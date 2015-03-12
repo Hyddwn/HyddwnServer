@@ -17,6 +17,7 @@ using Aura.Channel.Scripting;
 using Aura.Channel.World.Inventory;
 using Aura.Channel.Skills.Life;
 using System.Collections.Generic;
+using Aura.Channel.Skills;
 
 namespace Aura.Channel.World.Entities
 {
@@ -26,10 +27,11 @@ namespace Aura.Channel.World.Entities
 	public abstract class Creature : Entity, IDisposable
 	{
 		public const float HandBalance = 0.3f;
+		public const float BaseMagicBalance = 0.3f;
 		public const float HandCritical = 0.1f;
 		public const int HandAttackMin = 0;
 		public const int HandAttackMax = 8;
-		public const float MaxKnockBack = 120;
+		public const float MinStability = -10, MaxStability = 100;
 
 		private const float MinWeight = 0.7f, MaxWeight = 1.5f;
 		private const float MaxFoodStatBonus = 100;
@@ -199,10 +201,11 @@ namespace Aura.Channel.World.Entities
 			}
 		}
 
-		private float _knockBack;
-		private DateTime _knockBackChange;
+		private float _stability;
+		private DateTime _stabilityChange;
 		/// <summary>
-		/// "Force" applied to the creature.
+		/// Creature's stability, once it goes below a certain value the creature
+		/// becomes "unstable" and might have to be knocked back.
 		/// </summary>
 		/// <remarks>
 		/// The more you hit a creature with heavy weapons,
@@ -210,25 +213,31 @@ namespace Aura.Channel.World.Entities
 		/// is knocked back/down.
 		/// This is also used for the knock down gauge.
 		/// </remarks>
-		public float KnockBack
+		public float Stability
 		{
 			get
 			{
-				if (_knockBack <= 0)
-					return 0;
+				if (_stability >= MaxStability)
+					return MaxStability;
 
-				var result = _knockBack - ((DateTime.Now - _knockBackChange).TotalMilliseconds / 60f);
-				if (result <= 0)
-					result = _knockBack = 0;
+				var result = _stability + ((DateTime.Now - _stabilityChange).TotalMilliseconds / 60f);
+				if (result >= MaxStability)
+					result = _stability = MaxStability;
 
 				return (float)result;
 			}
 			set
 			{
-				_knockBack = Math.Min(MaxKnockBack, value);
-				_knockBackChange = DateTime.Now;
+				_stability = Math2.Clamp(MinStability, MaxStability, value);
+				_stabilityChange = DateTime.Now;
 			}
 		}
+
+		/// <summary>
+		/// Returns true if Stability is lower than or equal to 0,
+		/// at which point the creature should be knocked back.
+		/// </summary>
+		public bool IsUnstable { get { return (this.Stability <= 0); } }
 
 		public bool IsDead { get { return this.Has(CreatureStates.Dead); } }
 		public bool IsStunned { get { return (this.Stun > 0); } }
@@ -294,6 +303,16 @@ namespace Aura.Channel.World.Entities
 				return (AttackSpeed)result;
 			}
 		}
+
+		/// <summary>
+		/// Holds the time at which the knock down is over.
+		/// </summary>
+		public DateTime KnockDownTime { get; set; }
+
+		/// <summary>
+		/// Returns true if creature is currently knocked down.
+		/// </summary>
+		public bool IsKnockedDown { get { return (DateTime.Now < this.KnockDownTime); } }
 
 		// Stats
 		// ------------------------------------------------------------------
@@ -463,6 +482,51 @@ namespace Aura.Channel.World.Entities
 
 		public int AttackMinMod { get { return (int)this.StatMods.Get(Stat.AttackMinMod); } }
 		public int AttackMaxMod { get { return (int)this.StatMods.Get(Stat.AttackMaxMod); } }
+
+		/// <summary>
+		/// Returns total magic attack, based on stats, equipment, etc.
+		/// </summary>
+		public float MagicAttack
+		{
+			get
+			{
+				var result = (Math.Max(0, this.Int - 10) / 5f);
+
+				// TODO: Bonuses
+
+				return result;
+			}
+		}
+
+		/// <summary>
+		/// Returns total magic defense, based on stats, equipment, etc.
+		/// </summary>
+		public float MagicDefense
+		{
+			get
+			{
+				var result = (Math.Max(0, this.Will - 10) / 5f);
+
+				// TODO: Bonuses
+
+				return result;
+			}
+		}
+
+		/// <summary>
+		/// Returns total magic protection, based on stats, equipment, etc.
+		/// </summary>
+		public float MagicProtection
+		{
+			get
+			{
+				var result = (Math.Max(0, this.Int - 10) / 20f);
+
+				// TODO: Bonuses
+
+				return result;
+			}
+		}
 
 		// Food Mods
 		// ------------------------------------------------------------------
@@ -1115,7 +1179,7 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Calculates random balance using the given base balance (eg 0.3 for hands).
+		/// Calculates random balance (0.0~0.8) using the given base balance (eg 0.3 for hands).
 		/// </summary>
 		/// <param name="baseBalance"></param>
 		/// <returns></returns>
@@ -1130,9 +1194,27 @@ namespace Aura.Channel.World.Entities
 			// Randomization, balance+-(100-balance), eg 80 = 60~100
 			var diff = 1.0f - balance;
 			balance += ((diff - (diff * 2 * (float)rnd.NextDouble())) * (float)rnd.NextDouble());
-			balance = (float)Math.Max(0f, Math.Round(balance, 2));
 
-			return balance;
+			return Math2.Clamp(0f, 0.8f, balance);
+		}
+
+		/// <summary>
+		/// Calculates random magic balance (0.0~1.0).
+		/// </summary>
+		/// <returns></returns>
+		public float GetRndMagicBalance(float baseBalance = BaseMagicBalance)
+		{
+			var rnd = RandomProvider.Get();
+			var balance = baseBalance;
+
+			// Int
+			balance += (Math.Max(0, this.Int - 10) / 4) / 100f;
+
+			// Randomization, balance+-(100-balance), eg 80 = 60~100
+			var diff = 1.0f - balance;
+			balance += ((diff - (diff * 2 * (float)rnd.NextDouble())) * (float)rnd.NextDouble());
+
+			return Math2.Clamp(0f, 1f, balance);
 		}
 
 		/// <summary>
@@ -1152,6 +1234,43 @@ namespace Aura.Channel.World.Entities
 		public float GetRndBalance(Item weapon)
 		{
 			return this.GetRndBalance(weapon != null ? weapon.Balance : HandBalance);
+		}
+
+		/// <summary>
+		/// Calculates random base Magic damage for skill, using the given values.
+		/// </summary>
+		/// <remarks>
+		/// http://wiki.mabinogiworld.com/view/Stats#Magic_Damage
+		/// </remarks>
+		/// <param name="skill"></param>
+		/// <param name="baseMin"></param>
+		/// <param name="baseMax"></param>
+		/// <returns></returns>
+		public float GetRndMagicDamage(Skill skill, float baseMin, float baseMax)
+		{
+			var rnd = RandomProvider.Get();
+
+			var baseDamage = rnd.Between(baseMin, baseMax);
+			var factor = rnd.Between(skill.RankData.FactorMin, skill.RankData.FactorMax);
+
+			var wandBonus = 0f;
+			var chargeMultiplier = 0f;
+
+			if (skill.Info.Id == SkillId.Icebolt && this.RightHand != null && this.RightHand.HasTag("/ice_wand/"))
+				wandBonus = 5;
+			else if (skill.Info.Id == SkillId.Firebolt && this.RightHand != null && this.RightHand.HasTag("/fire_wand/"))
+				wandBonus = 5;
+			else if (skill.Info.Id == SkillId.Lightningbolt && this.RightHand != null && this.RightHand.HasTag("/lightning_wand/"))
+				wandBonus = 3.5f;
+
+			if (skill.Info.Id == SkillId.Firebolt || skill.Info.Id == SkillId.IceSpear || skill.Info.Id == SkillId.HailStorm)
+				chargeMultiplier = skill.Stacks;
+
+			// TODO: Enchants
+
+			var damage = (float)(baseDamage + Math.Floor(wandBonus * (1 + chargeMultiplier)) + (factor * this.MagicAttack));
+
+			return (damage * this.GetRndMagicBalance());
 		}
 
 		/// <summary>
