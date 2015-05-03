@@ -8,9 +8,10 @@ using System.Text;
 using Aura.Channel.World.Entities;
 using Aura.Shared.Network;
 using Aura.Channel.World;
-using Aura.Shared.Mabi.Const;
-using E = Aura.Shared.Mabi.Const.Effect;
+using Aura.Mabi.Const;
+using E = Aura.Mabi.Const.Effect;
 using Aura.Data.Database;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network.Sending
 {

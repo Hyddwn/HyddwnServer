@@ -8,6 +8,7 @@ using System.Linq;
 using Aura.Channel.Util;
 using Aura.Data.Database;
 using Aura.Shared.Util;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel.World
 {
@@ -25,9 +26,9 @@ namespace Aura.Channel.World
 		/// Loads collision objects from region data.
 		/// </summary>
 		/// <param name="data"></param>
-		public void Init(RegionData data)
+		public void Init(RegionInfoData data)
 		{
-			foreach (var area in data.Areas.Values)
+			foreach (var area in data.Areas)
 			{
 				foreach (var prop in area.Props.Values)
 				{

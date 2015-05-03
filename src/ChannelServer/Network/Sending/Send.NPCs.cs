@@ -9,8 +9,9 @@ using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.World.Entities;
 using Aura.Shared.Network;
 using Aura.Channel.Network.Sending.Helpers;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
 using Aura.Channel.World.Inventory;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network.Sending
 {

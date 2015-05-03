@@ -8,10 +8,11 @@ using System.Text;
 using Aura.Shared.Network;
 using Aura.Channel.Network.Sending;
 using Aura.Shared.Util;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
 using Aura.Channel.World.Entities;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network.Handlers
 {

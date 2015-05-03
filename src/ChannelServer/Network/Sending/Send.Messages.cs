@@ -7,9 +7,10 @@ using System.Linq;
 using System.Text;
 using Aura.Channel.World.Entities;
 using Aura.Shared.Network;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using Aura.Channel.World;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -276,8 +277,4 @@ namespace Aura.Channel.Network.Sending
 			region.Broadcast(packet);
 		}
 	}
-	public enum MsgBoxTitle { Notice, Info, Warning, Confirm }
-	public enum MsgBoxButtons { None, Close, OkCancel, YesNoCancel }
-	public enum MsgBoxAlign { Left, Center }
-	public enum NoticeType { Top = 1, TopRed, MiddleTop, Middle, Left, TopGreen, MiddleSystem, System, MiddleLower }
 }

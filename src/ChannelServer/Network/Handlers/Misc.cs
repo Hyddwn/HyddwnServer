@@ -8,8 +8,9 @@ using System.Text;
 using Aura.Shared.Network;
 using Aura.Channel.Network.Sending;
 using Aura.Shared.Util;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
 using Aura.Data;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -198,6 +199,24 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.UnkEsc)]
 		public void UnkEsc(ChannelClient client, Packet packet)
 		{
+		}
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Purpose unknown, sent if character is "stuck" because of
+		/// incompatibilities or missing responses, commonly happens
+		/// after an update of creature info (5209).
+		/// </remarks>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.IncompatibleUnk)]
+		public void IncompatibleUnk(ChannelClient client, Packet packet)
+		{
+			//Log.Unimplemented("5411");
+			Log.Warning("A client seems to be incompatible with the server, the latest version of Aura only supports the latest NA update. (Account id: {0})", client.Account.Id);
 		}
 	}
 }

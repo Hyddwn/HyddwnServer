@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
 using System;
 
 namespace Aura.Login.Database
@@ -94,7 +94,4 @@ namespace Aura.Login.Database
 			this.Luck = 10;
 		}
 	}
-
-	public enum CharacterType { Character, Pet, Partner }
-	public enum DeletionFlag { Normal, Recover, Ready, Delete }
 }

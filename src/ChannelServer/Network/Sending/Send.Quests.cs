@@ -10,7 +10,8 @@ using Aura.Shared.Network;
 using Aura.Channel.World.Quests;
 using System.Collections;
 using Aura.Channel.Network.Sending.Helpers;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network.Sending
 {

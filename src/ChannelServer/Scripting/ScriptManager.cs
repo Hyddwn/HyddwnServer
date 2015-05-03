@@ -22,8 +22,8 @@ using Aura.Channel.World.Entities;
 using Aura.Channel.World.Quests;
 using Aura.Data;
 using Aura.Data.Database;
-using Aura.Shared.Mabi;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi;
+using Aura.Mabi.Const;
 using Aura.Shared.Util;
 
 namespace Aura.Channel.Scripting

@@ -2,7 +2,8 @@
 // For more information, see license file in the main folder
 
 using Aura.Channel.World.Entities.Creatures;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
+using Aura.Mabi.Network;
 using Aura.Shared.Network;
 
 namespace Aura.Channel.Network.Sending.Helpers

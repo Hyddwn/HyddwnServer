@@ -5,10 +5,10 @@ using System;
 using System.Threading;
 using Aura.Data;
 using Aura.Data.Database;
-using Aura.Shared.Mabi.Const;
-using Aura.Shared.Mabi.Structs;
+using Aura.Mabi.Const;
+using Aura.Mabi.Structs;
 using Aura.Shared.Util;
-using Aura.Shared.Mabi;
+using Aura.Mabi;
 
 namespace Aura.Channel.World.Entities
 {
@@ -372,7 +372,7 @@ namespace Aura.Channel.World.Entities
 				this.OptionInfo.Price = this.Data.Price;
 				this.OptionInfo.SellingPrice = this.Data.SellingPrice;
 				this.OptionInfo.WeaponType = this.Data.WeaponType;
-				this.OptionInfo.AttackSpeed = (AttackSpeed)this.Data.AttackSpeed;
+				this.OptionInfo.AttackSpeed = this.Data.AttackSpeed;
 				this.OptionInfo.EffectiveRange = this.Data.Range;
 				this.OptionInfo.UpgradeMax = (byte)this.Data.MaxUpgrades;
 

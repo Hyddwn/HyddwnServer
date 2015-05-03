@@ -8,9 +8,10 @@ using System.Text;
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.World.Entities;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Skills.Actions
 {
@@ -38,16 +39,6 @@ namespace Aura.Channel.Skills.Actions
 	[Skill(SkillId.ContinentWarp)]
 	public class ContinentWarp : IPreparable, IUseable, ICompletable, ICancelable
 	{
-		/// <summary>
-		/// Continents players can warp to.
-		/// </summary>
-		private enum Continent : byte
-		{
-			Uladh = 0,
-			Iria = 1,
-			Belvast = 2,
-		}
-
 		/// <summary>
 		/// Prepares the skill, called when opening map. Goes straight to Ready.
 		/// </summary>

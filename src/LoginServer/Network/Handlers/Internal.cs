@@ -2,10 +2,11 @@
 // For more information, see license file in the main folder
 
 using Aura.Shared.Network;
-using Aura.Shared.Mabi;
+using Aura.Mabi;
 using Aura.Shared.Util;
 using System;
 using Aura.Login.Database;
+using Aura.Mabi.Network;
 
 namespace Aura.Login.Network.Handlers
 {

@@ -98,7 +98,7 @@ public class TirRegionScript : RegionScript
 	
 	public override void LoadSpawns()
 	{
-		// Southern Fields
+		// Southern Fields (Disabled during MabiLand event)
 		CreatureSpawn(20001, 15, 1, 11926,25589, 15256,22203, 11553,18350, 4721,17364, 4035,21583); // Gray Wolf
 		CreatureSpawn(20003, 5,  1, 7375,17002,  13727,17316, 16027,21792, 11708,19855);            // White Wolf
 		

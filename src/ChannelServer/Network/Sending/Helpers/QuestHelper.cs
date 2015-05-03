@@ -3,7 +3,8 @@
 
 using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.World.Quests;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
+using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using System;
 using System.Linq;
@@ -70,6 +71,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 			{
 				packet.PutByte(0);
 				packet.PutByte(0);
+				packet.PutByte(0);
+			}
+
+			// [190200, NA203 (22.04.2015)] ?
+			{
 				packet.PutByte(0);
 			}
 

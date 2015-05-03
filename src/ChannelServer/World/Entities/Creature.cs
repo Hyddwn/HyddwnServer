@@ -9,9 +9,9 @@ using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities.Creatures;
 using Aura.Data;
 using Aura.Data.Database;
-using Aura.Shared.Mabi;
-using Aura.Shared.Mabi.Const;
-using Aura.Shared.Mabi.Structs;
+using Aura.Mabi;
+using Aura.Mabi.Const;
+using Aura.Mabi.Structs;
 using Aura.Shared.Util;
 using Aura.Channel.Scripting;
 using Aura.Channel.World.Inventory;
@@ -278,7 +278,7 @@ namespace Aura.Channel.World.Entities
 		/// Returns weapon's attack speed or the race's if not weapon
 		/// is equipped.
 		/// </summary>
-		public AttackSpeed AttackSpeed { get { return (this.RightHand != null ? (AttackSpeed)this.RightHand.Data.AttackSpeed : (AttackSpeed)this.RaceData.AttackSpeed); } }
+		public AttackSpeed AttackSpeed { get { return (this.RightHand != null ? this.RightHand.Data.AttackSpeed : (AttackSpeed)this.RaceData.AttackSpeed); } }
 
 		/// <summary>
 		/// Returns average attack speed of both equipped weapons, or race's
@@ -292,10 +292,10 @@ namespace Aura.Channel.World.Entities
 
 				if (this.RightHand != null)
 				{
-					result = this.RightHand.Data.AttackSpeed;
+					result = (int)this.RightHand.Data.AttackSpeed;
 					if (this.LeftHand != null)
 					{
-						result += this.LeftHand.Data.AttackSpeed;
+						result += (int)this.LeftHand.Data.AttackSpeed;
 						result /= 2;
 					}
 				}
@@ -818,6 +818,15 @@ namespace Aura.Channel.World.Entities
 		{
 			this.RegionId = region;
 			this.SetPosition(x, y);
+		}
+
+		/// <summary>
+		/// Sets RegionId and position.
+		/// </summary>
+		/// <param name="loc"></param>
+		public void SetLocation(Location loc)
+		{
+			this.SetLocation(loc.RegionId, loc.X, loc.Y);
 		}
 
 		/// <summary>

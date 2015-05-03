@@ -8,9 +8,10 @@ using System.Text;
 using Aura.Channel.World.Entities;
 using Aura.Shared.Network;
 using Aura.Channel.World;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using Aura.Channel.Network.Sending.Helpers;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -330,9 +331,4 @@ namespace Aura.Channel.Network.Sending
 			creature.Client.Send(packet);
 		}
 	}
-
-	/// <summary>
-	/// Repeat modes for SetBgm
-	/// </summary>
-	public enum BgmRepeat : int { Indefinitely = 0, Once = 1 }
 }

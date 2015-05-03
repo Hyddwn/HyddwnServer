@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Aura.Channel.Network.Sending;
-using Aura.Shared.Mabi;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel.World.Entities.Creatures
 {

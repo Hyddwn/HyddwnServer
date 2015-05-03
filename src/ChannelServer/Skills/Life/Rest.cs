@@ -7,8 +7,8 @@ using Aura.Channel.Skills.Base;
 using Aura.Channel.World.Entities;
 using Aura.Data;
 using Aura.Data.Database;
-using Aura.Shared.Mabi;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel.Skills.Life
 {

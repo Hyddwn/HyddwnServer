@@ -9,7 +9,8 @@ using Aura.Channel.World.Entities;
 using Aura.Shared.Network;
 using Aura.Channel.World;
 using Aura.Channel.Skills;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -113,6 +114,11 @@ namespace Aura.Channel.Network.Sending
 					{
 						actionPacket.PutFloat(pos.X);
 						actionPacket.PutFloat(pos.Y);
+
+						// [190200, NA203 (22.04.2015)]
+						{
+							actionPacket.PutInt(0);
+						}
 					}
 
 					actionPacket.PutByte(0); // PDef? Seen as 0x20 in a normal attack (G18)
@@ -305,6 +311,4 @@ namespace Aura.Channel.Network.Sending
 			receiver.Client.Send(packet);
 		}
 	}
-
-	public enum TargetMode : byte { Normal = 0, Alert = 1, Aggro = 2 }
 }

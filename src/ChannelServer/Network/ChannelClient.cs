@@ -9,7 +9,8 @@ using Aura.Channel.Util;
 using Aura.Channel.World.Entities;
 using Aura.Shared.Network;
 using Aura.Channel.Skills.Life;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
+using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network
 {
@@ -109,6 +110,10 @@ namespace Aura.Channel.Network
 				// Close NPC sessions
 				if (creature.Client.NpcSession.Script != null)
 					creature.Client.NpcSession.Clear();
+
+				// Use fallback location if creature is in a temp region.
+				if (creature.Region.IsTemporary)
+					creature.SetLocation(creature.FallbackLocation);
 
 				// Unspawn creature
 				creature.Region.RemoveCreature(creature);

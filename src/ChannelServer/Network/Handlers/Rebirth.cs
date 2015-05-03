@@ -6,7 +6,8 @@ using Aura.Channel.Util;
 using Aura.Channel.World.Entities;
 using Aura.Data;
 using Aura.Data.Database;
-using Aura.Shared.Mabi.Const;
+using Aura.Mabi.Const;
+using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using System;
 
@@ -168,13 +169,6 @@ namespace Aura.Channel.Network.Handlers
 
 			// Success
 			Send.RequestRebirthR(creature, true);
-		}
-
-		private enum RebirthLocation : byte
-		{
-			Last = 0,
-			Tir = 1,
-			Iria = 2,
 		}
 	}
 }
