@@ -530,6 +530,7 @@ namespace Aura.Mabi.Const
 		PickupItemGMSkill = 65001,
 		SuperWindmill = 65002,
 		BlockWorldGMSkill = 65003,
+		AdministrativePicking2 = 65006,
 	}
 
 	public enum PlayingQuality
