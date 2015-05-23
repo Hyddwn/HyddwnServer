@@ -351,7 +351,7 @@ namespace Aura.Channel.Network.Handlers
 			if (!gotMetaScript)
 			{
 				// Get script
-				var script = ChannelServer.Instance.ScriptManager.GetItemScript(item.Info.Id);
+				var script = ChannelServer.Instance.ScriptManager.ItemScripts.Get(item.Info.Id);
 				if (script == null)
 				{
 					Log.Unimplemented("Item script for '{0}' not found.", item.Info.Id);
@@ -561,6 +561,52 @@ namespace Aura.Channel.Network.Handlers
 			var item = creature.Inventory.GetItemSafe(itemEntityId);
 
 			item.IsNew = false;
+		}
+
+		/// <summary>
+		/// Sent when trying to burn an item in a campfire.
+		/// </summary>
+		/// <example>
+		/// 001 [00A1000E000A000E] Long   : 45317531380613134  Fire prop
+		/// 002 [00500000000003B9] Long   : 22517998136853433  Item to burn
+		/// 003 [..............00] Byte   : 0  Enchanter's Burn?
+		/// </example>
+		/// <remarks>
+		/// TODO: How to get the Enchanter's Burn button? Having the items isn't enough.
+		/// </remarks>
+		[PacketHandler(Op.BurnItem)]
+		public void BurnItem(ChannelClient client, Packet packet)
+		{
+			var propEntityId = packet.GetLong();
+			var itemEntityId = packet.GetLong();
+			var option = packet.GetBool();
+
+			// Get creature and item
+			var creature = client.GetCreatureSafe(packet.Id);
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+
+			// Check if prop is still there (campfires may vanish)
+			var prop = creature.Region.GetProp(propEntityId);
+			if (prop != null)
+			{
+				var enchantBurnSuccess = false;
+				var exp = 0;
+
+				// Add exp based on item buying price (random+unofficial)
+				if (item.OptionInfo.Price > 0)
+					exp = 40 + (int)(item.OptionInfo.Price / (float)item.Data.StackMax / 100f * item.Info.Amount);
+
+				// Remove item from cursor
+				creature.Inventory.Remove(item);
+
+				// Effect
+				Send.Effect(MabiId.Broadcast, creature, Effect.BurnItem, propEntityId, enchantBurnSuccess);
+				Send.ServerMessage(creature, Localization.Get("Burning EXP {0}"), exp);
+				Send.Notice(creature, Localization.Get("Burning EXP {0}"), exp);
+			}
+
+			// Fail if prop is gone
+			Send.BurnItemR(creature, prop != null);
 		}
 	}
 }

@@ -1,28 +1,30 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills;
 using Aura.Channel.Skills.Base;
+using Aura.Channel.Skills.Life;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Shared.Network;
+using Aura.Shared.Scripting.Scripts;
 using Aura.Shared.Util;
-using Aura.Channel.Skills.Life;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading;
 
 namespace Aura.Channel.Scripting.Scripts
 {
 	// TODO: Rewrite into the new tree design before we make more
 	//   of a mess out of this than necessary.
-	public abstract class AiScript : IDisposable
+	public abstract class AiScript : IScript, IDisposable
 	{
 		// Official heartbeat while following a target seems
 		// to be about 100-200ms?
@@ -116,6 +118,25 @@ namespace Aura.Channel.Scripting.Scripts
 			_heartbeatTimer.Change(-1, -1);
 			_heartbeatTimer.Dispose();
 			_heartbeatTimer = null;
+		}
+
+		/// <summary>
+		/// Called when script is initialized after loading it.
+		/// </summary>
+		/// <returns></returns>
+		public bool Init()
+		{
+			var attr = this.GetType().GetCustomAttribute<AiScriptAttribute>();
+			if (attr == null)
+			{
+				Log.Error("AiScript.Init: Missing AiScript attribute.");
+				return false;
+			}
+
+			foreach (var name in attr.Names)
+				ChannelServer.Instance.ScriptManager.AiScripts.Add(name, this.GetType());
+
+			return true;
 		}
 
 		/// <summary>
@@ -762,7 +783,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="minDistance"></param>
 		/// <param name="maxDistance"></param>
 		/// <returns></returns>
-		protected IEnumerable Wander(int minDistance = 100, int maxDistance = 600)
+		protected IEnumerable Wander(int minDistance = 100, int maxDistance = 600, bool walk = true)
 		{
 			if (maxDistance < minDistance)
 				maxDistance = minDistance;
@@ -776,7 +797,7 @@ namespace Aura.Channel.Scripting.Scripts
 			if (npc != null && destination.GetDistance(npc.SpawnLocation.Position) > _maxDistanceFromSpawn)
 				destination = pos.GetRelative(npc.SpawnLocation.Position, (minDistance + maxDistance) / 2);
 
-			foreach (var action in this.WalkTo(destination))
+			foreach (var action in this.MoveTo(destination, walk))
 				yield return action;
 		}
 
@@ -855,9 +876,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="timeMin"></param>
 		/// <param name="timeMax"></param>
 		/// <returns></returns>
-		protected IEnumerable Circle(int radius, int timeMin = 1000, int timeMax = 5000)
+		protected IEnumerable Circle(int radius, int timeMin = 1000, int timeMax = 5000, bool walk = true)
 		{
-			return this.Circle(radius, timeMin, timeMax, this.Random() < 50);
+			return this.Circle(radius, timeMin, timeMax, this.Random() < 50, walk);
 		}
 
 		/// <summary>
@@ -868,7 +889,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="timeMax"></param>
 		/// <param name="clockwise"></param>
 		/// <returns></returns>
-		protected IEnumerable Circle(int radius, int timeMin, int timeMax, bool clockwise)
+		protected IEnumerable Circle(int radius, int timeMin, int timeMax, bool clockwise, bool walk)
 		{
 			if (timeMin < 500)
 				timeMin = 500;
@@ -889,7 +910,7 @@ namespace Aura.Channel.Scripting.Scripts
 				var x = targetPos.X + (Math.Cos(angle) * radius);
 				var y = targetPos.Y + (Math.Sin(angle) * radius);
 
-				foreach (var action in this.WalkTo(new Position((int)x, (int)y)))
+				foreach (var action in this.MoveTo(new Position((int)x, (int)y), walk))
 					yield return action;
 			}
 		}
@@ -931,7 +952,10 @@ namespace Aura.Channel.Scripting.Scripts
 
 			while ((pos = this.Creature.GetPosition()).InRange((targetPos = this.Creature.Target.GetPosition()), minDistance))
 			{
-				foreach (var action in this.MoveTo(pos.GetRelative(targetPos, minDistance + 50), walk))
+				// The position to move to is on the line between pos and targetPos,
+				// -distance from target to creature, resulting in a position
+				// "behind" the creature.
+				foreach (var action in this.MoveTo(pos.GetRelative(targetPos, -(minDistance + 50)), walk))
 					yield return action;
 			}
 
@@ -1423,6 +1447,26 @@ namespace Aura.Channel.Scripting.Scripts
 			Hit,
 			DefenseHit,
 			KnockDown,
+		}
+	}
+
+	/// <summary>
+	/// Attribute for AI scripts, to specify which races the script is for.
+	/// </summary>
+	public class AiScriptAttribute : Attribute
+	{
+		/// <summary>
+		/// List of AI names
+		/// </summary>
+		public string[] Names { get; private set; }
+
+		/// <summary>
+		/// New attribute
+		/// </summary>
+		/// <param name="names"></param>
+		public AiScriptAttribute(params string[] names)
+		{
+			this.Names = names;
 		}
 	}
 }

@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Aura.Channel.Scripting
+namespace Aura.Shared.Scripting
 {
 	/// <summary>
 	/// Defines a type that's not to load.

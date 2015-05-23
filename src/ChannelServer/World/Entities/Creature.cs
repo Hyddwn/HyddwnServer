@@ -1673,13 +1673,14 @@ namespace Aura.Channel.World.Entities
 		}
 		/// <summary>
 		/// Returns a list of creatures in range that are targetable.
+		/// Checks for collisions.
 		/// </summary>
 		/// <param name="range"></param>
 		/// <returns></returns>
 		public ICollection<Creature> GetTargetableCreaturesInRange(int range)
 		{
 			var visible = this.Region.GetVisibleCreaturesInRange(this, range);
-			var targetable = visible.FindAll(a => this.CanTarget(a));
+			var targetable = visible.FindAll(a => this.CanTarget(a) && !this.Region.Collisions.Any(this.GetPosition(), a.GetPosition()));
 
 			return targetable;
 		}
@@ -1689,5 +1690,18 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		/// <param name="creature"></param>
 		public abstract void Aggro(Creature target);
+
+		/// <summary>
+		/// Disposes creature and removes it from its current region.
+		/// </summary>
+		public override void Disappear()
+		{
+			this.Dispose();
+
+			if (this.Region != null)
+				this.Region.RemoveCreature(this);
+
+			base.Disappear();
+		}
 	}
 }

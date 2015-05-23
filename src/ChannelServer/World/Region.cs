@@ -26,10 +26,11 @@ namespace Aura.Channel.World
 		// TODO: Data?
 		public const int VisibleRange = 3000;
 
-		protected ReaderWriterLockSlim _creaturesRWLS, _propsRWLS, _itemsRWLS;
+		protected ReaderWriterLockSlim _creaturesRWLS, _propsRWLS, _clientEventsRWLS, _itemsRWLS;
 
 		protected Dictionary<long, Creature> _creatures;
 		protected Dictionary<long, Prop> _props;
+		protected Dictionary<long, ClientEvent> _clientEvents;
 		protected Dictionary<long, Item> _items;
 
 		protected HashSet<ChannelClient> _clients;
@@ -91,6 +92,7 @@ namespace Aura.Channel.World
 		{
 			_creaturesRWLS = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 			_propsRWLS = new ReaderWriterLockSlim();
+			_clientEventsRWLS = new ReaderWriterLockSlim();
 			_itemsRWLS = new ReaderWriterLockSlim();
 
 			this.Id = regionId;
@@ -100,6 +102,7 @@ namespace Aura.Channel.World
 
 			_creatures = new Dictionary<long, Creature>();
 			_props = new Dictionary<long, Prop>();
+			_clientEvents = new Dictionary<long, ClientEvent>();
 			_items = new Dictionary<long, Item>();
 
 			_clients = new HashSet<ChannelClient>();
@@ -230,6 +233,7 @@ namespace Aura.Channel.World
 			this.Collisions.Init(this.RegionInfoData);
 
 			this.LoadProps();
+			this.LoadClientEvents();
 		}
 
 		/// <summary>
@@ -253,13 +257,42 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Adds all props found in the client for this region.
+		/// </summary>
+		protected void LoadClientEvents()
+		{
+			foreach (var area in this.RegionInfoData.Areas)
+			{
+				foreach (var clientEvent in area.Events.Values)
+				{
+					var add = new ClientEvent(clientEvent.Id, clientEvent);
+
+					lock (_clientEvents)
+						_clientEvents[add.EntityId] = add;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Returns event by id or null if it doesn't exist.
 		/// </summary>
 		/// <param name="eventId"></param>
 		/// <returns></returns>
-		public EventData GetEvent(long eventId)
+		public ClientEvent GetClientEvent(long eventId)
 		{
-			return this.RegionInfoData.GetEvent(eventId);
+			ClientEvent result;
+
+			_clientEventsRWLS.EnterReadLock();
+			try
+			{
+				_clientEvents.TryGetValue(eventId, out result);
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitReadLock();
+			}
+
+			return result;
 		}
 
 		/// <summary>
@@ -332,27 +365,7 @@ namespace Aura.Channel.World
 
 			// Remove them from the region
 			foreach (var entity in disappear)
-			{
-				if (entity.Is(DataType.Creature))
-				{
-					var creature = entity as Creature;
-					this.RemoveCreature(creature);
-					creature.Dispose();
-
-					// Respawn
-					var npc = creature as NPC;
-					if (npc != null && npc.SpawnId > 0)
-						ChannelServer.Instance.ScriptManager.Spawn(npc.SpawnId, 1);
-				}
-				else if (entity.Is(DataType.Item))
-				{
-					this.RemoveItem(entity as Item);
-				}
-				else if (entity.Is(DataType.Prop))
-				{
-					this.RemoveProp(entity as Prop);
-				}
-			}
+				entity.Disappear();
 		}
 
 		/// <summary>
@@ -471,8 +484,8 @@ namespace Aura.Channel.World
 			// TODO: Technically not required? Handled by LookAround.
 			Send.EntityAppears(creature);
 
-			if (creature.EntityId < MabiId.Npcs)
-				Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
+			//if (creature.EntityId < MabiId.Npcs)
+			//	Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
 		}
 
 		/// <summary>
@@ -499,8 +512,8 @@ namespace Aura.Channel.World
 				lock (_clients)
 					_clients.Remove(creature.Client);
 
-			if (creature.EntityId < MabiId.Npcs)
-				Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
+			//if (creature.EntityId < MabiId.Npcs)
+			//	Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
 
 			// Remove dynamic region from client when he's removed from it on
 			// the server, so it's recreated next time it goes to a dynamic
@@ -536,6 +549,53 @@ namespace Aura.Channel.World
 			}
 
 			return creature;
+		}
+
+		/// <summary>
+		/// Returns list of creatures that match predicate.
+		/// </summary>
+		public ICollection<Creature> GetCreatures(Func<Creature, bool> predicate)
+		{
+			var result = new List<Creature>();
+
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				result.AddRange(_creatures.Values.Where(predicate));
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns list of creatures that match predicate.
+		/// </summary>
+		public ICollection<NPC> GetNpcs(Func<NPC, bool> predicate)
+		{
+			var result = new List<NPC>();
+
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				foreach (var creature in _creatures.Values)
+				{
+					var npc = creature as NPC;
+					if (npc == null || !predicate(npc))
+						continue;
+
+					result.Add(npc);
+				}
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+
+			return result;
 		}
 
 		/// <summary>
@@ -691,6 +751,8 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void AddProp(Prop prop)
 		{
+			// TODO: Add prop shape to collisions
+
 			_propsRWLS.EnterWriteLock();
 			try
 			{
@@ -702,6 +764,13 @@ namespace Aura.Channel.World
 			}
 
 			prop.Region = this;
+
+			// Add collisions
+			if (prop.Shapes.Count > 0)
+			{
+				foreach (var shape in prop.Shapes)
+					this.Collisions.Add(prop.EntityIdHex, shape);
+			}
 
 			Send.EntityAppears(prop);
 		}
@@ -728,6 +797,10 @@ namespace Aura.Channel.World
 				_propsRWLS.ExitWriteLock();
 			}
 
+			// Remove collisions
+			if (prop.Shapes.Count > 0)
+				this.Collisions.Remove(prop.EntityIdHex);
+
 			Send.PropDisappears(prop);
 
 			prop.Region = null;
@@ -744,6 +817,26 @@ namespace Aura.Channel.World
 			try
 			{
 				_props.TryGetValue(entityId, out result);
+			}
+			finally
+			{
+				_propsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns prop or null.
+		/// </summary>
+		public IList<Prop> GetProps(Func<Prop, bool> predicate)
+		{
+			var result = new List<Prop>();
+
+			_propsRWLS.EnterReadLock();
+			try
+			{
+				result.AddRange(_props.Values.Where(predicate));
 			}
 			finally
 			{
@@ -947,7 +1040,7 @@ namespace Aura.Channel.World
 			finally { _propsRWLS.ExitReadLock(); }
 
 			// Remove all
-			foreach (var npc in npcs) { this.RemoveCreature(npc); npc.Dispose(); }
+			foreach (var npc in npcs) { npc.Dispose(); this.RemoveCreature(npc); }
 			foreach (var prop in props) this.RemoveProp(prop);
 		}
 

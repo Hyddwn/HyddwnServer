@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Linq;
 using Aura.Mabi.Network;
 using Aura.Channel.World;
+using System.Text.RegularExpressions;
 
 namespace Aura.Channel.Util
 {
@@ -50,7 +51,7 @@ namespace Aura.Channel.Util
 
 			// GMs
 			Add(50, 50, "warp", "<region> [x] [y]", HandleWarp);
-			Add(50, 50, "jump", "[x] [y]", HandleWarp);
+			Add(50, 50, "jump", "[x] [y]", HandleJump);
 			Add(50, 50, "item", "<id|name> [amount|color1 [color2 [color 3]]]", HandleItem);
 			Add(50, 50, "ego", "<item id> <ego name> <ego race> [color1 [color2 [color 3]]]", HandleEgo);
 			Add(50, 50, "skill", "<id> [rank]", HandleSkill);
@@ -236,68 +237,121 @@ namespace Aura.Channel.Util
 
 		private CommandResult HandleWarp(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
-			// Handles both warp and jump
-
-			var warp = (args[0] == "warp");
-			var offset = (warp ? 1 : 0);
-
-			if (warp && args.Count < 2)
+			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
-			// Get region id
 			int regionId = 0;
-			if (warp)
+			int x = -1, y = -1;
+
+			// Warp to path
+			if (args.Count == 2 && !args[1].Contains("r:") && !Regex.IsMatch(args[1], "^[0-9]+$"))
+			{
+				try
+				{
+					var loc = new Location(args[1]);
+					regionId = loc.RegionId;
+					x = loc.X;
+					y = loc.Y;
+				}
+				catch (Exception ex)
+				{
+					Send.ServerMessage(sender, "Error: {0}", ex.Message);
+					return CommandResult.Fail;
+				}
+			}
+			// Warp/Jump to coordinates
+			else
 			{
 				if (!int.TryParse(args[1].Replace("r:", ""), out regionId))
 				{
 					Send.ServerMessage(sender, Localization.Get("Invalid region id."));
 					return CommandResult.InvalidArgument;
 				}
-			}
-			else
-				regionId = target.RegionId;
 
-			// Check region
-			var warpToRegion = ChannelServer.Instance.World.GetRegion(regionId);
-			if (warp && warpToRegion == null)
-			{
-				Send.ServerMessage(sender, Localization.Get("Region doesn't exist."));
-				return CommandResult.Fail;
+				// Check region
+				var warpToRegion = ChannelServer.Instance.World.GetRegion(regionId);
+				if (warpToRegion == null)
+				{
+					Send.ServerMessage(sender, Localization.Get("Region doesn't exist."));
+					return CommandResult.Fail;
+				}
+
+				// Parse X
+				if (args.Count > 2 && !int.TryParse(args[2].Replace("x:", ""), out x))
+				{
+					Send.ServerMessage(sender, Localization.Get("Invalid X coordinate."));
+					return CommandResult.InvalidArgument;
+				}
+
+				// Parse Y
+				if (args.Count > 3 && !int.TryParse(args[3].Replace("y:", ""), out y))
+				{
+					Send.ServerMessage(sender, Localization.Get("Invalid Y coordinate."));
+					return CommandResult.InvalidArgument;
+				}
+
+				// Same coordinates if warping back from a dynamic region,
+				// random coordinates if none were specified in a normal warp.
+				if ((target.Region.IsDynamic || warpToRegion.IsDynamic) && (warpToRegion.BaseId == target.Region.BaseId))
+				{
+					var pos = target.GetPosition();
+					x = pos.X;
+					y = pos.Y;
+				}
+				else if (x == -1 || y == -1)
+				{
+					var rndc = AuraData.RegionInfoDb.RandomCoord(warpToRegion.BaseId);
+					if (x < 0) x = rndc.X;
+					if (y < 0) y = rndc.Y;
+				}
 			}
 
+			target.Warp(regionId, x, y);
+
+			Send.ServerMessage(sender, Localization.Get("Warped to {0}@{1}/{2}"), regionId, x, y);
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("You've been warped by '{0}'."), sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleJump(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			int regionId = target.RegionId;
 			int x = -1, y = -1;
 
+			// Split args like "123,321", our common spawner coord format
+			int index = -1;
+			if (args.Count == 2 && (index = args[1].IndexOf(',')) != -1)
+			{
+				args.Add(args[1].Substring(index + 1, args[1].Length - index - 1));
+				args[1] = args[1].Substring(0, index);
+			}
+
 			// Parse X
-			if (args.Count > 1 + offset && !int.TryParse(args[1 + offset].Replace("x:", ""), out x))
+			if (args.Count > 1 && !int.TryParse(args[1].Trim(','), out x))
 			{
 				Send.ServerMessage(sender, Localization.Get("Invalid X coordinate."));
 				return CommandResult.InvalidArgument;
 			}
 
 			// Parse Y
-			if (args.Count > 2 + offset && !int.TryParse(args[2 + offset].Replace("y:", ""), out y))
+			if (args.Count > 2 && !int.TryParse(args[2].Trim(','), out y))
 			{
 				Send.ServerMessage(sender, Localization.Get("Invalid Y coordinate."));
 				return CommandResult.InvalidArgument;
 			}
 
-			// Same coordinates if warping back from a dynamic region,
-			// random coordinates if none were specified in a normal warp.
-			if ((target.Region.IsDynamic || warpToRegion.IsDynamic) && (warpToRegion.BaseId == target.Region.BaseId))
+			if (x == -1 || y == -1)
 			{
-				var pos = target.GetPosition();
-				x = pos.X;
-				y = pos.Y;
-			}
-			else if (x == -1 || y == -1)
-			{
-				var rndc = AuraData.RegionInfoDb.RandomCoord(warpToRegion.BaseId);
+				var rndc = AuraData.RegionInfoDb.RandomCoord(regionId);
 				if (x < 0) x = rndc.X;
 				if (y < 0) y = rndc.Y;
 			}
 
 			target.Warp(regionId, x, y);
 
+			Send.ServerMessage(sender, Localization.Get("Jumped to {0}/{1}"), x, y);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("You've been warped by '{0}'."), sender.Name);
 
@@ -766,7 +820,7 @@ namespace Aura.Channel.Util
 				var x = (int)(targetPos.X + Math.Sin(i) * i * 20);
 				var y = (int)(targetPos.Y + Math.Cos(i) * i * 20);
 
-				var creature = ChannelServer.Instance.ScriptManager.Spawn(raceId, target.RegionId, x, y, -1, true, true);
+				var creature = ChannelServer.Instance.World.SpawnManager.Spawn(raceId, target.RegionId, x, y, true, true);
 
 				if (titleId != 0)
 				{
@@ -1140,8 +1194,8 @@ namespace Aura.Channel.Util
 			// List of "working", normal player skills
 			var listOfSkills = new SkillId[] {
 				SkillId.Smash, SkillId.Defense, SkillId.FinalHit, SkillId.Counterattack, SkillId.Windmill,
-				SkillId.Rest, SkillId.Herbalism, SkillId.ProductionMastery,
-				SkillId.ManaShield, SkillId.Icebolt, SkillId.Firebolt, SkillId.Lightningbolt,
+				SkillId.Rest, SkillId.Herbalism, SkillId.ProductionMastery, SkillId.Campfire, SkillId.FirstAid,
+				SkillId.ManaShield, SkillId.Icebolt, SkillId.Firebolt, SkillId.Lightningbolt, SkillId.Healing, SkillId.Meditation,
 				SkillId.Composing, SkillId.PlayingInstrument, SkillId.Song,
 			};
 

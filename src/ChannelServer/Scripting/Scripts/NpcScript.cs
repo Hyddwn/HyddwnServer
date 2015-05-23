@@ -116,7 +116,8 @@ namespace Aura.Channel.Scripting.Scripts
 			this.NPC = new NPC();
 			this.NPC.State = CreatureStates.Npc | CreatureStates.NamedNpc | CreatureStates.GoodNpc;
 			this.NPC.ScriptType = this.GetType();
-			this.NPC.AI = ChannelServer.Instance.ScriptManager.GetAi("npc_normal", this.NPC);
+
+			this.SetAi("npc_normal");
 
 			// Load script first, to get race set and stuff, then load the NPC data.
 			this.Load();
@@ -447,7 +448,7 @@ namespace Aura.Channel.Scripting.Scripts
 					break;
 
 				case NpcMood.Hates:
-					moodStr = this.RndStr(
+					moodStr = this.Rnd(
 						Localization.Get("(<npcname/> is looking at me like they don't want to see me.)"),
 						Localization.Get("(<npcname/> obviously hates me.)")
 					);
@@ -474,7 +475,7 @@ namespace Aura.Channel.Scripting.Scripts
 					break;
 
 				default:
-					moodStr = this.RndStr(
+					moodStr = this.Rnd(
 						Localization.Get("(<npcname/> is looking at me.)"),
 						Localization.Get("(<npcname/> is looking in my direction.)"),
 						Localization.Get("(<npcname/> is waiting for me to says something.)"),
@@ -554,7 +555,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var msg = "";
 			if (favor >= 0)
 			{
-				msg = this.RndStr(
+				msg = this.Rnd(
 					Localization.Get("(I think I left a good impression.)"),
 					Localization.Get("(The conversation drew a lot of interest.)"),
 					Localization.Get("(That was a great conversation!)")
@@ -563,7 +564,7 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 			else
 			{
-				msg = this.RndStr(
+				msg = this.Rnd(
 					Localization.Get("(A bit of frowning is evident.)"),
 					Localization.Get("(Seems like this person did not enjoy the conversation.)"),
 					Localization.Get("(A disapproving look, indeed.)")
@@ -776,14 +777,9 @@ namespace Aura.Channel.Scripting.Scripts
 			if (this.NPC.AI != null)
 				this.NPC.AI.Dispose();
 
-			var ai = ChannelServer.Instance.ScriptManager.GetAi(name, this.NPC);
-			if (ai == null)
-			{
-				Log.Error("SetAi: AI '{0}' not found ({1})", name, this.GetType().Name);
-				return;
-			}
-
-			this.NPC.AI = ai;
+			this.NPC.AI = ChannelServer.Instance.ScriptManager.AiScripts.CreateAi(name, this.NPC);
+			if (this.NPC.AI == null)
+				Log.Error("NpcScript.SetAi: AI '{0}' not found ({1})", name, this.GetType().Name);
 		}
 
 		/// <summary>
@@ -814,13 +810,13 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Opens shop for player.
 		/// </summary>
-		/// <param name="shopType"></param>
-		protected void OpenShop(string shopType)
+		/// <param name="typeName"></param>
+		protected void OpenShop(string typeName)
 		{
-			var shop = ChannelServer.Instance.ScriptManager.GetShop(shopType);
+			var shop = ChannelServer.Instance.ScriptManager.NpcShopScripts.Get(typeName);
 			if (shop == null)
 			{
-				Log.Unimplemented("Missing shop: {0}", shopType);
+				Log.Unimplemented("Missing shop: {0}", typeName);
 				this.Close("(Missing shop.)");
 				return;
 			}
@@ -933,7 +929,11 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		protected async Task Hook(string hookName, params object[] args)
 		{
-			foreach (var hook in ChannelServer.Instance.ScriptManager.GetHooks(this.NPC.Name, hookName))
+			var hooks = ChannelServer.Instance.ScriptManager.NpcScriptHooks.Get(this.NPC.Name, hookName);
+			if (hooks == null)
+				return;
+
+			foreach (var hook in hooks)
 			{
 				var result = await hook(this, args);
 				switch (result)
@@ -1186,7 +1186,7 @@ namespace Aura.Channel.Scripting.Scripts
 				throw new ArgumentException("NpcScript.RandomPtj: questIds may not be empty.");
 
 			// Check quest scripts and get a list of available ones
-			var questScripts = questIds.Select(id => ChannelServer.Instance.ScriptManager.GetQuestScript(id)).Where(a => a != null);
+			var questScripts = questIds.Select(id => ChannelServer.Instance.ScriptManager.QuestScripts.Get(id)).Where(a => a != null);
 			var questScriptsCount = questScripts.Count();
 			if (questScriptsCount == 0)
 				throw new Exception("NpcScript.RandomPtj: Unable to find any of the given quests.");
@@ -1227,7 +1227,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		public string GetPtjXml(int questId, string name, string title, int maxAvailableJobs, int remainingJobs)
 		{
-			var quest = ChannelServer.Instance.ScriptManager.GetQuestScript(questId);
+			var quest = ChannelServer.Instance.ScriptManager.QuestScripts.Get(questId);
 			if (quest == null)
 				throw new ArgumentException("NpcScript.GetPtjXml: Unknown quest '" + questId + "'.");
 
@@ -1670,7 +1670,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="msgs"></param>
 		public void RndMsg(params string[] msgs)
 		{
-			var msg = this.RndStr(msgs);
+			var msg = this.Rnd(msgs);
 			if (msg != null)
 				this.Msg(msgs[Random(msgs.Length)]);
 		}
@@ -1681,7 +1681,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="msgs"></param>
 		public void RndFavorMsg(params string[] msgs)
 		{
-			var msg = this.RndStr(msgs);
+			var msg = this.Rnd(msgs);
 			if (msg != null)
 				this.Msg(Hide.None, msgs[Random(msgs.Length)], FavorExpression());
 		}

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Aura.Channel.Scripting.Compilers
+namespace Aura.Shared.Scripting.Compilers
 {
 	public class CompilerErrorsException : Exception
 	{

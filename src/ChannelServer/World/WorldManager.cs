@@ -23,6 +23,7 @@ namespace Aura.Channel.World
 		private Dictionary<int, Region> _regions;
 
 		public DynamicRegionManager DynamicRegions { get; private set; }
+		public SpawnManager SpawnManager { get; private set; }
 
 		/// <summary>
 		/// Returns number of regions.
@@ -34,6 +35,7 @@ namespace Aura.Channel.World
 			_regions = new Dictionary<int, Region>();
 
 			this.DynamicRegions = new DynamicRegionManager();
+			this.SpawnManager = new SpawnManager();
 		}
 
 		/// <summary>
@@ -324,6 +326,19 @@ namespace Aura.Channel.World
 		public Creature GetCreature(string name)
 		{
 			return _regions.Values.Select(region => region.GetCreature(name)).FirstOrDefault(creature => creature != null);
+		}
+
+		/// <summary>
+		/// Returns list of all creatures in all regions.
+		/// </summary>
+		public ICollection<Creature> GetAllCreatures()
+		{
+			var result = new List<Creature>();
+
+			foreach (var region in _regions.Values)
+				result.AddRange(region.GetCreatures(_ => true));
+
+			return result;
 		}
 
 		/// <summary>
