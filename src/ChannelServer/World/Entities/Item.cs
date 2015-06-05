@@ -224,6 +224,27 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Creates new item based on drop data.
+		/// </summary>
+		/// <param name="dropData"></param>
+		public Item(DropData dropData)
+			: this(dropData.ItemId)
+		{
+			var rnd = RandomProvider.Get();
+
+			this.Info.Amount = (ushort)rnd.Next(dropData.AmountMin, dropData.AmountMax + 1);
+			if (this.Data.StackType != StackType.Sac && this.Info.Amount < 1)
+				this.Info.Amount = 1;
+
+			this.OptionInfo.Prefix = (ushort)dropData.Prefix;
+			this.OptionInfo.Suffix = (ushort)dropData.Suffix;
+
+			if (dropData.Color1 != null) this.Info.Color1 = (uint)dropData.Color1;
+			if (dropData.Color2 != null) this.Info.Color2 = (uint)dropData.Color2;
+			if (dropData.Color3 != null) this.Info.Color3 = (uint)dropData.Color3;
+		}
+
+		/// <summary>
 		/// Item based on item and entity id.
 		/// </summary>
 		/// <param name="itemId"></param>
@@ -637,7 +658,7 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public override void Disappear()
 		{
-			if (this.Region != null)
+			if (this.Region != Region.Limbo)
 				this.Region.RemoveItem(this);
 
 			base.Disappear();

@@ -140,12 +140,11 @@ namespace Aura.Channel.World.Inventory
 			{
 				_weaponSet = value;
 				this.UpdateEquipReferences(Pocket.RightHand1, Pocket.LeftHand1, Pocket.Magazine1);
-				Send.StatUpdate(_creature, StatUpdateType.Private,
-					Stat.AttackMinBaseMod, Stat.AttackMaxBaseMod,
-					Stat.InjuryMinBaseMod, Stat.InjuryMaxBaseMod,
-					Stat.BalanceBaseMod, Stat.CriticalBaseMod,
-					Stat.DefenseBaseMod, Stat.ProtectionBaseMod
-				);
+
+				// Make sure the creature is logged in
+				// TODO: Remove sending from properties.
+				if (_creature.Region != Region.Limbo)
+					this.UpdateEquipStats();
 			}
 		}
 
@@ -654,19 +653,43 @@ namespace Aura.Channel.World.Inventory
 		/// into stacks first, if possible, before calling Add.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <param name="tempFallback"></param>
+		/// <param name="tempFallback">Add to temp inv when all other pockets are full?</param>
 		/// <returns>Returns true if item was added to the inventory completely.</returns>
 		public bool Insert(Item item, bool tempFallback)
 		{
+			List<Item> changed;
+			return this.Insert(item, tempFallback, out changed);
+		}
+
+		/// <summary>
+		/// Tries to add item to one of the main inventories,
+		/// using temp as fallback. Unlike "Add" the item will be filled
+		/// into stacks first, if possible, before calling Add.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="tempFallback">Add to temp inv when all other pockets are full?</param>
+		/// <param name="changed">List of stacks that items were inserted into.</param>
+		/// <returns>Returns true if item was added to the inventory completely.</returns>
+		public bool Insert(Item item, bool tempFallback, out List<Item> changed)
+		{
+			changed = null;
+
 			if (item.Data.StackType == StackType.Stackable)
 			{
 				// Try stacks/sacs first
-				List<Item> changed;
 				lock (_pockets)
 				{
 					// Main inv
 					_pockets[Pocket.Inventory].FillStacks(item, out changed);
 					this.UpdateChangedItems(changed);
+
+					// VIP inv
+					// TODO: Add and check inv locks
+					if (item.Info.Amount != 0)
+					{
+						_pockets[Pocket.VIPInventory].FillStacks(item, out changed);
+						this.UpdateChangedItems(changed);
+					}
 
 					// Bags
 					for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax; ++i)
@@ -785,6 +808,14 @@ namespace Aura.Channel.World.Inventory
 				// Try main inv
 				if (_pockets.ContainsKey(Pocket.Inventory))
 					success = _pockets[Pocket.Inventory].Add(item);
+
+				// VIP inv
+				// TODO: Add and check inv locks
+				if (!success)
+				{
+					if (_pockets.ContainsKey(Pocket.VIPInventory))
+						success = _pockets[Pocket.VIPInventory].Add(item);
+				}
 
 				// Try bags
 				for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax; ++i)
@@ -1091,14 +1122,26 @@ namespace Aura.Channel.World.Inventory
 
 			// Send stat update when moving equipment
 			if (source.IsEquip() || target.IsEquip())
-			{
-				Send.StatUpdate(_creature, StatUpdateType.Private,
-					Stat.AttackMinBaseMod, Stat.AttackMaxBaseMod,
-					Stat.InjuryMinBaseMod, Stat.InjuryMaxBaseMod,
-					Stat.BalanceBaseMod, Stat.CriticalBaseMod,
-					Stat.DefenseBaseMod, Stat.ProtectionBaseMod
-				);
-			}
+				this.UpdateEquipStats();
+		}
+
+		/// <summary>
+		/// Sends private stat update for all equipment relevant stats.
+		/// </summary>
+		private void UpdateEquipStats()
+		{
+			Send.StatUpdate(_creature, StatUpdateType.Private,
+				Stat.AttackMinBase, Stat.AttackMaxBase,
+				Stat.AttackMinBaseMod, Stat.AttackMaxBaseMod,
+				Stat.RightAttackMinMod, Stat.RightAttackMaxMod,
+				Stat.LeftAttackMinMod, Stat.LeftAttackMaxMod,
+				Stat.InjuryMinBaseMod, Stat.InjuryMaxBaseMod,
+				Stat.CriticalBase, Stat.CriticalBaseMod,
+				Stat.LeftCriticalMod, Stat.RightCriticalMod,
+				Stat.BalanceBase, Stat.BalanceBaseMod,
+				Stat.LeftBalanceMod, Stat.RightBalanceMod,
+				Stat.DefenseBaseMod, Stat.ProtectionBaseMod
+			);
 		}
 
 		// Stat mods
