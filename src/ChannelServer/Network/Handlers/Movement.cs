@@ -14,6 +14,7 @@ using Aura.Data.Database;
 using Aura.Channel.Network.Sending;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using System.Xml.Linq;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -40,10 +41,17 @@ namespace Aura.Channel.Network.Handlers
 			var to = new Position(x, y);
 			var walk = (packet.Op == Op.Walk);
 
+			// Check for running with meditation active
 			if (creature.Conditions.Has(ConditionsE.Meditation) && !walk && (creature.Inventory.RightHand == null || (!creature.Inventory.RightHand.HasTag("/wand/") && !creature.Inventory.RightHand.HasTag("/staff/"))))
 				throw new ModerateViolation("Tried to run with meditation active.");
 
-			//Position intersection;
+			// Stop aiming when moving
+			if (creature.AimMeter.IsAiming)
+				creature.AimMeter.Stop();
+
+			//Position intersection
+			// TODO: Reset position if intersection found.
+			// TODO: Figure out how to handle getting stuck in props (the client allows walking out).
 			//if (creature.Region.Collissions.Find(from, to, out intersection))
 			//{
 			//    Aura.Shared.Util.Log.Debug("Intersection at '{0}'", intersection);
@@ -109,13 +117,33 @@ namespace Aura.Channel.Network.Handlers
 			// Check range
 			// TODO: Checking region id doesn't work because a "leave" event
 			//   can be triggered after we've changed the creature's region.
-			//   Checking position doesn't work because the events can be
-			//   quite large.
-			// TODO: Check the shape?
-			if (clientEvent.Data.RegionId != creature.RegionId && signalType == SignalType.Enter)
+			//if (clientEvent.Data.RegionId != creature.RegionId && signalType == SignalType.Enter)
+			//{
+			//	Log.Warning("EventInform: Player '{0:X16}' triggered event '{1:X16}' out of range.", creature.EntityId, eventId);
+			//	return;
+			//}
+
+			// Save town
+			var pos = creature.GetPosition();
+			var saveTownParam = clientEvent.Data.Parameters.FirstOrDefault(a => a.EventType == EventType.SaveTown);
+			if (saveTownParam != null && signalType == SignalType.Enter && clientEvent.IsInside(pos.X, pos.Y))
 			{
-				Log.Warning("EventInform: Player '{0:X16}' triggered event '{1:X16}' out of range.", creature.EntityId, eventId);
-				return;
+				if (saveTownParam.XML != null)
+				{
+					var globalname = saveTownParam.XML.Attribute("globalname");
+					if (globalname != null)
+					{
+						creature.LastTown = globalname.Value;
+					}
+					else
+					{
+						Log.Warning("EventInform: Failed to get globalname for SaveTown '{0:X16}'.", clientEvent.EntityId);
+					}
+				}
+				else
+				{
+					Log.Warning("EventInform: Failed to read XML for SaveTown '{0:X16}'.", clientEvent.EntityId);
+				}
 			}
 
 			// Check handler

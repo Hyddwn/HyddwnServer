@@ -93,12 +93,12 @@ namespace Aura.Channel.World.Entities
 			this.Color1 = this.RaceData.Color1;
 			this.Color2 = this.RaceData.Color2;
 			this.Color3 = this.RaceData.Color3;
-			this.Height = (float)(this.RaceData.SizeMin + RandomProvider.Get().NextDouble() * (this.RaceData.SizeMax - this.RaceData.SizeMin));
+			this.Height = (float)(this.RaceData.SizeMin + rnd.NextDouble() * (this.RaceData.SizeMax - this.RaceData.SizeMin));
 			this.Life = this.LifeMaxBase = this.RaceData.Life;
 			this.Mana = this.ManaMaxBase = this.RaceData.Mana;
 			this.Stamina = this.StaminaMaxBase = this.RaceData.Stamina;
 			this.State = (CreatureStates)this.RaceData.DefaultState;
-			this.Direction = (byte)RandomProvider.Get().Next(256);
+			this.Direction = (byte)rnd.Next(256);
 
 			// Set drops
 			this.Drops.GoldMin = this.RaceData.GoldMin;
@@ -164,6 +164,9 @@ namespace Aura.Channel.World.Entities
 				Log.Error("NPC.Warp: Region '{0}' doesn't exist.", regionId);
 				return false;
 			}
+
+			if (this.Region != Region.Limbo)
+				this.Region.RemoveCreature(this);
 
 			this.SetLocation(regionId, x, y);
 
@@ -422,6 +425,35 @@ namespace Aura.Channel.World.Entities
 			// or if the current target is not aggroed yet.
 			if (this.Target == null || (this.Target != null && target != null && !this.Target.IsPlayer && target.IsPlayer) || this.AI.State != AiScript.AiState.Aggro)
 				this.AI.AggroCreature(target);
+		}
+
+		/// <summary>
+		/// Sets SpawnLocation and places NPC in region.
+		/// </summary>
+		/// <param name="regionId"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns>Returns false if NPC is spawned already or region doesn't exist.</returns>
+		public bool Spawn(int regionId, int x, int y)
+		{
+			// Already spawned
+			if (this.Region != Region.Limbo)
+			{
+				Log.Error("NPC.Spawn: Failed to spawn '{0}', it was spawned already.", this.RaceId, this.RegionId);
+				return false;
+			}
+
+			// Save spawn location
+			this.SpawnLocation = new Location(this.RegionId, x, y);
+
+			// Warp to spawn point
+			if (!this.Warp(regionId, x, y))
+			{
+				Log.Error("NPC.Spawn: Failed to spawn '{0}', region '{1}' doesn't exist.", this.RaceId, this.RegionId);
+				return false;
+			}
+
+			return true;
 		}
 
 		/// <summary>

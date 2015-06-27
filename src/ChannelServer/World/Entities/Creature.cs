@@ -59,6 +59,8 @@ namespace Aura.Channel.World.Entities
 		public CreatureConditions Conditions { get; protected set; }
 		public CreatureQuests Quests { get; protected set; }
 		public CreatureDrops Drops { get; protected set; }
+		public CreatureDeadMenu DeadMenu { get; protected set; }
+		public AimMeter AimMeter { get; protected set; }
 
 		public ScriptVariables Vars { get; protected set; }
 
@@ -100,6 +102,8 @@ namespace Aura.Channel.World.Entities
 		public float Weight { get { return _weight; } set { _weight = Math2.Clamp(MinWeight, MaxWeight, value); } }
 		public float Upper { get { return _upper; } set { _upper = Math2.Clamp(MinWeight, MaxWeight, value); } }
 		public float Lower { get { return _lower; } set { _lower = Math2.Clamp(MinWeight, MaxWeight, value); } }
+
+		public float BodyScale { get { return (this.Height * 0.4f + 0.6f); } }
 
 		public string StandStyle { get; set; }
 		public string StandStyleTalking { get; set; }
@@ -145,7 +149,12 @@ namespace Aura.Channel.World.Entities
 		public double MoveDuration { get { return _moveDuration; } }
 
 		/// <summary>
-		/// Location if the creature before the warp.
+		/// Location to warp to.
+		/// </summary>
+		public Location WarpLocation { get; set; }
+
+		/// <summary>
+		/// Location of the creature before the warp.
 		/// </summary>
 		public Location LastLocation { get; set; }
 
@@ -153,6 +162,21 @@ namespace Aura.Channel.World.Entities
 		/// Location to fall back to, when saving in a temp region.
 		/// </summary>
 		public Location FallbackLocation { get; set; }
+
+		/// <summary>
+		/// Location the player has saved at in a dungeon.
+		/// </summary>
+		public Location DungeonSaveLocation { get; set; }
+
+		/// <summary>
+		/// Event path to last visited town.
+		/// </summary>
+		public string LastTown
+		{
+			get { return (string.IsNullOrWhiteSpace(_lastTown) ? "Uladh_main/town_TirChonaill/TirChonaill_Spawn_A" : _lastTown); }
+			set { _lastTown = value; }
+		}
+		private string _lastTown;
 
 		/// <summary>
 		/// True while character is warping somewhere.
@@ -395,12 +419,22 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// AttMin from monster xml.
 		/// </summary>
-		public int AttackMinBase { get { return (this.RightHand == null ? this.RaceData.AttackMinBase : 0); } }
+		/// <remarks>
+		/// This seems to count towards the creature's damage even if a weapon
+		/// is equipped. This assumption is based on the fact that Golems
+		/// have a 0 attack weapon, that would make them almost no damage.
+		/// </remarks>
+		public int AttackMinBase { get { return this.RaceData.AttackMinBase; } }
 
 		/// <summary>
-		/// AttMin from monster xml.
+		/// AttMax from monster xml.
 		/// </summary>
-		public int AttackMaxBase { get { return (this.RightHand == null ? this.RaceData.AttackMaxBase : 0); } }
+		/// <remarks>
+		/// This seems to count towards the creature's damage even if a weapon
+		/// is equipped. This assumption is based on the fact that Golems
+		/// have a 0 attack weapon, that would make them almost no damage.
+		/// </remarks>
+		public int AttackMaxBase { get { return this.RaceData.AttackMaxBase; } }
 
 		/// <summary>
 		/// AttackMin from races xml.
@@ -697,6 +731,8 @@ namespace Aura.Channel.World.Entities
 			this.Conditions = new CreatureConditions(this);
 			this.Quests = new CreatureQuests(this);
 			this.Drops = new CreatureDrops(this);
+			this.DeadMenu = new CreatureDeadMenu(this);
+			this.AimMeter = new AimMeter(this);
 
 			this.Vars = new ScriptVariables();
 		}
@@ -919,6 +955,79 @@ namespace Aura.Channel.World.Entities
 		public abstract bool Warp(int regionId, int x, int y);
 
 		/// <summary>
+		/// Warps creature to target location,
+		/// returns false if warp is unsuccessful.
+		/// </summary>
+		/// <param name="location"></param>
+		/// <returns></returns>
+		public bool Warp(Location loc)
+		{
+			return this.Warp(loc.RegionId, loc.X, loc.Y);
+		}
+
+		/// <summary>
+		/// Warps creature to target location,
+		/// returns false if warp is unsuccessful.
+		/// </summary>
+		/// <param name="regionId"></param>
+		/// <param name="position"></param>
+		/// <returns></returns>
+		public bool Warp(int regionId, Position position)
+		{
+			return this.Warp(regionId, position.X, position.Y);
+		}
+
+		/// <summary>
+		/// Warps creature to target location path,
+		/// returns false if warp is unsuccessful.
+		/// </summary>
+		/// <remarks>
+		/// Parses location paths like Uladh_main/SomeArea/SomeEvent
+		/// and calls Warp with the resulting values.
+		/// </remarks>
+		/// <param name="regionId"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public bool Warp(string locationPath)
+		{
+			try
+			{
+				var loc = new Location(locationPath);
+				return this.Warp(loc.RegionId, loc.X, loc.Y);
+			}
+			catch (Exception ex)
+			{
+				Send.ServerMessage(this, "Warp error: {0}", ex.Message);
+				Log.Exception(ex, "Creature.Warp: Location parse error for '{0}'.", locationPath);
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Warps creature to given coordinates in its current region.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		public void Jump(int x, int y)
+		{
+			this.SetPosition(x, y);
+			Send.SetLocation(this, x, y);
+
+			// TODO: Warp followers?
+		}
+
+		/// <summary>
+		/// Warps creature to given coordinates in its current region.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		public void Jump(Position position)
+		{
+			this.Jump(position.X, position.Y);
+		}
+
+		/// <summary>
 		/// Called every 5 minutes, checks changes through food.
 		/// </summary>
 		/// <param name="time"></param>
@@ -1135,10 +1244,10 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public int AttackRangeFor(Creature target)
 		{
-			var attackerRange = this.RaceData.AttackRange;
-			var targetRange = target.RaceData.AttackRange;
+			var attackerRange = this.RaceData.AttackRange * this.BodyScale;
+			var targetRange = target.RaceData.AttackRange * target.BodyScale;
 
-			var result = 156; // Default found in the client (for reference)
+			var result = 156f; // Default found in the client (for reference)
 
 			if ((attackerRange < 300 && targetRange < 300) || (attackerRange >= 300 && attackerRange > targetRange))
 				result = ((attackerRange + targetRange) / 2);
@@ -1148,7 +1257,7 @@ namespace Aura.Channel.World.Entities
 			// A little something extra
 			result += 25;
 
-			return result;
+			return (int)result;
 		}
 
 		/// <summary>
@@ -1222,25 +1331,13 @@ namespace Aura.Channel.World.Entities
 					balance = (balance + this.LeftBalanceMod) / 2;
 			}
 
-			var min = 0;
-			if (this.RightHand == null)
-				min = this.AttackMinBase + this.AttackMinBaseMod;
-			else
-			{
-				min = this.RightAttackMinMod;
-				if (this.LeftHand != null)
-					min = (min + this.LeftAttackMinMod) / 2;
-			}
+			var min = this.AttackMinBase + this.AttackMinBaseMod + this.RightAttackMinMod;
+			if (this.LeftHand != null)
+				min = (min + this.LeftAttackMinMod) / 2;
 
-			var max = 0;
-			if (this.RightHand == null)
-				max = this.AttackMaxBase + this.AttackMaxBaseMod;
-			else
-			{
-				max = this.RightAttackMaxMod;
-				if (this.LeftHand != null)
-					max = (max + this.LeftAttackMaxMod) / 2;
-			}
+			var max = this.AttackMaxBase + this.AttackMaxBaseMod + this.RightAttackMaxMod;
+			if (this.LeftHand != null)
+				max = (max + this.LeftAttackMaxMod) / 2;
 
 			return this.GetRndDamage(min, max, balance);
 		}
@@ -1323,6 +1420,33 @@ namespace Aura.Channel.World.Entities
 			var damage = (float)(baseDamage + Math.Floor(wandBonus * (1 + chargeMultiplier)) + (factor * this.MagicAttack));
 
 			return (damage * this.GetRndMagicBalance());
+		}
+
+		public float GetRndRangedDamage()
+		{
+			// Base damage
+			float min = (this.RightHand == null ? 0 : this.RightHand.OptionInfo.AttackMin);
+			float max = (this.RightHand == null ? 0 : this.RightHand.OptionInfo.AttackMax);
+
+			// Dex bonus
+			min += (this.Dex - 10) / 3.5f;
+			max += (this.Dex - 10) / 2.5f;
+
+			// Base balance
+			var balance = (this.RightHand == null ? this.BalanceBase + this.BalanceBaseMod : this.RightHand.OptionInfo.Balance);
+
+			// Ranged balance bonus
+			var skill = this.Skills.Get(SkillId.RangedAttack);
+			if (skill != null)
+				balance += (int)skill.RankData.Var5;
+
+			// Random balance multiplier
+			var multiplier = this.GetRndBalance(balance) / 100f;
+
+			if (min > max)
+				min = max;
+
+			return (min + (max - min) * multiplier);
 		}
 
 		/// <summary>
@@ -1432,14 +1556,8 @@ namespace Aura.Channel.World.Entities
 							i++;
 						}
 
-						var gold = new Item(2000);
-						gold.Info.Amount = (ushort)Math.Min(1000, amount);
-						gold.Info.Region = this.RegionId;
-						gold.Info.X = dropPos.X;
-						gold.Info.Y = dropPos.Y;
-						gold.DisappearTime = DateTime.Now.AddSeconds(60);
-
-						this.Region.AddItem(gold);
+						var gold = Item.CreateGold(Math.Min(1000, amount));
+						gold.Drop(this.Region, pos);
 
 						amount -= gold.Info.Amount;
 					}
@@ -1451,6 +1569,12 @@ namespace Aura.Channel.World.Entities
 			var dropped = new HashSet<int>();
 			foreach (var drop in this.Drops.Drops)
 			{
+				if (drop == null || !AuraData.ItemDb.Exists(drop.ItemId))
+				{
+					Log.Warning("Creature.Kill: Invalid drop '{0}' from '{1}'.", (drop == null ? "null" : drop.ItemId.ToString()), this.RaceId);
+					continue;
+				}
+
 				if (rnd.NextDouble() * 100 < drop.Chance * ChannelServer.Instance.Conf.World.DropRate)
 				{
 					// Only drop any item once
@@ -1460,16 +1584,16 @@ namespace Aura.Channel.World.Entities
 					var dropPos = pos.GetRandomInRange(50, rnd);
 
 					var item = new Item(drop);
-					item.Info.Region = this.RegionId;
-					item.Info.X = dropPos.X;
-					item.Info.Y = dropPos.Y;
-					item.DisappearTime = DateTime.Now.AddSeconds(60);
-
-					this.Region.AddItem(item);
+					item.Drop(this.Region, pos);
 
 					dropped.Add(drop.ItemId);
 				}
 			}
+
+			foreach (var item in this.Drops.StaticDrops)
+				item.Drop(this.Region, pos);
+
+			this.Drops.ClearStaticDrops();
 		}
 
 		/// <summary>
@@ -1739,16 +1863,46 @@ namespace Aura.Channel.World.Entities
 
 			return this.RaceData.HasTag(tag);
 		}
+
 		/// <summary>
-		/// Returns a list of creatures in range that are targetable.
-		/// Checks for collisions.
+		/// Returns targetable creatures in given range around creature.
 		/// </summary>
-		/// <param name="range"></param>
+		/// <param name="range">Radius around position.</param>
+		/// <param name="addAttackRange">Factor in attack range?</param>
 		/// <returns></returns>
-		public ICollection<Creature> GetTargetableCreaturesInRange(int range)
+		public ICollection<Creature> GetTargetableCreaturesInRange(int range, bool addAttackRange)
 		{
-			var visible = this.Region.GetVisibleCreaturesInRange(this, range);
-			var targetable = visible.FindAll(a => this.CanTarget(a) && !this.Region.Collisions.Any(this.GetPosition(), a.GetPosition()));
+			return this.GetTargetableCreaturesAround(this.GetPosition(), range, addAttackRange);
+		}
+
+		/// <summary>
+		/// Returns targetable creatures in given range around position.
+		/// Optionally factors in attack range.
+		/// </summary>
+		/// <param name="position">Reference position.</param>
+		/// <param name="range">Radius around position.</param>
+		/// <param name="addAttackRange">Factor in attack range?</param>
+		/// <returns></returns>
+		public ICollection<Creature> GetTargetableCreaturesAround(Position position, int range, bool addAttackRange)
+		{
+			var targetable = this.Region.GetCreatures(target =>
+			{
+				var targetPos = target.GetPosition();
+				var radius = range;
+				if (addAttackRange)
+				{
+					// This is unofficial, the target's "hitbox" should be
+					// factored in, but the total attack range is too much.
+					// Using 50% for now until we know more.
+					radius += this.AttackRangeFor(target) / 2;
+				}
+
+				return target != this // Exclude creature
+					&& this.CanTarget(target) // Check targetability
+					&& targetPos.InRange(position, radius) // Check range
+					&& !this.Region.Collisions.Any(position, targetPos) // Check collisions between position
+					&& !target.Conditions.Has(ConditionsA.Invisible); // Check visiblility (GM)
+			});
 
 			return targetable;
 		}
@@ -1784,6 +1938,45 @@ namespace Aura.Channel.World.Entities
 
 			this.Direction = MabiMath.DirectionToByte(x, y);
 			Send.TurnTo(this, x, y);
+		}
+
+		/// <summary>
+		/// Starts dialog with NPC, returns false if NPC couldn't be found.
+		/// </summary>
+		/// <param name="npcName">The ident for the NPC, e.g. _duncan.</param>
+		/// <param name="npcNameLocal">Defaults to npcName if null.</param>
+		/// <returns></returns>
+		public bool TalkToNpc(string npcName, string npcNameLocal = null)
+		{
+			npcNameLocal = npcNameLocal ?? npcName;
+
+			var target = ChannelServer.Instance.World.GetNpc(npcName);
+			if (target == null)
+				return false;
+
+			Send.NpcInitiateDialog(this, target.EntityId, npcName, npcNameLocal);
+			this.Client.NpcSession.StartTalk(target, this);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Adds item to creature's inventory.
+		/// </summary>
+		/// <param name="item"></param>
+		public void GiveItem(Item item)
+		{
+			this.Inventory.Add(item, true);
+		}
+
+		/// <summary>
+		/// Adds item to creature's inventory.
+		/// </summary>
+		/// <param name="item"></param>
+		public void GiveItemWithEffect(Item item)
+		{
+			this.GiveItem(item);
+			Send.Effect(this, Effect.PickUpItem, (byte)1, item.Info.Id, item.Info.Color1, item.Info.Color2, item.Info.Color3);
 		}
 	}
 }

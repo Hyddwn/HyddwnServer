@@ -4,6 +4,7 @@
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills;
 using Aura.Channel.Skills.Base;
+using Aura.Channel.Skills.Combat;
 using Aura.Channel.Skills.Life;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
@@ -852,7 +853,13 @@ namespace Aura.Channel.Scripting.Scripts
 			// Check for collision
 			Position intersection;
 			if (this.Creature.Region.Collisions.Find(pos, destination, out intersection))
-				destination = pos.GetRelative(intersection, -10);
+			{
+				destination = pos.GetRelative(intersection, -100);
+
+				// If new destination is invalid as well don't move at all
+				if (this.Creature.Region.Collisions.Any(pos, destination))
+					destination = pos;
+			}
 
 			this.Creature.Move(destination, walk);
 
@@ -1083,7 +1090,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var skill = this.Creature.Skills.Get(skillId);
 			if (skill == null)
 			{
-				Log.Warning("AI.PrepareSkill: AI '{0}' tried to preapre skill that its creature '{1}' doesn't have.", this.GetType().Name, this.Creature.RaceId);
+				Log.Warning("AI.PrepareSkill: AI '{0}' tried to prepare skill '{2}', that its creature '{1}' doesn't have.", this.GetType().Name, this.Creature.RaceId, skillId);
 				yield break;
 			}
 
@@ -1170,6 +1177,29 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Makes creature use currently loaded skill.
+		/// </summary>
+		/// <returns></returns>
+		protected IEnumerable UseSkill()
+		{
+			var activeSkillId = this.Creature.Skills.ActiveSkill != null ? this.Creature.Skills.ActiveSkill.Info.Id : SkillId.None;
+
+			if (activeSkillId == SkillId.None)
+				yield break;
+
+			if (activeSkillId == SkillId.Windmill)
+			{
+				var wmHandler = ChannelServer.Instance.SkillManager.GetHandler<Windmill>(activeSkillId);
+				wmHandler.Use(this.Creature, this.Creature.Skills.ActiveSkill, 0, 0, 0);
+				this.SharpMind(activeSkillId, SharpMindStatus.Cancelling);
+			}
+			else
+			{
+				Log.Unimplemented("AI.UseSkill: Skill '{0}'", activeSkillId);
+			}
+		}
+
+		/// <summary>
 		/// Makes creature cancel currently loaded skill.
 		/// </summary>
 		/// <returns></returns>
@@ -1219,7 +1249,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var skill = this.Creature.Skills.Get(skillId);
 			if (skill == null)
 			{
-				Log.Warning("AI.StartSkill: AI '{0}' tried to preapre skill that its creature '{1}' doesn't have.", this.GetType().Name, this.Creature.RaceId);
+				Log.Warning("AI.StartSkill: AI '{0}' tried to start skill '{2}', that its creature '{1}' doesn't have.", this.GetType().Name, this.Creature.RaceId, skillId);
 				yield break;
 			}
 
@@ -1265,7 +1295,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var skill = this.Creature.Skills.Get(skillId);
 			if (skill == null)
 			{
-				Log.Warning("AI.StopSkill: AI '{0}' tried to preapre skill that its creature '{1}' doesn't have.", this.GetType().Name, this.Creature.RaceId);
+				Log.Warning("AI.StopSkill: AI '{0}' tried to stop skill '{2}', that its creature '{1}' doesn't have.", this.GetType().Name, this.Creature.RaceId, skillId);
 				yield break;
 			}
 

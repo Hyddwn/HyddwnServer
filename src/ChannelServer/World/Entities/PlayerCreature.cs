@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using Aura.Channel.Network.Sending;
+using Aura.Channel.World.Dungeons;
 using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
@@ -17,6 +18,7 @@ namespace Aura.Channel.World.Entities
 	public abstract class PlayerCreature : Creature
 	{
 		private List<Entity> _visibleEntities = new List<Entity>();
+		private object _lookAroundLock = new Object();
 
 		/// <summary>
 		/// Creature id, for creature database.
@@ -115,34 +117,69 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public override bool Warp(int regionId, int x, int y)
 		{
-			var warpTo = ChannelServer.Instance.World.GetRegion(regionId);
-			if (warpTo == null)
+			if (regionId == this.RegionId && this.Region != Region.Limbo)
+			{
+				// The Tin cutscene at the very beginning requires a Warp to
+				// fade away, otherwise the screen will stay black. However,
+				// the cutscene in the first dungeon includes a jump to the
+				// treasure room, where we can't warp, because that would drop
+				// the treasure chest key. This is basically a hack until we
+				// find a better way to properly get out of the Tin cutscene.
+				if (this.Temp.CurrentCutscene == null || this.Region.IsDungeon)
+				{
+					this.Jump(x, y);
+					return true;
+				}
+			}
+
+			var targetRegion = ChannelServer.Instance.World.GetRegion(regionId);
+			if (targetRegion == null)
 			{
 				Send.ServerMessage(this, "Warp failed, region doesn't exist.");
 				Log.Error("PC.Warp: Region '{0}' doesn't exist.", regionId);
 				return false;
 			}
 
-			var warpFrom = this.RegionId;
-			var loc = new Location(this.RegionId, this.GetPosition());
-
-			// Save fallback when warping from a normal to a dynamic region
-			if (warpTo.IsDynamic && !this.Region.IsDynamic)
-				this.FallbackLocation = loc;
+			var currentRegionId = this.RegionId;
+			var loc = new Location(currentRegionId, this.GetPosition());
 
 			this.LastLocation = loc;
-			this.SetLocation(regionId, x, y);
+			this.WarpLocation = new Location(regionId, x, y);
 			this.Warping = true;
 			Send.CharacterLock(this, Locks.Default);
 
-			if (!warpTo.IsDynamic)
+			// TODO: We don't have to send the "create warps" every time,
+			//   only when the player is warped there for the first time.
+
+			// Dynamic Region warp
+			var dynamicRegion = targetRegion as DynamicRegion;
+			if (dynamicRegion != null)
 			{
-				Send.EnterRegion(this);
+				if (!this.Region.IsTemp)
+					this.FallbackLocation = loc;
+
+				Send.EnterDynamicRegion(this, currentRegionId, targetRegion, x, y);
+
+				return true;
 			}
-			else
+
+			// Dungeon warp
+			var dungeonRegion = targetRegion as DungeonRegion;
+			if (dungeonRegion != null)
 			{
-				Send.EnterDynamicRegion(this, warpFrom, warpTo);
+				if (!this.Region.IsTemp)
+				{
+					this.FallbackLocation = loc;
+					this.DungeonSaveLocation = this.WarpLocation;
+				}
+
+				Send.DungeonInfo(this, dungeonRegion.Dungeon);
+
+				return true;
 			}
+
+			// Normal warp
+			Send.EnterRegion(this, regionId, x, y);
 
 			return true;
 		}
@@ -155,15 +192,18 @@ namespace Aura.Channel.World.Entities
 			if (!this.Watching)
 				return;
 
-			var currentlyVisible = this.Region.GetVisibleEntities(this);
+			lock (_lookAroundLock)
+			{
+				var currentlyVisible = this.Region.GetVisibleEntities(this);
 
-			var appear = currentlyVisible.Except(_visibleEntities);
-			var disappear = _visibleEntities.Except(currentlyVisible);
+				var appear = currentlyVisible.Except(_visibleEntities);
+				var disappear = _visibleEntities.Except(currentlyVisible);
 
-			Send.EntitiesAppear(this.Client, appear);
-			Send.EntitiesDisappear(this.Client, disappear);
+				Send.EntitiesAppear(this.Client, appear);
+				Send.EntitiesDisappear(this.Client, disappear);
 
-			_visibleEntities = currentlyVisible;
+				_visibleEntities = currentlyVisible;
+			}
 		}
 
 		/// <summary>

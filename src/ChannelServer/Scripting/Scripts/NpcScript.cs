@@ -132,7 +132,10 @@ namespace Aura.Channel.Scripting.Scripts
 					return false;
 				}
 
-				region.AddCreature(this.NPC);
+				// Add creature to region, unless the script already did it
+				// for some reason.
+				if (!region.CreatureExists(this.NPC.EntityId))
+					region.AddCreature(this.NPC);
 			}
 
 			this.NPC.SpawnLocation = new Location(this.NPC.RegionId, this.NPC.GetPosition());
@@ -852,6 +855,17 @@ namespace Aura.Channel.Scripting.Scripts
 		public bool GiveItem(int itemId, int amount = 1)
 		{
 			return this.Player.Inventory.Add(itemId, amount);
+		}
+
+		/// <summary>
+		/// Adds given amount of gold to the player's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public bool GiveGold(int amount)
+		{
+			return this.Player.Inventory.AddGold(amount);
 		}
 
 		/// <summary>

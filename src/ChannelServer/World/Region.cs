@@ -21,7 +21,7 @@ using Aura.Mabi.Network;
 
 namespace Aura.Channel.World
 {
-	public class Region
+	public abstract class Region
 	{
 		// TODO: Data?
 		public const int VisibleRange = 3000;
@@ -29,6 +29,7 @@ namespace Aura.Channel.World
 		public static readonly Region Limbo = new Limbo();
 
 		protected ReaderWriterLockSlim _creaturesRWLS, _propsRWLS, _clientEventsRWLS, _itemsRWLS;
+		private Dictionary<int, int> _propIds;
 
 		protected Dictionary<long, Creature> _creatures;
 		protected Dictionary<long, Prop> _props;
@@ -45,41 +46,9 @@ namespace Aura.Channel.World
 		public string Name { get; protected set; }
 
 		/// <summary>
-		/// Name of the region this one is based on (dynamics)
-		/// </summary>
-		public string BaseName { get; protected set; }
-
-		/// <summary>
 		/// Region's id
 		/// </summary>
 		public int Id { get; protected set; }
-
-		/// <summary>
-		/// Id of the region this one is based on (dynamics)
-		/// </summary>
-		public int BaseId { get; protected set; }
-
-		/// <summary>
-		/// Variation file used for this region (dynamics)
-		/// </summary>
-		public string Variation { get; protected set; }
-
-		/// <summary>
-		/// Returns true if this is a dynamic region.
-		/// </summary>
-		public bool IsDynamic { get { return this.Id != this.BaseId; } }
-
-		/// <summary>
-		/// Returns true if this region is temporary, like a dynamic region
-		/// or a dungeon.
-		/// </summary>
-		public bool IsTemporary { get { return this.IsDynamic; } }
-
-		/// <summary>
-		/// Returns true if this region is temporary, like a dynamic region
-		/// or a dungeon.
-		/// </summary>
-		public RegionMode Mode { get; protected set; }
 
 		/// <summary>
 		/// Manager for blocking objects in the region.
@@ -87,20 +56,34 @@ namespace Aura.Channel.World
 		public RegionCollision Collisions { get; protected set; }
 
 		/// <summary>
-		/// Creates new region by id.
+		/// Returns true if region is a dynamic region, judged by its id.
+		/// </summary>
+		public bool IsDynamic { get { return Math2.Between(this.Id, MabiId.DynamicRegions, MabiId.DynamicRegions + 5000); } }
+
+		/// <summary>
+		/// Returns true if region is a dungeon region, judged by its id.
+		/// </summary>
+		public bool IsDungeon { get { return Math2.Between(this.Id, MabiId.DungeonRegions, MabiId.DungeonRegions + 10000); } }
+
+		/// <summary>
+		/// Returns true if region is temporary, i.e. a dungeon or a dynamic region.
+		/// </summary>
+		public bool IsTemp { get { return (this.IsDynamic || this.IsDungeon); } }
+
+		/// <summary>
+		/// Initializes class.
 		/// </summary>
 		/// <param name="regionId"></param>
-		protected Region(int regionId, RegionMode mode)
+		protected Region(int regionId)
 		{
 			_creaturesRWLS = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 			_propsRWLS = new ReaderWriterLockSlim();
 			_clientEventsRWLS = new ReaderWriterLockSlim();
 			_itemsRWLS = new ReaderWriterLockSlim();
 
-			this.Id = regionId;
-			this.BaseId = regionId;
+			_propIds = new Dictionary<int, int>();
 
-			this.Mode = mode;
+			this.Id = regionId;
 
 			_creatures = new Dictionary<long, Creature>();
 			_props = new Dictionary<long, Prop>();
@@ -113,111 +96,6 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Creates new region by id.
-		/// </summary>
-		/// <param name="regionId"></param>
-		public static Region CreateNormal(int regionId)
-		{
-			var region = new Region(regionId, RegionMode.Permanent);
-
-			region.RegionInfoData = AuraData.RegionInfoDb.Find(region.Id);
-			if (region.RegionInfoData == null)
-				throw new Exception("Region.CreateNormal: No region info data found for '" + region.Id + "'.");
-
-			region.InitializeFromData();
-
-			return region;
-		}
-
-		/// <summary>
-		/// Creates new dynamic region, based on a region and variation file.
-		/// Region is automatically added to the dynamic region manager.
-		/// </summary>
-		/// <param name="regionId"></param>
-		/// <param name="variationFile"></param>
-		public static Region CreateDynamic(int baseRegionId, string variationFile = "", RegionMode mode = RegionMode.RemoveWhenEmpty)
-		{
-			var region = new Region(baseRegionId, mode);
-			region.Id = ChannelServer.Instance.World.DynamicRegions.GetFreeDynamicRegionId();
-			region.Variation = variationFile;
-
-			var baseRegionInfoData = AuraData.RegionInfoDb.Find(region.BaseId);
-			if (baseRegionInfoData == null)
-				throw new Exception("Region.CreateDynamic: No region info data found for '" + region.BaseId + "'.");
-
-			region.RegionInfoData = CreateVariation(baseRegionInfoData, region.Id, variationFile);
-
-			region.InitializeFromData();
-
-			ChannelServer.Instance.World.DynamicRegions.Add(region);
-
-			return region;
-		}
-
-		/// <summary>
-		/// Recreates a region, based on another region and a variation file.
-		/// </summary>
-		/// <param name="baseRegionInfoData"></param>
-		/// <param name="newRegionId"></param>
-		/// <param name="variationFile"></param>
-		/// <returns></returns>
-		private static RegionInfoData CreateVariation(RegionInfoData baseRegionInfoData, int newRegionId, string variationFile)
-		{
-			var result = new RegionInfoData();
-			result.Id = newRegionId;
-			result.GroupId = baseRegionInfoData.GroupId;
-			result.X1 = baseRegionInfoData.X1;
-			result.Y1 = baseRegionInfoData.Y1;
-			result.X2 = baseRegionInfoData.X2;
-			result.Y2 = baseRegionInfoData.Y2;
-
-			// TODO: Filter areas, props, and events to create, based on variation file.
-
-			result.Areas = new List<AreaData>(baseRegionInfoData.Areas.Count);
-			var i = 1;
-			foreach (var originalArea in baseRegionInfoData.Areas)
-			{
-				var area = originalArea.Copy(false, false);
-				area.Id = i++;
-
-				// Add props
-				foreach (var originalProp in originalArea.Props.Values)
-				{
-					var prop = originalProp.Copy();
-
-					var id = (ulong)prop.EntityId;
-					id &= ~0x0000FFFFFFFF0000U;
-					id |= ((ulong)result.Id << 32);
-					id |= ((ulong)baseRegionInfoData.GetAreaIndex(originalArea.Id) << 16);
-
-					prop.EntityId = (long)id;
-
-					area.Props.Add(prop.EntityId, prop);
-				}
-
-				// Add events
-				foreach (var originalEvent in originalArea.Events.Values)
-				{
-					var ev = originalEvent.Copy();
-					ev.RegionId = result.Id;
-
-					var id = (ulong)ev.Id;
-					id &= ~0x0000FFFFFFFF0000U;
-					id |= ((ulong)result.Id << 32);
-					id |= ((ulong)baseRegionInfoData.GetAreaIndex(originalArea.Id) << 16);
-
-					ev.Id = (long)id;
-
-					area.Events.Add(ev.Id, ev);
-				}
-
-				result.Areas.Add(area);
-			}
-
-			return result;
-		}
-
-		/// <summary>
 		/// Adds all props found in the client for this region and creates a list
 		/// of areas.
 		/// </summary>
@@ -225,14 +103,6 @@ namespace Aura.Channel.World
 		{
 			if (this.RegionInfoData == null || this.RegionInfoData.Areas == null)
 				return;
-
-			var regionData = AuraData.RegionDb.Find(this.BaseId);
-			if (regionData != null)
-				this.BaseName = regionData.Name;
-
-			this.Name = (this.IsDynamic ? "DynamicRegion" + this.Id : this.BaseName);
-
-			this.Collisions.Init(this.RegionInfoData);
 
 			this.LoadProps();
 			this.LoadClientEvents();
@@ -249,9 +119,17 @@ namespace Aura.Channel.World
 				{
 					var add = new Prop(prop.EntityId, prop.Id, this.Id, (int)prop.X, (int)prop.Y, prop.Direction, prop.Scale, 0, "", "", "");
 
+					// Add copy of extensions
+					foreach (var para in prop.Parameters)
+						add.Extensions.Add(new PropExtension(para.SignalType, para.EventType, para.Name, 0));
+
 					// Add drop behaviour if drop type exists
 					var dropType = prop.GetDropType();
 					if (dropType != -1) add.Behavior = Prop.GetDropBehavior(dropType);
+
+					// Replace default shapes with the ones loaded from region.
+					add.Shapes.Clear();
+					add.Shapes.AddRange(prop.Shapes.Select(a => a.GetPoints(0, 0, 0)));
 
 					this.AddProp(add);
 				}
@@ -268,9 +146,7 @@ namespace Aura.Channel.World
 				foreach (var clientEvent in area.Events.Values)
 				{
 					var add = new ClientEvent(clientEvent.Id, clientEvent);
-
-					lock (_clientEvents)
-						_clientEvents[add.EntityId] = add;
+					this.AddClientEvent(add);
 				}
 			}
 		}
@@ -288,6 +164,94 @@ namespace Aura.Channel.World
 			try
 			{
 				_clientEvents.TryGetValue(eventId, out result);
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns event by name or null if it doesn't exist.
+		/// </summary>
+		/// <param name="eventId"></param>
+		/// <returns></returns>
+		public ClientEvent GetClientEvent(string eventName)
+		{
+			return this.GetClientEvent(a => a.Data.Name == eventName);
+		}
+
+		/// <summary>
+		/// Adds client event to region.
+		/// </summary>
+		/// <param name="clientEvent"></param>
+		private void AddClientEvent(ClientEvent clientEvent)
+		{
+			_clientEventsRWLS.EnterWriteLock();
+			try
+			{
+				if (_clientEvents.ContainsKey(clientEvent.EntityId))
+					throw new ArgumentException("A client event with id '" + clientEvent.EntityId.ToString("X16") + "' already exists.");
+
+				_clientEvents.Add(clientEvent.EntityId, clientEvent);
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitWriteLock();
+			}
+
+			// Add collisions
+			this.Collisions.Add(clientEvent);
+		}
+
+		/// <summary>
+		/// Returns first event that matches the predicate.
+		/// </summary>
+		/// <param name="eventId"></param>
+		/// <returns></returns>
+		public ClientEvent GetClientEvent(Func<ClientEvent, bool> predicate)
+		{
+			_clientEventsRWLS.EnterReadLock();
+			try
+			{
+				return _clientEvents.Values.FirstOrDefault(predicate);
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitReadLock();
+			}
+		}
+
+
+		/// <summary>
+		/// Returns a list of events that start with the given path,
+		/// e.g. "Uladh_main/field_Tir_S_aa/fish_tircho_stream_", to get all
+		/// fishing events starting with that name.
+		/// </summary>
+		/// <param name="eventPath"></param>
+		/// <returns></returns>
+		public List<ClientEvent> GetMatchingEvents(string eventPath)
+		{
+			var split = eventPath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+			if (split.Length != 3)
+				throw new ArgumentException("Invalid event path, expected 3 segments.");
+
+			var result = new List<ClientEvent>();
+			//var eventName = split[2];
+
+			// We either have to look for the name or the path, but it's
+			// technically possible that two areas have events with the same
+			// name, so the path is safer.
+
+			_clientEventsRWLS.EnterReadLock();
+			try
+			{
+				// TODO: Cache
+
+				var events = _clientEvents.Values.Where(a => a.Data.Path.StartsWith(eventPath));
+				result.AddRange(events);
 			}
 			finally
 			{
@@ -461,12 +425,15 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void AddCreature(Creature creature)
 		{
-			if (creature.Region != Region.Limbo)
-				creature.Region.RemoveCreature(creature);
+			//if (creature.Region != Region.Limbo)
+			//	creature.Region.RemoveCreature(creature);
 
 			_creaturesRWLS.EnterWriteLock();
 			try
 			{
+				if (_creatures.ContainsKey(creature.EntityId))
+					throw new ArgumentException("A creature with id '" + creature.EntityId.ToString("X16") + "' already exists.");
+
 				_creatures.Add(creature.EntityId, creature);
 			}
 			finally
@@ -475,6 +442,7 @@ namespace Aura.Channel.World
 			}
 
 			creature.Region = this;
+			ChannelServer.Instance.Events.OnPlayerEntersRegion(creature);
 
 			// Save reference to client if it's mainly controlling this creature.
 			if (creature.Client.Controlling == creature)
@@ -483,8 +451,14 @@ namespace Aura.Channel.World
 					_clients.Add(creature.Client);
 			}
 
-			// TODO: Technically not required? Handled by LookAround.
+			// Send appear packets, so there's no delay.
 			Send.EntityAppears(creature);
+
+			// Remove Spawned state, so effect only plays the first time.
+			// This probably only works because of the EntityAppears above,
+			// otherwise the state would be gone by the time LookAround
+			// kicks in. Maybe we need a better solution.
+			creature.State &= ~CreatureStates.Spawned;
 
 			//if (creature.EntityId < MabiId.Npcs)
 			//	Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
@@ -493,7 +467,7 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Removes creature from region, sends EntityDisappears.
 		/// </summary>
-		public void RemoveCreature(Creature creature)
+		public virtual void RemoveCreature(Creature creature)
 		{
 			_creaturesRWLS.EnterWriteLock();
 			try
@@ -508,6 +482,14 @@ namespace Aura.Channel.World
 			// TODO: Technically not required? Handled by LookAround.
 			Send.EntityDisappears(creature);
 
+			ChannelServer.Instance.Events.OnPlayerLeavesRegion(creature);
+
+			// Update visible entities before leaving the region, so the client
+			// gets and up-to-date list.
+			var playerCreature = creature as PlayerCreature;
+			if (playerCreature != null)
+				playerCreature.LookAround();
+
 			creature.Region = Region.Limbo;
 
 			if (creature.Client.Controlling == creature)
@@ -516,21 +498,6 @@ namespace Aura.Channel.World
 
 			//if (creature.EntityId < MabiId.Npcs)
 			//	Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
-
-			// Remove dynamic region from client when he's removed from it on
-			// the server, so it's recreated next time it goes to a dynamic
-			// region with that id. Otherwise it will load the previous
-			// region again.
-			if (this.IsDynamic)
-				Send.RemoveDynamicRegion(creature, this.Id);
-
-			// Remove empty region from world
-			if (this.CountPlayers() == 0 && this.Mode == RegionMode.RemoveWhenEmpty)
-			{
-				ChannelServer.Instance.World.RemoveRegion(this.Id);
-				if (this.IsDynamic)
-					ChannelServer.Instance.World.DynamicRegions.Remove(this.Id);
-			}
 		}
 
 		/// <summary>
@@ -554,23 +521,37 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns list of creatures that match predicate.
+		/// Returns true if creature with given entity id exists.
 		/// </summary>
-		public ICollection<Creature> GetCreatures(Func<Creature, bool> predicate)
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		public bool CreatureExists(long entityId)
 		{
-			var result = new List<Creature>();
-
 			_creaturesRWLS.EnterReadLock();
 			try
 			{
-				result.AddRange(_creatures.Values.Where(predicate));
+				return _creatures.ContainsKey(entityId);
 			}
 			finally
 			{
 				_creaturesRWLS.ExitReadLock();
 			}
+		}
 
-			return result;
+		/// <summary>
+		/// Returns list of creatures that match predicate.
+		/// </summary>
+		public ICollection<Creature> GetCreatures(Func<Creature, bool> predicate)
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				return _creatures.Values.Where(predicate).ToList();
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
 		}
 
 		/// <summary>
@@ -735,17 +716,9 @@ namespace Aura.Channel.World
 		/// <param name="entity"></param>
 		/// <param name="range"></param>
 		/// <returns></returns>
-		public List<Creature> GetVisibleCreaturesInRange(Entity entity, int range = VisibleRange)
+		public ICollection<Creature> GetVisibleCreaturesInRange(Entity entity, int range = VisibleRange)
 		{
-			_creaturesRWLS.EnterReadLock();
-			try
-			{
-				return _creatures.Values.Where(a => a != entity && a.GetPosition().InRange(entity.GetPosition(), range) && !a.Conditions.Has(ConditionsA.Invisible)).ToList();
-			}
-			finally
-			{
-				_creaturesRWLS.ExitReadLock();
-			}
+			return this.GetCreatures(a => a != entity && a.GetPosition().InRange(entity.GetPosition(), range) && !a.Conditions.Has(ConditionsA.Invisible));
 		}
 
 		/// <summary>
@@ -753,9 +726,16 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void AddProp(Prop prop)
 		{
+			// Generate prop id if it doesn't have one yet.
+			if (prop.EntityId == 0)
+				prop.EntityId = this.GetNewPropEntityId(prop);
+
 			_propsRWLS.EnterWriteLock();
 			try
 			{
+				if (_props.ContainsKey(prop.EntityId))
+					throw new ArgumentException("A prop with id '" + prop.EntityId.ToString("X16") + "' already exists.");
+
 				_props.Add(prop.EntityId, prop);
 			}
 			finally
@@ -766,13 +746,39 @@ namespace Aura.Channel.World
 			prop.Region = this;
 
 			// Add collisions
-			if (prop.Shapes.Count > 0)
-			{
-				foreach (var shape in prop.Shapes)
-					this.Collisions.Add(prop.EntityIdHex, shape);
-			}
+			this.Collisions.Add(prop);
 
 			Send.EntityAppears(prop);
+		}
+
+		/// <summary>
+		/// Generates entity id for prop.
+		/// </summary>
+		/// <param name="prop"></param>
+		/// <returns></returns>
+		private long GetNewPropEntityId(Prop prop)
+		{
+			var regionId = this.Id;
+			var areaId = this.GetAreaId((int)prop.Info.X, (int)prop.Info.Y);
+			var propId = 0;
+
+			lock (_propIds)
+			{
+				if (!_propIds.ContainsKey(areaId))
+					_propIds[areaId] = 1;
+
+				propId = _propIds[areaId]++;
+
+				if (propId >= ushort.MaxValue)
+					throw new Exception("Max prop id reached in region '" + regionId + "', area '" + areaId + "'.");
+			}
+
+			var result = MabiId.ServerProps;
+			result |= (long)regionId << 32;
+			result |= (long)areaId << 16;
+			result |= (ushort)propId;
+
+			return result;
 		}
 
 		/// <summary>
@@ -798,8 +804,7 @@ namespace Aura.Channel.World
 			}
 
 			// Remove collisions
-			if (prop.Shapes.Count > 0)
-				this.Collisions.Remove(prop.EntityIdHex);
+			this.Collisions.Remove(prop.EntityId);
 
 			Send.PropDisappears(prop);
 
@@ -854,6 +859,9 @@ namespace Aura.Channel.World
 			_itemsRWLS.EnterWriteLock();
 			try
 			{
+				if (_items.ContainsKey(item.EntityId))
+					throw new ArgumentException("An item with id '" + item.EntityId.ToString("X16") + "' already exists.");
+
 				_items.Add(item.EntityId, item);
 			}
 			finally
@@ -924,18 +932,6 @@ namespace Aura.Channel.World
 			}
 
 			return result;
-		}
-
-		/// <summary>
-		/// Drops item into region and makes it disappear after x seconds.
-		/// Sends EntityAppears.
-		/// </summary>
-		public void DropItem(Item item, int x, int y)
-		{
-			item.Move(this.Id, x, y);
-			item.DisappearTime = DateTime.Now.AddSeconds(Math.Max(60, (item.OptionInfo.Price / 100) * 60));
-
-			this.AddItem(item);
 		}
 
 		/// <summary>
@@ -1203,7 +1199,7 @@ namespace Aura.Channel.World
 	public class Limbo : Region
 	{
 		public Limbo()
-			: base(0, RegionMode.Permanent)
+			: base(0)
 		{
 		}
 

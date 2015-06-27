@@ -33,6 +33,37 @@ namespace Aura.Mabi
 		}
 
 		/// <summary>
+		/// Converts degree into Mabi's byte direction.
+		/// </summary>
+		/// <param name="degree"></param>
+		/// <returns></returns>
+		public static byte DegreeToByte(int degree)
+		{
+			return (byte)(degree * 255 / 360);
+		}
+
+		/// <summary>
+		/// Converts vector direction into a radian.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public static float DirectionToRadian(double x, double y)
+		{
+			return ByteToRadian(DirectionToByte(x, y));
+		}
+
+		/// <summary>
+		/// Converts degree to radian.
+		/// </summary>
+		/// <param name="degree"></param>
+		/// <returns></returns>
+		public static float DegreeToRadian(int degree)
+		{
+			return (float)(Math.PI / 180f * degree);
+		}
+
+		/// <summary>
 		/// Calculates the stat bonus for eating food.
 		/// </summary>
 		/// <remarks>

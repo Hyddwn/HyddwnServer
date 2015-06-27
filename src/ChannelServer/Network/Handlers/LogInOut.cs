@@ -74,9 +74,7 @@ namespace Aura.Channel.Network.Handlers
 
 				character.Activate(CreatureStates.EverEnteredWorld);
 
-				Send.CharacterLock(character, Locks.Default);
-				Send.EnterRegion(character);
-				character.Warping = true;
+				character.Warp(character.GetLocation());
 			}
 			// Special login to Soul Stream for new chars
 			else
@@ -103,6 +101,8 @@ namespace Aura.Channel.Network.Handlers
 		public void EnterRegionRequest(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
+			var firstSpawn = (creature.Region == Region.Limbo);
+			var regionId = creature.WarpLocation.RegionId;
 
 			// Check permission
 			// This can happen from time to time, client lag?
@@ -115,23 +115,25 @@ namespace Aura.Channel.Network.Handlers
 			creature.Warping = false;
 
 			// Get region
-			var region = ChannelServer.Instance.World.GetRegion(creature.RegionId);
+			var region = ChannelServer.Instance.World.GetRegion(regionId);
 			if (region == null)
 			{
-				Log.Warning("Player '{0}' tried to enter unknown region '{1}'.", creature.Name, creature.RegionId);
+				Log.Warning("Player '{0}' tried to enter unknown region '{1}'.", creature.Name, regionId);
 				return;
 			}
 
 			// Characters that spawned at least once need to be saved.
-			if (creature is PlayerCreature)
-				(creature as PlayerCreature).Save = true;
+			var playerCreature = creature as PlayerCreature;
+			if (playerCreature != null)
+				playerCreature.Save = true;
+
+			// Remove creature from previous region.
+			if (creature.Region != Region.Limbo)
+				creature.Region.RemoveCreature(creature);
 
 			// Add to region
-			var firstSpawn = (creature.Region == Region.Limbo);
-			if (!firstSpawn)
-				ChannelServer.Instance.Events.OnPlayerLeavesRegion(creature);
+			creature.SetLocation(creature.WarpLocation);
 			region.AddCreature(creature);
-			ChannelServer.Instance.Events.OnPlayerEntersRegion(creature);
 
 			// Unlock and warp
 			Send.CharacterUnlock(creature, Locks.Default);
@@ -145,8 +147,8 @@ namespace Aura.Channel.Network.Handlers
 			creature.Region.ActivateAis(creature, pos, pos);
 
 			// Warp pets and other creatures as well
-			foreach (var c in client.Creatures.Values.Where(a => a.RegionId != creature.RegionId))
-				c.Warp(creature.RegionId, pos.X, pos.Y);
+			foreach (var cr in client.Creatures.Values.Where(a => a.RegionId != creature.RegionId))
+				cr.Warp(creature.RegionId, pos.X, pos.Y);
 
 			// Automatically done by the world update
 			//Send.EntitiesAppear(client, region.GetEntitiesInRange(creature));
@@ -269,9 +271,7 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.LeaveSoulStreamR(creature);
 
-			Send.CharacterLock(creature, Locks.Default);
-			Send.EnterRegion(creature);
-			creature.Warping = true;
+			creature.Warp(creature.GetLocation());
 		}
 
 		/// <summary>

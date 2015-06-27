@@ -197,5 +197,47 @@ namespace Aura.Channel.Network.Handlers
 			// 0002 [..............01] Byte   : 1
 			// 0003 [........40590000] Float  : 100.0
 		}
+
+		/// <summary>
+		/// Sent when touching a sleeping mimic.
+		/// </summary>
+		/// <example>
+		/// 0001 [0010F00000046344] Long   : 4767482418324292
+		/// </example>
+		[PacketHandler(Op.TouchMimic)]
+		public void TouchMimic(ChannelClient client, Packet packet)
+		{
+			var targetEntityId = packet.GetLong();
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			var target = creature.Region.GetCreature(targetEntityId);
+			target.Aggro(creature);
+
+			Send.TouchMimicR(creature);
+		}
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Sent sometimes during combat? Reproducable by spamming attack
+		/// and movement packets. Response seems to be a single byte,
+		/// probably a bool.
+		/// If this is triggered, and you suddenly log out, the client
+		/// might send a SetCombatTarget packet after/during DisconnectRequest,
+		/// which might cause a security violation, because the creature
+		/// has been removed from the client by then. This isn't too
+		/// much of a problem but we should probably look into it some time.
+		/// </remarks>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.UnkCombat)]
+		public void UnkCombat(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.UnkCombatR(creature);
+		}
 	}
 }

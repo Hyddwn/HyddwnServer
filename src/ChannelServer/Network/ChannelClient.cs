@@ -12,6 +12,9 @@ using Aura.Channel.Skills.Life;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Channel.World;
+using Aura.Channel.World.Dungeons;
+using System;
+using Aura.Shared.Util;
 
 namespace Aura.Channel.Network
 {
@@ -112,12 +115,38 @@ namespace Aura.Channel.Network
 				if (creature.Client.NpcSession.Script != null)
 					creature.Client.NpcSession.Clear();
 
+				var newLocation = new Location();
+
 				// Use fallback location if creature is in a temp region.
-				if (creature.Region.IsTemporary)
-					creature.SetLocation(creature.FallbackLocation);
+				if (creature.Region is DynamicRegion)
+					newLocation = creature.FallbackLocation;
+
+				// Use fallback location if creature is in a temp region.
+				var dungeonRegion = creature.Region as DungeonRegion;
+				if (dungeonRegion != null)
+				{
+					try
+					{
+						newLocation = new Location(dungeonRegion.Dungeon.Data.Exit);
+					}
+					catch (Exception ex)
+					{
+						Log.Exception(ex, "Failed to fallback warp character in dungeon.");
+						newLocation = new Location(1, 12800, 38100); // Tir square
+					}
+
+					if (dungeonRegion.Dungeon.Script != null)
+						dungeonRegion.Dungeon.Script.OnLeftEarly(dungeonRegion.Dungeon, creature);
+				}
 
 				// Unspawn creature
 				creature.Region.RemoveCreature(creature);
+
+				// Set new location (if applicable) after everyting else is done,
+				// in case on of the previous calls needs the creature's
+				// original position.
+				if (newLocation.RegionId != 0)
+					creature.SetLocation(newLocation);
 			}
 
 			// Save everything after we're done cleaning up

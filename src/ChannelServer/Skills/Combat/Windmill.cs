@@ -90,11 +90,27 @@ namespace Aura.Channel.Skills.Combat
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
 			var targetAreaId = packet.GetLong();
-			var unkInt1 = packet.GetInt();
-			var unkInt2 = packet.GetInt();
 
+			// There exists a seemingly rare case where these parameters
+			// aren't sent.
+			var unkInt1 = (packet.Peek() != PacketElementType.None ? packet.GetInt() : 0);
+			var unkInt2 = (packet.Peek() != PacketElementType.None ? packet.GetInt() : 0);
+
+			this.Use(attacker, skill, targetAreaId, unkInt1, unkInt2);
+		}
+
+		/// <summary>
+		/// Uses WM, attacking targets.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="targetAreaId"></param>
+		/// <param name="unkInt1"></param>
+		/// <param name="unkInt2"></param>
+		public void Use(Creature attacker, Skill skill, long targetAreaId, int unkInt1, int unkInt2)
+		{
 			var range = this.GetRange(attacker, skill);
-			var targets = attacker.GetTargetableCreaturesInRange(range);
+			var targets = attacker.GetTargetableCreaturesInRange(range, true);
 
 			// Check targets
 			if (targets.Count == 0)
@@ -218,7 +234,8 @@ namespace Aura.Channel.Skills.Combat
 				range = 400f;
 				knuckleMod = 0.5f;
 			}
-			else if (skill.Info.Rank >= SkillRank.R1)
+
+			if (skill.Info.Rank >= SkillRank.R1)
 			{
 				range = 500f;
 				knuckleMod = 0.6f;
@@ -226,8 +243,6 @@ namespace Aura.Channel.Skills.Combat
 
 			if (attacker.RightHand != null && attacker.RightHand.Data.WeaponType == 9)
 				range *= knuckleMod;
-
-			range += attacker.RaceData.AttackRange;
 
 			return (int)range;
 		}

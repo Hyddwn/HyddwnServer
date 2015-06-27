@@ -48,6 +48,7 @@ namespace Aura.Channel.Util
 			Add(01, 50, "who", "", HandleWho);
 			Add(01, 50, "motion", "<category> <motion>", HandleMotion);
 			Add(01, 50, "gesture", "<gesture>", HandleGesture);
+			Add(01, 50, "lasttown", "", HandleLastTown);
 
 			// GMs
 			Add(50, 50, "warp", "<region> [x] [y]", HandleWarp);
@@ -80,6 +81,7 @@ namespace Aura.Channel.Util
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", HandleDynamic);
+			Add(99, 99, "dungeon", "<dungeon name>", HandleDungeon);
 			Add(99, -1, "reloaddata", "", HandleReloadData);
 			Add(99, -1, "reloadscripts", "", HandleReloadScripts);
 			Add(99, -1, "reloadconf", "", HandleReloadConf);
@@ -276,31 +278,36 @@ namespace Aura.Channel.Util
 					return CommandResult.Fail;
 				}
 
+				var targetPos = target.GetPosition();
+
 				// Parse X
-				if (args.Count > 2 && !int.TryParse(args[2].Replace("x:", ""), out x))
+				if (args.Count > 2)
 				{
-					Send.ServerMessage(sender, Localization.Get("Invalid X coordinate."));
-					return CommandResult.InvalidArgument;
+					if (args[2].ToLower() == "x")
+						x = targetPos.X;
+					else if (!int.TryParse(args[2].Replace("x:", ""), out x))
+					{
+						Send.ServerMessage(sender, Localization.Get("Invalid X coordinate."));
+						return CommandResult.InvalidArgument;
+					}
 				}
 
 				// Parse Y
-				if (args.Count > 3 && !int.TryParse(args[3].Replace("y:", ""), out y))
+				if (args.Count > 3)
 				{
-					Send.ServerMessage(sender, Localization.Get("Invalid Y coordinate."));
-					return CommandResult.InvalidArgument;
+					if (args[3].ToLower() == "y")
+						y = targetPos.Y;
+					else if (!int.TryParse(args[3].Replace("y:", ""), out y))
+					{
+						Send.ServerMessage(sender, Localization.Get("Invalid Y coordinate."));
+						return CommandResult.InvalidArgument;
+					}
 				}
 
-				// Same coordinates if warping back from a dynamic region,
-				// random coordinates if none were specified in a normal warp.
-				if ((target.Region.IsDynamic || warpToRegion.IsDynamic) && (warpToRegion.BaseId == target.Region.BaseId))
+				// Randomize coordinates
+				if (x == -1 || y == -1)
 				{
-					var pos = target.GetPosition();
-					x = pos.X;
-					y = pos.Y;
-				}
-				else if (x == -1 || y == -1)
-				{
-					var rndc = AuraData.RegionInfoDb.RandomCoord(warpToRegion.BaseId);
+					var rndc = warpToRegion.RegionInfoData.RandomCoord(RandomProvider.Get());
 					if (x < 0) x = rndc.X;
 					if (y < 0) y = rndc.Y;
 				}
@@ -479,6 +486,19 @@ namespace Aura.Channel.Util
 
 				item.Amount = amount;
 			}
+			else if (item.Info.Id == 2004 && args.Count > 2) // Check
+			{
+				int amount;
+
+				// Get amount
+				if (!int.TryParse(args[2], out amount) || amount <= 0)
+				{
+					Send.ServerMessage(sender, Localization.Get("Invalid amount."));
+					return CommandResult.Fail;
+				}
+
+				item.MetaData1.SetInt("EVALUE", Math.Min(5000000, amount));
+			}
 			// Parse colors
 			else if (itemData.StackType != StackType.Stackable && args.Count > 2)
 			{
@@ -547,7 +567,7 @@ namespace Aura.Channel.Util
 			if (regionData == null)
 				return CommandResult.Fail;
 
-			var region = Region.CreateDynamic(baseRegionId, variant, RegionMode.Permanent);
+			var region = new DynamicRegion(baseRegionId, variant, RegionMode.Permanent);
 			ChannelServer.Instance.World.AddRegion(region);
 
 			var pos = target.GetPosition();
@@ -908,6 +928,8 @@ namespace Aura.Channel.Util
 				Send.ServerMessage(sender, Localization.Get("You're not authorized to use the GMCP."));
 				return CommandResult.Fail;
 			}
+
+			sender.Vars.Perm.GMCP = true;
 
 			Send.GmcpOpen(sender);
 
@@ -1559,6 +1581,40 @@ namespace Aura.Channel.Util
 					Send.ServerMessage(target, Localization.Get("'{0}' has disabled telewalk for you."), sender.Name);
 				Send.ServerMessage(sender, Localization.Get("Telewalk disabled."));
 			}
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleDungeon(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			var dungeonName = args[1];
+			var itemId = 2000; // Gold
+
+			// Check dungeon
+			if (!AuraData.DungeonDb.Entries.ContainsKey(dungeonName))
+			{
+				Send.SystemMessage(sender, Localization.Get("Dungeon '{0}' not found in database."), dungeonName);
+				return CommandResult.InvalidArgument;
+			}
+
+			if (!ChannelServer.Instance.World.DungeonManager.CreateDungeonAndWarp(dungeonName, itemId, target))
+			{
+				Send.SystemMessage(sender, Localization.Get("Failed to create dungeon."), dungeonName);
+				return CommandResult.Fail;
+			}
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleLastTown(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (string.IsNullOrWhiteSpace(target.LastTown))
+				Send.ServerMessage(sender, Localization.Get("No last town found."));
+			else if (!target.Warp(target.LastTown))
+				Send.ServerMessage(sender, Localization.Get("Warp failed."));
 
 			return CommandResult.Okay;
 		}

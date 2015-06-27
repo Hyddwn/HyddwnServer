@@ -12,6 +12,7 @@ using Aura.Shared.Util;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using System.Globalization;
+using Aura.Channel.World;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -35,6 +36,10 @@ namespace Aura.Channel.Network.Handlers
 		public void GmcpClose(ChannelClient client, Packet packet)
 		{
 			// Log it?
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			creature.Vars.Perm.GMCP = null;
 		}
 
 		/// <summary>
@@ -108,7 +113,7 @@ namespace Aura.Channel.Network.Handlers
 
 			this.EnsureGmcpAuthority(client);
 
-			creature.Warp(regionId, x, y);
+			creature.Jump(x, y);
 		}
 
 		/// <summary>

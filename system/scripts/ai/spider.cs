@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Spider AI
+// Spider AI
 //--- Description -----------------------------------------------------------
-//  AI for normal spiders.
+// AI for dungeon spiders, that hate players.
 //---------------------------------------------------------------------------
 
 [AiScript("spider")]
@@ -9,7 +9,7 @@ public class SpiderAi : AiScript
 {
 	public SpiderAi()
 	{
-		Doubts("/pc/", "/pet/");
+		Hates("/pc/", "/pet/");
 		
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 	}

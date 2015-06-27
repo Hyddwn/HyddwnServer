@@ -266,6 +266,38 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
+		/// Returns first item to match predicate, or null.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public Item GetItem(Func<Item, bool> predicate)
+		{
+			foreach (var pocket in _pockets.Values)
+			{
+				var item = pocket.GetItem(predicate);
+				if (item != null)
+					return item;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Returns items that match predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public List<Item> GetItems(Func<Item, bool> predicate)
+		{
+			var result = new List<Item>();
+
+			foreach (var pocket in _pockets.Values)
+				result.AddRange(pocket.GetItems(predicate));
+
+			return result;
+		}
+
+		/// <summary>
 		/// Returns item or throws security violation exception,
 		/// if item didn't exist or isn't allowed to be accessed.
 		/// </summary>
@@ -1011,8 +1043,39 @@ namespace Aura.Channel.World.Inventory
 		private void UpdateInventory(Item item, Pocket source, Pocket target)
 		{
 			this.CheckLeftHand(item, source, target);
+			this.CheckRightHand(item, source, target);
 			this.UpdateEquipReferences(source, target);
 			this.CheckEquipMoved(item, source, target);
+		}
+
+		/// <summary>
+		/// Makes sure you can't combine invalid equipment, like 2H and shields.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="source"></param>
+		/// <param name="target"></param>
+		private void CheckRightHand(Item item, Pocket source, Pocket target)
+		{
+			var rightItem = this.RightHand;
+
+			// Move 2H weapon if shield is euipped
+			if (target == this.LeftHandPocket && item.IsShieldLike && (rightItem != null && rightItem.IsTwoHand))
+			{
+				// Switch item
+				var success = _pockets[source].Add(rightItem);
+
+				// Fallback, temp inv
+				if (!success)
+					success = _pockets[Pocket.Temporary].Add(rightItem);
+
+				if (success)
+				{
+					_pockets[this.RightHandPocket].Remove(rightItem);
+
+					Send.ItemMoveInfo(_creature, rightItem, this.RightHandPocket, null);
+					Send.EquipmentMoved(_creature, this.RightHandPocket);
+				}
+			}
 		}
 
 		/// <summary>

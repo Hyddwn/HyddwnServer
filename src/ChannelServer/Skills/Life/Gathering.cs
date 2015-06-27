@@ -169,19 +169,35 @@ namespace Aura.Channel.Skills.Life
 			{
 				var targetProp = (Prop)targetEntity;
 
+				// Check if prop was emptied
+				if (targetProp.State == "empty")
+				{
+					this.DoComplete(creature, entityId, collectId, false, 2);
+					return;
+				}
+
+				// Regenerate resources
 				targetProp.Resource += (float)((DateTime.Now - targetProp.LastCollect).TotalMinutes * collectData.ResourceRecovering);
+
+				// Fail if currently no resources available
 				if (targetProp.Resource < collectData.ResourceReduction)
 				{
 					this.DoComplete(creature, entityId, collectId, false, 2);
 					return;
 				}
 
+				// Reduce resources on success
 				if (collectSuccess)
 				{
 					if (!ChannelServer.Instance.Conf.World.InfiniteResources)
 						targetProp.Resource -= collectData.ResourceReduction;
 					targetProp.LastCollect = DateTime.Now;
 				}
+
+				// Set prop's state to "empty" if it was emptied and is not
+				// regenerating resources.
+				if (collectData.ResourceRecovering == 0 && targetProp.Resource < collectData.ResourceReduction)
+					targetProp.SetState("empty");
 			}
 			else
 			{

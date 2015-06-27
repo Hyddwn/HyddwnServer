@@ -89,6 +89,10 @@ namespace Aura.Channel.Network.Handlers
 			// Default answer for now
 			Send.HomesteadInfoRequestR(creature);
 
+			// Re-open GMCP
+			if (creature.Vars.Perm.GMCP != null && client.Account.Authority >= ChannelServer.Instance.Conf.World.GmcpMinAuth)
+				Send.GmcpOpen(creature);
+
 			ChannelServer.Instance.Events.OnPlayerLoggedIn(creature);
 		}
 
@@ -234,6 +238,30 @@ namespace Aura.Channel.Network.Handlers
 			var target = creature.Region.GetCreature(targetEntityId);
 
 			Send.ViewEquipmentR(creature, target);
+		}
+
+		/// <summary>
+		/// Sent when using a skill without ammo, e.g. Ranged without arrows.
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : /arrow/
+		/// </example>
+		[PacketHandler(Op.AmmoRequired)]
+		public void AmmoRequired(ChannelClient client, Packet packet)
+		{
+			// Officials don't do anything here... auto equip ammo? =D
+		}
+
+		/// <summary>
+		/// Sent when a cutscene is finished or canceled?
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.UnkCutsceneEnd)]
+		public void UnkCutsceneEnd(ChannelClient client, Packet packet)
+		{
+			// Doesn't look like the server sends a response to this.
 		}
 	}
 }

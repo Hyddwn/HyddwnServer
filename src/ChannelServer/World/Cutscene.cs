@@ -30,6 +30,11 @@ namespace Aura.Channel.World
 		/// </summary>
 		public Dictionary<string, Creature> Actors { get; protected set; }
 
+		/// <summary>
+		/// Creates new cutscene.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="leader"></param>
 		public Cutscene(string name, Creature leader)
 		{
 			this.Name = name;
@@ -65,15 +70,7 @@ namespace Aura.Channel.World
 		/// <param name="raceId"></param>
 		public void AddActor(string name, int raceId)
 		{
-			var creature = new NPC();
-			creature.RaceId = raceId;
-			creature.LoadDefault();
-			creature.Name = creature.RaceData.Name;
-			creature.Color1 = creature.RaceData.Color1;
-			creature.Color2 = creature.RaceData.Color2;
-			creature.Color3 = creature.RaceData.Color3;
-			creature.Height = creature.RaceData.SizeMax;
-
+			var creature = new NPC(raceId);
 			this.Actors[name] = creature;
 		}
 
@@ -107,10 +104,12 @@ namespace Aura.Channel.World
 			Send.CharacterUnlock(this.Leader, Locks.Default);
 			Send.CutsceneUnk(this);
 
-			this.Leader.Temp.CurrentCutscene = null;
-
+			// Call callback before setting cutscene to null so it can
+			// be referenced from the core during the callback.
 			if (_callback != null)
 				_callback(this);
+
+			this.Leader.Temp.CurrentCutscene = null;
 		}
 	}
 }

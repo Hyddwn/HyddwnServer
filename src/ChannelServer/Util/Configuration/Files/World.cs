@@ -32,6 +32,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public bool InfiniteResources { get; protected set; }
 		public bool PerfectFishing { get; protected set; }
 		public bool InfiniteBait { get; protected set; }
+		public bool InfiniteArrows { get; protected set; }
 
 		public bool Bagception { get; protected set; }
 		public bool NoDurabilityLoss { get; protected set; }
@@ -43,6 +44,9 @@ namespace Aura.Channel.Util.Configuration.Files
 		public int BankGoldPerCharacter { get; protected set; }
 
 		public bool PtjInfiniteMemory { get; protected set; }
+
+		public bool PrivateDungeons { get; protected set; }
+		public bool EasySwitch { get; protected set; }
 
 		public void Load()
 		{
@@ -73,6 +77,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.InfiniteResources = this.GetBool("infinite_resources", false);
 			this.PerfectFishing = this.GetBool("perfect_fishing", false);
 			this.InfiniteBait = this.GetBool("infinite_bait", false);
+			this.InfiniteArrows = this.GetBool("infinite_arrows", false);
 
 			this.Bagception = this.GetBool("bagception", false);
 			this.NoDurabilityLoss = this.GetBool("no_durability_loss", false);
@@ -84,6 +89,9 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.BankGoldPerCharacter = this.GetInt("gold_per_character", 5000000);
 
 			this.PtjInfiniteMemory = this.GetBool("ptj_infinite_memory", false);
+
+			this.PrivateDungeons = this.GetBool("private_dungeons", false);
+			this.EasySwitch = this.GetBool("easy_switch", false);
 		}
 	}
 

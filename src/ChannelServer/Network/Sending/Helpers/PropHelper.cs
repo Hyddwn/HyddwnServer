@@ -19,29 +19,25 @@ namespace Aura.Channel.Network.Sending.Helpers
 			// look a bit different.
 			if (prop.ServerSide)
 			{
-				packet.PutString(prop.Name);
+				packet.PutString(prop.Ident);
 				packet.PutString(prop.Title);
 				packet.PutBin(prop.Info);
 				packet.PutString(prop.State);
 				packet.PutLong(0);
 
+				packet.PutByte(prop.HasXml);
 				if (prop.HasXml)
-				{
-					packet.PutByte(true);
 					packet.PutString(prop.Xml.ToString());
-				}
-				else
-				{
-					packet.PutByte(false);
-				}
 
-				packet.PutInt(0);
-				// if ^ 1 ?
-				//   010 [........000000CA] Int    : 202
-				//   011 [........0000044C] Int    : 1100
-				//   012 [................] String : 
-				//   013 [..............02] Byte   : 2
-				//   014 [................] String : message:s:Do you wish to enter the room?;condition:s:notin(220189,194241,1354);
+				packet.PutInt(prop.Extensions.Count);
+				foreach (var ext in prop.Extensions)
+				{
+					packet.PutInt((int)ext.SignalType);
+					packet.PutInt((int)ext.EventType);
+					packet.PutString(ext.Name);
+					packet.PutByte(ext.Mode);
+					packet.PutString(ext.Value.ToString());
+				}
 
 				packet.PutShort(0);
 			}

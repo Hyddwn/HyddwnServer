@@ -17,6 +17,7 @@ using Aura.Shared.Network;
 using Aura.Shared.Util;
 using Aura.Channel.World.Inventory;
 using Aura.Mabi.Network;
+using Aura.Data;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -50,6 +51,13 @@ namespace Aura.Channel.Network.Handlers
 			if (item.IsBag && target.IsBag() && !ChannelServer.Instance.Conf.World.Bagception)
 			{
 				Send.ServerMessage(creature, Localization.Get("Item bags can't be stored inside other bags."));
+				goto L_Fail;
+			}
+
+			// Check TwinSword feature
+			if (target == creature.Inventory.LeftHandPocket && !item.IsShieldLike && creature.RightHand != null && !AuraData.FeaturesDb.IsEnabled("TwinSword"))
+			{
+				Send.Notice(creature, NoticeType.MiddleSystem, Localization.Get("Dual Wielding is not available yet."));
 				goto L_Fail;
 			}
 
@@ -111,10 +119,8 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			//if (HandleDungeonDrop(client, creature, item))
-			//    return;
-
-			item.Drop(creature.Region, creature.GetPosition());
+			if (!ChannelServer.Instance.World.DungeonManager.CheckDrop(creature, item))
+				item.Drop(creature.Region, creature.GetPosition());
 
 			Send.ItemDropR(creature, true);
 
@@ -155,14 +161,19 @@ namespace Aura.Channel.Network.Handlers
 				}
 			}
 
-			var success = creature.Inventory.PickUp(item);
-			if (!success)
+			if (!creature.Inventory.PickUp(item))
 			{
 				Send.SystemMessage(creature, Localization.Get("Not enough space."));
 				creature.Inventory.Remove(item.OptionInfo.LinkedPocketId);
+				Send.ItemPickUpR(creature, false);
+				return;
 			}
 
-			Send.ItemPickUpR(creature, success);
+			// Pick up effect for keys
+			if (item.HasTag("/key/"))
+				Send.Effect(creature, Effect.PickUpItem, (byte)1, item.Info.Id, item.Info.Color1, item.Info.Color2, item.Info.Color3);
+
+			Send.ItemPickUpR(creature, true);
 		}
 
 		/// <summary>

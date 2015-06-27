@@ -22,7 +22,8 @@ public class RescueResidentQuestScript : QuestScript
 		AddObjective("talk_trefor", "Talk with Trefor", 1, 8692, 52637, Talk("trefor"));
 		AddObjective("kill_foxes", "Hunt 5 Young Brown Foxes", 1, 9100, 52000, Kill(5, "/brownfox/"));
 		AddObjective("talk_trefor2", "Talk with Trefor", 1, 8692, 52637, Talk("trefor"));
-		AddObjective("clear_alby", "Rescue a town resident from Alby Dungeon", 13, 3200, 3200, Talk("trefor"));
+		AddObjective("clear_alby", "Rescue a town resident from Alby Dungeon", 13, 3200, 3200, GetKeyword("Clear_Tutorial_Alby_Dungeon"));
+		AddObjective("talk_trefor3", "Talk with Trefor", 1, 8692, 52637, Talk("trefor"));
 		
 		AddReward(Exp(300));
 		AddReward(Gold(1800));
@@ -61,14 +62,14 @@ public class RescueResidentQuestScript : QuestScript
 			
 			npc.Msg("Good, I see that you're getting the hang of it.<br/>Well, I was able to do that when I was 8, but whatever...<br/>It is now time for you to go and search for the missing Villager.");
 			npc.Msg("Follow the road up and turn right and you'll find the Alby Dungeon.<br/>You can enter the dungeon by dropping this item on the altar.<br/>If you either lose it or fail to rescue her, come back to me so I can give you another one. Please be careful.", npc.Image("dungeonpass", 128, 128));
-			
-			npc.GiveItem(63140, 1);
+
+			npc.GiveItem(63180, 1);
 			
 			return HookResult.Break;
 		}
-		else if(npc.QuestActive(this.Id, "clear_alby"))
+		else if(npc.QuestActive(this.Id, "talk_trefor3"))
 		{
-			npc.FinishQuest(this.Id, "clear_alby");
+			npc.FinishQuest(this.Id, "talk_trefor3");
 			
 			npc.Msg("You did it! Good job.<br/>Good thing I asked for your help.<br/>For your great work, I will now teach you how to properly use the Smash skill.<br/>If you open your Skill window and press the 'LEARN' button, you will be able to use a more powerful Smash skill.<br/>I can always use some help here, so drop by often, okay?");
 			

@@ -86,6 +86,28 @@ namespace Aura.Channel.Scripting
 	}
 
 	/// <summary>
+	/// Collection of dungeon scripts.
+	/// </summary>
+	/// <remarks>
+	/// Key: Dungeon name
+	/// Value: Instance of DungeonScript
+	/// </remarks>
+	public class DungeonScriptCollection : Collection<string, DungeonScript>
+	{
+	}
+
+	/// <summary>
+	/// Collection of puzzle scripts.
+	/// </summary>
+	/// <remarks>
+	/// Key: Puzzle name
+	/// Value: Instance of PuzzleScript
+	/// </remarks>
+	public class PuzzleScriptCollection : Collection<string, PuzzleScript>
+	{
+	}
+
+	/// <summary>
 	/// Collection of hook lists.
 	/// </summary>
 	public class NpcScriptHookCollection : ListCollection<string, NpcScriptHook>

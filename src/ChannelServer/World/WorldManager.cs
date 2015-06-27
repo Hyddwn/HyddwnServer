@@ -15,6 +15,7 @@ using Aura.Shared.Network;
 using System.Threading.Tasks;
 using Aura.Mabi.Network;
 using Aura.Mabi.Const;
+using Aura.Channel.World.Dungeons;
 
 namespace Aura.Channel.World
 {
@@ -22,6 +23,7 @@ namespace Aura.Channel.World
 	{
 		private Dictionary<int, Region> _regions;
 
+		public DungeonManager DungeonManager { get; private set; }
 		public DynamicRegionManager DynamicRegions { get; private set; }
 		public SpawnManager SpawnManager { get; private set; }
 
@@ -34,6 +36,7 @@ namespace Aura.Channel.World
 		{
 			_regions = new Dictionary<int, Region>();
 
+			this.DungeonManager = new DungeonManager();
 			this.DynamicRegions = new DynamicRegionManager();
 			this.SpawnManager = new SpawnManager();
 		}
@@ -200,7 +203,7 @@ namespace Aura.Channel.World
 				}
 			}
 
-			var region = Region.CreateNormal(regionId);
+			var region = new NormalRegion(regionId);
 			lock (_regions)
 				_regions.Add(regionId, region);
 		}
@@ -244,6 +247,17 @@ namespace Aura.Channel.World
 			lock (_regions)
 				_regions.TryGetValue(regionId, out result);
 			return result;
+		}
+
+		/// <summary>
+		/// Returns region by name, or null if it doesn't exist.
+		/// </summary>
+		/// <param name="regionId"></param>
+		/// <returns></returns>
+		public Region GetRegion(string regionName)
+		{
+			lock (_regions)
+				return _regions.Values.FirstOrDefault(a => a.Name == regionName);
 		}
 
 		/// <summary>
@@ -305,7 +319,8 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public int CountPlayers()
 		{
-			return _regions.Values.Sum(region => region.CountPlayers());
+			lock (_regions)
+				return _regions.Values.Sum(region => region.CountPlayers());
 		}
 
 		/// <summary>
@@ -315,7 +330,8 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public Creature GetCreature(long entityId)
 		{
-			return _regions.Values.Select(region => region.GetCreature(entityId)).FirstOrDefault(creature => creature != null);
+			lock (_regions)
+				return _regions.Values.Select(region => region.GetCreature(entityId)).FirstOrDefault(creature => creature != null);
 		}
 
 		/// <summary>
@@ -325,7 +341,8 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public Creature GetCreature(string name)
 		{
-			return _regions.Values.Select(region => region.GetCreature(name)).FirstOrDefault(creature => creature != null);
+			lock (_regions)
+				return _regions.Values.Select(region => region.GetCreature(name)).FirstOrDefault(creature => creature != null);
 		}
 
 		/// <summary>
@@ -335,8 +352,9 @@ namespace Aura.Channel.World
 		{
 			var result = new List<Creature>();
 
-			foreach (var region in _regions.Values)
-				result.AddRange(region.GetCreatures(_ => true));
+			lock (_regions)
+				foreach (var region in _regions.Values)
+					result.AddRange(region.GetCreatures(_ => true));
 
 			return result;
 		}
@@ -348,7 +366,8 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public NPC GetNpc(long entityId)
 		{
-			return _regions.Values.Select(region => region.GetNpc(entityId)).FirstOrDefault(creature => creature != null);
+			lock (_regions)
+				return _regions.Values.Select(region => region.GetNpc(entityId)).FirstOrDefault(creature => creature != null);
 		}
 
 		/// <summary>
@@ -358,7 +377,8 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public NPC GetNpc(string name)
 		{
-			return (NPC)_regions.Values.Select(region => region.GetCreature(name)).FirstOrDefault(creature => creature != null && creature is NPC);
+			lock (_regions)
+				return (NPC)_regions.Values.Select(region => region.GetCreature(name)).FirstOrDefault(creature => creature != null && creature is NPC);
 		}
 
 		/// <summary>
@@ -369,8 +389,9 @@ namespace Aura.Channel.World
 		{
 			var result = new List<Creature>();
 
-			foreach (var region in _regions.Values)
-				region.GetAllGoodNpcs(ref result);
+			lock (_regions)
+				foreach (var region in _regions.Values)
+					region.GetAllGoodNpcs(ref result);
 
 			return result;
 		}
@@ -380,7 +401,13 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void RemoveScriptedEntities()
 		{
-			foreach (var region in _regions.Values)
+			// Make a copy of region list, the following loop could modify
+			// the current regions.
+			List<Region> regions;
+			lock (_regions)
+				regions = _regions.Values.ToList();
+
+			foreach (var region in regions)
 				region.RemoveScriptedEntities();
 		}
 
@@ -390,8 +417,9 @@ namespace Aura.Channel.World
 		/// <param name="packet"></param>
 		public void Broadcast(Packet packet)
 		{
-			foreach (var region in _regions.Values)
-				region.Broadcast(packet);
+			lock (_regions)
+				foreach (var region in _regions.Values)
+					region.Broadcast(packet);
 		}
 	}
 }

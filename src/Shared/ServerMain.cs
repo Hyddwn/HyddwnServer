@@ -85,6 +85,11 @@ namespace Aura.Shared
 
 			try
 			{
+				if ((toLoad & DataLoad.Features) != 0)
+				{
+					this.LoadDb(AuraData.FeaturesDb, "db/features.txt", reload);
+				}
+
 				if ((toLoad & DataLoad.Races) != 0)
 				{
 					this.LoadDb(AuraData.AncientDropDb, "db/ancient_drops.txt", reload);
@@ -184,6 +189,7 @@ namespace Aura.Shared
 				if ((toLoad & DataLoad.Props) != 0)
 				{
 					this.LoadDb(AuraData.PropsDb, "db/props.txt", reload);
+					this.LoadDb(AuraData.PropDefaultsDb, "db/prop_defaults.dat", reload);
 				}
 
 				if ((toLoad & DataLoad.Collecting) != 0)
@@ -195,6 +201,12 @@ namespace Aura.Shared
 				{
 					this.LoadDb(AuraData.FishDb, "db/fish.txt", reload);
 					this.LoadDb(AuraData.FishingGroundsDb, "db/fishing_grounds.txt", reload);
+				}
+
+				if ((toLoad & DataLoad.Dungeons) != 0)
+				{
+					this.LoadDb(AuraData.DungeonBlocksDb, "db/dungeon_blocks.txt", reload);
+					this.LoadDb(AuraData.DungeonDb, "db/dungeons.txt", reload);
 				}
 			}
 			catch (DatabaseErrorException ex)
@@ -297,10 +309,12 @@ namespace Aura.Shared
 		Props = 0x80000,
 		Collecting = 0x100000,
 		Fishing = 0x200000,
+		Dungeons = 0x400000,
+		Features = 0x800000,
 
 		All = 0xFFFFFFFF,
 
-		LoginServer = Races | StatsBase | Cards | Colors | Items | Pets,
+		LoginServer = Features | Races | StatsBase | Cards | Colors | Items | Pets,
 		ChannelServer = All,
 		Npcs = Races,
 	}

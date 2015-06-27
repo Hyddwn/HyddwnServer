@@ -8,6 +8,7 @@ using System.Linq;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using Aura.Mabi.Const;
+using System.Xml.Linq;
 
 namespace Aura.Data.Database
 {
@@ -22,21 +23,9 @@ namespace Aura.Data.Database
 		public int Y2 { get; set; }
 		public List<AreaData> Areas { get; set; }
 
-		/// <summary>
-		/// Returns id of area at the given coordinates, or 0 if area wasn't found.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns></returns>
-		public int GetAreaId(int x, int y)
+		public RegionInfoData()
 		{
-			foreach (var area in this.Areas)
-			{
-				if (x >= Math.Min(area.X1, area.X2) && x <= Math.Max(area.X1, area.X2) && y >= Math.Min(area.Y1, area.Y2) && y <= Math.Max(area.Y1, area.Y2))
-					return area.Id;
-			}
-
-			return 0;
+			this.Areas = new List<AreaData>();
 		}
 
 		/// <summary>
@@ -82,6 +71,41 @@ namespace Aura.Data.Database
 
 			return -1;
 		}
+
+		/// <summary>
+		/// Returns random coordinates inside the actual region.
+		/// </summary>
+		/// <param name="rnd"></param>
+		/// <returns></returns>
+		public Point RandomCoord(Random rnd)
+		{
+			var result = new Point();
+			result.X = rnd.Next(this.X1, this.X2);
+			result.Y = rnd.Next(this.Y1, this.Y2);
+
+			return result;
+		}
+
+		/// <summary>
+		/// Creates copy of this region data.
+		/// </summary>
+		/// <returns></returns>
+		public RegionInfoData Copy()
+		{
+			var result = new RegionInfoData();
+			result.Id = this.Id;
+			result.Name = this.Name;
+			result.GroupId = this.GroupId;
+			result.X1 = this.X1;
+			result.Y1 = this.Y1;
+			result.X2 = this.X2;
+			result.Y2 = this.Y2;
+
+			foreach (var area in this.Areas)
+				result.Areas.Add(area.Copy(true, true));
+
+			return result;
+		}
 	}
 
 	public class AreaData
@@ -95,6 +119,12 @@ namespace Aura.Data.Database
 		public Dictionary<long, PropData> Props { get; set; }
 		public Dictionary<long, EventData> Events { get; set; }
 
+		public AreaData()
+		{
+			this.Props = new Dictionary<long, PropData>();
+			this.Events = new Dictionary<long, EventData>();
+		}
+
 		/// <summary>
 		/// Creates a copy of the area data.
 		/// </summary>
@@ -105,6 +135,7 @@ namespace Aura.Data.Database
 		{
 			var result = new AreaData();
 			result.Id = this.Id;
+			result.Name = this.Name;
 			result.X1 = this.X1;
 			result.Y1 = this.Y1;
 			result.X2 = this.X2;
@@ -166,6 +197,12 @@ namespace Aura.Data.Database
 		public List<ShapeData> Shapes { get; set; }
 		public List<RegionElementData> Parameters { get; set; }
 
+		public PropData()
+		{
+			this.Shapes = new List<ShapeData>();
+			this.Parameters = new List<RegionElementData>();
+		}
+
 		/// <summary>
 		/// Returns drop type, if one exists, or -1.
 		/// </summary>
@@ -176,11 +213,10 @@ namespace Aura.Data.Database
 			{
 				// TODO: Event or SignalType can probably be checked as
 				//   well for finding drop props.
-				var match = Regex.Match(param.XML, @"<xml droptype=""(?<type>[0-9]+)""/>", RegexOptions.Compiled);
-				if (!match.Success)
+				if (param.XML == null || param.XML.Attribute("droptype") == null)
 					continue;
 
-				return int.Parse(match.Groups["type"].Value);
+				return int.Parse(param.XML.Attribute("droptype").Value);
 			}
 
 			return -1;
@@ -191,6 +227,7 @@ namespace Aura.Data.Database
 			var result = new PropData();
 			result.EntityId = this.EntityId;
 			result.Id = this.Id;
+			result.Name = this.Name;
 			result.X = this.X;
 			result.Y = this.Y;
 			result.Direction = this.Direction;
@@ -210,26 +247,73 @@ namespace Aura.Data.Database
 
 	public class ShapeData
 	{
-		public int X1 { get; set; }
-		public int Y1 { get; set; }
-		public int X2 { get; set; }
-		public int Y2 { get; set; }
-		public int X3 { get; set; }
-		public int Y3 { get; set; }
-		public int X4 { get; set; }
-		public int Y4 { get; set; }
+		public float DirX1 { get; set; }
+		public float DirX2 { get; set; }
+		public float DirY1 { get; set; }
+		public float DirY2 { get; set; }
+		public float LenX { get; set; }
+		public float LenY { get; set; }
+		public float PosX { get; set; }
+		public float PosY { get; set; }
+
+		public Point[] GetPoints(float radianAngle, int pivotX, int pivotY)
+		{
+			var points = new Point[4];
+
+			double a00 = this.DirX1 * this.LenX;
+			double a01 = this.DirX2 * this.LenX;
+			double a02 = this.DirY1 * this.LenY;
+			double a03 = this.DirY2 * this.LenY;
+
+			double sx1 = this.PosX - a00 - a02; if (sx1 < this.PosX) sx1 = Math.Ceiling(sx1);
+			double sy1 = this.PosY - a01 - a03; if (sy1 < this.PosY) sy1 = Math.Ceiling(sy1);
+			double sx2 = this.PosX + a00 - a02; if (sx2 < this.PosX) sx2 = Math.Ceiling(sx2);
+			double sy2 = this.PosY + a01 - a03; if (sy2 < this.PosY) sy2 = Math.Ceiling(sy2);
+			double sx3 = this.PosX + a00 + a02; if (sx3 < this.PosX) sx3 = Math.Ceiling(sx3);
+			double sy3 = this.PosY + a01 + a03; if (sy3 < this.PosY) sy3 = Math.Ceiling(sy3);
+			double sx4 = this.PosX - a00 + a02; if (sx4 < this.PosX) sx4 = Math.Ceiling(sx4);
+			double sy4 = this.PosY - a01 + a03; if (sy4 < this.PosY) sy4 = Math.Ceiling(sy4);
+
+			if (a02 * a01 > a03 * a00)
+			{
+				points[0] = new Point((int)sx1, (int)sy1);
+				points[1] = new Point((int)sx2, (int)sy2);
+				points[2] = new Point((int)sx3, (int)sy3);
+				points[3] = new Point((int)sx4, (int)sy4);
+			}
+			else
+			{
+				points[0] = new Point((int)sx1, (int)sy1);
+				points[3] = new Point((int)sx2, (int)sy2);
+				points[2] = new Point((int)sx3, (int)sy3);
+				points[1] = new Point((int)sx4, (int)sy4);
+			}
+
+			var cosTheta = Math.Cos(radianAngle);
+			var sinTheta = Math.Sin(radianAngle);
+
+			for (int i = 0; i < points.Length; ++i)
+			{
+				var x = (int)(cosTheta * (points[i].X /*- pivotX*/) - sinTheta * (points[i].Y /*- pivotY*/) + pivotX);
+				var y = (int)(sinTheta * (points[i].X /*- pivotX*/) + cosTheta * (points[i].Y /*- pivotY*/) + pivotY);
+				points[i].X = x;
+				points[i].Y = y;
+			}
+
+			return points;
+		}
 
 		public ShapeData Copy()
 		{
 			var result = new ShapeData();
-			result.X1 = this.X1;
-			result.Y1 = this.Y1;
-			result.X2 = this.X2;
-			result.Y2 = this.Y2;
-			result.X3 = this.X3;
-			result.Y3 = this.Y3;
-			result.X4 = this.X4;
-			result.Y4 = this.Y4;
+			result.DirX1 = this.DirX1;
+			result.DirX2 = this.DirX2;
+			result.DirY1 = this.DirY1;
+			result.DirY2 = this.DirY2;
+			result.LenX = this.LenX;
+			result.LenY = this.LenY;
+			result.PosX = this.PosX;
+			result.PosY = this.PosY;
 
 			return result;
 		}
@@ -239,6 +323,7 @@ namespace Aura.Data.Database
 	{
 		public long Id { get; set; }
 		public string Name { get; set; }
+		public string Path { get; set; }
 		public EventType Type { get; set; }
 		public int RegionId { get; set; }
 		public float X { get; set; }
@@ -247,36 +332,17 @@ namespace Aura.Data.Database
 		public List<ShapeData> Shapes { get; set; }
 		public List<RegionElementData> Parameters { get; set; }
 
-		public bool IsInside(int x, int y)
+		public EventData()
 		{
-			if (this.Shapes.Count == 0)
-				return false;
-
-			var result = false;
-
-			var shape = this.Shapes[0];
-			var point = new Point(x, y);
-			var points = new[] // >_>
-			{
-				new Point(shape.X1,shape.Y1),
-				new Point(shape.X2,shape.Y2),
-				new Point(shape.X3,shape.Y3),
-				new Point(shape.X4,shape.Y4),
-			};
-
-			for (int i = 0, j = points.Length - 1; i < points.Length; j = i++)
-			{
-				if (((points[i].Y > point.Y) != (points[j].Y > point.Y)) && (point.X < (points[j].X - points[i].X) * (point.Y - points[i].Y) / (points[j].Y - points[i].Y) + points[i].X))
-					result = !result;
-			}
-
-			return result;
+			this.Shapes = new List<ShapeData>();
+			this.Parameters = new List<RegionElementData>();
 		}
 
 		public EventData Copy()
 		{
 			var result = new EventData();
 			result.Id = this.Id;
+			result.Name = this.Name;
 			result.Type = this.Type;
 			result.RegionId = this.RegionId;
 			result.X = this.X;
@@ -297,10 +363,10 @@ namespace Aura.Data.Database
 
 	public class RegionElementData
 	{
-		public int EventType { get; set; }
-		public int SignalType { get; set; }
+		public EventType EventType { get; set; }
+		public SignalType SignalType { get; set; }
 		public string Name { get; set; }
-		public string XML { get; set; }
+		public XElement XML { get; set; }
 
 		public RegionElementData Copy()
 		{
@@ -308,7 +374,7 @@ namespace Aura.Data.Database
 			result.EventType = this.EventType;
 			result.SignalType = this.SignalType;
 			result.Name = this.Name;
-			result.XML = this.XML;
+			result.XML = this.XML != null ? new XElement(this.XML) : null;
 
 			return result;
 		}
@@ -335,35 +401,12 @@ namespace Aura.Data.Database
 		/// <returns></returns>
 		public Point RandomCoord(int region)
 		{
-			var result = new Point();
-
-			var ri = this.Find(region);
-			if (ri != null)
-			{
-				lock (_rnd)
-				{
-					result.X = _rnd.Next(ri.X1, ri.X2);
-					result.Y = _rnd.Next(ri.Y1, ri.Y2);
-				}
-			}
-
-			return result;
-		}
-
-		/// <summary>
-		/// Returns area id for the given location, or 0 if no area exists.
-		/// </summary>
-		/// <param name="region"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns></returns>
-		public int GetAreaId(int region, int x, int y)
-		{
 			var ri = this.Find(region);
 			if (ri == null)
-				return int.MaxValue;
+				return new Point();
 
-			return ri.GetAreaId(x, y);
+			lock (_rnd)
+				return ri.RandomCoord(_rnd);
 		}
 
 		/// <summary>
@@ -378,33 +421,6 @@ namespace Aura.Data.Database
 				return -1;
 
 			return data.GroupId;
-		}
-
-		/// <summary>
-		/// Returns a list of events that start with the given path,
-		/// e.g. "Uladh_main/field_Tir_S_aa/fish_tircho_stream_", to get all
-		/// fishing events starting with that name.
-		/// </summary>
-		/// <param name="eventPath"></param>
-		/// <returns></returns>
-		public List<EventData> GetMatchingEvents(string eventPath)
-		{
-			var split = eventPath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-			if (split.Length != 3)
-				throw new ArgumentException("Invalid event path, expected 3 segments.");
-
-			var region = this.GetRegion(split[0]);
-			if (region == null)
-				throw new ArgumentException("Unknown region '" + split[0] + "'.");
-
-			var area = region.GetArea(split[1]);
-			if (area == null)
-				throw new ArgumentException("Unknown area '" + split[1] + "' in region '" + split[0] + "'.");
-
-			// TODO: Cache
-			var result = new List<EventData>(area.Events.Values.Where(a => a.Name.StartsWith(split[2])));
-
-			return result;
 		}
 
 		/// <summary>
@@ -427,7 +443,6 @@ namespace Aura.Data.Database
 				ri.Y2 = br.ReadInt32();
 
 				var cAreas = br.ReadInt32();
-				ri.Areas = new List<AreaData>();
 				for (int i = 0; i < cAreas; ++i)
 				{
 					var ai = new AreaData();
@@ -440,7 +455,6 @@ namespace Aura.Data.Database
 					ai.Y2 = br.ReadInt32();
 
 					var cProps = br.ReadInt32();
-					ai.Props = new Dictionary<long, PropData>();
 					for (int j = 0; j < cProps; ++j)
 					{
 						var pi = new PropData();
@@ -453,31 +467,31 @@ namespace Aura.Data.Database
 						pi.Scale = br.ReadSingle();
 
 						var cShapes = br.ReadInt32();
-						pi.Shapes = new List<ShapeData>();
 						for (int k = 0; k < cShapes; ++k)
 						{
 							var si = new ShapeData();
-							si.X1 = br.ReadInt32();
-							si.Y1 = br.ReadInt32();
-							si.X2 = br.ReadInt32();
-							si.Y2 = br.ReadInt32();
-							si.X3 = br.ReadInt32();
-							si.Y3 = br.ReadInt32();
-							si.X4 = br.ReadInt32();
-							si.Y4 = br.ReadInt32();
+							si.DirX1 = br.ReadSingle();
+							si.DirX2 = br.ReadSingle();
+							si.DirY1 = br.ReadSingle();
+							si.DirY2 = br.ReadSingle();
+							si.LenX = br.ReadSingle();
+							si.LenY = br.ReadSingle();
+							si.PosX = br.ReadSingle();
+							si.PosY = br.ReadSingle();
 
 							pi.Shapes.Add(si);
 						}
 
 						var cElements = br.ReadInt32();
-						pi.Parameters = new List<RegionElementData>();
 						for (int k = 0; k < cElements; ++k)
 						{
 							var red = new RegionElementData();
-							red.EventType = br.ReadInt32();
-							red.SignalType = br.ReadInt32();
+							red.EventType = (EventType)br.ReadInt32();
+							red.SignalType = (SignalType)br.ReadInt32();
 							red.Name = br.ReadString();
-							red.XML = br.ReadString();
+
+							var xml = br.ReadString();
+							red.XML = !string.IsNullOrWhiteSpace(xml) ? XElement.Parse(xml) : null;
 
 							pi.Parameters.Add(red);
 						}
@@ -486,45 +500,45 @@ namespace Aura.Data.Database
 					}
 
 					var cEvents = br.ReadInt32();
-					ai.Events = new Dictionary<long, EventData>();
 					for (int j = 0; j < cEvents; ++j)
 					{
 						var ei = new EventData();
 						ei.Id = br.ReadInt64();
 						ei.Name = br.ReadString();
+						ei.Path = string.Format("{0}/{1}/{2}", ri.Name, ai.Name, ei.Name);
 						ei.RegionId = ri.Id;
 						ei.X = br.ReadSingle();
 						ei.Y = br.ReadSingle();
 						ei.Type = (EventType)br.ReadInt32();
 
 						var cShapes = br.ReadInt32();
-						ei.Shapes = new List<ShapeData>();
 						for (int k = 0; k < cShapes; ++k)
 						{
 							var si = new ShapeData();
-							si.X1 = br.ReadInt32();
-							si.Y1 = br.ReadInt32();
-							si.X2 = br.ReadInt32();
-							si.Y2 = br.ReadInt32();
-							si.X3 = br.ReadInt32();
-							si.Y3 = br.ReadInt32();
-							si.X4 = br.ReadInt32();
-							si.Y4 = br.ReadInt32();
+							si.DirX1 = br.ReadSingle();
+							si.DirX2 = br.ReadSingle();
+							si.DirY1 = br.ReadSingle();
+							si.DirY2 = br.ReadSingle();
+							si.LenX = br.ReadSingle();
+							si.LenY = br.ReadSingle();
+							si.PosX = br.ReadSingle();
+							si.PosY = br.ReadSingle();
 
 							ei.Shapes.Add(si);
 						}
 
 						var cElements = br.ReadInt32();
-						ei.Parameters = new List<RegionElementData>();
 						for (int k = 0; k < cElements; ++k)
 						{
 							var red = new RegionElementData();
-							red.EventType = br.ReadInt32();
-							red.SignalType = br.ReadInt32();
+							red.EventType = (EventType)br.ReadInt32();
+							red.SignalType = (SignalType)br.ReadInt32();
 							red.Name = br.ReadString();
-							red.XML = br.ReadString();
 
-							if (!ei.IsAltar && red.EventType == 2110 && red.SignalType == 103)
+							var xml = br.ReadString();
+							red.XML = !string.IsNullOrWhiteSpace(xml) ? XElement.Parse(xml) : null;
+
+							if (!ei.IsAltar && red.EventType == EventType.Altar && red.SignalType == SignalType.StepOn)
 								ei.IsAltar = true;
 
 							ei.Parameters.Add(red);

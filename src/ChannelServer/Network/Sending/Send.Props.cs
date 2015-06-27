@@ -20,13 +20,14 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="propEntityId"></param>
-		public static void HittingProp(Creature creature, long propEntityId)
+		/// <param name="stunTime"></param>
+		public static void HittingProp(Creature creature, long propEntityId, int stunTime)
 		{
 			var pos = creature.GetPosition();
 
 			var packet = new Packet(Op.HittingProp, creature.EntityId);
 			packet.PutLong(propEntityId);
-			packet.PutInt(2000);
+			packet.PutInt(stunTime);
 			packet.PutFloat(pos.X);
 			packet.PutFloat(pos.Y);
 
@@ -65,6 +66,36 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet(Op.PropUpdate, prop.EntityId);
 			packet.AddPropUpdateInfo(prop);
+
+			prop.Region.Broadcast(packet);
+		}
+
+		/// <summary>
+		/// Broadcasts new prop extension.
+		/// </summary>
+		/// <param name="prop"></param>
+		/// <param name="ext"></param>
+		public static void AddPropExtension(Prop prop, PropExtension ext)
+		{
+			var packet = new Packet(Op.AddPropExtension, prop.EntityId);
+			packet.PutInt((int)ext.SignalType);
+			packet.PutInt((int)ext.EventType);
+			packet.PutString(ext.Name);
+			packet.PutByte(ext.Mode);
+			packet.PutString(ext.Value.ToString());
+
+			prop.Region.Broadcast(packet);
+		}
+
+		/// <summary>
+		/// Broadcasts prop extension remove.
+		/// </summary>
+		/// <param name="prop"></param>
+		/// <param name="ext"></param>
+		public static void RemovePropExtension(Prop prop, PropExtension ext)
+		{
+			var packet = new Packet(Op.RemovePropExtension, prop.EntityId);
+			packet.PutString(ext.Name);
 
 			prop.Region.Broadcast(packet);
 		}

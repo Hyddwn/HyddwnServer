@@ -72,7 +72,10 @@ namespace Aura.Mabi.Network
 		public const int WarpUnk1 = 0x4E39;
 		public const int RequestRebirth = 0x4E84;
 		public const int RequestRebirthR = 0x4E85;
-		public const int PonsUpdate = 0x4E8F; // b:2, i:amount, sent on login
+
+		// PonsUpdate changed by +1 some time.
+
+		public const int PonsUpdate = 0x4E90;
 
 		public const int ChannelCharacterInfoRequest = 0x5208;
 		public const int ChannelCharacterInfoRequestR = 0x5209;
@@ -112,6 +115,7 @@ namespace Aura.Mabi.Network
 		public const int NpcTalkEndR = 0x55F3;
 		public const int NpcTalkEgo = 0x55F4;
 		public const int NpcTalkEgoR = 0x55F5;
+		public const int NpcInitiateDialog = 0x55F7;
 		public const int NpcTalkPartner = 0x55F8;
 		public const int NpcTalkPartnerR = 0x55F9;
 		public const int ItemBlessed = 0x5BD8;
@@ -197,6 +201,8 @@ namespace Aura.Mabi.Network
 
 		public const int SawItemNotification = 0x65D8; // [190100, NA200 (2015-01-15)]
 
+		public const int UnkCutsceneEnd = 0x65DC; // Relatively new? (NA204)
+
 		public const int SkillInfo = 0x6979;
 		public const int SkillTrainingUp = 0x697C;
 		public const int SkillAdvance = 0x697E;
@@ -205,7 +211,7 @@ namespace Aura.Mabi.Network
 		public const int SkillReady = 0x6983;
 		public const int SkillUse = 0x6986;
 		public const int SkillComplete = 0x6987;
-		public const int SkillCompleteUnk = 0x6988; // used in gathering fail
+		public const int SkillCompleteUnk = 0x6988; // Used in gathering fail and as SkillComplete for Ranged on Aura?
 		public const int SkillCancel = 0x6989;
 		public const int SkillStart = 0x698A;
 		public const int SkillStop = 0x698B;
@@ -286,6 +292,8 @@ namespace Aura.Mabi.Network
 		public const int StatUpdatePrivate = 0x7530;
 		public const int StatUpdatePublic = 0x7532;
 		public const int CombatTargetUpdate = 0x791A; // ?
+		public const int UnkCombat = 0x791B; // ?
+		public const int UnkCombatR = 0x791C; // ?
 		public const int CombatSetAim = 0x791D;
 		public const int CombatSetAimR = 0x791E;
 		public const int SetCombatTarget = 0x7920;
@@ -296,6 +304,8 @@ namespace Aura.Mabi.Network
 		public const int CombatActionPack = 0x7926;
 		public const int CombatUsedSkill = 0x7927;
 		public const int CombatAttackR = 0x7D01;
+		public const int TouchMimic = 0x7D03;
+		public const int TouchMimicR = 0x7D04;
 
 		public const int EventInform = 0x88B8;
 		public const int NewQuest = 0x8CA0;
@@ -377,7 +387,8 @@ namespace Aura.Mabi.Network
 		public const int HittingProp = 0x908A;
 		public const int TouchProp = 0x908B;
 		public const int TouchPropR = 0x908C;
-		public const int PropInteraction = 0x908D; // Doors?
+		public const int AddPropExtension = 0x908D;
+		public const int RemovePropExtension = 0x908E;
 		public const int PlaySound = 0x908F;
 
 		// [190100, NA198 (11.12.2014)] Something added here?
@@ -443,6 +454,8 @@ namespace Aura.Mabi.Network
 		public const int SosButtonRequest = 0xA9A9;
 		public const int SosButtonRequestR = 0xA9AA;
 		public const int SkillTeleport = 0xA9F0;
+		public const int EnterRebirth = 0xA9F9;
+		public const int EnterRebirthR = 0xA9FA;
 
 		// [150000~180000] Something was added? Next two ops changed.
 		// [180800, NA196] Something was added? Ops 0xAAXX - 0xABXX increased by 4.
@@ -486,6 +499,8 @@ namespace Aura.Mabi.Network
 		// ItemMagnet got increased by one, some time between NA200 and NA204.
 
 		public const int ItemMagnet = 0xABAC; // [190100, NA200 (2015-01-15)]
+
+		public const int AmmoRequired = 0xABBB;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;

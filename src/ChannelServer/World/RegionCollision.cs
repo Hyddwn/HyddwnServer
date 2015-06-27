@@ -16,7 +16,7 @@ namespace Aura.Channel.World
 	{
 		private Quadtree<LinePath> _tree;
 
-		private Dictionary<string, List<LinePath>> _reference;
+		private Dictionary<long, List<LinePath>> _reference;
 
 		/// <summary>
 		/// Creates new collision manager for region.
@@ -24,79 +24,43 @@ namespace Aura.Channel.World
 		public RegionCollision()
 		{
 			_tree = new Quadtree<LinePath>(new Size(1000, 1000), 2);
-			_reference = new Dictionary<string, List<LinePath>>();
+			_reference = new Dictionary<long, List<LinePath>>();
 		}
 
 		/// <summary>
-		/// Loads collision objects from region data.
+		/// Adds shapes of entity to collision collection.
 		/// </summary>
-		/// <param name="data"></param>
-		public void Init(RegionInfoData data)
+		/// <param name="shapedEntity"></param>
+		public void Add(IShapedEntity shapedEntity)
 		{
-			foreach (var area in data.Areas)
-			{
-				// Add props
-				foreach (var prop in area.Props.Values)
-				{
-					foreach (var shape in prop.Shapes)
-						this.Add(shape);
-				}
-
-				// Add collision events
-				foreach (var ev in area.Events.Values.Where(a => a.Type == EventType.Collision))
-				{
-					foreach (var shape in ev.Shapes)
-						this.Add(shape);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Adds shape to collisions.
-		/// </summary>
-		/// <param name="shape"></param>
-		public void Add(ShapeData shape)
-		{
-			this.Add(null, shape);
-		}
-
-		/// <summary>
-		/// Adds shape to collisions, referenced by the given ident.
-		/// </summary>
-		/// <param name="ident"></param>
-		/// <param name="shape"></param>
-		public void Add(string ident, ShapeData shape)
-		{
-			var p1 = new Point(shape.X1, shape.Y1);
-			var p2 = new Point(shape.X2, shape.Y2);
-			var p3 = new Point(shape.X3, shape.Y3);
-			var p4 = new Point(shape.X4, shape.Y4);
-
-			var line1 = new LinePath(p1, p2);
-			var line2 = new LinePath(p2, p3);
-			var line3 = new LinePath(p3, p4);
-			var line4 = new LinePath(p4, p1);
-
-			lock (_tree)
-			{
-				_tree.Insert(line1);
-				_tree.Insert(line2);
-				_tree.Insert(line3);
-				_tree.Insert(line4);
-			}
-
-			if (ident == null)
+			if (shapedEntity.Shapes == null || shapedEntity.Shapes.Count == 0 || !shapedEntity.IsCollision)
 				return;
 
-			lock (_reference)
+			foreach (var points in shapedEntity.Shapes)
 			{
-				if (!_reference.ContainsKey(ident))
-					_reference[ident] = new List<LinePath>();
+				var line1 = new LinePath(points[0], points[1]);
+				var line2 = new LinePath(points[1], points[2]);
+				var line3 = new LinePath(points[2], points[3]);
+				var line4 = new LinePath(points[3], points[0]);
 
-				_reference[ident].Add(line1);
-				_reference[ident].Add(line2);
-				_reference[ident].Add(line3);
-				_reference[ident].Add(line4);
+				lock (_tree)
+				{
+					_tree.Insert(line1);
+					_tree.Insert(line2);
+					_tree.Insert(line3);
+					_tree.Insert(line4);
+				}
+
+				lock (_reference)
+				{
+					if (!_reference.ContainsKey(shapedEntity.EntityId))
+						_reference[shapedEntity.EntityId] = new List<LinePath>();
+
+					_reference[shapedEntity.EntityId].Add(line1);
+					_reference[shapedEntity.EntityId].Add(line2);
+					_reference[shapedEntity.EntityId].Add(line3);
+					_reference[shapedEntity.EntityId].Add(line4);
+				}
 			}
 		}
 
@@ -104,20 +68,20 @@ namespace Aura.Channel.World
 		/// Removes collision objects with the given ident.
 		/// </summary>
 		/// <param name="ident"></param>
-		public void Remove(string ident)
+		public void Remove(long entityId)
 		{
-			if (!_reference.ContainsKey(ident))
-				return;
-
 			// Remove lines from tree
 			lock (_reference)
 			{
-				foreach (var obj in _reference[ident])
+				if (!_reference.ContainsKey(entityId))
+					return;
+
+				foreach (var obj in _reference[entityId])
 					lock (_tree)
 						_tree.Remove(obj);
 
 				// Remove references
-				_reference.Remove(ident);
+				_reference.Remove(entityId);
 			}
 		}
 
@@ -246,5 +210,12 @@ namespace Aura.Channel.World
 		{
 			return ("(" + P1.X + "," + P1.Y + " - " + P2.X + "," + P2.Y + ")");
 		}
+	}
+
+	public interface IShapedEntity
+	{
+		long EntityId { get; }
+		bool IsCollision { get; }
+		List<Point[]> Shapes { get; }
 	}
 }

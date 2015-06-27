@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using System;
+using System.Linq;
 using System.Threading;
 using Aura.Data;
 using Aura.Data.Database;
@@ -9,6 +10,7 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Structs;
 using Aura.Shared.Util;
 using Aura.Mabi;
+using System.Collections.Generic;
 
 namespace Aura.Channel.World.Entities
 {
@@ -198,6 +200,38 @@ namespace Aura.Channel.World.Entities
 		public bool IsBlessed { get { return ((this.OptionInfo.Flags & ItemFlags.Blessed) != 0); } }
 
 		/// <summary>
+		/// Returns true if item is a dungeon key.
+		/// </summary>
+		/// <remarks>
+		/// We could check for /dungeon/key/ here, but there's more items with
+		/// that tag, especially event keys, and I don't think we want to drop
+		/// those automatically in dungeons.
+		/// Instead we're gonna check the 3 key ids used for (presumably) every
+		/// dungeon in the game.
+		/// </remarks>
+		public bool IsDungeonKey { get { return (this.Info.Id >= 70028 && this.Info.Id <= 70030); } }
+
+		/// <summary>
+		/// Reutrns true if item is a shield.
+		/// </summary>
+		public bool IsShield { get { return this.HasTag("/shield/"); } }
+
+		/// <summary>
+		/// Reutrns true if item is a shield or is equipped like a shield (e.g. books).
+		/// </summary>
+		public bool IsShieldLike { get { return (this.IsShield || this.IsEquippableBook); } }
+
+		/// <summary>
+		/// Reutrns true if item is two handed.
+		/// </summary>
+		public bool IsTwoHand { get { return this.HasTag("/twohand/"); } }
+
+		/// <summary>
+		/// Reutnrs true if item is a book that can be equipped.
+		/// </summary>
+		public bool IsEquippableBook { get { return this.HasTag("/equip/*/book/"); } }
+
+		/// <summary>
 		/// New item based on item id.
 		/// </summary>
 		/// <param name="itemId"></param>
@@ -242,6 +276,9 @@ namespace Aura.Channel.World.Entities
 			if (dropData.Color1 != null) this.Info.Color1 = (uint)dropData.Color1;
 			if (dropData.Color2 != null) this.Info.Color2 = (uint)dropData.Color2;
 			if (dropData.Color3 != null) this.Info.Color3 = (uint)dropData.Color3;
+
+			if (dropData.Durability != -1)
+				this.Durability = dropData.Durability;
 		}
 
 		/// <summary>
@@ -304,6 +341,133 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns new stack of gold.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public static Item CreateGold(int amount)
+		{
+			var item = new Item(2000);
+			item.Amount = amount;
+
+			return item;
+		}
+
+		/// <summary>
+		/// Creates item based on parameters.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public static Item Create(int id, int amount = 0, int amountMin = 0, int amountMax = 0, uint? color1 = null, uint? color2 = null, uint? color3 = null, int prefix = 0, int suffix = 0, int expires = 0, int durability = -1)
+		{
+			var dropData = new DropData(id, 100, amount, amountMin, amountMax, color1, color2, color3, prefix, suffix, expires, durability);
+			return new Item(dropData);
+		}
+
+		/// <summary>
+		/// Returns new stack of gold.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public static Item CreateEnchanted(int itemId, int prefix = 0, int suffix = 0)
+		{
+			var item = new Item(itemId);
+			if (prefix > 0) item.OptionInfo.Prefix = (ushort)prefix;
+			if (suffix > 0) item.OptionInfo.Suffix = (ushort)suffix;
+
+			return item;
+		}
+
+		/// <summary>
+		/// Creates a key.
+		/// </summary>
+		/// <param name="itemId">Id of the key, e.g. 70028 for Treasure Chest Key.</param>
+		/// <param name="lockName">Name of the lock this key is for.</param>
+		/// <param name="ownerEntityId">The entity id of the person who can use this key, set to 0 to ignore.</param>
+		/// <returns></returns>
+		public static Item CreateKey(int itemId, string lockName, long ownerEntityId = 0)
+		{
+			// 70028 - Treasure Chest Key
+			//005 [................] String : prop_to_unlock:s:chest;
+			//006 [................] String : AIEXCLR:8:4503599627466431;
+
+			// 70029 - Dungeon Room Key
+			// 70030 - Boss Room Key
+			//005 [................] String : prop_to_unlock:s:CF273B4974C7C864AFBB2D8C1D86EB9C;
+			//006 [................] String : 
+
+			var item = new Item(itemId);
+			item.MetaData1.SetString("prop_to_unlock", lockName);
+			if (ownerEntityId != 0)
+				item.MetaData1.SetLong("AIEXCLR", ownerEntityId);
+
+			return item;
+		}
+
+		/// <summary>
+		/// Returns new check with the given amount.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public static Item CreateCheck(int amount)
+		{
+			var item = new Item(2004);
+			item.MetaData1.SetInt("EVALUE", amount);
+
+			return item;
+		}
+
+		/// <summary>
+		/// Returns a random drop from the given list as item.
+		/// </summary>
+		/// <param name="rnd"></param>
+		/// <param name="drops"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentException"></exception>
+		public static Item GetRandomDrop(Random rnd, List<DropData> drops)
+		{
+			if (drops == null || drops.Count == 0)
+				throw new ArgumentException("Drops list empty.");
+
+			return GetRandomDrop(rnd, drops.Sum(a => a.Chance), drops);
+		}
+
+		/// <summary>
+		/// Returns a random drop from the given list as item.
+		/// Returns null if total wasn't reached.
+		/// </summary>
+		/// <param name="rnd"></param>
+		/// <param name="total"></param>
+		/// <param name="drops"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentException"></exception>
+		public static Item GetRandomDrop(Random rnd, float total, List<DropData> drops)
+		{
+			if (drops == null || drops.Count == 0)
+				throw new ArgumentException("Drops list empty.");
+
+			var num = rnd.NextDouble() * total;
+
+			var n = 0.0;
+			DropData data = null;
+			foreach (var drop in drops)
+			{
+				n += drop.Chance;
+				if (num <= n)
+				{
+					data = drop;
+					break;
+				}
+			}
+
+			if (data == null)
+				return null;
+
+			return new Item(data);
+		}
+
+		/// <summary>
 		/// Returns item's position, based on Info.X and Y.
 		/// </summary>
 		/// <returns></returns>
@@ -363,7 +527,10 @@ namespace Aura.Channel.World.Entities
 
 			//this.SetNewEntityId();
 			this.Move(region.Id, x, y);
-			this.DisappearTime = DateTime.Now.AddSeconds(Math.Max(60, (this.OptionInfo.Price / 100) * 60));
+
+			// Keys don't disappear (?)
+			if (!this.HasTag("/key/"))
+				this.DisappearTime = DateTime.Now.AddSeconds(Math.Max(60, (this.OptionInfo.Price / 100) * 60));
 
 			region.AddItem(this);
 		}

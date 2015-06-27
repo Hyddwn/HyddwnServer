@@ -45,6 +45,16 @@ namespace Aura.Channel.Scripting
 		public QuestScriptCollection QuestScripts { get; private set; }
 
 		/// <summary>
+		/// Dungeon scripts loaded by the channel
+		/// </summary>
+		public DungeonScriptCollection DungeonScripts { get; private set; }
+
+		/// <summary>
+		/// Dungeon scripts loaded by the channel
+		/// </summary>
+		public PuzzleScriptCollection PuzzleScripts { get; private set; }
+
+		/// <summary>
 		/// Hooks set up by various scripts
 		/// </summary>
 		public NpcScriptHookCollection NpcScriptHooks { get; private set; }
@@ -63,6 +73,8 @@ namespace Aura.Channel.Scripting
 			this.AiScripts = new AiScriptCollection();
 			this.NpcShopScripts = new NpcShopScriptCollection();
 			this.QuestScripts = new QuestScriptCollection();
+			this.DungeonScripts = new DungeonScriptCollection();
+			this.PuzzleScripts = new PuzzleScriptCollection();
 			this.NpcScriptHooks = new NpcScriptHookCollection();
 
 			this.GlobalVars = new ScriptVariables();
@@ -101,6 +113,8 @@ namespace Aura.Channel.Scripting
 			this.NpcShopScripts.Clear();
 			this.QuestScripts.Clear();
 			this.NpcScriptHooks.Clear();
+			this.DungeonScripts.Clear();
+			this.PuzzleScripts.Clear();
 
 			this.DisposeScripts();
 			ChannelServer.Instance.World.RemoveScriptedEntities();

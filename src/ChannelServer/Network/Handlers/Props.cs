@@ -7,6 +7,7 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
+using System.Linq;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -39,7 +40,8 @@ namespace Aura.Channel.Network.Handlers
 			{
 				if (creature.GetPosition().InRange(prop.GetPosition(), 1500))
 				{
-					Send.HittingProp(creature, prop.EntityId);
+					creature.Stun = 1000;
+					Send.HittingProp(creature, prop.EntityId, 1000);
 
 					if (prop.Behavior != null)
 					{
@@ -85,27 +87,59 @@ namespace Aura.Channel.Network.Handlers
 			{
 				Log.Warning("TouchProp: Player '{0}' tried to touch unknown prop '{1}'.", creature.Name, entityId.ToString("X16"));
 				Send.ServerMessage(creature, "Unknown target.");
-			}
-			else
-			{
-				if (creature.GetPosition().InRange(prop.GetPosition(), 1500))
-				{
-					if (prop.Behavior != null)
-					{
-						prop.Behavior(creature, prop);
-					}
-					else
-					{
-						Log.Unimplemented("TouchProp: No prop behavior for '{0}'.", prop.EntityIdHex);
-					}
-				}
-				else
-				{
-					Send.Notice(creature, NoticeType.MiddleLower, Localization.Get("You're too far away."));
-					Log.Warning("TouchProp: Player '{0}' tried to touch prop out of range.", creature.Name);
-				}
+				goto L_End;
 			}
 
+			// Check behavior
+			if (prop.Behavior == null)
+			{
+				Log.Unimplemented("TouchProp: No prop behavior for '{0}'.", prop.EntityIdHex);
+				goto L_End;
+			}
+
+			// Check distance to centers
+			// Props can be quite big, and the center of it isn't necessarily
+			// where the player will touch it, so a simple range check
+			// doesn't work properly, e.g. with dungeon's boss doors.
+			// The proper way to solve this would probably be checking for a
+			// colission with the prop's shape I guess, but we'll just be lazy
+			// and assume there are no interactable props which's shapes
+			// are so large that a center distance check on all shapes isn't
+			// enough.
+			// If the prop doesn't have a shape, aka it doesn't have collision,
+			// we have no choice but to use the prop's center and hope for the best.
+			var creaturePos = creature.GetPosition();
+			var inRange = false;
+
+			if (prop.Shapes.Count != 0)
+			{
+				var shapes = prop.Shapes.ToList();
+				foreach (var shape in shapes)
+				{
+					var centerX = (shape.Min(a => a.X) + shape.Max(a => a.X)) / 2;
+					var centerY = (shape.Min(a => a.Y) + shape.Max(a => a.Y)) / 2;
+					var pos = new Position(centerX, centerY);
+
+					if (creaturePos.InRange(pos, 1000))
+					{
+						inRange = true;
+						break;
+					}
+				}
+			}
+			else
+				inRange = creaturePos.InRange(prop.GetPosition(), 1000);
+
+			if (!inRange)
+			{
+				Log.Warning("TouchProp: Player '{0}' tried to touch prop out of range.", creature.Name);
+				goto L_End;
+			}
+
+			// Run behavior
+			prop.Behavior(creature, prop);
+
+		L_End:
 			Send.TouchPropR(creature);
 		}
 	}

@@ -111,19 +111,31 @@ namespace Aura.Data.Database
 		public uint? Color1 { get; set; }
 		public uint? Color2 { get; set; }
 		public uint? Color3 { get; set; }
+		public int Expires { get; set; }
+		public int Durability { get; set; }
 
 		public DropData()
 		{
 		}
 
-		public DropData(int itemId, float chance, int amountMin = 0, int amountMax = 0, int prefix = 0, int suffix = 0)
+		public DropData(int itemId, float chance, int amount = 0, int amountMin = 0, int amountMax = 0, uint? color1 = null, uint? color2 = null, uint? color3 = null, int prefix = 0, int suffix = 0, int expires = 0, int durability = -1)
 		{
+			if (amount != 0)
+				amountMin = amountMax = amount;
+			if (amountMax < amountMin)
+				amountMax = amountMin;
+
 			this.ItemId = itemId;
 			this.Chance = chance;
 			this.AmountMin = amountMin;
 			this.AmountMax = amountMax;
 			this.Prefix = prefix;
 			this.Suffix = suffix;
+			this.Color1 = color1;
+			this.Color2 = color2;
+			this.Color3 = color3;
+			this.Expires = expires;
+			this.Durability = durability;
 		}
 
 		public DropData Copy()
@@ -139,6 +151,8 @@ namespace Aura.Data.Database
 			result.Color1 = this.Color1;
 			result.Color2 = this.Color2;
 			result.Color3 = this.Color3;
+			result.Expires = this.Expires;
+			result.Durability = this.Durability;
 
 			return result;
 		}
@@ -394,6 +408,8 @@ namespace Aura.Data.Database
 					if (drop.ContainsKey("color1")) dropData.Color1 = drop.ReadUInt("color1");
 					if (drop.ContainsKey("color2")) dropData.Color2 = drop.ReadUInt("color2");
 					if (drop.ContainsKey("color3")) dropData.Color3 = drop.ReadUInt("color3");
+
+					dropData.Durability = drop.ReadInt("durability", -1);
 
 					raceData.Drops.Add(dropData);
 				}
