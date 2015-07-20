@@ -297,6 +297,7 @@ namespace Aura.Mabi.Network
 		public const int UnkCombatR = 0x791C; // ?
 		public const int CombatSetAim = 0x791D;
 		public const int CombatSetAimR = 0x791E;
+		public const int CombatSetAim2 = 0x791F;
 		public const int SetCombatTarget = 0x7920;
 		public const int SetFinisher = 0x7921;
 		public const int SetFinisher2 = 0x7922;
@@ -445,6 +446,9 @@ namespace Aura.Mabi.Network
 		public const int GetPetAi = 0xA8A2;
 		public const int GetPetAiR = 0xA8A3;
 		public const int WarpUnk3 = 0xA8AF;
+		public const int SetQuestTimer = 0xA8CF; // Was 0xA8D0 on RE (G13)
+		public const int RemoveQuestTimer = 0xA8D0; // ?
+		public const int UpdateQuestTimerCounter = 0xA8D1;
 		public const int UmbrellaJump = 0xA8E0;
 		public const int UmbrellaJumpR = 0xA8E1;
 		public const int UmbrellaLand = 0xA8E2;

@@ -27,9 +27,9 @@ public class AlbyTutorialDungeonScript : DungeonScript
 		}
 	}
 
-	public override void OnBossDeath(Dungeon dungeon, Creature deadBoss)
+	public override void OnBossDeath(Dungeon dungeon, Creature boss, Creature killer)
 	{
-		if (deadBoss.RaceId == 30022)
+		if (boss.RaceId == 30022)
 		{
 			dungeon.Complete();
 		}

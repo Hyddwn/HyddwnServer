@@ -177,6 +177,13 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			if (!creature.Can(Locks.Gesture))
+			{
+				Log.Debug("Gesture locked for '{0}'.", creature.Name);
+				Send.UseGestureR(creature, false);
+				return;
+			}
+
 			creature.StopMove();
 
 			var motionData = AuraData.MotionDb.Find(gestureName);

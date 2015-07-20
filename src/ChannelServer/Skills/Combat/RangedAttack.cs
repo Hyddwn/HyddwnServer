@@ -37,16 +37,19 @@ namespace Aura.Channel.Skills.Combat
 		/// Amount of stability lost on hit.
 		/// </summary>
 		private const float StabilityReduction = 60f;
+		private const float StabilityReductionElf = 30f;
 
 		/// <summary>
 		/// Stun for the attacker
 		/// </summary>
 		private const int AttackerStun = 800;
+		private const int AttackerStunElf = 600;
 
 		/// <summary>
 		/// Stun for the target
 		/// </summary>
 		private const int TargetStun = 2100;
+		private const int TargetStunElf = 2600;
 
 		/// <summary>
 		/// Bonus damage for fire arrows
@@ -72,6 +75,10 @@ namespace Aura.Channel.Skills.Combat
 		{
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
+			// Lock running if not elf
+			if (!creature.IsElf)
+				creature.Lock(Locks.Run);
+
 			return true;
 		}
 
@@ -89,6 +96,10 @@ namespace Aura.Channel.Skills.Combat
 				Send.Effect(creature, Effect.FireArrow, true);
 
 			Send.SkillReady(creature, skill.Info.Id);
+
+			// Lock running if not elf
+			if (!creature.IsElf)
+				creature.Lock(Locks.Run);
 
 			return true;
 		}
@@ -136,104 +147,126 @@ namespace Aura.Channel.Skills.Combat
 			var targetPos = target.GetPosition();
 			var attackerPos = attacker.GetPosition();
 
-			// Check range
-			//if (!attackerPos.InRange(targetPos, attacker.RightHand.OptionInfo.EffectiveRange + 100))
-			//	return CombatSkillResult.OutOfRange;
+			var actionType = (attacker.IsElf ? CombatActionPackType.ChainRangeAttack : CombatActionPackType.NormalAttack);
+			var attackerStun = (short)(actionType == CombatActionPackType.ChainRangeAttack ? AttackerStunElf : AttackerStun);
 
-			// Actions
-			var cap = new CombatActionPack(attacker, skill.Info.Id);
+			// "Cancels" the skill
+			// 800 = old load time? == aAction.Stun? Varies? Doesn't seem to be a stun.
+			Send.SkillUse(attacker, skill.Info.Id, attackerStun, 1);
 
-			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, skill.Info.Id, targetEntityId);
-			aAction.Set(AttackerOptions.Result);
-			aAction.Stun = AttackerStun;
-			cap.Add(aAction);
-
-			// Hit by chance
 			var chance = attacker.AimMeter.GetAimChance(target);
-			var rnd = RandomProvider.Get();
-			if (rnd.NextDouble() * 100 < chance)
+			var rnd = RandomProvider.Get().NextDouble() * 100;
+			var successfulHit = (rnd < chance);
+
+			var maxHits = (actionType == CombatActionPackType.ChainRangeAttack && successfulHit ? 2 : 1);
+			var prevId = 0;
+
+			for (byte i = 1; i <= maxHits; ++i)
 			{
-				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-				tAction.Set(TargetOptions.Result);
-				tAction.Stun = TargetStun;
-				cap.Add(tAction);
+				target.StopMove();
 
-				// Damage
-				var damage = attacker.GetRndRangedDamage();
+				// Actions
+				var cap = new CombatActionPack(attacker, skill.Info.Id);
+				cap.Hit = i;
+				cap.Type = actionType;
+				cap.PrevId = prevId;
+				prevId = cap.Id;
 
-				// More damage with fire arrow
-				if (attacker.Temp.FireArrow)
-					damage *= FireBonus;
+				var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, skill.Info.Id, targetEntityId);
+				aAction.Set(AttackerOptions.Result);
+				aAction.Stun = attackerStun;
+				cap.Add(aAction);
 
-				// Critical Hit
-				var critChance = attacker.GetRightCritChance(target.Protection);
-				CriticalHit.Handle(attacker, critChance, ref damage, tAction);
-
-				// Subtract target def/prot
-				SkillHelper.HandleDefenseProtection(target, ref damage);
-
-				// Defense
-				Defense.Handle(aAction, tAction, ref damage);
-
-				// Mana Shield
-				ManaShield.Handle(target, ref damage, tAction);
-
-				// Deal with it!
-				if (damage > 0)
-					target.TakeDamage(tAction.Damage = damage, attacker);
-
-				// Aggro
-				target.Aggro(attacker);
-
-				// Death/Knockback
-				if (target.IsDead)
+				// Target action if hit
+				if (successfulHit)
 				{
-					tAction.Set(TargetOptions.FinishingKnockDown);
-					attacker.Shove(target, KnockBackDistance);
-				}
-				else
-				{
-					// Insta-recover in knock down
-					// TODO: Tied to stability?
-					if (target.IsKnockedDown)
+					var targetSkillId = target.Skills.ActiveSkill != null ? target.Skills.ActiveSkill.Info.Id : SkillId.CombatMastery;
+
+					var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, targetSkillId);
+					tAction.Set(TargetOptions.Result);
+					tAction.AttackerSkillId = skill.Info.Id;
+					tAction.Stun = (short)(actionType == CombatActionPackType.ChainRangeAttack ? TargetStunElf : TargetStun);
+					if (actionType == CombatActionPackType.ChainRangeAttack)
+						tAction.EffectFlags = 0x20;
+					cap.Add(tAction);
+
+					// Damage
+					var damage = attacker.GetRndRangedDamage();
+
+					// More damage with fire arrow
+					if (attacker.Temp.FireArrow)
+						damage *= FireBonus;
+
+					// Critical Hit
+					var critChance = attacker.GetRightCritChance(target.Protection);
+					CriticalHit.Handle(attacker, critChance, ref damage, tAction);
+
+					// Subtract target def/prot
+					SkillHelper.HandleDefenseProtection(target, ref damage);
+
+					// Defense
+					Defense.Handle(aAction, tAction, ref damage);
+
+					// Mana Shield
+					ManaShield.Handle(target, ref damage, tAction);
+
+					// Deal with it!
+					if (damage > 0)
+						target.TakeDamage(tAction.Damage = damage, attacker);
+
+					// Aggro
+					target.Aggro(attacker);
+
+					// Death/Knockback
+					if (target.IsDead)
 					{
-						tAction.Stun = 0;
+						tAction.Set(TargetOptions.FinishingKnockDown);
+						attacker.Shove(target, KnockBackDistance);
+						maxHits = 1;
 					}
-					// Knock down if hit repeatedly
-					else if (target.Stability < 30)
-					{
-						tAction.Set(TargetOptions.KnockDown);
-					}
-					// Normal stability reduction
 					else
 					{
-						target.Stability -= StabilityReduction;
-						if (target.IsUnstable)
+						// Insta-recover in knock down
+						// TODO: Tied to stability?
+						if (target.IsKnockedDown)
 						{
-							tAction.Set(TargetOptions.KnockBack);
-							attacker.Shove(target, KnockBackDistance);
+							tAction.Stun = 0;
 						}
+						// Knock down if hit repeatedly
+						else if (target.Stability < 30)
+						{
+							tAction.Set(TargetOptions.KnockDown);
+						}
+						// Normal stability reduction
+						else
+						{
+							target.Stability -= (actionType == CombatActionPackType.ChainRangeAttack ? StabilityReductionElf : StabilityReduction);
+							if (target.IsUnstable)
+							{
+								tAction.Set(TargetOptions.KnockBack);
+								attacker.Shove(target, KnockBackDistance);
+							}
+						}
+						tAction.Creature.Stun = tAction.Stun;
 					}
 				}
+
+				aAction.Creature.Stun = aAction.Stun;
+
+				// Skill training
+				if (skill.Info.Rank == SkillRank.Novice || skill.Info.Rank == SkillRank.RF)
+					skill.Train(1); // Try ranged attack.
+
+				// Reduce arrows
+				if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows)
+					attacker.Inventory.Decrement(attacker.Magazine);
+
+				cap.Handle();
 			}
-
-			// Skill training
-			if (skill.Info.Rank == SkillRank.Novice || skill.Info.Rank == SkillRank.RF)
-				skill.Train(1); // Try ranged attack.
-
-			// Reduce arrows
-			if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows)
-				attacker.Inventory.Decrement(attacker.Magazine);
 
 			// Disable fire arrow effect
 			if (attacker.Temp.FireArrow)
 				Send.Effect(attacker, Effect.FireArrow, false);
-
-			// "Cancels" the skill
-			// 800 = old load time? == aAction.Stun? Varies? Doesn't seem to be a stun.
-			Send.SkillUse(attacker, skill.Info.Id, 800, 1);
-
-			cap.Handle();
 
 			return CombatSkillResult.Okay;
 		}
@@ -244,7 +277,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="obj"></param>
 		private void OnCreatureAttacks(TargetAction tAction)
 		{
-			if (tAction.SkillId != SkillId.RangedAttack)
+			if (tAction.AttackerSkillId != SkillId.RangedAttack)
 				return;
 
 			var attackerSkill = tAction.Attacker.Skills.Get(SkillId.RangedAttack);

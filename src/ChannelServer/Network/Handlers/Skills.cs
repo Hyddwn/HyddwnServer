@@ -92,6 +92,14 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check lock
+			if (!creature.Can(Locks.StartSkills))
+			{
+				Log.Debug("StartSkills locked for '{0}'.", creature.Name);
+				Send.SkillStartSilentCancel(creature, skillId);
+				return;
+			}
+
 			// TODO: Move mana/stm checks here?
 
 			try
@@ -181,6 +189,14 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check lock
+			if (!creature.Can(Locks.PrepareSkills))
+			{
+				Log.Debug("PrepareSkills locked for '{0}'.", creature.Name);
+				Send.SkillPrepareSilentCancel(creature, skillId);
+				return;
+			}
+
 			var skill = creature.Skills.GetSafe(skillId);
 			skill.State = SkillState.None;
 
@@ -211,10 +227,16 @@ namespace Aura.Channel.Network.Handlers
 
 			try
 			{
+				creature.Unlock(Locks.All);
+				creature.Lock(Locks.ChanceStance | Locks.ChangeEquipment | Locks.UseItem | Locks.PrepareSkills | Locks.Attack | Locks.TalkToNpc | Locks.Gesture | Locks.StartSkills);
+				creature.Lock(skill.Data.PrepareLock);
+				creature.Unlock(skill.Data.PrepareUnlock);
+
 				// Run handler
 				var success = handler.Prepare(creature, skill, packet);
 				if (!success)
 				{
+					creature.Unlock(Locks.All);
 					Send.SkillPrepareSilentCancel(creature, skillId);
 					return;
 				}
@@ -240,6 +262,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 			catch (NotImplementedException)
 			{
+				creature.Unlock(Locks.All);
 				Log.Unimplemented("SkillPrepare: Skill prepare method for '{0}'.", skillId);
 				Send.ServerMessage(creature, Localization.Get("This skill isn't implemented completely yet."));
 				Send.SkillPrepareSilentCancel(creature, skillId);
@@ -292,9 +315,18 @@ namespace Aura.Channel.Network.Handlers
 
 			try
 			{
+				creature.Unlock(Locks.All);
+				creature.Lock(Locks.ChangeEquipment | Locks.UseItem | Locks.Attack | Locks.TalkToNpc | Locks.Gesture);
+				creature.Lock(skill.Data.ReadyLock);
+				creature.Unlock(skill.Data.ReadyUnlock);
+
 				var success = handler.Ready(creature, skill, packet);
 				if (!success)
+				{
+					creature.Unlock(Locks.All);
+					// Cancel?
 					return;
+				}
 
 				if (skill.RankData.ManaWait != 0)
 					creature.Regens.Add("ActiveSkillWait", Stat.Mana, skill.RankData.ManaWait, creature.ManaMax);
@@ -305,6 +337,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 			catch (NotImplementedException)
 			{
+				creature.Unlock(Locks.All);
 				Log.Unimplemented("SkillReady: Skill ready method for '{0}'.", skillId);
 				Send.ServerMessage(creature, Localization.Get("This skill isn't implemented completely yet."));
 				// Cancel?
@@ -350,6 +383,11 @@ namespace Aura.Channel.Network.Handlers
 
 			try
 			{
+				creature.Unlock(Locks.All);
+				creature.Lock(Locks.ChanceStance | Locks.Walk | Locks.Run | Locks.ChangeEquipment | Locks.UseItem | Locks.Attack | Locks.PickUpAndDrop | Locks.TalkToNpc | Locks.Gesture);
+				creature.Lock(skill.Data.UseLock);
+				creature.Unlock(skill.Data.UseUnlock);
+
 				handler.Use(creature, skill, packet);
 
 				// If stacks aren't 0 the skill wasn't successfully used yet.
@@ -364,6 +402,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 			catch (NotImplementedException)
 			{
+				creature.Unlock(Locks.All);
 				Log.Unimplemented("SkillUse: Skill use method for '{0}'.", skillId);
 				Send.ServerMessage(creature, Localization.Get("This skill isn't implemented completely yet."));
 				Send.SkillUseSilentCancel(creature);
@@ -400,10 +439,25 @@ namespace Aura.Channel.Network.Handlers
 
 			try
 			{
+				// Some (un)locks for Complete in the db don't make sense
+				// under the assumption that everything is unlocked each state.
+				// Either the devs didn't know how all this worked anymore
+				// or there might be locks that aren't lifted between Prepare
+				// and Complete, which would make sense.
+				// And why is anything locked in Complete, when it has
+				// to be unlocked right after the handler call anyway?
+				// There are 16 non-G1 skills that (un)lock something on complete
+				// though, ignore for now and keep researching.
+				creature.Unlock(Locks.All);
+				creature.Lock(Locks.ChangeEquipment | Locks.Attack);
+				creature.Lock(skill.Data.CompleteLock);
+				creature.Unlock(skill.Data.CompleteLock);
+
 				handler.Complete(creature, skill, packet);
 			}
 			catch (NotImplementedException)
 			{
+				creature.Unlock(Locks.All);
 				Log.Unimplemented("SkillComplete: Skill complete method for '{0}'.", skillId);
 				Send.ServerMessage(creature, Localization.Get("This skill isn't implemented completely yet."));
 				// Cancel?
@@ -427,6 +481,9 @@ namespace Aura.Channel.Network.Handlers
 
 					// else TODO: Set skill's cooldown for security reasons.
 				}
+
+				// Unlock everything once we're done?
+				creature.Unlock(Locks.All);
 			}
 			else if (skill.State != SkillState.Canceled)
 			{
@@ -434,6 +491,12 @@ namespace Aura.Channel.Network.Handlers
 				// (e.g. Final Hit is canceled if you attack a countering enemy)
 				Send.SkillReady(creature, skill.Info.Id);
 				skill.State = SkillState.Ready;
+
+				// We're basically going back into ready, use its locks?
+				creature.Unlock(Locks.All);
+				creature.Lock(Locks.ChangeEquipment | Locks.UseItem | Locks.Attack | Locks.TalkToNpc | Locks.Gesture);
+				creature.Lock(skill.Data.ReadyLock);
+				creature.Unlock(skill.Data.ReadyUnlock);
 			}
 		}
 
@@ -516,6 +579,40 @@ namespace Aura.Channel.Network.Handlers
 			// Ever a negative response?
 
 			creature.AimMeter.Start(targetEntityId);
+		}
+
+		/// <summary>
+		/// Second type of aiming, used by elves.
+		/// </summary>
+		/// <remarks>
+		/// Exact purpose unknown. tachiorz
+		/// 
+		/// Interestingly there are logs of elves using the normal CombatSetAim
+		/// as well. [exec]
+		/// </remarks>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.CombatSetAim2)]
+		public void CombatSetAim2(ChannelClient client, Packet packet)
+		{
+			var flag = packet.GetByte(); // ?
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check skill
+			// TODO: More accurate checks?
+			var activeSkill = creature.Skills.ActiveSkill;
+			if (activeSkill == null || activeSkill.Data.Type != SkillType.RangedCombat || creature.Target == null)
+			{
+				Log.Debug("CombatSetAim2: No active (ranged) skill or invalid target.");
+				Send.CombatSetAimR(creature, 0, SkillId.None, 0);
+				return;
+			}
+
+			if(flag != 0)
+				Send.CombatSetAimR(creature, creature.Target.EntityId, SkillId.None, 1);
+			else
+				creature.AimMeter.Start(creature.Target.EntityId, 1);
 		}
 
 		/// <summary>

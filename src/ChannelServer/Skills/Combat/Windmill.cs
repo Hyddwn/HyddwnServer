@@ -6,6 +6,7 @@ using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Magic;
 using Aura.Channel.World.Entities;
+using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
@@ -58,6 +59,7 @@ namespace Aura.Channel.Skills.Combat
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
 			creature.StopMove();
+			creature.Lock(Locks.Move);
 
 			Send.SkillInitEffect(creature, null);
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
@@ -148,7 +150,7 @@ namespace Aura.Channel.Skills.Combat
 				ManaShield.Handle(target, ref damage, tAction);
 
 				// Clean Hit if not defended nor critical
-				if (!tAction.Is(CombatActionType.Defended) && !tAction.Has(TargetOptions.Critical))
+				if (tAction.SkillId != SkillId.Defense && !tAction.Has(TargetOptions.Critical))
 					tAction.Set(TargetOptions.CleanHit);
 
 				// Take damage if any is left
@@ -158,7 +160,7 @@ namespace Aura.Channel.Skills.Combat
 				// Finish if dead, knock down if not defended
 				if (target.IsDead)
 					tAction.Set(TargetOptions.KnockDownFinish);
-				else if (!tAction.Is(CombatActionType.Defended))
+				else if (tAction.SkillId != SkillId.Defense)
 					tAction.Set(TargetOptions.KnockDown);
 
 				// Anger Management
@@ -168,7 +170,7 @@ namespace Aura.Channel.Skills.Combat
 				// Stun & knock back
 				aAction.Stun = CombatMastery.GetAttackerStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
 
-				if (!tAction.Is(CombatActionType.Defended))
+				if (tAction.SkillId != SkillId.Defense)
 				{
 					tAction.Stun = CombatMastery.GetTargetStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
 					target.Stability = Creature.MinStability;
@@ -186,6 +188,15 @@ namespace Aura.Channel.Skills.Combat
 				var rnd = RandomProvider.Get();
 				var aggroTarget = survived.Random();
 				aggroTarget.Aggro(attacker);
+			}
+
+			// Reduce life in old combat system
+			if (!AuraData.FeaturesDb.IsEnabled("CombatSystemRenewal"))
+			{
+				var amount = (attacker.LifeMax < 10 ? 2 : attacker.LifeMax / 10);
+				attacker.ModifyLife(-amount);
+
+				// TODO: Invincibility
 			}
 
 			// Spin it~

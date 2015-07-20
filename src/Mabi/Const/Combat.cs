@@ -5,6 +5,9 @@ using System;
 
 namespace Aura.Mabi.Const
 {
+	/// <summary>
+	/// Options for attacker options.
+	/// </summary>
 	[Flags]
 	public enum AttackerOptions : uint
 	{
@@ -29,6 +32,14 @@ namespace Aura.Mabi.Const
 		UseEffect = 0x08,
 
 		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Charge?
+		/// </remarks>
+		Dashed = 0x10,
+
+		/// <summary>
 		/// Req for some skills (0x20)
 		/// </summary>
 		/// <remarks>
@@ -51,8 +62,19 @@ namespace Aura.Mabi.Const
 		/// Missed? (0x800)
 		/// </summary>
 		Missed = 0x800,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Attack Phase, used in Pummel?
+		/// </remarks>
+		PhaseAttack = 0x1000,
 	}
 
+	/// <summary>
+	/// Options for target options.
+	/// </summary>
 	[Flags]
 	public enum TargetOptions : uint
 	{
@@ -129,6 +151,11 @@ namespace Aura.Mabi.Const
 		/// </remarks>
 		ManaShield = 0x100000,
 
+		/// <summary>
+		/// ?
+		/// </summary>
+		MultiHit = 0x2000000,
+
 		// ??? = 0x4000000 // logged on a counter hit / using mana shield
 
 		/// <summary>
@@ -138,9 +165,37 @@ namespace Aura.Mabi.Const
 		/// Always active when creature dies.
 		/// </remarks>
 		FinishingKnockDown = Finished | KnockDownFinish | FinishingHit,
+
+		/// <summary>
+		/// Combined flags for knock back/downs?
+		/// </summary>
+		Downed = 0x7CF00,
 	}
 
-	// Most likely flags
+	/// <summary>
+	/// Type of the combat action pack.
+	/// </summary>
+	public enum CombatActionPackType : byte
+	{
+		/// <summary>
+		/// A normal hit.
+		/// </summary>
+		NormalAttack = 1,
+
+		/// <summary>
+		/// Dual wield attack, consisting of 2 packs in sequence.
+		/// </summary>
+		TwinSwordAttack = 2,
+
+		/// <summary>
+		/// Dual arrow attack? Elf ranged.
+		/// </summary>
+		ChainRangeAttack = 3
+	}
+
+	/// <summary>
+	/// Flags of a combat action.
+	/// </summary>
 	[Flags]
 	public enum CombatActionType : byte
 	{
@@ -154,27 +209,53 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Simple hit by Source (0x02)
 		/// </summary>
-		Hit = 0x02,
+		Attacker = 0x02,
+
+		/// <summary>
+		/// ? (0x04)
+		/// </summary>
+		Unknown = 0x04,
+
+		/// <summary>
+		/// ? (0x10)
+		/// </summary>
+		/// <remarks>
+		/// Skill was active?
+		/// </remarks>
+		SkillActive = 0x10,
+
+		/// <summary>
+		/// ? (0x20)
+		/// </summary>
+		/// <remarks>
+		/// Skill was used successfully?
+		/// </remarks>
+		SkillSuccess = 0x20,
+
+		/// <summary>
+		/// ? (0x40)
+		/// </summary>
+		PlayerCharacter = 0x40,
 
 		/// <summary>
 		/// Both hit at the same time (0x06)
 		/// </summary>
-		SimultaneousHit = 0x06,
+		SimultaneousHit = Attacker | Unknown,
 
 		/// <summary>
 		/// Alternative target type for Counter? (0x13)
 		/// </summary>
-		CounteredHit2 = 0x13,
+		CounteredHit2 = TakeHit | Attacker | SkillActive,
 
 		/// <summary>
 		/// Smash/Counter (0x32)
 		/// </summary>
-		HardHit = 0x32,
+		HardHit = SkillSuccess | SkillActive | Attacker,
 
 		/// <summary>
 		/// Target type Defense (0x33)
 		/// </summary>
-		Defended = 0x33,
+		Defended = SkillSuccess | SkillActive | Attacker | TakeHit,
 
 		// Target type with Mana Shield
 		// ??? = 0x41,
@@ -182,17 +263,17 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Passive Damage, Shadow Bunshin/Fireball (0x42)
 		/// </summary>
-		SpecialHit = 0x42,
+		SpecialHit = PlayerCharacter | Attacker,
 
 		/// <summary>
 		/// Target type for Counter (0x53)
 		/// </summary>
-		CounteredHit = 0x53,
+		CounteredHit = PlayerCharacter | SkillActive | Attacker | TakeHit,
 
 		/// <summary>
 		/// Magicbolt, range, doing Counter? (0x72)
 		/// </summary>
-		RangeHit = 0x72,
+		RangeHit = PlayerCharacter | SkillSuccess | SkillActive | Attacker,
 
 		//DefendedHit = 0x73, // ?
 	}

@@ -90,9 +90,12 @@ public class RanaldBaseScript : NpcScript
 				break;
 
 			case "about_skill":
-				//If player knows Windmill
-				Msg("How was the Windmill skill? Was it of any help?<br/>You will one day become a great warrior<br/>as long as you remain an ardent student eager for training just like you are now.");
-				break;
+				if(HasSkill(SkillId.Windmill))
+				{
+					Msg("How was the Windmill skill? Was it of any help?<br/>You will one day become a great warrior<br/>as long as you remain an ardent student eager for training just like you are now.");
+					break;
+				}
+				goto default;
 
 			case "about_study":
 				Msg("This is not the time for class. Come back tomorrow morning.");
@@ -147,6 +150,13 @@ public class RanaldBaseScript : NpcScript
 				Msg("Counterattack skill...<br/>Simply knowing the skill won't help you.<br/>It's all about timing.");
 				Msg("This skill cannot be mastered unless you practice it in a real combat situation, which means...<br/>You'll need to get hit first.");
 				Msg("I could show you a demonstration right now and teach you this skill, but... I'll probably break you in half.<br/>You should go to Trefor instead and ask him to show you the Counterattack skill.<br/>It would be a lot safer for you. Go now.<br/>");
+				break;
+
+			case "skill_magnum_shot":
+				Msg("Oh... You already know about that? I only gave you a brief summary about the Ranged Attack, and you already picked up that much! Quite impressive! Alright! Let's move on then!");
+				Msg("Magnum Shot skill helps you to shoot a powerful blow with the power you have concentrated in the bow.<br/>Go on and work on the training.");
+				RemoveKeyword("skill_magnum_shot");
+				GiveSkill(SkillId.MagnumShot, SkillRank.RF);
 				break;
 
 			case "square":

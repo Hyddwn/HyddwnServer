@@ -421,7 +421,7 @@ namespace Aura.Channel.World.Inventory
 				return false;
 
 			// If amount differs (item was added to stack)
-			if (collidingItem != null && (item.Info.Amount != amount || item.Info.Amount == 0))
+			if (collidingItem != null && (item.Info.Amount != amount || (item.Info.Amount == 0 && item.Data.Type != ItemType.Sac)))
 			{
 				Send.ItemAmount(_creature, collidingItem);
 
@@ -1127,6 +1127,11 @@ namespace Aura.Channel.World.Inventory
 				if (leftItem == null)
 					return;
 			}
+
+			// Don't remove if combination is valid, this should allow weapons
+			// to be switched while having a shield equipped.
+			if ((item.HasTag("/righthand/") && !item.HasTag("/bow/")) && (leftItem.HasTag("/lefthand/") && !leftItem.HasTag("/arrow/")))
+				return;
 
 			// Try inventory first.
 			// TODO: List of pockets stuff can be auto-moved to.

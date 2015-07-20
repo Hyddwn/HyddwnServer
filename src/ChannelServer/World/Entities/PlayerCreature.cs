@@ -36,21 +36,6 @@ namespace Aura.Channel.World.Entities
 		public DateTime DeletionTime { get; set; }
 
 		/// <summary>
-		/// Time at which the creature was created.
-		/// </summary>
-		public DateTime CreationTime { get; set; }
-
-		/// <summary>
-		/// Time of last rebirth.
-		/// </summary>
-		public DateTime LastRebirth { get; set; }
-
-		/// <summary>
-		/// How many times the character rebirthed.
-		/// </summary>
-		public int RebirthCount { get; set; }
-
-		/// <summary>
 		/// Time of last login.
 		/// </summary>
 		public DateTime LastLogin { get; set; }
@@ -146,7 +131,7 @@ namespace Aura.Channel.World.Entities
 			this.LastLocation = loc;
 			this.WarpLocation = new Location(regionId, x, y);
 			this.Warping = true;
-			Send.CharacterLock(this, Locks.Default);
+			this.Lock(Locks.Default, true);
 
 			// TODO: We don't have to send the "create warps" every time,
 			//   only when the player is warped there for the first time.

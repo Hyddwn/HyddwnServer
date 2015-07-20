@@ -24,6 +24,11 @@ namespace Aura.Channel.World.Entities.Creatures
 		private const int MaxChanceRunning = 90;
 
 		/// <summary>
+		/// Aim offset for an elf.
+		/// </summary>
+		private float _aimOffset = 0f;
+
+		/// <summary>
 		/// Creature this aim meter belongs to.
 		/// </summary>
 		public Creature Creature { get; private set; }
@@ -53,23 +58,39 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// Starts aiming timer and sends CombatSetAimR.
 		/// </summary>
 		/// <param name="targetEntityId"></param>
-		public void Start(long targetEntityId)
+		/// <param name="flag"></param>
+		public void Start(long targetEntityId, byte flag = 0)
 		{
 			// Use 0 as fallback for now, until we're sure there's no
 			// "no skill" ranged.
 			var activeSkillId = this.Creature.Skills.ActiveSkill == null ? 0 : this.Creature.Skills.ActiveSkill.Info.Id;
 
-			this.StartTime = DateTime.Now;
-			Send.CombatSetAimR(this.Creature, targetEntityId, activeSkillId, 0);
+			if (flag > 0 && this.Creature.IsElf)
+			{
+				var chance = this.GetAimChance(this.Creature.Region.GetCreature(targetEntityId));
+				if (chance > 50f)
+				{
+					_aimOffset = 0.5f;
+					this.StartTime = DateTime.Now;
+				}
+			}
+			else
+			{
+				this.Creature.StopMove();
+				_aimOffset = 0f;
+				this.StartTime = DateTime.Now;
+			}
+			Send.CombatSetAimR(this.Creature, targetEntityId, activeSkillId, flag);
 		}
 
 		/// <summary>
 		/// Stops aiming timer and sends CombatSetAimR.
 		/// </summary>
-		public void Stop()
+		/// <param name="flag"></param>
+		public void Stop(byte flag = 0)
 		{
 			this.StartTime = DateTime.MinValue;
-			Send.CombatSetAimR(this.Creature, 0, SkillId.None, 0);
+			Send.CombatSetAimR(this.Creature, 0, SkillId.None, flag);
 		}
 
 		/// <summary>
@@ -126,7 +147,14 @@ namespace Aura.Channel.World.Entities.Creatures
 			var hitRatio = 1.0;
 			hitRatio = ((d1 - d2) / bowRange) * distance * hitRatio + d2;
 
-			var chance = Math.Sqrt(aimMod / hitRatio) * 100f;
+			var chance = Math.Sqrt(_aimOffset*_aimOffset + aimMod / hitRatio) * 100f;
+
+			// Aim chance for moving elf caps at 50%
+			if (this.Creature.IsMoving && this.Creature.IsElf)
+			{
+				if (chance > 50f)
+					chance = 50f;
+			}
 
 			// 100% after x time (unofficial)
 			if (chance >= 120)

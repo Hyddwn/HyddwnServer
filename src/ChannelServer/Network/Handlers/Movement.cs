@@ -30,7 +30,7 @@ namespace Aura.Channel.Network.Handlers
 		/// 004 [..............00] Byte   : 0
 		/// </example>
 		[PacketHandler(Op.Run, Op.Walk)]
-		public void Run(ChannelClient client, Packet packet)
+		public void Move(ChannelClient client, Packet packet)
 		{
 			var x = packet.GetInt();
 			var y = packet.GetInt();
@@ -41,12 +41,25 @@ namespace Aura.Channel.Network.Handlers
 			var to = new Position(x, y);
 			var walk = (packet.Op == Op.Walk);
 
-			// Check for running with meditation active
-			if (creature.Conditions.Has(ConditionsE.Meditation) && !walk && (creature.Inventory.RightHand == null || (!creature.Inventory.RightHand.HasTag("/wand/") && !creature.Inventory.RightHand.HasTag("/staff/"))))
-				throw new ModerateViolation("Tried to run with meditation active.");
+			// Reset position if creature can't walk.
+			if (walk && !creature.Can(Locks.Walk))
+			{
+				Log.Debug("Walk locked for '{0}'.", creature.Name);
+				creature.Jump(from);
+				return;
+			}
+
+			// Reset position if creature can't run.
+			// (Force walk instead?)
+			if (!walk && !creature.Can(Locks.Run))
+			{
+				Log.Debug("Run locked for '{0}'.", creature.Name);
+				creature.Jump(from);
+				return;
+			}
 
 			// Stop aiming when moving
-			if (creature.AimMeter.IsAiming)
+			if (!creature.IsElf && creature.AimMeter.IsAiming)
 				creature.AimMeter.Stop();
 
 			//Position intersection

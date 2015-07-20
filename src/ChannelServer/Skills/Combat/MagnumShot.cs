@@ -67,6 +67,8 @@ namespace Aura.Channel.Skills.Combat
 			Send.SkillFlashEffect(creature);
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
+			creature.Lock(Locks.Run);
+
 			return true;
 		}
 
@@ -84,6 +86,8 @@ namespace Aura.Channel.Skills.Combat
 				Send.Effect(creature, Effect.FireArrow, true);
 
 			Send.SkillReady(creature, skill.Info.Id);
+
+			creature.Lock(Locks.Run);
 
 			return true;
 		}
@@ -141,6 +145,8 @@ namespace Aura.Channel.Skills.Combat
 			var rnd = RandomProvider.Get();
 			if (rnd.NextDouble() * 100 < chance)
 			{
+				target.StopMove();
+
 				aAction.Set(AttackerOptions.KnockBackHit2);
 
 				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);

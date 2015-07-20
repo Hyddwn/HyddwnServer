@@ -78,6 +78,8 @@ namespace Aura.Channel.World.Entities
 
 		public override int RegionId { get; set; }
 
+		public Locks Locks { get; protected set; }
+
 		/// <summary>
 		/// Returns whether creature is able to receive exp and level up.
 		/// </summary>
@@ -88,6 +90,21 @@ namespace Aura.Channel.World.Entities
 		/// (e.g. Counterattack).
 		/// </summary>
 		public virtual bool LearningSkillsEnabled { get { return false; } }
+
+		/// <summary>
+		/// Time at which the creature was created.
+		/// </summary>
+		public DateTime CreationTime { get; set; }
+
+		/// <summary>
+		/// Time of last rebirth.
+		/// </summary>
+		public DateTime LastRebirth { get; set; }
+
+		/// <summary>
+		/// How many times the character rebirthed.
+		/// </summary>
+		public int RebirthCount { get; set; }
 
 		// Look
 		// ------------------------------------------------------------------
@@ -432,7 +449,7 @@ namespace Aura.Channel.World.Entities
 		/// <remarks>
 		/// This seems to count towards the creature's damage even if a weapon
 		/// is equipped. This assumption is based on the fact that Golems
-		/// have a 0 attack weapon, that would make them almost no damage.
+		/// have a 0 attack weapon, that would make them do almost no damage.
 		/// </remarks>
 		public int AttackMaxBase { get { return this.RaceData.AttackMaxBase; } }
 
@@ -1696,6 +1713,17 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Changes life and sends stat update.
+		/// </summary>
+		/// <param name="amount"></param>
+		public void ModifyLife(float amount)
+		{
+			this.Life += amount;
+			Send.StatUpdate(this, StatUpdateType.Private, Stat.Life, Stat.LifeInjured);
+			Send.StatUpdate(this, StatUpdateType.Public, Stat.Life, Stat.LifeInjured);
+		}
+
+		/// <summary>
 		/// Increases AP and updates client.
 		/// </summary>
 		/// <param name="amount"></param>
@@ -1899,6 +1927,7 @@ namespace Aura.Channel.World.Entities
 
 				return target != this // Exclude creature
 					&& this.CanTarget(target) // Check targetability
+					&& ((!this.Has(CreatureStates.Npc) || !target.Has(CreatureStates.Npc)) || this.Target == target) // Allow NPC on NPC only if it's the creature's target
 					&& targetPos.InRange(position, radius) // Check range
 					&& !this.Region.Collisions.Any(position, targetPos) // Check collisions between position
 					&& !target.Conditions.Has(ConditionsA.Invisible); // Check visiblility (GM)
@@ -1970,13 +1999,90 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Adds item to creature's inventory.
+		/// Adds item to creature's inventory and shows it above head.
 		/// </summary>
 		/// <param name="item"></param>
 		public void GiveItemWithEffect(Item item)
 		{
 			this.GiveItem(item);
 			Send.Effect(this, Effect.PickUpItem, (byte)1, item.Info.Id, item.Info.Color1, item.Info.Color2, item.Info.Color3);
+		}
+
+		/// <summary>
+		/// Adds item to creature's inventory and shows an acquire window.
+		/// </summary>
+		/// <param name="item"></param>
+		public void AcquireItem(Item item)
+		{
+			this.GiveItem(item);
+			Send.AcquireItemInfo(this, item.EntityId);
+		}
+
+		/// <summary>
+		/// Removes items with the given id from the creature's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		public void RemoveItem(int itemId, int amount = 1)
+		{
+			this.Inventory.Remove(itemId, amount);
+		}
+
+		/// <summary>
+		/// Activates given Locks for creature.
+		/// </summary>
+		/// <remarks>
+		/// Some locks are lifted automatically on Warp, SkillComplete,
+		/// and SkillCancel.
+		/// 
+		/// Only sending the locks when they actually changed can cause problems,
+		/// e.g. if a lock is removed during a cutscene (skill running out)
+		/// the unlock after the cutscene isn't sent.
+		/// The client actually has counted locks, unlike us atm.
+		/// Implementing those will fix the problem. TODO.
+		/// </remarks>
+		/// <param name="locks">Locks to activate.</param>
+		/// <param name="updateClient">Sends CharacterLock to client if true.</param>
+		/// <returns>Creature's current lock value after activating given locks.</returns>
+		public Locks Lock(Locks locks, bool updateClient = false)
+		{
+			var prev = this.Locks;
+			this.Locks |= locks;
+
+			if (updateClient /*&& prev != this.Locks*/)
+				Send.CharacterLock(this, locks);
+
+			return this.Locks;
+		}
+
+		/// <summary>
+		/// Deactivates given Locks for creature.
+		/// </summary>
+		/// <remarks>
+		/// Unlocking movement on the client apparently resets skill stuns.
+		/// </remarks>
+		/// <param name="locks">Locks to deactivate.</param>
+		/// <param name="updateClient">Sends CharacterUnlock to client if true.</param>
+		/// <returns>Creature's current lock value after deactivating given locks.</returns>
+		public Locks Unlock(Locks locks, bool updateClient = false)
+		{
+			var prev = this.Locks;
+			this.Locks &= ~locks;
+
+			if (updateClient /*&& prev != this.Locks*/)
+				Send.CharacterUnlock(this, locks);
+
+			return this.Locks;
+		}
+
+		/// <summary>
+		/// Returns true if given lock isn't activated.
+		/// </summary>
+		/// <param name="locks"></param>
+		/// <returns></returns>
+		public bool Can(Locks locks)
+		{
+			return ((this.Locks & locks) == 0);
 		}
 	}
 }

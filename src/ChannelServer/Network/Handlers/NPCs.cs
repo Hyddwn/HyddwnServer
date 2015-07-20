@@ -37,6 +37,14 @@ namespace Aura.Channel.Network.Handlers
 			// Check creature
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check lock
+			if (!creature.Can(Locks.TalkToNpc))
+			{
+				Log.Debug("TalkToNpc locked for '{0}'.", creature.Name);
+				Send.NpcTalkStartR_Fail(creature);
+				return;
+			}
+
 			// Check NPC
 			var target = ChannelServer.Instance.World.GetNpc(npcEntityId);
 			if (target == null)

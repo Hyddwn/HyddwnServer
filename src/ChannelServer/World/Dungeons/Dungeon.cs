@@ -233,7 +233,7 @@ namespace Aura.Channel.World.Dungeons
 					catch (PuzzleException e)
 					{
 						sections[section].Puzzles.Remove(puzzle);
-						Log.Debug("Section {0}, puzzle '{1}' : {2}", section, scriptName, e.Message);
+						Log.Debug("Floor {0} Section {1}, puzzle '{2}' : {3}", iFloor, section, scriptName, e.Message);
 					}
 				}
 			}
@@ -633,7 +633,7 @@ namespace Aura.Channel.World.Dungeons
 
 			// Call OnBossDeath
 			if (this.Script != null)
-				this.Script.OnBossDeath(this, creature);
+				this.Script.OnBossDeath(this, creature, killer);
 
 			// Complete dungeon when all bosses were killed
 			if (_bossesRemaining == 0)

@@ -5,6 +5,7 @@ using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
+using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
@@ -44,6 +45,12 @@ namespace Aura.Channel.Skills.Combat
 			Send.SkillFlashEffect(creature);
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
+			// Default lock is Walk|Run,  since renovation you are stopped when
+			// loading counter, previously you kept running till you were at your
+			// destination.
+			if (AuraData.FeaturesDb.IsEnabled("TalentRenovationCloseCombat"))
+				creature.StopMove();
+
 			return true;
 		}
 
@@ -57,11 +64,54 @@ namespace Aura.Channel.Skills.Combat
 		{
 			Send.SkillReady(creature, skill.Info.Id);
 
+			// Default lock is Run, lock Walk if no combat weapon is equipped.
+			if (AuraData.FeaturesDb.IsEnabled("TalentRenovationCloseCombat"))
+			{
+				if (creature.RightHand == null || !creature.RightHand.HasTag("/weapontype_combat/"))
+					creature.Lock(Locks.Walk);
+			}
+			// Tell client to lock any movement if renovation isn't enabled.
+			else
+				creature.Lock(Locks.Move, true);
+
 			// Training
 			if (skill.Info.Rank == SkillRank.RF)
 				skill.Train(1); // Use Counterattack.
 
 			return true;
+		}
+
+		/// <summary>
+		/// Resets the skill's cooldown in old combat.
+		/// </summary>
+		/// <remarks>
+		/// Counter doesn't use the new cooldown system, but Vars, similar
+		/// to Final Hit. Var10 is the cooldown for normal hits, Var11 is for
+		/// knuckles. That's why we have to reset it here.
+		/// </remarks>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public override void Complete(Creature creature, Skill skill, Packet packet)
+		{
+			base.Complete(creature, skill, packet);
+
+			if (!AuraData.FeaturesDb.IsEnabled("CombatSystemRenewal"))
+				Send.ResetCooldown(creature, skill.Info.Id);
+		}
+
+		/// <summary>
+		/// Cancels special effects.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		public override void Cancel(Creature creature, Skill skill)
+		{
+			// Updating unlock because of the updating lock for pre-renovation.
+			// Since moving isn't locked by default when using a skill it's
+			// apparently not unlocked by default either.
+			if (!AuraData.FeaturesDb.IsEnabled("TalentRenovationCloseCombat"))
+				creature.Unlock(Locks.Move, true);
 		}
 
 		/// <summary>
@@ -97,6 +147,12 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="target"></param>
 		public void Use(Creature attacker, Creature target)
 		{
+			// Updating unlock because of the updating lock for pre-renovation
+			// Has to be done here because we can't have an updating unlock
+			// after the combat action, it resets the stun.
+			if (!AuraData.FeaturesDb.IsEnabled("TalentRenovationCloseCombat"))
+				attacker.Unlock(Locks.Move, true);
+
 			var skill = attacker.Skills.Get(SkillId.Counterattack);
 
 			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, SkillId.Counterattack, target.EntityId);
