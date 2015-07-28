@@ -40,7 +40,7 @@ head over to our [Gitter chat](https://gitter.im/aura-project/aura).
 
 Contribution
 ------------------------------
-There are 4 ways **you** can help us to improve Aura:
+There are 3 ways **you** can help us to improve Aura:
 
 1. Research
 2. Bug reports
@@ -56,7 +56,7 @@ If you're not sure if you've found a bug or not, report it on [Gitter Chat](http
 and we'll clarify for you.
 
 
-### 3+4. Code
+### 3. Code
 The fastest way to get code contributions into the source is a pull request, which,
 if well written, can be merged right in to *master*. To expediate this process, 
 all pull requests must comply with our coding conventions below.
