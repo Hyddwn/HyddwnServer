@@ -13,7 +13,7 @@ As such, every user is free to use Aura and choose how to use it.
 Compatibility
 ------------------------------
 Compatibility to all major versions but NA was dropped on
-[2013-09-13 (Aura Legacy)](https://github.com/aura-project/aura_legacy/commit/c6483faace4d79b8f772bee519531718084a243d). Since that time, Aura is kept compatible only to the *latest update* of NA.
+[2013-09-13 (Aura Legacy)](https://github.com/Fuhhue/aura_legacy/commit/c6483faace4d79b8f772bee519531718084a243d). Since that time, Aura is kept compatible only to the *latest update* of NA.
 
 Requirements
 ------------------------------
@@ -36,35 +36,30 @@ Installation
 
 Afterwards, you should be able to start Aura via the provided scripts or
 directly from the bin directories. If not, or if you need a more detailed guide,
-head over to our [forums](http://aura-project.org/forum/), [Gitter chat](https://gitter.im/aura-project/aura), or [wiki](http://aura-project.org/wiki).
+head over to our [Gitter chat](https://gitter.im/aura-project/aura).
 
 Contribution
 ------------------------------
-There are 4 ways **you** can help us to improve Aura:
+There are 3 ways **you** can help us to improve Aura:
 
 1. Research
 2. Bug reports
 3. Pull Requests
-4. Releases on the forums
 
 ### 1. Research
-Do research on NPCs, quests, skills, anything really that isn't implemented yet and
-post it on our [research forum](http://aura-project.org/forum/index.php/forum/33-research/).
+Do research on NPCs, quests, skills, anything really that isn't implemented yet.
 The information you post will help developers to implement the features. 
 
 ### 2. Bug reports
-Report bugs on [GitHub](https://github.com/aura-project/aura/issues) so they can be fixed ASAP.
-If you're not sure if you've found a bug or not, report it on the [forum](http://aura-project.org/forum/index.php/forum/39-bugs/),
+Report bugs on [GitHub](https://github.com/Whimsytech/aura/issues) so they can be fixed ASAP.
+If you're not sure if you've found a bug or not, report it on [Gitter Chat](https://gitter.im/aura-project/aura),
 and we'll clarify for you.
 
 
-### 3+4. Code
+### 3. Code
 The fastest way to get code contributions into the source is a pull request, which,
 if well written, can be merged right in to *master*. To expediate this process, 
 all pull requests must comply with our coding conventions below.
-
-Alternatively you can make "casual" releases on the forum, which developers might pick up
-as research or as a base to implement the features into the official source.
 
 #### Coding conventions
 * Base: [MS Naming Guidelines](http://msdn.microsoft.com/en-us/library/xzf533w0%28v=vs.71%29.aspx),
@@ -93,8 +88,5 @@ allow you to connect to your own public IP.
 
 Links
 ------------------------------
-* Forums: http://aura-project.org/
-* GitHub: https://github.com/aura-project
+* GitHub: https://github.com/Whimsytech
 * [![Gitter chat](https://badges.gitter.im/aura-project/aura.png)](https://gitter.im/aura-project/aura)
-* Trello: https://trello.com/b/qnLaezQf/aura
-* Wiki: http://aura-project.org/wiki
