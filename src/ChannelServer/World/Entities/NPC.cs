@@ -220,25 +220,73 @@ namespace Aura.Channel.World.Entities
 			return true;
 		}
 
-		/// <summary>
-		/// Kills NPC, rewarding the killer.
-		/// </summary>
-		/// <param name="killer"></param>
-		public override void Kill(Creature killer)
-		{
-			base.Kill(killer);
+        /// <summary>
+        /// Kills NPC, rewarding the killer.
+        /// </summary>
+        /// <param name="killer"></param>
+        public override void Kill(Creature killer)
+        {
+            base.Kill(killer);
 
-			this.DisappearTime = DateTime.Now.AddSeconds(20);
+            this.DisappearTime = DateTime.Now.AddSeconds(20);
 
-			if (killer == null)
-				return;
+            if (killer == null)
+                return;
 
-			// Exp
-			var exp = (long)(this.RaceData.Exp * ChannelServer.Instance.Conf.World.ExpRate);
-			killer.GiveExp(exp);
+            // Exp
+            var exp = (long)(this.RaceData.Exp * ChannelServer.Instance.Conf.World.ExpRate);
 
-			Send.CombatMessage(killer, "+{0} EXP", exp);
-		}
+            if (killer.IsInParty)
+            {
+                if (killer.Party.ExpRule != PartyExpSharing.AllToFinish)
+                {
+                    // Check to see who is actually in range to recieve experience (official simply ALWAYS divides by party member total, even if they cannot recieve the experience.
+                    var members = killer.Party.RegionRangeCheck(killer);
+
+
+
+
+                    if (members.Count > 0)
+                    {
+                        if (killer.Party.ExpRule == PartyExpSharing.Equal)
+                        {
+                            // divide by number of people in the party who are in the region
+                            exp /= (members.Count + 1);
+
+                            foreach (Creature member in members)
+                            {
+                                member.GiveExp(exp);
+                                Send.CombatMessage(member, "+{0} EXP", exp);
+                            }
+                            
+                        }
+
+                        if (killer.Party.ExpRule == PartyExpSharing.MoreToFinish)
+                        {
+                            exp /= 2;
+                            // divide by number of people in the party who are in the region
+                            var share = exp / (members.Count + 1);
+
+                            // murderer gets an extra share of the exp.
+                            exp += share;
+
+                            foreach (Creature member in members)
+                            {
+                                member.GiveExp(share);
+                                Send.CombatMessage(member, "+{0} EXP", share);
+                            }
+                            
+                        }
+                    }
+                }
+            }
+
+            
+            killer.GiveExp(exp);
+            Send.CombatMessage(killer, "+{0} EXP", exp);
+
+
+        }
 
 		/// <summary>
 		/// NPCs may survive randomly.

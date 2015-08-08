@@ -94,6 +94,7 @@
     <Compile Include="Network\Handlers\Character.cs" />
     <Compile Include="Network\Handlers\Items.cs" />
     <Compile Include="Network\Handlers\GMCP.cs" />
+    <Compile Include="Network\Handlers\Parties.cs" />
     <Compile Include="Network\Handlers\Pets.cs" />
     <Compile Include="Network\Handlers\Props.cs" />
     <Compile Include="Network\Handlers\Quests.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Network\Sending\Helpers\TalentHelper.cs" />
     <Compile Include="Network\Sending\Send.Dungeons.cs" />
     <Compile Include="Network\Sending\Send.GMCP.cs" />
+    <Compile Include="Network\Sending\Send.Parties.cs" />
     <Compile Include="Network\Sending\Send.Quests.cs" />
     <Compile Include="Network\Sending\Send.Effects.cs" />
     <Compile Include="Network\Sending\Send.Pets.cs" />
@@ -260,6 +262,7 @@
     <Compile Include="World\Inventory\CreatureInventory.cs" />
     <Compile Include="World\Inventory\InventoryPockets.cs" />
     <Compile Include="World\Location.cs" />
+    <Compile Include="World\MabiParty.cs" />
     <Compile Include="World\NormalRegion.cs" />
     <Compile Include="World\Position.cs" />
     <Compile Include="World\Quests\Objectives.cs" />

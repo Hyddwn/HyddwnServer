@@ -403,15 +403,15 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutInt(0);
 			}
 
-			// Party
-			// --------------------------------------------------------------
-			//if (creature.Party != null)
-			//{
-			//    packet.PutByte(creature.Party.IsOpen && creature.Party.Leader == creature);
-			//    packet.PutString(creature.Party.GetMemberWantedString());
-			//}
-			//else
-			{
+            // Party
+            // --------------------------------------------------------------
+            if (creature.IsInParty)
+            {
+                packet.PutByte(creature.Party.IsOpen && creature.Party.Leader == creature);
+                packet.PutString(creature.Party.MemberWanted);
+            }
+            else
+            {
 				packet.PutByte(0);
 				packet.PutString("");
 			}
