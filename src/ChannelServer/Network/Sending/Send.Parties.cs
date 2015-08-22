@@ -1,15 +1,8 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Aura.Channel.World.Entities;
-using Aura.Shared.Network;
 using Aura.Channel.World;
-using Aura.Channel.Skills;
-using Aura.Mabi.Const;
+using Aura.Channel.Network.Sending.Helpers;
 using Aura.Mabi.Network;
 
 namespace Aura.Channel.Network.Sending
@@ -24,14 +17,12 @@ namespace Aura.Channel.Network.Sending
         public static void CreatePartyR(Creature creature)
         {
             var packet = new Packet(Op.PartyCreateR, creature.EntityId);
-
             var party = creature.Party;
 
             if (creature.IsInParty)
             {
                 packet.PutByte(1);
-
-                BuildPartyInfo(party, ref packet);
+                PartyHelper.BuildPartyInfo(party, ref packet);
             }
             else
                 packet.PutByte(0);
@@ -49,19 +40,12 @@ namespace Aura.Channel.Network.Sending
         {
             var packet = new Packet(Op.PartyJoinR, creature.EntityId);
 
-            if (PartyJoinResult.WrongPass == result || PartyJoinResult.Full == result)
-            {
-                packet.PutByte((byte)result);
-                creature.Client.Send(packet);
-                return;
-            }
+            packet.PutByte((byte)result);
 
             if (PartyJoinResult.Success == result)
-            {
-                packet.PutByte((byte)result);
-                BuildPartyInfo(creature.Party, ref packet);
-                creature.Client.Send(packet);
-            }
+                PartyHelper.BuildPartyInfo(creature.Party, ref packet);
+            
+            creature.Client.Send(packet);
 
         }
 
@@ -74,10 +58,9 @@ namespace Aura.Channel.Network.Sending
             var packet = new Packet(Op.PartyJoinUpdate, 0);
             var party = creature.Party;
 
-            AddPartyMember(creature, ref packet);
+            PartyHelper.AddPartyMember(creature, ref packet);
 
             party.Broadcast(packet, true, creature);
-
         }
 
         /// <summary>
@@ -85,14 +68,14 @@ namespace Aura.Channel.Network.Sending
         /// name, type, etc.
         /// </summary>
         /// <param name="party"></param>
-        public static void PartyMemberWantedRefresh(MabiParty party)
+        public static void PartyMemberWantedRefresh(Party party)
         {
             var packet = new Packet(Op.PartyWantedUpdate, party.Leader.EntityId);
+
             packet.PutByte(party.IsOpen);
-            packet.PutString(party.MemberWanted);
+            packet.PutString(party.MemberWantedString);
 
             party.Leader.Region.Broadcast(packet, party.Leader);
-
         }
 
         /// <summary>
@@ -100,7 +83,7 @@ namespace Aura.Channel.Network.Sending
         /// </summary>
         /// <param name="creature"></param>
         /// <param name="party"></param>
-        public static void PartyWindowUpdate(Creature creature, MabiParty party)
+        public static void PartyWindowUpdate(Creature creature, Party party)
         {
             var packet = new Packet(Op.PartyWindowUpdate, 0);
             packet.PutLong(creature.EntityId);
@@ -113,7 +96,6 @@ namespace Aura.Channel.Network.Sending
 
 
             party.Broadcast(packet, true);
-            
         }
 
         /// <summary>
@@ -121,7 +103,7 @@ namespace Aura.Channel.Network.Sending
         /// </summary>
         /// <param name="creature"></param>
         /// <param name="party"></param>
-        public static void PartyLeaveUpdate(Creature creature, MabiParty party)
+        public static void PartyLeaveUpdate(Creature creature, Party party)
         {
             var packet = new Packet(Op.PartyLeaveUpdate, 0);
             packet.PutLong(creature.EntityId);
@@ -133,7 +115,7 @@ namespace Aura.Channel.Network.Sending
         /// Informs party members of a party type change (Dungeon, Normal, Jam, etc)
         /// </summary>
         /// <param name="party"></param>
-        public static void PartyTypeUpdate(MabiParty party)
+        public static void PartyTypeUpdate(Party party)
         {
             var packet = new Packet(Op.PartyTypeUpdate, 0);
 
@@ -147,7 +129,7 @@ namespace Aura.Channel.Network.Sending
         /// </summary>
         /// <remarks>(apparently they only get to know about name changes?)</remarks>
         /// <param name="party"></param>
-        public static void PartySettingUpdate(MabiParty party)
+        public static void PartySettingUpdate(Party party)
         {
             var packet = new Packet(Op.PartySettingUpdate, 0);
             packet.PutString(party.Name);
@@ -163,7 +145,7 @@ namespace Aura.Channel.Network.Sending
         {
             var packet = new Packet(Op.PartyChangeSettingR, creature.EntityId);
 
-            BuildPartyInfo(creature.Party, ref packet);
+            PartyHelper.BuildPartyInfo(creature.Party, ref packet);
             creature.Client.Send(packet);
         }
 
@@ -198,7 +180,7 @@ namespace Aura.Channel.Network.Sending
         /// Informs all members of a change in leadership.
         /// </summary>
         /// <param name="party"></param>
-        public static void PartyChangeLeader(MabiParty party)
+        public static void PartyChangeLeader(Party party)
         {
             var packet = new Packet(Op.PartyChangeLeaderUpdate, 0);
             packet.PutLong(party.Leader.EntityId);
@@ -223,7 +205,7 @@ namespace Aura.Channel.Network.Sending
         /// Opens and closes the party's Member Wanted window.
         /// </summary>
         /// <param name="party"></param>
-        public static void PartyMemberWantedStateChange(MabiParty party)
+        public static void PartyMemberWantedStateChange(Party party)
         {
             var packet = new Packet((party.IsOpen ? Op.PartyWantedOpened : Op.PartyWantedClosed), 0);
 
@@ -246,7 +228,7 @@ namespace Aura.Channel.Network.Sending
         /// Sends new finish rule setting to all clients in the party
         /// </summary>
         /// <param name="party"></param>
-        public static void PartyFinishUpdate(MabiParty party)
+        public static void PartyFinishUpdate(Party party)
         {
             var packet = new Packet(Op.PartyFinishUpdate, 0);
             packet.PutInt((int)party.Finish);
@@ -258,7 +240,7 @@ namespace Aura.Channel.Network.Sending
         /// Updates clients on new party EXP distribution settings.
         /// </summary>
         /// <param name="party"></param>
-        public static void PartyExpUpdate(MabiParty party)
+        public static void PartyExpUpdate(Party party)
         {
             var packet = new Packet(Op.PartyExpUpdate, 0);
             packet.PutInt((int)party.ExpRule);
@@ -366,82 +348,5 @@ namespace Aura.Channel.Network.Sending
 
             creature.Party.Broadcast(packet, true);
         }
-
-        /// <summary>
-        /// Constructs the party info packet, because this is used in a number of packets.
-        /// </summary>
-        /// <param name="party"></param>
-        /// <param name="packet"></param>
-        private static void BuildPartyInfo(MabiParty party, ref Packet packet)
-        {
-            packet.PutLong(party.ID);
-            packet.PutString(party.Name);
-            packet.PutLong(party.Leader.EntityId);
-
-            packet.PutByte(party.IsOpen);
-            packet.PutInt((int)party.Finish);
-            packet.PutInt((int)party.ExpRule);
-
-            packet.PutLong(0);                                                      // Quest ID?
-
-            packet.PutInt(party.MaxSize);
-            packet.PutInt((int)party.Type);
-
-            packet.PutString(party.DungeonLevel);
-            packet.PutString(party.Info);
-
-            packet.PutInt(party.TotalMembers);
-
-            AddPartyMembers(party, ref packet);
-        }
-
-        /// <summary>
-        /// Adds party member data to the referenced packet.
-        /// </summary>
-        /// <param name="party"></param>
-        /// <param name="packet"></param>
-        private static void AddPartyMembers(MabiParty party, ref Packet packet)
-		{
-            var partyMembers = party.Members;
-            for (int i = partyMembers.Count - 1; i >= 0; i--)
-            {
-                AddPartyMember(partyMembers[i], ref packet);
-
-                if (i == 0)
-                {
-                    packet.PutInt(3);
-                    packet.PutLong(0);
-                }
-                else
-                {
-                    packet.PutInt(1);
-                    packet.PutLong(0);
-                }
-            }
-                                                            // ?
-            packet.PutByte(0);                                                  // ?
-        }
-
-        /// <summary>
-        /// Adds the referred creature's data to the referenced packet.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="packet"></param>
-        private static void AddPartyMember(Creature creature, ref Packet packet)
-        {
-            packet.PutInt(creature.PartyPosition);
-            packet.PutLong(creature.EntityId);
-            packet.PutString(creature.Name);
-            packet.PutByte(1);                                                   // ?
-            packet.PutInt(creature.Region.Id);
-
-            var loc = creature.GetPosition();
-            packet.PutInt(loc.X);
-            packet.PutInt(loc.Y);
-            packet.PutByte(0);                                                   // ?
-            packet.PutInt((int)((creature.Life * 100) / creature.LifeMax));
-            packet.PutInt((int)100);
-        }
-
     }
 }

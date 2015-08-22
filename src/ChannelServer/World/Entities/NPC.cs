@@ -241,19 +241,16 @@ namespace Aura.Channel.World.Entities
                 if (killer.Party.ExpRule != PartyExpSharing.AllToFinish)
                 {
                     // Check to see who is actually in range to recieve experience (official simply ALWAYS divides by party member total, even if they cannot recieve the experience.
-                    var members = killer.Party.RegionRangeCheck(killer);
+                    var expEligibleMembers = killer.Party.GetMembersInRange(killer);
 
-
-
-
-                    if (members.Count > 0)
+                    if (expEligibleMembers.Count > 0)
                     {
                         if (killer.Party.ExpRule == PartyExpSharing.Equal)
                         {
                             // divide by number of people in the party who are in the region
-                            exp /= (members.Count + 1);
+                            exp /= (expEligibleMembers.Count + 1);
 
-                            foreach (Creature member in members)
+                            foreach (Creature member in expEligibleMembers)
                             {
                                 member.GiveExp(exp);
                                 Send.CombatMessage(member, "+{0} EXP", exp);
@@ -265,12 +262,12 @@ namespace Aura.Channel.World.Entities
                         {
                             exp /= 2;
                             // divide by number of people in the party who are in the region
-                            var share = exp / (members.Count + 1);
+                            var share = exp / (expEligibleMembers.Count + 1);
 
                             // murderer gets an extra share of the exp.
                             exp += share;
 
-                            foreach (Creature member in members)
+                            foreach (Creature member in expEligibleMembers)
                             {
                                 member.GiveExp(share);
                                 Send.CombatMessage(member, "+{0} EXP", share);

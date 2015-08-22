@@ -408,7 +408,7 @@ namespace Aura.Channel.Network.Sending.Helpers
             if (creature.IsInParty)
             {
                 packet.PutByte(creature.Party.IsOpen && creature.Party.Leader == creature);
-                packet.PutString(creature.Party.MemberWanted);
+                packet.PutString(creature.Party.MemberWantedString);
             }
             else
             {

@@ -109,6 +109,7 @@
     <Compile Include="Network\Sending\Helpers\CreatureHelper.cs" />
     <Compile Include="Network\Sending\Helpers\EntityHelper.cs" />
     <Compile Include="Network\Sending\Helpers\ItemHelper.cs" />
+    <Compile Include="Network\Sending\Helpers\PartyHelper.cs" />
     <Compile Include="Network\Sending\Helpers\PropHelper.cs" />
     <Compile Include="Network\Sending\Helpers\PvpHelper.cs" />
     <Compile Include="Network\Sending\Helpers\QuestHelper.cs" />
@@ -262,8 +263,9 @@
     <Compile Include="World\Inventory\CreatureInventory.cs" />
     <Compile Include="World\Inventory\InventoryPockets.cs" />
     <Compile Include="World\Location.cs" />
-    <Compile Include="World\MabiParty.cs" />
+    <Compile Include="World\Party.cs" />
     <Compile Include="World\NormalRegion.cs" />
+    <Compile Include="World\PartyManager.cs" />
     <Compile Include="World\Position.cs" />
     <Compile Include="World\Quests\Objectives.cs" />
     <Compile Include="World\Quests\Prerequisites.cs" />

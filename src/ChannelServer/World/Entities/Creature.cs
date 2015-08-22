@@ -738,7 +738,7 @@ namespace Aura.Channel.World.Entities
         // Parties
         // ------------------------------------------------------------------
 
-        public MabiParty Party;
+        public Party Party;
         
         /// <summary>
         /// The number in the party this player occupies.
@@ -764,7 +764,7 @@ namespace Aura.Channel.World.Entities
 			this.Drops = new CreatureDrops(this);
 			this.DeadMenu = new CreatureDeadMenu(this);
 			this.AimMeter = new AimMeter(this);
-            this.Party = new MabiParty();
+            this.Party = new Party();
 
 			this.Vars = new ScriptVariables();
 		}
