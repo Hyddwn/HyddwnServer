@@ -448,7 +448,6 @@ namespace Aura.Channel.World
 
             if (TotalMembers > 0)
             {
-
                 if (Leader == creature)
                 {
                     SetLeader(GetNextLeader());

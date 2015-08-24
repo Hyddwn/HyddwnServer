@@ -738,12 +738,12 @@ namespace Aura.Channel.World.Entities
         // Parties
         // ------------------------------------------------------------------
 
-        public Party Party;
+        public Party Party { get; set; }
         
         /// <summary>
         /// The number in the party this player occupies.
         /// </summary>
-        public int PartyPosition;
+        public int PartyPosition { get; set; }
         public bool IsInParty { get { return Party.ID != 0; } }
 
         // ------------------------------------------------------------------

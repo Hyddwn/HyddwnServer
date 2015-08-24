@@ -105,7 +105,7 @@ namespace Aura.Channel.Network
 		public override void CleanUp()
 		{
 
-            // Moved here to always be called when a client is being killed off, on the suggestion of E.
+            // Moved here to always be called when a client is being killed off, on the suggestion of Exec.
             ChannelServer.Instance.Events.OnPlayerDisconnect(Controlling);
 
             // Dispose creatures, to remove subscriptions and stuff.

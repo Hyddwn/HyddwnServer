@@ -146,7 +146,7 @@ namespace Aura.Channel.World
 		/// Raised when a creature is attacked.
 		/// </summary>
 		public event Action<TargetAction> CreatureAttack;
-		public void OnCreatureAttack(TargetAction action) { CreatureAttack.Raise(action); }
+		public void OnCreatureAttacked(TargetAction action) { CreatureAttack.Raise(action); }
 
 		/// <summary>
 		/// Raised when a creature attacks some creature.

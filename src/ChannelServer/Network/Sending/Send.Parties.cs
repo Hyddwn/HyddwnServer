@@ -22,7 +22,7 @@ namespace Aura.Channel.Network.Sending
             if (creature.IsInParty)
             {
                 packet.PutByte(1);
-                PartyHelper.BuildPartyInfo(party, ref packet);
+                PartyHelper.BuildPartyInfo(ref packet, party);
             }
             else
                 packet.PutByte(0);
@@ -34,6 +34,7 @@ namespace Aura.Channel.Network.Sending
         /// Sends the correct response to the client sending a party join request,
         /// and success grants full party information.
         /// </summary>
+        /// <remarks>This is also sent when changing channel whilst in a party, upon reaching the new channel.</remarks>
         /// <param name="creature"></param>
         /// <param name="result"></param>
         public static void PartyJoinR(Creature creature, PartyJoinResult result)
@@ -43,7 +44,7 @@ namespace Aura.Channel.Network.Sending
             packet.PutByte((byte)result);
 
             if (PartyJoinResult.Success == result)
-                PartyHelper.BuildPartyInfo(creature.Party, ref packet);
+                PartyHelper.BuildPartyInfo(ref packet, creature.Party);
             
             creature.Client.Send(packet);
 
@@ -58,7 +59,7 @@ namespace Aura.Channel.Network.Sending
             var packet = new Packet(Op.PartyJoinUpdate, 0);
             var party = creature.Party;
 
-            PartyHelper.AddPartyMember(creature, ref packet);
+            PartyHelper.AddPartyMember(ref packet, creature);
 
             party.Broadcast(packet, true, creature);
         }
@@ -145,7 +146,7 @@ namespace Aura.Channel.Network.Sending
         {
             var packet = new Packet(Op.PartyChangeSettingR, creature.EntityId);
 
-            PartyHelper.BuildPartyInfo(creature.Party, ref packet);
+            PartyHelper.BuildPartyInfo(ref packet, creature.Party);
             creature.Client.Send(packet);
         }
 

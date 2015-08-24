@@ -11,6 +11,7 @@ namespace Aura.Channel.Network.Sending.Helpers
         {
             var type = (PartyType)packet.GetInt();
             var name = packet.GetString();
+            packet.GetString();                 // What is this one?
 
             if (type == PartyType.Dungeon)
             {
@@ -22,6 +23,7 @@ namespace Aura.Channel.Network.Sending.Helpers
             }
             var password = packet.GetString();
             var maxSize = packet.GetInt();
+            var partyBoard = packet.GetBool();
 
             party.SetType(type);
             party.SetName(name);
@@ -33,13 +35,13 @@ namespace Aura.Channel.Network.Sending.Helpers
             if (party.IsOpen)
                 Send.PartyMemberWantedRefresh(party);
         }
-
+        
         /// <summary>
         /// Constructs the party info packet, because this is used in a number of packets.
         /// </summary>
         /// <param name="party"></param>
         /// <param name="packet"></param>
-        public static void BuildPartyInfo(Party party, ref Packet packet)
+        public static void BuildPartyInfo(ref Packet packet, Party party)
         {
             packet.PutLong(party.ID);
             packet.PutString(party.Name);
@@ -59,7 +61,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 
             packet.PutInt(party.TotalMembers);
 
-            AddPartyMembers(party, ref packet);
+            AddPartyMembers(ref packet, party);
         }
 
         /// <summary>
@@ -67,12 +69,12 @@ namespace Aura.Channel.Network.Sending.Helpers
         /// </summary>
         /// <param name="party"></param>
         /// <param name="packet"></param>
-        public static void AddPartyMembers(Party party, ref Packet packet)
+        public static void AddPartyMembers(ref Packet packet, Party party)
         {
             var partyMembers = party.Members;
             for (int i = partyMembers.Count - 1; i >= 0; i--)
             {
-                AddPartyMember(partyMembers[i], ref packet);
+                AddPartyMember(ref packet, partyMembers[i]);
 
                 if (i == 0)
                 {
@@ -93,7 +95,7 @@ namespace Aura.Channel.Network.Sending.Helpers
         /// </summary>
         /// <param name="creature"></param>
         /// <param name="packet"></param>
-        public static void AddPartyMember(Creature creature, ref Packet packet)
+        public static void AddPartyMember(ref Packet packet, Creature creature)
         {
             packet.PutInt(creature.PartyPosition);
             packet.PutLong(creature.EntityId);
