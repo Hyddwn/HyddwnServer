@@ -22,7 +22,7 @@ namespace Aura.Channel.Network.Sending
             if (creature.IsInParty)
             {
                 packet.PutByte(1);
-                PartyHelper.BuildPartyInfo(ref packet, party);
+                packet.BuildPartyInfo(party);
             }
             else
                 packet.PutByte(0);
@@ -44,7 +44,7 @@ namespace Aura.Channel.Network.Sending
             packet.PutByte((byte)result);
 
             if (PartyJoinResult.Success == result)
-                PartyHelper.BuildPartyInfo(ref packet, creature.Party);
+                packet.BuildPartyInfo(creature.Party);
             
             creature.Client.Send(packet);
 
@@ -59,7 +59,7 @@ namespace Aura.Channel.Network.Sending
             var packet = new Packet(Op.PartyJoinUpdate, 0);
             var party = creature.Party;
 
-            PartyHelper.AddPartyMember(ref packet, creature);
+            packet.AddPartyMember(creature);
 
             party.Broadcast(packet, true, creature);
         }
@@ -146,7 +146,7 @@ namespace Aura.Channel.Network.Sending
         {
             var packet = new Packet(Op.PartyChangeSettingR, creature.EntityId);
 
-            PartyHelper.BuildPartyInfo(ref packet, creature.Party);
+            packet.BuildPartyInfo(creature.Party);
             creature.Client.Send(packet);
         }
 

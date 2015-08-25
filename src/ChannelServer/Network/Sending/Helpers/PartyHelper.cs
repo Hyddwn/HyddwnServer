@@ -7,7 +7,7 @@ namespace Aura.Channel.Network.Sending.Helpers
     public static class PartyHelper
     {
 
-        public static void SettingsParse(Party party, Packet packet)
+        public static void SettingsParse(this Packet packet, Party party)
         {
             var type = (PartyType)packet.GetInt();
             var name = packet.GetString();
@@ -41,7 +41,7 @@ namespace Aura.Channel.Network.Sending.Helpers
         /// </summary>
         /// <param name="party"></param>
         /// <param name="packet"></param>
-        public static void BuildPartyInfo(ref Packet packet, Party party)
+        public static void BuildPartyInfo(this Packet packet, Party party)
         {
             packet.PutLong(party.ID);
             packet.PutString(party.Name);
@@ -61,7 +61,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 
             packet.PutInt(party.TotalMembers);
 
-            AddPartyMembers(ref packet, party);
+            packet.AddPartyMembers(party);
         }
 
         /// <summary>
@@ -69,12 +69,12 @@ namespace Aura.Channel.Network.Sending.Helpers
         /// </summary>
         /// <param name="party"></param>
         /// <param name="packet"></param>
-        public static void AddPartyMembers(ref Packet packet, Party party)
+        public static void AddPartyMembers(this Packet packet, Party party)
         {
             var partyMembers = party.Members;
             for (int i = partyMembers.Count - 1; i >= 0; i--)
             {
-                AddPartyMember(ref packet, partyMembers[i]);
+                packet.AddPartyMember(partyMembers[i]);
 
                 if (i == 0)
                 {
@@ -95,7 +95,7 @@ namespace Aura.Channel.Network.Sending.Helpers
         /// </summary>
         /// <param name="creature"></param>
         /// <param name="packet"></param>
-        public static void AddPartyMember(ref Packet packet, Creature creature)
+        public static void AddPartyMember(this Packet packet, Creature creature)
         {
             packet.PutInt(creature.PartyPosition);
             packet.PutLong(creature.EntityId);

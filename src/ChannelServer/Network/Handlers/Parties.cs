@@ -25,7 +25,7 @@ namespace Aura.Channel.Network.Handlers
             }
 
             party.CreateParty(creature);
-            PartyHelper.SettingsParse(party, packet);
+            packet.SettingsParse(party);
 
             Send.CreatePartyR(creature);
 
@@ -108,7 +108,7 @@ namespace Aura.Channel.Network.Handlers
             if ((!creature.IsInParty) || (creature != party.Leader))
                 return;
 
-            PartyHelper.SettingsParse(party, packet);
+            packet.SettingsParse(party);
             Send.PartyChangeSettingR(creature);
         }
 
