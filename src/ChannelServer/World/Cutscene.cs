@@ -8,6 +8,7 @@ using System.Text;
 using Aura.Channel.World.Entities;
 using Aura.Channel.Network.Sending;
 using Aura.Mabi.Const;
+using Aura.Data;
 
 namespace Aura.Channel.World
 {
@@ -37,6 +38,15 @@ namespace Aura.Channel.World
 		/// <param name="leader"></param>
 		public Cutscene(string name, Creature leader)
 		{
+			if (string.IsNullOrWhiteSpace(name))
+				throw new ArgumentNullException("name");
+
+			if (leader == null)
+				throw new ArgumentNullException("leader");
+
+			if (!AuraData.CutscenesDb.Exists(name))
+				throw new ArgumentException("Unknown cutscene '" + name + "'.");
+
 			this.Name = name;
 			this.Leader = leader;
 
