@@ -16,6 +16,7 @@ namespace Aura.Data
 		public static CharCardSetDb CharCardSetDb = new CharCardSetDb();
 		public static CollectingDb CollectingDb = new CollectingDb();
 		public static ColorMapDb ColorMapDb = new ColorMapDb();
+		public static CutscenesDb CutscenesDb = new CutscenesDb();
 		public static DungeonDb DungeonDb = new DungeonDb();
 		public static DungeonBlocksDb DungeonBlocksDb = new DungeonBlocksDb();
 		public static ExpDb ExpDb = new ExpDb();
