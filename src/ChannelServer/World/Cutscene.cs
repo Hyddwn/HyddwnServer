@@ -83,7 +83,7 @@ namespace Aura.Channel.World
 					//var actorData = AuraData.ActorDb.Find(actorName);
 					//if (actor == null)
 					//	Log.Warning("Unknown actor '{0}'.", actorName);
-					Log.Unimplemented("Actor '{0}'", actorName);
+					Log.Unimplemented("Cutscene.FromData: Cutscene actor '{0}'", actorName);
 				}
 				else if (actorName == "me")
 				{
@@ -98,13 +98,13 @@ namespace Aura.Channel.World
 				{
 					int idx;
 					if (!int.TryParse(actorName.Substring("player".Length), out idx))
-						Log.Warning("Invalid party member actor name '{0}'.", actorName);
+						Log.Warning("Cutscene.FromData: Invalid party member actor name '{0}'.", actorName);
 					//else
 					//	actor = partyMembers[idx];
 					actor = creature; // tmp
 				}
 				else
-					Log.Warning("Unknown kind of actor ({0}).", actorName);
+					Log.Warning("Cutscene.FromData: Unknown kind of actor ({0}).", actorName);
 
 				if (actor == null)
 					actor = dummy;
@@ -165,6 +165,15 @@ namespace Aura.Channel.World
 		{
 			this.Play();
 			_callback = onFinish;
+		}
+
+		/// <summary>
+		/// Loads cutscene from data and plays it.
+		/// </summary>
+		public static void Play(string name, Creature creature)
+		{
+			var cutscene = FromData(name, creature);
+			cutscene.Play();
 		}
 
 		/// <summary>

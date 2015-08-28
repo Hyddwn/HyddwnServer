@@ -49,6 +49,7 @@ namespace Aura.Channel.Util
 			Add(01, 50, "motion", "<category> <motion>", HandleMotion);
 			Add(01, 50, "gesture", "<gesture>", HandleGesture);
 			Add(01, 50, "lasttown", "", HandleLastTown);
+			Add(01, 50, "cutscene", "<name>", HandleCutscene);
 
 			// GMs
 			Add(50, 50, "warp", "<region> [x] [y]", HandleWarp);
@@ -1615,6 +1616,22 @@ namespace Aura.Channel.Util
 				Send.ServerMessage(sender, Localization.Get("No last town found."));
 			else if (!target.Warp(target.LastTown))
 				Send.ServerMessage(sender, Localization.Get("Warp failed."));
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleCutscene(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			if (!AuraData.CutscenesDb.Exists(args[1]))
+			{
+				Send.ServerMessage(sender, Localization.Get("Cutscene not found."));
+				return CommandResult.Okay;
+			}
+
+			Cutscene.Play(args[1], target);
 
 			return CommandResult.Okay;
 		}
