@@ -12,14 +12,7 @@ public class AlbyBeginnerDungeonScript : DungeonScript
 		dungeon.AddBoss(30018, 1); // Giant Spiderling
 		dungeon.AddBoss(30019, 3); // Red Spiderling
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_GiantSpider_kid", member);
-			cutscene.AddActor("player0", member);
-			cutscene.AddActor("#giant_spider_kid", 30018);
-			cutscene.AddActor("#red_spider_kid", 30019);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_GiantSpider_kid");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

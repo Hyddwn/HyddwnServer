@@ -18,13 +18,7 @@ public class RabbieBasicDungeonScript : DungeonScript
 			dungeon.AddBoss(170101, 1); // Lycanthrope
 			dungeon.AddBoss(170102, 1); // Lycanthrope
 
-			foreach (var member in dungeon.Party)
-			{
-				var cutscene = new Cutscene("bossroom_Lycanthrope2", member);
-				cutscene.AddActor("me", member);
-				cutscene.AddActor("#lycan", 170101);
-				cutscene.Play();
-			}
+			dungeon.PlayCutscene("bossroom_Lycanthrope2");
 		}
 	}
 

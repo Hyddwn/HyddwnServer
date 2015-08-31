@@ -28,18 +28,7 @@ public class BarriDungeonScript : DungeonScript
 		dungeon.AddBoss(100006, 1); // Ogre Warrior
 		dungeon.AddBoss(100007, 1); // Ogre Warrior
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_OgreBros", member);
-			cutscene.AddActor("me", member);
-			cutscene.AddActor("#ogrebros1", 100003);
-			cutscene.AddActor("#ogrebros2", 100004);
-			cutscene.AddActor("#ogrebros3", 100005);
-			cutscene.AddActor("#ogrebros4", 100006);
-			cutscene.AddActor("#ogrebros5", 100007);
-			cutscene.AddActor("#goblin", 10101);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_OgreBros");
 	}
 
 	public override void OnCleared(Dungeon dungeon)
