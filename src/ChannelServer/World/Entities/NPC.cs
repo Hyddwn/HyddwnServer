@@ -8,6 +8,7 @@ using Aura.Channel.Scripting.Scripts;
 using Aura.Shared.Util;
 using System;
 using Aura.Channel.Network.Sending;
+using Aura.Data.Database;
 
 namespace Aura.Channel.World.Entities
 {
@@ -134,6 +135,59 @@ namespace Aura.Channel.World.Entities
 				this.AI = ChannelServer.Instance.ScriptManager.AiScripts.CreateAi(this.RaceData.AI, this);
 				if (this.AI == null)
 					Log.Warning("ScriptManager.Spawn: Missing AI '{0}' for '{1}'.", this.RaceData.AI, this.RaceId);
+			}
+		}
+
+		/// <summary>
+		/// Creates new NPC from actor data.
+		/// </summary>
+		/// <param name="actorData"></param>
+		public NPC(ActorData actorData)
+			: this(actorData.RaceId)
+		{
+			if (actorData.HasColors)
+			{
+				this.Color1 = actorData.Color1;
+				this.Color2 = actorData.Color2;
+				this.Color3 = actorData.Color3;
+			}
+
+			this.Height = actorData.Height;
+			this.Weight = actorData.Weight;
+			this.Upper = actorData.Upper;
+			this.Lower = actorData.Lower;
+			this.EyeColor = (byte)actorData.EyeColor;
+			this.EyeType = (short)actorData.EyeType;
+			this.MouthType = (byte)actorData.MouthType;
+			this.SkinColor = (byte)actorData.SkinColor;
+
+			if (actorData.FaceItemId != 0)
+			{
+				var face = new Item(actorData.FaceItemId);
+				face.Info.Color1 = (byte)actorData.SkinColor;
+				this.Inventory.Add(face, Pocket.Face);
+			}
+			if (actorData.HairItemId != 0)
+			{
+				var hair = new Item(actorData.HairItemId);
+				hair.Info.Color1 = actorData.HairColor;
+				this.Inventory.Add(hair, Pocket.Hair);
+			}
+
+			foreach (var itemData in actorData.Items)
+			{
+				var item = new Item(itemData.ItemId);
+
+				if (itemData.HasColors)
+				{
+					item.Info.Color1 = itemData.Color1;
+					item.Info.Color2 = itemData.Color2;
+					item.Info.Color3 = itemData.Color3;
+				}
+
+				var pocket = (Pocket)itemData.Pocket;
+				if (pocket != Pocket.None)
+					this.Inventory.Add(item, pocket);
 			}
 		}
 

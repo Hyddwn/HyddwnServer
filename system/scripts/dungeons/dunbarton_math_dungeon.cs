@@ -21,13 +21,7 @@ public class MathDungeonScript : DungeonScript
 	{
 		dungeon.AddBoss(20201, 3); // Hellhound
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_HellHound", member);
-			cutscene.AddActor("me", member);
-			cutscene.AddActor("#hellhound", 20201);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_HellHound");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

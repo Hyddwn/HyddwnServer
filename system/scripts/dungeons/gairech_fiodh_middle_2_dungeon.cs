@@ -14,13 +14,7 @@ public class FiodhIntTwoDungeonScript : DungeonScript
 		dungeon.AddBoss(100304, 1); // Argus
 		dungeon.AddBoss(170201, 6); // Werewolf
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_argos", member);
-			cutscene.AddActor("player0", member);
-			cutscene.AddActor("#argus", 100302);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_argos");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

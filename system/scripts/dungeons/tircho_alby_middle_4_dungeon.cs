@@ -14,16 +14,7 @@ public class AlbyIntFourDungeonScript : DungeonScript
 		dungeon.AddBoss(30011, 1); // Giant White Spider
 		dungeon.AddBoss(30012, 16); // Burgundy Spider
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_giant_spiderRBW", member);
-			cutscene.AddActor("player0", member);
-			cutscene.AddActor("#giant_black_spider", 30009);
-			cutscene.AddActor("#giant_spider", 30010);
-			cutscene.AddActor("#giant_white_spider", 30011);
-			cutscene.AddActor("#darkred_spider", 30012);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_giant_spiderRBW");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

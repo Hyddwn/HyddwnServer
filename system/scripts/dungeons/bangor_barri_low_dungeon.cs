@@ -12,14 +12,7 @@ public class BarriBasicDungeonScript : DungeonScript
 		dungeon.AddBoss(170201, 5); // Werewolf
 		dungeon.AddBoss(160101, 5); // Gray Gremlin
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_WereWolf", member);
-			cutscene.AddActor("me", member);
-			cutscene.AddActor("#werewolf", 170201);
-			cutscene.AddActor("#gray_gremlin", 160101);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_WereWolf");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

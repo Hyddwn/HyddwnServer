@@ -33,11 +33,7 @@ public class TirBeginnerRegionScript : RegionScript
 			if (!creature.Quests.Has(202001))
 				creature.Quests.Start(202001, false); // Nao's Letter of Introduction
 
-			// TODO: Cutscene db
-			var cutscene = new Cutscene("tuto_meet_tin", creature);
-			cutscene.AddActor("me", creature);
-			cutscene.AddActor("#tin", creature.Region.GetCreature("_tin"));
-			cutscene.Play((scene) =>
+			Cutscene.Play("tuto_meet_tin", creature, (scene) =>
 			{
 				// Give first weapon
 				if(creature.RightHand == null)

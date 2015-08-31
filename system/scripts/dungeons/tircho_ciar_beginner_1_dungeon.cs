@@ -11,13 +11,7 @@ public class CiarBeginnerDungeonScript : DungeonScript
 	{
 		dungeon.AddBoss(130014, 1); // Small Golem
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_small_golem_Ciar", member);
-			cutscene.AddActor("me", member);
-			cutscene.AddActor("#small_golem2", 130014);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_small_golem_Ciar");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

@@ -12,14 +12,7 @@ public class AlbyBasicDungeonScript : DungeonScript
 		dungeon.AddBoss(30007, 1); // Giant Red Spider
 		dungeon.AddBoss(30013, 6); // Dark Blue Spider
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_Albi_GiantSpider_DarkBlueSpider", member);
-			cutscene.AddActor("player0", member);
-			cutscene.AddActor("#giant_spider", 30007);
-			cutscene.AddActor("#darkblue_spider", 30013);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_Albi_GiantSpider_DarkBlueSpider");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

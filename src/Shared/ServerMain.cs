@@ -208,6 +208,12 @@ namespace Aura.Shared
 					this.LoadDb(AuraData.DungeonBlocksDb, "db/dungeon_blocks.txt", reload);
 					this.LoadDb(AuraData.DungeonDb, "db/dungeons.txt", reload);
 				}
+
+				if ((toLoad & DataLoad.Cutscenes) != 0)
+				{
+					this.LoadDb(AuraData.CutscenesDb, "db/cutscenes.txt", reload);
+					this.LoadDb(AuraData.ActorDb, "db/actors.txt", reload);
+				}
 			}
 			catch (DatabaseErrorException ex)
 			{
@@ -311,6 +317,7 @@ namespace Aura.Shared
 		Fishing = 0x200000,
 		Dungeons = 0x400000,
 		Features = 0x800000,
+		Cutscenes = 0x1000000,
 
 		All = 0xFFFFFFFF,
 
