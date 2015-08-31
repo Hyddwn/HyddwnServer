@@ -414,8 +414,8 @@ namespace Aura.Channel.Database
 							item.OptionInfo.AttackSpeed = (AttackSpeed)reader.GetByte("attackSpeed");
 							item.Proficiency = reader.GetInt32("experience");
 							item.OptionInfo.Upgraded = reader.GetByte("upgrades");
-							item.MetaData1.Parse(reader.GetStringSafe("meta1"));
-							item.MetaData2.Parse(reader.GetStringSafe("meta2"));
+							item.MetaData1.Parse(reader.GetStringSafe("meta1") ?? "");
+							item.MetaData2.Parse(reader.GetStringSafe("meta2") ?? "");
 							item.OptionInfo.LinkedPocketId = (Pocket)reader.GetByte("linkedPocket");
 							item.OptionInfo.Flags = (ItemFlags)reader.GetByte("flags");
 							item.OptionInfo.Prefix = reader.GetUInt16("prefix");
