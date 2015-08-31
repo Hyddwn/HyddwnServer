@@ -10,6 +10,7 @@ namespace Aura.Data
 	/// </summary>
 	public static class AuraData
 	{
+		public static ActorDb ActorDb = new ActorDb();
 		public static AncientDropDb AncientDropDb = new AncientDropDb();
 		public static ChairDb ChairDb = new ChairDb();
 		public static CharCardDb CharCardDb = new CharCardDb();

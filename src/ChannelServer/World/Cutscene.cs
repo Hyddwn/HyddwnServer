@@ -80,10 +80,11 @@ namespace Aura.Channel.World
 				// Retrieve actor
 				if (actorName.StartsWith("#"))
 				{
-					//var actorData = AuraData.ActorDb.Find(actorName);
-					//if (actor == null)
-					//	Log.Warning("Unknown actor '{0}'.", actorName);
-					Log.Unimplemented("Cutscene.FromData: Cutscene actor '{0}'", actorName);
+					var actorData = AuraData.ActorDb.Find(actorName);
+					if (actorData == null)
+						Log.Warning("Unknown actor '{0}'.", actorName);
+
+					actor = new NPC(actorData);
 				}
 				else if (actorName == "me")
 				{

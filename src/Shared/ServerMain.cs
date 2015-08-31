@@ -212,6 +212,7 @@ namespace Aura.Shared
 				if ((toLoad & DataLoad.Cutscenes) != 0)
 				{
 					this.LoadDb(AuraData.CutscenesDb, "db/cutscenes.txt", reload);
+					this.LoadDb(AuraData.ActorDb, "db/actors.txt", reload);
 				}
 			}
 			catch (DatabaseErrorException ex)
