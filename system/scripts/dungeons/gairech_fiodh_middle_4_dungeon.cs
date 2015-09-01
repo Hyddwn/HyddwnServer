@@ -11,13 +11,7 @@ public class FiodhIntFourDungeonScript : DungeonScript
 	{
 		dungeon.AddBoss(10602, 3); // Giant Imp
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_imp", member);
-			cutscene.AddActor("player0", member);
-			cutscene.AddActor("#imp", 10601);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_imp");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

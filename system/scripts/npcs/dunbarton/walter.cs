@@ -34,8 +34,8 @@ public class WalterScript : NpcScript
 		AddPhrase("What do you need?");
 	}
 
-    protected override async Task Talk()
-    {
+	protected override async Task Talk()
+	{
 		SetBgm("NPC_Walter.mp3");
 
 		await Intro(
@@ -109,7 +109,7 @@ public class WalterScript : NpcScript
 
 			case "@upgrade":
 				Msg("...<br/>Give me what you want to modify.<br/>I'm sure you have checked the number and type of the modification you want?<upgrade />");
-				
+
 				while (true)
 				{
 					var reply = await Select();

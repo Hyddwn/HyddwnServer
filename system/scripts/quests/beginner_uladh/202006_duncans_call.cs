@@ -51,9 +51,7 @@ public class DuncansCallQuestScript : QuestScript
 			
 			npc.Close2();
 			
-			var cutscene = new Cutscene("etc_event_ego_goodbye", npc.Player);
-			cutscene.AddActor("me", npc.Player);
-			cutscene.Play();
+			Cutscene.Play("etc_event_ego_goodbye", npc.Player);
 			
 			return HookResult.Break;
 		}

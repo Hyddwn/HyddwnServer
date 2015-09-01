@@ -7,7 +7,7 @@
     <ProjectGuid>{527345E3-44AD-4947-9C2D-8320CB236A3C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChannelServer.Tests</RootNamespace>
+    <RootNamespace>Aura.Tests.Channel</RootNamespace>
     <AssemblyName>ChannelServer.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -42,8 +42,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DungeonGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripting\ScriptVariables.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChannelServer\ChannelServer.csproj">

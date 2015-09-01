@@ -112,6 +112,14 @@ namespace Aura.Channel.World.Dungeons
 		public List<Creature> Party { get; private set; }
 
 		/// <summary>
+		/// The leader of the party that created this dungeon.
+		/// </summary>
+		/// <remarks>
+		/// Temp until we have an actual Party class.
+		/// </remarks>
+		public Creature PartyLeader { get; private set; }
+
+		/// <summary>
 		/// Creates new dungeon.
 		/// </summary>
 		/// <param name="instanceId"></param>
@@ -142,6 +150,7 @@ namespace Aura.Channel.World.Dungeons
 
             this.Party = new List<Creature>(); // = creature.Party; || = party;
 			this.Party.Add(creature);
+			this.PartyLeader = creature;
 
             if (creature.IsInParty)
             {
@@ -701,6 +710,16 @@ namespace Aura.Channel.World.Dungeons
 		public int CountPlayers()
 		{
 			return this.Regions.Sum(a => a.CountPlayers());
+		}
+
+		/// <summary>
+		/// Plays cutscene for all party members.
+		/// </summary>
+		/// <param name="dungeon"></param>
+		/// <param name="cutsceneName"></param>
+		public void PlayCutscene(string cutsceneName)
+		{
+			Cutscene.Play(cutsceneName, this.PartyLeader);
 		}
 	}
 }

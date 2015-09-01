@@ -50,15 +50,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CRandom.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="DatabaseDat.cs" />
     <Compile Include="DatabaseJson.cs" />
+    <Compile Include="Database\Actors.cs" />
     <Compile Include="Database\AncientDrops.cs" />
     <Compile Include="Database\Chairs.cs" />
     <Compile Include="Database\CharCards.cs" />
     <Compile Include="Database\CharCardSets.cs" />
     <Compile Include="Database\Collecting.cs" />
+    <Compile Include="Database\Cutscenes.cs" />
     <Compile Include="Database\DungeonBlocks.cs" />
     <Compile Include="Database\Dungeons.cs" />
     <Compile Include="Database\Features.cs" />
@@ -89,7 +90,6 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="AuraData.cs" />
-    <Compile Include="MTRandom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaggableData.cs" />
     <Compile Include="CsvReader.cs" />

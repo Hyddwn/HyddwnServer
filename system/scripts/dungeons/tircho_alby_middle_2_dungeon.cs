@@ -12,15 +12,7 @@ public class AlbyIntTwoDungeonScript : DungeonScript
 		dungeon.AddBoss(170107, 2); // Lycanthrope
 		dungeon.AddBoss(110102, 5); // Gorgon
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_lycan", member);
-			cutscene.AddActor("leader", member);
-			cutscene.AddActor("player1", member); // TODO: Party
-			cutscene.AddActor("#lycan", 170107);
-			cutscene.AddActor("#gorgon", 110102);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_lycan");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

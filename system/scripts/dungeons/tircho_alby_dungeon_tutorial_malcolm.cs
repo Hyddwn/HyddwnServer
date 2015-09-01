@@ -12,13 +12,7 @@ public class AlbyTutorialMalcolmDungeonScript : DungeonScript
 	{
 		dungeon.AddBoss(30802, 1); // Giant Golden Spiderling
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_tutorial_giantgoldenspiderkid", member);
-			cutscene.AddActor("player0", member);
-			cutscene.AddActor("#giantgoldenspiderkid", 30802);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_tutorial_giantgoldenspiderkid");
 	}
 
 	public override void OnBossDeath(Dungeon dungeon, Creature boss, Creature killer)

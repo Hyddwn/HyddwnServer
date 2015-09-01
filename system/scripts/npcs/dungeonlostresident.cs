@@ -40,10 +40,7 @@ public class DungeonLostResidentNpcScript : NpcScript
 		await Select();
 		Close2();
 
-		var cutscene = new Cutscene("tuto_result", Player);
-		cutscene.AddActor("me", Player);
-		cutscene.AddActor("#lostresident", 1002);
-		cutscene.Play(_ => WarpToRewardRoom());
+		Cutscene.Play("bossroom_Golem34", Player, _ => WarpToRewardRoom());
 	}
 
 	// There's no reason for this function to be in the core if this is the

@@ -34,11 +34,41 @@ namespace Aura.Channel.Scripting
 	{
 		private Dictionary<string, object> _variables;
 
+		/// <summary>
+		/// Creates new variable manager.
+		/// </summary>
 		public VariableManager()
 		{
 			_variables = new Dictionary<string, object>();
 		}
 
+		/// <summary>
+		/// Creates new variable manager and adds the given values.
+		/// </summary>
+		public VariableManager(IDictionary<string, object> values)
+		{
+			_variables = new Dictionary<string, object>(values);
+		}
+
+		/// <summary>
+		/// Sets given variables.
+		/// </summary>
+		/// <param name="values"></param>
+		public void Load(IDictionary<string, object> values)
+		{
+			lock (_variables)
+			{
+				foreach (var value in values)
+					_variables[value.Key] = value.Value;
+			}
+		}
+
+		/// <summary>
+		/// Sets the given member to the value.
+		/// </summary>
+		/// <param name="binder"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public override bool TrySetMember(SetMemberBinder binder, object value)
 		{
 			lock (_variables)
@@ -46,6 +76,12 @@ namespace Aura.Channel.Scripting
 			return true;
 		}
 
+		/// <summary>
+		/// Returns the value for the given member via result, or null if it doesn't exist.
+		/// </summary>
+		/// <param name="binder"></param>
+		/// <param name="result"></param>
+		/// <returns></returns>
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
 			lock (_variables)
@@ -54,10 +90,14 @@ namespace Aura.Channel.Scripting
 			return true;
 		}
 
-		public ICollection<KeyValuePair<string, object>> GetList()
+		/// <summary>
+		/// Returns list of all variables as KeyValue collection.
+		/// </summary>
+		/// <returns></returns>
+		public IDictionary<string, object> GetList()
 		{
 			lock (_variables)
-				return _variables.ToList();
+				return new Dictionary<string, object>(_variables);
 		}
 
 		/// <summary>
@@ -69,12 +109,10 @@ namespace Aura.Channel.Scripting
 		{
 			get
 			{
+				object result;
 				lock (_variables)
-				{
-					object result;
 					_variables.TryGetValue(key, out result);
-					return result;
-				}
+				return result;
 			}
 			set
 			{

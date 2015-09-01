@@ -12,14 +12,7 @@ public class FiodhIntOneDungeonScript : DungeonScript
 		dungeon.AddBoss(130004, 1); // Small Golem
 		dungeon.AddBoss(160102, 6); // Green Gremlin
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_small_golem", member);
-			cutscene.AddActor("player0", member);
-			cutscene.AddActor("#small_golem", 130004);
-			cutscene.AddActor("#imp", 10601);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_small_golem");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

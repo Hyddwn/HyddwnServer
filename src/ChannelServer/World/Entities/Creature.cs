@@ -785,7 +785,7 @@ namespace Aura.Channel.World.Entities
 				if (this.RaceData == null)
 					throw new Exception("Unable to load race data, race '" + this.RaceId.ToString() + "' not found.");
 
-				Log.Warning("Race '{0}' not found, using human instead.", this.RaceId);
+				Log.Warning("Creature.LoadDefault: Race '{0}' not found, using human instead.", this.RaceId);
 			}
 
 			// Add inventory

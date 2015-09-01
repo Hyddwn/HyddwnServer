@@ -12,14 +12,7 @@ public class FiodhDungeonScript : DungeonScript
 		dungeon.AddBoss(130003, 1); // Small Golem
 		dungeon.AddBoss(190001, 3); // Flying Sword
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_SmallGolem_FlyingSword", member);
-			cutscene.AddActor("me", member);
-			cutscene.AddActor("#small_golem", 130003);
-			cutscene.AddActor("#flying_sword", 190001);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_SmallGolem_FlyingSword");
 	}
 
 	public override void OnCleared(Dungeon dungeon)

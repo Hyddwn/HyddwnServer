@@ -59,14 +59,7 @@ public class CiarDungeonScript : DungeonScript
 		dungeon.AddBoss(130001, 1); // Golem
 		dungeon.AddBoss(11003, 6); // Metal Skeleton
 
-		foreach (var member in dungeon.Party)
-		{
-			var cutscene = new Cutscene("bossroom_Metalskeleton_Golem", member);
-			cutscene.AddActor("player0", member);
-			cutscene.AddActor("#golem", 130001);
-			cutscene.AddActor("#metal_skeleton", 11003);
-			cutscene.Play();
-		}
+		dungeon.PlayCutscene("bossroom_Metalskeleton_Golem");
 	}
 
 	public override void OnCleared(Dungeon dungeon)
