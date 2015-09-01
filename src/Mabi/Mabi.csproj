@@ -53,6 +53,7 @@
     <Compile Include="Const\MabiId.cs" />
     <Compile Include="Const\Music.cs" />
     <Compile Include="Const\Notices.cs" />
+    <Compile Include="Const\Party.cs" />
     <Compile Include="Const\Pets.cs" />
     <Compile Include="Const\Quests.cs" />
     <Compile Include="Const\Races.cs" />

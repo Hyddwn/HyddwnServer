@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Network.Sending.Helpers;
+using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 
@@ -25,7 +26,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			party.CreateParty(creature);
-			packet.SettingsParse(party);
+			packet.ParseSettings(party);
 
 			Send.CreatePartyR(creature);
 
@@ -36,19 +37,21 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.PartyJoin)]
 		public void PartyJoin(ChannelClient client, Packet packet)
 		{
-			var creature = client.GetCreatureSafe(packet.Id);
-			var partyLeader = ChannelServer.Instance.World.GetCreature(packet.GetLong());
-			var party = partyLeader.Party;
+			var leaderEntityId = packet.GetLong();
 			var password = packet.GetString();
 
-			if ((creature.IsInParty) || (!partyLeader.IsInParty) || (partyLeader.Party.Leader.EntityId != partyLeader.EntityId))
+			var creature = client.GetCreatureSafe(packet.Id);
+			var partyLeader = ChannelServer.Instance.World.GetCreature(leaderEntityId);
+			var party = partyLeader.Party;
+
+			if (creature.IsInParty || !partyLeader.IsInParty || partyLeader.Party.Leader.EntityId != partyLeader.EntityId)
 				return;
 
 			var result = party.AddMember(creature, password);
 
 			Send.PartyJoinR(creature, result);
 
-			if (result == World.PartyJoinResult.Success)
+			if (result == PartyJoinResult.Success)
 				Send.PartyCreateUpdate(creature);
 		}
 
@@ -80,15 +83,17 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.PartyRemove)]
 		public void RemoveFromParty(ChannelClient client, Packet packet)
 		{
-			var creature = client.GetCreatureSafe(packet.Id);
-			var party = creature.Party;
-			var canRemove = !creature.Region.IsDynamic;
-			var target = party.GetMember(packet.GetLong());
+			var targetEntityId = packet.GetLong();
 
-			if ((!creature.IsInParty) || (party.Leader != creature))
+			var creature = client.GetCreatureSafe(packet.Id);
+			var canRemove = !creature.Region.IsDynamic;
+			var party = creature.Party;
+			var target = party.GetMember(targetEntityId);
+
+			if (!creature.IsInParty || party.Leader != creature)
 				return;
 
-			if ((canRemove) && (target != null) && (target != creature))
+			if (canRemove && target != null && target != creature)
 			{
 				party.RemoveMember(target);
 				Send.PartyRemoved(target);
@@ -105,10 +110,11 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if ((!creature.IsInParty) || (creature != party.Leader))
+			if (!creature.IsInParty || creature != party.Leader)
 				return;
 
-			packet.SettingsParse(party);
+			packet.ParseSettings(party);
+
 			Send.PartyChangeSettingR(creature);
 		}
 
@@ -118,10 +124,11 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if ((!creature.IsInParty) || (party.Leader != creature))
+			if (!creature.IsInParty || party.Leader != creature)
 				return;
 
 			party.SetPassword(packet.GetString());
+
 			Send.PartyChangePasswordR(creature);
 		}
 
@@ -131,11 +138,12 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if ((!creature.IsInParty) || (party.Leader != creature))
+			if (!creature.IsInParty || party.Leader != creature)
 				return;
 
 			// IS there any instance in which you're NOT allowed to change party leader?
 			var success = party.SetLeader(packet.GetLong());
+
 			Send.PartyChangeLeaderR(creature, success);
 
 		}
@@ -146,10 +154,11 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if ((!creature.IsInParty) || (creature != party.Leader))
+			if (!creature.IsInParty || creature != party.Leader)
 				return;
 
 			party.Close();
+
 			Send.PartyWantedClosedR(creature);
 		}
 
@@ -159,10 +168,11 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if ((!creature.IsInParty) || (creature != party.Leader))
+			if (!creature.IsInParty || creature != party.Leader)
 				return;
 
 			party.Open();
+
 			Send.PartyWantedOpenR(creature);
 		}
 
@@ -172,10 +182,11 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if ((!creature.IsInParty) || (party.Leader != creature))
+			if (!creature.IsInParty || party.Leader != creature)
 				return;
 
 			party.ChangeFinish(packet.GetInt());
+
 			Send.PartyChangeFinishR(creature);
 		}
 
@@ -185,10 +196,11 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if ((!creature.IsInParty) || (party.Leader != creature))
+			if (!creature.IsInParty || party.Leader != creature)
 				return;
 
 			party.ChangeExp(packet.GetInt());
+
 			Send.PartyChangeExpR(creature);
 		}
 	}

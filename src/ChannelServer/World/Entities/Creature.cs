@@ -744,7 +744,8 @@ namespace Aura.Channel.World.Entities
 		/// The number in the party this player occupies.
 		/// </summary>
 		public int PartyPosition { get; set; }
-		public bool IsInParty { get { return Party.ID != 0; } }
+
+		public bool IsInParty { get { return this.Party.Id != 0; } }
 
 		// ------------------------------------------------------------------
 

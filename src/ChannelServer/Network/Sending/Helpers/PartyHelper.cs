@@ -4,25 +4,23 @@
 using Aura.Channel.World.Entities;
 using Aura.Mabi.Network;
 using Aura.Channel.World;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel.Network.Sending.Helpers
 {
 	public static class PartyHelper
 	{
-
-		public static void SettingsParse(this Packet packet, Party party)
+		public static void ParseSettings(this Packet packet, Party party)
 		{
 			var type = (PartyType)packet.GetInt();
 			var name = packet.GetString();
 			var unkStr = packet.GetString(); // ?
-
+			var dungeonLevel = "";
+			var info = "";
 			if (type == PartyType.Dungeon)
 			{
-				var dungeonLevel = packet.GetString();
-				var info = packet.GetString();
-
-				party.SetDungeonLevel(dungeonLevel);
-				party.SetInfo(info);
+				dungeonLevel = packet.GetString();
+				info = packet.GetString();
 			}
 			var password = packet.GetString();
 			var maxSize = packet.GetInt();
@@ -30,6 +28,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			party.SetType(type);
 			party.SetName(name);
+			if (type == PartyType.Dungeon)
+			{
+				party.SetDungeonLevel(dungeonLevel);
+				party.SetInfo(info);
+			}
 			party.SetPassword(password);
 			party.SetSize(maxSize);
 
@@ -46,7 +49,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 		/// <param name="packet"></param>
 		public static void BuildPartyInfo(this Packet packet, Party party)
 		{
-			packet.PutLong(party.ID);
+			packet.PutLong(party.Id);
 			packet.PutString(party.Name);
 			packet.PutLong(party.Leader.EntityId);
 
@@ -54,7 +57,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 			packet.PutInt((int)party.Finish);
 			packet.PutInt((int)party.ExpRule);
 
-			packet.PutLong(0);                                                      // Quest ID?
+			packet.PutLong(0); // Quest id?
 
 			packet.PutInt(party.MaxSize);
 			packet.PutInt((int)party.Type);
@@ -62,7 +65,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 			packet.PutString(party.DungeonLevel);
 			packet.PutString(party.Info);
 
-			packet.PutInt(party.TotalMembers);
+			packet.PutInt(party.MemberCount);
 
 			packet.AddPartyMembers(party);
 		}
@@ -74,10 +77,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 		/// <param name="packet"></param>
 		public static void AddPartyMembers(this Packet packet, Party party)
 		{
-			var partyMembers = party.Members;
-			for (int i = partyMembers.Count - 1; i >= 0; i--)
+			var members = party.GetMembers();
+
+			for (int i = members.Length - 1; i >= 0; i--)
 			{
-				packet.AddPartyMember(partyMembers[i]);
+				packet.AddPartyMember(members[i]);
 
 				if (i == 0)
 				{
@@ -100,13 +104,13 @@ namespace Aura.Channel.Network.Sending.Helpers
 		/// <param name="packet"></param>
 		public static void AddPartyMember(this Packet packet, Creature creature)
 		{
+			var loc = creature.GetPosition();
+
 			packet.PutInt(creature.PartyPosition);
 			packet.PutLong(creature.EntityId);
 			packet.PutString(creature.Name);
 			packet.PutByte(1);
 			packet.PutInt(creature.Region.Id);
-
-			var loc = creature.GetPosition();
 			packet.PutInt(loc.X);
 			packet.PutInt(loc.Y);
 			packet.PutByte(0);

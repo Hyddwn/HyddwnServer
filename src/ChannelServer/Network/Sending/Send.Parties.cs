@@ -5,6 +5,7 @@ using Aura.Channel.World.Entities;
 using Aura.Channel.World;
 using Aura.Channel.Network.Sending.Helpers;
 using Aura.Mabi.Network;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -43,8 +44,7 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.PartyJoinR, creature.EntityId);
 
 			packet.PutByte((byte)result);
-
-			if (PartyJoinResult.Success == result)
+			if (result == PartyJoinResult.Success)
 				packet.BuildPartyInfo(creature.Party);
 
 			creature.Client.Send(packet);
@@ -57,8 +57,9 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="creature"></param>
 		public static void PartyJoinUpdateMembers(Creature creature)
 		{
-			var packet = new Packet(Op.PartyJoinUpdate, 0);
 			var party = creature.Party;
+
+			var packet = new Packet(Op.PartyJoinUpdate, 0);
 
 			packet.AddPartyMember(creature);
 
@@ -75,7 +76,7 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.PartyWantedUpdate, party.Leader.EntityId);
 
 			packet.PutByte(party.IsOpen);
-			packet.PutString(party.MemberWantedString);
+			packet.PutString(party.ToString());
 
 			party.Leader.Region.Broadcast(packet, party.Leader);
 		}
@@ -88,6 +89,7 @@ namespace Aura.Channel.Network.Sending
 		public static void PartyWindowUpdate(Creature creature, Party party)
 		{
 			var packet = new Packet(Op.PartyWindowUpdate, 0);
+
 			packet.PutLong(creature.EntityId);
 
 			// TODO: Find out what these actually mean.
@@ -95,7 +97,6 @@ namespace Aura.Channel.Network.Sending
 			packet.PutByte(1);
 			packet.PutByte(0);
 			packet.PutByte(0);
-
 
 			party.Broadcast(packet, true);
 		}
@@ -108,6 +109,7 @@ namespace Aura.Channel.Network.Sending
 		public static void PartyLeaveUpdate(Creature creature, Party party)
 		{
 			var packet = new Packet(Op.PartyLeaveUpdate, 0);
+
 			packet.PutLong(creature.EntityId);
 
 			party.Broadcast(packet, true);
@@ -134,6 +136,7 @@ namespace Aura.Channel.Network.Sending
 		public static void PartySettingUpdate(Party party)
 		{
 			var packet = new Packet(Op.PartySettingUpdate, 0);
+
 			packet.PutString(party.Name);
 
 			party.Broadcast(packet, true);
@@ -148,6 +151,7 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.PartyChangeSettingR, creature.EntityId);
 
 			packet.BuildPartyInfo(creature.Party);
+
 			creature.Client.Send(packet);
 		}
 
@@ -159,6 +163,7 @@ namespace Aura.Channel.Network.Sending
 		public static void PartyRemoveR(Creature creature, bool canRemove)
 		{
 			var packet = new Packet(Op.PartyRemoveR, creature.EntityId);
+
 			packet.PutByte(canRemove);
 
 			creature.Client.Send(packet);
@@ -185,6 +190,7 @@ namespace Aura.Channel.Network.Sending
 		public static void PartyChangeLeader(Party party)
 		{
 			var packet = new Packet(Op.PartyChangeLeaderUpdate, 0);
+
 			packet.PutLong(party.Leader.EntityId);
 
 			party.Broadcast(packet, true);
@@ -200,6 +206,7 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.PartyChangeLeaderR, creature.EntityId);
 
 			packet.PutByte(success);
+
 			creature.Client.Send(packet);
 		}
 
@@ -233,6 +240,7 @@ namespace Aura.Channel.Network.Sending
 		public static void PartyFinishUpdate(Party party)
 		{
 			var packet = new Packet(Op.PartyFinishUpdate, 0);
+
 			packet.PutInt((int)party.Finish);
 
 			party.Broadcast(packet, true);
@@ -245,6 +253,7 @@ namespace Aura.Channel.Network.Sending
 		public static void PartyExpUpdate(Party party)
 		{
 			var packet = new Packet(Op.PartyExpUpdate, 0);
+
 			packet.PutInt((int)party.ExpRule);
 
 			party.Broadcast(packet, true);
@@ -263,6 +272,7 @@ namespace Aura.Channel.Network.Sending
 
 			// Can it fail?
 			packet.PutByte(true);
+
 			creature.Client.Send(packet);
 		}
 
@@ -277,6 +287,7 @@ namespace Aura.Channel.Network.Sending
 
 			// Can it fail?
 			packet.PutByte(true);
+
 			creature.Client.Send(packet);
 		}
 
@@ -291,6 +302,7 @@ namespace Aura.Channel.Network.Sending
 
 			// Can it fail?
 			packet.PutByte(true);
+
 			creature.Client.Send(packet);
 		}
 
@@ -305,6 +317,7 @@ namespace Aura.Channel.Network.Sending
 
 			// Can it fail?
 			packet.PutByte(true);
+
 			creature.Client.Send(packet);
 		}
 
@@ -318,6 +331,7 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.PartyLeaveR, creature.EntityId);
 
 			packet.PutByte(leaving);
+
 			creature.Client.Send(packet);
 		}
 
@@ -329,6 +343,8 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="creature"></param>
 		public static void PartyCreateUpdate(Creature creature)
 		{
+			var loc = creature.GetPosition();
+
 			var packet = new Packet(Op.PartyCreateUpdate, 0);
 
 			packet.PutLong(creature.EntityId);
@@ -337,15 +353,13 @@ namespace Aura.Channel.Network.Sending
 			packet.PutString(creature.Name);
 			packet.PutByte(1);
 			packet.PutInt(creature.Region.Id);
-
-			var loc = creature.GetPosition();
 			packet.PutInt(loc.X);
 			packet.PutInt(loc.Y);
 			packet.PutByte(0);
 
 			packet.PutInt((int)((creature.Life * 100) / creature.LifeMax));
 			packet.PutInt((int)100);
-			packet.PutInt(creature.Party.Leader == creature ? 3 : 1);               // TODO: Check what this actually is (I've only seen the leader with a 3 so far)
+			packet.PutInt(creature.Party.Leader == creature ? 3 : 1); // TODO: Check what this actually is (I've only seen the leader with a 3 so far)
 			packet.PutLong(0);
 
 			creature.Party.Broadcast(packet, true);

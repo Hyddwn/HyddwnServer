@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System.Collections.Generic;
-using Aura.Channel.World.Entities;
-using Aura.Mabi.Network;
 using Aura.Channel.Network.Sending;
+using Aura.Channel.World.Entities;
+using Aura.Mabi.Const;
+using Aura.Mabi.Network;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Aura.Channel.World
@@ -14,13 +16,14 @@ namespace Aura.Channel.World
 	{
 		private object _sync = new object();
 
+		private List<Creature> _members;
+		private Dictionary<int, Creature> _occupiedSlots;
+
 		public PartyType Type { get; private set; }
 		public string Name { get; private set; }
 		public string DungeonLevel { get; private set; }
 		public string Info { get; private set; }
 		public string Password { get; private set; }
-
-		public bool HasPassword { get { return Password != ""; } }
 
 		public int MaxSize { get; private set; }
 
@@ -31,52 +34,21 @@ namespace Aura.Channel.World
 		public PartyFinishRule Finish { get; private set; }
 		public PartyExpSharing ExpRule { get; private set; }
 
-		public List<Creature> Members
-		{
-			get
-			{
-				lock (_sync)
-				{
-					return new List<Creature>(_members);
-				}
-			}
-		}
-
-		private List<Creature> _members { get; set; }
-
 		public Creature Leader { get; private set; }
 
-		public int TotalMembers { get { lock (_sync) return _members.Count; } }
+		public int MemberCount { get { lock (_sync) return _members.Count; } }
 
-		public Dictionary<int, Creature> OccupiedSlots { get; private set; }
+		public bool HasPassword { get { return this.Password != ""; } }
 
-		/// <summary>
-		/// Returns the party name in the format the Party Member Wanted functionality requires.
-		/// </summary>
-		public string MemberWantedString
-		{
-			get
-			{
-				StringBuilder result = new StringBuilder();
-				result.AppendFormat("p{ 0}", (int)Type);
-				result.AppendFormat("{0:d2}", TotalMembers);
-				result.AppendFormat("{0:d2}", MaxSize);
-				result.AppendFormat("{0}", (HasPassword ? "y" : "n"));
-				result.AppendFormat("{0}", (Type == PartyType.Dungeon ? "[Dungeon] " + Name + "/" + DungeonLevel + "-" + Info : Name));
-
-				return result.ToString();
-			}
-		}
-
-		public long ID { get; private set; }
+		public long Id { get; private set; }
 
 		/// <summary>
-		/// Creates a dummy party
+		/// Creates a dummy party.
 		/// </summary>
 		public Party()
 		{
-			ID = 0;
-			Password = "";
+			this.Id = 0;
+			this.Password = "";
 		}
 
 		/// <summary>
@@ -88,36 +60,38 @@ namespace Aura.Channel.World
 		{
 			_members = new List<Creature>();
 			_members.Add(creature);
+
+			_occupiedSlots = new Dictionary<int, Creature>();
+			_occupiedSlots.Add(1, creature);
+
+			this.LeaderChangeAllowed = true;
+			this.Leader = creature;
+
 			creature.PartyPosition = 1;
-			LeaderChangeAllowed = true;
 
-			OccupiedSlots = new Dictionary<int, Creature>();
-			OccupiedSlots.Add(1, creature);
-			Leader = creature;
-
-			ID = PartyManager.GetNextPartyID();
+			this.Id = ChannelServer.Instance.PartyManager.GetNextPartyID();
 
 			// TODO: add check/conf for maximum party size
 		}
 
-		public Creature GetMember(long entityID)
+		public Creature GetMember(long entityId)
 		{
 			lock (_sync)
-			{
-				foreach (Creature member in _members)
-				{
-					if (member.EntityId == entityID)
-						return member;
-				}
-			}
-			return null;
+				return _members.FirstOrDefault(a => a.EntityId == entityId);
+		}
+
+		public Creature[] GetMembers()
+		{
+			lock (_sync)
+				return _members.ToArray();
 		}
 
 		private int GetAvailableSlot()
 		{
-			for (int i = 1; i < MaxSize; i++)
+			for (int i = 1; i < this.MaxSize; i++)
 			{
-				if (!OccupiedSlots.ContainsKey(i)) return i;
+				if (!_occupiedSlots.ContainsKey(i))
+					return i;
 			}
 			return 200;
 		}
@@ -132,7 +106,7 @@ namespace Aura.Channel.World
 			lock (_sync)
 			{
 				var time = _members[0].CreationTime;
-				Creature result = _members[0];
+				var result = _members[0];
 
 				for (int i = 1; i < _members.Count; i++)
 				{
@@ -149,39 +123,37 @@ namespace Aura.Channel.World
 
 		public bool SetLeader(Creature creature)
 		{
-			if (LeaderChangeAllowed)
+			if (!this.LeaderChangeAllowed)
+				return false;
+
+			lock (_sync)
 			{
-				lock (_sync)
-				{
-					if (_members.Contains(creature))
-					{
-						Leader = creature;
-						Send.PartyChangeLeader(this);
-						return true;
-					}
-				}
+				if (!_members.Contains(creature))
+					return false;
 			}
-			return false;
+
+			this.Leader = creature;
+			Send.PartyChangeLeader(this);
+
+			return true;
 		}
 
-		public bool SetLeader(long entityID)
+		public bool SetLeader(long entitiyId)
 		{
-			var creature = GetMember(entityID);
+			var creature = this.GetMember(entitiyId);
 
 			if (creature != null)
-			{
 				return SetLeader(creature);
-			}
 
 			return false;
 		}
 
 		public PartyJoinResult AddMember(Creature creature, string password)
 		{
-			if (TotalMembers >= MaxSize)
+			if (this.MemberCount >= this.MaxSize)
 				return PartyJoinResult.Full;
 
-			if (Password != password)
+			if (this.Password != password)
 				return PartyJoinResult.WrongPass;
 
 			this.AddMemberSilent(creature);
@@ -189,6 +161,7 @@ namespace Aura.Channel.World
 
 			if (this.IsOpen)
 				Send.PartyMemberWantedRefresh(this);
+
 			return PartyJoinResult.Success;
 		}
 
@@ -199,21 +172,22 @@ namespace Aura.Channel.World
 				_members.Add(creature);
 
 				creature.Party = this;
-				creature.PartyPosition = GetAvailableSlot();
+				creature.PartyPosition = this.GetAvailableSlot();
 
-				OccupiedSlots.Add(creature.PartyPosition, creature);
+				_occupiedSlots.Add(creature.PartyPosition, creature);
 			}
 		}
 
 		public void RemoveMember(Creature creature)
 		{
-			RemoveMemberSilent(creature);
+			this.RemoveMemberSilent(creature);
 
-			if (TotalMembers == 0)
+			if (this.MemberCount == 0)
 			{
-				Close();
+				this.Close();
 				return;
 			}
+
 			Send.PartyLeaveUpdate(creature, this);
 
 			if (IsOpen)
@@ -222,14 +196,13 @@ namespace Aura.Channel.World
 			// What is this?
 			//Send.PartyWindowUpdate(creature, party);
 
-			if (Leader == creature)
+			if (this.Leader == creature)
 			{
-				SetLeader(GetNextLeader());
-				Close();
+				this.SetLeader(this.GetNextLeader());
+				this.Close();
 
 				Send.PartyChangeLeader(this);
 			}
-
 		}
 
 		public void RemoveMemberSilent(Creature creature)
@@ -237,7 +210,7 @@ namespace Aura.Channel.World
 			lock (_sync)
 			{
 				_members.Remove(creature);
-				OccupiedSlots.Remove(creature.PartyPosition);
+				_occupiedSlots.Remove(creature.PartyPosition);
 			}
 
 			creature.Party = new Party();
@@ -245,18 +218,18 @@ namespace Aura.Channel.World
 
 		public void Close()
 		{
-			if (IsOpen)
+			if (this.IsOpen)
 			{
-				IsOpen = false;
+				this.IsOpen = false;
 				Send.PartyMemberWantedStateChange(this);
 			}
 		}
 
 		public void Open()
 		{
-			if (!IsOpen)
+			if (!this.IsOpen)
 			{
-				IsOpen = true;
+				this.IsOpen = true;
 				Send.PartyMemberWantedStateChange(this);
 			}
 		}
@@ -266,15 +239,15 @@ namespace Aura.Channel.World
 		/// and excluding a specific creature.
 		/// </summary>
 		/// <param name="packet"></param>
-		/// <param name="changeID"></param>
+		/// <param name="useMemberEntityId"></param>
 		/// <param name="exclude"></param>
-		public void Broadcast(Packet packet, bool changeID = false, Creature exclude = null)
+		public void Broadcast(Packet packet, bool useMemberEntityId = false, Creature exclude = null)
 		{
 			lock (_sync)
 			{
 				foreach (var member in _members)
 				{
-					if (changeID)
+					if (useMemberEntityId)
 						packet.Id = member.EntityId;
 
 					if (exclude != member)
@@ -285,53 +258,53 @@ namespace Aura.Channel.World
 
 		public void SetType(PartyType type)
 		{
-			if (type != Type)
-			{
-				Type = type;
-				Send.PartyTypeUpdate(this);
-			}
+			if (type == this.Type)
+				return;
+
+			this.Type = type;
+			Send.PartyTypeUpdate(this);
 		}
 
 		public void SetName(string name)
 		{
-			Name = name;
+			this.Name = name;
 		}
 
 		public void SetDungeonLevel(string dungeonLevel)
 		{
-			DungeonLevel = dungeonLevel;
+			this.DungeonLevel = dungeonLevel;
 		}
 
 		public void SetInfo(string info)
 		{
-			Info = info;
+			this.Info = info;
 		}
 
 		public void SetSize(int size)
 		{
-			if ((TotalMembers <= size) /* && (Conf max size check here)*/)
-				MaxSize = size;
+			if ((this.MemberCount <= size) /* && (Conf max size check here)*/)
+				this.MaxSize = size;
 		}
 
 		public void ChangeFinish(int rule)
 		{
-			Finish = (PartyFinishRule)rule;
+			this.Finish = (PartyFinishRule)rule;
 
 			Send.PartyFinishUpdate(this);
 		}
 
 		public void ChangeExp(int rule)
 		{
-			ExpRule = (PartyExpSharing)rule;
+			this.ExpRule = (PartyExpSharing)rule;
 
 			Send.PartyExpUpdate(this);
 		}
 
 		public void SetPassword(string pass)
 		{
-			Password = pass;
+			this.Password = pass;
 
-			if (IsOpen)
+			if (this.IsOpen)
 				Send.PartyMemberWantedRefresh(this);
 		}
 
@@ -341,26 +314,17 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public List<Creature> OnAltar()
 		{
-			List<Creature> result = new List<Creature>();
+			var result = new List<Creature>();
 
 			lock (_sync)
 			{
-				foreach (Creature member in _members)
+				foreach (var member in _members.Where(a => a != this.Leader && a.RegionId == this.Leader.RegionId))
 				{
-					if (member != Leader)
-						if (member.Region.Id == Leader.Region.Id)
-						{
-							{
-								var pos = member.GetPosition();
+					var pos = member.GetPosition();
+					var clientEvent = member.Region.GetClientEvent(a => a.Data.IsAltar);
 
-								var clientEvent = member.Region.GetClientEvent(a => a.Data.IsAltar);
-
-								if (clientEvent.IsInside(pos.X, pos.Y))
-								{
-									result.Add(member);
-								}
-							}
-						}
+					if (clientEvent.IsInside(pos.X, pos.Y))
+						result.Add(member);
 				}
 			}
 			return result;
@@ -376,7 +340,7 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public List<Creature> GetMembersInRange(Creature creature, int range = -1)
 		{
-			List<Creature> result = new List<Creature>();
+			var result = new List<Creature>();
 			var pos = creature.GetPosition();
 
 			if (range < 0)
@@ -384,20 +348,18 @@ namespace Aura.Channel.World
 
 			lock (_sync)
 			{
-				foreach (Creature member in _members)
+				foreach (var member in _members.Where(a => a != creature && a.RegionId == this.Leader.RegionId))
 				{
-					if (member != creature)
-						if (member.Region.Id == creature.Region.Id)
-							if (range > 0)
-							{
-								if (pos.InRange(member.GetPosition(), range))
-									result.Add(member);
-							}
-							else
-								result.Add(member);
-
+					if (range > 0)
+					{
+						if (pos.InRange(member.GetPosition(), range))
+							result.Add(member);
+					}
+					else
+						result.Add(member);
 				}
 			}
+
 			return result;
 		}
 
@@ -408,28 +370,21 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public List<Creature> GetMembersInRegion(Creature creature)
 		{
-			return GetMembersInRange(creature, 0);
+			return this.GetMembersInRange(creature, 0);
 		}
 
 		/// <summary>
 		/// Returns a list of all creatures in the region specified.
 		/// </summary>
-		/// <param name="regionID"></param>
+		/// <param name="regionId"></param>
 		/// <returns></returns>
-		public List<Creature> GetMembersInRegion(int regionID)
+		public List<Creature> GetMembersInRegion(int regionId)
 		{
-			List<Creature> result = new List<Creature>();
+			var result = new List<Creature>();
 
 			lock (_sync)
-			{
-				foreach (Creature member in _members)
-				{
-					if (member.Region.Id == regionID)
-					{
-						result.Add(member);
-					}
-				}
-			}
+				result.AddRange(_members.Where(a => a.RegionId == regionId));
+
 			return result;
 		}
 
@@ -443,47 +398,45 @@ namespace Aura.Channel.World
 			lock (_sync)
 			{
 				_members.Remove(creature);
-				OccupiedSlots.Remove(creature.PartyPosition);
+				_occupiedSlots.Remove(creature.PartyPosition);
 			}
 
-			if (TotalMembers > 0)
+			if (this.MemberCount > 0)
 			{
-				if (Leader == creature)
+				if (this.Leader == creature)
 				{
-					SetLeader(GetNextLeader());
-					if (IsOpen)
-						Close();
+					this.SetLeader(GetNextLeader());
+
+					if (this.IsOpen)
+						this.Close();
+
 					Send.PartyChangeLeader(this);
 				}
 				else
 				{
-					if (IsOpen)
+					if (this.IsOpen)
 						Send.PartyMemberWantedRefresh(this);
 				}
+
 				Send.PartyLeaveUpdate(creature, this);
 			}
-
 		}
-	}
 
-	public enum PartyFinishRule
-	{
-		BiggestContributer = 0, Turn = 1, Anyone = 2
-	}
-	public enum PartyExpSharing
-	{
-		Equal = 0, MoreToFinish = 1, AllToFinish = 2
-	}
+		/// <summary>
+		/// Returns the party name in the format the Party Member Wanted
+		/// functionality requires.
+		/// </summary>
+		public override string ToString()
+		{
+			var result = new StringBuilder();
 
-	public enum PartyType
-	{
-		Normal = 0, Dungeon = 1, Jam = 3
-	}
+			result.AppendFormat("p{ 0}", (int)this.Type);
+			result.AppendFormat("{0:d2}", this.MemberCount);
+			result.AppendFormat("{0:d2}", this.MaxSize);
+			result.AppendFormat("{0}", (this.HasPassword ? "y" : "n"));
+			result.AppendFormat("{0}", (this.Type == PartyType.Dungeon ? "[Dungeon] " + this.Name + "/" + this.DungeonLevel + "-" + this.Info : this.Name));
 
-	public enum PartyJoinResult
-	{
-		Full = 0,           // Full or failure?
-		Success = 1,
-		WrongPass = 4
+			return result.ToString();
+		}
 	}
 }

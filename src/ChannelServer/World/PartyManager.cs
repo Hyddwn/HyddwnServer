@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System.Collections.Generic;
-using Aura.Channel.World.Entities;
-using Aura.Mabi.Network;
 using Aura.Channel.Network.Sending;
+using Aura.Channel.World.Entities;
+using Aura.Mabi.Const;
+using Aura.Mabi.Network;
 using System;
+using System.Collections.Generic;
 
 namespace Aura.Channel.World
 {
@@ -17,31 +18,29 @@ namespace Aura.Channel.World
 	/// 
 	/// They'll need to be given space in the DB at a later date (I really hope I'm not the one who has to write that MySQL DB update..)
 	/// </summary>
-	public static class PartyManager
+	public class PartyManager
 	{
+		private object _sync = new object();
+
+		private long _offset = 0;
+		private int _range = 0;
+		private const int _maxPartyRange = 100000;
+
 		/// <summary>
 		/// The last ID used by a party.
 		/// </summary>
 		/// <remarks>I'm not really sure what this would be used for,
 		/// but I feel like I'd regret not putting in place..?</remarks>
-		public static long CurrentID
+		public long CurrentID
 		{
 			get
 			{
-				lock (_lock)
-				{
-					return Mabi.Const.MabiId.Parties + _offset + _range;
-				}
+				lock (_sync)
+					return MabiId.Parties + _offset + _range;
 			}
 		}
 
-		private static long _offset = 0;
-		private static int _range = 0;
-		private static object _lock = new object();
-
-		private const int _maxPartyRange = 100000;
-
-		static PartyManager()
+		public PartyManager()
 		{
 			ChannelServer.Instance.Events.PlayerDisconnect += PlayerDisconnect;
 		}
@@ -50,37 +49,37 @@ namespace Aura.Channel.World
 		/// This removes players who disconnect from any party they're in.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void PlayerDisconnect(Creature creature)
+		public void PlayerDisconnect(Creature creature)
 		{
 			if (creature.IsInParty)
-			{
 				creature.Party.DisconnectedMember(creature);
-			}
 		}
 
 		/// <summary>
 		/// Passes the next available ID for use in a party.
 		/// </summary>
 		/// <returns></returns>
-		public static long GetNextPartyID()
+		public long GetNextPartyID()
 		{
-			lock (_lock)
+			lock (_sync)
 			{
 				_offset++;
-				if (_offset >= _maxPartyRange) _offset = 0;
+				if (_offset >= _maxPartyRange)
+					_offset = 0;
 
-				return Mabi.Const.MabiId.Parties + _offset + _range;
+				return MabiId.Parties + _offset + _range;
 			}
 		}
 
 		// TODO: Implement the below >_>
 		/// <summary>
-		/// This is for setting the range of party IDs, which is set by the server upon connecting to the Login Server.
+		/// This is for setting the range of party IDs, which is set by the server
+		/// upon connecting to the Login Server.
 		/// </summary>
 		/// <param name="range"></param>
-		internal static void RangeSet(int range)
-		{
-			_range = range * _maxPartyRange;
-		}
+		//public void RangeSet(int range)
+		//{
+		//	_range = range * _maxPartyRange;
+		//}
 	}
 }
