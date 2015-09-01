@@ -105,12 +105,12 @@ namespace Aura.Channel.Network
 		public override void CleanUp()
 		{
 
-            // Moved here to always be called when a client is being killed off, on the suggestion of Exec.
-            ChannelServer.Instance.Events.OnPlayerDisconnect(Controlling);
+			// Moved here to always be called when a client is being killed off, on the suggestion of Exec.
+			ChannelServer.Instance.Events.OnPlayerDisconnect(Controlling);
 
-            // Dispose creatures, to remove subscriptions and stuff.
-            // Do this before unspawning, the creature might need the region.
-            foreach (var creature in this.Creatures.Values)
+			// Dispose creatures, to remove subscriptions and stuff.
+			// Do this before unspawning, the creature might need the region.
+			foreach (var creature in this.Creatures.Values)
 				creature.Dispose();
 
 			foreach (var creature in this.Creatures.Values.Where(a => a.Region != Region.Limbo))

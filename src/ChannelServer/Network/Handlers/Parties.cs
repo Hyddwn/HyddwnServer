@@ -8,188 +8,188 @@ using Aura.Shared.Network;
 
 namespace Aura.Channel.Network.Handlers
 {
-    public partial class ChannelServerHandlers : PacketHandlerManager<ChannelClient>
-    {
-        [PacketHandler(Op.PartyCreate)]
-        public void PartyCreate(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
+	public partial class ChannelServerHandlers : PacketHandlerManager<ChannelClient>
+	{
+		[PacketHandler(Op.PartyCreate)]
+		public void PartyCreate(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
 
-            // Needs check like the below, but do homesteads count as dynamic regions?
-            // I know you can't make a party in the shadow realm (you can in dungeons), but are they the only places? Need to look into that.
-            if ((creature.IsInParty) /*|| (creature.Region.IsDynamic) */)
-            {
-                Send.CreatePartyR(creature);
-                return;
-            }
+			// Needs check like the below, but do homesteads count as dynamic regions?
+			// I know you can't make a party in the shadow realm (you can in dungeons), but are they the only places? Need to look into that.
+			if ((creature.IsInParty) /*|| (creature.Region.IsDynamic) */)
+			{
+				Send.CreatePartyR(creature);
+				return;
+			}
 
-            party.CreateParty(creature);
-            packet.SettingsParse(party);
+			party.CreateParty(creature);
+			packet.SettingsParse(party);
 
-            Send.CreatePartyR(creature);
+			Send.CreatePartyR(creature);
 
-            party.Open();
+			party.Open();
 
-        }
+		}
 
-        [PacketHandler(Op.PartyJoin)]
-        public void PartyJoin(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var partyLeader = ChannelServer.Instance.World.GetCreature(packet.GetLong());
-            var party = partyLeader.Party;
-            var password = packet.GetString();
+		[PacketHandler(Op.PartyJoin)]
+		public void PartyJoin(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var partyLeader = ChannelServer.Instance.World.GetCreature(packet.GetLong());
+			var party = partyLeader.Party;
+			var password = packet.GetString();
 
-            if ((creature.IsInParty) || (!partyLeader.IsInParty) || (partyLeader.Party.Leader.EntityId != partyLeader.EntityId))
-                return;
+			if ((creature.IsInParty) || (!partyLeader.IsInParty) || (partyLeader.Party.Leader.EntityId != partyLeader.EntityId))
+				return;
 
-            var result = party.AddMember(creature, password);
-            
-            Send.PartyJoinR(creature, result);
+			var result = party.AddMember(creature, password);
 
-            if (result == World.PartyJoinResult.Success)
-                Send.PartyCreateUpdate(creature);
-        }
+			Send.PartyJoinR(creature, result);
 
-        [PacketHandler(Op.PartyLeave)]
-        public void LeaveParty(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
-            var canLeave = !creature.Region.IsDynamic;
+			if (result == World.PartyJoinResult.Success)
+				Send.PartyCreateUpdate(creature);
+		}
 
-            if (!creature.IsInParty)
-            {
-                Send.PartyLeaveR(creature, false);
-                return;
-            }
+		[PacketHandler(Op.PartyLeave)]
+		public void LeaveParty(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
+			var canLeave = !creature.Region.IsDynamic;
 
-            // TODO: Check if there are other regions or situations in which you cannot leave a party.
-            if (!canLeave)
-            {
-                Send.PartyLeaveR(creature, false);
-                return;
-            }
+			if (!creature.IsInParty)
+			{
+				Send.PartyLeaveR(creature, false);
+				return;
+			}
 
-            creature.Party.RemoveMember(creature);
+			// TODO: Check if there are other regions or situations in which you cannot leave a party.
+			if (!canLeave)
+			{
+				Send.PartyLeaveR(creature, false);
+				return;
+			}
 
-            Send.PartyLeaveR(creature, canLeave);
-        }
+			creature.Party.RemoveMember(creature);
 
-        [PacketHandler(Op.PartyRemove)]
-        public void RemoveFromParty(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
-            var canRemove = !creature.Region.IsDynamic;
-            var target = party.GetMember(packet.GetLong());
+			Send.PartyLeaveR(creature, canLeave);
+		}
 
-            if ((!creature.IsInParty) || (party.Leader != creature))
-                return;
+		[PacketHandler(Op.PartyRemove)]
+		public void RemoveFromParty(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
+			var canRemove = !creature.Region.IsDynamic;
+			var target = party.GetMember(packet.GetLong());
 
-            if ((canRemove) && (target != null) && (target != creature))
-            {
-                party.RemoveMember(target);
-                Send.PartyRemoved(target);
-            }
-            else
-                canRemove = false;
+			if ((!creature.IsInParty) || (party.Leader != creature))
+				return;
 
-            Send.PartyRemoveR(creature, canRemove);
-        }
+			if ((canRemove) && (target != null) && (target != creature))
+			{
+				party.RemoveMember(target);
+				Send.PartyRemoved(target);
+			}
+			else
+				canRemove = false;
 
-        [PacketHandler(Op.PartyChangeSetting)]
-        public void PartyChangeSettings(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
+			Send.PartyRemoveR(creature, canRemove);
+		}
 
-            if ((!creature.IsInParty) || (creature != party.Leader))
-                return;
+		[PacketHandler(Op.PartyChangeSetting)]
+		public void PartyChangeSettings(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
 
-            packet.SettingsParse(party);
-            Send.PartyChangeSettingR(creature);
-        }
+			if ((!creature.IsInParty) || (creature != party.Leader))
+				return;
 
-        [PacketHandler(Op.PartyChangePassword)]
-        public void PartyChangePassword(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
+			packet.SettingsParse(party);
+			Send.PartyChangeSettingR(creature);
+		}
 
-            if ((!creature.IsInParty) || (party.Leader != creature))
-                return;
-            
-            party.SetPassword(packet.GetString());
-            Send.PartyChangePasswordR(creature);
-        }
+		[PacketHandler(Op.PartyChangePassword)]
+		public void PartyChangePassword(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
 
-        [PacketHandler(Op.PartyChangeLeader)]
-        public void PartyChangeLeader(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
+			if ((!creature.IsInParty) || (party.Leader != creature))
+				return;
 
-            if ((!creature.IsInParty) || (party.Leader != creature))
-                return;
+			party.SetPassword(packet.GetString());
+			Send.PartyChangePasswordR(creature);
+		}
 
-            // IS there any instance in which you're NOT allowed to change party leader?
-            var success = party.SetLeader(packet.GetLong());
-            Send.PartyChangeLeaderR(creature, success);
+		[PacketHandler(Op.PartyChangeLeader)]
+		public void PartyChangeLeader(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
 
-        }
+			if ((!creature.IsInParty) || (party.Leader != creature))
+				return;
 
-        [PacketHandler(Op.PartyWantedHide)]
-        public void PartyWantedClose(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
+			// IS there any instance in which you're NOT allowed to change party leader?
+			var success = party.SetLeader(packet.GetLong());
+			Send.PartyChangeLeaderR(creature, success);
 
-            if ((!creature.IsInParty) || (creature != party.Leader))
-                return;
-            
-            party.Close();
-            Send.PartyWantedClosedR(creature);
-        }
+		}
 
-        [PacketHandler(Op.PartyWantedShow)]
-        public void PartyWantedOpen(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
+		[PacketHandler(Op.PartyWantedHide)]
+		public void PartyWantedClose(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
 
-            if ((!creature.IsInParty) || (creature != party.Leader))
-                return;
+			if ((!creature.IsInParty) || (creature != party.Leader))
+				return;
 
-            party.Open();
-            Send.PartyWantedOpenR(creature);
-        }
+			party.Close();
+			Send.PartyWantedClosedR(creature);
+		}
 
-        [PacketHandler(Op.PartyChangeFinish)]
-        public void PartyChangeFinish(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
+		[PacketHandler(Op.PartyWantedShow)]
+		public void PartyWantedOpen(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
 
-            if ((!creature.IsInParty) || (party.Leader != creature))
-                return;
+			if ((!creature.IsInParty) || (creature != party.Leader))
+				return;
 
-            party.ChangeFinish(packet.GetInt());
-            Send.PartyChangeFinishR(creature);
-        }
+			party.Open();
+			Send.PartyWantedOpenR(creature);
+		}
 
-        [PacketHandler(Op.PartyChangeExp)]
-        public void PartyChangeExp(ChannelClient client, Packet packet)
-        {
-            var creature = client.GetCreatureSafe(packet.Id);
-            var party = creature.Party;
+		[PacketHandler(Op.PartyChangeFinish)]
+		public void PartyChangeFinish(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
 
-            if ((!creature.IsInParty) || (party.Leader != creature))
-                return;
-            
-            party.ChangeExp(packet.GetInt());
-            Send.PartyChangeExpR(creature);
-        }
-    }
+			if ((!creature.IsInParty) || (party.Leader != creature))
+				return;
+
+			party.ChangeFinish(packet.GetInt());
+			Send.PartyChangeFinishR(creature);
+		}
+
+		[PacketHandler(Op.PartyChangeExp)]
+		public void PartyChangeExp(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
+
+			if ((!creature.IsInParty) || (party.Leader != creature))
+				return;
+
+			party.ChangeExp(packet.GetInt());
+			Send.PartyChangeExpR(creature);
+		}
+	}
 }
