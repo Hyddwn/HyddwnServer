@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Caitin
 //--- Description -----------------------------------------------------------
-// Grocer
+// Grocer - manages the Tir Chonaill grocery shop
 //---------------------------------------------------------------------------
 
 public class CaitinBaseScript : NpcScript
@@ -82,7 +82,7 @@ public class CaitinBaseScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (!Player.Skills.Has(SkillId.Cooking, SkillRank.RF))
+				if (!HasSkill(SkillId.Cooking, SkillRank.RF))
 				{
 					Msg("Hehe, skills?<br/>Well, how about cooking? Do you enjoy cooking?<br/>Oh, but that doesn't mean I can teach you the Cooking skill.<br/>I'm not good enough to teach you...<br/>Though I can share my experiences of cooking if you like.", Button("OK", "@skilleffect01"), Button("No, thanks", "@skilleffect02"));
 					switch (await Select())
