@@ -14,20 +14,21 @@ namespace Aura.Channel.Network.Sending
 		/// <summary>
 		/// Response to the party creation request, sends the client the relevant party data.
 		/// </summary>
-		/// <remarks>I feel like I'm the MSDN with that summary.</remarks>
+		/// <remarks>
+		/// I feel like I'm the MSDN with that summary.
+		/// </remarks>
 		/// <param name="creature"></param>
-		public static void CreatePartyR(Creature creature)
+		/// <param name="party">Set null for negative response.</param>
+		public static void CreatePartyR(Creature creature, Party party)
 		{
 			var packet = new Packet(Op.PartyCreateR, creature.EntityId);
-			var party = creature.Party;
 
-			if (creature.IsInParty)
+			packet.PutByte(party != null);
+			if (party != null)
 			{
 				packet.PutByte(1);
 				packet.BuildPartyInfo(party);
 			}
-			else
-				packet.PutByte(0);
 
 			creature.Client.Send(packet);
 		}
@@ -36,7 +37,10 @@ namespace Aura.Channel.Network.Sending
 		/// Sends the correct response to the client sending a party join request,
 		/// and success grants full party information.
 		/// </summary>
-		/// <remarks>This is also sent when changing channel whilst in a party, upon reaching the new channel.</remarks>
+		/// <remarks>
+		/// This is also sent when changing channel whilst in a party,
+		/// upon reaching the new channel.
+		/// </remarks>
 		/// <param name="creature"></param>
 		/// <param name="result"></param>
 		public static void PartyJoinR(Creature creature, PartyJoinResult result)
@@ -173,12 +177,12 @@ namespace Aura.Channel.Network.Sending
 		/// Informing the leader on the status of their password request
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void PartyChangePasswordR(Creature creature)
+		/// <param name="success"></param>
+		public static void PartyChangePasswordR(Creature creature, bool success)
 		{
 			var packet = new Packet(Op.PartyChangePasswordR, creature.EntityId);
 
-			// Changing password success, assume always successful?
-			packet.PutByte(true);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}
@@ -266,12 +270,12 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <remarks>Currently only successful</remarks>
 		/// <param name="creature"></param>
-		public static void PartyChangeFinishR(Creature creature)
+		/// <param name="success"></param>
+		public static void PartyChangeFinishR(Creature creature, bool success)
 		{
 			var packet = new Packet(Op.PartyChangeFinishR, creature.EntityId);
 
-			// Can it fail?
-			packet.PutByte(true);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}
@@ -281,12 +285,12 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <remarks>Currently only successful</remarks>
 		/// <param name="creature"></param>
-		public static void PartyChangeExpR(Creature creature)
+		/// <param name="success"></param>
+		public static void PartyChangeExpR(Creature creature, bool success)
 		{
 			var packet = new Packet(Op.PartyChangeExpR, creature.EntityId);
 
-			// Can it fail?
-			packet.PutByte(true);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}
@@ -296,12 +300,12 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <remarks>Currently only successful</remarks>
 		/// <param name="creature"></param>
-		public static void PartyWantedClosedR(Creature creature)
+		/// <param name="success"></param>
+		public static void PartyWantedClosedR(Creature creature, bool success)
 		{
 			var packet = new Packet(Op.PartyWantedHideR, creature.EntityId);
 
-			// Can it fail?
-			packet.PutByte(true);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}
@@ -311,12 +315,12 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <remarks>Currently only successful</remarks>
 		/// <param name="creature"></param>
-		public static void PartyWantedOpenR(Creature creature)
+		/// <param name="success"></param>
+		public static void PartyWantedOpenR(Creature creature, bool success)
 		{
 			var packet = new Packet(Op.PartyWantedShowR, creature.EntityId);
 
-			// Can it fail?
-			packet.PutByte(true);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}
@@ -325,12 +329,12 @@ namespace Aura.Channel.Network.Sending
 		/// Response to a member attempting to leave the party.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="leaving"></param>
-		public static void PartyLeaveR(Creature creature, bool leaving)
+		/// <param name="success"></param>
+		public static void PartyLeaveR(Creature creature, bool success)
 		{
 			var packet = new Packet(Op.PartyLeaveR, creature.EntityId);
 
-			packet.PutByte(leaving);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}

@@ -6,6 +6,7 @@ using Aura.Channel.Network.Sending.Helpers;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
+using Aura.Shared.Util;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -17,21 +18,22 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			// Needs check like the below, but do homesteads count as dynamic regions?
-			// I know you can't make a party in the shadow realm (you can in dungeons), but are they the only places? Need to look into that.
-			if ((creature.IsInParty) /*|| (creature.Region.IsDynamic) */)
+			// Needs check like the below, but do homesteads count as dynamic
+			// regions? I know you can't make a party in the shadow realm
+			// (you can in dungeons), but are they the only places?
+			if (creature.IsInParty /*|| creature.Region.IsDynamic */)
 			{
-				Send.CreatePartyR(creature);
+				Log.Warning("PartyCreate: User '{0}' tried to create a party while already being in one.", client.Account.Id);
+				Send.CreatePartyR(creature, null);
 				return;
 			}
 
 			party.CreateParty(creature);
 			packet.ParseSettings(party);
 
-			Send.CreatePartyR(creature);
+			Send.CreatePartyR(creature, party);
 
 			party.Open();
-
 		}
 
 		[PacketHandler(Op.PartyJoin)]
@@ -41,13 +43,24 @@ namespace Aura.Channel.Network.Handlers
 			var password = packet.GetString();
 
 			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Cgeck party leader
 			var partyLeader = ChannelServer.Instance.World.GetCreature(leaderEntityId);
-			var party = partyLeader.Party;
-
-			if (creature.IsInParty || !partyLeader.IsInParty || partyLeader.Party.Leader.EntityId != partyLeader.EntityId)
+			if (partyLeader == null)
+			{
+				Log.Warning("PartyJoin: User '{0}' tried to join party of non-existent leader.", client.Account.Id);
+				Send.PartyJoinR(creature, PartyJoinResult.Full);
 				return;
+			}
 
-			var result = party.AddMember(creature, password);
+			// Check if creature can join
+			if (creature.IsInParty || partyLeader != partyLeader.Party.Leader)
+			{
+				Log.Warning("PartyJoin: User '{0}' tried to join party illicitly.", client.Account.Id);
+				return;
+			}
+
+			var result = partyLeader.Party.AddMember(creature, password);
 
 			Send.PartyJoinR(creature, result);
 
@@ -59,25 +72,27 @@ namespace Aura.Channel.Network.Handlers
 		public void LeaveParty(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
-			var party = creature.Party;
-			var canLeave = !creature.Region.IsDynamic;
 
+			// Check if in party
 			if (!creature.IsInParty)
 			{
+				Log.Warning("PartyLeave: User '{0}' tried to leave party without being in one.", client.Account.Id);
 				Send.PartyLeaveR(creature, false);
 				return;
 			}
 
+			// Check if able to leave
 			// TODO: Check if there are other regions or situations in which you cannot leave a party.
-			if (!canLeave)
+			if (creature.Region.IsDynamic)
 			{
+				Log.Warning("PartyLeave: User '{0}' tried to leave party in a dynamic region.", client.Account.Id);
 				Send.PartyLeaveR(creature, false);
 				return;
 			}
 
 			creature.Party.RemoveMember(creature);
 
-			Send.PartyLeaveR(creature, canLeave);
+			Send.PartyLeaveR(creature, true);
 		}
 
 		[PacketHandler(Op.PartyRemove)]
@@ -86,22 +101,39 @@ namespace Aura.Channel.Network.Handlers
 			var targetEntityId = packet.GetLong();
 
 			var creature = client.GetCreatureSafe(packet.Id);
+
 			var canRemove = !creature.Region.IsDynamic;
 			var party = creature.Party;
-			var target = party.GetMember(targetEntityId);
 
-			if (!creature.IsInParty || party.Leader != creature)
-				return;
-
-			if (canRemove && target != null && target != creature)
+			// Check creature
+			if (!creature.IsInParty || creature != party.Leader)
 			{
-				party.RemoveMember(target);
-				Send.PartyRemoved(target);
+				Log.Warning("PartyLeave: User '{0}' tried to leave party in a dynamic region.", client.Account.Id);
+				Send.PartyRemoveR(creature, false);
+				return;
 			}
-			else
-				canRemove = false;
 
-			Send.PartyRemoveR(creature, canRemove);
+			// Check target
+			var target = party.GetMember(targetEntityId);
+			if (target == null || target == creature)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to remove invalid member from party.", client.Account.Id);
+				Send.PartyRemoveR(creature, false);
+				return;
+			}
+
+			// Check region
+			if (creature.Region.IsDynamic)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to remove member in dynamic region.", client.Account.Id);
+				Send.PartyRemoveR(creature, false);
+				return;
+			}
+
+			party.RemoveMember(target);
+			Send.PartyRemoved(target);
+
+			Send.PartyRemoveR(creature, true);
 		}
 
 		[PacketHandler(Op.PartyChangeSetting)]
@@ -111,7 +143,10 @@ namespace Aura.Channel.Network.Handlers
 			var party = creature.Party;
 
 			if (!creature.IsInParty || creature != party.Leader)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to change party settings illicitly.", client.Account.Id);
 				return;
+			}
 
 			packet.ParseSettings(party);
 
@@ -121,28 +156,40 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.PartyChangePassword)]
 		public void PartyChangePassword(ChannelClient client, Packet packet)
 		{
+			var password = packet.GetString();
+
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if (!creature.IsInParty || party.Leader != creature)
+			if (!creature.IsInParty || creature != party.Leader)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to change party password illicitly.", client.Account.Id);
+				Send.PartyChangePasswordR(creature, false);
 				return;
+			}
 
-			party.SetPassword(packet.GetString());
+			party.SetPassword(password);
 
-			Send.PartyChangePasswordR(creature);
+			Send.PartyChangePasswordR(creature, true);
 		}
 
 		[PacketHandler(Op.PartyChangeLeader)]
 		public void PartyChangeLeader(ChannelClient client, Packet packet)
 		{
+			var entityId = packet.GetLong();
+
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if (!creature.IsInParty || party.Leader != creature)
+			if (!creature.IsInParty || creature != party.Leader)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to change party leader illicitly.", client.Account.Id);
+				Send.PartyChangeLeaderR(creature, false);
 				return;
+			}
 
 			// IS there any instance in which you're NOT allowed to change party leader?
-			var success = party.SetLeader(packet.GetLong());
+			var success = party.SetLeader(entityId);
 
 			Send.PartyChangeLeaderR(creature, success);
 
@@ -155,11 +202,15 @@ namespace Aura.Channel.Network.Handlers
 			var party = creature.Party;
 
 			if (!creature.IsInParty || creature != party.Leader)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to change ad setting illicitly.", client.Account.Id);
+				Send.PartyWantedClosedR(creature, false);
 				return;
+			}
 
 			party.Close();
 
-			Send.PartyWantedClosedR(creature);
+			Send.PartyWantedClosedR(creature, true);
 		}
 
 		[PacketHandler(Op.PartyWantedShow)]
@@ -169,39 +220,55 @@ namespace Aura.Channel.Network.Handlers
 			var party = creature.Party;
 
 			if (!creature.IsInParty || creature != party.Leader)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to change ad setting illicitly.", client.Account.Id);
+				Send.PartyWantedOpenR(creature, false);
 				return;
+			}
 
 			party.Open();
 
-			Send.PartyWantedOpenR(creature);
+			Send.PartyWantedOpenR(creature, true);
 		}
 
 		[PacketHandler(Op.PartyChangeFinish)]
 		public void PartyChangeFinish(ChannelClient client, Packet packet)
 		{
+			var rule = (PartyFinishRule)packet.GetInt();
+
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if (!creature.IsInParty || party.Leader != creature)
+			if (!creature.IsInParty || creature != party.Leader)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to change party finish setting illigitly.", client.Account.Id);
+				Send.PartyChangeFinishR(creature, false);
 				return;
+			}
 
-			party.ChangeFinish(packet.GetInt());
+			party.ChangeFinish(rule);
 
-			Send.PartyChangeFinishR(creature);
+			Send.PartyChangeFinishR(creature, true);
 		}
 
 		[PacketHandler(Op.PartyChangeExp)]
 		public void PartyChangeExp(ChannelClient client, Packet packet)
 		{
+			var rule = (PartyExpSharing)packet.GetInt();
+
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
-			if (!creature.IsInParty || party.Leader != creature)
+			if (!creature.IsInParty || creature != party.Leader)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to change party exp setting illigitly.", client.Account.Id);
+				Send.PartyChangeExpR(creature, false);
 				return;
+			}
 
-			party.ChangeExp(packet.GetInt());
+			party.ChangeExp(rule);
 
-			Send.PartyChangeExpR(creature);
+			Send.PartyChangeExpR(creature, true);
 		}
 	}
 }

@@ -5,6 +5,7 @@ using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +30,6 @@ namespace Aura.Channel.World
 
 		public bool IsOpen { get; private set; }
 
-		public bool LeaderChangeAllowed { get; set; }
-
 		public PartyFinishRule Finish { get; private set; }
 		public PartyExpSharing ExpRule { get; private set; }
 
@@ -38,7 +37,7 @@ namespace Aura.Channel.World
 
 		public int MemberCount { get { lock (_sync) return _members.Count; } }
 
-		public bool HasPassword { get { return this.Password != ""; } }
+		public bool HasPassword { get { return !string.IsNullOrWhiteSpace(this.Password); } }
 
 		public long Id { get; private set; }
 
@@ -47,8 +46,6 @@ namespace Aura.Channel.World
 		/// </summary>
 		public Party()
 		{
-			this.Id = 0;
-			this.Password = "";
 		}
 
 		/// <summary>
@@ -64,7 +61,6 @@ namespace Aura.Channel.World
 			_occupiedSlots = new Dictionary<int, Creature>();
 			_occupiedSlots.Add(1, creature);
 
-			this.LeaderChangeAllowed = true;
 			this.Leader = creature;
 
 			creature.PartyPosition = 1;
@@ -93,39 +89,42 @@ namespace Aura.Channel.World
 				if (!_occupiedSlots.ContainsKey(i))
 					return i;
 			}
+
 			return 200;
 		}
 
 		/// <summary>
-		/// Get the next available leader
+		/// Sets next leader automatically.
 		/// </summary>
-		/// <remarks>Official gives the character that has been created for the longest period of time precedence</remarks>
+		/// <remarks>
+		/// Official gives the character that has been created for the
+		/// longest period of time precedence.
+		/// </remarks>
 		/// <returns></returns>
-		public Creature GetNextLeader()
+		public void AutoChooseNextLeader()
 		{
+			Creature newLeader;
+
 			lock (_sync)
 			{
 				var time = _members[0].CreationTime;
-				var result = _members[0];
+				newLeader = _members[0];
 
 				for (int i = 1; i < _members.Count; i++)
 				{
 					if (time < _members[i].CreationTime)
 					{
-						result = _members[i];
+						newLeader = _members[i];
 						time = _members[i].CreationTime;
 					}
 				}
-
-				return result;
 			}
+
+			this.SetLeader(newLeader);
 		}
 
 		public bool SetLeader(Creature creature)
 		{
-			if (!this.LeaderChangeAllowed)
-				return false;
-
 			lock (_sync)
 			{
 				if (!_members.Contains(creature))
@@ -143,7 +142,7 @@ namespace Aura.Channel.World
 			var creature = this.GetMember(entitiyId);
 
 			if (creature != null)
-				return SetLeader(creature);
+				return this.SetLeader(creature);
 
 			return false;
 		}
@@ -198,7 +197,7 @@ namespace Aura.Channel.World
 
 			if (this.Leader == creature)
 			{
-				this.SetLeader(this.GetNextLeader());
+				this.AutoChooseNextLeader();
 				this.Close();
 
 				Send.PartyChangeLeader(this);
@@ -218,20 +217,20 @@ namespace Aura.Channel.World
 
 		public void Close()
 		{
-			if (this.IsOpen)
-			{
-				this.IsOpen = false;
-				Send.PartyMemberWantedStateChange(this);
-			}
+			if (!this.IsOpen)
+				return;
+
+			this.IsOpen = false;
+			Send.PartyMemberWantedStateChange(this);
 		}
 
 		public void Open()
 		{
-			if (!this.IsOpen)
-			{
-				this.IsOpen = true;
-				Send.PartyMemberWantedStateChange(this);
-			}
+			if (this.IsOpen)
+				return;
+
+			this.IsOpen = true;
+			Send.PartyMemberWantedStateChange(this);
 		}
 
 		/// <summary>
@@ -282,26 +281,29 @@ namespace Aura.Channel.World
 
 		public void SetSize(int size)
 		{
-			if ((this.MemberCount <= size) /* && (Conf max size check here)*/)
-				this.MaxSize = size;
+			// TODO: Max size conf
+			this.MaxSize = Math2.Clamp(this.MemberCount, 8, size);
 		}
 
-		public void ChangeFinish(int rule)
+		public void ChangeFinish(PartyFinishRule rule)
 		{
-			this.Finish = (PartyFinishRule)rule;
+			this.Finish = rule;
 
 			Send.PartyFinishUpdate(this);
 		}
 
-		public void ChangeExp(int rule)
+		public void ChangeExp(PartyExpSharing rule)
 		{
-			this.ExpRule = (PartyExpSharing)rule;
+			this.ExpRule = rule;
 
 			Send.PartyExpUpdate(this);
 		}
 
 		public void SetPassword(string pass)
 		{
+			if (string.IsNullOrWhiteSpace(pass))
+				pass = null;
+
 			this.Password = pass;
 
 			if (this.IsOpen)
@@ -336,7 +338,7 @@ namespace Aura.Channel.World
 		/// </summary>
 		/// <remarks>3000 is a total guess as to the actual visible range.</remarks>
 		/// <param name="creature"></param>
-		/// <param name="range"></param>
+		/// <param name="range">Use 0 to get every member in the region.</param>
 		/// <returns></returns>
 		public List<Creature> GetMembersInRange(Creature creature, int range = -1)
 		{
@@ -350,12 +352,7 @@ namespace Aura.Channel.World
 			{
 				foreach (var member in _members.Where(a => a != creature && a.RegionId == this.Leader.RegionId))
 				{
-					if (range > 0)
-					{
-						if (pos.InRange(member.GetPosition(), range))
-							result.Add(member);
-					}
-					else
+					if (range == 0 || pos.InRange(member.GetPosition(), range))
 						result.Add(member);
 				}
 			}
@@ -364,7 +361,7 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns a list of all creatures in the same region as the specified creature.
+		/// Returns a list of all members in the same region as the specified creature.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <returns></returns>
@@ -374,7 +371,7 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns a list of all creatures in the region specified.
+		/// Returns a list of all members in the region specified.
 		/// </summary>
 		/// <param name="regionId"></param>
 		/// <returns></returns>
@@ -387,7 +384,6 @@ namespace Aura.Channel.World
 
 			return result;
 		}
-
 
 		/// <summary>
 		/// Deals with removing disconnected players from the party.
@@ -403,20 +399,17 @@ namespace Aura.Channel.World
 
 			if (this.MemberCount > 0)
 			{
+				// Choose new leader if the old one disconnected
 				if (this.Leader == creature)
 				{
-					this.SetLeader(GetNextLeader());
-
-					if (this.IsOpen)
-						this.Close();
+					this.AutoChooseNextLeader();
+					this.Close();
 
 					Send.PartyChangeLeader(this);
 				}
-				else
-				{
-					if (this.IsOpen)
-						Send.PartyMemberWantedRefresh(this);
-				}
+
+				if (this.IsOpen)
+					Send.PartyMemberWantedRefresh(this);
 
 				Send.PartyLeaveUpdate(creature, this);
 			}
@@ -434,7 +427,10 @@ namespace Aura.Channel.World
 			result.AppendFormat("{0:d2}", this.MemberCount);
 			result.AppendFormat("{0:d2}", this.MaxSize);
 			result.AppendFormat("{0}", (this.HasPassword ? "y" : "n"));
-			result.AppendFormat("{0}", (this.Type == PartyType.Dungeon ? "[Dungeon] " + this.Name + "/" + this.DungeonLevel + "-" + this.Info : this.Name));
+			if (this.Type == PartyType.Dungeon)
+				result.AppendFormat("{0}", "[Dungeon] " + this.Name + "/" + this.DungeonLevel + "-" + this.Info);
+			else
+				result.AppendFormat("{0}", this.Name);
 
 			return result.ToString();
 		}
