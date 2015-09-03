@@ -61,6 +61,15 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			/// Check name length
+			if (name.Length < 4 || name.Length > 32)
+			{
+				Log.Warning("PartyCreate: User '{0}' tried to create a party with invalid name.", client.Account.Id);
+				Send.CreatePartyR(creature, null);
+				return;
+			}
+
+			// Create
 			creature.Party = Party.Create(creature, type, name, dungeonLevel, info, password, maxSize);
 
 			Send.CreatePartyR(creature, creature.Party);
