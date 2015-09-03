@@ -8,6 +8,7 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
+using System.Collections.Generic;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -345,6 +346,24 @@ namespace Aura.Channel.Network.Handlers
 			party.ChangeExp(rule);
 
 			Send.PartyChangeExpR(creature, true);
+		}
+
+		/// <summary>
+		/// Request for list of open parties, sent when opening party board.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.PartyBoardRequest)]
+		public void PartyBoardRequest(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			var parties = new List<Party>();
+
+			Send.PartyBoardRequestR(creature, parties);
 		}
 	}
 }

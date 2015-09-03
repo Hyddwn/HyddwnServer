@@ -6,6 +6,7 @@ using Aura.Channel.World;
 using Aura.Channel.Network.Sending.Helpers;
 using Aura.Mabi.Network;
 using Aura.Mabi.Const;
+using System.Collections.Generic;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -400,6 +401,39 @@ namespace Aura.Channel.Network.Sending
 			packet.PutLong(0);
 
 			creature.Party.Broadcast(packet, true);
+		}
+
+		/// <summary>
+		/// Sends PartyBoardRequestR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="parties"></param>
+		public static void PartyBoardRequestR(Creature creature, List<Party> parties)
+		{
+			var packet = new Packet(Op.PartyBoardRequestR, creature.EntityId);
+
+			packet.PutInt(0); // count
+			{
+				// 002 [0040000000000105] Long   : 18014398509482245
+				// 003 [0010000000000004] Long   : 4503599600000020
+				// 004 [................] String : xxxxxxx
+				// 005 [..............01] Byte   : 1
+				// 006 [..............00] Byte   : 0
+				// 007 [..............00] Byte   : 0
+				// 008 [................] String : [S-xxxxx] note/xxxx
+				// 009 [................] String : Unrestricted
+				// 010 [................] String : Unrestricted
+				// 011 [................] String : 
+				// 012 [............0000] Short  : 0
+				// 013 [........00000000] Int    : 0
+				// 014 [........00000001] Int    : 1
+				// 015 [........00000008] Int    : 8
+				// 016 [..............00] Byte   : 0
+				// 017 [................] String : Ch1
+				// 018 [........00000001] Int    : 1
+			}
+
+			creature.Client.Send(packet);
 		}
 	}
 }

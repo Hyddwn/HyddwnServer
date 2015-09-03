@@ -355,6 +355,8 @@ namespace Aura.Mabi.Network
 		public const int PartyChangeExp = 0x8EB8;
 		public const int PartyChangeExpR = 0x8EB9;
 		public const int PartyExpUpdate = 0x8EBA;
+		public const int PartyBoardRequest = 0x8EBD;
+		public const int PartyBoardRequestR = 0x8EBE;
 		public const int GuildInfoNoGuild = 0x8EFB;
 		public const int OpenGuildPanel = 0x8EFC;
 		public const int GuildInfo = 0x8EFD;
