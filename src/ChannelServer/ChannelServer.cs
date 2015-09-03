@@ -266,6 +266,7 @@ namespace Aura.Channel
 
 			this.World = new WorldManager();
 			this.World.Initialize();
+			this.PartyManager.Initialize();
 
 			Log.Info("  done loading {0} regions.", this.World.Count);
 		}

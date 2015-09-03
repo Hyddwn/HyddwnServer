@@ -40,7 +40,10 @@ namespace Aura.Channel.World
 			}
 		}
 
-		public PartyManager()
+		/// <summary>
+		/// Initializes party manager.
+		/// </summary>
+		public void Initialize()
 		{
 			ChannelServer.Instance.Events.PlayerDisconnect += PlayerDisconnect;
 		}
