@@ -21,7 +21,6 @@ namespace Aura.Channel.Network.Handlers
 
 			var type = (PartyType)packet.GetInt();
 			var name = packet.GetString();
-			var unkStr = packet.GetString(); // ?
 			if (type == PartyType.Dungeon)
 			{
 				dungeonLevel = packet.GetString();
@@ -48,6 +47,42 @@ namespace Aura.Channel.Network.Handlers
 			Send.CreatePartyR(creature, creature.Party);
 
 			creature.Party.Open();
+		}
+
+		[PacketHandler(Op.PartyChangeSetting)]
+		public void PartyChangeSettings(ChannelClient client, Packet packet)
+		{
+			var dungeonLevel = "";
+			var info = "";
+
+			var type = (PartyType)packet.GetInt();
+			var name = packet.GetString();
+			if (type == PartyType.Dungeon)
+			{
+				dungeonLevel = packet.GetString();
+				info = packet.GetString();
+			}
+			var password = packet.GetString();
+			var maxSize = packet.GetInt();
+			var partyBoard = packet.GetBool();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
+
+			if (!creature.IsInParty || creature != party.Leader)
+			{
+				Log.Warning("PartyLeave: User '{0}' tried to change party settings illicitly.", client.Account.Id);
+				return;
+			}
+
+			party.ChangeSettings(type, name, dungeonLevel, info, password, maxSize);
+
+			if (partyBoard)
+			{
+				// TODO: Party board
+			}
+
+			Send.PartyChangeSettingR(creature);
 		}
 
 		[PacketHandler(Op.PartyJoin)]
@@ -164,43 +199,6 @@ namespace Aura.Channel.Network.Handlers
 			Send.PartyRemoved(target);
 
 			Send.PartyRemoveR(creature, true);
-		}
-
-		[PacketHandler(Op.PartyChangeSetting)]
-		public void PartyChangeSettings(ChannelClient client, Packet packet)
-		{
-			var dungeonLevel = "";
-			var info = "";
-
-			var type = (PartyType)packet.GetInt();
-			var name = packet.GetString();
-			var unkStr = packet.GetString(); // ?
-			if (type == PartyType.Dungeon)
-			{
-				dungeonLevel = packet.GetString();
-				info = packet.GetString();
-			}
-			var password = packet.GetString();
-			var maxSize = packet.GetInt();
-			var partyBoard = packet.GetBool();
-
-			var creature = client.GetCreatureSafe(packet.Id);
-			var party = creature.Party;
-
-			if (!creature.IsInParty || creature != party.Leader)
-			{
-				Log.Warning("PartyLeave: User '{0}' tried to change party settings illicitly.", client.Account.Id);
-				return;
-			}
-
-			party.ChangeSettings(type, name, dungeonLevel, info, password, maxSize);
-
-			if (partyBoard)
-			{
-				// TODO: Party board
-			}
-
-			Send.PartyChangeSettingR(creature);
 		}
 
 		[PacketHandler(Op.PartyChangePassword)]
