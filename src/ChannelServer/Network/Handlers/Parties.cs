@@ -33,6 +33,16 @@ namespace Aura.Channel.Network.Handlers
 			Send.SquadUnkR(creature, num);
 		}
 
+		/// <summary>
+		/// Sent to create a new party.
+		/// </summary>
+		/// <example>
+		/// 001 [........00000000] Int    : 0
+		/// 002 [................] String : test
+		/// 003 [................] String : 1234
+		/// 004 [........00000007] Int    : 7
+		/// 005 [..............00] Byte   : 0
+		/// </example>
 		[PacketHandler(Op.PartyCreate)]
 		public void PartyCreate(ChannelClient client, Packet packet)
 		{
@@ -78,6 +88,16 @@ namespace Aura.Channel.Network.Handlers
 			creature.Party.Open();
 		}
 
+		/// <summary>
+		/// Sent when changing the party settings.
+		/// </summary>
+		/// <example>
+		/// 001 [........00000000] Int    : 0
+		/// 002 [................] String : test
+		/// 003 [................] String : 1234
+		/// 004 [........00000007] Int    : 7
+		/// 005 [..............00] Byte   : 0
+		/// </example>
 		[PacketHandler(Op.PartyChangeSetting)]
 		public void PartyChangeSettings(ChannelClient client, Packet packet)
 		{
@@ -114,6 +134,12 @@ namespace Aura.Channel.Network.Handlers
 			Send.PartyChangeSettingR(creature);
 		}
 
+		/// <summary>
+		/// Request to join a party.
+		/// </summary>
+		/// <example>
+		/// ...
+		/// </example>
 		[PacketHandler(Op.PartyJoin)]
 		public void PartyJoin(ChannelClient client, Packet packet)
 		{
@@ -162,6 +188,12 @@ namespace Aura.Channel.Network.Handlers
 			Send.PartyCreateUpdate(creature);
 		}
 
+		/// <summary>
+		/// Sent when trying to leave party.
+		/// </summary>
+		/// <example>
+		/// ...
+		/// </example>
 		[PacketHandler(Op.PartyLeave)]
 		public void LeaveParty(ChannelClient client, Packet packet)
 		{
@@ -189,6 +221,12 @@ namespace Aura.Channel.Network.Handlers
 			Send.PartyLeaveR(creature, true);
 		}
 
+		/// <summary>
+		/// Request to remove someone from the party.
+		/// </summary>
+		/// <example>
+		/// ...
+		/// </example>
 		[PacketHandler(Op.PartyRemove)]
 		public void RemoveFromParty(ChannelClient client, Packet packet)
 		{
@@ -230,6 +268,12 @@ namespace Aura.Channel.Network.Handlers
 			Send.PartyRemoveR(creature, true);
 		}
 
+		/// <summary>
+		/// Sent when changing the party's password.
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : 2345
+		/// </example>
 		[PacketHandler(Op.PartyChangePassword)]
 		public void PartyChangePassword(ChannelClient client, Packet packet)
 		{
@@ -250,6 +294,12 @@ namespace Aura.Channel.Network.Handlers
 			Send.PartyChangePasswordR(creature, true);
 		}
 
+		/// <summary>
+		/// Sent when changing the leader in the party window.
+		/// </summary>
+		/// <example>
+		/// 001 [0010000000000004] Long   : 4503599627370500
+		/// </example>
 		[PacketHandler(Op.PartyChangeLeader)]
 		public void PartyChangeLeader(ChannelClient client, Packet packet)
 		{
@@ -272,6 +322,12 @@ namespace Aura.Channel.Network.Handlers
 
 		}
 
+		/// <summary>
+		/// Sent when deactivating "Member Wanted".
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
 		[PacketHandler(Op.PartyWantedHide)]
 		public void PartyWantedClose(ChannelClient client, Packet packet)
 		{
@@ -290,6 +346,12 @@ namespace Aura.Channel.Network.Handlers
 			Send.PartyWantedClosedR(creature, true);
 		}
 
+		/// <summary>
+		/// Sent when activating "Member Wanted".
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
 		[PacketHandler(Op.PartyWantedShow)]
 		public void PartyWantedOpen(ChannelClient client, Packet packet)
 		{
@@ -308,6 +370,12 @@ namespace Aura.Channel.Network.Handlers
 			Send.PartyWantedOpenR(creature, true);
 		}
 
+		/// <summary>
+		/// Sent when changing the finishing rule in the party window.
+		/// </summary>
+		/// <example>
+		/// 001 [................] Int : 1
+		/// </example>
 		[PacketHandler(Op.PartyChangeFinish)]
 		public void PartyChangeFinish(ChannelClient client, Packet packet)
 		{
@@ -328,6 +396,12 @@ namespace Aura.Channel.Network.Handlers
 			Send.PartyChangeFinishR(creature, true);
 		}
 
+		/// <summary>
+		/// Sent when changing the exp rule in the party window.
+		/// </summary>
+		/// <example>
+		/// 001 [................] Int : 1
+		/// </example>
 		[PacketHandler(Op.PartyChangeExp)]
 		public void PartyChangeExp(ChannelClient client, Packet packet)
 		{
@@ -354,8 +428,6 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// No parameters.
 		/// </example>
-		/// <param name="client"></param>
-		/// <param name="packet"></param>
 		[PacketHandler(Op.PartyBoardRequest)]
 		public void PartyBoardRequest(ChannelClient client, Packet packet)
 		{
