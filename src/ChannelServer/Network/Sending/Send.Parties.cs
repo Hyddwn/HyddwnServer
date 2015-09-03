@@ -59,10 +59,7 @@ namespace Aura.Channel.Network.Sending
 
 			packet.PutByte(party != null);
 			if (party != null)
-			{
-				packet.PutByte(1);
-				packet.BuildPartyInfo(party);
-			}
+				packet.AddParty(party);
 
 			creature.Client.Send(packet);
 		}
