@@ -12,6 +12,40 @@ namespace Aura.Channel.Network.Sending
 	public static partial class Send
 	{
 		/// <summary>
+		/// Sends SquadUnkR to creature's client.
+		/// </summary>
+		/// <remarks>
+		/// I assume this is a list of missions the squad can do?
+		/// </remarks>
+		/// <param name="creature"></param>
+		/// <param name="num"></param>
+		public static void SquadUnkR(Creature creature, int num)
+		{
+			var packet = new Packet(Op.SquadUnkR, creature.EntityId);
+			packet.PutInt(num);
+			packet.PutInt(0); // count
+			{
+				// 003 [........000AD959] Int    : 711001
+				// 004 [..............00] Byte   : 0
+				// 005 [................] String : Girgashiy
+				// 006 [..............01] Byte   : 1
+				// 007 [..............10] Byte   : 16
+				// 008 [........001B7740] Int    : 1800000
+				// 009 [........00011365] Int    : 70501
+				// 010 [................] String : These mystic beings appeared near Abb Neagh Lake, terrorizing the land with god-like powers of destruction. Fanatics have declared them sent from the heavens and branded them the Girgashiy, a race of divine beings. They must be stopped before they reach a populated area. Form a squad with any brave companions you can find, and end their reign of terror.
+				// 011 [................] String : Girgashiy;Girgashiy will perform a high jump before a very powerful area attack. Use this opportunity to attack them with Crusader Skills.
+				// 012 [................] String : 20000 Experience Point4000G
+				// 013 [........00000000] Int    : 0
+				// 014 [........00000000] Int    : 0
+				// 015 [........00000000] Int    : 0
+				// 016 [........00000000] Int    : 0
+				// 017 [..............00] Byte   : 0
+			}
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Response to the party creation request, sends the client the relevant party data.
 		/// </summary>
 		/// <remarks>

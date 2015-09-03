@@ -318,8 +318,8 @@ namespace Aura.Mabi.Network
 		public const int CompleteQuestR = 0x8CA4;
 		public const int GiveUpQuest = 0x8CA5;
 		public const int GiveUpQuestR = 0x8CA6;
-		public const int GirgashiyQuestRequest = 0x8D6E;
-		public const int GirgashiyQuestRequestR = 0x8D6F;
+		public const int SquadUnk = 0x8D6E;
+		public const int SquadUnkR = 0x8D6F;
 		public const int QuestStartPtj = 0x8D68;
 		public const int QuestEndPtj = 0x8D69;
 		public const int QuestUpdatePtj = 0x8D6A;

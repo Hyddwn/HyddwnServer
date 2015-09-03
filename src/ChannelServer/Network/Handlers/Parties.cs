@@ -13,6 +13,25 @@ namespace Aura.Channel.Network.Handlers
 {
 	public partial class ChannelServerHandlers : PacketHandlerManager<ChannelClient>
 	{
+		/// <summary>
+		/// Sent when opening the party creation.
+		/// </summary>
+		/// <remarks>
+		/// Request for squad information?
+		/// </remarks>
+		/// <example>
+		/// 001 [........00015E22] Int    : 89634
+		/// </example>
+		[PacketHandler(Op.SquadUnk)]
+		public void SquadUnk(ChannelClient client, Packet packet)
+		{
+			var num = packet.GetInt();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.SquadUnkR(creature, num);
+		}
+
 		[PacketHandler(Op.PartyCreate)]
 		public void PartyCreate(ChannelClient client, Packet packet)
 		{
