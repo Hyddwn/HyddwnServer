@@ -765,7 +765,7 @@ namespace Aura.Channel.World.Entities
 			this.Drops = new CreatureDrops(this);
 			this.DeadMenu = new CreatureDeadMenu(this);
 			this.AimMeter = new AimMeter(this);
-			this.Party = new Party();
+			this.Party = Party.CreateDummy(this);
 
 			this.Vars = new ScriptVariables();
 		}

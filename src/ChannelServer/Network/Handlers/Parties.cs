@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Network.Sending.Helpers;
+using Aura.Channel.World;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
@@ -15,8 +16,22 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.PartyCreate)]
 		public void PartyCreate(ChannelClient client, Packet packet)
 		{
+			var dungeonLevel = "";
+			var info = "";
+
+			var type = (PartyType)packet.GetInt();
+			var name = packet.GetString();
+			var unkStr = packet.GetString(); // ?
+			if (type == PartyType.Dungeon)
+			{
+				dungeonLevel = packet.GetString();
+				info = packet.GetString();
+			}
+			var password = packet.GetString();
+			var maxSize = packet.GetInt();
+			var partyBoard = packet.GetBool();
+
 			var creature = client.GetCreatureSafe(packet.Id);
-			var party = creature.Party;
 
 			// Needs check like the below, but do homesteads count as dynamic
 			// regions? I know you can't make a party in the shadow realm
@@ -28,12 +43,11 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			party.CreateParty(creature);
-			packet.ParseSettings(party);
+			creature.Party = Party.Create(creature, type, name, dungeonLevel, info, password, maxSize);
 
-			Send.CreatePartyR(creature, party);
+			Send.CreatePartyR(creature, creature.Party);
 
-			party.Open();
+			creature.Party.Open();
 		}
 
 		[PacketHandler(Op.PartyJoin)]
@@ -44,7 +58,7 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			// Cgeck party leader
+			// Check party leader
 			var partyLeader = ChannelServer.Instance.World.GetCreature(leaderEntityId);
 			if (partyLeader == null)
 			{
@@ -53,19 +67,35 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			var party = partyLeader.Party;
+
 			// Check if creature can join
-			if (creature.IsInParty || partyLeader != partyLeader.Party.Leader)
+			if (creature.IsInParty || partyLeader != party.Leader || !party.HasFreeSpace)
 			{
 				Log.Warning("PartyJoin: User '{0}' tried to join party illicitly.", client.Account.Id);
+				Send.PartyJoinR(creature, PartyJoinResult.Full);
 				return;
 			}
 
-			var result = partyLeader.Party.AddMember(creature, password);
+			// Check space
+			if (!party.HasFreeSpace)
+			{
+				Send.PartyJoinR(creature, PartyJoinResult.Full);
+				return;
+			}
 
-			Send.PartyJoinR(creature, result);
+			// Check password
+			if (!party.CheckPassword(password))
+			{
+				Send.PartyJoinR(creature, PartyJoinResult.WrongPass);
+				return;
+			}
 
-			if (result == PartyJoinResult.Success)
-				Send.PartyCreateUpdate(creature);
+			// Add
+			partyLeader.Party.AddMember(creature, password);
+
+			Send.PartyJoinR(creature, PartyJoinResult.Success);
+			Send.PartyCreateUpdate(creature);
 		}
 
 		[PacketHandler(Op.PartyLeave)]
@@ -139,6 +169,21 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.PartyChangeSetting)]
 		public void PartyChangeSettings(ChannelClient client, Packet packet)
 		{
+			var dungeonLevel = "";
+			var info = "";
+
+			var type = (PartyType)packet.GetInt();
+			var name = packet.GetString();
+			var unkStr = packet.GetString(); // ?
+			if (type == PartyType.Dungeon)
+			{
+				dungeonLevel = packet.GetString();
+				info = packet.GetString();
+			}
+			var password = packet.GetString();
+			var maxSize = packet.GetInt();
+			var partyBoard = packet.GetBool();
+
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
@@ -148,7 +193,12 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			packet.ParseSettings(party);
+			party.ChangeSettings(type, name, dungeonLevel, info, password, maxSize);
+
+			if (partyBoard)
+			{
+				// TODO: Party board
+			}
 
 			Send.PartyChangeSettingR(creature);
 		}

@@ -20,6 +20,8 @@ namespace Aura.Channel.World
 		private List<Creature> _members;
 		private Dictionary<int, Creature> _occupiedSlots;
 
+		public long Id { get; private set; }
+
 		public PartyType Type { get; private set; }
 		public string Name { get; private set; }
 		public string DungeonLevel { get; private set; }
@@ -39,49 +41,119 @@ namespace Aura.Channel.World
 
 		public bool HasPassword { get { return !string.IsNullOrWhiteSpace(this.Password); } }
 
-		public long Id { get; private set; }
+		public bool HasFreeSpace { get { return (this.MemberCount < this.MaxSize); } }
 
 		/// <summary>
-		/// Creates a dummy party.
+		/// Initializes party.
 		/// </summary>
-		public Party()
+		private Party()
 		{
+			_members = new List<Creature>();
+			_occupiedSlots = new Dictionary<int, Creature>();
 		}
 
 		/// <summary>
-		/// Fleshes the party out, with information from the CreateParty packet.
+		/// Creates new party with creature as leader.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="packet"></param>
-		public void CreateParty(Creature creature)
+		public static Party Create(Creature creature, PartyType type, string name, string dungeonLevel, string info, string password, int maxSize)
 		{
-			_members = new List<Creature>();
-			_members.Add(creature);
+			var party = new Party();
 
-			_occupiedSlots = new Dictionary<int, Creature>();
-			_occupiedSlots.Add(1, creature);
+			party.Id = ChannelServer.Instance.PartyManager.GetNextPartyID();
 
-			this.Leader = creature;
+			party._members.Add(creature);
+			party._occupiedSlots.Add(1, creature);
+			party.Leader = creature;
+			party.SetSettings(type, name, dungeonLevel, info, password, maxSize);
 
 			creature.PartyPosition = 1;
 
-			this.Id = ChannelServer.Instance.PartyManager.GetNextPartyID();
-
-			// TODO: add check/conf for maximum party size
+			return party;
 		}
 
+		/// <summary>
+		/// Creates new dummy party for creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static Party CreateDummy(Creature creature)
+		{
+			var party = new Party();
+
+			party._members.Add(creature);
+			party._occupiedSlots.Add(1, creature);
+			party.Leader = creature;
+
+			creature.PartyPosition = 1;
+
+			return party;
+		}
+
+		/// <summary>
+		/// Changes settings and updates clients.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="name"></param>
+		/// <param name="dungeonLevel"></param>
+		/// <param name="info"></param>
+		/// <param name="password"></param>
+		/// <param name="maxSize"></param>
+		public void ChangeSettings(PartyType type, string name, string dungeonLevel, string info, string password, int maxSize)
+		{
+			this.SetSettings(type, name, dungeonLevel, info, password, maxSize);
+
+			Send.PartyTypeUpdate(this);
+
+			if (this.IsOpen)
+				Send.PartyMemberWantedRefresh(this);
+
+			Send.PartySettingUpdate(this);
+		}
+
+		/// <summary>
+		/// Sets given options without updating the clients.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="name"></param>
+		/// <param name="dungeonLevel"></param>
+		/// <param name="info"></param>
+		/// <param name="password"></param>
+		/// <param name="maxSize"></param>
+		private void SetSettings(PartyType type, string name, string dungeonLevel, string info, string password, int maxSize)
+		{
+			this.Type = type;
+			this.Name = name;
+			this.DungeonLevel = (string.IsNullOrWhiteSpace(password) ? null : password);
+			this.Info = (string.IsNullOrWhiteSpace(password) ? null : password);
+			this.Password = (string.IsNullOrWhiteSpace(password) ? null : password);
+			this.MaxSize = Math2.Clamp(this.MemberCount, 8, maxSize);
+		}
+
+		/// <summary>
+		/// Returns party member by entity id, or null if it doesn't exist.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
 		public Creature GetMember(long entityId)
 		{
 			lock (_sync)
 				return _members.FirstOrDefault(a => a.EntityId == entityId);
 		}
 
+		/// <summary>
+		/// Returns list of all members.
+		/// </summary>
+		/// <returns></returns>
 		public Creature[] GetMembers()
 		{
 			lock (_sync)
 				return _members.ToArray();
 		}
 
+		/// <summary>
+		/// Returns first available slot.
+		/// </summary>
+		/// <returns></returns>
 		private int GetAvailableSlot()
 		{
 			for (int i = 1; i < this.MaxSize; i++)
@@ -123,6 +195,11 @@ namespace Aura.Channel.World
 			this.SetLeader(newLeader);
 		}
 
+		/// <summary>
+		/// Sets leader to given creature, if possible.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <returns></returns>
 		public bool SetLeader(Creature creature)
 		{
 			lock (_sync)
@@ -137,6 +214,11 @@ namespace Aura.Channel.World
 			return true;
 		}
 
+		/// <summary>
+		/// Sets leader to given entity, if possible.
+		/// </summary>
+		/// <param name="entitiyId"></param>
+		/// <returns></returns>
 		public bool SetLeader(long entitiyId)
 		{
 			var creature = this.GetMember(entitiyId);
@@ -147,23 +229,25 @@ namespace Aura.Channel.World
 			return false;
 		}
 
-		public PartyJoinResult AddMember(Creature creature, string password)
+		/// <summary>
+		/// Adds creature to party and updates the clients.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="password"></param>
+		/// <returns></returns>
+		public void AddMember(Creature creature, string password)
 		{
-			if (this.MemberCount >= this.MaxSize)
-				return PartyJoinResult.Full;
-
-			if (this.Password != password)
-				return PartyJoinResult.WrongPass;
-
 			this.AddMemberSilent(creature);
 			Send.PartyJoinUpdateMembers(creature);
 
 			if (this.IsOpen)
 				Send.PartyMemberWantedRefresh(this);
-
-			return PartyJoinResult.Success;
 		}
 
+		/// <summary>
+		/// Adds creature to party without updating the clients.
+		/// </summary>
+		/// <param name="creature"></param>
 		public void AddMemberSilent(Creature creature)
 		{
 			lock (_sync)
@@ -177,6 +261,10 @@ namespace Aura.Channel.World
 			}
 		}
 
+		/// <summary>
+		/// Removes creature from party if it's in it and updates the clients.
+		/// </summary>
+		/// <param name="creature"></param>
 		public void RemoveMember(Creature creature)
 		{
 			this.RemoveMemberSilent(creature);
@@ -204,6 +292,10 @@ namespace Aura.Channel.World
 			}
 		}
 
+		/// <summary>
+		/// Removes creature from party without updating the clients.
+		/// </summary>
+		/// <param name="creature"></param>
 		public void RemoveMemberSilent(Creature creature)
 		{
 			lock (_sync)
@@ -212,9 +304,12 @@ namespace Aura.Channel.World
 				_occupiedSlots.Remove(creature.PartyPosition);
 			}
 
-			creature.Party = new Party();
+			creature.Party = Party.CreateDummy(creature);
 		}
 
+		/// <summary>
+		/// Closes members wanted ad.
+		/// </summary>
 		public void Close()
 		{
 			if (!this.IsOpen)
@@ -224,6 +319,9 @@ namespace Aura.Channel.World
 			Send.PartyMemberWantedStateChange(this);
 		}
 
+		/// <summary>
+		/// Opens members wanted ad.
+		/// </summary>
 		public void Open()
 		{
 			if (this.IsOpen)
@@ -255,6 +353,10 @@ namespace Aura.Channel.World
 			}
 		}
 
+		/// <summary>
+		/// Sets party type.
+		/// </summary>
+		/// <param name="type"></param>
 		public void SetType(PartyType type)
 		{
 			if (type == this.Type)
@@ -264,27 +366,50 @@ namespace Aura.Channel.World
 			Send.PartyTypeUpdate(this);
 		}
 
+		/// <summary>
+		/// Sets party name.
+		/// </summary>
+		/// <remarks>
+		/// TODO: Kinda redundant, use property?
+		/// </remarks>
+		/// <param name="name"></param>
 		public void SetName(string name)
 		{
 			this.Name = name;
 		}
 
+		/// <summary>
+		/// Sets dungeon level.
+		/// </summary>
+		/// <param name="dungeonLevel"></param>
 		public void SetDungeonLevel(string dungeonLevel)
 		{
 			this.DungeonLevel = dungeonLevel;
 		}
 
+		/// <summary>
+		/// Sets party info.
+		/// </summary>
+		/// <param name="info"></param>
 		public void SetInfo(string info)
 		{
 			this.Info = info;
 		}
 
+		/// <summary>
+		/// Sets party's max size.
+		/// </summary>
+		/// <param name="size"></param>
 		public void SetSize(int size)
 		{
 			// TODO: Max size conf
 			this.MaxSize = Math2.Clamp(this.MemberCount, 8, size);
 		}
 
+		/// <summary>
+		/// Change finishing rule.
+		/// </summary>
+		/// <param name="rule"></param>
 		public void ChangeFinish(PartyFinishRule rule)
 		{
 			this.Finish = rule;
@@ -292,6 +417,10 @@ namespace Aura.Channel.World
 			Send.PartyFinishUpdate(this);
 		}
 
+		/// <summary>
+		/// Changes exp sharing rule.
+		/// </summary>
+		/// <param name="rule"></param>
 		public void ChangeExp(PartyExpSharing rule)
 		{
 			this.ExpRule = rule;
@@ -299,6 +428,10 @@ namespace Aura.Channel.World
 			Send.PartyExpUpdate(this);
 		}
 
+		/// <summary>
+		/// Sets party's password, set to empty string or null to disable.
+		/// </summary>
+		/// <param name="pass"></param>
 		public void SetPassword(string pass)
 		{
 			if (string.IsNullOrWhiteSpace(pass))
@@ -433,6 +566,18 @@ namespace Aura.Channel.World
 				result.AppendFormat("{0}", this.Name);
 
 			return result.ToString();
+		}
+
+		/// <summary>
+		/// Returns true if password is correct or none is set.
+		/// </summary>
+		/// <returns></returns>
+		public bool CheckPassword(string password)
+		{
+			if (string.IsNullOrWhiteSpace(this.Password))
+				return true;
+
+			return (password == this.Password);
 		}
 	}
 }

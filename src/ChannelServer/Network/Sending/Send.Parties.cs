@@ -135,7 +135,9 @@ namespace Aura.Channel.Network.Sending
 		/// <summary>
 		/// Updates members on changes to the party settings
 		/// </summary>
-		/// <remarks>(apparently they only get to know about name changes?)</remarks>
+		/// <remarks>
+		/// Apparently they only get to know about name changes?
+		/// </remarks>
 		/// <param name="party"></param>
 		public static void PartySettingUpdate(Party party)
 		{

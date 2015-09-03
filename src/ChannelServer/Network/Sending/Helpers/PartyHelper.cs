@@ -10,38 +10,6 @@ namespace Aura.Channel.Network.Sending.Helpers
 {
 	public static class PartyHelper
 	{
-		public static void ParseSettings(this Packet packet, Party party)
-		{
-			var type = (PartyType)packet.GetInt();
-			var name = packet.GetString();
-			var unkStr = packet.GetString(); // ?
-			var dungeonLevel = "";
-			var info = "";
-			if (type == PartyType.Dungeon)
-			{
-				dungeonLevel = packet.GetString();
-				info = packet.GetString();
-			}
-			var password = packet.GetString();
-			var maxSize = packet.GetInt();
-			var partyBoard = packet.GetBool();
-
-			party.SetType(type);
-			party.SetName(name);
-			if (type == PartyType.Dungeon)
-			{
-				party.SetDungeonLevel(dungeonLevel);
-				party.SetInfo(info);
-			}
-			party.SetPassword(password);
-			party.SetSize(maxSize);
-
-			Send.PartySettingUpdate(party);
-
-			if (party.IsOpen)
-				Send.PartyMemberWantedRefresh(party);
-		}
-
 		/// <summary>
 		/// Constructs the party info packet, because this is used in a number of packets.
 		/// </summary>
