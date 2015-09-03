@@ -554,18 +554,7 @@ namespace Aura.Channel.World
 		/// </summary>
 		public override string ToString()
 		{
-			var result = new StringBuilder();
-
-			result.AppendFormat("p{ 0}", (int)this.Type);
-			result.AppendFormat("{0:d2}", this.MemberCount);
-			result.AppendFormat("{0:d2}", this.MaxSize);
-			result.AppendFormat("{0}", (this.HasPassword ? "y" : "n"));
-			if (this.Type == PartyType.Dungeon)
-				result.AppendFormat("{0}", "[Dungeon] " + this.Name + "/" + this.DungeonLevel + "-" + this.Info);
-			else
-				result.AppendFormat("{0}", this.Name);
-
-			return result.ToString();
+			return string.Format("p{0}{1:d2}{2:d2}{3}{4}", (int)this.Type, this.MemberCount, this.MaxSize, (this.HasPassword ? "y" : "n"), this.Name);
 		}
 
 		/// <summary>
