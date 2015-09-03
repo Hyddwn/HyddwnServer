@@ -15,7 +15,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 		/// </summary>
 		/// <param name="party"></param>
 		/// <param name="packet"></param>
-		public static void BuildPartyInfo(this Packet packet, Party party)
+		public static void AddParty(this Packet packet, Party party)
 		{
 			packet.PutLong(party.Id);
 			packet.PutString(party.Name);

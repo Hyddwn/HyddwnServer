@@ -60,7 +60,7 @@ namespace Aura.Channel.World
 		{
 			var party = new Party();
 
-			party.Id = ChannelServer.Instance.PartyManager.GetNextPartyID();
+			party.Id = ChannelServer.Instance.PartyManager.GetNextPartyId();
 
 			party._members.Add(creature);
 			party._occupiedSlots.Add(1, creature);

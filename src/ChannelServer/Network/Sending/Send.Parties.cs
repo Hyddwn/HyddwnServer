@@ -80,7 +80,7 @@ namespace Aura.Channel.Network.Sending
 
 			packet.PutByte((byte)result);
 			if (result == PartyJoinResult.Success)
-				packet.BuildPartyInfo(creature.Party);
+				packet.AddParty(creature.Party);
 
 			creature.Client.Send(packet);
 
@@ -187,7 +187,7 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet(Op.PartyChangeSettingR, creature.EntityId);
 
-			packet.BuildPartyInfo(creature.Party);
+			packet.AddParty(creature.Party);
 
 			creature.Client.Send(packet);
 		}

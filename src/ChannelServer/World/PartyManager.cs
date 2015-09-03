@@ -62,7 +62,7 @@ namespace Aura.Channel.World
 		/// Passes the next available ID for use in a party.
 		/// </summary>
 		/// <returns></returns>
-		public long GetNextPartyID()
+		public long GetNextPartyId()
 		{
 			lock (_sync)
 			{
