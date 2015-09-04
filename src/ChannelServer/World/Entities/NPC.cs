@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Aura.Mabi.Const;
 using Aura.Channel.Scripting.Scripts;
@@ -289,54 +290,49 @@ namespace Aura.Channel.World.Entities
 
 			// Exp
 			var exp = (long)(this.RaceData.Exp * ChannelServer.Instance.Conf.World.ExpRate);
+			var expRule = killer.Party.ExpRule;
 
-			if (killer.IsInParty)
+			if (!killer.IsInParty || expRule == PartyExpSharing.AllToFinish)
 			{
-				if (killer.Party.ExpRule != PartyExpSharing.AllToFinish)
+				killer.GiveExp(exp);
+				Send.CombatMessage(killer, "+{0} EXP", exp);
+			}
+			else
+			{
+				var members = killer.Party.GetMembers();
+
+				// TODO: Optional party bonus.
+
+				if (expRule == PartyExpSharing.Equal)
 				{
-					// Check to see who is actually in range to recieve experience (official simply ALWAYS divides by party member total, even if they cannot recieve the experience.
-					var expEligibleMembers = killer.Party.GetMembersInRange(killer);
+					// official simply ALWAYS divides by party member total,
+					// even if they cannot recieve the experience.
+					// ---
+					// What does that ^ mean, you won't get the exp if you're
+					// out of range? -- exec
+					var eaExp = exp / members.Length;
 
-					if (expEligibleMembers.Count > 0)
+					foreach (var member in members)
 					{
-						if (killer.Party.ExpRule == PartyExpSharing.Equal)
-						{
-							// divide by number of people in the party who are in the region
-							exp /= (expEligibleMembers.Count + 1);
+						member.GiveExp(eaExp);
+						Send.CombatMessage(member, "+{0} EXP", eaExp);
+					}
+				}
+				else if (expRule == PartyExpSharing.MoreToFinish)
+				{
+					exp /= 2;
+					var eaExp = exp / members.Length;
 
-							foreach (Creature member in expEligibleMembers)
-							{
-								member.GiveExp(exp);
-								Send.CombatMessage(member, "+{0} EXP", exp);
-							}
+					killer.GiveExp(exp);
+					Send.CombatMessage(killer, "+{0} EXP", exp);
 
-						}
-
-						if (killer.Party.ExpRule == PartyExpSharing.MoreToFinish)
-						{
-							exp /= 2;
-							// divide by number of people in the party who are in the region
-							var share = exp / (expEligibleMembers.Count + 1);
-
-							// murderer gets an extra share of the exp.
-							exp += share;
-
-							foreach (Creature member in expEligibleMembers)
-							{
-								member.GiveExp(share);
-								Send.CombatMessage(member, "+{0} EXP", share);
-							}
-
-						}
+					foreach (var member in members.Where(a => a != killer))
+					{
+						member.GiveExp(eaExp);
+						Send.CombatMessage(member, "+{0} EXP", eaExp);
 					}
 				}
 			}
-
-
-			killer.GiveExp(exp);
-			Send.CombatMessage(killer, "+{0} EXP", exp);
-
-
 		}
 
 		/// <summary>
