@@ -151,6 +151,16 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns list of all members, sorted by their position in the party.
+		/// </summary>
+		/// <returns></returns>
+		public Creature[] GetSortedMembers()
+		{
+			lock (_sync)
+				return _members.OrderBy(a => a.PartyPosition).ToArray();
+		}
+
+		/// <summary>
 		/// Returns first available slot.
 		/// </summary>
 		/// <returns></returns>

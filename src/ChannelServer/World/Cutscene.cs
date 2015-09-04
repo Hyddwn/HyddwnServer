@@ -70,7 +70,7 @@ namespace Aura.Channel.World
 		{
 			var result = new Cutscene(name, creature);
 
-			//var partyMembers = creature.Party.GetMembers();
+			var partyMembers = creature.Party.GetSortedMembers();
 			var dummy = new NPC();
 
 			foreach (var actorName in result.Data.Actors)
@@ -100,9 +100,10 @@ namespace Aura.Channel.World
 					int idx;
 					if (!int.TryParse(actorName.Substring("player".Length), out idx))
 						Log.Warning("Cutscene.FromData: Invalid party member actor name '{0}'.", actorName);
-					//else
-					//	actor = partyMembers[idx];
-					actor = creature; // tmp
+					else if (idx > partyMembers.Length - 1)
+						Log.Warning("Cutscene.FromData: Index out of party member range '{0}/{1}'.", idx, partyMembers.Length);
+					else
+						actor = partyMembers[idx];
 				}
 				else
 					Log.Warning("Cutscene.FromData: Unknown kind of actor ({0}).", actorName);
