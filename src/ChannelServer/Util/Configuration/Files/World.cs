@@ -46,6 +46,8 @@ namespace Aura.Channel.Util.Configuration.Files
 		public bool PrivateDungeons { get; protected set; }
 		public bool EasySwitch { get; protected set; }
 
+		public float PartyExpBonus { get; protected set; }
+
 		public void Load()
 		{
 			this.Require("system/conf/world.conf");
@@ -88,6 +90,8 @@ namespace Aura.Channel.Util.Configuration.Files
 
 			this.PrivateDungeons = this.GetBool("private_dungeons", false);
 			this.EasySwitch = this.GetBool("easy_switch", false);
+
+			this.PartyExpBonus = this.GetFloat("party_exp_bonus", 0);
 		}
 	}
 }

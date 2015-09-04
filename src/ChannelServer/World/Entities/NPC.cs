@@ -301,7 +301,14 @@ namespace Aura.Channel.World.Entities
 			{
 				var members = killer.Party.GetMembers();
 
-				// TODO: Optional party bonus.
+				// Apply optional exp bonus
+				if (members.Length > 1)
+				{
+					var extra = members.Length - 1;
+					var bonus = ChannelServer.Instance.Conf.World.PartyExpBonus;
+
+					exp += (long)(exp * ((extra * bonus) / 100f));
+				}
 
 				if (expRule == PartyExpSharing.Equal)
 				{
