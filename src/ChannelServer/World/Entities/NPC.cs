@@ -300,6 +300,9 @@ namespace Aura.Channel.World.Entities
 			else
 			{
 				var members = killer.Party.GetMembers();
+				var eaExp = 0L;
+				var killerExp = 0L;
+				var killerPos = killer.GetPosition();
 
 				// Apply optional exp bonus
 				if (members.Length > 1)
@@ -310,34 +313,29 @@ namespace Aura.Channel.World.Entities
 					exp += (long)(exp * ((extra * bonus) / 100f));
 				}
 
+				// Official simply ALWAYS divides by party member total,
+				// even if they cannot recieve the experience.
 				if (expRule == PartyExpSharing.Equal)
 				{
-					// official simply ALWAYS divides by party member total,
-					// even if they cannot recieve the experience.
-					// ---
-					// What does that ^ mean, you won't get the exp if you're
-					// out of range? -- exec
-					var eaExp = exp / members.Length;
-
-					foreach (var member in members)
-					{
-						member.GiveExp(eaExp);
-						Send.CombatMessage(member, "+{0} EXP", eaExp);
-					}
+					eaExp = exp / members.Length;
+					killerExp = eaExp;
 				}
 				else if (expRule == PartyExpSharing.MoreToFinish)
 				{
 					exp /= 2;
-					var eaExp = exp / members.Length;
+					eaExp = exp / members.Length;
+					killerExp = exp;
+				}
 
-					killer.GiveExp(exp);
-					Send.CombatMessage(killer, "+{0} EXP", exp);
+				// Killer's exp
+				killer.GiveExp(killerExp);
+				Send.CombatMessage(killer, "+{0} EXP", killerExp);
 
-					foreach (var member in members.Where(a => a != killer))
-					{
-						member.GiveExp(eaExp);
-						Send.CombatMessage(member, "+{0} EXP", eaExp);
-					}
+				// Exp for members in range of killer, the range is unofficial
+				foreach (var member in members.Where(a => a != killer && a.GetPosition().InRange(killerPos, 3000)))
+				{
+					member.GiveExp(eaExp);
+					Send.CombatMessage(member, "+{0} EXP", eaExp);
 				}
 			}
 		}
