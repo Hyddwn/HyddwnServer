@@ -343,6 +343,7 @@ namespace Aura.Mabi.Network
 		public const int PartyChangeLeader = 0x8EA5;
 		public const int PartyChangeLeaderR = 0x8EA6;
 		public const int PartyChangeLeaderUpdate = 0x8EA7;
+		public const int PartyChat = 0x8EA8;
 		public const int PartyWantedShow = 0x8EA9;
 		public const int PartyWantedShowR = 0x8EAA;
 		public const int PartyWantedOpened = 0x8EAB;

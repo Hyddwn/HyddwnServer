@@ -47,5 +47,16 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.VisualChat(creature, url, width, height);
 		}
+
+		[PacketHandler(Op.PartyChat)]
+		public void PartyChat(ChannelClient client, Packet packet)
+		{
+			var msg = packet.GetString();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			if (creature.IsInParty)
+				Send.PartyChat(creature, msg);
+		}
 	}
 }

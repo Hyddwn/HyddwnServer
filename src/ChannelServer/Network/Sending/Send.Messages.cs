@@ -127,6 +127,20 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Broadcasts PartyChat to all party members.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="msg"></param>
+		public static void PartyChat(Creature creature, string msg)
+		{
+			var packet = new Packet(Op.PartyChat, creature.EntityId);
+			packet.PutLong(creature.EntityId);
+			packet.PutString(msg);
+
+			creature.Party.Broadcast(packet, true);
+		}
+
+		/// <summary>
 		/// Sends MsgBox to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
