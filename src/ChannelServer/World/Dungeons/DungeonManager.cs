@@ -297,7 +297,7 @@ namespace Aura.Channel.World.Dungeons
 					var regionId = dungeon.Regions.First().Id;
 
 					// Original creature is always a member of the dungeon party.
-					foreach (Creature member in dungeon.Party)
+					foreach (var member in dungeon.Party)
 					{
 						var pos = member.GetPosition();
 						member.Warp(regionId, pos);

@@ -224,13 +224,12 @@ namespace Aura.Channel.Network.Sending
 		/// Sends CutsceneEnd to cutscene's leader.
 		/// </summary>
 		/// <param name="cutscene"></param>
-		public static void CutsceneEnd(Cutscene cutscene)
+		public static void CutsceneEnd(Creature creature)
 		{
 			var packet = new Packet(Op.CutsceneEnd, MabiId.Channel);
-			packet.PutLong(cutscene.Leader.EntityId);
+			packet.PutLong(creature.EntityId);
 
-			// TODO: Send to whole party?
-			cutscene.Leader.Client.Send(packet);
+			creature.Client.Send(packet);
 		}
 
 		/// <summary>
@@ -241,12 +240,12 @@ namespace Aura.Channel.Network.Sending
 		/// the character after watching the cutscene.
 		/// </remarks>
 		/// <param name="cutscene"></param>
-		public static void CutsceneUnk(Cutscene cutscene)
+		public static void CutsceneUnk(Creature creature)
 		{
 			var packet = new Packet(Op.CutsceneUnk, MabiId.Channel);
-			packet.PutLong(cutscene.Leader.EntityId);
+			packet.PutLong(creature.EntityId);
 
-			cutscene.Leader.Client.Send(packet);
+			creature.Client.Send(packet);
 		}
 
 		/// <summary>

@@ -16,7 +16,8 @@ namespace Aura.Channel.World
 {
 	public class Cutscene
 	{
-		public Action<Cutscene> _callback;
+		private Action<Cutscene> _callback;
+		private Creature[] _viewers;
 
 		/// <summary>
 		/// Name of the cutscene file.
@@ -153,11 +154,14 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void Play()
 		{
-			this.Leader.Temp.CurrentCutscene = this;
+			_viewers = this.Leader.Party.GetMembers();
 
-			// TODO: All viewers
-			this.Leader.Lock(Locks.Default, true);
-			Send.PlayCutscene(this.Leader, this);
+			foreach (var member in _viewers)
+			{
+				member.Temp.CurrentCutscene = this;
+				member.Lock(Locks.Default, true);
+				Send.PlayCutscene(member, this);
+			}
 		}
 
 		/// <summary>
@@ -192,16 +196,20 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void Finish()
 		{
-			Send.CutsceneEnd(this);
-			this.Leader.Unlock(Locks.Default, true);
-			Send.CutsceneUnk(this);
+			foreach (var member in _viewers)
+			{
+				Send.CutsceneEnd(member);
+				member.Unlock(Locks.Default, true);
+				Send.CutsceneUnk(member);
+			}
 
 			// Call callback before setting cutscene to null so it can
 			// be referenced from the core during the callback.
 			if (_callback != null)
 				_callback(this);
 
-			this.Leader.Temp.CurrentCutscene = null;
+			foreach (var member in _viewers)
+				member.Temp.CurrentCutscene = null;
 		}
 	}
 }

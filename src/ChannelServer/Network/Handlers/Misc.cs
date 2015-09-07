@@ -156,8 +156,8 @@ namespace Aura.Channel.Network.Handlers
 
 			if (creature.Temp.CurrentCutscene.Leader != creature)
 			{
-				// TODO: Do we have to send the no-leader message here?
-				Log.Warning("FinishedCutscene: Player '{0}' tried to finish cutscene without being the leader.", creature.EntityIdHex);
+				// Unofficial
+				Send.Notice(creature, Localization.Get("Someone else is still watching the cutscene."));
 				return;
 			}
 
