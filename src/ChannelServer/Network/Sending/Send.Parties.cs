@@ -249,16 +249,25 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Opens and closes the party's Member Wanted window.
+		/// Opens the party's Member Wanted window.
 		/// </summary>
 		/// <param name="party"></param>
-		public static void PartyMemberWantedStateChange(Party party)
+		public static void PartyWantedOpened(Party party)
 		{
-			var packet = new Packet((party.IsOpen ? Op.PartyWantedOpened : Op.PartyWantedClosed), 0);
+			var packet = new Packet(Op.PartyWantedOpened, 0);
 
 			party.Broadcast(packet, true);
+		}
 
-			PartyMemberWantedRefresh(party);
+		/// <summary>
+		/// Closes the party's Member Wanted window.
+		/// </summary>
+		/// <param name="party"></param>
+		public static void PartyWantedClosed(Party party)
+		{
+			var packet = new Packet(Op.PartyWantedClosed, 0);
+
+			party.Broadcast(packet, true);
 		}
 
 		/// <summary>

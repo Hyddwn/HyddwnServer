@@ -236,6 +236,8 @@ namespace Aura.Channel.World
 			if (creature != null)
 				return this.SetLeader(creature);
 
+			this.Close();
+
 			return false;
 		}
 
@@ -326,7 +328,9 @@ namespace Aura.Channel.World
 				return;
 
 			this.IsOpen = false;
-			Send.PartyMemberWantedStateChange(this);
+
+			Send.PartyWantedClosed(this);
+			Send.PartyMemberWantedRefresh(this);
 		}
 
 		/// <summary>
@@ -338,7 +342,9 @@ namespace Aura.Channel.World
 				return;
 
 			this.IsOpen = true;
-			Send.PartyMemberWantedStateChange(this);
+
+			Send.PartyWantedOpened(this);
+			Send.PartyMemberWantedRefresh(this);
 		}
 
 		/// <summary>
