@@ -218,8 +218,17 @@ namespace Aura.Channel.World
 					return false;
 			}
 
+			// Close ad if it was open and reopen it after changing
+			// leader, to make it appear above his head instead.
+			var wasOpen = this.IsOpen;
+			if (wasOpen)
+				this.Close();
+
 			this.Leader = creature;
 			Send.PartyChangeLeader(this);
+
+			if (wasOpen)
+				this.Open();
 
 			return true;
 		}
