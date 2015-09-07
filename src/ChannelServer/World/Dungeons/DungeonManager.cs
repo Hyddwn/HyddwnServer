@@ -252,6 +252,7 @@ namespace Aura.Channel.World.Dungeons
 
 			var dungeonName = parameter.XML.Attribute("dungeonname").Value.ToLower();
 
+			// Check script
 			var dungeonScript = ChannelServer.Instance.ScriptManager.DungeonScripts.Get(dungeonName);
 			if (dungeonScript == null)
 			{
@@ -260,18 +261,20 @@ namespace Aura.Channel.World.Dungeons
 				return false;
 			}
 
+			// Check route
 			if (!dungeonScript.Route(creature, item, ref dungeonName))
 			{
 				Send.Notice(creature, "Routing fail.");
 				return false;
 			}
 
-			if (creature.IsInParty)
-				if (creature.Party.Leader != creature)
-				{
-					Send.Notice(creature, "You're not the leader. Only the leader may enter the dungeon. [placeholder message]");
-					return false;
-				}
+			// Check party
+			if (creature.IsInParty && creature.Party.Leader != creature)
+			{
+				// Unofficial
+				Send.Notice(creature, Localization.Get("Only the leader may create the dungeon."));
+				return false;
+			}
 
 			return this.CreateDungeonAndWarp(dungeonName, item.Info.Id, creature);
 		}
