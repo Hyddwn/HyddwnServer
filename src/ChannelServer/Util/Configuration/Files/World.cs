@@ -36,6 +36,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public bool NoDurabilityLoss { get; protected set; }
 		public bool UnlimitedUpgrades { get; protected set; }
 		public bool UncapProficiency { get; protected set; }
+		public bool UnlimitedDyes { get; protected set; }
 
 		public TimeSpan RebirthTime { get; protected set; }
 
@@ -79,6 +80,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.NoDurabilityLoss = this.GetBool("no_durability_loss", false);
 			this.UnlimitedUpgrades = this.GetBool("unlimited_upgrades", false);
 			this.UncapProficiency = this.GetBool("uncap_proficiency", false);
+			this.UnlimitedDyes = this.GetBool("unlimited_dyes", false);
 
 			this.RebirthTime = TimeSpan.FromDays(this.GetInt("rebirth_time", 6));
 
