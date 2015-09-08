@@ -468,7 +468,7 @@ namespace Aura.Channel.Network.Sending
 			packet.PutInt(x);
 			packet.PutInt(y);
 
-			creature.Client.Send(packet);
+			creature.Region.Broadcast(packet, creature);
 		}
 	}
 
