@@ -1652,7 +1652,7 @@ namespace Aura.Channel.Util
 				return CommandResult.Okay;
 			}
 
-			target.Party.SetSize(size);
+			target.Party.SetMaxSize(size);
 
 			Send.SystemMessage(sender, Localization.Get("Changed party size to {0}."), target.Party.MaxSize);
 			if (sender != target)

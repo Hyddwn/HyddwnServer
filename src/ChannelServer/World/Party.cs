@@ -20,27 +20,75 @@ namespace Aura.Channel.World
 		private List<Creature> _members;
 		private Dictionary<int, Creature> _occupiedSlots;
 
+		/// <summary>
+		/// Party's unique identifier (comparable to EntityId).
+		/// </summary>
 		public long Id { get; private set; }
 
+		/// <summary>
+		/// Party type.
+		/// </summary>
 		public PartyType Type { get; private set; }
+
+		/// <summary>
+		/// Party's name.
+		/// </summary>
 		public string Name { get; private set; }
+
+		/// <summary>
+		/// Dungeon level.
+		/// </summary>
 		public string DungeonLevel { get; private set; }
+
+		/// <summary>
+		/// Dungeon info.
+		/// </summary>
 		public string Info { get; private set; }
+
+		/// <summary>
+		/// Password necessary to join the party,
+		/// null or empty for none.
+		/// </summary>
 		public string Password { get; private set; }
 
+		/// <summary>
+		/// Maximum allowed number of members.
+		/// </summary>
 		public int MaxSize { get; private set; }
 
+		/// <summary>
+		/// True if the party recruitment window is open.
+		/// </summary>
 		public bool IsOpen { get; private set; }
 
+		/// <summary>
+		/// Rule about who gets to finish enemies.
+		/// </summary>
 		public PartyFinishRule Finish { get; private set; }
+
+		/// <summary>
+		/// Rule about how the exp are shared between the members.
+		/// </summary>
 		public PartyExpSharing ExpRule { get; private set; }
 
+		/// <summary>
+		/// The party's current leader.
+		/// </summary>
 		public Creature Leader { get; private set; }
 
+		/// <summary>
+		/// Amount of current members.
+		/// </summary>
 		public int MemberCount { get { lock (_sync) return _members.Count; } }
 
+		/// <summary>
+		/// Returns true if password is not empty.
+		/// </summary>
 		public bool HasPassword { get { return !string.IsNullOrWhiteSpace(this.Password); } }
 
+		/// <summary>
+		/// Returns true if member count is lower than max size.
+		/// </summary>
 		public bool HasFreeSpace { get { return (this.MemberCount < this.MaxSize); } }
 
 		/// <summary>
@@ -425,7 +473,7 @@ namespace Aura.Channel.World
 		/// Sets party's max size.
 		/// </summary>
 		/// <param name="size"></param>
-		public void SetSize(int size)
+		public void SetMaxSize(int size)
 		{
 			this.MaxSize = Math2.Clamp(this.MemberCount, ChannelServer.Instance.Conf.World.PartyMaxSize, size);
 

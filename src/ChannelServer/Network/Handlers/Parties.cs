@@ -128,6 +128,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check party max size
+			if (maxSize > ChannelServer.Instance.Conf.World.PartyMaxSize)
+				Send.MsgBox(creature, Localization.Get("The maximum party size allowed on this server is {0}."), ChannelServer.Instance.Conf.World.PartyMaxSize);
+
 			party.ChangeSettings(type, name, dungeonLevel, info, password, maxSize);
 
 			if (partyBoard)
