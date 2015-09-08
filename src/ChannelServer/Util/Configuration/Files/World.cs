@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Shared.Util;
 using Aura.Shared.Util.Configuration;
 using System;
 
@@ -47,6 +48,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public bool EasySwitch { get; protected set; }
 
 		public float PartyExpBonus { get; protected set; }
+		public int PartyMaxSize { get; protected set; }
 
 		public void Load()
 		{
@@ -92,6 +94,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.EasySwitch = this.GetBool("easy_switch", false);
 
 			this.PartyExpBonus = this.GetFloat("party_exp_bonus", 0);
+			this.PartyMaxSize = Math2.Clamp(1, 99, this.GetInt("party_max_size", 8));
 		}
 	}
 }

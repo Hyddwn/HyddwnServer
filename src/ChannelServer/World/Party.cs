@@ -126,7 +126,7 @@ namespace Aura.Channel.World
 			this.DungeonLevel = (string.IsNullOrWhiteSpace(password) ? null : password);
 			this.Info = (string.IsNullOrWhiteSpace(password) ? null : password);
 			this.Password = (string.IsNullOrWhiteSpace(password) ? null : password);
-			this.MaxSize = Math2.Clamp(this.MemberCount, 8, maxSize);
+			this.MaxSize = Math2.Clamp(this.MemberCount, ChannelServer.Instance.Conf.World.PartyMaxSize, maxSize);
 		}
 
 		/// <summary>
@@ -427,8 +427,7 @@ namespace Aura.Channel.World
 		/// <param name="size"></param>
 		public void SetSize(int size)
 		{
-			// TODO: Max size conf
-			this.MaxSize = Math2.Clamp(this.MemberCount, 8, size);
+			this.MaxSize = Math2.Clamp(this.MemberCount, ChannelServer.Instance.Conf.World.PartyMaxSize, size);
 		}
 
 		/// <summary>

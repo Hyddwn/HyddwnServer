@@ -72,13 +72,17 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			/// Check name length
+			// Check name length
 			if (name.Length < 4 || name.Length > 32)
 			{
 				Log.Warning("PartyCreate: User '{0}' tried to create a party with invalid name.", client.Account.Id);
 				Send.CreatePartyR(creature, null);
 				return;
 			}
+
+			// Check party max size
+			if (maxSize > ChannelServer.Instance.Conf.World.PartyMaxSize)
+				Send.MsgBox(creature, Localization.Get("The maximum party size allowed on this server is {0}."), ChannelServer.Instance.Conf.World.PartyMaxSize);
 
 			// Create
 			creature.Party = Party.Create(creature, type, name, dungeonLevel, info, password, maxSize);
