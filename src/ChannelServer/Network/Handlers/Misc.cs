@@ -150,7 +150,10 @@ namespace Aura.Channel.Network.Handlers
 
 			if (creature.Temp.CurrentCutscene == null)
 			{
-				Log.Error("FinishedCutscene: Player '{0}' tried to finish invalid cutscene.", creature.EntityIdHex);
+				// This can happen if multiple member's cutscenes end at the
+				// same time, they all send the finish packet, no matter whether
+				// they're the leader or not. (Is that normal?)
+				//Log.Error("FinishedCutscene: Player '{0}' tried to finish invalid cutscene.", creature.EntityIdHex);
 				return;
 			}
 
