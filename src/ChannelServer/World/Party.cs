@@ -629,7 +629,10 @@ namespace Aura.Channel.World
 		/// </summary>
 		public override string ToString()
 		{
-			return string.Format("p{0}{1:d2}{2:d2}{3}{4}", (int)this.Type, this.MemberCount, this.MaxSize, (this.HasPassword ? "y" : "n"), this.Name);
+			var name = (this.Type != PartyType.Dungeon ? this.Name : "[Dungeon] " + this.Name + "/" + this.DungeonLevel + "-" + this.Info);
+			var password = (this.HasPassword ? "y" : "n");
+
+			return string.Format("p{0}{1:d2}{2:d2}{3}{4}", (int)this.Type, this.MemberCount, this.MaxSize, password, name);
 		}
 
 		/// <summary>
