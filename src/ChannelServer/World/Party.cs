@@ -171,8 +171,8 @@ namespace Aura.Channel.World
 		{
 			this.Type = type;
 			this.Name = name;
-			this.DungeonLevel = (string.IsNullOrWhiteSpace(password) ? null : password);
-			this.Info = (string.IsNullOrWhiteSpace(password) ? null : password);
+			this.DungeonLevel = (string.IsNullOrWhiteSpace(dungeonLevel) ? null : dungeonLevel);
+			this.Info = (string.IsNullOrWhiteSpace(info) ? null : info);
 			this.Password = (string.IsNullOrWhiteSpace(password) ? null : password);
 			this.MaxSize = Math2.Clamp(this.MemberCount, ChannelServer.Instance.Conf.World.PartyMaxSize, maxSize);
 		}
