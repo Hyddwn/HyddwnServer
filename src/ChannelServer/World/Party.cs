@@ -428,6 +428,9 @@ namespace Aura.Channel.World
 		public void SetSize(int size)
 		{
 			this.MaxSize = Math2.Clamp(this.MemberCount, ChannelServer.Instance.Conf.World.PartyMaxSize, size);
+
+			if (this.IsOpen)
+				Send.PartyMemberWantedRefresh(this);
 		}
 
 		/// <summary>
