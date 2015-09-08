@@ -169,7 +169,8 @@ namespace Aura.Channel.Skills.Hidden
 		private void DyeSuccess(Creature creature)
 		{
 			// Remove dye
-			creature.Inventory.Decrement(creature.Temp.SkillItem2);
+			if (!ChannelServer.Instance.Conf.World.UnlimitedDyes)
+				creature.Inventory.Decrement(creature.Temp.SkillItem2);
 
 			// Update item color
 			Send.ItemUpdate(creature, creature.Temp.SkillItem1);
