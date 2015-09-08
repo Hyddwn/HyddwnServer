@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
+using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Util;
@@ -19,6 +20,7 @@ namespace Aura.Channel.World
 
 		private List<Creature> _members;
 		private Dictionary<int, Creature> _occupiedSlots;
+		private int _adTimer;
 
 		/// <summary>
 		/// Party's unique identifier (comparable to EntityId).
@@ -101,6 +103,15 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Unsubscribes from ad tick.
+		/// </summary>
+		~Party()
+		{
+			// Just in case if didn't happen anywhere else for some reason.
+			ChannelServer.Instance.Events.MinutesTimeTick -= this.OnMinutesTimeTick;
+		}
+
+		/// <summary>
 		/// Creates new party with creature as leader.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -116,6 +127,8 @@ namespace Aura.Channel.World
 			party.SetSettings(type, name, dungeonLevel, info, password, maxSize);
 
 			creature.PartyPosition = 1;
+
+			ChannelServer.Instance.Events.MinutesTimeTick += party.OnMinutesTimeTick;
 
 			return party;
 		}
@@ -367,11 +380,16 @@ namespace Aura.Channel.World
 		/// <param name="creature"></param>
 		public void RemoveMemberSilent(Creature creature)
 		{
+			// TODO: Unify removing/leaving/dcing
+
 			lock (_sync)
 			{
 				_members.Remove(creature);
 				_occupiedSlots.Remove(creature.PartyPosition);
 			}
+
+			if (this.MemberCount == 0)
+				ChannelServer.Instance.Events.MinutesTimeTick -= this.OnMinutesTimeTick;
 
 			creature.Party = Party.CreateDummy(creature);
 		}
@@ -621,6 +639,26 @@ namespace Aura.Channel.World
 
 				Send.PartyLeaveUpdate(creature, this);
 			}
+
+			if (this.MemberCount == 0)
+				ChannelServer.Instance.Events.MinutesTimeTick -= this.OnMinutesTimeTick;
+		}
+
+		/// <summary>
+		/// Raised once every minute.
+		/// </summary>
+		/// <param name="time"></param>
+		private void OnMinutesTimeTick(ErinnTime time)
+		{
+			if (this.Type == PartyType.Dungeon && this.IsOpen)
+			{
+				if ((_adTimer++) < 5)
+					return;
+
+				Send.PartyAdChat(this);
+			}
+
+			_adTimer = 0;
 		}
 
 		/// <summary>
