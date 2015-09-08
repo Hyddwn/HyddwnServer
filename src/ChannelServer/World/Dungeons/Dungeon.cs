@@ -152,6 +152,12 @@ namespace Aura.Channel.World.Dungeons
 			this.Party.Add(creature);
 			this.PartyLeader = creature;
 
+			if (creature.IsInParty)
+			{
+				// Only creatures who actually ENTER the dungeon at creation are considered "dungeon founders".
+				this.Party.AddRange(creature.Party.OnAltar());
+			}
+
 			// Get script
 			this.Script = ChannelServer.Instance.ScriptManager.DungeonScripts.Get(this.Name);
 			if (this.Script == null)

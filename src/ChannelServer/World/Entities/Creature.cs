@@ -734,6 +734,21 @@ namespace Aura.Channel.World.Entities
 
 		// ------------------------------------------------------------------
 
+
+		// Parties
+		// ------------------------------------------------------------------
+
+		public Party Party { get; set; }
+
+		/// <summary>
+		/// The number in the party this player occupies.
+		/// </summary>
+		public int PartyPosition { get; set; }
+
+		public bool IsInParty { get { return this.Party.Id != 0; } }
+
+		// ------------------------------------------------------------------
+
 		protected Creature()
 		{
 			this.Client = new DummyClient();
@@ -750,6 +765,7 @@ namespace Aura.Channel.World.Entities
 			this.Drops = new CreatureDrops(this);
 			this.DeadMenu = new CreatureDeadMenu(this);
 			this.AimMeter = new AimMeter(this);
+			this.Party = Party.CreateDummy(this);
 
 			this.Vars = new ScriptVariables();
 		}

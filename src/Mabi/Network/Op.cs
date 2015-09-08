@@ -318,6 +318,8 @@ namespace Aura.Mabi.Network
 		public const int CompleteQuestR = 0x8CA4;
 		public const int GiveUpQuest = 0x8CA5;
 		public const int GiveUpQuestR = 0x8CA6;
+		public const int SquadUnk = 0x8D6E;
+		public const int SquadUnkR = 0x8D6F;
 		public const int QuestStartPtj = 0x8D68;
 		public const int QuestEndPtj = 0x8D69;
 		public const int QuestUpdatePtj = 0x8D6A;
@@ -341,6 +343,7 @@ namespace Aura.Mabi.Network
 		public const int PartyChangeLeader = 0x8EA5;
 		public const int PartyChangeLeaderR = 0x8EA6;
 		public const int PartyChangeLeaderUpdate = 0x8EA7;
+		public const int PartyChat = 0x8EA8;
 		public const int PartyWantedShow = 0x8EA9;
 		public const int PartyWantedShowR = 0x8EAA;
 		public const int PartyWantedOpened = 0x8EAB;
@@ -353,6 +356,8 @@ namespace Aura.Mabi.Network
 		public const int PartyChangeExp = 0x8EB8;
 		public const int PartyChangeExpR = 0x8EB9;
 		public const int PartyExpUpdate = 0x8EBA;
+		public const int PartyBoardRequest = 0x8EBD;
+		public const int PartyBoardRequestR = 0x8EBE;
 		public const int GuildInfoNoGuild = 0x8EFB;
 		public const int OpenGuildPanel = 0x8EFC;
 		public const int GuildInfo = 0x8EFD;

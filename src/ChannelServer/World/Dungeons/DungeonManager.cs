@@ -119,9 +119,9 @@ namespace Aura.Channel.World.Dungeons
 			}
 			else
 			{
-				// Create new dungeon if there is non yet or it's Tuesday
+				// Create new dungeon if there's not one yet
 				var existing = this.Get(a => a.Name == dungeonName && a.ItemId == itemId);
-				if (existing == null || ErinnTime.Now.Month == 2 || ChannelServer.Instance.Conf.World.PrivateDungeons)
+				if (existing == null || ChannelServer.Instance.Conf.World.PrivateDungeons)
 				{
 					instanceId = this.GetInstanceId();
 					dungeon = new Dungeon(instanceId, dungeonName, itemId, rnd.Next(), rnd.Next(), creature);
@@ -252,6 +252,7 @@ namespace Aura.Channel.World.Dungeons
 
 			var dungeonName = parameter.XML.Attribute("dungeonname").Value.ToLower();
 
+			// Check script
 			var dungeonScript = ChannelServer.Instance.ScriptManager.DungeonScripts.Get(dungeonName);
 			if (dungeonScript == null)
 			{
@@ -260,9 +261,18 @@ namespace Aura.Channel.World.Dungeons
 				return false;
 			}
 
+			// Check route
 			if (!dungeonScript.Route(creature, item, ref dungeonName))
 			{
 				Send.Notice(creature, "Routing fail.");
+				return false;
+			}
+
+			// Check party
+			if (creature.IsInParty && creature.Party.Leader != creature)
+			{
+				// Unofficial
+				Send.Notice(creature, Localization.Get("Only the leader may create the dungeon."));
 				return false;
 			}
 
@@ -285,9 +295,16 @@ namespace Aura.Channel.World.Dungeons
 				{
 					var dungeon = this.CreateDungeon(dungeonName, itemId, creature);
 					var regionId = dungeon.Regions.First().Id;
-					var pos = creature.GetPosition();
 
-					creature.Warp(regionId, pos);
+					// Original creature is always a member of the dungeon party.
+					foreach (var member in dungeon.Party)
+					{
+						var pos = member.GetPosition();
+						member.Warp(regionId, pos);
+
+						// TODO: This is a bit hacky, needs to be moved to Creature.Warp, with an appropriate check.
+						Send.EntitiesDisappear(member.Client, dungeon.Party);
+					}
 
 					return true;
 				}

@@ -157,7 +157,7 @@ namespace Aura.Channel.Skills
 						tAction.Set(TargetOptions.ManaShield);
 
 					// On attack events
-					ChannelServer.Instance.Events.OnCreatureAttack(tAction);
+					ChannelServer.Instance.Events.OnCreatureAttacked(tAction);
 					if (this.Attacker.IsPlayer)
 						ChannelServer.Instance.Events.OnCreatureAttackedByPlayer(tAction);
 

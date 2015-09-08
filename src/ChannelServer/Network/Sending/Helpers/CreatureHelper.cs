@@ -405,12 +405,12 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			// Party
 			// --------------------------------------------------------------
-			//if (creature.Party != null)
-			//{
-			//    packet.PutByte(creature.Party.IsOpen && creature.Party.Leader == creature);
-			//    packet.PutString(creature.Party.GetMemberWantedString());
-			//}
-			//else
+			if (creature.IsInParty)
+			{
+				packet.PutByte(creature.Party.IsOpen && creature.Party.Leader == creature);
+				packet.PutString(creature.Party.ToString());
+			}
+			else
 			{
 				packet.PutByte(0);
 				packet.PutString("");

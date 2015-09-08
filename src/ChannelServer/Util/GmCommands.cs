@@ -33,6 +33,7 @@ namespace Aura.Channel.Util
 			Add(00, 50, "where", "", HandleWhere);
 			Add(00, 50, "cp", "", HandleCp);
 			Add(00, 50, "distance", "", HandleDistance);
+			Add(00, 50, "partysize", "<size>", HandlePartySize);
 
 			// VIPs
 			Add(01, 50, "go", "<location>", HandleGo);
@@ -1632,6 +1633,30 @@ namespace Aura.Channel.Util
 			}
 
 			Cutscene.Play(args[1], target);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandlePartySize(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			int size;
+			if (!int.TryParse(args[1], out size))
+				return CommandResult.InvalidArgument;
+
+			if (!target.IsInParty)
+			{
+				Send.SystemMessage(sender, Localization.Get("Target is not in party."));
+				return CommandResult.Okay;
+			}
+
+			target.Party.SetMaxSize(size);
+
+			Send.SystemMessage(sender, Localization.Get("Changed party size to {0}."), target.Party.MaxSize);
+			if (sender != target)
+				Send.SystemMessage(target, Localization.Get("Party size changed to {0} by {1}."), target.Party.MaxSize, sender.Name);
 
 			return CommandResult.Okay;
 		}

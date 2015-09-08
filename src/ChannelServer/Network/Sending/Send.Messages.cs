@@ -127,6 +127,39 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Broadcasts PartyChat to all party members.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="msg"></param>
+		public static void PartyChat(Creature creature, string msg)
+		{
+			var packet = new Packet(Op.PartyChat, creature.EntityId);
+			packet.PutLong(creature.EntityId);
+			packet.PutString(msg);
+
+			creature.Party.Broadcast(packet, true);
+		}
+
+		/// <summary>
+		/// Broadcasts Chat on entire server, with a blue Party Chat,
+		/// consisting of information about the party.
+		/// </summary>
+		/// <param name="party"></param>
+		public static void PartyAdChat(Party party)
+		{
+			var packet = new Packet(Op.Chat, MabiId.Broadcast);
+			packet.PutByte(0);
+			packet.PutString("<PARTY>");
+			packet.PutString("[Wanted] {0}: [{1}/{2}] - {3}", party.Leader.Name, party.Name, party.DungeonLevel, party.Info);
+			packet.PutByte(1);
+			packet.PutInt(-1);
+			packet.PutInt(0);
+			packet.PutByte(2);
+
+			ChannelServer.Instance.World.Broadcast(packet);
+		}
+
+		/// <summary>
 		/// Sends MsgBox to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Aura.Mabi.Const;
 using Aura.Channel.Scripting.Scripts;
@@ -289,9 +290,54 @@ namespace Aura.Channel.World.Entities
 
 			// Exp
 			var exp = (long)(this.RaceData.Exp * ChannelServer.Instance.Conf.World.ExpRate);
-			killer.GiveExp(exp);
+			var expRule = killer.Party.ExpRule;
 
-			Send.CombatMessage(killer, "+{0} EXP", exp);
+			if (!killer.IsInParty || expRule == PartyExpSharing.AllToFinish)
+			{
+				killer.GiveExp(exp);
+				Send.CombatMessage(killer, "+{0} EXP", exp);
+			}
+			else
+			{
+				var members = killer.Party.GetMembers();
+				var eaExp = 0L;
+				var killerExp = 0L;
+				var killerPos = killer.GetPosition();
+
+				// Apply optional exp bonus
+				if (members.Length > 1)
+				{
+					var extra = members.Length - 1;
+					var bonus = ChannelServer.Instance.Conf.World.PartyExpBonus;
+
+					exp += (long)(exp * ((extra * bonus) / 100f));
+				}
+
+				// Official simply ALWAYS divides by party member total,
+				// even if they cannot recieve the experience.
+				if (expRule == PartyExpSharing.Equal)
+				{
+					eaExp = exp / members.Length;
+					killerExp = eaExp;
+				}
+				else if (expRule == PartyExpSharing.MoreToFinish)
+				{
+					exp /= 2;
+					eaExp = exp / members.Length;
+					killerExp = exp;
+				}
+
+				// Killer's exp
+				killer.GiveExp(killerExp);
+				Send.CombatMessage(killer, "+{0} EXP", killerExp);
+
+				// Exp for members in range of killer, the range is unofficial
+				foreach (var member in members.Where(a => a != killer && a.GetPosition().InRange(killerPos, 3000)))
+				{
+					member.GiveExp(eaExp);
+					Send.CombatMessage(member, "+{0} EXP", eaExp);
+				}
+			}
 		}
 
 		/// <summary>

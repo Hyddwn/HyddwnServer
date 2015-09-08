@@ -16,7 +16,8 @@ namespace Aura.Channel.World
 {
 	public class Cutscene
 	{
-		public Action<Cutscene> _callback;
+		private Action<Cutscene> _callback;
+		private Creature[] _viewers;
 
 		/// <summary>
 		/// Name of the cutscene file.
@@ -70,7 +71,7 @@ namespace Aura.Channel.World
 		{
 			var result = new Cutscene(name, creature);
 
-			//var partyMembers = creature.Party.GetMembers();
+			var partyMembers = creature.Party.GetSortedMembers();
 			var dummy = new NPC();
 
 			foreach (var actorName in result.Data.Actors)
@@ -100,9 +101,10 @@ namespace Aura.Channel.World
 					int idx;
 					if (!int.TryParse(actorName.Substring("player".Length), out idx))
 						Log.Warning("Cutscene.FromData: Invalid party member actor name '{0}'.", actorName);
-					//else
-					//	actor = partyMembers[idx];
-					actor = creature; // tmp
+					else if (idx > partyMembers.Length - 1)
+						Log.Warning("Cutscene.FromData: Index out of party member range '{0}/{1}'.", idx, partyMembers.Length);
+					else
+						actor = partyMembers[idx];
 				}
 				else
 					Log.Warning("Cutscene.FromData: Unknown kind of actor ({0}).", actorName);
@@ -152,11 +154,14 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void Play()
 		{
-			this.Leader.Temp.CurrentCutscene = this;
+			_viewers = this.Leader.Party.GetMembers();
 
-			// TODO: All viewers
-			this.Leader.Lock(Locks.Default, true);
-			Send.PlayCutscene(this.Leader, this);
+			foreach (var member in _viewers)
+			{
+				member.Temp.CurrentCutscene = this;
+				member.Lock(Locks.Default, true);
+				Send.PlayCutscene(member, this);
+			}
 		}
 
 		/// <summary>
@@ -191,16 +196,20 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void Finish()
 		{
-			Send.CutsceneEnd(this);
-			this.Leader.Unlock(Locks.Default, true);
-			Send.CutsceneUnk(this);
+			foreach (var member in _viewers)
+			{
+				Send.CutsceneEnd(member);
+				member.Unlock(Locks.Default, true);
+				Send.CutsceneUnk(member);
+			}
 
 			// Call callback before setting cutscene to null so it can
 			// be referenced from the core during the callback.
 			if (_callback != null)
 				_callback(this);
 
-			this.Leader.Temp.CurrentCutscene = null;
+			foreach (var member in _viewers)
+				member.Temp.CurrentCutscene = null;
 		}
 	}
 }

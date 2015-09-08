@@ -67,6 +67,7 @@ namespace Aura.Channel
 		public SkillManager SkillManager { get; private set; }
 		public EventManager Events { get; private set; }
 		public WeatherManager Weather { get; private set; }
+		public PartyManager PartyManager { get; private set; }
 
 		public WorldManager World { get; private set; }
 
@@ -88,6 +89,7 @@ namespace Aura.Channel
 			this.SkillManager = new SkillManager();
 			this.Events = new EventManager();
 			this.Weather = new WeatherManager();
+			this.PartyManager = new PartyManager();
 		}
 
 		/// <summary>
@@ -264,6 +266,7 @@ namespace Aura.Channel
 
 			this.World = new WorldManager();
 			this.World.Initialize();
+			this.PartyManager.Initialize();
 
 			Log.Info("  done loading {0} regions.", this.World.Count);
 		}
