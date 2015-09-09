@@ -97,7 +97,8 @@ namespace Aura.Channel.Scripting
 		/// </summary>
 		public void Clear()
 		{
-			this.Script.Cancel();
+			if (this.Script != null)
+				this.Script.Cancel();
 			this.Script = null;
 			this.Target = null;
 		}
