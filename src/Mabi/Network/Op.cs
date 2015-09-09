@@ -256,6 +256,8 @@ namespace Aura.Mabi.Network
 		public const int NpcShopSellItemR = 0x7153;
 		public const int ClearNpcShop = 0x7158; // Empties tabs
 		public const int AddToNpcShop = 0x7159; // Adds items while shop is open, works like open
+		public const int OpenShopRemotely = 0x715C; // ?
+		public const int OpenShopRemotelyR = 0x715D; // ?
 		public const int OpenNpcShop = 0x715E;
 		public const int RequestBankTabs = 0x7211;
 		public const int OpenBank = 0x7212;

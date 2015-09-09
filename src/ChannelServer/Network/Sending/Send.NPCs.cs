@@ -101,6 +101,19 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends OpenShopRemotelyR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void OpenShopRemotelyR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.OpenShopRemotelyR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends OpenNpcShop to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -108,8 +121,8 @@ namespace Aura.Channel.Network.Sending
 		public static void OpenNpcShop(Creature creature, IList<NpcShopTab> tabs)
 		{
 			var packet = new Packet(Op.OpenNpcShop, creature.EntityId);
-			packet.PutString("shopname");
-			packet.PutByte(0);
+			packet.PutString("shopname"); // e.g. TirchonaillShop_Dilys
+			packet.PutByte(0); // 1 in remote shops?
 			packet.PutByte(0);
 			packet.PutInt(0);
 			packet.PutByte((byte)tabs.Count);

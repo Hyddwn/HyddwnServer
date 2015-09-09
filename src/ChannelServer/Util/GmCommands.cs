@@ -51,6 +51,7 @@ namespace Aura.Channel.Util
 			Add(01, 50, "gesture", "<gesture>", HandleGesture);
 			Add(01, 50, "lasttown", "", HandleLastTown);
 			Add(01, 50, "cutscene", "<name>", HandleCutscene);
+			Add(01, 50, "openshop", "<name>", HandleOpenShop);
 
 			// GMs
 			Add(50, 50, "warp", "<region> [x] [y]", HandleWarp);
@@ -1657,6 +1658,28 @@ namespace Aura.Channel.Util
 			Send.SystemMessage(sender, Localization.Get("Changed party size to {0}."), target.Party.MaxSize);
 			if (sender != target)
 				Send.SystemMessage(target, Localization.Get("Party size changed to {0} by {1}."), target.Party.MaxSize, sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleOpenShop(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			var typeName = args[1];
+
+			// Get shop
+			var shop = ChannelServer.Instance.ScriptManager.NpcShopScripts.Get(typeName);
+			if (shop == null)
+			{
+				Send.ServerMessage(sender, Localization.Get("Unable to find shop '{0}'."), typeName);
+				return CommandResult.Okay;
+			}
+
+			shop.OpenRemotelyFor(target);
+
+			Send.SystemMessage(sender, Localization.Get("Opened shop '{0}'."), typeName);
 
 			return CommandResult.Okay;
 		}

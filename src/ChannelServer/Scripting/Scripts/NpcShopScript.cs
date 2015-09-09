@@ -275,6 +275,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Sends OpenShopRemotelyR and OpenNpcShop for creature and this shop.
+		/// </summary>
+		/// <param name="creature">Creature opening the shop</param>
+		public void OpenRemotelyFor(Creature creature)
+		{
+			Send.OpenShopRemotelyR(creature, true);
+			this.OpenFor(creature, null);
+		}
+
+		/// <summary>
 		/// Returns thread-safe list of all tabs.
 		/// </summary>
 		/// <returns></returns>
