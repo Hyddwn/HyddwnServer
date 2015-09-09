@@ -558,6 +558,61 @@ namespace Aura.Mabi.Network
 		public const int Walking = 0x0FD13021;
 		public const int Walk = 0x0FF23431;
 
+		// Messenger Server
+		// ------------------------------------------------------------------
+		public static class Msgr
+		{
+			public const int Login = 0xC350;
+			public const int LoginR = 0xC351;
+			public const int FriendInvite = 0xC352;
+			public const int FriendInviteR = 0xC353;
+			public const int FriendConfirm = 0xC354;
+			public const int FriendReply = 0xC355;
+			public const int ChatInvite = 0xC356;
+			public const int FriendList = 0xC358;
+			public const int FriendListR = 0xC359;
+			public const int FriendBlock = 0xC35A;
+			public const int FriendBlockR = 0xC35B;
+			public const int FriendUnblock = 0xC35C;
+			public const int FriendUnblockR = 0xC35D;
+			public const int FriendOnline = 0xC35E;
+			public const int FriendOffline = 0xC35F;
+
+			public const int ChatBegin = 0xC360;
+			public const int ChatBeginR = 0xC361;
+			public const int ChatEnd = 0xC362;
+			public const int ChatInviteR = 0xC366;
+			public const int ChatLeave = 0xC367;
+			public const int Chat = 0xC368;
+			public const int ChatR = 0xC36A;
+			public const int FriendDelete = 0xC36B;
+			public const int ChatJoin = 0xC36C;
+			public const int GuildChat = 0xC36E;
+			public const int GuildChatR = 0xC36F;
+
+			public const int ChangeOption = 0xC370;
+			public const int ChangeOptionR = 0xC371;
+			public const int FriendOptionChanged = 0xC372;
+			public const int GroupList = 0xC376;
+			public const int SendNote = 0xC37E;
+			public const int SendNoteR = 0xC37F;
+
+			public const int NoteList = 0xC380;
+			public const int NoteListR = 0xC381;
+			public const int NoteDelete = 0xC382;
+			public const int Refresh = 0xC384;
+			public const int YouGotNote = 0xC385;
+			public const int ReadNote = 0xC386;
+			public const int ReadNoteR = 0xC387;
+			public const int ChangeChannel = 0xC389;
+			public const int FriendChannelChanged = 0xC38A;
+			public const int GuildMemberList = 0xC38B;
+			public const int GuildMemberListR = 0xC38C;
+			public const int GuildMemberState = 0xC38D;
+
+			public const int PlayerBlock = 0xC392;
+		}
+
 		// Internal communication
 		// ------------------------------------------------------------------
 		public static class Internal
