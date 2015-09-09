@@ -353,5 +353,34 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends Inquiry to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="id"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public static void Inquiry(Creature creature, byte id, string format, params object[] args)
+		{
+			var packet = new Packet(Op.Inquiry, creature.EntityId);
+			packet.PutByte(id);
+			packet.PutString(format, args);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends InquiryResponseR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void InquiryResponseR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.InquiryResponseR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

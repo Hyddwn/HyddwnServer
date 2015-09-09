@@ -273,5 +273,23 @@ namespace Aura.Channel.Network.Handlers
 		{
 			// Doesn't look like the server sends a response to this.
 		}
+
+		/// <summary>
+		/// Sent when an inquiry is answered with OK.
+		/// </summary>
+		/// <example>
+		/// 001 [..............02] Byte   : 2
+		/// </example>
+		[PacketHandler(Op.InquiryResponse)]
+		public void InquiryResponse(ChannelClient client, Packet packet)
+		{
+			var id = packet.GetByte();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			creature.HandleInquiry(id);
+
+			Send.InquiryResponseR(creature, true);
+		}
 	}
 }
