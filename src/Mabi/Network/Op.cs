@@ -635,10 +635,18 @@ namespace Aura.Mabi.Network
 		/// <returns></returns>
 		public static string GetName(int op)
 		{
+			// Login/Channel
 			foreach (var field in typeof(Op).GetFields(BindingFlags.Public | BindingFlags.Static))
 			{
 				if ((int)field.GetValue(null) == op)
 					return field.Name;
+			}
+
+			// Msgr
+			foreach (var field in typeof(Op.Msgr).GetFields(BindingFlags.Public | BindingFlags.Static))
+			{
+				if ((int)field.GetValue(null) == op)
+					return "Msgr." + field.Name;
 			}
 
 			return "?";
