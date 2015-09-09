@@ -354,6 +354,12 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public bool IsKnockedDown { get { return (DateTime.Now < this.KnockDownTime); } }
 
+		/// <summary>
+		/// Returns true if creature is able to run while having ranged loaded,
+		/// e.g. because its and elf or has a crossbow equipped.
+		/// </summary>
+		public bool CanRunWithRanged { get { return (this.IsElf || (this.RightHand != null && this.RightHand.HasTag("/crossbow/"))); } }
+
 		// Stats
 		// ------------------------------------------------------------------
 
