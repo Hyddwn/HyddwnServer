@@ -2,12 +2,15 @@
 // For more information, see license file in the main folder
 
 using Aura.Mabi.Network;
+using Aura.Msgr.Database;
 using Aura.Shared.Network;
 
 namespace Aura.Msgr.Network
 {
 	public class MsgrClient : BaseClient
 	{
+		public Contact Contact { get; set; }
+
 		protected override void EncodeBuffer(byte[] buffer)
 		{
 		}

@@ -187,6 +187,79 @@ namespace Aura.Shared.Database
 		}
 
 		/// <summary>
+		/// Returns true if sessionKey is correct for account.
+		/// </summary>
+		/// <param name="accountId"></param>
+		/// <param name="sessionKey"></param>
+		/// <returns></returns>
+		public bool CheckSession(string accountId, long sessionKey)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT `sessionKey` FROM `accounts` WHERE `accountId` = @accountId AND `sessionKey` = @sessionKey", conn))
+			{
+				mc.Parameters.AddWithValue("@accountId", accountId);
+				mc.Parameters.AddWithValue("@sessionKey", sessionKey);
+
+				using (var reader = mc.ExecuteReader())
+					return reader.HasRows;
+			}
+		}
+
+		/// <summary>
+		/// Returns true if account has a character with the given id on the
+		/// given server.
+		/// </summary>
+		/// <param name="accountId"></param>
+		/// <param name="entityId"></param>
+		/// <param name="server"></param>
+		/// <returns></returns>
+		public bool AccountHasCharacter(string accountId, long entityId, string server)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand(
+				"SELECT `c`.`entityId` " +
+				"FROM `characters` AS `c` " +
+				"INNER JOIN `creatures` AS `cr` ON `c`.`creatureId` = `cr`.`creatureId` " +
+				"WHERE `accountId` = @accountId AND `entityId` = @entityId AND `server` = @server"
+			, conn))
+			{
+				mc.Parameters.AddWithValue("@accountId", accountId);
+				mc.Parameters.AddWithValue("@entityId", entityId);
+				mc.Parameters.AddWithValue("@server", server);
+
+				using (var reader = mc.ExecuteReader())
+					return reader.HasRows;
+			}
+		}
+
+		/// <summary>
+		/// Returns true if account has a pet with the given id on the
+		/// given server.
+		/// </summary>
+		/// <param name="accountId"></param>
+		/// <param name="entityId"></param>
+		/// <param name="server"></param>
+		/// <returns></returns>
+		public bool AccountHasPet(string accountId, long entityId, string server)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand(
+				"SELECT `c`.`entityId` " +
+				"FROM `pets` AS `c` " +
+				"INNER JOIN `creatures` AS `cr` ON `c`.`creatureId` = `cr`.`creatureId` " +
+				"WHERE `accountId` = @accountId AND `entityId` = @entityId AND `server` = @server"
+			, conn))
+			{
+				mc.Parameters.AddWithValue("@accountId", accountId);
+				mc.Parameters.AddWithValue("@entityId", entityId);
+				mc.Parameters.AddWithValue("@server", server);
+
+				using (var reader = mc.ExecuteReader())
+					return reader.HasRows;
+			}
+		}
+
+		/// <summary>
 		/// Changes auth level of account.
 		/// </summary>
 		/// <param name="accountId"></param>
