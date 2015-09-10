@@ -93,8 +93,7 @@ namespace Aura.Channel.World
 				}
 				else if (actorName == "leader")
 				{
-					//actor = creature.Party.Leader;
-					actor = creature; // tmp
+					actor = creature.Party.Leader;
 				}
 				else if (actorName.StartsWith("player"))
 				{
