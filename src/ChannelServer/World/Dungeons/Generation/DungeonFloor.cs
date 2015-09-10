@@ -71,7 +71,7 @@ namespace Aura.Channel.World.Dungeons.Generation
 			var sectionStart = 0;
 			var puzzleCountSum = 0f;
 			var weightsList = CalculateWeights();
-			Log.Debug("Floor weightsList: " + string.Join(",", weightsList));
+			//Log.Debug("Floor weightsList: " + string.Join(",", weightsList));
 			var pathWeight = weightsList.Sum();
 			floorData.Sections.ForEach(x => puzzleCountSum += x.Max);
 			for (var i = 0; i < sectionCount; ++i)
@@ -89,7 +89,7 @@ namespace Aura.Channel.World.Dungeons.Generation
 				}
 				if (currentWeight > sectionLength)
 				{
-					if (currentWeight - weightsList[sectionEnd] >= (int) Math.Round(floorData.Sections[i].Max/puzzleCountSum*criticalPathLeft))
+					if (currentWeight - weightsList[sectionEnd] >= (int)Math.Round(floorData.Sections[i].Max / puzzleCountSum * criticalPathLeft))
 					{
 						currentWeight -= weightsList[sectionEnd];
 						--sectionEnd;
@@ -108,11 +108,11 @@ namespace Aura.Channel.World.Dungeons.Generation
 				}
 				else sectionPath = this.MazeGenerator.CriticalPath.GetRange(sectionStart + 1, sectionEnd - sectionStart + 1);
 				this.Sections.Add(new DungeonFloorSection(this.GetRoom(sectionPath[0].PosFrom), sectionPath, haveBossDoor, this._dungeonGenerator.RngPuzzles));
-				var weightsListSegment = (i == sectionCount - 1 ? 
-					new ArraySegment<int>(weightsList, sectionStart, criticalPathLength - sectionStart) : 
+				var weightsListSegment = (i == sectionCount - 1 ?
+					new ArraySegment<int>(weightsList, sectionStart, criticalPathLength - sectionStart) :
 					new ArraySegment<int>(weightsList, sectionStart, sectionEnd - sectionStart + 1));
-				Log.Debug("section weightsList: " + string.Join(",", weightsListSegment));
-				Log.Debug(string.Format("section {0}: max puzzles: {1}, wanted length: {2}, length: {3}", i, floorData.Sections[i].Max, sectionLength, weightsListSegment.Sum()));
+				//Log.Debug("section weightsList: " + string.Join(",", weightsListSegment));
+				//Log.Debug(string.Format("section {0}: max puzzles: {1}, wanted length: {2}, length: {3}", i, floorData.Sections[i].Max, sectionLength, weightsListSegment.Sum()));
 				sectionStart = sectionEnd + 1;
 			}
 		}
@@ -126,7 +126,7 @@ namespace Aura.Channel.World.Dungeons.Generation
 		{
 			var criticalPathLength = this.MazeGenerator.CriticalPath.Count - 1;
 			var weightsList = new int[criticalPathLength];
-			
+
 			for (var i = 0; i < criticalPathLength; ++i)
 			{
 				var move = this.MazeGenerator.CriticalPath[i + 1];
