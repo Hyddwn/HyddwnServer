@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using Aura.Mabi.Network;
+
 namespace Aura.Msgr.Network
 {
 	public static partial class Send
@@ -16,7 +17,7 @@ namespace Aura.Msgr.Network
 				packet.PutString(client.Contact.FullName);
 				packet.PutString("");
 				packet.PutUInt(0x80000000);
-				packet.PutByte(0x10);
+				packet.PutByte((byte)client.Contact.State);
 			}
 
 			client.Send(packet);

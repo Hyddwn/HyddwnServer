@@ -72,6 +72,9 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
+			// TODO: Load and save.
+			client.Contact.State = ContactState.Online;
+
 			Log.Info("User '{0}' logged in as '{1}'.", client.Contact.AccountId, client.Contact.FullName);
 
 			Send.LoginR(client, LoginResult.Okay);

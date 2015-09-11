@@ -51,6 +51,7 @@
     <Compile Include="Const\Locks.cs" />
     <Compile Include="Const\Login.cs" />
     <Compile Include="Const\MabiId.cs" />
+    <Compile Include="Const\Msgr.cs" />
     <Compile Include="Const\Music.cs" />
     <Compile Include="Const\Notices.cs" />
     <Compile Include="Const\Party.cs" />
