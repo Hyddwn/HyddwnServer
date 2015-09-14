@@ -51,6 +51,29 @@ namespace Aura.Msgr.Network
 
 			client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends note to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="note">Set to null for negative response.</param>
+		public static void ReadNoteR(MsgrClient client, Note note)
+		{
+			var packet = new Packet(Op.Msgr.ReadNoteR, 0);
+
+			packet.PutByte(note != null);
+			if (note != null)
+			{
+				packet.PutLong(note.Id);
+				packet.PutString(note.FromCharacterName);
+				packet.PutString(note.FromServer);
+				packet.PutLong(note.GetLongTime());
+				packet.PutByte(0); // Notification note? (reply disabled)
+				packet.PutString(note.Message);
+			}
+
+			client.Send(packet);
+		}
 	}
 
 	public enum LoginResult

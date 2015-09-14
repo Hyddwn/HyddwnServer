@@ -98,5 +98,43 @@ namespace Aura.Msgr.Network
 
 			Send.NoteListRequestR(client, notes);
 		}
+
+		/// <summary>
+		/// Sent when double-clicking note, to open and read it.
+		/// </summary>
+		/// <example>
+		/// 001 [0000000000000001] Long   : 1
+		/// </example>
+		[PacketHandler(Op.Msgr.ReadNote)]
+		public void ReadNote(MsgrClient client, Packet packet)
+		{
+			var noteId = packet.GetLong();
+
+			if (client.Contact == null)
+				return;
+
+			// TODO: Cache everything in memory?
+			var note = MsgrServer.Instance.Database.GetNote(noteId);
+
+			// Check note
+			if (note == null)
+			{
+				Log.Warning("User '{0}' requested a non-existent note.", client.Contact.AccountId);
+				Send.ReadNoteR(client, null);
+				return;
+			}
+
+			// Check receiver
+			if (note.Receiver != client.Contact.FullName)
+			{
+				Log.Warning("User '{0}' tried to read a note that's not his.", client.Contact.AccountId);
+				Send.ReadNoteR(client, null);
+				return;
+			}
+
+			MsgrServer.Instance.Database.SetNoteRead(noteId);
+
+			Send.ReadNoteR(client, note);
+		}
 	}
 }

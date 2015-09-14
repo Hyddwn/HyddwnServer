@@ -93,6 +93,31 @@ namespace Aura.Msgr.Database
 		}
 
 		/// <summary>
+		/// Returns note with given id, or null on error.
+		/// </summary>
+		/// <param name="contact"></param>
+		/// <param name="noteId"></param>
+		/// <returns></returns>
+		public Note GetNote(long noteId)
+		{
+			Note note = null;
+
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `notes` WHERE `noteId` = @noteId", conn))
+			{
+				mc.Parameters.AddWithValue("@noteId", noteId);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					if (reader.Read())
+						note = this.ReadNote(reader);
+				}
+			}
+
+			return note;
+		}
+
+		/// <summary>
 		/// Reads note from reader, returns null on error.
 		/// </summary>
 		/// <param name="reader"></param>
@@ -116,6 +141,22 @@ namespace Aura.Msgr.Database
 			note.FromServer = split[1];
 
 			return note;
+		}
+
+		/// <summary>
+		/// Sets read flag for given note.
+		/// </summary>
+		/// <param name="noteId"></param>
+		public void SetNoteRead(long noteId)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `notes` SET {0} WHERE `noteId` = @noteId", conn))
+			{
+				cmd.Set("read", true);
+				cmd.AddParameter("@noteId", noteId);
+
+				cmd.Execute();
+			}
 		}
 	}
 }
