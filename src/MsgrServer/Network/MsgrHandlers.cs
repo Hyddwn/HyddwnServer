@@ -14,6 +14,23 @@ namespace Aura.Msgr.Network
 		private Regex _receiverRegex = new Regex(@"^[a-z0-9]+@[a-z0-9_]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		/// <summary>
+		/// Checks if user is logged in before calling non-login handlers.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		public override void Handle(MsgrClient client, Packet packet)
+		{
+			// Check if logged in for non-login packets
+			if (packet.Op != Op.Msgr.Login && client.Contact == null)
+			{
+				Log.Warning("Attempted sending of non-login packet from '{0}' before login.", client.Address);
+				return;
+			}
+
+			base.Handle(client, packet);
+		}
+
+		/// <summary>
 		/// Sent upon logging into to channel, to log into msgr as well.
 		/// </summary>
 		/// <example>
@@ -28,7 +45,7 @@ namespace Aura.Msgr.Network
 		/// 009 [........00000000] Int    : 0
 		/// </example>
 		[PacketHandler(Op.Msgr.Login)]
-		public void MsgrLogin(MsgrClient client, Packet packet)
+		public void Login(MsgrClient client, Packet packet)
 		{
 			var unkString = packet.GetString();
 			var entityId = packet.GetLong();
@@ -94,9 +111,6 @@ namespace Aura.Msgr.Network
 		{
 			var unkLong = packet.GetLong();
 
-			if (client.Contact == null)
-				return;
-
 			var notes = MsgrServer.Instance.Database.GetNotes(client.Contact);
 
 			Send.NoteListRequestR(client, notes);
@@ -112,9 +126,6 @@ namespace Aura.Msgr.Network
 		public void ReadNote(MsgrClient client, Packet packet)
 		{
 			var noteId = packet.GetLong();
-
-			if (client.Contact == null)
-				return;
 
 			// TODO: Cache everything in memory?
 			var note = MsgrServer.Instance.Database.GetNote(noteId);
@@ -154,9 +165,6 @@ namespace Aura.Msgr.Network
 			var fromAccountId = packet.GetString().Trim();
 			var receiver = packet.GetString().Trim();
 			var message = packet.GetString().Trim();
-
-			if (client.Contact == null)
-				return;
 
 			// Check message length
 			if (message.Length > 200)
