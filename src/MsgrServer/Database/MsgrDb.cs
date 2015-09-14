@@ -3,6 +3,7 @@
 
 using Aura.Shared.Database;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 
 namespace Aura.Msgr.Database
 {
@@ -59,6 +60,62 @@ namespace Aura.Msgr.Database
 					return contact;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Returns all notes for contact.
+		/// </summary>
+		/// <param name="contact"></param>
+		/// <returns></returns>
+		public List<Note> GetNotes(Contact contact)
+		{
+			var result = new List<Note>();
+
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `notes` WHERE `receiver` = @receiver", conn))
+			{
+				mc.Parameters.AddWithValue("@receiver", contact.FullName);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						var note = this.ReadNote(reader);
+						if (note == null)
+							continue;
+
+						result.Add(note);
+					}
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Reads note from reader, returns null on error.
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <returns></returns>
+		private Note ReadNote(MySqlDataReader reader)
+		{
+			var note = new Note();
+
+			note.Id = reader.GetInt64("noteId");
+			note.Sender = reader.GetStringSafe("sender");
+			note.Receiver = reader.GetStringSafe("receiver");
+			note.Message = reader.GetStringSafe("message");
+			note.Time = reader.GetDateTimeSafe("time");
+			note.Read = reader.GetBoolean("read");
+
+			var split = note.Sender.Split('@');
+			if (split.Length != 2)
+				return null;
+
+			note.FromCharacterName = split[0];
+			note.FromServer = split[1];
+
+			return note;
 		}
 	}
 }

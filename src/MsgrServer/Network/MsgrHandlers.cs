@@ -79,5 +79,24 @@ namespace Aura.Msgr.Network
 
 			Send.LoginR(client, LoginResult.Okay);
 		}
+
+		/// <summary>
+		/// Sent when opening notes, requests lists of existing notes.
+		/// </summary>
+		/// <example>
+		/// 001 [0000000000000000] Long   : 0
+		/// </example>
+		[PacketHandler(Op.Msgr.NoteListRequest)]
+		public void NoteListRequest(MsgrClient client, Packet packet)
+		{
+			var unkLong = packet.GetLong();
+
+			if (client.Contact == null)
+				return;
+
+			var notes = MsgrServer.Instance.Database.GetNotes(client.Contact);
+
+			Send.NoteListRequestR(client, notes);
+		}
 	}
 }

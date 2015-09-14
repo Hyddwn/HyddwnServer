@@ -600,8 +600,8 @@ namespace Aura.Mabi.Network
 			public const int SendNote = 0xC37E;
 			public const int SendNoteR = 0xC37F;
 
-			public const int NoteList = 0xC380;
-			public const int NoteListR = 0xC381;
+			public const int NoteListRequest = 0xC380;
+			public const int NoteListRequestR = 0xC381;
 			public const int NoteDelete = 0xC382;
 			public const int Refresh = 0xC384;
 			public const int YouGotNote = 0xC385;

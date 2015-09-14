@@ -2,6 +2,8 @@
 // For more information, see license file in the main folder
 
 using Aura.Mabi.Network;
+using Aura.Msgr.Database;
+using System.Collections.Generic;
 
 namespace Aura.Msgr.Network
 {
@@ -18,6 +20,33 @@ namespace Aura.Msgr.Network
 				packet.PutString("");
 				packet.PutUInt(0x80000000);
 				packet.PutByte((byte)client.Contact.State);
+			}
+
+			client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends note list to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="notes">Set to null for negative response.</param>
+		public static void NoteListRequestR(MsgrClient client, List<Note> notes)
+		{
+			var packet = new Packet(Op.Msgr.NoteListRequestR, 0);
+
+			packet.PutByte(notes != null);
+			if (notes != null)
+			{
+				packet.PutInt(notes.Count);
+				foreach (var note in notes)
+				{
+					packet.PutLong(note.Id);
+					packet.PutString(note.Sender);
+					packet.PutString(note.Message);
+					packet.PutLong(note.GetLongTime());
+					packet.PutByte(note.Read);
+					packet.PutByte(0); // Hidden if 1?
+				}
 			}
 
 			client.Send(packet);
