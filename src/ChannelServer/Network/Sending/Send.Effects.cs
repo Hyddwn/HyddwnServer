@@ -23,6 +23,14 @@ namespace Aura.Channel.Network.Sending
 		/// <remarks>
 		/// Parameters have to be casted to the proper type, use carefully!
 		/// </remarks>
+		/// <example>
+		/// 001 [........00000052] Int    : 82
+		/// 002 [................] String : process
+		/// 003 [300000080037006A] Long   : 3458764548183883882
+		/// 004 [..............01] Byte   : 1
+		/// 
+		/// Send.Effect(someCreature, 82, "process", 0x300000080037006A, (byte)1);
+		/// </example>
 		/// <param name="entity"></param>
 		/// <param name="effectId"></param>
 		/// <param name="parameters"></param>
