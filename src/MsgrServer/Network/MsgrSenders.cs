@@ -74,6 +74,20 @@ namespace Aura.Msgr.Network
 
 			client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends note to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="success"></param>
+		public static void SendNoteR(MsgrClient client)
+		{
+			var packet = new Packet(Op.Msgr.SendNoteR, 0);
+
+			packet.PutByte(0);
+
+			client.Send(packet);
+		}
 	}
 
 	public enum LoginResult

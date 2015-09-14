@@ -3,6 +3,7 @@
 
 using Aura.Shared.Database;
 using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 
 namespace Aura.Msgr.Database
@@ -154,6 +155,24 @@ namespace Aura.Msgr.Database
 			{
 				cmd.Set("read", true);
 				cmd.AddParameter("@noteId", noteId);
+
+				cmd.Execute();
+			}
+		}
+
+		/// <summary>
+		/// Adds note to database.
+		/// </summary>
+		/// <param name="noteId"></param>
+		public void AddNote(string sender, string receiver, string message)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new InsertCommand("INSERT INTO `notes` {0}", conn))
+			{
+				cmd.Set("sender", sender);
+				cmd.Set("receiver", receiver);
+				cmd.Set("message", message);
+				cmd.Set("time", DateTime.Now);
 
 				cmd.Execute();
 			}

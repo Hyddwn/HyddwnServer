@@ -5,11 +5,14 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
+using System.Text.RegularExpressions;
 
 namespace Aura.Msgr.Network
 {
 	public partial class MsgrServerHandlers : PacketHandlerManager<MsgrClient>
 	{
+		private Regex _receiverRegex = new Regex(@"^[a-z0-9]+@[a-z0-9_]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
 		/// <summary>
 		/// Sent upon logging into to channel, to log into msgr as well.
 		/// </summary>
@@ -135,6 +138,51 @@ namespace Aura.Msgr.Network
 			MsgrServer.Instance.Database.SetNoteRead(noteId);
 
 			Send.ReadNoteR(client, note);
+		}
+
+		/// <summary>
+		/// Sent when opening notes, requests lists of existing notes.
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : admin
+		/// 002 [................] String : Foobar@Aura
+		/// 003 [................] String : hi there
+		/// </example>
+		[PacketHandler(Op.Msgr.SendNote)]
+		public void SendNote(MsgrClient client, Packet packet)
+		{
+			var fromAccountId = packet.GetString().Trim();
+			var receiver = packet.GetString().Trim();
+			var message = packet.GetString().Trim();
+
+			if (client.Contact == null)
+				return;
+
+			// Check message length
+			if (message.Length > 200)
+			{
+				Log.Warning("User '{0}' tried to send a message that's longer than 200 characters.", client.Contact.AccountId);
+				return;
+			}
+
+			// Check validity of receiver
+			if (!_receiverRegex.IsMatch(receiver))
+			{
+				Log.Warning("User '{0}' tried to send a message to invalid receiver '{1}'.", client.Contact.AccountId, receiver);
+				return;
+			}
+
+			// TODO: The messenger is kinda made for direct database access,
+			//   but doing that with MySQL isn't exactly efficient...
+			//   Maybe we should use a different solution for the msgr?
+
+			// TODO: You should be able to send a message to a character that
+			//   has never logged in, so we can't check for contact existence,
+			//   but this way someone could flood the database. Spam check?
+
+			MsgrServer.Instance.Database.AddNote(client.Contact.FullName, receiver, message);
+
+			Send.SendNoteR(client);
 		}
 	}
 }
