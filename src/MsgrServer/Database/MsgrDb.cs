@@ -177,5 +177,22 @@ namespace Aura.Msgr.Database
 				cmd.Execute();
 			}
 		}
+
+		/// <summary>
+		/// Deletes note from database.
+		/// </summary>
+		/// <param name="receiver"></param>
+		/// <param name="noteId"></param>
+		public void DeleteNote(string receiver, long noteId)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("DELETE FROM `notes` WHERE `receiver` = @receiver AND `noteId` = @noteId", conn))
+			{
+				mc.Parameters.AddWithValue("@receiver", receiver);
+				mc.Parameters.AddWithValue("@noteId", noteId);
+
+				mc.ExecuteNonQuery();
+			}
+		}
 	}
 }
