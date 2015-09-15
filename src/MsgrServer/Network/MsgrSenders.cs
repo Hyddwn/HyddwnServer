@@ -79,12 +79,27 @@ namespace Aura.Msgr.Network
 		/// Sends note to client.
 		/// </summary>
 		/// <param name="client"></param>
-		/// <param name="success"></param>
 		public static void SendNoteR(MsgrClient client)
 		{
 			var packet = new Packet(Op.Msgr.SendNoteR, 0);
 
 			packet.PutByte(0);
+
+			client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends note to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="note"></param>
+		public static void YouGotNote(MsgrClient client, Note note)
+		{
+			var packet = new Packet(Op.Msgr.YouGotNote, 0);
+
+			packet.PutLong(note.Id);
+			packet.PutString(note.FromCharacterName);
+			packet.PutString(note.FromServer);
 
 			client.Send(packet);
 		}

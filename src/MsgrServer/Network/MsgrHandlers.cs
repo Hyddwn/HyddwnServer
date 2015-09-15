@@ -224,5 +224,31 @@ namespace Aura.Msgr.Network
 			// Delete doesn't seem to have a response, the note disappears as
 			// soon as you click Delete, the server is only notified.
 		}
+
+		/// <summary>
+		/// Sent regularly, to check for new notes.
+		/// </summary>
+		/// <remarks>
+		/// Is it possible to get multiple new notes at once? The response
+		/// only seems to support one. Although, when you check the inbox
+		/// you would also get the other new ones I suppose.
+		/// 
+		/// The moment this packet is sent is probably also the moment at
+		/// which the client empties the inbox cache, otherwise you
+		/// wouldn't get the new note in the list.
+		/// </remarks>
+		/// <example>
+		/// 001 [0000000000000009] Long   : 9
+		/// </example>
+		[PacketHandler(Op.Msgr.CheckNotes)]
+		public void CheckNotes(MsgrClient client, Packet packet)
+		{
+			// Id of the newest note in inbox
+			var noteId = packet.GetLong();
+
+			var note = MsgrServer.Instance.Database.GetNewNote(client.Contact.FullName, noteId);
+			if (note != null)
+				Send.YouGotNote(client, note);
+		}
 	}
 }
