@@ -201,7 +201,7 @@ namespace Aura.Channel.Skills.Combat
 			}
 
 			// Reduce arrows
-			if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows)
+			if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows && attacker.Magazine.Info.Id != 67220)
 				attacker.Inventory.Decrement(attacker.Magazine);
 
 			// Disable fire arrow effect
