@@ -175,7 +175,7 @@
     <Compile Include="Skills\Hidden\Blessing.cs" />
     <Compile Include="Skills\Hidden\Dye.cs" />
     <Compile Include="Skills\Combat\AdministrativePicking2.cs" />
-    <Compile Include="Skills\Actions\ThrowDice.cs" />
+    <Compile Include="Skills\Actions\DiceTossing.cs" />
     <Compile Include="Skills\Life\Campfire.cs" />
     <Compile Include="Skills\Life\FirstAid.cs" />
     <Compile Include="Skills\Life\Fishing.cs" />

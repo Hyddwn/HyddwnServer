@@ -125,7 +125,7 @@ namespace Aura.Mabi.Const
 		public static readonly int FinalHit = 70;
 
 		/// <summary>
-		/// Seen in Dice Throwing Usually has a string that's sent with the effect
+		/// Seen in Dice Tossing Usually has a string that's sent with the effect
 		/// </summary>
 		public static readonly int Dice = 82;
 
