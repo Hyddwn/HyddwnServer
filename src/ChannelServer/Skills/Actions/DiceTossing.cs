@@ -17,7 +17,6 @@ namespace Aura.Channel.Skills.Action
 	[Skill(SkillId.DiceTossing)]
 	public class DiceTossing : ISkillHandler, IPreparable, IReadyable, IUseable, ICompletable, ICancelable
 	{
-		private const int DiceItemId = 62021;
 		private const int Range = 400;
 
 		/// <summary>
