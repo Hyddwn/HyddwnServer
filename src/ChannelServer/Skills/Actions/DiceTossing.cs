@@ -80,7 +80,10 @@ namespace Aura.Channel.Skills.Action
 			// Check range
 			if (!creature.GetPosition().InRange(areaPosition, Range))
 			{
+				this.Cancel(creature, skill);
+				Send.SkillUseSilentCancel(creature);
 				Send.Notice(creature, Localization.Get("Out of range."));
+				return;
 			}
 
 			// Reduce Dice
