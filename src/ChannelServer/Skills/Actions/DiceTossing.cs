@@ -45,9 +45,16 @@ namespace Aura.Channel.Skills.Action
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			if (creature.Inventory.Count(ItemId) == 0)
+			if (!creature.Inventory.Has(ItemId))
 			{
-				Send.Notice(creature, Localization.Get("You need at least one Six Sided Dice."));
+				Send.Notice(creature, Localization.Get("You need at least one Six Sided Dice"));
+				return false;
+			}
+
+			// there seems to be client side code to prevent this, but just incase..
+			if (creature.RightHand != null && !creature.RightHand.HasTag("/dice/"))
+			{
+				Send.Notice(creature, Localization.Get("You must equip one Six Sided Dice to use this Action."));
 				return false;
 			}
 
@@ -69,8 +76,7 @@ namespace Aura.Channel.Skills.Action
 		/// <returns></returns>
 		public bool Ready(Creature creature, Skill skill, Packet packet)
 		{
-			//skill.Stacks = 1; //I will leave this here.
-			Send.SkillStackSet(creature, skill.Info.Id, 1);
+			skill.Stacks = 1;
 			Send.UseMotion(creature, 27, 1, true, false);
 			Send.Effect(creature, Effect.Dice, "wait");
 			Send.SkillReady(creature, skill.Info.Id);
@@ -90,12 +96,14 @@ namespace Aura.Channel.Skills.Action
 			var unkInt3 = packet.GetInt();
 			var unkInt4 = packet.GetInt();
 
-			// Send.ItemAmount(creature, ); Remove 1 item
+			// Reduce Dice
+			if (creature.Inventory.RightHand != null)
+				creature.Inventory.Decrement(creature.Inventory.RightHand);
+
 			Send.UseMotion(creature, 27, 2, false, false);
 			Send.Effect(creature, Effect.Dice, "process", location, (byte)3);
 			Send.SkillUse(creature, skill.Info.Id, location, unkInt3, unkInt4);
 			skill.Stacks = 0;
-			Send.Effect(creature, Effect.StackUpdate, Effect.Dice, (byte)0, (byte)1, (byte)0);
 		}
 
 		/// <summary>
@@ -110,14 +118,14 @@ namespace Aura.Channel.Skills.Action
 			var unkInt3 = packet.GetInt();
 			var unkInt4 = packet.GetInt();
 
+			var areaPosition = new Position(location);
+
 			// Check range
-			if (!creature.GetPosition().InRange(creature.GetPosition(), Range))
+			if (!creature.GetPosition().InRange(areaPosition, Range))
 			{
 				Send.Notice(creature, Localization.Get("Out of range."));
-				goto L_End;
 			}
 
-			L_End:
 			Send.SkillComplete(creature, skill.Info.Id, location, unkInt3, unkInt4);
 		}
 
@@ -129,7 +137,6 @@ namespace Aura.Channel.Skills.Action
 		public void Cancel(Creature creature, Skill skill)
 		{
 			skill.Stacks = 0;
-			Send.Effect(creature, Effect.StackUpdate, Effect.Dice, (byte)0, (byte)1);
 			Send.MotionCancel2(creature, 1);
 			Send.Effect(creature, Effect.Dice, "cancel");
 		}
