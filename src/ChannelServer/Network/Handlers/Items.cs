@@ -81,6 +81,10 @@ namespace Aura.Channel.Network.Handlers
 			if (target.IsEquip() && (item.HasTag("/bow/|/crossbow/")) && !creature.Skills.Has(SkillId.RangedAttack))
 				creature.Skills.Give(SkillId.RangedAttack, SkillRank.Novice);
 
+			// Give Dice Tossing When equiping Dice
+			if (target.IsEquip() && (item.HasTag("/dice/")) && !creature.Skills.Has(SkillId.DiceTossing))
+				creature.Skills.Give(SkillId.DiceTossing, SkillRank.Novice);
+
 			// Give Playing Instrument when equipping an instrument
 			if (target.IsEquip() && (item.HasTag("/instrument/")) && !creature.Skills.Has(SkillId.PlayingInstrument))
 				creature.Skills.Give(SkillId.PlayingInstrument, SkillRank.Novice);
