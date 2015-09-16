@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
+
 namespace Aura.Mabi.Const
 {
-	public enum ContactState : byte
+	public enum ContactStatus : byte
 	{
 		None = 0x00,
 		Online = 0x10,
@@ -14,5 +16,12 @@ namespace Aura.Mabi.Const
 		DoingBusiness = 0x60,
 		Offline = 0xE0,
 		// Others are displayed as "Unknown".
+	}
+
+	// Looks like a bitmask... but are there other values?
+	[Flags]
+	public enum ChatOptions : uint
+	{
+		NotifyOnFriendLogIn = 0x80000000,
 	}
 }

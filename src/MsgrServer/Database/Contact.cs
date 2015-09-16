@@ -17,8 +17,17 @@ namespace Aura.Msgr.Database
 		public string Name { get; set; }
 		public string Server { get; set; }
 		public string ChannelName { get; set; }
-		public ContactState State { get; set; }
+		public ContactStatus Status { get; set; }
+		public string Nickname { get; set; }
+		public ChatOptions ChatOptions { get; set; }
 
 		public string FullName { get { return (this.Name + "@" + this.Server); } }
+
+		public Contact()
+		{
+			this.Nickname = "";
+			this.Status = ContactStatus.Online;
+			this.ChatOptions = ChatOptions.NotifyOnFriendLogIn;
+		}
 	}
 }

@@ -5,6 +5,7 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Aura.Msgr.Network
@@ -91,9 +92,6 @@ namespace Aura.Msgr.Network
 				Send.LoginR(client, LoginResult.Fail);
 				return;
 			}
-
-			// TODO: Load and save.
-			client.Contact.State = ContactState.Online;
 
 			Log.Info("User '{0}' logged in as '{1}'.", client.Contact.AccountId, client.Contact.FullName);
 
@@ -249,6 +247,58 @@ namespace Aura.Msgr.Network
 			var note = MsgrServer.Instance.Database.GetNewNote(client.Contact.FullName, noteId);
 			if (note != null)
 				Send.YouGotNote(client, note);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : asd
+		/// 002 [..............30] Byte   : 48
+		/// 003 [........80000000] Int    : -2147483648
+		/// </example>
+		[PacketHandler(Op.Msgr.ChangeOptions)]
+		public void ChangeOptions(MsgrClient client, Packet packet)
+		{
+			var nickname = packet.GetString();
+			var status = (ContactStatus)packet.GetByte();
+			var chatOptions = (ChatOptions)packet.GetUInt();
+
+			var contact = client.Contact;
+
+			// Check nickname
+			if (nickname.Length > 50)
+			{
+				Log.Warning("User '{0}' tried to use a nickname that's longer than 50 characters.", contact.AccountId);
+				Send.ChangeOptionsR(client, false);
+				return;
+			}
+
+			// Check status
+			if (!Enum.IsDefined(typeof(ContactStatus), status))
+			{
+				Log.Warning("User '{0}' tried to use an invalid or unknown status ({1}).", contact.AccountId, status);
+				Send.ChangeOptionsR(client, false);
+				return;
+			}
+
+			// Check options
+			if (!Enum.IsDefined(typeof(ChatOptions), chatOptions))
+			{
+				Log.Warning("User '{0}' tried to use a invalid or unknown options ({1}).", contact.AccountId, status);
+				Send.ChangeOptionsR(client, false);
+				return;
+			}
+
+			// TODO: Notify friends about changed options?
+
+			contact.Nickname = nickname;
+			contact.Status = status;
+			contact.ChatOptions = chatOptions;
+
+			MsgrServer.Instance.Database.SaveOptions(contact);
+
+			Send.ChangeOptionsR(client, true);
 		}
 	}
 }

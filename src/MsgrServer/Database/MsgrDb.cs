@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Mabi.Const;
 using Aura.Shared.Database;
 using MySql.Data.MySqlClient;
 using System;
@@ -40,6 +41,12 @@ namespace Aura.Msgr.Database
 						if (reader.Read())
 						{
 							contact.Id = reader.GetInt32("contactId");
+							contact.Status = (ContactStatus)reader.GetByte("status");
+							contact.ChatOptions = (ChatOptions)reader.GetUInt32("chatOptions");
+							contact.Nickname = reader.GetStringSafe("nickname") ?? "";
+
+							if (!Enum.IsDefined(typeof(ContactStatus), contact.Status) || contact.Status == ContactStatus.None)
+								contact.Status = ContactStatus.Online;
 
 							return contact;
 						}
@@ -220,6 +227,24 @@ namespace Aura.Msgr.Database
 			}
 
 			return note;
+		}
+
+		/// <summary>
+		/// Saves contact's options to database.
+		/// </summary>
+		/// <param name="contact"></param>
+		public void SaveOptions(Contact contact)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `contacts` SET {0} WHERE `contactId` = @contactId", conn))
+			{
+				cmd.Set("status", (byte)contact.Status);
+				cmd.Set("chatOptions", (uint)contact.ChatOptions);
+				cmd.Set("nickname", contact.Nickname ?? "");
+				cmd.AddParameter("@contactId", contact.Id);
+
+				cmd.Execute();
+			}
 		}
 	}
 }

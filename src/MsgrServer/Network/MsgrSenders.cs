@@ -17,9 +17,9 @@ namespace Aura.Msgr.Network
 			{
 				packet.PutInt(client.Contact.Id);
 				packet.PutString(client.Contact.FullName);
-				packet.PutString("");
-				packet.PutUInt(0x80000000);
-				packet.PutByte((byte)client.Contact.State);
+				packet.PutString(client.Contact.Nickname);
+				packet.PutUInt((uint)client.Contact.ChatOptions);
+				packet.PutByte((byte)client.Contact.Status);
 			}
 
 			client.Send(packet);
@@ -100,6 +100,26 @@ namespace Aura.Msgr.Network
 			packet.PutLong(note.Id);
 			packet.PutString(note.FromCharacterName);
 			packet.PutString(note.FromServer);
+
+			client.Send(packet);
+		}
+
+		/// <summary>
+		/// Updates options on the client on success.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="success"></param>
+		public static void ChangeOptionsR(MsgrClient client, bool success)
+		{
+			var packet = new Packet(Op.Msgr.ChangeOptionsR, 0);
+
+			packet.PutByte(success);
+			if (success)
+			{
+				packet.PutString(client.Contact.Nickname);
+				packet.PutByte((byte)client.Contact.Status);
+				packet.PutUInt((uint)client.Contact.ChatOptions);
+			}
 
 			client.Send(packet);
 		}
