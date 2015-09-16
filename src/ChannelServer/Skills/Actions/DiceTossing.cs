@@ -52,7 +52,7 @@ namespace Aura.Channel.Skills.Action
 			}
 
 			// there seems to be client side code to prevent this, but just incase..
-			if (creature.RightHand != null && !creature.RightHand.HasTag("/dice/"))
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/dice/"))
 			{
 				Send.Notice(creature, Localization.Get("You must equip one Six Sided Dice to use this Action."));
 				return false;
@@ -96,6 +96,14 @@ namespace Aura.Channel.Skills.Action
 			var unkInt3 = packet.GetInt();
 			var unkInt4 = packet.GetInt();
 
+			var areaPosition = new Position(location);
+
+			// Check range
+			if (!creature.GetPosition().InRange(areaPosition, Range))
+			{
+				Send.Notice(creature, Localization.Get("Out of range."));
+			}
+
 			// Reduce Dice
 			if (creature.Inventory.RightHand != null)
 				creature.Inventory.Decrement(creature.Inventory.RightHand);
@@ -117,14 +125,6 @@ namespace Aura.Channel.Skills.Action
 			var location = packet.GetLong();
 			var unkInt3 = packet.GetInt();
 			var unkInt4 = packet.GetInt();
-
-			var areaPosition = new Position(location);
-
-			// Check range
-			if (!creature.GetPosition().InRange(areaPosition, Range))
-			{
-				Send.Notice(creature, Localization.Get("Out of range."));
-			}
 
 			Send.SkillComplete(creature, skill.Info.Id, location, unkInt3, unkInt4);
 		}
