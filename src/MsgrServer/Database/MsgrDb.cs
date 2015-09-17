@@ -214,7 +214,7 @@ namespace Aura.Msgr.Database
 			Note note = null;
 
 			using (var conn = this.Connection)
-			using (var mc = new MySqlCommand("SELECT * FROM `notes` WHERE `receiver` = @receiver AND `noteId` > @noteId ORDER BY `noteId` ASC LIMIT 1", conn))
+			using (var mc = new MySqlCommand("SELECT * FROM `notes` WHERE `receiver` = @receiver AND `noteId` > @noteId AND `read` = 0 ORDER BY `noteId` ASC LIMIT 1", conn))
 			{
 				mc.Parameters.AddWithValue("@receiver", receiver);
 				mc.Parameters.AddWithValue("@noteId", noteId);

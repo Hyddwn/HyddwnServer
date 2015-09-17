@@ -224,7 +224,7 @@ namespace Aura.Msgr.Network
 		}
 
 		/// <summary>
-		/// Sent regularly, to check for new notes.
+		/// Sent every minute, to check for new notes.
 		/// </summary>
 		/// <remarks>
 		/// Is it possible to get multiple new notes at once? The response
@@ -234,6 +234,10 @@ namespace Aura.Msgr.Network
 		/// The moment this packet is sent is probably also the moment at
 		/// which the client empties the inbox cache, otherwise you
 		/// wouldn't get the new note in the list.
+		/// 
+		/// After you log in, if you don't open your inbox, the client will
+		/// start sending this packet with id 0, already read notes have
+		/// to be filtered, so you're only reminded of the unread ones.
 		/// </remarks>
 		/// <example>
 		/// 001 [0000000000000009] Long   : 9
