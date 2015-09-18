@@ -10,23 +10,15 @@ using System.Threading.Tasks;
 
 namespace Aura.Msgr.Database
 {
-	public class User
+	public class User : Contact
 	{
-		public int Id { get; set; }
 		public string AccountId { get; set; }
-		public string Name { get; set; }
-		public string Server { get; set; }
 		public string ChannelName { get; set; }
-		public ContactStatus Status { get; set; }
-		public string Nickname { get; set; }
 		public ChatOptions ChatOptions { get; set; }
 
-		public string FullName { get { return (this.Name + "@" + this.Server); } }
-
 		public User()
+			: base()
 		{
-			this.Nickname = "";
-			this.Status = ContactStatus.Online;
 			this.ChatOptions = ChatOptions.NotifyOnFriendLogIn;
 		}
 	}

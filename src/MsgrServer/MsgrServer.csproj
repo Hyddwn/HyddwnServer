@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\Contact.cs" />
     <Compile Include="Database\User.cs" />
     <Compile Include="Database\Friend.cs" />
     <Compile Include="Database\Group.cs" />
