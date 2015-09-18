@@ -572,8 +572,8 @@ namespace Aura.Mabi.Network
 			public const int FriendConfirm = 0xC354;
 			public const int FriendReply = 0xC355;
 			public const int ChatInvite = 0xC356;
-			public const int FriendList = 0xC358;
-			public const int FriendListR = 0xC359;
+			public const int FriendListRequest = 0xC358;
+			public const int FriendListRequestR = 0xC359;
 			public const int FriendBlock = 0xC35A;
 			public const int FriendBlockR = 0xC35B;
 			public const int FriendUnblock = 0xC35C;

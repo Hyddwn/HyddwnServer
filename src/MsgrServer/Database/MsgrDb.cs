@@ -246,5 +246,35 @@ namespace Aura.Msgr.Database
 				cmd.Execute();
 			}
 		}
+
+		/// <summary>
+		/// Returns list of all groups in contact's friend list.
+		/// </summary>
+		/// <param name="contact"></param>
+		/// <returns></returns>
+		public List<Group> GetGroups(Contact contact)
+		{
+			var result = new List<Group>();
+
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `groups` WHERE `contactId` = @contactId", conn))
+			{
+				mc.Parameters.AddWithValue("@contactId", contact.Id);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						var group = new Group();
+						group.Id = reader.GetInt32("groupId");
+						group.Name = reader.GetStringSafe("name");
+
+						result.Add(group);
+					}
+				}
+			}
+
+			return result;
+		}
 	}
 }

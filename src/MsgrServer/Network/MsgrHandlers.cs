@@ -3,9 +3,11 @@
 
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using Aura.Msgr.Database;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Aura.Msgr.Network
@@ -227,17 +229,13 @@ namespace Aura.Msgr.Network
 		/// Sent every minute, to check for new notes.
 		/// </summary>
 		/// <remarks>
-		/// Is it possible to get multiple new notes at once? The response
-		/// only seems to support one. Although, when you check the inbox
-		/// you would also get the other new ones I suppose.
+		/// The offical server seems to only send the latest unread note,
+		/// sending the response multiple times, for multiple notes,
+		/// doesn't seem to do anything.
 		/// 
 		/// The moment this packet is sent is probably also the moment at
 		/// which the client empties the inbox cache, otherwise you
 		/// wouldn't get the new note in the list.
-		/// 
-		/// After you log in, if you don't open your inbox, the client will
-		/// start sending this packet with id 0, already read notes have
-		/// to be filtered, so you're only reminded of the unread ones.
 		/// </remarks>
 		/// <example>
 		/// 001 [0000000000000009] Long   : 9
@@ -245,7 +243,7 @@ namespace Aura.Msgr.Network
 		[PacketHandler(Op.Msgr.CheckNotes)]
 		public void CheckNotes(MsgrClient client, Packet packet)
 		{
-			// Id of the newest note in inbox
+			// Id of the newest note the client knows about
 			var noteId = packet.GetLong();
 
 			var note = MsgrServer.Instance.Database.GetLatestUnreadNote(client.Contact.FullName, noteId);
@@ -303,6 +301,25 @@ namespace Aura.Msgr.Network
 			MsgrServer.Instance.Database.SaveOptions(contact);
 
 			Send.ChangeOptionsR(client, true);
+		}
+
+		/// <summary>
+		/// Sent upon login, to request the group and the friend list.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.Msgr.FriendListRequest)]
+		public void FriendListRequest(MsgrClient client, Packet packet)
+		{
+			var contact = client.Contact;
+
+			// Lists are sorted alphabetically by the client
+			var groups = MsgrServer.Instance.Database.GetGroups(contact);
+			var friends = new List<Friend>(); //MsgrServer.Instance.Database.GetFriends(contact);
+
+			Send.GroupList(client, groups);
+			Send.FriendListRequestR(client, friends);
 		}
 	}
 }

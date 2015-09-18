@@ -123,6 +123,50 @@ namespace Aura.Msgr.Network
 
 			client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends group list to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="groups"></param>
+		public static void GroupList(MsgrClient client, List<Group> groups)
+		{
+			var packet = new Packet(Op.Msgr.GroupList, 0);
+
+			packet.PutInt(groups.Count + 1);
+			foreach (var group in groups)
+			{
+				packet.PutInt(group.Id);
+				packet.PutString(group.Name);
+			}
+
+			// ETC, Blacklist is displayed always
+			packet.PutInt(-1);
+			packet.PutString("");
+
+			client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends friend list to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="friends"></param>
+		public static void FriendListRequestR(MsgrClient client, List<Friend> friends)
+		{
+			var packet = new Packet(Op.Msgr.FriendListRequestR, 0);
+
+			packet.PutInt(friends.Count);
+			foreach (var friend in friends)
+			{
+				packet.PutInt(friend.Id);
+				packet.PutByte((byte)friend.Status);
+				packet.PutString(friend.FullName);
+				packet.PutInt(friend.GroupId);
+			}
+
+			client.Send(packet);
+		}
 	}
 
 	public enum LoginResult

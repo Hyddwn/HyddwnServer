@@ -56,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\Contact.cs" />
+    <Compile Include="Database\Friend.cs" />
+    <Compile Include="Database\Group.cs" />
     <Compile Include="Database\MsgrDb.cs" />
     <Compile Include="Database\Note.cs" />
     <Compile Include="MsgrServer.cs" />
