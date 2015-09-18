@@ -209,12 +209,12 @@ namespace Aura.Msgr.Database
 		/// <param name="receiver"></param>
 		/// <param name="noteId"></param>
 		/// <returns></returns>
-		public Note GetNewNote(string receiver, long noteId)
+		public Note GetLatestUnreadNote(string receiver, long noteId)
 		{
 			Note note = null;
 
 			using (var conn = this.Connection)
-			using (var mc = new MySqlCommand("SELECT * FROM `notes` WHERE `receiver` = @receiver AND `noteId` > @noteId AND `read` = 0 ORDER BY `noteId` ASC LIMIT 1", conn))
+			using (var mc = new MySqlCommand("SELECT * FROM `notes` WHERE `receiver` = @receiver AND `noteId` > @noteId AND `read` = 0 ORDER BY `noteId` DESC LIMIT 1", conn))
 			{
 				mc.Parameters.AddWithValue("@receiver", receiver);
 				mc.Parameters.AddWithValue("@noteId", noteId);

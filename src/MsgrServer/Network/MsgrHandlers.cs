@@ -248,7 +248,7 @@ namespace Aura.Msgr.Network
 			// Id of the newest note in inbox
 			var noteId = packet.GetLong();
 
-			var note = MsgrServer.Instance.Database.GetNewNote(client.Contact.FullName, noteId);
+			var note = MsgrServer.Instance.Database.GetLatestUnreadNote(client.Contact.FullName, noteId);
 			if (note != null)
 				Send.YouGotNote(client, note);
 		}
