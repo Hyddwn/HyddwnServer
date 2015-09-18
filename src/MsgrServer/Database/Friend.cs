@@ -3,7 +3,7 @@
 
 namespace Aura.Msgr.Database
 {
-	public class Friend : Contact
+	public class Friend : User
 	{
 		public int GroupId { get; set; }
 	}

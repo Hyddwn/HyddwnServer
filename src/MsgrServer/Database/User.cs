@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Aura.Msgr.Database
 {
-	public class Contact
+	public class User
 	{
 		public int Id { get; set; }
 		public string AccountId { get; set; }
@@ -23,7 +23,7 @@ namespace Aura.Msgr.Database
 
 		public string FullName { get { return (this.Name + "@" + this.Server); } }
 
-		public Contact()
+		public User()
 		{
 			this.Nickname = "";
 			this.Status = ContactStatus.Online;

@@ -15,11 +15,11 @@ namespace Aura.Msgr.Network
 			packet.PutInt((int)result);
 			if (result == LoginResult.Okay)
 			{
-				packet.PutInt(client.Contact.Id);
-				packet.PutString(client.Contact.FullName);
-				packet.PutString(client.Contact.Nickname);
-				packet.PutUInt((uint)client.Contact.ChatOptions);
-				packet.PutByte((byte)client.Contact.Status);
+				packet.PutInt(client.User.Id);
+				packet.PutString(client.User.FullName);
+				packet.PutString(client.User.Nickname);
+				packet.PutUInt((uint)client.User.ChatOptions);
+				packet.PutByte((byte)client.User.Status);
 			}
 
 			client.Send(packet);
@@ -116,9 +116,9 @@ namespace Aura.Msgr.Network
 			packet.PutByte(success);
 			if (success)
 			{
-				packet.PutString(client.Contact.Nickname);
-				packet.PutByte((byte)client.Contact.Status);
-				packet.PutUInt((uint)client.Contact.ChatOptions);
+				packet.PutString(client.User.Nickname);
+				packet.PutByte((byte)client.User.Status);
+				packet.PutUInt((uint)client.User.ChatOptions);
 			}
 
 			client.Send(packet);

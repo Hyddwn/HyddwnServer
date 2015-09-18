@@ -9,7 +9,7 @@ namespace Aura.Msgr.Network
 {
 	public class MsgrClient : BaseClient
 	{
-		public Contact Contact { get; set; }
+		public User User { get; set; }
 
 		protected override void EncodeBuffer(byte[] buffer)
 		{
