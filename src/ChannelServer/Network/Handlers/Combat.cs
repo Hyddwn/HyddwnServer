@@ -108,7 +108,11 @@ namespace Aura.Channel.Network.Handlers
 		public void CombatAttack(ChannelClient client, Packet packet)
 		{
 			var targetEntityId = packet.GetLong();
-			var unkString = packet.GetString();
+
+			// This string is in the standard CombatAttack packet,
+			// but the purpose is unknown, and it's not in all CombatAttack
+			// packets.
+			//var unkString = packet.GetString();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
