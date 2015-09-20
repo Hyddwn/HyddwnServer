@@ -112,7 +112,12 @@ namespace Aura.Channel.Network.Handlers
 			// This string is in the standard CombatAttack packet,
 			// but the purpose is unknown, and it's not in all CombatAttack
 			// packets.
-			//var unkString = packet.GetString();
+			if (packet.Peek() == PacketElementType.String)
+			{
+				var unkString = packet.GetString();
+				if (!string.IsNullOrWhiteSpace(unkString))
+					Log.Info("CombatAttack: Non-empty string, please report this message to the development team. String: " + unkString);
+			}
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
