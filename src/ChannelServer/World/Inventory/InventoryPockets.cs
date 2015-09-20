@@ -447,6 +447,11 @@ namespace Aura.Channel.World.Inventory
 						? _map[x, y]
 						: _map[_width - 1 - x, _height - 1 - y];
 
+					// Skip empty slots
+					if (item == null)
+						continue;
+
+					// Take item if it matches predicate
 					if (predicate(item))
 						return item;
 				}
@@ -470,6 +475,10 @@ namespace Aura.Channel.World.Inventory
 					var item = startAt == StartAt.TopLeft
 						? _map[x, y]
 						: _map[_width - 1 - x, _height - 1 - y];
+
+					// Skip empty slots
+					if (item == null)
+						continue;
 
 					// An item can occupy more than one spot on the map,
 					// make sure it's only added once.
