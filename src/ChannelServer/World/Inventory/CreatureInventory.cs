@@ -269,12 +269,16 @@ namespace Aura.Channel.World.Inventory
 		/// Returns first item to match predicate, or null.
 		/// </summary>
 		/// <param name="predicate"></param>
+		/// <param name="startAt">
+		/// Affects the order of the returned items, based on their position in
+		/// the inventory.
+		/// </param>
 		/// <returns></returns>
-		public Item GetItem(Func<Item, bool> predicate)
+		public Item GetItem(Func<Item, bool> predicate, StartAt startAt = StartAt.Random)
 		{
 			foreach (var pocket in _pockets.Values)
 			{
-				var item = pocket.GetItem(predicate);
+				var item = pocket.GetItem(predicate, startAt);
 				if (item != null)
 					return item;
 			}
@@ -286,13 +290,17 @@ namespace Aura.Channel.World.Inventory
 		/// Returns items that match predicate.
 		/// </summary>
 		/// <param name="predicate"></param>
+		/// <param name="startAt">
+		/// Affects the order of the returned items, based on their position in
+		/// the inventory.
+		/// </param>
 		/// <returns></returns>
-		public List<Item> GetItems(Func<Item, bool> predicate)
+		public List<Item> GetItems(Func<Item, bool> predicate, StartAt startAt = StartAt.Random)
 		{
 			var result = new List<Item>();
 
 			foreach (var pocket in _pockets.Values)
-				result.AddRange(pocket.GetItems(predicate));
+				result.AddRange(pocket.GetItems(predicate, startAt));
 
 			return result;
 		}

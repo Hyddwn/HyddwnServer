@@ -92,15 +92,17 @@ namespace Aura.Channel.World.Inventory
 		/// Returns first item to match predicate, or null.
 		/// </summary>
 		/// <param name="predicate"></param>
+		/// <param name="startAt"></param>
 		/// <returns></returns>
-		public abstract Item GetItem(Func<Item, bool> predicate);
+		public abstract Item GetItem(Func<Item, bool> predicate, StartAt startAt);
 
 		/// <summary>
 		/// Returns items that match predicate.
 		/// </summary>
 		/// <param name="predicate"></param>
+		/// <param name="startAt"></param>
 		/// <returns></returns>
-		public abstract List<Item> GetItems(Func<Item, bool> predicate);
+		public abstract List<Item> GetItems(Func<Item, bool> predicate, StartAt startAt);
 
 		/// <summary>
 		/// Removes items by item id and amount. Modified items are returned
@@ -431,16 +433,52 @@ namespace Aura.Channel.World.Inventory
 			get { return _items.Count; }
 		}
 
-		public override Item GetItem(Func<Item, bool> predicate)
+		public override Item GetItem(Func<Item, bool> predicate, StartAt startAt)
 		{
-			// TODO: Search from bottom right
-			return _items.Values.FirstOrDefault(predicate);
+			if (startAt == StartAt.Random)
+				return _items.Values.FirstOrDefault(predicate);
+
+			for (int y = 0; y < _height; ++y)
+			{
+				for (int x = 0; x < _width; ++x)
+				{
+					// Reverse index for bottom right start point
+					var item = startAt == StartAt.TopLeft
+						? _map[x, y]
+						: _map[_width - 1 - x, _height - 1 - y];
+
+					if (predicate(item))
+						return item;
+				}
+			}
+
+			return null;
 		}
 
-		public override List<Item> GetItems(Func<Item, bool> predicate)
+		public override List<Item> GetItems(Func<Item, bool> predicate, StartAt startAt)
 		{
-			// TODO: Search from bottom right
-			return _items.Values.Where(predicate).ToList();
+			if (startAt == StartAt.Random)
+				return _items.Values.Where(predicate).ToList();
+
+			var result = new List<Item>();
+
+			for (int y = 0; y < _height; ++y)
+			{
+				for (int x = 0; x < _width; ++x)
+				{
+					// Reverse index for bottom right start point
+					var item = startAt == StartAt.TopLeft
+						? _map[x, y]
+						: _map[_width - 1 - x, _height - 1 - y];
+
+					// An item can occupy more than one spot on the map,
+					// make sure it's only added once.
+					if (predicate(item) && !result.Contains(item))
+						result.Add(item);
+				}
+			}
+
+			return result;
 		}
 	}
 
@@ -561,7 +599,7 @@ namespace Aura.Channel.World.Inventory
 			get { return (_item != null ? 1 : 0); }
 		}
 
-		public override Item GetItem(Func<Item, bool> predicate)
+		public override Item GetItem(Func<Item, bool> predicate, StartAt startAt)
 		{
 			if (_item != null && predicate(_item))
 				return _item;
@@ -569,7 +607,7 @@ namespace Aura.Channel.World.Inventory
 			return null;
 		}
 
-		public override List<Item> GetItems(Func<Item, bool> predicate)
+		public override List<Item> GetItems(Func<Item, bool> predicate, StartAt startAt)
 		{
 			var result = new List<Item>();
 
@@ -662,14 +700,21 @@ namespace Aura.Channel.World.Inventory
 			get { return _items.Count; }
 		}
 
-		public override Item GetItem(Func<Item, bool> predicate)
+		public override Item GetItem(Func<Item, bool> predicate, StartAt startAt)
 		{
 			return _items.FirstOrDefault(predicate);
 		}
 
-		public override List<Item> GetItems(Func<Item, bool> predicate)
+		public override List<Item> GetItems(Func<Item, bool> predicate, StartAt startAt)
 		{
 			return _items.Where(predicate).ToList();
 		}
+	}
+
+	public enum StartAt
+	{
+		Random,
+		BottomRight,
+		TopLeft,
 	}
 }
