@@ -4,6 +4,7 @@
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World.Inventory;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
@@ -51,18 +52,65 @@ namespace Aura.Channel.Skills.Life
 			if (packet.Peek() == PacketElementType.String)
 				itemEntityId = MabiDictionary.Fetch<long>("ITEMID", packet.GetString());
 
-			// TODO: Get bandage if not item skill
-			// Bandages are used starting from the bottom-right corner.
-			// Higher quality bandages will take priority over lower quality bandages regardless of placement.
-			// ~_______~
-			// GetItem(ByTag) (starting in lower right?)
+			Item bandage = null;
 
-			// TODO: Check actual bandage
-			if (creature.Inventory.Count(BandageItemId) == 0)
+			// Get given bandage item or select one from the inventory
+			if (itemEntityId != 0)
 			{
-				Send.Notice(creature, Localization.Get("You need more than one Bandage."));
-				return false;
+				bandage = creature.Inventory.GetItem(itemEntityId);
+
+				if (bandage == null || !bandage.HasTag("/bandage/"))
+				{
+					Log.Warning("FirstAid.Prepare: Creature '{0:X16}' tried to use invalid bandage.", creature.EntityId);
+					return false;
+				}
 			}
+			else
+			{
+				// Get all bandages in inventory
+				var items = creature.Inventory.GetItems(a => a.HasTag("/bandage/"), StartAt.BottomRight);
+
+				// Cancel if there are none
+				if (items.Count == 0)
+				{
+					Send.Notice(creature, Localization.Get("You need more than one Bandage."));
+					return false;
+				}
+
+				var best = 0;
+
+				// Select the bandage with the highest quality,
+				// starting from the bottom right
+				foreach (var item in items)
+				{
+					var quality = 0;
+					if (item.HasTag("/common_grade/"))
+						quality = 1;
+					else if (item.HasTag("/high_grade/"))
+						quality = 2;
+					else if (item.HasTag("/highest_grade/"))
+						quality = 3;
+
+					// Select this item, if the quality is *better* than the
+					// previously selected one, we don't want to switch to a
+					// bandage of equal quality, since we want to get the one
+					// closest to the bottom right.
+					if (bandage == null || quality > best)
+					{
+						best = quality;
+						bandage = item;
+					}
+				}
+
+				// Sanity check, shouldn't happen. Ever.
+				if (bandage == null)
+				{
+					Log.Warning("FirstAid.Prepare: The impossible sanity check failed.");
+					return false;
+				}
+			}
+
+			creature.Temp.SkillItem1 = bandage;
 
 			Send.SkillInitEffect(creature, null);
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
@@ -128,11 +176,20 @@ namespace Aura.Channel.Skills.Life
 				goto L_End;
 			}
 
-			// Remove bandage
-			// TODO: Remove actual bandage
-			if (!creature.Inventory.Remove(BandageItemId, 1))
+			// Check bandage, make sure he still has the item and that
+			// it wasn't switched with something else somehow.
+			if (creature.Temp.SkillItem1 == null || !creature.Temp.SkillItem1.HasTag("/bandage/") || !creature.Inventory.Has(creature.Temp.SkillItem1))
 			{
+				Log.Warning("FirstAid.Complete: Creature '{0:X16}' apparently switched the skill item somehow, between Ready and Complete.", creature.EntityId);
 				Send.Notice(creature, Localization.Get("Invalid bandage."));
+				goto L_End;
+			}
+
+			// Remove bandage
+			if (!creature.Inventory.Decrement(creature.Temp.SkillItem1))
+			{
+				Log.Error("FirstAid.Complete: Decrementing the skill item failed somehow.");
+				Send.Notice(creature, Localization.Get("Unknown error."));
 				goto L_End;
 			}
 
