@@ -187,6 +187,9 @@ namespace Aura.Channel.Skills.Music
 		/// <summary>
 		/// Returns a random result message for the given quality.
 		/// </summary>
+		/// <remarks>
+		/// Reference: http://wiki.mabinogiworld.com/view/Playing_Instrument
+		/// </remarks>
 		/// <param name="quality"></param>
 		/// <returns></returns>
 		protected virtual string GetRandomQualityMessage(PlayingQuality quality)
@@ -196,12 +199,13 @@ namespace Aura.Channel.Skills.Music
 			{
 				case PlayingQuality.VeryGood:
 					msgs = new string[] {
-						Localization.Get("It seemed as if the God of Music had descended"),
-						Localization.Get("A perfect performance"),
+						Localization.Get("Your song came from the heavens!"),
+						Localization.Get("That was a perfect song"),
 					};
 					break;
 				case PlayingQuality.Good:
 					msgs = new string[] {
+						Localization.Get("You gave a great performance"),
 						Localization.Get("The performance was quite alright"),
 						Localization.Get("Not a bad performance"),
 						Localization.Get("I'm slowly gaining confidence in playing instruments."),
@@ -212,7 +216,7 @@ namespace Aura.Channel.Skills.Music
 						Localization.Get("Lots of mistakes, although most didn't notice"),
 						Localization.Get("An embarrassing performance"),
 						Localization.Get("The song is still too difficult for me."),
-						Localization.Get("I need more practice to play this song well."),
+						Localization.Get("You'll need to practice hard to master this song."),
 					};
 					break;
 				case PlayingQuality.VeryBad:
