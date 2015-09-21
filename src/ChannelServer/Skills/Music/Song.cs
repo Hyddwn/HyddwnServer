@@ -86,6 +86,9 @@ namespace Aura.Channel.Skills.Music
 		/// <summary>
 		/// Returns random success message.
 		/// </summary>
+		/// <remarks>
+		/// Reference: http://wiki.mabinogiworld.com/view/Song
+		/// </remarks>
 		/// <param name="quality"></param>
 		/// <returns></returns>
 		protected override string GetRandomQualityMessage(PlayingQuality quality)
@@ -95,23 +98,31 @@ namespace Aura.Channel.Skills.Music
 			{
 				case PlayingQuality.VeryGood:
 					msgs = new string[] {
-						Localization.Get("It seemed as if the God of Music had descended"),
-						Localization.Get("A perfect performance"),
+						Localization.Get("Your song was heavenly."),
+						Localization.Get("That was a perfect song."),
 					};
 					break;
 				case PlayingQuality.Good:
 					msgs = new string[] {
-						Localization.Get("The performance was quite alright"),
-						Localization.Get("Not a bad performance"),
-						Localization.Get("I'm slowly gaining confidence in playing instruments."),
+						Localization.Get("You did a fine job."),
+						Localization.Get("That really boosted your confidence."),
+						Localization.Get("You gave a great performance."),
 					};
 					break;
 				case PlayingQuality.Bad:
 				case PlayingQuality.VeryBad:
 					msgs = new string[] {
-						Localization.Get("A disastrous performance"),
-						Localization.Get("That was a total mess..."),
-						Localization.Get("That was a difficult song for me to play."),
+						Localization.Get("This song was too difficult for you to sing."),
+						Localization.Get("That was too difficult for you to sing."),
+						Localization.Get("This song is still difficult for you to sing"),
+						Localization.Get("You need to work harder to sing this song."),
+						Localization.Get("That was horrible."),
+						Localization.Get("Not only was the song you chose horrible, but you also sang it terribly."),
+						Localization.Get("You should apologize for that performance."),
+						Localization.Get("That was an easy song and you still butchered it."),
+						Localization.Get("Did anyone notice how much you messed up?"),
+						Localization.Get("You should feel ashamed of your performance."),
+						Localization.Get("You sang it well, but you won't improve if you keep singing such easy songs."),
 					};
 					break;
 			}
