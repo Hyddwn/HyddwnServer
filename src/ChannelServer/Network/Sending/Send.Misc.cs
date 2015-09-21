@@ -262,7 +262,7 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Broadcasts UseMotion and CancelMotion (cancel is true) around creature.
+		/// Broadcasts UseMotion and CancelMotion (if cancel is true) in creature's region.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="category"></param>
@@ -272,13 +272,7 @@ namespace Aura.Channel.Network.Sending
 		public static void UseMotion(Creature creature, int category, int type, bool loop = false, bool cancel = false)
 		{
 			if (cancel)
-			{
-				// Cancel motion
-				var cancelPacket = new Packet(Op.CancelMotion, creature.EntityId);
-				cancelPacket.PutByte(0);
-
-				creature.Region.Broadcast(cancelPacket, creature);
-			}
+				CancelMotion(creature);
 
 			// Do motion
 			var packet = new Packet(Op.UseMotion, creature.EntityId);
@@ -287,11 +281,26 @@ namespace Aura.Channel.Network.Sending
 			packet.PutByte(loop);
 			packet.PutShort(0);
 
+			// XXX: Why is it region and not range again...? Maybe so you see
+			//   the motion when coming into range? ... does that work?
+
 			creature.Region.Broadcast(packet, creature);
 		}
 
 		/// <summary>
-		/// Broadcasts MotionCancel2 in range of creature.
+		/// Broadcasts CancelMotion in creature's region.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void CancelMotion(Creature creature)
+		{
+			var cancelPacket = new Packet(Op.CancelMotion, creature.EntityId);
+			cancelPacket.PutByte(0);
+
+			creature.Region.Broadcast(cancelPacket, creature);
+		}
+
+		/// <summary>
+		/// Broadcasts MotionCancel2 in creature's region.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="unkByte"></param>

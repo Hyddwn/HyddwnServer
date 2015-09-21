@@ -106,6 +106,11 @@ namespace Aura.Channel.Skills.Music
 			Send.SkillUsePlayingInstrument(creature, skill.Info.Id, instrumentType, mml, rndScore);
 			skill.State = SkillState.Used;
 
+			// Special motion on highest quality.
+			if (quality == PlayingQuality.VeryGood)
+				Send.UseMotion(creature, 88, 2, true);
+
+			// Called from Complete, once the song is finished.
 			creature.Skills.Callback(skill.Info.Id, () =>
 			{
 				Send.Notice(creature, this.GetRandomQualityMessage(quality));
@@ -275,6 +280,10 @@ namespace Aura.Channel.Skills.Music
 			// Training by failing badly is possible at F and E.
 			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.RE && quality == PlayingQuality.VeryBad)
 				skill.Train(4); // Get a horrible result.
+
+			// Cancel special motion
+			if (quality == PlayingQuality.VeryGood)
+				Send.CancelMotion(creature);
 
 			// TODO: "Use the skill successfully to grow crops faster."
 			// TODO: "Use a music buff skill."
