@@ -125,7 +125,7 @@ namespace Aura.Channel.Network
 				if (creature.Region is DynamicRegion)
 					newLocation = creature.FallbackLocation;
 
-				// Use fallback location if creature is in a temp region.
+				// Use dungeon exit as fallback location if in a dungeon.
 				var dungeonRegion = creature.Region as DungeonRegion;
 				if (dungeonRegion != null)
 				{
