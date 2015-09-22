@@ -18,7 +18,7 @@ namespace Aura.Msgr.Database
 		public Contact()
 		{
 			this.Nickname = "";
-			this.Status = ContactStatus.Online;
+			this.Status = ContactStatus.Offline;
 		}
 	}
 }

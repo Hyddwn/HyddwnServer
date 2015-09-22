@@ -160,7 +160,7 @@ namespace Aura.Msgr.Network
 			foreach (var friend in friends)
 			{
 				packet.PutInt(friend.Id);
-				packet.PutByte((byte)friend.Status);
+				packet.PutByte((byte)friend.FriendshipStatus);
 				packet.PutString(friend.FullName);
 				packet.PutInt(friend.GroupId);
 			}

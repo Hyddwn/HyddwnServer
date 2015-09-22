@@ -275,5 +275,42 @@ namespace Aura.Msgr.Database
 
 			return result;
 		}
+
+		/// <summary>
+		/// Returns list of friends for user.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns></returns>
+		public List<Friend> GetFriends(User user)
+		{
+			var result = new List<Friend>();
+
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand(
+				"SELECT f.userId2 AS friendId, c.characterName AS friendName, c.server AS friendServer, f.groupId AS groupId " +
+				"FROM `friends` AS f " +
+				"INNER JOIN `contacts` AS c ON `f`.`userId2` = `c`.`contactId` " +
+				"WHERE `f`.`userId1` = @userId", conn))
+			{
+				mc.Parameters.AddWithValue("@userId", user.Id);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						var friend = new Friend();
+						friend.Id = reader.GetInt32("friendId");
+						friend.Name = reader.GetStringSafe("friendName");
+						friend.Server = reader.GetStringSafe("friendServer");
+						friend.GroupId = reader.GetInt32("groupId");
+						friend.FriendshipStatus = (FriendshipStatus)reader.GetByte("status");
+
+						result.Add(friend);
+					}
+				}
+			}
+
+			return result;
+		}
 	}
 }

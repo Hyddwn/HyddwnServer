@@ -18,6 +18,18 @@ namespace Aura.Mabi.Const
 		// Others are displayed as "Unknown".
 	}
 
+	public enum FriendshipStatus : byte
+	{
+		Normal = 0,
+		Blocked = 1,
+		//Offline = 2, // ?
+		Inviting = 3,
+		Invited = 4, // msg box
+		//Offline = 5, // ?
+		//Offline = 6, // ?
+		Blacklist = 7,
+	}
+
 	// Looks like a bitmask... but are there other values?
 	[Flags]
 	public enum ChatOptions : uint

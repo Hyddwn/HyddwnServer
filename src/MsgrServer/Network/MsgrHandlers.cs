@@ -316,7 +316,7 @@ namespace Aura.Msgr.Network
 
 			// Lists are sorted alphabetically by the client
 			var groups = MsgrServer.Instance.Database.GetGroups(user);
-			var friends = new List<Friend>(); //MsgrServer.Instance.Database.GetFriends(contact);
+			var friends = MsgrServer.Instance.Database.GetFriends(user);
 
 			Send.GroupList(client, groups);
 			Send.FriendListRequestR(client, friends);
