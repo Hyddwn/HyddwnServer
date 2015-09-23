@@ -133,6 +133,7 @@ namespace Aura.Msgr.Network
 		{
 			var packet = new Packet(Op.Msgr.GroupList, 0);
 
+			// Custom groups + ETC
 			packet.PutInt(groups.Count + 1);
 			foreach (var group in groups)
 			{
@@ -140,7 +141,7 @@ namespace Aura.Msgr.Network
 				packet.PutString(group.Name);
 			}
 
-			// ETC, Blacklist is displayed always
+			// ETC (id:-1) and Blacklist (id:-4) are displayed always.
 			packet.PutInt(-1);
 			packet.PutString("");
 
