@@ -598,6 +598,7 @@ namespace Aura.Mabi.Network
 			public const int FriendOptionChanged = 0xC372;
 			public const int GroupList = 0xC376;
 			public const int AddGroup = 0xC377;
+			public const int DeleteGroup = 0xC379;
 			public const int RenameGroup = 0xC37B;
 			public const int ChangeGroup = 0xC37D;
 			public const int SendNote = 0xC37E;

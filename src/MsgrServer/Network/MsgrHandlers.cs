@@ -390,5 +390,21 @@ namespace Aura.Msgr.Network
 
 			MsgrServer.Instance.Database.ChangeGroup(client.User, friendContactId, groupId);
 		}
+
+		/// <summary>
+		/// Notification about deletion of a group, no response.
+		/// </summary>
+		/// <example>
+		/// 002 [........00000001] Int    : 1
+		/// </example>
+		[PacketHandler(Op.Msgr.DeleteGroup)]
+		public void DeleteGroup(MsgrClient client, Packet packet)
+		{
+			var groupId = packet.GetInt();
+
+			// TODO: We need a list of friends and groups in memory, this is insane.
+
+			MsgrServer.Instance.Database.DeleteGroup(client.User, groupId);
+		}
 	}
 }

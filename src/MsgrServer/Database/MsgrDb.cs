@@ -334,6 +334,35 @@ namespace Aura.Msgr.Database
 		}
 
 		/// <summary>
+		/// Deletes group from database and moves friends in that group to ETC.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="groupId"></param>
+		public void DeleteGroup(User user, int groupId)
+		{
+			using (var conn = this.Connection)
+			{
+				// Move friends
+				using (var cmd = new UpdateCommand("UPDATE `friends` SET {0} WHERE `userId1` = @userId1 AND `groupId` = @oldGroupId", conn))
+				{
+					cmd.Set("groupId", -1);
+					cmd.AddParameter("@userId1", user.Id);
+					cmd.AddParameter("@oldGroupId", groupId);
+
+					cmd.Execute();
+				}
+
+				// Delete group
+				using (var mc = new MySqlCommand("DELETE FROM `groups` WHERE `contactId` = @contactId AND `groupId` = @groupId", conn))
+				{
+					mc.Parameters.AddWithValue("@contactId", user.Id);
+					mc.Parameters.AddWithValue("@groupId", groupId);
+					mc.ExecuteNonQuery();
+				}
+			}
+		}
+
+		/// <summary>
 		/// Returns list of friends for user.
 		/// </summary>
 		/// <param name="user"></param>
