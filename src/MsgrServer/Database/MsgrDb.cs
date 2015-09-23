@@ -296,6 +296,25 @@ namespace Aura.Msgr.Database
 		}
 
 		/// <summary>
+		/// Renames group in database.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="groupId"></param>
+		/// <param name="groupName"></param>
+		public void RenameGroup(User user, int groupId, string groupName)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `groups` SET {0} WHERE `groupId` = @groupId AND `contactId` = @contactId", conn))
+			{
+				cmd.Set("name", groupName);
+				cmd.AddParameter("@groupId", groupId);
+				cmd.AddParameter("@contactId", user.Id);
+
+				cmd.Execute();
+			}
+		}
+
+		/// <summary>
 		/// Returns list of friends for user.
 		/// </summary>
 		/// <param name="user"></param>

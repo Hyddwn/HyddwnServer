@@ -343,5 +343,21 @@ namespace Aura.Msgr.Network
 
 			MsgrServer.Instance.Database.AddGroup(client.User, groupId, groupName);
 		}
+
+		/// <summary>
+		/// Notification about group renaming, no response.
+		/// </summary>
+		/// <example>
+		/// 001 [........00000002] Int    : 2
+		/// 002 [................] String : test23
+		/// </example>
+		[PacketHandler(Op.Msgr.RenameGroup)]
+		public void RenameGroup(MsgrClient client, Packet packet)
+		{
+			var groupId = packet.GetInt();
+			var groupName = packet.GetString();
+
+			MsgrServer.Instance.Database.RenameGroup(client.User, groupId, groupName);
+		}
 	}
 }
