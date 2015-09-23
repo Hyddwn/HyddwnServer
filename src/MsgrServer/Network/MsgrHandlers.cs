@@ -341,6 +341,13 @@ namespace Aura.Msgr.Network
 			var groupId = packet.GetInt();
 			var groupName = packet.GetString();
 
+			if (groupId <= 0)
+			{
+				Log.Warning("User '{0}' tried to add group with invalid id '{1}'.", client.User.AccountId, groupId);
+				client.Kill(); // Not killing the connection would desync the client
+				return;
+			}
+
 			MsgrServer.Instance.Database.AddGroup(client.User, groupId, groupName);
 		}
 
@@ -356,6 +363,12 @@ namespace Aura.Msgr.Network
 		{
 			var groupId = packet.GetInt();
 			var groupName = packet.GetString();
+
+			if (groupId <= 0)
+			{
+				Log.Warning("User '{0}' tried to rename group with invalid id '{1}'.", client.User.AccountId, groupId);
+				return; // No need for a client kill, we don't care about the name.
+			}
 
 			MsgrServer.Instance.Database.RenameGroup(client.User, groupId, groupName);
 		}
