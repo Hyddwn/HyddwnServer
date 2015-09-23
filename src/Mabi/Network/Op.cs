@@ -599,6 +599,7 @@ namespace Aura.Mabi.Network
 			public const int GroupList = 0xC376;
 			public const int AddGroup = 0xC377;
 			public const int RenameGroup = 0xC37B;
+			public const int ChangeGroup = 0xC37D;
 			public const int SendNote = 0xC37E;
 			public const int SendNoteR = 0xC37F;
 

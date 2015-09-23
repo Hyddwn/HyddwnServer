@@ -372,5 +372,23 @@ namespace Aura.Msgr.Network
 
 			MsgrServer.Instance.Database.RenameGroup(client.User, groupId, groupName);
 		}
+
+		/// <summary>
+		/// Notification about moving friend to another group, no response.
+		/// </summary>
+		/// <example>
+		/// 001 [........00000003] Int    : 3
+		/// 002 [........00000001] Int    : 1
+		/// </example>
+		[PacketHandler(Op.Msgr.ChangeGroup)]
+		public void ChangeGroup(MsgrClient client, Packet packet)
+		{
+			var friendContactId = packet.GetInt();
+			var groupId = packet.GetInt();
+
+			// TODO: We need a list of friends and groups in memory, this is insane.
+
+			MsgrServer.Instance.Database.ChangeGroup(client.User, friendContactId, groupId);
+		}
 	}
 }

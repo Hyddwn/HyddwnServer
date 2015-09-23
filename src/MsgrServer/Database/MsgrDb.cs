@@ -315,6 +315,25 @@ namespace Aura.Msgr.Database
 		}
 
 		/// <summary>
+		/// Changes group the friend is in in the database.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="friendContactId"></param>
+		/// <param name="groupId"></param>
+		public void ChangeGroup(User user, int friendContactId, int groupId)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `friends` SET {0} WHERE `userId1` = @userId1 AND `userId2` = @userId2", conn))
+			{
+				cmd.Set("groupId", groupId);
+				cmd.AddParameter("@userId1", user.Id);
+				cmd.AddParameter("@userId2", friendContactId);
+
+				cmd.Execute();
+			}
+		}
+
+		/// <summary>
 		/// Returns list of friends for user.
 		/// </summary>
 		/// <param name="user"></param>
