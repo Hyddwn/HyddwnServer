@@ -277,6 +277,25 @@ namespace Aura.Msgr.Database
 		}
 
 		/// <summary>
+		/// Adds group to database.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="groupId"></param>
+		/// <param name="groupName"></param>
+		public void AddGroup(User user, int groupId, string groupName)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new InsertCommand("INSERT INTO `groups` {0}", conn))
+			{
+				cmd.Set("groupId", groupId);
+				cmd.Set("contactId", user.Id);
+				cmd.Set("name", groupName);
+
+				cmd.Execute();
+			}
+		}
+
+		/// <summary>
 		/// Returns list of friends for user.
 		/// </summary>
 		/// <param name="user"></param>
@@ -287,7 +306,7 @@ namespace Aura.Msgr.Database
 
 			using (var conn = this.Connection)
 			using (var mc = new MySqlCommand(
-				"SELECT f.userId2 AS friendId, c.characterName AS friendName, c.server AS friendServer, f.groupId AS groupId " +
+				"SELECT f.userId2 AS friendId, c.characterName AS friendName, c.server AS friendServer, f.groupId AS groupId, f.status AS status " +
 				"FROM `friends` AS f " +
 				"INNER JOIN `contacts` AS c ON `f`.`userId2` = `c`.`contactId` " +
 				"WHERE `f`.`userId1` = @userId", conn))

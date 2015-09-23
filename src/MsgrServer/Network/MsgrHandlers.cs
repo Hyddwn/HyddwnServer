@@ -321,5 +321,27 @@ namespace Aura.Msgr.Network
 			Send.GroupList(client, groups);
 			Send.FriendListRequestR(client, friends);
 		}
+
+		/// <summary>
+		/// Notification about creation of a new group,
+		/// doesn't seem to have a response.
+		/// </summary>
+		/// <remarks>
+		/// Right, let the client decide the group id, what could possibly
+		/// go wrong. Is this fixable? There's no response, the client will
+		/// try to work with that id =/
+		/// </remarks>
+		/// <example>
+		/// 001 [........00000001] Int    : 1
+		/// 002 [................] String : test
+		/// </example>
+		[PacketHandler(Op.Msgr.AddGroup)]
+		public void AddGroup(MsgrClient client, Packet packet)
+		{
+			var groupId = packet.GetInt();
+			var groupName = packet.GetString();
+
+			MsgrServer.Instance.Database.AddGroup(client.User, groupId, groupName);
+		}
 	}
 }
