@@ -251,9 +251,9 @@ namespace Aura.Msgr.Database
 		/// </summary>
 		/// <param name="user"></param>
 		/// <returns></returns>
-		public List<Group> GetGroups(User user)
+		public ICollection<Group> GetGroups(User user)
 		{
-			var result = new List<Group>();
+			var result = new Dictionary<int, Group>();
 
 			using (var conn = this.Connection)
 			using (var mc = new MySqlCommand("SELECT * FROM `groups` WHERE `contactId` = @contactId", conn))
@@ -268,12 +268,13 @@ namespace Aura.Msgr.Database
 						group.Id = reader.GetInt32("groupId");
 						group.Name = reader.GetStringSafe("name");
 
-						result.Add(group);
+						// Override duplicate ids
+						result[group.Id] = group;
 					}
 				}
 			}
 
-			return result;
+			return result.Values;
 		}
 
 		/// <summary>

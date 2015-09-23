@@ -129,7 +129,7 @@ namespace Aura.Msgr.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="groups"></param>
-		public static void GroupList(MsgrClient client, List<Group> groups)
+		public static void GroupList(MsgrClient client, ICollection<Group> groups)
 		{
 			var packet = new Packet(Op.Msgr.GroupList, 0);
 
