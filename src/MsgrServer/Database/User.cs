@@ -12,7 +12,6 @@ namespace Aura.Msgr.Database
 {
 	public class User : Contact
 	{
-		public string AccountId { get; set; }
 		public string ChannelName { get; set; }
 		public ChatOptions ChatOptions { get; set; }
 		public List<Group> Groups { get; private set; }

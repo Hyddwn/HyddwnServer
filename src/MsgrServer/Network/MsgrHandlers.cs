@@ -451,5 +451,50 @@ namespace Aura.Msgr.Network
 			client.User.Groups.Remove(group);
 			MsgrServer.Instance.Database.DeleteGroup(client.User, groupId);
 		}
+
+		/// <summary>
+		/// Request for adding a friend.
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : Sway
+		/// 002 [................] String : Aura
+		/// </example>
+		[PacketHandler(Op.Msgr.FriendInvite)]
+		public void FriendInvite(MsgrClient client, Packet packet)
+		{
+			var characterName = packet.GetString();
+			var serverName = packet.GetString();
+
+			// Get user
+			var friend = MsgrServer.Instance.Database.GetFriendFromUser(characterName, serverName);
+			if (friend == null)
+			{
+				Send.FriendInviteR(client, FriendInviteResult.UserNotFound);
+				return;
+			}
+
+			// Check account
+			if (friend.AccountId == client.User.AccountId)
+			{
+				Send.FriendInviteR(client, FriendInviteResult.OwnAccount);
+				return;
+			}
+
+			// Check existing friends
+			if (client.User.Friends.Exists(a => a.Id == friend.Id))
+			{
+				Send.FriendInviteR(client, FriendInviteResult.AlreadyFriends);
+				return;
+			}
+
+			// TODO: Check max friends (what is the max?)
+
+			friend.FriendshipStatus = FriendshipStatus.Inviting;
+
+			client.User.Friends.Add(friend);
+			MsgrServer.Instance.Database.InviteFriend(client.User, friend);
+
+			Send.FriendInviteR(client, FriendInviteResult.Success, friend);
+		}
 	}
 }

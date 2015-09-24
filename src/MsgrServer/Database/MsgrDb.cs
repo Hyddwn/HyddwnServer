@@ -73,6 +73,37 @@ namespace Aura.Msgr.Database
 		}
 
 		/// <summary>
+		/// Returns friend for invitation, or null if the user doesn't exist.
+		/// </summary>
+		/// <param name="characterName"></param>
+		/// <param name="server"></param>
+		/// <returns></returns>
+		public Friend GetFriendFromUser(string characterName, string server)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `contacts` WHERE `characterName` = @characterName AND `server` = @server", conn))
+			{
+				mc.Parameters.AddWithValue("@characterName", characterName);
+				mc.Parameters.AddWithValue("@server", server);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					if (!reader.Read())
+						return null;
+
+					var friend = new Friend();
+					friend.AccountId = reader.GetString("accountId");
+					friend.Name = characterName;
+					friend.Server = server;
+					friend.Id = reader.GetInt32("contactId");
+					friend.Status = (ContactStatus)reader.GetByte("status");
+
+					return friend;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Returns all notes for user.
 		/// </summary>
 		/// <param name="user"></param>
@@ -400,6 +431,40 @@ namespace Aura.Msgr.Database
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Creates friend entries for user and friend with status inviting/invited.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="friend"></param>
+		public void InviteFriend(User user, Friend friend)
+		{
+			using (var conn = this.Connection)
+			using (var transaction = conn.BeginTransaction())
+			{
+				using (var cmd = new InsertCommand("INSERT INTO `friends` {0}", conn, transaction))
+				{
+					cmd.Set("userId1", user.Id);
+					cmd.Set("userId2", friend.Id);
+					cmd.Set("groupId", -1);
+					cmd.Set("status", (byte)FriendshipStatus.Inviting);
+
+					cmd.Execute();
+				}
+
+				using (var cmd = new InsertCommand("INSERT INTO `friends` {0}", conn, transaction))
+				{
+					cmd.Set("userId1", friend.Id);
+					cmd.Set("userId2", user.Id);
+					cmd.Set("groupId", -1);
+					cmd.Set("status", (byte)FriendshipStatus.Invited);
+
+					cmd.Execute();
+				}
+
+				transaction.Commit();
+			}
 		}
 	}
 }

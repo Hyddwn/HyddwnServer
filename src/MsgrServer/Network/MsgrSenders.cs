@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Msgr.Database;
+using System;
 using System.Collections.Generic;
 
 namespace Aura.Msgr.Network
@@ -168,6 +170,31 @@ namespace Aura.Msgr.Network
 
 			client.Send(packet);
 		}
+
+		/// <summary>
+		/// Response to FriendInvite.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="result"></param>
+		/// <param name="friend">Required for success, otherwise can be left null.</param>
+		public static void FriendInviteR(MsgrClient client, FriendInviteResult result, Contact friend = null)
+		{
+			if (result == FriendInviteResult.Success && friend == null)
+				throw new ArgumentNullException("friend");
+
+			var packet = new Packet(Op.Msgr.FriendInviteR, 0);
+
+			//packet.PutInt((int)result);
+			packet.PutInt((int)result);
+			if (result == FriendInviteResult.Success)
+			{
+				packet.PutInt(friend.Id);
+				packet.PutString(friend.FullName);
+				packet.PutByte((byte)FriendshipStatus.Inviting);
+			}
+
+			client.Send(packet);
+		}
 	}
 
 	public enum LoginResult
@@ -175,5 +202,22 @@ namespace Aura.Msgr.Network
 		Okay = 0,
 		Fail = 1,
 		Pet = 11,
+	}
+
+	public enum FriendInviteResult
+	{
+		Success = 0,
+		UnknownError = 1,
+		UserNotFound = 2,
+		//UnknownError = 3,
+		//UnknownError = 4,
+		AlreadyFriends = 5,
+		//UnknownError = 6,
+		//UnknownError = 7,
+		MaxReached = 8,
+		OwnAccount = 9,
+		NoPets = 10,
+		//UnknownError = 11,
+		UserMaxReached = 12,
 	}
 }
