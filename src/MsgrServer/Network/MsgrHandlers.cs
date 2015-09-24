@@ -318,6 +318,12 @@ namespace Aura.Msgr.Network
 			var groups = MsgrServer.Instance.Database.GetGroups(user);
 			var friends = MsgrServer.Instance.Database.GetFriends(user);
 
+			user.Groups.Clear();
+			user.Groups.AddRange(groups);
+
+			user.Friends.Clear();
+			user.Friends.AddRange(friends);
+
 			Send.GroupList(client, groups);
 			Send.FriendListRequestR(client, friends);
 		}
@@ -386,7 +392,21 @@ namespace Aura.Msgr.Network
 			var friendContactId = packet.GetInt();
 			var groupId = packet.GetInt();
 
-			// TODO: We need a list of friends and groups in memory, this is insane.
+			// Check friend
+			if (!client.User.Friends.Exists(a => a.Id == friendContactId))
+			{
+				Log.Warning("ChangeGroup: User '{0}' tried to change group of invalid friend.", client.User.AccountId);
+				client.Kill();
+				return;
+			}
+
+			// Check group
+			if (groupId != -1 && groupId != -4 && !client.User.Groups.Exists(a => a.Id == groupId))
+			{
+				Log.Warning("ChangeGroup: User '{0}' tried to change friend's group to an invalid one.", client.User.AccountId);
+				client.Kill();
+				return;
+			}
 
 			MsgrServer.Instance.Database.ChangeGroup(client.User, friendContactId, groupId);
 		}
@@ -402,7 +422,12 @@ namespace Aura.Msgr.Network
 		{
 			var groupId = packet.GetInt();
 
-			// TODO: We need a list of friends and groups in memory, this is insane.
+			if (!client.User.Groups.Exists(a => a.Id == groupId))
+			{
+				Log.Warning("DeleteGroup: User '{0}' tried to delete an invalid group.", client.User.AccountId);
+				client.Kill();
+				return;
+			}
 
 			MsgrServer.Instance.Database.DeleteGroup(client.User, groupId);
 		}

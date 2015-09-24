@@ -15,11 +15,15 @@ namespace Aura.Msgr.Database
 		public string AccountId { get; set; }
 		public string ChannelName { get; set; }
 		public ChatOptions ChatOptions { get; set; }
+		public List<Group> Groups { get; private set; }
+		public List<Friend> Friends { get; private set; }
 
 		public User()
 			: base()
 		{
 			this.ChatOptions = ChatOptions.NotifyOnFriendLogIn;
+			this.Groups = new List<Group>();
+			this.Friends = new List<Friend>();
 		}
 	}
 }
