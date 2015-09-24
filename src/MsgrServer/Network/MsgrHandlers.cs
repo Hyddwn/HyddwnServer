@@ -354,7 +354,12 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			MsgrServer.Instance.Database.AddGroup(client.User, groupId, groupName);
+			var group = new Database.Group();
+			group.Id = groupId;
+			group.Name = groupName;
+
+			client.User.Groups.Add(group);
+			MsgrServer.Instance.Database.AddGroup(client.User, group);
 		}
 
 		/// <summary>
@@ -370,13 +375,23 @@ namespace Aura.Msgr.Network
 			var groupId = packet.GetInt();
 			var groupName = packet.GetString();
 
+			// Check if predefined group
 			if (groupId <= 0)
 			{
 				Log.Warning("User '{0}' tried to rename group with invalid id '{1}'.", client.User.AccountId, groupId);
 				return; // No need for a client kill, we don't care about the name.
 			}
 
-			MsgrServer.Instance.Database.RenameGroup(client.User, groupId, groupName);
+			// Get group
+			var group = client.User.GetGroup(groupId);
+			if (group == null)
+			{
+				Log.Warning("User '{0}' tried to rename non-existent group.", client.User.AccountId, groupId);
+				return;
+			}
+
+			group.Name = groupName;
+			MsgrServer.Instance.Database.RenameGroup(client.User, group);
 		}
 
 		/// <summary>
@@ -393,9 +408,10 @@ namespace Aura.Msgr.Network
 			var groupId = packet.GetInt();
 
 			// Check friend
-			if (!client.User.Friends.Exists(a => a.Id == friendContactId))
+			var friend = client.User.GetFriend(friendContactId);
+			if (friend == null)
 			{
-				Log.Warning("ChangeGroup: User '{0}' tried to change group of invalid friend.", client.User.AccountId);
+				Log.Warning("ChangeGroup: User '{0}' tried to change group of non-existent friend.", client.User.AccountId);
 				client.Kill();
 				return;
 			}
@@ -408,6 +424,7 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
+			friend.GroupId = groupId;
 			MsgrServer.Instance.Database.ChangeGroup(client.User, friendContactId, groupId);
 		}
 
@@ -422,13 +439,16 @@ namespace Aura.Msgr.Network
 		{
 			var groupId = packet.GetInt();
 
-			if (!client.User.Groups.Exists(a => a.Id == groupId))
+			// Get group
+			var group = client.User.GetGroup(groupId);
+			if (group == null)
 			{
 				Log.Warning("DeleteGroup: User '{0}' tried to delete an invalid group.", client.User.AccountId);
 				client.Kill();
 				return;
 			}
 
+			client.User.Groups.Remove(group);
 			MsgrServer.Instance.Database.DeleteGroup(client.User, groupId);
 		}
 	}

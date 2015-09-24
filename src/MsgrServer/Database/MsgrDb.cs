@@ -285,14 +285,14 @@ namespace Aura.Msgr.Database
 		/// <param name="user"></param>
 		/// <param name="groupId"></param>
 		/// <param name="groupName"></param>
-		public void AddGroup(User user, int groupId, string groupName)
+		public void AddGroup(User user, Group group)
 		{
 			using (var conn = this.Connection)
 			using (var cmd = new InsertCommand("INSERT INTO `groups` {0}", conn))
 			{
-				cmd.Set("groupId", groupId);
+				cmd.Set("groupId", group.Id);
 				cmd.Set("contactId", user.Id);
-				cmd.Set("name", groupName);
+				cmd.Set("name", group.Name);
 
 				cmd.Execute();
 			}
@@ -304,13 +304,13 @@ namespace Aura.Msgr.Database
 		/// <param name="user"></param>
 		/// <param name="groupId"></param>
 		/// <param name="groupName"></param>
-		public void RenameGroup(User user, int groupId, string groupName)
+		public void RenameGroup(User user, Group group)
 		{
 			using (var conn = this.Connection)
 			using (var cmd = new UpdateCommand("UPDATE `groups` SET {0} WHERE `groupId` = @groupId AND `contactId` = @contactId", conn))
 			{
-				cmd.Set("name", groupName);
-				cmd.AddParameter("@groupId", groupId);
+				cmd.Set("name", group.Name);
+				cmd.AddParameter("@groupId", group.Id);
 				cmd.AddParameter("@contactId", user.Id);
 
 				cmd.Execute();

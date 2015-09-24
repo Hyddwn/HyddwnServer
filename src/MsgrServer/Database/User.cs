@@ -25,5 +25,15 @@ namespace Aura.Msgr.Database
 			this.Groups = new List<Group>();
 			this.Friends = new List<Friend>();
 		}
+
+		public Group GetGroup(int id)
+		{
+			return this.Groups.FirstOrDefault(a => a.Id == id);
+		}
+
+		public Friend GetFriend(int id)
+		{
+			return this.Friends.FirstOrDefault(a => a.Id == id);
+		}
 	}
 }
