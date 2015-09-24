@@ -30,6 +30,8 @@ namespace Aura.Msgr.Database
 				user.Name = characterName;
 				user.Server = server;
 				user.ChannelName = channelName;
+				user.Status = ContactStatus.Online;
+				user.ChatOptions = ChatOptions.NotifyOnFriendLogIn;
 
 				// Try to get contact from db
 				using (var mc = new MySqlCommand("SELECT * FROM `contacts` WHERE `characterEntityId` = @characterEntityId", conn))
