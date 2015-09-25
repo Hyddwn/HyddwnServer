@@ -335,13 +335,13 @@ namespace Aura.Msgr.Database
 		/// <param name="user"></param>
 		/// <param name="groupId"></param>
 		/// <param name="groupName"></param>
-		public void RenameGroup(User user, Group group)
+		public void RenameGroup(User user, int groupId, string groupName)
 		{
 			using (var conn = this.Connection)
 			using (var cmd = new UpdateCommand("UPDATE `groups` SET {0} WHERE `groupId` = @groupId AND `contactId` = @contactId", conn))
 			{
-				cmd.Set("name", group.Name);
-				cmd.AddParameter("@groupId", group.Id);
+				cmd.Set("name", groupName);
+				cmd.AddParameter("@groupId", groupId);
 				cmd.AddParameter("@contactId", user.Id);
 
 				cmd.Execute();

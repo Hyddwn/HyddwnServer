@@ -14,20 +14,15 @@ namespace Aura.Msgr.Database
 	{
 		public string ChannelName { get; set; }
 		public ChatOptions ChatOptions { get; set; }
-		public List<Group> Groups { get; private set; }
+		public HashSet<int> Groups { get; private set; }
 		public List<Friend> Friends { get; private set; }
 
 		public User()
 			: base()
 		{
 			this.ChatOptions = ChatOptions.NotifyOnFriendLogIn;
-			this.Groups = new List<Group>();
+			this.Groups = new HashSet<int>();
 			this.Friends = new List<Friend>();
-		}
-
-		public Group GetGroup(int id)
-		{
-			return this.Groups.FirstOrDefault(a => a.Id == id);
 		}
 
 		public Friend GetFriend(int id)

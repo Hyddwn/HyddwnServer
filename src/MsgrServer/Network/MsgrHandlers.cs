@@ -319,7 +319,8 @@ namespace Aura.Msgr.Network
 			var friends = MsgrServer.Instance.Database.GetFriends(user);
 
 			user.Groups.Clear();
-			user.Groups.AddRange(groups);
+			foreach (var group in groups)
+				user.Groups.Add(group.Id);
 
 			user.Friends.Clear();
 			user.Friends.AddRange(friends);
@@ -358,7 +359,7 @@ namespace Aura.Msgr.Network
 			group.Id = groupId;
 			group.Name = groupName;
 
-			client.User.Groups.Add(group);
+			client.User.Groups.Add(groupId);
 			MsgrServer.Instance.Database.AddGroup(client.User, group);
 		}
 
@@ -382,16 +383,14 @@ namespace Aura.Msgr.Network
 				return; // No need for a client kill, we don't care about the name.
 			}
 
-			// Get group
-			var group = client.User.GetGroup(groupId);
-			if (group == null)
+			// Check group
+			if (!client.User.Groups.Contains(groupId))
 			{
 				Log.Warning("User '{0}' tried to rename non-existent group.", client.User.AccountId, groupId);
 				return;
 			}
 
-			group.Name = groupName;
-			MsgrServer.Instance.Database.RenameGroup(client.User, group);
+			MsgrServer.Instance.Database.RenameGroup(client.User, groupId, groupName);
 		}
 
 		/// <summary>
@@ -417,7 +416,7 @@ namespace Aura.Msgr.Network
 			}
 
 			// Check group
-			if (groupId != -1 && groupId != -4 && !client.User.Groups.Exists(a => a.Id == groupId))
+			if (groupId != -1 && groupId != -4 && !client.User.Groups.Contains(groupId))
 			{
 				Log.Warning("ChangeGroup: User '{0}' tried to change friend's group to an invalid one.", client.User.AccountId);
 				client.Kill();
@@ -439,16 +438,15 @@ namespace Aura.Msgr.Network
 		{
 			var groupId = packet.GetInt();
 
-			// Get group
-			var group = client.User.GetGroup(groupId);
-			if (group == null)
+			// Check group
+			if (!client.User.Groups.Contains(groupId))
 			{
 				Log.Warning("DeleteGroup: User '{0}' tried to delete an invalid group.", client.User.AccountId);
 				client.Kill();
 				return;
 			}
 
-			client.User.Groups.Remove(group);
+			client.User.Groups.Remove(groupId);
 			MsgrServer.Instance.Database.DeleteGroup(client.User, groupId);
 		}
 
