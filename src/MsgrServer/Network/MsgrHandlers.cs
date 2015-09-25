@@ -485,7 +485,21 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			// TODO: Check max friends (what is the max?)
+			// Check max friends
+			var max = MsgrServer.Instance.Conf.Msgr.MaxFriends;
+			if (max != 0 && client.User.Friends.Count >= max)
+			{
+				Send.FriendInviteR(client, FriendInviteResult.MaxReached);
+				return;
+			}
+
+			// Check friend's max friends
+			var count = MsgrServer.Instance.Database.CountFriends(friend.Id);
+			if (max != 0 && count >= max)
+			{
+				Send.FriendInviteR(client, FriendInviteResult.UserMaxReached);
+				return;
+			}
 
 			friend.FriendshipStatus = FriendshipStatus.Inviting;
 

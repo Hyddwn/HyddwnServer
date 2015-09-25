@@ -466,5 +466,20 @@ namespace Aura.Msgr.Database
 				transaction.Commit();
 			}
 		}
+
+		/// <summary>
+		/// Returns the amount of friends the given contact has.
+		/// </summary>
+		/// <param name="contactId"></param>
+		/// <returns></returns>
+		public long CountFriends(int contactId)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT COUNT(`friendId`) FROM `friends` WHERE `userId1` = @userId"))
+			{
+				mc.Parameters.AddWithValue("@userId", contactId);
+				return (long)mc.ExecuteScalar();
+			}
+		}
 	}
 }

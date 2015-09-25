@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Shared.Util;
 using Aura.Shared.Util.Configuration;
+using System;
 
 namespace Aura.Msgr.Util
 {
@@ -30,12 +32,14 @@ namespace Aura.Msgr.Util
 	public class MsgrConfFile : ConfFile
 	{
 		public int Port { get; protected set; }
+		public int MaxFriends { get; protected set; }
 
 		public void Load()
 		{
 			this.Require("system/conf/msgr.conf");
 
 			this.Port = this.GetInt("port", 8002);
+			this.MaxFriends = Math.Max(0, this.GetInt("max_friends", 0));
 		}
 	}
 }
