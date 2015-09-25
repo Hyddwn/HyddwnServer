@@ -475,7 +475,7 @@ namespace Aura.Msgr.Database
 		public long CountFriends(int contactId)
 		{
 			using (var conn = this.Connection)
-			using (var mc = new MySqlCommand("SELECT COUNT(`friendId`) FROM `friends` WHERE `userId1` = @userId"))
+			using (var mc = new MySqlCommand("SELECT COUNT(`friendId`) FROM `friends` WHERE `userId1` = @userId", conn))
 			{
 				mc.Parameters.AddWithValue("@userId", contactId);
 				return (long)mc.ExecuteScalar();
