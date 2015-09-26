@@ -588,5 +588,21 @@ namespace Aura.Msgr.Network
 				// TODO: Live update for friend?
 			}
 		}
+
+		/// <summary>
+		/// Sent to open chat window.
+		/// </summary>
+		/// <example>
+		/// 001 [........00000002] Int    : 2
+		/// 002 [..............00] Byte   : 0
+		/// </example>
+		[PacketHandler(Op.Msgr.ChatBegin)]
+		public void ChatBegin(MsgrClient client, Packet packet)
+		{
+			var contactId = packet.GetInt();
+			var unkByte = packet.GetByte();
+
+			// ...
+		}
 	}
 }
