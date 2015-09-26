@@ -228,6 +228,17 @@ namespace Aura.Msgr.Network
 
 			user.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Notifies user about friend being offline.
+		/// </summary>
+		/// <param name="user"></param>
+		public static void FriendOffline(User user, User friend)
+		{
+			var packet = new Packet(Op.Msgr.FriendOffline, 0);
+			packet.PutInt(friend.Id);
+			user.Client.Send(packet);
+		}
 	}
 
 	public enum LoginResult

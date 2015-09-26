@@ -52,8 +52,18 @@ namespace Aura.Msgr.Network
 
 		public override void CleanUp()
 		{
-			if (this.User != null)
-				MsgrServer.Instance.UserManager.Remove(this.User);
+			if (this.User == null)
+				return;
+
+			MsgrServer.Instance.UserManager.Remove(this.User);
+
+			// Notify friends about user going offline
+			foreach (var friend in this.User.Friends)
+			{
+				var friendUser = MsgrServer.Instance.UserManager.Get(friend.Id);
+				if (friendUser != null)
+					Network.Send.FriendOffline(friendUser, this.User);
+			}
 		}
 	}
 }

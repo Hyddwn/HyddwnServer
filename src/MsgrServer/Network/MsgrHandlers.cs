@@ -331,6 +331,19 @@ namespace Aura.Msgr.Network
 
 			Send.GroupList(client, groups);
 			Send.FriendListRequestR(client, friends);
+
+			// Notify user and friends about online statuses
+			foreach (var friend in friends)
+			{
+				var friendUser = MsgrServer.Instance.UserManager.Get(friend.Id);
+				if (friendUser != null)
+				{
+					// TODO: A little inefficient, the packets are built for
+					//   every single friend. Make a list overload?
+					Send.FriendOnline(client.User, friendUser);
+					Send.FriendOnline(friendUser, client.User);
+				}
+			}
 		}
 
 		/// <summary>
