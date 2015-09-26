@@ -503,10 +503,38 @@ namespace Aura.Msgr.Network
 
 			friend.FriendshipStatus = FriendshipStatus.Inviting;
 
+			// TODO: Live update for friend.
+
 			client.User.Friends.Add(friend);
 			MsgrServer.Instance.Database.InviteFriend(client.User, friend);
 
 			Send.FriendInviteR(client, FriendInviteResult.Success, friend);
+		}
+
+		/// <summary>
+		/// Notification about friend deletion, no response.
+		/// </summary>
+		/// <example>
+		/// 001 [........00000005] Int    : 5
+		/// </example>
+		[PacketHandler(Op.Msgr.DeleteFriend)]
+		public void DeleteFriend(MsgrClient client, Packet packet)
+		{
+			var contactId = packet.GetInt();
+
+			// Check friend
+			var friend = client.User.GetFriend(contactId);
+			if (friend == null)
+			{
+				Log.Warning("DeleteFriend: User '{0}' tried to delete non-existent friend.", client.User.AccountId);
+				client.Kill(); // Out of sync, close connection.
+				return;
+			}
+
+			// TODO: Live update for friend.
+
+			client.User.Friends.Remove(friend);
+			MsgrServer.Instance.Database.DeleteFriend(client.User.Id, contactId);
 		}
 	}
 }

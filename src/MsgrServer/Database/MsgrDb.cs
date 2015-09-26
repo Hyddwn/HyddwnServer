@@ -481,5 +481,21 @@ namespace Aura.Msgr.Database
 				return (long)mc.ExecuteScalar();
 			}
 		}
+
+		/// <summary>
+		/// Deletes friend entries between the two users.
+		/// </summary>
+		/// <param name="contactId"></param>
+		/// <returns></returns>
+		public void DeleteFriend(int contactId1, int contactId2)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("DELETE FROM `friends` WHERE (`userId1` = @userId1 AND `userId2` = @userId2) OR (`userId2` = @userId1 AND `userId1` = @userId2)", conn))
+			{
+				mc.Parameters.AddWithValue("@userId1", contactId1);
+				mc.Parameters.AddWithValue("@userId2", contactId2);
+				mc.ExecuteNonQuery();
+			}
+		}
 	}
 }
