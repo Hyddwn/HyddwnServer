@@ -195,6 +195,22 @@ namespace Aura.Msgr.Network
 
 			client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends live invitation from friend to user.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="friend"></param>
+		public static void FriendConfirm(User user, User friend)
+		{
+			var packet = new Packet(Op.Msgr.FriendConfirm, 0);
+			packet.PutInt(friend.Id);
+			packet.PutString(friend.Name);
+			packet.PutString(friend.Server);
+			packet.PutString(friend.FullName);
+
+			user.Client.Send(packet);
+		}
 	}
 
 	public enum LoginResult

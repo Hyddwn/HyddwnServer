@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using Aura.Mabi.Const;
+using Aura.Msgr.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace Aura.Msgr.Database
 {
 	public class User : Contact
 	{
+		public MsgrClient Client { get; set; }
 		public string ChannelName { get; set; }
 		public ChatOptions ChatOptions { get; set; }
 		public HashSet<int> Groups { get; private set; }

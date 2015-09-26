@@ -95,6 +95,8 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
+			client.User.Client = client;
+
 			Log.Info("User '{0}' logged in as '{1}'.", client.User.AccountId, client.User.FullName);
 
 			Send.LoginR(client, LoginResult.Okay);
@@ -505,8 +507,12 @@ namespace Aura.Msgr.Network
 
 			friend.FriendshipStatus = FriendshipStatus.Inviting;
 
-			// TODO: Live update for friend.
+			// Notify friend
+			var friendUser = MsgrServer.Instance.UserManager.Get(friend.Id);
+			if (friendUser != null)
+				Send.FriendConfirm(client.User, friendUser);
 
+			// Add
 			client.User.Friends.Add(friend);
 			MsgrServer.Instance.Database.InviteFriend(client.User, friend);
 
