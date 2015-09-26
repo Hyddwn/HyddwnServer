@@ -98,6 +98,8 @@ namespace Aura.Msgr.Network
 			Log.Info("User '{0}' logged in as '{1}'.", client.User.AccountId, client.User.FullName);
 
 			Send.LoginR(client, LoginResult.Okay);
+
+			MsgrServer.Instance.UserManager.Add(client.User);
 		}
 
 		/// <summary>

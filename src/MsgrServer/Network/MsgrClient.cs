@@ -49,5 +49,11 @@ namespace Aura.Msgr.Network
 
 			return result;
 		}
+
+		public override void CleanUp()
+		{
+			if (this.User != null)
+				MsgrServer.Instance.UserManager.Remove(this.User);
+		}
 	}
 }

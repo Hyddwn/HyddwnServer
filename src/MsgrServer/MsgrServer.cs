@@ -35,12 +35,18 @@ namespace Aura.Msgr
 		public MsgrConf Conf { get; private set; }
 
 		/// <summary>
+		/// Manager of online users.
+		/// </summary>
+		public UserManager UserManager { get; private set; }
+
+		/// <summary>
 		/// Initializes msgr server.
 		/// </summary>
 		private MsgrServer()
 		{
 			this.Database = new MsgrDb();
 			this.Conf = new MsgrConf();
+			this.UserManager = new UserManager();
 
 			this.Server = new MsgrServerServer();
 			this.Server.Handlers = new MsgrServerHandlers();
