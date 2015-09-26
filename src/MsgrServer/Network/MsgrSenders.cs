@@ -230,6 +230,23 @@ namespace Aura.Msgr.Network
 		}
 
 		/// <summary>
+		/// Notifies users about friend being online.
+		/// </summary>
+		/// <param name="user"></param>
+		public static void FriendOnline(List<User> users, User friend)
+		{
+			var packet = new Packet(Op.Msgr.FriendOnline, 0);
+
+			packet.PutInt(friend.Id);
+			packet.PutString(friend.Nickname);
+			packet.PutByte((byte)friend.Status);
+			packet.PutString(friend.ChannelName);
+
+			foreach (var user in users)
+				user.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Notifies user about friend being offline.
 		/// </summary>
 		/// <param name="user"></param>
@@ -238,6 +255,19 @@ namespace Aura.Msgr.Network
 			var packet = new Packet(Op.Msgr.FriendOffline, 0);
 			packet.PutInt(friend.Id);
 			user.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Notifies users about friend being offline.
+		/// </summary>
+		/// <param name="user"></param>
+		public static void FriendOffline(List<User> users, User friend)
+		{
+			var packet = new Packet(Op.Msgr.FriendOffline, 0);
+			packet.PutInt(friend.Id);
+
+			foreach (var user in users)
+				user.Client.Send(packet);
 		}
 	}
 

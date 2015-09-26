@@ -4,6 +4,7 @@
 using Aura.Mabi.Network;
 using Aura.Msgr.Database;
 using Aura.Shared.Network;
+using System.Linq;
 
 namespace Aura.Msgr.Network
 {
@@ -58,12 +59,9 @@ namespace Aura.Msgr.Network
 			MsgrServer.Instance.UserManager.Remove(this.User);
 
 			// Notify friends about user going offline
-			foreach (var friend in this.User.Friends)
-			{
-				var friendUser = MsgrServer.Instance.UserManager.Get(friend.Id);
-				if (friendUser != null)
-					Network.Send.FriendOffline(friendUser, this.User);
-			}
+			var friendUsers = MsgrServer.Instance.UserManager.Get(this.User.Friends.Select(a => a.Id));
+			if (friendUsers.Count != 0)
+				Network.Send.FriendOffline(friendUsers, this.User);
 		}
 	}
 }

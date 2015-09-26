@@ -7,6 +7,7 @@ using Aura.Msgr.Database;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -332,17 +333,15 @@ namespace Aura.Msgr.Network
 			Send.GroupList(client, groups);
 			Send.FriendListRequestR(client, friends);
 
-			// Notify user and friends about online statuses
-			foreach (var friend in friends)
+			// Notify friends about user going online
+			var friendUsers = MsgrServer.Instance.UserManager.Get(friends.Select(a => a.Id));
+			if (friendUsers.Count != 0)
 			{
-				var friendUser = MsgrServer.Instance.UserManager.Get(friend.Id);
-				if (friendUser != null)
-				{
-					// TODO: A little inefficient, the packets are built for
-					//   every single friend. Make a list overload?
+				Send.FriendOnline(friendUsers, user);
+
+				// Notify user about online friends
+				foreach (var friendUser in friendUsers)
 					Send.FriendOnline(client.User, friendUser);
-					Send.FriendOnline(friendUser, client.User);
-				}
 			}
 		}
 

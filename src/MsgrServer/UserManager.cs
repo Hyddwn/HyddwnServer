@@ -54,5 +54,24 @@ namespace Aura.Msgr
 				_users.TryGetValue(userId, out result);
 			return result;
 		}
+
+		/// <summary>
+		/// Returns list of users with given ids.
+		/// </summary>
+		/// <param name="friendIds"></param>
+		/// <returns></returns>
+		public List<User> Get(IEnumerable<int> ids)
+		{
+			var result = new List<User>();
+
+			foreach (var id in ids)
+			{
+				var user = this.Get(id);
+				if (user != null)
+					result.Add(user);
+			}
+
+			return result;
+		}
 	}
 }
