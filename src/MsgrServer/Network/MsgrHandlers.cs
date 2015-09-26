@@ -567,17 +567,25 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			// TODO: Live update for friend.
-
 			if (accepted)
 			{
 				friend.FriendshipStatus = FriendshipStatus.Normal;
 				MsgrServer.Instance.Database.AcceptFriend(client.User.Id, contactId);
+
+				// Notify user and friend if friend is online
+				var friendUser = MsgrServer.Instance.UserManager.Get(contactId);
+				if (friendUser != null)
+				{
+					Send.FriendOnline(client.User, friendUser);
+					Send.FriendOnline(friendUser, client.User);
+				}
 			}
 			else
 			{
 				client.User.Friends.Remove(friend);
 				MsgrServer.Instance.Database.DeleteFriend(client.User.Id, contactId);
+
+				// TODO: Live update for friend?
 			}
 		}
 	}

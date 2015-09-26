@@ -204,10 +204,27 @@ namespace Aura.Msgr.Network
 		public static void FriendConfirm(User user, User friend)
 		{
 			var packet = new Packet(Op.Msgr.FriendConfirm, 0);
+
 			packet.PutInt(friend.Id);
 			packet.PutString(friend.Name);
 			packet.PutString(friend.Server);
 			packet.PutString(friend.FullName);
+
+			user.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Notifies user about friend being online.
+		/// </summary>
+		/// <param name="user"></param>
+		public static void FriendOnline(User user, User friend)
+		{
+			var packet = new Packet(Op.Msgr.FriendOnline, 0);
+
+			packet.PutInt(friend.Id);
+			packet.PutString(friend.Nickname);
+			packet.PutByte((byte)friend.Status);
+			packet.PutString(friend.ChannelName);
 
 			user.Client.Send(packet);
 		}
