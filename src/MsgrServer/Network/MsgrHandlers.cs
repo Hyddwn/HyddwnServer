@@ -544,5 +544,41 @@ namespace Aura.Msgr.Network
 			client.User.Friends.Remove(friend);
 			MsgrServer.Instance.Database.DeleteFriend(client.User.Id, contactId);
 		}
+
+		/// <summary>
+		/// Notification about friend accept, no response.
+		/// </summary>
+		/// <example>
+		/// 001 [........00000002] Int    : 2
+		/// 002 [..............01] Byte   : 1
+		/// </example>
+		[PacketHandler(Op.Msgr.FriendReply)]
+		public void FriendReply(MsgrClient client, Packet packet)
+		{
+			var contactId = packet.GetInt();
+			var accepted = packet.GetBool();
+
+			// Check friend
+			var friend = client.User.GetFriend(contactId);
+			if (friend == null)
+			{
+				Log.Warning("FriendReply: User '{0}' tried to accept non-existent invitation.", client.User.AccountId);
+				client.Kill(); // Out of sync, close connection.
+				return;
+			}
+
+			// TODO: Live update for friend.
+
+			if (accepted)
+			{
+				friend.FriendshipStatus = FriendshipStatus.Normal;
+				MsgrServer.Instance.Database.AcceptFriend(client.User.Id, contactId);
+			}
+			else
+			{
+				client.User.Friends.Remove(friend);
+				MsgrServer.Instance.Database.DeleteFriend(client.User.Id, contactId);
+			}
+		}
 	}
 }
