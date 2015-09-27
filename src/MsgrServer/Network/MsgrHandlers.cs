@@ -525,7 +525,7 @@ namespace Aura.Msgr.Network
 			// Notify friend
 			var friendUser = MsgrServer.Instance.UserManager.Get(friend.Id);
 			if (friendUser != null)
-				Send.FriendConfirm(client.User, friendUser);
+				Send.FriendConfirm(friendUser, client.User);
 
 			// Add
 			client.User.Friends.Add(friend);
