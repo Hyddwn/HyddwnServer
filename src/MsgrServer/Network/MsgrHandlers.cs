@@ -669,5 +669,27 @@ namespace Aura.Msgr.Network
 
 			Send.ChatR(session, client.User.Id, message);
 		}
+
+		/// <summary>
+		/// Sent when closing chat window.
+		/// </summary>
+		/// <example>
+		/// 001 [0000000000000001] Long   : 1
+		/// </example>
+		[PacketHandler(Op.Msgr.ChatEnd)]
+		public void ChatEnd(MsgrClient client, Packet packet)
+		{
+			var sessionId = packet.GetLong();
+
+			// Check session
+			var session = MsgrServer.Instance.ChatSessionManager.Get(sessionId);
+			if (session == null || !session.HasUser(client.User.Id))
+			{
+				Log.Warning("ChatEnd: User '{0}' tried to end invalid chat session.", client.User.AccountId);
+				return;
+			}
+
+			Send.ChatLeave(session, client.User);
+		}
 	}
 }

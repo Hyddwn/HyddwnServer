@@ -340,6 +340,21 @@ namespace Aura.Msgr.Network
 
 			user.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Notifies session user about user closing chat window.
+		/// </summary>
+		/// <param name="session"></param>
+		/// <param name="user"></param>
+		public static void ChatLeave(ChatSession session, User user)
+		{
+			var packet = new Packet(Op.Msgr.ChatLeave, 0);
+
+			packet.PutLong(session.Id);
+			packet.PutInt(user.Id);
+
+			session.Broadcast(packet);
+		}
 	}
 
 	public enum LoginResult
