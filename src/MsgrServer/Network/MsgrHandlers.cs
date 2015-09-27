@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Aura.Msgr.Chat;
 
 namespace Aura.Msgr.Network
 {
@@ -30,6 +31,8 @@ namespace Aura.Msgr.Network
 				Log.Warning("Attempted sending of non-login packet from '{0}' before login.", client.Address);
 				return;
 			}
+
+			//Log.Debug(packet);
 
 			base.Handle(client, packet);
 		}
@@ -614,7 +617,57 @@ namespace Aura.Msgr.Network
 			var contactId = packet.GetInt();
 			var unkByte = packet.GetByte();
 
-			// ...
+			// Check friend and relation
+			var friend = client.User.GetFriend(contactId);
+			if (friend == null || friend.FriendshipStatus != FriendshipStatus.Normal)
+			{
+				Log.Warning("ChatBegin: User '{0}' tried to start chat without being friends.", client.User.AccountId);
+				return;
+			}
+
+			// Check if online
+			var user = MsgrServer.Instance.UserManager.Get(contactId);
+			if (user == null)
+			{
+				Log.Warning("ChatBegin: User '{0}' tried to start chat with offline friend.", client.User.AccountId);
+				return;
+			}
+
+			// Create session
+			var session = new ChatSession();
+			session.Join(client.User);
+			session.PreJoin(user);
+
+			Send.ChatBeginR(client.User, session.Id, contactId);
+		}
+
+		/// <summary>
+		/// Sent upon sending a message in a chat.
+		/// </summary>
+		/// <example>
+		/// 001 [0000000000000001] Long   : 1
+		/// 002 [................] String : test
+		/// </example>
+		[PacketHandler(Op.Msgr.Chat)]
+		public void Chat(MsgrClient client, Packet packet)
+		{
+			var sessionId = packet.GetLong();
+			var message = packet.GetString();
+
+			// Check session
+			var session = MsgrServer.Instance.ChatSessionManager.Get(sessionId);
+			if (session == null || !session.HasUser(client.User.Id))
+			{
+				Log.Warning("Chat: User '{0}' tried to chat in invalid session.", client.User.AccountId);
+				return;
+			}
+
+			// Notify waiting users
+			var waiting = session.GetWaitingUsers();
+			foreach (var user in waiting)
+				session.Join(user);
+
+			Send.ChatR(session, client.User.Id, message);
 		}
 	}
 }

@@ -3,6 +3,7 @@
 
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using Aura.Msgr.Chat;
 using Aura.Msgr.Database;
 using System;
 using System.Collections.Generic;
@@ -268,6 +269,76 @@ namespace Aura.Msgr.Network
 
 			foreach (var user in users)
 				user.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Notifies users about friend being offline.
+		/// </summary>
+		/// <param name="user"></param>
+		public static void ChatBeginR(User user, long sessionId, int friendId)
+		{
+			var packet = new Packet(Op.Msgr.ChatBeginR, 0);
+
+			packet.PutLong(sessionId);
+			packet.PutInt(friendId);
+
+			user.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Notifies users about someone joining the chat.
+		/// </summary>
+		/// <param name="session"></param>
+		/// <param name="user"></param>
+		public static void ChatInviteR(ChatSession session, User user)
+		{
+			var packet = new Packet(Op.Msgr.ChatInviteR, 0);
+
+			packet.PutLong(session.Id);
+			packet.PutInt(user.Id);
+			packet.PutString(user.FullName);
+			packet.PutString(user.Nickname);
+
+			session.Broadcast(packet);
+		}
+
+		/// <summary>
+		/// Broadcasts chat message in session.
+		/// </summary>
+		/// <param name="session"></param>
+		/// <param name="contactId"></param>
+		/// <param name="message"></param>
+		public static void ChatR(ChatSession session, int contactId, string message)
+		{
+			var packet = new Packet(Op.Msgr.ChatR, 0);
+
+			packet.PutLong(session.Id);
+			packet.PutInt(contactId);
+			packet.PutString(message);
+
+			session.Broadcast(packet);
+		}
+
+		/// <summary>
+		/// Sends initial chat session information to user.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="session"></param>
+		public static void ChatJoin(User user, ChatSession session)
+		{
+			var users = session.GetUsers();
+
+			var packet = new Packet(Op.Msgr.ChatJoin, 0);
+
+			packet.PutLong(session.Id);
+			packet.PutInt(users.Length);
+			foreach (var sessionUser in users)
+			{
+				packet.PutInt(sessionUser.Id);
+				packet.PutString(sessionUser.FullName);
+			}
+
+			user.Client.Send(packet);
 		}
 	}
 

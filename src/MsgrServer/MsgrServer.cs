@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Msgr.Chat;
 using Aura.Msgr.Database;
 using Aura.Msgr.Network;
 using Aura.Msgr.Util;
@@ -35,9 +36,14 @@ namespace Aura.Msgr
 		public MsgrConf Conf { get; private set; }
 
 		/// <summary>
-		/// Manager of online users.
+		/// Manager for all online users.
 		/// </summary>
 		public UserManager UserManager { get; private set; }
+
+		/// <summary>
+		/// Manager for all chat sessions.
+		/// </summary>
+		public ChatSessionManager ChatSessionManager { get; private set; }
 
 		/// <summary>
 		/// Initializes msgr server.
@@ -47,6 +53,7 @@ namespace Aura.Msgr
 			this.Database = new MsgrDb();
 			this.Conf = new MsgrConf();
 			this.UserManager = new UserManager();
+			this.ChatSessionManager = new ChatSessionManager();
 
 			this.Server = new MsgrServerServer();
 			this.Server.Handlers = new MsgrServerHandlers();
