@@ -597,6 +597,14 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
+			// Check relation
+			if (friend.FriendshipStatus != FriendshipStatus.Invited)
+			{
+				// Don't log, could be sent twice due to lag.
+				return;
+			}
+
+			// Accept or remove friend
 			if (accepted)
 			{
 				friend.FriendshipStatus = FriendshipStatus.Normal;
