@@ -529,7 +529,7 @@ namespace Aura.Msgr.Network
 
 			// Add
 			client.User.Friends.Add(friend);
-			MsgrServer.Instance.Database.InviteFriend(client.User, friend);
+			MsgrServer.Instance.Database.InviteFriend(client.User.Id, friend.Id);
 
 			Send.FriendInviteR(client, FriendInviteResult.Success, friend);
 		}

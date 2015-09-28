@@ -436,17 +436,17 @@ namespace Aura.Msgr.Database
 		/// <summary>
 		/// Creates friend entries for user and friend with status inviting/invited.
 		/// </summary>
-		/// <param name="user"></param>
-		/// <param name="friend"></param>
-		public void InviteFriend(User user, Friend friend)
+		/// <param name="userId"></param>
+		/// <param name="friendId"></param>
+		public void InviteFriend(int userId, int friendId)
 		{
 			using (var conn = this.Connection)
 			using (var transaction = conn.BeginTransaction())
 			{
 				using (var cmd = new InsertCommand("INSERT INTO `friends` {0}", conn, transaction))
 				{
-					cmd.Set("userId1", user.Id);
-					cmd.Set("userId2", friend.Id);
+					cmd.Set("userId1", userId);
+					cmd.Set("userId2", friendId);
 					cmd.Set("groupId", -1);
 					cmd.Set("status", (byte)FriendshipStatus.Inviting);
 
@@ -455,8 +455,8 @@ namespace Aura.Msgr.Database
 
 				using (var cmd = new InsertCommand("INSERT INTO `friends` {0}", conn, transaction))
 				{
-					cmd.Set("userId1", friend.Id);
-					cmd.Set("userId2", user.Id);
+					cmd.Set("userId1", friendId);
+					cmd.Set("userId2", userId);
 					cmd.Set("groupId", -1);
 					cmd.Set("status", (byte)FriendshipStatus.Invited);
 
