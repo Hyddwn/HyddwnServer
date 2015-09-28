@@ -565,6 +565,7 @@ namespace Aura.Msgr.Network
 				}
 				else
 				{
+					userAsFriend.FriendshipStatus = FriendshipStatus.Invited;
 					friendUser.Friends.Add(userAsFriend);
 					Send.FriendConfirm(friendUser, client.User);
 				}
