@@ -727,6 +727,12 @@ namespace Aura.Msgr.Network
 			}
 
 			Send.ChatLeave(session, client.User);
+
+			// Remove user from group chat?
+			// (I assume if you were added to a group chat unwillingly,
+			// and you leave it, you are actually out.)
+			if (session.Count > 2)
+				session.Leave(client.User);
 		}
 
 		/// <summary>
