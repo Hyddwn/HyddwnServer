@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-// Dilys in Tir Chonaill
+// Dilys
 //--- Description -----------------------------------------------------------
-// Healer
+// Healer at Tir Chonaill Hearler's House
 //---------------------------------------------------------------------------
 
 public class DilysScript : NpcScript
@@ -20,6 +20,10 @@ public class DilysScript : NpcScript
 		EquipItem(Pocket.Armor, 15653, 0x00FFFFFF, 0x0061854B, 0x00FFFFFF);
 		EquipItem(Pocket.Glove, 16098, 0x0061854B, 0x00000000, 0x00000000);
 		EquipItem(Pocket.Shoe, 17285, 0x00E8E8E8, 0x00000000, 0x00000000);
+
+		AddGreeting(0, "Welcome to the Healer's House.");
+		AddGreeting(1, "Have you been here before?<br/>You look familiar.");
+		//AddGreeting(2, "You're back.<br/>Nice to see you again, <username/>."); // Not sure
 
 		AddPhrase("It's such a hassle to get all those ingrediants for just one meal.");
 		AddPhrase("Men are all the same.");
@@ -43,10 +47,11 @@ public class DilysScript : NpcScript
 		{
 
 			case "@talk":
-				Msg("Welcome to the Healer's House.");
-				//Msg("Have you been here before?<br/>You look familiar.");
-				//Msg("You're back.<br/>Nice to see you again, <username/>.<br/>");
-				await StartConversation();
+				Greet();
+				Msg(Hide.Name, GetMoodString(), FavorExpression());
+				if (Title == 11002)
+					Msg("Sigh...<br/>As if Trefore weren't enough...<br/>Do we really need more dummies in this town?");
+				await Conversation();
 				break;
 
 			case "@shop":
@@ -85,7 +90,35 @@ public class DilysScript : NpcScript
 				break;
 
 			case "@petheal":
-				Msg("You may want to summon your animal friend first.<br/>If you don't have a pet, then please don't waste my time.");
+				if (Player.Pet == null)
+				{
+					Msg("You may want to summon your animal friend first.<br/>If you don't have a pet, then please don't waste my time.");
+				}
+				else if (Player.Pet.IsDead)
+				{
+					Msg("Uh oh, you'll need to revive the pet first.<br/>Use a Phoenix Feather to revive your pet.");
+				}
+				else if (Player.Pet.Life == Player.Pet.LifeMax)
+				{
+					Msg("Your pet's as healthy as you are!<br/>I don't appreciate pranks.");
+				}
+				else
+				{
+					Msg("Oh no! <username/>, your animal friend is badly hurt and needs to be treated right away.<br/>I don't know why so many animals are getting injured lately. It makes me worry.<br/>The treatment will cost 180 Gold, but don't think of the price. Your pet needs help immediately.", Button("Recieve Treatment", "@recieveheal"), Button("Decline the Treatment", "@end"));
+					if (await Select() == "@recieveheal")
+					{
+						if (Gold < 180)
+						{
+							Msg("Oh no, I don't think you have enough gold.<br/>Hmmm... The gold covers the cost of the bandages and medicine...<br/>How about doing a part-time job?");
+						}
+						else
+						{
+							Gold -= 180;
+							Player.Pet.FullLifeHeal();
+							Msg("Okay, all bandaged up and ready to go!<br/>If your dear animal friend gets hurt again, do not hesitate to visit me.");
+						}
+					}
+				}
 				break;
 		}
 
@@ -104,17 +137,30 @@ public class DilysScript : NpcScript
 
 			case "rumor":
 				GiveKeyword("graveyard");
-				Msg("It was hard for you to get here, wasn't it? I bet if I were a little closer to the Square<br/>you would've come earlier. Hehe...<br/>Truthfully, it is kind of scary being next to the graveyard.<p/>At first I thought about opening the Healer's House near the Square<br/>but Duncan advised me that this place would be better for business.<br/>Actually, I haven't had many patients.<br/>Only people who come to hunt spiders and...Trefor, who stores his goods here...");
+				Msg("It was hard for you to get here, wasn't it? I bet if I were a little closer to the Square<br/>you would've come earlier. Hehe...<br/>Truthfully, it is kind of scary being next to the graveyard.");
+				Msg("At first I thought about opening the Healer's House near the Square<br/>but Duncan advised me that this place would be better for business.<br/>Actually, I haven't had many patients.<br/>Only people who come to hunt spiders and...Trefor, who stores his goods here...");
 				ModifyRelation(Random(2), 0, Random(2));
+
+				/* Message from Field Boss Spawns
+				Msg("<face name='normal'/>Head to Eastern Prairie of the Meadow right away!<br/>Trefor made a fuss because of Gigantic White Wolf's attack.");
+				Msg("<title name='NONE'/>(That was a great conversation!)"); */
 				break;
 
 			case "about_skill":
-				GiveKeyword("skill_counter_attack");
-				Msg("Skills...<br/>Oh! A while ago, Ranald defeated a fox<br/>that had appeared in town using some skill or other... What was that called...?<br/>I think it's called  Melee... Counter... Counterattack? Something like that...");
+				if (HasSkill(SkillId.Counterattack))
+				{
+					Msg("Was the Melee Counterattack skill helpful?<br/>I heard that the stronger the enemy is, the more powerful the skill becomes.");
+				}
+				else
+				{
+					GiveKeyword("skill_counter_attack");
+					Msg("Skills...<br/>Oh! A while ago, Ranald defeated a fox<br/>that had appeared in town using some skill or other... What was that called...?<br/>I think it's called  Melee... Counter... Counterattack? Something like that...");
+				}
 				break;
 
 			case "about_arbeit":
-				Msg("It's not time to start work yet.<br/>Can you come back and ask for a job later?");
+				Msg("Unimplemented");
+				//Msg("It's not time to start work yet.<br/>Can you come back and ask for a job later?");
 				//Msg("Do you need some work to do?<br/>If you want, you can help me here.<br/>The pay is not great, but I will definitely pay you for your work.<br/>The pay also depends on how long you've worked for me.<br/>Would you like to try?);
 				break;
 
@@ -127,7 +173,7 @@ public class DilysScript : NpcScript
 				break;
 
 			case "shop_healing":
-				Msg("I must not fit your image of a healer.  Everyone says that.<br/>This is my house...<br/>But Trefor uses it as his own storehouse.<br/>I just don't understand men...");
+				Msg("I must not fit your image of a healer. Everyone says that.<br/>This is my house...<br/>But Trefor uses it as his own storehouse.<br/>I just don't understand men...");
 				break;
 
 			case "shop_inn":
@@ -139,7 +185,8 @@ public class DilysScript : NpcScript
 				break;
 
 			case "shop_smith":
-				Msg("The Blacksmith's Shop is on the other side of the town.<br/>Just across the bridge.<br/>If you go there, please check to see if Ferghus is okay.<p/>I am worried about him since he likes to drink so much.");
+				Msg("The Blacksmith's Shop is on the other side of the town.<br/>Just across the bridge.<br/>If you go there, please check to see if Ferghus is okay.");
+				Msg("I am worried about him since he likes to drink so much.");
 				break;
 
 			case "skill_range":
@@ -147,9 +194,31 @@ public class DilysScript : NpcScript
 				Msg("You should not ask such questions to a healer...<br/>Why don't you go to the School and talk to Ranald?");
 				break;
 
+			case "skill_instrument":
+				GiveKeyword("temple");
+				Msg("Hmm... Priestess Endelyon at the Church would know about that.<br/>Have you talked to her yet?");
+				break;
+
+			case "skill_composing":
+				GiveKeyword("shop_bank");
+				GiveKeyword("temple");
+				Msg("Did you hear about the Composing skill from Bebhinn at the Bank?<br/>To be honest, Bebhinn is kind of tone deaf!<br/>She wants to compose so badly,<br/>but she just doesn't have the musical talent.");
+				Msg("Sometimes, I get the feeling that she pushes people to learn that skill,<br/>just so one of them will write her a song!<br/>But that's besides the point...<br/>Have you talked to Priestess Endelyon at the Church?<br/>She composes beautiful music.");
+				Msg("If you ever learn how to compose,<br/>would you please write a song not just for Bebhinn,<br/>but for me, too?");
+				break;
+
+			case "skill_tailoring":
+				GiveKeyword("shop_grocery");
+				Msg("Caitin at the Grocery Store is the best tailor in town.<br/>Everyone knows it.<br/>Word around town is that all the clothes at Malcolm's General Shop<br/>were actually made by Caitin.<br/>Why don't you go to the Grocery Store and talk to her about it?");
+				break;
+
 			case "skill_counter_attack":
 				GiveKeyword("school");
 				Msg("Come on, stop teasing.<br/>How can a fragile lady like me use such a powerful skill?<br/>Maybe, if I use it on Lassar... Haha!<br/>Teacher Ranald is at the School.<br/>Try talking to him about it.");
+				break;
+
+			case "skill_gathering":
+				Msg("It isn't as hard as you think.<br/>Just gather wood, get water, trim the sheep...<br/>If you do it one step at a time,<br/>you'll be done before you know it.");
 				break;
 
 			case "square":
@@ -176,6 +245,7 @@ public class DilysScript : NpcScript
 				break;
 
 			case "shop_headman":
+				GiveKeyword("square");
 				Msg("The Chief's House is not far from here. It's a short walk.<br/>Follow the path around the hill near the Square,<br/>and you will find it.<br/>");
 				break;
 
@@ -184,17 +254,14 @@ public class DilysScript : NpcScript
 				break;
 
 			case "school":
-				GiveKeyword("bank");
+				GiveKeyword("shop_bank");
 				Msg("The School is nearby.<br/>See that road by the Bank? Follow it down the hill.<br/>Ah, I forgot Lassar is at the School.<br/>She claims that she is a teacher of magic,<br/>but actually, she can't even do half of what she teaches.");
 				break;
 
 			case "skill_campfire":
 				GiveKeyword("shop_inn");
-				Msg("Seems like a lot of people are using the Campfire skill lately...<br/>You can go ask Piaras at the Inn. He traveled around before settling in this town.<br/>He probably knows all sorts of skills.<p/>Oh? Piaras already told you everything he knows?<br/>Hmm... Then, er, perhaps Shepherd Deian might know something?");
-				break;
-
-			case "graveyard":
-				Msg("The graveyard? Just go up the hill. <be/>But, really? Asking about the graveyard at the Healer's House?<br/>Haha, you're quite strange...");
+				Msg("Seems like a lot of people are using the Campfire skill lately...<br/>You can go ask Piaras at the Inn. He traveled around before settling in this town.<br/>He probably knows all sorts of skills.");
+				Msg("Oh? Piaras already told you everything he knows?<br/>Hmm... Then, er, perhaps Shepherd Deian might know something?");
 				break;
 
 			case "shop_restaurant":
@@ -207,24 +274,75 @@ public class DilysScript : NpcScript
 				Msg("Hmm... We don't have a shop that sells weapons here...<br/>But you could go and talk to Ferghus.<br/>His Blacksmith's Shop is past the Inn, just across the bridge.");
 				break;
 
+			case "shop_cloth":
+				GiveKeyword("shop_misc");
+				Msg("A clothing shop?<br/>I always hoped someone would open a clothing shop here...<br/>But no such luck.<br/>If you need clothes, try Malcolm's General Shop.");
+				break;
+
 			case "shop_bookstore":
-				Msg("Yes, I am also frustrated that there are no bookstores in this town...<br/>When I need to books I always have to ask someone who is leaving town<br/>to purchase them for me.<p/>Since I don't know when patients might need my help,<br/>I cannot leave this place...");
+				Msg("Yes, I am also frustrated that there are no bookstores in this town...<br/>When I need to books I always have to ask someone who is leaving town<br/>to purchase them for me.");
+				Msg("Since I don't know when patients might need my help,<br/>I cannot leave this place...");
 				break;
 
 			case "shop_goverment_office":
-				Msg("Huh? A Town Office? Here?<br/>I don't think so...<br/>In fact, this town is not under the control of the Kingdom of Aliech...<p/>Are you looking for an item you lost during your adventures?<br/>The Chief takes care of all town-related issue. Why don't you go see him?");
+				Msg("Huh? A Town Office? Here?<br/>I don't think so...<br/>In fact, this town is not under the control of the Kingdom of Aliech...");
+				Msg("Are you looking for an item you lost during your adventures?<br/>The Chief takes care of all town-related issue. Why don't you go see him?");
+				break;
+
+			case "graveyard":
+				Msg("The graveyard? Just go up the hill. <be/>But, really? Asking about the graveyard at the Healer's House?<br/>Haha, you're quite strange...");
 				break;
 
 			default:
 				RndMsg(
+					"Eh?",
 					"I don't know... I'm sorry.",
-					"Did you ask others about this as well?",
 					"What are you talking about?",
-					"Did they say they didn't know about it either?<br/>Well...",
-					"Eh?"
+					"Did you ask others about this as well?",
+					"Did they say they didn't know about it either?<br/>Well..."
 				);
 				ModifyRelation(0, 0, Random(2));
 				break;
 		}
+	}
+}
+
+public class DilysShop : NpcShopScript
+{
+	public override void Setup()
+	{
+		Add("Potions", 51000);     // Potion Concoction Kit
+		Add("Potions", 51001);     // HP 10 Potion
+		Add("Potions", 51002, 1);  // HP 30 Potion x1
+		Add("Potions", 51002, 10); // HP 30 Potion x10
+		Add("Potions", 51002, 20); // HP 30 Potion x20
+		Add("Potions", 51006);     // MP 10 Potion
+		Add("Potions", 51007, 1);  // MP 30 Potion x1
+		Add("Potions", 51007, 10); // MP 30 Potion x10
+		Add("Potions", 51007, 20); // MP 30 Potion x20
+		Add("Potions", 51011);     // Stamina 10 Potion
+		Add("Potions", 51012, 1);  // Stamina 30 Potion x1
+		Add("Potions", 51012, 10); // Stamina 30 Potion x10
+		Add("Potions", 51012, 20); // Stamina 30 Potion x20
+		Add("Potions", 51037, 10); // Base Potion x10
+		Add("Potions", 51201, 1);  // Marionette 30 Potion x1
+		Add("Potions", 51201, 10); // Marionette 30 Potion x10
+		Add("Potions", 51201, 20); // Marionette 30 Potion x20
+		Add("Potions", 51202, 1);  // Marionette 50 Potion x1
+		Add("Potions", 51202, 10); // Marionette 50 Potion x10
+		Add("Potions", 51202, 20); // Marionette 50 Potion x20
+
+		Add("First Aid Kits", 60005, 10); // Bandage x10
+		Add("First Aid Kits", 60005, 20); // Bandage x20
+		Add("First Aid Kits", 63000, 10); // Phoenix Feather x10
+		Add("First Aid Kits", 63000, 20); // Phoenix Feather x20
+		Add("First Aid Kits", 63032);     // Pet First-Aid Kit
+		Add("First Aid Kits", 63715, 10); // Fine Marionette Repair Set x10
+		Add("First Aid Kits", 63715, 20); // Fine Marionette Repair Set x20
+		Add("First Aid Kits", 63716, 10); // Marionette Repair Set x10
+		Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
+
+		Add("Etc.", 91563, 1); // Hot Spring Ticket x1
+		Add("Etc.", 91563, 5); // Hot Spring Ticket x5
 	}
 }
