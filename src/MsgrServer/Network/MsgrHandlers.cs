@@ -591,10 +591,13 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			// TODO: Live update for friend.
-
 			client.User.Friends.Remove(friend);
 			MsgrServer.Instance.Database.DeleteFriend(client.User.Id, contactId);
+
+			// Live update
+			var friendUser = MsgrServer.Instance.UserManager.Get(contactId);
+			if (friendUser != null)
+				Send.FriendOffline(client.User, friendUser);
 		}
 
 		/// <summary>
