@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Dilys
 //--- Description -----------------------------------------------------------
-// Healer at Tir Chonaill Hearler's House
+// Healer at Tir Chonaill Healer's House
 //---------------------------------------------------------------------------
 
 public class DilysScript : NpcScript
