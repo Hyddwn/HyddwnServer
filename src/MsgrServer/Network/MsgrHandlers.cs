@@ -522,16 +522,31 @@ namespace Aura.Msgr.Network
 
 			friend.FriendshipStatus = FriendshipStatus.Inviting;
 
-			// Notify friend
-			var friendUser = MsgrServer.Instance.UserManager.Get(friend.Id);
-			if (friendUser != null)
-				Send.FriendConfirm(friendUser, client.User);
-
 			// Add
 			client.User.Friends.Add(friend);
 			MsgrServer.Instance.Database.InviteFriend(client.User.Id, friend.Id);
 
 			Send.FriendInviteR(client, FriendInviteResult.Success, friend);
+
+			// Notify friend
+			var friendUser = MsgrServer.Instance.UserManager.Get(friend.Id);
+			if (friendUser != null)
+			{
+				// Get user as friend object to add to friend's friends,
+				// otherwise the relation check in the live answer will fail.
+				// TODO: I hate this, the current Friend concept sucks,
+				//   they're not even *really* needed... remove them.
+				var userAsFriend = MsgrServer.Instance.Database.GetFriendFromUser(client.User.Name, client.User.Server);
+				if (userAsFriend == null)
+				{
+					Log.Error("FriendInvite: Failed to query user as friend for new friend's friends. Friends friends friends.");
+				}
+				else
+				{
+					friendUser.Friends.Add(userAsFriend);
+					Send.FriendConfirm(friendUser, client.User);
+				}
+			}
 		}
 
 		/// <summary>
