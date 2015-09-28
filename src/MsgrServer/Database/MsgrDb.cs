@@ -468,6 +468,43 @@ namespace Aura.Msgr.Database
 		}
 
 		/// <summary>
+		/// Creates friend entry for contact on user with the blacklist status.
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="contactId"></param>
+		public void Blacklist(int userId, int contactId)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new InsertCommand("INSERT INTO `friends` {0}", conn))
+			{
+				cmd.Set("userId1", userId);
+				cmd.Set("userId2", contactId);
+				cmd.Set("groupId", -4);
+				cmd.Set("status", (byte)FriendshipStatus.Blacklist);
+
+				cmd.Execute();
+			}
+		}
+
+		/// <summary>
+		/// Returns true if user blacklisted contact.
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="contactId"></param>
+		public bool IsBlacklisted(int userId, int contactId)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT `friendId` FROM `friends` WHERE `userId1` = @userId1 AND `userId2` = @userId2 AND `status` = 7", conn))
+			{
+				mc.Parameters.AddWithValue("@userId1", userId);
+				mc.Parameters.AddWithValue("@userId2", contactId);
+
+				using (var reader = mc.ExecuteReader())
+					return reader.HasRows;
+			}
+		}
+
+		/// <summary>
 		/// Returns the amount of friends the given contact has.
 		/// </summary>
 		/// <param name="contactId"></param>

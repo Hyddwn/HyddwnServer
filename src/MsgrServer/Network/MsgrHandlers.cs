@@ -457,6 +457,8 @@ namespace Aura.Msgr.Network
 
 			friend.GroupId = groupId;
 			MsgrServer.Instance.Database.ChangeGroup(client.User, friendContactId, groupId);
+
+			// Moving a friend to the Blacklist group doesn't seem to do anything.
 		}
 
 		/// <summary>
@@ -507,6 +509,13 @@ namespace Aura.Msgr.Network
 			if (friend.AccountId == client.User.AccountId)
 			{
 				Send.FriendInviteR(client, FriendInviteResult.OwnAccount);
+				return;
+			}
+
+			// Check blacklist, don't let people add someone who blacklisted them
+			if (MsgrServer.Instance.Database.IsBlacklisted(friend.Id, client.User.Id))
+			{
+				Send.FriendInviteR(client, FriendInviteResult.UnknownError);
 				return;
 			}
 
@@ -854,6 +863,58 @@ namespace Aura.Msgr.Network
 			var friendUser = MsgrServer.Instance.UserManager.Get(contactId);
 			if (friendUser != null)
 				Send.FriendOnline(friendUser, client.User);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : exec
+		/// 002 [................] String : Aura
+		/// </example>
+		[PacketHandler(Op.Msgr.PlayerBlock)]
+		public void PlayerBlock(MsgrClient client, Packet packet)
+		{
+			var characterName = packet.GetString();
+			var serverName = packet.GetString();
+
+			// Get user
+			var friend = MsgrServer.Instance.Database.GetFriendFromUser(characterName, serverName);
+			if (friend == null)
+			{
+				Send.FriendInviteR(client, FriendInviteResult.UserNotFound);
+				return;
+			}
+
+			// Check account
+			if (friend.AccountId == client.User.AccountId)
+			{
+				Send.FriendInviteR(client, FriendInviteResult.OwnAccount);
+				return;
+			}
+
+			// Check existing friends
+			if (client.User.Friends.Exists(a => a.Id == friend.Id))
+			{
+				Send.FriendInviteR(client, FriendInviteResult.AlreadyFriends);
+				return;
+			}
+
+			// Check max friends
+			var max = MsgrServer.Instance.Conf.Msgr.MaxFriends;
+			if (max != 0 && client.User.Friends.Count >= max)
+			{
+				Send.FriendInviteR(client, FriendInviteResult.MaxReached);
+				return;
+			}
+
+			friend.FriendshipStatus = FriendshipStatus.Blacklist;
+
+			// Add
+			client.User.Friends.Add(friend);
+			MsgrServer.Instance.Database.Blacklist(client.User.Id, friend.Id);
+
+			Send.FriendInviteR(client, FriendInviteResult.Success, friend);
 		}
 	}
 }

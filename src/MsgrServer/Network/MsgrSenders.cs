@@ -178,7 +178,7 @@ namespace Aura.Msgr.Network
 		/// <param name="client"></param>
 		/// <param name="result"></param>
 		/// <param name="friend">Required for success, otherwise can be left null.</param>
-		public static void FriendInviteR(MsgrClient client, FriendInviteResult result, Contact friend = null)
+		public static void FriendInviteR(MsgrClient client, FriendInviteResult result, Friend friend = null)
 		{
 			if (result == FriendInviteResult.Success && friend == null)
 				throw new ArgumentNullException("friend");
@@ -191,7 +191,7 @@ namespace Aura.Msgr.Network
 			{
 				packet.PutInt(friend.Id);
 				packet.PutString(friend.FullName);
-				packet.PutByte((byte)FriendshipStatus.Inviting);
+				packet.PutByte((byte)friend.FriendshipStatus);
 			}
 
 			client.Send(packet);
