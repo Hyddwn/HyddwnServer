@@ -300,8 +300,9 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			// TODO: Notify friends about changed options?
+			var prevStatus = user.Status;
 
+			// Change options
 			user.Nickname = nickname;
 			user.Status = status;
 			user.ChatOptions = chatOptions;
@@ -309,6 +310,19 @@ namespace Aura.Msgr.Network
 			MsgrServer.Instance.Database.SaveOptions(user);
 
 			Send.ChangeOptionsR(client, true);
+
+			// Change online status for friends
+			if (prevStatus != status)
+			{
+				var friendUsers = MsgrServer.Instance.UserManager.Get(user.Friends.Select(a => a.Id));
+				if (friendUsers.Count != 0)
+				{
+					if (status == ContactStatus.Offline)
+						Send.FriendOffline(friendUsers, user);
+					else
+						Send.FriendOnline(friendUsers, user);
+				}
+			}
 		}
 
 		/// <summary>
