@@ -728,5 +728,50 @@ namespace Aura.Msgr.Network
 
 			Send.ChatLeave(session, client.User);
 		}
+
+		/// <summary>
+		/// Sent when inviting a new person to join a chat session, no response.
+		/// </summary>
+		/// 001 [0000000000000001] Long   : 1
+		/// 002 [........00000005] Int    : 5
+		[PacketHandler(Op.Msgr.ChatInvite)]
+		public void ChatInvite(MsgrClient client, Packet packet)
+		{
+			var sessionId = packet.GetLong();
+			var contactId = packet.GetInt();
+
+			// Check friend
+			var friend = client.User.GetFriend(contactId);
+			if (friend == null)
+			{
+				Log.Warning("ChatInvite: User '{0}' tried to invite invalid friend.", client.User.AccountId);
+				return;
+			}
+
+			// Check user
+			var friendUser = MsgrServer.Instance.UserManager.Get(contactId);
+			if (friendUser == null || friendUser.Status == ContactStatus.Offline)
+			{
+				Log.Warning("ChatInvite: User '{0}' tried to invite someone who isn't online.", client.User.AccountId);
+				return;
+			}
+
+			// Check session
+			var session = MsgrServer.Instance.ChatSessionManager.Get(sessionId);
+			if (session == null)
+			{
+				Log.Warning("ChatInvite: User '{0}' tried to invite someone into invalid chat session.", client.User.AccountId);
+				return;
+			}
+
+			// Check if in session already
+			if (session.HasUser(friendUser.Id))
+			{
+				// Don't log, could happen due to lag.
+				return;
+			}
+
+			session.Join(friendUser);
+		}
 	}
 }
