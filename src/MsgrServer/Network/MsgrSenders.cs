@@ -355,6 +355,40 @@ namespace Aura.Msgr.Network
 
 			session.Broadcast(packet);
 		}
+
+		/// <summary>
+		/// Response to FriendBlock request.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="success"></param>
+		/// <param name="friendId">Only required on success.</param>
+		public static void FriendBlockR(User user, bool success, int friendId)
+		{
+			var packet = new Packet(Op.Msgr.FriendBlockR, 0);
+
+			packet.PutByte(success);
+			if (success)
+				packet.PutInt(friendId);
+
+			user.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Response to FriendUnblock request.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="success"></param>
+		/// <param name="friendId">Only required on success.</param>
+		public static void FriendUnblockR(User user, bool success, int friendId)
+		{
+			var packet = new Packet(Op.Msgr.FriendUnblockR, 0);
+
+			packet.PutByte(success);
+			if (success)
+				packet.PutInt(friendId);
+
+			user.Client.Send(packet);
+		}
 	}
 
 	public enum LoginResult

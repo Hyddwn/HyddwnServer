@@ -59,7 +59,7 @@ namespace Aura.Msgr.Network
 			MsgrServer.Instance.UserManager.Remove(this.User);
 
 			// Notify friends about user going offline
-			var friendUsers = MsgrServer.Instance.UserManager.Get(this.User.Friends.Select(a => a.Id));
+			var friendUsers = MsgrServer.Instance.UserManager.Get(this.User.GetFriendIds());
 			if (friendUsers.Count != 0)
 				Network.Send.FriendOffline(friendUsers, this.User);
 		}

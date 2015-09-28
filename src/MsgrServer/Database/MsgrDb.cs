@@ -503,12 +503,29 @@ namespace Aura.Msgr.Database
 		/// </summary>
 		/// <param name="contactId"></param>
 		/// <returns></returns>
-		public void AcceptFriend(int contactId1, int contactId2)
+		public void SetFriendshipStatus(int contactId1, int contactId2, FriendshipStatus status)
 		{
 			using (var conn = this.Connection)
 			using (var cmd = new UpdateCommand("UPDATE `friends` SET {0} WHERE (`userId1` = @userId1 AND `userId2` = @userId2) OR (`userId2` = @userId1 AND `userId1` = @userId2)", conn))
 			{
-				cmd.Set("status", (byte)FriendshipStatus.Normal);
+				cmd.Set("status", (byte)status);
+				cmd.AddParameter("@userId1", contactId1);
+				cmd.AddParameter("@userId2", contactId2);
+				cmd.Execute();
+			}
+		}
+
+		/// <summary>
+		/// Updates friendship status for contact 1.
+		/// </summary>
+		/// <param name="contactId"></param>
+		/// <returns></returns>
+		public void SetFriendshipStatusOneSided(int contactId1, int contactId2, FriendshipStatus status)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `friends` SET {0} WHERE (`userId1` = @userId1 AND `userId2` = @userId2)", conn))
+			{
+				cmd.Set("status", (byte)status);
 				cmd.AddParameter("@userId1", contactId1);
 				cmd.AddParameter("@userId2", contactId2);
 				cmd.Execute();

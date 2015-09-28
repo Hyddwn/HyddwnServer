@@ -19,6 +19,9 @@ namespace Aura.Msgr.Database
 		public HashSet<int> Groups { get; private set; }
 		public List<Friend> Friends { get; private set; }
 
+		/// <summary>
+		/// Creates new user.
+		/// </summary>
 		public User()
 			: base()
 		{
@@ -27,9 +30,49 @@ namespace Aura.Msgr.Database
 			this.Friends = new List<Friend>();
 		}
 
+		/// <summary>
+		/// Returns friend with the given id.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		public Friend GetFriend(int id)
 		{
-			return this.Friends.FirstOrDefault(a => a.Id == id);
+			lock (this.Friends)
+				return this.Friends.FirstOrDefault(a => a.Id == id);
+		}
+
+		/// <summary>
+		/// Returns list of all friend's ids.
+		/// </summary>
+		/// <returns></returns>
+		public int[] GetFriendIds()
+		{
+			lock (this.Friends)
+				return this.Friends.Select(a => a.Id).ToArray();
+		}
+
+		/// <summary>
+		/// Returns list of all friend's ids with status Normal.
+		/// </summary>
+		/// <returns></returns>
+		public int[] GetNormalFriendIds()
+		{
+			lock (this.Friends)
+				return this.Friends.Where(a => a.FriendshipStatus == FriendshipStatus.Normal).Select(a => a.Id).ToArray();
+		}
+
+		/// <summary>
+		/// Returns friendship status from user to given contact.
+		/// </summary>
+		/// <param name="contactId"></param>
+		/// <returns></returns>
+		public FriendshipStatus GetFriendshipStatus(int contactId)
+		{
+			var friend = this.GetFriend(contactId);
+			if (friend == null)
+				return FriendshipStatus.Blocked;
+
+			return friend.FriendshipStatus;
 		}
 	}
 }

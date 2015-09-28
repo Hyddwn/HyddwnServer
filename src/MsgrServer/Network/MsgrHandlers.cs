@@ -314,7 +314,7 @@ namespace Aura.Msgr.Network
 			// Change online status for friends
 			if (prevStatus != status)
 			{
-				var friendUsers = MsgrServer.Instance.UserManager.Get(user.Friends.Select(a => a.Id));
+				var friendUsers = MsgrServer.Instance.UserManager.Get(user.GetNormalFriendIds());
 				if (friendUsers.Count != 0)
 				{
 					if (status == ContactStatus.Offline)
@@ -351,15 +351,14 @@ namespace Aura.Msgr.Network
 			Send.FriendListRequestR(client, friends);
 
 			// Notify friends about user going online
-			var friendUsers = MsgrServer.Instance.UserManager.Get(friends.Select(a => a.Id));
+			var friendUsers = MsgrServer.Instance.UserManager.Get(user.GetNormalFriendIds());
 			if (friendUsers.Count != 0)
-			{
 				Send.FriendOnline(friendUsers, user);
 
-				// Notify user about online friends
-				foreach (var friendUser in friendUsers)
-					Send.FriendOnline(client.User, friendUser);
-			}
+			// Notify user about online friends
+			friendUsers = MsgrServer.Instance.UserManager.Get(user.GetFriendIds());
+			foreach (var friendUser in friendUsers.Where(a => a.GetFriendshipStatus(user.Id) == FriendshipStatus.Normal))
+				Send.FriendOnline(client.User, friendUser);
 		}
 
 		/// <summary>
@@ -622,7 +621,7 @@ namespace Aura.Msgr.Network
 			if (accepted)
 			{
 				friend.FriendshipStatus = FriendshipStatus.Normal;
-				MsgrServer.Instance.Database.AcceptFriend(client.User.Id, contactId);
+				MsgrServer.Instance.Database.SetFriendshipStatus(client.User.Id, contactId, friend.FriendshipStatus);
 
 				// Notify user and friend if friend is online
 				var friendUser = MsgrServer.Instance.UserManager.Get(contactId);
@@ -778,6 +777,83 @@ namespace Aura.Msgr.Network
 			}
 
 			session.Join(friendUser);
+		}
+
+		/// <summary>
+		/// Sent when blocking a friend.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.Msgr.FriendBlock)]
+		public void FriendBlock(MsgrClient client, Packet packet)
+		{
+			var contactId = packet.GetInt();
+
+			// Check friend
+			var friend = client.User.GetFriend(contactId);
+			if (friend == null)
+			{
+				Log.Warning("FriendBlock: User '{0}' tried to block invalid friend.", client.User.AccountId);
+				return;
+			}
+
+			// Check status
+			if (friend.FriendshipStatus != FriendshipStatus.Normal)
+			{
+				Send.FriendBlockR(client.User, false, contactId);
+				return;
+			}
+
+			// Change status
+			friend.FriendshipStatus = FriendshipStatus.Blocked;
+			MsgrServer.Instance.Database.SetFriendshipStatusOneSided(client.User.Id, contactId, friend.FriendshipStatus);
+
+			Send.FriendBlockR(client.User, true, contactId);
+
+			// Live update
+			var friendUser = MsgrServer.Instance.UserManager.Get(contactId);
+			if (friendUser != null)
+			{
+				// Show as offline from now on
+				Send.FriendOffline(friendUser, client.User);
+			}
+		}
+
+		/// <summary>
+		/// Sent when unblocking a friend.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.Msgr.FriendUnblock)]
+		public void FriendUnblock(MsgrClient client, Packet packet)
+		{
+			var contactId = packet.GetInt();
+
+			// Check friend
+			var friend = client.User.GetFriend(contactId);
+			if (friend == null)
+			{
+				Log.Warning("FriendUnblock: User '{0}' tried to block invalid friend.", client.User.AccountId);
+				return;
+			}
+
+			// Check status
+			if (friend.FriendshipStatus != FriendshipStatus.Blocked)
+			{
+				Send.FriendUnblockR(client.User, false, contactId);
+				return;
+			}
+
+			// Change status
+			friend.FriendshipStatus = FriendshipStatus.Normal;
+			MsgrServer.Instance.Database.SetFriendshipStatusOneSided(client.User.Id, contactId, friend.FriendshipStatus);
+
+			Send.FriendUnblockR(client.User, true, contactId);
+
+			// Live update
+			var friendUser = MsgrServer.Instance.UserManager.Get(contactId);
+			if (friendUser != null)
+				Send.FriendOnline(friendUser, client.User);
 		}
 	}
 }
