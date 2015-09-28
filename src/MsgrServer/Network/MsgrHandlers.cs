@@ -598,7 +598,7 @@ namespace Aura.Msgr.Network
 			// Live update
 			var friendUser = MsgrServer.Instance.UserManager.Get(contactId);
 			if (friendUser != null)
-				Send.FriendOffline(client.User, friendUser);
+				Send.FriendOffline(friendUser, client.User);
 		}
 
 		/// <summary>
