@@ -3,7 +3,7 @@ Developers
 
 Active developers
 
-* exec
+- exec - https://github.com/exectails
 
 Inactive Developers
 ==============================
@@ -30,6 +30,7 @@ People who have supported the development with a considerable donation
 
 * Hitzuki
 * Seeker
+* Pegwald
 
 Others
 ==============================
