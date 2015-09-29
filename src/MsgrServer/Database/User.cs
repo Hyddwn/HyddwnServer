@@ -74,5 +74,21 @@ namespace Aura.Msgr.Database
 
 			return friend.FriendshipStatus;
 		}
+
+		/// <summary>
+		/// Sets friendship status from user to given contact.
+		/// Returns true if successful, false if the friend doesn't exist.
+		/// </summary>
+		/// <param name="contactId"></param>
+		/// <returns></returns>
+		public bool SetFriendshipStatus(int contactId, FriendshipStatus status)
+		{
+			var friend = this.GetFriend(contactId);
+			if (friend == null)
+				return false;
+
+			friend.FriendshipStatus = status;
+			return true;
+		}
 	}
 }

@@ -640,6 +640,7 @@ namespace Aura.Msgr.Network
 				var friendUser = MsgrServer.Instance.UserManager.Get(contactId);
 				if (friendUser != null)
 				{
+					friendUser.SetFriendshipStatus(client.User.Id, friend.FriendshipStatus);
 					Send.FriendOnline(client.User, friendUser);
 					Send.FriendOnline(friendUser, client.User);
 				}
