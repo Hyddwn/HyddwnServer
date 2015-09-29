@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Aura.Msgr.Chat
@@ -48,6 +49,19 @@ namespace Aura.Msgr.Chat
 			lock (_sessions)
 				_sessions.TryGetValue(sessionId, out result);
 			return result;
+		}
+
+		/// <summary>
+		/// Returns first session that has only the two given users,
+		/// or null, if no such session exists.
+		/// </summary>
+		/// <param name="contactId1"></param>
+		/// <param name="contactId2"></param>
+		/// <returns></returns>
+		public ChatSession Find(int contactId1, int contactId2)
+		{
+			lock (_sessions)
+				return _sessions.Values.FirstOrDefault(a => a.IsBetween(contactId1, contactId2));
 		}
 	}
 }

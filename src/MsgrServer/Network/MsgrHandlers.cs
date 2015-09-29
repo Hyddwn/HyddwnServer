@@ -683,10 +683,16 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			// Create session
-			var session = new ChatSession();
-			session.Join(client.User);
-			session.PreJoin(user);
+			ChatSession session;
+
+			// Get or create session
+			session = MsgrServer.Instance.ChatSessionManager.Find(client.User.Id, friend.Id);
+			if (session == null)
+			{
+				session = new ChatSession();
+				session.Join(client.User);
+				session.PreJoin(user);
+			}
 
 			Send.ChatBeginR(client.User, session.Id, contactId);
 		}

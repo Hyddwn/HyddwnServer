@@ -131,5 +131,30 @@ namespace Aura.Msgr.Chat
 					user.Client.Send(packet);
 			}
 		}
+
+		/// <summary>
+		/// Returns true if session is only between the two given users.
+		/// </summary>
+		/// <param name="contactId1"></param>
+		/// <param name="contactId2"></param>
+		/// <returns></returns>
+		public bool IsBetween(int contactId1, int contactId2)
+		{
+			// TODO: Optimize... maybe hash the users?
+			lock (_sync)
+			{
+				if (_users.Count == 2 && _users.ContainsKey(contactId1) && _users.ContainsKey(contactId2))
+					return true;
+
+				if (
+					_users.Count + _waitingUsers.Count == 2 &&
+					(_users.ContainsKey(contactId1) || _waitingUsers.ContainsKey(contactId1)) &&
+					(_users.ContainsKey(contactId2) || _waitingUsers.ContainsKey(contactId2))
+				)
+					return true;
+			}
+
+			return false;
+		}
 	}
 }
