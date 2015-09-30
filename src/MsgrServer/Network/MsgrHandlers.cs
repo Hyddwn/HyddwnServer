@@ -714,6 +714,12 @@ namespace Aura.Msgr.Network
 			if (string.IsNullOrWhiteSpace(message))
 				return;
 
+			if (message.Length > 256)
+			{
+				Log.Warning("Chat: User '{0}' sent message that was longer than allowed by the client.", client.User.AccountId);
+				return;
+			}
+
 			// Check session
 			var session = MsgrServer.Instance.ChatSessionManager.Get(sessionId);
 			if (session == null || !session.HasUser(client.User.Id))
