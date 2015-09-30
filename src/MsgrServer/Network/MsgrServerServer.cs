@@ -9,10 +9,28 @@ namespace Aura.Msgr.Network
 {
 	public class MsgrServerServer : BaseServer<MsgrClient>
 	{
+		/// <summary>
+		/// Reads var int length from buffer.
+		/// </summary>
+		/// <param name="buffer"></param>
+		/// <param name="ptr"></param>
+		/// <returns></returns>
 		protected override int GetPacketLength(byte[] buffer, int ptr)
 		{
-			// <0x55><0x??><0x02><length>
-			return buffer[ptr + 3] + 4;
+			// <0x55><0x??><0x02><length...>
+
+			var result = 0;
+			ptr += 3;
+
+			for (int i = 0; ; ++i)
+			{
+				result |= (buffer[ptr] & 0x7f) << (i * 7);
+
+				if ((buffer[ptr++] & 0x80) == 0)
+					break;
+			}
+
+			return result + ptr;
 		}
 
 		protected override void HandleBuffer(MsgrClient client, byte[] buffer)
