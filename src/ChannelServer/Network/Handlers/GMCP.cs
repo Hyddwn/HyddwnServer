@@ -13,6 +13,7 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using System.Globalization;
 using Aura.Channel.World;
+using Aura.Mabi;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -266,7 +267,11 @@ namespace Aura.Channel.Network.Handlers
 			if (speedBonus == 0)
 				creature.Conditions.Deactivate(ConditionsC.Hurry);
 			else
-				creature.Conditions.Activate(ConditionsC.Hurry, speedBonus);
+			{
+				var extra = new MabiDictionary();
+				extra.SetShort("VAL", speedBonus);
+				creature.Conditions.Activate(ConditionsC.Hurry, extra);
+			}
 
 			Send.ServerMessage(creature, Localization.Get("Speed boost: {0}x"), multiplier.ToString("0.0", CultureInfo.InvariantCulture));
 		}

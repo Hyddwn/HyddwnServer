@@ -14,13 +14,21 @@ namespace Aura.Channel.World.Entities.Creatures
 	/// Holds all conditions of a creature.
 	/// </summary>
 	/// <remarks>
-	/// Conditions can have additional options, apperantly sent as a
-	/// MabiDictionary, identified by the id of the condition.
-	/// Only known example so far: C.Hurry
-	/// Hurry uses a short value to specify the speed increase.
-	/// This is the only supported value for the moment, until we have
-	/// more info on what exactly we need.
+	/// "Extra" values are information about conditions that are stored in
+	/// MabiDictionaries, they appear after the actual conditions in the
+	/// ConditionUpdate packet. An example of such a condition is ConditionsC.Hurry,
+	/// which is used to modify your movement speed.
+	/// To set those values, prepare a MabiDictionary before calling Activate
+	/// and pass it as the optional "extra" value. They are removed
+	/// automatically on deactivating.
 	/// </remarks>
+	/// <example>
+	/// creature.Conditions.Activate(ConditionsA.Petrified);
+	/// 
+	/// var extra = new MabiDictionary();
+	/// extra.SetShort("VAL", speedBonus);
+	/// creature.Conditions.Activate(ConditionsC.Hurry, extra);
+	/// </example>
 	public class CreatureConditions
 	{
 		private Creature _creature;
@@ -48,37 +56,32 @@ namespace Aura.Channel.World.Entities.Creatures
 		public bool Has(ConditionsE condition) { return ((this.E & condition) != 0); }
 		public bool Has(ConditionsF condition) { return ((this.F & condition) != 0); }
 
-		public void Activate(ConditionsA condition) { this.A |= condition; Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsB condition) { this.B |= condition; Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsC condition) { this.C |= condition; Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsD condition) { this.D |= condition; Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsE condition) { this.E |= condition; Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsF condition) { this.F |= condition; Send.ConditionUpdate(_creature); }
+		public void Activate(ConditionsA condition, MabiDictionary extra = null) { this.A |= condition; if (extra != null) this.SetExtra((double)condition, 0, extra); Send.ConditionUpdate(_creature); }
+		public void Activate(ConditionsB condition, MabiDictionary extra = null) { this.B |= condition; if (extra != null) this.SetExtra((double)condition, 1, extra); Send.ConditionUpdate(_creature); }
+		public void Activate(ConditionsC condition, MabiDictionary extra = null) { this.C |= condition; if (extra != null) this.SetExtra((double)condition, 2, extra); Send.ConditionUpdate(_creature); }
+		public void Activate(ConditionsD condition, MabiDictionary extra = null) { this.D |= condition; if (extra != null) this.SetExtra((double)condition, 3, extra); Send.ConditionUpdate(_creature); }
+		public void Activate(ConditionsE condition, MabiDictionary extra = null) { this.E |= condition; if (extra != null) this.SetExtra((double)condition, 4, extra); Send.ConditionUpdate(_creature); }
+		public void Activate(ConditionsF condition, MabiDictionary extra = null) { this.F |= condition; if (extra != null) this.SetExtra((double)condition, 5, extra); Send.ConditionUpdate(_creature); }
 
-		public void Activate(ConditionsC condition, short val)
+		public void Deactivate(ConditionsA condition) { this.A &= ~condition; this.RemoveExtra((double)condition, 0); Send.ConditionUpdate(_creature); }
+		public void Deactivate(ConditionsB condition) { this.B &= ~condition; this.RemoveExtra((double)condition, 1); Send.ConditionUpdate(_creature); }
+		public void Deactivate(ConditionsC condition) { this.C &= ~condition; this.RemoveExtra((double)condition, 2); Send.ConditionUpdate(_creature); }
+		public void Deactivate(ConditionsD condition) { this.D &= ~condition; this.RemoveExtra((double)condition, 3); Send.ConditionUpdate(_creature); }
+		public void Deactivate(ConditionsE condition) { this.E &= ~condition; this.RemoveExtra((double)condition, 4); Send.ConditionUpdate(_creature); }
+		public void Deactivate(ConditionsF condition) { this.F &= ~condition; this.RemoveExtra((double)condition, 5); Send.ConditionUpdate(_creature); }
+
+		private void SetExtra(double condition, int offset, MabiDictionary extra)
 		{
-			this.C |= condition;
-
-			var id = (int)Math.Log((double)condition, 2) + 64 * 2;
+			var id = (int)Math.Log(condition, 2) + (64 * offset);
 			lock (_extra)
-			{
-				if (!_extra.ContainsKey(id))
-					_extra[id] = new MabiDictionary();
-				_extra[id].SetShort("VAL", val);
-			}
+				_extra[id] = extra;
 
 			_extraCache = null;
-
-			Send.ConditionUpdate(_creature);
 		}
 
-		public void Deactivate(ConditionsA condition) { this.A &= ~condition; Send.ConditionUpdate(_creature); }
-		public void Deactivate(ConditionsB condition) { this.B &= ~condition; Send.ConditionUpdate(_creature); }
-		public void Deactivate(ConditionsC condition)
+		private void RemoveExtra(double condition, int offset)
 		{
-			this.C &= ~condition;
-
-			var id = (int)Math.Log((double)condition, 2) + 64 * 2;
+			var id = (int)Math.Log(condition, 2) + (64 * offset);
 			lock (_extra)
 			{
 				if (_extra.ContainsKey(id))
@@ -86,12 +89,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			}
 
 			_extraCache = null;
-
-			Send.ConditionUpdate(_creature);
 		}
-		public void Deactivate(ConditionsD condition) { this.D &= ~condition; Send.ConditionUpdate(_creature); }
-		public void Deactivate(ConditionsE condition) { this.E &= ~condition; Send.ConditionUpdate(_creature); }
-		public void Deactivate(ConditionsF condition) { this.F &= ~condition; Send.ConditionUpdate(_creature); }
 
 		/// <summary>
 		/// Resets all conditions and sends update.

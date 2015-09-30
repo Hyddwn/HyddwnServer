@@ -805,7 +805,11 @@ namespace Aura.Channel.Util
 			if (speed == 0)
 				target.Conditions.Deactivate(ConditionsC.Hurry);
 			else
-				target.Conditions.Activate(ConditionsC.Hurry, speed);
+			{
+				var extra = new MabiDictionary();
+				extra.SetShort("VAL", speed);
+				target.Conditions.Activate(ConditionsC.Hurry, extra);
+			}
 
 			Send.ServerMessage(sender, Localization.Get("Speed changed to +{0}%."), speed);
 			if (sender != target)
