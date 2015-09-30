@@ -710,6 +710,10 @@ namespace Aura.Msgr.Network
 			var sessionId = packet.GetLong();
 			var message = packet.GetString();
 
+			// Check message
+			if (string.IsNullOrWhiteSpace(message))
+				return;
+
 			// Check session
 			var session = MsgrServer.Instance.ChatSessionManager.Get(sessionId);
 			if (session == null || !session.HasUser(client.User.Id))
