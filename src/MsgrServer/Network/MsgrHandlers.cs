@@ -689,11 +689,10 @@ namespace Aura.Msgr.Network
 			// Get or create session
 			session = MsgrServer.Instance.ChatSessionManager.Find(client.User.Id, friend.Id);
 			if (session == null)
-			{
 				session = new ChatSession();
-				session.Join(client.User);
-				session.PreJoin(user);
-			}
+
+			session.Join(client.User);
+			session.Add(user);
 
 			Send.ChatBeginR(client.User, session.Id, contactId);
 		}
@@ -729,9 +728,9 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			// Notify waiting users
-			var waiting = session.GetWaitingUsers();
-			foreach (var user in waiting)
+			// Notify implicit, but not active users
+			var implicitUsers = session.GetInactiveImplicitUsers();
+			foreach (var user in implicitUsers)
 				session.Join(user);
 
 			Send.ChatR(session, client.User.Id, message);
@@ -756,13 +755,7 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			Send.ChatLeave(session, client.User);
-
-			// Remove user from group chat?
-			// (I assume if you were added to a group chat unwillingly,
-			// and you leave it, you are actually out.)
-			if (session.Count > 2)
-				session.Leave(client.User);
+			session.Leave(client.User);
 		}
 
 		/// <summary>

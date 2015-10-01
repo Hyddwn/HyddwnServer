@@ -10,6 +10,17 @@ using System.Threading;
 
 namespace Aura.Msgr.Chat
 {
+	/// <summary>
+	/// Represents and manages a chat session between users.
+	/// </summary>
+	/// <remarks>
+	/// Users are differentiated by being active or implicit. The session has
+	/// a list of implicit user's ids, the users in that list will auto-join
+	/// the chat once a message arrives. They are only removed from that list
+	/// when they leave a group chat, this way users always get back into
+	/// the same session, even across relogs, because they're pulled back in,
+	/// based on their id.
+	/// </remarks>
 	public class ChatSession
 	{
 		private static long _ids = 0;
@@ -17,7 +28,7 @@ namespace Aura.Msgr.Chat
 		private object _sync = new object();
 
 		private Dictionary<int, User> _users;
-		private Dictionary<int, User> _waitingUsers;
+		private HashSet<int> _implicitUsers;
 
 		/// <summary>
 		/// Unique identifier for this session.
@@ -35,7 +46,7 @@ namespace Aura.Msgr.Chat
 		public ChatSession()
 		{
 			_users = new Dictionary<int, User>();
-			_waitingUsers = new Dictionary<int, User>();
+			_implicitUsers = new HashSet<int>();
 
 			this.Id = Interlocked.Increment(ref _ids);
 
@@ -51,7 +62,7 @@ namespace Aura.Msgr.Chat
 			lock (_sync)
 			{
 				_users[user.Id] = user;
-				_waitingUsers.Remove(user.Id);
+				_implicitUsers.Add(user.Id);
 			}
 
 			// Update clients if this wasn't the initiating user.
@@ -66,13 +77,13 @@ namespace Aura.Msgr.Chat
 		}
 
 		/// <summary>
-		/// Adds user to waiting list, to be notified when the first msg gets in.
+		/// Adds user to implicit user list, to be notified once a msg gets in.
 		/// </summary>
 		/// <param name="user"></param>
-		public void PreJoin(User user)
+		public void Add(User user)
 		{
 			lock (_sync)
-				_waitingUsers[user.Id] = user;
+				_implicitUsers.Add(user.Id);
 		}
 
 		/// <summary>
@@ -82,7 +93,24 @@ namespace Aura.Msgr.Chat
 		public void Leave(User user)
 		{
 			lock (_sync)
+			{
 				_users.Remove(user.Id);
+
+				// Remove user from implicit list if more than one user is left
+				// in chat, so the user leaves group chats for good.
+				if (_users.Count > 1)
+				{
+					_implicitUsers.Remove(user.Id);
+				}
+				// Clear user lists if no active user is left.
+				else if (_users.Count == 0)
+				{
+					_users.Clear();
+					_implicitUsers.Clear();
+				}
+			}
+
+			Send.ChatLeave(this, user);
 		}
 
 		/// <summary>
@@ -97,14 +125,14 @@ namespace Aura.Msgr.Chat
 		}
 
 		/// <summary>
-		/// Returns list of users who are waiting for the first message.
+		/// Returns list of implicit users that are currently not in the chat.
 		/// </summary>
 		/// <returns></returns>
-		public User[] GetWaitingUsers()
+		public List<User> GetInactiveImplicitUsers()
 		{
-			User[] result;
+			List<User> result;
 			lock (_sync)
-				result = _waitingUsers.Values.ToArray();
+				result = MsgrServer.Instance.UserManager.Get(_implicitUsers.Where(id => !_users.ContainsKey(id)));
 			return result;
 		}
 
@@ -140,21 +168,8 @@ namespace Aura.Msgr.Chat
 		/// <returns></returns>
 		public bool IsBetween(int contactId1, int contactId2)
 		{
-			// TODO: Optimize... maybe hash the users?
 			lock (_sync)
-			{
-				if (_users.Count == 2 && _users.ContainsKey(contactId1) && _users.ContainsKey(contactId2))
-					return true;
-
-				if (
-					_users.Count + _waitingUsers.Count == 2 &&
-					(_users.ContainsKey(contactId1) || _waitingUsers.ContainsKey(contactId1)) &&
-					(_users.ContainsKey(contactId2) || _waitingUsers.ContainsKey(contactId2))
-				)
-					return true;
-			}
-
-			return false;
+				return (_implicitUsers.Count == 2 && _implicitUsers.Contains(contactId1) && _implicitUsers.Contains(contactId2));
 		}
 	}
 }

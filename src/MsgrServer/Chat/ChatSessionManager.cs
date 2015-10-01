@@ -19,7 +19,7 @@ namespace Aura.Msgr.Chat
 		}
 
 		/// <summary>
-		/// Adds sessopm to manager.
+		/// Adds session to manager.
 		/// </summary>
 		/// <param name="session"></param>
 		public void Add(ChatSession session)
