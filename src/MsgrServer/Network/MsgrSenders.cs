@@ -389,6 +389,22 @@ namespace Aura.Msgr.Network
 
 			user.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Updates user's status and nickname for all friends.
+		/// </summary>
+		/// <param name="friends"></param>
+		/// <param name="user"></param>
+		public static void FriendOptionChanged(List<User> friends, User user)
+		{
+			var packet = new Packet(Op.Msgr.FriendOptionChanged, 0);
+			packet.PutInt(user.Id);
+			packet.PutString(user.Nickname);
+			packet.PutByte((byte)user.Status);
+
+			foreach (var friendUser in friends)
+				friendUser.Client.Send(packet);
+		}
 	}
 
 	public enum LoginResult

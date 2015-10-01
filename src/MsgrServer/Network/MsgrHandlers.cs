@@ -311,18 +311,19 @@ namespace Aura.Msgr.Network
 
 			Send.ChangeOptionsR(client, true);
 
-			// Change online status for friends
-			if (prevStatus != status)
-			{
-				var friendUsers = MsgrServer.Instance.UserManager.Get(user.GetNormalFriendIds());
-				if (friendUsers.Count != 0)
-				{
-					if (status == ContactStatus.Offline)
-						Send.FriendOffline(friendUsers, user);
-					else
-						Send.FriendOnline(friendUsers, user);
-				}
-			}
+			// Update friends
+			var friendUsers = MsgrServer.Instance.UserManager.Get(user.GetNormalFriendIds());
+			if (friendUsers.Count == 0)
+				return;
+
+			// Set offline if prev was not offline, set online if prev was offline,
+			// and just update the options if not offline.
+			if (prevStatus != ContactStatus.Offline && status == ContactStatus.Offline)
+				Send.FriendOffline(friendUsers, user);
+			else if (prevStatus == ContactStatus.Offline && status != ContactStatus.Offline)
+				Send.FriendOnline(friendUsers, user);
+			else if (status != ContactStatus.Offline)
+				Send.FriendOptionChanged(friendUsers, user);
 		}
 
 		/// <summary>
