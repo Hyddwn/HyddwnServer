@@ -52,10 +52,24 @@ public class MoongateScript : GeneralScript
 		RegisterGate("_moontunnel_tailteann_cemetery", 0xA0012C002F0001);
 		RegisterGate("_moontunnel_sliab_cuilin01", 0xA0012D00040005);
 		RegisterGate("_moontunnel_sliab_cuilin02", 0xA0012D0004001B);
+		RegisterGate("_moontunnel_abb_neagh01", 0xA0012E00190018);
+		RegisterGate("_moontunnel_abb_neagh02", 0xA0012E001A0016);
+		RegisterGate("_moontunnel_tara_01", 0xA001910008000A);
+		RegisterGate("_moontunnel_tara_west", 0xA00191000802F2);
+		RegisterGate("_moontunnel_tara_s", 0xA001910010002F);
+		RegisterGate("_moontunnel_blago_prairie_e", 0xA001920000003B);
+		RegisterGate("_moontunnel_blago_prairie_02", 0xA0019200020108);
+		RegisterGate("_moontunnel_blago_prairie_01", 0xA001920006002C);
 		RegisterGate("_moontunnel_tara_kingdom", 0xA001B5000E0003);
 		RegisterGate("_moontunnel_belfast_01", 0xA00FA500020024);
 		RegisterGate("_moontunnel_belfast_02", 0xA00FA5000B0011);
+		RegisterGate("_moontunnel_scathach_03", 0xA00FAE00020004);
+		RegisterGate("_moontunnel_scathach_04", 0xA00FAE00030005);
+		RegisterGate("_moontunnel_scathach_01", 0xA00FAE000A00B5);
+		RegisterGate("_moontunnel_scathach_02", 0xA00FAE000A00B8);
+		RegisterGate("_moontunnel_scathach_05", 0xA00FAE000C004B);
 
+		// Keywords don't exist, do the gates still exist?
 		//RegisterGate("_moontunnel_dugaldaisle", 0xA0001000060014);
 		//RegisterGate("_moontunnel_moonsurface_enterance", 0xA003EB00000001);
 		//RegisterGate("_moontunnel_moonsurface_exit", 0xA003EB00000003);
