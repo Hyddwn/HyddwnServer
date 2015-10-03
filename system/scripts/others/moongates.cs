@@ -69,7 +69,7 @@ public class MoongateScript : GeneralScript
 		RegisterGate("Fishing Area", "_moontunnel_scathach_02", 0xA00FAE000A00B8);
 		RegisterGate("Witch's Cave", "_moontunnel_scathach_05", 0xA00FAE000C004B);
 
-		// TODO: G1, G7, G9, G10
+		// TODO: G1
 
 		RegisterTimetable("G2",
 			"_moontunnel_fiodh_dungeon",
@@ -116,6 +116,96 @@ public class MoongateScript : GeneralScript
 			"_moontunnel_emainmacha",
 			"_moontunnel_loggingcamp",
 			"_moontunnel_ciar_dungeon"
+		);
+
+		RegisterTimetable("G4",
+			"_moontunnel_emainmacha",
+			"_moontunnel_emainmacha",
+			"_moontunnel_ceann_harbor",
+			"_moontunnel_bangor",
+			"_moontunnel_math_dungeon",
+			"_moontunnel_coill_dungeon",
+			"_moontunnel_alby_dungeon",
+			"_moontunnel_peaca_dungeon",
+			"_moontunnel_ceann_harbor",
+			"_moontunnel_loggingcamp",
+			"_moontunnel_tirchonaill",
+			"_moontunnel_tirchonaill",
+			"_moontunnel_dunbarton",
+			"_moontunnel_rabbie_dungeon",
+			"_moontunnel_bangor",
+			"_moontunnel_dunbarton",
+			"_moontunnel_ciar_dungeon",
+			"_moontunnel_ceoisland",
+			"_moontunnel_fiodh_dungeon",
+			"_moontunnel_dragonruin",
+			"_moontunnel_ceoisland"
+		);
+
+		RegisterTimetable("G9",
+			"_moontunnel_tirchonaill",
+			"_moontunnel_alby_dungeon",
+			"_moontunnel_ceoisland",
+			"_moontunnel_ceoisland",
+			"_moontunnel_tailteann_w",
+			"_moontunnel_bangor",
+			"_moontunnel_tirchonaill",
+			"_moontunnel_fiodh_dungeon",
+			"_moontunnel_peaca_dungeon",
+			"_moontunnel_emainmacha",
+			"_moontunnel_dunbarton",
+			"_moontunnel_tirchonaill",
+			"_moontunnel_coill_dungeon",
+			"_moontunnel_dunbarton",
+			"_moontunnel_bangor",
+			"_moontunnel_dunbarton",
+			"_moontunnel_emainmacha",
+			"_moontunnel_ceann_harbor",
+			"_moontunnel_rabbie_dungeon",
+			"_moontunnel_emainmacha",
+			"_moontunnel_dragonruin",
+			"_moontunnel_ceoisland",
+			"_moontunnel_bangor",
+			"_moontunnel_math_dungeon",
+			"_moontunnel_tailteann_w",
+			"_moontunnel_ciar_dungeon",
+			"_moontunnel_tailteann_w",
+			"_moontunnel_loggingcamp"
+		);
+
+		RegisterTimetable("G10",
+			"_moontunnel_tailteann_w",
+			"_moontunnel_tirchonaill",
+			"_moontunnel_dunbarton",
+			"_moontunnel_emainmacha",
+			"_moontunnel_coill_dungeon",
+			"_moontunnel_tara_west",
+			"_moontunnel_ceoisland",
+			"_moontunnel_bangor",
+			"_moontunnel_ceoisland",
+			"_moontunnel_tara_west",
+			"_moontunnel_ciar_dungeon",
+			"_moontunnel_tailteann_w",
+			"_moontunnel_tara_west",
+			"_moontunnel_bangor",
+			"_moontunnel_emainmacha",
+			"_moontunnel_tailteann_w",
+			"_moontunnel_dunbarton",
+			"_moontunnel_math_dungeon",
+			"_moontunnel_emainmacha",
+			"_moontunnel_ceoisland",
+			"_moontunnel_fiodh_dungeon",
+			"_moontunnel_peaca_dungeon",
+			"_moontunnel_ceann_harbor",
+			"_moontunnel_loggingcamp",
+			"_moontunnel_tara_west",
+			"_moontunnel_alby_dungeon",
+			"_moontunnel_tirchonaill",
+			"_moontunnel_tirchonaill",
+			"_moontunnel_dragonruin",
+			"_moontunnel_dunbarton",
+			"_moontunnel_tara_west",
+			"_moontunnel_rabbie_dungeon"
 		);
 
 		RegisterTimetable("G11",
@@ -253,9 +343,19 @@ public class MoongateScript : GeneralScript
 		if (IsEnabled("G11") && tables.TryGetValue("G11", out result))
 			return result;
 
-		// G1
+		// G10
+		if (IsEnabled("G10") && tables.TryGetValue("G10", out result))
+			return result;
 
-		// Table changes once Emain is open (G2)
+		// G9
+		if (IsEnabled("G9") && tables.TryGetValue("G9", out result))
+			return result;
+
+		// G4
+		if (IsEnabled("G4") && tables.TryGetValue("G4", out result))
+			return result;
+
+		// G2, table changes once Emain is open
 		var sealBroken = (GlobalVars.Perm["SealStoneId_sealstone_osnasail"] != null || GlobalVars.Perm["SealStoneId_sealstone_south_emainmacha"] != null);
 
 		if (tables.TryGetValue("G2Emain", out result) && sealBroken)
