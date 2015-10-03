@@ -22,6 +22,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutString(prop.Ident);
 				packet.PutString(prop.Title);
 				packet.PutBin(prop.Info);
+
 				packet.PutString(prop.State);
 				packet.PutLong(0);
 
@@ -46,17 +47,24 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutString(prop.State);
 				packet.PutLong(DateTime.Now);
 
+				packet.PutByte(prop.HasXml);
 				if (prop.HasXml)
-				{
-					packet.PutByte(true);
 					packet.PutString(prop.Xml.ToString());
-				}
-				else
-				{
-					packet.PutByte(false);
-				}
 
 				packet.PutFloat(prop.Info.Direction);
+
+				if (prop.Extensions.Count != 0)
+				{
+					packet.PutInt(prop.Extensions.Count);
+					foreach (var ext in prop.Extensions)
+					{
+						packet.PutInt((int)ext.SignalType);
+						packet.PutInt((int)ext.EventType);
+						packet.PutString(ext.Name);
+						packet.PutByte(ext.Mode);
+						packet.PutString(ext.Value.ToString());
+					}
+				}
 			}
 
 			return packet;
