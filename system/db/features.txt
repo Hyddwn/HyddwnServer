@@ -328,7 +328,9 @@
 // Generation 16
 { name: "G16", enabled: false, children: [
 	// Season 1
-	{ name: "G16S1", enabled: true, children: []},
+	{ name: "G16S1", enabled: true, children: [
+		{ name: "MoonTunnel", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G16S2", enabled: true, children: [
@@ -395,4 +397,5 @@
 { name: "TwinSword", enabled: true },
 { name: "CombatSystemRenewal", enabled: true },
 { name: "TalentRenovationCloseCombat", enabled: true },
+{ name: "MoonTunnel", enabled: true },
 ]
