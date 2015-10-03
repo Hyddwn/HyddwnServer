@@ -69,7 +69,20 @@ public class MoongateScript : GeneralScript
 		RegisterGate("Fishing Area", "_moontunnel_scathach_02", 0xA00FAE000A00B8);
 		RegisterGate("Witch's Cave", "_moontunnel_scathach_05", 0xA00FAE000C004B);
 
-		// TODO: G1
+		RegisterTimetable("G1",
+			"_moontunnel_tirchonaill",
+			"_moontunnel_ciar_dungeon",
+			"_moontunnel_dunbarton",
+			"_moontunnel_bangor",
+			"_moontunnel_bangor",
+			"_moontunnel_math_dungeon",
+			"_moontunnel_dunbarton",
+			"_moontunnel_rabbie_dungeon",
+			"_moontunnel_loggingcamp",
+			"_moontunnel_fiodh_dungeon",
+			"_moontunnel_alby_dungeon",
+			"_moontunnel_ciar_dungeon"
+		);
 
 		RegisterTimetable("G2",
 			"_moontunnel_fiodh_dungeon",
@@ -356,12 +369,21 @@ public class MoongateScript : GeneralScript
 			return result;
 
 		// G2, table changes once Emain is open
-		var sealBroken = (GlobalVars.Perm["SealStoneId_sealstone_osnasail"] != null || GlobalVars.Perm["SealStoneId_sealstone_south_emainmacha"] != null);
+		if (IsEnabled("G2"))
+		{
+			var sealBroken = (GlobalVars.Perm["SealStoneId_sealstone_osnasail"] != null || GlobalVars.Perm["SealStoneId_sealstone_south_emainmacha"] != null);
 
-		if (tables.TryGetValue("G2Emain", out result) && sealBroken)
-			return result;
+			if (tables.TryGetValue("G2Emain", out result) && sealBroken)
+				return result;
 
-		if (tables.TryGetValue("G2", out result))
+			if (tables.TryGetValue("G2", out result))
+				return result;
+		}
+
+		// G1
+		// Was there another one, for when the Dugald seal stone hadn't
+		// been broken yet?
+		if (IsEnabled("G1") && tables.TryGetValue("G1", out result))
 			return result;
 
 		// Fallback
