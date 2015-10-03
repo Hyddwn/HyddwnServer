@@ -418,8 +418,8 @@ public class MoongateScript : GeneralScript
 			{
 				gate.Prop.Xml.SetAttributeValue("target", currentGateKeyword);
 				gate.Prop.Xml.SetAttributeValue("nopick", 0); // 1 disables clicking the prop
-				gate.Prop.RemoveAllExtensions();
-				gate.Prop.AddExtension(new ConfirmationPropExtension("_devent_ask_warp", string.Format(L("Do you wish to travel to the {0} Moon Gate?"), currentGate.Name), ""));
+				gate.Prop.Extensions.Clear();
+				gate.Prop.Extensions.Add(new ConfirmationPropExtension("_devent_ask_warp", string.Format(L("Do you wish to travel to the {0} Moon Gate?"), currentGate.Name), ""));
 			}
 
 			Send.PropUpdate(gate.Prop);

@@ -10,6 +10,7 @@ using Aura.Shared.Network;
 using Aura.Channel.World;
 using Aura.Channel.Network.Sending.Helpers;
 using Aura.Mabi.Network;
+using Aura.Channel.World.Entities.Props;
 
 namespace Aura.Channel.Network.Sending
 {

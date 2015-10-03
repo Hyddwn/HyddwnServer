@@ -1,4 +1,7 @@
-﻿using Aura.Mabi;
+﻿// Copyright (c) Aura development team - Licensed under GNU GPL
+// For more information, see license file in the main folder
+
+using Aura.Mabi;
 using Aura.Mabi.Const;
 using System;
 using System.Collections.Generic;
@@ -6,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aura.Channel.World.Entities
+namespace Aura.Channel.World.Entities.Props
 {
 	public class PropExtension
 	{

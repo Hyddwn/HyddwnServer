@@ -16,6 +16,7 @@ using Aura.Data.Database;
 using Aura.Channel.Network.Sending;
 using System.Drawing;
 using Aura.Mabi;
+using Aura.Channel.World.Entities.Props;
 
 namespace Aura.Channel.World.Entities
 {
@@ -130,7 +131,7 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// List of extensions (TODO: needs research).
 		/// </summary>
-		public List<PropExtension> Extensions { get; private set; }
+		public PropExtensionManager Extensions { get; private set; }
 
 		/// <summary>
 		/// Creates new prop with a newly generated entity id.
@@ -167,7 +168,7 @@ namespace Aura.Channel.World.Entities
 		{
 			this.Shapes = new List<Point[]>();
 			this.Temp = new PropTemp();
-			this.Extensions = new List<PropExtension>();
+			this.Extensions = new PropExtensionManager(this);
 
 			_resource = 100;
 
@@ -298,27 +299,6 @@ namespace Aura.Channel.World.Entities
 			this.UpdateCollisions();
 			if (this.Region != Region.Limbo)
 				Send.PropUpdate(this);
-		}
-
-		/// <summary>
-		///	Adds new extention and broadcast update.
-		/// </summary>
-		/// <param name="ext"></param>
-		public void AddExtension(PropExtension ext)
-		{
-			this.Extensions.Add(ext);
-			Send.AddPropExtension(this, ext);
-		}
-
-		/// <summary>
-		///	Removes all extensions from prop and broadcast update.
-		/// </summary>
-		/// <param name="ext"></param>
-		public void RemoveAllExtensions()
-		{
-			foreach (var ext in this.Extensions)
-				Send.RemovePropExtension(this, ext);
-			this.Extensions.Clear();
 		}
 
 		/// <summary>

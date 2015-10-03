@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using System.Xml.Linq;
 using Aura.Channel.World.Dungeons.Props;
 using Aura.Channel.World.Dungeons.Puzzles;
+using Aura.Channel.World.Entities.Props;
 
 namespace Aura.Channel.World.Dungeons
 {
@@ -428,7 +429,7 @@ namespace Aura.Channel.World.Dungeons
 				exitStatue.Info.Color1 = floorData.Color1;
 				exitStatue.Info.Color2 = floorData.Color1;
 				exitStatue.Info.Color3 = floorData.Color3;
-				exitStatue.Extensions.Add(new ConfirmationPropExtension("GotoLobby", "_LT[code.standard.msg.dungeon_exit_notice_msg]", "_LT[code.standard.msg.dungeon_exit_notice_title]", "haskey(chest)"));
+				exitStatue.Extensions.AddSilent(new ConfirmationPropExtension("GotoLobby", "_LT[code.standard.msg.dungeon_exit_notice_msg]", "_LT[code.standard.msg.dungeon_exit_notice_title]", "haskey(chest)"));
 				exitStatue.Behavior = (cr, pr) => { cr.Warp(this.Data.Exit); };
 				region.AddProp(exitStatue);
 			}

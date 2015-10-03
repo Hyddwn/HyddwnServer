@@ -19,6 +19,7 @@ using System.Drawing;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Mabi.Network;
 using Aura.Channel.Scripting;
+using Aura.Channel.World.Entities.Props;
 
 namespace Aura.Channel.World
 {
@@ -129,7 +130,7 @@ namespace Aura.Channel.World
 
 					// Add copy of extensions
 					foreach (var para in prop.Parameters)
-						add.Extensions.Add(new PropExtension(para.SignalType, para.EventType, para.Name, 0));
+						add.Extensions.AddSilent(new PropExtension(para.SignalType, para.EventType, para.Name, 0));
 
 					// Add drop behaviour if drop type exists
 					var dropType = prop.GetDropType();

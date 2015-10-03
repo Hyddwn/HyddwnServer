@@ -6,6 +6,7 @@ using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Channel.World.Entities;
 using Aura.Shared.Util;
+using Aura.Channel.World.Entities.Props;
 
 namespace Aura.Channel.World.Dungeons.Props
 {
@@ -190,7 +191,7 @@ namespace Aura.Channel.World.Dungeons.Props
 		public void Open()
 		{
 			if (!this.IsLocked)
-				this.RemoveAllExtensions();
+				this.Extensions.Clear();
 			this.IsLocked = false;
 			this.SetState("open");
 		}
@@ -214,7 +215,7 @@ namespace Aura.Channel.World.Dungeons.Props
 			var extname = string.Format("directed_ask({0},{1})", _closedFrom.X, _closedFrom.Y);
 			var condition = string.Format("notfrom({0},{1})", _closedFrom.X, _closedFrom.Y);
 			var ext = new ConfirmationPropExtension(extname, Localization.Get("Do you wish to go inside the room?"), condition: condition);
-			this.AddExtension(ext);
+			this.Extensions.Add(ext);
 		}
 	}
 }

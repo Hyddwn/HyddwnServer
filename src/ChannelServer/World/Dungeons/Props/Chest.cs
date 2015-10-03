@@ -8,6 +8,7 @@ using Aura.Channel.World.Entities;
 using Aura.Mabi;
 using Aura.Shared.Util;
 using Aura.Channel.World.Dungeons.Puzzles;
+using Aura.Channel.World.Entities.Props;
 
 namespace Aura.Channel.World.Dungeons.Props
 {
@@ -86,7 +87,7 @@ namespace Aura.Channel.World.Dungeons.Props
 		{
 			this.LockName = lockName;
 			this.State = "closed";
-			this.Extensions.Add(new ConfirmationPropExtension("", Localization.Get("Do you wish to open this chest?"), null, "haskey(" + lockName + ")"));
+			this.Extensions.AddSilent(new ConfirmationPropExtension("", Localization.Get("Do you wish to open this chest?"), null, "haskey(" + lockName + ")"));
 		}
 
 		public LockedChest(Puzzle puzzle, string name, string key)
