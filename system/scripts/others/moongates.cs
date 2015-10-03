@@ -22,7 +22,7 @@ public class MoongateScript : GeneralScript
 	{
 		RegisterGate("Tir Chonaill", "_moontunnel_tirchonaill", 0xA000010004001F);
 		RegisterGate("Ciar Dungeon", "_moontunnel_ciar_dungeon", 0xA000010005001B);
-		RegisterGate("Aly Dungeon", "_moontunnel_alby_dungeon", 0xA0000100080006);
+		RegisterGate("Alby Dungeon", "_moontunnel_alby_dungeon", 0xA0000100080006);
 		RegisterGate("Math Dungeon", "_moontunnel_math_dungeon", 0xA0000E00090034);
 		RegisterGate("Dunbarton", "_moontunnel_dunbarton", 0xA0000E000A02B4);
 		RegisterGate("Rabbie Dungeon", "_moontunnel_rabbie_dungeon", 0xA0000E00110039);
@@ -61,13 +61,13 @@ public class MoongateScript : GeneralScript
 		RegisterGate("Eluned Winery", "_moontunnel_blago_prairie_02", 0xA0019200020108);
 		RegisterGate("Lezarro Winery", "_moontunnel_blago_prairie_01", 0xA001920006002C);
 		RegisterGate("Rath Royal Castle", "_moontunnel_tara_kingdom", 0xA001B5000E0003);
-		RegisterGate("Belfast 1", "_moontunnel_belfast_01", 0xA00FA500020024);
-		RegisterGate("Belfast 2", "_moontunnel_belfast_02", 0xA00FA5000B0011);
-		RegisterGate("Scathach 3", "_moontunnel_scathach_03", 0xA00FAE00020004);
-		RegisterGate("Scathach 4", "_moontunnel_scathach_04", 0xA00FAE00030005);
-		RegisterGate("Scathach 1", "_moontunnel_scathach_01", 0xA00FAE000A00B5);
-		RegisterGate("Scathach 2", "_moontunnel_scathach_02", 0xA00FAE000A00B8);
-		RegisterGate("Scathach 5", "_moontunnel_scathach_05", 0xA00FAE000C004B);
+		RegisterGate("Mykeeness Cliffs", "_moontunnel_belfast_01", 0xA00FA500020024);
+		RegisterGate("Garden", "_moontunnel_belfast_02", 0xA00FA5000B0011);
+		RegisterGate("Springs", "_moontunnel_scathach_03", 0xA00FAE00020004);
+		RegisterGate("Black Beach", "_moontunnel_scathach_04", 0xA00FAE00030005);
+		RegisterGate("Scathach Patrol Camp", "_moontunnel_scathach_01", 0xA00FAE000A00B5);
+		RegisterGate("Fishing Area", "_moontunnel_scathach_02", 0xA00FAE000A00B8);
+		RegisterGate("Witch's Cave", "_moontunnel_scathach_05", 0xA00FAE000C004B);
 
 		// TODO: G1, G7, G9, G10
 
