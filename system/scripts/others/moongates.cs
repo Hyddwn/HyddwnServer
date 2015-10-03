@@ -388,7 +388,11 @@ public class MoongateScript : GeneralScript
 	private void UpdateCurrentGates()
 	{
 		var table = GetTable();
-		var cycles = (int)((DateTime.Now - ErinnTime.BeginOfTime).TotalSeconds / 2160);
+
+		// Add 9 minutes, to compensate for the 6 in-game hours between
+		// 18:00 and 00:00, otherwise we get the gates for the next day
+		// when starting the server between 00:00 and 05:59.
+		var cycles = (int)((DateTime.Now.AddMinutes(9) - ErinnTime.BeginOfTime).TotalSeconds / 2160);
 
 		currentGateKeyword = table[cycles % table.Length];
 		nextGateKeyword = table[(cycles + 1) % table.Length];
