@@ -406,9 +406,29 @@ public class MoongateScript : GeneralScript
 	[On("ErinnDaytimeTick")]
 	public void OnErinnDaytimeTick(ErinnTime now)
 	{
+		var firstRun = (currentGateKeyword == null);
+
 		if (now.IsDusk || currentGateKeyword == null)
 			UpdateCurrentGates();
 
+		// Just update gates on first run, to set initial state.
+		if (firstRun)
+		{
+			UpdateGates(now);
+			return;
+		}
+
+		// Open gates after 12s, after the Eweca msg disappeared.
+		Task.Delay(12000).ContinueWith(_ =>
+		{
+			UpdateGates(now);
+			if (!IsEnabled("MoonTunnel"))
+				Send.Notice(NoticeType.MiddleSystem, string.Format(L("Moon Gates leading to {0} have appeared all across Erinn."), currentGate.Name));
+		});
+	}
+
+	private void UpdateGates(ErinnTime now)
+	{
 		var state = now.IsNight || AlwaysOpen ? "open" : "closed";
 
 		foreach (var gate in gates.Values)
@@ -428,9 +448,6 @@ public class MoongateScript : GeneralScript
 
 			Send.PropUpdate(gate.Prop);
 		}
-
-		if (!IsEnabled("MoonTunnel"))
-			Send.Notice(NoticeType.MiddleSystem, string.Format(L("Moon Gates leading to {0} have appeared all across Erinn."), currentGate.Name));
 	}
 
 	private class MoonGate
