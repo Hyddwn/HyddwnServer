@@ -428,6 +428,9 @@ public class MoongateScript : GeneralScript
 
 			Send.PropUpdate(gate.Prop);
 		}
+
+		if (!IsEnabled("MoonTunnel"))
+			Send.Notice(NoticeType.MiddleSystem, string.Format(L("Moon Gates leading to {0} have appeared all across Erinn."), currentGate.Name));
 	}
 
 	private class MoonGate
