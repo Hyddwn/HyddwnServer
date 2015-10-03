@@ -371,7 +371,7 @@ public class MoongateScript : GeneralScript
 
 	private void SendMoonGateInfoRequestR(string current, string next)
 	{
-		var packet = new Packet(Op.MoonGateInfoRequestR, MabiId.Channel);
+		var packet = new Packet(Op.MoonGateInfoRequestR, MabiId.Broadcast);
 		packet.PutString(current);
 		packet.PutString(next);
 		ChannelServer.Instance.World.Broadcast(packet);
@@ -379,7 +379,7 @@ public class MoongateScript : GeneralScript
 
 	private void SendMoonGateInfoRequestR(Creature creature, string current, string next)
 	{
-		var packet = new Packet(Op.MoonGateInfoRequestR, MabiId.Channel);
+		var packet = new Packet(Op.MoonGateInfoRequestR, MabiId.Broadcast);
 		packet.PutString(current);
 		packet.PutString(next);
 		creature.Client.Send(packet);
