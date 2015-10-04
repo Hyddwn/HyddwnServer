@@ -11,6 +11,7 @@ using Aura.Shared.Util;
 using Aura.Mabi.Const;
 using Aura.Data;
 using Aura.Mabi.Network;
+using Aura.Mabi;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -290,6 +291,72 @@ namespace Aura.Channel.Network.Handlers
 			creature.HandleInquiry(id);
 
 			Send.InquiryResponseR(creature, true);
+		}
+
+		/// <summary>
+		/// Sent upon spinning the color wheel, used in name color change skill.
+		/// </summary>
+		/// <example>
+		/// 001 [............0032] Short  : 50
+		/// </example>
+		[PacketHandler(Op.SpinColorWheel)]
+		public void SpinColorWheel(ChannelClient client, Packet packet)
+		{
+			var strength = packet.GetShort();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check active skill
+			if (!creature.Skills.IsActive(SkillId.NameColorChange))
+			{
+				Log.Warning("SpinColorWheel: Creature '{0:X16}' tried to spin color wheel without the necesseray skill being active.", creature.EntityId);
+				return;
+			}
+
+			var rnd = RandomProvider.Get();
+			var result = MabiMath.DegreeToRadian((int)rnd.Between(0, 359));
+
+			Send.SpinColorWheelR(creature, result);
+		}
+
+		/// <summary>
+		/// Sent when color wheel stops spinning.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.ChangeNameColor)]
+		public void ChangeNameColor(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check item id
+			if (creature.Temp.NameColorItemEntityId == 0)
+			{
+				Log.Warning("ChangeNameColor: Creature '{0:X16}' sent packet while item id is 0.", creature.EntityId);
+				return;
+			}
+
+			// Check item
+			var item = creature.Inventory.GetItem(creature.Temp.NameColorItemEntityId);
+			if (item == null)
+			{
+				Log.Warning("ChangeNameColor: Creature '{0:X16}' doesn't have the item.", creature.EntityId);
+				return;
+			}
+
+			//creature.Inventory.Remove(item);
+
+			// Calculate color...
+
+			// Set conditions that modify the colors
+			var extra = new MabiDictionary();
+			extra.SetInt("IDX", 18);
+
+			creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
+			creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
+
+			Send.Notice(creature, NoticeType.Middle, Localization.Get("Your name and chat text colors have changed."));
 		}
 	}
 }
