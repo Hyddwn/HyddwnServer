@@ -314,9 +314,14 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			var rnd = RandomProvider.Get();
-			var result = MabiMath.DegreeToRadian((int)rnd.Between(0, 359));
+			var slot = (int)rnd.Between(0, 31);
+			if (slot == 1) // TODO: extra spin
+				slot = 2;
+			var radian = (float)(Math.PI / 16f * slot);
 
-			Send.SpinColorWheelR(creature, result);
+			creature.Temp.ColorWheelResult = slot + 1;
+
+			Send.SpinColorWheelR(creature, radian);
 		}
 
 		/// <summary>
@@ -345,13 +350,57 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			//creature.Inventory.Remove(item);
+			creature.Temp.NameColorItemEntityId = 0;
 
-			// Calculate color...
+			// "Calculate" color
+			// It's currently unknown how the client gets the colors, the index
+			// sent to the client is not the slot the wheel lands on, and it's
+			// not a color from the color table. Might be hardcoded.
+			var idx = -1;
+			switch (creature.Temp.ColorWheelResult)
+			{
+				case 1: idx = 28; break;
+				case 2:
+				case 3: idx = 14; break;
+				case 4: idx = 13; break;
+				case 5: idx = 11; break;
+				case 6: idx = 1; break;
+				case 7: idx = 6; break;
+				case 8: idx = 26; break;
+				case 9: idx = 5; break;
+				case 10: idx = 25; break;
+				case 11: idx = 1; break;
+				case 12: idx = 11; break;
+				case 13: idx = 4; break;
+				case 14: idx = 3; break;
+				case 15: idx = 11; break;
+				case 16: idx = 18; break;
+				case 17: idx = 22; break;
+				case 18: idx = 10; break;
+				case 19: idx = 24; break;
+				case 20: idx = 27; break;
+				case 21: idx = 12; break;
+				case 22: idx = 23; break;
+				case 23: idx = 19; break;
+				case 24: idx = 3; break;
+				case 25: idx = 16; break;
+				case 26: idx = 8; break;
+				case 27: idx = 30; break;
+				case 28: idx = 2; break;
+				case 29: idx = 20; break;
+				case 30: idx = 21; break;
+				case 31: idx = 15; break;
+				case 32: idx = 9; break;
+				default:
+					Log.Warning("ChangeNameColor: Calculating color failed, result: {0}.", creature.Temp.ColorWheelResult);
+					return;
+			}
+
+			//creature.Inventory.Remove(item);
 
 			// Set conditions that modify the colors
 			var extra = new MabiDictionary();
-			extra.SetInt("IDX", 18);
+			extra.SetInt("IDX", idx);
 
 			creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
 			creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);

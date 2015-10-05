@@ -50,6 +50,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		public bool FireArrow;
 
 		public long NameColorItemEntityId;
-		public float ColorWheelResult;
+		public int ColorWheelResult;
 	}
 }
