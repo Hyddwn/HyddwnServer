@@ -69,6 +69,11 @@ public class MoongateScript : GeneralScript
 		RegisterGate("Fishing Area", "_moontunnel_scathach_02", 0xA00FAE000A00B8);
 		RegisterGate("Witch's Cave", "_moontunnel_scathach_05", 0xA00FAE000C004B);
 
+		// Keywords don't exist, do the gates still exist?
+		//RegisterGate("_moontunnel_dugaldaisle", 0xA0001000060014);
+		//RegisterGate("_moontunnel_moonsurface_enterance", 0xA003EB00000001);
+		//RegisterGate("_moontunnel_moonsurface_exit", 0xA003EB00000003);
+
 		RegisterTimetable("G1",
 			"_moontunnel_tirchonaill",
 			"_moontunnel_ciar_dungeon",
@@ -248,11 +253,6 @@ public class MoongateScript : GeneralScript
 			"_moontunnel_bangor"
 		);
 
-		// Keywords don't exist, do the gates still exist?
-		//RegisterGate("_moontunnel_dugaldaisle", 0xA0001000060014);
-		//RegisterGate("_moontunnel_moonsurface_enterance", 0xA003EB00000001);
-		//RegisterGate("_moontunnel_moonsurface_exit", 0xA003EB00000003);
-
 		AddPacketHandler(Op.MoonGateUse, HandleMoonGateUse);
 		AddPacketHandler(Op.MoonGateInfoRequest, HandleMoonGateInfoRequest);
 
@@ -341,8 +341,6 @@ public class MoongateScript : GeneralScript
 		{
 			var origin = gate.Keyword;
 			var destination = currentGateKeyword;
-
-			// Do you wish to travel to the [...] Moon Gate?
 
 			UseMoonGate(creature, origin, destination);
 		}
@@ -520,7 +518,7 @@ public class MoongateScript : GeneralScript
 		nextGateKeyword = table[(cycles + 1) % table.Length];
 
 		if (!gatesStr.TryGetValue(currentGateKeyword, out currentGate))
-			Log.Error("MoonGateScript.UpdateCurrentGates: Gate '{0}' not found.", currentGateKeyword);
+			throw new Exception("Gate '" + currentGateKeyword + "' not found.");
 
 		SendMoonGateInfoRequestR(currentGateKeyword, nextGateKeyword);
 	}
