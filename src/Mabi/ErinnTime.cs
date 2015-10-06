@@ -162,12 +162,12 @@ namespace Aura.Mabi
 			format = format.Replace("dd", this.Day.ToString("00"));
 			format = format.Replace("d", this.Day.ToString());
 
-			format = format.Replace("tt", (this.Hour < 12 ? "AM" : "PM"));
-			format = format.Replace("t", (this.Hour < 12 ? "A" : "P"));
-
 			format = format.Replace("MMMM", Months[this.Month]);
 			format = format.Replace("MM", this.Month.ToString("00"));
 			format = format.Replace("M", this.Month.ToString());
+
+			format = format.Replace("tt", (this.Hour < 12 ? "AM" : "PM"));
+			format = format.Replace("t", (this.Hour < 12 ? "A" : "P"));
 
 			return format;
 		}
