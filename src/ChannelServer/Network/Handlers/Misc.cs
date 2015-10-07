@@ -396,7 +396,7 @@ namespace Aura.Channel.Network.Handlers
 					return;
 			}
 
-			//creature.Inventory.Remove(item);
+			creature.Inventory.Remove(item);
 
 			// Expiration apparently varies based on the item,
 			// no expiration time can be found in the db.
