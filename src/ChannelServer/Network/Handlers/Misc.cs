@@ -405,6 +405,8 @@ namespace Aura.Channel.Network.Handlers
 			creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
 			creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
 
+			creature.Vars.Perm["NameColorIdx"] = idx;
+
 			Send.Notice(creature, NoticeType.Middle, Localization.Get("Your name and chat text colors have changed."));
 		}
 	}
