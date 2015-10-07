@@ -467,6 +467,9 @@ namespace Aura.Mabi.Network
 		public const int UnsetBgm = 0xA911;
 		public const int EnterDynamicRegionExtended = 0xA97E; // Creates multiple dynamic regions and warps to one
 		public const int EnableRoyalAlchemist = 0xA9A3;
+		public const int SpinColorWheel = 0xA9A5;
+		public const int SpinColorWheelR = 0xA9A6;
+		public const int ChangeNameColor = 0xA9A7;
 		public const int SosButtonRequest = 0xA9A9;
 		public const int SosButtonRequestR = 0xA9AA;
 		public const int SkillTeleport = 0xA9F0;

@@ -48,5 +48,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		public DropData FishingDrop;
 
 		public bool FireArrow;
+
+		public long NameColorItemEntityId;
+		public int ColorWheelResult;
 	}
 }

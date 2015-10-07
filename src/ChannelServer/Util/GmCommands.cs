@@ -52,6 +52,7 @@ namespace Aura.Channel.Util
 			Add(01, 50, "lasttown", "", HandleLastTown);
 			Add(01, 50, "cutscene", "<name>", HandleCutscene);
 			Add(01, 50, "openshop", "<name>", HandleOpenShop);
+			Add(01, 50, "nccolor", "<id (0-32)>", HandleNameChatColor);
 
 			// GMs
 			Add(50, 50, "warp", "<region> [x] [y]", HandleWarp);
@@ -1684,6 +1685,48 @@ namespace Aura.Channel.Util
 			shop.OpenRemotelyFor(target);
 
 			Send.SystemMessage(sender, Localization.Get("Opened shop '{0}'."), typeName);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleNameChatColor(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			var idx = 0;
+
+			if (args.Count > 1)
+			{
+				if (!int.TryParse(args[1], out idx) || !Math2.Between(idx, 0, 32))
+					return CommandResult.InvalidArgument;
+			}
+
+			if (idx == 0)
+			{
+				target.Vars.Perm["NameColorIdx"] = null;
+				target.Vars.Perm["NameColorEnd"] = null;
+				target.Vars.Perm["ChatColorIdx"] = null;
+				target.Vars.Perm["ChatColorEnd"] = null;
+
+				target.Conditions.Deactivate(ConditionsB.NameColorChange);
+				target.Conditions.Deactivate(ConditionsB.ChatColorChange);
+			}
+			else
+			{
+				target.Vars.Perm["NameColorIdx"] = idx;
+				target.Vars.Perm["ChatColorIdx"] = idx;
+				target.Vars.Perm["NameColorEnd"] = null;
+				target.Vars.Perm["ChatColorEnd"] = null;
+
+				var extra = new MabiDictionary();
+				extra.SetInt("IDX", idx);
+
+				target.Conditions.Activate(ConditionsB.NameColorChange, extra);
+				target.Conditions.Activate(ConditionsB.ChatColorChange, extra);
+			}
+
+			if (sender == target)
+				Send.SystemMessage(target, Localization.Get("Your name/chat color has been changed."));
+			else
+				Send.SystemMessage(target, Localization.Get("Your name/chat color has been changed by {0}."), sender.Name);
 
 			return CommandResult.Okay;
 		}

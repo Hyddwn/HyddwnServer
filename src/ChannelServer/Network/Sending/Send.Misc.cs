@@ -391,5 +391,13 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		public static void SpinColorWheelR(Creature creature, float result)
+		{
+			var packet = new Packet(Op.SpinColorWheelR, creature.EntityId);
+			packet.PutFloat(result);
+
+			creature.Client.Send(packet);
+		}
 	}
 }
