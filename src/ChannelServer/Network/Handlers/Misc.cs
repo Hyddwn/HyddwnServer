@@ -349,6 +349,11 @@ namespace Aura.Channel.Network.Handlers
 				Log.Warning("ChangeNameColor: Creature '{0:X16}' doesn't have the item.", creature.EntityId);
 				return;
 			}
+			if (!item.HasTag("/name_chatting_color_change/|/name_color_change/"))
+			{
+				Log.Warning("ChangeNameColor: Creature '{0:X16}' tried to use invalid item.", creature.EntityId);
+				return;
+			}
 
 			creature.Temp.NameColorItemEntityId = 0;
 
