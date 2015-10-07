@@ -402,10 +402,16 @@ namespace Aura.Channel.Network.Handlers
 			var extra = new MabiDictionary();
 			extra.SetInt("IDX", idx);
 
+			// Activate name color change
 			creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
-			creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
-
 			creature.Vars.Perm["NameColorIdx"] = idx;
+
+			// Activate chat color change
+			if (item.HasTag("/name_chatting_color_change/"))
+			{
+				creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
+				creature.Vars.Perm["ChatColorIdx"] = idx;
+			}
 
 			Send.Notice(creature, NoticeType.Middle, Localization.Get("Your name and chat text colors have changed."));
 		}

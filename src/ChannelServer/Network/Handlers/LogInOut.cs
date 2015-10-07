@@ -215,13 +215,19 @@ namespace Aura.Channel.Network.Handlers
 				if (lastAging < lastSaturday)
 					playerCreature.AgeUp((short)(1 + diff / 7));
 
-				// Name color condition
+				// Name/Chat color conditions
 				if (creature.Vars.Perm["NameColorIdx"] != null)
 				{
 					var extra = new MabiDictionary();
 					extra.SetInt("IDX", (int)creature.Vars.Perm["NameColorIdx"]);
 
 					creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
+				}
+				if (creature.Vars.Perm["ChatColorIdx"] != null)
+				{
+					var extra = new MabiDictionary();
+					extra.SetInt("IDX", (int)creature.Vars.Perm["ChatColorIdx"]);
+
 					creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
 				}
 			}
