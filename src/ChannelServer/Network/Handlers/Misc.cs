@@ -398,6 +398,10 @@ namespace Aura.Channel.Network.Handlers
 
 			//creature.Inventory.Remove(item);
 
+			// Expiration apparently varies based on the item,
+			// no expiration time can be found in the db.
+			var end = DateTime.Now.AddDays(item.Info.Id != 85563 ? 7 : 30);
+
 			// Set conditions that modify the colors
 			var extra = new MabiDictionary();
 			extra.SetInt("IDX", idx);
@@ -405,12 +409,14 @@ namespace Aura.Channel.Network.Handlers
 			// Activate name color change
 			creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
 			creature.Vars.Perm["NameColorIdx"] = idx;
+			creature.Vars.Perm["NameColorEnd"] = end;
 
 			// Activate chat color change
 			if (item.HasTag("/name_chatting_color_change/"))
 			{
 				creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
 				creature.Vars.Perm["ChatColorIdx"] = idx;
+				creature.Vars.Perm["ChatColorEnd"] = end;
 			}
 
 			Send.Notice(creature, NoticeType.Middle, Localization.Get("Your name and chat text colors have changed."));
