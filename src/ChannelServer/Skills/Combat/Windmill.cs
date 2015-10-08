@@ -127,6 +127,7 @@ namespace Aura.Channel.Skills.Combat
 
 			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, skill.Info.Id, targetAreaId);
 			aAction.Set(AttackerOptions.Result);
+			aAction.Stun = CombatMastery.GetAttackerStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
 
 			cap.Add(aAction);
 
@@ -167,9 +168,7 @@ namespace Aura.Channel.Skills.Combat
 				if (!target.IsDead)
 					survived.Add(target);
 
-				// Stun & knock back
-				aAction.Stun = CombatMastery.GetAttackerStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
-
+				// Stun and shove if not defended
 				if (tAction.SkillId != SkillId.Defense)
 				{
 					tAction.Stun = CombatMastery.GetTargetStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
