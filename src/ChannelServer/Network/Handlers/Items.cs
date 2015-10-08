@@ -684,5 +684,180 @@ namespace Aura.Channel.Network.Handlers
 			// Fail if prop is gone
 			Send.BurnItemR(creature, prop != null);
 		}
+
+		/// <summary>
+		/// Sent after selecting a destination in the Moonlight Traveler Book.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.BeginnerWarpBook)]
+		public void BeginnerWarpBook(ChannelClient client, Packet packet)
+		{
+			var itemEntityid = packet.GetLong();
+			var destination = packet.GetInt();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check creature
+			if (creature.TotalLevel >= 1000)
+			{
+				// Unofficial
+				Send.Notice(creature, Localization.Get("You can only use this item with a cumulative level of less than 1000."));
+				return;
+			}
+
+			// Check item
+			var item = creature.Inventory.GetItem(itemEntityid);
+			if (item == null || !item.HasTag("/beginnerwarpbook/"))
+			{
+				Log.Warning("BeginnerWarpBook: Creature '{0:X16}' doesn't have valid item.", itemEntityid);
+				return;
+			}
+
+			// Get coordinates
+			int regionId, x, y;
+			switch (destination)
+			{
+				case 0: regionId = 1; x = 13579; y = 22326; break;
+				#region Coordinates
+				case 1: regionId = 1; x = 32308; y = 27698; break;
+				case 2: regionId = 1; x = 3154; y = 52811; break;
+				case 3: regionId = 16; x = 20064; y = 67827; break;
+				case 4: regionId = 16; x = 31520; y = 33204; break;
+				case 5: regionId = 48; x = 7951; y = 30593; break;
+				case 6: regionId = 14; x = 26311; y = 38204; break;
+				case 7: regionId = 30; x = 8348; y = 81487; break;
+				case 8: regionId = 30; x = 49128; y = 60582; break;
+				case 9: regionId = 30; x = 64788; y = 33623; break;
+				case 10: regionId = 30; x = 43145; y = 19012; break;
+				case 11: regionId = 96; x = 15905; y = 25145; break;
+				case 12: regionId = 100; x = 49991; y = 43443; break;
+				case 13: regionId = 53; x = 120280; y = 104580; break;
+				case 14: regionId = 53; x = 73212; y = 115903; break;
+				case 15: regionId = 302; x = 97035; y = 91284; break;
+				case 16: regionId = 302; x = 125883; y = 80385; break;
+				case 17: regionId = 301; x = 84766; y = 101012; break;
+				case 18: regionId = 301; x = 87253; y = 81792; break;
+				case 19: regionId = 52; x = 50853; y = 34452; break;
+				case 20: regionId = 52; x = 21679; y = 32126; break;
+				case 21: regionId = 52; x = 52491; y = 64447; break;
+				case 22: regionId = 52; x = 20019; y = 67454; break;
+				case 23: regionId = 300; x = 193867; y = 205950; break;
+				case 24: regionId = 300; x = 238871; y = 196052; break;
+				case 25: regionId = 300; x = 232070; y = 136426; break;
+				case 26: regionId = 300; x = 195239; y = 173012; break;
+				case 27: regionId = 300; x = 189570; y = 219060; break;
+				case 28: regionId = 300; x = 146395; y = 187801; break;
+				case 29: regionId = 300; x = 257649; y = 239436; break;
+				case 30: regionId = 401; x = 59694; y = 124234; break;
+				case 31: regionId = 401; x = 111770; y = 62730; break;
+				case 32: regionId = 401; x = 68248; y = 103550; break;
+				case 33: regionId = 437; x = 116960; y = 112065; break;
+				case 34: regionId = 402; x = 85528; y = 14223; break;
+				case 35: regionId = 402; x = 37692; y = 17899; break;
+				case 36: regionId = 402; x = 33541; y = 39287; break;
+				case 37: regionId = 56; x = 8460; y = 8895; break;
+				case 38: regionId = 23; x = 37115; y = 38003; break;
+				case 39: regionId = 4005; x = 33807; y = 17349; break;
+				case 40: regionId = 4005; x = 40321; y = 45514; break;
+				case 41: regionId = 4014; x = 38890; y = 41112; break;
+				case 42: regionId = 4014; x = 42737; y = 35072; break;
+				case 43: regionId = 4014; x = 74680; y = 46398; break;
+				case 44: regionId = 4014; x = 44910; y = 63821; break;
+				case 45: regionId = 4014; x = 69500; y = 72698; break;
+				case 46: regionId = 3001; x = 159908; y = 171678; break;
+				case 47: regionId = 3001; x = 192021; y = 291671; break;
+				case 48: regionId = 3001; x = 292245; y = 326127; break;
+				case 49: regionId = 3001; x = 321445; y = 286146; break;
+				case 50: regionId = 3001; x = 96264; y = 312501; break;
+				case 51: regionId = 3001; x = 159925; y = 347087; break;
+				case 52: regionId = 3001; x = 235975; y = 207542; break;
+				case 53: regionId = 3001; x = 287568; y = 273578; break;
+				case 54: regionId = 3001; x = 327176; y = 247806; break;
+				case 55: regionId = 3001; x = 267927; y = 139778; break;
+				case 56: regionId = 3001; x = 326549; y = 172878; break;
+				case 57: regionId = 3001; x = 402148; y = 264873; break;
+				case 58: regionId = 3001; x = 403249; y = 246044; break;
+				case 59: regionId = 3001; x = 430304; y = 163469; break;
+				case 60: regionId = 3001; x = 407742; y = 125883; break;
+				case 61: regionId = 3001; x = 348010; y = 139290; break;
+				case 62: regionId = 3001; x = 304640; y = 121520; break;
+				case 63: regionId = 3100; x = 137070; y = 229339; break;
+				case 64: regionId = 3100; x = 177534; y = 203653; break;
+				case 65: regionId = 3100; x = 146584; y = 325163; break;
+				case 66: regionId = 3100; x = 190747; y = 289647; break;
+				case 67: regionId = 3100; x = 194297; y = 361121; break;
+				case 68: regionId = 3100; x = 268954; y = 370296; break;
+				case 69: regionId = 3100; x = 300050; y = 340960; break;
+				case 70: regionId = 3100; x = 269342; y = 258545; break;
+				case 71: regionId = 3100; x = 321100; y = 280880; break;
+				case 72: regionId = 3100; x = 343964; y = 345509; break;
+				case 73: regionId = 3100; x = 390133; y = 345752; break;
+				case 74: regionId = 3100; x = 456013; y = 379761; break;
+				case 75: regionId = 3100; x = 391682; y = 451110; break;
+				case 76: regionId = 3100; x = 352160; y = 418340; break;
+				case 77: regionId = 3100; x = 317103; y = 466760; break;
+				case 78: regionId = 3100; x = 275091; y = 467067; break;
+				case 79: regionId = 3300; x = 57387; y = 226499; break;
+				case 80: regionId = 3300; x = 133940; y = 265772; break;
+				case 81: regionId = 3300; x = 94810; y = 235480; break;
+				case 82: regionId = 3300; x = 155230; y = 205010; break;
+				case 83: regionId = 3300; x = 143845; y = 163780; break;
+				case 84: regionId = 3300; x = 201988; y = 195173; break;
+				case 85: regionId = 3300; x = 254660; y = 162990; break;
+				case 86: regionId = 3300; x = 254639; y = 197404; break;
+				case 87: regionId = 3300; x = 255150; y = 224263; break;
+				case 88: regionId = 3300; x = 370645; y = 223131; break;
+				case 89: regionId = 3300; x = 440364; y = 179199; break;
+				case 90: regionId = 3300; x = 315098; y = 170835; break;
+				case 91: regionId = 3300; x = 296328; y = 116863; break;
+				case 92: regionId = 3300; x = 228056; y = 76053; break;
+				case 93: regionId = 3300; x = 183808; y = 57453; break;
+				case 94: regionId = 3300; x = 153406; y = 100848; break;
+				case 95: regionId = 3300; x = 168020; y = 134682; break;
+				case 96: regionId = 3300; x = 126075; y = 137745; break;
+				case 97: regionId = 3300; x = 44581; y = 180517; break;
+				case 98: regionId = 3300; x = 92660; y = 164640; break;
+				case 99: regionId = 3300; x = 60246; y = 138141; break;
+				case 100: regionId = 3300; x = 67666; y = 130851; break;
+				case 101: regionId = 3200; x = 188791; y = 158998; break;
+				case 102: regionId = 3200; x = 167080; y = 171707; break;
+				case 103: regionId = 3200; x = 150451; y = 209240; break;
+				case 104: regionId = 3200; x = 195029; y = 244641; break;
+				case 105: regionId = 3200; x = 288409; y = 159394; break;
+				case 106: regionId = 3200; x = 275370; y = 125710; break;
+				case 107: regionId = 3200; x = 263626; y = 217510; break;
+				case 108: regionId = 3200; x = 253193; y = 241151; break;
+				case 109: regionId = 3200; x = 342492; y = 251671; break;
+				case 110: regionId = 3200; x = 364389; y = 225304; break;
+				case 111: regionId = 3200; x = 398282; y = 272748; break;
+				case 112: regionId = 3200; x = 427950; y = 244159; break;
+				case 113: regionId = 3200; x = 377349; y = 180449; break;
+				case 114: regionId = 3200; x = 337995; y = 146241; break;
+				case 115: regionId = 3200; x = 383389; y = 140146; break;
+				case 116: regionId = 3400; x = 321772; y = 212578; break;
+				case 117: regionId = 3400; x = 326077; y = 179143; break;
+				case 118: regionId = 3400; x = 303722; y = 169110; break;
+				case 119: regionId = 3400; x = 279197; y = 156698; break;
+				case 120: regionId = 3400; x = 256968; y = 158885; break;
+				case 121: regionId = 3400; x = 205320; y = 181180; break;
+				case 122: regionId = 3400; x = 211517; y = 148776; break;
+				case 123: regionId = 3400; x = 181041; y = 263383; break;
+				case 124: regionId = 3400; x = 168242; y = 214715; break;
+				case 125: regionId = 3400; x = 187663; y = 238669; break;
+				case 126: regionId = 3400; x = 177402; y = 258100; break;
+				case 127: regionId = 3400; x = 220876; y = 241651; break;
+				#endregion
+				case 128: regionId = 3400; x = 239649; y = 264187; break;
+
+				default:
+					Send.ServerMessage(creature, Localization.Get("Unknown destination."));
+					Log.Warning("BeginnerWarpBook: Unknown destination '{0}'.", destination);
+					return;
+			}
+
+			// Warp
+			creature.Warp(regionId, x, y);
+		}
 	}
 }

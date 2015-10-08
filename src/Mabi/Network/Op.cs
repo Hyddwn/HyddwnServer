@@ -515,6 +515,8 @@ namespace Aura.Mabi.Network
 		public const int ShamalaTransformationEnd = 0xAB1E;
 		public const int ShamalaTransformationEndR = 0xAB1F;
 
+		public const int BeginnerWarpBook = 0xABA3; // Added to Aura after ItemMagnet, original op unknown, if different.
+
 		// ItemMagnet got increased by one, some time between NA200 and NA204.
 
 		public const int ItemMagnet = 0xABAC; // [190100, NA200 (2015-01-15)]
