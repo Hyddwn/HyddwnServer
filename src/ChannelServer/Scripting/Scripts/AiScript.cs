@@ -1193,6 +1193,12 @@ namespace Aura.Channel.Scripting.Scripts
 				wmHandler.Use(this.Creature, this.Creature.Skills.ActiveSkill, 0, 0, 0);
 				this.SharpMind(activeSkillId, SharpMindStatus.Cancelling);
 			}
+			else if (activeSkillId == SkillId.Stomp)
+			{
+				var handler = ChannelServer.Instance.SkillManager.GetHandler<Stomp>(activeSkillId);
+				handler.Use(this.Creature, this.Creature.Skills.ActiveSkill, 0, 0, 0);
+				this.SharpMind(activeSkillId, SharpMindStatus.Cancelling);
+			}
 			else
 			{
 				Log.Unimplemented("AI.UseSkill: Skill '{0}'", activeSkillId);

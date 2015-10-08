@@ -39,8 +39,7 @@ public class GolemAi : AiScript
 		{
 			Do(PrepareSkill(SkillId.Stomp));
 			Do(Wait(2000));
-			Do(Say("*STOMP*"));
-			Do(CancelSkill());
+			Do(UseSkill());
 			Do(Wait(2000));
 		}
 		else if(rndn < 70) // 30%
