@@ -18,8 +18,8 @@ namespace Aura.Channel.Skills.Combat
 	/// Based on Giant Stomp logs.
 	/// 
 	/// It appears that different races use different ranks, that make for
-	/// different versions of the skill. The variables don't get increased
-	/// by rank, but they kind jump back and forth.
+	/// different versions of the skill. The variables don't increase
+	/// by rank, but they kinda jump back and forth.
 	/// 
 	/// Var1: ? (0, 200, 400, 550)
 	/// Var2: ? (0, 1000, 1500)
@@ -32,6 +32,11 @@ namespace Aura.Channel.Skills.Combat
 		/// Units the enemy is knocked back.
 		/// </summary>
 		private const int KnockbackDistance = 0;
+
+		/// <summary>
+		/// Stun for attacker.
+		/// </summary>
+		private const int AttackerStun = 2000;
 
 		/// <summary>
 		/// Prepares the skill.
@@ -97,7 +102,7 @@ namespace Aura.Channel.Skills.Combat
 
 			var aAction = new AttackerAction(CombatActionType.Attacker, attacker, skill.Info.Id, targetAreaId);
 			aAction.Set(AttackerOptions.Result);
-			aAction.Stun = CombatMastery.GetAttackerStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
+			aAction.Stun = AttackerStun;
 
 			cap.Add(aAction);
 
