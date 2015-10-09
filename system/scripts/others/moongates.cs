@@ -1,14 +1,24 @@
 //--- Aura Script -----------------------------------------------------------
-// Moongates
+// Moon Gates
 //--- Description -----------------------------------------------------------
-// New version of the moon gates, the "Moon Tunnels". Traveling between
-// specific locations at night.
+// This script manages all aspects of Moon Gates/Tunnels across Uladh and
+// Belvast. It switches between old-school Moon Gates, the different
+// timetables, and the newer Moon Tunnels, based on the features enabled
+// for the server.
+// 
+// Features used:
+// - MoonTunnel: Switches between gates and tunnels
+// - G2: Make use of G2 timetable
+// - G4: Make use of G4 timetable
+// - G9: Make use of G9 timetable
+// - G10: Make use of G10 timetable
+// - G11: Make use of G11 timetable
 // --- Notes ----------------------------------------------------------------
 // It doesn't seem to be possible to create custom gates, the client just
 // doesn't display them.
 //---------------------------------------------------------------------------
 
-public class MoongateScript : GeneralScript
+public class MoonGateScript : GeneralScript
 {
 	// Setup ----------------------------------------------------------------
 
@@ -275,7 +285,7 @@ public class MoongateScript : GeneralScript
 		var prop = ChannelServer.Instance.World.GetProp(entityId);
 		if (prop == null)
 		{
-			Log.Error("MoongateScript: Prop '{0:X16}' not found.", entityId);
+			Log.Error("MoonGateScript: Prop '{0:X16}' not found.", entityId);
 			return;
 		}
 
@@ -283,7 +293,7 @@ public class MoongateScript : GeneralScript
 		var keywordData = AuraData.KeywordDb.Find(keyword);
 		if (keywordData == null)
 		{
-			Log.Error("MoongateScript: Unknown keyword '{0}'.", keyword);
+			Log.Error("MoonGateScript: Unknown keyword '{0}'.", keyword);
 			return;
 		}
 
