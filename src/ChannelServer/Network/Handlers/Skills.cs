@@ -609,7 +609,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			if(flag != 0)
+			if (flag != 0)
 				Send.CombatSetAimR(creature, creature.Target.EntityId, SkillId.None, 1);
 			else
 				creature.AimMeter.Start(creature.Target.EntityId, 1);
@@ -630,6 +630,68 @@ namespace Aura.Channel.Network.Handlers
 		public void SkillCompleteUnk(ChannelClient client, Packet packet)
 		{
 			this.SkillComplete(client, packet);
+		}
+
+		/// <summary>
+		/// Sent upon "starting" a production process, e.g. when using Handicraft.
+		/// </summary>
+		/// <example>
+		/// Handicraft
+		/// 001 [............271D] Short  : 10013
+		/// 002 [............0005] Short  : 5
+		/// 003 [............0006] Short  : 6
+		/// 004 [........00000001] Int    : 1
+		/// 005 [0000000000000000] Long   : 0
+		/// 
+		/// Weaving
+		/// 001 [............271B] Short  : 10011
+		/// 002 [............0005] Short  : 5
+		/// 003 [............0001] Short  : 1
+		/// 004 [........00000001] Int    : 1
+		/// 005 [00A188D000050041] Long   : 45467898185318465
+		/// 
+		/// Magic Craft
+		/// 001 [............2739] Short  : 10041
+		/// 002 [............0005] Short  : 5
+		/// 003 [............0010] Short  : 16
+		/// 004 [........00000005] Int    : 5
+		/// 005 [00A00C2300030016] Long   : 45049340737290262
+		/// 
+		/// 001 [............2739] Short  : 10041
+		/// 002 [............0005] Short  : 5
+		/// 003 [............0010] Short  : 16
+		/// 004 [........00000002] Int    : 2
+		/// 005 [00A00C2300030016] Long   : 45049340737290262
+		/// 006 [............F490] Short  : 62608
+		/// </example>
+		[PacketHandler(Op.ProductionUnknown)]
+		public void ProductionUnknown(ChannelClient client, Packet packet)
+		{
+			Log.Debug(packet);
+
+			var skillId = (SkillId)packet.GetUShort();
+			var unkShort1 = packet.GetShort();
+			var unkShort2 = packet.GetShort(); // production category?
+			var productionId = packet.GetInt();
+			var propEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check skill
+			if (!creature.Skills.Has(skillId))
+			{
+				Log.Warning("ProductionUnknown: Creature '{0:X16}' tried to ... without having the skill.", creature.EntityId);
+				return;
+			}
+
+			var gp = new Packet(Op.ProductionUnknownR, creature.EntityId);
+			gp.PutByte(1);
+			gp.PutUShort((ushort)skillId);
+			gp.PutShort(5);
+			gp.PutFloat(0); // bonus success?
+			gp.PutByte(0);
+			gp.PutByte(0);
+			client.Send(gp);
 		}
 	}
 }
