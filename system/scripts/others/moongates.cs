@@ -13,6 +13,7 @@
 // - G9: Make use of G9 timetable
 // - G10: Make use of G10 timetable
 // - G11: Make use of G11 timetable
+// - G18: Gates/tunnels always open
 // --- Notes ----------------------------------------------------------------
 // It doesn't seem to be possible to create custom gates, the client just
 // doesn't display them.
@@ -559,7 +560,7 @@ public class MoonGateScript : GeneralScript
 
 	private void UpdateGates(ErinnTime now)
 	{
-		var state = now.IsNight || AlwaysOpen ? "open" : "closed";
+		var state = now.IsNight || AlwaysOpen || IsEnabled("G18") ? "open" : "closed";
 
 		foreach (var gate in gates.Values)
 		{
