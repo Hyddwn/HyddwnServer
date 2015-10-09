@@ -392,7 +392,7 @@ public class MoonGateScript : GeneralScript
 		// G1
 		// Was there another one, for when the Dugald seal stone hadn't
 		// been broken yet?
-		if (IsEnabled("G1") && tables.TryGetValue("G1", out result))
+		if (tables.TryGetValue("G1", out result))
 			return result;
 
 		// Fallback
