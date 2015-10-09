@@ -688,8 +688,10 @@ namespace Aura.Channel.Network.Handlers
 		/// <summary>
 		/// Sent after selecting a destination in the Moonlight Traveler Book.
 		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="packet"></param>
+		/// <example>
+		/// 001 [0050F000000005DA] Long   : 22781880927520218
+		/// 002 [........00000006] Int    : 6
+		/// </example>
 		[PacketHandler(Op.BeginnerWarpBook)]
 		public void BeginnerWarpBook(ChannelClient client, Packet packet)
 		{
