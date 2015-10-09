@@ -688,9 +688,9 @@ namespace Aura.Channel.Network.Handlers
 			gp.PutByte(1);
 			gp.PutUShort((ushort)skillId);
 			gp.PutShort(5);
-			gp.PutFloat(0); // bonus success?
+			gp.PutFloat(10); // bonus success?
 			gp.PutByte(0);
-			gp.PutByte(0);
+			gp.PutByte(0); // bool, use above rate?
 			client.Send(gp);
 		}
 	}
