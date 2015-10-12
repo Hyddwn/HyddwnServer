@@ -81,8 +81,9 @@ Common problems
 ### Errors after updates
 Usually all errors are solveable by recompiling and deleting the cache folder.
 
-### Korean message when trying to connect to channel
-This message means that the client wasn't able to connect to the channel,
+### Error message when trying to connect to channel
+If you get a Korean error or a message saying "You failed to enter the world" upon
+trying to connect to the channel, it means that the client wasn't able to reach the channel server,
 which is usually caused by configuration mistakes. Make sure you can reach
 the IP/Port you've set the channel to run on (`channel.conf`) from the affected computer.
 
