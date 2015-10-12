@@ -307,7 +307,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			// Check active skill
-			if (!creature.Skills.IsActive(SkillId.NameColorChange))
+			if (!creature.Skills.IsActive(SkillId.NameColorChange) && !creature.Skills.IsActive(SkillId.UseItemChattingColorChange))
 			{
 				Log.Warning("SpinColorWheel: Creature '{0:X16}' tried to spin color wheel without the necesseray skill being active.", creature.EntityId);
 				return;
@@ -349,7 +349,8 @@ namespace Aura.Channel.Network.Handlers
 				Log.Warning("ChangeNameColor: Creature '{0:X16}' doesn't have the item.", creature.EntityId);
 				return;
 			}
-			if (!item.HasTag("/name_chatting_color_change/|/name_color_change/"))
+
+			if (!item.HasTag("/name_chatting_color_change/|/name_color_change/|/chatting_color_change/"))
 			{
 				Log.Warning("ChangeNameColor: Creature '{0:X16}' tried to use invalid item.", creature.EntityId);
 				return;
@@ -412,12 +413,15 @@ namespace Aura.Channel.Network.Handlers
 			extra.SetInt("IDX", idx);
 
 			// Activate name color change
-			creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
-			creature.Vars.Perm["NameColorIdx"] = idx;
-			creature.Vars.Perm["NameColorEnd"] = end;
+			if (item.HasTag("/name_chatting_color_change/|/name_color_change/"))
+			{
+				creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
+				creature.Vars.Perm["NameColorIdx"] = idx;
+				creature.Vars.Perm["NameColorEnd"] = end;
+			}
 
 			// Activate chat color change
-			if (item.HasTag("/name_chatting_color_change/"))
+			if (item.HasTag("/name_chatting_color_change/|/chatting_color_change/"))
 			{
 				creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
 				creature.Vars.Perm["ChatColorIdx"] = idx;
