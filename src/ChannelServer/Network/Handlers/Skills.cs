@@ -664,8 +664,8 @@ namespace Aura.Channel.Network.Handlers
 		/// 005 [00A00C2300030016] Long   : 45049340737290262
 		/// 006 [............F490] Short  : 62608
 		/// </example>
-		[PacketHandler(Op.ProductionUnknown)]
-		public void ProductionUnknown(ChannelClient client, Packet packet)
+		[PacketHandler(Op.ProductionSuccessRequest)]
+		public void ProductionSuccessRequest(ChannelClient client, Packet packet)
 		{
 			Log.Debug(packet);
 
@@ -680,18 +680,11 @@ namespace Aura.Channel.Network.Handlers
 			// Check skill
 			if (!creature.Skills.Has(skillId))
 			{
-				Log.Warning("ProductionUnknown: Creature '{0:X16}' tried to ... without having the skill.", creature.EntityId);
+				Log.Warning("ProductionSuccessRequest: Creature '{0:X16}' tried to ... without having the skill.", creature.EntityId);
 				return;
 			}
 
-			var gp = new Packet(Op.ProductionUnknownR, creature.EntityId);
-			gp.PutByte(1);
-			gp.PutUShort((ushort)skillId);
-			gp.PutShort(5);
-			gp.PutFloat(10); // bonus success?
-			gp.PutByte(0);
-			gp.PutByte(0); // bool, use above rate?
-			client.Send(gp);
+			Send.ProductionSuccessRequestR(creature, skillId, 0, false);
 		}
 	}
 }

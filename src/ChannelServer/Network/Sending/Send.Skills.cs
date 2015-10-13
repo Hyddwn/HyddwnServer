@@ -780,5 +780,33 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends ProductionSuccessRequestR to creature's client, informing it
+		/// about the success rate it requested.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skillId">Skill the rate is used for.</param>
+		/// <param name="successRate">
+		/// Bonus success rate, added to the value calculated by the client,
+		/// or the total success rate to use, if totalSuccess is true.
+		/// </param>
+		/// <param name="totalSuccess">
+		/// If true, the client will display the given successRate, if it's false,
+		/// it will calculate the default rate itself and add successRate as bonus.
+		/// </param>
+		public static void ProductionSuccessRequestR(Creature creature, SkillId skillId, float successRate, bool totalSuccess)
+		{
+			var gp = new Packet(Op.ProductionSuccessRequestR, creature.EntityId);
+
+			gp.PutByte(1);
+			gp.PutUShort((ushort)skillId);
+			gp.PutShort(5); // unkShort1?
+			gp.PutFloat(successRate);
+			gp.PutByte(0);
+			gp.PutByte(totalSuccess);
+
+			creature.Client.Send(gp);
+		}
 	}
 }
