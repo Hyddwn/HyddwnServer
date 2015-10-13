@@ -307,7 +307,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			// Check active skill
-			if (!creature.Skills.IsActive(SkillId.NameColorChange))
+			if (!creature.Skills.IsActive(SkillId.NameColorChange) && !creature.Skills.IsActive(SkillId.UseItemChattingColorChange))
 			{
 				Log.Warning("SpinColorWheel: Creature '{0:X16}' tried to spin color wheel without the necesseray skill being active.", creature.EntityId);
 				return;
@@ -349,7 +349,12 @@ namespace Aura.Channel.Network.Handlers
 				Log.Warning("ChangeNameColor: Creature '{0:X16}' doesn't have the item.", creature.EntityId);
 				return;
 			}
-			if (!item.HasTag("/name_chatting_color_change/|/name_color_change/"))
+
+			var bothChange = item.HasTag("/name_chatting_color_change/");
+			var nameChange = bothChange || item.HasTag("/name_color_change/");
+			var chatChange = bothChange || item.HasTag("/chatting_color_change/");
+
+			if (!nameChange && !chatChange)
 			{
 				Log.Warning("ChangeNameColor: Creature '{0:X16}' tried to use invalid item.", creature.EntityId);
 				return;
@@ -412,19 +417,28 @@ namespace Aura.Channel.Network.Handlers
 			extra.SetInt("IDX", idx);
 
 			// Activate name color change
-			creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
-			creature.Vars.Perm["NameColorIdx"] = idx;
-			creature.Vars.Perm["NameColorEnd"] = end;
+			if (nameChange)
+			{
+				creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
+				creature.Vars.Perm["NameColorIdx"] = idx;
+				creature.Vars.Perm["NameColorEnd"] = end;
+			}
 
 			// Activate chat color change
-			if (item.HasTag("/name_chatting_color_change/"))
+			if (chatChange)
 			{
 				creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
 				creature.Vars.Perm["ChatColorIdx"] = idx;
 				creature.Vars.Perm["ChatColorEnd"] = end;
 			}
 
-			Send.Notice(creature, NoticeType.Middle, Localization.Get("Your name and chat text colors have changed."));
+			// Notice
+			if (bothChange)
+				Send.Notice(creature, NoticeType.Middle, Localization.Get("Your name and chat text colors have changed."));
+			else if (nameChange)
+				Send.Notice(creature, NoticeType.Middle, Localization.Get("Your name color has changed."));
+			else if (chatChange)
+				Send.Notice(creature, NoticeType.Middle, Localization.Get("Your chat text color has changed."));
 		}
 	}
 }
