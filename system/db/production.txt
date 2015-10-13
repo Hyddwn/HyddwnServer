@@ -1,7 +1,7 @@
 // Aura
 // Database file
 // 
-// Values: category, id, title, itemId, amount, exp, tool, durability, materials, successRates, rainBonus
+// Values: category, id, title, itemId, amount, exp, rank, tool, durability, materials, successRates, rainBonus
 //---------------------------------------------------------------------------
 
 [
