@@ -605,7 +605,7 @@ namespace Aura.Mabi.Const
 	/// <summary>
 	/// Categories for production skills.
 	/// </summary>
-	public enum ProductionCategory
+	public enum ProductionCategory : short
 	{
 		Weaving = 1,
 		Handicraft = 6,

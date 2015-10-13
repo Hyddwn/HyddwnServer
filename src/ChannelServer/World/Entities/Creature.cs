@@ -2161,7 +2161,7 @@ namespace Aura.Channel.World.Entities
 		/// http://mabination.com/threads/57123-Chaos-Life-Skill-Guide-Refining
 		/// </remarks>
 		/// <returns></returns>
-		public float GetProductionSuccessChance(int baseChance)
+		public float GetProductionSuccessChance(int baseChance, int rainBonus)
 		{
 			// Base
 			var result = (baseChance + (this.Dex - 60) * (baseChance / 300));
@@ -2170,6 +2170,10 @@ namespace Aura.Channel.World.Entities
 			var pm = this.Skills.Get(SkillId.ProductionMastery);
 			if (pm != null)
 				result += (byte)pm.Info.Rank;
+
+			// Weather bonus
+			if (ChannelServer.Instance.Weather.GetWeather(this.RegionId).Type == WeatherType.Rain)
+				result += rainBonus;
 
 			return Math2.Clamp(0, 99, result);
 		}

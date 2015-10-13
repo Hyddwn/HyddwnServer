@@ -667,11 +667,9 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.ProductionSuccessRequest)]
 		public void ProductionSuccessRequest(ChannelClient client, Packet packet)
 		{
-			Log.Debug(packet);
-
 			var skillId = (SkillId)packet.GetUShort();
 			var unkShort1 = packet.GetShort();
-			var unkShort2 = (ProductionCategory)packet.GetShort();
+			var category = (ProductionCategory)packet.GetShort();
 			var productionId = packet.GetInt();
 			var propEntityId = packet.GetLong();
 
