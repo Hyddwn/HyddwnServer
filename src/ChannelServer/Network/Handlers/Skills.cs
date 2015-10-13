@@ -671,7 +671,7 @@ namespace Aura.Channel.Network.Handlers
 
 			var skillId = (SkillId)packet.GetUShort();
 			var unkShort1 = packet.GetShort();
-			var unkShort2 = packet.GetShort(); // production category?
+			var unkShort2 = (ProductionCategory)packet.GetShort();
 			var productionId = packet.GetInt();
 			var propEntityId = packet.GetLong();
 

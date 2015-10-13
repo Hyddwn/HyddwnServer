@@ -601,4 +601,14 @@ namespace Aura.Mabi.Const
 		/// </summary>
 		SmallCatch = 255,
 	}
+
+	/// <summary>
+	/// Categories for production skills.
+	/// </summary>
+	public enum ProductionCategory
+	{
+		Weaving = 1,
+		Handicraft = 6,
+		MagicCraft = 16,
+	}
 }
