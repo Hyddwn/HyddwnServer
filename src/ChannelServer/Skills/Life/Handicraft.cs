@@ -195,6 +195,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				// Create product
 				var productItem = new Item(productData.ItemId);
+				productItem.Amount = productData.Amount;
 				creature.Inventory.Insert(productItem, true);
 
 				// Success
