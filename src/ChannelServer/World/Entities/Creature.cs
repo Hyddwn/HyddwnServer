@@ -2172,7 +2172,7 @@ namespace Aura.Channel.World.Entities
 				result += (byte)pm.Info.Rank;
 
 			// Weather bonus
-			if (ChannelServer.Instance.Weather.GetWeather(this.RegionId).Type == WeatherType.Rain)
+			if (ChannelServer.Instance.Weather.GetWeatherType(this.RegionId) == WeatherType.Rain)
 				result += rainBonus;
 
 			return Math2.Clamp(0, 99, result);
