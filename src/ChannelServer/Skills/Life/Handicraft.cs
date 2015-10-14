@@ -178,7 +178,7 @@ namespace Aura.Channel.Skills.Life
 			var rank = skill.Info.Rank <= SkillRank.R1 ? skill.Info.Rank : SkillRank.R1;
 			var chance = creature.GetProductionSuccessChance(productData.SuccessRates[rank], productData.RainBonus);
 			var rnd = RandomProvider.Get();
-			var success = (rnd.Next(100) >= chance);
+			var success = (rnd.Next(100) < chance);
 
 			// Update tool's durability and proficiency
 			creature.Inventory.ReduceDurability(creature.RightHand, productData.Durability);
