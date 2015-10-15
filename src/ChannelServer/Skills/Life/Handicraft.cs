@@ -152,10 +152,9 @@ namespace Aura.Channel.Skills.Life
 			// Check materials
 			var requiredMaterials = productData.GetMaterialList();
 			var toReduce = new List<ProductionMaterial>();
+			var inUse = new HashSet<long>();
 			foreach (var reqMat in requiredMaterials)
 			{
-				// XXX: What if an item matches multiple requirements...? Can that happen?
-
 				// Check all selected items for tag matches
 				foreach (var material in materials)
 				{
@@ -163,9 +162,20 @@ namespace Aura.Channel.Skills.Life
 					// needed or available
 					if (material.Item.HasTag(reqMat.Tag))
 					{
+						// Cancel if one item matches multiple materials.
+						// It's unknown how this would be handled, can it even
+						// happen? Can one item maybe only be used as one material?
+						if (inUse.Contains(material.Item.EntityId))
+						{
+							Send.ServerMessage(creature, Localization.Get("Unable to handle request, please report, with this information: ({0}/{1})."), material.Item.Info.Id, productData.Id);
+							Log.Warning("Handicraft.Complete: Item '{0}' matches multiple materials for product '{1}'.", material.Item.Info.Id, productData.Id);
+							goto L_Fail;
+						}
+
 						var reduce = Math.Min(reqMat.Amount, material.Item.Amount);
 						reqMat.Amount -= reduce;
 						toReduce.Add(new ProductionMaterial(material.Item, reduce));
+						inUse.Add(material.Item.EntityId);
 					}
 
 					// Break once we got what we need
@@ -176,7 +186,8 @@ namespace Aura.Channel.Skills.Life
 
 			if (requiredMaterials.Any(a => a.Amount != 0))
 			{
-				Send.ServerMessage(creature, "Insufficient materials.");
+				// Unofficial, the client should normally prevent this.
+				Send.ServerMessage(creature, Localization.Get("Insufficient materials."));
 				goto L_Fail;
 			}
 
