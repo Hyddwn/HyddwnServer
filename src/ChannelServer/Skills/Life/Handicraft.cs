@@ -59,6 +59,12 @@ namespace Aura.Channel.Skills.Life
 		/// </example>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/handicraft_kit/"))
+			{
+				Send.MsgBox(creature, Localization.Get("You're going to need a Handicraft Kit for that."));
+				return false;
+			}
+
 			var unkByte1 = packet.GetByte();
 			var productId = packet.GetInt();
 			var unkShort1 = packet.GetShort();
