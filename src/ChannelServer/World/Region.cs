@@ -128,9 +128,8 @@ namespace Aura.Channel.World
 				{
 					var add = new Prop(prop.EntityId, prop.Id, this.Id, (int)prop.X, (int)prop.Y, prop.Direction, prop.Scale, 0, "", "", "");
 
-					// Add copy of extensions
-					foreach (var para in prop.Parameters)
-						add.Extensions.AddSilent(new PropExtension(para.SignalType, para.EventType, para.Name, 0));
+					// Save parameters for use by dungeons
+					add.Parameters = prop.Parameters.ToList();
 
 					// Add drop behaviour if drop type exists
 					var dropType = prop.GetDropType();
