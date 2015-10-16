@@ -607,8 +607,24 @@ namespace Aura.Mabi.Const
 	/// </summary>
 	public enum ProductionCategory : short
 	{
-		Weaving = 1,
+		/// <summary>
+		/// Spinning Wheel
+		/// </summary>
+		Spinning = 1,
+
+		/// <summary>
+		/// Loom
+		/// </summary>
+		Weaving = 2,
+
+		/// <summary>
+		/// Handicraft skill
+		/// </summary>
 		Handicraft = 6,
+
+		/// <summary>
+		/// Magic Craft skill? Magic Cauldrons? (I don't speak G14+)
+		/// </summary>
 		MagicCraft = 16,
 	}
 }
