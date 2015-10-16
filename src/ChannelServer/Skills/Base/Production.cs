@@ -166,20 +166,18 @@ namespace Aura.Channel.Skills.Base
 				goto L_Fail;
 			}
 
-			// Check product
-			var productData = AuraData.ProductionDb.Find(category, productId);
-			if (productData == null)
+			// Get potential products
+			// Some productions can produce items of varying quality (cheap,
+			// common, fine, finest)
+			var potentialProducts = AuraData.ProductionDb.Find(category, productId);
+			if (potentialProducts.Length == 0)
 			{
 				Send.ServerMessage(creature, "Unknown product.");
 				goto L_Fail;
 			}
 
-			var productItemData = AuraData.ItemDb.Find(productData.ItemId);
-			if (productItemData == null)
-			{
-				Send.ServerMessage(creature, "Unknown product item.");
-				goto L_Fail;
-			}
+			// Get reference product for checks and mats
+			var productData = potentialProducts[0];
 
 			// Check tool
 			// Sanity check, the client should be handling this.
@@ -245,25 +243,57 @@ namespace Aura.Channel.Skills.Base
 
 			// Check success
 			var rank = skill.Info.Rank <= SkillRank.R1 ? skill.Info.Rank : SkillRank.R1;
-			var chance = creature.GetProductionSuccessChance(productData.SuccessRates[rank], productData.RainBonus);
+			var baseChance = potentialProducts.Sum(a => a.SuccessRates[rank]);
+			var rainBonus = productData.RainBonus;
+			var chance = creature.GetProductionSuccessChance(baseChance, rainBonus);
 			var rnd = RandomProvider.Get();
 			var success = (rnd.Next(100) < chance);
-
-			// Update tool's durability and proficiency
-			if (productData.Tool != null)
-			{
-				creature.Inventory.ReduceDurability(creature.RightHand, productData.Durability);
-				creature.Inventory.AddProficiency(creature.RightHand, Proficiency);
-			}
 
 			// Create item here, so it can be used in skill training,
 			// but add it to inv later, to mimic the official packet sequence.
 			Item productItem = null;
 			if (success)
 			{
+				var itemId = 0;
+				var num = rnd.NextDouble() * baseChance;
+				var n = 0.0;
+				foreach (var potentialProduct in potentialProducts)
+				{
+					n += potentialProduct.SuccessRates[rank];
+					if (num <= n)
+					{
+						itemId = potentialProduct.ItemId;
+						break;
+					}
+				}
+
+				// Sanity check
+				if (itemId == 0)
+				{
+					Log.Error("ProductionSkill.Complete: Failed to select random product item for {0}/{1}, num: {2}.", category, productId, num);
+					Send.ServerMessage(creature, "Failed to generate product.");
+					goto L_Fail;
+				}
+
+				// Check item
+				var productItemData = AuraData.ItemDb.Find(productData.ItemId);
+				if (productItemData == null)
+				{
+					Log.Error("ProductionSkill.Complete: Unknown product item '{0}'.", itemId);
+					Send.ServerMessage(creature, "Unknown product item.");
+					goto L_Fail;
+				}
+
 				// Create product
-				productItem = new Item(productData.ItemId);
+				productItem = new Item(itemId);
 				productItem.Amount = productData.Amount;
+			}
+
+			// Update tool's durability and proficiency
+			if (productData.Tool != null)
+			{
+				creature.Inventory.ReduceDurability(creature.RightHand, productData.Durability);
+				creature.Inventory.AddProficiency(creature.RightHand, Proficiency);
 			}
 
 			// Skill training
@@ -280,7 +310,7 @@ namespace Aura.Channel.Skills.Base
 
 				// Success
 				Send.UseMotion(creature, 14, 0); // Success motion
-				Send.Notice(creature, Localization.Get("{0} created successfully!"), productItemData.Name);
+				Send.Notice(creature, Localization.Get("{0} created successfully!"), productItem.Data.Name);
 				Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
 
 				return;

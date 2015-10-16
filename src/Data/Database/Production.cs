@@ -60,12 +60,11 @@ namespace Aura.Data.Database
 		}
 	}
 
-	// TODO: Indexed based on cat+id?
 	public class ProductionDb : DatabaseJson<ProductionData>
 	{
-		public ProductionData Find(ProductionCategory category, int productId)
+		public ProductionData[] Find(ProductionCategory category, int productId)
 		{
-			return this.Entries.FirstOrDefault(a => a.Category == category && a.Id == productId);
+			return this.Entries.Where(a => a.Category == category && a.Id == productId).ToArray();
 		}
 
 		protected override void ReadEntry(JObject entry)
