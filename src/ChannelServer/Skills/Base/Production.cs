@@ -237,8 +237,18 @@ namespace Aura.Channel.Skills.Base
 				creature.Inventory.AddProficiency(creature.RightHand, Proficiency);
 			}
 
+			// Create item here, so it can be used in skill training,
+			// but add it to inv later, to mimic the official packet sequence.
+			Item productItem = null;
+			if (success)
+			{
+				// Create product
+				productItem = new Item(productData.ItemId);
+				productItem.Amount = productData.Amount;
+			}
+
 			// Skill training
-			this.SkillTraining(creature, skill, productData, success);
+			this.SkillTraining(creature, skill, productData, success, productItem);
 
 			// Reduce mats
 			foreach (var material in toReduce)
@@ -246,9 +256,7 @@ namespace Aura.Channel.Skills.Base
 
 			if (success)
 			{
-				// Create product
-				var productItem = new Item(productData.ItemId);
-				productItem.Amount = productData.Amount;
+				// Add product to inventory
 				creature.Inventory.Insert(productItem, true);
 
 				// Success
@@ -313,7 +321,7 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="skill"></param>
 		/// <param name="data"></param>
 		/// <param name="success"></param>
-		protected abstract void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success);
+		protected abstract void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success, Item producedItem);
 	}
 
 	public class ProductionMaterial

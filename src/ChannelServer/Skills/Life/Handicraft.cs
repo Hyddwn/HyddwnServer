@@ -53,7 +53,7 @@ namespace Aura.Channel.Skills.Life
 			return true;
 		}
 
-		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success)
+		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success, Item producedItem)
 		{
 			if (skill.Info.Rank == SkillRank.RF)
 			{
