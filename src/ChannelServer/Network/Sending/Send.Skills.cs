@@ -293,12 +293,13 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="skillId"></param>
 		/// <param name="mode"></param>
 		/// <param name="propEntityId"></param>
+		/// <param name="unkInt"></param>
 		/// <param name="productId"></param>
 		/// <param name="unkShort"></param>
 		/// <param name="category"></param>
 		/// <param name="amountToProduce"></param>
 		/// <param name="materials"></param>
-		public static void SkillUse(Creature creature, SkillId skillId, byte mode, long propEntityId, int productId, short unkShort, ProductionCategory category, short amountToProduce, List<ProductionMaterial> materials)
+		public static void SkillUse(Creature creature, SkillId skillId, byte mode, long propEntityId, int unkInt, int productId, short unkShort, ProductionCategory category, short amountToProduce, List<ProductionMaterial> materials)
 		{
 			if (materials.Count > byte.MaxValue)
 				throw new ArgumentException("Amount of materials can't be larger than 255.");
@@ -308,7 +309,10 @@ namespace Aura.Channel.Network.Sending
 			packet.PutUShort((ushort)skillId);
 			packet.PutByte(mode);
 			if (mode == 1)
+			{
 				packet.PutLong(propEntityId);
+				packet.PutInt(unkInt);
+			}
 			packet.PutInt(productId);
 			packet.PutShort(unkShort);
 			packet.PutShort((short)category);
@@ -549,12 +553,13 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="skillId"></param>
 		/// <param name="mode"></param>
 		/// <param name="propEntityId"></param>
+		/// <param name="unkInt"></param>
 		/// <param name="productId"></param>
 		/// <param name="unkShort"></param>
 		/// <param name="category"></param>
 		/// <param name="amountToProduce"></param>
 		/// <param name="materials"></param>
-		public static void SkillComplete(Creature creature, SkillId skillId, byte mode, long propEntityId, int productId, short unkShort, ProductionCategory category, short amountToProduce, List<ProductionMaterial> materials)
+		public static void SkillComplete(Creature creature, SkillId skillId, byte mode, long propEntityId, int unkInt, int productId, short unkShort, ProductionCategory category, short amountToProduce, List<ProductionMaterial> materials)
 		{
 			if (materials.Count > byte.MaxValue)
 				throw new ArgumentException("Amount of materials can't be larger than 255.");
@@ -564,7 +569,10 @@ namespace Aura.Channel.Network.Sending
 			packet.PutUShort((ushort)skillId);
 			packet.PutByte(mode);
 			if (mode == 1)
+			{
 				packet.PutLong(propEntityId);
+				packet.PutInt(unkInt);
+			}
 			packet.PutInt(productId);
 			packet.PutShort(unkShort);
 			packet.PutShort((short)category);

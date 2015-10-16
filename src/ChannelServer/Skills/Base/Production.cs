@@ -64,8 +64,12 @@ namespace Aura.Channel.Skills.Base
 
 			var mode = packet.GetByte();
 			var propEntityId = 0L;
+			var unkInt = 0;
 			if (mode == 1)
+			{
 				propEntityId = packet.GetLong();
+				unkInt = packet.GetInt();
+			}
 			var productId = packet.GetInt();
 			var unkShort1 = packet.GetShort();
 			var category = (ProductionCategory)packet.GetShort();
@@ -94,7 +98,7 @@ namespace Aura.Channel.Skills.Base
 
 			// Response
 			Send.UseMotion(creature, MotionCategory, MotionId); // Production motion
-			Send.SkillUse(creature, skill.Info.Id, mode, propEntityId, productId, unkShort1, category, amountToProduce, materials);
+			Send.SkillUse(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort1, category, amountToProduce, materials);
 			skill.State = SkillState.Used;
 
 			return true;
@@ -110,8 +114,12 @@ namespace Aura.Channel.Skills.Base
 		{
 			var mode = packet.GetByte();
 			var propEntityId = 0L;
+			var unkInt = 0;
 			if (mode == 1)
+			{
 				propEntityId = packet.GetLong();
+				unkInt = packet.GetInt();
+			}
 			var productId = packet.GetInt();
 			var unkShort = packet.GetShort();
 			var category = (ProductionCategory)packet.GetShort();
@@ -233,7 +241,7 @@ namespace Aura.Channel.Skills.Base
 				// Success
 				Send.UseMotion(creature, 14, 0); // Success motion
 				Send.Notice(creature, Localization.Get("{0} created successfully!"), productItemData.Name);
-				Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, productId, unkShort, category, amountToProduce, materials);
+				Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
 
 				return;
 			}
@@ -241,7 +249,7 @@ namespace Aura.Channel.Skills.Base
 		L_Fail:
 			// Unofficial
 			Send.UseMotion(creature, 14, 3); // Fail motion
-			Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, productId, unkShort, category, amountToProduce, materials);
+		Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
 		}
 
 		/// <summary>
