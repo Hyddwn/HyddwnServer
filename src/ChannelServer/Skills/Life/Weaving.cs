@@ -38,6 +38,11 @@ namespace Aura.Channel.Skills.Life
 	{
 		protected override bool RequiresProp { get { return true; } }
 
+		protected override bool CheckCategory(Creature creature, ProductionCategory category)
+		{
+			return (category == ProductionCategory.Spinning || category == ProductionCategory.Weaving);
+		}
+
 		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success, Item producedItem)
 		{
 			if (skill.Info.Rank == SkillRank.Novice)

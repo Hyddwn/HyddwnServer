@@ -159,6 +159,13 @@ namespace Aura.Channel.Skills.Base
 			if (!this.CheckProp(creature, propEntityId))
 				goto L_Fail;
 
+			// Check category
+			if (!this.CheckCategory(creature, category))
+			{
+				Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to use category '{1}' with skill '{2}'.", creature.EntityId, category, this.GetType().Name);
+				goto L_Fail;
+			}
+
 			// Check product
 			var productData = AuraData.ProductionDb.Find(category, productId);
 			if (productData == null)
@@ -295,6 +302,14 @@ namespace Aura.Channel.Skills.Base
 		{
 			return true;
 		}
+
+		/// <summary>
+		/// Checks if category can be handled by this skill, returns false if not.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="category"></param>
+		/// <returns></returns>
+		protected abstract bool CheckCategory(Creature creature, ProductionCategory category);
 
 		/// <summary>
 		/// Checks if prop is valid and in range, returns false if not.
