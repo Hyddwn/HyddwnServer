@@ -34,11 +34,12 @@ namespace Aura.Channel.Skills.Life
 	[Skill(SkillId.Handicraft)]
 	public class Handicraft : ProductionSkill
 	{
-		protected override int MotionCategory { get { return 11; } }
-
-		protected override int MotionId { get { return 3; } }
-
 		protected override bool RequiresProp { get { return false; } }
+
+		protected override void OnUse(Creature creature, Skill skill)
+		{
+			Send.UseMotion(creature, 11, 3);
+		}
 
 		protected override bool CheckTools(Creature creature, Skill skill)
 		{

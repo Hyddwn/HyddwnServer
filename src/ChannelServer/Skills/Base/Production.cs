@@ -25,16 +25,6 @@ namespace Aura.Channel.Skills.Base
 		protected virtual int Proficiency { get { return 30; } }
 
 		/// <summary>
-		/// Motion to execute while working.
-		/// </summary>
-		protected abstract int MotionCategory { get; }
-
-		/// <summary>
-		/// Motion to execute while working.
-		/// </summary>
-		protected abstract int MotionId { get; }
-
-		/// <summary>
 		/// Should return true if skill requires a prop.
 		/// </summary>
 		protected abstract bool RequiresProp { get; }
@@ -96,12 +86,23 @@ namespace Aura.Channel.Skills.Base
 			if (!this.CheckProp(creature, propEntityId))
 				return false;
 
+			// Give skills the ability to use motions and other things.
+			this.OnUse(creature, skill);
+
 			// Response
-			Send.UseMotion(creature, MotionCategory, MotionId); // Production motion
 			Send.SkillUse(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort1, category, amountToProduce, materials);
 			skill.State = SkillState.Used;
 
 			return true;
+		}
+
+		/// <summary>
+		/// Called from successful Prepare.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		protected virtual void OnUse(Creature creature, Skill skill)
+		{
 		}
 
 		/// <summary>
@@ -162,11 +163,23 @@ namespace Aura.Channel.Skills.Base
 			}
 
 			// Check tool
-			// TODO: Check durability? What happens if tool is unusable?
-			if (creature.RightHand == null || !creature.RightHand.HasTag(productData.Tool))
+			// Sanity check, the client should be handling this.
+			if (productData.Tool != null)
 			{
-				Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without the appropriate tool.", creature.EntityId);
-				goto L_Fail;
+				// TODO: Check durability? What happens if tool is unusable?
+				if (creature.RightHand == null || !creature.RightHand.HasTag(productData.Tool))
+				{
+					Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without the appropriate tool.", creature.EntityId);
+					goto L_Fail;
+				}
+			}
+			else
+			{
+				if (creature.RightHand != null)
+				{
+					Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without empty hands.", creature.EntityId);
+					goto L_Fail;
+				}
 			}
 
 			// Check materials
@@ -249,7 +262,7 @@ namespace Aura.Channel.Skills.Base
 		L_Fail:
 			// Unofficial
 			Send.UseMotion(creature, 14, 3); // Fail motion
-		Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
+			Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
 		}
 
 		/// <summary>
