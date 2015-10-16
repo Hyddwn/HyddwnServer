@@ -70,7 +70,7 @@ namespace Aura.Data.Database
 
 		protected override void ReadEntry(JObject entry)
 		{
-			entry.AssertNotMissing("category", "id", "title", "itemId", "amount", "exp", "rank", "tool", "durability", "materials", "successRates", "rainBonus");
+			entry.AssertNotMissing("category", "id", "title", "itemId", "amount", "exp", "rank", "materials", "successRates", "rainBonus");
 
 			var data = new ProductionData();
 
@@ -79,7 +79,7 @@ namespace Aura.Data.Database
 			data.ItemId = entry.ReadInt("itemId");
 			data.Amount = entry.ReadInt("amount");
 			data.Exp = entry.ReadInt("exp");
-			data.Tool = entry.ReadString("tool");
+			data.Tool = entry.ReadString("tool", null);
 			data.Durability = entry.ReadInt("durability");
 
 			// Rank
