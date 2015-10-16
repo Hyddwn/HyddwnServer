@@ -38,7 +38,7 @@ public class MoonGateScript : GeneralScript
 		RegisterGate("Dunbarton", "_moontunnel_dunbarton", 0xA0000E000A02B4);
 		RegisterGate("Rabbie Dungeon", "_moontunnel_rabbie_dungeon", 0xA0000E00110039);
 		RegisterGate("Spiral Hill", "_moontunnel_duntir02", 0xA000100008002B);
-		RegisterGate("Logging Gamp", "_moontunnel_loggingcamp", 0xA00010000D0011);
+		RegisterGate("Logging Camp", "_moontunnel_loggingcamp", 0xA00010000D0011);
 		RegisterGate("Lighthouse", "_moontunnel_cobh_harbor", 0xA0001700040199);
 		RegisterGate("Reighinalt", "_moontunnel_reighinalt", 0xA0001E00010062);
 		RegisterGate("Dragon Ruins", "_moontunnel_dragonruin", 0xA0001E00020064);
