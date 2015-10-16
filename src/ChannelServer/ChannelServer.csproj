@@ -156,6 +156,7 @@
     <Compile Include="Skills\Actions\ContinentWarp.cs" />
     <Compile Include="Skills\Actions\OutfitAction.cs" />
     <Compile Include="Skills\Base\CombatSkillHandler.cs" />
+    <Compile Include="Skills\Base\Production.cs" />
     <Compile Include="Skills\Base\Interfaces.cs" />
     <Compile Include="Skills\Base\StandardPrepareHandler.cs" />
     <Compile Include="Skills\Base\StartStopSkillHandler.cs" />
