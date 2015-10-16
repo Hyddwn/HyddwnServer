@@ -38,6 +38,8 @@ namespace Aura.Channel.Skills.Life
 
 		protected override int MotionId { get { return 3; } }
 
+		protected override bool RequiresProp { get { return false; } }
+
 		protected override bool CheckTools(Creature creature, Skill skill)
 		{
 			if (creature.RightHand == null || !creature.RightHand.HasTag("/handicraft_kit/"))

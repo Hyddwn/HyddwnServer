@@ -35,6 +35,11 @@ namespace Aura.Channel.Skills.Base
 		protected abstract int MotionId { get; }
 
 		/// <summary>
+		/// Should return true if skill requires a prop.
+		/// </summary>
+		protected abstract bool RequiresProp { get; }
+
+		/// <summary>
 		/// Starts production, finished in Complete.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -58,6 +63,9 @@ namespace Aura.Channel.Skills.Base
 				return false;
 
 			var mode = packet.GetByte();
+			var propEntityId = 0L;
+			if (mode == 1)
+				propEntityId = packet.GetLong();
 			var productId = packet.GetInt();
 			var unkShort1 = packet.GetShort();
 			var category = (ProductionCategory)packet.GetShort();
@@ -80,9 +88,13 @@ namespace Aura.Channel.Skills.Base
 				materials.Add(new ProductionMaterial(item, amount));
 			}
 
+			// Check prop
+			if (!this.CheckProp(creature, propEntityId))
+				return false;
+
 			// Response
 			Send.UseMotion(creature, MotionCategory, MotionId); // Production motion
-			Send.SkillUse(creature, skill.Info.Id, mode, productId, unkShort1, category, amountToProduce, materials);
+			Send.SkillUse(creature, skill.Info.Id, mode, propEntityId, productId, unkShort1, category, amountToProduce, materials);
 			skill.State = SkillState.Used;
 
 			return true;
@@ -97,6 +109,9 @@ namespace Aura.Channel.Skills.Base
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
 			var mode = packet.GetByte();
+			var propEntityId = 0L;
+			if (mode == 1)
+				propEntityId = packet.GetLong();
 			var productId = packet.GetInt();
 			var unkShort = packet.GetShort();
 			var category = (ProductionCategory)packet.GetShort();
@@ -118,6 +133,10 @@ namespace Aura.Channel.Skills.Base
 
 				materials.Add(new ProductionMaterial(item, amount));
 			}
+
+			// Check prop
+			if (!this.CheckProp(creature, propEntityId))
+				goto L_Fail;
 
 			// Check product
 			var productData = AuraData.ProductionDb.Find(category, productId);
@@ -214,7 +233,7 @@ namespace Aura.Channel.Skills.Base
 				// Success
 				Send.UseMotion(creature, 14, 0); // Success motion
 				Send.Notice(creature, Localization.Get("{0} created successfully!"), productItemData.Name);
-				Send.SkillComplete(creature, skill.Info.Id, mode, productId, unkShort, category, amountToProduce, materials);
+				Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, productId, unkShort, category, amountToProduce, materials);
 
 				return;
 			}
@@ -222,7 +241,7 @@ namespace Aura.Channel.Skills.Base
 		L_Fail:
 			// Unofficial
 			Send.UseMotion(creature, 14, 3); // Fail motion
-			Send.SkillComplete(creature, skill.Info.Id, mode, productId, unkShort, category, amountToProduce, materials);
+			Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, productId, unkShort, category, amountToProduce, materials);
 		}
 
 		/// <summary>
@@ -233,6 +252,36 @@ namespace Aura.Channel.Skills.Base
 		/// <returns></returns>
 		protected virtual bool CheckTools(Creature creature, Skill skill)
 		{
+			return true;
+		}
+
+		/// <summary>
+		/// Checks if prop is valid and in range, returns false if not.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="propId"></param>
+		/// <returns></returns>
+		protected virtual bool CheckProp(Creature creature, long propEntityId)
+		{
+			if (!this.RequiresProp)
+				return true;
+
+			// Check existence
+			var prop = (propEntityId == 0 ? null : creature.Region.GetProp(propEntityId));
+			if (prop == null)
+			{
+				Log.Warning("ProductionSkill.Prepare: Creature '{0:X16}' tried to use production skill with invalid prop.", creature.EntityId);
+				return false;
+			}
+
+			// Check distance
+			if (!creature.GetPosition().InRange(prop.GetPosition(), 1000))
+			{
+				// Don't warn, could happen due to lag.
+				Send.Notice(creature, Localization.Get("You are too far away."));
+				return false;
+			}
+
 			return true;
 		}
 
