@@ -139,7 +139,7 @@ public class SionScript : NpcScript
 		if (minutes == 1)
 			furnaceSwitch.Xml.SetAttributeValue("EventText", string.Format("{0} has activated the furnace for 1 minute.\nAnyone can use the furnace now to make ingots.", Player.Name));
 		else
-			furnaceSwitch.Xml.SetAttributeValue("EventText", string.Format("{0} has activated the furnace for {0} minutes.\nAnyone can use the furnace now to make ingots.", Player.Name, minutes));
+			furnaceSwitch.Xml.SetAttributeValue("EventText", string.Format("{0} has activated the furnace for {1} minutes.\nAnyone can use the furnace now to make ingots.", Player.Name, minutes));
 		furnaceSwitch.SetState("on");
 
 		foreach (var prop in furnaces)
