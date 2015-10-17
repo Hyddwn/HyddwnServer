@@ -45,9 +45,10 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			// Check state
+			// Sanity check, client should handle it.
 			if (prop.State != "on")
 			{
-				Send.Notice(creature, Localization.Get("The Furnace isn't working."));
+				Send.Notice(creature, Localization.Get("The Waterwheel isn't working,\nand that means the Furnace won't fire."));
 				return false;
 			}
 
