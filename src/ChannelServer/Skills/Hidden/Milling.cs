@@ -61,7 +61,7 @@ namespace Aura.Channel.Skills.Hidden
 			return true;
 		}
 
-		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success, Item producedItem)
+		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success)
 		{
 			// Hidden Novice Rank skill, no training.
 		}

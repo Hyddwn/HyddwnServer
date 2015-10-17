@@ -261,11 +261,23 @@ namespace Aura.Channel.Skills.Base
 			var rnd = RandomProvider.Get();
 			var success = (rnd.Next(100) < chance);
 
-			// Create item here, so it can be used in skill training,
-			// but add it to inv later, to mimic the official packet sequence.
-			Item productItem = null;
+			// Update tool's durability and proficiency
+			if (productData.Tool != null)
+			{
+				creature.Inventory.ReduceDurability(creature.RightHand, productData.Durability);
+				creature.Inventory.AddProficiency(creature.RightHand, Proficiency);
+			}
+
+			// Skill training
+			this.SkillTraining(creature, skill, productData, success);
+
+			// Reduce mats
+			foreach (var material in toReduce)
+				creature.Inventory.Decrement(material.Item, (ushort)material.Amount);
+
 			if (success)
 			{
+				// Select random product
 				var itemId = 0;
 				var num = rnd.NextDouble() * baseChance;
 				var n = 0.0;
@@ -297,26 +309,9 @@ namespace Aura.Channel.Skills.Base
 				}
 
 				// Create product
-				productItem = new Item(itemId);
+				var productItem = new Item(itemId);
 				productItem.Amount = productData.Amount;
-			}
 
-			// Update tool's durability and proficiency
-			if (productData.Tool != null)
-			{
-				creature.Inventory.ReduceDurability(creature.RightHand, productData.Durability);
-				creature.Inventory.AddProficiency(creature.RightHand, Proficiency);
-			}
-
-			// Skill training
-			this.SkillTraining(creature, skill, productData, success, productItem);
-
-			// Reduce mats
-			foreach (var material in toReduce)
-				creature.Inventory.Decrement(material.Item, (ushort)material.Amount);
-
-			if (success)
-			{
 				// Add product to inventory
 				creature.Inventory.Insert(productItem, true);
 
@@ -390,7 +385,7 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="skill"></param>
 		/// <param name="data"></param>
 		/// <param name="success"></param>
-		protected abstract void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success, Item producedItem);
+		protected abstract void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success);
 	}
 
 	public class ProductionMaterial

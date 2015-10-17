@@ -26,7 +26,7 @@ namespace Aura.Channel.Skills.Life
 			return (category == ProductionCategory.Spinning || category == ProductionCategory.Weaving);
 		}
 
-		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success, Item producedItem)
+		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success)
 		{
 			if (skill.Info.Rank == SkillRank.Novice)
 			{
@@ -41,22 +41,22 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.RD)
 			{
-				if (producedItem.HasTag("/yarn/01/"))
+				if (data.ItemData.HasTag("/yarn/01/"))
 					skill.Train(1); // Successfully make Thick Thread.
-				else if (producedItem.HasTag("/yarn/02/"))
+				else if (data.ItemData.HasTag("/yarn/02/"))
 					skill.Train(2); // Successfully make Thin Thread.
-				else if (producedItem.HasTag("/texture/04/"))
+				else if (data.ItemData.HasTag("/texture/04/"))
 					skill.Train(3); // Successfully make Finest Fabric.
-				else if (producedItem.HasTag("/texture/03/"))
+				else if (data.ItemData.HasTag("/texture/03/"))
 					skill.Train(4); // Successfully make Fine Fabric.
-				else if (producedItem.HasTag("/texture/02/"))
+				else if (data.ItemData.HasTag("/texture/02/"))
 					skill.Train(5); // Successfully make Common Fabric.
-				else if (producedItem.HasTag("/texture/01/"))
+				else if (data.ItemData.HasTag("/texture/01/"))
 					skill.Train(6); // Successfully make Cheap Fabric.
-				else if (producedItem.HasTag("/silk/01/"))
+				else if (data.ItemData.HasTag("/silk/01/"))
 					skill.Train(7); // Successfully make Cheap Silk.
 
-				else if (skill.Info.Rank >= SkillRank.RE && producedItem.HasTag("/leather_strap/01/"))
+				else if (skill.Info.Rank >= SkillRank.RE && data.ItemData.HasTag("/leather_strap/01/"))
 					skill.Train(8); // Successfully make Cheap Leather Strap.
 
 				return;
@@ -64,24 +64,24 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank == SkillRank.RC)
 			{
-				if (producedItem.HasTag("/yarn/02/"))
+				if (data.ItemData.HasTag("/yarn/02/"))
 					skill.Train(1); // Successfully make Thin Thread.
 				return;
 			}
 
 			if (skill.Info.Rank >= SkillRank.RB && skill.Info.Rank <= SkillRank.RA)
 			{
-				if (producedItem.HasTag("/yarn/02/"))
+				if (data.ItemData.HasTag("/yarn/02/"))
 					skill.Train(1); // Successfully make Thin Thread.
-				else if (producedItem.HasTag("/texture/04/"))
+				else if (data.ItemData.HasTag("/texture/04/"))
 					skill.Train(2); // Successfully make Finest Fabric.
-				else if (producedItem.HasTag("/texture/03/"))
+				else if (data.ItemData.HasTag("/texture/03/"))
 					skill.Train(3); // Successfully make Fine Fabric.
-				else if (producedItem.HasTag("/texture/02/"))
+				else if (data.ItemData.HasTag("/texture/02/"))
 					skill.Train(4); // Successfully make Common Fabric.
-				else if (producedItem.HasTag("/silk/01/"))
+				else if (data.ItemData.HasTag("/silk/01/"))
 					skill.Train(5); // Successfully make Cheap Silk.
-				else if (producedItem.HasTag("/leather_strap/01/"))
+				else if (data.ItemData.HasTag("/leather_strap/01/"))
 					skill.Train(6); // Successfully make Cheap Leather Strap.
 
 				return;
@@ -89,19 +89,19 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank == SkillRank.R9)
 			{
-				if (producedItem.HasTag("/yarn/03/"))
+				if (data.ItemData.HasTag("/yarn/03/"))
 					skill.Train(1); // Successfully make a Braid.
-				else if (producedItem.HasTag("/texture/04/"))
+				else if (data.ItemData.HasTag("/texture/04/"))
 					skill.Train(2); // Successfully make Finest Fabric.
-				else if (producedItem.HasTag("/texture/03/"))
+				else if (data.ItemData.HasTag("/texture/03/"))
 					skill.Train(3); // Successfully make Fine Fabric.
-				else if (producedItem.HasTag("/silk/04/"))
+				else if (data.ItemData.HasTag("/silk/04/"))
 					skill.Train(4); // Successfully make Finest Silk.
-				else if (producedItem.HasTag("/silk/03/"))
+				else if (data.ItemData.HasTag("/silk/03/"))
 					skill.Train(5); // Successfully make Fine Silk.
-				else if (producedItem.HasTag("/silk/02/"))
+				else if (data.ItemData.HasTag("/silk/02/"))
 					skill.Train(6); // Successfully make Common Silk.
-				else if (producedItem.HasTag("/leather_strap/01/"))
+				else if (data.ItemData.HasTag("/leather_strap/01/"))
 					skill.Train(7); // Successfully make Cheap Leather Strap.
 
 				return;
@@ -109,25 +109,25 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank == SkillRank.R8)
 			{
-				if (producedItem.HasTag("/silk/04/"))
+				if (data.ItemData.HasTag("/silk/04/"))
 					skill.Train(1); // Successfully make Finest Silk.
-				else if (producedItem.HasTag("/silk/03/"))
+				else if (data.ItemData.HasTag("/silk/03/"))
 					return;
 			}
 
 			if (skill.Info.Rank == SkillRank.R7)
 			{
-				if (producedItem.HasTag("/yarn/03/"))
+				if (data.ItemData.HasTag("/yarn/03/"))
 					skill.Train(1); // Successfully make a Braid.
-				else if (producedItem.HasTag("/texture/04/"))
+				else if (data.ItemData.HasTag("/texture/04/"))
 					skill.Train(2); // Successfully make Finest Fabric.
-				else if (producedItem.HasTag("/texture/03/"))
+				else if (data.ItemData.HasTag("/texture/03/"))
 					skill.Train(3); // Successfully make Fine Fabric.
-				else if (producedItem.HasTag("/silk/04/"))
+				else if (data.ItemData.HasTag("/silk/04/"))
 					skill.Train(4); // Successfully make Finest Silk.
-				else if (producedItem.HasTag("/silk/03/"))
+				else if (data.ItemData.HasTag("/silk/03/"))
 					skill.Train(5); // Successfully make Fine Silk.
-				else if (producedItem.HasTag("/leather_strap/02/"))
+				else if (data.ItemData.HasTag("/leather_strap/02/"))
 					skill.Train(7); // Successfully make Common Leather Strap.
 
 				return;
@@ -135,17 +135,17 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank == SkillRank.R6)
 			{
-				if (producedItem.HasTag("/texture/04/"))
+				if (data.ItemData.HasTag("/texture/04/"))
 					skill.Train(2); // Successfully make Finest Fabric.
-				else if (producedItem.HasTag("/texture/03/"))
+				else if (data.ItemData.HasTag("/texture/03/"))
 					skill.Train(3); // Successfully make Fine Fabric.
-				else if (producedItem.HasTag("/silk/04/"))
+				else if (data.ItemData.HasTag("/silk/04/"))
 					skill.Train(4); // Successfully make Finest Silk.
-				else if (producedItem.HasTag("/silk/03/"))
+				else if (data.ItemData.HasTag("/silk/03/"))
 					skill.Train(5); // Successfully make Fine Silk.
-				else if (producedItem.HasTag("/leather_strap/03/"))
+				else if (data.ItemData.HasTag("/leather_strap/03/"))
 					skill.Train(7); // Successfully make Fine Leather Strap.
-				else if (producedItem.HasTag("/leather_strap/02/"))
+				else if (data.ItemData.HasTag("/leather_strap/02/"))
 					skill.Train(7); // Successfully make Common Leather Strap.
 
 				return;
@@ -153,17 +153,17 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank == SkillRank.R5)
 			{
-				if (producedItem.HasTag("/toughband/"))
+				if (data.ItemData.HasTag("/toughband/"))
 					skill.Train(1); // Successfully make a Tough String.
-				else if (producedItem.HasTag("/texture/04/"))
+				else if (data.ItemData.HasTag("/texture/04/"))
 					skill.Train(2); // Successfully make Finest Fabric.
-				else if (producedItem.HasTag("/texture/03/"))
+				else if (data.ItemData.HasTag("/texture/03/"))
 					skill.Train(3); // Successfully make Fine Fabric.
-				else if (producedItem.HasTag("/silk/04/"))
+				else if (data.ItemData.HasTag("/silk/04/"))
 					skill.Train(4); // Successfully make Finest Silk.
-				else if (producedItem.HasTag("/silk/03/"))
+				else if (data.ItemData.HasTag("/silk/03/"))
 					skill.Train(5); // Successfully make Fine Silk.
-				else if (producedItem.HasTag("/leather_strap/03/"))
+				else if (data.ItemData.HasTag("/leather_strap/03/"))
 					skill.Train(6); // Successfully make Fine Leather Strap.
 
 				return;
@@ -171,9 +171,9 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank == SkillRank.R4)
 			{
-				if (producedItem.HasTag("/toughband/"))
+				if (data.ItemData.HasTag("/toughband/"))
 					skill.Train(1); // Successfully make a Tough String.
-				else if (producedItem.HasTag("/toughyarn/"))
+				else if (data.ItemData.HasTag("/toughyarn/"))
 					skill.Train(2); // Successfully make Tough Thread.
 
 				return;
@@ -181,13 +181,13 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank >= SkillRank.R3 && skill.Info.Rank <= SkillRank.R2)
 			{
-				if (producedItem.HasTag("/toughyarn/"))
+				if (data.ItemData.HasTag("/toughyarn/"))
 					skill.Train(1); // Successfully make Tough Thread.
-				else if (producedItem.HasTag("/texture/04/"))
+				else if (data.ItemData.HasTag("/texture/04/"))
 					skill.Train(2); // Successfully make Finest Fabric.
-				else if (producedItem.HasTag("/silk/04/"))
+				else if (data.ItemData.HasTag("/silk/04/"))
 					skill.Train(3); // Successfully make Finest Silk.
-				else if (producedItem.HasTag("/leather_strap/04/"))
+				else if (data.ItemData.HasTag("/leather_strap/04/"))
 					skill.Train(4); // Successfully make Finest Leather Strap.
 
 				return;
@@ -195,15 +195,15 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank == SkillRank.R1)
 			{
-				if (producedItem.HasTag("/toughyarn/"))
+				if (data.ItemData.HasTag("/toughyarn/"))
 					skill.Train(1); // Successfully make Tough Thread.
-				else if (producedItem.HasTag("/toughband/"))
+				else if (data.ItemData.HasTag("/toughband/"))
 					skill.Train(1); // Successfully make a Tough String.
-				else if (producedItem.HasTag("/texture/04/"))
+				else if (data.ItemData.HasTag("/texture/04/"))
 					skill.Train(2); // Successfully make Finest Fabric.
-				else if (producedItem.HasTag("/silk/04/"))
+				else if (data.ItemData.HasTag("/silk/04/"))
 					skill.Train(3); // Successfully make Finest Silk.
-				else if (producedItem.HasTag("/leather_strap/04/"))
+				else if (data.ItemData.HasTag("/leather_strap/04/"))
 					skill.Train(4); // Successfully make Finest Leather Strap.
 
 				return;

@@ -43,7 +43,7 @@ namespace Aura.Channel.Skills.Life
 			return (category == ProductionCategory.Handicraft);
 		}
 
-		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success, Item producedItem)
+		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success)
 		{
 			if (skill.Info.Rank == SkillRank.RF)
 			{
