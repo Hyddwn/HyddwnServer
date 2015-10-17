@@ -273,7 +273,12 @@ namespace Aura.Channel.Skills.Base
 
 			// Reduce mats
 			foreach (var material in toReduce)
-				creature.Inventory.Decrement(material.Item, (ushort)material.Amount);
+			{
+				// On fail you lose 0~amount of materials randomly
+				var reduce = success ? material.Amount : rnd.Next(0, material.Amount + 1);
+				if (reduce > 0)
+					creature.Inventory.Decrement(material.Item, (ushort)reduce);
+			}
 
 			if (success)
 			{
