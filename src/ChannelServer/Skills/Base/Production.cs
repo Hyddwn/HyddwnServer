@@ -17,6 +17,18 @@ using System.Threading.Tasks;
 
 namespace Aura.Channel.Skills.Base
 {
+	/// <summary>
+	/// Base class for production skills, like Handicraft and Weaving.
+	/// </summary>
+	/// <remarks>
+	/// Starting production calls Prepare, once the creation process is done,
+	/// Complete is called. There is no way to cancel the skill once Prepare
+	/// was called.
+	/// 
+	/// While the client tells us how many items are gonna be produced,
+	/// it Prepares the skill again and again, so we must only create
+	/// one product at a time.
+	/// </remarks>
 	public abstract class ProductionSkill : IPreparable, ICompletable
 	{
 		/// <summary>

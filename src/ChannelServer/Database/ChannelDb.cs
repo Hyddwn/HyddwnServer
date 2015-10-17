@@ -623,6 +623,7 @@ namespace Aura.Channel.Database
 				character.Skills.Add(SkillId.ContinentWarp, SkillRank.Novice, character.RaceId);
 				character.Skills.Add(SkillId.AddSeasoning, SkillRank.Novice, character.RaceId);
 				character.Skills.Add(SkillId.Gathering, SkillRank.Novice, character.RaceId);
+				character.Skills.Add(SkillId.Milling, SkillRank.Novice, character.RaceId);
 			}
 		}
 

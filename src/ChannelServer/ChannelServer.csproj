@@ -180,6 +180,7 @@
     <Compile Include="Skills\Actions\DiceTossing.cs" />
     <Compile Include="Skills\Hidden\UseItemChattingColorChange.cs" />
     <Compile Include="Skills\Hidden\NameColorChange.cs" />
+    <Compile Include="Skills\Hidden\Milling.cs" />
     <Compile Include="Skills\Life\Campfire.cs" />
     <Compile Include="Skills\Life\FirstAid.cs" />
     <Compile Include="Skills\Life\Fishing.cs" />

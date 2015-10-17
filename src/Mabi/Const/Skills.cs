@@ -618,6 +618,11 @@ namespace Aura.Mabi.Const
 		Weaving = 2,
 
 		/// <summary>
+		/// Tir Windmill
+		/// </summary>
+		Milling = 4,
+
+		/// <summary>
 		/// Handicraft skill
 		/// </summary>
 		Handicraft = 6,
