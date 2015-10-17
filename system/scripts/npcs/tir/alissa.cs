@@ -11,7 +11,7 @@ public class AlissaBaseScript : NpcScript
 	static bool WindmillActive { get; set; }
 
 	static Prop _windmillProp = null;
-	Prop WindmillProp { get { return _windmillProp ?? (_windmillProp = NPC.Region.GetProp(WindmillPropId)); } }
+	Prop WindmillProp { get { return _windmillProp ?? (_windmillProp = ChannelServer.Instance.World.GetProp(WindmillPropId)); } }
 
 	public override void Load()
 	{
@@ -40,6 +40,8 @@ public class AlissaBaseScript : NpcScript
 		AddPhrase("There's a guard at the wheat field, and I'm watching the Windmill.");
 		AddPhrase("When is Caitin going to teach me how to bake bread?");
 		AddPhrase("You can gather wheat at the wheat field.");
+		
+		DeactivateWindmill();
 	}
 
 	protected override async Task Talk()
