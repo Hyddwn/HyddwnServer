@@ -76,10 +76,10 @@ namespace Aura.Channel.Skills.Base
 			if (!this.CheckTools(creature, skill))
 				return false;
 
-			var mode = packet.GetByte();
+			var unkByte = packet.GetByte();
 			var propEntityId = 0L;
 			var unkInt = 0;
-			if (mode == 1)
+			if (packet.Peek() == PacketElementType.Long) // Rule unknown
 			{
 				propEntityId = packet.GetLong();
 				unkInt = packet.GetInt();
@@ -114,7 +114,7 @@ namespace Aura.Channel.Skills.Base
 			this.OnUse(creature, skill);
 
 			// Response
-			Send.SkillUse(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort1, category, amountToProduce, materials);
+			Send.SkillUse(creature, skill.Info.Id, unkByte, propEntityId, unkInt, productId, unkShort1, category, amountToProduce, materials);
 			skill.State = SkillState.Used;
 
 			return true;
@@ -137,10 +137,10 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="packet"></param>
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
-			var mode = packet.GetByte();
+			var unkByte = packet.GetByte();
 			var propEntityId = 0L;
 			var unkInt = 0;
-			if (mode == 1)
+			if (packet.Peek() == PacketElementType.Long) // Rule unknown
 			{
 				propEntityId = packet.GetLong();
 				unkInt = packet.GetInt();
@@ -323,7 +323,7 @@ namespace Aura.Channel.Skills.Base
 				// Success
 				Send.UseMotion(creature, 14, 0); // Success motion
 				Send.Notice(creature, Localization.Get("{0} created successfully!"), productItem.Data.Name);
-				Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
+				Send.SkillComplete(creature, skill.Info.Id, unkByte, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
 
 				return;
 			}
@@ -331,7 +331,7 @@ namespace Aura.Channel.Skills.Base
 		L_Fail:
 			// Unofficial
 			Send.UseMotion(creature, 14, 3); // Fail motion
-			Send.SkillComplete(creature, skill.Info.Id, mode, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
+			Send.SkillComplete(creature, skill.Info.Id, unkByte, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
 		}
 
 		/// <summary>
