@@ -618,6 +618,11 @@ namespace Aura.Mabi.Const
 		Weaving = 2,
 
 		/// <summary>
+		/// Furnace
+		/// </summary>
+		Refining = 3,
+
+		/// <summary>
 		/// Tir Windmill
 		/// </summary>
 		Milling = 4,

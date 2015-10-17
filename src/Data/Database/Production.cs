@@ -25,6 +25,7 @@ namespace Aura.Data.Database
 		public List<ProductionMaterialData> Materials { get; set; }
 		public Dictionary<SkillRank, int> SuccessRates { get; set; }
 		public int RainBonus { get; set; }
+		public ItemData ItemData { get; set; }
 
 		public ProductionData()
 		{
@@ -106,6 +107,10 @@ namespace Aura.Data.Database
 				data.SuccessRates[rank] = ratesObj.ReadInt(rank.ToString().TrimStart('R'));
 
 			data.RainBonus = entry.ReadInt("rainBonus");
+
+			data.ItemData = AuraData.ItemDb.Find(data.ItemId);
+			if (data.ItemData == null)
+				throw new DatabaseErrorException("Item not found: " + data.ItemId);
 
 			this.Entries.Add(data);
 		}
