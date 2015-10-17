@@ -1,10 +1,12 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.World.Entities;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
+using Aura.Shared.Util;
 
 namespace Aura.Channel.Skills.Life
 {
@@ -19,11 +21,30 @@ namespace Aura.Channel.Skills.Life
 	[Skill(SkillId.Weaving)]
 	public class Weaving : ProductionSkill
 	{
-		protected override bool RequiresProp { get { return true; } }
-
 		protected override bool CheckCategory(Creature creature, ProductionCategory category)
 		{
 			return (category == ProductionCategory.Spinning || category == ProductionCategory.Weaving);
+		}
+
+		protected override bool CheckProp(Creature creature, long propEntityId)
+		{
+			// Check existence
+			var prop = (propEntityId == 0 ? null : creature.Region.GetProp(propEntityId));
+			if (prop == null || !prop.HasTag("/spin/|/loom/"))
+			{
+				Log.Warning("Weaving.Prepare: Creature '{0:X16}' tried to use production skill with invalid prop.", creature.EntityId);
+				return false;
+			}
+
+			// Check distance
+			if (!creature.GetPosition().InRange(prop.GetPosition(), 1000))
+			{
+				// Don't warn, could happen due to lag.
+				Send.Notice(creature, Localization.Get("You are too far away."));
+				return false;
+			}
+
+			return true;
 		}
 
 		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success)

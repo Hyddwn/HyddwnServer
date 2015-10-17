@@ -19,8 +19,6 @@ namespace Aura.Channel.Skills.Life
 	[Skill(SkillId.Refining)]
 	public class Refining : ProductionSkill
 	{
-		protected override bool RequiresProp { get { return true; } }
-
 		protected override bool CheckCategory(Creature creature, ProductionCategory category)
 		{
 			return (category == ProductionCategory.Refining);

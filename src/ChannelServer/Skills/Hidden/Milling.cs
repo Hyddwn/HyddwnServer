@@ -19,8 +19,6 @@ namespace Aura.Channel.Skills.Hidden
 	[Skill(SkillId.Milling)]
 	public class Milling : ProductionSkill
 	{
-		protected override bool RequiresProp { get { return true; } }
-
 		protected override bool CheckCategory(Creature creature, ProductionCategory category)
 		{
 			return (category == ProductionCategory.Milling);

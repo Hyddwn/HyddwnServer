@@ -37,11 +37,6 @@ namespace Aura.Channel.Skills.Base
 		protected virtual int Proficiency { get { return 30; } }
 
 		/// <summary>
-		/// Should return true if skill requires a prop.
-		/// </summary>
-		protected abstract bool RequiresProp { get; }
-
-		/// <summary>
 		/// Starts production, finished in Complete.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -359,29 +354,7 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="creature"></param>
 		/// <param name="propId"></param>
 		/// <returns></returns>
-		protected virtual bool CheckProp(Creature creature, long propEntityId)
-		{
-			if (!this.RequiresProp)
-				return true;
-
-			// Check existence
-			var prop = (propEntityId == 0 ? null : creature.Region.GetProp(propEntityId));
-			if (prop == null)
-			{
-				Log.Warning("ProductionSkill.Prepare: Creature '{0:X16}' tried to use production skill with invalid prop.", creature.EntityId);
-				return false;
-			}
-
-			// Check distance
-			if (!creature.GetPosition().InRange(prop.GetPosition(), 1000))
-			{
-				// Don't warn, could happen due to lag.
-				Send.Notice(creature, Localization.Get("You are too far away."));
-				return false;
-			}
-
-			return true;
-		}
+		protected abstract bool CheckProp(Creature creature, long propEntityId);
 
 		/// <summary>
 		/// Handles skill training.

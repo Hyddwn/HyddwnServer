@@ -19,8 +19,6 @@ namespace Aura.Channel.Skills.Life
 	[Skill(SkillId.Handicraft)]
 	public class Handicraft : ProductionSkill
 	{
-		protected override bool RequiresProp { get { return false; } }
-
 		protected override void OnUse(Creature creature, Skill skill)
 		{
 			Send.UseMotion(creature, 11, 3);
@@ -35,6 +33,11 @@ namespace Aura.Channel.Skills.Life
 				return false;
 			}
 
+			return true;
+		}
+
+		protected override bool CheckProp(Creature creature, long propEntityId)
+		{
 			return true;
 		}
 
