@@ -100,6 +100,10 @@ namespace Aura.Channel.Network.Handlers
 				// Give Handicraft when equipping a Handicraft Kit
 				if ((item.HasTag("/handicraft_kit/")) && !creature.Skills.Has(SkillId.Handicraft))
 					creature.Skills.Give(SkillId.Handicraft, SkillRank.RF);
+
+				// Raise equiped event
+				// TODO: Script mentioned above should use this event.
+				ChannelServer.Instance.Events.OnPlayerEquipsItem(creature, item);
 			}
 
 			// Inform about temp moves (items in temp don't count for quest objectives?)
