@@ -94,6 +94,7 @@ namespace Aura.Channel.Scripting.Scripts
 			ChannelServer.Instance.Events.SkillRankChanged -= this.OnSkillRankChanged;
 			ChannelServer.Instance.Events.CreatureLevelUp -= this.OnCreatureLevelUp;
 			ChannelServer.Instance.Events.CreatureGotKeyword -= this.CreatureGotKeyword;
+			ChannelServer.Instance.Events.PlayerEquipsItem -= this.OnPlayerEquipsItem;
 		}
 
 		// Setup
@@ -260,6 +261,12 @@ namespace Aura.Channel.Scripting.Scripts
 				ChannelServer.Instance.Events.CreatureGotKeyword += this.CreatureGotKeyword;
 			}
 
+			if (objective.Type == ObjectiveType.Equip)
+			{
+				ChannelServer.Instance.Events.PlayerEquipsItem -= this.OnPlayerEquipsItem;
+				ChannelServer.Instance.Events.PlayerEquipsItem += this.OnPlayerEquipsItem;
+			}
+
 			this.Objectives.Add(ident, objective);
 		}
 
@@ -319,6 +326,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestObjective ReachRank(SkillId skillId, SkillRank rank) { return new QuestObjectiveReachRank(skillId, rank); }
 		protected QuestObjective ReachLevel(int level) { return new QuestObjectiveReachLevel(level); }
 		protected QuestObjective GetKeyword(string keyword) { return new QuestObjectiveGetKeyword(keyword); }
+		protected QuestObjective Equip(string tag) { return new QuestObjectiveEquip(tag); }
 
 		// Reward Factory
 		// ------------------------------------------------------------------
@@ -501,13 +509,37 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Checks prerequisites.
+		/// Checks and updates current objective.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="keywordId"></param>
 		private void CreatureGotKeyword(Creature creature, int keywordId)
 		{
 			this.CheckCurrentObjective(creature);
+		}
+
+		/// <summary>
+		/// Updates equip objectives.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="item"></param>
+		private void OnPlayerEquipsItem(Creature creature, Item item)
+		{
+			if (creature == null || !creature.IsPlayer || item == null || !item.Info.Pocket.IsEquip())
+				return;
+
+			var quest = creature.Quests.Get(this.Id);
+			if (quest == null) return;
+
+			var progress = quest.CurrentObjectiveOrLast;
+			if (progress == null) return;
+
+			var objective = this.Objectives[progress.Ident];
+			if (objective == null || objective.Type != ObjectiveType.Equip) return;
+
+			var equipObjective = (objective as QuestObjectiveEquip);
+			if (!progress.Done && item.HasTag(equipObjective.Tag))
+				quest.SetDone(progress.Ident);
 		}
 	}
 

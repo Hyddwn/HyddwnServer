@@ -126,6 +126,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// 52 - QO_FLAG:b:true;TARGETCOUNT:4:1; - Collect for the Transformation Diary
 				// 50 - TARGETRACE:4:9;TARGETCOUNT:4:1; - Transform into a Kiwi.
 				// 54 - TARGETRACE:4:9;TARGETCOUNT:4:1; - Collect Frail Green Kiwi perfectly.
+				// 31 - TARGETCOUNT:4:1;TGTSID:s:/Gathering_Knife/; - Equip Gathering Knife
 
 				// Type theory:
 				// 1  : Kill x of y
@@ -137,6 +138,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// 15 : Reach lvl x
 				// 18 : Do something with item x ?
 				// 19 : Clear something, like jousting or a dungeon?
+				// 31 : Equip item, matching tag X
 
 				// Progress
 				packet.PutInt(progress.Count);

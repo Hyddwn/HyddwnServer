@@ -168,4 +168,22 @@ namespace Aura.Channel.World.Quests
 			this.MetaData.SetInt("TARGETCOUNT", 1);
 		}
 	}
+
+	/// <summary>
+	/// Objective to equip something.
+	/// </summary>
+	public class QuestObjectiveEquip : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Equip; } }
+
+		public string Tag { get; private set; }
+
+		public QuestObjectiveEquip(string tag)
+			: base(1)
+		{
+			this.Tag = tag;
+			this.MetaData.SetString("TGTSID", this.Tag);
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
+	}
 }
