@@ -95,20 +95,10 @@ public class ElenScript : NpcScript
 				ModifyRelation(Random(2), 0, Random(2));
 				break;
 
-			/*case "about_skill":
-				// If you don't have refining
-				Msg("Did my grandpa send you over this way?<br/>Hehe.... Oh, nothing.<br/>Here, take this...");
-				Msg("Are you interested in refining by any chance?<br/>Refining is the first step in becoming a blacksmith...");
-				Msg("You can use ore in its raw form.<br/>You have to melt it to extract the pure metal from it.<br/>You can simply assume that you can use the ore as it is.");
-				Msg("We've been looking for more ore anyway,<br/>so why don't you go to Barri Dungeon and mine some ore for us?<br/>Bring some ore and I'll teach you how to refine metal. Tee hee...<br/>Of course, if you are going to mine, you will need at least a pickaxe.");
-
-				// If you talk to her during refining quest
-				Msg("Did you forget what I asked you?");
-				Msg("You can find ore inside Barri Dungeon over there.<br/>Of course, you can't mine with bare hands. You will need a pickaxe for that.");
-
-				// After the quest / Has refining
+			case "about_skill":
+				// Learning Refining is handled in the quest script
 				Msg("How's refining coming along?<br/>There are lots of furnaces around,<br/>so go talk to Sion over there and he'll teach you how to use one.");
-				break;*/
+				break;
 
 			case "about_arbeit":
 				Msg("Unimplemented");
