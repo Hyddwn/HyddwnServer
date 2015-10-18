@@ -93,6 +93,10 @@ namespace Aura.Channel.Network.Handlers
 			if (target.IsEquip() && (item.HasTag("/potion_making/kit/")) && !creature.Skills.Has(SkillId.PotionMaking))
 				creature.Skills.Give(SkillId.PotionMaking, SkillRank.Novice);
 
+			// Give Handicraft when equipping a Handicraft Kit
+			if (target.IsEquip() && (item.HasTag("/handicraft_kit/")) && !creature.Skills.Has(SkillId.Handicraft))
+				creature.Skills.Give(SkillId.Handicraft, SkillRank.RF);
+
 			// Inform about temp moves (items in temp don't count for quest objectives?)
 			if (source == Pocket.Temporary && target == Pocket.Cursor)
 				ChannelServer.Instance.Events.OnPlayerReceivesItem(creature, item.Info.Id, item.Info.Amount);
