@@ -77,25 +77,30 @@ namespace Aura.Channel.Network.Handlers
 			if (!creature.Inventory.Move(item, target, targetX, targetY))
 				goto L_Fail;
 
-			// Give Ranged Attack when equipping a (cross)bow
-			if (target.IsEquip() && (item.HasTag("/bow/|/crossbow/")) && !creature.Skills.Has(SkillId.RangedAttack))
-				creature.Skills.Give(SkillId.RangedAttack, SkillRank.Novice);
+			// Handle stuff that happens when you equip certain things.
+			// TODO: Handle in a script?
+			if (target.IsEquip())
+			{
+				// Give Ranged Attack when equipping a (cross)bow
+				if ((item.HasTag("/bow/|/crossbow/")) && !creature.Skills.Has(SkillId.RangedAttack))
+					creature.Skills.Give(SkillId.RangedAttack, SkillRank.Novice);
 
-			// Give Dice Tossing When equiping Dice
-			if (target.IsEquip() && (item.HasTag("/dice/")) && !creature.Skills.Has(SkillId.DiceTossing))
-				creature.Skills.Give(SkillId.DiceTossing, SkillRank.Novice);
+				// Give Dice Tossing When equiping Dice
+				if ((item.HasTag("/dice/")) && !creature.Skills.Has(SkillId.DiceTossing))
+					creature.Skills.Give(SkillId.DiceTossing, SkillRank.Novice);
 
-			// Give Playing Instrument when equipping an instrument
-			if (target.IsEquip() && (item.HasTag("/instrument/")) && !creature.Skills.Has(SkillId.PlayingInstrument))
-				creature.Skills.Give(SkillId.PlayingInstrument, SkillRank.Novice);
+				// Give Playing Instrument when equipping an instrument
+				if ((item.HasTag("/instrument/")) && !creature.Skills.Has(SkillId.PlayingInstrument))
+					creature.Skills.Give(SkillId.PlayingInstrument, SkillRank.Novice);
 
-			// Give Potion Making when equipping a Potion Concoction Kit
-			if (target.IsEquip() && (item.HasTag("/potion_making/kit/")) && !creature.Skills.Has(SkillId.PotionMaking))
-				creature.Skills.Give(SkillId.PotionMaking, SkillRank.Novice);
+				// Give Potion Making when equipping a Potion Concoction Kit
+				if ((item.HasTag("/potion_making/kit/")) && !creature.Skills.Has(SkillId.PotionMaking))
+					creature.Skills.Give(SkillId.PotionMaking, SkillRank.Novice);
 
-			// Give Handicraft when equipping a Handicraft Kit
-			if (target.IsEquip() && (item.HasTag("/handicraft_kit/")) && !creature.Skills.Has(SkillId.Handicraft))
-				creature.Skills.Give(SkillId.Handicraft, SkillRank.RF);
+				// Give Handicraft when equipping a Handicraft Kit
+				if ((item.HasTag("/handicraft_kit/")) && !creature.Skills.Has(SkillId.Handicraft))
+					creature.Skills.Give(SkillId.Handicraft, SkillRank.RF);
+			}
 
 			// Inform about temp moves (items in temp don't count for quest objectives?)
 			if (source == Pocket.Temporary && target == Pocket.Cursor)
