@@ -25,7 +25,7 @@ namespace Aura.Channel.Skills.Life
 		/// </summary>
 		public void Init()
 		{
-			ChannelServer.Instance.Events.CreatureCollected += this.OnCreatureCollected;
+			ChannelServer.Instance.Events.CreatureGathered += this.OnCreatureGathered;
 		}
 
 		/// <summary>
@@ -47,7 +47,7 @@ namespace Aura.Channel.Skills.Life
 		/// Raised when creature collects something, handles gathering conditions.
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnCreatureCollected(CollectEventArgs args)
+		private void OnCreatureGathered(CollectEventArgs args)
 		{
 			var skill = args.Creature.Skills.Get(SkillId.ProductionMastery);
 			if (skill == null || !args.Success) return;

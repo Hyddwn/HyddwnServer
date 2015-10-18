@@ -174,10 +174,10 @@ namespace Aura.Channel.World
 		public void OnCreatureGotKeyword(Creature creature, int keywordId) { CreatureGotKeyword.Raise(creature, keywordId); }
 
 		/// <summary>
-		/// Raised when a creature collects, aka gathers, items.
+		/// Raised when a creature gathers items.
 		/// </summary>
-		public event Action<CollectEventArgs> CreatureCollected;
-		public void OnCreatureCollected(CollectEventArgs args) { CreatureCollected.Raise(args); }
+		public event Action<CollectEventArgs> CreatureGathered;
+		public void OnCreatureGathered(CollectEventArgs args) { CreatureGathered.Raise(args); }
 
 		/// <summary>
 		/// Raised while handling the combat action pack.
