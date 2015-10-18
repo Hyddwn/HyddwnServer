@@ -58,7 +58,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			packet.PutString(quest.Data.Name);
 			packet.PutString(quest.Data.Description);
-			packet.PutString(""); // AdditionalInfo?
+			packet.PutString(quest.Data.AdditionalInfo);
 
 			packet.PutInt(1);
 			packet.PutInt(quest.QuestItem.Info.Id);

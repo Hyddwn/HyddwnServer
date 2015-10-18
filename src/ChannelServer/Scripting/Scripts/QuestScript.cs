@@ -23,6 +23,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 		public string Name { get; protected set; }
 		public string Description { get; protected set; }
+		public string AdditionalInfo { get; protected set; }
 
 		public QuestType Type { get; protected set; }
 		public PtjType PtjType { get; protected set; }
@@ -123,6 +124,15 @@ namespace Aura.Channel.Scripting.Scripts
 		protected void SetDescription(string description)
 		{
 			this.Description = description;
+		}
+
+		/// <summary>
+		/// Sets additional info of quest.
+		/// </summary>
+		/// <param name="info"></param>
+		protected void SetAdditionalInfo(string info)
+		{
+			this.AdditionalInfo = info;
 		}
 
 		/// <summary>
