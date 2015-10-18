@@ -185,6 +185,7 @@
     <Compile Include="Skills\Life\FirstAid.cs" />
     <Compile Include="Skills\Life\Fishing.cs" />
     <Compile Include="Skills\Life\Gathering.cs" />
+    <Compile Include="Skills\Life\PotionMaking.cs" />
     <Compile Include="Skills\Life\Refining.cs" />
     <Compile Include="Skills\Life\Weaving.cs" />
     <Compile Include="Skills\Life\Handicraft.cs" />

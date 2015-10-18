@@ -628,6 +628,11 @@ namespace Aura.Mabi.Const
 		Milling = 4,
 
 		/// <summary>
+		/// Potion Making skill
+		/// </summary>
+		PotionMaking = 5,
+
+		/// <summary>
 		/// Handicraft skill
 		/// </summary>
 		Handicraft = 6,

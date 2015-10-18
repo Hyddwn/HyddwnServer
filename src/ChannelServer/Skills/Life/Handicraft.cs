@@ -36,11 +36,6 @@ namespace Aura.Channel.Skills.Life
 			return true;
 		}
 
-		protected override bool CheckProp(Creature creature, long propEntityId)
-		{
-			return true;
-		}
-
 		protected override bool CheckCategory(Creature creature, ProductionCategory category)
 		{
 			return (category == ProductionCategory.Handicraft);

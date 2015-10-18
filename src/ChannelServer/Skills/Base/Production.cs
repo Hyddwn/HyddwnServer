@@ -354,7 +354,10 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="creature"></param>
 		/// <param name="propId"></param>
 		/// <returns></returns>
-		protected abstract bool CheckProp(Creature creature, long propEntityId);
+		protected virtual bool CheckProp(Creature creature, long propEntityId)
+		{
+			return true;
+		}
 
 		/// <summary>
 		/// Handles skill training.
