@@ -186,4 +186,23 @@ namespace Aura.Channel.World.Quests
 			this.MetaData.SetInt("TARGETCOUNT", 1);
 		}
 	}
+
+	/// <summary>
+	/// Objective to equip something.
+	/// </summary>
+	public class QuestObjectiveGather : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Gather; } }
+
+		public int ItemId { get; private set; }
+
+		public QuestObjectiveGather(int itemId, int amount)
+			: base(amount)
+		{
+			this.ItemId = itemId;
+			this.MetaData.SetInt("TARGETITEM", this.ItemId);
+			//this.MetaData.SetString("TGTSID", "/Gathering_Knife/"); // Tool to use (ignored?)
+			this.MetaData.SetInt("TARGETCOUNT", this.Amount);
+		}
+	}
 }

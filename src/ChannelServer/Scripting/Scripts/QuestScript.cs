@@ -14,6 +14,7 @@ using Aura.Mabi;
 using Aura.Channel.Network.Sending;
 using System.Threading;
 using Aura.Channel.Skills;
+using Aura.Channel.World;
 
 namespace Aura.Channel.Scripting.Scripts
 {
@@ -95,6 +96,7 @@ namespace Aura.Channel.Scripting.Scripts
 			ChannelServer.Instance.Events.CreatureLevelUp -= this.OnCreatureLevelUp;
 			ChannelServer.Instance.Events.CreatureGotKeyword -= this.CreatureGotKeyword;
 			ChannelServer.Instance.Events.PlayerEquipsItem -= this.OnPlayerEquipsItem;
+			ChannelServer.Instance.Events.CreatureGathered -= this.OnCreatureGathered;
 		}
 
 		// Setup
@@ -267,6 +269,12 @@ namespace Aura.Channel.Scripting.Scripts
 				ChannelServer.Instance.Events.PlayerEquipsItem += this.OnPlayerEquipsItem;
 			}
 
+			if (objective.Type == ObjectiveType.Gather)
+			{
+				ChannelServer.Instance.Events.CreatureGathered -= this.OnCreatureGathered;
+				ChannelServer.Instance.Events.CreatureGathered += this.OnCreatureGathered;
+			}
+
 			this.Objectives.Add(ident, objective);
 		}
 
@@ -327,6 +335,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestObjective ReachLevel(int level) { return new QuestObjectiveReachLevel(level); }
 		protected QuestObjective GetKeyword(string keyword) { return new QuestObjectiveGetKeyword(keyword); }
 		protected QuestObjective Equip(string tag) { return new QuestObjectiveEquip(tag); }
+		protected QuestObjective Gather(int itemId, int amount) { return new QuestObjectiveGather(itemId, amount); }
 
 		// Reward Factory
 		// ------------------------------------------------------------------
@@ -539,7 +548,36 @@ namespace Aura.Channel.Scripting.Scripts
 
 			var equipObjective = (objective as QuestObjectiveEquip);
 			if (!progress.Done && item.HasTag(equipObjective.Tag))
+			{
 				quest.SetDone(progress.Ident);
+				Send.QuestUpdate(creature, quest);
+			}
+		}
+
+		/// <summary>
+		/// Updates gathering objectives.
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnCreatureGathered(CollectEventArgs args)
+		{
+			var quest = args.Creature.Quests.Get(this.Id);
+			if (quest == null) return;
+
+			var progress = quest.CurrentObjectiveOrLast;
+			if (progress == null) return;
+
+			var objective = this.Objectives[progress.Ident];
+			if (objective == null || objective.Type != ObjectiveType.Gather) return;
+
+			var gatherObjective = (objective as QuestObjectiveGather);
+			if (!progress.Done && args.Success && args.ItemId == gatherObjective.ItemId)
+			{
+				progress.Count++;
+				if (progress.Count == gatherObjective.Amount)
+					quest.SetDone(progress.Ident);
+
+				Send.QuestUpdate(args.Creature, quest);
+			}
 		}
 	}
 
