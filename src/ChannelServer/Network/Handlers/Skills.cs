@@ -667,12 +667,20 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.ProductionSuccessRequest)]
 		public void ProductionSuccessRequest(ChannelClient client, Packet packet)
 		{
+			ProductionCategory category;
+			int productionId;
+
+			// Parse packet
 			var skillId = (SkillId)packet.GetUShort();
 			var unkShort1 = packet.GetShort();
-			var category = (ProductionCategory)packet.GetShort();
-			var productionId = packet.GetInt();
+			if (unkShort1 == 5)
+			{
+				category = (ProductionCategory)packet.GetShort();
+				productionId = packet.GetInt();
+			}
 			var propEntityId = packet.GetLong();
 
+			// Get creature
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			// Check skill
@@ -682,7 +690,17 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			Send.ProductionSuccessRequestR(creature, skillId, 0, false);
+			// Response
+			if (unkShort1 == 5)
+			{
+				Send.ProductionSuccessRequestR(creature, skillId, 0, false);
+			}
+			else if (unkShort1 == 6)
+			{
+				Send.ProductionSuccessRequestR(creature, skillId, 0, false, 0);
+			}
+			else
+				Log.Warning("ProductionSuccessRequest: Unknown packet structure.");
 		}
 	}
 }

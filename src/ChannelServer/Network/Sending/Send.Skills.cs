@@ -873,6 +873,10 @@ namespace Aura.Channel.Network.Sending
 		/// Sends ProductionSuccessRequestR to creature's client, informing it
 		/// about the success rate it requested.
 		/// </summary>
+		/// <remarks>
+		/// This version of the packet is used for "normal" Production,
+		/// like Weaving and Handicraft.
+		/// </remarks>
 		/// <param name="creature"></param>
 		/// <param name="skillId">Skill the rate is used for.</param>
 		/// <param name="successRate">
@@ -893,6 +897,38 @@ namespace Aura.Channel.Network.Sending
 			gp.PutFloat(successRate);
 			gp.PutByte(0);
 			gp.PutByte(totalSuccess);
+
+			creature.Client.Send(gp);
+		}
+
+		/// <summary>
+		/// Sends ProductionSuccessRequestR to creature's client, informing it
+		/// about the success rate it requested.
+		/// </summary>
+		/// <remarks>
+		/// This version of the packet is used for Tailoring and Blacksmithing.
+		/// </remarks>
+		/// <param name="creature"></param>
+		/// <param name="skillId">Skill the rate is used for.</param>
+		/// <param name="successRate">
+		/// Bonus success rate, added to the value calculated by the client,
+		/// or the total success rate to use, if totalSuccess is true.
+		/// </param>
+		/// <param name="totalSuccess">
+		/// If true, the client will display the given successRate, if it's false,
+		/// it will calculate the default rate itself and add successRate as bonus.
+		/// </param>
+		public static void ProductionSuccessRequestR(Creature creature, SkillId skillId, float successRate, bool totalSuccess, float unkFloat)
+		{
+			var gp = new Packet(Op.ProductionSuccessRequestR, creature.EntityId);
+
+			gp.PutByte(1);
+			gp.PutUShort((ushort)skillId);
+			gp.PutShort(6);
+			gp.PutFloat(successRate);
+			gp.PutByte(0);
+			gp.PutByte(totalSuccess);
+			gp.PutFloat(unkFloat);
 
 			creature.Client.Send(gp);
 		}
