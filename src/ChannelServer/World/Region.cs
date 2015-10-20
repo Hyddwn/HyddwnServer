@@ -451,7 +451,6 @@ namespace Aura.Channel.World
 			}
 
 			creature.Region = this;
-			ChannelServer.Instance.Events.OnPlayerEntersRegion(creature);
 
 			// Save reference to client if it's mainly controlling this creature.
 			if (creature.Client.Controlling == creature)
@@ -471,6 +470,9 @@ namespace Aura.Channel.World
 
 			//if (creature.EntityId < MabiId.Npcs)
 			//	Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
+
+			if (creature.IsPlayer)
+				ChannelServer.Instance.Events.OnPlayerEntersRegion(creature);
 		}
 
 		/// <summary>
