@@ -1264,6 +1264,18 @@ namespace Aura.Channel.World.Inventory
 			item.OptionInfo.Durability = Math.Max(0, item.OptionInfo.Durability - amount);
 			Send.ItemDurabilityUpdate(_creature, item);
 		}
+
+		/// <summary>
+		/// Increases item's proficiency and updates client.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="amount"></param>
+		public void AddProficiency(Item item, int amount)
+		{
+			item.Proficiency += amount;
+
+			Send.ItemExpUpdate(_creature, item);
+		}
 	}
 
 	public enum WeaponSet : byte

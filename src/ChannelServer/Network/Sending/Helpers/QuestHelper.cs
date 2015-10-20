@@ -58,7 +58,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			packet.PutString(quest.Data.Name);
 			packet.PutString(quest.Data.Description);
-			packet.PutString(""); // AdditionalInfo?
+			packet.PutString(quest.Data.AdditionalInfo);
 
 			packet.PutInt(1);
 			packet.PutInt(quest.QuestItem.Info.Id);
@@ -126,6 +126,8 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// 52 - QO_FLAG:b:true;TARGETCOUNT:4:1; - Collect for the Transformation Diary
 				// 50 - TARGETRACE:4:9;TARGETCOUNT:4:1; - Transform into a Kiwi.
 				// 54 - TARGETRACE:4:9;TARGETCOUNT:4:1; - Collect Frail Green Kiwi perfectly.
+				// 31 - TARGETCOUNT:4:1;TGTSID:s:/Gathering_Knife/; - Equip Gathering Knife
+				// 32 - TARGETCOUNT:4:5;TARGETITEM:4:60009;TGTSID:s:/Gathering_Knife/; - Sheared 5 Sheep
 
 				// Type theory:
 				// 1  : Kill x of y
@@ -137,6 +139,8 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// 15 : Reach lvl x
 				// 18 : Do something with item x ?
 				// 19 : Clear something, like jousting or a dungeon?
+				// 31 : Equip item, matching tag X
+				// 32 : Gather item x, gather equipment doesn't seem to matter
 
 				// Progress
 				packet.PutInt(progress.Count);

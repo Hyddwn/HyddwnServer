@@ -214,6 +214,11 @@ namespace Aura.Shared
 					this.LoadDb(AuraData.CutscenesDb, "db/cutscenes.txt", reload);
 					this.LoadDb(AuraData.ActorDb, "db/actors.txt", reload);
 				}
+
+				if ((toLoad & DataLoad.Production) != 0)
+				{
+					this.LoadDb(AuraData.ProductionDb, "db/production.txt", reload);
+				}
 			}
 			catch (DatabaseErrorException ex)
 			{
@@ -318,6 +323,7 @@ namespace Aura.Shared
 		Dungeons = 0x400000,
 		Features = 0x800000,
 		Cutscenes = 0x1000000,
+		Production = 0x2000000,
 
 		All = 0xFFFFFFFF,
 

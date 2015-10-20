@@ -266,7 +266,7 @@ namespace Aura.Channel.Skills.Life
 			//}
 
 			// Events
-			ChannelServer.Instance.Events.OnCreatureCollected(new CollectEventArgs(creature, collectData, collectSuccess, receiveItemId));
+			ChannelServer.Instance.Events.OnCreatureGathered(new CollectEventArgs(creature, collectData, collectSuccess, receiveItemId));
 
 			// Complete
 			this.DoComplete(creature, entityId, collectId, collectSuccess, 0);

@@ -2152,5 +2152,30 @@ namespace Aura.Channel.World.Entities
 
 			action(this);
 		}
+
+		/// <summary>
+		/// Calculates and returns general production skill success chance.
+		/// </summary>
+		/// <remarks>
+		/// Unofficial, but seems to work fine in most cases.
+		/// http://mabination.com/threads/57123-Chaos-Life-Skill-Guide-Refining
+		/// </remarks>
+		/// <returns></returns>
+		public float GetProductionSuccessChance(int baseChance, int rainBonus)
+		{
+			// Base
+			var result = (baseChance + (this.Dex - 60) * (baseChance / 300));
+
+			// Production Mastery bonus
+			var pm = this.Skills.Get(SkillId.ProductionMastery);
+			if (pm != null)
+				result += (byte)pm.Info.Rank;
+
+			// Weather bonus
+			if (ChannelServer.Instance.Weather.GetWeatherType(this.RegionId) == WeatherType.Rain)
+				result += rainBonus;
+
+			return Math2.Clamp(0, 99, result);
+		}
 	}
 }

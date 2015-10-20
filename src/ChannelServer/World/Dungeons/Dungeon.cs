@@ -283,7 +283,7 @@ namespace Aura.Channel.World.Dungeons
 			if (stairs == null)
 				throw new Exception("Missing stairs prop '" + this.Data.StairsPropId + "'.");
 
-			var statue = region.GetProp(a => a.Extensions.Any(x => x.SignalType == SignalType.Touch && x.EventType == EventType.Confirmation));
+			var statue = region.GetProp(a => a.Parameters.Any(x => x.SignalType == SignalType.Touch && x.EventType == EventType.Confirmation));
 			if (statue == null)
 				throw new Exception("Missing statue prop '" + this.Data.LastStatuePropId + "'.");
 

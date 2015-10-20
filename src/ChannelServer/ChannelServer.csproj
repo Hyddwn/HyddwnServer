@@ -156,6 +156,7 @@
     <Compile Include="Skills\Actions\ContinentWarp.cs" />
     <Compile Include="Skills\Actions\OutfitAction.cs" />
     <Compile Include="Skills\Base\CombatSkillHandler.cs" />
+    <Compile Include="Skills\Base\Production.cs" />
     <Compile Include="Skills\Base\Interfaces.cs" />
     <Compile Include="Skills\Base\StandardPrepareHandler.cs" />
     <Compile Include="Skills\Base\StartStopSkillHandler.cs" />
@@ -179,10 +180,15 @@
     <Compile Include="Skills\Actions\DiceTossing.cs" />
     <Compile Include="Skills\Hidden\UseItemChattingColorChange.cs" />
     <Compile Include="Skills\Hidden\NameColorChange.cs" />
+    <Compile Include="Skills\Hidden\Milling.cs" />
     <Compile Include="Skills\Life\Campfire.cs" />
     <Compile Include="Skills\Life\FirstAid.cs" />
     <Compile Include="Skills\Life\Fishing.cs" />
     <Compile Include="Skills\Life\Gathering.cs" />
+    <Compile Include="Skills\Life\PotionMaking.cs" />
+    <Compile Include="Skills\Life\Refining.cs" />
+    <Compile Include="Skills\Life\Weaving.cs" />
+    <Compile Include="Skills\Life\Handicraft.cs" />
     <Compile Include="Skills\Life\Herbalism.cs" />
     <Compile Include="Skills\Life\ProductionMastery.cs" />
     <Compile Include="Skills\Life\Rest.cs" />

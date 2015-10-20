@@ -6,6 +6,12 @@
 
 public class SionScript : NpcScript
 {
+	static long FurnaceSwitchId = 0x00A0001F00010029;
+
+	static bool furnacesOn;
+	static IList<Prop> furnaces;
+	static Prop furnaceSwitch;
+
 	public override void Load()
 	{
 		SetName("_sion");
@@ -38,6 +44,8 @@ public class SionScript : NpcScript
 		AddPhrase("To fire up the furnace, come talk to me!");
 		AddPhrase("Why does Bryce not like me?");
 		AddPhrase("You have to pay. You have to pay to activate the switch!");
+
+		InitFurnaces();
 	}
 
 	protected override async Task Talk()
@@ -63,30 +71,43 @@ public class SionScript : NpcScript
 				break;
 
 			case "@watermill":
-				Msg("Unimplemented");
-
-				/*Msg("Do you want to use the furnace?<br/>You can use it for 1 minute with 100 Gold,<br/>and for 5 minutes with 450 Gold.");
-				Msg("Hehe... It uses firewood, water, and other things...<br/>so I'm sorry but I have to charge you or I lose money.<br/>However, anyone can use it when it's running.", Button("1 Minute", "@1minute"), Button("5 Minutes", "@5minute"), Button("Forget It", "@quit"));
-				
-				var response = await Select();
-				if (response == "@1minute")
+				if (furnacesOn)
 				{
-					Msg("There, I turned on the switch. Now anyone can use the furnace for 1 minute.");
+					Msg("I started the furnace...<br/>You better hurry up and use it before time runs out.");
 				}
-				else if (response == "@5minute")
+				else
 				{
-					Msg("There, I turned on the switch. Now anyone can use the furnace for 5 minutes.");
-				}
-				else if (response == "@quit")
-				{
-					Msg("You're not going to pay? Then you can't make ingots.<br/>You need fire to refine ore...");
-				}
+					Msg("Do you want to use the furnace?<br/>You can use it for 1 minute with 100 Gold,<br/>and for 5 minutes with 450 Gold.");
+					Msg("Hehe... It uses firewood, water, and other things...<br/>so I'm sorry but I have to charge you or I lose money.<br/>However, anyone can use it when it's running.", Button("1 Minute", "@1minute"), Button("5 Minutes", "@5minutes"), Button("Forget It", "@quit"));
 
-				// Already in Use
-				// Msg("I started the furnace...<br/>You better hurry up and use it before time runs out.");
-
-				// If you don't have enough money
-				// Msg("You don't have enough to pay for it.<br/>...I'm sorry, but you need more money...");*/
+					var response = await Select();
+					if (response == "@1minute")
+					{
+						if (Gold < 100)
+							Msg("You don't have enough to pay for it.<br/>...I'm sorry, but you need more money...");
+						else
+						{
+							Msg("There, I turned on the switch. Now anyone can use the furnace for 1 minute.");
+							ActivateFurnaces(1);
+							Gold -= 100;
+						}
+					}
+					else if (response == "@5minutes")
+					{
+						if (Gold < 450)
+							Msg("You don't have enough to pay for it.<br/>...I'm sorry, but you need more money...");
+						else
+						{
+							Msg("There, I turned on the switch. Now anyone can use the furnace for 5 minutes.");
+							ActivateFurnaces(5);
+							Gold -= 450;
+						}
+					}
+					else if (response == "@quit")
+					{
+						Msg("You're not going to pay? Then you can't make ingots.<br/>You need fire to refine ore...");
+					}
+				}
 				break;
 
 			case "@upgrade":
@@ -97,6 +118,45 @@ public class SionScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void InitFurnaces()
+	{
+		var region = ChannelServer.Instance.World.GetRegion(NPC.RegionId);
+
+		furnaces = region.GetProps(a => a.HasTag("/refine/"));
+		furnaceSwitch = region.GetProp(FurnaceSwitchId);
+
+		DeactivateFurnaces();
+	}
+
+	private void ActivateFurnaces(int minutes)
+	{
+		if (furnacesOn)
+			return;
+		furnacesOn = true;
+
+		if (minutes == 1)
+			furnaceSwitch.Xml.SetAttributeValue("EventText", string.Format("{0} has activated the furnace for 1 minute.\nAnyone can use the furnace now to make ingots.", Player.Name));
+		else
+			furnaceSwitch.Xml.SetAttributeValue("EventText", string.Format("{0} has activated the furnace for {1} minutes.\nAnyone can use the furnace now to make ingots.", Player.Name, minutes));
+		furnaceSwitch.SetState("on");
+
+		foreach (var prop in furnaces)
+			prop.SetState("on");
+
+		SetTimeout(1000 * 60 * minutes, DeactivateFurnaces);
+	}
+
+	private void DeactivateFurnaces()
+	{
+		furnaceSwitch.Xml.SetAttributeValue("EventText", "You can't use the furnace.\nYou can activate the furnace through the water mill keeper.");
+		furnaceSwitch.SetState("off");
+
+		foreach (var prop in furnaces)
+			prop.SetState("off");
+
+		furnacesOn = false;
 	}
 
 	protected override async Task Keywords(string keyword)

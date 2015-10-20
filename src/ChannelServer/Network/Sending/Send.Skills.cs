@@ -12,6 +12,8 @@ using Aura.Channel.Skills;
 using Aura.Mabi.Const;
 using Aura.Data.Database;
 using Aura.Mabi.Network;
+using Aura.Channel.Skills.Life;
+using Aura.Channel.Skills.Base;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -283,6 +285,51 @@ namespace Aura.Channel.Network.Sending
 		/// <summary>
 		/// Sends SkillUse to creature's client.
 		/// </summary>
+		/// <remarks>
+		/// TODO: Look into sending packets back as is, so we don't have to
+		///   recreate complex ones like this one.
+		/// </remarks>
+		/// <param name="creature"></param>
+		/// <param name="skillId"></param>
+		/// <param name="unkByte"></param>
+		/// <param name="propEntityId"></param>
+		/// <param name="unkInt"></param>
+		/// <param name="productId"></param>
+		/// <param name="unkShort"></param>
+		/// <param name="category"></param>
+		/// <param name="amountToProduce"></param>
+		/// <param name="materials"></param>
+		public static void SkillUse(Creature creature, SkillId skillId, byte unkByte, long propEntityId, int unkInt, int productId, short unkShort, ProductionCategory category, short amountToProduce, List<ProductionMaterial> materials)
+		{
+			if (materials.Count > byte.MaxValue)
+				throw new ArgumentException("Amount of materials can't be larger than 255.");
+
+			var packet = new Packet(Op.SkillUse, creature.EntityId);
+
+			packet.PutUShort((ushort)skillId);
+			packet.PutByte(unkByte);
+			if (propEntityId != 0)
+			{
+				packet.PutLong(propEntityId);
+				packet.PutInt(unkInt);
+			}
+			packet.PutInt(productId);
+			packet.PutShort(unkShort);
+			packet.PutShort((short)category);
+			packet.PutShort(amountToProduce);
+			packet.PutByte((byte)materials.Count);
+			foreach (var material in materials)
+			{
+				packet.PutLong(material.Item.EntityId);
+				packet.PutShort((short)material.Amount);
+			}
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends SkillUse to creature's client.
+		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="skillId"></param>
 		/// <param name="dict"></param>
@@ -495,6 +542,47 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.SkillComplete, creature.EntityId);
 			packet.PutUShort((ushort)skillId);
 			packet.PutByte(unkByte);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends SkillComplete to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skillId"></param>
+		/// <param name="unkByte"></param>
+		/// <param name="propEntityId"></param>
+		/// <param name="unkInt"></param>
+		/// <param name="productId"></param>
+		/// <param name="unkShort"></param>
+		/// <param name="category"></param>
+		/// <param name="amountToProduce"></param>
+		/// <param name="materials"></param>
+		public static void SkillComplete(Creature creature, SkillId skillId, byte unkByte, long propEntityId, int unkInt, int productId, short unkShort, ProductionCategory category, short amountToProduce, List<ProductionMaterial> materials)
+		{
+			if (materials.Count > byte.MaxValue)
+				throw new ArgumentException("Amount of materials can't be larger than 255.");
+
+			var packet = new Packet(Op.SkillComplete, creature.EntityId);
+
+			packet.PutUShort((ushort)skillId);
+			packet.PutByte(unkByte);
+			if (propEntityId != 0)
+			{
+				packet.PutLong(propEntityId);
+				packet.PutInt(unkInt);
+			}
+			packet.PutInt(productId);
+			packet.PutShort(unkShort);
+			packet.PutShort((short)category);
+			packet.PutShort(amountToProduce);
+			packet.PutByte((byte)materials.Count);
+			foreach (var material in materials)
+			{
+				packet.PutLong(material.Item.EntityId);
+				packet.PutShort((short)material.Amount);
+			}
 
 			creature.Client.Send(packet);
 		}
@@ -779,6 +867,34 @@ namespace Aura.Channel.Network.Sending
 			packet.PutByte(0); // end of list?
 
 			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends ProductionSuccessRequestR to creature's client, informing it
+		/// about the success rate it requested.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skillId">Skill the rate is used for.</param>
+		/// <param name="successRate">
+		/// Bonus success rate, added to the value calculated by the client,
+		/// or the total success rate to use, if totalSuccess is true.
+		/// </param>
+		/// <param name="totalSuccess">
+		/// If true, the client will display the given successRate, if it's false,
+		/// it will calculate the default rate itself and add successRate as bonus.
+		/// </param>
+		public static void ProductionSuccessRequestR(Creature creature, SkillId skillId, float successRate, bool totalSuccess)
+		{
+			var gp = new Packet(Op.ProductionSuccessRequestR, creature.EntityId);
+
+			gp.PutByte(1);
+			gp.PutUShort((ushort)skillId);
+			gp.PutShort(5); // unkShort1?
+			gp.PutFloat(successRate);
+			gp.PutByte(0);
+			gp.PutByte(totalSuccess);
+
+			creature.Client.Send(gp);
 		}
 	}
 }

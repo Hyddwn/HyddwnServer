@@ -62,6 +62,8 @@ quests/ptj/502165_endelyon_eggs_adv.cs
 quests/ptj/church_endelyon.cs
 
 // Skills
+quests/20006_elen_refine.cs
 quests/20007_ranald_windmill.cs
+quests/204003_malcolm_weaving_g7.cs
 
 include "/user/scripts/scripts_quests.txt"

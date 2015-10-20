@@ -134,6 +134,22 @@ namespace Aura.Channel.World.Entities
 		public PropExtensionManager Extensions { get; private set; }
 
 		/// <summary>
+		/// List of parameters for client side props.
+		/// </summary>
+		/// <remarks>
+		/// While the parameters are very similar to the extensions, they can't
+		/// be sent to the client, that messes with the prop's functionality.
+		/// For example, sending the parameters as extensions to the client
+		/// will override the original functionality of production props.
+		/// As a result you won't start a skill anymore, but send a touch
+		/// prop packet instead. Since we still need the parameters though,
+		/// we just dump them here for now, until we know more.
+		/// 
+		/// Don't change this list during run-time.
+		/// </remarks>
+		public List<RegionElementData> Parameters { get; set; }
+
+		/// <summary>
 		/// Creates new prop with a newly generated entity id.
 		/// </summary>
 		/// <param name="id"></param>
@@ -308,9 +324,12 @@ namespace Aura.Channel.World.Entities
 		{
 			this.Shapes.Clear();
 
+			// Get list of defaults for prop
 			var defaultsList = AuraData.PropDefaultsDb.Find(this.Info.Id);
 			if (defaultsList != null && defaultsList.Count != 0)
 			{
+				// Get first default if state is empty, or the first one that
+				// matches the current state.
 				var def = string.IsNullOrWhiteSpace(this.State)
 					? defaultsList.First()
 					: defaultsList.FirstOrDefault(a => a.State == this.State);
