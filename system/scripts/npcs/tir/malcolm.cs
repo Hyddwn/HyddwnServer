@@ -169,3 +169,94 @@ public class MalcolmBaseScript : NpcScript
 		}
 	}
 }
+
+public class MalcolmShop : NpcShopScript
+{
+	public override void Setup()
+	{
+		Add("General Goods", 40093);      // Pet Instructor Stick
+		Add("General Goods", 61001);      // Score Scroll
+		Add("General Goods", 64018, 10);  // Paper x10
+		Add("General Goods", 64018, 100); // Paper x100
+		Add("General Goods", 62021, 100); // Six-sided Die x100
+		Add("General Goods", 63020);      // Empty Bottle
+		Add("General Goods", 19001);   // Robe
+		Add("General Goods", 1006);    // Introduction to Music Composition
+		Add("General Goods", 60045);      // Handicraft Kit
+		Add("General Goods", 60034);    // Bait Tin x300
+		Add("General Goods", 40004);      // Lute
+		Add("General Goods", 19002);    // Slender Robe
+		Add("General Goods", 51227, 1);   // Ticking Quiz Bomb x1
+		Add("General Goods", 2001);       // Gold Pouch
+		Add("General Goods", 40045);    // Fishing Rod
+		Add("General Goods", 40018);    // Ukulele
+		Add("General Goods", 40214);    // Bass Drum
+		Add("General Goods", 2006);       // Big Gold Pouch
+		Add("General Goods", 2005);       // Item Bag (7x5)
+		Add("General Goods", 2029);       // Item Bag (8x6)
+		Add("General Goods", 2024);       // Item Bag (7x6)
+		Add("General Goods", 18029);    // Wood-rimmed Glasses
+		Add("General Goods", 91364, 1);   // Seal Scroll (1-day) x1
+		Add("General Goods", 91364, 10);  // Seal Scroll (1-day) x10
+		Add("General Goods", 91365, 1);   // Seal Scroll (7-day) x1
+		Add("General Goods", 91365, 10);  // Seal Scroll (7-day) x10
+		Add("General Goods", 91366, 1);   // Seal Scroll (30-day) x1
+		Add("General Goods", 91366, 10);  // Seal Scroll (30-day) x10
+		Add("General Goods", 85571);      // Reforging Tool
+
+		Add("Hats", 18024);    //  Hairband
+		Add("Hats", 18017);    //  Tail Cap
+		Add("Hats", 18023);    //  Mongo's Thief Cap
+		Add("Hats", 18025);    //  Popo's Merchant Cap
+		Add("Hats", 18016);    //  Hat
+		Add("Hats", 18015);    //  Leather Hat
+		Add("Hats", 18019);    //  Lirina's Feather Cap
+		Add("Hats", 18027);    //  Lirina's Merchant Cap
+		Add("Hats", 18020);    //  Mongo's Feather Cap
+		Add("Hats", 18018);    //  Leather Tail Cap
+		Add("Hats", 18021);    //  Merchant Cap
+		Add("Hats", 18026);    //  Mongo's Merchant Cap
+
+		Add("Shoes & Gloves", 17012);    //  Leather Shoes (Type 1)
+		Add("Shoes & Gloves", 16024);    //  Pet Instructor Glove
+		Add("Shoes & Gloves", 17025);    //  Sandal
+		Add("Shoes & Gloves", 16029);    //  Leather Stitched Glove
+		Add("Shoes & Gloves", 16002);    //  Linen Gloves
+		Add("Shoes & Gloves", 17066);    //  One-button Ankle Shoes
+		Add("Shoes & Gloves", 16001);    //  Quilting Gloves
+		Add("Shoes & Gloves", 16030);    //  Big Band Glove
+		Add("Shoes & Gloves", 17006);    //  Cloth Shoes
+		Add("Shoes & Gloves", 17000);    //  Women's Flats
+		Add("Shoes & Gloves", 17014);    //  Leather Shoes (Type 3)
+		Add("Shoes & Gloves", 17002);    //  Swordswoman Shoes
+		Add("Shoes & Gloves", 17008);    //  Cores' Boots (F)
+		Add("Shoes & Gloves", 17027);    //  Long Sandals
+		Add("Shoes & Gloves", 16003);    //  Sesamoid Gloves
+		Add("Shoes & Gloves", 16011);    //  Cores' Healer Gloves
+		Add("Shoes & Gloves", 16012);    //  Swordswoman Gloves
+		Add("Shoes & Gloves", 17036);    //  Spika Two-piece Boots
+		Add("Shoes & Gloves", 16034);    //  Two-lined Belt Glove
+		Add("Shoes & Gloves", 17071);    //  Knee-high Boots
+		Add("Shoes & Gloves", 17038);    //  Mini Ribbon Sandals
+
+		Add("Casual", 15000);    //  Popo's Shirt and Pants
+		Add("Casual", 15003);    //  Vest and Pants Set
+		Add("Casual", 15021);    //  Elementary School Uniform
+		Add("Casual", 15018);    //  Mongo's Traveler Suit (F)
+		Add("Casual", 15043);    //  Track Suit Set
+		Add("Casual", 15031);    //  Magic School Uniform
+		Add("Casual", 15024);    //  Popo's Dress
+		Add("Casual", 15012);    //  Ceremonial Dress
+
+		Add("Formal", 15025);    //  Magic School Uniform (F)
+		Add("Formal", 15061);    //  Wave-print Side-slit Tunic
+		Add("Formal", 15059);    //  Terks' Tank Top and Shorts
+		Add("Formal", 15005);    //  Adventurer's Suit
+		Add("Formal", 15007);    //  Traditional Tir Chonaill Costume
+		Add("Formal", 15028);    //  Cores' Thief Suit (F)
+		Add("Formal", 15011);    //  Sleeveless and Bell-Bottoms
+		Add("Formal", 15013);    //  China Dress
+
+		Add("Event"); // Empty
+	}
+}
