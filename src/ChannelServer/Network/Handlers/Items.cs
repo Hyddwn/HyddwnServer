@@ -101,6 +101,10 @@ namespace Aura.Channel.Network.Handlers
 				if ((item.HasTag("/handicraft_kit/")) && !creature.Skills.Has(SkillId.Handicraft))
 					creature.Skills.Give(SkillId.Handicraft, SkillRank.RF);
 
+				// Give Tailoring when equipping a Tailoring Kit
+				if ((item.HasTag("/tailor/kit/")) && !creature.Skills.Has(SkillId.Tailoring))
+					creature.Skills.Give(SkillId.Tailoring, SkillRank.Novice);
+
 				// Raise equiped event
 				// TODO: Script mentioned above should use this event.
 				ChannelServer.Instance.Events.OnPlayerEquipsItem(creature, item);
