@@ -136,10 +136,11 @@
 { raceId: 471010, name: "Polar Bear Hat Seal", timeLimit: 92, exp: 1.8, height: 0.6, upper: 1.1, lower: 1.0, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 471011, name: "Cone Hat Seal", timeLimit: 92, exp: 1.8, height: 0.6, upper: 1.1, lower: 1.0, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490025, name: "Warp Imp", timeLimit: 112, exp: 1.7, height: 0.2, upper: 3.6, lower: 1.5, life: 72, mana: 38, stamina: 43, str: 24, int: 31, dex: 26, will: 23, luck: 29, defense: 0, protection: 2 },
-{ raceId: 490030, name: "Lite Seal", timeLimit: 92, exp: 1.8, height: 0.6, upper: 1.1, lower: 1.0, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
+{ raceId: 490030, name: "Pumpkin Seal", timeLimit: 92, exp: 1.8, height: 0.6, upper: 1.1, lower: 1.0, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490031, name: "Knitwear Penguin", timeLimit: 92, exp: 1.8, height: 0.8, upper: 1.4, lower: 1.2, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490032, name: "Lite Seal", timeLimit: 92, exp: 1.8, height: 0.6, upper: 1.1, lower: 1.0, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490043, name: "Cone Hat Penguin", timeLimit: 92, exp: 1.8, height: 0.8, upper: 1.4, lower: 1.2, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
+{ raceId: 490047, name: "Coach Pengu", timeLimit: 92, exp: 1.8, height: 0.8, upper: 1.4, lower: 1.2, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490057, name: "Umeboshi Blossom", timeLimit: 180, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 200, mana: 50, stamina: 150, str: 70, int: 20, dex: 40, will: 30, luck: 30, defense: 20, protection: 25 },
 { raceId: 490058, name: "Handsome Alpaca", timeLimit: 180, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 90, mana: 70, stamina: 80, str: 40, int: 50, dex: 36, will: 46, luck: 30, defense: 0, protection: 2 },
 { raceId: 490061, name: "Recall Imp", timeLimit: 112, exp: 1.7, height: 0.2, upper: 3.6, lower: 1.5, life: 72, mana: 38, stamina: 43, str: 24, int: 31, dex: 26, will: 23, luck: 29, defense: 0, protection: 2 },
@@ -341,6 +342,10 @@
 // ?
 //---------------------------------------------------------------------------
 { raceId: 490042, name: "Spirit of Tuan", timeLimit: 90, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 150, mana: 120, stamina: 100, str: 40, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 8 },
+
+// 55
+//---------------------------------------------------------------------------
+{ raceId: 490066, name: "Fallen Fairy", timeLimit: 120, exp: 1.75, height: 1.0, upper: 1.0, lower: 1.0, life: 350, mana: 100, stamina: 300, str: 150, int: 100, dex: 45, will: 45, luck: 30, defense: 15, protection: 8 },
 
 // Partners
 //---------------------------------------------------------------------------
