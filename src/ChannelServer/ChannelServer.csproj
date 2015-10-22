@@ -135,6 +135,7 @@
     <Compile Include="Network\Sending\Send.Rebirth.cs" />
     <Compile Include="Network\Sending\Send.Vehicles.cs" />
     <Compile Include="Network\Sending\Send.Weather.cs" />
+    <Compile Include="Network\Sending\Send.Echo.cs" />
     <Compile Include="Network\Sending\Send.World.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
