@@ -28,6 +28,7 @@ namespace Aura.Data
 		public static ItemDb ItemDb = new ItemDb();
 		public static ItemUpgradesDb ItemUpgradesDb = new ItemUpgradesDb();
 		public static KeywordDb KeywordDb = new KeywordDb();
+		public static ManualDb ManualDb = new ManualDb();
 		public static MotionDb MotionDb = new MotionDb();
 		public static PetDb PetDb = new PetDb();
 		public static ProductionDb ProductionDb = new ProductionDb();

@@ -65,6 +65,7 @@
     <Compile Include="Database\Features.cs" />
     <Compile Include="Database\Fish.cs" />
     <Compile Include="Database\FishingGrounds.cs" />
+    <Compile Include="Database\Manuals.cs" />
     <Compile Include="Database\Production.cs" />
     <Compile Include="Database\PropDefaults.cs" />
     <Compile Include="Database\Props.cs" />
