@@ -148,6 +148,9 @@ namespace Aura.Mabi.Structs
 		public int PonsPrice;
 		[FieldOffset(92)]
 		public int __unknown3;
+
+		// [1XXXXX] Purpose unknown, added some time
+		// between G15 and G19.
 		[FieldOffset(96)]
 		public int __unknown96;
 	}
