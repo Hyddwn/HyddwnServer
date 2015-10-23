@@ -932,5 +932,32 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(gp);
 		}
+
+		/// <summary>
+		/// Sends TailoringMiniGame to creature's client to start tailoring minigame.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="item">Item that is to be finished.</param>
+		/// <param name="xOffset">Offset of stitch points on the x-axis.</param>
+		/// <param name="yOffset">Offset of stitch points on the y-axis.</param>
+		/// <param name="rng">Randomization for the 6 stitch points.</param>
+		public static void TailoringMiniGame(Creature creature, Item item, int xOffset, int yOffset, byte[] rng)
+		{
+			if (rng == null || rng.Length != 6)
+				throw new ArgumentException("rng needs exactly 6 values.");
+
+			var packet = new Packet(Op.TailoringMiniGame, creature.EntityId);
+
+			packet.PutShort((short)xOffset);
+			packet.PutShort((short)yOffset);
+			packet.PutBin(rng);
+			packet.PutByte(4);
+			packet.PutLong(0);
+			packet.PutInt(0);
+			packet.PutLong(item.EntityId);
+			packet.PutInt(0);
+
+			creature.Client.Send(packet);
+		}
 	}
 }
