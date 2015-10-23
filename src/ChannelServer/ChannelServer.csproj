@@ -188,6 +188,7 @@
     <Compile Include="Skills\Life\Gathering.cs" />
     <Compile Include="Skills\Life\PotionMaking.cs" />
     <Compile Include="Skills\Life\Refining.cs" />
+    <Compile Include="Skills\Life\Tailoring.cs" />
     <Compile Include="Skills\Life\Weaving.cs" />
     <Compile Include="Skills\Life\Handicraft.cs" />
     <Compile Include="Skills\Life\Herbalism.cs" />

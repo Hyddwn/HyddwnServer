@@ -967,7 +967,13 @@ namespace Aura.Channel.Network.Sending
 			packet.PutShort((short)xOffset);
 			packet.PutShort((short)yOffset);
 			packet.PutBin(deviation);
-			packet.PutByte(4); // Seems to modify the cursor size, but glitches the game if not 4?
+
+			// Modifies cursor size, glitches the minigame if smaller than
+			// deviation? Seems to be a general deviation that applies to
+			// all points? Setting all deviations, incl this, to 0 gives
+			// the most spot-on results.
+			packet.PutByte(4);
+
 			packet.PutLong(0);
 			packet.PutInt(0);
 			packet.PutLong(item.EntityId);
