@@ -50,9 +50,9 @@ namespace Aura.Data.Database
 
 	public class ManualDb : DatabaseJson<ManualData>
 	{
-		public ManualData[] Find(ManualCategory category, int manualId)
+		public ManualData Find(ManualCategory category, int manualId)
 		{
-			return this.Entries.Where(a => a.Category == category && a.Id == manualId).ToArray();
+			return this.Entries.FirstOrDefault(a => a.Category == category && a.Id == manualId);
 		}
 
 		protected override void ReadEntry(JObject entry)
