@@ -936,22 +936,38 @@ namespace Aura.Channel.Network.Sending
 		/// <summary>
 		/// Sends TailoringMiniGame to creature's client to start tailoring minigame.
 		/// </summary>
+		/// <remarks>
+		/// The offsets specify the distance of the "stitch points" from the
+		/// center of the 200x200px minigame field. X is 1:1 the distance
+		/// from the center for each point, while Y gets added up.
+		/// The point closest to the center is Y/2 px away, the second Y/2+Y,
+		/// and the third Y/2+Y*2.
+		/// 
+		/// Deviation is an array of 6 values, one for each point, that specify
+		/// the amount of pixels your clicks can deviate from the actual
+		/// position you clicked. For example, if you click on 60x180 for the
+		/// first point, and the first byte in deviation is 3, the actual
+		/// position sent to the server is between 57x177 and 63x183,
+		/// randomized by the client.
+		/// If the deviation values are too big, the minigame glitches and is
+		/// likely to fail, the biggest value seen in logs was 4.
+		/// </remarks>
 		/// <param name="creature"></param>
 		/// <param name="item">Item that is to be finished.</param>
 		/// <param name="xOffset">Offset of stitch points on the x-axis.</param>
 		/// <param name="yOffset">Offset of stitch points on the y-axis.</param>
-		/// <param name="rng">Randomization for the 6 stitch points.</param>
-		public static void TailoringMiniGame(Creature creature, Item item, int xOffset, int yOffset, byte[] rng)
+		/// <param name="deviation">Randomization for the 6 stitch points.</param>
+		public static void TailoringMiniGame(Creature creature, Item item, int xOffset, int yOffset, byte[] deviation)
 		{
-			if (rng == null || rng.Length != 6)
+			if (deviation == null || deviation.Length != 6)
 				throw new ArgumentException("rng needs exactly 6 values.");
 
 			var packet = new Packet(Op.TailoringMiniGame, creature.EntityId);
 
 			packet.PutShort((short)xOffset);
 			packet.PutShort((short)yOffset);
-			packet.PutBin(rng);
-			packet.PutByte(4);
+			packet.PutBin(deviation);
+			packet.PutByte(4); // Seems to modify the cursor size, but glitches the game if not 4?
 			packet.PutLong(0);
 			packet.PutInt(0);
 			packet.PutLong(item.EntityId);
