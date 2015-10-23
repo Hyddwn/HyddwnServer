@@ -35,6 +35,8 @@ namespace Aura.Channel.Skills.Life
 		private const string SignNameVar = "MKNAME";
 		private const string SignRankVar = "MKSLV";
 
+		private static readonly byte[] SuccessTable = new byte[] { 97, 94, 92, 89, 88, 86, 85, 84, 82, 80, 78, 75, 73, 72, 71, 55, 40, 28, 20, 13, 8, 6, 4, 2, 2, 2, 1, 1, 1, 1 };
+
 		/// <summary>
 		/// Prepares the skill.
 		/// </summary>
@@ -194,6 +196,15 @@ namespace Aura.Channel.Skills.Life
 
 			var rnd = RandomProvider.Get();
 
+			// Check success
+			var chance = this.GetSuccessChance(skill.Info.Rank, manualData.Rank);
+			if (rnd.NextDouble() * 100 >= chance)
+			{
+				// TODO: Random quality loss.
+				Send.Notice(creature, Localization.Get("The combination of tools and materials didn't do much of anything. (Quality 0%)"));
+				goto L_Fail;
+			}
+
 			// Get to work
 			if (existingItem == null)
 			{
@@ -300,6 +311,27 @@ namespace Aura.Channel.Skills.Life
 			// Min = -100
 			// Max = 100 (increasing the max would increase the chance for 100 quality)
 			return Math.Max(-100, 100 - (int)(total * 2));
+		}
+
+		/// <summary>
+		/// Returns success chance between 0 and 100.
+		/// </summary>
+		/// <remarks>
+		/// Unofficial. It's unlikely that officials use a table, instead of
+		/// a formula, but for a lack of formula, we're forced to go with
+		/// this. The success rates actually seem to be rather static,
+		/// so it should work fine. We have all possible combinations,
+		/// and with this function we do get the correct base chance.
+		/// </remarks>
+		/// <param name="skillRank"></param>
+		/// <param name="manualRank"></param>
+		/// <returns></returns>
+		private int GetSuccessChance(SkillRank skillRank, SkillRank manualRank)
+		{
+			var diff = ((int)skillRank - (int)manualRank);
+			var chance = SuccessTable[29 - (diff + 15)];
+
+			return Math2.Clamp(0, 100, chance);
 		}
 
 		/// <summary>
