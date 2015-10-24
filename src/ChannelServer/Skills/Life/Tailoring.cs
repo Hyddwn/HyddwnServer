@@ -135,6 +135,10 @@ namespace Aura.Channel.Skills.Life
 				}
 			}
 
+			// Skill training
+			if (skill.Info.Rank == SkillRank.Novice)
+				skill.Train(1); // Use the skill.
+
 			Send.Echo(creature, Op.SkillUse, packet);
 			skill.State = SkillState.Used;
 
@@ -266,27 +270,42 @@ namespace Aura.Channel.Skills.Life
 					// Calculate progress to add
 					var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
 					var rankDiff = ((int)skill.Info.Rank - (int)manualData.Rank);
+					ProgressResult result;
 
 					// Apply RNG fail/success
 					// Unofficial and mostly based on guessing.
 					var rngFailSuccess = rnd.NextDouble();
-					if (rngFailSuccess < 0.05f) // 5% chance for bad
+					if (rngFailSuccess >= 0.00f && rngFailSuccess < 0.05f) // 5% chance for very bad
+					{
+						msg += Localization.Get("Catastrophic failure!");
+						addProgress /= 2f;
+						result = ProgressResult.VeryBad;
+					}
+					else if (rngFailSuccess >= 0.05f && rngFailSuccess < 0.10f) // 5% chance for bad
 					{
 						msg += Localization.Get("That didn't go so well...");
-						addProgress /= 2f;
+						addProgress /= 1.5f;
+						result = ProgressResult.Bad;
 					}
-					else if (rngFailSuccess >= 0.05f && rngFailSuccess < 0.10f && rankDiff <= -2) // 5% chance for best
+					else if (rngFailSuccess >= 0.10f && rngFailSuccess < 0.50f && rankDiff <= -2) // 5% chance for best
 					{
 						msg += Localization.Get("You created a masterpiece!");
 						addProgress *= 2f;
+						result = ProgressResult.VeryGood;
 					}
-					else // 90% chance for good
+					else // 85% chance for good
 					{
 						// Too easy if more than two ranks below?
 						if (rankDiff >= 2)
+						{
 							msg += Localization.Get("You did it, but that was way too easy.");
+							result = ProgressResult.Bad;
+						}
 						else
+						{
 							msg += Localization.Get("Success!");
+							result = ProgressResult.Good;
+						}
 					}
 
 					// Weather bonus
@@ -301,6 +320,7 @@ namespace Aura.Channel.Skills.Life
 					else
 						msg += string.Format(Localization.Get("\n{0}% completed."), (int)(progress * 100));
 
+					this.OnProgress(creature, skill, result);
 					Send.Notice(creature, msg);
 				}
 				else
@@ -571,6 +591,8 @@ namespace Aura.Channel.Skills.Life
 				msg = msg.TrimEnd(',', ' ');
 			}
 
+			this.OnProgress(creature, skill, ProgressResult.Finish);
+
 			// Send notice
 			Send.Notice(creature, msg, item.Data.Name);
 		}
@@ -710,6 +732,48 @@ namespace Aura.Channel.Skills.Life
 			return true;
 		}
 
+		/// <summary>
+		/// Handles skill training by progress.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="result"></param>
+		private void OnProgress(Creature creature, Skill skill, ProgressResult result)
+		{
+			if (skill.Info.Rank == SkillRank.Novice)
+			{
+				skill.Train(2); // Use the skill successfully.
+				return;
+			}
+
+			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.R3)
+			{
+				skill.Train(1); // Use the skill successfully.
+				switch (result)
+				{
+					case ProgressResult.VeryGood: skill.Train(2); break; // Achieve a very good result.
+					case ProgressResult.Bad: skill.Train(3); break; // The result is a failure.
+					case ProgressResult.VeryBad: skill.Train(4); break; // The result is very bad.
+					case ProgressResult.Finish: skill.Train(5); break; // Clothes are finished.
+				}
+
+				return;
+			}
+
+			if (skill.Info.Rank >= SkillRank.R2 && skill.Info.Rank <= SkillRank.R1)
+			{
+				skill.Train(1); // Use the skill successfully.
+				switch (result)
+				{
+					case ProgressResult.Bad: skill.Train(2); break; // The result is a failure.
+					case ProgressResult.VeryBad: skill.Train(3); break; // The result is very bad.
+					case ProgressResult.Finish: skill.Train(4); break; // Clothes are finished.
+				}
+
+				return;
+			}
+		}
+
 		private enum Bonus
 		{
 			Protection,
@@ -720,6 +784,15 @@ namespace Aura.Channel.Skills.Life
 		{
 			Progression = 1,
 			Finish = 2,
+		}
+
+		private enum ProgressResult
+		{
+			VeryBad,
+			Bad,
+			Good,
+			VeryGood,
+			Finish,
 		}
 	}
 }
