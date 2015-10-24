@@ -260,6 +260,10 @@ namespace Aura.Channel.Skills.Life
 					{
 						var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
 
+						// Weather bonus
+						if (ChannelServer.Instance.Weather.GetWeatherType(creature.RegionId) == WeatherType.Rain)
+							addProgress += manualData.RainBonus;
+
 						progress = Math.Min(1, progress + addProgress);
 						existingItem.MetaData1.SetFloat(ProgressVar, progress);
 					}
