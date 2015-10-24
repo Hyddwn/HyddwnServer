@@ -244,47 +244,82 @@ namespace Aura.Channel.Skills.Life
 			// Success, get to work
 			if (success)
 			{
+				var newItem = false;
+				var finished = false;
+				var msg = "";
+
 				// Create new item
 				if (existingItem == null)
 				{
-					var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
+					existingItem = new Item(manualData.ItemId);
+					existingItem.OptionInfo.Flags |= ItemFlags.Incomplete;
+					existingItem.MetaData1.SetFloat(ProgressVar, 0);
+					existingItem.MetaData1.SetLong(UnkVar, DateTime.Now);
 
-					var item = new Item(manualData.ItemId);
-					item.OptionInfo.Flags |= ItemFlags.Incomplete;
-					item.MetaData1.SetFloat(ProgressVar, addProgress);
-					item.MetaData1.SetLong(UnkVar, DateTime.Now);
-
-					creature.Inventory.Add(item, true);
+					newItem = true;
 				}
-				// Increase progress
+
+				// Finish item if progress is >= 1, otherwise increase progress.
+				var progress = (newItem ? 0 : existingItem.MetaData1.GetFloat(ProgressVar));
+				if (progress < 1)
+				{
+					// Calculate progress to add
+					var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
+					var rankDiff = ((int)skill.Info.Rank - (int)manualData.Rank);
+
+					// Apply RNG fail/success
+					// Unofficial and mostly based on guessing.
+					var rngFailSuccess = rnd.NextDouble();
+					if (rngFailSuccess < 0.05f) // 5% chance for bad
+					{
+						msg += Localization.Get("That didn't go so well...");
+						addProgress /= 2f;
+					}
+					else if (rngFailSuccess >= 0.05f && rngFailSuccess < 0.10f && rankDiff <= -2) // 5% chance for best
+					{
+						msg += Localization.Get("You created a masterpiece!");
+						addProgress *= 2f;
+					}
+					else // 90% chance for good
+					{
+						// Too easy if more than two ranks below?
+						if (rankDiff >= 2)
+							msg += Localization.Get("You did it, but that was way too easy.");
+						else
+							msg += Localization.Get("Success!");
+					}
+
+					// Weather bonus
+					if (ChannelServer.Instance.Weather.GetWeatherType(creature.RegionId) == WeatherType.Rain)
+						addProgress += manualData.RainBonus;
+
+					progress = Math.Min(1, progress + addProgress);
+					existingItem.MetaData1.SetFloat(ProgressVar, progress);
+
+					if (progress == 1)
+						msg += Localization.Get("\nFinal Stage remaining");
+					else
+						msg += string.Format(Localization.Get("\n{0}% completed."), (int)(progress * 100));
+
+					Send.Notice(creature, msg);
+				}
 				else
 				{
-					// Finish item if progress is <= 1, otherwise increase
-					// progress.
-					var progress = existingItem.MetaData1.GetFloat(ProgressVar);
-					var finished = false;
-					if (progress < 1)
-					{
-						var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
+					var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
+					this.FinishItem(creature, skill, manualData, existingItem, quality);
 
-						// Weather bonus
-						if (ChannelServer.Instance.Weather.GetWeatherType(creature.RegionId) == WeatherType.Rain)
-							addProgress += manualData.RainBonus;
-
-						progress = Math.Min(1, progress + addProgress);
-						existingItem.MetaData1.SetFloat(ProgressVar, progress);
-					}
-					else
-					{
-						var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
-						this.FinishItem(creature, skill, manualData, existingItem, quality);
-						finished = true;
-					}
-
-					Send.ItemUpdate(creature, existingItem);
-					if (finished)
-						Send.AcquireInfo2(creature, "tailoring", existingItem.EntityId);
+					finished = true;
 				}
+
+				// Add or update item
+				if (!newItem)
+					Send.ItemUpdate(creature, existingItem);
+				else
+					creature.Inventory.Add(existingItem, true);
+
+				// Acquire info once it's finished and updated.
+				if (finished)
+					Send.AcquireInfo2(creature, "tailoring", existingItem.EntityId);
 
 				Send.UseMotion(creature, 14, 0); // Success motion
 				Send.Echo(creature, packet);
