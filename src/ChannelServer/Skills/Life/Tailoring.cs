@@ -109,13 +109,13 @@ namespace Aura.Channel.Skills.Life
 			var materials = new List<ProductionMaterial>();
 			var stitches = new List<Point>();
 
-			var stage = packet.GetByte();
+			var stage = (Stage)packet.GetByte();
 			var unkLong1 = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var existingItemEntityId = packet.GetLong();
 			var unkInt2 = packet.GetInt();
 
-			if (stage == 1)
+			if (stage == Stage.Progression)
 			{
 				// Materials
 				var count = packet.GetByte();
@@ -135,7 +135,7 @@ namespace Aura.Channel.Skills.Life
 					materials.Add(new ProductionMaterial(item, amount));
 				}
 			}
-			else if (stage == 2)
+			else if (stage == Stage.Finish)
 			{
 				var gotStitches = packet.GetBool();
 				if (!gotStitches)
@@ -560,6 +560,12 @@ namespace Aura.Channel.Skills.Life
 		{
 			Protection,
 			Durability,
+		}
+
+		private enum Stage
+		{
+			Progression,
+			Finish,
 		}
 	}
 }
