@@ -46,6 +46,14 @@ namespace Aura.Data.Database
 				result.Add(new ProductionMaterialData(material.Tag, material.Amount));
 			return result;
 		}
+
+		public List<ProductionMaterialData> GetFinishMaterialList()
+		{
+			var result = new List<ProductionMaterialData>();
+			foreach (var material in this.FinishMaterials)
+				result.Add(new ProductionMaterialData(material.Tag, material.Amount));
+			return result;
+		}
 	}
 
 	public class ManualDb : DatabaseJson<ManualData>

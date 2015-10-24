@@ -68,7 +68,11 @@ namespace Aura.Channel.Skills.Life
 					return false;
 			}
 			else
-				throw new Exception("Unknown progress stage.");
+			{
+				Send.ServerMessage(creature, Localization.Get("Stage error, please report."));
+				Log.Error("Tailoring: Unknown progress stage '{0}'.", stage);
+				return false;
+			}
 
 			// Check tools
 			if (!CheckTools(creature))
@@ -78,38 +82,53 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			// Check if ready for completion
-			if (stage == Stage.Progression)
+			if (stage == Stage.Progression && existingItemEntityId != 0)
 			{
-				if (existingItemEntityId != 0)
+				// Check item
+				var item = creature.Inventory.GetItem(existingItemEntityId);
+				if (item == null)
 				{
-					// Check item
-					var item = creature.Inventory.GetItem(existingItemEntityId);
-					if (item == null)
+					Log.Warning("Tailoring.Complete: Creature '{0:X16}' tried to work on non-existent item.", creature.EntityId);
+					return false;
+				}
+
+				// Check item progress
+				if (item.MetaData1.GetFloat(ProgressVar) == 1)
+				{
+					var rnd = RandomProvider.Get();
+
+					// Get manual
+					var manualId = creature.Magazine.MetaData1.GetInt("FORMID");
+					var manualData = AuraData.ManualDb.Find(ManualCategory.Tailoring, manualId);
+					if (manualData == null)
 					{
-						Log.Warning("Tailoring.Complete: Creature '{0:X16}' tried to work on non-existent item.", creature.EntityId);
+						Log.Error("Tailoring.Complete: Manual '{0}' not found.", manualId);
+						Send.ServerMessage(creature, Localization.Get("Failed to look up pattern, please report."));
 						return false;
 					}
 
-					// Check item progress
-					if (item.MetaData1.GetFloat(ProgressVar) == 1)
-					{
-						// Start minigame if item is complete
-						var rnd = RandomProvider.Get();
-
-						var xOffset = (short)rnd.Next(30, 50);
-						var yOffset = (short)rnd.Next(20, 30);
-						var deviation = new byte[6];
-						for (int i = 0; i < deviation.Length; ++i)
-							deviation[i] = (byte)rnd.Next(0, 5);
-
-						Send.TailoringMiniGame(creature, item, xOffset, yOffset, deviation);
-
-						// Save offsets for complete
-						creature.Temp.TailoringMiniGameX = xOffset;
-						creature.Temp.TailoringMiniGameY = yOffset;
-
+					// Get items to decrement
+					List<ProductionMaterial> toDecrement;
+					if (!this.GetItemsToDecrement(creature, Stage.Finish, manualData, materials, out toDecrement))
 						return false;
-					}
+
+					// Decrement mats
+					this.DecrementMaterialItems(creature, toDecrement, true, RandomProvider.Get());
+
+					// Start minigame
+					var xOffset = (short)rnd.Next(30, 50);
+					var yOffset = (short)rnd.Next(20, 30);
+					var deviation = new byte[6];
+					for (int i = 0; i < deviation.Length; ++i)
+						deviation[i] = (byte)rnd.Next(0, 5);
+
+					Send.TailoringMiniGame(creature, item, xOffset, yOffset, deviation);
+
+					// Save offsets for complete
+					creature.Temp.TailoringMiniGameX = xOffset;
+					creature.Temp.TailoringMiniGameY = yOffset;
+
+					return false;
 				}
 			}
 
@@ -149,7 +168,11 @@ namespace Aura.Channel.Skills.Life
 					goto L_Fail;
 			}
 			else
-				throw new Exception("Unknown progress stage.");
+			{
+				Send.ServerMessage(creature, Localization.Get("Stage error, please report."));
+				Log.Error("Tailoring: Unknown progress stage '{0}'.", stage);
+				goto L_Fail;
+			}
 
 			// Check tools
 			if (!CheckTools(creature))
@@ -192,19 +215,24 @@ namespace Aura.Channel.Skills.Life
 				}
 			}
 
-			// Get items to decrement
-			List<ProductionMaterial> toDecrement;
-			if (!this.GetItemsToDecrement(creature, manualData, materials, out toDecrement))
-				goto L_Fail;
-
 			var rnd = RandomProvider.Get();
 
 			// Check success
 			var chance = this.GetSuccessChance(skill.Info.Rank, manualData.Rank);
 			var success = (rnd.NextDouble() * 100 < chance);
 
-			// Decrement mats
-			this.DecrementMaterialItems(creature, toDecrement, success, rnd);
+			// Materials are only sent to Complete for progression,
+			// finish materials are handled in Prepare.
+			if (stage == Stage.Progression)
+			{
+				// Get items to decrement
+				List<ProductionMaterial> toDecrement;
+				if (!this.GetItemsToDecrement(creature, Stage.Progression, manualData, materials, out toDecrement))
+					goto L_Fail;
+
+				// Decrement mats
+				this.DecrementMaterialItems(creature, toDecrement, success, rnd);
+			}
 
 			// Success, get to work
 			if (success)
@@ -489,11 +517,11 @@ namespace Aura.Channel.Skills.Life
 		/// <param name="materials"></param>
 		/// <param name="toDecrement"></param>
 		/// <returns></returns>
-		private bool GetItemsToDecrement(Creature creature, ManualData manualData, List<ProductionMaterial> materials, out List<ProductionMaterial> toDecrement)
+		private bool GetItemsToDecrement(Creature creature, Stage stage, ManualData manualData, List<ProductionMaterial> materials, out List<ProductionMaterial> toDecrement)
 		{
 			toDecrement = new List<ProductionMaterial>();
 
-			var requiredMaterials = manualData.GetMaterialList();
+			var requiredMaterials = (stage == Stage.Progression ? manualData.GetMaterialList() : manualData.GetFinishMaterialList());
 			var inUse = new HashSet<long>();
 			foreach (var reqMat in requiredMaterials)
 			{
@@ -621,8 +649,8 @@ namespace Aura.Channel.Skills.Life
 
 		private enum Stage
 		{
-			Progression,
-			Finish,
+			Progression = 1,
+			Finish = 2,
 		}
 	}
 }
