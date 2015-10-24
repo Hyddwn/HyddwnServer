@@ -194,57 +194,69 @@ namespace Aura.Channel.Skills.Life
 				}
 			}
 
+			// Get items to decrement
+			List<ProductionMaterial> toDecrement;
+			if (!this.GetItemsToDecrement(creature, manualData, materials, out toDecrement))
+				goto L_Fail;
+
 			var rnd = RandomProvider.Get();
 
 			// Check success
 			var chance = this.GetSuccessChance(skill.Info.Rank, manualData.Rank);
-			if (rnd.NextDouble() * 100 >= chance)
-			{
-				// TODO: Random quality loss.
-				Send.Notice(creature, Localization.Get("The combination of tools and materials didn't do much of anything. (Quality 0%)"));
-				goto L_Fail;
-			}
+			var success = (rnd.NextDouble() * 100 < chance);
 
-			// Get to work
-			if (existingItem == null)
-			{
-				var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
+			// Decrement mats
+			this.DecrementMaterialItems(creature, toDecrement, success, rnd);
 
+			// Success, get to work
+			if (success)
+			{
 				// Create new item
-				var item = new Item(manualData.ItemId);
-				item.OptionInfo.Flags |= ItemFlags.Incomplete;
-				item.MetaData1.SetFloat(ProgressVar, addProgress);
-				item.MetaData1.SetLong(UnkVar, DateTime.Now);
-
-				creature.Inventory.Add(item, true);
-			}
-			else
-			{
-				// Increase progress
-				var progress = existingItem.MetaData1.GetFloat(ProgressVar);
-				var finished = false;
-				if (progress < 1)
+				if (existingItem == null)
 				{
 					var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
 
-					progress = Math.Min(1, progress + addProgress);
-					existingItem.MetaData1.SetFloat(ProgressVar, progress);
+					var item = new Item(manualData.ItemId);
+					item.OptionInfo.Flags |= ItemFlags.Incomplete;
+					item.MetaData1.SetFloat(ProgressVar, addProgress);
+					item.MetaData1.SetLong(UnkVar, DateTime.Now);
+
+					creature.Inventory.Add(item, true);
 				}
+				// Increase progress
 				else
 				{
-					var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
-					this.FinishItem(creature, skill, manualData, existingItem, quality);
-					finished = true;
+					// Finish item if progress is <= 1, otherwise increase
+					// progress.
+					var progress = existingItem.MetaData1.GetFloat(ProgressVar);
+					var finished = false;
+					if (progress < 1)
+					{
+						var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
+
+						progress = Math.Min(1, progress + addProgress);
+						existingItem.MetaData1.SetFloat(ProgressVar, progress);
+					}
+					else
+					{
+						var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
+						this.FinishItem(creature, skill, manualData, existingItem, quality);
+						finished = true;
+					}
+
+					Send.ItemUpdate(creature, existingItem);
+					if (finished)
+						Send.AcquireInfo2(creature, "tailoring", existingItem.EntityId);
 				}
 
-				Send.ItemUpdate(creature, existingItem);
-				if (finished)
-					Send.AcquireInfo2(creature, "tailoring", existingItem.EntityId);
+				Send.UseMotion(creature, 14, 0); // Success motion
+				Send.Echo(creature, packet);
+				return;
 			}
 
-			Send.UseMotion(creature, 14, 0); // Success motion
-			Send.Echo(creature, packet);
-			return;
+			// Fail
+			// TODO: Random quality loss.
+			Send.Notice(creature, Localization.Get("The combination of tools and materials didn't do much of anything. (Quality 0%)"));
 
 		L_Fail:
 			Send.UseMotion(creature, 14, 3); // Fail motion
@@ -466,6 +478,82 @@ namespace Aura.Channel.Skills.Life
 
 			// Send notice
 			Send.Notice(creature, msg, item.Data.Name);
+		}
+
+		/// <summary>
+		/// Returns list of items that have to be decremented to satisfy the
+		/// manual's required materials. Actual return value is whether
+		/// this process was successful, or if materials are missing.
+		/// Handles necessary messages and logs.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="manualData"></param>
+		/// <param name="materials"></param>
+		/// <param name="toDecrement"></param>
+		/// <returns></returns>
+		private bool GetItemsToDecrement(Creature creature, ManualData manualData, List<ProductionMaterial> materials, out List<ProductionMaterial> toDecrement)
+		{
+			toDecrement = new List<ProductionMaterial>();
+
+			var requiredMaterials = manualData.GetMaterialList();
+			var inUse = new HashSet<long>();
+			foreach (var reqMat in requiredMaterials)
+			{
+				// Check all selected items for tag matches
+				foreach (var material in materials)
+				{
+					// Satisfy requirement with item, up to the max amount
+					// needed or available
+					if (material.Item.HasTag(reqMat.Tag))
+					{
+						// Cancel if one item matches multiple materials.
+						// It's unknown how this would be handled, can it even
+						// happen? Can one item maybe only be used as one material?
+						if (inUse.Contains(material.Item.EntityId))
+						{
+							Send.ServerMessage(creature, Localization.Get("Unable to handle request, please report, with this information: ({0}/{1}:{2})."), material.Item.Info.Id, manualData.Category, manualData.Id);
+							Log.Warning("ProductionSkill.Complete: Item '{0}' matches multiple materials for manual '{1}:{2}'.", material.Item.Info.Id, manualData.Category, manualData.Id);
+							return false;
+						}
+
+						var amount = Math.Min(reqMat.Amount, material.Item.Amount);
+						reqMat.Amount -= amount;
+						toDecrement.Add(new ProductionMaterial(material.Item, amount));
+						inUse.Add(material.Item.EntityId);
+					}
+
+					// Break once we got what we need
+					if (reqMat.Amount == 0)
+						break;
+				}
+			}
+
+			if (requiredMaterials.Any(a => a.Amount != 0))
+			{
+				// Unofficial, the client should normally prevent this.
+				Send.ServerMessage(creature, Localization.Get("Insufficient materials."));
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Decrements the given materials.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="toDecrement"></param>
+		/// <param name="success"></param>
+		/// <param name="rnd"></param>
+		private void DecrementMaterialItems(Creature creature, List<ProductionMaterial> toDecrement, bool success, Random rnd)
+		{
+			foreach (var material in toDecrement)
+			{
+				// On fail you lose 0~amount of materials randomly
+				var amount = success ? material.Amount : rnd.Next(0, material.Amount + 1);
+				if (amount > 0)
+					creature.Inventory.Decrement(material.Item, (ushort)amount);
+			}
 		}
 
 		private enum Bonus
