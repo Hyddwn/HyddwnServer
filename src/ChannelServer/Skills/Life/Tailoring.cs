@@ -25,19 +25,36 @@ namespace Aura.Channel.Skills.Life
 	/// Starting Tailoring calls Prepare, once the creation process is done,
 	/// Complete is called. There is no way to cancel the skill once Prepare
 	/// was called.
+	/// 
+	/// Due to the nature of the skill and its requirements, and a lack of
+	/// research data caused by those factors, some areas of this handler
+	/// are based on guesses. If you have deeper insights or new information
+	/// that shed new light on things, please fix the mistakes and make a PR
+	/// or tell us about them.
 	/// </remarks>
 	[Skill(SkillId.Tailoring)]
 	public class Tailoring : IPreparable, ICompletable
 	{
+		// Item meta data var names
 		private const string ProgressVar = "PRGRATE";
 		private const string UnkVar = "STCLMT";
 		private const string QualityVar = "QUAL";
 		private const string SignNameVar = "MKNAME";
 		private const string SignRankVar = "MKSLV";
 
+		/// <summary>
+		/// Amount of durability the kit loses on each try.
+		/// </summary>
 		private const int ToolDurabilityLoss = 75;
+
+		/// <summary>
+		/// Amount of durability the pattern loses on each try.
+		/// </summary>
 		private const int PatternDurabilityLoss = 1000;
 
+		/// <summary>
+		/// Base success chance used in success formula.
+		/// </summary>
 		private static readonly byte[] SuccessTable = new byte[] { 96, 93, 91, 88, 87, 85, 84, 83, 81, 79, 77, 74, 72, 71, 70, 54, 39, 27, 19, 12, 7, 5, 3, 1, 1, 1, 0, 0, 0, 0 };
 
 		/// <summary>
