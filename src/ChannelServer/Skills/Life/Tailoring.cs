@@ -133,7 +133,7 @@ namespace Aura.Channel.Skills.Life
 						return false;
 
 					// Decrement mats
-					this.DecrementMaterialItems(creature, toDecrement, true, RandomProvider.Get());
+					this.DecrementMaterialItems(creature, toDecrement, true, rnd);
 
 					// Start minigame
 					var xOffset = (short)rnd.Next(30, 50);
