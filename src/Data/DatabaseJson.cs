@@ -55,6 +55,10 @@ namespace Aura.Data
 							this.Warnings.Add(new DatabaseWarningException("Number to big or too small for variable, in " + Environment.NewLine + obj.ToString(), path));
 							continue;
 						}
+						catch (Exception ex)
+						{
+							throw new DatabaseErrorException("Exception: " + ex.ToString() + Environment.NewLine + "Entry: " + Environment.NewLine + obj.ToString(), path);
+						}
 					}
 				}
 				catch (JsonReaderException ex)

@@ -438,3 +438,11 @@ albangolem/*/run,              900.000000
 albangolem/*/walk,             207.689000
 PetSouloftuan/*/run,          1245.000000
 PetSouloftuan/*/walk,          176.894000
+petcloudhorse/*/run,           845.454500
+petcloudhorse/*/walk,          127.645100
+zebach/*/run,                  799.998200
+zebach/*/walk,                 799.998200
+femaledisciple/*/run,          373.750000
+Petfairy/dinashee/run,        1268.161000
+Petfairy/dinashee/walk,        211.363800
+Barrel/*/run,                  340.000000
