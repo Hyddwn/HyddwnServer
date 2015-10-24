@@ -35,7 +35,7 @@ namespace Aura.Channel.Skills.Life
 		private const string SignNameVar = "MKNAME";
 		private const string SignRankVar = "MKSLV";
 
-		private static readonly byte[] SuccessTable = new byte[] { 97, 94, 92, 89, 88, 86, 85, 84, 82, 80, 78, 75, 73, 72, 71, 55, 40, 28, 20, 13, 8, 6, 4, 2, 2, 2, 1, 1, 1, 1 };
+		private static readonly byte[] SuccessTable = new byte[] { 96, 93, 91, 88, 87, 85, 84, 83, 81, 79, 77, 74, 72, 71, 70, 54, 39, 27, 19, 12, 7, 5, 3, 1, 1, 1, 0, 0, 0, 0 };
 
 		/// <summary>
 		/// Prepares the skill.
@@ -218,7 +218,7 @@ namespace Aura.Channel.Skills.Life
 			var rnd = RandomProvider.Get();
 
 			// Check success
-			var chance = this.GetSuccessChance(skill.Info.Rank, manualData.Rank);
+			var chance = this.GetSuccessChance(creature, skill.Info.Rank, manualData.Rank);
 			var success = (rnd.NextDouble() * 100 < chance);
 
 			// Materials are only sent to Complete for progression,
@@ -361,15 +361,21 @@ namespace Aura.Channel.Skills.Life
 		/// so it should work fine. We have all possible combinations,
 		/// and with this function we do get the correct base chance.
 		/// </remarks>
+		/// <param name="creature"></param>
 		/// <param name="skillRank"></param>
 		/// <param name="manualRank"></param>
 		/// <returns></returns>
-		private int GetSuccessChance(SkillRank skillRank, SkillRank manualRank)
+		private int GetSuccessChance(Creature creature, SkillRank skillRank, SkillRank manualRank)
 		{
 			var diff = ((int)skillRank - (int)manualRank);
 			var chance = SuccessTable[29 - (diff + 15)];
 
-			return Math2.Clamp(0, 100, chance);
+			// Production Mastery bonus
+			var pm = creature.Skills.Get(SkillId.ProductionMastery);
+			if (pm != null)
+				chance += (byte)pm.Info.Rank;
+
+			return Math2.Clamp(0, 99, chance);
 		}
 
 		/// <summary>
