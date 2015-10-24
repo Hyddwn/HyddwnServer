@@ -35,6 +35,9 @@ namespace Aura.Channel.Skills.Life
 		private const string SignNameVar = "MKNAME";
 		private const string SignRankVar = "MKSLV";
 
+		private const int ToolDurabilityLoss = 75;
+		private const int PatternDurabilityLoss = 1000;
+
 		private static readonly byte[] SuccessTable = new byte[] { 96, 93, 91, 88, 87, 85, 84, 83, 81, 79, 77, 74, 72, 71, 70, 54, 39, 27, 19, 12, 7, 5, 3, 1, 1, 1, 0, 0, 0, 0 };
 
 		/// <summary>
@@ -234,6 +237,10 @@ namespace Aura.Channel.Skills.Life
 				this.DecrementMaterialItems(creature, toDecrement, success, rnd);
 			}
 
+			// Reduce durability
+			creature.Inventory.ReduceDurability(creature.RightHand, ToolDurabilityLoss);
+			creature.Inventory.ReduceDurability(creature.Magazine, PatternDurabilityLoss);
+
 			// Success, get to work
 			if (success)
 			{
@@ -302,6 +309,7 @@ namespace Aura.Channel.Skills.Life
 		/// <returns></returns>
 		private bool CheckTools(Creature creature)
 		{
+			// Check for kit and valid manual
 			// Sanity check, client checks it as well.
 			if (
 				creature.RightHand == null || !creature.RightHand.HasTag("/tailor/kit/") ||
@@ -309,6 +317,22 @@ namespace Aura.Channel.Skills.Life
 			)
 			{
 				Send.MsgBox(creature, Localization.Get("You need a Tailoring Kit in your right hand\nand a Sewing Pattern in your left."));
+				return false;
+			}
+
+			// Check if kit has enough durability
+			// Does the client check this?
+			if (creature.RightHand.Durability < ToolDurabilityLoss)
+			{
+				Send.MsgBox(creature, Localization.Get("You can't use this Tailoring Kit anymore."));
+				return false;
+			}
+
+			// Check if pattern has enough durability
+			// Does the client check this?
+			if (creature.Magazine.Durability < PatternDurabilityLoss)
+			{
+				Send.MsgBox(creature, Localization.Get("You can't use this Sewing Pattern anymore. You'll stab your fingers!"));
 				return false;
 			}
 
