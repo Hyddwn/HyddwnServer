@@ -46,11 +46,29 @@ namespace Aura.Channel.Skills.Life
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			var stage = packet.GetByte();
+			var materials = new List<ProductionMaterial>();
+			var stitches = new List<Point>();
+
+			var stage = (Stage)packet.GetByte();
 			var unkLong1 = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var existingItemEntityId = packet.GetLong();
-			// ...
+			var unkInt2 = packet.GetInt();
+
+			if (stage == Stage.Progression)
+			{
+				// Materials
+				if (!this.ReadMaterials(creature, packet, out materials))
+					return false;
+			}
+			else if (stage == Stage.Finish)
+			{
+				// Stitches
+				if (!this.ReadStitches(creature, packet, out stitches))
+					return false;
+			}
+			else
+				throw new Exception("Unknown progress stage.");
 
 			// Check tools
 			if (!CheckTools(creature))
@@ -60,35 +78,38 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			// Check if ready for completion
-			if (existingItemEntityId != 0 && stage == 1)
+			if (stage == Stage.Progression)
 			{
-				// Check item
-				var item = creature.Inventory.GetItem(existingItemEntityId);
-				if (item == null)
+				if (existingItemEntityId != 0)
 				{
-					Log.Warning("Tailoring.Complete: Creature '{0:X16}' tried to work on non-existent item.", creature.EntityId);
-					return false;
-				}
+					// Check item
+					var item = creature.Inventory.GetItem(existingItemEntityId);
+					if (item == null)
+					{
+						Log.Warning("Tailoring.Complete: Creature '{0:X16}' tried to work on non-existent item.", creature.EntityId);
+						return false;
+					}
 
-				// Check item progress
-				if (item.MetaData1.GetFloat(ProgressVar) == 1)
-				{
-					// Start minigame if item is complete
-					var rnd = RandomProvider.Get();
+					// Check item progress
+					if (item.MetaData1.GetFloat(ProgressVar) == 1)
+					{
+						// Start minigame if item is complete
+						var rnd = RandomProvider.Get();
 
-					var xOffset = (short)rnd.Next(30, 50);
-					var yOffset = (short)rnd.Next(20, 30);
-					var deviation = new byte[6];
-					for (int i = 0; i < deviation.Length; ++i)
-						deviation[i] = (byte)rnd.Next(0, 5);
+						var xOffset = (short)rnd.Next(30, 50);
+						var yOffset = (short)rnd.Next(20, 30);
+						var deviation = new byte[6];
+						for (int i = 0; i < deviation.Length; ++i)
+							deviation[i] = (byte)rnd.Next(0, 5);
 
-					Send.TailoringMiniGame(creature, item, xOffset, yOffset, deviation);
+						Send.TailoringMiniGame(creature, item, xOffset, yOffset, deviation);
 
-					// Save offsets for complete
-					creature.Temp.TailoringMiniGameX = xOffset;
-					creature.Temp.TailoringMiniGameY = yOffset;
+						// Save offsets for complete
+						creature.Temp.TailoringMiniGameX = xOffset;
+						creature.Temp.TailoringMiniGameY = yOffset;
 
-					return false;
+						return false;
+					}
 				}
 			}
 
@@ -118,37 +139,14 @@ namespace Aura.Channel.Skills.Life
 			if (stage == Stage.Progression)
 			{
 				// Materials
-				var count = packet.GetByte();
-				for (int i = 0; i < count; ++i)
-				{
-					var itemEntityId = packet.GetLong();
-					var amount = packet.GetShort();
-
-					// Check item
-					var item = creature.Inventory.GetItem(itemEntityId);
-					if (item == null)
-					{
-						Log.Warning("Tailoring.Complete: Creature '{0:X16}' tried to use non-existent material item.", creature.EntityId);
-						goto L_Fail;
-					}
-
-					materials.Add(new ProductionMaterial(item, amount));
-				}
+				if (!this.ReadMaterials(creature, packet, out materials))
+					goto L_Fail;
 			}
 			else if (stage == Stage.Finish)
 			{
-				var gotStitches = packet.GetBool();
-				if (!gotStitches)
-					goto L_Fail;
-
 				// Stitches
-				for (int i = 0; i < 6; ++i)
-				{
-					var x = packet.GetShort();
-					var y = packet.GetShort();
-
-					stitches.Add(new Point(x, y));
-				}
+				if (!this.ReadStitches(creature, packet, out stitches))
+					goto L_Fail;
 			}
 			else
 				throw new Exception("Unknown progress stage.");
@@ -554,6 +552,65 @@ namespace Aura.Channel.Skills.Life
 				if (amount > 0)
 					creature.Inventory.Decrement(material.Item, (ushort)amount);
 			}
+		}
+
+		/// <summary>
+		/// Reads materuals from packet, starting with the count.
+		/// Returns false if a material item wasn't found, after logging it.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="packet"></param>
+		/// <param name="materials"></param>
+		/// <returns></returns>
+		private bool ReadMaterials(Creature creature, Packet packet, out List<ProductionMaterial> materials)
+		{
+			materials = new List<ProductionMaterial>();
+
+			var count = packet.GetByte();
+			for (int i = 0; i < count; ++i)
+			{
+				var itemEntityId = packet.GetLong();
+				var amount = packet.GetShort();
+
+				// Check item
+				var item = creature.Inventory.GetItem(itemEntityId);
+				if (item == null)
+				{
+					Log.Warning("Tailoring.Complete: Creature '{0:X16}' tried to use non-existent material item.", creature.EntityId);
+					return false;
+				}
+
+				materials.Add(new ProductionMaterial(item, amount));
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Reads stitches from packet, starting with the bool, saying whether
+		/// there are any. Returns false if bool is false.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="packet"></param>
+		/// <param name="stitches"></param>
+		/// <returns></returns>
+		private bool ReadStitches(Creature creature, Packet packet, out List<Point> stitches)
+		{
+			stitches = new List<Point>();
+
+			var gotStitches = packet.GetBool();
+			if (!gotStitches)
+				return false;
+
+			for (int i = 0; i < 6; ++i)
+			{
+				var x = packet.GetShort();
+				var y = packet.GetShort();
+
+				stitches.Add(new Point(x, y));
+			}
+
+			return true;
 		}
 
 		private enum Bonus
