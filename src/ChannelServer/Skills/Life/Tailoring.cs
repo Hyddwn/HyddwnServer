@@ -133,7 +133,7 @@ namespace Aura.Channel.Skills.Life
 						return false;
 
 					// Decrement mats
-					this.DecrementMaterialItems(creature, toDecrement, true, rnd);
+					this.DecrementMaterialItems(creature, toDecrement, rnd);
 
 					// Start minigame
 					var xOffset = (short)rnd.Next(30, 50);
@@ -241,10 +241,6 @@ namespace Aura.Channel.Skills.Life
 
 			var rnd = RandomProvider.Get();
 
-			// Check success
-			var chance = this.GetSuccessChance(creature, skill.Info.Rank, manualData.Rank);
-			var success = (rnd.NextDouble() * 100 < chance);
-
 			// Materials are only sent to Complete for progression,
 			// finish materials are handled in Prepare.
 			if (stage == Stage.Progression)
@@ -255,64 +251,85 @@ namespace Aura.Channel.Skills.Life
 					goto L_Fail;
 
 				// Decrement mats
-				this.DecrementMaterialItems(creature, toDecrement, success, rnd);
+				this.DecrementMaterialItems(creature, toDecrement, rnd);
 			}
 
 			// Reduce durability
 			creature.Inventory.ReduceDurability(creature.RightHand, ToolDurabilityLoss);
 			creature.Inventory.ReduceDurability(creature.Magazine, PatternDurabilityLoss);
 
-			// Success, get to work
-			if (success)
+			// Get to work
+			var newItem = false;
+			var finished = false;
+			var msg = "";
+
+			// Create new item
+			if (existingItem == null)
 			{
-				var newItem = false;
-				var finished = false;
-				var msg = "";
+				existingItem = new Item(manualData.ItemId);
+				existingItem.OptionInfo.Flags |= ItemFlags.Incomplete;
+				existingItem.MetaData1.SetFloat(ProgressVar, 0);
+				existingItem.MetaData1.SetLong(UnkVar, DateTime.Now);
 
-				// Create new item
-				if (existingItem == null)
+				newItem = true;
+			}
+
+			// Finish item if progress is >= 1, otherwise increase progress.
+			var progress = (newItem ? 0 : existingItem.MetaData1.GetFloat(ProgressVar));
+			if (progress < 1)
+			{
+				// TODO: Random quality gain/loss?
+				//   "The combination of tools and materials was quite good! (Quality +{0}%)"
+
+				// Get success
+				// Unofficial and mostly based on guessing. If process was
+				// determined to be successful, a good result will happen,
+				// if not, a bad one. Both are then split into very good
+				// and very bad, based on another random number.
+				var chance = this.GetSuccessChance(creature, skill.Info.Rank, manualData.Rank);
+				var success = (rnd.NextDouble() * 100 < chance);
+				var rngFailSuccess = rnd.NextDouble();
+
+				// Calculate progress to add
+				// Base line is between 50 and 100% of the max progress from
+				// the db. For example, a Popo's skirt has 200%, which should
+				// always put it on 100% instantly, as long as it's a success.
+				var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
+				var rankDiff = ((int)skill.Info.Rank - (int)manualData.Rank);
+				ProgressResult result;
+
+				// Apply RNG fail/success
+				if (!success)
 				{
-					existingItem = new Item(manualData.ItemId);
-					existingItem.OptionInfo.Flags |= ItemFlags.Incomplete;
-					existingItem.MetaData1.SetFloat(ProgressVar, 0);
-					existingItem.MetaData1.SetLong(UnkVar, DateTime.Now);
-
-					newItem = true;
-				}
-
-				// Finish item if progress is >= 1, otherwise increase progress.
-				var progress = (newItem ? 0 : existingItem.MetaData1.GetFloat(ProgressVar));
-				if (progress < 1)
-				{
-					// Calculate progress to add
-					var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
-					var rankDiff = ((int)skill.Info.Rank - (int)manualData.Rank);
-					ProgressResult result;
-
-					// Apply RNG fail/success
-					// Unofficial and mostly based on guessing.
-					var rngFailSuccess = rnd.NextDouble();
-					if (rngFailSuccess >= 0.00f && rngFailSuccess < 0.05f) // 5% chance for very bad
+					// 25% chance for very bad
+					if (rngFailSuccess < 0.25f)
 					{
 						msg += Localization.Get("Catastrophic failure!");
 						addProgress /= 2f;
 						result = ProgressResult.VeryBad;
 					}
-					else if (rngFailSuccess >= 0.05f && rngFailSuccess < 0.10f) // 5% chance for bad
+					// 75% chance for bad
+					else
 					{
 						msg += Localization.Get("That didn't go so well...");
 						addProgress /= 1.5f;
 						result = ProgressResult.Bad;
 					}
-					else if (rngFailSuccess >= 0.10f && rngFailSuccess < 0.50f && rankDiff <= -2) // 5% chance for best
+				}
+				else
+				{
+					// 25% chance for best, if manual is >= 2 ranks
+					if (rngFailSuccess < 0.25f && rankDiff <= -2)
 					{
 						msg += Localization.Get("You created a masterpiece!");
 						addProgress *= 2f;
 						result = ProgressResult.VeryGood;
 					}
-					else // 85% chance for good
+					// 85% chance for good
+					else
 					{
-						// Too easy if more than two ranks below?
+						// Too easy if more than two ranks below, which counts
+						// as a training fail, according to the Wiki.
 						if (rankDiff >= 2)
 						{
 							msg += Localization.Get("You did it, but that was way too easy.");
@@ -324,49 +341,44 @@ namespace Aura.Channel.Skills.Life
 							result = ProgressResult.Good;
 						}
 					}
-
-					// Weather bonus
-					if (ChannelServer.Instance.Weather.GetWeatherType(creature.RegionId) == WeatherType.Rain)
-						addProgress += manualData.RainBonus;
-
-					progress = Math.Min(1, progress + addProgress);
-					existingItem.MetaData1.SetFloat(ProgressVar, progress);
-
-					if (progress == 1)
-						msg += Localization.Get("\nFinal Stage remaining");
-					else
-						msg += string.Format(Localization.Get("\n{0}% completed."), (int)(progress * 100));
-
-					this.OnProgress(creature, skill, result);
-					Send.Notice(creature, msg);
-				}
-				else
-				{
-					var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
-					this.FinishItem(creature, skill, manualData, existingItem, quality);
-
-					finished = true;
 				}
 
-				// Add or update item
-				if (!newItem)
-					Send.ItemUpdate(creature, existingItem);
+				// Weather bonus
+				if (ChannelServer.Instance.Weather.GetWeatherType(creature.RegionId) == WeatherType.Rain)
+					addProgress += manualData.RainBonus;
+
+				progress = Math.Min(1, progress + addProgress);
+				existingItem.MetaData1.SetFloat(ProgressVar, progress);
+
+				if (progress == 1)
+					msg += Localization.Get("\nFinal Stage remaining");
 				else
-					creature.Inventory.Add(existingItem, true);
+					msg += string.Format(Localization.Get("\n{0}% completed."), (int)(progress * 100));
 
-				// Acquire info once it's finished and updated.
-				if (finished)
-					Send.AcquireInfo2(creature, "tailoring", existingItem.EntityId);
+				this.OnProgress(creature, skill, result);
+				Send.Notice(creature, msg);
+			}
+			else
+			{
+				var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
+				this.FinishItem(creature, skill, manualData, existingItem, quality);
 
-				Send.UseMotion(creature, 14, 0); // Success motion
-				Send.Echo(creature, packet);
-				return;
+				finished = true;
 			}
 
-			// Fail
-			// TODO: Random quality loss.
-			Send.Notice(creature, Localization.Get("The combination of tools and materials didn't do much of anything. (Quality 0%)"));
+			// Add or update item
+			if (!newItem)
+				Send.ItemUpdate(creature, existingItem);
+			else
+				creature.Inventory.Add(existingItem, true);
 
+			// Acquire info once it's finished and updated.
+			if (finished)
+				Send.AcquireInfo2(creature, "tailoring", existingItem.EntityId);
+
+			Send.UseMotion(creature, 14, 0); // Success motion
+			Send.Echo(creature, packet);
+			return;
 		L_Fail:
 			Send.UseMotion(creature, 14, 3); // Fail motion
 			Send.Echo(creature, packet);
@@ -687,17 +699,11 @@ namespace Aura.Channel.Skills.Life
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="toDecrement"></param>
-		/// <param name="success"></param>
 		/// <param name="rnd"></param>
-		private void DecrementMaterialItems(Creature creature, List<ProductionMaterial> toDecrement, bool success, Random rnd)
+		private void DecrementMaterialItems(Creature creature, List<ProductionMaterial> toDecrement, Random rnd)
 		{
 			foreach (var material in toDecrement)
-			{
-				// On fail you lose 0~amount of materials randomly
-				var amount = success ? material.Amount : rnd.Next(0, material.Amount + 1);
-				if (amount > 0)
-					creature.Inventory.Decrement(material.Item, (ushort)amount);
-			}
+				creature.Inventory.Decrement(material.Item, (ushort)material.Amount);
 		}
 
 		/// <summary>
