@@ -159,6 +159,21 @@ public class NoraShop : TailorShop
 	{
 		base.Setup();
 
+		// Sewing Patterns
+		Add("Sewing Patterns", 60000, "FORMID:4:101;");
+		Add("Sewing Patterns", 60000, "FORMID:4:102;");
+		Add("Sewing Patterns", 60000, "FORMID:4:103;");
+		Add("Sewing Patterns", 60000, "FORMID:4:104;");
+		Add("Sewing Patterns", 60000, "FORMID:4:105;");
+		Add("Sewing Patterns", 60000, "FORMID:4:106;");
+		Add("Sewing Patterns", 60000, "FORMID:4:107;");
+		Add("Sewing Patterns", 60000, "FORMID:4:108;");
+		Add("Sewing Patterns", 60000, "FORMID:4:109;");
+		Add("Sewing Patterns", 60000, "FORMID:4:110;");
+		Add("Sewing Patterns", 60044, "FORMID:4:180;");
+		Add("Sewing Patterns", 60044, "FORMID:4:185;");
+
+		// Skill Books
 		Add("Skill Book", (c, o) => o.GetFavor(c) >= 50); // Allow access with >= 50 favor
 		Add("Skill Book", 1082); // Resting Guide
 	}

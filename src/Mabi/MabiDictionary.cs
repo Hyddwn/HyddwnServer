@@ -45,6 +45,7 @@ namespace Aura.Mabi
 		public void SetUInt(string key, uint val) { this.Set(key, (int)val); }
 		public void SetLong(string key, long val) { this.Set(key, val); }
 		public void SetULong(string key, ulong val) { this.Set(key, (long)val); }
+		public void SetLong(string key, DateTime val) { this.SetLong(key, (long)(val.Ticks / 10000)); }
 		public void SetFloat(string key, float val) { this.Set(key, val); }
 		public void SetString(string key, string val) { this.Set(key, val); }
 		public void SetString(string key, string format, params object[] args) { this.Set(key, string.Format(format, args)); }

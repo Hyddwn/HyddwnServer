@@ -577,7 +577,7 @@ namespace Aura.Channel.World.Entities
 				Log.Warning("Item.LoadDefault: Item '{0}' couldn't be found in database.", this.Info.Id);
 			}
 
-			this.OptionInfo.Flags = ItemFlags.Unknown;
+			this.OptionInfo.Flags = ItemFlags.Default;
 		}
 
 		/// <summary>

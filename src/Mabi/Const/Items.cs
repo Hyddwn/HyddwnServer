@@ -179,14 +179,35 @@ namespace Aura.Mabi.Const
 	[Flags]
 	public enum ItemFlags : byte
 	{
-		Unknown = 0x01,
-		// ? = 0x02,
+		/// <summary>
+		/// ?
+		/// </summary>
+		Default = 0x01,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		Unknown2 = 0x02,
+
+		/// <summary>
+		/// Item blessed with Holy Water.
+		/// </summary>
 		Blessed = 0x04,
+
+		/// <summary>
+		/// Used in production, e.g. Tailoring.
+		/// </summary>
 		Incomplete = 0x08,
-		// ? = 0x10, (adds "-only Item" text, server side gender restriction?)
-		// ? = 0x20, (removes "(Original)" text?)
-		// ? = 0x40,
-		// ? = 0x80,
+
+		/// <summary>
+		/// Adds "-only Item" text?
+		/// </summary>
+		Unknown3 = 0x10,
+
+		/// <summary>
+		/// Removes "(Original)" text?
+		/// </summary>
+		Reproduction = 0x20,
 	}
 
 	/// <summary>

@@ -51,5 +51,7 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		public long NameColorItemEntityId;
 		public int ColorWheelResult;
+
+		public int TailoringMiniGameX, TailoringMiniGameY;
 	}
 }

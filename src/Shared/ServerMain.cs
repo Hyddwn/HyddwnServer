@@ -218,6 +218,7 @@ namespace Aura.Shared
 				if ((toLoad & DataLoad.Production) != 0)
 				{
 					this.LoadDb(AuraData.ProductionDb, "db/production.txt", reload);
+					this.LoadDb(AuraData.ManualDb, "db/manuals.txt", reload);
 				}
 			}
 			catch (DatabaseErrorException ex)
