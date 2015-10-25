@@ -139,10 +139,11 @@ namespace Aura.Channel.Skills.Life
 					var xOffset = (short)rnd.Next(30, 50);
 					var yOffset = (short)rnd.Next(20, 30);
 					var deviation = new byte[6];
+					var deviation2 = (byte)(skill.Info.Rank < SkillRank.R9 ? 4 : 2);
 					for (int i = 0; i < deviation.Length; ++i)
-						deviation[i] = (byte)rnd.Next(0, 5);
+						deviation[i] = (byte)rnd.Next(0, deviation2 + 1);
 
-					Send.TailoringMiniGame(creature, item, xOffset, yOffset, deviation);
+					Send.TailoringMiniGame(creature, item, xOffset, yOffset, deviation, deviation2);
 
 					// Save offsets for complete
 					creature.Temp.TailoringMiniGameX = xOffset;

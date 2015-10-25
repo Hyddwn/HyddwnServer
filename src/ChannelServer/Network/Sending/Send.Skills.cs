@@ -957,7 +957,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="xOffset">Offset of stitch points on the x-axis.</param>
 		/// <param name="yOffset">Offset of stitch points on the y-axis.</param>
 		/// <param name="deviation">Randomization for the 6 stitch points.</param>
-		public static void TailoringMiniGame(Creature creature, Item item, int xOffset, int yOffset, byte[] deviation)
+		public static void TailoringMiniGame(Creature creature, Item item, int xOffset, int yOffset, byte[] deviation, byte deviation2)
 		{
 			if (deviation == null || deviation.Length != 6)
 				throw new ArgumentException("rng needs exactly 6 values.");
@@ -972,7 +972,7 @@ namespace Aura.Channel.Network.Sending
 			// deviation? Seems to be a general deviation that applies to
 			// all points? Setting all deviations, incl this, to 0 gives
 			// the most spot-on results.
-			packet.PutByte(4);
+			packet.PutByte(deviation2);
 
 			packet.PutLong(0);
 			packet.PutInt(0);
