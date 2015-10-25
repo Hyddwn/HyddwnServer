@@ -260,7 +260,7 @@ namespace Aura.Channel.Skills.Life
 
 			// Get to work
 			var newItem = false;
-			var finished = false;
+			var success = false;
 			var msg = "";
 
 			// Create new item
@@ -276,6 +276,7 @@ namespace Aura.Channel.Skills.Life
 
 			// Finish item if progress is >= 1, otherwise increase progress.
 			var progress = (newItem ? 0 : existingItem.MetaData1.GetFloat(ProgressVar));
+			ProgressResult result;
 			if (progress < 1)
 			{
 				// TODO: Random quality gain/loss?
@@ -287,7 +288,7 @@ namespace Aura.Channel.Skills.Life
 				// if not, a bad one. Both are then split into very good
 				// and very bad, based on another random number.
 				var chance = this.GetSuccessChance(creature, skill.Info.Rank, manualData.Rank);
-				var success = (rnd.NextDouble() * 100 < chance);
+				success = (rnd.NextDouble() * 100 < chance);
 				var rngFailSuccess = rnd.NextDouble();
 
 				// Calculate progress to add
@@ -296,7 +297,6 @@ namespace Aura.Channel.Skills.Life
 				// always put it on 100% instantly, as long as it's a success.
 				var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
 				var rankDiff = ((int)skill.Info.Rank - (int)manualData.Rank);
-				ProgressResult result;
 
 				// Apply RNG fail/success
 				if (!success)
@@ -363,7 +363,8 @@ namespace Aura.Channel.Skills.Life
 				var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
 				this.FinishItem(creature, skill, manualData, existingItem, quality);
 
-				finished = true;
+				result = ProgressResult.Finish;
+				success = true;
 			}
 
 			// Add or update item
@@ -373,12 +374,18 @@ namespace Aura.Channel.Skills.Life
 				creature.Inventory.Add(existingItem, true);
 
 			// Acquire info once it's finished and updated.
-			if (finished)
+			if (result == ProgressResult.Finish)
 				Send.AcquireInfo2(creature, "tailoring", existingItem.EntityId);
 
-			Send.UseMotion(creature, 14, 0); // Success motion
-			Send.Echo(creature, packet);
-			return;
+			// Success motion if it was a good result, otherwise keep
+			// going to fail.
+			if (success)
+			{
+				Send.UseMotion(creature, 14, 0); // Success motion
+				Send.Echo(creature, packet);
+				return;
+			}
+
 		L_Fail:
 			Send.UseMotion(creature, 14, 3); // Fail motion
 			Send.Echo(creature, packet);
