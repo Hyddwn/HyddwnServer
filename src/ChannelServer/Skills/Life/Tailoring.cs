@@ -55,7 +55,7 @@ namespace Aura.Channel.Skills.Life
 		/// <summary>
 		/// Base success chance used in success formula.
 		/// </summary>
-		private static readonly byte[] SuccessTable = new byte[] { 96, 93, 91, 88, 87, 85, 84, 83, 81, 79, 77, 74, 72, 71, 70, 54, 39, 27, 19, 12, 7, 5, 3, 1, 1, 1, 0, 0, 0, 0 };
+		private static readonly int[] SuccessTable = { 96, 93, 91, 88, 87, 85, 84, 83, 81, 79, 77, 74, 72, 71, 70, 54, 39, 27, 19, 12, 7, 5, 3, 1, 1, 1, 0, 0, 0, 0 };
 
 		/// <summary>
 		/// Prepares the skill.
@@ -474,6 +474,16 @@ namespace Aura.Channel.Skills.Life
 			var pm = creature.Skills.Get(SkillId.ProductionMastery);
 			if (pm != null)
 				chance += (byte)pm.Info.Rank;
+
+			// Party bonus
+			// http://mabination.com/threads/579-Sooni-s-Guide-to-Tailoring!-(Please-claim-back-from-me)
+			if (creature.IsInParty)
+			{
+				var members = creature.Party.GetMembers();
+				var tailorsCount = members.Where(a => a != creature && a.Skills.Has(SkillId.Tailoring, SkillRank.RF)).Count();
+				if (tailorsCount != 0)
+					chance += (int)(tailorsCount * 5 / 100f * chance);
+			}
 
 			return Math2.Clamp(0, 99, chance);
 		}
