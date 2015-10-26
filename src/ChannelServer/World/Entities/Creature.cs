@@ -18,6 +18,7 @@ using Aura.Channel.World.Inventory;
 using Aura.Channel.Skills.Life;
 using System.Collections.Generic;
 using Aura.Channel.Skills;
+using System.Threading;
 
 namespace Aura.Channel.World.Entities
 {
@@ -361,6 +362,7 @@ namespace Aura.Channel.World.Entities
 		public bool CanRunWithRanged { get { return (this.IsElf || (this.RightHand != null && this.RightHand.HasTag("/crossbow/"))); } }
 
 		public Dictionary<long, HitTracker> _hitTrackers;
+		public int _totalHits;
 
 		// Stats
 		// ------------------------------------------------------------------
@@ -1518,6 +1520,7 @@ namespace Aura.Channel.World.Entities
 						_hitTrackers[from.EntityId] = (tracker = new HitTracker(this, from));
 				}
 				tracker.RegisterHit(damage);
+				_totalHits = Interlocked.Increment(ref _totalHits);
 			}
 
 			// Kill if life too low
@@ -2241,6 +2244,15 @@ namespace Aura.Channel.World.Entities
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Returns the total number of hits the creature took.
+		/// </summary>
+		/// <returns></returns>
+		public int GetTotalHits()
+		{
+			return _totalHits;
 		}
 	}
 }
