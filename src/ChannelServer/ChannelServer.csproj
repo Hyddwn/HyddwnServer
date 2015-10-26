@@ -272,6 +272,7 @@
     <Compile Include="World\Entities\Props\PropExtension.cs" />
     <Compile Include="World\Entities\Props\PropExtensionManager.cs" />
     <Compile Include="World\EventManager.cs" />
+    <Compile Include="World\HitTracker.cs" />
     <Compile Include="World\Inventory\BankInventory.cs" />
     <Compile Include="World\Inventory\CreatureInventory.cs" />
     <Compile Include="World\Inventory\InventoryPockets.cs" />
