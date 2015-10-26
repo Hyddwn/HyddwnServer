@@ -296,7 +296,7 @@ namespace Aura.Channel.Skills.Music
 		protected virtual void OnCreatureAttackedByPlayer(TargetAction action)
 		{
 			// Check for instrument in attacker's right hand
-			if (action.Attacker == null || action.Attacker.RightHand == null || action.Attacker.RightHand.Data.Type != ItemType.Instrument)
+			if (action.Attacker == null || action.Attacker.RightHand == null || !action.Attacker.RightHand.HasTag("/instrument/"))
 				return;
 
 			// Get skill
