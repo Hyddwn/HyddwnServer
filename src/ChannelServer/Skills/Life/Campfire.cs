@@ -40,6 +40,9 @@ namespace Aura.Channel.Skills.Life
 		/// Prop to spawn
 		/// </summary>
 		private const int PropId = 203;
+		private const int HalloweenPropId = 44455;
+		private const int ChristmasPropId = 44867;
+		private const int SeventhAnnvPropId = 44809;
 
 		/// <summary>
 		/// How much Firewood is required/being removed.
@@ -127,6 +130,7 @@ namespace Aura.Channel.Skills.Life
 			var positionId = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var unkInt2 = packet.GetInt();
+			var propId = PropId;
 
 			// Handle items
 			if (skill.Info.Id == SkillId.Campfire)
@@ -145,6 +149,8 @@ namespace Aura.Channel.Skills.Life
 				if (item == null)
 					throw new ModerateViolation("Used CampfireKit with invalid kit.");
 
+				propId = this.GetPropId(item); // Change the prop ID based on what campfire kit was used
+
 				// Reduce kit
 				creature.Inventory.Decrement(item);
 			}
@@ -152,9 +158,10 @@ namespace Aura.Channel.Skills.Life
 			// Set up Campfire
 			var pos = new Position(positionId);
 			var effect = (skill.Info.Rank < SkillRank.RB ? "campfire_01" : "campfire_02");
-			var prop = new Prop(PropId, creature.RegionId, pos.X, pos.Y, MabiMath.ByteToRadian(creature.Direction), 1); // Logs
+			var prop = new Prop(propId, creature.RegionId, pos.X, pos.Y, MabiMath.ByteToRadian(creature.Direction), 1); // Logs
 			prop.State = "single";
-			prop.Xml.SetAttributeValue("EFFECT", effect); // Fire effect
+			if (prop.Data.Id != HalloweenPropId)
+				prop.Xml.SetAttributeValue("EFFECT", effect); // Fire effect
 			prop.DisappearTime = DateTime.Now.AddMinutes(this.GetDuration(skill.Info.Rank, creature.RegionId)); // Disappear after x minutes
 
 			// Temp data for Rest
@@ -196,6 +203,32 @@ namespace Aura.Channel.Skills.Life
 				duration /= 2; // Unofficial
 
 			return duration;
+		}
+
+		/// <summary>
+		/// Gets the prop ID
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		private int GetPropId(Item item)
+		{
+			if (item != null)
+			{
+				if (item.HasTag("/halloween_campfire_kit/"))
+				{
+					return HalloweenPropId;
+				}
+				else if (item.HasTag("/burner/"))
+				{
+					return ChristmasPropId;
+				}
+				else if (item.HasTag("/anniversary_campfire_kit/"))
+				{
+					return SeventhAnnvPropId;
+				}
+			}
+
+			return PropId;
 		}
 	}
 }
