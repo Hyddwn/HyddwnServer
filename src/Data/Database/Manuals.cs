@@ -29,29 +29,97 @@ namespace Aura.Data.Database
 		public float MaxProgress { get; set; }
 		public float RainBonus { get; set; }
 		public List<ProductionMaterialData> Materials { get; set; }
-		public List<ProductionMaterialData> FinishMaterials { get; set; }
+		public List<FinishData> Finish { get; set; }
 
 		public ItemData ItemData { get; set; }
 
 		public ManualData()
 		{
 			this.Materials = new List<ProductionMaterialData>();
-			this.FinishMaterials = new List<ProductionMaterialData>();
+			this.Finish = new List<FinishData>();
 		}
 
+		/// <summary>
+		/// Returns a copy of the materials.
+		/// </summary>
+		/// <remarks>
+		/// Use this if you have to modify the list in any way,
+		/// *don't* modify the Materials property.
+		/// </remarks>
+		/// <returns></returns>
 		public List<ProductionMaterialData> GetMaterialList()
 		{
 			var result = new List<ProductionMaterialData>();
+
 			foreach (var material in this.Materials)
 				result.Add(new ProductionMaterialData(material.Tag, material.Amount));
+
 			return result;
 		}
 
-		public List<ProductionMaterialData> GetFinishMaterialList()
+		/// <summary>
+		/// Returns a copy of the materials of the first finish.
+		/// </summary>
+		/// <remarks>
+		/// Use this if you have to modify the list in any way,
+		/// *don't* modify the Finish property.
+		/// </remarks>
+		/// <returns></returns>
+		public List<ProductionMaterialData> GetFirstFinishMaterialList()
 		{
+			if (this.Finish == null || this.Finish.Count == 0)
+				throw new Exception("No finishes.");
+
 			var result = new List<ProductionMaterialData>();
-			foreach (var material in this.FinishMaterials)
+
+			foreach (var material in this.Finish.First().Materials)
 				result.Add(new ProductionMaterialData(material.Tag, material.Amount));
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a copy of the finishes.
+		/// </summary>
+		/// <remarks>
+		/// Use this if you have to modify the list in any way,
+		/// *don't* modify the Finish property.
+		/// </remarks>
+		/// <returns></returns>
+		public List<FinishData> GetFinishList()
+		{
+			var result = new List<FinishData>();
+
+			foreach (var finish in this.Finish)
+				result.Add(finish.Copy());
+
+			return result;
+		}
+	}
+
+	public class FinishData
+	{
+		public List<ProductionMaterialData> Materials { get; set; }
+		public uint? Color1 { get; set; }
+		public uint? Color2 { get; set; }
+		public uint? Color3 { get; set; }
+
+		public FinishData()
+		{
+			this.Materials = new List<ProductionMaterialData>();
+		}
+
+		public FinishData Copy()
+		{
+			var result = new FinishData();
+
+			foreach (var material in this.Materials)
+				result.Materials.Add(new ProductionMaterialData(material.Tag, material.Amount));
+
+			result.Color1 = this.Color1;
+			result.Color2 = this.Color2;
+			result.Color3 = this.Color3;
+
 			return result;
 		}
 	}
@@ -65,7 +133,7 @@ namespace Aura.Data.Database
 
 		protected override void ReadEntry(JObject entry)
 		{
-			entry.AssertNotMissing("category", "id", "manualItemId", "itemId", "exp", "rank", "maxProgress", "rainBonus", "materials", "finishMaterials");
+			entry.AssertNotMissing("category", "id", "manualItemId", "itemId", "exp", "rank", "maxProgress", "rainBonus", "materials", "finish");
 
 			var data = new ManualData();
 
@@ -95,15 +163,26 @@ namespace Aura.Data.Database
 				data.Materials.Add(materialData);
 			}
 
-			// Finish Materials
-			foreach (var material in entry["finishMaterials"])
+			// Finishes
+			foreach (JObject finish in entry["finish"])
 			{
-				var materialData = new ProductionMaterialData();
+				var finishData = new FinishData();
 
-				materialData.Tag = (string)material[0];
-				materialData.Amount = (int)material[1];
+				foreach (var material in finish["materials"])
+				{
+					var materialData = new ProductionMaterialData();
 
-				data.FinishMaterials.Add(materialData);
+					materialData.Tag = (string)material[0];
+					materialData.Amount = (int)material[1];
+
+					finishData.Materials.Add(materialData);
+				}
+
+				if (finish.ContainsKey("color1")) finishData.Color1 = finish.ReadUInt("color1");
+				if (finish.ContainsKey("color2")) finishData.Color2 = finish.ReadUInt("color2");
+				if (finish.ContainsKey("color3")) finishData.Color3 = finish.ReadUInt("color3");
+
+				data.Finish.Add(finishData);
 			}
 
 			data.ItemData = AuraData.ItemDb.Find(data.ItemId);

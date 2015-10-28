@@ -659,7 +659,10 @@ namespace Aura.Channel.Skills.Life
 		{
 			toDecrement = new List<ProductionMaterial>();
 
-			var requiredMaterials = (stage == Stage.Progression ? manualData.GetMaterialList() : manualData.GetFinishMaterialList());
+			// TODO: While Tailoring currently doesn't have multiple finishes,
+			//   this could be an interesting customization,
+			//   allowing finishes with a dye ampoule for example.
+			var requiredMaterials = (stage == Stage.Progression ? manualData.GetMaterialList() : manualData.GetFirstFinishMaterialList());
 			var inUse = new HashSet<long>();
 			foreach (var reqMat in requiredMaterials)
 			{
