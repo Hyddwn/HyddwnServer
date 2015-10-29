@@ -33,30 +33,8 @@ namespace Aura.Channel.Skills.Life
 	/// or tell us about them.
 	/// </remarks>
 	[Skill(SkillId.Tailoring)]
-	public class Tailoring : IPreparable, ICompletable
+	public class Tailoring : CreationSkill, IPreparable, ICompletable
 	{
-		// Item meta data var names
-		private const string ProgressVar = "PRGRATE";
-		private const string UnkVar = "STCLMT";
-		private const string QualityVar = "QUAL";
-		private const string SignNameVar = "MKNAME";
-		private const string SignRankVar = "MKSLV";
-
-		/// <summary>
-		/// Amount of durability the kit loses on each try.
-		/// </summary>
-		private const int ToolDurabilityLoss = 75;
-
-		/// <summary>
-		/// Amount of durability the pattern loses on each try.
-		/// </summary>
-		private const int PatternDurabilityLoss = 1000;
-
-		/// <summary>
-		/// Base success chance used in success formula.
-		/// </summary>
-		private static readonly int[] SuccessTable = { 96, 93, 91, 88, 87, 85, 84, 83, 81, 79, 77, 74, 72, 71, 70, 54, 39, 27, 19, 12, 7, 5, 3, 1, 1, 1, 0, 0, 0, 0 };
-
 		/// <summary>
 		/// Prepares the skill.
 		/// </summary>
@@ -73,7 +51,7 @@ namespace Aura.Channel.Skills.Life
 			var propEntityId = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var existingItemEntityId = packet.GetLong();
-			var unkInt2 = packet.GetInt();
+			var finishId = packet.GetInt();
 
 			if (stage == Stage.Progression)
 			{
@@ -129,7 +107,7 @@ namespace Aura.Channel.Skills.Life
 
 					// Get items to decrement
 					List<ProductionMaterial> toDecrement;
-					if (!this.GetItemsToDecrement(creature, Stage.Finish, manualData, materials, out toDecrement))
+					if (!this.GetItemsToDecrement(creature, Stage.Finish, finishId, manualData, materials, out toDecrement))
 						return false;
 
 					// Decrement mats
@@ -178,7 +156,7 @@ namespace Aura.Channel.Skills.Life
 			var propEntityId = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var existingItemEntityId = packet.GetLong();
-			var unkInt2 = packet.GetInt();
+			var finishId = packet.GetInt();
 
 			if (stage == Stage.Progression)
 			{
@@ -248,7 +226,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				// Get items to decrement
 				List<ProductionMaterial> toDecrement;
-				if (!this.GetItemsToDecrement(creature, Stage.Progression, manualData, materials, out toDecrement))
+				if (!this.GetItemsToDecrement(creature, Stage.Progression, finishId, manualData, materials, out toDecrement))
 					goto L_Fail;
 
 				// Decrement mats
@@ -257,7 +235,7 @@ namespace Aura.Channel.Skills.Life
 
 			// Reduce durability
 			creature.Inventory.ReduceDurability(creature.RightHand, ToolDurabilityLoss);
-			creature.Inventory.ReduceDurability(creature.Magazine, PatternDurabilityLoss);
+			creature.Inventory.ReduceDurability(creature.Magazine, ManualDurabilityLoss);
 
 			// Get to work
 			var newItem = false;
@@ -270,7 +248,7 @@ namespace Aura.Channel.Skills.Life
 				existingItem = new Item(manualData.ItemId);
 				existingItem.OptionInfo.Flags |= ItemFlags.Incomplete;
 				existingItem.MetaData1.SetFloat(ProgressVar, 0);
-				existingItem.MetaData1.SetLong(UnkVar, DateTime.Now);
+				existingItem.MetaData1.SetLong(StclmtVar, DateTime.Now);
 
 				newItem = true;
 			}
@@ -288,7 +266,7 @@ namespace Aura.Channel.Skills.Life
 				// determined to be successful, a good result will happen,
 				// if not, a bad one. Both are then split into very good
 				// and very bad, based on another random number.
-				var chance = this.GetSuccessChance(creature, skill.Info.Rank, manualData.Rank);
+				var chance = this.GetSuccessChance(creature, skill, manualData.Rank);
 				success = (rnd.NextDouble() * 100 < chance);
 				var rngFailSuccess = rnd.NextDouble();
 
@@ -363,6 +341,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
 				this.FinishItem(creature, skill, manualData, existingItem, quality);
+				this.OnProgress(creature, skill, ProgressResult.Finish);
 
 				result = ProgressResult.Finish;
 				success = true;
@@ -422,7 +401,7 @@ namespace Aura.Channel.Skills.Life
 
 			// Check if pattern has enough durability
 			// Does the client check this?
-			if (creature.Magazine.Durability < PatternDurabilityLoss)
+			if (creature.Magazine.Durability < ManualDurabilityLoss)
 			{
 				Send.MsgBox(creature, Localization.Get("You can't use this Sewing Pattern anymore. You'll stab your fingers!"));
 				return false;
@@ -469,284 +448,6 @@ namespace Aura.Channel.Skills.Life
 			// Min = -100
 			// Max = 100 (increasing the max would increase the chance for 100 quality)
 			return Math.Max(-100, 100 - (int)(total * 2));
-		}
-
-		/// <summary>
-		/// Returns success chance between 0 and 100.
-		/// </summary>
-		/// <remarks>
-		/// Unofficial. It's unlikely that officials use a table, instead of
-		/// a formula, but for a lack of formula, we're forced to go with
-		/// this. The success rates actually seem to be rather static,
-		/// so it should work fine. We have all possible combinations,
-		/// and with this function we do get the correct base chance.
-		/// </remarks>
-		/// <param name="creature"></param>
-		/// <param name="skillRank"></param>
-		/// <param name="manualRank"></param>
-		/// <returns></returns>
-		private int GetSuccessChance(Creature creature, SkillRank skillRank, SkillRank manualRank)
-		{
-			var diff = ((int)skillRank - (int)manualRank);
-			var chance = SuccessTable[29 - (diff + 15)];
-
-			// Production Mastery bonus
-			var pm = creature.Skills.Get(SkillId.ProductionMastery);
-			if (pm != null)
-				chance += (byte)pm.Info.Rank;
-
-			// Party bonus
-			// http://mabination.com/threads/579-Sooni-s-Guide-to-Tailoring!-(Please-claim-back-from-me)
-			if (creature.IsInParty)
-			{
-				var members = creature.Party.GetMembers();
-				var tailorsCount = members.Where(a => a != creature && a.Skills.Has(SkillId.Tailoring, SkillRank.RF)).Count();
-				if (tailorsCount != 0)
-					chance += (int)(tailorsCount * 5 / 100f * chance);
-			}
-
-			return Math2.Clamp(0, 99, chance);
-		}
-
-		/// <summary>
-		/// Sets appropriete flags, bonuses, and signatures, and sends
-		/// notices about quality and bonuses.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="manualData"></param>
-		/// <param name="item"></param>
-		/// <param name="quality"></param>
-		private void FinishItem(Creature creature, Skill skill, ManualData manualData, Item item, int quality)
-		{
-			item.OptionInfo.Flags &= ~ItemFlags.Incomplete;
-			item.OptionInfo.Flags |= ItemFlags.Reproduction;
-			item.MetaData1.Remove(ProgressVar);
-			item.MetaData1.Remove(UnkVar);
-			item.MetaData1.SetInt(QualityVar, quality);
-
-			// Signature
-			if (skill.Info.Rank >= SkillRank.R9 && manualData.Rank >= SkillRank.RA && quality >= 80)
-			{
-				item.MetaData1.SetString(SignNameVar, creature.Name);
-				item.MetaData1.SetByte(SignRankVar, (byte)skill.Info.Rank);
-			}
-
-			// Get quality based msg
-			var msg = "";
-			if (quality == 100) // god
-			{
-				msg = Localization.Get("You created a godly {0}! Excellent work!");
-			}
-			else if (quality >= 80) // best
-			{
-				msg = Localization.Get("Your hard work produced a very nice {0}!");
-			}
-			else if (quality >= 50) // better
-			{
-				msg = Localization.Get("Your efforts created an above-average {0}!");
-			}
-			else if (quality >= 20) // reasonable
-			{
-				msg = Localization.Get("Your creation is far superior to anything you can get from a store.");
-			}
-			else if (quality >= -20) // normal
-			{
-				msg = Localization.Get("Your creation is just as good as anything you can get from a store.");
-			}
-			else if (quality >= -50) // worse
-			{
-				msg = Localization.Get("Your creation could be nice with a few repairs.");
-			}
-			else if (quality >= -80) // worst
-			{
-				msg = Localization.Get("You managed to finish the {0}, but it's pretty low quality.");
-			}
-			else
-			{
-				msg = Localization.Get("Your {0} isn't really fit for use. Maybe you could get some decent scrap wood out of it.");
-			}
-
-			// Get quality based bonuses
-			var bonuses = new Dictionary<Bonus, int>();
-			if (item.HasTag("/armor/cloth/") || item.HasTag("/armor/lightarmor/"))
-			{
-				if (quality >= 90)
-				{
-					bonuses[Bonus.Protection] = 2;
-					bonuses[Bonus.Durability] = 5;
-				}
-				else if (quality >= 80)
-				{
-					bonuses[Bonus.Protection] = 2;
-					bonuses[Bonus.Durability] = 4;
-				}
-				else if (quality >= 70)
-				{
-					bonuses[Bonus.Protection] = 1;
-					bonuses[Bonus.Durability] = 4;
-				}
-				else if (quality >= 30)
-				{
-					bonuses[Bonus.Protection] = 1;
-					bonuses[Bonus.Durability] = 3;
-				}
-				else if (quality >= 20)
-				{
-					bonuses[Bonus.Protection] = 1;
-					bonuses[Bonus.Durability] = 2;
-				}
-			}
-			else if (item.HasTag("/hand/glove/"))
-			{
-				if (quality >= 80)
-					bonuses[Bonus.Protection] = 1;
-			}
-			else if (item.HasTag("/foot/shoes/"))
-			{
-				if (quality >= 90)
-					bonuses[Bonus.Durability] = 4;
-				else if (quality >= 40)
-					bonuses[Bonus.Durability] = 3;
-				else if (quality >= 20)
-					bonuses[Bonus.Durability] = 2;
-			}
-			else if (item.HasTag("/robe/"))
-			{
-				if (quality >= 80)
-					bonuses[Bonus.Durability] = 2;
-			}
-
-			// Apply bonuses and append msgs
-			if (bonuses.Count != 0)
-			{
-				msg += "\n";
-				foreach (var bonus in bonuses)
-				{
-					if (bonus.Key == Bonus.Protection)
-					{
-						msg += string.Format("Protection Increase {0}, ", bonus.Value);
-						item.OptionInfo.Protection += (short)bonus.Value;
-					}
-					else if (bonus.Key == Bonus.Durability)
-					{
-						msg += string.Format("Durability Increase {0}, ", bonus.Value);
-						item.OptionInfo.Durability += bonus.Value;
-						item.OptionInfo.DurabilityMax = item.OptionInfo.DurabilityOriginal = item.OptionInfo.Durability;
-					}
-				}
-				msg = msg.TrimEnd(',', ' ');
-			}
-
-			this.OnProgress(creature, skill, ProgressResult.Finish);
-
-			// Send notice
-			Send.Notice(creature, msg, item.Data.Name);
-		}
-
-		/// <summary>
-		/// Returns list of items that have to be decremented to satisfy the
-		/// manual's required materials. Actual return value is whether
-		/// this process was successful, or if materials are missing.
-		/// Handles necessary messages and logs.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="manualData"></param>
-		/// <param name="materials"></param>
-		/// <param name="toDecrement"></param>
-		/// <returns></returns>
-		private bool GetItemsToDecrement(Creature creature, Stage stage, ManualData manualData, List<ProductionMaterial> materials, out List<ProductionMaterial> toDecrement)
-		{
-			toDecrement = new List<ProductionMaterial>();
-
-			// TODO: While Tailoring currently doesn't have multiple finishes,
-			//   this could be an interesting customization,
-			//   allowing finishes with a dye ampoule for example.
-			var requiredMaterials = (stage == Stage.Progression ? manualData.GetMaterialList() : manualData.GetFirstFinishMaterialList());
-			var inUse = new HashSet<long>();
-			foreach (var reqMat in requiredMaterials)
-			{
-				// Check all selected items for tag matches
-				foreach (var material in materials)
-				{
-					// Satisfy requirement with item, up to the max amount
-					// needed or available
-					if (material.Item.HasTag(reqMat.Tag))
-					{
-						// Cancel if one item matches multiple materials.
-						// It's unknown how this would be handled, can it even
-						// happen? Can one item maybe only be used as one material?
-						if (inUse.Contains(material.Item.EntityId))
-						{
-							Send.ServerMessage(creature, Localization.Get("Unable to handle request, please report, with this information: ({0}/{1}:{2})."), material.Item.Info.Id, manualData.Category, manualData.Id);
-							Log.Warning("ProductionSkill.Complete: Item '{0}' matches multiple materials for manual '{1}:{2}'.", material.Item.Info.Id, manualData.Category, manualData.Id);
-							return false;
-						}
-
-						var amount = Math.Min(reqMat.Amount, material.Item.Amount);
-						reqMat.Amount -= amount;
-						toDecrement.Add(new ProductionMaterial(material.Item, amount));
-						inUse.Add(material.Item.EntityId);
-					}
-
-					// Break once we got what we need
-					if (reqMat.Amount == 0)
-						break;
-				}
-			}
-
-			if (requiredMaterials.Any(a => a.Amount != 0))
-			{
-				// Unofficial, the client should normally prevent this.
-				Send.ServerMessage(creature, Localization.Get("Insufficient materials."));
-				return false;
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// Decrements the given materials.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="toDecrement"></param>
-		/// <param name="rnd"></param>
-		private void DecrementMaterialItems(Creature creature, List<ProductionMaterial> toDecrement, Random rnd)
-		{
-			foreach (var material in toDecrement)
-				creature.Inventory.Decrement(material.Item, (ushort)material.Amount);
-		}
-
-		/// <summary>
-		/// Reads materuals from packet, starting with the count.
-		/// Returns false if a material item wasn't found, after logging it.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="packet"></param>
-		/// <param name="materials"></param>
-		/// <returns></returns>
-		private bool ReadMaterials(Creature creature, Packet packet, out List<ProductionMaterial> materials)
-		{
-			materials = new List<ProductionMaterial>();
-
-			var count = packet.GetByte();
-			for (int i = 0; i < count; ++i)
-			{
-				var itemEntityId = packet.GetLong();
-				var amount = packet.GetShort();
-
-				// Check item
-				var item = creature.Inventory.GetItem(itemEntityId);
-				if (item == null)
-				{
-					Log.Warning("Tailoring.Complete: Creature '{0:X16}' tried to use non-existent material item.", creature.EntityId);
-					return false;
-				}
-
-				materials.Add(new ProductionMaterial(item, amount));
-			}
-
-			return true;
 		}
 
 		/// <summary>
@@ -817,31 +518,5 @@ namespace Aura.Channel.Skills.Life
 				return;
 			}
 		}
-	}
-
-	public enum Bonus
-	{
-		Defense,
-		Protection,
-		Durability,
-		AttackMin,
-		AttackMax,
-		Critical,
-		Balance,
-	}
-
-	public enum Stage
-	{
-		Progression = 1,
-		Finish = 2,
-	}
-
-	public enum ProgressResult
-	{
-		VeryBad,
-		Bad,
-		Good,
-		VeryGood,
-		Finish,
 	}
 }

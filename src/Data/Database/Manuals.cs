@@ -58,42 +58,23 @@ namespace Aura.Data.Database
 		}
 
 		/// <summary>
-		/// Returns a copy of the materials of the first finish.
+		/// Returns a copy of the finish with the given id, or null if
+		/// it doesn't exist.
 		/// </summary>
 		/// <remarks>
 		/// Use this if you have to modify the list in any way,
 		/// *don't* modify the Finish property.
 		/// </remarks>
 		/// <returns></returns>
-		public List<ProductionMaterialData> GetFirstFinishMaterialList()
+		public FinishData GetFinish(int finishId)
 		{
 			if (this.Finish == null || this.Finish.Count == 0)
 				throw new Exception("No finishes.");
 
-			var result = new List<ProductionMaterialData>();
+			if (finishId > this.Finish.Count - 1)
+				return null;
 
-			foreach (var material in this.Finish.First().Materials)
-				result.Add(new ProductionMaterialData(material.Tag, material.Amount));
-
-			return result;
-		}
-
-		/// <summary>
-		/// Returns a copy of the finishes.
-		/// </summary>
-		/// <remarks>
-		/// Use this if you have to modify the list in any way,
-		/// *don't* modify the Finish property.
-		/// </remarks>
-		/// <returns></returns>
-		public List<FinishData> GetFinishList()
-		{
-			var result = new List<FinishData>();
-
-			foreach (var finish in this.Finish)
-				result.Add(finish.Copy());
-
-			return result;
+			return this.Finish[finishId].Copy();
 		}
 	}
 

@@ -33,14 +33,8 @@ namespace Aura.Channel.Skills.Life
 	/// or tell us about them.
 	/// </remarks>
 	[Skill(SkillId.Blacksmithing)]
-	public class Blacksmithing : IPreparable, ICompletable
+	public class Blacksmithing : CreationSkill, IPreparable, ICompletable
 	{
-		// Item meta data var names
-		private const string ProgressVar = "PRGRATE";
-		private const string QualityVar = "QUAL";
-		private const string SignNameVar = "MKNAME";
-		private const string SignRankVar = "MKSLV";
-
 		/// <summary>
 		/// Size of the mini-game field.
 		/// </summary>
@@ -55,21 +49,6 @@ namespace Aura.Channel.Skills.Life
 		/// Max position value for dots on the field.
 		/// </summary>
 		private const int FieldMax = FieldSize - FieldMin;
-
-		/// <summary>
-		/// Amount of durability the hammer loses on each try.
-		/// </summary>
-		private const int ToolDurabilityLoss = 75;
-
-		/// <summary>
-		/// Amount of durability the manual loses on each try.
-		/// </summary>
-		private const int ManualDurabilityLoss = 1000;
-
-		/// <summary>
-		/// Base success chance used in success formula.
-		/// </summary>
-		private static readonly int[] SuccessTable = { 96, 93, 91, 88, 87, 85, 84, 83, 81, 79, 77, 74, 72, 71, 70, 54, 39, 27, 19, 12, 7, 5, 3, 1, 1, 1, 0, 0, 0, 0 };
 
 		/// <summary>
 		/// Prepares skill.
@@ -267,7 +246,7 @@ namespace Aura.Channel.Skills.Life
 				// determined to be successful, a good result will happen,
 				// if not, a bad one. Both are then split into very good
 				// and very bad, based on another random number.
-				var chance = this.GetSuccessChance(creature, skill.Info.Rank, manualData.Rank);
+				var chance = this.GetSuccessChance(creature, skill, manualData.Rank);
 				success = (rnd.NextDouble() * 100 < chance);
 
 				// Calculate progress to add
@@ -340,38 +319,6 @@ namespace Aura.Channel.Skills.Life
 		}
 
 		/// <summary>
-		/// Reads materuals from packet, starting with the count.
-		/// Returns false if a material item wasn't found, after logging it.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="packet"></param>
-		/// <param name="materials"></param>
-		/// <returns></returns>
-		private bool ReadMaterials(Creature creature, Packet packet, out List<ProductionMaterial> materials)
-		{
-			materials = new List<ProductionMaterial>();
-
-			var count = packet.GetByte();
-			for (int i = 0; i < count; ++i)
-			{
-				var itemEntityId = packet.GetLong();
-				var amount = packet.GetShort();
-
-				// Check item
-				var item = creature.Inventory.GetItem(itemEntityId);
-				if (item == null)
-				{
-					Log.Warning("Blacksmithing.Complete: Creature '{0:X16}' tried to use non-existent material item.", creature.EntityId);
-					return false;
-				}
-
-				materials.Add(new ProductionMaterial(item, amount));
-			}
-
-			return true;
-		}
-
-		/// <summary>
 		/// Reads stitches from packet, starting with the bool, saying whether
 		/// there are any. Returns false if bool is false.
 		/// </summary>
@@ -396,43 +343,6 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			return true;
-		}
-
-		/// <summary>
-		/// Returns success chance between 0 and 100.
-		/// </summary>
-		/// <remarks>
-		/// Unofficial. It's unlikely that officials use a table, instead of
-		/// a formula, but for a lack of formula, we're forced to go with
-		/// this. The success rates actually seem to be rather static,
-		/// so it should work fine. We have all possible combinations,
-		/// and with this function we do get the correct base chance.
-		/// </remarks>
-		/// <param name="creature"></param>
-		/// <param name="skillRank"></param>
-		/// <param name="manualRank"></param>
-		/// <returns></returns>
-		private int GetSuccessChance(Creature creature, SkillRank skillRank, SkillRank manualRank)
-		{
-			var diff = ((int)skillRank - (int)manualRank);
-			var chance = SuccessTable[29 - (diff + 15)];
-
-			// Production Mastery bonus
-			var pm = creature.Skills.Get(SkillId.ProductionMastery);
-			if (pm != null)
-				chance += (byte)pm.Info.Rank;
-
-			// Party bonus
-			// http://mabination.com/threads/579-Sooni-s-Guide-to-Tailoring!-(Please-claim-back-from-me)
-			if (creature.IsInParty)
-			{
-				var members = creature.Party.GetMembers();
-				var smithCount = members.Where(a => a != creature && a.Skills.Has(SkillId.Blacksmithing, SkillRank.RF)).Count();
-				if (smithCount != 0)
-					chance += (int)(smithCount * 5 / 100f * chance);
-			}
-
-			return Math2.Clamp(0, 99, chance);
 		}
 
 		/// <summary>
@@ -480,101 +390,14 @@ namespace Aura.Channel.Skills.Life
 			// Max = 100 (increasing the max would increase the chance for 100 quality)
 			return Math.Max(-100, 100 - (int)(total * 2));
 		}
+	}
 
-		/// <summary>
-		/// Sets appropriete flags, bonuses, and signatures, and sends
-		/// notices about quality and bonuses.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="manualData"></param>
-		/// <param name="item"></param>
-		/// <param name="quality"></param>
-		private void FinishItem(Creature creature, Skill skill, ManualData manualData, Item item, int quality)
-		{
-			item.OptionInfo.Flags &= ~ItemFlags.Incomplete;
-			item.OptionInfo.Flags |= ItemFlags.Reproduction;
-			item.MetaData1.Remove(ProgressVar);
-			item.MetaData1.SetInt(QualityVar, quality);
-
-			// Signature
-			if (skill.Info.Rank >= SkillRank.R9 && manualData.Rank >= SkillRank.RA && quality >= 80)
-			{
-				item.MetaData1.SetString(SignNameVar, creature.Name);
-				item.MetaData1.SetByte(SignRankVar, (byte)skill.Info.Rank);
-			}
-
-			// Get quality based msg
-			var msg = "";
-			if (quality == 100) // god
-			{
-				msg = Localization.Get("You created a godly {0}! Excellent work!");
-			}
-			else if (quality >= 80) // best
-			{
-				msg = Localization.Get("Your hard work produced a very nice {0}!");
-			}
-			else if (quality >= 50) // better
-			{
-				msg = Localization.Get("Your efforts created an above-average {0}!");
-			}
-			else if (quality >= 20) // reasonable
-			{
-				msg = Localization.Get("Your creation is far superior to anything you can get from a store.");
-			}
-			else if (quality >= -20) // normal
-			{
-				msg = Localization.Get("Your creation is just as good as anything you can get from a store.");
-			}
-			else if (quality >= -50) // worse
-			{
-				msg = Localization.Get("Your creation could be nice with a few repairs.");
-			}
-			else if (quality >= -80) // worst
-			{
-				msg = Localization.Get("You managed to finish the {0}, but it's pretty low quality.");
-			}
-			else
-			{
-				msg = Localization.Get("Your {0} isn't really fit for use. Maybe you could get some decent scrap wood out of it.");
-			}
-
-			// Get quality based bonuses
-			var bonuses = new Dictionary<Bonus, int>();
-			// ...
-
-			// Apply bonuses and append msgs
-			if (bonuses.Count != 0)
-			{
-				msg += "\n";
-				foreach (var bonus in bonuses)
-				{
-					if (bonus.Key == Bonus.Protection)
-					{
-						msg += string.Format("Protection Increase {0}, ", bonus.Value);
-						item.OptionInfo.Protection += (short)bonus.Value;
-					}
-					else if (bonus.Key == Bonus.Durability)
-					{
-						msg += string.Format("Durability Increase {0}, ", bonus.Value);
-						item.OptionInfo.Durability += bonus.Value;
-						item.OptionInfo.DurabilityMax = item.OptionInfo.DurabilityOriginal = item.OptionInfo.Durability;
-					}
-				}
-				msg = msg.TrimEnd(',', ' ');
-			}
-
-			// Send notice
-			Send.Notice(creature, msg, item.Data.Name);
-		}
-
-		private class HammerHit
-		{
-			public bool Performed { get; set; }
-			public int X { get; set; }
-			public int Y { get; set; }
-			public int Timing { get; set; }
-		}
+	public class HammerHit
+	{
+		public bool Performed { get; set; }
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Timing { get; set; }
 	}
 
 	public class BlacksmithDot
