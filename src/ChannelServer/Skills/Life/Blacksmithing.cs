@@ -235,6 +235,10 @@ namespace Aura.Channel.Skills.Life
 				this.DecrementMaterialItems(creature, toDecrement, rnd);
 			}
 
+			// Reduce durability
+			creature.Inventory.ReduceDurability(creature.RightHand, ToolDurabilityLoss);
+			creature.Inventory.ReduceDurability(creature.Magazine, ManualDurabilityLoss);
+
 			var success = true;
 			var isNewItem = false;
 			Item item = null;
