@@ -114,8 +114,28 @@ namespace Aura.Channel.Skills.Life
 				if (item.MetaData1.GetFloat(ProgressVar) == 1)
 				{
 					var rnd = RandomProvider.Get();
-					var deviation = (byte)(skill.Info.Rank < SkillRank.R9 ? 3 : 2);
 
+					// Get manual
+					var manualId = creature.Magazine.MetaData1.GetInt("FORMID");
+					var manualData = AuraData.ManualDb.Find(ManualCategory.Blacksmithing, manualId);
+					if (manualData == null)
+					{
+						Log.Error("Blacksmithing.Complete: Manual '{0}' not found.", manualId);
+						Send.ServerMessage(creature, Localization.Get("Failed to look up pattern, please report."));
+						return false;
+					}
+
+					// Get items to decrement
+					var requiredMaterials = manualData.GetFinish(finishId).Materials;
+					List<ProductionMaterial> toDecrement;
+					if (!this.GetItemsToDecrement(creature, Stage.Finish, manualData, requiredMaterials, materials, out toDecrement))
+						return false;
+
+					// Decrement mats
+					this.DecrementMaterialItems(creature, toDecrement, rnd);
+
+					// Start minigame
+					var deviation = (byte)(skill.Info.Rank < SkillRank.R9 ? 3 : 2);
 					var dots = new List<BlacksmithDot>();
 					for (int i = 0; i < 5; ++i)
 					{
@@ -131,7 +151,6 @@ namespace Aura.Channel.Skills.Life
 						dots.Add(dot);
 					}
 
-					// Start minigame
 					Send.BlacksmithingMiniGame(creature, prop, item, dots, deviation);
 
 					// Save dots for finish
@@ -199,6 +218,21 @@ namespace Aura.Channel.Skills.Life
 				Log.Error("Blacksmithing.Complete: Manual '{0}' not found.", manualId);
 				Send.ServerMessage(creature, Localization.Get("Failed to look up manual, please report."));
 				goto L_Fail;
+			}
+
+			// Materials are only sent to Complete for progression,
+			// finish materials are handled in Prepare.
+			if (stage == Stage.Progression)
+			{
+				var requiredMaterials = manualData.GetMaterialList();
+
+				// Get items to decrement
+				List<ProductionMaterial> toDecrement;
+				if (!this.GetItemsToDecrement(creature, Stage.Progression, manualData, requiredMaterials, materials, out toDecrement))
+					goto L_Fail;
+
+				// Decrement mats
+				this.DecrementMaterialItems(creature, toDecrement, rnd);
 			}
 
 			var success = true;
