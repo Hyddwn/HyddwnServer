@@ -268,6 +268,7 @@ public class GilmoreShop : NpcShopScript
 		Add("General Goods", 41123);      // Cello
 		Add("General Goods", 41124);      // Standing Microphone
 		Add("General Goods", 41125);      // Wireless Microphone
+		Add("General Goods", 45130, 10);  // Spider Trap
 		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -283,47 +284,56 @@ public class GilmoreShop : NpcShopScript
 		Add("General Goods", 91366, 1);   // Seal Scroll (30-day) x1
 		Add("General Goods", 91366, 10);  // Seal Scroll (30-day) x10
 
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64500); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
-		Add("Blacksmith", 64581); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20101;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20102;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20103;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20104;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20105;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20106;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20107;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20108;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20109;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20110;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20112;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20113;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20114;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20117;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20130;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20131;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20132;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20134;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20135;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20137;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20139;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20140;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20141;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20119;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20121;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20124;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20125;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20127;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20142;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20145;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20146;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20147;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20148;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20149;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20150;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20151;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20202;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20128;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20126;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20129;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20201;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20290;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20291;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20292;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20293;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20294;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20295;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20296;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20297;"); // Blacksmith Manual
+		Add("Blacksmith", 64581, "FORMID:4:20298;"); // Blacksmith Manual
 
 		Add("Clothing", 15044); // Carpenter Clothes
 		Add("Clothing", 15062); // Zigzag Tunic
