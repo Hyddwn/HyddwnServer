@@ -84,15 +84,33 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="creature"></param>
 		/// <param name="skill"></param>
 		/// <param name="manualData"></param>
+		/// <param name="finishId">
+		/// The id of the finish to use, make sure to get the actual
+		/// finish id, which in Blacksmithing comes from the Prepare
+		/// that switches to the mini-game.
+		/// </param>
 		/// <param name="item"></param>
 		/// <param name="quality"></param>
-		protected void FinishItem(Creature creature, Skill skill, ManualData manualData, Item item, int quality)
+		protected void FinishItem(Creature creature, Skill skill, ManualData manualData, int finishId, Item item, int quality)
 		{
+			var finish = manualData.GetFinish(finishId);
+			if (finish == null)
+			{
+				Log.Error("CreationSkill.FinishItem: Finish '{0}' not found.", finishId);
+				Send.ServerMessage(creature, Localization.Get("Unknown finish recipe, please report."));
+				return;
+			}
+
+			// Update item
 			item.OptionInfo.Flags &= ~ItemFlags.Incomplete;
 			item.OptionInfo.Flags |= ItemFlags.Reproduction;
 			item.MetaData1.Remove(ProgressVar);
 			item.MetaData1.Remove(StclmtVar);
 			item.MetaData1.SetInt(QualityVar, quality);
+
+			if (finish.Color1 != null) item.Info.Color1 = (uint)finish.Color1;
+			if (finish.Color2 != null) item.Info.Color2 = (uint)finish.Color2;
+			if (finish.Color3 != null) item.Info.Color3 = (uint)finish.Color3;
 
 			// Signature
 			if (skill.Info.Rank >= SkillRank.R9 && manualData.Rank >= SkillRank.RA && quality >= 80)
@@ -237,28 +255,12 @@ namespace Aura.Channel.Skills.Base
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="manualData"></param>
-		/// <param name="materials"></param>
+		/// <param name="materials">List of materials the client supplies.</param>
 		/// <param name="toDecrement"></param>
 		/// <returns></returns>
-		protected bool GetItemsToDecrement(Creature creature, Stage stage, int finishId, ManualData manualData, List<ProductionMaterial> materials, out List<ProductionMaterial> toDecrement)
+		protected bool GetItemsToDecrement(Creature creature, Stage stage, ManualData manualData, List<ProductionMaterialData> requiredMaterials, List<ProductionMaterial> materials, out List<ProductionMaterial> toDecrement)
 		{
 			toDecrement = new List<ProductionMaterial>();
-			List<ProductionMaterialData> requiredMaterials;
-
-			if (stage == Stage.Progression)
-				requiredMaterials = manualData.GetMaterialList();
-			else
-			{
-				var finish = manualData.GetFinish(finishId);
-				if (finish == null)
-				{
-					Log.Error("CreationSkill.GetItemsToDecrement: Finish '{0}' not found.", finishId);
-					Send.ServerMessage(creature, Localization.Get("Unknown finish recipe, please report."));
-					return false;
-				}
-
-				requiredMaterials = finish.Materials;
-			}
 
 			var inUse = new HashSet<long>();
 			foreach (var reqMat in requiredMaterials)

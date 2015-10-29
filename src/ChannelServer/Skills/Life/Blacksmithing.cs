@@ -66,7 +66,7 @@ namespace Aura.Channel.Skills.Life
 			var propEntityId = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var existingItemEntityId = packet.GetLong();
-			var finish = packet.GetInt();
+			var finishId = packet.GetInt();
 
 			if (stage == Stage.Progression)
 			{
@@ -134,6 +134,7 @@ namespace Aura.Channel.Skills.Life
 
 					// Save dots for finish
 					creature.Temp.BlacksmithingMiniGameDots = dots;
+					creature.Temp.CreationFinishId = finishId;
 
 					return false;
 				}
@@ -163,7 +164,7 @@ namespace Aura.Channel.Skills.Life
 			var propEntityId = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var existingItemEntityId = packet.GetLong();
-			var unkInt2 = packet.GetInt();
+			var finishId = packet.GetInt();
 
 			if (stage == Stage.Progression)
 			{
@@ -277,7 +278,7 @@ namespace Aura.Channel.Skills.Life
 			else
 			{
 				var quality = this.CalculateQuality(hits, creature.Temp.BlacksmithingMiniGameDots);
-				this.FinishItem(creature, skill, manualData, item, quality);
+				this.FinishItem(creature, skill, manualData, creature.Temp.CreationFinishId, item, quality);
 			}
 
 			// Add or update item

@@ -56,5 +56,6 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		public int TailoringMiniGameX, TailoringMiniGameY;
 		public List<BlacksmithDot> BlacksmithingMiniGameDots;
+		public int CreationFinishId;
 	}
 }

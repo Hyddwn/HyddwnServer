@@ -106,8 +106,9 @@ namespace Aura.Channel.Skills.Life
 					}
 
 					// Get items to decrement
+					var requiredMaterials = manualData.GetFinish(finishId).Materials;
 					List<ProductionMaterial> toDecrement;
-					if (!this.GetItemsToDecrement(creature, Stage.Finish, finishId, manualData, materials, out toDecrement))
+					if (!this.GetItemsToDecrement(creature, Stage.Finish, manualData, requiredMaterials, materials, out toDecrement))
 						return false;
 
 					// Decrement mats
@@ -224,9 +225,11 @@ namespace Aura.Channel.Skills.Life
 			// finish materials are handled in Prepare.
 			if (stage == Stage.Progression)
 			{
+				var requiredMaterials = manualData.GetMaterialList();
+
 				// Get items to decrement
 				List<ProductionMaterial> toDecrement;
-				if (!this.GetItemsToDecrement(creature, Stage.Progression, finishId, manualData, materials, out toDecrement))
+				if (!this.GetItemsToDecrement(creature, Stage.Progression, manualData, requiredMaterials, materials, out toDecrement))
 					goto L_Fail;
 
 				// Decrement mats
@@ -340,7 +343,7 @@ namespace Aura.Channel.Skills.Life
 			else
 			{
 				var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
-				this.FinishItem(creature, skill, manualData, existingItem, quality);
+				this.FinishItem(creature, skill, manualData, 0, existingItem, quality);
 				this.OnProgress(creature, skill, ProgressResult.Finish);
 
 				result = ProgressResult.Finish;
