@@ -362,11 +362,14 @@ public class NerysShop : NpcShopScript
 
 		Add("Event"); // Empty
 
-		Add("Arrowheads", 64011); // Bundle of Arrowheads
-		Add("Arrowheads", 64015); // Bundle of Bolt Heads
-		Add("Arrowheads", 64013); // Bundle of Fine Arrowheads
-		Add("Arrowheads", 64016); // Bundle of Fine Bolt Heads
-		Add("Arrowheads", 64014); // Bundle of the Finest Arrowheads
-		Add("Arrowheads", 64017); // Bundle of the Finest Bolt Heads
+		if (IsEnabled("G10"))
+		{
+			Add("Arrowhead", 64011); // Bundle of Arrowheads
+			Add("Arrowhead", 64015); // Bundle of Boltheads
+			Add("Arrowhead", 64013); // Bundle of Fine Arrowheads
+			Add("Arrowhead", 64016); // Bundle of Fine Boltheads
+			Add("Arrowhead", 64014); // Bundle of Finest Arrowheads
+			Add("Arrowhead", 64017); // Bundle of Finest Boltheads
+		}
 	}
 }

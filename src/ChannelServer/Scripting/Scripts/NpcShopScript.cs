@@ -310,6 +310,11 @@ namespace Aura.Channel.Scripting.Scripts
 					? _tabs.Values.ToList()
 					: _tabs.Values.Where(t => t.ShouldDisplay(creature, owner)).ToList();
 		}
+
+		protected bool IsEnabled(string featureName)
+		{
+			return AuraData.FeaturesDb.IsEnabled(featureName);
+		}
 	}
 
 	/// <summary>
