@@ -1142,7 +1142,11 @@ namespace Aura.Channel.World.Inventory
 			// unless it involves bows and their ammunition.
 			if (item.HasTag("/righthand/") && leftItem.HasTag("/lefthand/"))
 			{
-				if (!item.HasTag("/bow/|/crossbow/") && !leftItem.HasTag("/arrow/|/bolt/"))
+				// TODO: This check sucks. And it feels like it needs to be
+				//   turned around, isn't everything unequipped, except for
+				//   shields? Is there anything else that can be equipped
+				//   without a right-hand counterpart?
+				if (!item.HasTag("/bow/|/crossbow/|/tailor/kit/") && !leftItem.HasTag("/arrow/|/bolt/|/tailor/manual/"))
 					return;
 			}
 
