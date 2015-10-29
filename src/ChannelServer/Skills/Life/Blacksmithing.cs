@@ -124,7 +124,9 @@ namespace Aura.Channel.Skills.Life
 						dot.Deviation = rnd.Next(0, deviation + 1);
 						dot.X = rnd.Next(FieldMin, FieldMax + 1);
 						dot.Y = rnd.Next(FieldMin, FieldMax + 1);
-						dot.TimeDisplacement = rnd.Between(0.81f, 0.98f);
+
+						// Use static displacement until we know the formula.
+						dot.TimeDisplacement = 1; // rnd.Between(0.81f, 0.98f);
 
 						dots.Add(dot);
 					}
@@ -372,11 +374,10 @@ namespace Aura.Channel.Skills.Life
 				var p1 = dots[i];
 				var p2 = hits[i];
 
-				var timingMax = 6000 * (1f + (1f - p1.TimeDisplacement)) * 0.85f;
-				var timingMin = timingMax * 0.80f;
-
 				// Static -30 when not hit at all or timing was wrong
-				if (!p2.Performed || p2.Timing < timingMin || p2.Timing > timingMax)
+				// Time should be between 4k and 5k with time
+				// displacement 1.
+				if (!p2.Performed || p2.Timing < 4000 || p2.Timing > 5000)
 				{
 					total += 30;
 					continue;
