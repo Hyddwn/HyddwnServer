@@ -161,24 +161,64 @@ namespace Aura.Channel.Skills.Base
 				msg += "\n";
 				foreach (var bonus in bonuses)
 				{
-					if (bonus.Key == Bonus.Protection)
+					var bonusName = "?";
+					switch (bonus.Key)
 					{
-						msg += string.Format("Protection", bonus.Value);
-						item.OptionInfo.Protection += (short)bonus.Value;
-					}
-					else if (bonus.Key == Bonus.Durability)
-					{
-						msg += string.Format("Durability, ", bonus.Value);
-						item.OptionInfo.Durability += bonus.Value;
-						item.OptionInfo.DurabilityMax = item.OptionInfo.DurabilityOriginal = item.OptionInfo.Durability;
+						case Bonus.Defense:
+							item.OptionInfo.Defense += bonus.Value;
+							bonusName = "Defense";
+							break;
+
+						case Bonus.Protection:
+							item.OptionInfo.Protection += (short)bonus.Value;
+							bonusName = "Protection";
+							break;
+
+						case Bonus.Durability:
+							item.OptionInfo.Durability += bonus.Value * 1000;
+							bonusName = "Durability";
+							break;
+
+						case Bonus.DurabilityMax:
+							item.OptionInfo.DurabilityMax += bonus.Value * 1000;
+							bonusName = "Max Durability";
+							break;
+
+						case Bonus.AttackMin:
+							item.OptionInfo.AttackMin += (ushort)bonus.Value;
+							bonusName = "Min Attack";
+							break;
+
+						case Bonus.AttackMax:
+							item.OptionInfo.AttackMax += (ushort)bonus.Value;
+							bonusName = "Max Attack";
+							break;
+
+						case Bonus.Critical:
+							item.OptionInfo.Critical += (sbyte)bonus.Value;
+							bonusName = "Critical";
+							break;
+
+						case Bonus.Balance:
+							item.OptionInfo.Balance += (byte)bonus.Value;
+							bonusName = "Balance";
+							break;
 					}
 
 					if (bonus.Value > 0)
-						msg += string.Format(" Increase {0}, ", bonus.Value);
+						msg += string.Format("{0} Increase {1}, ", bonusName, bonus.Value);
 					else
-						msg += string.Format(" Decrease {0}, ", bonus.Value);
+						msg += string.Format("{0} Decrease {1}, ", bonusName, bonus.Value);
 				}
 				msg = msg.TrimEnd(',', ' ');
+
+				// Check attack
+				if (item.OptionInfo.AttackMin > item.OptionInfo.AttackMax || item.OptionInfo.AttackMax < item.OptionInfo.AttackMin)
+					item.OptionInfo.AttackMin = item.OptionInfo.AttackMax;
+
+				// Check durability
+				if (item.OptionInfo.Durability > item.OptionInfo.DurabilityMax || item.OptionInfo.DurabilityMax < item.OptionInfo.Durability)
+					item.OptionInfo.Durability = item.OptionInfo.DurabilityMax;
 			}
 
 			// Send notice
@@ -189,6 +229,9 @@ namespace Aura.Channel.Skills.Base
 		/// Returns a list of bonuses that the given item would get with
 		/// the given quality.
 		/// </summary>
+		/// <remarks>
+		/// Reference: http://mabination.com/threads/85245-Player-made-Item-Quality
+		/// </remarks>
 		/// <param name="item"></param>
 		/// <param name="quality"></param>
 		/// <returns></returns>
@@ -196,52 +239,375 @@ namespace Aura.Channel.Skills.Base
 		{
 			var bonuses = new Dictionary<Bonus, int>();
 
-			if (item.HasTag("/armor/cloth/") || item.HasTag("/armor/lightarmor/"))
+			// Weapons (except bows)
+			if (item.HasTag("/weapon/") && !item.HasTag("/bow/|/crossbow/"))
 			{
-				if (quality >= 90)
-				{
-					bonuses[Bonus.Protection] = 2;
-					bonuses[Bonus.Durability] = 5;
-				}
+				// Balance
+				if (quality >= 98)
+					bonuses[Bonus.Balance] = 10;
+				else if (quality >= 95)
+					bonuses[Bonus.Balance] = 9;
+				else if (quality >= 92)
+					bonuses[Bonus.Balance] = 8;
+				else if (quality >= 90)
+					bonuses[Bonus.Balance] = 7;
+				else if (quality >= 85)
+					bonuses[Bonus.Balance] = 6;
 				else if (quality >= 80)
+					bonuses[Bonus.Balance] = 5;
+				else if (quality >= 70)
+					bonuses[Bonus.Balance] = 4;
+				else if (quality >= 60)
+					bonuses[Bonus.Balance] = 3;
+				else if (quality >= 50)
+					bonuses[Bonus.Balance] = 2;
+				else if (quality >= 30)
+					bonuses[Bonus.Balance] = 1;
+
+				// Critical
+				if (quality >= 95)
+					bonuses[Bonus.Critical] = 5;
+				else if (quality >= 90)
+					bonuses[Bonus.Critical] = 4;
+				else if (quality >= 80)
+					bonuses[Bonus.Critical] = 3;
+				else if (quality >= 70)
+					bonuses[Bonus.Critical] = 2;
+				else if (quality >= 50)
+					bonuses[Bonus.Critical] = 1;
+
+				// Max Attack
+				if (quality >= 75)
+					bonuses[Bonus.AttackMax] = 2;
+				else if (quality >= 20)
+					bonuses[Bonus.AttackMax] = 1;
+				else if (quality < -80)
+					bonuses[Bonus.AttackMax] = -1;
+
+				// Min Attack
+				if (quality >= 75)
+					bonuses[Bonus.AttackMin] = 2;
+				else if (quality >= 20)
+					bonuses[Bonus.AttackMin] = 1;
+				else if (quality < -80)
+					bonuses[Bonus.AttackMin] = -1;
+
+				// Durability
+				if (quality >= 80)
 				{
-					bonuses[Bonus.Protection] = 2;
+					bonuses[Bonus.Durability] = 5;
+					bonuses[Bonus.DurabilityMax] = 5;
+				}
+				else if (quality >= 60)
+				{
 					bonuses[Bonus.Durability] = 4;
+					bonuses[Bonus.DurabilityMax] = 4;
+				}
+				else if (quality >= 50)
+				{
+					bonuses[Bonus.Durability] = 3;
+					bonuses[Bonus.DurabilityMax] = 3;
+				}
+				else if (quality >= 45)
+				{
+					bonuses[Bonus.Durability] = 2;
+					bonuses[Bonus.DurabilityMax] = 2;
+				}
+				else if (quality >= 40)
+				{
+					bonuses[Bonus.Durability] = 1;
+					bonuses[Bonus.DurabilityMax] = 1;
+				}
+				else if (quality >= -20)
+				{
+				}
+				else if (quality >= -60)
+				{
+					bonuses[Bonus.Durability] = -2;
+					bonuses[Bonus.DurabilityMax] = 0;
+				}
+				else if (quality >= -80)
+				{
+					bonuses[Bonus.Durability] = -2;
+					bonuses[Bonus.DurabilityMax] = -1;
+				}
+				else
+				{
+					bonuses[Bonus.Durability] = -3;
+					bonuses[Bonus.DurabilityMax] = -2;
+				}
+			}
+
+			// Bows
+			else if (item.HasTag("/bow/|/crossbow/"))
+			{
+				// Balance
+				if (quality >= 98)
+					bonuses[Bonus.Balance] = 5;
+				else if (quality >= 80)
+					bonuses[Bonus.Balance] = 4;
+				else if (quality >= 70)
+					bonuses[Bonus.Balance] = 3;
+				else if (quality >= 50)
+					bonuses[Bonus.Balance] = 2;
+				else if (quality >= 30)
+					bonuses[Bonus.Balance] = 1;
+
+				// Critical
+				if (quality >= 95)
+					bonuses[Bonus.Critical] = 5;
+				else if (quality >= 95)
+					bonuses[Bonus.Critical] = 4;
+				else if (quality >= 80)
+					bonuses[Bonus.Critical] = 3;
+				else if (quality >= 70)
+					bonuses[Bonus.Critical] = 2;
+				else if (quality >= 10)
+					bonuses[Bonus.Critical] = 1;
+
+				// Max Attack
+				if (quality >= 90)
+					bonuses[Bonus.AttackMax] = 2;
+				else if (quality >= 10)
+					bonuses[Bonus.AttackMax] = 1;
+				else
+					bonuses[Bonus.AttackMax] = -1;
+
+				// Min Attack
+				if (quality >= 95)
+					bonuses[Bonus.AttackMin] = 2;
+				else if (quality >= 30)
+					bonuses[Bonus.AttackMin] = 1;
+				else if (quality < -10)
+					bonuses[Bonus.AttackMin] = -1;
+
+				// Durability
+				if (quality >= 98)
+				{
+					bonuses[Bonus.Durability] = 3;
+					bonuses[Bonus.DurabilityMax] = 3;
+				}
+				else if (quality >= 90)
+				{
+					bonuses[Bonus.Durability] = 2;
+					bonuses[Bonus.DurabilityMax] = 2;
+				}
+				else if (quality >= 50)
+				{
+					bonuses[Bonus.Durability] = 1;
+					bonuses[Bonus.DurabilityMax] = 1;
+				}
+				else if (quality >= -10)
+				{
+				}
+				else if (quality >= -30)
+				{
+					bonuses[Bonus.Durability] = -1;
+					bonuses[Bonus.DurabilityMax] = -1;
+				}
+				else
+				{
+					bonuses[Bonus.Durability] = -2;
+					bonuses[Bonus.DurabilityMax] = -2;
+				}
+			}
+
+			// Armors and clothes
+			else if (item.HasTag("/armor/cloth/|/armor/lightarmor/|/armor/heavyarmor/"))
+			{
+				// Defense
+				if (quality >= 90)
+					bonuses[Bonus.Defense] = 1;
+
+				// Protection
+				if (quality >= 95)
+					bonuses[Bonus.Protection] = 3;
+				else if (quality >= 75)
+					bonuses[Bonus.Protection] = 2;
+				else if (quality >= 50)
+					bonuses[Bonus.Protection] = 1;
+
+				// Durability
+				if (quality >= 80)
+				{
+					bonuses[Bonus.Durability] = 5;
+					bonuses[Bonus.DurabilityMax] = 5;
 				}
 				else if (quality >= 70)
 				{
-					bonuses[Bonus.Protection] = 1;
 					bonuses[Bonus.Durability] = 4;
+					bonuses[Bonus.DurabilityMax] = 4;
 				}
-				else if (quality >= 30)
+				else if (quality >= 55)
 				{
-					bonuses[Bonus.Protection] = 1;
 					bonuses[Bonus.Durability] = 3;
+					bonuses[Bonus.DurabilityMax] = 3;
 				}
-				else if (quality >= 20)
+				else if (quality >= 35)
 				{
-					bonuses[Bonus.Protection] = 1;
 					bonuses[Bonus.Durability] = 2;
+					bonuses[Bonus.DurabilityMax] = 2;
+				}
+				else if (quality >= -20)
+				{
+				}
+				else if (quality >= -60)
+				{
+					bonuses[Bonus.Durability] = -2;
+					bonuses[Bonus.DurabilityMax] = 0;
+				}
+				else if (quality >= -80)
+				{
+					bonuses[Bonus.Durability] = -2;
+					bonuses[Bonus.DurabilityMax] = -1;
+				}
+				else
+				{
+					bonuses[Bonus.Durability] = -3;
+					bonuses[Bonus.DurabilityMax] = -2;
 				}
 			}
-			else if (item.HasTag("/hand/glove/"))
+
+			// Gloves and Gauntles
+			else if (item.HasTag("/hand/glove/|/hand/gauntlet/"))
 			{
+				// Protection
 				if (quality >= 80)
 					bonuses[Bonus.Protection] = 1;
 			}
-			else if (item.HasTag("/foot/shoes/"))
+
+			// Boots, Shoes, and Greaves
+			else if (item.HasTag("/foot/shoes/|/foot/armorboots/"))
 			{
-				if (quality >= 90)
+				// Durability
+				if (quality >= 95)
+				{
+					bonuses[Bonus.Durability] = 5;
+					bonuses[Bonus.DurabilityMax] = 5;
+				}
+				else if (quality >= 85)
+				{
 					bonuses[Bonus.Durability] = 4;
-				else if (quality >= 40)
+					bonuses[Bonus.DurabilityMax] = 4;
+				}
+				else if (quality >= 60)
+				{
 					bonuses[Bonus.Durability] = 3;
-				else if (quality >= 20)
+					bonuses[Bonus.DurabilityMax] = 3;
+				}
+				else if (quality >= 40)
+				{
 					bonuses[Bonus.Durability] = 2;
+					bonuses[Bonus.DurabilityMax] = 2;
+				}
+				else if (quality >= 20)
+				{
+					bonuses[Bonus.Durability] = 1;
+					bonuses[Bonus.DurabilityMax] = 1;
+				}
+				else if (quality >= -20)
+				{
+				}
+				else if (quality >= -60)
+				{
+					bonuses[Bonus.Durability] = -2;
+					bonuses[Bonus.DurabilityMax] = 0;
+				}
+				else if (quality >= -80)
+				{
+					bonuses[Bonus.Durability] = -2;
+					bonuses[Bonus.DurabilityMax] = -1;
+				}
+				else
+				{
+					bonuses[Bonus.Durability] = -3;
+					bonuses[Bonus.DurabilityMax] = -2;
+				}
 			}
+
+			// Shields
+			else if (item.HasTag("/lefthand/shield/"))
+			{
+				// Defense
+				if (quality >= 90)
+					bonuses[Bonus.Defense] = 1;
+
+				// Durability
+				if (quality >= 95)
+				{
+					bonuses[Bonus.Durability] = 5;
+					bonuses[Bonus.DurabilityMax] = 5;
+				}
+				else if (quality >= 90)
+				{
+					bonuses[Bonus.Durability] = 4;
+					bonuses[Bonus.DurabilityMax] = 4;
+				}
+				else if (quality >= 85)
+				{
+					bonuses[Bonus.Durability] = 3;
+					bonuses[Bonus.DurabilityMax] = 3;
+				}
+				else if (quality >= 80)
+				{
+					bonuses[Bonus.Durability] = 2;
+					bonuses[Bonus.DurabilityMax] = 2;
+				}
+				else if (quality >= 40)
+				{
+					bonuses[Bonus.Durability] = 1;
+					bonuses[Bonus.DurabilityMax] = 1;
+				}
+				else if (quality >= -20)
+				{
+				}
+				else if (quality >= -60)
+				{
+					bonuses[Bonus.Durability] = -2;
+					bonuses[Bonus.DurabilityMax] = 0;
+				}
+				else if (quality >= -80)
+				{
+					bonuses[Bonus.Durability] = -2;
+					bonuses[Bonus.DurabilityMax] = -1;
+				}
+				else
+				{
+					bonuses[Bonus.Durability] = -3;
+					bonuses[Bonus.DurabilityMax] = -2;
+				}
+			}
+
+			// Hats
+			else if (item.HasTag("/headgear/"))
+			{
+				// Durability
+				if (quality >= 90)
+				{
+					bonuses[Bonus.Durability] = 1;
+					bonuses[Bonus.DurabilityMax] = 1;
+				}
+			}
+
+			// Helmets
+			else if (item.HasTag("/helmet/"))
+			{
+				// Durability
+				if (quality >= 80)
+				{
+					bonuses[Bonus.Durability] = 1;
+					bonuses[Bonus.DurabilityMax] = 1;
+				}
+			}
+
+			// Robes
 			else if (item.HasTag("/robe/"))
 			{
 				if (quality >= 80)
-					bonuses[Bonus.Durability] = 2;
+				{
+					bonuses[Bonus.Durability] = 1;
+					bonuses[Bonus.DurabilityMax] = 1;
+				}
 			}
 
 			return bonuses;
@@ -354,6 +720,7 @@ namespace Aura.Channel.Skills.Base
 		Defense,
 		Protection,
 		Durability,
+		DurabilityMax,
 		AttackMin,
 		AttackMax,
 		Critical,
