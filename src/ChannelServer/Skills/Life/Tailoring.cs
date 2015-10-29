@@ -817,26 +817,26 @@ namespace Aura.Channel.Skills.Life
 				return;
 			}
 		}
+	}
 
-		private enum Bonus
-		{
-			Protection,
-			Durability,
-		}
+	public enum Bonus
+	{
+		Protection,
+		Durability,
+	}
 
-		private enum Stage
-		{
-			Progression = 1,
-			Finish = 2,
-		}
+	public enum Stage
+	{
+		Progression = 1,
+		Finish = 2,
+	}
 
-		private enum ProgressResult
-		{
-			VeryBad,
-			Bad,
-			Good,
-			VeryGood,
-			Finish,
-		}
+	public enum ProgressResult
+	{
+		VeryBad,
+		Bad,
+		Good,
+		VeryGood,
+		Finish,
 	}
 }
