@@ -70,7 +70,7 @@ namespace Aura.Channel.Skills.Life
 			var stitches = new List<Point>();
 
 			var stage = (Stage)packet.GetByte();
-			var unkLong1 = packet.GetLong();
+			var propEntityId = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var existingItemEntityId = packet.GetLong();
 			var unkInt2 = packet.GetInt();
@@ -175,7 +175,7 @@ namespace Aura.Channel.Skills.Life
 			var stitches = new List<Point>();
 
 			var stage = (Stage)packet.GetByte();
-			var unkLong1 = packet.GetLong();
+			var propEntityId = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var existingItemEntityId = packet.GetLong();
 			var unkInt2 = packet.GetInt();
