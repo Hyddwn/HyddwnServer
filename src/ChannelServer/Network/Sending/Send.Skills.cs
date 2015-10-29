@@ -981,5 +981,54 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends BlacksmithingMiniGame to creature's client, which starts
+		/// the Blacksmithing mini-game.
+		/// </summary>
+		/// <remarks>
+		/// The position of the dots is relative to the upper left of the
+		/// field. They land exactly on those spots after "wavering" for a
+		/// moment. This wavering is randomized on the client side and
+		/// doesn't affect anything.
+		/// 
+		/// The time bar is always the same, but the time it takes to fill
+		/// up changes based on the "time displacement". The lower the value,
+		/// the longer it takes to fill up. Using values that are too high
+		/// or too low mess up the calculations and cause confusing results.
+		/// The official range seems to be between ~0.81 and ~0.98.
+		/// </remarks>
+		/// <param name="creature"></param>
+		/// <param name="prop"></param>
+		/// <param name="item"></param>
+		/// <param name="dots"></param>
+		/// <param name="deviation"></param>
+		public static void BlacksmithingMiniGame(Creature creature, Prop prop, Item item, List<BlacksmithDot> dots, int deviation)
+		{
+			if (dots == null || dots.Count != 5)
+				throw new ArgumentException("5 dots required.");
+
+			var packet = new Packet(Op.BlacksmithingMiniGame, creature.EntityId);
+
+			// Untested if this is actually the deviation/cursor size,
+			// but Tailoring does something very similar. Just like with
+			// Tailoring, wrong values cause failed games.
+			packet.PutShort((short)deviation);
+
+			foreach (var dot in dots)
+			{
+				packet.PutShort((short)dot.X);
+				packet.PutShort((short)dot.Y);
+				packet.PutFloat(dot.TimeDisplacement);
+				packet.PutShort((short)dot.Deviation);
+			}
+
+			packet.PutLong(prop.EntityId);
+			packet.PutInt(0);
+			packet.PutLong(item.EntityId);
+			packet.PutInt(0);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

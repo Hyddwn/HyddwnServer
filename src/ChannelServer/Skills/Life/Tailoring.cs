@@ -821,8 +821,13 @@ namespace Aura.Channel.Skills.Life
 
 	public enum Bonus
 	{
+		Defense,
 		Protection,
 		Durability,
+		AttackMin,
+		AttackMax,
+		Critical,
+		Balance,
 	}
 
 	public enum Stage

@@ -5,6 +5,8 @@ using System;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Data.Database;
 using Aura.Mabi.Structs;
+using System.Collections.Generic;
+using Aura.Channel.Skills.Life;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -53,5 +55,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		public int ColorWheelResult;
 
 		public int TailoringMiniGameX, TailoringMiniGameY;
+		public List<BlacksmithDot> BlacksmithingMiniGameDots;
 	}
 }
