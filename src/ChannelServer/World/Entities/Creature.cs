@@ -1106,6 +1106,11 @@ namespace Aura.Channel.World.Entities
 
 			foreach (var item in equipment.Where(a => a.Durability > 0))
 			{
+				// Going by the name, I assume items with this tag don't lose
+				// durability regularly.
+				if (item.HasTag("/no_abrasion/"))
+					continue;
+
 				switch (item.Info.Pocket)
 				{
 					case Pocket.Head: loss = 3; break;
