@@ -105,6 +105,10 @@ namespace Aura.Channel.Network.Handlers
 				if ((item.HasTag("/tailor/kit/")) && !creature.Skills.Has(SkillId.Tailoring))
 					creature.Skills.Give(SkillId.Tailoring, SkillRank.Novice);
 
+				// Give Blacksmithing when equipping a Blacksmith Hammer
+				if ((item.HasTag("/tool/blacksmith/")) && !creature.Skills.Has(SkillId.Blacksmithing))
+					creature.Skills.Give(SkillId.Blacksmithing, SkillRank.Novice);
+
 				// Raise equiped event
 				// TODO: Script mentioned above should use this event.
 				ChannelServer.Instance.Events.OnPlayerEquipsItem(creature, item);
