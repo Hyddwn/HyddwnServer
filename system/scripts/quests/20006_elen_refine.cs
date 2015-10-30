@@ -30,8 +30,7 @@ public class ElensRequestQuestScript : QuestScript
 		if (!npc.Player.Inventory.Has(64002, 5)) // 5 Iron Ore
 			return HookResult.Continue;
 
-		// Unofficial
-		npc.Msg("Good job!");
+		Send.Notice(npc.Player, "You have given Iron Ore to Elen.");
 		npc.Player.Inventory.Remove(64002, 5); // 5 Iron Ore
 		npc.CompleteQuest(this.Id);
 
