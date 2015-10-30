@@ -352,7 +352,21 @@ namespace Aura.Channel.Skills.Life
 			if (creature.RightHand == null || creature.Magazine == null || !creature.RightHand.HasTag("/tool/blacksmith/*/hammer/") || !creature.Magazine.HasTag("/blacksmith/manual/"))
 			{
 				// Sanity check, client checks it as well.
-				Send.Notice(creature, Localization.Get("You ned a Hammer in your right hand\nand a Blacksmith Manual in your left."));
+				Send.Notice(creature, Localization.Get("You need a Hammer in your right hand\nand a Blacksmith Manual in your left."));
+				return false;
+			}
+
+			// Check if kit has enough durability
+			if (creature.RightHand.Durability < ToolDurabilityLoss)
+			{
+				Send.MsgBox(creature, Localization.Get("You can't use this Blacksmith Hammer anymore."));
+				return false;
+			}
+
+			// Check if manual has enough durability
+			if (creature.Magazine.Durability < ManualDurabilityLoss)
+			{
+				Send.MsgBox(creature, Localization.Get("You can't use this blueprint anymore. It's too faded."));
 				return false;
 			}
 
