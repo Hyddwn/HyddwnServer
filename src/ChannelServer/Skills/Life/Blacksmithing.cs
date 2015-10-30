@@ -289,6 +289,7 @@ namespace Aura.Channel.Skills.Life
 				// and very bad, based on another random number.
 				var chance = this.GetSuccessChance(creature, skill, manualData.Rank);
 				success = (rnd.NextDouble() * 100 < chance);
+				var rngFailSuccess = rnd.NextDouble();
 
 				// Calculate progress to add
 				// Base line is between 50 and 100% of the max progress from
@@ -296,6 +297,54 @@ namespace Aura.Channel.Skills.Life
 				// always put it on 100% instantly, as long as it's a success.
 				var addProgress = rnd.Between(manualData.MaxProgress / 2, manualData.MaxProgress);
 				var rankDiff = ((int)skill.Info.Rank - (int)manualData.Rank);
+
+				var msg = "";
+				ProgressResult result;
+
+				// Apply RNG fail/success
+				if (!success)
+				{
+					// 25% chance for very bad
+					if (rngFailSuccess < 0.25f)
+					{
+						msg += Localization.Get("Yikes. That was terrible. Are you feeling okay?");
+						addProgress /= 2f;
+						result = ProgressResult.VeryBad;
+					}
+					// 75% chance for bad
+					else
+					{
+						msg += Localization.Get("Failed...");
+						addProgress /= 1.5f;
+						result = ProgressResult.Bad;
+					}
+				}
+				else
+				{
+					// 25% chance for best, if manual is >= 2 ranks
+					if (rngFailSuccess < 0.25f && rankDiff <= -2)
+					{
+						msg += Localization.Get("A smashing success!!!");
+						addProgress *= 2f;
+						result = ProgressResult.VeryGood;
+					}
+					// 85% chance for good
+					else
+					{
+						// Too easy if more than two ranks below, which counts
+						// as a training fail, according to the Wiki.
+						if (rankDiff >= 2)
+						{
+							msg += Localization.Get("That was way too easy.");
+							result = ProgressResult.Bad;
+						}
+						else
+						{
+							msg += Localization.Get("Success!");
+							result = ProgressResult.Good;
+						}
+					}
+				}
 
 				// Weather bonus
 				if (ChannelServer.Instance.Weather.GetWeatherType(creature.RegionId) == WeatherType.Rain)
@@ -306,8 +355,6 @@ namespace Aura.Channel.Skills.Life
 				item.MetaData1.SetFloat(ProgressVar, progress);
 
 				// Message
-				var msg = Localization.Get("Success!");
-
 				if (progress == 1)
 					msg += Localization.Get("\nFinal Stage remaining");
 				else
