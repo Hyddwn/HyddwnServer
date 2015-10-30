@@ -1136,19 +1136,9 @@ namespace Aura.Channel.World.Inventory
 					return;
 			}
 
-			// Don't remove if combination is valid, this should allow weapons
-			// to be switched while having a shield equipped.
-			// Combinations of righthand/lefthand are (always?) valid,
-			// unless it involves bows and their ammunition.
-			if (item.HasTag("/righthand/") && leftItem.HasTag("/lefthand/"))
-			{
-				// TODO: This check sucks. And it feels like it needs to be
-				//   turned around, isn't everything unequipped, except for
-				//   shields? Is there anything else that can be equipped
-				//   without a right-hand counterpart?
-				if (!item.HasTag("/bow/|/crossbow/|/tailor/kit/") && !leftItem.HasTag("/arrow/|/bolt/|/tailor/manual/"))
-					return;
-			}
+			// Don't remove if left hand item is a shield
+			if (leftItem.IsShieldLike)
+				return;
 
 			// Try inventory first.
 			// TODO: List of pockets stuff can be auto-moved to.
