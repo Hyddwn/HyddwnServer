@@ -99,15 +99,7 @@ public class EdernScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (!HasSkill(SkillId.Blacksmithing, SkillRank.RF))
-				{
-					Msg("Seeing how you're somewhat familiar with the Blacksmith skill,<br/>I suppose I can tell you this much.");
-					Msg("Being a blacksmith is more than hammering metal.<br/>The cardinal point is to learn how the metal<br/>reacts at what temperature.");
-					Msg("Melting metal at the proper temperature,<br/>knowing when to hammer it and to put it in water,<br/>and understanding the nature of the metal.<br/>That's the Blacksmith skill.");
-					Msg("Of course you wouldn't understand now.<br/>You have a more lot to learn to even understand<br/>the knowledge I have gained for so many years.");
-					Msg("Still, it will do you good to remember what I've told you. Haha.");
-				}
-				else
+				if (HasSkill(SkillId.Blacksmithing, SkillRank.RF))
 				{
 					Msg("Hmm... So you are getting the hang of it now? Blacksmith skill?");
 					Msg("You seem rather cocky. Well, let me tell you something.");
@@ -115,6 +107,22 @@ public class EdernScript : NpcScript
 					Msg("An egg...<br/>To force the analogy,<br/>you are about the level of an egg.");
 					Msg("Don't be too proud now with that little skill you have.<br/>It's only the beginning.");
 					Msg("If you don't devote yourself, you will only amount to a half-baked blacksmith.");
+				}
+				else if (HasSkill(SkillId.Blacksmithing, SkillRank.Novice))
+				{
+					Msg("Seeing how you're somewhat familiar with the Blacksmith skill,<br/>I suppose I can tell you this much.");
+					Msg("Being a blacksmith is more than hammering metal.<br/>The cardinal point is to learn how the metal<br/>reacts at what temperature.");
+					Msg("Melting metal at the proper temperature,<br/>knowing when to hammer it and to put it in water,<br/>and understanding the nature of the metal.<br/>That's the Blacksmith skill.");
+					Msg("Of course you wouldn't understand now.<br/>You have a more lot to learn to even understand<br/>the knowledge I have gained for so many years.");
+					Msg("Still, it will do you good to remember what I've told you. Haha.");
+
+					TrainSkill(SkillId.Blacksmithing, 1);
+				}
+				else
+				{
+					Msg("With that clumsy skill of yours, don't go about telling people that you're a blacksmith.");
+					Msg("Shouldn't you be coming to a certain realization to see that<br/>my granddaughter, Elen, who is much better than you are,<br/>is only tending to item sales?");
+					Msg("To become proficient in the Blacksmith skill,<br/>the blacksmith hammer should never be too far from your hands.<br/>You, too, will feel differently about blacksmiths<br/>when you are holding a hammer yourself.");
 				}
 				break;
 

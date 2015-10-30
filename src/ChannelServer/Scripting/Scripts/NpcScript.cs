@@ -943,6 +943,20 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Trains the specified condition for skill by one.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="condition"></param>
+		protected void TrainSkill(SkillId skillId, int condition)
+		{
+			var skill = this.Player.Skills.Get(skillId);
+			if (skill == null)
+				return;
+
+			skill.Train(condition);
+		}
+
+		/// <summary>
 		/// Execute Hook! Harhar.
 		/// </summary>
 		/// <remarks>
