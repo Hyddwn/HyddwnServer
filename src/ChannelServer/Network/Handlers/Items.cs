@@ -530,11 +530,17 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			var rnd = RandomProvider.Get();
+
 			var pickers = new DyePickers();
-			//pickers.Picker2.X = 10;
-			//pickers.Picker2.Y = 10;
-			//pickers.Picker3.X = -10;
-			//pickers.Picker3.Y = 10;
+			pickers.Picker2.X = (short)-rnd.Next(10, 16);
+			pickers.Picker2.Y = (short)-rnd.Next(10, 16);
+			pickers.Picker3.X = (short)+rnd.Next(10, 16);
+			pickers.Picker3.Y = (short)-rnd.Next(10, 16);
+			pickers.Picker4.X = (short)-rnd.Next(10, 16);
+			pickers.Picker4.Y = (short)+rnd.Next(10, 16);
+			pickers.Picker5.X = (short)+rnd.Next(10, 16);
+			pickers.Picker5.Y = (short)+rnd.Next(10, 16);
 
 			creature.Temp.RegularDyePickers = pickers;
 

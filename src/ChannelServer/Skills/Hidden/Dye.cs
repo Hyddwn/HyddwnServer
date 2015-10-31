@@ -13,6 +13,11 @@ using Aura.Mabi.Const;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
 using Aura.Mabi.Network;
+using Aura.Data.Database;
+using Aura.Data;
+using System.Drawing;
+using System.Drawing.Imaging;
+using Aura.Mabi.Structs;
 
 namespace Aura.Channel.Skills.Hidden
 {
@@ -28,6 +33,14 @@ namespace Aura.Channel.Skills.Hidden
 	[Skill(SkillId.Dye)]
 	public class Dye : IPreparable, IUseable, ICompletable, ICancelable
 	{
+		// Distort rates
+		private const double R1 = 0.5, R2 = 0.3, R3 = 0.2, R4 = 0.03;
+
+		/// <summary>
+		/// Size of regular dye field.
+		/// </summary>
+		private const int MapSize = 256;
+
 		/// <summary>
 		/// Prepares skill, goes straight to being ready.
 		/// </summary>
@@ -64,10 +77,11 @@ namespace Aura.Channel.Skills.Hidden
 		{
 			var part = packet.GetInt();
 
-			if (packet.Peek() == PacketElementType.Short)
-				this.UseRegular(creature, skill, packet, part);
-			else if (packet.Peek() == PacketElementType.Byte)
-				this.UseFixed(creature, skill, packet, part);
+			switch (packet.Peek())
+			{
+				case PacketElementType.Short: this.UseRegular(creature, skill, packet, part); break;
+				case PacketElementType.Byte: this.UseFixed(creature, skill, packet, part); break;
+			}
 		}
 
 		/// <summary>
@@ -109,13 +123,17 @@ namespace Aura.Channel.Skills.Hidden
 		{
 			var part = packet.GetInt();
 
-			if (creature.Skills.ActiveSkill != skill) return;
-			if (creature.Temp.SkillItem1 == null || creature.Temp.SkillItem2 == null) return;
+			if (creature.Skills.ActiveSkill != skill)
+				return;
 
-			if (packet.Peek() == PacketElementType.Short)
-				this.CompleteRegular(creature, packet, skill, part);
-			else if (packet.Peek() == PacketElementType.Byte)
-				this.CompleteFixed(creature, packet, skill, part);
+			if (creature.Temp.SkillItem1 == null || creature.Temp.SkillItem2 == null)
+				return;
+
+			switch (packet.Peek())
+			{
+				case PacketElementType.Short: this.CompleteRegular(creature, packet, skill, part); break;
+				case PacketElementType.Byte: this.CompleteFixed(creature, packet, skill, part); break;
+			}
 		}
 
 		/// <summary>
@@ -130,9 +148,45 @@ namespace Aura.Channel.Skills.Hidden
 			var x = packet.GetShort();
 			var y = packet.GetShort();
 
-			// TODO: Get the distort formula for regulars
+			// Choose random picker
+			var rnd = RandomProvider.Get();
+			DyePicker picker;
+			switch (rnd.Next(5))
+			{
+				default:
+				case 0: picker = creature.Temp.RegularDyePickers.Picker1; break;
+				case 1: picker = creature.Temp.RegularDyePickers.Picker2; break;
+				case 2: picker = creature.Temp.RegularDyePickers.Picker3; break;
+				case 3: picker = creature.Temp.RegularDyePickers.Picker4; break;
+				case 4: picker = creature.Temp.RegularDyePickers.Picker5; break;
+			}
 
-			Send.ServerMessage(creature, Localization.Get("This skill isn't implemented completely yet."));
+			// Apply picker offset
+			x = (short)((x + picker.X) % MapSize);
+			y = (short)((y + picker.Y) % MapSize);
+
+			// Color item
+			var item = creature.Temp.SkillItem1;
+			var data = item.Data;
+			try
+			{
+				switch (part)
+				{
+					default:
+					case 0: item.Info.Color1 = GetRegularColor(data.ColorMap1, 0, 0, 0, 0, x, y); break;
+					case 1: item.Info.Color2 = GetRegularColor(data.ColorMap2, 0, 0, 0, 0, x, y); break;
+					case 2: item.Info.Color3 = GetRegularColor(data.ColorMap3, 0, 0, 0, 0, x, y); break;
+				}
+				this.DyeSuccess(creature);
+
+				Send.AcquireFixedDyedItemInfo(creature, item.EntityId);
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex);
+				Send.ServerMessage(creature, Localization.Get("Error, please report."));
+			}
+
 			Send.SkillCompleteDye(creature, skill.Info.Id, part);
 		}
 
@@ -188,6 +242,130 @@ namespace Aura.Channel.Skills.Hidden
 		/// <param name="skill"></param>
 		public void Cancel(Creature creature, Skill skill)
 		{
+		}
+
+		/// <summary>
+		/// Returns the color at the specified location, on a color map,
+		/// distorted with the given parameters.
+		/// </summary>
+		/// <param name="colorMapId">Id of the color map to use.</param>
+		/// <param name="a1">Distortion algorithm parameter.</param>
+		/// <param name="a2">Distortion algorithm parameter.</param>
+		/// <param name="a3">Distortion algorithm parameter.</param>
+		/// <param name="a4">Distortion algorithm parameter.</param>
+		/// <param name="x">X position of the selected picker.</param>
+		/// <param name="y">Y position of the selected picker.</param>
+		/// <returns></returns>
+		private static uint GetRegularColor(int colorMapId, int a1, int a2, int a3, int a4, int x, int y)
+		{
+			var mapData = AuraData.ColorMapDb.Find(colorMapId);
+			if (mapData == null)
+				throw new Exception("Color map '" + colorMapId + "' not found.");
+
+			if (mapData.Width != 256 && mapData.Width != 64)
+				throw new Exception("Invalid map size (" + mapData.Width + ").");
+
+			// Create map out of data
+			var raw = new byte[MapSize * MapSize * 4];
+			if (mapData.Width == 256)
+			{
+				Buffer.BlockCopy(mapData.Raw, 0, raw, 0, mapData.Raw.Length);
+			}
+			else if (mapData.Width == 64)
+			{
+				for (int m = 0; m < mapData.Width; ++m)
+				{
+					var i = m * mapData.Width * 4;
+					for (int k = 0; k < 4; ++k)
+					{
+						for (int l = 0; l < 4; ++l)
+						{
+							var j = m * 256 * 4 + k * 256 + l * 256 * mapData.Height * 4;
+							Buffer.BlockCopy(mapData.Raw, i, raw, j, mapData.Width * 4);
+						}
+					}
+				}
+			}
+
+			raw = Distort(raw, 0, 0, 0, 0);
+
+			var p = y * MapSize * 4 + x * 4;
+			var a = raw[p + 3];
+			var r = raw[p + 0];
+			var g = raw[p + 1];
+			var b = raw[p + 2];
+
+			var color = 0u;
+			color |= (uint)(b << (8 * 0));
+			color |= (uint)(g << (8 * 1));
+			color |= (uint)(r << (8 * 2));
+			color |= (uint)(a << (8 * 3));
+
+			return color;
+		}
+
+		/// <summary>
+		/// Distorts raw image, using the given parameters.
+		/// </summary>
+		/// <param name="rawIn"></param>
+		/// <param name="a1"></param>
+		/// <param name="a2"></param>
+		/// <param name="a3"></param>
+		/// <param name="a4"></param>
+		/// <returns></returns>
+		private static byte[] Distort(byte[] rawIn, int a1, int a2, int a3, int a4)
+		{
+			if (rawIn.Length < MapSize * MapSize * 4)
+				throw new ArgumentException("rawIn too small.");
+
+			var maxIn = rawIn.Length;
+			var rawOut = new byte[rawIn.Length];
+			var xf = new Func<int, int>[] { x => CoordDistort(R1, x, a1), x => 0, x => CoordDistort(R3, x, a3), x => 0 };
+			var yf = new Func<int, int>[] { y => 0, y => CoordDistort(R2, y, a2), y => 0, y => CoordDistort(R4, y, a4) };
+
+			for (int i = 0; i < xf.Length; ++i)
+			{
+				var xDistort = xf[i];
+				var yDistort = yf[i];
+
+				for (var y = 0; y < MapSize; y++)
+				{
+					for (var x = 0; x < MapSize; x++)
+					{
+						var dx = (x + xDistort(y)) % MapSize;
+						var dy = (y + yDistort(x)) % MapSize;
+
+						var ptrIn = ((y * 1024) + (x * 4)) % maxIn;
+						var ptrOut = (dy * 1024) + (dx * 4);
+
+						rawOut[ptrOut + 0] = rawIn[ptrIn + 0];
+						rawOut[ptrOut + 1] = rawIn[ptrIn + 1];
+						rawOut[ptrOut + 2] = rawIn[ptrIn + 2];
+						rawOut[ptrOut + 3] = rawIn[ptrIn + 3];
+					}
+				}
+
+				if (i != xf.Length - 1)
+				{
+					var tmp = rawIn;
+					rawIn = rawOut;
+					rawOut = tmp;
+				}
+			}
+
+			return rawOut;
+		}
+
+		/// <summary>
+		/// Used in Distort.
+		/// </summary>
+		/// <param name="rate"></param>
+		/// <param name="orig"></param>
+		/// <param name="arg"></param>
+		/// <returns></returns>
+		private static int CoordDistort(double rate, int orig, int arg)
+		{
+			return (int)(rate * (ColorMapDb.DistortionMap[(orig + arg) % ColorMapDb.DistortionMap.Length] ^ 37));
 		}
 	}
 }
