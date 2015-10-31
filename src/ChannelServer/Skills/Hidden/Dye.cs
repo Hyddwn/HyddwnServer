@@ -262,28 +262,23 @@ namespace Aura.Channel.Skills.Hidden
 			if (mapData == null)
 				throw new Exception("Color map '" + colorMapId + "' not found.");
 
-			if (mapData.Width != 256 && mapData.Width != 64)
-				throw new Exception("Invalid map size (" + mapData.Width + ").");
-
 			// Create map out of data
 			var raw = new byte[MapSize * MapSize * 4];
-			if (mapData.Width == 256)
+			if (mapData.Width == MapSize)
 			{
 				Buffer.BlockCopy(mapData.Raw, 0, raw, 0, mapData.Raw.Length);
 			}
-			else if (mapData.Width == 64)
+			else
 			{
-				for (int m = 0; m < mapData.Width; ++m)
+				// Create tiled image
+				var instride = mapData.Width * 4;
+				var outstride = MapSize * 4;
+
+				for (int i = 0; i < MapSize; ++i)
 				{
-					var i = m * mapData.Width * 4;
-					for (int k = 0; k < 4; ++k)
-					{
-						for (int l = 0; l < 4; ++l)
-						{
-							var j = m * 256 * 4 + k * 256 + l * 256 * mapData.Height * 4;
-							Buffer.BlockCopy(mapData.Raw, i, raw, j, mapData.Width * 4);
-						}
-					}
+					var midx = (i % mapData.Height) * instride;
+					for (int fidx = 0; fidx < outstride; fidx += instride)
+						Buffer.BlockCopy(mapData.Raw, midx, raw, fidx + i * outstride, Math.Min(instride, outstride - fidx));
 				}
 			}
 
