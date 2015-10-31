@@ -165,6 +165,12 @@ namespace Aura.Channel.Skills.Hidden
 			x = (short)((x + picker.X) % MapSize);
 			y = (short)((y + picker.Y) % MapSize);
 
+			// Arguments
+			var a1 = creature.Temp.DyeDistortA1;
+			var a2 = creature.Temp.DyeDistortA2;
+			var a3 = creature.Temp.DyeDistortA3;
+			var a4 = creature.Temp.DyeDistortA4;
+
 			// Color item
 			var item = creature.Temp.SkillItem1;
 			var data = item.Data;
@@ -173,9 +179,9 @@ namespace Aura.Channel.Skills.Hidden
 				switch (part)
 				{
 					default:
-					case 0: item.Info.Color1 = GetRegularColor(data.ColorMap1, 0, 0, 0, 0, x, y); break;
-					case 1: item.Info.Color2 = GetRegularColor(data.ColorMap2, 0, 0, 0, 0, x, y); break;
-					case 2: item.Info.Color3 = GetRegularColor(data.ColorMap3, 0, 0, 0, 0, x, y); break;
+					case 0: item.Info.Color1 = GetRegularColor(data.ColorMap1, a1, a2, a3, a4, x, y); break;
+					case 1: item.Info.Color2 = GetRegularColor(data.ColorMap2, a1, a2, a3, a4, x, y); break;
+					case 2: item.Info.Color3 = GetRegularColor(data.ColorMap3, a1, a2, a3, a4, x, y); break;
 				}
 				this.DyeSuccess(creature);
 
@@ -282,7 +288,7 @@ namespace Aura.Channel.Skills.Hidden
 				}
 			}
 
-			raw = Distort(raw, 0, 0, 0, 0);
+			raw = Distort(raw, a1, a2, a3, a4);
 
 			var p = y * MapSize * 4 + x * 4;
 			var a = raw[p + 3];

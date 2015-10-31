@@ -35,6 +35,7 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		// Random dyeing cursors for regular dyes
 		public DyePickers RegularDyePickers;
+		public int DyeDistortA1, DyeDistortA2, DyeDistortA3, DyeDistortA4;
 
 		// Final Hit training counters
 		public int FinalHitKillCount, FinalHitKillCountStrong, FinalHitKillCountAwful, FinalHitKillCountBoss;
