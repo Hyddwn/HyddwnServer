@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginServer", "src\LoginServer\LoginServer.csproj", "{3C2D0134-1F31-45FC-9622-CDD28F17BCCE}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.ChannelServer", "src\Test.ChannelServer\Test.ChannelServer.csproj", "{527345E3-44AD-4947-9C2D-8320CB236A3C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Mabi", "src\Test.Mabi\Test.Mabi.csproj", "{A4FCA69F-A1D9-48C6-BBA5-BD38D0D411A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Data", "src\Test.Data\Test.Data.csproj", "{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +123,16 @@ Global
 		{A4FCA69F-A1D9-48C6-BBA5-BD38D0D411A2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A4FCA69F-A1D9-48C6-BBA5-BD38D0D411A2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A4FCA69F-A1D9-48C6-BBA5-BD38D0D411A2}.Release|x86.ActiveCfg = Release|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
