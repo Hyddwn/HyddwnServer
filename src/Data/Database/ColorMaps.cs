@@ -13,6 +13,7 @@ namespace Aura.Data.Database
 		public int Width { get; set; }
 		public int Height { get; set; }
 		public uint[] ColorMap { get; set; }
+		public byte[] Raw { get; set; }
 	}
 
 	/// <summary>
@@ -49,11 +50,17 @@ namespace Aura.Data.Database
 			info.Id = br.ReadByte();
 			info.Width = br.ReadInt16();
 			info.Height = br.ReadInt16();
+
+			info.Raw = br.ReadBytes(info.Width * info.Height * 4);
 			info.ColorMap = new uint[info.Width * info.Height];
-			for (int i = 0; i < info.ColorMap.Length; ++i)
+
+			using (var ms = new MemoryStream(info.Raw))
+			using (var br2 = new BinaryReader(ms))
 			{
-				info.ColorMap[i] = br.ReadUInt32();
+				for (int i = 0; i < info.ColorMap.Length; ++i)
+					info.ColorMap[i] = br2.ReadUInt32();
 			}
+
 			this.Entries.Add(info.Id, info);
 		}
 	}
