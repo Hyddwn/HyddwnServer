@@ -265,6 +265,11 @@ namespace Aura.Channel.Skills.Hidden
 		private static uint GetRegularColor(int colorMapId, int a1, int a2, int a3, int a4, int x, int y)
 		{
 			var mapData = AuraData.ColorMapDb.Find(colorMapId);
+
+			// Some dyes use two different palettes for default and dye colors.
+			if (mapData != null && mapData.DyeId != mapData.Id)
+				mapData = AuraData.ColorMapDb.Find(mapData.DyeId);
+
 			if (mapData == null)
 				throw new Exception("Color map '" + colorMapId + "' not found.");
 

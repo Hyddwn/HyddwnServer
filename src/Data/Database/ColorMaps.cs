@@ -10,10 +10,12 @@ namespace Aura.Data.Database
 	public class ColorMapData
 	{
 		public int Id { get; set; }
+		public int DyeId { get; set; }
 		public int Width { get; set; }
 		public int Height { get; set; }
-		public uint[] ColorMap { get; set; }
 		public byte[] Raw { get; set; }
+
+		public uint[] ColorMap { get; set; }
 	}
 
 	/// <summary>
@@ -68,6 +70,7 @@ namespace Aura.Data.Database
 		{
 			var info = new ColorMapData();
 			info.Id = br.ReadByte();
+			info.DyeId = br.ReadByte();
 			info.Width = br.ReadInt16();
 			info.Height = br.ReadInt16();
 
