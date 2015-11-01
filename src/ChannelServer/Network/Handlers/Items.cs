@@ -510,10 +510,10 @@ namespace Aura.Channel.Network.Handlers
 
 			var rnd = RandomProvider.Get();
 
-			var a1 = creature.Temp.DyeDistortA1 = rnd.Next(0, 255);
-			var a2 = creature.Temp.DyeDistortA2 = rnd.Next(0, 255);
-			var a3 = creature.Temp.DyeDistortA3 = rnd.Next(0, 255);
-			var a4 = creature.Temp.DyeDistortA4 = rnd.Next(0, 255);
+			var a1 = creature.Temp.DyeDistortA1 = rnd.Next(256);
+			var a2 = creature.Temp.DyeDistortA2 = rnd.Next(256);
+			var a3 = creature.Temp.DyeDistortA3 = rnd.Next(256);
+			var a4 = creature.Temp.DyeDistortA4 = rnd.Next(256);
 
 			Send.DyePaletteReqR(creature, a1, a2, a3, a4);
 		}
