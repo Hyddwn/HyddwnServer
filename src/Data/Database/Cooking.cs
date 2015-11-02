@@ -2,11 +2,8 @@
 // For more information, see license file in the main folder
 
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aura.Data.Database
 {
@@ -51,6 +48,47 @@ namespace Aura.Data.Database
 
 	public class CookingDb : DatabaseJson<RecipeData>
 	{
+		/// <summary>
+		/// Returns the first recipe that fits the given method and ingredients.
+		/// </summary>
+		/// <param name="method"></param>
+		/// <param name="itemIds"></param>
+		/// <returns></returns>
+		public RecipeData Find(string method, IEnumerable<int> itemIds)
+		{
+			// Go through all method's recipes
+			foreach (var entry in this.Entries.Where(a => a.Method == method))
+			{
+				var fail = false;
+				var gotOther = false;
+
+				// Check one item after the other
+				foreach (var itemId in itemIds)
+				{
+					// Found in main? Good.
+					if (entry.MainIngredients.Any(a => a.ItemId == itemId))
+						continue;
+
+					// Found in others and there's no other used yet? Good.
+					if (!gotOther && entry.MainIngredients.Any(a => a.ItemId == itemId))
+					{
+						gotOther = true;
+						continue;
+					}
+
+					// Not found anywhere? Good luck next time.
+					fail = true;
+					break;
+				}
+
+				// If there was no fail, we found an entry that works.
+				if (!fail)
+					return entry;
+			}
+
+			return null;
+		}
+
 		protected override void ReadEntry(JObject entry)
 		{
 			entry.AssertNotMissing("method", "itemId", "mainIngredients");
