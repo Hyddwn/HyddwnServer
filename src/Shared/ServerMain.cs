@@ -220,6 +220,11 @@ namespace Aura.Shared
 					this.LoadDb(AuraData.ProductionDb, "db/production.txt", reload);
 					this.LoadDb(AuraData.ManualDb, "db/manuals.txt", reload);
 				}
+
+				if ((toLoad & DataLoad.Cooking) != 0)
+				{
+					this.LoadDb(AuraData.CookingDb, "db/cooking.txt", reload);
+				}
 			}
 			catch (DatabaseErrorException ex)
 			{
@@ -325,6 +330,7 @@ namespace Aura.Shared
 		Features = 0x800000,
 		Cutscenes = 0x1000000,
 		Production = 0x2000000,
+		Cooking = 0x4000000,
 
 		All = 0xFFFFFFFF,
 
