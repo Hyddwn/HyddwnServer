@@ -59,6 +59,11 @@ namespace Aura.Data.Database
 			// Go through all method's recipes
 			foreach (var entry in this.Entries.Where(a => a.Method == method))
 			{
+				// Can't match if more main ingredients are required than
+				// items provided.
+				if (entry.MainIngredients.Count > itemIds.Count())
+					continue;
+
 				var fail = false;
 				var gotOther = false;
 
@@ -70,7 +75,7 @@ namespace Aura.Data.Database
 						continue;
 
 					// Found in others and there's no other used yet? Good.
-					if (!gotOther && entry.MainIngredients.Any(a => a.ItemId == itemId))
+					if (!gotOther && entry.OtherIngredients.Any(a => a.ItemId == itemId))
 					{
 						gotOther = true;
 						continue;
@@ -125,7 +130,7 @@ namespace Aura.Data.Database
 					ingData.QualityMin = ingEntry.ReadInt("qualityMin");
 					ingData.QualityMax = ingEntry.ReadInt("qualityMax");
 
-					data.MainIngredients.Add(ingData);
+					data.OtherIngredients.Add(ingData);
 				}
 			}
 
