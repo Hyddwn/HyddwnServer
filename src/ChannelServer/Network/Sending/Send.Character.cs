@@ -348,6 +348,25 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends AcquireInfo2 to creature's client.
+		/// </summary>
+		/// <remarks>
+		/// Assumingly specific to cooking.
+		/// </remarks>
+		/// <param name="creature"></param>
+		/// <param name="objectid"></param>
+		/// <param name="classid"></param>
+		/// <param name="success"></param>
+		public static void AcquireInfo2Cooking(Creature creature, long objectid, int classid, bool success)
+		{
+			var packet = new Packet(Op.AcquireInfo2, creature.EntityId);
+			packet.PutString("<xml type='cooking' objectid='{0}' classid='{1}' success='{2}' />", objectid, classid, success ? 1 : 0);
+			packet.PutInt(3000);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends AcquireInfo to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

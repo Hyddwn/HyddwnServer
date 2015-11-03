@@ -285,6 +285,21 @@ namespace Aura.Channel.Network.Sending
 		/// <summary>
 		/// Sends SkillUse to creature's client.
 		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skillId"></param>
+		/// <param name="unkInt"></param>
+		public static void SkillUse(Creature creature, SkillId skillId, int unkInt)
+		{
+			var packet = new Packet(Op.SkillUse, creature.EntityId);
+			packet.PutUShort((ushort)skillId);
+			packet.PutInt(unkInt);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends SkillUse to creature's client.
+		/// </summary>
 		/// <remarks>
 		/// TODO: Look into sending packets back as is, so we don't have to
 		///   recreate complex ones like this one.
@@ -542,6 +557,21 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.SkillComplete, creature.EntityId);
 			packet.PutUShort((ushort)skillId);
 			packet.PutByte(unkByte);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends SkillComplete to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skillId"></param>
+		/// <param name="unkInt"></param>
+		public static void SkillComplete(Creature creature, SkillId skillId, int unkInt)
+		{
+			var packet = new Packet(Op.SkillComplete, creature.EntityId);
+			packet.PutUShort((ushort)skillId);
+			packet.PutInt(unkInt);
 
 			creature.Client.Send(packet);
 		}

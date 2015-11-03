@@ -24,6 +24,11 @@ namespace Aura.Mabi.Const
 		public static readonly int Revive = 4;
 
 		/// <summary>
+		/// 
+		/// </summary>
+		public static readonly int Cooking = 7;
+
+		/// <summary>
 		/// Displays item above player's head, e.g. keys in dungeons.
 		/// int:itemId, int:color1, int:color2, int:color3
 		/// </summary>
