@@ -78,6 +78,10 @@ namespace Aura.Channel.Skills.Life
 			if (!this.CheckTools(creature, method))
 				return false;
 
+			// Check rank
+			if (!this.CheckRank(creature, method, skill.Info.Rank))
+				return false;
+
 			// Check prop
 			if (!this.CheckProp(creature, method, propEntityId))
 				return false;
@@ -241,7 +245,7 @@ namespace Aura.Channel.Skills.Life
 					break;
 
 				default:
-					Log.Error("Cooking.CheckProp: Unknown cooking method.");
+					Log.Error("Cooking.CheckTools: Unknown cooking method.");
 					return false;
 			}
 
@@ -272,6 +276,36 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// Checks rank for method, returns true if everything is in order.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="method"></param>
+		/// <param name="skillRank"></param>
+		/// <returns></returns>
+		private bool CheckRank(Creature creature, string method, SkillRank skillRank)
+		{
+			switch (method)
+			{
+				case CookingMethod.Mixing: return true;
+				case CookingMethod.Baking: return (skillRank >= SkillRank.RF);
+				case CookingMethod.Simmering: return (skillRank >= SkillRank.RE);
+				case CookingMethod.Kneading: return (skillRank >= SkillRank.RD);
+				case CookingMethod.Boiling: return (skillRank >= SkillRank.RC);
+				case CookingMethod.NoodleMaking: return (skillRank >= SkillRank.RB);
+				case CookingMethod.DeepFrying: return (skillRank >= SkillRank.RA);
+				case CookingMethod.StirFrying: return (skillRank >= SkillRank.R9);
+				case CookingMethod.PastaMaking: return (skillRank >= SkillRank.R8);
+				case CookingMethod.JamMaking: return (skillRank >= SkillRank.R7);
+				case CookingMethod.PieMaking: return (skillRank >= SkillRank.R6);
+				case CookingMethod.Steaming: return (skillRank >= SkillRank.R5);
+
+				default:
+					Log.Error("Cooking.CheckRank: Unknown cooking method.");
+					return false;
+			}
 		}
 
 		/// <summary>
