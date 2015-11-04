@@ -119,7 +119,7 @@ namespace Aura.Channel.Scripting
 							var rank = (SkillRank)function.GetArgument<byte>(1);
 
 							if (!creature.Skills.Has(skillid))
-								creature.Skills.Give(skillid, SkillRank.Novice);
+								creature.Skills.Give(skillid, rank);
 							break;
 						}
 
