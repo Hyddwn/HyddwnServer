@@ -1136,9 +1136,17 @@ namespace Aura.Channel.World.Inventory
 					return;
 			}
 
-			// Don't remove if left hand item is a shield
+			// Special handling of shield-likes (shields, books, etc)
 			if (leftItem.IsShieldLike)
-				return;
+			{
+				// If right hand item is something that can be combined with
+				// a shield, the unequipping must be canceled. Things that
+				// don't go with shields include bows and 2H weapons,
+				// possibly more.
+				// TODO: Is there a better way to check this?
+				if (!item.IsBow && !item.IsTwoHand)
+					return;
+			}
 
 			// Try inventory first.
 			// TODO: List of pockets stuff can be auto-moved to.
