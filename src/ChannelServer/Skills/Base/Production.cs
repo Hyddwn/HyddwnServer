@@ -269,8 +269,9 @@ namespace Aura.Channel.Skills.Base
 			// Reduce mats
 			foreach (var material in toReduce)
 			{
-				// On fail you lose 0~amount of materials randomly
-				var reduce = success ? material.Amount : rnd.Next(0, material.Amount + 1);
+				// On fail of non-queued productions you lose 1~amount of
+				// materials randomly
+				var reduce = (success || amountToProduce > 1) ? material.Amount : rnd.Next(1, material.Amount + 1);
 				if (reduce > 0)
 					creature.Inventory.Decrement(material.Item, (ushort)reduce);
 			}
