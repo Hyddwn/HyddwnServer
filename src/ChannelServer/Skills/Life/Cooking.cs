@@ -75,7 +75,7 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			// Check prop
-			if (!this.CheckProp(method, propEntityId))
+			if (!this.CheckProp(creature, method, propEntityId))
 				return false;
 
 			// Save information
@@ -206,12 +206,52 @@ namespace Aura.Channel.Skills.Life
 		/// <param name="method"></param>
 		/// <param name="propEntityId"></param>
 		/// <returns></returns>
-		private bool CheckProp(string method, long propEntityId)
+		private bool CheckProp(Creature creature, string method, long propEntityId)
 		{
-			// if method requires prop
-			// if prop == 0
-			// get prop
-			// if prop == null
+			switch (method)
+			{
+				// Does't require a prop
+				case CookingMethod.Mixing:
+				case CookingMethod.Kneading:
+				case CookingMethod.NoodleMaking:
+				case CookingMethod.PastaMaking:
+				case CookingMethod.PieMaking:
+					return true;
+
+				// Requires a prop, continue to checks.
+				case CookingMethod.Baking:
+				case CookingMethod.Simmering:
+				case CookingMethod.Boiling:
+				case CookingMethod.DeepFrying:
+				case CookingMethod.StirFrying:
+				case CookingMethod.JamMaking:
+				case CookingMethod.Steaming:
+					break;
+
+				default:
+					Log.Error("Cooking.CheckProp: Unknown cooking method.");
+					return false;
+			}
+
+			// Check prop id
+			if (propEntityId == 0)
+				return false;
+
+			// Check prop
+			var prop = creature.Region.GetProp(propEntityId);
+			if (prop == null)
+				return false;
+
+			// Check range
+			if (!creature.GetPosition().InRange(prop.GetPosition(), 500))
+			{
+				Send.Notice(creature, Localization.Get("You are too far away."));
+				return false;
+			}
+
+			// Check prop type
+			if (!prop.HasTag("/cooker/"))
+				return false;
 
 			return true;
 		}
