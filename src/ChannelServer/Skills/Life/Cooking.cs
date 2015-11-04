@@ -74,6 +74,10 @@ namespace Aura.Channel.Skills.Life
 				ingredients.Add(new Ingredient(item, amount));
 			}
 
+			// Check tools
+			if (!this.CheckTools(creature, method))
+				return false;
+
 			// Check prop
 			if (!this.CheckProp(creature, method, propEntityId))
 				return false;
@@ -198,6 +202,76 @@ namespace Aura.Channel.Skills.Life
 		public int GetTime(string method)
 		{
 			return 5000;
+		}
+
+		/// <summary>
+		/// Checks tools for method, returns true if everything is in order.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <returns></returns>
+		private bool CheckTools(Creature creature, string method)
+		{
+			var right = "";
+			var left = "";
+
+			switch (method)
+			{
+				case CookingMethod.Mixing:
+					right = "/cooking/cooking_knife/";
+					left = "/cooking/cooking_table/";
+					break;
+
+				case CookingMethod.Kneading:
+				case CookingMethod.NoodleMaking:
+				case CookingMethod.PastaMaking:
+				case CookingMethod.PieMaking:
+					right = "/cooking/cooking_kneader/";
+					left = "/cooking/cooking_table/";
+					break;
+
+				case CookingMethod.Baking:
+				case CookingMethod.Simmering:
+				case CookingMethod.Boiling:
+				case CookingMethod.DeepFrying:
+				case CookingMethod.StirFrying:
+				case CookingMethod.JamMaking:
+				case CookingMethod.Steaming:
+					right = "/cooking/cooking_dipper/";
+					left = "/cooking/cooking_pot/";
+					break;
+
+				default:
+					Log.Error("Cooking.CheckProp: Unknown cooking method.");
+					return false;
+			}
+
+			// Check right hand
+			if (right != "")
+			{
+				if ((creature.RightHand == null || !creature.RightHand.HasTag(right)))
+					return false;
+
+				if (creature.RightHand.Durability == 0)
+				{
+					Send.Notice(creature, Localization.Get("You can't use this {0} anymore."), creature.RightHand.Data.Name);
+					return false;
+				}
+			}
+
+			// Check left hand
+			if (left != "")
+			{
+				if ((creature.LeftHand == null || !creature.LeftHand.HasTag(left)))
+					return false;
+
+				if (creature.LeftHand.Durability == 0)
+				{
+					Send.Notice(creature, Localization.Get("You can't use this {0} anymore."), creature.RightHand.Data.Name);
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		/// <summary>
