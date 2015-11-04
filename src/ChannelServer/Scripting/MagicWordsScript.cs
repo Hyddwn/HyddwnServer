@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
+using Aura.Data;
 
 namespace Aura.Channel.Scripting
 {
@@ -77,13 +78,36 @@ namespace Aura.Channel.Scripting
 				switch (function.Name)
 				{
 					// trainskill(x,y)
-					// Trains skill x's first condition on rank y?
+					// Trains skill x's last condition on rank y.
+					// Most skills only require reading a book to advance,
+					// but Cooking has more conditions, and the book that can be
+					// used on each rank is always the last trainable condition.
 					case "trainskill":
 						{
 							var skillid = (SkillId)function.GetArgument<ushort>(0);
 							var rank = (SkillRank)function.GetArgument<byte>(1);
 
-							creature.Skills.Train(skillid, rank, 1);
+							// Cancel if creature doesn't have the skill with
+							// the correct rank.
+							var skill = creature.Skills.Get(skillid);
+							if (skill == null || skill.Info.Rank != rank)
+								break;
+
+							// Find the last trainable condition
+							var found = false;
+							for (int i = 8; i >= 0; --i)
+							{
+								if (skill.RankData.Conditions[i].Count > 0)
+								{
+									skill.Train(i + 1);
+									found = true;
+									break;
+								}
+							}
+
+							if (!found)
+								throw new Exception("No trainable condition found for " + skillid + " @ " + rank + ".");
+
 							break;
 						}
 
