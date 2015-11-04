@@ -240,7 +240,7 @@ namespace Aura.Channel.Skills.Base
 			var bonuses = new Dictionary<Bonus, int>();
 
 			// Weapons (except bows)
-			if (item.HasTag("/weapon/") && !item.HasTag("/bow/|/crossbow/"))
+			if (item.HasTag("/weapon/") && !item.HasTag("/bow/|/bow01|/crossbow/"))
 			{
 				// Balance
 				if (quality >= 98)
@@ -339,7 +339,7 @@ namespace Aura.Channel.Skills.Base
 			}
 
 			// Bows
-			else if (item.HasTag("/bow/|/crossbow/"))
+			else if (item.HasTag("/bow/|/bow01/|/crossbow/"))
 			{
 				// Balance
 				if (quality >= 98)
