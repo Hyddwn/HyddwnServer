@@ -13,8 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aura.Channel.Skills.Life
 {
@@ -29,7 +27,7 @@ namespace Aura.Channel.Skills.Life
 	/// > 95 = 5 stars
 	/// </remarks>
 	[Skill(SkillId.Cooking)]
-	public class Cooking : IPreparable, ICompletable
+	public class Cooking : IPreparable, ICompletable, IInitiableSkillHandler
 	{
 		/// <summary>
 		/// Id of the item used as food waste, for failed cooking attempts.
@@ -41,6 +39,14 @@ namespace Aura.Channel.Skills.Life
 		/// as they're "emptied".
 		/// </summary>
 		private const int EmptyBottleItemId = 63020;
+
+		/// <summary>
+		/// Sets up subscriptions required for skill training.
+		/// </summary>
+		public void Init()
+		{
+			ChannelServer.Instance.Events.PlayerUsesItem += this.OnPlayerUsesItem;
+		}
 
 		/// <summary>
 		/// Prepares skill, specifying the ingredients.
@@ -132,16 +138,32 @@ namespace Aura.Channel.Skills.Life
 
 					// Notice
 					var msg = "";
+					Quality quality;
 					if (judgement.Quality > 95)
+					{
 						msg += Localization.Get("You just made a delicious dish!");
+						quality = Quality.VeryGood;
+					}
 					else if (judgement.Quality > 75)
+					{
 						msg += Localization.Get("You just made a tasty dish!");
+						quality = Quality.Good;
+					}
 					else if (judgement.Quality > 55)
+					{
 						msg += Localization.Get("You just made an edible dish.");
+						quality = Quality.Okay;
+					}
 					else if (judgement.Quality > 35)
+					{
 						msg += Localization.Get("You just made a pretty unappetizing dish...");
+						quality = Quality.Bad;
+					}
 					else
+					{
 						msg += Localization.Get("You just made a dish... that you probably shouldn't eat. Yuck!");
+						quality = Quality.VeryBad;
+					}
 
 					// Help message
 					if (judgement.HelpItem != null)
@@ -162,6 +184,8 @@ namespace Aura.Channel.Skills.Life
 					}
 
 					Send.Notice(creature, msg);
+
+					this.OnSuccessfulCooking(creature, skill, creature.Temp.CookingMethod, item, quality);
 
 					success = true;
 				}
@@ -430,12 +454,317 @@ namespace Aura.Channel.Skills.Life
 			return result;
 		}
 
+		/// <summary>
+		/// Handles part of the skill training.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="method"></param>
+		/// <param name="item"></param>
+		/// <param name="quality"></param>
+		private void OnSuccessfulCooking(Creature creature, Skill skill, string method, Item item, Quality quality)
+		{
+			if (skill.Info.Rank == SkillRank.Novice)
+			{
+				if (method == CookingMethod.Mixing)
+					skill.Train(1); // Make any dish by mixing cooking ingredients.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RF)
+			{
+				if (method == CookingMethod.Baking)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(1); // Make a dish that is deliciously baked.
+					else
+						skill.Train(2); // Successful in baking a dish.
+				}
+				else if (method == CookingMethod.Mixing)
+					skill.Train(5); // Make any dish by mixing cooking ingredients.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RE)
+			{
+				if (method == CookingMethod.Simmering)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(1); // Make a dish that is deliciously simmered.
+					else
+						skill.Train(2); // Successful in simmering a dish.
+				}
+				else if (method == CookingMethod.Baking)
+					skill.Train(4); // Successful in baking a dish.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RD)
+			{
+				if (method == CookingMethod.Kneading)
+					skill.Train(1); // Successful in kneading a dish.
+				else if (method == CookingMethod.Simmering)
+					skill.Train(2); // Successful in simmering a dish.
+				else if (method == CookingMethod.Baking)
+					skill.Train(5); // Successful in baking a dish.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RC)
+			{
+				if (method == CookingMethod.Kneading)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(1); // Make a dish that is deliciously boiled.
+					else
+						skill.Train(2); // Successful in boiling a dish.
+				}
+				else if (method == CookingMethod.Kneading)
+					skill.Train(4); // Successful in baking a dish.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RB)
+			{
+				if (method == CookingMethod.NoodleMaking)
+					skill.Train(1); // Make noodles.
+				else if (method == CookingMethod.Boiling)
+					skill.Train(2); // Successful in boiling a dish.
+				else if (method == CookingMethod.Kneading)
+					skill.Train(5); // Successful in baking a dish.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RA)
+			{
+				if (method == CookingMethod.DeepFrying)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(1); // Make a dish that is deliciously deep-fried.
+					else
+						skill.Train(2); // Successful in deep-frying a dish.
+				}
+				else if (method == CookingMethod.NoodleMaking)
+					skill.Train(5); // Make noodles.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.R9)
+			{
+				if (method == CookingMethod.StirFrying)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(1); // Make a dish that is deliciously stir-fried.
+					else
+						skill.Train(2); // Successful in stir-frying a dish.
+				}
+				else if (method == CookingMethod.DeepFrying)
+					skill.Train(4); // Successful in deep-frying a dish.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.R8)
+			{
+				if (method == CookingMethod.PastaMaking)
+					skill.Train(1); // Make pasta.
+				else if (method == CookingMethod.StirFrying)
+					skill.Train(2); // Successful in stir-frying a dish.
+				else if (method == CookingMethod.DeepFrying)
+					skill.Train(4); // Successful in deep-frying a dish.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.R7)
+			{
+				if (method == CookingMethod.JamMaking)
+					skill.Train(1); // Make jam.
+				else if (method == CookingMethod.PastaMaking)
+					skill.Train(2); // Make pasta.
+				else if (method == CookingMethod.StirFrying)
+					skill.Train(4); // Successful in stir-frying a dish.
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.R6)
+			{
+				if (method == CookingMethod.PieMaking)
+					skill.Train(1); // Make a Pie
+				else if (method == CookingMethod.JamMaking)
+					skill.Train(2); // Make Jam
+				else if (method == CookingMethod.PastaMaking)
+					skill.Train(4); // Make Pasta
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.R5)
+			{
+				if (method == CookingMethod.Steaming)
+					skill.Train(1); // Steam a Dish
+				else if (method == CookingMethod.PieMaking)
+					skill.Train(2); // Make a Pie
+				else if (method == CookingMethod.JamMaking)
+					skill.Train(4); // Make Jam
+
+				return;
+			}
+		}
+
+		/// <summary>
+		/// Handles part of the skill training.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="item"></param>
+		private void OnPlayerUsesItem(Creature creature, Item item)
+		{
+			// Get skill
+			var skill = creature.Skills.Get(SkillId.Cooking);
+			if (skill == null)
+				return;
+
+			// Check if item is food
+			if (!item.HasTag("/food/"))
+				return;
+
+			// Get quality and method
+			var method = item.MetaData1.GetString("MKACT");
+			if (method == null)
+				return;
+
+			var iQuality = item.MetaData1.GetInt("QUAL");
+			var quality = iQuality >= 95 ? Quality.VeryGood : iQuality >= 75 ? Quality.Good : iQuality >= 55 ? Quality.Okay : iQuality >= 35 ? Quality.Bad : Quality.VeryBad;
+
+			if (skill.Info.Rank == SkillRank.RF)
+			{
+				if (method == CookingMethod.Simmering)
+					skill.Train(3); // Eat a simmered dish without sharing.
+				else if (method == CookingMethod.Baking)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(4); // Eat a deliciously baked dish.
+				}
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RE)
+			{
+				if (method == CookingMethod.Simmering)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(3); // Eat a deliciously simmered dish.
+				}
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RD)
+			{
+				if (method == CookingMethod.Boiling)
+					skill.Train(3); // Eat a boiled dish without sharing.
+				else if (method == CookingMethod.Simmering)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(4); // Eat a deliciously simmered dish.
+				}
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RC)
+			{
+				if (method == CookingMethod.Boiling)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(3); // Eat a deliciously boiled dish.
+				}
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RB)
+			{
+				if (method == CookingMethod.DeepFrying)
+					skill.Train(3); // Eat a deep-fried dish without sharing.
+				else if (method == CookingMethod.Boiling)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(4); // Eat a deliciously boiled dish.
+				}
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.RA)
+			{
+				if (method == CookingMethod.StirFrying)
+					skill.Train(3); // Eat a stir-fried dish without sharing.
+				else if (method == CookingMethod.DeepFrying)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(4); // Eat a deliciously deep-fried dish.
+				}
+
+				return;
+			}
+
+			if (skill.Info.Rank >= SkillRank.R9 && skill.Info.Rank <= SkillRank.R7)
+			{
+				if (method == CookingMethod.StirFrying)
+				{
+					if (quality == Quality.VeryGood)
+						skill.Train(3); // Eat a deliciously stir-fried dish.
+				}
+
+				return;
+			}
+
+			// TODO: Jam and pies don't have jam and pie tags,
+			//   how to identify them for the last two ranks
+			//   without hard-coded ids?
+
+			if (skill.Info.Rank == SkillRank.R6)
+			{
+				//if (item.HasTag("/jam/"))
+				//	skill.Train(3); // Eat Jam
+
+				return;
+			}
+
+			if (skill.Info.Rank == SkillRank.R5)
+			{
+				//if (item.HasTag("/pie/"))
+				//	skill.Train(3); // Eat a Pie
+
+				return;
+			}
+		}
+
 		private struct Judgement
 		{
 			public float Quality;
 
 			public Item HelpItem;
 			public float HelpAmount;
+		}
+
+		private enum Quality
+		{
+			VeryGood,
+			Good,
+			Okay,
+			Bad,
+			VeryBad,
 		}
 	}
 
