@@ -41,6 +41,11 @@ namespace Aura.Channel.Skills.Life
 		private const int EmptyBottleItemId = 63020;
 
 		/// <summary>
+		/// Rating required for declicious training requirements.
+		/// </summary>
+		private const Rating DeliciousRating = Rating.FourStars;
+
+		/// <summary>
 		/// Sets up subscriptions required for skill training.
 		/// </summary>
 		public void Init()
@@ -141,7 +146,7 @@ namespace Aura.Channel.Skills.Life
 
 					// Notice
 					var msg = "";
-					if (judgement.Quality > 95)
+					if (judgement.Quality > 75)
 						msg += Localization.Get("You just made a delicious dish!");
 					else if (judgement.Quality > 55)
 						msg += Localization.Get("You just made a tasty dish!");
@@ -463,7 +468,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Baking)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously baked.
 					else
 						skill.Train(2); // Successful in baking a dish.
@@ -478,7 +483,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Simmering)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously simmered.
 					else
 						skill.Train(2); // Successful in simmering a dish.
@@ -505,7 +510,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Kneading)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously boiled.
 					else
 						skill.Train(2); // Successful in boiling a dish.
@@ -532,7 +537,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.DeepFrying)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously deep-fried.
 					else
 						skill.Train(2); // Successful in deep-frying a dish.
@@ -547,7 +552,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.StirFrying)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously stir-fried.
 					else
 						skill.Train(2); // Successful in stir-frying a dish.
@@ -637,7 +642,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a simmered dish without sharing.
 				else if (method == CookingMethod.Baking)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(4); // Eat a deliciously baked dish.
 				}
 
@@ -648,7 +653,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Simmering)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(3); // Eat a deliciously simmered dish.
 				}
 
@@ -661,7 +666,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a boiled dish without sharing.
 				else if (method == CookingMethod.Simmering)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(4); // Eat a deliciously simmered dish.
 				}
 
@@ -672,7 +677,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Boiling)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(3); // Eat a deliciously boiled dish.
 				}
 
@@ -685,7 +690,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a deep-fried dish without sharing.
 				else if (method == CookingMethod.Boiling)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(4); // Eat a deliciously boiled dish.
 				}
 
@@ -698,7 +703,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a stir-fried dish without sharing.
 				else if (method == CookingMethod.DeepFrying)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(4); // Eat a deliciously deep-fried dish.
 				}
 
@@ -709,7 +714,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.StirFrying)
 				{
-					if (rating == Rating.FiveStars)
+					if (rating == DeliciousRating)
 						skill.Train(3); // Eat a deliciously stir-fried dish.
 				}
 
