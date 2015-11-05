@@ -129,41 +129,28 @@ namespace Aura.Channel.Skills.Life
 				var judgement = this.JudgeQuality(recipe, creature.Temp.CookingIngredients);
 				if (judgement.Quality > 0)
 				{
+					var quality = (int)judgement.Quality;
+					var rating = this.GetRating((int)judgement.Quality);
+
 					// Create food if quality was good enough
 					item = new Item(recipe.ItemId);
-					item.MetaData1.SetInt("QUAL", (int)judgement.Quality);
+					item.MetaData1.SetInt("QUAL", quality);
 					item.MetaData1.SetString("MKNAME", creature.Name);
 					item.MetaData1.SetShort("MKSLV", (short)skill.Info.Rank);
 					item.MetaData1.SetString("MKACT", creature.Temp.CookingMethod);
 
 					// Notice
 					var msg = "";
-					Rating rating;
 					if (judgement.Quality > 95)
-					{
 						msg += Localization.Get("You just made a delicious dish!");
-						rating = Rating.FiveStars;
-					}
-					else if (judgement.Quality > 75)
-					{
-						msg += Localization.Get("You just made a tasty dish!");
-						rating = Rating.FourStars;
-					}
 					else if (judgement.Quality > 55)
-					{
-						msg += Localization.Get("You just made an edible dish.");
-						rating = Rating.ThreeStars;
-					}
+						msg += Localization.Get("You just made a tasty dish!");
 					else if (judgement.Quality > 35)
-					{
+						msg += Localization.Get("You just made an edible dish.");
+					else if (judgement.Quality > -35)
 						msg += Localization.Get("You just made a pretty unappetizing dish...");
-						rating = Rating.TwoStars;
-					}
 					else
-					{
 						msg += Localization.Get("You just made a dish... that you probably shouldn't eat. Yuck!");
-						rating = Rating.OneStar;
-					}
 
 					// Help message
 					if (judgement.HelpItem != null)
