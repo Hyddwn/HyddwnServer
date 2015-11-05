@@ -138,31 +138,31 @@ namespace Aura.Channel.Skills.Life
 
 					// Notice
 					var msg = "";
-					Quality quality;
+					Rating rating;
 					if (judgement.Quality > 95)
 					{
 						msg += Localization.Get("You just made a delicious dish!");
-						quality = Quality.VeryGood;
+						rating = Rating.FiveStars;
 					}
 					else if (judgement.Quality > 75)
 					{
 						msg += Localization.Get("You just made a tasty dish!");
-						quality = Quality.Good;
+						rating = Rating.FourStars;
 					}
 					else if (judgement.Quality > 55)
 					{
 						msg += Localization.Get("You just made an edible dish.");
-						quality = Quality.Okay;
+						rating = Rating.ThreeStars;
 					}
 					else if (judgement.Quality > 35)
 					{
 						msg += Localization.Get("You just made a pretty unappetizing dish...");
-						quality = Quality.Bad;
+						rating = Rating.TwoStars;
 					}
 					else
 					{
 						msg += Localization.Get("You just made a dish... that you probably shouldn't eat. Yuck!");
-						quality = Quality.VeryBad;
+						rating = Rating.OneStar;
 					}
 
 					// Help message
@@ -185,7 +185,7 @@ namespace Aura.Channel.Skills.Life
 
 					Send.Notice(creature, msg);
 
-					this.OnSuccessfulCooking(creature, skill, creature.Temp.CookingMethod, item, quality);
+					this.OnSuccessfulCooking(creature, skill, creature.Temp.CookingMethod, item, rating);
 
 					success = true;
 				}
@@ -461,8 +461,8 @@ namespace Aura.Channel.Skills.Life
 		/// <param name="skill"></param>
 		/// <param name="method"></param>
 		/// <param name="item"></param>
-		/// <param name="quality"></param>
-		private void OnSuccessfulCooking(Creature creature, Skill skill, string method, Item item, Quality quality)
+		/// <param name="rating"></param>
+		private void OnSuccessfulCooking(Creature creature, Skill skill, string method, Item item, Rating rating)
 		{
 			if (skill.Info.Rank == SkillRank.Novice)
 			{
@@ -476,7 +476,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Baking)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(1); // Make a dish that is deliciously baked.
 					else
 						skill.Train(2); // Successful in baking a dish.
@@ -491,7 +491,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Simmering)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(1); // Make a dish that is deliciously simmered.
 					else
 						skill.Train(2); // Successful in simmering a dish.
@@ -518,7 +518,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Kneading)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(1); // Make a dish that is deliciously boiled.
 					else
 						skill.Train(2); // Successful in boiling a dish.
@@ -545,7 +545,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.DeepFrying)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(1); // Make a dish that is deliciously deep-fried.
 					else
 						skill.Train(2); // Successful in deep-frying a dish.
@@ -560,7 +560,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.StirFrying)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(1); // Make a dish that is deliciously stir-fried.
 					else
 						skill.Train(2); // Successful in stir-frying a dish.
@@ -641,8 +641,8 @@ namespace Aura.Channel.Skills.Life
 			if (method == null)
 				return;
 
-			var iQuality = item.MetaData1.GetInt("QUAL");
-			var quality = iQuality >= 95 ? Quality.VeryGood : iQuality >= 75 ? Quality.Good : iQuality >= 55 ? Quality.Okay : iQuality >= 35 ? Quality.Bad : Quality.VeryBad;
+			var quality = item.MetaData1.GetInt("QUAL");
+			var rating = this.GetRating(quality);
 
 			if (skill.Info.Rank == SkillRank.RF)
 			{
@@ -650,7 +650,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a simmered dish without sharing.
 				else if (method == CookingMethod.Baking)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(4); // Eat a deliciously baked dish.
 				}
 
@@ -661,7 +661,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Simmering)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(3); // Eat a deliciously simmered dish.
 				}
 
@@ -674,7 +674,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a boiled dish without sharing.
 				else if (method == CookingMethod.Simmering)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(4); // Eat a deliciously simmered dish.
 				}
 
@@ -685,7 +685,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Boiling)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(3); // Eat a deliciously boiled dish.
 				}
 
@@ -698,7 +698,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a deep-fried dish without sharing.
 				else if (method == CookingMethod.Boiling)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(4); // Eat a deliciously boiled dish.
 				}
 
@@ -711,7 +711,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a stir-fried dish without sharing.
 				else if (method == CookingMethod.DeepFrying)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(4); // Eat a deliciously deep-fried dish.
 				}
 
@@ -722,7 +722,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.StirFrying)
 				{
-					if (quality == Quality.VeryGood)
+					if (rating == Rating.FiveStars)
 						skill.Train(3); // Eat a deliciously stir-fried dish.
 				}
 
@@ -750,6 +750,16 @@ namespace Aura.Channel.Skills.Life
 			}
 		}
 
+		/// <summary>
+		/// Returns star rating based on quality.
+		/// </summary>
+		/// <param name="val"></param>
+		/// <returns></returns>
+		private Rating GetRating(int val)
+		{
+			return val >= 95 ? Rating.FiveStars : val >= 75 ? Rating.FourStars : val >= 55 ? Rating.ThreeStars : val >= 35 ? Rating.TwoStars : Rating.OneStar;
+		}
+
 		private struct Judgement
 		{
 			public float Quality;
@@ -758,13 +768,13 @@ namespace Aura.Channel.Skills.Life
 			public float HelpAmount;
 		}
 
-		private enum Quality
+		private enum Rating
 		{
-			VeryGood,
-			Good,
-			Okay,
-			Bad,
-			VeryBad,
+			FiveStars,
+			FourStars,
+			ThreeStars,
+			TwoStars,
+			OneStar,
 		}
 	}
 
