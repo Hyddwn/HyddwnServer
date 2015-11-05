@@ -171,6 +171,10 @@ namespace Aura.Channel.Skills.Life
 
 			creature.Region.AddProp(prop);
 
+			// Training
+			if (skill.Info.Rank == SkillRank.Novice)
+				skill.Train(1); // Use Campfire.
+
 			// Complete
 			Send.SkillComplete(creature, skill.Info.Id, positionId, unkInt1, unkInt2);
 		}
