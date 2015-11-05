@@ -744,7 +744,7 @@ namespace Aura.Channel.Skills.Life
 		/// <returns></returns>
 		private Rating GetRating(int val)
 		{
-			return val >= 95 ? Rating.FiveStars : val >= 75 ? Rating.FourStars : val >= 55 ? Rating.ThreeStars : val >= 35 ? Rating.TwoStars : Rating.OneStar;
+			return val > 95 ? Rating.FiveStars : val > 75 ? Rating.FourStars : val > 55 ? Rating.ThreeStars : val > 35 ? Rating.TwoStars : Rating.OneStar;
 		}
 
 		private struct Judgement
