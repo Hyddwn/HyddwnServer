@@ -90,23 +90,60 @@ public class GlenisScript : NpcScript
 				break;
 
 			case "about_skill":
-				Msg("Ha ha. You've got the look of<br/>someone who can officially use the Cooking skill now.<br/>It makes me happy to know that there's one more person who's going down the same path as I am.<br/>Are you interested in making Assorted Fruits, by any chance?", Button("Of course!", "@fruit01"), Button("I will pass", "@fruit02"));
-				switch (await Select())
+				if (!HasSkill(SkillId.Cooking))
 				{
-					case "@fruit01":
-						Msg("Ah-ha! You certainly have a burning passion for cooking!<br/>Now, calm yourself down,<br/>and pick up the cooking knife and the cooking table.<br/>Make sure you're mixing here.");
-						Msg("First, you have to put the ingredients in.<br/>Apples, strawberries, and berries.<br/>The amount doesn't matter. What's important is the ratio.<br/>Press the 'Use Ingredient' button to determine the ratio.", Image("cook_making01", true));
-						Msg("Now, remember this.<br/>1/3 of strawberries...<br/>1/3 of apples...<br/>1/3 of berries...", Image("cook_making01", true));
-						Msg("When you put in all the ingredients and the ratio bar turns yellow,<br/>press the 'Start' button to start cooking.", Image("cook_making02", true));
-						Msg("You'll have a tasty Assorted Fruits dish.<br/>Ha ha. What do you think?<br/>Make sure you get some ingredients and try it.");
-						Msg("Hmm.<br/>If you want to get more cooking recipes,<br/>stop by Aeira's Bookstore.<br/>There are recipe books there. Sometimes I go there to quickly look through them.");
-						Msg("Don't tell Aeira, though. Ha ha.");
-						break;
+					if (!HasItem(1063)) // Step-By-Step Cooking Skill 101
+					{
+						Msg("Seeing how you are asking about skills at a Restaurant,<br/>are you looking to learn some Cooking skills from me?");
+						Msg("<image name='cooking_glenis01'/>Hahaha. Oh, my.<br/>It makes me feel like you're looking up to me and I'm flattered, but<br/>cooking actually isn't anything special in that it doesn't require a particular teaching process.<br/>It's simply a matter of getting cooking ingredients and mixing them well according to the recipe.");
+						Msg("<image name='cooking_glenis02'/>A recipe is merely a guide,<br/>not an essential like a sewing pattern.<br/>What's really important is the feel for cooking, you know.<br/>You have to figure out the precise combination ratio as you cook and taste the food.");
+						Msg("<image name='cooking_glenis03'/>Oh, the excitement of finding the precise combination and creating a dish...");
+						Msg("Hmm...<br/>You don't really understand unless you experience it yourself, but let's see here...");
+						Msg("If you really want to learn the Cooking skill, I can give you a book.<br/>Would you be interested at all? <button title='Of course!' keyword='@cookbook01' /><button title='Not really' keyword='@cookbook02' />");
 
-					case "@fruit02":
-						Msg("Ha ha. I guess my intention's been revealed...");
-						Msg("I've been craving fruit lately.");
-						break;
+						if (await Select() == "@cookbook01")
+							Msg("Good choice. That book I just gave you is an essential introductory cookbook,<br/>written by Mochail, for anyone who wishes to learn the Cooking skill.<br/>Follow that book step-by-step and you should have no problem picking up the Cooking skill.");
+						else
+							Msg("Ha ha. A thoughtful one, are you?<br/>Are you worried about us going in the red?<br/>Hahaha. Just take it. I won't charge you for it.<br/>This is an introductory cookbook, so read through it carefully.");
+
+						GiveItem(1063); // Step-By-Step Cooking Skill 101
+						Notice(NoticeType.MiddleSystem, "Received Step-By-Step Cooking Skill 101 from Glenis.");
+
+						Msg("<image name='Novice_cook_items'/>By the way... Do you have any cooking tools, <username/>?<br/>To use the Cooking skill, you need to have the proper cooking tools that the recipe calls for.<br/>You will learn lots of different recipes as your skill improves<br/>but, for the time being, you will need to have at least a cooking knife and a cooking table.");
+						Msg("Don't forget.<br/>A cooking knife and a cooking table!<br/>You'll find them at Walter's shop. Hahaha.");
+					}
+					else
+					{
+						Msg("Hmm. You'll have to at least read a book that<br/>teaches you the Cooking skill before talking to me.<br/>");
+					}
+				}
+				else if (!HasSkill(SkillId.Cooking, SkillRank.RF))
+				{
+					Msg("Hmm. You've read the book I gave you, haven't you?");
+					Msg("But cooking is something you learn by actually doing it yourself.");
+					Msg("<image name='Novice_cook_items'/>First, you'll need a cooking knife and a cooking table.<br/>You'll probably find them at Walter's shop.");
+					Msg("Remember. Actually cooking yourself is the best way to learn.");
+				}
+				else
+				{
+					Msg("Ha ha. You've got the look of<br/>someone who can officially use the Cooking skill now.<br/>It makes me happy to know that there's one more person who's going down the same path as I am.<br/>Are you interested in making Assorted Fruits, by any chance?", Button("Of course!", "@fruit01"), Button("I will pass", "@fruit02"));
+					switch (await Select())
+					{
+						case "@fruit01":
+							Msg("Ah-ha! You certainly have a burning passion for cooking!<br/>Now, calm yourself down,<br/>and pick up the cooking knife and the cooking table.<br/>Make sure you're mixing here.");
+							Msg("First, you have to put the ingredients in.<br/>Apples, strawberries, and berries.<br/>The amount doesn't matter. What's important is the ratio.<br/>Press the 'Use Ingredient' button to determine the ratio.", Image("cook_making01", true));
+							Msg("Now, remember this.<br/>1/3 of strawberries...<br/>1/3 of apples...<br/>1/3 of berries...", Image("cook_making01", true));
+							Msg("When you put in all the ingredients and the ratio bar turns yellow,<br/>press the 'Start' button to start cooking.", Image("cook_making02", true));
+							Msg("You'll have a tasty Assorted Fruits dish.<br/>Ha ha. What do you think?<br/>Make sure you get some ingredients and try it.");
+							Msg("Hmm.<br/>If you want to get more cooking recipes,<br/>stop by Aeira's Bookstore.<br/>There are recipe books there. Sometimes I go there to quickly look through them.");
+							Msg("Don't tell Aeira, though. Ha ha.");
+							break;
+
+						case "@fruit02":
+							Msg("Ha ha. I guess my intention's been revealed...");
+							Msg("I've been craving fruit lately.");
+							break;
+					}
 				}
 				break;
 

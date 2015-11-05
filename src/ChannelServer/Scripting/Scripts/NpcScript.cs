@@ -1359,6 +1359,17 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Displays notice.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public void Notice(NoticeType type, string format, params object[] args)
+		{
+			Send.Notice(this.Player, type, format, args);
+		}
+
+		/// <summary>
 		/// Redeems code if found.
 		/// </summary>
 		/// <param name="code"></param>
