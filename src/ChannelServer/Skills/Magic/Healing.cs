@@ -111,8 +111,8 @@ namespace Aura.Channel.Skills.Magic
 			if (creature.RightHand != null && creature.RightHand.HasTag("/healing_wand/"))
 				healAmount += 5;
 
-			// Reduce user's stamina
-			if (target.Life < target.LifeInjured)
+			// Reduce user's stamina if target is the user
+			if (target == creature && target.Life < target.LifeInjured)
 			{
 				creature.Stamina -= healAmount;
 				Send.StatUpdate(creature, StatUpdateType.Private, Stat.Stamina, Stat.Hunger, Stat.StaminaMax);
