@@ -22,6 +22,7 @@ namespace Aura.Data.Database
 		public SkillRank Rank { get; set; }
 		public string Tool { get; set; }
 		public int Durability { get; set; }
+		public int Mana { get; set; }
 		public List<ProductionMaterialData> Materials { get; set; }
 		public Dictionary<SkillRank, int> SuccessRates { get; set; }
 		public int RainBonus { get; set; }
@@ -81,6 +82,7 @@ namespace Aura.Data.Database
 			data.Exp = entry.ReadInt("exp");
 			data.Tool = entry.ReadString("tool", null);
 			data.Durability = entry.ReadInt("durability");
+			data.Mana = entry.ReadInt("mana");
 
 			// Rank
 			var difficultyRank = entry.ReadString("rank");
