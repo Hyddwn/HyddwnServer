@@ -49,6 +49,8 @@ public class CiarSealStoneScript : SealStoneScript
 	public override void OnBreak(Creature creature)
 	{
 		creature.Titles.Enable(10003); // the Ciar Seal Breaker
+		if (!creature.Skills.Has(SkillId.FirstAid, SkillRank.RE))
+			creature.Skills.Give(SkillId.FirstAid, SkillRank.RE);
 	}
 }
 
@@ -72,6 +74,8 @@ public class RabbieSealStoneScript : SealStoneScript
 	public override void OnBreak(Creature creature)
 	{
 		creature.Titles.Enable(10004); // the Rabbie Seal Breaker
+		if (!creature.Skills.Has(SkillId.Windmill, SkillRank.RE))
+			creature.Skills.Give(SkillId.Windmill, SkillRank.RE);
 	}
 }
 
@@ -100,6 +104,8 @@ public class MathSealStoneScript : SealStoneScript
 	public override void OnBreak(Creature creature)
 	{
 		creature.Titles.Enable(10005); // the Math Seal Breaker
+		if (!creature.Skills.Has(SkillId.MusicalKnowledge, SkillRank.RC))
+			creature.Skills.Give(SkillId.MusicalKnowledge, SkillRank.RC);
 	}
 }
 
@@ -228,6 +234,8 @@ public class AbbSealStoneScript : SealStoneScript
 	public override void OnBreak(Creature creature)
 	{
 		creature.Titles.Enable(10068); // the Abb Neagh Seal Breaker
+		if (!creature.Skills.Has(SkillId.Lightningbolt, SkillRank.RC))
+			creature.Skills.Give(SkillId.Lightningbolt, SkillRank.RC);
 	}
 }
 
