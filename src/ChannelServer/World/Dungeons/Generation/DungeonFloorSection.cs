@@ -72,10 +72,13 @@ namespace Aura.Channel.World.Dungeons.Generation
 				0xe76c74, // Red
 				0x654e9f, // Purple
 				0x4fbcee, // Blue
+				0x3e75ba, // Dark Blue
 				0xbfd46c, // Green
+				0x77b75d, // Dark Green
 				0xf7b356, // Orange
 				0xfdf06c, // Yellow
 				0xff76bd, // Pink
+				0xdf67b0, // Maroon
 				0x6df8f3, // Turquoise
 			};
 
@@ -94,7 +97,7 @@ namespace Aura.Channel.World.Dungeons.Generation
 			public uint GetLockColor()
 			{
 				if (_availableColors.Count == 0)
-					// We out of awailable colours, lets return random one
+					// We're out of available colors, let's return a random one.
 					return (uint)RandomProvider.Get().Next(0xFFFFFF);
 
 				return _availableColors.Dequeue();
