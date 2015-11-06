@@ -101,8 +101,21 @@ namespace Aura.Channel.Skills.Base
 				materials.Add(new ProductionMaterial(item, amount));
 			}
 
+			// Get product data
+			var potentialProducts = AuraData.ProductionDb.Find(category, productId);
+			if (potentialProducts.Length == 0)
+			{
+				Send.ServerMessage(creature, "Unknown product.");
+				return false;
+			}
+			var productData = potentialProducts[0];
+
 			// Check prop
 			if (!this.CheckProp(creature, propEntityId))
+				return false;
+
+			// Check mana
+			if (!this.CheckMana(creature, productData))
 				return false;
 
 			// Give skills the ability to use motions and other things.
@@ -185,6 +198,16 @@ namespace Aura.Channel.Skills.Base
 
 			// Get reference product for checks and mats
 			var productData = potentialProducts[0];
+
+			// Check mana
+			if (!this.CheckMana(creature, productData))
+				goto L_Fail;
+
+			if (productData.Mana > 0)
+			{
+				creature.Mana -= productData.Mana;
+				Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana);
+			}
 
 			// Check tool
 			// Sanity check, the client should be handling this.
@@ -357,6 +380,25 @@ namespace Aura.Channel.Skills.Base
 		/// <returns></returns>
 		protected virtual bool CheckProp(Creature creature, long propEntityId)
 		{
+			return true;
+		}
+
+		/// <summary>
+		/// Checks if creature has enough mana to produce product,
+		/// returns false if not. Handles notices.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="productData"></param>
+		/// <returns></returns>
+		private bool CheckMana(Creature creature, ProductionData productData)
+		{
+			// Sanity check, client checks this as well.
+			if (creature.Mana < productData.Mana)
+			{
+				Send.Notice(creature, Localization.Get("You do not have enough MP to make that many at once."));
+				return false;
+			}
+
 			return true;
 		}
 
