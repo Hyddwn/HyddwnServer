@@ -24,6 +24,11 @@ namespace Aura.Channel.Skills.Base
 	public abstract class MagicBolt : IPreparable, IReadyable, ICombatSkill, ICompletable, ICancelable, IInitiableSkillHandler, ICustomHitCanceler
 	{
 		/// <summary>
+		/// Minimum stability required to not get knocked down.
+		/// </summary>
+		private const float MinStability = 10;
+
+		/// <summary>
 		/// Stun time of attacker after use in ms.
 		/// </summary>
 		protected virtual short AttackerStun { get { return 500; } }
@@ -225,12 +230,11 @@ namespace Aura.Channel.Skills.Base
 				// If knocked down, instant recovery,
 				// if repeat hit, knock down,
 				// otherwise potential knock back.
-
 				if (target.IsKnockedDown)
 				{
 					tAction.Stun = 0;
 				}
-				else if (target.IsUnstable)
+				else if (target.Stability < MinStability)
 				{
 					tAction.Set(TargetOptions.KnockDown);
 				}
