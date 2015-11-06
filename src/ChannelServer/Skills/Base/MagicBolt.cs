@@ -26,7 +26,7 @@ namespace Aura.Channel.Skills.Base
 		/// <summary>
 		/// Minimum stability required to not get knocked down.
 		/// </summary>
-		private const float MinStability = 10;
+		private const float MinStability = 20;
 
 		/// <summary>
 		/// Stun time of attacker after use in ms.
