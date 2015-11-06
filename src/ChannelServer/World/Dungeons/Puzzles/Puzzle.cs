@@ -189,15 +189,9 @@ namespace Aura.Channel.World.Dungeons.Puzzles
 
 			Item key;
 			if (place.IsBossLock)
-			{
-				key = Item.CreateKey(70030, doorName); // Boss Room Key
-				key.Info.Color1 = 0xFF0000; // Red
-			}
+				key = Item.CreateKey(70030, 0xFF0000, doorName); // Boss Room Key
 			else
-			{
-				key = Item.CreateKey(70029, doorName); // Dungeon Room Key
-				key.Info.Color1 = place.LockColor;
-			}
+				key = Item.CreateKey(70029, place.LockColor, doorName); // Dungeon Room Key
 
 			place.LockPlace(key);
 			this.Keys[keyName] = key;

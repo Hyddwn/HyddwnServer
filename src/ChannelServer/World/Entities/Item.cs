@@ -411,6 +411,25 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Creates a key with a specific color.
+		/// </summary>
+		/// <param name="itemId">Id of the key, e.g. 70028 for Treasure Chest Key.</param>
+		/// <param name="color">Color of the key.</param>
+		/// <param name="lockName">Name of the lock this key is for.</param>
+		/// <param name="ownerEntityId">The entity id of the person who can use this key, set to 0 to ignore.</param>
+		/// <returns></returns>
+		public static Item CreateKey(int itemId, uint color, string lockName, long ownerEntityId = 0)
+		{
+			var item = new Item(itemId);
+			item.Info.Color1 = color;
+			item.MetaData1.SetString("prop_to_unlock", lockName);
+			if (ownerEntityId != 0)
+				item.MetaData1.SetLong("AIEXCLR", ownerEntityId);
+
+			return item;
+		}
+
+		/// <summary>
 		/// Returns new check with the given amount.
 		/// </summary>
 		/// <param name="amount"></param>
