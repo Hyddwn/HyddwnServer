@@ -99,7 +99,8 @@ namespace Aura.Channel.Skills.Magic
 					target.Aggro(attacker);
 
 				// Death/Knockback
-				this.HandleKnockBack(attacker, target, tAction);
+				var overcharge = (skill.Stacks > targets.Count);
+				this.HandleKnockBack(attacker, target, tAction, overcharge);
 
 				cap.Add(tAction);
 			}

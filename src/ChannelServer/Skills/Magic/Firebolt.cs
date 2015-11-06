@@ -53,7 +53,7 @@ namespace Aura.Channel.Skills.Magic
 		/// <summary>
 		/// Handles knock back/stun/death.
 		/// </summary>
-		protected override void HandleKnockBack(Creature attacker, Creature target, TargetAction tAction)
+		protected override void HandleKnockBack(Creature attacker, Creature target, TargetAction tAction, bool overcharge)
 		{
 			attacker.Shove(target, KnockbackDistance);
 			if (target.IsDead)

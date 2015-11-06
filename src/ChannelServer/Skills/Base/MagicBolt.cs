@@ -202,7 +202,7 @@ namespace Aura.Channel.Skills.Base
 			target.Aggro(attacker);
 
 			// Death/Knockback
-			this.HandleKnockBack(attacker, target, tAction);
+			this.HandleKnockBack(attacker, target, tAction, false);
 
 			// Override stun set by defense
 			aAction.Stun = AttackerStun;
@@ -218,7 +218,11 @@ namespace Aura.Channel.Skills.Base
 		/// <summary>
 		/// Handles knock back/stun/death.
 		/// </summary>
-		protected virtual void HandleKnockBack(Creature attacker, Creature target, TargetAction tAction)
+		/// <param name="attacker"></param>
+		/// <param name="target"></param>
+		/// <param name="tAction"></param>
+		/// <param name="overcharge">If true, the target will be knock back instantly.</param>
+		protected virtual void HandleKnockBack(Creature attacker, Creature target, TargetAction tAction, bool overcharge)
 		{
 			if (target.IsDead)
 			{
@@ -240,7 +244,11 @@ namespace Aura.Channel.Skills.Base
 				}
 				else
 				{
-					target.Stability -= StabilityReduction;
+					if (overcharge)
+						target.Stability = Creature.MinStability;
+					else
+						target.Stability -= StabilityReduction;
+
 					if (target.IsUnstable)
 					{
 						tAction.Set(TargetOptions.KnockBack);
