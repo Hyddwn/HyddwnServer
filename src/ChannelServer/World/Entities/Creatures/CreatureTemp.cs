@@ -61,5 +61,7 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		public List<Ingredient> CookingIngredients;
 		public string CookingMethod;
+
+		public object CounterSyncLock = new object();
 	}
 }
