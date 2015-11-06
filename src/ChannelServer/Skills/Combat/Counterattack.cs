@@ -155,7 +155,7 @@ namespace Aura.Channel.Skills.Combat
 
 			var skill = attacker.Skills.Get(SkillId.Counterattack);
 
-			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, SkillId.Counterattack, target.EntityId);
+			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, target.EntityId);
 			aAction.Options |= AttackerOptions.Result | AttackerOptions.KnockBackHit2;
 
 			var tAction = new TargetAction(CombatActionType.CounteredHit2, target, attacker, target.Skills.IsReady(SkillId.Smash) ? SkillId.Smash : SkillId.CombatMastery);
@@ -210,7 +210,7 @@ namespace Aura.Channel.Skills.Combat
 			{
 				attackerSkill.Train(2); // Successfully counter enemy's attack.
 
-				if (tAction.SkillId == SkillId.Smash)
+				if (tAction.AttackerSkillId == SkillId.Smash)
 					attackerSkill.Train(4); // Counter enemy's special attack.
 
 				if (tAction.Has(TargetOptions.Critical))
@@ -220,7 +220,7 @@ namespace Aura.Channel.Skills.Combat
 			{
 				attackerSkill.Train(1); // Successfully counter enemy's attack.
 
-				if (tAction.SkillId == SkillId.Smash)
+				if (tAction.AttackerSkillId == SkillId.Smash)
 					attackerSkill.Train(2); // Counter enemy's special attack.
 
 				if (tAction.Has(TargetOptions.Critical))

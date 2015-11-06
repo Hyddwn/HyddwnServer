@@ -112,7 +112,7 @@ namespace Aura.Channel.Skills.Combat
 				return CombatSkillResult.Okay;
 
 			// Prepare combat actions
-			var aAction = new AttackerAction(CombatActionType.HardHit, attacker, skill.Info.Id, targetEntityId);
+			var aAction = new AttackerAction(CombatActionType.HardHit, attacker, targetEntityId);
 			aAction.Set(AttackerOptions.Result | AttackerOptions.KnockBackHit2);
 
 			var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
@@ -201,15 +201,15 @@ namespace Aura.Channel.Skills.Combat
 		/// <summary>
 		/// Training, called when someone attacks something.
 		/// </summary>
-		/// <param name="action"></param>
-		public void OnCreatureAttackedByPlayer(TargetAction action)
+		/// <param name="tAction"></param>
+		public void OnCreatureAttackedByPlayer(TargetAction tAction)
 		{
 			// Only train if used skill was Smash
-			if (action.SkillId != SkillId.Smash)
+			if (tAction.AttackerSkillId != SkillId.Smash)
 				return;
 
 			// Get skill
-			var attackerSkill = action.Attacker.Skills.Get(SkillId.Smash);
+			var attackerSkill = tAction.Attacker.Skills.Get(SkillId.Smash);
 			if (attackerSkill == null) return; // Should be impossible.
 
 			// Learning by attacking
@@ -218,8 +218,8 @@ namespace Aura.Channel.Skills.Combat
 				case SkillRank.RF:
 				case SkillRank.RE:
 					attackerSkill.Train(1); // Use the skill successfully.
-					if (action.Has(TargetOptions.Critical)) attackerSkill.Train(2); // Critical Hit with Smash.
-					if (action.Creature.IsDead) attackerSkill.Train(3); // Finishing blow with Smash.
+					if (tAction.Has(TargetOptions.Critical)) attackerSkill.Train(2); // Critical Hit with Smash.
+					if (tAction.Creature.IsDead) attackerSkill.Train(3); // Finishing blow with Smash.
 					break;
 
 				case SkillRank.RD:
@@ -229,7 +229,7 @@ namespace Aura.Channel.Skills.Combat
 				case SkillRank.R9:
 				case SkillRank.R8:
 				case SkillRank.R7:
-					if (action.Has(TargetOptions.Critical) && action.Creature.IsDead)
+					if (tAction.Has(TargetOptions.Critical) && tAction.Creature.IsDead)
 						attackerSkill.Train(4); // Finishing blow with Critical Hit.
 					goto case SkillRank.RF;
 
@@ -239,9 +239,9 @@ namespace Aura.Channel.Skills.Combat
 				case SkillRank.R3:
 				case SkillRank.R2:
 				case SkillRank.R1:
-					if (action.Has(TargetOptions.Critical)) attackerSkill.Train(1); // Critical Hit with Smash.
-					if (action.Creature.IsDead) attackerSkill.Train(2); // Finishing blow with Smash.
-					if (action.Has(TargetOptions.Critical) && action.Creature.IsDead) attackerSkill.Train(3); // Finishing blow with Critical Hit.
+					if (tAction.Has(TargetOptions.Critical)) attackerSkill.Train(1); // Critical Hit with Smash.
+					if (tAction.Creature.IsDead) attackerSkill.Train(2); // Finishing blow with Smash.
+					if (tAction.Has(TargetOptions.Critical) && tAction.Creature.IsDead) attackerSkill.Train(3); // Finishing blow with Critical Hit.
 					break;
 			}
 		}

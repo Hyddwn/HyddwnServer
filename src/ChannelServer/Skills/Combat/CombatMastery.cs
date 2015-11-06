@@ -77,7 +77,7 @@ namespace Aura.Channel.Skills.Combat
 				var weapon = (i == 1 ? rightWeapon : leftWeapon);
 				var weaponIsKnuckle = (weapon != null && weapon.Data.HasTag("/knuckle/"));
 
-				var aAction = new AttackerAction(CombatActionType.Attacker, attacker, skill.Info.Id, targetEntityId);
+				var aAction = new AttackerAction(CombatActionType.Attacker, attacker, targetEntityId);
 				aAction.Set(AttackerOptions.Result);
 
 				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);

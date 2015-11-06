@@ -176,7 +176,7 @@ namespace Aura.Channel.Skills.Combat
 				cap.PrevId = prevId;
 				prevId = cap.Id;
 
-				var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, skill.Info.Id, targetEntityId);
+				var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, targetEntityId);
 				aAction.Set(AttackerOptions.Result);
 				aAction.Stun = attackerStun;
 				cap.Add(aAction);

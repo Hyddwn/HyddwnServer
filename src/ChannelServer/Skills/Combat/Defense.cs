@@ -119,7 +119,6 @@ namespace Aura.Channel.Skills.Combat
 
 			// Update actions
 			tAction.Flags = CombatActionType.Defended;
-			tAction.SkillId = SkillId.Defense;
 			tAction.Stun = DefenseTargetStun;
 			aAction.Stun = DefenseAttackerStun;
 
@@ -176,7 +175,7 @@ namespace Aura.Channel.Skills.Combat
 		public void OnCreatureAttack(TargetAction tAction)
 		{
 			// We're only interested in hits on creatures using Defense
-			if (!tAction.Creature.Skills.IsReady(SkillId.Defense))
+			if (tAction.SkillId != SkillId.Defense)
 				return;
 
 			// Did the target successfully defend itself?

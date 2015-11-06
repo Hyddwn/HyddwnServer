@@ -125,7 +125,7 @@ namespace Aura.Channel.Skills.Combat
 			// Create actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, skill.Info.Id, targetAreaId);
+			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetAreaId);
 			aAction.Set(AttackerOptions.Result);
 			aAction.Stun = CombatMastery.GetAttackerStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
 
@@ -263,7 +263,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="obj"></param>
 		private void OnCreatureAttack(TargetAction tAction)
 		{
-			if (tAction.SkillId != SkillId.Windmill)
+			if (tAction.AttackerSkillId != SkillId.Windmill)
 				return;
 
 			var attackerSkill = tAction.Attacker.Skills.Get(SkillId.Windmill);

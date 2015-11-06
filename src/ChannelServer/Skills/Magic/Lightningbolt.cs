@@ -59,7 +59,7 @@ namespace Aura.Channel.Skills.Magic
 		protected override void UseSkillOnTarget(Creature attacker, Skill skill, Creature mainTarget)
 		{
 			// Create actions
-			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, skill.Info.Id, mainTarget.EntityId);
+			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, mainTarget.EntityId);
 			aAction.Set(AttackerOptions.Result);
 
 			var cap = new CombatActionPack(attacker, skill.Info.Id, aAction);

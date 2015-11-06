@@ -135,7 +135,7 @@ namespace Aura.Channel.Skills.Combat
 			// Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, skill.Info.Id, targetEntityId);
+			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, targetEntityId);
 			aAction.Set(AttackerOptions.Result);
 			aAction.Stun = AttackerStun;
 			cap.Add(aAction);
@@ -234,10 +234,10 @@ namespace Aura.Channel.Skills.Combat
 		/// <summary>
 		/// Handles the majority of the skill training.
 		/// </summary>
-		/// <param name="obj"></param>
+		/// <param name="tAction"></param>
 		private void OnCreatureAttacks(TargetAction tAction)
 		{
-			if (tAction.SkillId != SkillId.MagnumShot)
+			if (tAction.AttackerSkillId != SkillId.MagnumShot)
 				return;
 
 			var attackerSkill = tAction.Attacker.Skills.Get(SkillId.MagnumShot);

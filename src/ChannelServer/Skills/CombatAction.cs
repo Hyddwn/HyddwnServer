@@ -354,15 +354,17 @@ namespace Aura.Channel.Skills
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="creature"></param>
-		/// <param name="skillId"></param>
+		/// 
 		/// <param name="targetId"></param>
-		public AttackerAction(CombatActionType type, Creature creature, SkillId skillId, long targetId)
+		public AttackerAction(CombatActionType type, Creature creature, long targetId)
 		{
 			this.Flags = type;
 			this.Creature = creature;
-			this.SkillId = skillId;
 			this.TargetId = targetId;
 			this.WeaponParameterType = 1;
+
+			var active = creature.Skills.ActiveSkill;
+			this.SkillId = (active == null ? SkillId.CombatMastery : active.Info.Id);
 		}
 
 		/// <summary>
@@ -429,10 +431,6 @@ namespace Aura.Channel.Skills
 		/// <summary>
 		/// Skill used by the attacker
 		/// </summary>
-		/// <remarks>
-		/// SkillId might be changed during skill handling (e.g. because of
-		/// Defense). In that case we need a "backup".
-		/// </remarks>
 		public SkillId AttackerSkillId { get; set; }
 
 		/// <summary>
@@ -455,14 +453,16 @@ namespace Aura.Channel.Skills
 		/// <param name="type"></param>
 		/// <param name="creature"></param>
 		/// <param name="attacker"></param>
-		/// <param name="skillId"></param>
-		public TargetAction(CombatActionType type, Creature creature, Creature attacker, SkillId skillId)
+		/// <param name="attackerSkillId"></param>
+		public TargetAction(CombatActionType type, Creature creature, Creature attacker, SkillId attackerSkillId)
 		{
 			this.Flags = type;
 			this.Creature = creature;
 			this.Attacker = attacker;
-			this.SkillId = skillId;
-			this.AttackerSkillId = skillId;
+			this.AttackerSkillId = attackerSkillId;
+
+			var active = creature.Skills.ActiveSkill;
+			this.SkillId = (active == null ? SkillId.CombatMastery : active.Info.Id);
 		}
 
 		/// <summary>

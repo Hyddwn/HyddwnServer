@@ -173,7 +173,7 @@ namespace Aura.Channel.Skills.Base
 			target.StopMove();
 
 			// Create actions
-			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, skill.Info.Id, target.EntityId);
+			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, target.EntityId);
 			aAction.Set(AttackerOptions.Result);
 
 			var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
@@ -286,10 +286,10 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="tAction"></param>
 		protected virtual void OnCreatureAttack(TargetAction tAction)
 		{
-			if (tAction.SkillId != this.SkillId)
+			if (tAction.AttackerSkillId != this.SkillId)
 				return;
 
-			var attackerSkill = tAction.Attacker.Skills.Get(tAction.SkillId);
+			var attackerSkill = tAction.Attacker.Skills.Get(tAction.AttackerSkillId);
 			if (attackerSkill == null) return;
 
 			this.Train(tAction, attackerSkill);

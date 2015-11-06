@@ -100,7 +100,7 @@ namespace Aura.Channel.Skills.Combat
 			// Create actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-			var aAction = new AttackerAction(CombatActionType.Attacker, attacker, skill.Info.Id, targetAreaId);
+			var aAction = new AttackerAction(CombatActionType.Attacker, attacker, targetAreaId);
 			aAction.Set(AttackerOptions.Result);
 			aAction.Stun = AttackerStun;
 
