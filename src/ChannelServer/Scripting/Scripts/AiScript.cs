@@ -351,6 +351,7 @@ namespace Aura.Channel.Scripting.Scripts
 			// Reset on...
 			if (this.Creature.Target.IsDead																 // target dead
 			|| !this.Creature.GetPosition().InRange(this.Creature.Target.GetPosition(), _aggroMaxRadius) // out of aggro range
+			|| this.Creature.Target.Warping																 // target is warping
 			|| this.Creature.Target.Client.State == ClientState.Dead									 // target disconnected
 			|| (_state != AiState.Aggro && this.Creature.Target.Conditions.Has(ConditionsA.Invisible))	 // target hid before reaching aggro state
 			)
