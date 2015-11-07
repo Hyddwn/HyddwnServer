@@ -178,6 +178,7 @@ namespace Aura.Channel.World.Dungeons
 			// Create lobby
 			var lobbyRegionId = ChannelServer.Instance.World.DungeonManager.GetRegionId();
 			var lobbyRegion = new DungeonLobbyRegion(lobbyRegionId, this.Data.LobbyRegionId, this);
+			lobbyRegion.PlayerEnters += this.OnPlayerEntersLobby;
 			this.Regions.Add(lobbyRegion);
 
 			// Create floors
@@ -384,7 +385,7 @@ namespace Aura.Channel.World.Dungeons
 			saveStatue.Info.Color3 = floorData.Color3;
 			saveStatue.Behavior = (cr, pr) =>
 			{
-				cr.DungeonSaveLocation = new Location(cr.RegionId, cr.GetPosition());
+				cr.DungeonSaveLocation = cr.GetLocation();
 				Send.Notice(cr, Localization.Get("You have memorized this location."));
 			};
 			region.AddProp(saveStatue);
@@ -717,6 +718,18 @@ namespace Aura.Channel.World.Dungeons
 		public void PlayCutscene(string cutsceneName)
 		{
 			Cutscene.Play(cutsceneName, this.PartyLeader);
+		}
+
+		/// <summary>
+		/// Called when a creature enters the lobby region.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void OnPlayerEntersLobby(Creature creature)
+		{
+			// Save location
+			// This happens whenever you enter the lobby.
+			creature.DungeonSaveLocation = creature.GetLocation();
+			Send.Notice(creature, Localization.Get("You have memorized this location."));
 		}
 	}
 }

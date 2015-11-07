@@ -78,6 +78,16 @@ namespace Aura.Channel.World
 		public VariableManager Properties { get; private set; }
 
 		/// <summary>
+		/// Raised when a player gets added to the region.
+		/// </summary>
+		public event Action<Creature> PlayerEnters;
+
+		/// <summary>
+		/// Raised when a player is removed from the region.
+		/// </summary>
+		public event Action<Creature> PlayerLeaves;
+
+		/// <summary>
 		/// Initializes class.
 		/// </summary>
 		/// <param name="regionId"></param>
@@ -471,7 +481,10 @@ namespace Aura.Channel.World
 			//	Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
 
 			if (creature.IsPlayer)
+			{
 				ChannelServer.Instance.Events.OnPlayerEntersRegion(creature);
+				this.PlayerEnters.Raise(creature);
+			}
 		}
 
 		/// <summary>
@@ -492,7 +505,11 @@ namespace Aura.Channel.World
 			// TODO: Technically not required? Handled by LookAround.
 			Send.EntityDisappears(creature);
 
-			ChannelServer.Instance.Events.OnPlayerLeavesRegion(creature);
+			if (creature.IsPlayer)
+			{
+				ChannelServer.Instance.Events.OnPlayerLeavesRegion(creature);
+				this.PlayerLeaves.Raise(creature);
+			}
 
 			// Update visible entities before leaving the region, so the client
 			// gets and up-to-date list.
@@ -505,9 +522,6 @@ namespace Aura.Channel.World
 			if (creature.Client.Controlling == creature)
 				lock (_clients)
 					_clients.Remove(creature.Client);
-
-			//if (creature.EntityId < MabiId.Npcs)
-			//	Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
 		}
 
 		/// <summary>
