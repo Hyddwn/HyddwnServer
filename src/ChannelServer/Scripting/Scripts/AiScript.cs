@@ -291,10 +291,10 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		private void SelectState()
 		{
-			var potentialTargets = this.Creature.Region.GetVisibleCreaturesInRange(this.Creature, _aggroRadius);
+			var potentialTargets = this.Creature.Region.GetVisibleCreaturesInRange(this.Creature, _aggroRadius).Where(c => !c.Warping);
 
 			// Stay in idle if there's no visible creature in aggro range
-			if (potentialTargets.Count == 0 && this.Creature.Target == null)
+			if (!potentialTargets.Any() && this.Creature.Target == null)
 			{
 				if (_state != AiState.Idle)
 					this.Reset();
@@ -351,6 +351,7 @@ namespace Aura.Channel.Scripting.Scripts
 			// Reset on...
 			if (this.Creature.Target.IsDead																 // target dead
 			|| !this.Creature.GetPosition().InRange(this.Creature.Target.GetPosition(), _aggroMaxRadius) // out of aggro range
+			|| this.Creature.Target.Warping																 // target is warping
 			|| this.Creature.Target.Client.State == ClientState.Dead									 // target disconnected
 			|| (_state != AiState.Aggro && this.Creature.Target.Conditions.Has(ConditionsA.Invisible))	 // target hid before reaching aggro state
 			)
