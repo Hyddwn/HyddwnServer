@@ -291,10 +291,10 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		private void SelectState()
 		{
-			var potentialTargets = this.Creature.Region.GetVisibleCreaturesInRange(this.Creature, _aggroRadius);
+			var potentialTargets = this.Creature.Region.GetVisibleCreaturesInRange(this.Creature, _aggroRadius).Where(c => !c.Warping);
 
 			// Stay in idle if there's no visible creature in aggro range
-			if (potentialTargets.Count == 0 && this.Creature.Target == null)
+			if (!potentialTargets.Any() && this.Creature.Target == null)
 			{
 				if (_state != AiState.Idle)
 					this.Reset();
