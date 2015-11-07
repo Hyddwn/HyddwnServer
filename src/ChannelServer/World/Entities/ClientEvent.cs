@@ -63,6 +63,12 @@ namespace Aura.Channel.World.Entities
 				this.Shapes.Add(shape.GetPoints(0, 0, 0));
 		}
 
+		/// <summary>
+		/// Returns true if the given position is inside the event rectangle.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
 		public bool IsInside(int x, int y)
 		{
 			if (this.Shapes.Count == 0)
@@ -84,6 +90,16 @@ namespace Aura.Channel.World.Entities
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Returns true if the given position is inside the event rectangle.
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <returns></returns>
+		public bool IsInside(Position pos)
+		{
+			return this.IsInside(pos.X, pos.Y);
 		}
 	}
 }

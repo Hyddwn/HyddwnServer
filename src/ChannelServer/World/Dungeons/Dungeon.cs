@@ -149,15 +149,11 @@ namespace Aura.Channel.World.Dungeons
 			this.FloorPlan = floorPlan;
 			this.Options = XElement.Parse("<option />");
 
-			this.Party = new List<Creature>(); // = creature.Party; || = party;
-			this.Party.Add(creature);
+			this.Party = new List<Creature>();
 			this.PartyLeader = creature;
 
-			if (creature.IsInParty)
-			{
-				// Only creatures who actually ENTER the dungeon at creation are considered "dungeon founders".
-				this.Party.AddRange(creature.Party.OnAltar());
-			}
+			// Only creatures who actually ENTER the dungeon at creation are considered "dungeon founders".
+			this.Party.AddRange(creature.Party.GetCreaturesOnAltar(creature.RegionId));
 
 			// Get script
 			this.Script = ChannelServer.Instance.ScriptManager.DungeonScripts.Get(this.Name);

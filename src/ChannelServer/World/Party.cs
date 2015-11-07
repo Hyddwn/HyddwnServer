@@ -537,24 +537,31 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns a list of all creatures on the altar in the same region as the leader.
+		/// Returns a list of all members standing on the altar in the given region.
 		/// </summary>
+		/// <remarks>
+		/// This and other functions assume that there's only ever one altar
+		/// per region. Should this change at any point, these functions have
+		/// to be fixed.
+		/// </remarks>
+		/// <param name="regionId"></param>
 		/// <returns></returns>
-		public List<Creature> OnAltar()
+		public List<Creature> GetCreaturesOnAltar(int regionId)
 		{
 			var result = new List<Creature>();
 
 			lock (_sync)
 			{
-				foreach (var member in _members.Where(a => a != this.Leader && a.RegionId == this.Leader.RegionId))
+				foreach (var member in _members.Where(a => a.RegionId == regionId))
 				{
 					var pos = member.GetPosition();
 					var clientEvent = member.Region.GetClientEvent(a => a.Data.IsAltar);
 
-					if (clientEvent.IsInside(pos.X, pos.Y))
+					if (clientEvent.IsInside(pos))
 						result.Add(member);
 				}
 			}
+
 			return result;
 		}
 

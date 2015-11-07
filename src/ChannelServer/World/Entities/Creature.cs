@@ -751,6 +751,10 @@ namespace Aura.Channel.World.Entities
 		// Parties
 		// ------------------------------------------------------------------
 
+		/// <summary>
+		/// The party the creature is a part of. If creature is not in a party,
+		/// a dummy party is created, consisting of only the creature.
+		/// </summary>
 		public Party Party { get; set; }
 
 		/// <summary>
@@ -758,6 +762,9 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public int PartyPosition { get; set; }
 
+		/// <summary>
+		/// Returns true if creature is in an actual party.
+		/// </summary>
 		public bool IsInParty { get { return this.Party.Id != 0; } }
 
 		// ------------------------------------------------------------------

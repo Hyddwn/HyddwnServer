@@ -296,14 +296,15 @@ namespace Aura.Channel.World.Dungeons
 					var dungeon = this.CreateDungeon(dungeonName, itemId, creature);
 					var regionId = dungeon.Regions.First().Id;
 
-					// Original creature is always a member of the dungeon party.
-					foreach (var member in dungeon.Party)
+					// Warp the party currently standing on the altar into the dungeon.
+					var party = creature.Party.GetCreaturesOnAltar(creature.RegionId);
+					foreach (var member in party)
 					{
 						var pos = member.GetPosition();
 						member.Warp(regionId, pos);
 
 						// TODO: This is a bit hacky, needs to be moved to Creature.Warp, with an appropriate check.
-						Send.EntitiesDisappear(member.Client, dungeon.Party);
+						Send.EntitiesDisappear(member.Client, party);
 					}
 
 					return true;
