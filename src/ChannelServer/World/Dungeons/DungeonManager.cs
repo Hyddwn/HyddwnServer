@@ -125,7 +125,7 @@ namespace Aura.Channel.World.Dungeons
 				{
 					// Random floor plan on Tuesday
 					var day = ErinnTime.Now.Day;
-					var floorPlan = (day == 2 ? rnd.Next() : day);
+					var floorPlan = (day == 2 || ChannelServer.Instance.Conf.World.RandomFloors ? rnd.Next() : day);
 
 					instanceId = this.GetInstanceId();
 					dungeon = new Dungeon(instanceId, dungeonName, itemId, rnd.Next(), floorPlan, creature);
