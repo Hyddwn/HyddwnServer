@@ -730,6 +730,10 @@ namespace Aura.Channel.World.Dungeons
 			// This happens whenever you enter the lobby.
 			creature.DungeonSaveLocation = creature.GetLocation();
 			Send.Notice(creature, Localization.Get("You have memorized this location."));
+
+			// Notify player if dungeon was created by another party.
+			if (!this.Party.Contains(creature))
+				Send.MsgBox(creature, Localization.Get("This dungeon has been created by another player."));
 		}
 	}
 }
