@@ -123,8 +123,12 @@ namespace Aura.Channel.World.Dungeons
 				var existing = this.Get(a => a.Name == dungeonName && a.ItemId == itemId);
 				if (existing == null || ChannelServer.Instance.Conf.World.PrivateDungeons)
 				{
+					// Random floor plan on Tuesday
+					var day = ErinnTime.Now.Day;
+					var floorPlan = (day == 2 ? rnd.Next() : day);
+
 					instanceId = this.GetInstanceId();
-					dungeon = new Dungeon(instanceId, dungeonName, itemId, rnd.Next(), rnd.Next(), creature);
+					dungeon = new Dungeon(instanceId, dungeonName, itemId, rnd.Next(), floorPlan, creature);
 				}
 				else
 					dungeon = existing;
