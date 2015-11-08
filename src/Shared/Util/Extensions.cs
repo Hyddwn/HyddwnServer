@@ -110,6 +110,7 @@ namespace Aura.Shared.Util
 		/// If a chunk would break in a word, the function backtracks to
 		/// the previous splitter char, if there is one.
 		/// 
+		/// Splitters are defined by the localization files. In English:
 		/// Splitter chars are hyphens and spaces. Spaces are stripped from the
 		/// end of chunks while hyphens are not.
 		/// </summary>
@@ -117,7 +118,7 @@ namespace Aura.Shared.Util
 		/// <param name="maxChunkLength"></param>
 		public static IEnumerable<string> Chunkify(this string str, int maxChunkLength)
 		{
-			return str.Chunkify(maxChunkLength, " ".ToCharArray(), "-".ToCharArray());
+			return str.Chunkify(maxChunkLength, Localization.Get(" ").ToCharArray(), Localization.Get("-").ToCharArray());
 		}
 
 		/// <summary>
