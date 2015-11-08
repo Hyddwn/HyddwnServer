@@ -41,15 +41,21 @@ namespace Aura.Channel.Network.Sending
 		public static void System_Broadcast(string from, string format, params object[] args)
 		{
 			var packet = new Packet(Op.Chat, MabiId.Broadcast);
-			packet.PutByte(0);
-			packet.PutString("<{0}>", from);
-			packet.PutString(format, args);
-			packet.PutByte(true);
-			packet.PutUInt(0xFFFF8080);
-			packet.PutInt(0);
-			packet.PutByte(0);
 
-			ChannelServer.Instance.World.Broadcast(packet);
+			foreach (var msg in string.Format(format, args).Chunkify(100)) // Mabi displays up to 100 chars
+			{
+				packet.PutByte(0);
+				packet.PutString("<{0}>", from);
+				packet.PutString(msg);
+				packet.PutByte(true);
+				packet.PutUInt(0xFFFF8080);
+				packet.PutInt(0);
+				packet.PutByte(0);
+
+				ChannelServer.Instance.World.Broadcast(packet);
+
+				packet.Clear(packet.Op, packet.Id);
+			}
 		}
 
 		/// <summary>
@@ -73,15 +79,21 @@ namespace Aura.Channel.Network.Sending
 		private static void SystemMessage(Creature creature, string from, string format, params object[] args)
 		{
 			var packet = new Packet(Op.Chat, creature.EntityId);
-			packet.PutByte(0);
-			packet.PutString(from);
-			packet.PutString(format, args);
-			packet.PutByte(true);
-			packet.PutUInt(0xFFFF8080);
-			packet.PutInt(0);
-			packet.PutByte(0);
 
-			creature.Client.Send(packet);
+			foreach (var msg in string.Format(format, args).Chunkify(100)) // Mabi displays up to 100 chars
+			{
+				packet.PutByte(0);
+				packet.PutString(from);
+				packet.PutString(msg);
+				packet.PutByte(true);
+				packet.PutUInt(0xFFFF8080);
+				packet.PutInt(0);
+				packet.PutByte(0);
+
+				creature.Client.Send(packet);
+
+				packet.Clear(packet.Op, packet.Id);
+			}
 		}
 
 		/// <summary>

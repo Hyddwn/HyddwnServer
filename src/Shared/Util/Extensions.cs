@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 
 namespace Aura.Shared.Util
 {
@@ -99,6 +101,75 @@ namespace Aura.Shared.Util
 		public static string ToInvariant(this double f, string format = "g")
 		{
 			return f.ToString(format, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		/// Breaks the specified string into chunks no longer than the
+		/// given maximum length. This can be used for word wrapping purposes.
+		/// 
+		/// If a chunk would break in a word, the function backtracks to
+		/// the previous splitter char, if there is one.
+		/// 
+		/// Splitters are defined by the localization files. In English:
+		/// Splitter chars are hyphens and spaces. Spaces are stripped from the
+		/// end of chunks while hyphens are not.
+		/// </summary>
+		/// <param name="str"></param>
+		/// <param name="maxChunkLength"></param>
+		public static IEnumerable<string> Chunkify(this string str, int maxChunkLength)
+		{
+			return str.Chunkify(maxChunkLength, Localization.Get(" ").ToCharArray(), Localization.Get("-").ToCharArray());
+		}
+
+		/// <summary>
+		/// Breaks the specified string into chunks no longer than the
+		/// given maximum length. This can be used for word wrapping purposes.
+		/// 
+		/// If a chunk would break in a word, the function backtracks to
+		/// the previous splitter char, if there is one.
+		/// 
+		/// Splitters in removedSplitters are stripped from the ends of chunks,
+		/// while splitters in kepSplitters are not.
+		/// </summary>
+		/// <param name="str"></param>
+		/// <param name="maxChunkLength"></param>
+		/// <param name="removedSplitters"></param>
+		/// <param name="keptSplitters"></param>
+		/// <returns></returns>
+		public static IEnumerable<string> Chunkify(this string str, int maxChunkLength, char[] removedSplitters, char[] keptSplitters)
+		{
+			var splitters = removedSplitters.Concat(keptSplitters).ToArray();
+
+			var startIndex = 0;
+
+			while (startIndex < str.Length)
+			{
+				// Calculate the maximum length of this chunk.
+				var maxIndex = Math.Min(startIndex + maxChunkLength, str.Length) - 1;
+
+				// Try to make a chunk this big.
+				var endIndex = maxIndex;
+
+				if (!splitters.Contains(str[endIndex]) && (endIndex != str.Length - 1 && !splitters.Contains(str[endIndex + 1])))
+				{
+					// If the last char in our chunk is part of a word,
+					// Try to find the start of the word
+					endIndex = str.LastIndexOfAny(splitters, maxIndex);
+
+					if (endIndex < startIndex) // We didn't find one in bounds
+						endIndex = maxIndex; // So we have to return to splitting the word
+				}
+
+				// Make our chunk. We'll leave splitters at the start, if they exist.
+				var chunk = str.Substring(startIndex, endIndex - startIndex + 1).TrimEnd(removedSplitters);
+
+				// If we get a chunk that's all removed splitters, don't output it
+				if (chunk.Length != 0)
+					yield return chunk;
+
+				// Start on the next chunk
+				startIndex = endIndex + 1;
+			}
 		}
 	}
 }
