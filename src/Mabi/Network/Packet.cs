@@ -351,6 +351,15 @@ namespace Aura.Mabi.Network
 		}
 
 		/// <summary>
+		/// Reads and returns ulong from buffer.
+		/// </summary>
+		/// <returns></returns>
+		public ulong GetULong()
+		{
+			return (ulong)this.GetLong();
+		}
+
+		/// <summary>
 		/// Reads long from buffer and returns it as DateTime.
 		/// </summary>
 		/// <returns></returns>
