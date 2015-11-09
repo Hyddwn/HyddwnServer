@@ -45,6 +45,7 @@
     <Compile Include="ErinnTime.cs" />
     <Compile Include="MabiDictionary.cs" />
     <Compile Include="MabiZip.cs" />
+    <Compile Include="Network\Packet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
