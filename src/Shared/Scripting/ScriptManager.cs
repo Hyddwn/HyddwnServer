@@ -89,13 +89,15 @@ namespace Aura.Shared.Scripting
 			// Load scripts
 			var loaded = this.LoadScripts(toLoad);
 
+			Log.Info("  loaded {0} scripts ({1} failed).", loaded, toLoad.Count - loaded);
+
 			// Init scripts
+			Log.Info("Initializing scripts...");
 			this.InitializeScripts();
+			Log.Info("  script initialization complete");
 
 			//if (toLoad.Count > 0)
 			//	Log.WriteLine();
-
-			Log.Info("  done loading {0} scripts (of {1}).", loaded, toLoad.Count);
 		}
 
 		/// <summary>
