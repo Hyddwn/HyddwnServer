@@ -97,7 +97,7 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (!QuestActive(204002))
+				if (!QuestActive(204002) && !QuestCompleted(204002))
 				{
 					//StartQuest(204002); // Quest log: http://pastebin.com/1c9XFc5Y
 					Msg("Skills? I don't know if I can call it a skill, but you can gather eggs from hens.<br/>Some of the less fortunate among the faithful come to the Church seeking the blessings of Lymilark.<br/>To relieve their hunger, we prepare boiled eggs for them.");
@@ -105,14 +105,14 @@ public class EndelyonScript : NpcScript
 				}
 				else
 				{
-					if (HasSkill(SkillId.Tailoring))
-					{
-						Msg("Did you make the clothes you are wearing right now with the Tailoring skill?<br/>If not, I'm sorry. It's just that your clothes are very beautiful.");
-					}
-					else
+					if (!HasSkill(SkillId.Tailoring))
 					{
 						GiveKeyword("skill_tailoring");
 						Msg("I'm sorry, but I don't know much about skills.<br/>The only skill I know is tailoring.<br/>If you want to know more about making clothes,<br/>talk with Caitin at the Grocery Store.<br/>She's the best tailor in town.");
+					}
+					else
+					{
+						Msg("Did you make the clothes you are wearing right now with the Tailoring skill?<br/>If not, I'm sorry. It's just that your clothes are very beautiful.");
 					}
 				}
 				break;
