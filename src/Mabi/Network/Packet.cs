@@ -274,6 +274,8 @@ namespace Aura.Mabi.Network
 			if (this.Peek() != PacketElementType.Byte)
 				throw new Exception("Expected Byte, got " + this.Peek() + ".");
 
+			this.AssertReadable(1 + sizeof(byte));
+
 			_ptr += 1;
 			return _buffer[_ptr++];
 		}
@@ -292,6 +294,8 @@ namespace Aura.Mabi.Network
 		{
 			if (this.Peek() != PacketElementType.Short)
 				throw new Exception("Expected Short, got " + this.Peek() + ".");
+
+			this.AssertReadable(1 + sizeof(short));
 
 			_ptr += 1;
 			var val = IPAddress.HostToNetworkOrder(BitConverter.ToInt16(_buffer, _ptr));
@@ -318,6 +322,8 @@ namespace Aura.Mabi.Network
 			if (this.Peek() != PacketElementType.Int)
 				throw new Exception("Expected Int, got " + this.Peek() + ".");
 
+			this.AssertReadable(1 + sizeof(int));
+
 			_ptr += 1;
 			var val = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(_buffer, _ptr));
 			_ptr += sizeof(int);
@@ -342,6 +348,8 @@ namespace Aura.Mabi.Network
 		{
 			if (this.Peek() != PacketElementType.Long)
 				throw new Exception("Expected Long, got " + this.Peek() + ".");
+
+			this.AssertReadable(1 + sizeof(long));
 
 			_ptr += 1;
 			var val = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(_buffer, _ptr));
@@ -377,9 +385,11 @@ namespace Aura.Mabi.Network
 			if (this.Peek() != PacketElementType.Float)
 				throw new Exception("Expected Float, got " + this.Peek() + ".");
 
+			this.AssertReadable(1 + sizeof(float));
+
 			_ptr += 1;
 			var val = BitConverter.ToSingle(_buffer, _ptr);
-			_ptr += 4;
+			_ptr += sizeof(float);
 
 			return val;
 		}
@@ -393,9 +403,13 @@ namespace Aura.Mabi.Network
 			if (this.Peek() != PacketElementType.String)
 				throw new ArgumentException("Expected String, got " + this.Peek() + ".");
 
+			this.AssertReadable(1 + sizeof(short));
+
 			_ptr += 1;
 			var len = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(_buffer, _ptr));
-			_ptr += 2;
+			_ptr += sizeof(short);
+
+			this.AssertReadable(len);
 
 			var val = Encoding.UTF8.GetString(_buffer, _ptr, len - 1);
 			_ptr += len;
@@ -412,9 +426,13 @@ namespace Aura.Mabi.Network
 			if (this.Peek() != PacketElementType.Bin)
 				throw new ArgumentException("Expected Bin, got " + this.Peek() + ".");
 
+			this.AssertReadable(1 + sizeof(short));
+
 			_ptr += 1;
 			var len = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(_buffer, _ptr));
-			_ptr += 2;
+			_ptr += sizeof(short);
+
+			this.AssertReadable(len);
 
 			var val = new byte[len];
 			Buffer.BlockCopy(_buffer, _ptr, val, 0, len);
@@ -451,6 +469,16 @@ namespace Aura.Mabi.Network
 			}
 
 			return (T)val;
+		}
+
+		/// <summary>
+		/// Throws exception, if buffer doesn't have the given amount of bytes left.
+		/// </summary>
+		/// <param name="byteCount"></param>
+		private void AssertReadable(int byteCount)
+		{
+			if (_ptr + byteCount > _buffer.Length)
+				throw new IndexOutOfRangeException("Buffer doesn't have enough bytes left.");
 		}
 
 		/// <summary>
