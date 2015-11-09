@@ -227,11 +227,19 @@ namespace Aura.Mabi.Network
 
 			var size = Marshal.SizeOf(val);
 			var arr = new byte[size];
-			var ptr = Marshal.AllocHGlobal(size);
 
-			Marshal.StructureToPtr(val, ptr, true);
-			Marshal.Copy(ptr, arr, 0, size);
-			Marshal.FreeHGlobal(ptr);
+			IntPtr ptr = IntPtr.Zero;
+			try
+			{
+				ptr = Marshal.AllocHGlobal(size);
+				Marshal.StructureToPtr(val, ptr, true);
+				Marshal.Copy(ptr, arr, 0, size);
+			}
+			finally
+			{
+				if (ptr != IntPtr.Zero)
+					Marshal.FreeHGlobal(ptr);
+			}
 
 			return this.PutBin(arr);
 		}
@@ -418,11 +426,20 @@ namespace Aura.Mabi.Network
 				throw new Exception("GetObj can only marshal to structs.");
 
 			var buffer = this.GetBin();
+			object val;
 
-			IntPtr intPtr = Marshal.AllocHGlobal(buffer.Length);
-			Marshal.Copy(buffer, 0, intPtr, buffer.Length);
-			var val = Marshal.PtrToStructure(intPtr, typeof(T));
-			Marshal.FreeHGlobal(intPtr);
+			IntPtr intPtr = IntPtr.Zero;
+			try
+			{
+				intPtr = Marshal.AllocHGlobal(buffer.Length);
+				Marshal.Copy(buffer, 0, intPtr, buffer.Length);
+				val = Marshal.PtrToStructure(intPtr, typeof(T));
+			}
+			finally
+			{
+				if (intPtr != IntPtr.Zero)
+					Marshal.FreeHGlobal(intPtr);
+			}
 
 			return (T)val;
 		}
