@@ -122,7 +122,7 @@ namespace Aura.Channel.Skills.Base
 			this.OnUse(creature, skill);
 
 			// Response
-			Send.SkillUse(creature, skill.Info.Id, unkByte, propEntityId, unkInt, productId, unkShort1, category, amountToProduce, materials);
+			Send.Echo(creature, Op.SkillUse, packet);
 			skill.State = SkillState.Used;
 
 			return true;
@@ -342,7 +342,7 @@ namespace Aura.Channel.Skills.Base
 				// Success
 				Send.UseMotion(creature, 14, 0); // Success motion
 				Send.Notice(creature, Localization.Get("{0} created successfully!"), productItem.Data.Name);
-				Send.SkillComplete(creature, skill.Info.Id, unkByte, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
+				Send.Echo(creature, Op.SkillComplete, packet);
 
 				return;
 			}
@@ -350,7 +350,7 @@ namespace Aura.Channel.Skills.Base
 		L_Fail:
 			// Unofficial
 			Send.UseMotion(creature, 14, 3); // Fail motion
-			Send.SkillComplete(creature, skill.Info.Id, unkByte, propEntityId, unkInt, productId, unkShort, category, amountToProduce, materials);
+			Send.Echo(creature, Op.SkillComplete, packet);
 		}
 
 		/// <summary>
