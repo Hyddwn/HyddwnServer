@@ -1237,7 +1237,7 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public int GetEquipmentDefense()
 		{
-			return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2))
+			return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
 				.SelectMany(pocket => pocket.Items.Where(a => a != null))
 				.Sum(item => item.OptionInfo.Defense);
 		}
@@ -1248,7 +1248,7 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public int GetEquipmentProtection()
 		{
-			return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2))
+			return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
 				.SelectMany(pocket => pocket.Items.Where(a => a != null))
 				.Sum(item => item.OptionInfo.Protection);
 		}

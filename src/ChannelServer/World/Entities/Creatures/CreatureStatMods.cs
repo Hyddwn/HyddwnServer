@@ -153,5 +153,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		Skill,
 		SkillRank,
 		Title,
+		Equipment,
 	}
 }
