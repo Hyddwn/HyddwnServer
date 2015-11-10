@@ -132,11 +132,27 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Returns true if tag contains "/pounch/bag/".
+		/// Returns true if tag contains "/pounch/bag/" (item bags).
 		/// </summary>
 		public bool IsBag
 		{
 			get { return this.Data.HasTag("/pouch/bag/"); }
+		}
+
+		/// <summary>
+		/// Returns true if tag contains "/pouch/money/" (gold pouches).
+		/// </summary>
+		public bool IsGoldPouch
+		{
+			get { return this.Data.HasTag("/pouch/money/"); }
+		}
+
+		/// <summary>
+		/// Returns true if tag contains "/sac_item/" (gathering bags, e.g. wool pouch).
+		/// </summary>
+		public bool IsGatheringPouch
+		{
+			get { return this.Data.HasTag("/sac_item/"); }
 		}
 
 		/// <summary>

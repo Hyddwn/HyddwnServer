@@ -238,9 +238,15 @@ namespace Aura.Channel.Skills.Base
 				// Check all selected items for tag matches
 				foreach (var material in materials)
 				{
+					// Check item and stack item for tag, pouches can be put
+					// into the window, reducing the contained items.
+					var match =
+						material.Item.HasTag(reqMat.Tag) ||
+						(material.Item.IsGatheringPouch && material.Item.Data.StackItem != null && material.Item.Data.StackItem.HasTag(reqMat.Tag));
+
 					// Satisfy requirement with item, up to the max amount
 					// needed or available
-					if (material.Item.HasTag(reqMat.Tag))
+					if (match)
 					{
 						// Cancel if one item matches multiple materials.
 						// It's unknown how this would be handled, can it even
