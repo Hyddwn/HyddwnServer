@@ -571,7 +571,7 @@ namespace Aura.Channel.World.Inventory
 
 					// Notify everybout receiving the items in the sac.
 					if (newItem.Data.StackType == StackType.Sac)
-						ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, newItem.Data.StackItem, newItem.Info.Amount);
+						ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, newItem.Data.StackItemId, newItem.Info.Amount);
 				}
 
 				success = (insertSuccess || newItem.Info.Amount == 0);

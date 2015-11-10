@@ -291,7 +291,7 @@ namespace Aura.Channel.Network.Handlers
 				amount = item.Info.Amount;
 
 			// Clone item or create new one based on stack item
-			var splitItem = item.Data.StackItem == 0 ? new Item(item) : new Item(item.Data.StackItem);
+			var splitItem = item.Data.StackItemId == 0 ? new Item(item) : new Item(item.Data.StackItemId);
 			splitItem.Info.Amount = amount;
 
 			// New item on cursor
@@ -304,7 +304,7 @@ namespace Aura.Channel.Network.Handlers
 			// Update amount or remove
 			item.Info.Amount -= amount;
 
-			if (item.Info.Amount > 0 || item.Data.StackItem != 0)
+			if (item.Info.Amount > 0 || item.Data.StackItemId != 0)
 			{
 				Send.ItemAmount(creature, item);
 			}

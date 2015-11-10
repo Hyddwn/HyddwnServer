@@ -333,11 +333,7 @@ namespace Aura.Channel.Network.Handlers
 			if (item.Data.StackType == StackType.Sac)
 			{
 				// Add costs of the items inside the sac
-				var stackItemData = AuraData.ItemDb.Find(item.Data.StackItem);
-				if (stackItemData != null)
-					sellingPrice += (int)((item.Info.Amount / (float)stackItemData.StackMax) * stackItemData.SellingPrice);
-				else
-					Log.Warning("NpcShopSellItem: Missing stack item data for '{0}'.", item.Data.StackItem);
+				sellingPrice += (int)((item.Info.Amount / (float)item.Data.StackItem.StackMax) * item.Data.StackItem.SellingPrice);
 			}
 			else if (item.Data.StackType == StackType.Stackable)
 			{

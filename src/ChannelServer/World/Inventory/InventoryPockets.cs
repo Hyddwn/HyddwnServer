@@ -165,7 +165,7 @@ namespace Aura.Channel.World.Inventory
 
 			if (collidingItem != null && (
 				// Colliding item is sac and new item can fill be put into it
-				(collidingItem.Data.StackType == StackType.Sac && collidingItem.Data.StackItem != 0 && (collidingItem.Data.StackItem == newItem.Info.Id || collidingItem.Data.StackItem == newItem.Data.StackItem)) ||
+				(collidingItem.Data.StackType == StackType.Sac && collidingItem.Data.StackItemId != 0 && (collidingItem.Data.StackItemId == newItem.Info.Id || collidingItem.Data.StackItemId == newItem.Data.StackItemId)) ||
 
 				// Colliding item is a quiver (general arrow sac) that
 				// a regular arrow can be put into.
@@ -340,7 +340,7 @@ namespace Aura.Channel.World.Inventory
 						continue;
 
 					// If same class or item is stack item of inventory item
-					if (item.Info.Id == invItem.Info.Id || invItem.Data.StackItem == item.Info.Id)
+					if (item.Info.Id == invItem.Info.Id || invItem.Data.StackItemId == item.Info.Id)
 					{
 						// If item fits into stack 100%
 						if ((uint)invItem.Info.Amount + (uint)item.Info.Amount <= (uint)invItem.Data.StackMax)
@@ -398,7 +398,7 @@ namespace Aura.Channel.World.Inventory
 					}
 
 					// Sacs/Stackables
-					if (item.Data.StackItem == itemId || (item.Info.Id == itemId && item.Data.StackType == StackType.Stackable))
+					if (item.Data.StackItemId == itemId || (item.Info.Id == itemId && item.Data.StackType == StackType.Stackable))
 					{
 						if (amount >= item.Info.Amount)
 						{
@@ -432,7 +432,7 @@ namespace Aura.Channel.World.Inventory
 
 		public override int CountItem(int itemId)
 		{
-			return _items.Values.Where(item => item.Info.Id == itemId || item.Data.StackItem == itemId)
+			return _items.Values.Where(item => item.Info.Id == itemId || item.Data.StackItemId == itemId)
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 
@@ -531,7 +531,7 @@ namespace Aura.Channel.World.Inventory
 			collidingItem = _item;
 
 			// Handle stackables and sacs
-			if (collidingItem != null && ((collidingItem.Data.StackType == StackType.Sac && (collidingItem.Data.StackItem == newItem.Info.Id || collidingItem.Data.StackItem == newItem.Data.StackItem)) || (newItem.Data.StackType == StackType.Stackable && newItem.Info.Id == collidingItem.Info.Id)))
+			if (collidingItem != null && ((collidingItem.Data.StackType == StackType.Sac && (collidingItem.Data.StackItemId == newItem.Info.Id || collidingItem.Data.StackItemId == newItem.Data.StackItemId)) || (newItem.Data.StackType == StackType.Stackable && newItem.Info.Id == collidingItem.Info.Id)))
 			{
 				if (collidingItem.Info.Amount < collidingItem.Data.StackMax)
 				{
@@ -710,7 +710,7 @@ namespace Aura.Channel.World.Inventory
 
 		public override int CountItem(int itemId)
 		{
-			return _items.Where(item => item.Info.Id == itemId || item.Data.StackItem == itemId)
+			return _items.Where(item => item.Info.Id == itemId || item.Data.StackItemId == itemId)
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 

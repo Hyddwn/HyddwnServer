@@ -33,7 +33,8 @@ namespace Aura.Data.Database
 
 		public StackType StackType { get; set; }
 		public ushort StackMax { get; set; }
-		public int StackItem { get; set; }
+		public int StackItemId { get; set; }
+		public ItemData StackItem { get; set; }
 		public int Price { get; set; }
 		public int SellingPrice { get; set; }
 		public int Durability;
@@ -109,6 +110,16 @@ namespace Aura.Data.Database
 			return this.Entries.FindAll(a => a.Value.Name.ToLower().Contains(name));
 		}
 
+		protected override void AfterLoad()
+		{
+			foreach (var entry in this.Entries.Values.Where(a => a.StackItemId != 0))
+			{
+				entry.StackItem = this.Find(entry.StackItemId);
+				if (entry.StackItem == null)
+					throw new DatabaseErrorException("Stack item not found: " + entry.StackItemId);
+			}
+		}
+
 		protected override void ReadEntry(JObject entry)
 		{
 			entry.AssertNotMissing("id", "name", "originalName", "tags", "type", "width", "height", "price");
@@ -126,7 +137,7 @@ namespace Aura.Data.Database
 			if (info.StackMax < 1)
 				info.StackMax = 1;
 
-			info.StackItem = entry.ReadInt("stackItem");
+			info.StackItemId = entry.ReadInt("stackItem");
 
 			info.Consumed = entry.ReadBool("consumed");
 			info.Width = entry.ReadByte("width");
