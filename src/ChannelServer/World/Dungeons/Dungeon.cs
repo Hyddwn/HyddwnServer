@@ -735,5 +735,27 @@ namespace Aura.Channel.World.Dungeons
 			if (!this.Party.Contains(creature))
 				Send.MsgBox(creature, Localization.Get("This dungeon has been created by another player."));
 		}
+
+		/// <summary>
+		/// Returns true if all doors except the boss door have been opened.
+		/// </summary>
+		/// <returns></returns>
+		public bool CheckDoors()
+		{
+			foreach (var region in this.Regions)
+			{
+				var dungeonFloorRegion = region as DungeonFloorRegion;
+				if (dungeonFloorRegion == null)
+					continue;
+
+				var props = region.GetProps(a => a is Door && a.State == "closed");
+				var max = dungeonFloorRegion.Floor.IsLastFloor ? 1 : 0;
+
+				if (props.Count > max)
+					return false;
+			}
+
+			return true;
+		}
 	}
 }

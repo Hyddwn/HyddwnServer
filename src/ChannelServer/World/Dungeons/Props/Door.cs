@@ -100,6 +100,22 @@ namespace Aura.Channel.World.Dungeons.Props
 			if (_isSwitchDoor)
 				return;
 
+			// Check dungeon doors for boss room doors
+			// TODO: Mixing normal and boss doors like this seems wrong.
+			if (this.DoorType == DungeonBlockType.BossDoor)
+			{
+				var dungeonRegion = this.Region as DungeonRegion;
+				if (dungeonRegion != null)
+				{
+					// Check if all rooms have been cleared
+					if (!dungeonRegion.Dungeon.CheckDoors())
+					{
+						Send.Notice(creature, Localization.Get("Unable to enter the boss room. There must be a closed door somewhere in the dungeon."));
+						return;
+					}
+				}
+			}
+
 			// Check if character has the key
 			if (!this.RemoveKey(creature))
 			{
