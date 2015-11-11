@@ -13,6 +13,7 @@ namespace Aura.Data.Database
 	public class DungeonData
 	{
 		public string Name { get; set; }
+		public string EngName { get; set; }
 		public DungeonStyleData Style { get; set; }
 		public int BaseSeed { get; set; }
 		public int LobbyRegionId { get; set; }
@@ -118,6 +119,7 @@ namespace Aura.Data.Database
 
 			var dungeonData = new DungeonData();
 			dungeonData.Name = entry.ReadString("name").ToLower();
+			dungeonData.EngName = entry.ReadString("engName");
 			dungeonData.BaseSeed = entry.ReadInt("baseSeed");
 			dungeonData.LobbyRegionId = entry.ReadInt("lobby");
 			dungeonData.Exit = entry.ReadString("exit");
