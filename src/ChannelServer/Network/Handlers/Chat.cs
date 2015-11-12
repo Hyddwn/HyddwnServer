@@ -72,5 +72,40 @@ namespace Aura.Channel.Network.Handlers
 			if (creature.IsInParty)
 				Send.PartyChat(creature, msg);
 		}
+
+		/// <summary>
+		/// Sent when whispering someone.
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : test
+		/// 002 [................] String : asd
+		/// </example>
+		[PacketHandler(Op.WhisperChat)]
+		public void WhisperChat(ChannelClient client, Packet packet)
+		{
+			var name = packet.GetString();
+			var message = packet.GetString();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Get target
+			var targetCreature = ChannelServer.Instance.World.GetPlayer(name);
+			if (targetCreature == null)
+			{
+				Send.SystemMessage(creature, Localization.Get("Character not found."));
+				return;
+			}
+
+			// Character limit for players is 100
+			if (message.Length > 100 && creature.Titles.SelectedTitle != TitleId.devCAT)
+			{
+				Log.Warning("WhisperChat: Creature '{0:X16}' tried to send chat message with over 100 characters.");
+				return;
+			}
+
+			// Send message
+			Send.WhisperChat(creature, creature.Name, message);
+			Send.WhisperChat(targetCreature, creature.Name, message);
+		}
 	}
 }

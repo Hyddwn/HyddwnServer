@@ -153,6 +153,21 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends WhisperChat to creature's client, containing whisper message.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="sender"></param>
+		/// <param name="message"></param>
+		public static void WhisperChat(Creature creature, string sender, string message)
+		{
+			var packet = new Packet(Op.WhisperChat, creature.EntityId);
+			packet.PutString(sender);
+			packet.PutString(message);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Broadcasts Chat on entire server, with a blue Party Chat,
 		/// consisting of information about the party.
 		/// </summary>
