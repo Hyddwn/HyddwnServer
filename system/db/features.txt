@@ -260,7 +260,9 @@
 	{ name: "G10S1", enabled: true, children: []},
 	
 	// Season 2
-	{ name: "G10S2", enabled: true, children: []},
+	{ name: "G10S2", enabled: true, children: [
+		{ name: "VisualChat", enabled: true },
+	]},
 	
 	// Season 3
 	{ name: "G10S2", enabled: true, children: []},

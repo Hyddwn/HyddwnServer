@@ -10,6 +10,7 @@ using Aura.Channel.Network.Sending;
 using Aura.Shared.Util;
 using Aura.Mabi.Network;
 using Aura.Mabi.Const;
+using Aura.Data;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -77,7 +78,9 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			Send.VisualChat(creature, url, width, height);
+			// Broadcast, if feature is enabled
+			if (AuraData.FeaturesDb.IsEnabled("VisualChat"))
+				Send.VisualChat(creature, url, width, height);
 		}
 
 		/// <summary>
