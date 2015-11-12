@@ -368,7 +368,7 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 
 			// Show relation values to devCATs for debugging
-			if (this.Player.Titles.SelectedTitle == 60001)
+			if (this.Player.Titles.SelectedTitle == TitleId.devCAT)
 			{
 				msg += "<br/>" + "Favor: " + this.Favor;
 				msg += "<br/>" + "Memory: " + this.Memory;
@@ -1182,7 +1182,7 @@ namespace Aura.Channel.Scripting.Scripts
 		public bool CanDoPtj(PtjType type, int remaining = 99)
 		{
 			// Always allow devCATs
-			//if (this.Title == 60001)
+			//if (this.Title == TitleId.devCAT)
 			//	return true;
 
 			// Check remaining

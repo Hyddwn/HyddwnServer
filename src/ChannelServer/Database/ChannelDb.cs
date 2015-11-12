@@ -277,9 +277,9 @@ namespace Aura.Channel.Database
 			// Add GM titles for the characters of authority 50+ accounts
 			if (account != null)
 			{
-				if (account.Authority >= 50) character.Titles.Add(60000, TitleState.Usable); // GM
-				if (account.Authority >= 99) character.Titles.Add(60001, TitleState.Usable); // devCAT
-				//if (account.Authority >= 99) character.Titles.Add(60002, TitleState.Usable); // devDOG
+				if (account.Authority >= 50) character.Titles.Add(TitleId.GM, TitleState.Usable);
+				if (account.Authority >= 99) character.Titles.Add(TitleId.devCAT, TitleState.Usable);
+				//if (account.Authority >= 99) character.Titles.Add(TitleId.devDOG, TitleState.Usable);
 			}
 
 			// Init titles
@@ -1031,7 +1031,7 @@ namespace Aura.Channel.Database
 					// Dynamic titles shouldn't be saved
 					// TODO: Are enough titles affected to justify a column
 					//   in the db for this?
-					if (title.Key == 60000 || title.Key == 60001 || title.Key == 60002 || title.Key == 50000) // GM, devCAT, Guild
+					if (title.Key == TitleId.GM || title.Key == TitleId.devCAT || title.Key == TitleId.devDOG || title.Key == TitleId.Guild)
 						continue;
 
 					using (var cmd = new InsertCommand("INSERT INTO `titles` {0}", conn, transaction))

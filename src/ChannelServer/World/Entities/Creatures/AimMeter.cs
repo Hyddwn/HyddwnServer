@@ -147,7 +147,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			var hitRatio = 1.0;
 			hitRatio = ((d1 - d2) / bowRange) * distance * hitRatio + d2;
 
-			var chance = Math.Sqrt(_aimOffset*_aimOffset + aimMod / hitRatio) * 100f;
+			var chance = Math.Sqrt(_aimOffset * _aimOffset + aimMod / hitRatio) * 100f;
 
 			// Aim chance for moving elf caps at 50%
 			if (this.Creature.IsMoving && this.Creature.IsElf)
@@ -171,7 +171,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			}
 
 			// Debug for devCATs
-			if (this.Creature.Titles.SelectedTitle == 60001)
+			if (this.Creature.Titles.SelectedTitle == TitleId.devCAT)
 				Send.ServerMessage(this.Creature, "Debug: Aim {0}, Distance {1}, Time {2}", chance, distance, aimTime);
 
 			return chance;

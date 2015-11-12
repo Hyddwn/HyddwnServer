@@ -24,7 +24,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			// Character limit for players is 100
-			if (message.Length > 100 && creature.Titles.SelectedTitle != 60001)
+			if (message.Length > 100 && creature.Titles.SelectedTitle != TitleId.devCAT)
 			{
 				Log.Warning("Chat: Creature '{0:X16}' tried to send chat message with over 100 characters.");
 				return;
@@ -63,7 +63,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			// Character limit for players is 100
-			if (msg.Length > 100 && creature.Titles.SelectedTitle != 60001)
+			if (msg.Length > 100 && creature.Titles.SelectedTitle != TitleId.devCAT)
 			{
 				Log.Warning("PartyChat: Creature '{0:X16}' tried to send chat message with over 100 characters.");
 				return;

@@ -63,6 +63,7 @@
     <Compile Include="Const\ReviveOptions.cs" />
     <Compile Include="Const\Skills.cs" />
     <Compile Include="Const\Stats.cs" />
+    <Compile Include="Const\TitleId.cs" />
     <Compile Include="ErinnTime.cs" />
     <Compile Include="MabiDictionary.cs" />
     <Compile Include="MabiMath.cs" />

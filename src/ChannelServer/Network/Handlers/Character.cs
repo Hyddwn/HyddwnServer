@@ -79,7 +79,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Special
-			if (creature.Titles.SelectedTitle == 60001) // devCAT
+			if (creature.Titles.SelectedTitle == TitleId.devCAT)
 				creature.DeadMenu.Add(ReviveOptions.HereNoPenalty);
 
 			Send.DeadMenuR(creature, creature.DeadMenu);
