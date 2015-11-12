@@ -18,19 +18,6 @@ namespace Aura.Channel.Network.Sending
 	public static partial class Send
 	{
 		/// <summary>
-		/// Sends MoonGateInfoRequestR to creature's client.
-		/// </summary>
-		/// <param name="creature"></param>
-		public static void MoonGateInfoRequestR(Creature creature)
-		{
-			var packet = new Packet(Op.MoonGateInfoRequestR, creature.EntityId);
-			//packet.PutString("_moongate_tara_west");
-			//packet.PutString("_moongate_tirchonaill");
-
-			creature.Client.Send(packet);
-		}
-
-		/// <summary>
 		/// Sends MailsRequestR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

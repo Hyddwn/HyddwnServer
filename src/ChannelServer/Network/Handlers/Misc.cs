@@ -18,25 +18,6 @@ namespace Aura.Channel.Network.Handlers
 	public partial class ChannelServerHandlers : PacketHandlerManager<ChannelClient>
 	{
 		/// <summary>
-		/// Sent regularly to request the current moon gates (?).
-		/// </summary>
-		/// <remarks>
-		/// It seems strange that the moon gates are requested over and over,
-		/// but the official answer is always the names of 2 moon gates.
-		/// </remarks>
-		/// <example>
-		/// No Parameters.
-		/// </example>
-		[PacketHandler(Op.MoonGateInfoRequest)]
-		public void MoonGateInfoRequest(ChannelClient client, Packet packet)
-		{
-			var creature = client.GetCreatureSafe(packet.Id);
-
-			// Empty answer for now.
-			Send.MoonGateInfoRequestR(creature);
-		}
-
-		/// <summary>
 		/// Sent on login to request a list of new mails.
 		/// </summary>
 		/// <remarks>
