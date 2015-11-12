@@ -15,6 +15,20 @@ namespace Aura.Channel.Network.Handlers
 {
 	public partial class ChannelServerHandlers : PacketHandlerManager<ChannelClient>
 	{
+		/// <summary>
+		/// Sent when speaking in normal, public chat.
+		/// </summary>
+		/// <remarks>
+		/// Handles GM commands.
+		/// 
+		/// The maximum amount of characters you can type into the chat box
+		/// is 100, which is also the max number of characters displayed in
+		/// the chat bubble. devCATs don't have a limit on how much they can
+		/// type, but the message will be cut off.
+		/// </remarks>
+		/// <example>
+		/// ...
+		/// </example>
 		[PacketHandler(Op.Chat)]
 		public void Chat(ChannelClient client, Packet packet)
 		{
@@ -30,6 +44,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check speak lock
 			if (!creature.Can(Locks.Speak))
 			{
 				Log.Debug("Speak locked for '{0}'.", creature.Name);
@@ -40,9 +55,19 @@ namespace Aura.Channel.Network.Handlers
 			if (ChannelServer.Instance.CommandProcessor.Process(client, creature, message))
 				return;
 
+			// Broadcast message
 			Send.Chat(creature, message);
 		}
 
+		/// <summary>
+		/// Sent when using visual chat.
+		/// </summary>
+		/// <remarks>
+		/// Visual Chat has to be enabled via a feature in the client.
+		/// </remarks>
+		/// <example>
+		/// ...
+		/// </example>
 		[PacketHandler(Op.VisualChat)]
 		public void VisualChat(ChannelClient client, Packet packet)
 		{
@@ -55,6 +80,12 @@ namespace Aura.Channel.Network.Handlers
 			Send.VisualChat(creature, url, width, height);
 		}
 
+		/// <summary>
+		/// Sent when talking in party chat.
+		/// </summary>
+		/// <example>
+		/// ...
+		/// </example>
 		[PacketHandler(Op.PartyChat)]
 		public void PartyChat(ChannelClient client, Packet packet)
 		{
@@ -69,6 +100,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Send message if creature is actually in a party
 			if (creature.IsInParty)
 				Send.PartyChat(creature, msg);
 		}
@@ -92,6 +124,7 @@ namespace Aura.Channel.Network.Handlers
 			var targetCreature = ChannelServer.Instance.World.GetPlayer(name);
 			if (targetCreature == null)
 			{
+				// Unofficial
 				Send.SystemMessage(creature, Localization.Get("Character not found."));
 				return;
 			}
