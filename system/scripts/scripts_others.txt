@@ -6,5 +6,6 @@
 
 others/sealstones.cs
 others/moongates.cs
+others/on_equip.cs
 
 include "/user/scripts/scripts_others.txt"
