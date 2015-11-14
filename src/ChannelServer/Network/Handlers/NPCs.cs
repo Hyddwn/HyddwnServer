@@ -52,7 +52,9 @@ namespace Aura.Channel.Network.Handlers
 				throw new ModerateViolation("Tried to talk to non-existant NPC 0x{0:X}", npcEntityId);
 			}
 
-			// Special NPCs
+			// Special NPC requirements
+			// The Soulstream version of Nao and Tin are only available
+			// in the Soulstream, and in there we can't check range.
 			var bypassDistanceCheck = false;
 			var disallow = false;
 			if (npcEntityId == MabiId.Nao || npcEntityId == MabiId.Tin)
@@ -86,8 +88,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Respond
 			Send.NpcTalkStartR(creature, npcEntityId);
 
+			// Start NPC dialog
 			client.NpcSession.StartTalk(target, creature);
 		}
 
@@ -166,21 +170,6 @@ namespace Aura.Channel.Network.Handlers
 
 			var response = match.Groups["result"].Value;
 
-			// Obsolete, implicit @end handling
-			//if (response == "@end")
-			//{
-			//	try
-			//	{
-			//		client.NpcSession.Script.EndConversation();
-			//	}
-			//	catch (OperationCanceledException)
-			//	{
-			//		//Log.Debug("Received @end");
-			//	}
-			//	client.NpcSession.Clear();
-			//	return;
-			//}
-
 			// Cut @input "prefix" added for <input> element.
 			if (response.StartsWith("@input"))
 				response = response.Substring(7).Trim();
@@ -188,9 +177,11 @@ namespace Aura.Channel.Network.Handlers
 			// TODO: Do another keyword check, in case modders bypass the
 			//   actual check below.
 
+			// Check conversation state
 			if (client.NpcSession.Script.ConversationState != ConversationState.Select)
 				Log.Debug("Received Select without being in Select mode ({0}).", client.NpcSession.Script.GetType().Name);
 
+			// Continue dialog
 			client.NpcSession.Script.Resume(response);
 		}
 
@@ -210,20 +201,20 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var keyword = packet.GetString();
 
-			var character = client.GetCreatureSafe(packet.Id);
+			var creature = client.GetCreatureSafe(packet.Id);
 
 			// Check session
 			client.NpcSession.EnsureValid();
 
 			// Check keyword
-			if (!character.Keywords.Has(keyword))
+			if (!creature.Keywords.Has(keyword))
 			{
-				Send.NpcTalkKeywordR_Fail(character);
-				Log.Warning("NpcTalkKeyword: Player '{0}' tried using keyword '{1}', without knowing it.", character.Name, keyword);
+				Send.NpcTalkKeywordR_Fail(creature);
+				Log.Warning("NpcTalkKeyword: Player '{0}' tried using keyword '{1}', without knowing it.", creature.Name, keyword);
 				return;
 			}
 
-			Send.NpcTalkKeywordR(character, keyword);
+			Send.NpcTalkKeywordR(creature, keyword);
 		}
 
 		/// <summary>
@@ -277,6 +268,7 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Buy, adding item, and removing gold
 			var success = false;
 
 			// Cursor
@@ -292,12 +284,12 @@ namespace Aura.Channel.Network.Handlers
 				ChannelServer.Instance.Events.OnPlayerReceivesItem(creature, item.Info.Id, item.Info.Amount);
 			}
 
+			// Response
 			Send.NpcShopBuyItemR(creature, success);
 			return;
 
 		L_Fail:
 			Send.NpcShopBuyItemR(creature, false);
-			return;
 		}
 
 		/// <summary>
@@ -351,8 +343,10 @@ namespace Aura.Channel.Network.Handlers
 			// Add gold
 			creature.Inventory.AddGold(sellingPrice);
 
+			// Remove item event
 			ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, item.Info.Amount);
 
+			// Respond in any case, to unlock the player
 		L_End:
 			Send.NpcShopSellItemR(creature);
 		}
@@ -375,11 +369,11 @@ namespace Aura.Channel.Network.Handlers
 		}
 
 		/// <summary>
-		/// Sent when selecting which tabs to display (human, elf, giant).
+		/// Sent when selecting which bank tabs to display (human, elf, giant).
 		/// </summary>
 		/// <remarks>
 		/// This packet is only sent when enabling Elf or Giant, it's not sent
-		/// on deactivating them and not for Human either.
+		/// on deactivating them, and not for Human either.
 		/// It's to request data that was not sent initially,
 		/// i.e. send only Human first and Elf and Giant when ticked.
 		/// The client only requests those tabs once.
@@ -394,6 +388,7 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Fall back to human when race invalid
 			if (race < BankTabRace.Human || race > BankTabRace.Giant)
 				race = BankTabRace.Human;
 
@@ -413,11 +408,12 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check creature's gold
 			if (creature.Inventory.Gold < amount)
 				throw new ModerateViolation("BankDepositGold: '{0}' ({1}) tried to deposit more than he has.", creature.Name, creature.EntityIdHex);
 
+			// Check bank max gold
 			var goldMax = Math.Min((long)int.MaxValue, client.Account.Characters.Count * (long)ChannelServer.Instance.Conf.World.BankGoldPerCharacter);
-
 			if ((long)client.Account.Bank.Gold + amount > goldMax)
 			{
 				Send.MsgBox(creature, Localization.Get("The maximum amount of gold you may store in the bank is {0:n0}."), goldMax);
@@ -425,9 +421,11 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Transfer gold
 			creature.Inventory.RemoveGold(amount);
 			client.Account.Bank.AddGold(creature, amount);
 
+			// Response
 			Send.BankDepositGoldR(creature, true);
 		}
 
@@ -446,9 +444,12 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Add fee for checks
 			var removeAmount = withdrawAmount;
-			if (createCheck) removeAmount += withdrawAmount / 20; // +5%
+			if (createCheck)
+				removeAmount += withdrawAmount / 20; // +5%
 
+			// Check bank gold
 			if (client.Account.Bank.Gold < removeAmount)
 			{
 				// Don't throw a violation, it's possible to accidentally
@@ -469,12 +470,12 @@ namespace Aura.Channel.Network.Handlers
 			// Add check item to creature's cursor pocket if check
 			else
 			{
-				var item = new Item(2004); // Check
-				item.MetaData1.SetInt("EVALUE", withdrawAmount);
+				var item = Item.CreateCheck(withdrawAmount);
 
-				// This shouldn't happen.
+				// Try to add check to cursor
 				if (!creature.Inventory.Add(item, Pocket.Cursor))
 				{
+					// This shouldn't happen.
 					Log.Debug("BankWithdrawGold: Unable to add check to cursor.");
 
 					Send.BankWithdrawGoldR(creature, false);
@@ -482,8 +483,10 @@ namespace Aura.Channel.Network.Handlers
 				}
 			}
 
+			// Remove gold from bank
 			client.Account.Bank.RemoveGold(creature, removeAmount);
 
+			// Response
 			Send.BankWithdrawGoldR(creature, true);
 		}
 
@@ -506,6 +509,8 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Deposit item
+			// TODO: Handle different banks in different towns.
 			var success = client.Account.Bank.DepositItem(creature, itemEntityId, "Global", tabName, posX, posY);
 
 			Send.BankDepositItemR(creature, success);
@@ -526,6 +531,8 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Withdraw item
+			// TODO: Handle different banks in different towns.
 			var success = client.Account.Bank.WithdrawItem(creature, tabName, itemEntityId);
 
 			Send.BankWithdrawItemR(creature, success);
@@ -543,12 +550,13 @@ namespace Aura.Channel.Network.Handlers
 		/// and since it starts looking for the ego to talk to in the inventory
 		/// you would have to equip the ego you *don't* want to talk to...
 		/// 
-		/// I fyou right click the ego to talk to a specific one you get the
+		/// If you right click the ego to talk to a specific one you get the
 		/// correct ego race, but it will still show the stats of the auto-
 		/// selected one.
 		/// </remarks>
-		/// <param name="client"></param>
-		/// <param name="packet"></param>
+		/// <example>
+		/// ...
+		/// </example>
 		[PacketHandler(Op.NpcTalkEgo)]
 		public void NpcTalkEgo(ChannelClient client, Packet packet)
 		{
@@ -560,7 +568,7 @@ namespace Aura.Channel.Network.Handlers
 			if (egoRace <= EgoRace.None || egoRace > EgoRace.CylinderF)
 			{
 				Log.Warning("NpcTalkEgo: Invalid ego race '{0}'.", egoRace);
-				Send.SystemMessage(creature, "Invalid ego race.");
+				Send.ServerMessage(creature, Localization.Get("Invalid ego race."));
 				Send.NpcTalkEgoR(creature, false, 0, null, null);
 				return;
 			}
@@ -571,7 +579,7 @@ namespace Aura.Channel.Network.Handlers
 			//   *Should* we implement that without proper support though?
 			if (creature.Inventory.Items.Count(item => item.EgoInfo.Race == egoRace) > 1)
 			{
-				Send.SystemMessage(creature, "Multiple egos of the same type are currently not supported.");
+				Send.ServerMessage(creature, Localization.Get("Multiple egos of the same type are currently not supported."));
 				Send.NpcTalkEgoR(creature, false, 0, null, null);
 				return;
 			}

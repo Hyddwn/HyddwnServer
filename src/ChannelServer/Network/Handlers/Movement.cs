@@ -34,6 +34,8 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var x = packet.GetInt();
 			var y = packet.GetInt();
+			var unkByte1 = packet.GetByte();
+			var unkByte2 = packet.GetByte();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -81,8 +83,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Activate AIs near the walking path
 			creature.Region.ActivateAis(creature, from, to);
 
+			// Make creature move
 			creature.Move(to, walk);
 		}
 
@@ -136,13 +140,14 @@ namespace Aura.Channel.Network.Handlers
 			//	return;
 			//}
 
-			// Save town
+			// Save last visited "town"
 			var pos = creature.GetPosition();
 			var saveTownParam = clientEvent.Data.Parameters.FirstOrDefault(a => a.EventType == EventType.SaveTown);
 			if (saveTownParam != null && signalType == SignalType.Enter && clientEvent.IsInside(pos.X, pos.Y))
 			{
 				if (saveTownParam.XML != null)
 				{
+					// TODO: Is there a better way to identify those events?
 					var globalname = saveTownParam.XML.Attribute("globalname");
 					if (globalname != null)
 					{
@@ -161,14 +166,18 @@ namespace Aura.Channel.Network.Handlers
 
 			// Check handler
 			var handler = clientEvent.Handlers.Get(signalType);
-			if (handler == null) return;
+			if (handler == null)
+			{
+				// Don't log, the server doesn't have to handle all events.
+				return;
+			}
 
-			// Run
+			// Call handler
 			handler(creature, clientEvent.Data);
 		}
 
 		/// <summary>
-		/// Sent when a client side music event is triggered.
+		/// Sent when a client-side music event is triggered.
 		/// </summary>
 		/// <remarks>
 		/// This is sent since 190X? It contains the names of the events

@@ -126,10 +126,11 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.FinishedCutscene)]
 		public void FinishedCutscene(ChannelClient client, Packet packet)
 		{
-			var unkInt = packet.GetInt();
+			var unkInt = packet.GetInt(); // Cutscene id?
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check if there is a cutscene to cancel
 			if (creature.Temp.CurrentCutscene == null)
 			{
 				// This can happen if multiple member's cutscenes end at the
@@ -139,6 +140,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Only leader can stop the cutscene
 			if (creature.Temp.CurrentCutscene.Leader != creature)
 			{
 				// Unofficial
@@ -146,6 +148,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Finish cutscene
 			creature.Temp.CurrentCutscene.Finish();
 		}
 
@@ -162,6 +165,7 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check lock
 			if (!creature.Can(Locks.Gesture))
 			{
 				Log.Debug("Gesture locked for '{0}'.", creature.Name);
@@ -169,8 +173,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Stop movement
 			creature.StopMove();
 
+			// Get motion data
 			var motionData = AuraData.MotionDb.Find(gestureName);
 			if (motionData == null)
 			{
@@ -179,6 +185,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Response
 			Send.UseMotion(creature, motionData.Category, motionData.Type, motionData.Loop);
 			Send.UseGestureR(creature, true);
 		}
@@ -211,7 +218,6 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.IncompatibleUnk)]
 		public void IncompatibleUnk(ChannelClient client, Packet packet)
 		{
-			//Log.Unimplemented("5411");
 			Log.Warning("A client seems to be incompatible with the server, the latest version of Aura only supports the latest NA update. (Account id: {0})", client.Account.Id);
 		}
 
@@ -226,6 +232,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var targetEntityId = packet.GetLong();
 
+			// Get creatures
 			var creature = client.GetCreatureSafe(packet.Id);
 			var target = creature.Region.GetCreature(targetEntityId);
 
@@ -269,6 +276,7 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Try to call callback
 			creature.HandleInquiry(id);
 
 			Send.InquiryResponseR(creature, true);
@@ -294,6 +302,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Calculate random result
 			var rnd = RandomProvider.Get();
 			var slot = (int)rnd.Between(0, 31);
 			if (slot == 1) // TODO: extra spin
@@ -302,6 +311,7 @@ namespace Aura.Channel.Network.Handlers
 
 			creature.Temp.ColorWheelResult = slot + 1;
 
+			// Response
 			Send.SpinColorWheelR(creature, radian);
 		}
 
@@ -331,6 +341,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Figure out what to change
 			var bothChange = item.HasTag("/name_chatting_color_change/");
 			var nameChange = bothChange || item.HasTag("/name_color_change/");
 			var chatChange = bothChange || item.HasTag("/chatting_color_change/");
@@ -387,6 +398,7 @@ namespace Aura.Channel.Network.Handlers
 					return;
 			}
 
+			// Remove item from inv
 			creature.Inventory.Remove(item);
 
 			// Expiration apparently varies based on the item,
