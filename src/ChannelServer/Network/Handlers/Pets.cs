@@ -126,6 +126,13 @@ namespace Aura.Channel.Network.Handlers
 
 			var pet = client.GetCreatureSafe(packet.Id);
 
+			// Check action
+			if (!Enum.IsDefined(typeof(PetAction), action))
+			{
+				Log.Warning("PetAction: Creature '{0:X16}' ({1}) tried to use unknown action '{2}'.", pet.EntityId, pet.RaceId, action);
+				return;
+			}
+
 			//Send.Chat(pet, "...");
 
 			Send.PetActionEffect(pet, action);

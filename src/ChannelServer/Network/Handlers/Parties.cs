@@ -414,6 +414,15 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
+			// Check rule
+			if (!Enum.IsDefined(typeof(PartyFinishRule), rule))
+			{
+				Log.Warning("PartyChangeFinish: Creature '{0:X16}' tried to use unknown rule '{1}'.", creature.EntityId, rule);
+				Send.PartyChangeFinishR(creature, false);
+				return;
+			}
+
+			// Check if creature can change finish rule
 			if (!creature.IsInParty || creature != party.Leader)
 			{
 				Log.Warning("PartyLeave: User '{0}' tried to change party finish setting illigitly.", client.Account.Id);
@@ -442,6 +451,15 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
+			// Check rule
+			if (!Enum.IsDefined(typeof(PartyExpSharing), rule))
+			{
+				Log.Warning("PartyChangeExp: Creature '{0:X16}' tried to use unknown rule '{1}'.", creature.EntityId, rule);
+				Send.PartyChangeFinishR(creature, false);
+				return;
+			}
+
+			// Check if creature can change exp sharing rule
 			if (!creature.IsInParty || creature != party.Leader)
 			{
 				Log.Warning("PartyLeave: User '{0}' tried to change party exp setting illigitly.", client.Account.Id);
