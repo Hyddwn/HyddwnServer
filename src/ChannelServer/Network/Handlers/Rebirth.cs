@@ -153,6 +153,10 @@ namespace Aura.Channel.Network.Handlers
 			player.LastRebirth = DateTime.Now;
 			player.RebirthCount++;
 
+			// Prevent pre-G4 Iria rebirth
+			if (!AuraData.FeaturesDb.IsEnabled("IriaRebirth"))
+				location = RebirthLocation.Tir;
+
 			// Location
 			switch (location)
 			{
@@ -160,7 +164,6 @@ namespace Aura.Channel.Network.Handlers
 				case RebirthLocation.Tir: creature.SetLocation(125, 21489, 76421); break;
 
 				// Iria beginner area (Rano)
-				// (TODO: Disable pre-G4?)
 				case RebirthLocation.Iria: creature.SetLocation(3001, 164533, 161862); break;
 			}
 
