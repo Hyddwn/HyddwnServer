@@ -9,6 +9,7 @@ using Aura.Channel.World;
 using Aura.Mabi.Const;
 using Aura.Channel.World.Inventory;
 using Aura.Mabi.Network;
+using System;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -29,6 +30,7 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check if a pet is out already
 			if (creature.Pet != null)
 			{
 				Log.Warning("SummonPet: Player '{0}' tried to spawn multiple pets.", client.Account.Id);
@@ -38,10 +40,12 @@ namespace Aura.Channel.Network.Handlers
 
 			var pet = client.Account.GetPetSafe(entityId);
 
+			// Adjust pet's state
 			// Doesn't fix giant mount problems.
 			if (creature.IsGiant)
 				pet.StateEx |= CreatureStatesEx.SummonedByGiant;
 
+			// Set location, aster, etc.
 			pet.Master = creature;
 			creature.Pet = pet;
 
@@ -50,11 +54,15 @@ namespace Aura.Channel.Network.Handlers
 
 			pet.Save = true;
 			pet.Client = client;
+
+			// Add pet to controled creature list
 			client.Creatures.Add(pet.EntityId, pet);
 
+			// Register and response
 			Send.PetRegister(creature, pet);
 			Send.SummonPetR(creature, pet);
 
+			// Make pet appear by "warping" it (sends EnterRegion)
 			pet.Warp(pet.GetLocation());
 		}
 
@@ -71,6 +79,7 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check pet and entity id
 			var pet = creature.Pet;
 			if (pet == null || pet.EntityId != entityId)
 			{
@@ -79,12 +88,15 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Remove pet
 			client.Creatures.Remove(pet.EntityId);
 			pet.Master = null;
 			creature.Pet = null;
 
+			// Stop movement
 			var pos = pet.StopMove();
 
+			// Remove from region and send necessary effects, packets, and response
 			Send.SpawnEffect(SpawnEffect.PetDespawn, creature.RegionId, pos.X, pos.Y, creature, pet);
 			if (pet.Region != Region.Limbo)
 				pet.Region.RemoveCreature(pet);
@@ -141,13 +153,16 @@ namespace Aura.Channel.Network.Handlers
 
 			var pet = client.GetSummonedPetSafe(packet.Id);
 
+			// Check region
 			if (pet.Master.RegionId != pet.RegionId)
 			{
 				throw new ModerateViolation("Illegal pet teleport");
 			}
 
+			// Warp
 			pet.Warp(pet.RegionId, x, y);
 
+			// Response
 			Send.TelePetR(pet, true);
 		}
 
@@ -175,13 +190,9 @@ namespace Aura.Channel.Network.Handlers
 			var x = packet.GetInt();
 			var y = packet.GetInt();
 
-			// Get creature
+			// Get creature, pet, and item
 			var creature = client.GetCreatureSafe(packet.Id);
-
-			// Get pet
 			var pet = client.GetSummonedPetSafe(petEntityId);
-
-			// Get item
 			var item = creature.Inventory.GetItemSafe(itemEntityId);
 
 			// Check pocket
@@ -193,16 +204,18 @@ namespace Aura.Channel.Network.Handlers
 				throw new ModerateViolation("Attempted to put an item into an invalid pet pocket ({0})", pocket);
 			}
 
-			// Try move
+			// Try to move item
 			if (!creature.Inventory.MovePet(pet, item, pet, pocket, x, y))
 			{
 				Log.Warning("PutItemIntoPetInv: Moving item failed.");
 				goto L_Fail;
 			}
 
+			// Remove and reveive events for player and pet
 			ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, item.Info.Amount);
 			ChannelServer.Instance.Events.OnPlayerReceivesItem(pet, item.Info.Id, item.Info.Amount);
 
+			// Response
 			Send.PutItemIntoPetInvR(creature, true);
 			return;
 
@@ -223,16 +236,12 @@ namespace Aura.Channel.Network.Handlers
 			var petEntityId = packet.GetLong();
 			var itemEntityId = packet.GetLong();
 
-			// Get creature
+			// Get creature, pet, and item
 			var creature = client.GetCreatureSafe(packet.Id);
-
-			// Get pet
 			var pet = client.GetSummonedPetSafe(petEntityId);
-
-			// Get item
 			var item = pet.Inventory.GetItemSafe(itemEntityId);
 
-			// Try move
+			// Try to move item
 			if (!pet.Inventory.MovePet(pet, item, creature, Pocket.Cursor, 0, 0))
 			{
 				Log.Warning("TakeItemFromPetInv: Moving item failed.");
@@ -240,9 +249,11 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Remove and reveive events for player and pet
 			ChannelServer.Instance.Events.OnPlayerRemovesItem(pet, item.Info.Id, item.Info.Amount);
 			ChannelServer.Instance.Events.OnPlayerReceivesItem(creature, item.Info.Id, item.Info.Amount);
 
+			// Response
 			Send.TakeItemFromPetInvR(creature, true);
 		}
 
@@ -259,13 +270,15 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check target creature
 			var mount = creature.Region.GetCreature(mountEntityId);
 			if (mount == null || mount == creature)
 				return;
 
 			// ...
-
 			Send.ServerMessage(creature, "Mounts aren't implemented yet.");
+
+			// Response
 			Send.PetMountR(creature, false);
 		}
 
@@ -281,8 +294,9 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			// ...
-
 			Send.ServerMessage(creature, "Mounts aren't implemented yet.");
+
+			// Response
 			Send.PetUnmountR(creature, false);
 		}
 
@@ -290,6 +304,9 @@ namespace Aura.Channel.Network.Handlers
 		/// Sent when changing the AI.
 		/// </summary>
 		/// <remarks>
+		/// Saves selected AI in permanent creature variables, to be requested
+		/// via GetPetAi when the pet is summoned again.
+		/// 
 		/// There's no response to this packet.
 		/// 
 		/// The default AI files can be found in data/db/ in the client.

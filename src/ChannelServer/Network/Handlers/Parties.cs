@@ -8,6 +8,7 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
+using System;
 using System.Collections.Generic;
 
 namespace Aura.Channel.Network.Handlers
@@ -62,10 +63,10 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			// Needs check like the below, but do homesteads count as dynamic
-			// regions? I know you can't make a party in the shadow realm
-			// (you can in dungeons), but are they the only places?
-			if (creature.IsInParty /*|| creature.Region.IsDynamic */)
+			// Check if party can be created
+			// TODO: Is party creation disabled in all dynamic regions?
+			//   What about homesteads?
+			if (creature.IsInParty || creature.Region.IsDynamic)
 			{
 				Log.Warning("PartyCreate: User '{0}' tried to create a party while already being in one.", client.Account.Id);
 				Send.CreatePartyR(creature, null);
@@ -84,11 +85,13 @@ namespace Aura.Channel.Network.Handlers
 			if (maxSize > ChannelServer.Instance.Conf.World.PartyMaxSize)
 				Send.MsgBox(creature, Localization.Get("The maximum party size allowed on this server is {0}."), ChannelServer.Instance.Conf.World.PartyMaxSize);
 
-			// Create
+			// Create new party
 			creature.Party = Party.Create(creature, type, name, dungeonLevel, info, password, maxSize);
 
+			// Response
 			Send.CreatePartyR(creature, creature.Party);
 
+			// Start members wanted ad
 			creature.Party.Open();
 		}
 
@@ -122,6 +125,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
+			// Check if creature can change settings
 			if (!creature.IsInParty || creature != party.Leader)
 			{
 				Log.Warning("PartyLeave: User '{0}' tried to change party settings illicitly.", client.Account.Id);
@@ -132,13 +136,15 @@ namespace Aura.Channel.Network.Handlers
 			if (maxSize > ChannelServer.Instance.Conf.World.PartyMaxSize)
 				Send.MsgBox(creature, Localization.Get("The maximum party size allowed on this server is {0}."), ChannelServer.Instance.Conf.World.PartyMaxSize);
 
+			// Update settings
 			party.ChangeSettings(type, name, dungeonLevel, info, password, maxSize);
 
+			// TODO: Party board
 			if (partyBoard)
 			{
-				// TODO: Party board
 			}
 
+			// Response
 			Send.PartyChangeSettingR(creature);
 		}
 
@@ -192,6 +198,7 @@ namespace Aura.Channel.Network.Handlers
 			// Add
 			partyLeader.Party.AddMember(creature, password);
 
+			// Response and party update
 			Send.PartyJoinR(creature, PartyJoinResult.Success);
 			Send.PartyCreateUpdate(creature);
 		}
@@ -224,8 +231,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Remove member
 			creature.Party.RemoveMember(creature);
 
+			// Response
 			Send.PartyLeaveR(creature, true);
 		}
 
@@ -242,7 +251,6 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			var canRemove = !creature.Region.IsDynamic;
 			var party = creature.Party;
 
 			// Check creature
@@ -270,9 +278,11 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Remove
 			party.RemoveMember(target);
-			Send.PartyRemoved(target);
+			Send.PartyRemoved(target); // TODO: Send from RemoveMember?
 
+			// Response
 			Send.PartyRemoveR(creature, true);
 		}
 
@@ -290,6 +300,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
+			// Check if creature can change password
 			if (!creature.IsInParty || creature != party.Leader)
 			{
 				Log.Warning("PartyLeave: User '{0}' tried to change party password illicitly.", client.Account.Id);
@@ -297,8 +308,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Change password
 			party.SetPassword(password);
 
+			// Response
 			Send.PartyChangePasswordR(creature, true);
 		}
 
@@ -316,6 +329,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
+			// Check if creature can change leader
 			if (!creature.IsInParty || creature != party.Leader)
 			{
 				Log.Warning("PartyLeave: User '{0}' tried to change party leader illicitly.", client.Account.Id);
@@ -323,9 +337,11 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			// IS there any instance in which you're NOT allowed to change party leader?
+			// Set leader
+			// Is there any instance in which you're not allowed to change party leader?
 			var success = party.SetLeader(entityId);
 
+			// Response
 			Send.PartyChangeLeaderR(creature, success);
 
 		}
@@ -342,6 +358,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
+			// Check if creature can change wanted status
 			if (!creature.IsInParty || creature != party.Leader)
 			{
 				Log.Warning("PartyLeave: User '{0}' tried to change ad setting illicitly.", client.Account.Id);
@@ -349,8 +366,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Close ad
 			party.Close();
 
+			// Response
 			Send.PartyWantedClosedR(creature, true);
 		}
 
@@ -366,6 +385,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var party = creature.Party;
 
+			// Check if creature can change wanted status
 			if (!creature.IsInParty || creature != party.Leader)
 			{
 				Log.Warning("PartyLeave: User '{0}' tried to change ad setting illicitly.", client.Account.Id);
@@ -373,8 +393,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Start wanted ad
 			party.Open();
 
+			// Response
 			Send.PartyWantedOpenR(creature, true);
 		}
 
@@ -399,8 +421,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Change rule
 			party.ChangeFinish(rule);
 
+			// Response
 			Send.PartyChangeFinishR(creature, true);
 		}
 
@@ -425,8 +449,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Change rule
 			party.ChangeExp(rule);
 
+			// Response
 			Send.PartyChangeExpR(creature, true);
 		}
 
@@ -441,6 +467,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Dummy, until we have party boards.
 			var parties = new List<Party>();
 
 			Send.PartyBoardRequestR(creature, parties);
