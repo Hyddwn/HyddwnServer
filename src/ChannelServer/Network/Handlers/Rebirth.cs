@@ -19,13 +19,13 @@ namespace Aura.Channel.Network.Handlers
 		/// Sent after selecting all rebirth options.
 		/// </summary>
 		/// <remarks>
-		/// To get into the rebirth screen send "<rebirth style='-1'/>"
-		/// as a NPC message. The dialog result will either be "@rebirth"
+		/// To get into the rebirth screen, send "<rebirth style='-1'/>"
+		/// as an NPC message. The dialog result will be either "@rebirth"
 		/// or "@cancel".
 		/// 
-		/// You can always go to Nao to rebirth from the login screen,
+		/// You can always go to Nao for rebirthing from the login screen,
 		/// because the last rebirth time is only sent in the full
-		/// creature info in 5209. In-game the client checks the date,
+		/// creature info in 5209. In-game, the client checks the date,
 		/// preventing one from going there before it should be possible
 		/// under NA rules.
 		/// </remarks>

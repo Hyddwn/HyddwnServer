@@ -47,6 +47,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check range
 			if (creature.GetPosition().InRange(prop.GetPosition(), 1500))
 			{
 				creature.Stun = 1000;
@@ -67,6 +68,7 @@ namespace Aura.Channel.Network.Handlers
 				Log.Warning("HitProp: Player '{0}' tried to hit prop out of range.", creature.Name);
 			}
 
+			// Response
 			Send.HitPropR(creature, true);
 		}
 
@@ -147,6 +149,7 @@ namespace Aura.Channel.Network.Handlers
 			// Run behavior
 			prop.Behavior(creature, prop);
 
+			// Response in any case, to unlock player
 		L_End:
 			Send.TouchPropR(creature);
 		}
