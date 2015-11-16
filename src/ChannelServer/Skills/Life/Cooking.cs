@@ -46,6 +46,11 @@ namespace Aura.Channel.Skills.Life
 		private const Rating DeliciousRating = Rating.FourStars;
 
 		/// <summary>
+		/// Minimum quality to not get food waste.
+		/// </summary>
+		private const int SuccessMinQuality = -20;
+
+		/// <summary>
 		/// Sets up subscriptions required for skill training.
 		/// </summary>
 		public void Init()
@@ -132,7 +137,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				// Get judgement
 				var judgement = this.JudgeQuality(recipe, creature.Temp.CookingIngredients);
-				if (judgement.Quality > 0)
+				if (judgement.Quality >= SuccessMinQuality)
 				{
 					var quality = (int)judgement.Quality;
 					var rating = this.GetRating((int)judgement.Quality);
@@ -192,7 +197,7 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			// Create food waste if nothing halfway decent was created
-			if (item == null)
+			if (success)
 			{
 				item = new Item(FoodWasteItemId);
 				Send.Notice(creature, Localization.Get("Cooking failed"));
