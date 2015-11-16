@@ -10,6 +10,7 @@ using Aura.Mabi;
 using Aura.Channel.World.Entities;
 using Aura.Channel.Skills;
 using Aura.Data.Database;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel.World
 {
@@ -184,6 +185,24 @@ namespace Aura.Channel.World
 		/// </summary>
 		public event Action<CombatActionPack> HandlingCombatActionPack;
 		public void OnHandlingCombatActionPack(CombatActionPack pack) { HandlingCombatActionPack.Raise(pack); }
+
+		/// <summary>
+		/// Raised when a creature produces material (e.g. Weaving, Handicraft, Potion Making).
+		/// </summary>
+		public event Action<ProductionEventArgs> CreatureProducedItem;
+		public void OnCreatureProducedItem(ProductionEventArgs args) { CreatureProducedItem.Raise(args); }
+
+		/// <summary>
+		/// Raised when a creature created an item (Tailoring, Blacksmithing).
+		/// </summary>
+		public event Action<CreationEventArgs> CreatureCreatedItem;
+		public void OnCreatureCreatedItem(CreationEventArgs args) { CreatureCreatedItem.Raise(args); }
+
+		/// <summary>
+		/// Raised when a creature cooked something.
+		/// </summary>
+		public event Action<CookingEventArgs> CreatureCookedMeal;
+		public void OnCreatureCookedMeal(CookingEventArgs args) { CreatureCookedMeal.Raise(args); }
 	}
 
 	public static class EventHandlerExtensions
@@ -239,5 +258,59 @@ namespace Aura.Channel.World
 			this.Success = success;
 			this.ItemId = itemId;
 		}
+	}
+
+	public class ProductionEventArgs : EventArgs
+	{
+		public Creature Creature { get; set; }
+		public ProductionData ProductionData { get; set; }
+		public bool Success { get; set; }
+		public Item Item { get; set; }
+
+		public ProductionEventArgs(Creature creature, ProductionData data, bool success, Item item)
+		{
+			this.Creature = creature;
+			this.ProductionData = data;
+			this.Success = success;
+			this.Item = item;
+		}
+	}
+
+	public class CreationEventArgs : EventArgs
+	{
+		public Creature Creature { get; set; }
+		public CreationMethod Method { get; set; }
+		public Item Item { get; set; }
+		public SkillRank Rank { get; set; }
+
+		public CreationEventArgs(Creature creature, CreationMethod method, Item item, SkillRank rank)
+		{
+			this.Creature = creature;
+			this.Method = method;
+			this.Item = item;
+			this.Rank = rank;
+		}
+	}
+
+	public class CookingEventArgs : EventArgs
+	{
+		public Creature Creature { get; set; }
+		public RecipeData Recipe { get; set; }
+		public bool Success { get; set; }
+		public Item Item { get; set; }
+
+		public CookingEventArgs(Creature creature, RecipeData recipe, bool success, Item item)
+		{
+			this.Creature = creature;
+			this.Recipe = recipe;
+			this.Success = success;
+			this.Item = item;
+		}
+	}
+
+	public enum CreationMethod
+	{
+		Tailoring,
+		Blacksmithing,
 	}
 }

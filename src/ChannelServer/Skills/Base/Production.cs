@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
+using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data;
 using Aura.Data.Database;
@@ -345,6 +346,9 @@ namespace Aura.Channel.Skills.Base
 				// Add product to inventory
 				creature.Inventory.Insert(productItem, true);
 
+				// Material creation event
+				ChannelServer.Instance.Events.OnCreatureProducedItem(new ProductionEventArgs(creature, productData, true, productItem));
+
 				// Success
 				Send.UseMotion(creature, 14, 0); // Success motion
 				Send.Notice(creature, Localization.Get("{0} created successfully!"), productItem.Data.Name);
@@ -352,6 +356,9 @@ namespace Aura.Channel.Skills.Base
 
 				return;
 			}
+
+			// Material creation event
+			ChannelServer.Instance.Events.OnCreatureProducedItem(new ProductionEventArgs(creature, productData, false, null));
 
 		L_Fail:
 			// Unofficial

@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
+using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data;
 using Aura.Data.Database;
@@ -218,6 +219,10 @@ namespace Aura.Channel.Skills.Life
 			// Add item to inv
 			creature.Inventory.Add(item, true);
 
+			// Cooking event
+			ChannelServer.Instance.Events.OnCreatureCookedMeal(new CookingEventArgs(creature, recipe, success, item));
+
+			// Effects and response
 			Send.AcquireInfo2Cooking(creature, item.EntityId, item.Info.Id, success);
 			Send.Effect(creature, Effect.Cooking, (byte)0, (byte)(success ? 4 : 1));
 

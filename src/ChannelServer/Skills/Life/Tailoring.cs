@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
+using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data;
 using Aura.Data.Database;
@@ -345,6 +346,9 @@ namespace Aura.Channel.Skills.Life
 				var quality = this.CalculateQuality(stitches, creature.Temp.TailoringMiniGameX, creature.Temp.TailoringMiniGameY);
 				this.FinishItem(creature, skill, manualData, 0, existingItem, quality);
 				this.OnProgress(creature, skill, ProgressResult.Finish);
+
+				// Creation event
+				ChannelServer.Instance.Events.OnCreatureCreatedItem(new CreationEventArgs(creature, CreationMethod.Tailoring, existingItem, manualData.Rank));
 
 				result = ProgressResult.Finish;
 				success = true;

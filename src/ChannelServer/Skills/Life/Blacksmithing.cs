@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
+using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data;
 using Aura.Data.Database;
@@ -368,6 +369,9 @@ namespace Aura.Channel.Skills.Life
 				var quality = this.CalculateQuality(hits, creature.Temp.BlacksmithingMiniGameDots);
 				this.FinishItem(creature, skill, manualData, creature.Temp.CreationFinishId, item, quality);
 				this.OnProgress(creature, skill, item, ProgressResult.Finish);
+
+				// Creation event
+				ChannelServer.Instance.Events.OnCreatureCreatedItem(new CreationEventArgs(creature, CreationMethod.Blacksmithing, item, manualData.Rank));
 			}
 
 			// Add or update item
