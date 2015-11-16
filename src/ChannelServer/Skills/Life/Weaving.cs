@@ -21,6 +21,30 @@ namespace Aura.Channel.Skills.Life
 	[Skill(SkillId.Weaving)]
 	public class Weaving : ProductionSkill
 	{
+		protected override bool CheckTools(Creature creature, Skill skill, ProductionData productData)
+		{
+			// Hands need to be free
+			if (!creature.HandsFree)
+			{
+				Send.Notice(creature, Localization.Get("You're going to need both hands free to weave anything."));
+				return false;
+			}
+
+			// The only production tool for weaving are gloves
+			if (productData.Tool != null)
+			{
+				var glove = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
+				if (glove == null || !glove.HasTag(productData.Tool))
+				{
+					// Unofficial
+					Send.Notice(creature, Localization.Get("You need access to a Spinning Wheel or Loom."));
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		protected override bool CheckCategory(Creature creature, ProductionCategory category)
 		{
 			return (category == ProductionCategory.Spinning || category == ProductionCategory.Weaving);
@@ -40,11 +64,24 @@ namespace Aura.Channel.Skills.Life
 			if (!creature.GetPosition().InRange(prop.GetPosition(), 1000))
 			{
 				// Don't warn, could happen due to lag.
-				Send.Notice(creature, Localization.Get("You are too far away."));
+				Send.Notice(creature, Localization.Get("You can't reach a Spinning Wheel or Loom from here."));
 				return false;
 			}
 
 			return true;
+		}
+
+		protected override void UpdateTool(Creature creature, ProductionData productData)
+		{
+			if (productData.Tool == null)
+				return;
+
+			var glove = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
+			if (glove == null)
+				return;
+
+			creature.Inventory.ReduceDurability(glove, productData.Durability);
+			creature.Inventory.AddProficiency(glove, Proficiency);
 		}
 
 		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success)

@@ -24,7 +24,7 @@ namespace Aura.Channel.Skills.Life
 			Send.UseMotion(creature, 11, 3);
 		}
 
-		protected override bool CheckTools(Creature creature, Skill skill)
+		protected override bool CheckTools(Creature creature, Skill skill, ProductionData productData)
 		{
 			if (creature.RightHand == null || !creature.RightHand.HasTag("/handicraft_kit/"))
 			{

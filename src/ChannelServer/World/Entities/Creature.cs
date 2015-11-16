@@ -156,6 +156,7 @@ namespace Aura.Channel.World.Entities
 		public Item RightHand { get { return this.Inventory.RightHand; } }
 		public Item LeftHand { get { return this.Inventory.LeftHand; } }
 		public Item Magazine { get { return this.Inventory.Magazine; } }
+		public bool HandsFree { get { return (this.RightHand == null && this.LeftHand == null && this.Magazine == null); } }
 
 		// Movement
 		// ------------------------------------------------------------------

@@ -69,9 +69,6 @@ namespace Aura.Channel.Skills.Base
 		/// </example>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			if (!this.CheckTools(creature, skill))
-				return false;
-
 			var unkByte = packet.GetByte();
 			var propEntityId = 0L;
 			var unkInt = 0;
@@ -110,6 +107,10 @@ namespace Aura.Channel.Skills.Base
 				return false;
 			}
 			var productData = potentialProducts[0];
+
+			// Check tools
+			if (!this.CheckTools(creature, skill, productData))
+				return false;
 
 			// Check prop
 			if (!this.CheckProp(creature, propEntityId))
@@ -200,6 +201,10 @@ namespace Aura.Channel.Skills.Base
 			// Get reference product for checks and mats
 			var productData = potentialProducts[0];
 
+			// Check tools
+			if (!this.CheckTools(creature, skill, productData))
+				goto L_Fail;
+
 			// Check mana
 			if (!this.CheckMana(creature, productData))
 				goto L_Fail;
@@ -208,26 +213,6 @@ namespace Aura.Channel.Skills.Base
 			{
 				creature.Mana -= productData.Mana;
 				Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana);
-			}
-
-			// Check tool
-			// Sanity check, the client should be handling this.
-			if (productData.Tool != null)
-			{
-				// TODO: Check durability? What happens if tool is unusable?
-				if (creature.RightHand == null || !creature.RightHand.HasTag(productData.Tool))
-				{
-					Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without the appropriate tool.", creature.EntityId);
-					goto L_Fail;
-				}
-			}
-			else
-			{
-				if (creature.RightHand != null)
-				{
-					Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without empty hands.", creature.EntityId);
-					goto L_Fail;
-				}
 			}
 
 			// Check materials
@@ -287,11 +272,7 @@ namespace Aura.Channel.Skills.Base
 			var success = (rnd.Next(100) < chance);
 
 			// Update tool's durability and proficiency
-			if (productData.Tool != null)
-			{
-				creature.Inventory.ReduceDurability(creature.RightHand, productData.Durability);
-				creature.Inventory.AddProficiency(creature.RightHand, Proficiency);
-			}
+			this.UpdateTool(creature, productData);
 
 			// Skill training
 			this.SkillTraining(creature, skill, productData, success);
@@ -367,13 +348,49 @@ namespace Aura.Channel.Skills.Base
 		}
 
 		/// <summary>
+		/// Updates tool's durability and proficiency.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="productData"></param>
+		protected virtual void UpdateTool(Creature creature, ProductionData productData)
+		{
+			if (productData.Tool == null)
+				return;
+
+			creature.Inventory.ReduceDurability(creature.RightHand, productData.Durability);
+			creature.Inventory.AddProficiency(creature.RightHand, Proficiency);
+		}
+
+		/// <summary>
 		/// Checks tools from Prepare, to maybe cancel skill.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="skill"></param>
+		/// <param name="productData"></param>
 		/// <returns></returns>
-		protected virtual bool CheckTools(Creature creature, Skill skill)
+		protected virtual bool CheckTools(Creature creature, Skill skill, ProductionData productData)
 		{
+			// Check tool
+			// Sanity check, the client should be handling this.
+			if (productData.Tool != null)
+			{
+				if (creature.RightHand == null || !creature.RightHand.HasTag(productData.Tool))
+				{
+					Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without the appropriate tool.", creature.EntityId);
+					return false;
+				}
+			}
+			else
+			{
+				if (creature.RightHand != null)
+				{
+					Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without empty hands.", creature.EntityId);
+					return false;
+				}
+			}
+
+			// TODO: Check durability? What happens if tool is unusable?
+
 			return true;
 		}
 

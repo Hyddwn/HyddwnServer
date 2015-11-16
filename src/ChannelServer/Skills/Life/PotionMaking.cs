@@ -22,7 +22,7 @@ namespace Aura.Channel.Skills.Life
 			ChannelServer.Instance.Events.PlayerUsesItem += this.OnPlayerUsesItem;
 		}
 
-		protected override bool CheckTools(Creature creature, Skill skill)
+		protected override bool CheckTools(Creature creature, Skill skill, ProductionData productData)
 		{
 			if (creature.RightHand == null || !creature.RightHand.HasTag("/potion_making/kit/"))
 			{
