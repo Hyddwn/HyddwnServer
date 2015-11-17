@@ -10,7 +10,7 @@ public class SheepAi : AiScript
 	protected override IEnumerable Idle()
 	{
 		Do(Wander());
-		Do(Wait(3000, 10000));
+		Do(Wait(10000, 14000));
 	}
 	
 	protected override IEnumerable Alert()
