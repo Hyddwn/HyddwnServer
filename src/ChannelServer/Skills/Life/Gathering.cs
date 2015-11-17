@@ -180,7 +180,7 @@ namespace Aura.Channel.Skills.Life
 				targetProp.Resource += (float)((DateTime.Now - targetProp.LastCollect).TotalMinutes * collectData.ResourceRecovering);
 
 				// Fail if currently no resources available
-				if (targetProp.Resource < collectData.ResourceReduction)
+				if (targetProp.Resource < reduction)
 				{
 					this.DoComplete(creature, entityId, collectId, false, 2);
 					return;
@@ -190,27 +190,28 @@ namespace Aura.Channel.Skills.Life
 				if (collectSuccess)
 				{
 					if (!ChannelServer.Instance.Conf.World.InfiniteResources)
-						targetProp.Resource -= collectData.ResourceReduction;
+						targetProp.Resource -= reduction;
 					targetProp.LastCollect = DateTime.Now;
 				}
 
 				// Set prop's state to "empty" if it was emptied and is not
 				// regenerating resources.
-				if (collectData.ResourceRecovering == 0 && targetProp.Resource < collectData.ResourceReduction)
+				if (collectData.ResourceRecovering == 0 && targetProp.Resource < reduction)
 					targetProp.SetState("empty");
 			}
 			else
 			{
 				var targetCreature = (Creature)targetEntity;
 
-				if (targetCreature.Mana < collectData.ResourceReduction)
+				// Fail if creature doesn't have enough mana
+				if (targetCreature.Mana < reduction)
 				{
 					this.DoComplete(creature, entityId, collectId, false, 2);
 					return;
 				}
 
 				if (collectSuccess && !ChannelServer.Instance.Conf.World.InfiniteResources)
-					targetCreature.Mana -= collectData.ResourceReduction;
+					targetCreature.Mana -= reduction;
 			}
 
 			// Drop
