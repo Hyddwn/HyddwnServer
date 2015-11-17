@@ -271,6 +271,34 @@ namespace Aura.Channel.Skills.Base
 			var rnd = RandomProvider.Get();
 			var success = (rnd.Next(100) < chance);
 
+			// Select random product
+			// Do this here, so we have the data for skill training,
+			// no matter the outcome.
+			if (potentialProducts.Length > 1)
+			{
+				var itemId = 0;
+				var num = rnd.NextDouble() * baseChance;
+				var n = 0.0;
+				foreach (var potentialProduct in potentialProducts)
+				{
+					n += potentialProduct.SuccessRates[rank];
+					if (num <= n)
+					{
+						itemId = potentialProduct.ItemId;
+						productData = potentialProduct;
+						break;
+					}
+				}
+
+				// Sanity check
+				if (itemId == 0)
+				{
+					Log.Error("ProductionSkill.Complete: Failed to select random product item for {0}/{1}, num: {2}.", category, productId, num);
+					Send.ServerMessage(creature, "Failed to generate product.");
+					goto L_Fail;
+				}
+			}
+
 			// Update tool's durability and proficiency
 			this.UpdateTool(creature, productData);
 
@@ -289,39 +317,17 @@ namespace Aura.Channel.Skills.Base
 
 			if (success)
 			{
-				// Select random product
-				var itemId = 0;
-				var num = rnd.NextDouble() * baseChance;
-				var n = 0.0;
-				foreach (var potentialProduct in potentialProducts)
-				{
-					n += potentialProduct.SuccessRates[rank];
-					if (num <= n)
-					{
-						itemId = potentialProduct.ItemId;
-						break;
-					}
-				}
-
-				// Sanity check
-				if (itemId == 0)
-				{
-					Log.Error("ProductionSkill.Complete: Failed to select random product item for {0}/{1}, num: {2}.", category, productId, num);
-					Send.ServerMessage(creature, "Failed to generate product.");
-					goto L_Fail;
-				}
-
 				// Check item
 				var productItemData = AuraData.ItemDb.Find(productData.ItemId);
 				if (productItemData == null)
 				{
-					Log.Error("ProductionSkill.Complete: Unknown product item '{0}'.", itemId);
+					Log.Error("ProductionSkill.Complete: Unknown product item '{0}'.", productData.ItemId);
 					Send.ServerMessage(creature, "Unknown product item.");
 					goto L_Fail;
 				}
 
 				// Create product
-				var productItem = new Item(itemId);
+				var productItem = new Item(productData.ItemId);
 				productItem.Amount = productData.Amount;
 
 				// Add product to inventory
