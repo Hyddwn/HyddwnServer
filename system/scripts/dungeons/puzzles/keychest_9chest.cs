@@ -19,24 +19,26 @@ public abstract class Keychest9ChestScript : PuzzleScript
 	{
 		var place = puzzle.GetPlace("Place");
 
-		// Get 3 random numbers between 1 and 9
-		var monsterChests = UniqueRnd(3, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+		// Get 4 random numbers between 1 and 9
+		var specialChests = UniqueRnd(4, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-		// Spawn 9 chests, with monsters in 3 of them
+		// Spawn 9 chests, with monsters in 3, and an enchant in one of them
 		for (int i = 1; i <= 9; ++i)
 		{
-			var monsterChest = monsterChests.Contains(i);
+			// First 3 special chests are monsters, last is enchant
+			var isMonsterChest = specialChests.Take(3).Contains(i);
+			var isEnchantChest = specialChests[3] == i;
 
 			var chest = new LockedChest(puzzle, "Chest" + i, "lock1");
-			AddChestDrops(chest, i, monsterChest);
+			AddChestDrops(chest, i, isMonsterChest, isEnchantChest);
 			place.AddProp(chest, Placement.Center9);
 
 			puzzle.Set("Chest" + i + "Open", false);
-			puzzle.Set("Chest" + i + "Monster", monsterChest);
+			puzzle.Set("Chest" + i + "Monster", isMonsterChest);
 		}
 	}
 
-	protected abstract void AddChestDrops(Chest chest, int chestNum, bool monsterChest);
+	protected abstract void AddChestDrops(Chest chest, int chestNum, bool isMonsterChest, bool isEnchantChest);
 
 	public override void OnPropEvent(Puzzle puzzle, Prop prop)
 	{
@@ -67,111 +69,127 @@ public abstract class Keychest9ChestScript : PuzzleScript
 [PuzzleScript("keychest_9chest_ciar")]
 public class Keychest9ChestCiarScript : Keychest9ChestScript
 {
-	protected override void AddChestDrops(Chest chest, int chestNum, bool monsterChest)
+	protected override void AddChestDrops(Chest chest, int chestNum, bool isMonsterChest, bool isEnchantChest)
 	{
-		if (!monsterChest)
+		// Gold
+		if (!isMonsterChest)
 			chest.Add(Item.Create(id: 2000, amountMin: 100, amountMax: 250));
 
 		// Enchant
-		int prefix = 0, suffix = 0;
-		switch (Random(10))
+		if (isEnchantChest)
 		{
-			case 0:
-			case 1:
-			case 2:
-			case 3: prefix = 20205; break; // Restfull
-			case 4:
-			case 5:
-			case 6: prefix = 20204; break; // Foggy
-			case 7:
-			case 8: suffix = 30501; break; // Giant
-			case 9: suffix = 30602; break; // Healer
-		}
+			int prefix = 0, suffix = 0;
+			switch (Random(10))
+			{
+				case 0:
+				case 1:
+				case 2:
+				case 3: prefix = 20205; break; // Restfull
+				case 4:
+				case 5:
+				case 6: prefix = 20204; break; // Foggy
+				case 7:
+				case 8: suffix = 30501; break; // Giant
+				case 9: suffix = 30602; break; // Healer
+			}
 
-		chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+			chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+		}
 	}
 }
 
 [PuzzleScript("keychest_9chest_barri")]
 public class Keychest9ChestBarriScript : Keychest9ChestScript
 {
-	protected override void AddChestDrops(Chest chest, int chestNum, bool monsterChest)
+	protected override void AddChestDrops(Chest chest, int chestNum, bool isMonsterChest, bool isEnchantChest)
 	{
-		if (!monsterChest)
+		// Gold
+		if (!isMonsterChest)
 			chest.Add(Item.Create(id: 2000, amountMin: 250, amountMax: 400));
 
 		// Enchant
-		int prefix = 0, suffix = 0;
-		switch (Random(10))
+		if (isEnchantChest)
 		{
-			case 0:
-			case 1:
-			case 2: prefix = 20401; break; // Smart
-			case 3:
-			case 4:
-			case 5: prefix = 20402; break; // Strong
-			case 6:
-			case 7: suffix = 30702; break; // Raven
-			case 8: suffix = 30704; break; // Deadly
-			case 9: suffix = 30805; break; // Falcon
-		}
+			int prefix = 0, suffix = 0;
+			switch (Random(10))
+			{
+				case 0:
+				case 1:
+				case 2: prefix = 20401; break; // Smart
+				case 3:
+				case 4:
+				case 5: prefix = 20402; break; // Strong
+				case 6:
+				case 7: suffix = 30702; break; // Raven
+				case 8: suffix = 30704; break; // Deadly
+				case 9: suffix = 30805; break; // Falcon
+			}
 
-		chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+			chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+		}
 	}
 }
 
 [PuzzleScript("keychest_9chest_rabbie")]
 public class Keychest9ChestRabbieScript : Keychest9ChestScript
 {
-	protected override void AddChestDrops(Chest chest, int chestNum, bool monsterChest)
+	protected override void AddChestDrops(Chest chest, int chestNum, bool isMonsterChest, bool isEnchantChest)
 	{
-		if (!monsterChest)
+		// Gold
+		if (!isMonsterChest)
 			chest.Add(Item.Create(id: 2000, amountMin: 150, amountMax: 350));
 
 		// Enchant
-		int prefix = 0, suffix = 0;
-		switch (Random(10))
+		if (isEnchantChest)
 		{
-			case 0:
-			case 1:
-			case 2:
-			case 3: prefix = 20205; break; // Restfull
-			case 4:
-			case 5:
-			case 6: prefix = 20204; break; // Mist
-			case 7:
-			case 8: suffix = 30501; break; // Giant
-			case 9: suffix = 30602; break; // Healer
-		}
+			int prefix = 0, suffix = 0;
+			switch (Random(10))
+			{
+				case 0:
+				case 1:
+				case 2:
+				case 3: prefix = 20205; break; // Restfull
+				case 4:
+				case 5:
+				case 6: prefix = 20204; break; // Mist
+				case 7:
+				case 8: suffix = 30501; break; // Giant
+				case 9: suffix = 30602; break; // Healer
+			}
 
-		chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+			chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+		}
 	}
 }
 
 [PuzzleScript("keychest_9chest_mid_supply")]
 public class Keychest9ChestMidSupplyScript : Keychest9ChestScript
 {
-	protected override void AddChestDrops(Chest chest, int chestNum, bool monsterChest)
+	protected override void AddChestDrops(Chest chest, int chestNum, bool isMonsterChest, bool isEnchantChest)
 	{
-		if (!monsterChest)
+		// Gold
+		if (!isMonsterChest)
 			chest.Add(Item.Create(id: 2000, amountMin: 250, amountMax: 1000));
 
 		// Enchant
-		int prefix = 0, suffix = 0;
-		switch (Random(10))
+		if (isEnchantChest)
 		{
-			case 0:
-			case 1:
-			case 2:
-			case 3: prefix = 20205; break; // Restfull
-			case 4:
-			case 5:
-			case 6: prefix = 20204; break; // Mist
-			case 7:
-			case 8: suffix = 30501; break; // Giant
-			case 9: suffix = 30602; break; // Healer
-		}
+			int prefix = 0, suffix = 0;
+			switch (Random(10))
+			{
+				case 0:
+				case 1:
+				case 2:
+				case 3: prefix = 20205; break; // Restfull
+				case 4:
+				case 5:
+				case 6: prefix = 20204; break; // Mist
+				case 7:
+				case 8: suffix = 30501; break; // Giant
+				case 9: suffix = 30602; break; // Healer
+			}
 
-		chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+			chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+		}
 	}
 }
