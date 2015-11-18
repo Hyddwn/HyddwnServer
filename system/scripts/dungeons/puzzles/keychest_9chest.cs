@@ -18,8 +18,11 @@ public abstract class Keychest9ChestScript : PuzzleScript
 	public override void OnPuzzleCreate(Puzzle puzzle)
 	{
 		var place = puzzle.GetPlace("Place");
+
+		// Get 3 random numbers between 1 and 9
 		var monsterChests = UniqueRnd(3, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
+		// Spawn 9 chests, with monsters in 3 of them
 		for (int i = 1; i <= 9; ++i)
 		{
 			var monsterChest = monsterChests.Contains(i);
@@ -124,6 +127,34 @@ public class Keychest9ChestRabbieScript : Keychest9ChestScript
 	{
 		if (!monsterChest)
 			chest.Add(Item.Create(id: 2000, amountMin: 150, amountMax: 350));
+
+		// Enchant
+		int prefix = 0, suffix = 0;
+		switch (Random(10))
+		{
+			case 0:
+			case 1:
+			case 2:
+			case 3: prefix = 20205; break; // Restfull
+			case 4:
+			case 5:
+			case 6: prefix = 20204; break; // Mist
+			case 7:
+			case 8: suffix = 30501; break; // Giant
+			case 9: suffix = 30602; break; // Healer
+		}
+
+		chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+	}
+}
+
+[PuzzleScript("keychest_9chest_mid_supply")]
+public class Keychest9ChestMidSupplyScript : Keychest9ChestScript
+{
+	protected override void AddChestDrops(Chest chest, int chestNum, bool monsterChest)
+	{
+		if (!monsterChest)
+			chest.Add(Item.Create(id: 2000, amountMin: 250, amountMax: 1000));
 
 		// Enchant
 		int prefix = 0, suffix = 0;
