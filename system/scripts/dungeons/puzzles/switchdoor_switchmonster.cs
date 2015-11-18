@@ -69,6 +69,6 @@ public class ChestKeySwitchDoorSwitchMonsterScript : SwitchDoorSwitchMonsterScri
 {
 	public override void OnMobAllocated(Puzzle puzzle, MonsterGroup group)
 	{
-		group.AddDrop(Item.CreateKey(70028, 0xCCCCCC, "lock1"));
+		group.AddDrop(Item.CreateKey(70028, 0xEAC014, "lock1"));
 	}
 }
