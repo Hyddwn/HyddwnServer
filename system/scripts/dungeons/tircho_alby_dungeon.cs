@@ -47,24 +47,46 @@ public class AlbyDungeonScript : DungeonScript
 		// Alby Int 1
 		if (item.Info.Id == 63116) // Alby Intermediate Fomor Pass for One
 		{
-			dungeonName = "tircho_alby_middle_1_dungeon";
-			return true;
+			if (creature.Party.MemberCount == 1)
+			{
+				dungeonName = "tircho_alby_middle_1_dungeon";
+				return true;
+			}
+			else
+			{
+				Send.Notice(creature, L("You can only enter this dungeon alone."));
+				return false;
+			}
 		}
 
 		// Alby Int 2
-		// TODO: Party check
 		if (item.Info.Id == 63117) // Alby Intermediate Fomor Pass for Two
 		{
-			dungeonName = "tircho_alby_middle_2_dungeon";
-			return true;
+			if (creature.Party.MemberCount == 2)
+			{
+				dungeonName = "tircho_alby_middle_2_dungeon";
+				return true;
+			}
+			else
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 2 members."));
+				return false;
+			}
 		}
 
 		// Alby Int 4
-		// TODO: Party check
 		if (item.Info.Id == 63118) // Alby Intermediate Fomor Pass for Four
 		{
-			dungeonName = "tircho_alby_middle_4_dungeon";
-			return true;
+			if (creature.Party.MemberCount == 4)
+			{
+				dungeonName = "tircho_alby_middle_4_dungeon";
+				return true;
+			}
+			else
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 4 members."));
+				return false;
+			}
 		}
 
 		// tircho_alby_dungeon

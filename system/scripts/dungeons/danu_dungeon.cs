@@ -14,24 +14,46 @@ public class FiodhDungeonRouteScript : DungeonScript
 		// Fiodh Int 1
 		if (item.Info.Id == 63119) // Fiodh Intermediate Fomor Pass for One
 		{
-			dungeonName = "gairech_fiodh_middle_1_dungeon";
-			return true;
+			if (creature.Party.MemberCount == 1)
+			{
+				dungeonName = "gairech_fiodh_middle_1_dungeon";
+				return true;
+			}
+			else
+			{
+				Send.Notice(creature, L("You can only enter this dungeon alone."));
+				return false;
+			}
 		}
 
 		// Fiodh Int 2
-		// TODO: Party check
 		if (item.Info.Id == 63120) // Fiodh Intermediate Fomor Pass for Two
 		{
-			dungeonName = "gairech_fiodh_middle_2_dungeon";
-			return true;
+			if (creature.Party.MemberCount == 2)
+			{
+				dungeonName = "gairech_fiodh_middle_2_dungeon";
+				return true;
+			}
+			else
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 2 members."));
+				return false;
+			}
 		}
 
 		// Fiodh Int 4
-		// TODO: Party check
 		if (item.Info.Id == 63121) // Fiodh Intermediate Fomor Pass for Four
 		{
-			dungeonName = "gairech_fiodh_middle_4_dungeon";
-			return true;
+			if (creature.Party.MemberCount == 4)
+			{
+				dungeonName = "gairech_fiodh_middle_4_dungeon";
+				return true;
+			}
+			else
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 4 members."));
+				return false;
+			}
 		}
 
 		dungeonName = "gairech_fiodh_dungeon";

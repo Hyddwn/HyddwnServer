@@ -268,7 +268,7 @@ namespace Aura.Channel.World.Dungeons
 			// Check route
 			if (!dungeonScript.Route(creature, item, ref dungeonName))
 			{
-				Send.Notice(creature, "Routing fail.");
+				// The response in case of a fail is handled by the router.
 				return false;
 			}
 

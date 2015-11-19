@@ -26,24 +26,46 @@ public class CiarDungeonScript : DungeonScript
 		// Ciar Int 1
 		if (item.Info.Id == 63123) // Ciar Intermediate Fomor Pass for One
 		{
-			dungeonName = "tircho_ciar_middle_1_dungeon";
-			return true;
+			if (creature.Party.MemberCount == 1)
+			{
+				dungeonName = "tircho_ciar_middle_1_dungeon";
+				return true;
+			}
+			else
+			{
+				Send.Notice(creature, L("You can only enter this dungeon alone."));
+				return false;
+			}
 		}
 
 		// Ciar Int 2
-		// TODO: Party check
 		if (item.Info.Id == 63124) // Ciar Intermediate Fomor Pass for Two
 		{
-			dungeonName = "tircho_ciar_middle_2_dungeon";
-			return true;
+			if (creature.Party.MemberCount == 2)
+			{
+				dungeonName = "tircho_ciar_middle_2_dungeon";
+				return true;
+			}
+			else
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 2 members."));
+				return false;
+			}
 		}
 
 		// Ciar Int 4
-		// TODO: Party check
 		if (item.Info.Id == 63125) // Ciar Intermediate Fomor Pass for Four
 		{
-			dungeonName = "tircho_ciar_middle_4_dungeon";
-			return true;
+			if (creature.Party.MemberCount == 4)
+			{
+				dungeonName = "tircho_ciar_middle_4_dungeon";
+				return true;
+			}
+			else
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 4 members."));
+				return false;
+			}
 		}
 
 		// tircho_ciar_dungeon

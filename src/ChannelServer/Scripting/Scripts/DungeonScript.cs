@@ -66,6 +66,15 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Proxy for Localization.Get.
+		/// </summary>
+		/// <param name="phrase"></param>
+		protected string L(string phrase)
+		{
+			return Localization.Get(phrase);
+		}
+
+		/// <summary>
 		/// Changes dungeonName depending on the item, returns true if routing
 		/// was successful, if not, the dungeon was invalid.
 		/// </summary>
