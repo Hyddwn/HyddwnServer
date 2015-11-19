@@ -16,6 +16,13 @@ public class RabbieDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Fall back for unknown passes
+		if (item.IsDungeonPass)
+		{
+			Send.Notice(creature, L("This dungeon hasn't been implemented yet."));
+			return false;
+		}
+
 		// dunbarton_rabbie_dungeon
 		return true;
 	}

@@ -228,6 +228,15 @@ namespace Aura.Channel.World.Entities
 		public bool IsDungeonKey { get { return (this.Info.Id >= 70028 && this.Info.Id <= 70030); } }
 
 		/// <summary>
+		/// Returns true if item is a dungeon pass.
+		/// </summary>
+		/// <remarks>
+		/// Quest items that work like a dungeon pass basically are dungeon
+		/// passes, and should return true as well.
+		/// </remarks>
+		public bool IsDungeonPass { get { return (this.HasTag("/dungeon_pass/")); } }
+
+		/// <summary>
 		/// Returns true if item is a shield.
 		/// </summary>
 		public bool IsShield { get { return this.HasTag("/shield/"); } }

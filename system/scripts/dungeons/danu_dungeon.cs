@@ -56,6 +56,13 @@ public class FiodhDungeonRouteScript : DungeonScript
 			}
 		}
 
+		// Fall back for unknown passes
+		if (item.IsDungeonPass)
+		{
+			Send.Notice(creature, L("This dungeon hasn't been implemented yet."));
+			return false;
+		}
+
 		dungeonName = "gairech_fiodh_dungeon";
 		return true;
 	}

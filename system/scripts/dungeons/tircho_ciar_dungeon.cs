@@ -68,6 +68,13 @@ public class CiarDungeonScript : DungeonScript
 			}
 		}
 
+		// Fall back for unknown passes
+		if (item.IsDungeonPass)
+		{
+			Send.Notice(creature, L("This dungeon hasn't been implemented yet."));
+			return false;
+		}
+
 		// tircho_ciar_dungeon
 		return true;
 	}
