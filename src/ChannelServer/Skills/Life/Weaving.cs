@@ -23,23 +23,40 @@ namespace Aura.Channel.Skills.Life
 	{
 		protected override bool CheckTools(Creature creature, Skill skill, ProductionData productData)
 		{
-			// Hands need to be free
-			if (!creature.HandsFree)
+			// The only weaving tool in the db are gloves, for silk,
+			// while spinning, which is also handled by Weaving,
+			// uses blades for leather straps. That's why we need
+			// special handling for weaving.
+			if (productData.Category == ProductionCategory.Weaving)
 			{
-				Send.Notice(creature, Localization.Get("You're going to need both hands free to weave anything."));
-				return false;
-			}
-
-			// The only production tool for weaving are gloves
-			if (productData.Tool != null)
-			{
-				var glove = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
-				if (glove == null || !glove.HasTag(productData.Tool))
+				// Hands need to be free
+				if (!creature.HandsFree)
 				{
-					// Unofficial
-					Send.Notice(creature, Localization.Get("You need access to a Spinning Wheel or Loom."));
+					Send.Notice(creature, Localization.Get("You're going to need both hands free to weave anything."));
 					return false;
 				}
+
+				// The only production tool for weaving are gloves
+				if (productData.Tool != null)
+				{
+					var glove = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
+					if (glove == null || !glove.HasTag(productData.Tool))
+					{
+						// Unofficial
+						Send.Notice(creature, Localization.Get("You need access to a Spinning Wheel or Loom."));
+						return false;
+					}
+				}
+			}
+			else if (productData.Category == ProductionCategory.Spinning)
+			{
+				// Run the standard tests for spinning.
+				return base.CheckTools(creature, skill, productData);
+			}
+			else
+			{
+				Log.Error("Weaving.CheckTools: Unknown product category '{0}'.", productData.Category);
+				return false;
 			}
 
 			return true;
@@ -76,12 +93,30 @@ namespace Aura.Channel.Skills.Life
 			if (productData.Tool == null)
 				return;
 
-			var glove = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
-			if (glove == null)
-				return;
+			Item item;
 
-			creature.Inventory.ReduceDurability(glove, productData.Durability);
-			creature.Inventory.AddProficiency(glove, Proficiency);
+			if (productData.Category == ProductionCategory.Weaving)
+			{
+				item = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
+			}
+			else if (productData.Category == ProductionCategory.Spinning)
+			{
+				item = creature.RightHand;
+			}
+			else
+			{
+				Log.Error("Weaving.UpdateTool: Unknown product category '{0}'.", productData.Category);
+				return;
+			}
+
+			if (item == null)
+			{
+				Log.Error("Weaving.UpdateTool: No item to update found. Category: {0}", productData.Category);
+				return;
+			}
+
+			creature.Inventory.ReduceDurability(item, productData.Durability);
+			creature.Inventory.AddProficiency(item, Proficiency);
 		}
 
 		protected override void SkillTraining(Creature creature, Skill skill, ProductionData data, bool success)
