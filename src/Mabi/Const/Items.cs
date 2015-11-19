@@ -134,7 +134,7 @@ namespace Aura.Mabi.Const
 	/// <remarks>
 	/// Attr_ActionFlag in item db.
 	/// </remarks>
-	public enum ItemActionFlag
+	public enum ItemAction
 	{
 		NormalItem = 0,
 		StaticItem = 1,

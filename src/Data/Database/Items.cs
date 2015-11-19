@@ -18,6 +18,7 @@ namespace Aura.Data.Database
 		public string KorName { get; set; }
 
 		public ItemType Type { get; set; }
+		public ItemAction Action { get; set; }
 
 		/// <summary>
 		/// Specifies whether an item is consumed upon use.
@@ -131,6 +132,7 @@ namespace Aura.Data.Database
 			info.KorName = entry.ReadString("originalName");
 			info.Tags = entry.ReadString("tags");
 			info.Type = (ItemType)entry.ReadInt("type");
+			info.Action = (ItemAction)entry.ReadInt("action");
 			info.StackType = (StackType)entry.ReadInt("stackType");
 			info.StackMax = entry.ReadUShort("stackMax", 1);
 
