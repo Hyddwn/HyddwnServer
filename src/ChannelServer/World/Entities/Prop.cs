@@ -262,7 +262,7 @@ namespace Aura.Channel.World.Entities
 
 				var item = new Item(dropItemInfo.ItemClass);
 				item.Info.Amount = rndAmount;
-				item.Drop(prop.Region, creature.GetPosition());
+				item.Drop(prop.Region, creature.GetPosition(), creature, false);
 			};
 		}
 

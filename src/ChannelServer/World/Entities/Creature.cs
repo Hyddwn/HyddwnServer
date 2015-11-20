@@ -1640,7 +1640,7 @@ namespace Aura.Channel.World.Entities
 						}
 
 						var gold = Item.CreateGold(Math.Min(1000, amount));
-						gold.Drop(this.Region, pos);
+						gold.Drop(this.Region, pos, killer, false);
 
 						amount -= gold.Info.Amount;
 					}
@@ -1667,14 +1667,14 @@ namespace Aura.Channel.World.Entities
 					var dropPos = pos.GetRandomInRange(50, rnd);
 
 					var item = new Item(drop);
-					item.Drop(this.Region, pos);
+					item.Drop(this.Region, pos, killer, false);
 
 					dropped.Add(drop.ItemId);
 				}
 			}
 
 			foreach (var item in this.Drops.StaticDrops)
-				item.Drop(this.Region, pos);
+				item.Drop(this.Region, pos, killer, false);
 
 			this.Drops.ClearStaticDrops();
 		}

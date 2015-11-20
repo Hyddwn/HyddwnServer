@@ -140,7 +140,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			if (!ChannelServer.Instance.World.DungeonManager.CheckDrop(creature, item))
-				item.Drop(creature.Region, creature.GetPosition());
+				item.Drop(creature.Region, creature.GetPosition(), creature, true);
 
 			Send.ItemDropR(creature, true);
 

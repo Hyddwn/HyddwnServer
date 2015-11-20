@@ -38,15 +38,24 @@ namespace Aura.Channel.World.Dungeons.Props
 				return;
 
 			this.SetState("open");
-			this.DropItems();
+			this.DropItems(creature);
 		}
 
-		public void DropItems()
+		/// <summary>
+		/// Drops all items inside the chest to the floor.
+		/// </summary>
+		/// <param name="opener">If not null, creature becomes the owner of the items.</param>
+		public void DropItems(Creature opener)
 		{
 			lock (_items)
 			{
 				foreach (var item in _items)
-					item.Drop(this.Region, this.GetPosition());
+				{
+					if (opener == null)
+						item.Drop(this.Region, this.GetPosition());
+					else
+						item.Drop(this.Region, this.GetPosition(), opener, false);
+				}
 				_items.Clear();
 			}
 		}
@@ -115,7 +124,7 @@ namespace Aura.Channel.World.Dungeons.Props
 
 			// Open and drop
 			prop.SetState("open");
-			this.DropItems();
+			this.DropItems(creature);
 		}
 	}
 

@@ -580,7 +580,7 @@ namespace Aura.Channel.World.Entities
 		/// <param name="pos"></param>
 		public void Drop(Region region, Position pos)
 		{
-			this.Drop(region, pos, 0, false);
+			this.Drop(region, pos, null, false);
 		}
 
 		/// <summary>
@@ -590,15 +590,16 @@ namespace Aura.Channel.World.Entities
 		/// <param name="pos">
 		/// Center point of the drop, which is slightly randomized in this method.
 		/// </param>
-		/// <param name="ownerId">
+		/// <param name="owner">
 		/// The only entity that is allowed to pick up the item for a
 		/// certain period of time. Set to null to not protect item from
 		/// being picked up.
 		/// </param>
 		/// <param name="playerDrop">
-		/// Specifies whether the item is being dropped by a player, the owner.
+		/// Whether the item is being dropped by a player, the owner.
+		/// If it is, normal items aren't protected.
 		/// </param>
-		public void Drop(Region region, Position pos, long ownerId, bool playerDrop)
+		public void Drop(Region region, Position pos, Creature owner, bool playerDrop)
 		{
 			var rnd = RandomProvider.Get();
 
@@ -614,9 +615,9 @@ namespace Aura.Channel.World.Entities
 				this.DisappearTime = DateTime.Now.AddSeconds(Math.Max(60, (this.OptionInfo.Price / 100) * 60));
 
 			// Specify who can pick up the item when
-			if (ownerId != 0)
+			if (owner != null)
 			{
-				this.OwnerId = ownerId;
+				this.OwnerId = owner.EntityId;
 
 				switch (this.Data.Action)
 				{
