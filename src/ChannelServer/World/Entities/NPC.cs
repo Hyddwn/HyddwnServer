@@ -283,7 +283,7 @@ namespace Aura.Channel.World.Entities
 		{
 			base.Kill(killer);
 
-			this.DisappearTime = DateTime.Now.AddSeconds(20);
+			this.DisappearTime = DateTime.Now.AddSeconds(Creature.DisappearDelay);
 
 			if (killer == null)
 				return;

@@ -33,6 +33,12 @@ namespace Aura.Channel.World.Entities
 		private const float MinWeight = 0.7f, MaxWeight = 1.5f;
 		private const float MaxFoodStatBonus = 100;
 
+		/// <summary>
+		/// Time it takes a creature (i.e. a monster) to disappear
+		/// after dying in seconds.
+		/// </summary>
+		public const int DisappearDelay = 20;
+
 		private byte _inquiryId;
 		private Dictionary<byte, Action<Creature>> _inquiryCallbacks;
 
