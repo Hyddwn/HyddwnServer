@@ -116,6 +116,11 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public int RebirthCount { get; set; }
 
+		/// <summary>
+		/// Returns true if creature has the devCAT title selected.
+		/// </summary>
+		public bool IsDev { get { return (this.Titles.SelectedTitle == TitleId.devCAT); } }
+
 		// Look
 		// ------------------------------------------------------------------
 
@@ -2272,6 +2277,26 @@ namespace Aura.Channel.World.Entities
 		public int GetTotalHits()
 		{
 			return _totalHits;
+		}
+
+		/// <summary>
+		/// Returns whether creature is allowed to pick up the given item
+		/// from the ground.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public bool CanPickUp(Item item)
+		{
+			// Check if item is actually on the ground
+			if (item.RegionId == 0)
+				return false;
+
+			// Check if it's actually protected
+			if (item.OwnerId == 0 || item.ProtectionLimit == null || item.ProtectionLimit < DateTime.Now)
+				return true;
+
+			// Return whether creature is the owner
+			return (item.OwnerId == this.EntityId);
 		}
 	}
 }

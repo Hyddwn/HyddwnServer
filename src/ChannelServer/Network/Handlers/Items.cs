@@ -179,10 +179,17 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Check protection
-			if (item.OwnerId != 0 && item.OwnerId != creature.EntityId && item.ProtectionLimit > DateTime.Now)
+			if (!creature.CanPickUp(item))
 			{
-				Send.ItemPickUpR(creature, false);
-				return;
+				if (creature.IsDev)
+				{
+					Send.Notice(creature, Localization.Get("You stole an innocent player's loot, feeling like a big, strong devCAT now? Shame on you."));
+				}
+				else
+				{
+					Send.ItemPickUpR(creature, false);
+					return;
+				}
 			}
 
 			// Add bag
