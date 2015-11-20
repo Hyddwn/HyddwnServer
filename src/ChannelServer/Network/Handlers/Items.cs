@@ -170,8 +170,16 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Get item from region
 			var item = creature.Region.GetItem(entityId);
 			if (item == null)
+			{
+				Send.ItemPickUpR(creature, false);
+				return;
+			}
+
+			// Check protection
+			if (item.OwnerId != 0 && item.OwnerId != creature.EntityId && item.ProtectionLimit > DateTime.Now)
 			{
 				Send.ItemPickUpR(creature, false);
 				return;
@@ -189,6 +197,7 @@ namespace Aura.Channel.Network.Handlers
 				}
 			}
 
+			// Try to pick up item
 			if (!creature.Inventory.PickUp(item))
 			{
 				Send.SystemMessage(creature, Localization.Get("Not enough space."));

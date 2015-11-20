@@ -878,6 +878,9 @@ namespace Aura.Channel.World
 		/// <summary>
 		///  Adds item, sends EntityAppears.
 		/// </summary>
+		/// <remarks>
+		/// Use Item's Drop method, unless you know what you're doing.
+		/// </remarks>
 		public void AddItem(Item item)
 		{
 			_itemsRWLS.EnterWriteLock();

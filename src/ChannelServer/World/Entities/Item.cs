@@ -197,6 +197,18 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// The id of the entity that "produced" this item, and the only one
+		/// who can pick it up during the protection time.
+		/// </summary>
+		public long OwnerId { get; set; }
+
+		/// <summary>
+		/// The time at which the item becomes "free for all", where not only
+		/// the owner can pick it up.
+		/// </summary>
+		public DateTime? ProtectionLimit { get; set; }
+
+		/// <summary>
 		/// Returns true if item is a able to receive proficiency.
 		/// </summary>
 		public bool IsTrainableWeapon
@@ -562,11 +574,31 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Drops item in location with a new entity id.
+		/// Drops item at location.
 		/// </summary>
 		/// <param name="region"></param>
 		/// <param name="pos"></param>
 		public void Drop(Region region, Position pos)
+		{
+			this.Drop(region, pos, 0, false);
+		}
+
+		/// <summary>
+		/// Drops item at location.
+		/// </summary>
+		/// <param name="region">Region to drop the item in.</param>
+		/// <param name="pos">
+		/// Center point of the drop, which is slightly randomized in this method.
+		/// </param>
+		/// <param name="ownerId">
+		/// The only entity that is allowed to pick up the item for a
+		/// certain period of time. Set to null to not protect item from
+		/// being picked up.
+		/// </param>
+		/// <param name="playerDrop">
+		/// Specifies whether the item is being dropped by a player, the owner.
+		/// </param>
+		public void Drop(Region region, Position pos, long ownerId, bool playerDrop)
 		{
 			var rnd = RandomProvider.Get();
 
@@ -581,6 +613,37 @@ namespace Aura.Channel.World.Entities
 			if (!this.HasTag("/key/"))
 				this.DisappearTime = DateTime.Now.AddSeconds(Math.Max(60, (this.OptionInfo.Price / 100) * 60));
 
+			// Specify who can pick up the item when
+			if (ownerId != 0)
+			{
+				this.OwnerId = ownerId;
+
+				switch (this.Data.Action)
+				{
+					case ItemAction.StaticItem:
+					case ItemAction.AccountPersonalItem:
+					case ItemAction.CharacterPersonalItem:
+						// Personal items can never be picked up by anyone else
+						this.ProtectionLimit = DateTime.MaxValue;
+						break;
+
+					default:
+						// Set protection if item wasn't dropped by a player
+						if (!playerDrop)
+						{
+							// Monster disappear time
+							this.ProtectionLimit = DateTime.Now.AddSeconds(Creature.DisappearDelay);
+						}
+						break;
+				}
+			}
+			else
+			{
+				this.OwnerId = 0;
+				this.ProtectionLimit = null;
+			}
+
+			// Add item to region
 			region.AddItem(this);
 		}
 
