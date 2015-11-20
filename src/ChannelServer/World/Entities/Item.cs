@@ -632,8 +632,9 @@ namespace Aura.Channel.World.Entities
 						// Set protection if item wasn't dropped by a player
 						if (!playerDrop)
 						{
-							// Monster disappear time
-							this.ProtectionLimit = DateTime.Now.AddSeconds(Creature.DisappearDelay);
+							var seconds = ChannelServer.Instance.Conf.World.LootStealProtection;
+							if (seconds > 0)
+								this.ProtectionLimit = DateTime.Now.AddSeconds(seconds);
 						}
 						break;
 				}

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Channel.World.Entities;
 using Aura.Shared.Util;
 using Aura.Shared.Util.Configuration;
 using System;
@@ -20,6 +21,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public float BigLuckyFinishChance { get; protected set; }
 		public float HugeLuckyFinishChance { get; protected set; }
 		public float PropDropChance { get; protected set; }
+		public int LootStealProtection { get; protected set; }
 
 		public bool DeadlyNpcs { get; protected set; }
 		public bool EnableHunger { get; protected set; }
@@ -68,6 +70,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.BigLuckyFinishChance = this.GetFloat("big_lucky_finish_chance", 0.005f) / 100.0f;
 			this.HugeLuckyFinishChance = this.GetFloat("huge_lucky_finish_chance", 0.001f) / 100.0f;
 			this.PropDropChance = this.GetFloat("prop_drop_chance", 30) / 100.0f;
+			this.LootStealProtection = this.GetInt("loot_steal_protection", Creature.DisappearDelay);
 
 			this.DeadlyNpcs = this.GetBool("deadly_npcs", true);
 			this.EnableHunger = this.GetBool("enable_hunger", true);
