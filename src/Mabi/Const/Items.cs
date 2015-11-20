@@ -129,29 +129,126 @@ namespace Aura.Mabi.Const
 	}
 
 	/// <summary>
-	/// ?
+	/// Information about what can be done with an item.
 	/// </summary>
 	/// <remarks>
 	/// Attr_ActionFlag in item db.
 	/// </remarks>
 	public enum ItemAction
 	{
+		/// <summary>
+		/// Normal item, no restrictions.
+		/// </summary>
 		NormalItem = 0,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Tradeable, but loot protected like personal items?
+		/// Example: Black Orb Fragment
+		/// </remarks>
 		StaticItem = 1,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Quest items? Egos?
+		/// </remarks>
 		ImportantItem = 2,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Account specific?
+		/// </remarks>
 		AccountPersonalItem = 3,
-		DungeonItem = 4, // Special weapons for dungeons?
-		CharacterPersonalItem = 5, // Elsinore/Training Short Sword
-		RegionFixedItem = 6, // Keys?
-		BankBlockedItem = 7, // Gems?
-		NewBagItem = 8, // Events?
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Special weapons/items for dungeons?
+		/// </remarks>
+		DungeonItem = 4,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Character specific?
+		/// Examples: Elsinore, Training Short Sword, Shop licenses
+		/// </remarks>
+		CharacterPersonalItem = 5,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Items that can only be used in one region?
+		/// Examples: Treasure Chest Key
+		/// </remarks>
+		RegionFixedItem = 6,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Items that can't be placed in a bank?
+		/// Examples: Gems?
+		/// </remarks>
+		BankBlockedItem = 7,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Events?
+		/// </remarks>
+		NewBagItem = 8,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Personal item that can't be placed in bank?
+		/// </remarks>
 		BankBlockedCharacterPersonalItem = 9,
-		GuildItem = 10, // Guild Robe
-		// 11
+
+		/// <summary>
+		/// Guild Robe
+		/// </summary>
+		GuildItem = 10,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Not tradeable?
+		/// </remarks>
 		NotDealItem = 12,
-		Important2Item = 13, // Brionac
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Examples: Brionac, Yui
+		/// </remarks>
+		Important2Item = 13,
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Item shop items?
+		/// </remarks>
 		TradeLimitItem = 14,
-		// 15
+
+		/// <summary>
+		/// ?
+		/// </summary>
 		LordKeyItem = 16,
 	}
 
