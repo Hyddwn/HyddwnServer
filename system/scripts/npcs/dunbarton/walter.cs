@@ -318,28 +318,28 @@ public class WalterShop : NpcShopScript
 		Add("Tailoring", 60056);    // Finest Fabric Weaving Gloves
 		Add("Tailoring", 60057);    // Fine Fabric Weaving Gloves
 
-		Add("Sewing Patterns", 60000, "FORMID:4:111;"); // Sewing Pattern - Guardian Gloves
-		Add("Sewing Patterns", 60000, "FORMID:4:112;"); // Sewing Pattern - Wizard Hat
-		Add("Sewing Patterns", 60000, "FORMID:4:113;"); // Sewing Pattern - Leather Bandana
-		Add("Sewing Patterns", 60000, "FORMID:4:114;"); // Sewing Pattern - Hairband
-		Add("Sewing Patterns", 60000, "FORMID:4:115;"); // Sewing Pattern - Mongo's Long Skirt (F)
-		Add("Sewing Patterns", 60000, "FORMID:4:116;"); // Sewing Pattern - Light Leather Mail (F)
-		Add("Sewing Patterns", 60000, "FORMID:4:117;"); // Sewing Pattern - Lirina's Long Skirt (F)
-		Add("Sewing Patterns", 60000, "FORMID:4:118;"); // Sewing Pattern - Cores' Ninja Suit (M)
-		Add("Sewing Patterns", 60000, "FORMID:4:119;"); // Sewing Pattern - Cores' Thief Suit (M)
-		Add("Sewing Patterns", 60000, "FORMID:4:120;"); // Sewing Pattern - Light Leather Mail (M)
-		Add("Sewing Patterns", 60000, "FORMID:4:121;"); // Sewing Pattern - Common Silk Weaving Gloves
-		Add("Sewing Patterns", 60000, "FORMID:4:122;"); // Sewing Pattern - Professional Silk Weaving Gloves
-		Add("Sewing Patterns", 60000, "FORMID:4:123;"); // Sewing Pattern - Ring-Type Mini Leather Dress (F)
-		Add("Sewing Patterns", 60000, "FORMID:4:126;"); // Sewing Pattern - Lueys' Vest Wear
-		Add("Sewing Patterns", 60000, "FORMID:4:127;"); // Sewing Pattern - Broad-brimmed Feather Hat
-		Add("Sewing Patterns", 60000, "FORMID:4:128;"); // Sewing Pattern - Tork's Little-brimmed Hat
-		Add("Sewing Patterns", 60044, "FORMID:4:132;"); // Sewing Pattern - Cores' Thief Gloves
-		Add("Sewing Patterns", 60044, "FORMID:4:171;"); // Sewing Pattern - High-class Leather Armor
-		Add("Sewing Patterns", 60044, "FORMID:4:172;"); // Sewing Pattern - Middle-class Leather Armor
-		Add("Sewing Patterns", 60044, "FORMID:4:173;"); // Sewing Pattern - Basic Leather Armor
-		Add("Sewing Patterns", 60044, "FORMID:4:182;"); // Sewing Pattern - Terra Diamond-shaped Leather Boots
-		Add("Sewing Patterns", 60044, "FORMID:4:185;"); // Sewing Pattern - Spark Leather Armor
+		Add("Sewing Patterns", 60000, "FORMID:4:111;", 4600);   // Sewing Pattern - Guardian Gloves
+		Add("Sewing Patterns", 60000, "FORMID:4:112;", 200);    // Sewing Pattern - Wizard Hat
+		Add("Sewing Patterns", 60000, "FORMID:4:113;", 1250);   // Sewing Pattern - Leather Bandana
+		Add("Sewing Patterns", 60000, "FORMID:4:114;", 400);    // Sewing Pattern - Hairband
+		Add("Sewing Patterns", 60000, "FORMID:4:115;", 1600);   // Sewing Pattern - Mongo's Long Skirt (F)
+		Add("Sewing Patterns", 60000, "FORMID:4:116;", 16000);  // Sewing Pattern - Light Leather Mail (F)
+		Add("Sewing Patterns", 60000, "FORMID:4:117;", 5500);   // Sewing Pattern - Lirina's Long Skirt (F)
+		Add("Sewing Patterns", 60000, "FORMID:4:118;", 3400);   // Sewing Pattern - Cores' Ninja Suit (M)
+		Add("Sewing Patterns", 60000, "FORMID:4:119;", 112500); // Sewing Pattern - Cores' Thief Suit (M)
+		Add("Sewing Patterns", 60000, "FORMID:4:120;", 16000);  // Sewing Pattern - Light Leather Mail (M)
+		Add("Sewing Patterns", 60000, "FORMID:4:121;", 3000);   // Sewing Pattern - Common Silk Weaving Gloves
+		Add("Sewing Patterns", 60000, "FORMID:4:122;", 5000);   // Sewing Pattern - Professional Silk Weaving Gloves
+		Add("Sewing Patterns", 60000, "FORMID:4:123;", 125000); // Sewing Pattern - Ring-Type Mini Leather Dress (F)
+		Add("Sewing Patterns", 60000, "FORMID:4:126;", 77000);  // Sewing Pattern - Lueys' Vest Wear
+		Add("Sewing Patterns", 60000, "FORMID:4:127;", 55000);  // Sewing Pattern - Broad-brimmed Feather Hat
+		Add("Sewing Patterns", 60000, "FORMID:4:128;", 11000);  // Sewing Pattern - Tork's Little-brimmed Hat
+		Add("Sewing Patterns", 60044, "FORMID:4:132;", 4000);   // Sewing Pattern - Cores' Thief Gloves
+		Add("Sewing Patterns", 60044, "FORMID:4:171;", 172000); // Sewing Pattern - High-class Leather Armor
+		Add("Sewing Patterns", 60044, "FORMID:4:172;", 86400);  // Sewing Pattern - Middle-class Leather Armor
+		Add("Sewing Patterns", 60044, "FORMID:4:173;", 32500);  // Sewing Pattern - Basic Leather Armor
+		Add("Sewing Patterns", 60044, "FORMID:4:182;", 72200);  // Sewing Pattern - Terra Diamond-shaped Leather Boots
+		Add("Sewing Patterns", 60044, "FORMID:4:185;", 121000); // Sewing Pattern - Spark Leather Armor
 
 		Add("Gift", 52008); // Anthology
 		Add("Gift", 52009); // Cubic Puzzle

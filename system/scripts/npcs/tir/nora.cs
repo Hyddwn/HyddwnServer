@@ -160,18 +160,18 @@ public class NoraShop : TailorShop
 		base.Setup();
 
 		// Sewing Patterns
-		Add("Sewing Patterns", 60000, "FORMID:4:101;");
-		Add("Sewing Patterns", 60000, "FORMID:4:102;");
-		Add("Sewing Patterns", 60000, "FORMID:4:103;");
-		Add("Sewing Patterns", 60000, "FORMID:4:104;");
-		Add("Sewing Patterns", 60000, "FORMID:4:105;");
-		Add("Sewing Patterns", 60000, "FORMID:4:106;");
-		Add("Sewing Patterns", 60000, "FORMID:4:107;");
-		Add("Sewing Patterns", 60000, "FORMID:4:108;");
-		Add("Sewing Patterns", 60000, "FORMID:4:109;");
-		Add("Sewing Patterns", 60000, "FORMID:4:110;");
-		Add("Sewing Patterns", 60044, "FORMID:4:180;");
-		Add("Sewing Patterns", 60044, "FORMID:4:185;");
+		Add("Sewing Patterns", 60000, "FORMID:4:101;", 3000);   // Sewing Pattern - Cores' Healer Dress (F)
+		Add("Sewing Patterns", 60000, "FORMID:4:102;", 1700);   // Sewing Pattern - Magic School Uniform (M)
+		Add("Sewing Patterns", 60000, "FORMID:4:103;", 11500);  // Sewing Pattern - Magic School Uniform (F)
+		Add("Sewing Patterns", 60000, "FORMID:4:104;", 4600);   // Sewing Pattern - Cores' Healer Gloves
+		Add("Sewing Patterns", 60000, "FORMID:4:105;", 11250);  // Sewing Pattern - Mongo's Hat
+		Add("Sewing Patterns", 60000, "FORMID:4:106;", 400);    // Sewing Pattern - Popo's Skirt (F)
+		Add("Sewing Patterns", 60000, "FORMID:4:107;", 1250);   // Sewing Pattern - Mongo's Traveler Suit (F)
+		Add("Sewing Patterns", 60000, "FORMID:4:108;", 1250);   // Sewing Pattern - Mongo's Traveler Suit (M)
+		Add("Sewing Patterns", 60000, "FORMID:4:109;", 25500);  // Sewing Pattern - Cloth Mail
+		Add("Sewing Patterns", 60000, "FORMID:4:110;", 4000);   // Sewing Pattern - Cores' Healer Suit (M)
+		Add("Sewing Patterns", 60044, "FORMID:4:180;", 73000);  // Sewing Pattern - Riding Suit
+		Add("Sewing Patterns", 60044, "FORMID:4:185;", 121000); // Sewing Pattern - Spark Leather Armor
 
 		// Skill Books
 		Add("Skill Book", (c, o) => o.GetFavor(c) >= 50); // Allow access with >= 50 favor
