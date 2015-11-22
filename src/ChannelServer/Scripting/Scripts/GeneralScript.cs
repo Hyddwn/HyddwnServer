@@ -26,8 +26,9 @@ namespace Aura.Channel.Scripting.Scripts
 	/// </summary>
 	public abstract class GeneralScript : IDisposable, IScript, IAutoLoader
 	{
-		private const int PropDropRadius = 50;
-
+		/// <summary>
+		/// Global scripting variables.
+		/// </summary>
 		protected ScriptVariables GlobalVars { get { return ChannelServer.Instance.ScriptManager.GlobalVars; } }
 
 		/// <summary>
@@ -195,9 +196,6 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Returns true if feature is enabled.
 		/// </summary>
-		/// <remarks>
-		/// TODO: Make another more general script base class for this and Random?
-		/// </remarks>
 		/// <param name="featureName"></param>
 		/// <returns></returns>
 		protected bool IsEnabled(string featureName)
@@ -231,7 +229,7 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Adds command.
+		/// Adds GM command.
 		/// </summary>
 		/// <param name="auth"></param>
 		/// <param name="charAuth"></param>
@@ -262,6 +260,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Creates prop and spawns it.
 		/// </summary>
+		/// <returns>Created prop.</returns>
 		protected Prop SpawnProp(int id, int regionId, int x, int y, float direction, float scale, PropFunc behavior = null)
 		{
 			var region = ChannelServer.Instance.World.GetRegion(regionId);
@@ -282,6 +281,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Creates prop and spawns it.
 		/// </summary>
+		/// <returns>Created prop.</returns>
 		protected Prop SpawnProp(int id, int regionId, int x, int y, float direction, PropFunc behavior = null)
 		{
 			return this.SpawnProp(id, regionId, x, y, direction, 1, behavior);
@@ -290,6 +290,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Spawns prop
 		/// </summary>
+		/// <returns>Created prop.</returns>
 		protected Prop SpawnProp(Prop prop, PropFunc behavior = null)
 		{
 			var region = ChannelServer.Instance.World.GetRegion(prop.RegionId);
@@ -309,6 +310,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Sets behavior for the prop with entityId.
 		/// </summary>
+		/// <returns>Prop that the behavior was added for.</returns>
 		protected Prop SetPropBehavior(long entityId, PropFunc behavior)
 		{
 			var prop = ChannelServer.Instance.World.GetProp(entityId);
@@ -370,23 +372,34 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Creates creature spawn area.
 		/// </summary>
-		/// <param name="race"></param>
-		/// <param name="amount"></param>
-		/// <param name="region"></param>
-		/// <param name="coordinates"></param>
-		protected void CreateSpawner(int race, int amount, int region, int delay = 0, int delayMin = 10, int delayMax = 20, int[] titles = null, int[] coordinates = null)
+		/// <remarks>
+		/// Creates a spawner, that spawns a certain amount of monsters
+		/// and respawns them after they died. The monsters can have random
+		/// titles, and respawn delays, specifying how much time should be
+		/// between death and respawn.
+		/// </remarks>
+		/// <param name="raceId">Race to spawn</param>
+		/// <param name="amount">Maximum amount to spawn</param>
+		/// <param name="regionId">Region to spawn in</param>
+		/// <param name="delay">Initial spawn delay in seconds</param>
+		/// <param name="delayMin">Minimum respawn delay in seconds</param>
+		/// <param name="delayMax">Maximum respawn delay in seconds</param>
+		/// <param name="titles">List of random titles to apply to creatures</param>
+		/// <param name="coordinates">Even number of coordinates, specifying the spawn area</param>
+		protected void CreateSpawner(int raceId, int amount, int region, int delay = 0, int delayMin = 10, int delayMax = 20, int[] titles = null, int[] coordinates = null)
 		{
-			ChannelServer.Instance.World.SpawnManager.Add(new CreatureSpawner(race, amount, region, delay, delayMin, delayMax, titles, coordinates));
+			ChannelServer.Instance.World.SpawnManager.Add(new CreatureSpawner(raceId, amount, region, delay, delayMin, delayMax, titles, coordinates));
 		}
 
 		/// <summary>
 		/// Spawns creature(s)
 		/// </summary>
-		/// <param name="raceId"></param>
-		/// <param name="amount"></param>
-		/// <param name="regionId"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="raceId">Race to spawn.</param>
+		/// <param name="amount">Amount of creatures to spawn.</param>
+		/// <param name="regionId">Region to spawn creatures in.</param>
+		/// <param name="x">X-coordinate to spawn creatures at.</param>
+		/// <param name="y">Y-coordinate to spawn creatures at.</param>
+		/// <returns>List of creatures spawned by this call.</returns>
 		protected List<Creature> Spawn(int raceId, int amount, int regionId, int x, int y)
 		{
 			return this.Spawn(raceId, amount, regionId, x, y, null);
@@ -395,12 +408,13 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Spawns creature(s)
 		/// </summary>
-		/// <param name="raceId"></param>
-		/// <param name="amount"></param>
-		/// <param name="regionId"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="raceId">Race to spawn.</param>
+		/// <param name="amount">Amount of creatures to spawn.</param>
+		/// <param name="regionId">Region to spawn creatures in.</param>
+		/// <param name="x">X-coordinate to spawn creatures at.</param>
+		/// <param name="y">Y-coordinate to spawn creatures at.</param>
 		/// <param name="radius">Radius around position for random spawn</param>
+		/// <returns>List of creatures spawned by this call.</returns>
 		protected List<Creature> Spawn(int raceId, int amount, int regionId, int x, int y, int radius)
 		{
 			return this.Spawn(raceId, amount, regionId, x, y, radius, true, null);
@@ -409,13 +423,14 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Spawns creature(s)
 		/// </summary>
-		/// <param name="raceId"></param>
-		/// <param name="amount"></param>
-		/// <param name="regionId"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="raceId">Race to spawn.</param>
+		/// <param name="amount">Amount of creatures to spawn.</param>
+		/// <param name="regionId">Region to spawn creatures in.</param>
+		/// <param name="x">X-coordinate to spawn creatures at.</param>
+		/// <param name="y">Y-coordinate to spawn creatures at.</param>
 		/// <param name="radius">Radius around position for random spawn</param>
 		/// <param name="effect">Whether to display spawn effect</param>
+		/// <returns>List of creatures spawned by this call.</returns>
 		protected List<Creature> Spawn(int raceId, int amount, int regionId, int x, int y, int radius, bool effect)
 		{
 			return this.Spawn(raceId, amount, regionId, x, y, radius, effect, null);
@@ -424,12 +439,13 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Spawns creature(s)
 		/// </summary>
-		/// <param name="raceId"></param>
-		/// <param name="amount"></param>
-		/// <param name="regionId"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="raceId">Race to spawn.</param>
+		/// <param name="amount">Amount of creatures to spawn.</param>
+		/// <param name="regionId">Region to spawn creatures in.</param>
+		/// <param name="x">X-coordinate to spawn creatures at.</param>
+		/// <param name="y">Y-coordinate to spawn creatures at.</param>
 		/// <param name="onDeath">Runs when one of the creatures dies</param>
+		/// <returns>List of creatures spawned by this call.</returns>
 		protected List<Creature> Spawn(int raceId, int amount, int regionId, int x, int y, Action<Creature, Creature> onDeath)
 		{
 			return this.Spawn(raceId, amount, regionId, x, y, 0, true, onDeath);
@@ -438,13 +454,14 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Spawns creature(s)
 		/// </summary>
-		/// <param name="raceId"></param>
-		/// <param name="amount"></param>
-		/// <param name="regionId"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="raceId">Race to spawn.</param>
+		/// <param name="amount">Amount of creatures to spawn.</param>
+		/// <param name="regionId">Region to spawn creatures in.</param>
+		/// <param name="x">X-coordinate to spawn creatures at.</param>
+		/// <param name="y">Y-coordinate to spawn creatures at.</param>
 		/// <param name="radius">Radius around position for random spawn</param>
 		/// <param name="onDeath">Runs when one of the creatures dies</param>
+		/// <returns>List of creatures spawned by this call.</returns>
 		protected List<Creature> Spawn(int raceId, int amount, int regionId, int x, int y, int radius, Action<Creature, Creature> onDeath)
 		{
 			return this.Spawn(raceId, amount, regionId, x, y, 0, true, onDeath);
@@ -453,14 +470,15 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Spawns creature(s)
 		/// </summary>
-		/// <param name="raceId"></param>
-		/// <param name="amount"></param>
-		/// <param name="regionId"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="raceId">Race to spawn.</param>
+		/// <param name="amount">Amount of creatures to spawn.</param>
+		/// <param name="regionId">Region to spawn creatures in.</param>
+		/// <param name="x">X-coordinate to spawn creatures at.</param>
+		/// <param name="y">Y-coordinate to spawn creatures at.</param>
 		/// <param name="radius">Radius around position for random spawn</param>
 		/// <param name="effect">Whether to display spawn effect</param>
 		/// <param name="onDeath">Runs when one of the creatures dies</param>
+		/// <returns>List of creatures spawned by this call.</returns>
 		protected List<Creature> Spawn(int raceId, int amount, int regionId, int x, int y, int radius, bool effect, Action<Creature, Creature> onDeath)
 		{
 			return this.Spawn(raceId, amount, regionId, new Position(x, y), radius, effect, onDeath);
@@ -469,13 +487,14 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Spawns creature(s)
 		/// </summary>
-		/// <param name="raceId"></param>
-		/// <param name="amount"></param>
-		/// <param name="regionId"></param>
-		/// <param name="pos"></param>
+		/// <param name="raceId">Race to spawn.</param>
+		/// <param name="amount">Amount of creatures to spawn.</param>
+		/// <param name="regionId">Region to spawn creatures in.</param>
+		/// <param name="pos">Position to spawn creatures at.</param>
 		/// <param name="radius">Radius around position for random spawn</param>
 		/// <param name="effect">Whether to display spawn effect</param>
 		/// <param name="onDeath">Runs when one of the creatures dies</param>
+		/// <returns>List of creatures spawned by this call.</returns>
 		protected List<Creature> Spawn(int raceId, int amount, int regionId, Position pos, int radius, bool effect, Action<Creature, Creature> onDeath)
 		{
 			var result = new List<Creature>();
@@ -590,10 +609,21 @@ namespace Aura.Channel.Scripting.Scripts
 		#endregion Timers
 	}
 
+	/// <summary>
+	/// Attribute for methods in GeneralScript, to mark them as subscribers
+	/// for events in the EventManager.
+	/// </summary>
 	public class OnAttribute : Attribute
 	{
+		/// <summary>
+		/// Event to subscribe to (*without* "On" prefix).
+		/// </summary>
 		public string Event { get; protected set; }
 
+		/// <summary>
+		/// Creates new attribute.
+		/// </summary>
+		/// <param name="evnt"></param>
 		public OnAttribute(string evnt)
 		{
 			this.Event = evnt;
