@@ -20,7 +20,7 @@ namespace Aura.Channel.Scripting.Scripts
 	/// <example>
 	/// Getting a script: ChannelServer.Instance.ScriptManager.PuzzleScripts.Get("entrance_puzzle");
 	/// </example>
-	public class PuzzleScript : IScript
+	public class PuzzleScript : GeneralScript
 	{
 		/// <summary>
 		/// Name of the puzzle
@@ -31,7 +31,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Called when the script is initially created.
 		/// </summary>
 		/// <returns></returns>
-		public bool Init()
+		public override bool Init()
 		{
 			var attr = this.GetType().GetCustomAttribute<PuzzleScriptAttribute>();
 			if (attr == null)
@@ -45,69 +45,6 @@ namespace Aura.Channel.Scripting.Scripts
 			ChannelServer.Instance.ScriptManager.PuzzleScripts.Add(this.Name, this);
 
 			return true;
-		}
-
-		/// <summary>
-		/// Returns random number between 0.0 and 100.0.
-		/// </summary>
-		/// <returns></returns>
-		protected double Random()
-		{
-			var rnd = RandomProvider.Get();
-			return (100 * rnd.NextDouble());
-		}
-
-		/// <summary>
-		/// Returns random number between 0 and max-1.
-		/// </summary>
-		/// <param name="max">Exclusive upper bound</param>
-		/// <returns></returns>
-		protected int Random(int max)
-		{
-			var rnd = RandomProvider.Get();
-			return rnd.Next(max);
-		}
-
-		/// <summary>
-		/// Returns random number between min and max-1.
-		/// </summary>
-		/// <param name="min">Inclusive lower bound</param>
-		/// <param name="max">Exclusive upper bound</param>
-		/// <returns></returns>
-		protected int Random(int min, int max)
-		{
-			var rnd = RandomProvider.Get();
-			return rnd.Next(min, max);
-		}
-
-		/// <summary>
-		/// Returns the specified amount of random values from the parameters.
-		/// The returned values contain every parameter only once.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="amount"></param>
-		/// <param name="values"></param>
-		/// <returns></returns>
-		protected T[] UniqueRnd<T>(int amount, params T[] values)
-		{
-			if (values == null || values.Length == 0 || values.Length < amount)
-				throw new ArgumentException("Values might not be null, empty, or be smaller than amount.");
-
-			var rnd = RandomProvider.Get();
-			return values.OrderBy(a => rnd.Next()).Take(amount).ToArray();
-		}
-
-		/// <summary>
-		/// Returns true if feature is enabled.
-		/// </summary>
-		/// <remarks>
-		/// TODO: Make another more general script base class for this and Random?
-		/// </remarks>
-		/// <param name="featureName"></param>
-		/// <returns></returns>
-		protected bool IsEnabled(string featureName)
-		{
-			return AuraData.FeaturesDb.IsEnabled(featureName);
 		}
 
 		public virtual void OnPrepare(Puzzle puzzle)

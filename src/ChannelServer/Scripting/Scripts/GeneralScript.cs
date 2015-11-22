@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Linq;
 using Aura.Channel.Network;
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Util;
@@ -167,12 +168,33 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Returns a random value from the given ones.
 		/// </summary>
 		/// <param name="values"></param>
-		public T Rnd<T>(params T[] values)
+		protected T Rnd<T>(params T[] values)
 		{
 			if (values == null || values.Length == 0)
 				throw new ArgumentException("values may not be null or empty.");
 
 			return values[this.Random(values.Length)];
+		}
+
+		/// <summary>
+		/// Returns a unique number of random parameters,
+		/// useful when you need unique random numbers for example.
+		/// </summary>
+		/// <example>
+		/// var n = UniqueRnd(3, 1,2,3,4,5); // n = int[] { 3, 1, 5 }
+		/// var s = UniqueRnd(2, "test", "foo", "bar"); // s = string[] { "bar", "foo" }
+		/// </example>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="amount"></param>
+		/// <param name="values"></param>
+		/// <returns></returns>
+		protected T[] UniqueRnd<T>(int amount, params T[] values)
+		{
+			if (values == null || values.Length == 0 || values.Length < amount)
+				throw new ArgumentException("Values may not be null, empty, or smaller than amount.");
+
+			var rnd = RandomProvider.Get();
+			return values.OrderBy(a => rnd.Next()).Take(amount).ToArray();
 		}
 
 		/// <summary>
@@ -378,7 +400,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// titles, and respawn delays, specifying how much time should be
 		/// between death and respawn.
 		/// </remarks>
-		/// <param name="raceId">Race to spawn</param>
+		/// <param name="race">Race to spawn</param>
 		/// <param name="amount">Maximum amount to spawn</param>
 		/// <param name="regionId">Region to spawn in</param>
 		/// <param name="delay">Initial spawn delay in seconds</param>
@@ -386,9 +408,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="delayMax">Maximum respawn delay in seconds</param>
 		/// <param name="titles">List of random titles to apply to creatures</param>
 		/// <param name="coordinates">Even number of coordinates, specifying the spawn area</param>
-		protected void CreateSpawner(int raceId, int amount, int region, int delay = 0, int delayMin = 10, int delayMax = 20, int[] titles = null, int[] coordinates = null)
+		protected void CreateSpawner(int race, int amount, int region, int delay = 0, int delayMin = 10, int delayMax = 20, int[] titles = null, int[] coordinates = null)
 		{
-			ChannelServer.Instance.World.SpawnManager.Add(new CreatureSpawner(raceId, amount, region, delay, delayMin, delayMax, titles, coordinates));
+			ChannelServer.Instance.World.SpawnManager.Add(new CreatureSpawner(race, amount, region, delay, delayMin, delayMax, titles, coordinates));
 		}
 
 		/// <summary>
