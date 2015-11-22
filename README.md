@@ -8,13 +8,14 @@ It's not about playing a game or competing with any services provided by
 Nexon or its partners, and we don't endorse such actions.
 
 Aura is completely free and licensed under the GNU GPL.
-As such, every user is free to use Aura and choose how to use it.
+As such, every user is free to use Aura and choose how to use it,
+in the context of its license.
 
 Compatibility
 ------------------------------
-Compatibility to all major versions but NA was dropped on
-2013-09-13 (in Aura Legacy). Since that time, Aura is kept
-compatible only to the *latest update* of NA.
+Aura is only compatible to the latest version of NA,
+compatibility to all other versions was dropped on
+2013-09-13 (in Aura Legacy).
 
 Requirements
 ------------------------------
@@ -56,7 +57,6 @@ The information you post will help developers to implement the features.
 ### 2. Bug reports
 Report bugs on [GitHub](https://github.com/aura-project/aura/issues), so they can be fixed ASAP.
 
-
 ### 3+4. Code
 The fastest way to get code contributions into the source is a pull request, which,
 if well written, can be merged right in to *master*. To expediate this process, 
@@ -73,7 +73,7 @@ as research or as a base to implement the features into the official source.
   * Use tabs, not spaces.
 * Comment lines shouldn't exceed ~80 characters, other lines' lengths are irrevelant.
 * Excessive usage of the auto-formatting feature is encouraged. (Default VS settings)
-* Avoid regions.
+* Avoid overuse of regions.
 
 Common problems
 ------------------------------
@@ -88,8 +88,16 @@ which is usually caused by configuration mistakes. Make sure you can reach
 the IP/Port you've set the channel to run on (`channel.conf`) from the affected computer.
 
 In some rare cases this can also be caused by routers, for example,
-if you try to make the server publicly available and the router doesn't
-allow you to connect to your own public IP.
+if you try to make the server available from the internet and the router
+doesn't allow you to connect to your own public IP.
+
+### I can't move/am naked after login
+This usually happens when the server and the client aren't compatible to
+each other. Make sure you're running the latest version of Aura and *NA*.
+
+If you did update both and are still running into problems, an official update
+probably broke compatibility. Wait a few hours for us to update Aura
+if NA has just been happened, or create an issue on [GitHub](https://github.com/aura-project/aura/issues).
 
 Links
 ------------------------------
