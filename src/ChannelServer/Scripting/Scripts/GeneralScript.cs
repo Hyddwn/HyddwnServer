@@ -153,23 +153,13 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Returns a random string from the given ones.
-		/// </summary>
-		/// <param name="strings"></param>
-		[Obsolete("Use Rnd instead.", true)]
-		public string RndStr(params string[] strings)
-		{
-			return this.Rnd(strings);
-		}
-
-		/// <summary>
 		/// Returns a random value from the given ones.
 		/// </summary>
 		/// <param name="values"></param>
 		public T Rnd<T>(params T[] values)
 		{
 			if (values == null || values.Length == 0)
-				throw new ArgumentException("values might not be null or empty.");
+				throw new ArgumentException("values may not be null or empty.");
 
 			return values[this.Random(values.Length)];
 		}
@@ -364,19 +354,6 @@ namespace Aura.Channel.Scripting.Scripts
 		#endregion Props
 
 		#region Spawn
-
-		/// <summary>
-		/// Creates creature spawn area.
-		/// </summary>
-		/// <param name="raceId"></param>
-		/// <param name="amount"></param>
-		/// <param name="regionId"></param>
-		/// <param name="coordinates"></param>
-		[Obsolete("Use CreateSpawner instead.", true)]
-		protected void CreatureSpawn(int raceId, int amount, int regionId, params int[] coordinates)
-		{
-			this.CreateSpawner(raceId, amount, regionId, 0, 10, 10, null, coordinates);
-		}
 
 		/// <summary>
 		/// Creates creature spawn area.
