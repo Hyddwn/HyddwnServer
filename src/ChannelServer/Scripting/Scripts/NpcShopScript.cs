@@ -33,7 +33,7 @@ namespace Aura.Channel.Scripting.Scripts
 	/// Pons overweights everything, but it's displayed alongside
 	/// other prices if they aren't 0.
 	/// </remarks>
-	public class NpcShopScript : IScript, IDisposable
+	public class NpcShopScript : GeneralScript, IDisposable
 	{
 		protected Dictionary<string, NpcShopTab> _tabs;
 
@@ -49,8 +49,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Unsubscribes Shop from events.
 		/// </summary>
-		public void Dispose()
+		public override void Dispose()
 		{
+			base.Dispose();
 			ChannelServer.Instance.Events.ErinnMidnightTick -= this.OnErinnMidnightTick;
 		}
 
@@ -81,7 +82,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Initializes shop, calling setup and adding it to the script manager.
 		/// </summary>
 		/// <returns></returns>
-		public bool Init()
+		public override bool Init()
 		{
 			if (ChannelServer.Instance.ScriptManager.NpcShopScripts.ContainsKey(this.GetType().Name))
 			{
@@ -309,11 +310,6 @@ namespace Aura.Channel.Scripting.Scripts
 				return creature == null || owner == null
 					? _tabs.Values.ToList()
 					: _tabs.Values.Where(t => t.ShouldDisplay(creature, owner)).ToList();
-		}
-
-		protected bool IsEnabled(string featureName)
-		{
-			return AuraData.FeaturesDb.IsEnabled(featureName);
 		}
 	}
 

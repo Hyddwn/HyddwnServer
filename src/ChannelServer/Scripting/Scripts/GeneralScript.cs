@@ -30,12 +30,23 @@ namespace Aura.Channel.Scripting.Scripts
 
 		protected ScriptVariables GlobalVars { get { return ChannelServer.Instance.ScriptManager.GlobalVars; } }
 
+		/// <summary>
+		/// Initalizes script, calling Load.
+		/// </summary>
+		/// <returns></returns>
 		public virtual bool Init()
 		{
 			this.Load();
 			return true;
 		}
 
+		/// <summary>
+		/// Use initial setup of the script.
+		/// </summary>
+		/// <remarks>
+		/// The reason Init calls Load is backwards compatibility,
+		/// prior to IScript the initial method was called Load.
+		/// </remarks>
 		public virtual void Load()
 		{
 		}
@@ -116,8 +127,7 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 		}
 
-		// Functions
-		// ------------------------------------------------------------------
+		#region General functions
 
 		/// <summary>
 		/// Returns random number between 0.0 and 100.0.
@@ -194,6 +204,8 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			return AuraData.FeaturesDb.IsEnabled(featureName);
 		}
+
+		#endregion
 
 		#region Extension
 

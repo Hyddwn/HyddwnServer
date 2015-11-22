@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Aura.Channel.Scripting.Scripts
 {
-	public class DungeonScript : IScript
+	public class DungeonScript : GeneralScript
 	{
 		/// <summary>
 		/// Name of the dungeon
@@ -27,7 +27,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Called when the script is initially created.
 		/// </summary>
 		/// <returns></returns>
-		public bool Init()
+		public override bool Init()
 		{
 			var attr = this.GetType().GetCustomAttribute<DungeonScriptAttribute>();
 			if (attr == null)
@@ -43,35 +43,6 @@ namespace Aura.Channel.Scripting.Scripts
 			ChannelServer.Instance.ScriptManager.DungeonScripts.Add(this.Name, this);
 
 			return true;
-		}
-
-		/// <summary>
-		/// Called from Init.
-		/// </summary>
-		public virtual void Load()
-		{
-		}
-
-		/// <summary>
-		/// Returns true if feature is enabled.
-		/// </summary>
-		/// <remarks>
-		/// TODO: Make another more general script base class for this and Random?
-		/// </remarks>
-		/// <param name="featureName"></param>
-		/// <returns></returns>
-		protected bool IsEnabled(string featureName)
-		{
-			return AuraData.FeaturesDb.IsEnabled(featureName);
-		}
-
-		/// <summary>
-		/// Proxy for Localization.Get.
-		/// </summary>
-		/// <param name="phrase"></param>
-		protected string L(string phrase)
-		{
-			return Localization.Get(phrase);
 		}
 
 		/// <summary>
