@@ -676,7 +676,17 @@ namespace Aura.Channel.Util
 			// Get skill id
 			int skillId;
 			if (!int.TryParse(args[1], out skillId))
-				return CommandResult.InvalidArgument;
+			{
+				// Try skill id enum if arg wasn't numeric
+				SkillId skillIdE;
+				if (!Enum.TryParse(args[1], out skillIdE))
+				{
+					Send.ServerMessage(target, Localization.Get("Unknown skill id '{0}'."), args[1]);
+					return CommandResult.InvalidArgument;
+				}
+
+				skillId = (int)skillIdE;
+			}
 
 			// Check skill data
 			var skillData = AuraData.SkillDb.Find(skillId);
