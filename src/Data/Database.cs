@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using MsgPack.Serialization;
 
 namespace Aura.Data
@@ -105,12 +106,7 @@ namespace Aura.Data
 				}
 			}
 
-			if (!fromFiles)
-			{
-				if (!this.LoadFromCache(cache))
-					this.LoadFromFiles(files);
-			}
-			else
+			if (fromFiles || !this.LoadFromCache(cache))
 			{
 				this.LoadFromFiles(files);
 				this.CreateCache(cache);
@@ -152,6 +148,12 @@ namespace Aura.Data
 				"Please download and compile the latest version of MsgPack (https://github.com/msgpack/msgpack-cli), " +
 				"then place the generated dll in Aura's Lib folder. Lastly, recompile Aura."));
 
+				return false;
+			}
+			catch (SerializationException)
+			{
+				// Deserialization failed, probably due to a new database format or corrupt cache file.
+				// Catch it, read from the files, and rebuild the cache.
 				return false;
 			}
 
