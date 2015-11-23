@@ -353,6 +353,7 @@ namespace Aura.Channel.Util
 				return CommandResult.InvalidArgument;
 			}
 
+			// Get random coordinates in region if none were provided
 			if (x == -1 || y == -1)
 			{
 				var rndc = AuraData.RegionInfoDb.RandomCoord(regionId);
@@ -383,6 +384,7 @@ namespace Aura.Channel.Util
 			int regionId = -1, x = -1, y = -1;
 			var destination = args[1].ToLower();
 
+			// Determine where to warp to
 			if (destination.StartsWith("tir")) { regionId = 1; x = 12801; y = 38397; }
 			else if (destination.StartsWith("dugald")) { regionId = 16; x = 23017; y = 61244; }
 			else if (destination.StartsWith("dun")) { regionId = 14; x = 38001; y = 38802; }
@@ -401,6 +403,7 @@ namespace Aura.Channel.Util
 				return CommandResult.InvalidArgument;
 			}
 
+			// Shouldn't happen unless someone made a mistake above
 			if (regionId == -1 || x == -1 || y == -1)
 			{
 				Send.ServerMessage(sender, Localization.Get("Error while choosing destination."));
@@ -410,6 +413,7 @@ namespace Aura.Channel.Util
 
 			target.Warp(regionId, x, y);
 
+			Send.ServerMessage(sender, Localization.Get("Warped to {0}@{1}/{2}"), regionId, x, y);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("You've been warped by '{0}'."), sender.Name);
 
@@ -555,8 +559,8 @@ namespace Aura.Channel.Util
 
 		private CommandResult HandleDynamic(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
-			string variant = "";
-
+			// Get variant
+			var variant = "";
 			if (args.Count > 1)
 			{
 				variant = args[1];
@@ -565,20 +569,23 @@ namespace Aura.Channel.Util
 					variant += ".xml";
 			}
 
+			// Get region info
 			var baseRegionId = target.RegionId;
 			var regionData = AuraData.RegionDb.Find(baseRegionId);
 
 			if (regionData == null)
 				return CommandResult.Fail;
 
+			// Create region
 			var region = new DynamicRegion(baseRegionId, variant, RegionMode.Permanent);
 			ChannelServer.Instance.World.AddRegion(region);
 
-			var pos = target.GetPosition();
-
-			target.Warp(region.Id, pos.X, pos.Y);
+			//Warp
+			target.Warp(region.Id, target.GetPosition());
 
 			Send.ServerMessage(sender, Localization.Get("Created new region based on region {0}, new region's id: {1}"), baseRegionId, region.Id);
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("'{0}' warped you to a new, dynamic region."), sender.Name);
 
 			return CommandResult.Okay;
 		}
@@ -666,10 +673,12 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get skill id
 			int skillId;
 			if (!int.TryParse(args[1], out skillId))
 				return CommandResult.InvalidArgument;
 
+			// Check skill data
 			var skillData = AuraData.SkillDb.Find(skillId);
 			if (skillData == null)
 			{
@@ -677,6 +686,7 @@ namespace Aura.Channel.Util
 				return CommandResult.Fail;
 			}
 
+			// Get rank
 			int rank = 0;
 			if (args.Count > 2 && args[2] != "novice" && !int.TryParse(args[2], NumberStyles.HexNumber, null, out rank))
 				return CommandResult.InvalidArgument;
@@ -684,6 +694,7 @@ namespace Aura.Channel.Util
 			if (rank > 0)
 				rank = Math2.Clamp(0, 18, 16 - rank);
 
+			// Check rank data
 			var rankData = skillData.GetRankData(rank, target.RaceId);
 			if (rankData == null)
 			{
@@ -691,9 +702,10 @@ namespace Aura.Channel.Util
 				return CommandResult.Fail;
 			}
 
+			// Give skill
 			target.Skills.Give((SkillId)skillId, (SkillRank)rank);
 
-			Send.ServerMessage(sender, Localization.Get("Skill added."));
+			Send.ServerMessage(sender, Localization.Get("Skill '{0}' added."), (SkillId)skillId);
 			if (target != sender)
 				Send.ServerMessage(sender, Localization.Get("Skill '{0}' added by '{1}'."), (SkillId)skillId, sender.Name);
 
@@ -705,10 +717,12 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get value
 			float val;
 			if (!float.TryParse(args[1], NumberStyles.Float, CultureInfo.InvariantCulture, out val))
 				return CommandResult.InvalidArgument;
 
+			// Change value based on command
 			switch (args[0])
 			{
 				case "height": target.Height = val; val = target.Height; break;
@@ -763,10 +777,12 @@ namespace Aura.Channel.Util
 				}
 			}
 
+			// Get hair item
 			var hair = target.Inventory.GetItemAt(Pocket.Hair, 0, 0);
 			if (hair == null)
 				return CommandResult.Fail;
 
+			// Change color
 			hair.Info.Color1 = color;
 			Send.EquipmentChanged(target, hair);
 
@@ -782,10 +798,12 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get title id
 			ushort titleId;
 			if (!ushort.TryParse(args[1], out titleId))
 				return CommandResult.InvalidArgument;
 
+			// Enable title
 			target.Titles.Enable(titleId);
 
 			Send.ServerMessage(sender, Localization.Get("Added title."));
@@ -824,24 +842,29 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get race id
 			int raceId;
 			if (!int.TryParse(args[1], out raceId))
 				return CommandResult.InvalidArgument;
 
+			// Check race
 			if (!AuraData.RaceDb.Exists(raceId))
 			{
 				Send.ServerMessage(sender, Localization.Get("Race '{0}' doesn't exist."), raceId);
 				return CommandResult.Fail;
 			}
 
+			// Get amount
 			int amount = 1;
 			if (args.Count > 2 && !int.TryParse(args[2], out amount))
 				return CommandResult.InvalidArgument;
 
+			// Get title
 			ushort titleId = 30011;
 			if (args.Count > 3 && !ushort.TryParse(args[3], out titleId))
 				return CommandResult.InvalidArgument;
 
+			// Spawn creatures in a spiral
 			var targetPos = target.GetPosition();
 			for (int i = 0; i < amount; ++i)
 			{
@@ -870,6 +893,7 @@ namespace Aura.Channel.Util
 
 			//Send.PlayDead(target);
 
+			Send.ServerMessage(sender, Localization.Get("Game over."));
 			if (target != sender)
 				Send.ServerMessage(target, Localization.Get("You've been killed by {0}."), sender.Name);
 
@@ -910,11 +934,17 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get amount
 			short amount;
 			if (!short.TryParse(args[1], out amount))
 				return CommandResult.InvalidArgument;
 
+			// Add ap
 			target.GiveAp(amount);
+
+			Send.ServerMessage(sender, Localization.Get("Added {0} AP."), amount);
+			if (target != sender)
+				Send.ServerMessage(target, Localization.Get("{0} gave you {1} AP."), sender.Name, amount);
 
 			return CommandResult.Okay;
 		}
@@ -991,7 +1021,7 @@ namespace Aura.Channel.Util
 
 			Send.ServerMessage(sender, Localization.Get("Marked all items on the floor to disappear now."));
 			if (target != sender)
-				Send.ServerMessage(target, Localization.Get("{0} removed all items in your region."), sender.Name);
+				Send.ServerMessage(target, Localization.Get("{0} removed all items that were lying on the floor in your region."), sender.Name);
 
 			return CommandResult.Okay;
 		}
@@ -1108,26 +1138,32 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get prop id
 			int propId;
 			if (!int.TryParse(args[1], out propId))
 				return CommandResult.InvalidArgument;
 
+			// Create and spawn prop
 			var pos = target.GetPosition();
 			var prop = new Prop(propId, target.RegionId, pos.X, pos.Y, MabiMath.ByteToRadian(target.Direction));
 
 			target.Region.AddProp(prop);
 
 			Send.ServerMessage(sender, Localization.Get("Spawned prop."));
+			if (target != sender)
+				Send.ServerMessage(target, Localization.Get("{0} spawned a prop at your location."), sender.Name);
 
 			return CommandResult.Okay;
 		}
 
 		private CommandResult HandleWho(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
+			// Get id of the region to look for players in
 			int regionId = 0;
 			if (args.Count > 1 && !int.TryParse(args[1], out regionId))
 				return CommandResult.InvalidArgument;
 
+			// Create list of players in region or world
 			List<Creature> players;
 			if (regionId != 0)
 			{
@@ -1149,6 +1185,7 @@ namespace Aura.Channel.Util
 				Send.ServerMessage(sender, Localization.Get("Players online ({0}):"), players.Count);
 			}
 
+			// Send list of players
 			Send.ServerMessage(sender,
 				players.Count == 0
 				? Localization.Get("None")
@@ -1181,6 +1218,7 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get given gesture
 			var gesture = AuraData.MotionDb.Find(args[1]);
 			if (gesture == null)
 			{
@@ -1271,6 +1309,7 @@ namespace Aura.Channel.Util
 		{
 			var distancePos = sender.Vars.Temp.DistanceCommandPos;
 
+			// Save distance or calculate distance if this is the second call
 			if (distancePos == null)
 			{
 				sender.Vars.Temp.DistanceCommandPos = sender.GetPosition();
@@ -1294,13 +1333,16 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get amount
 			int amount;
 			if (!int.TryParse(args[1], out amount))
 				return CommandResult.InvalidArgument;
 
+			// Cap amount, client doesn't handle this many entities too well
 			if (amount > 1000000)
 				amount = 1000000;
 
+			// Create gold stacks until amount is reached
 			var rnd = RandomProvider.Get();
 			var i = amount;
 			while (i > 0)
@@ -1309,6 +1351,7 @@ namespace Aura.Channel.Util
 				stack.Info.Amount = (ushort)Math.Min(1000, i);
 				i -= stack.Info.Amount;
 
+				// Add them to inv or drop them if inv is full
 				if (!target.Inventory.Insert(stack, false))
 					stack.Drop(target.Region, target.GetPosition().GetRandomInRange(500, rnd));
 			}
@@ -1325,6 +1368,7 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get NPC
 			var name = args[1];
 			var npc = ChannelServer.Instance.World.GetNpc(name);
 			if (npc == null)
@@ -1333,18 +1377,22 @@ namespace Aura.Channel.Util
 				return CommandResult.Fail;
 			}
 
-			int favor = npc.GetFavor(target);
+			// Get favor
+			var favor = npc.GetFavor(target);
 
+			// Output favor if no set parameter
 			if (args.Count < 3)
 			{
 				Send.SystemMessage(sender, Localization.Get("Favor of {0}: {1}"), name, favor);
 				return CommandResult.Okay;
 			}
 
+			// Get amount
 			int amount;
 			if (!int.TryParse(args[2], out amount))
 				return CommandResult.InvalidArgument;
 
+			// Set favor
 			favor = npc.SetFavor(target, amount);
 
 			Send.SystemMessage(sender, Localization.Get("Changed favor for {0}, new value: {1}"), name, favor);
@@ -1359,6 +1407,7 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get NPC
 			var name = args[1];
 			var npc = ChannelServer.Instance.World.GetNpc(name);
 			if (npc == null)
@@ -1367,18 +1416,22 @@ namespace Aura.Channel.Util
 				return CommandResult.Fail;
 			}
 
-			int stress = npc.GetStress(target);
+			// Get stress
+			var stress = npc.GetStress(target);
 
+			// Output stress if no set parameter
 			if (args.Count < 3)
 			{
 				Send.SystemMessage(sender, Localization.Get("Stress of {0}: {1}"), name, stress);
 				return CommandResult.Okay;
 			}
 
+			// Get amount
 			int amount;
 			if (!int.TryParse(args[2], out amount))
 				return CommandResult.InvalidArgument;
 
+			// Set stress
 			stress = npc.SetStress(target, amount);
 
 			Send.SystemMessage(sender, Localization.Get("Changed stress for {0}, new value: {1}"), name, stress);
@@ -1393,6 +1446,7 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
+			// Get NPC
 			var name = args[1];
 			var npc = ChannelServer.Instance.World.GetNpc(name);
 			if (npc == null)
@@ -1401,18 +1455,22 @@ namespace Aura.Channel.Util
 				return CommandResult.Fail;
 			}
 
-			int memory = npc.GetMemory(target);
+			// Get memory
+			var memory = npc.GetMemory(target);
 
+			// Output memory if not set parameter
 			if (args.Count < 3)
 			{
 				Send.SystemMessage(sender, Localization.Get("Memory of {0}: {1}"), name, memory);
 				return CommandResult.Okay;
 			}
 
+			// Get amount
 			int amount;
 			if (!int.TryParse(args[2], out amount))
 				return CommandResult.InvalidArgument;
 
+			// Set memory
 			memory = npc.SetMemory(target, amount);
 
 			Send.SystemMessage(sender, Localization.Get("Changed memory for {0}, new value: {1}"), name, memory);
@@ -1579,6 +1637,7 @@ namespace Aura.Channel.Util
 
 		private CommandResult HandleTeleWalk(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
+			// Toggle telewalk
 			if (target.Vars.Temp["telewalk"] == null)
 			{
 				target.Vars.Temp["telewalk"] = true;
@@ -1608,17 +1667,23 @@ namespace Aura.Channel.Util
 			var itemId = 2000; // Gold
 
 			// Check dungeon
-			if (!AuraData.DungeonDb.Entries.ContainsKey(dungeonName))
+			var dungeonData = AuraData.DungeonDb.Find(dungeonName);
+			if (dungeonData == null)
 			{
 				Send.SystemMessage(sender, Localization.Get("Dungeon '{0}' not found in database."), dungeonName);
 				return CommandResult.InvalidArgument;
 			}
 
+			// Create dungeon and warp in
 			if (!ChannelServer.Instance.World.DungeonManager.CreateDungeonAndWarp(dungeonName, itemId, target))
 			{
 				Send.SystemMessage(sender, Localization.Get("Failed to create dungeon."), dungeonName);
 				return CommandResult.Fail;
 			}
+
+			Send.ServerMessage(sender, Localization.Get("Warped into {0}."), dungeonData.EngName);
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("{0} warped you into {1}."), sender.Name, dungeonData.EngName);
 
 			return CommandResult.Okay;
 		}
@@ -1638,13 +1703,17 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
-			if (!AuraData.CutscenesDb.Exists(args[1]))
+			var cutscene = args[1];
+
+			// Check given cutscene
+			if (!AuraData.CutscenesDb.Exists(cutscene))
 			{
 				Send.ServerMessage(sender, Localization.Get("Cutscene not found."));
 				return CommandResult.Okay;
 			}
 
-			Cutscene.Play(args[1], target);
+			// Play cutscene
+			Cutscene.Play(cutscene, target);
 
 			return CommandResult.Okay;
 		}
@@ -1660,7 +1729,7 @@ namespace Aura.Channel.Util
 
 			if (!target.IsInParty)
 			{
-				Send.SystemMessage(sender, Localization.Get("Target is not in party."));
+				Send.SystemMessage(sender, Localization.Get("Target creature is not in a party."));
 				return CommandResult.Okay;
 			}
 
@@ -1705,6 +1774,7 @@ namespace Aura.Channel.Util
 					return CommandResult.InvalidArgument;
 			}
 
+			// Reset colors
 			if (idx == 0)
 			{
 				target.Vars.Perm["NameColorIdx"] = null;
@@ -1715,6 +1785,7 @@ namespace Aura.Channel.Util
 				target.Conditions.Deactivate(ConditionsB.NameColorChange);
 				target.Conditions.Deactivate(ConditionsB.ChatColorChange);
 			}
+			// Set colors
 			else
 			{
 				target.Vars.Perm["NameColorIdx"] = idx;
