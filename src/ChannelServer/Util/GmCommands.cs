@@ -1608,6 +1608,7 @@ namespace Aura.Channel.Util
 		{
 			var weather = ChannelServer.Instance.Weather.GetWeather(target.RegionId);
 
+			// Return weather of current region
 			if (args.Count == 1)
 			{
 				if (weather == null)
@@ -1615,33 +1616,40 @@ namespace Aura.Channel.Util
 				else
 					Send.ServerMessage(sender, Localization.Get("Current weather: {0}"), weather);
 
-				return CommandResult.InvalidArgument;
+				return CommandResult.Okay;
 			}
 
+			// Change weather to weather table
 			if (args[1].StartsWith("type"))
 			{
 				Send.ServerMessage(sender, Localization.Get("Changing weather to table (typeX) requires a relog."));
 
 				ChannelServer.Instance.Weather.SetProviderAndUpdate(target.RegionId, new WeatherProviderTable(target.RegionId, args[1]));
+
+				return CommandResult.Okay;
 			}
-			else
+
+			// Change weather to something specific
+			float val;
+			if (!float.TryParse(args[1], out val))
 			{
-				float val;
-				if (!float.TryParse(args[1], out val))
+				switch (args[1])
 				{
-					switch (args[1])
-					{
-						case "clear": val = 0.5f; break;
-						case "clouds": val = 1.5f; break;
-						case "rain": val = 1.95f; break;
-						case "storm": val = 2.0f; break;
+					case "clear": val = 0.5f; break;
+					case "clouds": val = 1.5f; break;
+					case "rain": val = 1.95f; break;
+					case "storm": val = 2.0f; break;
 
-						default: return CommandResult.InvalidArgument;
-					}
+					default:
+						Send.ServerMessage(sender, Localization.Get("Unknown weather type."));
+						return CommandResult.InvalidArgument;
 				}
-
-				ChannelServer.Instance.Weather.SetProviderAndUpdate(target.RegionId, new WeatherProviderConstant(target.RegionId, val));
 			}
+
+			// Clamp to min/max 0~2, other values can cause weird looking results
+			val = Math2.Clamp(0, 2, val);
+
+			ChannelServer.Instance.Weather.SetProviderAndUpdate(target.RegionId, new WeatherProviderConstant(target.RegionId, val));
 
 			return CommandResult.Okay;
 		}
