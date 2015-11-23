@@ -1,10 +1,10 @@
 //--- Aura Script -----------------------------------------------------------
-// Ferghus, the blacksmith of Tir Chonaill
+// Ferghus
 //--- Description -----------------------------------------------------------
-// Weapon Breaker
+// The Blacksmith/Weapons Dealer in Southeast Tir
 //---------------------------------------------------------------------------
 
-public class FerghusBaseScript : NpcScript
+public class FerghusScript : NpcScript
 {
 	public override void Load()
 	{
@@ -20,6 +20,9 @@ public class FerghusBaseScript : NpcScript
 		EquipItem(Pocket.Armor, 15650, 0x001F2340, 0x00988486, 0x009E9FAC);
 		EquipItem(Pocket.Shoe, 17283, 0x0077564A, 0x00F2A03A, 0x008A243D);
 		EquipItem(Pocket.RightHand1, 40024, 0x00808080, 0x00212121, 0x00808080);
+
+		AddGreeting(0, "Are you new here? Good to see you.");
+		AddGreeting(1, "Have we met? You look familiar to me.");
 
 		AddPhrase("(Spits out a loogie)");
 		AddPhrase("Beard! Oh, beard! A true man never forgets how to grow a beard, yeah!");
@@ -49,8 +52,14 @@ public class FerghusBaseScript : NpcScript
 		switch (await Select())
 		{
 			case "@talk":
-				Msg("Are you new here? Good to see you.");
-				await StartConversation();
+				Greet();
+				Msg(Hide.Name, GetMoodString(), FavorExpression());
+				if (Title == 11002)
+				{
+					Msg("Hm... <username/>, the Guardian of Erinn?<br/>If you want, I could guard your weapons.");
+					Msg("...If you have any weapons that<br/>have become dull, I'll take care of it...");
+				}
+				await Conversation();
 				break;
 
 			case "@shop":
@@ -137,7 +146,7 @@ public class FerghusBaseScript : NpcScript
 			case "rumor":
 				GiveKeyword("windmill");
 				Msg("The wind around Tir Chonaill is very strong. It even breaks the windmill blades.<br/>And I'm the one to fix them.<br/>Malcolm's got some skills,<br/>but I'm the one who deals with iron.");
-				Msg("I made those extra blades out there just in case.<br/>When the Windmill stops working, it's really inconvenient around here.<br/>It's always better to be prepared, isn't it?<br/>");
+				Msg("I made those extra blades out there just in case.<br/>When the Windmill stops working, it's really inconvenient around here.<br/>It's always better to be prepared, isn't it?");
 				ModifyRelation(Random(2), 0, Random(2));
 				break;
 
@@ -149,10 +158,12 @@ public class FerghusBaseScript : NpcScript
 				break;
 
 			case "about_arbeit":
-				Msg("What? Part-time job?<br/>There's nothing. You can come back later.");
+				Msg("Unimplemented");
+				//Msg("What? Part-time job?<br/>There's nothing. You can come back later.");
 				break;
 
 			case "shop_misc":
+				GiveKeyword("shop_smith");
 				Msg("This is the Blacksmith's Shop. Surprisingly, many people think they are at the General Shop.");
 				Msg("Let me tell you the biggest difference between Malcolm and me.<br/>He sells all kinds of stuff for your everyday life,<br/>but I, the best smithy in town, make metal stuff, you know.<br/>Like weapons, for example.");
 				Msg("If you insist, I'll show you the way to the General Shop.<br/>Walk across the bridge, and go up the hill to the Square.");
@@ -167,6 +178,10 @@ public class FerghusBaseScript : NpcScript
 				Msg("I once hurt my hand while making a piece of armor.<br/>It really hurt and I went to Dilys. She cured it in a second!<br/>If you're not feeling well, you should go see her.<br/>Walk past the Square and you'll find her.");
 				break;
 
+			case "shop_inn":
+				Msg("You may lose your items or even get ill<br/>if you sleep outside with no protection.<br/>If you sleep in the Inn, you don't have to worry about things like that at least.<br/>You will see Nora right in front of the Inn. Do you want to talk to her?");
+				break;
+
 			case "shop_bank":
 				Msg("The Bank can be quite handy. They store your items, not just Gold.<br/>You'll probably use it a lot.<br/>The clerk at the Bank, Bebhinn, can help you in many ways if you get to know her.<br/>I'm not lying.");
 				Msg("The Bank is near the Square. So you have to go up there first...<br/>Do you follow me?");
@@ -178,8 +193,29 @@ public class FerghusBaseScript : NpcScript
 				Msg("What? You want to buy an item? Then you should have pressed 'Shop' instead<br/>of having this chat with me.");
 				break;
 
+			case "skill_range":
+				Msg("I think Ranald knows better.<br/>Why don't you ask him directly?<br/>It's true I make good bows.<br/>But making it and using it is totally different, you know.");
+				break;
+
 			case "skill_instrument":
 				Msg("Looks like you like music a lot,<br/>but I don't think I can help you with that.<br/>You know, I'm a blacksmith. I've never played any instruments before.");
+				break;
+
+			case "skill_composing":
+				GiveKeyword("temple");
+				Msg("You want to write music?<br/>Priestess Endelyon at the Church<br/>knows a bit about composing, I think.<br/>You can talk to her.");
+				Msg("She's such a nice lady.<br/>I'm sure she'll help you a lot.");
+				break;
+
+			case "skill_tailoring":
+				GiveKeyword("shop_misc");
+				Msg("Did you buy a Tailoring Kit? You can buy one at the General Shop.<br/>I know nothing about Tailoring, but I do know you need a Tailoring Kit and Fabric to make clothes.<br/>Just like a blacksmith needs an Anvil and a Bellows.");
+				break;
+
+			case "skill_magnum_shot":
+				Msg("Oh! you are interested in the Magnum Shot.<br/>Welcome. Even if you know how to use it,<br/>you have to have a bow and some arrows.<br/>If you need some, come and see me.");
+				Msg("Oh, you already have one?<br/>Then you're not here to buy anything?<br/>If not, why don't you talk with Trefor<br/>or Ranald at the School.");
+				Msg("I don't think I can help.");
 				break;
 
 			case "skill_counter_attack":
@@ -187,9 +223,32 @@ public class FerghusBaseScript : NpcScript
 				Msg("When it comes to combat skills,<br/>you'd better talk with them. They will tell you useful stories.<br/>Chief Duncan was once a warrior.<br/>Perhaps he can give you some tips from his experience.");
 				break;
 
+			case "skill_smash":
+				RemoveKeyword("skill_smash");
+				Msg("Did you use the Smash skill?<br/>It is like a double-edged sword. Its weakness is as big as its strength. Better use it carefully.");
+				break;
+
+			case "skill_gathering":
+				Msg("The most critical aspect of successful gathering is<br/>tools, tools and tools.<br/>Let's say there's a big forest full of giant trees.<br/>You can't do anything without an axe.");
+				Msg("What if there was a big flock of sheep with top quality wool?<br/>Without scissors or a knife,<br/>you can't even get a string of wool from them.");
+				Msg("You got the point?<br/>Then why don't you go through my stock<br/>and pick a tool?");
+				Msg("Don't you want it? Then, never mind. haha.");
+				break;
+
 			case "square":
 				Msg("Haha. You must have missed it.<br/>It's nearly impossible to miss the Square.<br/>I think you need to keep your eyes open.");
 				Msg("The Square farther within the town,<br/>right next to the big tree.<br/>You can see it even from that hill.");
+				break;
+
+			case "pool":
+				GiveKeyword("brook");
+				Msg("The reservoir is not on this side.<br/>Cross the Adelia Stream out there,<br/>take a left, and then go straight.");
+				Msg("When you think you're close to the School, that's where it is.");
+				break;
+
+			case "farmland":
+				GiveKeyword("brook");
+				Msg("The farmland? Then you're on the wrong side.<br/>Cross the Adelia Stream,<br/>and follow the path to the left.");
 				break;
 
 			case "windmill":
@@ -220,8 +279,20 @@ public class FerghusBaseScript : NpcScript
 				Msg("When you get there, can you tell Ranald<br/>we should get a drink together?<br/>Lassar must not find out about it, alright?");
 				break;
 
-			case "farmland":
-				Msg("The farmland? Then you're on the wrong side.<br/>Cross the Adelia Stream,<br/>and follow the path to the left.");
+			case "skill_windmill":
+				Msg("Hmm... Are you talking about the Windmill?");
+				Msg("It's at the entrance of the town.<br/>Drawing water from the stream and filling up the reservoir.<br/>Also used for grinding crops.<br/>Better stay alert around it. It can be quite dangerous.");
+				Msg("Ah... You are talking about a skill name, not the Windmill.");
+				break;
+
+			case "skill_campfire":
+				Msg("What? Campfire skill?<br/>I remember Deian came here and borrowed some tools,<br/>saying he would build a fire.<br/>Now I know why he needed them. haha.");
+				Msg("By the way, have you met Deian?<br/>He is a clumsy boy. I'm sure he's having a hard time.<br/>Why don't you go and help him out?");
+				break;
+
+			case "shop_restaurant":
+				Msg("Hmm...<br/>Are you looking for a restaurant?<br/>Sorry, but there are no restaurants in Tir Chonaill. But we have a grocery store.");
+				Msg("Speaking of... I could use some booze now.");
 				break;
 
 			case "shop_armory":
@@ -244,11 +315,18 @@ public class FerghusBaseScript : NpcScript
 				Msg("If you need some help,<br/>go see the Chief.");
 				break;
 
+			case "graveyard":
+				GiveKeyword("shop_headman");
+				Msg("The graveyard is near the Chief's House.<br/>Walk to the north of his house and you'll see it.<br/>Several days ago, I came home and slept like a log after drinking.<br/>But it turns out I slept in the graveyard, not in my bed!");
+				Msg("It was a bit chilly and more than a little creepy! But it was fun too.<br/>If there were no spiders, I could have a real good drinking binge there.");
+				break;
+
 			case "skill_fishing":
 				Msg("Based on what I've seen, all you need<br/>is a Fishing Rod and a Bait Tin in each hand.");
 				break;
 
 			case "lute":
+				GiveKeyword("shop_misc");
 				Msg("Malcolm's General Shop sells lutes.<br/>He also sells... Um...<br/>What was that called? Ukul... something.");
 				break;
 
@@ -256,9 +334,9 @@ public class FerghusBaseScript : NpcScript
 				RndMsg(
 					"?",
 					"*Yawn* I don't know.",
+					"Haha. I have no idea.",
 					"That's not my concern.",
-					"I don't know, man. That's just out of my league.",
-					"Haha. I have no idea."
+					"I don't know, man. That's just out of my league."
 				);
 				ModifyRelation(0, 0, Random(2));
 				break;
@@ -270,53 +348,47 @@ public class FerghusShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		//--- Weapon tab -----------------------------
-		//--------------------------------------------
-		Add("Weapon", 40023);       //Gathering Knife
-		Add("Weapon", 45001, 20);   //Arrow x20
-		Add("Weapon", 45001, 100);  //Arrow x100
-		Add("Weapon", 40022);       //Gathering Axe
-		Add("Weapon", 45002, 50);   //Bolt x50
-		Add("Weapon", 45002, 200);  //Bolt x200
-		Add("Weapon", 40027);       //Weeding Hoe
-		Add("Weapon", 40003);       //Short Bow
-		Add("Weapon", 40026);       //Sickle
-		Add("Weapon", 40006);       //Dagger
-		Add("Weapon", 40005);       //Short Sword
-		Add("Weapon", 40025);       //Pickaxe
-		Add("Weapon", 40179);       //Spiked Knuckle
-		Add("Weapon", 40007);       //Hatchet
-		Add("Weapon", 40024);       //Blacksmith Hammer
-		Add("Weapon", 40244);       //Bear Knuckle
-		Add("Weapon", 40180);       //Hobnail Knuckle
-		Add("Weapon", 40745);       //Basic Control Bar
-		Add("Weapon", 40841);       //Spiral Shuriken
-		Add("Weapon", 46001);       //Round Shield
+		Add("Weapon", 40003);      // Short Bow
+		Add("Weapon", 40005);      // Short Sword
+		Add("Weapon", 40006);      // Dagger
+		Add("Weapon", 40007);      // Hatchet
+		Add("Weapon", 40022);      // Gathering Axe
+		Add("Weapon", 40023);      // Gathering Knife
+		Add("Weapon", 40024);      // Blacksmith Hammer
+		Add("Weapon", 40025);      // Pickaxe
+		Add("Weapon", 40026);      // Sickle
+		Add("Weapon", 40027);      // Weeding Hoe
+		Add("Weapon", 40179);      // Spiked Knuckle
+		Add("Weapon", 40180);      // Hobnail Knuckle
+		Add("Weapon", 40244);      // Bear Knuckle
+		Add("Weapon", 40745);      // Basic Control Bar
+		Add("Weapon", 40841);      // Spiral Shuriken
+		Add("Weapon", 45001, 100); // Arrow x100
+		Add("Weapon", 45001, 20);  // Arrow x20
+		Add("Weapon", 45002, 50);  // Bolt x50
+		Add("Weapon", 45002, 200); // Bolt x200
+		Add("Weapon", 46001);      // Round Shield
 
-		//--- Shoes and Gloves tab -------------------
-		//--------------------------------------------			
-		Add("Shoes Gloves", 16004); //Studded Bracelet
-		Add("Shoes Gloves", 16008); //Cores' Thief Gloves
-		Add("Shoes Gloves", 16000); //Leather Gloves
-		Add("Shoes Gloves", 17021); //Lorica Sandles
-		Add("Shoes Gloves", 17014); //Leather Shoes
-		Add("Shoes Gloves", 17001); //Ladies Leather Boots
-		Add("Shoes Gloves", 17005); //Hunter Boots
-		Add("Shoes Gloves", 17015); //Combat Shoes
-		Add("Shoes Gloves", 17016); //Field Combat Shoes
-		Add("Shoes Gloves", 17020); //Thief Shoes
-		Add("Shoes Gloves", 16014); //Lorica Gloves
+		Add("Shoes && Gloves", 16000); // Leather Gloves
+		Add("Shoes && Gloves", 16004); // Studded Bracelet
+		Add("Shoes && Gloves", 16008); // Cores' Thief Gloves
+		Add("Shoes && Gloves", 16014); // Lorica Gloves
+		Add("Shoes && Gloves", 17001); // Ladies Leather Boots
+		Add("Shoes && Gloves", 17005); // Hunter Boots
+		Add("Shoes && Gloves", 17014); // Leather Shoes
+		Add("Shoes && Gloves", 17015); // Combat Shoes
+		Add("Shoes && Gloves", 17016); // Field Combat Shoes
+		Add("Shoes && Gloves", 17020); // Thief Shoes
+		Add("Shoes && Gloves", 17021); // Lorica Sandals
 
-		//--- Helmet tab -----------------------------
-		//--------------------------------------------
-		Add("Helmet", 18503);       //Cuirassier Helm
+		Add("Helmet", 18503); // Cuirassier Helm
 
-		//--- Armor tab ------------------------------
-		//--------------------------------------------
-		Add("Armor", 14001);        //Light Leather Mail (F)
-		Add("Armor", 14010);        //Light Leather Mail (M)
-		Add("Armor", 14004);        //Cloth Mail
-		Add("Armor", 14008);        //Full Leather Armor Set (F)
-		Add("Armor", 14003);        //Studded Cuirassier
+		Add("Armor", 14001); // Light Leather Mail (F)
+		Add("Armor", 14003); // Studded Cuirassier
+		Add("Armor", 14004); // Cloth Mail
+		Add("Armor", 14008); // Full Leather Armor Set
+		Add("Armor", 14010); // Light Leather Mail (M)
+
+		Add("Event"); // Empty
 	}
 }
