@@ -283,6 +283,8 @@ namespace Aura.Channel.Network.Sending
 
 						case Stat.Age: packet.PutShort((short)creature.Age); break;
 
+						case Stat.LastTown: packet.PutString(creature.LastTown); break;
+
 						// Client might crash with a mismatching value, 
 						// take a chance and put an int by default.
 						default:

@@ -152,6 +152,7 @@ namespace Aura.Channel.Network.Handlers
 					if (globalname != null)
 					{
 						creature.LastTown = globalname.Value;
+						Send.StatUpdate(creature, StatUpdateType.Private, Stat.LastTown);
 					}
 					else
 					{
