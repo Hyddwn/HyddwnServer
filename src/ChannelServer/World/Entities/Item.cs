@@ -287,6 +287,7 @@ namespace Aura.Channel.World.Entities
 			this.Init(itemId);
 			this.SetNewEntityId();
 
+			// Run OnCreation script
 			var script = ChannelServer.Instance.ScriptManager.ItemScripts.Get(itemId);
 			if (script != null)
 				script.OnCreation(this);
@@ -480,6 +481,40 @@ namespace Aura.Channel.World.Entities
 		{
 			var item = new Item(2004);
 			item.MetaData1.SetInt("EVALUE", amount);
+
+			return item;
+		}
+
+		/// <summary>
+		/// Returns new check with the given amount.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="portal"></param>
+		/// <returns></returns>
+		public static Item CreateWarpScroll(int itemId, string portal)
+		{
+			var item = new Item(itemId);
+
+			if (portal == "last_town")
+				item.MetaData1.SetString("TARGET", "last_town");
+			else
+				item.MetaData1.SetString("TARGET", "portal@{0}", portal);
+
+			return item;
+		}
+
+		/// <summary>
+		/// Returns new check with the given amount.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="regionId"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public static Item CreateWarpScroll(int itemId, int regionId, int x, int y)
+		{
+			var item = new Item(itemId);
+			item.MetaData1.SetString("TARGET", "pos@{0},{1},{2}", regionId, x, y);
 
 			return item;
 		}
