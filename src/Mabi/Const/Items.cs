@@ -297,9 +297,13 @@ namespace Aura.Mabi.Const
 		Incomplete = 0x08,
 
 		/// <summary>
-		/// Adds "-only Item" text?
+		/// Personalized item, e.g. due to an upgrade.
 		/// </summary>
-		Unknown3 = 0x10,
+		/// <remarks>
+		/// Adds "...-only Item" text, with "..." being the name of
+		/// the player, taken from the "OWNER" string value in MetaData1.
+		/// </remarks>
+		Personalized = 0x10,
 
 		/// <summary>
 		/// Removes "(Original)" text?

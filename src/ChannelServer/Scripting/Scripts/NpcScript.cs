@@ -1699,6 +1699,13 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 			}
 
+			// Personalization
+			if (result.Upgrade.Personalize)
+			{
+				result.Item.OptionInfo.Flags |= ItemFlags.Personalized;
+				result.Item.MetaData1.SetString("OWNER", this.Player.Name);
+			}
+
 			// Update item
 			Send.ItemUpdate(this.Player, result.Item);
 
