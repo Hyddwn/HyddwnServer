@@ -229,13 +229,21 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.ItemDestroy)]
 		public void ItemDestroy(ChannelClient client, Packet packet)
 		{
-			var itemId = packet.GetLong();
+			var itemEntityId = packet.GetLong();
 
 			var creature = client.GetCreatureSafe(packet.Id);
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
 
-			// Check and try to remove item
-			var item = creature.Inventory.GetItem(itemId);
-			if (item == null || !creature.Inventory.Remove(item))
+			// Check if item is destroyable
+			if (!item.HasTag("/destroyable/"))
+			{
+				Log.Warning("ItemDestroy: Creature '{0:X16}' tried to destroy a non-destroyable item.");
+				Send.ItemDestroyR(creature, false);
+				return;
+			}
+
+			// Try to remove item
+			if (!creature.Inventory.Remove(item))
 			{
 				Send.ItemDestroyR(creature, false);
 				return;
