@@ -240,6 +240,11 @@ namespace Aura.Channel.World.Entities
 		public bool IsDungeonKey { get { return (this.Info.Id >= 70028 && this.Info.Id <= 70030); } }
 
 		/// <summary>
+		/// Returns true if item is a dungeon room or boss room key.
+		/// </summary>
+		public bool IsDungeonRoomKey { get { return (this.Info.Id >= 70029 && this.Info.Id <= 70030); } }
+
+		/// <summary>
 		/// Returns true if item is a dungeon pass.
 		/// </summary>
 		/// <remarks>
@@ -630,7 +635,8 @@ namespace Aura.Channel.World.Entities
 
 					default:
 						// Set protection if item wasn't dropped by a player
-						if (!playerDrop)
+						// and it's not a dungeon room key
+						if (!playerDrop && !this.IsDungeonRoomKey)
 						{
 							var seconds = ChannelServer.Instance.Conf.World.LootStealProtection;
 							if (seconds > 0)
