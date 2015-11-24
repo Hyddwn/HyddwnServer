@@ -21,6 +21,7 @@ namespace Aura.Data.Database
 		public string Filter { get; set; }
 		public List<string> Npcs { get; set; }
 		public Dictionary<string, List<int>> Effects { get; set; }
+		public bool Personalize { get; set; }
 
 		public ItemUpgradeData()
 		{
@@ -68,6 +69,8 @@ namespace Aura.Data.Database
 					}
 				}
 			}
+
+			data.Personalize = entry.ReadBool("personalize");
 
 			this.Entries[data.Ident] = data;
 		}
