@@ -225,6 +225,11 @@ namespace Aura.Shared
 				{
 					this.LoadDb(AuraData.CookingDb, "db/cooking.txt", reload);
 				}
+
+				if ((toLoad & DataLoad.Portals) != 0)
+				{
+					this.LoadDb(AuraData.PortalDb, "db/portals.txt", reload);
+				}
 			}
 			catch (DatabaseErrorException ex)
 			{
@@ -331,6 +336,7 @@ namespace Aura.Shared
 		Cutscenes = 0x1000000,
 		Production = 0x2000000,
 		Cooking = 0x4000000,
+		Portals = 0x8000000,
 
 		All = 0xFFFFFFFF,
 

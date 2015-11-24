@@ -32,6 +32,7 @@ namespace Aura.Data
 		public static ManualDb ManualDb = new ManualDb();
 		public static MotionDb MotionDb = new MotionDb();
 		public static PetDb PetDb = new PetDb();
+		public static PortalDb PortalDb = new PortalDb();
 		public static ProductionDb ProductionDb = new ProductionDb();
 		public static PropsDb PropsDb = new PropsDb();
 		public static PropDropDb PropDropDb = new PropDropDb();
