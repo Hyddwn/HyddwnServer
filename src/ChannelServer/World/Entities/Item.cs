@@ -485,6 +485,16 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns true if item has the given flags.
+		/// </summary>
+		/// <param name="flags"></param>
+		/// <returns></returns>
+		public bool Is(ItemFlags flags)
+		{
+			return (this.OptionInfo.Flags & flags) != 0;
+		}
+
+		/// <summary>
 		/// Returns a random drop from the given list as item.
 		/// </summary>
 		/// <param name="rnd"></param>
@@ -624,25 +634,26 @@ namespace Aura.Channel.World.Entities
 			{
 				this.OwnerId = owner.EntityId;
 
-				switch (this.Data.Action)
-				{
-					case ItemAction.StaticItem:
-					case ItemAction.AccountPersonalItem:
-					case ItemAction.CharacterPersonalItem:
-						// Personal items can never be picked up by anyone else
-						this.ProtectionLimit = DateTime.MaxValue;
-						break;
+				// Personal items can never be picked up by anyone else
+				var isPersonal =
+					(this.Data.Action == ItemAction.StaticItem || this.Data.Action == ItemAction.AccountPersonalItem || this.Data.Action == ItemAction.CharacterPersonalItem)
+					|| this.Is(ItemFlags.Personalized);
 
-					default:
-						// Set protection if item wasn't dropped by a player
-						// and it's not a dungeon room key
-						if (!playerDrop && !this.IsDungeonRoomKey)
-						{
-							var seconds = ChannelServer.Instance.Conf.World.LootStealProtection;
-							if (seconds > 0)
-								this.ProtectionLimit = DateTime.Now.AddSeconds(seconds);
-						}
-						break;
+				// Set protection if item wasn't dropped by a player
+				// and it's not a dungeon room key
+				var standardProtection = (!isPersonal && !playerDrop && !this.IsDungeonRoomKey);
+
+				if (isPersonal)
+				{
+					this.ProtectionLimit = DateTime.MaxValue;
+				}
+				else if (standardProtection)
+				{
+					var seconds = ChannelServer.Instance.Conf.World.LootStealProtection;
+					if (seconds > 0)
+						this.ProtectionLimit = DateTime.Now.AddSeconds(seconds);
+					else
+						this.ProtectionLimit = null;
 				}
 			}
 			else
