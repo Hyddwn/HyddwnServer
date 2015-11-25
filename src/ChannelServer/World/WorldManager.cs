@@ -288,6 +288,26 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns prop by full name, or null if doesn't exist.
+		/// </summary>
+		/// <param name="fullName"></param>
+		/// <returns></returns>
+		public Prop GetProp(string fullName)
+		{
+			lock (_regions)
+			{
+				foreach (var region in _regions.Values)
+				{
+					var prop = region.GetProp(fullName);
+					if (prop != null)
+						return prop;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Returns player creature with the given name, or null.
 		/// </summary>
 		/// <param name="name"></param>

@@ -136,14 +136,19 @@ namespace Aura.Channel.World
 			{
 				foreach (var prop in area.Props.Values)
 				{
+					// XXX: Prop ctor that takes PropData and the names?
 					var add = new Prop(prop.EntityId, prop.Id, this.Id, (int)prop.X, (int)prop.Y, prop.Direction, prop.Scale, 0, "", "", "");
+
+					// Set full name
+					add.FullName = string.Format("{0}/{1}/{2}", this.RegionInfoData.Name, area.Name, prop.Name);
 
 					// Save parameters for use by dungeons
 					add.Parameters = prop.Parameters.ToList();
 
 					// Add drop behaviour if drop type exists
 					var dropType = prop.GetDropType();
-					if (dropType != -1) add.Behavior = Prop.GetDropBehavior(dropType);
+					if (dropType != -1)
+						add.Behavior = Prop.GetDropBehavior(dropType);
 
 					// Replace default shapes with the ones loaded from region.
 					add.Shapes.Clear();
@@ -850,6 +855,28 @@ namespace Aura.Channel.World
 			try
 			{
 				_props.TryGetValue(entityId, out result);
+			}
+			finally
+			{
+				_propsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns prop based on name, or null if it doesn't exist.
+		/// </summary>
+		/// <param name="fullName"></param>
+		/// <returns></returns>
+		public Prop GetProp(string fullName)
+		{
+			Prop result;
+
+			_propsRWLS.EnterReadLock();
+			try
+			{
+				result = _props.Values.FirstOrDefault(a => a.FullName == fullName);
 			}
 			finally
 			{

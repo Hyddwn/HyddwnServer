@@ -89,6 +89,14 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public string Title { get; set; }
 
+		/// <summary>
+		/// Unique name, consisting of region, area, and prop name.
+		/// </summary>
+		/// <example>
+		/// Uladh_main/town_TirChonaill/windmill_tircho
+		/// </example>
+		public string FullName { get; set; }
+
 		public float _resource;
 		/// <summary>
 		/// Remaining resource amount
