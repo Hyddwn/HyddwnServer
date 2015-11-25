@@ -6,7 +6,7 @@
 
 public class SionScript : NpcScript
 {
-	static long FurnaceSwitchId = 0x00A0001F00010029;
+	static string FurnaceSwitchName = "Ula_Bangor/_Ula_Bangor/forgeswitch1";
 
 	static bool furnacesOn;
 	static IList<Prop> furnaces;
@@ -125,7 +125,7 @@ public class SionScript : NpcScript
 		var region = ChannelServer.Instance.World.GetRegion(NPC.RegionId);
 
 		furnaces = region.GetProps(a => a.HasTag("/refine/"));
-		furnaceSwitch = region.GetProp(FurnaceSwitchId);
+		furnaceSwitch = region.GetProp(FurnaceSwitchName);
 
 		DeactivateFurnaces();
 	}
