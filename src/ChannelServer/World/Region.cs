@@ -808,6 +808,8 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Despawns prop, sends EntityDisappears.
 		/// </summary>
+		/// <param name="prop"></param>
+		/// <returns></returns>
 		public void RemoveProp(Prop prop)
 		{
 			if (!prop.ServerSide)
@@ -838,6 +840,8 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Returns prop or null.
 		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
 		public Prop GetProp(long entityId)
 		{
 			Prop result;
@@ -858,6 +862,8 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Returns prop or null.
 		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
 		public IList<Prop> GetProps(Func<Prop, bool> predicate)
 		{
 			var result = new List<Prop>();
@@ -881,6 +887,7 @@ namespace Aura.Channel.World
 		/// <remarks>
 		/// Use Item's Drop method, unless you know what you're doing.
 		/// </remarks>
+		/// <param name="item"></param>
 		public void AddItem(Item item)
 		{
 			_itemsRWLS.EnterWriteLock();
@@ -904,6 +911,7 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Despawns item, sends EntityDisappears.
 		/// </summary>
+		/// <param name="item"></param>
 		public void RemoveItem(Item item)
 		{
 			_itemsRWLS.EnterWriteLock();
@@ -924,6 +932,8 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Returns item or null.
 		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
 		public Item GetItem(long entityId)
 		{
 			Item result;
@@ -944,6 +954,7 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Returns a list of all items on the floor.
 		/// </summary>
+		/// <returns></returns>
 		public List<Item> GetAllItems()
 		{
 			List<Item> result;
@@ -964,6 +975,9 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Returns new list of all entities within range of source.
 		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="range">Leave at default for visible range.</param>
+		/// <returns></returns>
 		public List<Entity> GetEntitiesInRange(Entity source, int range = -1)
 		{
 			if (range < 0)
@@ -1008,6 +1022,9 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Returns new list of all creatures within range of position.
 		/// </summary>
+		/// <param name="pos"></param>
+		/// <param name="range"></param>
+		/// <returns></returns>
 		public List<Creature> GetCreaturesInRange(Position pos, int range)
 		{
 			var result = new List<Creature>();
@@ -1028,6 +1045,8 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Returns new list of all creatures within the specified polygon.
 		/// </summary>
+		/// <param name="points"></param>
+		/// <returns></returns>
 		public List<Creature> GetCreaturesInPolygon(params Point[] points)
 		{
 			var result = new List<Creature>();
