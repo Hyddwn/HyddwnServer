@@ -6,12 +6,12 @@
 
 public class AlissaBaseScript : NpcScript
 {
-	const long WindmillPropId = 0xA000010009042B;
+	const string WindmillPropName = "Uladh_main/town_TirChonaill/windmill_tircho";
 
 	static bool WindmillActive { get; set; }
 
 	static Prop _windmillProp = null;
-	Prop WindmillProp { get { return _windmillProp ?? (_windmillProp = ChannelServer.Instance.World.GetProp(WindmillPropId)); } }
+	Prop WindmillProp { get { return _windmillProp ?? (_windmillProp = ChannelServer.Instance.World.GetProp(WindmillPropName)); } }
 
 	public override void Load()
 	{
