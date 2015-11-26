@@ -1,10 +1,10 @@
 //--- Aura Script -----------------------------------------------------------
-// Goro, the Alby Arena Manager in Tir Chonaill
+// Goro
 //--- Description -----------------------------------------------------------
-// 
+// The Alby Arena Manager in Tir Chonaill
 //---------------------------------------------------------------------------
 
-public class GoroBaseScript : NpcScript
+public class GoroScript : NpcScript
 {
 	public override void Load()
 	{
@@ -78,7 +78,7 @@ public class GoroBaseScript : NpcScript
 				case "@reply3":
 					Msg("There are Goblins spread throughout the many dungeons of Erinn<br/>who can speak the language of humans.<br/>They are my brothers, and we have all learned from the same father.");
 					Msg("My father is a human.<br/>To tell the truth, I am a Goblin raised by the humans.");
-					Msg("My father took care of me since I was young, and took me all over the world<br/>teaching me the language, culture, manners, and many other aspects of humankind.<br/>My dream is to become the greatest merchant in Erinn, just like my father.<br/>");
+					Msg("My father took care of me since I was young, and took me all over the world<br/>teaching me the language, culture, manners, and many other aspects of humankind.<br/>My dream is to become the greatest merchant in Erinn, just like my father.");
 					break;
 
 				default:
@@ -94,8 +94,8 @@ public class GoroBaseScript : NpcScript
 	{
 		RndMsg(
 			"Well...",
-			"Hmm...I believe I have heard about it...",
 			"Excuse me, what did you say?",
+			"Hmm...I believe I have heard about it...",
 			"I do not know anything about that kind of story."
 		);
 	}
@@ -105,22 +105,21 @@ public class GoroShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		//--- Arena -------------------------------------
-		//-----------------------------------------------		
-		Add("Arena", 63019, 10);   //Alby Battle Arena Coin
-		Add("Arena", 63019, 20);   //Alby Battle Arena Coin
-		Add("Arena", 63019, 50);   //Alby Battle Arena Coin
-		Add("Arena", 63019, 100);  //Alby Battle Arena Coin
+		Add("Arena", 63019, 10);  // Alby Battle Arena Coin x10
+		Add("Arena", 63019, 20);  // Alby Battle Arena Coin x20
+		Add("Arena", 63019, 50);  // Alby Battle Arena Coin x50
+		Add("Arena", 63019, 100); // Alby Battle Arena Coin x100
 
-		//--- Potions -----------------------------------
-		//-----------------------------------------------
-		Add("Potions", 60005, 10); //Bandage
-		Add("Potions", 60005, 20); //Bandage
-		Add("Potions", 63000, 10); //Phoenix Feather
-		Add("Potions", 63000, 20); //Phoenix Feather
-		Add("Potions", 51002);     //HP 30 Potion
-		Add("Potions", 51002, 20); //HP 30 Potion
-		Add("Potions", 51012);     //Stamina 30 Potion
-		Add("Potions", 51012, 20); //Stamina 30 Potion
+		Add("Potions", 51002, 1);  // HP 30 Potion x1
+		Add("Potions", 51002, 20); // HP 30 Potion x20
+		Add("Potions", 51007, 1);  // MP 30 Potion x1
+		Add("Potions", 51007, 20); // MP 30 Potion x20
+		Add("Potions", 51012, 1);  // Stamina 30 Potion x1
+		Add("Potions", 51012, 20); // Stamina 30 Potion x20
+		Add("Potions", 60005, 10); // Bandage x10
+		Add("Potions", 60005, 20); // Bandage x20
+		Add("Potions", 63000, 10); // Phoenix Feather x10
+		Add("Potions", 63000, 20); // Phoenix Feather x20
+
 	}
 }
