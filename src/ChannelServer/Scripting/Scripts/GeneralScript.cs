@@ -568,6 +568,29 @@ namespace Aura.Channel.Scripting.Scripts
 			clientEvent.Handlers.Add(signal, onTriggered);
 		}
 
+		/// <summary>
+		/// Adds handler for event.
+		/// </summary>
+		/// <remarks>
+		/// The region and the event must exist first, so the client event
+		/// can be found, to add the handler.
+		/// </remarks>
+		/// <param name="fullName"></param>
+		/// <param name="signal"></param>
+		/// <param name="onTriggered"></param>
+		public void OnClientEvent(string fullName, SignalType signal, Action<Creature, EventData> onTriggered)
+		{
+			// Get event
+			var clientEvent = ChannelServer.Instance.World.GetClientEvent(fullName);
+			if (clientEvent == null)
+			{
+				Log.Error("OnClientEvent: Client event '{0}' doesn't exist.", fullName);
+				return;
+			}
+
+			clientEvent.Handlers.Add(signal, onTriggered);
+		}
+
 		#endregion Client Events
 
 		#region Timers

@@ -24,7 +24,7 @@ public class TirBeginnerRegionScript : RegionScript
 	public override void LoadEvents()
 	{
 		// "Altar" near Tin
-		OnClientEvent(0x00B0007D0001009C, SignalType.Enter, (creature, eventData) =>
+		OnClientEvent("Tin_Beginner_Tutorial/_Tin_Beginner_Tutorial_01/tuto_start", SignalType.Enter, (creature, eventData) =>
 		{
 			// Only do this once.
 			if (creature.Keywords.Has("tin_tutorial_guide"))
