@@ -216,7 +216,7 @@ namespace Aura.Channel.World.Dungeons
 							eventData.Shapes.Add(shape);
 
 							areaData.Events.Add(eventData.Id, eventData);
-							_clientEvents.Add(eventData.Id, new ClientEvent(eventData.Id, eventData));
+							_clientEvents.Add(eventData.Id, new ClientEvent(eventData));
 						}
 					}
 					else

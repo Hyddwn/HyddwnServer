@@ -50,11 +50,11 @@ namespace Aura.Channel.World.Entities
 		/// Creates new client event
 		/// </summary>
 		/// <param name="eventData"></param>
-		public ClientEvent(long id, EventData eventData)
+		public ClientEvent(EventData eventData)
 		{
 			this.Shapes = new List<Point[]>();
 
-			this.EntityId = id;
+			this.EntityId = eventData.Id;
 			this.Data = eventData;
 
 			this.Handlers = new Collection<SignalType, Action<Creature, EventData>>();
