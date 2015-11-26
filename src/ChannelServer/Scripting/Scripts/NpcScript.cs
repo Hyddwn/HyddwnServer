@@ -1678,20 +1678,41 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetFloat("MPROT", Math2.Clamp(0, int.MaxValue, mprot + effect.Value[0]));
 						break;
 
+					case "ManaUse":
+						var manaUseWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
+						manaUseWU.ManaUse += (sbyte)effect.Value[0];
+						result.Item.MetaData1.SetString("WU", manaUseWU.ToString());
+						break;
+
+					case "ChainCast":
+						var chainCastWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
+						chainCastWU.ChainCastSkillId = (ushort)effect.Value[0];
+						chainCastWU.ChainCastLevel = (byte)effect.Value[1];
+						result.Item.MetaData1.SetString("WU", chainCastWU.ToString());
+						break;
+
+					case "MagicDamage":
+						var magicDmgWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
+						magicDmgWU.MagicDamage += (sbyte)effect.Value[0];
+						result.Item.MetaData1.SetString("WU", magicDmgWU.ToString());
+						break;
+
+					case "CastingSpeed":
+						var castingSpeedWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
+						castingSpeedWU.CastingSpeed += (sbyte)effect.Value[0];
+						result.Item.MetaData1.SetString("WU", castingSpeedWU.ToString());
+						break;
+
 					// TODO:
 					// - CollectionSpeed
 					// - CollectionBonus
 					// - SplashRadius
-					// - ManaUse
 					// - ManaBurn
-					// - MagicDamage
-					// - CastingSpeed
 					// - LancePiercing
 					// - MusicBuffBonus
 					// - MusicBuffDuration
 					// - MaxBullets
 					// - Artisan
-					// - ChainCast
 
 					default:
 						Log.Unimplemented("Item upgrade '{0}'", effect.Key);
