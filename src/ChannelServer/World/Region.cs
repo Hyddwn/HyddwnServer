@@ -152,7 +152,7 @@ namespace Aura.Channel.World
 			{
 				foreach (var clientEventData in areaData.Events.Values)
 				{
-					var clientEvent = new ClientEvent(clientEventData);
+					var clientEvent = new ClientEvent(clientEventData, this.RegionInfoData.Name, areaData.Name);
 					this.AddClientEvent(clientEvent);
 				}
 			}

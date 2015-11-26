@@ -324,6 +324,26 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns client event by full name, or null if doesn't exist.
+		/// </summary>
+		/// <param name="fullName"></param>
+		/// <returns></returns>
+		public ClientEvent GetClientEvent(string fullName)
+		{
+			lock (_regions)
+			{
+				foreach (var region in _regions.Values)
+				{
+					var clientEvent = region.GetClientEvent(a => a.FullName == fullName);
+					if (clientEvent != null)
+						return clientEvent;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Returns player creature with the given name, or null.
 		/// </summary>
 		/// <param name="name"></param>
