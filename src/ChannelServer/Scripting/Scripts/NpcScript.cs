@@ -1679,12 +1679,15 @@ namespace Aura.Channel.Scripting.Scripts
 						break;
 
 					case "ManaUse":
+						// WU:s:00000003000000
 						var manaUseWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
 						manaUseWU.ManaUse += (sbyte)effect.Value[0];
 						result.Item.MetaData1.SetString("WU", manaUseWU.ToString());
 						break;
 
 					case "ChainCast":
+						// Chain Casting: +4, Magic Attack: +21
+						// EHLV:4:5;MTWR:1:1;OWNER:s:username;WU:s:30201400000015;
 						var chainCastWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
 						chainCastWU.ChainCastSkillId = (ushort)effect.Value[0];
 						chainCastWU.ChainCastLevel = (byte)effect.Value[1];
@@ -1692,15 +1695,31 @@ namespace Aura.Channel.Scripting.Scripts
 						break;
 
 					case "MagicDamage":
+						// Charging Speed: +12%, MA: +16
+						// EHLV:4:5;MTWR:1:1;OWNER:s:username;WU:s:00000000000c10;
 						var magicDmgWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
 						magicDmgWU.MagicDamage += (sbyte)effect.Value[0];
 						result.Item.MetaData1.SetString("WU", magicDmgWU.ToString());
 						break;
 
 					case "CastingSpeed":
+						// Charging Speed: +12%, MA: +16
+						// EHLV:4:5;MTWR:1:1;OWNER:s:username;WU:s:00000000000c10;
 						var castingSpeedWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
 						castingSpeedWU.CastingSpeed += (sbyte)effect.Value[0];
 						result.Item.MetaData1.SetString("WU", castingSpeedWU.ToString());
+						break;
+
+					case "MusicBuffBonus":
+						// MBB:4:8;MBD:4:10;MTWR:1:2;OTU:1:1;SPTEC:1:1;
+						var musicBuff = result.Item.MetaData1.GetInt("MBB");
+						result.Item.MetaData1.SetInt("MBB", musicBuff + effect.Value[0]);
+						break;
+
+					case "MusicBuffDuration":
+						// MBB:4:8;MBD:4:10;MTWR:1:2;OTU:1:1;SPTEC:1:1;
+						var musicBuffDur = result.Item.MetaData1.GetInt("MBD");
+						result.Item.MetaData1.SetInt("MBD", musicBuffDur + effect.Value[0]);
 						break;
 
 					// TODO:
@@ -1709,8 +1728,6 @@ namespace Aura.Channel.Scripting.Scripts
 					// - SplashRadius
 					// - ManaBurn
 					// - LancePiercing
-					// - MusicBuffBonus
-					// - MusicBuffDuration
 					// - MaxBullets
 					// - Artisan
 
