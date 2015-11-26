@@ -1992,6 +1992,116 @@ namespace Aura.Channel.Scripting.Scripts
 		public bool Success;
 	}
 
+	/// <summary>
+	/// Upgrade information that are combined in one meta data string called "WU".
+	/// </summary>
+	public class WUUpgrades
+	{
+		private ushort _ccSkillId;
+		private byte _ccLevel;
+
+		/// <summary>
+		/// Chain Cast upgrade, affected skill id
+		/// </summary>
+		public ushort ChainCastSkillId
+		{
+			get { return _ccSkillId; }
+			set
+			{
+				if (value < 10000)
+					throw new ArgumentOutOfRangeException("Value too low");
+
+				_ccSkillId = value;
+			}
+		}
+
+		/// <summary>
+		/// Chain Cast upgrade, chain level
+		/// </summary>
+		public byte ChainCastLevel
+		{
+			get { return _ccLevel; }
+			set
+			{
+				if (value > 9)
+					throw new ArgumentOutOfRangeException("Value too big");
+
+				_ccLevel = value;
+			}
+		}
+
+		/// <summary>
+		/// Mana Consumption upgrade
+		/// </summary>
+		public sbyte ManaUse { get; set; }
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		public sbyte Unknown { get; set; }
+
+		/// <summary>
+		/// Charging Speed upgrade
+		/// </summary>
+		public sbyte CastingSpeed { get; set; }
+
+		/// <summary>
+		/// Magic Attack upgrade
+		/// </summary>
+		public sbyte MagicDamage { get; set; }
+
+		/// <summary>
+		/// Creates new, nulled instance.
+		/// </summary>
+		public WUUpgrades()
+		{
+		}
+
+		/// <summary>
+		/// Creates new instance, parsing the given value.
+		/// </summary>
+		/// <param name="val"></param>
+		/// <example>
+		/// var wu = new WUUpgrades("12345603010203");
+		/// </example>
+		public WUUpgrades(string val)
+		{
+			// Null or empty is fine, just ignore
+			if (string.IsNullOrWhiteSpace(val))
+				return;
+
+			// Check length
+			if (val.Length != 14)
+				throw new ArgumentException("Value must have 14 characters");
+
+			this.ParseValue(val);
+		}
+
+		private void ParseValue(string val)
+		{
+			this.ChainCastSkillId = Convert.ToUInt16(val.Substring(0, 5));
+			this.ChainCastLevel = Convert.ToByte(val.Substring(5, 1), 16);
+			this.ManaUse = Convert.ToSByte(val.Substring(6, 2), 16);
+			this.Unknown = Convert.ToSByte(val.Substring(8, 2), 16);
+			this.CastingSpeed = Convert.ToSByte(val.Substring(10, 2), 16);
+			this.MagicDamage = Convert.ToSByte(val.Substring(12, 2), 16);
+		}
+
+		public override string ToString()
+		{
+			var result = new StringBuilder();
+
+			result.Append(this.ChainCastSkillId);
+			result.Append(this.ChainCastLevel.ToString().Substring(0, 1));
+			result.Append(this.ManaUse.ToString("x2"));
+			result.Append(this.Unknown.ToString("x2"));
+			result.Append(this.CastingSpeed.ToString("x2"));
+			result.Append(this.MagicDamage.ToString("x2"));
+
+			return result.ToString();
+		}
+	}
+
 #if __MonoCS__
 	// Added in Mono 3.0.8, adding it here for convenience.
 	public static class SemaphoreSlimExtension
