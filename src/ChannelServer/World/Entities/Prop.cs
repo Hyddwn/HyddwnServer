@@ -95,7 +95,7 @@ namespace Aura.Channel.World.Entities
 		/// <example>
 		/// Uladh_main/town_TirChonaill/windmill_tircho
 		/// </example>
-		public string FullName { get; set; }
+		public string FullName { get; private set; }
 
 		public float _resource;
 		/// <summary>
@@ -155,7 +155,7 @@ namespace Aura.Channel.World.Entities
 		/// 
 		/// Don't change this list during run-time.
 		/// </remarks>
-		public List<RegionElementData> Parameters { get; set; }
+		public List<RegionElementData> Parameters { get; private set; }
 
 		/// <summary>
 		/// Creates new prop with a newly generated entity id.
@@ -172,6 +172,32 @@ namespace Aura.Channel.World.Entities
 		public Prop(int id, int regionId, int x, int y, float direction, float scale = 1f, float altitude = 0, string state = "", string ident = "", string title = "")
 			: this(0, id, regionId, x, y, direction, scale, altitude, state, ident, title)
 		{
+		}
+
+		/// <summary>
+		/// Creates new prop, based on prop data.
+		/// </summary>
+		/// <param name="propData"></param>
+		/// <param name="regionId"></param>
+		/// <param name="regionName"></param>
+		/// <param name="areaName"></param>
+		public Prop(PropData propData, int regionId, string regionName, string areaName)
+			: this(propData.EntityId, propData.Id, regionId, (int)propData.X, (int)propData.Y, propData.Direction, propData.Scale, 0, "", "", "")
+		{
+			// Set full name
+			this.FullName = string.Format("{0}/{1}/{2}", regionName, areaName, propData.Name);
+
+			// Save parameters for use by dungeons
+			this.Parameters = propData.Parameters.ToList();
+
+			// Add drop behaviour if drop type exists
+			var dropType = propData.GetDropType();
+			if (dropType != -1)
+				this.Behavior = Prop.GetDropBehavior(dropType);
+
+			// Replace default shapes with the ones loaded from region.
+			this.Shapes.Clear();
+			this.Shapes.AddRange(propData.Shapes.Select(a => a.GetPoints(0, 0, 0)));
 		}
 
 		/// <summary>

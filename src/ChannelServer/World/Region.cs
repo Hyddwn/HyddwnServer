@@ -132,29 +132,13 @@ namespace Aura.Channel.World
 		/// </summary>
 		protected void LoadProps()
 		{
-			foreach (var area in this.RegionInfoData.Areas)
+			foreach (var areaData in this.RegionInfoData.Areas)
 			{
-				foreach (var prop in area.Props.Values)
+				foreach (var propData in areaData.Props.Values)
 				{
-					// XXX: Prop ctor that takes PropData and the names?
-					var add = new Prop(prop.EntityId, prop.Id, this.Id, (int)prop.X, (int)prop.Y, prop.Direction, prop.Scale, 0, "", "", "");
+					var prop = new Prop(propData, this.Id, this.RegionInfoData.Name, areaData.Name);
 
-					// Set full name
-					add.FullName = string.Format("{0}/{1}/{2}", this.RegionInfoData.Name, area.Name, prop.Name);
-
-					// Save parameters for use by dungeons
-					add.Parameters = prop.Parameters.ToList();
-
-					// Add drop behaviour if drop type exists
-					var dropType = prop.GetDropType();
-					if (dropType != -1)
-						add.Behavior = Prop.GetDropBehavior(dropType);
-
-					// Replace default shapes with the ones loaded from region.
-					add.Shapes.Clear();
-					add.Shapes.AddRange(prop.Shapes.Select(a => a.GetPoints(0, 0, 0)));
-
-					this.AddProp(add);
+					this.AddProp(prop);
 				}
 			}
 		}
@@ -164,12 +148,12 @@ namespace Aura.Channel.World
 		/// </summary>
 		protected void LoadClientEvents()
 		{
-			foreach (var area in this.RegionInfoData.Areas)
+			foreach (var areaData in this.RegionInfoData.Areas)
 			{
-				foreach (var clientEvent in area.Events.Values)
+				foreach (var clientEventData in areaData.Events.Values)
 				{
-					var add = new ClientEvent(clientEvent.Id, clientEvent);
-					this.AddClientEvent(add);
+					var clientEvent = new ClientEvent(clientEventData.Id, clientEventData);
+					this.AddClientEvent(clientEvent);
 				}
 			}
 		}
