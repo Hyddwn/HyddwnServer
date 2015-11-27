@@ -324,17 +324,17 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns client event by full name, or null if doesn't exist.
+		/// Returns client event by global name, or null if doesn't exist.
 		/// </summary>
-		/// <param name="fullName"></param>
+		/// <param name="globalName"></param>
 		/// <returns></returns>
-		public ClientEvent GetClientEvent(string fullName)
+		public ClientEvent GetClientEvent(string globalName)
 		{
 			lock (_regions)
 			{
 				foreach (var region in _regions.Values)
 				{
-					var clientEvent = region.GetClientEvent(a => a.FullName == fullName);
+					var clientEvent = region.GetClientEvent(a => a.GlobalName == globalName);
 					if (clientEvent != null)
 						return clientEvent;
 				}

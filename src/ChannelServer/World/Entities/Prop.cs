@@ -90,12 +90,15 @@ namespace Aura.Channel.World.Entities
 		public string Title { get; set; }
 
 		/// <summary>
-		/// Unique name, consisting of region, area, and prop name.
+		/// Global name, consisting of region, area, and prop name.
 		/// </summary>
+		/// <remarks>
+		/// Not necessarily unique, the last part, the prop name might be empty.
+		/// </remarks>
 		/// <example>
 		/// Uladh_main/town_TirChonaill/windmill_tircho
 		/// </example>
-		public string FullName { get; private set; }
+		public string GlobalName { get; private set; }
 
 		public float _resource;
 		/// <summary>
@@ -185,7 +188,7 @@ namespace Aura.Channel.World.Entities
 			: this(propData.EntityId, propData.Id, regionId, (int)propData.X, (int)propData.Y, propData.Direction, propData.Scale, 0, "", "", "")
 		{
 			// Set full name
-			this.FullName = string.Format("{0}/{1}/{2}", regionName, areaName, propData.Name);
+			this.GlobalName = string.Format("{0}/{1}/{2}", regionName, areaName, propData.Name);
 
 			// Save parameters for use by dungeons
 			this.Parameters = propData.Parameters.ToList();

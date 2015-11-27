@@ -37,12 +37,15 @@ namespace Aura.Channel.World.Entities
 		public EventData Data { get; private set; }
 
 		/// <summary>
-		/// Unique name, consisting of region, area, and event name.
+		/// Global name, consisting of region, area, and event name.
 		/// </summary>
+		/// <remarks>
+		/// Not necessarily unique, the last part, the event name might be empty.
+		/// </remarks>
 		/// <example>
 		/// Tin_Beginner_Tutorial/_Tin_Beginner_Tutorial_01/tuto_start
 		/// </example>
-		public string FullName { get; private set; }
+		public string GlobalName { get; private set; }
 
 		/// <summary>
 		/// Shapes of this event.
@@ -64,7 +67,7 @@ namespace Aura.Channel.World.Entities
 
 			this.EntityId = eventData.Id;
 			this.Data = eventData;
-			this.FullName = string.Format("{0}/{1}/{2}", regionName, areaName, eventData.Name);
+			this.GlobalName = string.Format("{0}/{1}/{2}", regionName, areaName, eventData.Name);
 
 			this.Handlers = new Collection<SignalType, Action<Creature, EventData>>();
 

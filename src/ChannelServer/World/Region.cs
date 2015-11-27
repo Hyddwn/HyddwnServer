@@ -216,7 +216,7 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Returns first event that matches the predicate.
 		/// </summary>
-		/// <param name="eventId"></param>
+		/// <param name="predicate"></param>
 		/// <returns></returns>
 		public ClientEvent GetClientEvent(Func<ClientEvent, bool> predicate)
 		{
@@ -851,16 +851,16 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Returns prop based on name, or null if it doesn't exist.
 		/// </summary>
-		/// <param name="fullName"></param>
+		/// <param name="globalName"></param>
 		/// <returns></returns>
-		public Prop GetProp(string fullName)
+		public Prop GetProp(string globalName)
 		{
 			Prop result;
 
 			_propsRWLS.EnterReadLock();
 			try
 			{
-				result = _props.Values.FirstOrDefault(a => a.FullName == fullName);
+				result = _props.Values.FirstOrDefault(a => a.GlobalName == globalName);
 			}
 			finally
 			{
