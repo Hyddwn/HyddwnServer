@@ -215,4 +215,23 @@ namespace Aura.Mabi.Const
 		ReelIn = 3,
 		Fall = 4,
 	}
+
+	public enum ChatSticker
+	{
+		None = 0,
+		Morrighan = 1,
+		Macha = 2,
+		Neamhain = 3,
+		Eweca = 4,
+		Ladeca = 5,
+		RibbonPink = 6,
+		RibbonBlue = 7,
+		BellGold = 8,
+		BellSilver = 9,
+		Butterfly = 10,
+		ButterflyBlue = 11,
+		Dog = 12,
+		Cat = 13,
+		Owl = 14,
+	}
 }
