@@ -849,18 +849,19 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns prop based on name, or null if it doesn't exist.
+		/// Returns first prop that matches the predicate, or null if
+		/// no matching props were found.
 		/// </summary>
-		/// <param name="globalName"></param>
+		/// <param name="predicate"></param>
 		/// <returns></returns>
-		public Prop GetProp(string globalName)
+		public Prop GetProp(Func<Prop, bool> predicate)
 		{
 			Prop result;
 
 			_propsRWLS.EnterReadLock();
 			try
 			{
-				result = _props.Values.FirstOrDefault(a => a.GlobalName == globalName);
+				result = _props.Values.FirstOrDefault(predicate);
 			}
 			finally
 			{
@@ -871,7 +872,7 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns prop or null.
+		/// Returns list of all props that match the predicate.
 		/// </summary>
 		/// <param name="predicate"></param>
 		/// <returns></returns>
@@ -896,7 +897,8 @@ namespace Aura.Channel.World
 		///  Adds item, sends EntityAppears.
 		/// </summary>
 		/// <remarks>
-		/// Use Item's Drop method, unless you know what you're doing.
+		/// Use Item's Drop method to drop items in a region,
+		/// unless you know what you're doing.
 		/// </remarks>
 		/// <param name="item"></param>
 		public void AddItem(Item item)

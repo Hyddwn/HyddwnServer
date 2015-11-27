@@ -125,7 +125,7 @@ public class SionScript : NpcScript
 		var region = ChannelServer.Instance.World.GetRegion(NPC.RegionId);
 
 		furnaces = region.GetProps(a => a.HasTag("/refine/"));
-		furnaceSwitch = region.GetProp(FurnaceSwitchName);
+		furnaceSwitch = region.GetProp(a => a.GlobalName == FurnaceSwitchName);
 
 		DeactivateFurnaces();
 	}

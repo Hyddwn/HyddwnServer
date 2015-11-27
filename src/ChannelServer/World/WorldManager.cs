@@ -288,17 +288,17 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns prop by full name, or null if doesn't exist.
+		/// Returns prop by global name, or null if doesn't exist.
 		/// </summary>
-		/// <param name="fullName"></param>
+		/// <param name="globalName"></param>
 		/// <returns></returns>
-		public Prop GetProp(string fullName)
+		public Prop GetProp(string globalName)
 		{
 			lock (_regions)
 			{
 				foreach (var region in _regions.Values)
 				{
-					var prop = region.GetProp(fullName);
+					var prop = region.GetProp(a => a.GlobalName == globalName);
 					if (prop != null)
 						return prop;
 				}
