@@ -204,8 +204,10 @@ namespace Aura.Channel.Network.Handlers
 			var playerCreature = creature as PlayerCreature;
 			if (playerCreature != null)
 			{
+				var now = DateTime.Now;
+
 				// Update last login
-				playerCreature.LastLogin = DateTime.Now;
+				playerCreature.LastLogin = now;
 
 				// Age check
 				var lastSaturday = ErinnTime.Now.GetLastSaturday();
@@ -219,7 +221,7 @@ namespace Aura.Channel.Network.Handlers
 				if (creature.Vars.Perm["NameColorEnd"] != null)
 				{
 					var dt = (DateTime)creature.Vars.Perm["NameColorEnd"];
-					if (DateTime.Now > dt)
+					if (now > dt)
 					{
 						creature.Vars.Perm["NameColorIdx"] = null;
 						creature.Vars.Perm["NameColorEnd"] = null;
@@ -228,7 +230,7 @@ namespace Aura.Channel.Network.Handlers
 				if (creature.Vars.Perm["ChatColorEnd"] != null)
 				{
 					var dt = (DateTime)creature.Vars.Perm["ChatColorEnd"];
-					if (DateTime.Now > dt)
+					if (now > dt)
 					{
 						creature.Vars.Perm["ChatColorIdx"] = null;
 						creature.Vars.Perm["ChatColorEnd"] = null;
@@ -247,6 +249,18 @@ namespace Aura.Channel.Network.Handlers
 					extra.SetInt("IDX", (int)creature.Vars.Perm["ChatColorIdx"]);
 
 					creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
+				}
+
+				// Chat sticker hack
+				// You don't see your own chat stickers on Aura without this packet
+				// for unknown reasons.
+				if (creature.Vars.Perm["ChatStickerId"] != null)
+				{
+					var sticker = (ChatSticker)creature.Vars.Perm["ChatStickerId"];
+					var end = (DateTime)creature.Vars.Perm["ChatStickerEnd"];
+
+					if (now < end)
+						Send.ChatSticker(creature, sticker, end);
 				}
 			}
 		}
