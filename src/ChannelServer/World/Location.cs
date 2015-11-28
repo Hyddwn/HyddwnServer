@@ -84,7 +84,7 @@ namespace Aura.Channel.World
 			if (region == null)
 				throw new Exception("Region '" + split[0] + "' not found.");
 
-			var regionData = region.RegionInfoData;
+			var regionData = region.Data;
 			if (region == null)
 				throw new Exception("Region '" + region.Id + "' doesn't have data.");
 

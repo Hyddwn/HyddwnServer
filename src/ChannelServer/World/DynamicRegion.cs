@@ -60,7 +60,7 @@ namespace Aura.Channel.World
 			this.Variation = variationFile;
 			this.Mode = mode;
 
-			this.RegionInfoData = CreateVariation(baseRegionInfoData, this.Id, variationFile);
+			this.Data = CreateVariation(baseRegionInfoData, this.Id, variationFile);
 
 			this.InitializeFromData();
 

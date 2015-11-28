@@ -40,7 +40,7 @@ namespace Aura.Channel.World
 
 		protected HashSet<ChannelClient> _clients;
 
-		public RegionInfoData RegionInfoData { get; protected set; }
+		public RegionInfoData Data { get; protected set; }
 
 		/// <summary>
 		/// Region's name
@@ -120,7 +120,7 @@ namespace Aura.Channel.World
 		/// </summary>
 		protected void InitializeFromData()
 		{
-			if (this.RegionInfoData == null || this.RegionInfoData.Areas == null)
+			if (this.Data == null || this.Data.Areas == null)
 				return;
 
 			this.LoadProps();
@@ -132,11 +132,11 @@ namespace Aura.Channel.World
 		/// </summary>
 		protected void LoadProps()
 		{
-			foreach (var areaData in this.RegionInfoData.Areas)
+			foreach (var areaData in this.Data.Areas)
 			{
 				foreach (var propData in areaData.Props.Values)
 				{
-					var prop = new Prop(propData, this.Id, this.RegionInfoData.Name, areaData.Name);
+					var prop = new Prop(propData, this.Id, this.Data.Name, areaData.Name);
 
 					this.AddProp(prop);
 				}
@@ -148,11 +148,11 @@ namespace Aura.Channel.World
 		/// </summary>
 		protected void LoadClientEvents()
 		{
-			foreach (var areaData in this.RegionInfoData.Areas)
+			foreach (var areaData in this.Data.Areas)
 			{
 				foreach (var clientEventData in areaData.Events.Values)
 				{
-					var clientEvent = new ClientEvent(clientEventData, this.RegionInfoData.Name, areaData.Name);
+					var clientEvent = new ClientEvent(clientEventData, this.Data.Name, areaData.Name);
 					this.AddClientEvent(clientEvent);
 				}
 			}
@@ -278,7 +278,7 @@ namespace Aura.Channel.World
 		{
 			var areaId = 0;
 
-			foreach (var area in this.RegionInfoData.Areas)
+			foreach (var area in this.Data.Areas)
 			{
 				if (x >= Math.Min(area.X1, area.X2) && x < Math.Max(area.X1, area.X2) && y >= Math.Min(area.Y1, area.Y2) && y < Math.Max(area.Y1, area.Y2))
 					areaId = area.Id;

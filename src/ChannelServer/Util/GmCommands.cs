@@ -311,7 +311,7 @@ namespace Aura.Channel.Util
 				// Randomize coordinates
 				if (x == -1 || y == -1)
 				{
-					var rndc = warpToRegion.RegionInfoData.RandomCoord(RandomProvider.Get());
+					var rndc = warpToRegion.Data.RandomCoord(RandomProvider.Get());
 					if (x < 0) x = rndc.X;
 					if (y < 0) y = rndc.Y;
 				}

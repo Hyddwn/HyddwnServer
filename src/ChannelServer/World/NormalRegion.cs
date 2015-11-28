@@ -15,11 +15,11 @@ namespace Aura.Channel.World
 		public NormalRegion(int regionId)
 			: base(regionId)
 		{
-			this.RegionInfoData = AuraData.RegionInfoDb.Find(this.Id);
-			if (this.RegionInfoData == null)
+			this.Data = AuraData.RegionInfoDb.Find(this.Id);
+			if (this.Data == null)
 				throw new Exception("Region.CreateNormal: No region info data found for '" + this.Id + "'.");
 
-			this.Name = this.RegionInfoData.Name;
+			this.Name = this.Data.Name;
 
 			this.InitializeFromData();
 		}

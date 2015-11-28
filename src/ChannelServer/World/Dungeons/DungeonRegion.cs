@@ -128,7 +128,7 @@ namespace Aura.Channel.World.Dungeons
 		/// </summary>
 		private void GenerateAreas()
 		{
-			this.RegionInfoData = new RegionInfoData();
+			this.Data = new RegionInfoData();
 
 			var areaId = 2;
 			var floor = this.Floor;
@@ -160,7 +160,7 @@ namespace Aura.Channel.World.Dungeons
 						areaData.X2 = x * Dungeon.TileSize + Dungeon.TileSize;
 						areaData.Y2 = y * Dungeon.TileSize + Dungeon.TileSize;
 
-						this.RegionInfoData.Areas.Add(areaData);
+						this.Data.Areas.Add(areaData);
 
 						var type = (isRoom ? DungeonBlockType.Room : DungeonBlockType.Alley);
 
@@ -216,7 +216,7 @@ namespace Aura.Channel.World.Dungeons
 							eventData.Shapes.Add(shape);
 
 							areaData.Events.Add(eventData.Id, eventData);
-							_clientEvents.Add(eventData.Id, new ClientEvent(eventData, this.RegionInfoData.Name, areaData.Name));
+							_clientEvents.Add(eventData.Id, new ClientEvent(eventData, this.Data.Name, areaData.Name));
 						}
 					}
 					else
@@ -231,7 +231,7 @@ namespace Aura.Channel.World.Dungeons
 						areaData.X2 = x * Dungeon.TileSize + Dungeon.TileSize * 2;
 						areaData.Y2 = y * Dungeon.TileSize + Dungeon.TileSize * 2;
 
-						this.RegionInfoData.Areas.Add(areaData);
+						this.Data.Areas.Add(areaData);
 
 						var block = this.Dungeon.Data.Style.Get(DungeonBlockType.BossRoom);
 						var propEntityId = MabiId.ClientProps | ((long)this.Id << 32) | ((long)areaData.Id << 16) | 1;
@@ -261,7 +261,7 @@ namespace Aura.Channel.World.Dungeons
 						areaData.X2 = x * Dungeon.TileSize + Dungeon.TileSize;
 						areaData.Y2 = y * Dungeon.TileSize + Dungeon.TileSize * 2 + Dungeon.TileSize;
 
-						this.RegionInfoData.Areas.Add(areaData);
+						this.Data.Areas.Add(areaData);
 					}
 				}
 			}
@@ -286,8 +286,8 @@ namespace Aura.Channel.World.Dungeons
 			if (baseRegionInfoData == null)
 				throw new Exception("DungeonLobbyRegion: No region info data found for '" + baseRegionId + "'.");
 
-			this.RegionInfoData = baseRegionInfoData.Copy();
-			FixIds(this.RegionInfoData, this.Id);
+			this.Data = baseRegionInfoData.Copy();
+			FixIds(this.Data, this.Id);
 
 			this.InitializeFromData();
 		}
