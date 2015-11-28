@@ -72,22 +72,74 @@ namespace Aura.Channel.World.Entities
 		public CreatureDeadMenu DeadMenu { get; protected set; }
 		public AimMeter AimMeter { get; protected set; }
 
+		/// <summary>
+		/// Temporary and permanent variables, exclusive to this creature.
+		/// </summary>
+		/// <remarks>
+		/// Permanent variables are saved across relogs, if the creature
+		/// is a player creature. NPCs and monster variables aren't saved.
+		/// </remarks>
 		public ScriptVariables Vars { get; protected set; }
 
+		/// <summary>
+		/// Returns true if creature is a Character or Pet.
+		/// </summary>
 		public bool IsPlayer { get { return (this.IsCharacter || this.IsPet); } }
+
+		/// <summary>
+		/// Returns true if creature is a character, i.e. a player creature,
+		/// but not a pet/partner.
+		/// </summary>
 		public bool IsCharacter { get { return (this is Character); } }
+
+		/// <summary>
+		/// Returns true if creature is a pet.
+		/// </summary>
 		public bool IsPet { get { return (this is Pet); } }
+
+		/// <summary>
+		/// Returns true if creature is a partner, i.e. a pet with an entity
+		/// id in a certain range.
+		/// </summary>
 		public bool IsPartner { get { return (this.IsPet && this.EntityId >= MabiId.Partners); } }
 
+		/// <summary>
+		/// Returns true if creature is a human, based on the race id.
+		/// </summary>
 		public bool IsHuman { get { return (this.RaceId == 10001 || this.RaceId == 10002); } }
+
+		/// <summary>
+		/// Returns true if creature is an elf, based on the race id.
+		/// </summary>
 		public bool IsElf { get { return (this.RaceId == 9001 || this.RaceId == 9002); } }
+
+		/// <summary>
+		/// Returns true if creature is a giant, based on the race id.
+		/// </summary>
 		public bool IsGiant { get { return (this.RaceId == 8001 || this.RaceId == 8002); } }
 
+		/// <summary>
+		/// Returns true if creature is male, based on its race data.
+		/// </summary>
 		public bool IsMale { get { return (this.RaceData != null && this.RaceData.Gender == Gender.Male); } }
+
+		/// <summary>
+		/// Returns true if creature is female, based on its race data.
+		/// </summary>
 		public bool IsFemale { get { return (this.RaceData != null && this.RaceData.Gender == Gender.Female); } }
 
+		/// <summary>
+		/// The region the creature is currently in.
+		/// </summary>
+		/// <remarks>
+		/// During warps, this value is the region id of the previous region,
+		/// only after the warp is done, it's set to the new region.
+		/// </remarks>
 		public override int RegionId { get; set; }
 
+		/// <summary>
+		/// Lock handler, for prohibiting the creature from doing certain things.
+		/// </summary>
 		public Locks Locks { get; protected set; }
 
 		/// <summary>
