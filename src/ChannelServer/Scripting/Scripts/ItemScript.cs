@@ -212,6 +212,22 @@ namespace Aura.Channel.Scripting.Scripts
 
 			skill.Train(condition);
 		}
+
+		/// <summary>
+		/// Activates the sticker for the given duration.
+		/// </summary>
+		/// <param name="sticker">Sticker to activate.</param>
+		/// <param name="duration">Duration in seconds.</param>
+		protected void ActivateChatSticker(Creature creature, ChatSticker sticker, int duration)
+		{
+			var end = DateTime.Now.AddSeconds(duration);
+
+			creature.Vars.Perm["ChatStickerId"] = (int)sticker;
+			creature.Vars.Perm["ChatStickerEnd"] = end;
+
+			Send.ChatSticker(creature, sticker, end);
+			Send.Notice(creature, Localization.Get("You carefully attach the sticker to your Chat Bubble."));
+		}
 	}
 
 	/// <summary>

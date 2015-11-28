@@ -441,5 +441,21 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Broadcasts ChatSticker in range of creature, activating the sticker.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="sticker"></param>
+		/// <param name="end"></param>
+		public static void ChatSticker(Creature creature, ChatSticker sticker, DateTime end)
+		{
+			var packet = new Packet(Op.ChatSticker, creature.EntityId);
+
+			packet.PutInt((int)sticker);
+			packet.PutLong(end);
+
+			creature.Region.Broadcast(packet, creature);
+		}
 	}
 }

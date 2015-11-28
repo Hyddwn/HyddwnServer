@@ -527,6 +527,8 @@ namespace Aura.Mabi.Network
 
 		public const int AmmoRequired = 0xABBB;
 
+		public const int ChatSticker = 0xAC0A;
+
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
 
