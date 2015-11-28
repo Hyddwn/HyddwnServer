@@ -1028,8 +1028,16 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			// [190200, NA215 (18.11.2015)] Chat Sticker
 			{
-				packet.PutInt(0);
-				packet.PutLong(0);
+				var stickerId = 0;
+				var end = DateTime.MinValue;
+				if (creature.Vars.Perm["ChatStickerId"] != null)
+				{
+					stickerId = creature.Vars.Perm["ChatStickerId"];
+					end = creature.Vars.Perm["ChatStickerEnd"];
+				}
+
+				packet.PutInt((int)stickerId);
+				packet.PutLong(end);
 			}
 
 			return packet;
