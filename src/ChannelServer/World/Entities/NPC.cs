@@ -21,6 +21,12 @@ namespace Aura.Channel.World.Entities
 		private static long _npcId = MabiId.Npcs;
 
 		/// <summary>
+		/// Time in seconds it takes a creature (i.e. a monster)
+		/// to disappear after dying.
+		/// </summary>
+		public const int DisappearDelay = 20;
+
+		/// <summary>
 		/// Type of the NpcScript used by the NPC.
 		/// </summary>
 		public Type ScriptType { get; set; }
@@ -283,7 +289,7 @@ namespace Aura.Channel.World.Entities
 		{
 			base.Kill(killer);
 
-			this.DisappearTime = DateTime.Now.AddSeconds(Creature.DisappearDelay);
+			this.DisappearTime = DateTime.Now.AddSeconds(NPC.DisappearDelay);
 
 			if (killer == null)
 				return;

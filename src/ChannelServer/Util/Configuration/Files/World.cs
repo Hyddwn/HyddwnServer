@@ -70,7 +70,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.BigLuckyFinishChance = this.GetFloat("big_lucky_finish_chance", 0.005f) / 100.0f;
 			this.HugeLuckyFinishChance = this.GetFloat("huge_lucky_finish_chance", 0.001f) / 100.0f;
 			this.PropDropChance = this.GetFloat("prop_drop_chance", 30) / 100.0f;
-			this.LootStealProtection = this.GetInt("loot_steal_protection", Creature.DisappearDelay);
+			this.LootStealProtection = this.GetInt("loot_steal_protection", NPC.DisappearDelay);
 
 			this.DeadlyNpcs = this.GetBool("deadly_npcs", true);
 			this.EnableHunger = this.GetBool("enable_hunger", true);
