@@ -284,56 +284,56 @@ public class GilmoreShop : NpcShopScript
 		Add("General Goods", 91366, 1);   // Seal Scroll (30-day) x1
 		Add("General Goods", 91366, 10);  // Seal Scroll (30-day) x10
 
-		Add("Blacksmith", 64500, "FORMID:4:20101;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20102;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20103;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20104;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20105;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20106;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20107;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20108;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20109;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20110;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20112;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20113;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20114;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20117;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20130;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20131;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20132;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20134;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20135;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20137;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20139;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20140;"); // Blacksmith Manual
-		Add("Blacksmith", 64500, "FORMID:4:20141;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20119;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20121;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20124;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20125;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20127;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20142;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20145;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20146;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20147;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20148;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20149;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20150;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20151;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20202;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20128;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20126;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20129;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20201;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20290;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20291;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20292;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20293;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20294;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20295;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20296;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20297;"); // Blacksmith Manual
-		Add("Blacksmith", 64581, "FORMID:4:20298;"); // Blacksmith Manual
+		Add("Blacksmith", 64500, "FORMID:4:20101;", 300);    // Blacksmith Manual - Weeding Hoe
+		Add("Blacksmith", 64500, "FORMID:4:20102;", 2000);   // Blacksmith Manual - Dagger
+		Add("Blacksmith", 64500, "FORMID:4:20103;", 9000);   // Blacksmith Manual - Round Shield
+		Add("Blacksmith", 64500, "FORMID:4:20104;", 1000);   // Blacksmith Manual - Pickaxe
+		Add("Blacksmith", 64500, "FORMID:4:20105;", 3000);   // Blacksmith Manual - Longsword
+		Add("Blacksmith", 64500, "FORMID:4:20106;", 600);    // Blacksmith Manual - Sickle
+		Add("Blacksmith", 64500, "FORMID:4:20107;", 4000);   // Blacksmith Manual - Cuirassier Helm
+		Add("Blacksmith", 64500, "FORMID:4:20108;", 5000);   // Blacksmith Manual - Spiked Cap
+		Add("Blacksmith", 64500, "FORMID:4:20109;", 10000);  // Blacksmith Manual - Ulna Protector Gloves
+		Add("Blacksmith", 64500, "FORMID:4:20110;", 15000);  // Blacksmith Manual - Waterdrop Cap
+		Add("Blacksmith", 64500, "FORMID:4:20112;", 35000);  // Blacksmith Manual - Evil Dying Crown
+		Add("Blacksmith", 64500, "FORMID:4:20113;", 35000);  // Blacksmith Manual - Dragon Crest
+		Add("Blacksmith", 64500, "FORMID:4:20114;", 41000);  // Blacksmith Manual - Iron Mask Headgear
+		Add("Blacksmith", 64500, "FORMID:4:20117;", 18000);  // Blacksmith Manual - Greaves
+		Add("Blacksmith", 64500, "FORMID:4:20130;", 2000);   // Blacksmith Manual - Blacksmith Hammer
+		Add("Blacksmith", 64500, "FORMID:4:20131;", 3000);   // Blacksmith Manual - Short Sword
+		Add("Blacksmith", 64500, "FORMID:4:20132;", 10000);  // Blacksmith Manual - Hatchet
+		Add("Blacksmith", 64500, "FORMID:4:20134;", 22000);  // Blacksmith Manual - Warhammer
+		Add("Blacksmith", 64500, "FORMID:4:20135;", 27000);  // Blacksmith Manual - Broadsword
+		Add("Blacksmith", 64500, "FORMID:4:20137;", 42000);  // Blacksmith Manual - Bastard Sword
+		Add("Blacksmith", 64500, "FORMID:4:20139;", 48000);  // Blacksmith Manual - Gladius
+		Add("Blacksmith", 64500, "FORMID:4:20140;", 66000);  // Blacksmith Manual - Two-handed Sword
+		Add("Blacksmith", 64500, "FORMID:4:20141;", 61000);  // Blacksmith Manual - Claymore
+		Add("Blacksmith", 64581, "FORMID:4:20119;", 32000);  // Blacksmith Manual - Plate Gauntlets
+		Add("Blacksmith", 64581, "FORMID:4:20121;", 42000);  // Blacksmith Manual - Spaika's Silver Plate Boots
+		Add("Blacksmith", 64581, "FORMID:4:20124;", 200);    // Blacksmith Manual - Bundle of Arrowheads
+		Add("Blacksmith", 64581, "FORMID:4:20125;", 1200);   // Blacksmith Manual - Bundle of Fine Arrowheads
+		Add("Blacksmith", 64581, "FORMID:4:20127;", 250);    // Blacksmith Manual - Bundle of Bolt Heads
+		Add("Blacksmith", 64581, "FORMID:4:20142;", 3920);   // Blacksmith Manual - Mythril Cable
+		Add("Blacksmith", 64581, "FORMID:4:20145;", 1000);   // Blacksmith Manual - Iron Bar
+		Add("Blacksmith", 64581, "FORMID:4:20146;", 3000);   // Blacksmith Manual - Copper Bar
+		Add("Blacksmith", 64581, "FORMID:4:20147;", 5000);   // Blacksmith Manual - Silver Bar
+		Add("Blacksmith", 64581, "FORMID:4:20148;", 7000);   // Blacksmith Manual - Gold Bar
+		Add("Blacksmith", 64581, "FORMID:4:20149;", 9000);   // Blacksmith Manual - Mythril Bar
+		Add("Blacksmith", 64581, "FORMID:4:20150;", 32000);  // Blacksmith Manual - Light Melka Chainmail
+		Add("Blacksmith", 64581, "FORMID:4:20151;", 58000);  // Blacksmith Manual - Pelican Protector
+		Add("Blacksmith", 64581, "FORMID:4:20202;", 25000);  // Blacksmith Manual - Battle Short Sword
+		Add("Blacksmith", 64581, "FORMID:4:20128;", 1300);   // Blacksmith Manual - Bundle of Fine Bolt Heads
+		Add("Blacksmith", 64581, "FORMID:4:20126;", 4600);   // Blacksmith Manual - Bundle of Finest Arrowheads
+		Add("Blacksmith", 64581, "FORMID:4:20129;", 5000);   // Blacksmith Manual - Bundle of the Finest Bolt Heads
+		Add("Blacksmith", 64581, "FORMID:4:20201;", 45000);  // Blacksmith Manual - Battle Sword
+		Add("Blacksmith", 64581, "FORMID:4:20290;", 76500);  // Blacksmith Manual - Celtic War Hammer
+		Add("Blacksmith", 64581, "FORMID:4:20291;", 76500);  // Blacksmith Manual - Celtic Warrior Hammer
+		Add("Blacksmith", 64581, "FORMID:4:20292;", 76500);  // Blacksmith Manual - Celtic Battle Axe
+		Add("Blacksmith", 64581, "FORMID:4:20293;", 76500);  // Blacksmith Manual - Celtic Warrior Axe
+		Add("Blacksmith", 64581, "FORMID:4:20294;", 117200); // Blacksmith Manual - Celtic Royal Knight Sword
+		Add("Blacksmith", 64581, "FORMID:4:20295;", 117200); // Blacksmith Manual - Celtic Royal War Hammer
+		Add("Blacksmith", 64581, "FORMID:4:20296;", 117200); // Blacksmith Manual - Celtic Royal Warrior Hammer
+		Add("Blacksmith", 64581, "FORMID:4:20297;", 117200); // Blacksmith Manual - Celtic Royal Battle Axe
+		Add("Blacksmith", 64581, "FORMID:4:20298;", 117200); // Blacksmith Manual - Celtic Royal Warrior Axe
 
 		Add("Clothing", 15044); // Carpenter Clothes
 		Add("Clothing", 15062); // Zigzag Tunic
