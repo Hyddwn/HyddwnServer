@@ -68,11 +68,14 @@ namespace Aura.Data.Database
 		/// <returns></returns>
 		public FinishData GetFinish(int finishId)
 		{
+			// Return empty finish data if no finish is required.
+			// (Consists of empty material list and nulled colors.)
 			if (this.Finish == null || this.Finish.Count == 0)
-				throw new Exception("No finishes.");
+				return new FinishData();
 
+			// Out-of-bounds check for finishes
 			if (finishId > this.Finish.Count - 1)
-				return null;
+				throw new IndexOutOfRangeException("finishId is out of range of available finishes.");
 
 			return this.Finish[finishId].Copy();
 		}
