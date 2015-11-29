@@ -325,15 +325,21 @@ public class GilmoreShop : NpcShopScript
 		Add("Blacksmith", 64581, "FORMID:4:20126;", 4600);   // Blacksmith Manual - Bundle of Finest Arrowheads
 		Add("Blacksmith", 64581, "FORMID:4:20129;", 5000);   // Blacksmith Manual - Bundle of the Finest Bolt Heads
 		Add("Blacksmith", 64581, "FORMID:4:20201;", 45000);  // Blacksmith Manual - Battle Sword
-		Add("Blacksmith", 64581, "FORMID:4:20290;", 76500);  // Blacksmith Manual - Celtic War Hammer
-		Add("Blacksmith", 64581, "FORMID:4:20291;", 76500);  // Blacksmith Manual - Celtic Warrior Hammer
-		Add("Blacksmith", 64581, "FORMID:4:20292;", 76500);  // Blacksmith Manual - Celtic Battle Axe
-		Add("Blacksmith", 64581, "FORMID:4:20293;", 76500);  // Blacksmith Manual - Celtic Warrior Axe
-		Add("Blacksmith", 64581, "FORMID:4:20294;", 117200); // Blacksmith Manual - Celtic Royal Knight Sword
-		Add("Blacksmith", 64581, "FORMID:4:20295;", 117200); // Blacksmith Manual - Celtic Royal War Hammer
-		Add("Blacksmith", 64581, "FORMID:4:20296;", 117200); // Blacksmith Manual - Celtic Royal Warrior Hammer
-		Add("Blacksmith", 64581, "FORMID:4:20297;", 117200); // Blacksmith Manual - Celtic Royal Battle Axe
-		Add("Blacksmith", 64581, "FORMID:4:20298;", 117200); // Blacksmith Manual - Celtic Royal Warrior Axe
+
+		// This feature is used by the client for the manuals.
+		// TODO: Sub-feature?
+		if (IsEnabled("TalentRenovationCloseCombat"))
+		{
+			Add("Blacksmith", 64581, "FORMID:4:20290;", 76500);  // Blacksmith Manual - Celtic War Hammer
+			Add("Blacksmith", 64581, "FORMID:4:20291;", 76500);  // Blacksmith Manual - Celtic Warrior Hammer
+			Add("Blacksmith", 64581, "FORMID:4:20292;", 76500);  // Blacksmith Manual - Celtic Battle Axe
+			Add("Blacksmith", 64581, "FORMID:4:20293;", 76500);  // Blacksmith Manual - Celtic Warrior Axe
+			Add("Blacksmith", 64581, "FORMID:4:20294;", 117200); // Blacksmith Manual - Celtic Royal Knight Sword
+			Add("Blacksmith", 64581, "FORMID:4:20295;", 117200); // Blacksmith Manual - Celtic Royal War Hammer
+			Add("Blacksmith", 64581, "FORMID:4:20296;", 117200); // Blacksmith Manual - Celtic Royal Warrior Hammer
+			Add("Blacksmith", 64581, "FORMID:4:20297;", 117200); // Blacksmith Manual - Celtic Royal Battle Axe
+			Add("Blacksmith", 64581, "FORMID:4:20298;", 117200); // Blacksmith Manual - Celtic Royal Warrior Axe
+		}
 
 		Add("Clothing", 15044); // Carpenter Clothes
 		Add("Clothing", 15062); // Zigzag Tunic
