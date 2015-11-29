@@ -310,7 +310,7 @@ namespace Aura.Channel.Skills.Base
 			{
 				// On fail of non-queued productions you lose 1~amount of
 				// materials randomly
-				var reduce = (success || amountToProduce > 1) ? material.Amount : rnd.Next(1, material.Amount + 1);
+				var reduce = success ? material.Amount : rnd.Next(1, material.Amount + 1);
 				if (reduce > 0)
 					creature.Inventory.Decrement(material.Item, (ushort)reduce);
 			}
