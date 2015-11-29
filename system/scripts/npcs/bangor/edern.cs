@@ -291,7 +291,7 @@ public class EdernShop : NpcShopScript
 		Add("Weapon", 40081); // Leather Long Bow
 		Add("Weapon", 40404); // Physis Wooden Lance
 
-		Add("Advanced Weapon"); // Empty?
+		Add("Advanced Weapon"); // Randomly filled on midnight tick
 
 		Add("Armor", 13043); // Leminia's Holy Moon Armor (M)
 		Add("Armor", 13044); // Leminia's Holy Moon Armor (F)
@@ -302,5 +302,69 @@ public class EdernShop : NpcShopScript
 		Add("Armor", 16525); // Arish Ashuvain Gauntlet
 		Add("Armor", 17518); // Arish Ashuvain Boots (M)
 		Add("Armor", 17519); // Arish Ashuvain Boots (F)
+	}
+
+	private int[] RandomWeapons = new int[]
+	{
+		40005, // Short Sword
+		40006, // Dagger
+		40007, // Hatchet
+		40010, // Longsword
+		40011, // Broadsword
+		40012, // Bastard Sword
+		40015, // Fluted Short Sword
+		40016, // Warhammer
+		40030, // Two-handed Sword
+		40033, // Claymore
+	};
+
+	private const int Prefix = 20611; // Intricate
+
+	private int[] RandomSuffixes = new int[]
+	{
+		30702, // Crow
+		30801, // Nature
+		30802, // Counter
+		30803, // Windmill
+		30804, // Smash
+		30807, // Prophetic
+		30904, // Lightning
+	};
+
+	private int[] PriceMultiplier = new int[]
+	{
+		2, // Crow
+		3, // Nature
+		3, // Counter
+		3, // Windmill
+		3, // Smash
+		3, // Prophetic
+		4, // Lightning
+	};
+
+	protected override void OnErinnMidnightTick(ErinnTime time)
+	{
+		// Run base (color randomization)
+		base.OnErinnMidnightTick(time);
+
+		// Add 0~2 random weapons with random enchants to the
+		// Advanced Weapon tab
+		var rnd = RandomProvider.Get();
+		var addCount = rnd.Next(0, 3);
+
+		ClearTab("Advanced Weapon");
+
+		for (int i = 0; i < addCount; ++i)
+		{
+			var itemId = RandomWeapons[rnd.Next(RandomWeapons.Length)];
+			var suffixIdx = rnd.Next(RandomSuffixes.Length);
+			var suffixId = RandomSuffixes[suffixIdx];
+			var priceMultiplier = PriceMultiplier[suffixIdx];
+
+			var item = Item.CreateEnchanted(itemId, Prefix, suffixId);
+			var price = (item.OptionInfo.Price * priceMultiplier);
+
+			Add("Advanced Weapon", item, price);
+		}
 	}
 }
