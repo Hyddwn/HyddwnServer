@@ -1,8 +1,8 @@
-// --- Aura Script ----------------------------------------------------------
-//  Trigger
-// --- Description ----------------------------------------------------------
-//  Patreon reward NPC for Trigger, thank you for your support!
-// --------------------------------------------------------------------------
+//--- Aura Script -----------------------------------------------------------
+// Trigger
+//--- Description -----------------------------------------------------------
+// Patreon reward NPC for Trigger, thank you for your support!
+//---------------------------------------------------------------------------
 
 public class TriggerPatronScript : NpcScript
 {
