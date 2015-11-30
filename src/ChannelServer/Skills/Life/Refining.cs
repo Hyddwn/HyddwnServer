@@ -75,7 +75,7 @@ namespace Aura.Channel.Skills.Life
 				return;
 			}
 
-			if (skill.Info.Rank == SkillRank.RB)
+			if (skill.Info.Rank >= SkillRank.RC && skill.Info.Rank <= SkillRank.RB)
 			{
 				if (data.ItemData.HasTag("/copperingot/"))
 				{
