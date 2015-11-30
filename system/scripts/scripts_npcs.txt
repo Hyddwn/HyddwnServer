@@ -63,5 +63,6 @@ npcs/egos/cylinder_male.cs
 npcs/egos/cylinder_female.cs
 
 custom/patrons/trigger.cs
+custom/patrons/pegwald.cs
 
 include "/user/scripts/scripts_npcs.txt"
