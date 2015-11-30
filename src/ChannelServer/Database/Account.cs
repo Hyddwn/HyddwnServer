@@ -9,6 +9,7 @@ using Aura.Channel.Util;
 using Aura.Channel.World.Entities;
 using Aura.Channel.Scripting;
 using Aura.Channel.World.Inventory;
+using Aura.Shared.Util;
 
 namespace Aura.Channel.Database
 {
@@ -69,6 +70,16 @@ namespace Aura.Channel.Database
 		/// Account wide bank.
 		/// </summary>
 		public BankInventory Bank { get; protected set; }
+
+		/// <summary>
+		/// Account's in-game cash points (Pon).
+		/// </summary>
+		public int Points
+		{
+			get { return _points; }
+			set { _points = (int)Math2.Clamp((long)0, int.MaxValue, value); }
+		}
+		private int _points;
 
 		/// <summary>
 		/// Account's current Autoban score. Don't set this directly

@@ -262,6 +262,9 @@ namespace Aura.Channel.Network.Handlers
 					if (now < end)
 						Send.ChatSticker(creature, sticker, end);
 				}
+
+				// Update Pon
+				Send.PonsUpdate(creature, creature.Client.Account.Points);
 			}
 		}
 
