@@ -82,6 +82,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "memory", "<npc name> [amount]", HandleMemory);
 			Add(50, 50, "weather", "[0.0~2.0|clear|rain|storm|type1~type12]", HandleWeather);
 			Add(50, 50, "telewalk", "", HandleTeleWalk);
+			Add(50, 50, "points", "<modificator>", HandlePoints);
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", HandleDynamic);
@@ -1823,6 +1824,37 @@ namespace Aura.Channel.Util
 				Send.SystemMessage(target, Localization.Get("Your name/chat color has been changed."));
 			else
 				Send.SystemMessage(target, Localization.Get("Your name/chat color has been changed by {0}."), sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandlePoints(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			var oldVal = target.Client.Account.Points;
+
+			// Output current points
+			if (args.Count < 2)
+			{
+				if (sender == target)
+					Send.ServerMessage(sender, Localization.Get("Your Pon: {0}"), oldVal);
+				else
+					Send.ServerMessage(sender, Localization.Get("{1}'s Pon: {0}"), oldVal, target.Name);
+
+				return CommandResult.Okay;
+			}
+
+			// Get modificator
+			int mod;
+			if (!int.TryParse(args[1], out mod))
+				return CommandResult.InvalidArgument;
+
+			// Modificate
+			var newVal = (target.Client.Account.Points += mod);
+
+			// Notice
+			Send.ServerMessage(sender, Localization.Get("Pon modificated: {0} -> {1}."), oldVal, newVal);
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("Your Pon have been modificated by {2}: {0} -> {1}."), oldVal, newVal, sender.Name);
 
 			return CommandResult.Okay;
 		}
