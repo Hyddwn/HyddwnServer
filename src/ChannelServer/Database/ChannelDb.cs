@@ -54,6 +54,7 @@ namespace Aura.Channel.Database
 						account.AutobanScore = reader.GetInt32("autobanScore");
 						account.LastAutobanReduction = reader.GetDateTimeSafe("lastAutobanReduction");
 						account.Bank.Gold = reader.GetInt32("bankGold");
+						account.Points = reader.GetInt32("points");
 
 						// We don't need to decrease their score if it's already zero!
 						if (account.AutobanScore > 0 && ChannelServer.Instance.Conf.Autoban.ReductionTime.Ticks != 0)
@@ -891,6 +892,7 @@ namespace Aura.Channel.Database
 				cmd.Set("autobanScore", account.AutobanScore);
 				cmd.Set("lastAutobanReduction", account.LastAutobanReduction);
 				cmd.Set("bankGold", account.Bank.Gold);
+				cmd.Set("points", account.Points);
 
 				cmd.Execute();
 			}
