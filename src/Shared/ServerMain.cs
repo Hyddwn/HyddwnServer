@@ -230,6 +230,11 @@ namespace Aura.Shared
 				{
 					this.LoadDb(AuraData.PortalDb, "db/portals.txt", reload);
 				}
+
+				if ((toLoad & DataLoad.CharacterStyles) != 0)
+				{
+					this.LoadDb(AuraData.CharacterStyleDb, "db/characterstyles.txt", reload);
+				}
 			}
 			catch (DatabaseErrorException ex)
 			{
@@ -337,10 +342,11 @@ namespace Aura.Shared
 		Production = 0x2000000,
 		Cooking = 0x4000000,
 		Portals = 0x8000000,
+		CharacterStyles = 0x10000000,
 
 		All = 0xFFFFFFFF,
 
-		LoginServer = Features | Races | StatsBase | Cards | Colors | Items | Pets,
+		LoginServer = Features | Races | StatsBase | Cards | Colors | Items | Pets | CharacterStyles,
 		ChannelServer = All,
 		Npcs = Races,
 	}
