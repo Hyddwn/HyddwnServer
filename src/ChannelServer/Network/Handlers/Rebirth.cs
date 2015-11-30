@@ -9,6 +9,7 @@ using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
+using Aura.Shared.Util;
 using System;
 
 namespace Aura.Channel.Network.Handlers
@@ -79,10 +80,20 @@ namespace Aura.Channel.Network.Handlers
 
 			// Get required data
 			var creature = client.GetCreatureSafe(packet.Id);
+
 			var hair = creature.Inventory.GetItemAt(Pocket.Hair, 0, 0);
 			var face = creature.Inventory.GetItemAt(Pocket.Face, 0, 0);
 			var hairItemData = AuraData.ItemDb.Find(hairItemId);
 			var faceItemData = AuraData.ItemDb.Find(faceItemId);
+
+			var raceData = (resetGender ? AuraData.RaceDb.Find(race) : creature.RaceData);
+			var hairStyleData = AuraData.CharacterStyleDb.Find(raceData.Gender == Gender.Male ? CharacterStyleType.MaleHairStyle : CharacterStyleType.FemaleHairStyle, hairItemId);
+			var faceData = AuraData.CharacterStyleDb.Find(raceData.Gender == Gender.Male ? CharacterStyleType.MaleFace : CharacterStyleType.FemaleFace, faceItemId);
+			var hairColorData = AuraData.CharacterStyleDb.Find(CharacterStyleType.HairColor, hairColor);
+			var skinColorData = AuraData.CharacterStyleDb.Find(CharacterStyleType.SkinColor, skinColor);
+			var eyeColorData = AuraData.CharacterStyleDb.Find(CharacterStyleType.EyeColor, eyeColor);
+			var eyeTypeData = AuraData.CharacterStyleDb.Find(CharacterStyleType.EyeType, eyeType);
+			var mouthTypeData = AuraData.CharacterStyleDb.Find(CharacterStyleType.MouthType, mouthType);
 
 			// Check age
 			if (resetAge && (age < 10 || age > 17 || age > creature.Age))
@@ -104,6 +115,85 @@ namespace Aura.Channel.Network.Handlers
 			// Check location
 			if (location < RebirthLocation.Last || location > RebirthLocation.Iria)
 				throw new SevereViolation("Player tried to rebirth with invalid location ({0}).", location);
+
+			// Check styles
+			if (hairItemId != hair.Info.Id)
+			{
+				if (hairStyleData == null)
+				{
+					Log.Error("Rebirth: Unknown hair style '{0}'.", hairItemId);
+					goto L_Fail;
+				}
+
+				if (!raceData.HasTag(hairStyleData.Races))
+					throw new SevereViolation("Player tried to rebirth with hair not available to their race: {0}, {1}", creature.RaceId, hairItemId);
+			}
+			if (faceItemId != face.Info.Id)
+			{
+				if (faceData == null)
+				{
+					Log.Error("Rebirth: Unknown face '{0}'.", hairItemId);
+					goto L_Fail;
+				}
+
+				if (!raceData.HasTag(faceData.Races))
+					throw new SevereViolation("Player tried to rebirth with face not available to their race: {0}, {1}", creature.RaceId, faceItemId);
+			}
+			if (hairColor != (byte)hair.Info.Color1)
+			{
+				if (hairColorData == null)
+				{
+					Log.Error("Rebirth: Unknown hair color '{0}'.", hairItemId);
+					goto L_Fail;
+				}
+
+				if (!raceData.HasTag(hairColorData.Races))
+					throw new SevereViolation("Player tried to rebirth with hair color not available to their race: {0}, {1}", creature.RaceId, hairColor);
+			}
+			if (skinColor != creature.SkinColor)
+			{
+				if (skinColorData == null)
+				{
+					Log.Error("Rebirth: Unknown skin color '{0}'.", hairItemId);
+					goto L_Fail;
+				}
+
+				if (!raceData.HasTag(skinColorData.Races))
+					throw new SevereViolation("Player tried to rebirth with skin color not available to their race: {0}, {1}", creature.RaceId, skinColor);
+			}
+			if (eyeColor != creature.EyeColor)
+			{
+				if (eyeColorData == null)
+				{
+					Log.Error("Rebirth: Unknown eye color '{0}'.", hairItemId);
+					goto L_Fail;
+				}
+
+				if (!raceData.HasTag(eyeColorData.Races))
+					throw new SevereViolation("Player tried to rebirth with eye color not available to their race: {0}, {1}", creature.RaceId, eyeColor);
+			}
+			if (eyeType != creature.EyeColor)
+			{
+				if (eyeTypeData == null)
+				{
+					Log.Error("Rebirth: Unknown eye type '{0}'.", hairItemId);
+					goto L_Fail;
+				}
+
+				if (!raceData.HasTag(eyeTypeData.Races))
+					throw new SevereViolation("Player tried to rebirth with eye type not available to their race: {0}, {1}", creature.RaceId, eyeType);
+			}
+			if (mouthType != creature.MouthType)
+			{
+				if (mouthTypeData == null)
+				{
+					Log.Error("Rebirth: Unknown mouth type '{0}'.", hairItemId);
+					goto L_Fail;
+				}
+
+				if (!raceData.HasTag(mouthTypeData.Races))
+					throw new SevereViolation("Player tried to rebirth with eye type not available to their race: {0}, {1}", creature.RaceId, mouthType);
+			}
 
 			// Reset age
 			if (resetAge)
@@ -176,6 +266,9 @@ namespace Aura.Channel.Network.Handlers
 
 			// Success
 			Send.RequestRebirthR(creature, true);
+
+		L_Fail:
+			Send.RequestRebirthR(creature, false);
 		}
 
 		/// <summary>
