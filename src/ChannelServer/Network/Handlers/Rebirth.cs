@@ -117,6 +117,7 @@ namespace Aura.Channel.Network.Handlers
 				throw new SevereViolation("Player tried to rebirth with invalid location ({0}).", location);
 
 			// Check styles
+			var totalPrice = 0;
 			if (hairItemId != hair.Info.Id)
 			{
 				if (hairStyleData == null)
@@ -127,6 +128,8 @@ namespace Aura.Channel.Network.Handlers
 
 				if (!raceData.HasTag(hairStyleData.Races))
 					throw new SevereViolation("Player tried to rebirth with hair not available to their race: {0}, {1}", creature.RaceId, hairItemId);
+
+				totalPrice += hairStyleData.Price;
 			}
 			if (faceItemId != face.Info.Id)
 			{
@@ -138,6 +141,8 @@ namespace Aura.Channel.Network.Handlers
 
 				if (!raceData.HasTag(faceData.Races))
 					throw new SevereViolation("Player tried to rebirth with face not available to their race: {0}, {1}", creature.RaceId, faceItemId);
+
+				totalPrice += faceData.Price;
 			}
 			if (hairColor != (byte)hair.Info.Color1)
 			{
@@ -149,6 +154,8 @@ namespace Aura.Channel.Network.Handlers
 
 				if (!raceData.HasTag(hairColorData.Races))
 					throw new SevereViolation("Player tried to rebirth with hair color not available to their race: {0}, {1}", creature.RaceId, hairColor);
+
+				totalPrice += hairColorData.Price;
 			}
 			if (skinColor != creature.SkinColor)
 			{
@@ -160,6 +167,8 @@ namespace Aura.Channel.Network.Handlers
 
 				if (!raceData.HasTag(skinColorData.Races))
 					throw new SevereViolation("Player tried to rebirth with skin color not available to their race: {0}, {1}", creature.RaceId, skinColor);
+
+				totalPrice += skinColorData.Price;
 			}
 			if (eyeColor != creature.EyeColor)
 			{
@@ -171,6 +180,8 @@ namespace Aura.Channel.Network.Handlers
 
 				if (!raceData.HasTag(eyeColorData.Races))
 					throw new SevereViolation("Player tried to rebirth with eye color not available to their race: {0}, {1}", creature.RaceId, eyeColor);
+
+				totalPrice += eyeColorData.Price;
 			}
 			if (eyeType != creature.EyeColor)
 			{
@@ -182,6 +193,8 @@ namespace Aura.Channel.Network.Handlers
 
 				if (!raceData.HasTag(eyeTypeData.Races))
 					throw new SevereViolation("Player tried to rebirth with eye type not available to their race: {0}, {1}", creature.RaceId, eyeType);
+
+				totalPrice += eyeTypeData.Price;
 			}
 			if (mouthType != creature.MouthType)
 			{
@@ -193,7 +206,14 @@ namespace Aura.Channel.Network.Handlers
 
 				if (!raceData.HasTag(mouthTypeData.Races))
 					throw new SevereViolation("Player tried to rebirth with eye type not available to their race: {0}, {1}", creature.RaceId, mouthType);
+
+				totalPrice += mouthTypeData.Price;
 			}
+
+			// Check points
+			// Sanity check, client should prevent this.
+			if (client.Account.Points < totalPrice)
+				throw new SevereViolation("Player tried to rebirth with options they can't pay more, total price: " + totalPrice);
 
 			// Reset age
 			if (resetAge)
@@ -266,6 +286,15 @@ namespace Aura.Channel.Network.Handlers
 
 			// Success
 			Send.RequestRebirthR(creature, true);
+
+			// Update points
+			if (totalPrice != 0)
+			{
+				client.Account.Points -= totalPrice;
+				Send.PonsUpdate(creature, client.Account.Points);
+			}
+
+			return;
 
 		L_Fail:
 			Send.RequestRebirthR(creature, false);
