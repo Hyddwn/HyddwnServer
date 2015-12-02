@@ -178,7 +178,10 @@ namespace Aura.Channel.Skills.Combat
 
 				// Deal with it!
 				if (damage > 0)
+				{
 					target.TakeDamage(tAction.Damage = damage, attacker);
+					SkillHelper.HandleInjury(attacker, target, damage);
+				}
 
 				// TODO: We have to calculate knockback distance right
 				// TODO: Target with Defense and shield shouldn't be knocked back

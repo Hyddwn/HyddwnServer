@@ -148,7 +148,11 @@ namespace Aura.Channel.Skills.Combat
 				ManaShield.Handle(target, ref damage, tAction);
 
 				// Apply damage
-				target.TakeDamage(tAction.Damage = 300, attacker);
+				if (damage > 0)
+				{
+					target.TakeDamage(tAction.Damage = 300, attacker);
+					SkillHelper.HandleInjury(attacker, target, damage);
+				}
 				target.Stability = Creature.MinStability;
 
 				// Aggro

@@ -133,7 +133,10 @@ namespace Aura.Channel.Skills.Combat
 
 				// Take damage if any is left
 				if (damage > 0)
+				{
 					target.TakeDamage(tAction.Damage = damage, attacker);
+					SkillHelper.HandleInjury(attacker, target, damage);
+				}
 
 				// Finish if dead, knock down if not defended
 				if (target.IsDead)
