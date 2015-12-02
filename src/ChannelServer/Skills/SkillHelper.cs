@@ -94,5 +94,32 @@ namespace Aura.Channel.Skills
 				}
 			}
 		}
+
+		/// <summary>
+		/// Inflicts injuries to target, based on attacker's Injury
+		/// properties and the given damage.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="target"></param>
+		/// <param name="damage"></param>
+		public static void HandleInjury(Creature attacker, Creature target, float damage)
+		{
+			if (attacker == null || target == null || damage == 0)
+				return;
+
+			var rnd = RandomProvider.Get();
+			var min = attacker.InjuryMin;
+			var max = Math.Max(min, attacker.InjuryMax);
+			if (max == 0)
+				return;
+
+			var rndInjure = rnd.Next(min, max + 1);
+			if (rndInjure == 0)
+				return;
+
+			var injure = damage * (rndInjure / 100f);
+
+			target.Injuries += injure;
+		}
 	}
 }
