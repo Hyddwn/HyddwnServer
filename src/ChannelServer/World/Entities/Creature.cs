@@ -2326,7 +2326,7 @@ namespace Aura.Channel.World.Entities
 		/// http://mabination.com/threads/57123-Chaos-Life-Skill-Guide-Refining
 		/// </remarks>
 		/// <returns></returns>
-		public float GetProductionSuccessChance(SkillId skillId, int baseChance, int rainBonus)
+		public float GetProductionSuccessChance(SkillId skillId, ProductionCategory category, int baseChance, int rainBonus)
 		{
 			// Base
 			float result = baseChance;
@@ -2340,7 +2340,12 @@ namespace Aura.Channel.World.Entities
 
 			// Weather bonus
 			if (ChannelServer.Instance.Weather.GetWeatherType(this.RegionId) == WeatherType.Rain)
-				result += rainBonus;
+			{
+				if (category == ProductionCategory.Weaving)
+					result += rainBonus * 2;
+				else
+					result *= 1 + (rainBonus / 100f);
+			}
 
 			return Math2.Clamp(0, 99, result);
 		}
