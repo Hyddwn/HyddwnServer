@@ -2323,14 +2323,14 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		/// <remarks>
 		/// Unofficial, but seems to work fine in most cases.
-		/// http://mabination.com/threads/57123-Chaos-Life-Skill-Guide-Refining
+		/// Dex bonus: http://mabination.com/threads/57123-Chaos-Life-Skill-Guide-Refining
 		/// </remarks>
 		/// <returns></returns>
-		public float GetProductionSuccessChance(SkillId skillId, ProductionCategory category, int baseChance, int rainBonus)
+		public float GetProductionSuccessChance(Skill skill, ProductionCategory category, int baseChance, int rainBonus)
 		{
 			// Base
 			float result = baseChance;
-			if (skillId != SkillId.PotionMaking && skillId != SkillId.Milling)
+			if (skill.Info.Id != SkillId.PotionMaking && skill.Info.Id != SkillId.Milling)
 				result += (this.Dex - 60) * (baseChance / 300f);
 
 			// Production Mastery bonus
@@ -2347,7 +2347,56 @@ namespace Aura.Channel.World.Entities
 					result *= 1 + (rainBonus / 100f);
 			}
 
+			// Party bonus
+			result += this.GetProductionPartyBonus(skill);
+
 			return Math2.Clamp(0, 99, result);
+		}
+
+		/// <summary>
+		/// Returns party production bonus for the given skill if creature
+		/// is in a party.
+		/// </summary>
+		/// <remarks>
+		// http://wiki.mabinogiworld.com/view/Party#Production_Bonus
+		/// </remarks>
+		/// <param name="skill"></param>
+		/// <returns></returns>
+		public float GetProductionPartyBonus(Skill skill)
+		{
+			// No bonus when not in party
+			if (!this.IsInParty)
+				return 0;
+
+			var result = 0f;
+
+			var members = this.Party.GetMembers();
+			foreach (var member in members)
+			{
+				// Exclude this creature
+				if (member == this)
+					continue;
+
+				// Exclude members that don't have Production Master rF+
+				var productionMastery = member.Skills.Get(SkillId.ProductionMastery);
+				if (productionMastery == null || productionMastery.Info.Rank < SkillRank.RF)
+					continue;
+
+				// Exclude members that don't have the production skill on rF+
+				var memberSkill = member.Skills.Get(skill.Info.Id);
+				if (memberSkill == null || memberSkill.Info.Rank < SkillRank.RF)
+					continue;
+
+				// +1% if member has the skill on a lower rank
+				if (memberSkill.Info.Rank < skill.Info.Rank)
+					result += 1;
+				// +5% if member has the skill on same or higher rank
+				else
+					result += 5;
+			}
+
+			// Cap at 35
+			return Math.Min(35, result);
 		}
 
 		/// <summary>

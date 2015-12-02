@@ -267,7 +267,7 @@ namespace Aura.Channel.Skills.Base
 			var rank = skill.Info.Rank <= SkillRank.R1 ? skill.Info.Rank : SkillRank.R1;
 			var baseChance = potentialProducts.Sum(a => a.SuccessRates[rank]);
 			var rainBonus = productData.RainBonus;
-			var chance = creature.GetProductionSuccessChance(skill.Info.Id, category, baseChance, rainBonus);
+			var chance = creature.GetProductionSuccessChance(skill, category, baseChance, rainBonus);
 			var rnd = RandomProvider.Get();
 			var success = (rnd.Next(100) < chance);
 
