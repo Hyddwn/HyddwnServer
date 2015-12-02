@@ -564,43 +564,107 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public int AttackMaxMod { get { return (int)this.StatMods.Get(Stat.AttackMaxMod); } }
 
-		public int InjuryMinBaseMod
+		/// <summary>
+		/// WAttMin from monster.
+		/// </summary>
+		public int InjuryMinBase { get { return this.RaceData.InjuryMinBase; } }
+
+		/// <summary>
+		/// WAttMax from monster.
+		/// </summary>
+		public int InjuryMaxBase { get { return this.RaceData.InjuryMaxBase; } }
+
+		/// <summary>
+		/// WAttackMin from race.
+		/// </summary>
+		public int InjuryMinBaseMod { get { return this.RaceData.InjuryMinBaseMod; } }
+
+		/// <summary>
+		/// WAttackMax from race.
+		/// </summary>
+		public int InjuryMaxBaseMod { get { return this.RaceData.InjuryMaxBaseMod; } }
+
+		/// <summary>
+		/// Par_WAttackMin from itemdb.
+		/// </summary>
+		public int RightInjuryMinMod { get { return (this.RightHand != null ? this.RightHand.OptionInfo.InjuryMin : 0); } }
+
+		/// <summary>
+		/// Par_WAttackMax from itemdb.
+		/// </summary>
+		public int RightInjuryMaxMod { get { return (this.RightHand != null ? this.RightHand.OptionInfo.InjuryMax : 0); } }
+
+		/// <summary>
+		/// Par_WAttackMin from itemdb.
+		/// </summary>
+		public int LeftInjuryMinMod { get { return (this.LeftHand != null ? this.LeftHand.OptionInfo.InjuryMin : 0); } }
+
+		/// <summary>
+		/// Par_WAttackMax from itemdb.
+		/// </summary>
+		public int LeftInjuryMaxMod { get { return (this.LeftHand != null ? this.LeftHand.OptionInfo.InjuryMax : 0); } }
+
+		/// <summary>
+		/// Title bonuses?
+		/// </summary>
+		public int InjuryMinMod { get { return (int)this.StatMods.Get(Stat.InjuryMinMod); } }
+
+		/// <summary>
+		/// Title bonuses?
+		/// </summary>
+		public int InjuryMaxMod { get { return (int)this.StatMods.Get(Stat.InjuryMaxMod); } }
+
+		/// <summary>
+		/// Returns total min injury.
+		/// </summary>
+		public int InjuryMin
 		{
 			get
 			{
-				var result = 0;
+				var result = ((this.Dex - 10) * 0.05f) + ((this.Will - 10) * 0.05f);
+				result += this.InjuryMinBase;
+				result += this.InjuryMinBaseMod;
+				result += this.InjuryMinMod;
 
+				// Add average of both weapons
 				if (this.RightHand != null)
 				{
-					result = this.RightHand.OptionInfo.InjuryMin;
+					var weapons = (float)RightInjuryMinMod;
 					if (this.LeftHand != null)
-					{
-						result += this.LeftHand.OptionInfo.InjuryMin;
-						result /= 2; // average
-					}
+						weapons = (weapons + this.LeftInjuryMinMod) / 2;
+
+					result += weapons;
 				}
 
-				return result;
+				return (int)Math2.Clamp(0, 100, result);
 			}
 		}
 
-		public int InjuryMaxBaseMod
+		/// <summary>
+		/// Returns total max injury.
+		/// </summary>
+		/// <remarks>
+		/// </remarks>
+		public int InjuryMax
 		{
 			get
 			{
-				var result = 0;
+				var result = ((this.Dex - 10) * 0.1f) + ((this.Will - 10) * 0.2f);
+				result += this.InjuryMaxBase;
+				result += this.InjuryMaxBaseMod;
+				result += this.InjuryMaxMod;
 
+				// Add average of both weapons
 				if (this.RightHand != null)
 				{
-					result = this.RightHand.OptionInfo.InjuryMax;
+					var weapons = (float)RightInjuryMaxMod;
 					if (this.LeftHand != null)
-					{
-						result += this.LeftHand.OptionInfo.InjuryMax;
-						result /= 2; // average
-					}
+						weapons = (weapons + this.LeftInjuryMaxMod) / 2;
+
+					result += weapons;
 				}
 
-				return result;
+				return (int)Math2.Clamp(0, 100, result);
 			}
 		}
 

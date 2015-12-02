@@ -107,18 +107,18 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutShort((short)creature.AttackMinMod);
 				packet.PutShort((short)creature.AttackMaxBase);
 				packet.PutShort((short)creature.AttackMaxMod);
-				packet.PutShort(0);			         // InjuryMinBase
-				packet.PutShort(0);			         // InjuryMinMod
-				packet.PutShort(0);			         // InjuryMaxBase
-				packet.PutShort(0);			         // InjuryMaxMod
+				packet.PutShort((short)creature.InjuryMinBase);
+				packet.PutShort((short)creature.InjuryMinMod);
+				packet.PutShort((short)creature.InjuryMaxBase);
+				packet.PutShort((short)creature.InjuryMaxMod);
 				packet.PutShort((short)creature.LeftAttackMinMod);
 				packet.PutShort((short)creature.LeftAttackMaxMod);
 				packet.PutShort((short)creature.RightAttackMinMod);
 				packet.PutShort((short)creature.RightAttackMaxMod);
-				packet.PutShort(0);			         // LeftInjuryMinMod
-				packet.PutShort(0);			         // LeftInjuryMaxMod
-				packet.PutShort(0);			         // RightInjuryMinMod
-				packet.PutShort(0);			         // RightInjuryMaxMod
+				packet.PutShort((short)creature.LeftInjuryMinMod);
+				packet.PutShort((short)creature.LeftInjuryMaxMod);
+				packet.PutShort((short)creature.RightInjuryMinMod);
+				packet.PutShort((short)creature.RightInjuryMaxMod);
 				packet.PutFloat(creature.LeftCriticalMod);
 				packet.PutFloat(creature.RightCriticalMod);
 				packet.PutShort((short)creature.LeftBalanceMod);

@@ -1221,6 +1221,8 @@ namespace Aura.Channel.World.Inventory
 				Stat.RightAttackMinMod, Stat.RightAttackMaxMod,
 				Stat.LeftAttackMinMod, Stat.LeftAttackMaxMod,
 				Stat.InjuryMinBaseMod, Stat.InjuryMaxBaseMod,
+				Stat.RightInjuryMinMod, Stat.RightInjuryMaxMod,
+				Stat.LeftInjuryMinMod, Stat.LeftInjuryMaxMod,
 				Stat.CriticalBase, Stat.CriticalBaseMod,
 				Stat.LeftCriticalMod, Stat.RightCriticalMod,
 				Stat.BalanceBase, Stat.BalanceBaseMod,
