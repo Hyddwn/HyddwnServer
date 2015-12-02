@@ -712,32 +712,4 @@ namespace Aura.Mabi.Const
 		/// </remarks>
 		WhilePetSummoned = 0x18,
 	}
-
-	/// <summary>
-	/// Skill stat the upgrade effects.
-	/// </summary>
-	public enum UpgradeSkillStat : short
-	{
-		None = 0x00,
-
-		/// <summary>
-		/// Min or default damage, depending on the skill.
-		/// </summary>
-		MinDamage = 0x01,
-
-		/// <summary>
-		/// Max damage, for skills that have a max damage.
-		/// </summary>
-		MaxDamage = 0x02,
-
-		/// <summary>
-		/// 
-		/// </summary>
-		CriticalSuccess = 0x03,
-
-		/// <summary>
-		/// 
-		/// </summary>
-		EXP = 0x15,
-	}
 }

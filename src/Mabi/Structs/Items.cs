@@ -217,7 +217,7 @@ namespace Aura.Mabi.Structs
 		public SkillId SkillId;
 
 		[FieldOffset(18)]
-		public UpgradeSkillStat SkillEffect;
+		public short SkillVar;
 
 		[FieldOffset(20)]
 		public int Unk4; // ??? if != 0x0A?
