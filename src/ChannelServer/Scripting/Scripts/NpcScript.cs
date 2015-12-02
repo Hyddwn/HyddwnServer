@@ -1514,9 +1514,7 @@ namespace Aura.Channel.Scripting.Scripts
 				return result;
 			}
 
-			// Take gold
 			result.HadGold = true;
-			this.Gold -= cost;
 
 			// TODO: Luck?
 
