@@ -243,6 +243,8 @@ namespace Aura.Channel.World.Entities.Creatures
 						case "Protection": _creature.StatMods.Add(Stat.ProtectionBaseMod, effect.Value, StatModSource.Title, data.Id); break;
 						case "MinAttack": _creature.StatMods.Add(Stat.AttackMinMod, effect.Value, StatModSource.Title, data.Id); break;
 						case "MaxAttack": _creature.StatMods.Add(Stat.AttackMaxMod, effect.Value, StatModSource.Title, data.Id); break;
+						case "MinInjury": _creature.StatMods.Add(Stat.InjuryMinMod, effect.Value, StatModSource.Title, data.Id); break;
+						case "MaxInjury": _creature.StatMods.Add(Stat.InjuryMaxMod, effect.Value, StatModSource.Title, data.Id); break;
 						default:
 							Log.Warning("SwitchStatMods: Unknown title effect '{0}' in title {1}.", effect.Key, data.Id);
 							break;
@@ -257,7 +259,8 @@ namespace Aura.Channel.World.Entities.Creatures
 					Stat.LifeMaxMod, Stat.Life, Stat.LifeInjured, Stat.ManaMaxMod, Stat.Mana, Stat.StaminaMaxMod,
 					Stat.Stamina, Stat.StrMod, Stat.IntMod, Stat.DexMod, Stat.WillMod, Stat.LuckMod,
 					Stat.DefenseBaseMod, Stat.ProtectionBaseMod,
-					Stat.AttackMinMod, Stat.AttackMaxMod
+					Stat.AttackMinMod, Stat.AttackMaxMod,
+					Stat.InjuryMinMod, Stat.InjuryMaxMod
 				);
 				Send.StatUpdate(_creature, StatUpdateType.Public, Stat.Life, Stat.LifeMaxMod, Stat.LifeMax);
 			}
