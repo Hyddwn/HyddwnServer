@@ -445,4 +445,299 @@ namespace Aura.Mabi.Const
 		MaleVoiceJp = 120,
 		FemaleVoiceJp = 121,
 	}
+
+	/// <summary>
+	/// Type of upgrade.
+	/// </summary>
+	public enum UpgradeType
+	{
+		/// <summary>
+		/// Enchant prefix.
+		/// </summary>
+		Prefix = 0,
+
+		/// <summary>
+		/// Enchant suffix.
+		/// </summary>
+		Suffix = 1,
+
+		/// <summary>
+		/// Artisan upgrade.
+		/// </summary>
+		Artisan = 6,
+
+		/// <summary>
+		/// Reforge.
+		/// </summary>
+		Reforge = 7,
+	}
+
+	/// <summary>
+	/// Stat the upgrade changes.
+	/// </summary>
+	public enum UpgradeStat : byte
+	{
+		HP = 0x00,
+		MaxHP = 0x01,
+		MP = 0x02,
+		MaxMP = 0x03,
+		Stamina = 0x04,
+		MaxStamina = 0x05,
+		Hunger = 0x06,
+		Level = 0x07,
+		ExperiencePoints = 0x08,
+		Age = 0x09,
+		STR = 0x0A,
+		Dexterity = 0x0B,
+		Intelligence = 0x0C,
+		Will = 0x0D,
+		Luck = 0x0E,
+		MinDamage = 0x0F,
+		MaxDamage = 0x10,
+		MinInjuryRate = 0x11,
+		MaxInjuryRate = 0x12,
+		Critical = 0x13,
+		Protection = 0x14,
+		Defense = 0x15,
+		DamageBalance = 0x16,
+
+		Fire = 0x1B,
+		Ice = 0x1C,
+		Lightning = 0x1D,
+		Poisoned = 0x1E,
+		Deadly = 0x1F,
+		PotionPoisoning = 0x20,
+		Numb = 0x21,
+		Silence = 0x22,
+		Petrified = 0x23,
+		Coward = 0x24,
+		Outraged = 0x25,
+		Confused = 0x26,
+		Combat2xEXP = 0x27,
+		Slow = 0x28,
+		Luck2 = 0x29,
+		Misfortune = 0x2A,
+		LeadersBlessing = 0x2B,
+		Explode1 = 0x2C,
+		Explode2 = 0x2D,
+		Mirage = 0x2E,
+		Weak = 0x2F,
+		PVPPenaltiy = 0x30,
+		Lethargic = 0x31,
+		CancelDarkKnight = 0x32,
+		CombatEXP1_1 = 0x33,
+		MagicDefense = 0x34,
+		MagicAttack = 0x35,
+		MagicProtection = 0x36,
+
+		MinAttackPower = 0x54,
+		MaxAttackPower = 0x55,
+		LooksABitStrong = 0x56,
+		ExplorationLevel = 0x57,
+		PoisonImmunity = 0x58,
+		PetrificationImmunity = 0x59,
+		LessenManaUsage = 0x5A,
+		LessenStaminaUsage = 0x5B,
+		ExplosionDefense = 0x5C,
+		StompDefense = 0x5D,
+		FireAlchemicDamage = 0x5E,
+		ClayAlchemicDamage = 0x5F,
+		WindAlchemicDamage = 0x60,
+		WaterAlchemicDamage = 0x61,
+		CrystalMakingSuccessRate = 0x62,
+		SynthesisSuccessRate = 0x63,
+		FragmentationSuccessRate = 0x64,
+
+		MagicAttack2 = 0x67,
+		FrozenBlastDuration = 0x68,
+		FrozenBlastRange = 0x69,
+		BarrierSpikesDurability = 0x6A,
+		StaminaUsage = 0x6B,
+		AttackSpeed = 0x6C,
+		PiercingLevel = 0x6D,
+		TotalLevel = 0x6E,
+		ScaleRatio = 0x6F,
+		MovementSpeedIncreaseGatheringSpeedIncrease = 0x70,
+		MusicBuffEffect = 0x71,
+		MusicBuffDuration = 0x72,
+
+		UnkSkill = 0x9B,
+		AutoMeleeDefense = 0x9C,
+		AutoMagicDefense = 0x9D,
+		AutoRangedDefense = 0x9E,
+		GatheringSpeed = 0x9F,
+		CollectionProbability = 0xA0,
+		CollectionQuantity = 0xA1,
+		EffectiveRange = 0xA2,
+		CastingSpeed = 0xA3,
+		MovementSpeed = 0xA4,
+		TransportSpeed = 0xA5,
+		MaxDurability = 0xA6,
+		MinAttackPower2 = 0xA7,
+		MaxAttackPower2 = 0xA8,
+
+		Act2ThresholdCutterDamageBoost = 0xB0,
+		MarionetteMinDamage = 0xB1,
+		MarionetteMaxDamage = 0xB2,
+		MarionetteHP = 0xB3,
+		MarionetteDefense = 0xB4,
+		MarionetteProtection = 0xB5,
+		MarionetteMagicDefense = 0xB6,
+		ControlMarionetteMinDamage = 0xB7,
+		ControlMarionetteMaxDamage = 0xB8,
+		ControlCriticalRate = 0xB9,
+		ControlCriticalBalanceBoosted = 0xBA,
+		IncitingIncidentStunTimeBoosted = 0xBB,
+		RisingActionDamageBoosted = 0xBC,
+		CrisisRangeBoosted = 0xBD,
+		ClimaticCrashDamageBoosted = 0xBE,
+		Act2ThresholdCutter3HitDamage = 0xBF,
+		Quality = 0xC0,
+		AlchemySuccessRateIncreased = 0xC1,
+		DualGunMinDamage = 0xC2,
+		DualGunMaxDamage = 0xC3,
+		UnknownKr1 = 0xC4,
+		UnknownKr2 = 0xC5,
+	}
+
+	/// <summary>
+	/// The way the upgrade value is applied.
+	/// </summary>
+	/// <remarks>
+	/// 3 and 4 are types that assumingly have never been used officially,
+	/// they set the stat to a fixed amout or percentage of the current value.
+	/// </remarks>
+	public enum UpgradeValueType : byte
+	{
+		/// <summary>
+		/// Simple +- value.
+		/// </summary>
+		Value = 0x00,
+
+		/// <summary>
+		/// Treats value as a percentage.
+		/// </summary>
+		Percent = 0x01,
+
+		// v Obscure
+
+		/// <summary>
+		/// Fixes stat at value.
+		/// </summary>
+		Fix = 0x03,
+
+		/// <summary>
+		/// Changes stat to a percentage of its current value.
+		/// </summary>
+		ChangeToPercent = 0x04,
+	}
+
+	/// <summary>
+	/// Type of check to determine if effect applies.
+	/// </summary>
+	public enum UpgradeCheckType
+	{
+		/// <summary>
+		/// Check value greater than...
+		/// </summary>
+		GreaterThan = 0x04,
+
+		/// <summary>
+		/// Check value lower than...
+		/// </summary>
+		LowerThan = 0x05,
+
+		/// <summary>
+		/// Check value great than or equal...
+		/// </summary>
+		GreaterEqualThan = 0x06,
+
+		/// <summary>
+		/// Check value lower than or equal...
+		/// </summary>
+		LowerEqualThan = 0x07,
+
+		/// <summary>
+		/// Check value equal...
+		/// </summary>
+		Equal = 0x08,
+
+		/// <summary>
+		/// Default value?
+		/// </summary>
+		None = 0x0A,
+
+		/// <summary>
+		/// Skill rank greater than...
+		/// </summary>
+		SkillRankEqual = 0x0D,
+
+		/// <summary>
+		/// Skill rank greater than...
+		/// </summary>
+		SkillRankGreaterThan = 0x0E,
+
+		/// <summary>
+		/// Skill rank lower than...
+		/// </summary>
+		SkillRankLowerThan = 0x0F,
+
+		/// <summary>
+		/// In a state of...
+		/// </summary>
+		/// <remarks>
+		/// "While in a state of Crazy Chocolate Balls"
+		/// Value = condition bit
+		/// </remarks>
+		InAStateOf = 0x10,
+
+		/// <summary>
+		/// While holding title...
+		/// </summary>
+		/// <remarks>
+		/// Value = title id
+		/// </remarks>
+		HoldingTitle = 0x11,
+
+		/// <summary>
+		/// When item is broken?
+		/// </summary>
+		WhenBroken = 0x14,
+
+		/// <summary>
+		/// While pet is summoned?
+		/// </summary>
+		/// <remarks>
+		/// CheckStat = 0xAF
+		/// </remarks>
+		WhilePetSummoned = 0x18,
+	}
+
+	/// <summary>
+	/// Skill stat the upgrade effects.
+	/// </summary>
+	public enum UpgradeSkillStat : short
+	{
+		None = 0x00,
+
+		/// <summary>
+		/// Min or default damage, depending on the skill.
+		/// </summary>
+		MinDamage = 0x01,
+
+		/// <summary>
+		/// Max damage, for skills that have a max damage.
+		/// </summary>
+		MaxDamage = 0x02,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		CriticalSuccess = 0x03,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		EXP = 0x15,
+	}
 }

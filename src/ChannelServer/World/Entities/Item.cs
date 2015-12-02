@@ -37,6 +37,11 @@ namespace Aura.Channel.World.Entities
 		private static long _itemId = MabiId.TmpItems;
 
 		/// <summary>
+		/// List of upgrade effects.
+		/// </summary>
+		private List<UpgradeEffect> _upgrades = new List<UpgradeEffect>();
+
+		/// <summary>
 		/// Returns entity data type "Item".
 		/// </summary>
 		public override DataType DataType { get { return DataType.Item; } }
@@ -353,6 +358,7 @@ namespace Aura.Channel.World.Entities
 			this.MetaData2 = new MabiDictionary(baseItem.MetaData2.ToString());
 			this.QuestId = baseItem.QuestId;
 			this.EgoInfo = baseItem.EgoInfo.Copy();
+			this.AddUpgradeEffect(baseItem.GetUpgradeEffects());
 
 			this.SetNewEntityId();
 		}
@@ -995,6 +1001,26 @@ namespace Aura.Channel.World.Entities
 				this.Region.RemoveItem(this);
 
 			base.Disappear();
+		}
+
+		/// <summary>
+		/// Adds upgrade effect to item, does not update client.
+		/// </summary>
+		/// <param name="effect"></param>
+		public void AddUpgradeEffect(params UpgradeEffect[] effects)
+		{
+			lock (_upgrades)
+				_upgrades.AddRange(effects);
+		}
+
+		/// <summary>
+		/// Returns a new list with the item's upgrade effects.
+		/// </summary>
+		/// <returns></returns>
+		public UpgradeEffect[] GetUpgradeEffects()
+		{
+			lock (_upgrades)
+				return _upgrades.ToArray();
 		}
 	}
 }

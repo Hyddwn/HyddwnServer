@@ -176,4 +176,71 @@ namespace Aura.Mabi.Structs
 	{
 		public short X, Y;
 	}
+
+	/// <summary>
+	/// Information about an upgrade effect.
+	/// </summary>
+	/// <remarks>
+	/// Used for enchants, certain upgrades, reforging, etc.
+	/// 
+	/// If ValueType.Percent is used, the value is interpreted as a percentage.
+	/// Example: 1 = 0.1, 10 = 1.0, 150 = 10.5, etc
+	/// 
+	/// The check supports skills and stats. Since both are saved in the same
+	/// location in the struct, make sure to only set one of them.
+	/// Example:
+	/// - CheckType.SkillRankGreaterThan: Set CheckSkillId and CheckSkillRank
+	/// - CheckType.GreaterThan: Set CheckStat, CheckValueType, and CheckValue
+	/// </remarks>
+	[StructLayout(LayoutKind.Explicit, Pack = 1)]
+	public struct UpgradeEffect
+	{
+		[FieldOffset(0)]
+		public UpgradeType Type;
+
+		[FieldOffset(4)]
+		public int Unk1;
+
+		[FieldOffset(8)]
+		public int Unk2; // default: 0, skill bonus: 0x1B
+
+		[FieldOffset(12)]
+		public UpgradeStat Stat;
+
+		[FieldOffset(13)]
+		public UpgradeValueType ValueType;
+
+		[FieldOffset(14)]
+		public short Value;
+
+		[FieldOffset(16)]
+		public SkillId SkillId;
+
+		[FieldOffset(18)]
+		public UpgradeSkillStat SkillEffect;
+
+		[FieldOffset(20)]
+		public int Unk4; // ??? if != 0x0A?
+
+		[FieldOffset(24)]
+		public int Unk5;
+
+		[FieldOffset(28)]
+		public UpgradeCheckType CheckType;
+
+		[FieldOffset(32)]
+		public SkillId CheckSkillId;
+
+		[FieldOffset(32)]
+		public UpgradeStat CheckStat;
+
+		[FieldOffset(33)]
+		public UpgradeValueType CheckValueType;
+
+		[FieldOffset(34)]
+		public short CheckValue;
+
+		[FieldOffset(35)]
+		public SkillRank CheckSkillRank;
+	}
 }
