@@ -465,57 +465,57 @@ namespace Aura.Channel.World.Entities
 		public float Luck { get { return this.LuckBaseTotal + this.LuckMod + this.LuckFoodMod; } }
 
 		/// <summary>
-		/// Rate from monster xml
+		/// Rate from monster.
 		/// </summary>
 		public int BalanceBase { get { return (this.RightHand == null ? this.RaceData.BalanceBase : 0); } }
 
 		/// <summary>
-		/// Rate from races xml
+		/// Rate from race.
 		/// </summary>
 		public int BalanceBaseMod { get { return (this.RightHand == null ? this.RaceData.BalanceBaseMod : 0); } }
 
 		/// <summary>
-		/// Balance of right hand weapon
+		/// Balance of right hand weapon.
 		/// </summary>
 		public int RightBalanceMod { get { return (this.RightHand != null ? this.RightHand.OptionInfo.Balance : 0); } }
 
 		/// <summary>
-		/// Balance of left hand weapon
+		/// Balance of left hand weapon.
 		/// </summary>
 		public int LeftBalanceMod { get { return (this.LeftHand != null ? this.LeftHand.OptionInfo.Balance : 0); } }
 
 		/// <summary>
-		/// Critical from monster xml.
+		/// Critical from monster.
 		/// </summary>
 		public float CriticalBase { get { return (this.RightHand == null ? this.RaceData.CriticalBase : 0); } }
 
 		/// <summary>
-		/// Critical from races xml.
+		/// Critical from race.
 		/// </summary>
 		public float CriticalBaseMod { get { return (this.RightHand == null ? this.RaceData.CriticalBaseMod : 0); } }
 
 		/// <summary>
-		/// Critical of right hand weapon
+		/// Critical of right hand weapon.
 		/// </summary>
 		public float RightCriticalMod { get { return (this.RightHand != null ? this.RightHand.OptionInfo.Critical : 0); } }
 
 		/// <summary>
-		/// Critical of left hand weapon
+		/// Critical of left hand weapon.
 		/// </summary>
 		public float LeftCriticalMod { get { return (this.LeftHand != null ? this.LeftHand.OptionInfo.Critical : 0); } }
 
 		/// <summary>
-		/// AttMin from monster xml.
+		/// AttMin from monster.
 		/// </summary>
 		/// <remarks>
 		/// This seems to count towards the creature's damage even if a weapon
 		/// is equipped. This assumption is based on the fact that Golems
-		/// have a 0 attack weapon, that would make them almost no damage.
+		/// have a 0 attack weapon, that would make them do almost no damage.
 		/// </remarks>
 		public int AttackMinBase { get { return this.RaceData.AttackMinBase; } }
 
 		/// <summary>
-		/// AttMax from monster xml.
+		/// AttMax from monster.
 		/// </summary>
 		/// <remarks>
 		/// This seems to count towards the creature's damage even if a weapon
@@ -525,32 +525,32 @@ namespace Aura.Channel.World.Entities
 		public int AttackMaxBase { get { return this.RaceData.AttackMaxBase; } }
 
 		/// <summary>
-		/// AttackMin from races xml.
+		/// AttackMin from race.
 		/// </summary>
 		public int AttackMinBaseMod { get { return (this.RightHand == null ? this.RaceData.AttackMinBaseMod : 0); } }
 
 		/// <summary>
-		/// AttackMax from races xml.
+		/// AttackMax from race.
 		/// </summary>
 		public int AttackMaxBaseMod { get { return (this.RightHand == null ? this.RaceData.AttackMaxBaseMod : 0); } }
 
 		/// <summary>
-		/// Par_AttackMin from item xml, for right hand weapon.
+		/// Par_AttackMin from itemdb, for right hand weapon.
 		/// </summary>
 		public int RightAttackMinMod { get { return (this.RightHand != null ? this.RightHand.OptionInfo.AttackMin : 0); } }
 
 		/// <summary>
-		/// Par_AttackMax from item xml, for right hand weapon.
+		/// Par_AttackMax from itemdb, for right hand weapon.
 		/// </summary>
 		public int RightAttackMaxMod { get { return (this.RightHand != null ? this.RightHand.OptionInfo.AttackMax : 0); } }
 
 		/// <summary>
-		/// Par_AttackMin from item xml, for left hand weapon.
+		/// Par_AttackMin from itemdb, for left hand weapon.
 		/// </summary>
 		public int LeftAttackMinMod { get { return (this.LeftHand != null ? this.LeftHand.OptionInfo.AttackMin : 0); } }
 
 		/// <summary>
-		/// Par_AttackMax from item xml, for left hand weapon.
+		/// Par_AttackMax from itemdb, for left hand weapon.
 		/// </summary>
 		public int LeftAttackMaxMod { get { return (this.LeftHand != null ? this.LeftHand.OptionInfo.AttackMax : 0); } }
 
