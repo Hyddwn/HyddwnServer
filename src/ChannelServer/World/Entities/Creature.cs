@@ -537,6 +537,15 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Par_AttackMin from itemdb, for right hand weapon.
 		/// </summary>
+		/// <remarks>
+		/// Officials differentiate between 1H and 2H (e.g. two-hand swords
+		/// and bows) weapons, in that they don't contribute to the Right...
+		/// and Left... properties, but ...BaseMod. While this makes sense,
+		/// it adds unnecessary complexity, as the client will display the
+		/// correct values the way we do it as well, since it simply uses
+		/// the values to calculate the stats, independent of the kind of
+		/// weapon you have equipped.
+		/// </remarks>
 		public int RightAttackMinMod { get { return (this.RightHand != null ? this.RightHand.OptionInfo.AttackMin : 0); } }
 
 		/// <summary>
@@ -644,6 +653,8 @@ namespace Aura.Channel.World.Entities
 		/// Returns total max injury.
 		/// </summary>
 		/// <remarks>
+		/// Something is missing in this function, the max injury rate shown on
+		/// the client tends to be *slightly* different, in the range of +-1~4.
 		/// </remarks>
 		public int InjuryMax
 		{
