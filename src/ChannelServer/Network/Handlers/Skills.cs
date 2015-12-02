@@ -686,7 +686,7 @@ namespace Aura.Channel.Network.Handlers
 			// Check skill
 			if (!creature.Skills.Has(skillId))
 			{
-				Log.Warning("ProductionSuccessRequest: Creature '{0:X16}' tried to ... without having the skill.", creature.EntityId);
+				Log.Warning("ProductionSuccessRequest: Creature '{0:X16}' tried to request success rate without having the skill.", creature.EntityId);
 				return;
 			}
 

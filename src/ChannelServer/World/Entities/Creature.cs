@@ -2326,10 +2326,12 @@ namespace Aura.Channel.World.Entities
 		/// http://mabination.com/threads/57123-Chaos-Life-Skill-Guide-Refining
 		/// </remarks>
 		/// <returns></returns>
-		public float GetProductionSuccessChance(int baseChance, int rainBonus)
+		public float GetProductionSuccessChance(SkillId skillId, int baseChance, int rainBonus)
 		{
 			// Base
-			var result = (baseChance + (this.Dex - 60) * (baseChance / 300));
+			float result = baseChance;
+			if (skillId != SkillId.PotionMaking && skillId != SkillId.Milling)
+				result += (this.Dex - 60) * (baseChance / 300f);
 
 			// Production Mastery bonus
 			var pm = this.Skills.Get(SkillId.ProductionMastery);
