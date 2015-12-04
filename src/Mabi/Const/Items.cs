@@ -532,7 +532,7 @@ namespace Aura.Mabi.Const
 
 		MinAttackPower = 0x54,
 		MaxAttackPower = 0x55,
-		LooksABitStrong = 0x56,
+		CombatPower = 0x56,
 		ExplorationLevel = 0x57,
 		PoisonImmunity = 0x58,
 		PetrificationImmunity = 0x59,
@@ -547,7 +547,8 @@ namespace Aura.Mabi.Const
 		CrystalMakingSuccessRate = 0x62,
 		SynthesisSuccessRate = 0x63,
 		FragmentationSuccessRate = 0x64,
-
+		Golem = 0x65,
+		BarrierSpikes = 0x66,
 		MagicAttack2 = 0x67,
 		FrozenBlastDuration = 0x68,
 		FrozenBlastRange = 0x69,
@@ -561,7 +562,7 @@ namespace Aura.Mabi.Const
 		MusicBuffEffect = 0x71,
 		MusicBuffDuration = 0x72,
 
-		UnkSkill = 0x9B,
+		Skill = 0x9B,
 		AutoMeleeDefense = 0x9C,
 		AutoMagicDefense = 0x9D,
 		AutoRangedDefense = 0x9E,
@@ -575,6 +576,8 @@ namespace Aura.Mabi.Const
 		MaxDurability = 0xA6,
 		MinAttackPower2 = 0xA7,
 		MaxAttackPower2 = 0xA8,
+
+		Pet = 0xAF,
 
 		Act2ThresholdCutterDamageBoost = 0xB0,
 		MarionetteMinDamage = 0xB1,
@@ -638,27 +641,27 @@ namespace Aura.Mabi.Const
 	public enum UpgradeCheckType
 	{
 		/// <summary>
-		/// Check value greater than...
+		/// Check value greater than ...
 		/// </summary>
 		GreaterThan = 0x04,
 
 		/// <summary>
-		/// Check value lower than...
+		/// Check value lower than ...
 		/// </summary>
 		LowerThan = 0x05,
 
 		/// <summary>
-		/// Check value great than or equal...
+		/// Check value great than or equal ...
 		/// </summary>
 		GreaterEqualThan = 0x06,
 
 		/// <summary>
-		/// Check value lower than or equal...
+		/// Check value lower than or equal ...
 		/// </summary>
 		LowerEqualThan = 0x07,
 
 		/// <summary>
-		/// Check value equal...
+		/// Check value equal ...
 		/// </summary>
 		Equal = 0x08,
 
@@ -668,22 +671,22 @@ namespace Aura.Mabi.Const
 		None = 0x0A,
 
 		/// <summary>
-		/// Skill rank greater than...
+		/// Skill rank greater than ...
 		/// </summary>
 		SkillRankEqual = 0x0D,
 
 		/// <summary>
-		/// Skill rank greater than...
+		/// Skill rank greater than ...
 		/// </summary>
 		SkillRankGreaterThan = 0x0E,
 
 		/// <summary>
-		/// Skill rank lower than...
+		/// Skill rank lower than ...
 		/// </summary>
 		SkillRankLowerThan = 0x0F,
 
 		/// <summary>
-		/// In a state of...
+		/// In a state of ...
 		/// </summary>
 		/// <remarks>
 		/// "While in a state of Crazy Chocolate Balls"
@@ -700,16 +703,41 @@ namespace Aura.Mabi.Const
 		HoldingTitle = 0x11,
 
 		/// <summary>
-		/// When item is broken?
+		/// During month ...
+		/// </summary>
+		/// <remarks>
+		/// Stat = 0-6 (Sunday-Saturday)
+		/// </remarks>
+		WhileBeing = 0x12,
+
+		/// <summary>
+		/// If PTJ ... was completed more than ... times
+		/// </summary>
+		/// <remarks>
+		/// Stat = PTJ id
+		/// Value = count
+		/// </remarks>
+		IfPtjCompletedMoreThan = 0x13,
+
+		/// <summary>
+		/// When item is broken.
 		/// </summary>
 		WhenBroken = 0x14,
 
 		/// <summary>
-		/// While pet is summoned?
+		/// If supporting race ...
 		/// </summary>
 		/// <remarks>
-		/// CheckStat = 0xAF
+		/// Stat = race: 1=Elf, 2=Giant
 		/// </remarks>
-		WhilePetSummoned = 0x18,
+		WhenSupporting = 0x15,
+
+		/// <summary>
+		/// While ... is summoned.
+		/// </summary>
+		/// <remarks>
+		/// Stat: Pet, BarrierSpikes, or Golem
+		/// </remarks>
+		WhileSummoned = 0x18,
 	}
 }
