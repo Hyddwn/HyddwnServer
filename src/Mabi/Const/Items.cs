@@ -462,11 +462,18 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Enchant suffix.
 		/// </summary>
+		/// <remarks>
+		/// Shows the effect under the suffix name, if item has a suffix.
+		/// </remarks>
 		Suffix = 1,
 
 		/// <summary>
 		/// Element "enchant".
 		/// </summary>
+		/// <remarks>
+		/// If Unk2 isn't 0x02, the effect will be displayed like an anchant,
+		/// i.e. "Fire 1 Increase".
+		/// </remarks>
 		Elemental = 2,
 
 		/// <summary>
@@ -477,11 +484,17 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Artisan upgrade.
 		/// </summary>
+		/// <remarks>
+		/// Requires LKUP:8:262244 meta data to show up.
+		/// </remarks>
 		Artisan = 6,
 
 		/// <summary>
 		/// Reforge.
 		/// </summary>
+		/// <remarks>
+		/// Requires MTWR:1:1~3 meta data to show up.
+		/// </remarks>
 		Reforge = 7,
 	}
 
