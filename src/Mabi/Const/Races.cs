@@ -13,4 +13,11 @@ namespace Aura.Mabi.Const
 		Male,
 		Universal,
 	}
+
+	public enum SupportRace : byte
+	{
+		None,
+		Elf,
+		Giant,
+	}
 }
