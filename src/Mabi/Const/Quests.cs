@@ -32,7 +32,7 @@ namespace Aura.Mabi.Const
 		Normal = 2,
 	}
 
-	public enum PtjType
+	public enum PtjType : short
 	{
 		General = 0,
 		GroceryStore = 1,
