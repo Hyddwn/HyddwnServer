@@ -454,12 +454,25 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Enchant prefix.
 		/// </summary>
+		/// <remarks>
+		/// Shows the effect under the prefix name, if item has a prefix.
+		/// </remarks>
 		Prefix = 0,
 
 		/// <summary>
 		/// Enchant suffix.
 		/// </summary>
 		Suffix = 1,
+
+		/// <summary>
+		/// Element "enchant".
+		/// </summary>
+		Elemental = 2,
+
+		/// <summary>
+		/// Effect in orange inside the item attributes.
+		/// </summary>
+		ItemAttribute = 5,
 
 		/// <summary>
 		/// Artisan upgrade.

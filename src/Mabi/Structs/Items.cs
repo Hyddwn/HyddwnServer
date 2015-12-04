@@ -218,6 +218,7 @@ namespace Aura.Mabi.Structs
 		/// Default: 0
 		/// Skill bonus: 0x1B
 		/// Set bonus: 0x16 ?
+		/// Elemental: 0x02 ?
 		/// </remarks>
 		[FieldOffset(8)]
 		public int Unk2;
