@@ -37,7 +37,11 @@ namespace Aura.Mabi.Structs
 		/// </summary>
 		public byte FigureB;
 
+		/// <summary>
+		/// Direction? (in region)
+		/// </summary>
 		public byte FigureC;
+
 		public byte FigureD;
 		public byte KnockCount;
 		private byte __unknown12;

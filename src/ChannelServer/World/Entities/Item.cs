@@ -703,6 +703,9 @@ namespace Aura.Channel.World.Entities
 				this.ProtectionLimit = null;
 			}
 
+			// Random direction
+			this.Info.FigureC = (byte)rnd.Next(256);
+
 			// Add item to region
 			region.AddItem(this);
 		}
