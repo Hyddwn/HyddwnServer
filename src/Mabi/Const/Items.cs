@@ -748,6 +748,9 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// When item is broken.
 		/// </summary>
+		/// <remarks>
+		/// Stat = bool: 0=intact, 1=broken
+		/// </remarks>
 		WhenBroken = 0x14,
 
 		/// <summary>

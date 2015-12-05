@@ -306,6 +306,15 @@ namespace Aura.Mabi.Structs
 		public Month CheckMonth;
 
 		/// <summary>
+		/// State to check for with UpgradeCheckType.WhenBroken.
+		/// </summary>
+		/// <remarks>
+		/// false=intact, true=broken
+		/// </remarks>
+		[FieldOffset(32)]
+		public bool CheckBroken;
+
+		/// <summary>
 		/// How to apply the check, e.g. value vs percentage.
 		/// </summary>
 		[FieldOffset(33)]
