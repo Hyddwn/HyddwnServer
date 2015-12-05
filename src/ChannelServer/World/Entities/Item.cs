@@ -11,6 +11,7 @@ using Aura.Mabi.Structs;
 using Aura.Shared.Util;
 using Aura.Mabi;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Aura.Channel.World.Entities
 {
@@ -1013,7 +1014,12 @@ namespace Aura.Channel.World.Entities
 		public void AddUpgradeEffect(params UpgradeEffect[] effects)
 		{
 			lock (_upgrades)
+			{
+				if (_upgrades.Count + effects.Length > byte.MaxValue)
+					throw new ArgumentException("Adding the effects would cause the item to have >255 effects.");
+
 				_upgrades.AddRange(effects);
+			}
 		}
 
 		/// <summary>
@@ -1024,6 +1030,104 @@ namespace Aura.Channel.World.Entities
 		{
 			lock (_upgrades)
 				return _upgrades.ToArray();
+		}
+
+		/// <summary>
+		/// Returns all upgrade effects in one base64 string.
+		/// </summary>
+		/// <remarks>
+		/// Structure:
+		///   byte length
+		///   UpgradeEffect[length] effects
+		/// </remarks>
+		/// <returns></returns>
+		public string SerializeUpgradeEffects()
+		{
+			lock (_upgrades)
+			{
+				if (_upgrades.Count == 0)
+					return null;
+
+				// Calculate sizes
+				var upgradeEffectSize = Marshal.SizeOf(typeof(UpgradeEffect));
+				var totalSize = 1 + (upgradeEffectSize * _upgrades.Count);
+
+				// Prepare result
+				var result = new byte[totalSize];
+				result[0] = (byte)_upgrades.Count;
+
+				var ptr = IntPtr.Zero;
+				try
+				{
+					// Create one buffer to use for all effects
+					ptr = Marshal.AllocHGlobal(upgradeEffectSize);
+					var effectBuffer = new byte[upgradeEffectSize];
+
+					// Write all effects to result
+					for (int i = 0; i < _upgrades.Count; ++i)
+					{
+						Marshal.StructureToPtr(_upgrades[i], ptr, true);
+						Marshal.Copy(ptr, effectBuffer, 0, upgradeEffectSize);
+						Buffer.BlockCopy(effectBuffer, 0, result, 1 + upgradeEffectSize * i, upgradeEffectSize);
+					}
+
+					// Return result as base64 string
+					return Convert.ToBase64String(result);
+				}
+				finally
+				{
+					if (ptr != IntPtr.Zero)
+						Marshal.FreeHGlobal(ptr);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deserializes given string and overrides upgrade effect list
+		/// with the content.
+		/// </summary>
+		/// <param name="effectsBase64"></param>
+		public void DeserializeUpgradeEffects(string effectsBase64)
+		{
+			if (string.IsNullOrWhiteSpace(effectsBase64))
+				return;
+
+			lock (_upgrades)
+			{
+				// Remove current effects
+				_upgrades.Clear();
+
+				// Get data from string
+				var data = Convert.FromBase64String(effectsBase64);
+
+				// Calculate sizes
+				var upgradeEffectSize = Marshal.SizeOf(typeof(UpgradeEffect));
+				var totalSize = 1 + (upgradeEffectSize * data[0]);
+
+				// Check data size
+				if (data.Length != totalSize)
+					throw new ArgumentException("The struct size in the data doesn't match the current struct.");
+
+				var ptr = IntPtr.Zero;
+				try
+				{
+					// Create one buffer to use for all effects
+					ptr = Marshal.AllocHGlobal(upgradeEffectSize);
+
+					// Read all effects from data
+					for (int i = 0; i < data[0]; ++i)
+					{
+						Marshal.Copy(data, 1 + upgradeEffectSize * i, ptr, upgradeEffectSize);
+						var val = (UpgradeEffect)Marshal.PtrToStructure(ptr, typeof(UpgradeEffect));
+						_upgrades.Add(val);
+					}
+				}
+				finally
+				{
+					if (ptr != IntPtr.Zero)
+						Marshal.FreeHGlobal(ptr);
+				}
+			}
 		}
 	}
 }
