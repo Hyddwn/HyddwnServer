@@ -3,6 +3,7 @@
 
 using System.Runtime.InteropServices;
 using Aura.Mabi.Const;
+using System;
 
 namespace Aura.Mabi.Structs
 {
@@ -190,12 +191,23 @@ namespace Aura.Mabi.Structs
 	/// If ValueType.Percent is used, the value is interpreted as a percentage.
 	/// Example: 1 = 0.1, 10 = 1.0, 156 = 15.6, etc
 	///
-	/// The check supports skills and stats. Since both are saved in the same
-	/// location in the struct, make sure to only set one of them.
-	/// Example:
-	/// - CheckType.SkillRankGreaterThan: Set CheckSkillId and CheckSkillRank
-	/// - CheckType.GreaterThan: Set CheckStat, CheckValueType, and CheckValue
+	/// We make heavy use of "unions" here, for easier usability, as a result,
+	/// you have to be a little careful what you set. It's best to use the
+	/// provided helper methods.
 	/// </remarks>
+	/// <example>
+	/// var effect1 = new UpgradeEffect(UpgradeType.Suffix);
+	/// effect1.SetStatEffect(UpgradeStat.STR, 9, UpgradeValueType.Value);
+	/// 
+	/// var effect2 = new UpgradeEffect(UpgradeType.Suffix);
+	/// effect2.SetSkillEffect(SkillId.Smash, 1, 10, UpgradeValueType.Percent);
+	/// effect2.SetStatCheck(UpgradeStat.HP, UpgradeCheckType.LowerEqualThan, 100, UpgradeValueType.Percent);
+	/// 
+	/// var item = new Item(63101); // Dagger
+	/// item.OptionInfo.Suffix = 30511; // Aquarius
+	/// item.AddUpgradeEffect(effect1);
+	/// item.AddUpgradeEffect(effect2);
+	/// </example>
 	[StructLayout(LayoutKind.Explicit, Pack = 1)]
 	public struct UpgradeEffect
 	{
@@ -271,6 +283,9 @@ namespace Aura.Mabi.Structs
 		/// <summary>
 		/// The type of check done to see if the effect should be applied.
 		/// </summary>
+		/// <remarks>
+		/// Default value is 0x0A (None).
+		/// </remarks>
 		[FieldOffset(28)]
 		public UpgradeCheckType CheckType;
 
@@ -347,5 +362,200 @@ namespace Aura.Mabi.Structs
 		public SkillRank CheckSkillRank;
 
 		// ^ Skill check ^
+
+		/// <summary>
+		/// Initializes upgrade effect, setting required default values.
+		/// You should generally use this constructor!
+		/// </summary>
+		/// <param name="type"></param>
+		public UpgradeEffect(UpgradeType type)
+		{
+			Type = type;
+			Unk1 = 0;
+			Unk2 = 0;
+			Stat = 0;
+			ValueType = 0;
+			Value = 0;
+			SkillId = 0;
+			SkillVar = 0;
+			Unk4 = 0x0A;
+			Unk5 = 0;
+			CheckType = UpgradeCheckType.None;
+			CheckStat = 0;
+			CheckRace = 0;
+			CheckPtj = 0;
+			CheckMonth = 0;
+			CheckBroken = false;
+			CheckValueType = 0;
+			CheckValue = 0;
+			CheckSkillId = 0;
+			CheckSkillRank = 0;
+		}
+
+		/// <summary>
+		/// Changes effect's type.
+		/// </summary>
+		/// <param name="type"></param>
+		public void SetType(UpgradeType type)
+		{
+			Type = type;
+		}
+
+		/// <summary>
+		/// Changes effect to give a stat bonus.
+		/// </summary>
+		/// <param name="stat"></param>
+		/// <param name="value"></param>
+		/// <param name="valueType"></param>
+		public void SetStatEffect(UpgradeStat stat, short value, UpgradeValueType valueType)
+		{
+			if (stat < UpgradeStat.Fire || stat > UpgradeStat.Lightning)
+				Unk2 = 0x00;
+			else
+				Unk2 = 0x02;
+
+			Stat = stat;
+			ValueType = valueType;
+			Value = value;
+		}
+
+		/// <summary>
+		/// Changes effect to give a skill bonus.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="skillVar"></param>
+		/// <param name="value"></param>
+		public void SetSkillEffect(SkillId skillId, short skillVar, short value, UpgradeValueType valueType)
+		{
+			Unk2 = 0x1B;
+
+			Stat = UpgradeStat.Skill;
+			ValueType = valueType;
+			Value = value;
+			SkillId = skillId;
+			SkillVar = skillVar;
+		}
+
+		/// <summary>
+		/// Changes effect to check a stat for a value.
+		/// </summary>
+		/// <param name="stat"></param>
+		/// <param name="checkType"></param>
+		/// <param name="value"></param>
+		public void SetStatCheck(UpgradeStat stat, UpgradeCheckType checkType, short value, UpgradeValueType valueType)
+		{
+			if (checkType < UpgradeCheckType.GreaterThan || checkType > UpgradeCheckType.Equal)
+				throw new ArgumentException(checkType + " is not a stat check.");
+
+			CheckType = checkType;
+			CheckStat = stat;
+			CheckValueType = valueType;
+			CheckValue = value;
+		}
+
+		/// <summary>
+		/// Changes effect to check for a skill rank.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="checkType">SkillRankEqual, SkillRankGreaterThan, or SkillRankLowerThan</param>
+		/// <param name="rank"></param>
+		public void SetSkillCheck(SkillId skillId, UpgradeCheckType checkType, SkillRank rank)
+		{
+			if (checkType < UpgradeCheckType.SkillRankEqual || checkType > UpgradeCheckType.SkillRankLowerThan)
+				throw new ArgumentException(checkType + " is not a skill check.");
+
+			CheckType = checkType;
+			CheckSkillId = skillId;
+			CheckValue = 0;
+			CheckSkillRank = rank;
+		}
+
+		/// <summary>
+		/// Changes effect to check if the item is broken (0 durability).
+		/// </summary>
+		/// <param name="broken">False = intact, True = broken.</param>
+		public void SetBrokenCheck(bool broken)
+		{
+			CheckType = UpgradeCheckType.WhenBroken;
+			CheckBroken = broken;
+			CheckValueType = 0;
+			CheckValue = 0;
+		}
+
+		/// <summary>
+		/// Changes effect to check if the creature uses the given title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		public void SetTitleCheck(int titleId)
+		{
+			CheckType = UpgradeCheckType.HoldingTitle;
+			CheckStat = 0;
+			CheckValueType = 0;
+			CheckValue = (short)titleId;
+		}
+
+		/// <summary>
+		/// Changes effect to check for the given condition.
+		/// </summary>
+		/// <param name="conditionId"></param>
+		public void SetConditionCheck(int conditionId)
+		{
+			CheckType = UpgradeCheckType.InAStateOf;
+			CheckStat = 0;
+			CheckValueType = 0;
+			CheckValue = (short)conditionId;
+		}
+
+		/// <summary>
+		/// Changes effect to check if the given PTJ has been done x times.
+		/// </summary>
+		/// <param name="ptjType"></param>
+		/// <param name="count"></param>
+		public void SetPtjCheck(PtjType ptjType, int count)
+		{
+			CheckType = UpgradeCheckType.IfPtjCompletedMoreThan;
+			CheckPtj = ptjType;
+			CheckValue = (short)count;
+		}
+
+		/// <summary>
+		/// Changes effect to check if today is the given Erinn month.
+		/// </summary>
+		/// <param name="month"></param>
+		public void SetMonthCheck(Month month)
+		{
+			CheckType = UpgradeCheckType.WhileBeing;
+			CheckMonth = month;
+			CheckValueType = 0;
+			CheckValue = 0;
+		}
+
+		/// <summary>
+		/// Changes effect to check for the given summon to be there.
+		/// </summary>
+		/// <param name="summonStat"></param>
+		public void SetSummonCheck(UpgradeStat summonStat)
+		{
+			if (summonStat != UpgradeStat.Pet && summonStat != UpgradeStat.BarrierSpikes && summonStat != UpgradeStat.Golem)
+				throw new ArgumentException(summonStat + " is not a summon stat.");
+
+			CheckType = UpgradeCheckType.WhileSummoned;
+			CheckStat = summonStat;
+			CheckValueType = 0;
+			CheckValue = 0;
+		}
+
+		/// <summary>
+		/// Changes effect to check if the given race is supported by the
+		/// item owner.
+		/// </summary>
+		/// <param name="race"></param>
+		public void SetSupportCheck(SupportRace race)
+		{
+			CheckType = UpgradeCheckType.WhenSupporting;
+			CheckRace = race;
+			CheckValueType = 0;
+			CheckValue = 0;
+		}
 	}
 }
