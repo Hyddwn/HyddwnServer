@@ -422,6 +422,9 @@ namespace Aura.Channel.Database
 							item.OptionInfo.Prefix = reader.GetUInt16("prefix");
 							item.OptionInfo.Suffix = reader.GetUInt16("suffix");
 
+							var upgradeEffects = reader.GetStringSafe("upgradeEffects");
+							item.DeserializeUpgradeEffects(upgradeEffects);
+
 							result.Add(item);
 						}
 					}
@@ -1107,6 +1110,19 @@ namespace Aura.Channel.Database
 						cmd.Set("flags", (byte)item.OptionInfo.Flags);
 						cmd.Set("prefix", item.OptionInfo.Prefix);
 						cmd.Set("suffix", item.OptionInfo.Suffix);
+
+						// Upgrade effects are saved as a byte array of all
+						// structs, with a byte in front of it for the count,
+						// in one base64 string. This saves us from managing
+						// another table, doesn't separate the item data,
+						// and has good performance.
+						// Downside: Should the struct ever change, we have
+						// to write an update function for the db data.
+						// Alternatively we could make an upgradeEffects table,
+						// but that's tricky, seeing how the struct has unions,
+						// and we'd need one more query for every item with
+						// effects on load, and multiple queries on save.
+						cmd.Set("upgradeEffects", item.SerializeUpgradeEffects());
 
 						cmd.Execute();
 
