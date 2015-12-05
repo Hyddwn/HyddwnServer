@@ -432,6 +432,7 @@ namespace Aura.Channel.Database
 				{
 					foreach (var item in result.Where(item => item.Data.HasTag("/ego_weapon/")))
 					{
+						mc.Parameters.Clear();
 						mc.Parameters.AddWithValue("@itemEntityId", item.EntityId);
 
 						using (var reader = mc.ExecuteReader())
@@ -460,8 +461,6 @@ namespace Aura.Channel.Database
 							item.EgoInfo.AwakeningExp = reader.GetInt32("awakeningExp");
 							item.EgoInfo.LastFeeding = reader.GetDateTimeSafe("lastFeeding");
 						}
-
-						mc.Parameters.Clear();
 					}
 				}
 			}
