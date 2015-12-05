@@ -646,6 +646,11 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Treats value as a percentage.
 		/// </summary>
+		/// <remarks>
+		/// 1 = 0.1%
+		/// 10 = 1.0%
+		/// 156 = 15.6%
+		/// </remarks>
 		Percent = 0x01,
 
 		// v Obscure

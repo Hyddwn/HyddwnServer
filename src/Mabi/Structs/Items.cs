@@ -188,8 +188,8 @@ namespace Aura.Mabi.Structs
 	/// Used for enchants, certain upgrades, reforging, etc.
 	/// 
 	/// If ValueType.Percent is used, the value is interpreted as a percentage.
-	/// Example: 1 = 0.1, 10 = 1.0, 150 = 10.5, etc
-	/// 
+	/// Example: 1 = 0.1, 10 = 1.0, 156 = 15.6, etc
+	///
 	/// The check supports skills and stats. Since both are saved in the same
 	/// location in the struct, make sure to only set one of them.
 	/// Example:
