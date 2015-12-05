@@ -729,7 +729,7 @@ namespace Aura.Mabi.Const
 		/// While holding title...
 		/// </summary>
 		/// <remarks>
-		/// Value = title id
+		/// Stat+ValueType = title id
 		/// </remarks>
 		HoldingTitle = 0x11,
 

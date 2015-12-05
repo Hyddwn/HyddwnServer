@@ -330,6 +330,12 @@ namespace Aura.Mabi.Structs
 		public bool CheckBroken;
 
 		/// <summary>
+		/// Title id to check for with UpgradeCheckType.HoldingTitle.
+		/// </summary>
+		[FieldOffset(32)]
+		public ushort CheckTitleId;
+
+		/// <summary>
 		/// How to apply the check, e.g. value vs percentage.
 		/// </summary>
 		[FieldOffset(33)]
@@ -386,6 +392,7 @@ namespace Aura.Mabi.Structs
 			CheckPtj = 0;
 			CheckMonth = 0;
 			CheckBroken = false;
+			CheckTitleId = 0;
 			CheckValueType = 0;
 			CheckValue = 0;
 			CheckSkillId = 0;
@@ -489,9 +496,8 @@ namespace Aura.Mabi.Structs
 		public void SetTitleCheck(int titleId)
 		{
 			CheckType = UpgradeCheckType.HoldingTitle;
-			CheckStat = 0;
-			CheckValueType = 0;
-			CheckValue = (short)titleId;
+			CheckTitleId = (ushort)titleId;
+			CheckValue = 0;
 		}
 
 		/// <summary>
