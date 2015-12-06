@@ -235,6 +235,11 @@ namespace Aura.Shared
 				{
 					this.LoadDb(AuraData.CharacterStyleDb, "db/characterstyles.txt", reload);
 				}
+
+				if ((toLoad & DataLoad.OptionSets) != 0)
+				{
+					this.LoadDb(AuraData.OptionSetDb, "db/optionsets.txt", reload);
+				}
 			}
 			catch (DatabaseErrorException ex)
 			{
@@ -343,6 +348,7 @@ namespace Aura.Shared
 		Cooking = 0x4000000,
 		Portals = 0x8000000,
 		CharacterStyles = 0x10000000,
+		OptionSets = 0x20000000,
 
 		All = 0xFFFFFFFF,
 

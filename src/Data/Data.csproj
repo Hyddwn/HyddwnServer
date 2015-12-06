@@ -72,6 +72,7 @@
     <Compile Include="Database\Production.cs" />
     <Compile Include="Database\PropDefaults.cs" />
     <Compile Include="Database\Props.cs" />
+    <Compile Include="Database\OptionSets.cs" />
     <Compile Include="Database\WeatherTables.cs" />
     <Compile Include="Database\ColorMaps.cs" />
     <Compile Include="Database\Exp.cs" />
