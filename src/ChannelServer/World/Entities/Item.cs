@@ -421,15 +421,104 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Returns new stack of gold.
+		/// Returns new item, enchanted with the given prefix/suffix.
 		/// </summary>
-		/// <param name="amount"></param>
+		/// <param name="itemId"></param>
+		/// <param name="prefix"></param>
+		/// <param name="suffix"></param>
 		/// <returns></returns>
 		public static Item CreateEnchanted(int itemId, int prefix = 0, int suffix = 0)
 		{
 			var item = new Item(itemId);
 			if (prefix > 0) item.OptionInfo.Prefix = (ushort)prefix;
 			if (suffix > 0) item.OptionInfo.Suffix = (ushort)suffix;
+
+			return item;
+		}
+
+		/// <summary>
+		/// Returns enchant with the given option set id.
+		/// </summary>
+		/// <param name="optionSetId">Option set to use, either Prefix or Suffix.</param>
+		/// <param name="expiration">The time in minutes after which the enchant expires, 0 for none.</param>
+		/// <returns></returns>
+		public static Item CreateEnchant(int optionSetId, int expiration = 0)
+		{
+			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
+			if (optionSetData == null)
+				throw new ArgumentException("Option set doesn't exist: " + optionSetId);
+
+			bool isSuffix;
+			if ((isSuffix = optionSetData.Category != OptionSetCategory.Prefix) && optionSetData.Category != OptionSetCategory.Suffix)
+				throw new ArgumentException("Option set is neither prefix nor suffix, use custom enchant instead.");
+
+			var item = new Item(optionSetData.ItemId);
+			item.MetaData1.SetInt(isSuffix ? "ENSFIX" : "ENPFIX", optionSetId);
+			if (expiration != 0)
+				item.MetaData1.SetLong(isSuffix ? "XPRSFX" : "XPRPFX", DateTime.Now.AddMinutes(expiration));
+
+			return item;
+		}
+
+		/// <summary>
+		/// Returns enchant with the given option set id.
+		/// </summary>
+		/// <remarks>
+		/// This method allows the creation of enchants with a prefix *and*
+		/// a suffix.
+		/// </remarks>
+		/// <param name="itemId">Id of the enchant scoll item, defaults to item id specified for the *fix.</param>
+		/// <param name="prefix">The option set to use as prefix, 0 for none.</param>
+		/// <param name="suffix">The option set to use as suffix, 0 for none.</param>
+		/// <param name="expiration">The time in minutes after which the enchant expires, 0 for none.</param>
+		/// <returns></returns>
+		public static Item CreateEnchant(int itemId, int prefix, int suffix, int expiration)
+		{
+			if (prefix == 0 && suffix == 0)
+				throw new ArgumentException("Prefix, suffix, or both must be set.");
+
+			OptionSetData prefixData, suffixData;
+
+			// Prefix
+			if (prefix != 0)
+			{
+				prefixData = AuraData.OptionSetDb.Find(prefix);
+				if (prefixData == null)
+					throw new ArgumentException("Option set doesn't exist: " + prefix);
+				if (prefixData.Category != OptionSetCategory.Prefix)
+					throw new ArgumentException("Option set is not a prefix.");
+
+				if (itemId == 0)
+					itemId = prefixData.ItemId;
+			}
+
+			// Suffix
+			if (suffix != 0)
+			{
+				suffixData = AuraData.OptionSetDb.Find(suffix);
+				if (suffixData == null)
+					throw new ArgumentException("Option set doesn't exist: " + suffix);
+				if (suffixData.Category != OptionSetCategory.Suffix)
+					throw new ArgumentException("Option set is not a suffix.");
+
+				if (itemId == 0)
+					itemId = suffixData.ItemId;
+			}
+
+			// Create item
+			var item = new Item(itemId);
+			if (prefix != 0)
+			{
+				item.MetaData1.SetInt("ENPFIX", prefix);
+				if (expiration != 0)
+					item.MetaData1.SetLong("XPRPFX", DateTime.Now.AddMinutes(expiration));
+			}
+			if (suffix != 0)
+			{
+				item.MetaData1.SetInt("ENSFIX", suffix);
+				if (expiration != 0)
+					item.MetaData1.SetLong("XPRSFX", DateTime.Now.AddMinutes(expiration));
+			}
 
 			return item;
 		}
