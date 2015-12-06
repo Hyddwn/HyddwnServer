@@ -17,6 +17,7 @@ namespace Aura.Data.Database
 	{
 		public int Id { get; set; }
 		public OptionSetCategory Category { get; set; }
+		public UpgradeType Type { get; set; }
 		public SkillRank Rank { get; set; }
 		public string Allow { get; set; }
 		public string Disallow { get; set; }
@@ -38,7 +39,7 @@ namespace Aura.Data.Database
 	{
 		private static readonly Regex _valueRegex = new Regex(@"^(?<sign>[+-])(?<min>[0-9]+)(?:~(?<max>[0-9]+))?%?$", RegexOptions.Compiled);
 
-		public OptionSetCategory Category { get; set; }
+		public UpgradeType Type { get; set; }
 		public UpgradeStat? Stat { get; set; }
 		public string Value { get; set; }
 		public string If { get; set; }
@@ -47,19 +48,7 @@ namespace Aura.Data.Database
 
 		public UpgradeEffect GetUpgradeEffect(Random rnd)
 		{
-			UpgradeType type;
-			switch (this.Category)
-			{
-				case OptionSetCategory.Prefix: type = UpgradeType.Prefix; break;
-				case OptionSetCategory.Suffix: type = UpgradeType.Suffix; break;
-				case OptionSetCategory.Elemental: type = UpgradeType.Elemental; break;
-				case OptionSetCategory.Artisan: type = UpgradeType.Artisan; break;
-				case OptionSetCategory.Alchemy: type = UpgradeType.ItemAttribute; break; // ?
-				case OptionSetCategory.HolyFlame: type = UpgradeType.ItemAttribute; break;
-				default: throw new Exception("Unknown category: " + this.Category);
-			}
-
-			var effect = new UpgradeEffect(type);
+			var effect = new UpgradeEffect(this.Type);
 
 			// Stat effect
 			if (this.Stat != null)
@@ -223,6 +212,19 @@ namespace Aura.Data.Database
 			data.RepairMultiplier = entry.ReadFloat("repairMultiplier", 1);
 			data.Personalize = entry.ReadBool("personalize");
 
+			UpgradeType type;
+			switch (data.Category)
+			{
+				case OptionSetCategory.Prefix: type = UpgradeType.Prefix; break;
+				case OptionSetCategory.Suffix: type = UpgradeType.Suffix; break;
+				case OptionSetCategory.Elemental: type = UpgradeType.Elemental; break;
+				case OptionSetCategory.Artisan: type = UpgradeType.Artisan; break;
+				case OptionSetCategory.Alchemy: type = UpgradeType.ItemAttribute; break; // ?
+				case OptionSetCategory.HolyFlame: type = UpgradeType.ItemAttribute; break;
+				default: throw new Exception("Unknown category: " + data.Category);
+			}
+			data.Type = type;
+
 			if (!Enum.IsDefined(typeof(OptionSetCategory), data.Category))
 				throw new DatabaseErrorException("Unknown category: '" + data.Category + "'");
 
@@ -233,7 +235,7 @@ namespace Aura.Data.Database
 					effectEntry.AssertNotMissing("stat", "value");
 
 					var effectData = new OptionSetEffectData();
-					effectData.Category = data.Category;
+					effectData.Type = data.Type;
 
 					var stat = effectEntry.ReadString("stat");
 					effectData.Stat = (UpgradeStat)Enum.Parse(typeof(UpgradeStat), stat);
