@@ -183,7 +183,7 @@ namespace Aura.Channel.Network.Handlers
 
 				totalPrice += eyeColorData.Price;
 			}
-			if (eyeType != creature.EyeColor)
+			if (eyeType != creature.EyeType)
 			{
 				if (eyeTypeData == null)
 				{
@@ -297,7 +297,9 @@ namespace Aura.Channel.Network.Handlers
 			return;
 
 		L_Fail:
+			// Kill after fail packet, otherwise player might get stuck.
 			Send.RequestRebirthR(creature, false);
+			client.Kill();
 		}
 
 		/// <summary>
