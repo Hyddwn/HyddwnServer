@@ -213,7 +213,7 @@ namespace Aura.Channel.Network.Handlers
 			// Check points
 			// Sanity check, client should prevent this.
 			if (client.Account.Points < totalPrice)
-				throw new ModerateViolation("Player tried to rebirth with options they can't pay more, total price: " + totalPrice);
+				throw new ModerateViolation("Player tried to rebirth without being able to pay for the selected options, total price: {0}, Points: {1}", totalPrice, client.Account.Points);
 
 			// Reset age
 			if (resetAge)
