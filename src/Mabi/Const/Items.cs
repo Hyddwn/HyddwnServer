@@ -721,7 +721,7 @@ namespace Aura.Mabi.Const
 		/// </summary>
 		/// <remarks>
 		/// "While in a state of Crazy Chocolate Balls"
-		/// Value = condition bit
+		/// Stat+ValueType = condition bit
 		/// </remarks>
 		InAStateOf = 0x10,
 

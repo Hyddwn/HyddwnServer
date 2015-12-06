@@ -336,6 +336,12 @@ namespace Aura.Mabi.Structs
 		public ushort CheckTitleId;
 
 		/// <summary>
+		/// Condition to check for with UpgradeCheckType.InAStateOf.
+		/// </summary>
+		[FieldOffset(32)]
+		public ushort CheckCondition;
+
+		/// <summary>
 		/// How to apply the check, e.g. value vs percentage.
 		/// </summary>
 		[FieldOffset(33)]
@@ -393,6 +399,7 @@ namespace Aura.Mabi.Structs
 			CheckMonth = 0;
 			CheckBroken = false;
 			CheckTitleId = 0;
+			CheckCondition = 0;
 			CheckValueType = 0;
 			CheckValue = 0;
 			CheckSkillId = 0;
@@ -507,9 +514,8 @@ namespace Aura.Mabi.Structs
 		public void SetConditionCheck(int conditionId)
 		{
 			CheckType = UpgradeCheckType.InAStateOf;
-			CheckStat = 0;
-			CheckValueType = 0;
-			CheckValue = (short)conditionId;
+			CheckCondition = (ushort)conditionId;
+			CheckValue = 0;
 		}
 
 		/// <summary>
