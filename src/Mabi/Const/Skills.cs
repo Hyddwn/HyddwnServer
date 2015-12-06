@@ -88,6 +88,13 @@ namespace Aura.Mabi.Const
 		WineMaking = 10037,
 		//향수제조 =  10038, 
 		StudyPotionLore = 10039,
+		HillwenEngineering = 10040,
+		MagicCraft = 10041,
+		RareMineralogy = 10042,
+		ShyllienEcology = 10043,
+		Tasting = 10044,
+		IngredientHunting = 10045,
+		Catering = 10046,
 
 		// Combat
 		Defense = 20001,
@@ -230,6 +237,7 @@ namespace Aura.Mabi.Const
 		FloatingStoneThunder = 30103,
 		InstantThunder = 30104,
 		Shockwave = 30105,
+		LightningRod = 30106,
 		Firebolt = 30201,
 		Fireball = 30202,
 		TrainingFireball = 30203,
@@ -255,6 +263,9 @@ namespace Aura.Mabi.Const
 		PaperAirplaneBomb = 30471,
 		InvitationofDeath = 30472,
 		FlamesOfHell = 30473,
+		Spellwalk = 30480,
+		SnapCast = 30481,
+		Inspiration = 30482,
 
 		// Alchemy
 		ManaCrystallization = 35001,
@@ -525,6 +536,31 @@ namespace Aura.Mabi.Const
 		Hoeing = 55007,
 		CommerceMastery = 55100,
 		TransformationMastery = 56001,
+
+		// Guns
+		DualGunMastery = 54302,
+		FlashLauncher = 54303,
+		GrappleShot = 54304,
+		BulletSlide = 54305,
+		ShootingRush = 54306,
+		BulletStorm = 54307,
+		Reload = 54401,
+		WayOfTheGun = 54402,
+
+		// Ninja
+		ShurikenMastery = 26000,
+		ShurikenCharge = 26001,
+		KunaiStorm = 26002,
+		ShadowBind = 26003,
+		ShadowCloak = 26004,
+		ExplosiveKunai = 26005,
+		Smokescreen = 26006,
+		SakuraAbyss = 26007,
+
+		// Divine Knights
+		ShieldOfTrust = 46001,
+		CelestialSpike = 46002,
+		JudgmentBlade = 46003,
 
 		// GM
 		PickupItemGMSkill = 65001,
