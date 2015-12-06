@@ -45,14 +45,14 @@ public class AlbyTutorialDungeonScript : DungeonScript
 			var treasureChest = new TreasureChest();
 
 			// Enchant
-			var enchant = new Item(62005);
+			var enchant = 0;
 			switch (rnd.Next(3))
 			{
-				case 0: enchant.OptionInfo.Prefix = 1506; break; // Swan Summoner's
-				case 1: enchant.OptionInfo.Prefix = 1706; break; // Good
-				case 2: enchant.OptionInfo.Prefix = 305; break;  // Fine
+				case 0: enchant = 1506; break; // Swan Summoner's (Prefix)
+				case 1: enchant = 1706; break; // Good (Prefix)
+				case 2: enchant = 305; break;  // Fine (Prefix)
 			}
-			treasureChest.Add(enchant);
+			treasureChest.Add(Item.CreateEnchant(enchant));
 
 			treasureChest.AddGold(rnd.Next(153, 768)); // Gold
 			treasureChest.Add(GetRandomTreasureItem(rnd)); // Random item

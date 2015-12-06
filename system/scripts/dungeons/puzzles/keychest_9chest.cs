@@ -78,22 +78,22 @@ public class Keychest9ChestCiarScript : Keychest9ChestScript
 		// Enchant
 		if (isEnchantChest)
 		{
-			int prefix = 0, suffix = 0;
+			var enchant = 0;
 			switch (Random(10))
 			{
 				case 0:
 				case 1:
 				case 2:
-				case 3: prefix = 20205; break; // Restfull
+				case 3: enchant = 20205; break; // Restfull (Prefix)
 				case 4:
 				case 5:
-				case 6: prefix = 20204; break; // Foggy
+				case 6: enchant = 20204; break; // Foggy (Prefix)
 				case 7:
-				case 8: suffix = 30501; break; // Giant
-				case 9: suffix = 30602; break; // Healer
+				case 8: enchant = 30501; break; // Giant (Suffix)
+				case 9: enchant = 30602; break; // Healer (Suffix)
 			}
 
-			chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+			chest.Add(Item.CreateEnchant(enchant));
 		}
 	}
 }
@@ -110,22 +110,22 @@ public class Keychest9ChestBarriScript : Keychest9ChestScript
 		// Enchant
 		if (isEnchantChest)
 		{
-			int prefix = 0, suffix = 0;
+			var enchant = 0;
 			switch (Random(10))
 			{
 				case 0:
 				case 1:
-				case 2: prefix = 20401; break; // Smart
+				case 2: enchant = 20401; break; // Smart (Prefix)
 				case 3:
 				case 4:
-				case 5: prefix = 20402; break; // Strong
+				case 5: enchant = 20402; break; // Strong (Prefix)
 				case 6:
-				case 7: suffix = 30702; break; // Raven
-				case 8: suffix = 30704; break; // Deadly
-				case 9: suffix = 30805; break; // Falcon
+				case 7: enchant = 30702; break; // Raven (Suffix)
+				case 8: enchant = 30704; break; // Deadly (Suffix)
+				case 9: enchant = 30805; break; // Falcon (Suffix)
 			}
 
-			chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+			chest.Add(Item.CreateEnchant(enchant));
 		}
 	}
 }
@@ -142,22 +142,22 @@ public class Keychest9ChestRabbieScript : Keychest9ChestScript
 		// Enchant
 		if (isEnchantChest)
 		{
-			int prefix = 0, suffix = 0;
+			var enchant = 0;
 			switch (Random(10))
 			{
 				case 0:
 				case 1:
 				case 2:
-				case 3: prefix = 20205; break; // Restfull
+				case 3: enchant = 20205; break; // Restfull (Prefix)
 				case 4:
 				case 5:
-				case 6: prefix = 20204; break; // Mist
+				case 6: enchant = 20204; break; // Mist (Prefix)
 				case 7:
-				case 8: suffix = 30501; break; // Giant
-				case 9: suffix = 30602; break; // Healer
+				case 8: enchant = 30501; break; // Giant (Suffix)
+				case 9: enchant = 30602; break; // Healer (Suffix)
 			}
 
-			chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+			chest.Add(Item.CreateEnchant(enchant));
 		}
 	}
 }
@@ -174,22 +174,22 @@ public class Keychest9ChestMidSupplyScript : Keychest9ChestScript
 		// Enchant
 		if (isEnchantChest)
 		{
-			int prefix = 0, suffix = 0;
+			var enchant = 0;
 			switch (Random(10))
 			{
 				case 0:
 				case 1:
 				case 2:
-				case 3: prefix = 20205; break; // Restfull
+				case 3: enchant = 20205; break; // Restfull (Prefix)
 				case 4:
 				case 5:
-				case 6: prefix = 20204; break; // Mist
+				case 6: enchant = 20204; break; // Mist (Prefix)
 				case 7:
-				case 8: suffix = 30501; break; // Giant
-				case 9: suffix = 30602; break; // Healer
+				case 8: enchant = 30501; break; // Giant (Suffix)
+				case 9: enchant = 30602; break; // Healer (Suffix)
 			}
 
-			chest.Add(Item.CreateEnchanted(62005, prefix, suffix));
+			chest.Add(Item.CreateEnchant(enchant));
 		}
 	}
 }

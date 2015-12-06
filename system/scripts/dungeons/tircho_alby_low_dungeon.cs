@@ -27,14 +27,14 @@ public class AlbyBasicDungeonScript : DungeonScript
 			if (i == 0)
 			{
 				// Dagger
-				var item = new Item(40006);
+				var prefix = 0;
 				switch (rnd.Next(3))
 				{
-					case 0: item.OptionInfo.Prefix = 20501; break; // Simple
-					case 1: item.OptionInfo.Prefix = 20502; break; // Scrupulous
-					case 2: item.OptionInfo.Prefix = 20201; break; // Hard
+					case 0: prefix = 20501; break; // Simple
+					case 1: prefix = 20502; break; // Scrupulous
+					case 2: prefix = 20201; break; // Hard
 				}
-				treasureChest.Add(item);
+				treasureChest.Add(Item.CreateEnchanted(40006, prefix, 0));
 			}
 
 			treasureChest.AddGold(rnd.Next(1072, 3680)); // Gold

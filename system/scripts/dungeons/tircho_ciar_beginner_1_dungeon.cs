@@ -26,17 +26,17 @@ public class CiarBeginnerDungeonScript : DungeonScript
 			if (i == 0)
 			{
 				// Enchant
-				var item = new Item(62005);
+				var enchant = 0;
 				switch (rnd.Next(6))
 				{
-					case 0: item.OptionInfo.Suffix = 11105; break; // Health
-					case 1: item.OptionInfo.Suffix = 11106; break; // Blood
-					case 2: item.OptionInfo.Suffix = 11205; break; // Water
-					case 3: item.OptionInfo.Suffix = 11206; break; // Fountain
-					case 4: item.OptionInfo.Suffix = 11304; break; // Patience
-					case 5: item.OptionInfo.Suffix = 11305; break; // Sustainer
+					case 0: enchant = 11105; break; // Health (Suffix)
+					case 1: enchant = 11106; break; // Blood (Suffix)
+					case 2: enchant = 11205; break; // Water (Suffix)
+					case 3: enchant = 11206; break; // Fountain (Suffix)
+					case 4: enchant = 11304; break; // Patience (Suffix)
+					case 5: enchant = 11305; break; // Sustainer (Suffix)
 				}
-				treasureChest.Add(item);
+				treasureChest.Add(Item.CreateEnchant(enchant));
 			}
 
 			treasureChest.AddGold(rnd.Next(640, 960)); // Gold
