@@ -20,6 +20,7 @@ namespace Aura.Data.Database
 		public SkillRank Rank { get; set; }
 		public string Allow { get; set; }
 		public string Disallow { get; set; }
+		public int ItemId { get; set; }
 		public bool AlwaysSuccess { get; set; }
 		public bool IgnoreRank { get; set; }
 		public float RepairMultiplier { get; set; }
@@ -216,6 +217,7 @@ namespace Aura.Data.Database
 			data.Rank = (rank == "N" ? SkillRank.Novice : (SkillRank)(16 - Convert.ToInt32(rank, 16)));
 			data.Allow = entry.ReadString("allow");
 			data.Disallow = entry.ReadString("disallow");
+			data.ItemId = entry.ReadInt("itemId", 62005); // Enchant Scroll
 			data.AlwaysSuccess = entry.ReadBool("alwaysSuccess");
 			data.IgnoreRank = entry.ReadBool("ignoreRank");
 			data.RepairMultiplier = entry.ReadFloat("repairMultiplier", 1);
