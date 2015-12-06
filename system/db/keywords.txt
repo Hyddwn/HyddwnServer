@@ -442,7 +442,7 @@
 { id: 20156, name: "ex_bluemushroom_karu#st", engName: "A Moving Blue Mushroom" },
 { id: 20157, name: "ex_bluemushroom_karu", engName: "A Moving Blue Mushroom" },
 { id: 20158, name: "ex_moonbear_karu#st", engName: "Black Bear with a Moon Mark" },
-{ id: 20159, name: "ex_moonbear_karu", engName: "Black Bear with a Moon Mark " },
+{ id: 20159, name: "ex_moonbear_karu", engName: "Black Bear with a Moon Mark" },
 { id: 20160, name: "ex_poisonmushroom_karu#st", engName: "A Moving Poisonous Mushroom" },
 { id: 20161, name: "ex_poisonmushroom_karu", engName: "A Moving Poisonous Mushroom" },
 { id: 20162, name: "ex_whitespotspider_muyu#st", engName: "Spider with White Spots" },
