@@ -423,15 +423,39 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Returns new item, enchanted with the given prefix/suffix.
 		/// </summary>
-		/// <param name="itemId"></param>
-		/// <param name="prefix"></param>
-		/// <param name="suffix"></param>
+		/// <param name="itemId">Id of the item to create.</param>
+		/// <param name="prefix">Id of the prefix option set to apply to item, 0 for none.</param>
+		/// <param name="suffix">Id of the suffix option set to apply to item, 0 for none.</param>
 		/// <returns></returns>
 		public static Item CreateEnchanted(int itemId, int prefix = 0, int suffix = 0)
 		{
 			var item = new Item(itemId);
-			if (prefix > 0) item.OptionInfo.Prefix = (ushort)prefix;
-			if (suffix > 0) item.OptionInfo.Suffix = (ushort)suffix;
+
+			// Prefix
+			if (prefix > 0)
+			{
+				var data = AuraData.OptionSetDb.Find(prefix);
+				if (data == null)
+					throw new ArgumentException("Option set doesn't exist: " + prefix);
+				if (data.Category != OptionSetCategory.Prefix)
+					throw new ArgumentException("Option set is not a suffix.");
+
+				item.OptionInfo.Prefix = (ushort)prefix;
+				item.ApplyOptionSet(data, false);
+			}
+
+			// Suffix
+			if (suffix > 0)
+			{
+				var data = AuraData.OptionSetDb.Find(suffix);
+				if (data == null)
+					throw new ArgumentException("Option set doesn't exist: " + suffix);
+				if (data.Category != OptionSetCategory.Suffix)
+					throw new ArgumentException("Option set is not a suffix.");
+
+				item.OptionInfo.Suffix = (ushort)suffix;
+				item.ApplyOptionSet(data, false);
+			}
 
 			return item;
 		}
@@ -1119,6 +1143,25 @@ namespace Aura.Channel.World.Entities
 		{
 			lock (_upgrades)
 				return _upgrades.ToArray();
+		}
+
+		/// <summary>
+		/// Applies all upgrade effects of option set to item.
+		/// </summary>
+		/// <param name="optionSetData">Option set to apply.</param>
+		/// <param name="clear">Remove existing upgrade effects of the same type?</param>
+		public void ApplyOptionSet(OptionSetData optionSetData, bool clear)
+		{
+			var rnd = RandomProvider.Get();
+
+			lock (_upgrades)
+			{
+				if (clear)
+					_upgrades.RemoveAll(a => a.Type == optionSetData.Type);
+
+				foreach (var effect in optionSetData.Effects)
+					this.AddUpgradeEffect(effect.GetUpgradeEffect(rnd));
+			}
 		}
 
 		/// <summary>
