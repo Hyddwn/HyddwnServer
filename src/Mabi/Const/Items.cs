@@ -479,6 +479,9 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Effect in orange inside the item attributes.
 		/// </summary>
+		/// <remarks>
+		/// Used only by Holy Flame?
+		/// </remarks>
 		ItemAttribute = 5,
 
 		/// <summary>
