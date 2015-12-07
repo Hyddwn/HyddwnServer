@@ -324,8 +324,7 @@ namespace Aura.Channel.World.Entities
 			if (this.Data.StackType != StackType.Sac && this.Info.Amount < 1)
 				this.Info.Amount = 1;
 
-			this.OptionInfo.Prefix = (ushort)dropData.Prefix;
-			this.OptionInfo.Suffix = (ushort)dropData.Suffix;
+			this.ApplyPreSuffix(dropData.Prefix, dropData.Suffix);
 
 			if (dropData.Color1 != null) this.Info.Color1 = (uint)dropData.Color1;
 			if (dropData.Color2 != null) this.Info.Color2 = (uint)dropData.Color2;
@@ -430,7 +429,18 @@ namespace Aura.Channel.World.Entities
 		public static Item CreateEnchanted(int itemId, int prefix = 0, int suffix = 0)
 		{
 			var item = new Item(itemId);
+			item.ApplyPreSuffix(prefix, suffix);
 
+			return item;
+		}
+
+		/// <summary>
+		/// Applies given prefix and/or suffix.
+		/// </summary>
+		/// <param name="prefix">Prefix to apply, 0 for none.</param>
+		/// <param name="suffix">Suffix to apply, 0 for none.</param>
+		public void ApplyPreSuffix(int prefix, int suffix)
+		{
 			// Prefix
 			if (prefix > 0)
 			{
@@ -440,8 +450,8 @@ namespace Aura.Channel.World.Entities
 				if (data.Category != OptionSetCategory.Prefix)
 					throw new ArgumentException("Option set is not a suffix.");
 
-				item.OptionInfo.Prefix = (ushort)prefix;
-				item.ApplyOptionSet(data, false);
+				this.OptionInfo.Prefix = (ushort)prefix;
+				this.ApplyOptionSet(data, true);
 			}
 
 			// Suffix
@@ -453,11 +463,9 @@ namespace Aura.Channel.World.Entities
 				if (data.Category != OptionSetCategory.Suffix)
 					throw new ArgumentException("Option set is not a suffix.");
 
-				item.OptionInfo.Suffix = (ushort)suffix;
-				item.ApplyOptionSet(data, false);
+				this.OptionInfo.Suffix = (ushort)suffix;
+				this.ApplyOptionSet(data, true);
 			}
-
-			return item;
 		}
 
 		/// <summary>
