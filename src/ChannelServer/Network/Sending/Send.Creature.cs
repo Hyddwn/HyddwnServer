@@ -228,11 +228,11 @@ namespace Aura.Channel.Network.Sending
 						case Stat.StaminaMaxMod: packet.PutFloat(creature.StatMods.Get(Stat.StaminaMaxMod)); break;
 						case Stat.StaminaMaxFoodMod: packet.PutFloat(creature.StaminaFoodMod); break;
 
-						case Stat.StrMod: packet.PutFloat(creature.StatMods.Get(Stat.StrMod)); break;
-						case Stat.DexMod: packet.PutFloat(creature.StatMods.Get(Stat.DexMod)); break;
-						case Stat.IntMod: packet.PutFloat(creature.StatMods.Get(Stat.IntMod)); break;
-						case Stat.LuckMod: packet.PutFloat(creature.StatMods.Get(Stat.LuckMod)); break;
-						case Stat.WillMod: packet.PutFloat(creature.StatMods.Get(Stat.WillMod)); break;
+						case Stat.StrMod: packet.PutFloat(creature.StrMod); break;
+						case Stat.DexMod: packet.PutFloat(creature.DexMod); break;
+						case Stat.IntMod: packet.PutFloat(creature.IntMod); break;
+						case Stat.LuckMod: packet.PutFloat(creature.LuckMod); break;
+						case Stat.WillMod: packet.PutFloat(creature.WillMod); break;
 						case Stat.Str: packet.PutFloat(creature.StrBaseTotal); break;
 						case Stat.Int: packet.PutFloat(creature.IntBaseTotal); break;
 						case Stat.Dex: packet.PutFloat(creature.DexBaseTotal); break;
