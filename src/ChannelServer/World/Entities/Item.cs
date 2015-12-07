@@ -320,16 +320,48 @@ namespace Aura.Channel.World.Entities
 		{
 			var rnd = RandomProvider.Get();
 
+			// Amount
 			this.Info.Amount = (ushort)rnd.Next(dropData.AmountMin, dropData.AmountMax + 1);
 			if (this.Data.StackType != StackType.Sac && this.Info.Amount < 1)
 				this.Info.Amount = 1;
 
-			this.ApplyPreSuffix(dropData.Prefix, dropData.Suffix);
+			// Set enchant meta data or apply option sets to item
+			if (dropData.Prefix != 0 || dropData.Suffix != 0)
+			{
+				if (this.HasTag("/enchantscroll/"))
+				{
+					// Prefix
+					if (dropData.Prefix != 0)
+					{
+						var data = AuraData.OptionSetDb.Find(dropData.Prefix);
+						if (data == null) throw new ArgumentException("Option set doesn't exist: " + dropData.Prefix);
+						if (data.Category != OptionSetCategory.Prefix) throw new ArgumentException("Option set is not a prefix.");
 
+						this.MetaData1.SetInt("ENPFIX", dropData.Prefix);
+					}
+
+					// Suffix
+					if (dropData.Suffix != 0)
+					{
+						var data = AuraData.OptionSetDb.Find(dropData.Suffix);
+						if (data == null) throw new ArgumentException("Option set doesn't exist: " + dropData.Suffix);
+						if (data.Category != OptionSetCategory.Suffix) throw new ArgumentException("Option set is not a suffix.");
+
+						this.MetaData1.SetInt("ENSFIX", dropData.Suffix);
+					}
+
+					// TODO: Expiration?
+				}
+				else
+					this.ApplyPreSuffix(dropData.Prefix, dropData.Suffix);
+			}
+
+			// Colors
 			if (dropData.Color1 != null) this.Info.Color1 = (uint)dropData.Color1;
 			if (dropData.Color2 != null) this.Info.Color2 = (uint)dropData.Color2;
 			if (dropData.Color3 != null) this.Info.Color3 = (uint)dropData.Color3;
 
+			// Lowered durability
 			if (dropData.Durability != -1)
 				this.Durability = dropData.Durability;
 		}
@@ -515,10 +547,8 @@ namespace Aura.Channel.World.Entities
 			if (prefix != 0)
 			{
 				prefixData = AuraData.OptionSetDb.Find(prefix);
-				if (prefixData == null)
-					throw new ArgumentException("Option set doesn't exist: " + prefix);
-				if (prefixData.Category != OptionSetCategory.Prefix)
-					throw new ArgumentException("Option set is not a prefix.");
+				if (prefixData == null) throw new ArgumentException("Option set doesn't exist: " + prefix);
+				if (prefixData.Category != OptionSetCategory.Prefix) throw new ArgumentException("Option set is not a prefix.");
 
 				if (itemId == 0)
 					itemId = prefixData.ItemId;
@@ -528,10 +558,8 @@ namespace Aura.Channel.World.Entities
 			if (suffix != 0)
 			{
 				suffixData = AuraData.OptionSetDb.Find(suffix);
-				if (suffixData == null)
-					throw new ArgumentException("Option set doesn't exist: " + suffix);
-				if (suffixData.Category != OptionSetCategory.Suffix)
-					throw new ArgumentException("Option set is not a suffix.");
+				if (suffixData == null) throw new ArgumentException("Option set doesn't exist: " + suffix);
+				if (suffixData.Category != OptionSetCategory.Suffix) throw new ArgumentException("Option set is not a suffix.");
 
 				if (itemId == 0)
 					itemId = suffixData.ItemId;
