@@ -1776,26 +1776,26 @@ namespace Aura.Channel.World.Entities
 
 			// Drops
 			var dropped = new HashSet<int>();
-			foreach (var drop in this.Drops.Drops)
+			foreach (var dropData in this.Drops.Drops)
 			{
-				if (drop == null || !AuraData.ItemDb.Exists(drop.ItemId))
+				if (dropData == null || !AuraData.ItemDb.Exists(dropData.ItemId))
 				{
-					Log.Warning("Creature.Kill: Invalid drop '{0}' from '{1}'.", (drop == null ? "null" : drop.ItemId.ToString()), this.RaceId);
+					Log.Warning("Creature.Kill: Invalid drop '{0}' from '{1}'.", (dropData == null ? "null" : dropData.ItemId.ToString()), this.RaceId);
 					continue;
 				}
 
-				if (rnd.NextDouble() * 100 < drop.Chance * ChannelServer.Instance.Conf.World.DropRate)
+				if (rnd.NextDouble() * 100 < dropData.Chance * ChannelServer.Instance.Conf.World.DropRate)
 				{
 					// Only drop any item once
-					if (dropped.Contains(drop.ItemId))
+					if (dropped.Contains(dropData.ItemId))
 						continue;
 
 					var dropPos = pos.GetRandomInRange(50, rnd);
 
-					var item = new Item(drop);
+					var item = new Item(dropData);
 					item.Drop(this.Region, pos, killer, false);
 
-					dropped.Add(drop.ItemId);
+					dropped.Add(dropData.ItemId);
 				}
 			}
 
