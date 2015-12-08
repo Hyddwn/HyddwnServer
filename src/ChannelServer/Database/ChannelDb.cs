@@ -214,7 +214,7 @@ namespace Aura.Channel.Database
 					var y = reader.GetInt32("y");
 					character.SetLocation(r, x, y);
 					character.Direction = reader.GetByte("direction");
-					character.Inventory.WeaponSet = (WeaponSet)reader.GetByte("weaponSet");
+					character.Inventory.ChangeWeaponSet((WeaponSet)reader.GetByte("weaponSet"));
 					character.Level = reader.GetInt16("level");
 					character.TotalLevel = reader.GetInt32("levelTotal");
 					character.Exp = reader.GetInt64("exp");

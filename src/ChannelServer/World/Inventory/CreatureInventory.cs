@@ -129,24 +129,10 @@ namespace Aura.Channel.World.Inventory
 			}
 		}
 
-		private WeaponSet _weaponSet;
 		/// <summary>
 		/// Sets or returns the selected weapon set.
 		/// </summary>
-		public WeaponSet WeaponSet
-		{
-			get { return _weaponSet; }
-			set
-			{
-				_weaponSet = value;
-				this.UpdateEquipReferences(Pocket.RightHand1, Pocket.LeftHand1, Pocket.Magazine1);
-
-				// Make sure the creature is logged in
-				// TODO: Remove sending from properties.
-				if (_creature.Region != Region.Limbo)
-					this.UpdateEquipStats();
-			}
-		}
+		public WeaponSet WeaponSet { get; private set; }
 
 		public Pocket RightHandPocket { get { return (this.WeaponSet == WeaponSet.First ? Pocket.RightHand1 : Pocket.RightHand2); } }
 		public Pocket LeftHandPocket { get { return (this.WeaponSet == WeaponSet.First ? Pocket.LeftHand1 : Pocket.LeftHand2); } }
@@ -1281,6 +1267,23 @@ namespace Aura.Channel.World.Inventory
 			item.Proficiency += amount;
 
 			Send.ItemExpUpdate(_creature, item);
+		}
+
+		/// <summary>
+		/// Changes weapon set, if necessary, and updates clients.
+		/// </summary>
+		/// <param name="set"></param>
+		public void ChangeWeaponSet(WeaponSet set)
+		{
+			this.WeaponSet = set;
+			this.UpdateEquipReferences(Pocket.RightHand1, Pocket.LeftHand1, Pocket.Magazine1);
+
+			// Make sure the creature is logged in
+			if (_creature.Region != Region.Limbo)
+			{
+				this.UpdateEquipStats();
+				Send.UpdateWeaponSet(_creature);
+			}
 		}
 	}
 
