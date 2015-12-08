@@ -425,6 +425,20 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends AcquireInfo2 to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="itemEntityId"></param>
+		public static void AcquireEnchantedItemInfo(Creature creature, long itemEntityId, int itemId, int optionSetId)
+		{
+			var packet = new Packet(Op.AcquireInfo2, creature.EntityId);
+			packet.PutString("<xml type='enchant' objectid='{0}' classid='{1}' value='{2}' optionset='{3}'/>", itemEntityId, itemId, 4, optionSetId);
+			packet.PutInt(3000);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends DeadMenuR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

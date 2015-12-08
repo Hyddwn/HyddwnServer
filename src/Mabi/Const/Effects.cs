@@ -21,6 +21,11 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// 
 		/// </summary>
+		public static readonly int Enchant = 1;
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public static readonly int Revive = 4;
 
 		/// <summary>
@@ -233,5 +238,12 @@ namespace Aura.Mabi.Const
 		Dog = 12,
 		Cat = 13,
 		Owl = 14,
+	}
+
+	public enum EnchantResult : byte
+	{
+		HugeFail = 1,
+		Fail = 2,
+		Success = 4,
 	}
 }
