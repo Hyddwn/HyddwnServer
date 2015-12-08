@@ -122,6 +122,9 @@ namespace Aura.Channel.Skills.Combat
 				// Calculate damage
 				var damage = this.GetDamage(attacker, skill);
 
+				// Elementals
+				damage *= attacker.CalculateElementalDamageMultiplier(target);
+
 				// Handle skills and reductions
 				CriticalHit.Handle(attacker, attacker.GetTotalCritChance(0), ref damage, tAction);
 				SkillHelper.HandleDefenseProtection(target, ref damage);

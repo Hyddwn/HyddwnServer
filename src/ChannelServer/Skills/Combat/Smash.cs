@@ -122,9 +122,12 @@ namespace Aura.Channel.Skills.Combat
 
 			// Calculate damage
 			var damage = this.GetDamage(attacker, skill);
-			var critChance = this.GetCritChance(attacker, target, skill);
+
+			// Elementals
+			damage *= attacker.CalculateElementalDamageMultiplier(target);
 
 			// Critical Hit
+			var critChance = this.GetCritChance(attacker, target, skill);
 			CriticalHit.Handle(attacker, critChance, ref damage, tAction);
 
 			// Subtract target def/prot

@@ -180,6 +180,9 @@ namespace Aura.Channel.Skills.Combat
 				(attacker.GetRndTotalDamage() * (skill.RankData.Var2 / 100f)) +
 				(target.GetRndTotalDamage() * (skill.RankData.Var1 / 100f));
 
+			// Elementals
+			damage *= attacker.CalculateElementalDamageMultiplier(target);
+
 			var critChance = attacker.GetTotalCritChance(target.Protection) + skill.RankData.Var3;
 
 			CriticalHit.Handle(attacker, critChance, ref damage, tAction, true);

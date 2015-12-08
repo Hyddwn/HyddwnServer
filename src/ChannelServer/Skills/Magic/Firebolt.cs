@@ -104,5 +104,16 @@ namespace Aura.Channel.Skills.Magic
 				return;
 			}
 		}
+
+		/// <summary>
+		/// Returns elemental damage multiplier for this skill.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		protected override float GetElementalDamageMultiplier(Creature attacker, Creature target)
+		{
+			return attacker.CalculateElementalDamageMultiplier(0, Creature.MaxElementalAffinity, 0, target);
+		}
 	}
 }

@@ -144,6 +144,9 @@ namespace Aura.Channel.Skills.Combat
 				var damage = attacker.GetRndTotalDamage();
 				damage *= skill.RankData.Var1 / 100f;
 
+				// Elementals
+				damage *= attacker.CalculateElementalDamageMultiplier(target);
+
 				// Handle skills and reductions
 				CriticalHit.Handle(attacker, attacker.GetTotalCritChance(0), ref damage, tAction);
 				SkillHelper.HandleDefenseProtection(target, ref damage);

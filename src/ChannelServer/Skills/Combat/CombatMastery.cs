@@ -100,6 +100,9 @@ namespace Aura.Channel.Skills.Combat
 				// Base damage
 				var damage = (i == 1 ? attacker.GetRndRightHandDamage() : attacker.GetRndLeftHandDamage());
 
+				// Elementals
+				damage *= attacker.CalculateElementalDamageMultiplier(target);
+
 				// Critical Hit
 				var critChance = (i == 1 ? attacker.GetRightCritChance(target.Protection) : attacker.GetLeftCritChance(target.Protection));
 				CriticalHit.Handle(attacker, critChance, ref damage, tAction);

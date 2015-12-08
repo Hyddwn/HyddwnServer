@@ -159,7 +159,11 @@ namespace Aura.Channel.Skills.Combat
 				// Damage
 				var damage = this.GetDamage(attacker, skill);
 
+				// Elementals
+				damage *= attacker.CalculateElementalDamageMultiplier(target);
+
 				// More damage with fire arrow
+				// XXX: Does this affect the element?
 				if (attacker.Temp.FireArrow)
 					damage *= FireBonus;
 

@@ -190,6 +190,9 @@ namespace Aura.Channel.Skills.Base
 			// Damage
 			var damage = this.GetDamage(attacker, skill);
 
+			// Elements
+			damage *= this.GetElementalDamageMultiplier(attacker, target);
+
 			// Reduce damage
 			if (this.Defendable)
 				Defense.Handle(aAction, tAction, ref damage);
@@ -291,6 +294,14 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="skill"></param>
 		/// <returns></returns>
 		protected abstract float GetDamage(Creature attacker, Skill skill);
+
+		/// <summary>
+		/// Returns elemental damage multiplier for this skill.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		protected abstract float GetElementalDamageMultiplier(Creature attacker, Creature target);
 
 		/// <summary>
 		/// Handles training.
