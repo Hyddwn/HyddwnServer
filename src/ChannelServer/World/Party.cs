@@ -222,18 +222,22 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns first available slot.
+		/// Returns first available slot, throws if none are available.
+		/// Check availability before adding members.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="Exception">
+		/// Thrown if no free slots are available.
+		/// </exception>
 		private int GetAvailableSlot()
 		{
-			for (int i = 1; i < this.MaxSize; i++)
+			for (int i = 1; i <= this.MaxSize; i++)
 			{
 				if (!_occupiedSlots.ContainsKey(i))
 					return i;
 			}
 
-			return 200;
+			throw new Exception("No free slot found.");
 		}
 
 		/// <summary>
