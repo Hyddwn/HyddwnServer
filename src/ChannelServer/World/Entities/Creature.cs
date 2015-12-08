@@ -33,6 +33,8 @@ namespace Aura.Channel.World.Entities
 		private const float MinWeight = 0.7f, MaxWeight = 1.5f;
 		private const float MaxFoodStatBonus = 100;
 
+		public const int MaxElementalAffinity = 9;
+
 		private byte _inquiryId;
 		private Dictionary<byte, Action<Creature>> _inquiryCallbacks;
 
@@ -723,6 +725,21 @@ namespace Aura.Channel.World.Entities
 				return result;
 			}
 		}
+
+		/// <summary>
+		/// Creature's affinity to the element lightning.
+		/// </summary>
+		public int ElementLightning { get { return (this.RaceData.ElementLightning + (int)this.StatMods.Get(Stat.ElementLightning)); } }
+
+		/// <summary>
+		/// Creature's affinity to the element fire.
+		/// </summary>
+		public int ElementFire { get { return (this.RaceData.ElementFire + (int)this.StatMods.Get(Stat.ElementFire)); } }
+
+		/// <summary>
+		/// Creature's affinity to the element ice.
+		/// </summary>
+		public int ElementIce { get { return (this.RaceData.ElementIce + (int)this.StatMods.Get(Stat.ElementIce)); } }
 
 		// Food Mods
 		// ------------------------------------------------------------------
@@ -2474,6 +2491,87 @@ namespace Aura.Channel.World.Entities
 
 			// Return whether creature is the owner
 			return (item.OwnerId == this.EntityId);
+		}
+
+		/// <summary>
+		/// Calculates the creature's elemental damage modifier, against the
+		/// target's elements.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public float CalculateElementalDamageMultiplier(Creature target)
+		{
+			return this.CalculateElementalDamageMultiplier(this.ElementLightning, this.ElementFire, this.ElementIce, target.ElementLightning, target.ElementFire, target.ElementIce);
+		}
+
+		/// <summary>
+		/// Calculates the elemental damage modifier, based on the given
+		/// affinities, against target.
+		/// </summary>
+		/// <param name="myLightning"></param>
+		/// <param name="myFire"></param>
+		/// <param name="myIce"></param>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public float CalculateElementalDamageMultiplier(int myLightning, int myFire, int myIce, Creature target)
+		{
+			return this.CalculateElementalDamageMultiplier(myLightning, myFire, myIce, target.ElementLightning, target.ElementFire, target.ElementIce);
+		}
+
+		/// <summary>
+		/// Calculates the elemental damage modifier, between the "my" and
+		/// the "target" affinities.
+		/// </summary>
+		/// <remarks>
+		/// Since nobody seems to know the exact way elementals work,
+		/// this function is mostly based on guess.
+		/// 
+		/// First, all elementals are stacked against each other.
+		/// If you have 1 affinity for an element that the enemy has as well,
+		/// you lose 11.1% damage. Afterwards, you gain 11.1% for each very
+		/// effective combination, and 3.7% for each slightly effective
+		/// combination.
+		/// 
+		/// The basic idea is that the same elements cancel each other out,
+		/// while Fire and Ice are very, and Ice and Lightning are slightly
+		/// effective against each other, as is hinted at in the in-game
+		/// book "Understanding Elementals". The book also mentions that
+		/// Fire and Lightning don't affect each other.
+		/// 
+		/// The acual values, 11.1 and 3.7 (11.1 / 3) are based on the max
+		/// affinity number 9, 11.1 * 9 being 99.9, and findings of the
+		/// community, stating the need for at least 3 affinity for a
+		/// noticible effect.
+		/// </remarks>
+		/// <param name="myLightning"></param>
+		/// <param name="myFire"></param>
+		/// <param name="mytIce"></param>
+		/// <param name="targetLightning"></param>
+		/// <param name="targetFire"></param>
+		/// <param name="targetIce"></param>
+		/// <returns></returns>
+		public float CalculateElementalDamageMultiplier(int myLightning, int myFire, int myIce, int targetLightning, int targetFire, int targetIce)
+		{
+			var result = 0f;
+
+			// Element vs Element
+			result -= Math.Min(myLightning, targetLightning);
+			result -= Math.Min(myFire, targetFire);
+			result -= Math.Min(myIce, targetIce);
+
+			// Fire >> Ice
+			result += Math.Min(myFire, targetIce);
+
+			// Ice >> Fire
+			result += Math.Min(myIce, targetFire);
+
+			// Ice > Lightning
+			result += Math.Min(myIce, targetLightning) / 3f;
+
+			// Lightning > Ice
+			result += Math.Min(myLightning, targetIce) / 3f;
+
+			return 1f + (result / 9f);
 		}
 	}
 }
