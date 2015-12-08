@@ -320,6 +320,15 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check set
+			if (!Enum.IsDefined(typeof(WeaponSet), set))
+			{
+				Log.Warning("Creature '{0:X16}' tried to switch to unknown weapon set '{1}'.", creature.EntityId, set);
+				Send.SwitchSetR(creature, false);
+				return;
+			}
+
+			// Check if creature can change their equip
 			if (!creature.Can(Locks.ChangeEquipment))
 			{
 				Log.Debug("ChangeEquipment locked for '{0}'.", creature.Name);
