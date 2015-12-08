@@ -26,7 +26,6 @@ namespace Aura.Channel.World.Inventory
 		private const int MaxWidth = 32;
 		private const int MaxHeight = 32;
 		private const int GoldItemId = 2000;
-		private const int GoldStackMax = 1000;
 
 		static CreatureInventory()
 		{
