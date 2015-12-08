@@ -777,4 +777,13 @@ namespace Aura.Mabi.Const
 		/// </remarks>
 		WhileSummoned = 0x18,
 	}
+
+	/// <summary>
+	/// Selected weapon set in inventory.
+	/// </summary>
+	public enum WeaponSet : byte
+	{
+		First = 0,
+		Second = 1,
+	}
 }

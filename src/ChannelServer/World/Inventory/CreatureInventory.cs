@@ -1285,10 +1285,4 @@ namespace Aura.Channel.World.Inventory
 			}
 		}
 	}
-
-	public enum WeaponSet : byte
-	{
-		First = 0,
-		Second = 1,
-	}
 }
