@@ -1172,6 +1172,17 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Removes all upgrade effects of the given type.
+		/// Does not update client.
+		/// </summary>
+		/// <param name="type"></param>
+		public void RemoveUpgradeEffects(UpgradeType type)
+		{
+			lock (_upgrades)
+				_upgrades.RemoveAll(a => a.Type == type);
+		}
+
+		/// <summary>
 		/// Returns a new list with the item's upgrade effects.
 		/// </summary>
 		/// <returns></returns>
