@@ -22,6 +22,17 @@ namespace Aura.Mabi.Network
 	}
 
 	/// <summary>
+	/// An exception for when a value of the wrong type is read from Packet.
+	/// </summary>
+	public class PacketElementTypeException : Exception
+	{
+		public PacketElementTypeException(PacketElementType expected, PacketElementType actual)
+			: base(string.Format("Expected {0}, got {1}.", expected, actual))
+		{
+		}
+	}
+
+	/// <summary>
 	/// General packet, used by Login and World.
 	/// </summary>
 	public class Packet
@@ -219,11 +230,14 @@ namespace Aura.Mabi.Network
 		public Packet PutBin() { return this.PutBin(new byte[] { 0 }); }
 
 		/// <summary>Converts struct to byte array and writes it as byte array to buffer.</summary>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when val is not a struct.
+		/// </exception>
 		public Packet PutBin(object val)
 		{
 			var type = val.GetType();
 			if (!type.IsValueType || type.IsPrimitive)
-				throw new Exception("PutBin only takes byte[] and structs.");
+				throw new InvalidOperationException("PutBin only takes byte[] and structs.");
 
 			var size = Marshal.SizeOf(val);
 			var arr = new byte[size];
@@ -269,10 +283,13 @@ namespace Aura.Mabi.Network
 		/// Reads and returns byte from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Byte.
+		/// </exception>
 		public byte GetByte()
 		{
 			if (this.Peek() != PacketElementType.Byte)
-				throw new Exception("Expected Byte, got " + this.Peek() + ".");
+				throw new PacketElementTypeException(PacketElementType.Byte, this.Peek());
 
 			this.AssertReadable(1 + sizeof(byte));
 
@@ -284,16 +301,22 @@ namespace Aura.Mabi.Network
 		/// Reads and returns bool (byte) from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Byte.
+		/// </exception>
 		public bool GetBool() { return (this.GetByte() != 0); }
 
 		/// <summary>
 		/// Reads and returns short from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Short.
+		/// </exception>
 		public short GetShort()
 		{
 			if (this.Peek() != PacketElementType.Short)
-				throw new Exception("Expected Short, got " + this.Peek() + ".");
+				throw new PacketElementTypeException(PacketElementType.Short, this.Peek());
 
 			this.AssertReadable(1 + sizeof(short));
 
@@ -308,6 +331,9 @@ namespace Aura.Mabi.Network
 		/// Reads and returns ushort from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Short.
+		/// </exception>
 		public ushort GetUShort()
 		{
 			return (ushort)this.GetShort();
@@ -317,10 +343,13 @@ namespace Aura.Mabi.Network
 		/// Reads and returns int from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Int.
+		/// </exception>
 		public int GetInt()
 		{
 			if (this.Peek() != PacketElementType.Int)
-				throw new Exception("Expected Int, got " + this.Peek() + ".");
+				throw new PacketElementTypeException(PacketElementType.Int, this.Peek());
 
 			this.AssertReadable(1 + sizeof(int));
 
@@ -335,6 +364,9 @@ namespace Aura.Mabi.Network
 		/// Reads and returns uint from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Int.
+		/// </exception>
 		public uint GetUInt()
 		{
 			return (uint)this.GetInt();
@@ -344,10 +376,13 @@ namespace Aura.Mabi.Network
 		/// Reads and returns long from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Long.
+		/// </exception>
 		public long GetLong()
 		{
 			if (this.Peek() != PacketElementType.Long)
-				throw new Exception("Expected Long, got " + this.Peek() + ".");
+				throw new PacketElementTypeException(PacketElementType.Long, this.Peek());
 
 			this.AssertReadable(1 + sizeof(long));
 
@@ -362,6 +397,9 @@ namespace Aura.Mabi.Network
 		/// Reads and returns ulong from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Long.
+		/// </exception>
 		public ulong GetULong()
 		{
 			return (ulong)this.GetLong();
@@ -371,6 +409,9 @@ namespace Aura.Mabi.Network
 		/// Reads long from buffer and returns it as DateTime.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Long.
+		/// </exception>
 		public DateTime GetDateTime()
 		{
 			return new DateTime(this.GetLong() * 10000);
@@ -380,10 +421,13 @@ namespace Aura.Mabi.Network
 		/// Reads and returns float from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Float.
+		/// </exception>
 		public float GetFloat()
 		{
 			if (this.Peek() != PacketElementType.Float)
-				throw new Exception("Expected Float, got " + this.Peek() + ".");
+				throw new PacketElementTypeException(PacketElementType.Float, this.Peek());
 
 			this.AssertReadable(1 + sizeof(float));
 
@@ -398,10 +442,13 @@ namespace Aura.Mabi.Network
 		/// Reads and returns string from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not String.
+		/// </exception>
 		public string GetString()
 		{
 			if (this.Peek() != PacketElementType.String)
-				throw new ArgumentException("Expected String, got " + this.Peek() + ".");
+				throw new PacketElementTypeException(PacketElementType.String, this.Peek());
 
 			this.AssertReadable(1 + sizeof(short));
 
@@ -421,10 +468,13 @@ namespace Aura.Mabi.Network
 		/// Reads and returns bin from buffer.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="PacketElementTypeException">
+		/// Thrown if the type of the current value is not Bin.
+		/// </exception>
 		public byte[] GetBin()
 		{
 			if (this.Peek() != PacketElementType.Bin)
-				throw new ArgumentException("Expected Bin, got " + this.Peek() + ".");
+				throw new PacketElementTypeException(PacketElementType.Bin, this.Peek());
 
 			this.AssertReadable(1 + sizeof(short));
 
@@ -446,11 +496,14 @@ namespace Aura.Mabi.Network
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when type is not a struct.
+		/// </exception>
 		public T GetObj<T>() where T : new()
 		{
 			var type = typeof(T);
 			if (!type.IsValueType || type.IsPrimitive)
-				throw new Exception("GetObj can only marshal to structs.");
+				throw new InvalidOperationException("GetObj can only marshal to structs.");
 
 			var buffer = this.GetBin();
 			object val;
@@ -472,7 +525,8 @@ namespace Aura.Mabi.Network
 		}
 
 		/// <summary>
-		/// Throws exception, if buffer doesn't have the given amount of bytes left.
+		/// Throws IndexOutOfRangeException, if buffer doesn't have the given
+		/// amount of bytes left.
 		/// </summary>
 		/// <param name="byteCount"></param>
 		private void AssertReadable(int byteCount)

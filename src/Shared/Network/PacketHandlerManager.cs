@@ -67,7 +67,19 @@ namespace Aura.Shared.Network
 				return;
 			}
 
-			handler(client, packet);
+			try
+			{
+				handler(client, packet);
+			}
+			catch (PacketElementTypeException ex)
+			{
+				Log.Error(
+					"PacketElementTypeException: " + ex.Message + Environment.NewLine +
+					ex.StackTrace + Environment.NewLine +
+					"Packet: " + Environment.NewLine +
+					packet.ToString()
+				);
+			}
 		}
 
 		public virtual void UnknownPacket(TClient client, Packet packet)
