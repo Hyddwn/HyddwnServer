@@ -1477,14 +1477,22 @@ namespace Aura.Channel.World.Entities
 		/// <remarks>
 		/// Method is used for bare hand attacks as well, if right hand is
 		/// empty, use bare hand attack values.
+		/// 
+		/// Uses bare hand damage if creature has 0 stamina.
 		/// </remarks>
 		/// <returns></returns>
 		public virtual float GetRndRightHandDamage()
 		{
-			// Checks in the properties should make this work (right = rh weapon or bare hand)
-			var min = this.AttackMinBase + this.AttackMinBaseMod + this.RightAttackMinMod;
-			var max = this.AttackMaxBase + this.AttackMaxBaseMod + this.RightAttackMaxMod;
+			var min = this.AttackMinBase + this.AttackMinBaseMod;
+			var max = this.AttackMaxBase + this.AttackMaxBaseMod;
 			var balance = this.BalanceBase + this.BalanceBaseMod + this.RightBalanceMod;
+
+			// Add potential weapon dmg only if creature has enough stamina
+			if (this.RightHand != null && this.Stamina >= this.RightHand.Data.StaminaUsage)
+			{
+				min += this.RightAttackMinMod;
+				max += this.RightAttackMaxMod;
+			}
 
 			return this.GetRndDamage(min, max, balance);
 		}
@@ -1492,13 +1500,24 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Calculates random damage for the left hand (off-hand).
 		/// </summary>
+		/// <remarks>
+		/// Uses bare hand damage if creature has 0 stamina.
+		/// </remarks>
 		/// <returns></returns>
 		public virtual float GetRndLeftHandDamage()
 		{
-			if (this.LeftHand == null /*|| !weapon*/)
-				return 0;
+			var min = this.AttackMinBase + this.AttackMinBaseMod;
+			var max = this.AttackMaxBase + this.AttackMaxBaseMod;
+			var balance = this.BalanceBase + this.BalanceBaseMod + this.LeftBalanceMod;
 
-			return this.GetRndDamage(this.LeftAttackMinMod, this.LeftAttackMaxMod, this.LeftBalanceMod);
+			// Add potential weapon dmg only if creature has enough stamina
+			if (this.LeftHand != null && this.Stamina >= this.LeftHand.Data.StaminaUsage)
+			{
+				min += this.LeftAttackMinMod;
+				max += this.LeftAttackMaxMod;
+			}
+
+			return this.GetRndDamage(min, max, balance);
 		}
 
 		/// <summary>

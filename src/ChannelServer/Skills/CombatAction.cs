@@ -143,8 +143,8 @@ namespace Aura.Channel.Skills
 
 				action.Creature.Stun = action.Stun;
 
-				// Life update
-				Send.StatUpdate(action.Creature, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.Mana);
+				// Stat update
+				Send.StatUpdate(action.Creature, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.Mana, Stat.Stamina);
 				Send.StatUpdate(action.Creature, StatUpdateType.Public, Stat.Life, Stat.LifeInjured);
 
 				// If target action

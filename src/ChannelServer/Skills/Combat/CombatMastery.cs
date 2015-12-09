@@ -14,6 +14,7 @@ using Aura.Channel.World;
 using Aura.Channel.Skills.Life;
 using Aura.Mabi;
 using Aura.Channel.Skills.Magic;
+using Aura.Channel.Network.Sending;
 
 namespace Aura.Channel.Skills.Combat
 {
@@ -182,6 +183,11 @@ namespace Aura.Channel.Skills.Combat
 
 				// Update current weapon
 				SkillHelper.UpdateWeapon(attacker, target, weapon);
+
+				// Consume stamina for weapon
+				if (attacker.Stamina < weapon.Data.StaminaUsage)
+					Send.Notice(attacker, Localization.Get("Your stamina is too low to fight properly!"));
+				attacker.Stamina -= weapon.Data.StaminaUsage;
 
 				cap.Handle();
 
