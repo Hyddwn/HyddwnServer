@@ -10,6 +10,12 @@ namespace Aura.Mabi.Structs
 	/// <summary>
 	/// Public item info.
 	/// </summary>
+	/// <remarks>
+	/// FigureA-D appear to be a union. Some items use specific bytes
+	/// for byte long information, other items use them in other ways,
+	/// for example, A+B as short for giant's beards on their hair
+	/// items.
+	/// </remarks>
 	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public struct ItemInfo
 	{
@@ -29,6 +35,7 @@ namespace Aura.Mabi.Structs
 
 		/// <summary>
 		/// State of the item? (eg. hoods and helmets)
+		/// Part of giant's beards
 		/// </summary>
 		public byte State; // FigureA
 

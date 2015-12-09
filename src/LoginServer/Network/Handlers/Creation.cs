@@ -77,8 +77,8 @@ namespace Aura.Login.Network.Handlers
 
 			// Get stuff
 			var card = client.Account.GetCharacterCard(cardId);
-			var faceItem = AuraData.ItemDb.Find(face);
-			var hairItem = AuraData.ItemDb.Find(hair);
+			var faceItemData = AuraData.ItemDb.Find(face);
+			var hairItemData = AuraData.ItemDb.Find(hair);
 
 			// Check card and server
 			if (card == null || !LoginServer.Instance.ServerList.Has(serverName))
@@ -88,7 +88,7 @@ namespace Aura.Login.Network.Handlers
 			}
 
 			// Check face/hair
-			if (faceItem == null || hairItem == null || (faceItem.Type != ItemType.Hair && faceItem.Type != ItemType.Face) || (hairItem.Type != ItemType.Hair && hairItem.Type != ItemType.Face))
+			if (faceItemData == null || hairItemData == null || (faceItemData.Type != ItemType.Hair && faceItemData.Type != ItemType.Face) || (hairItemData.Type != ItemType.Hair && hairItemData.Type != ItemType.Face))
 			{
 				Log.Error("Character creation: Invalid face ({0}) or hair ({1}).", face, hair);
 				goto L_Fail;
@@ -118,6 +118,8 @@ namespace Aura.Login.Network.Handlers
 				goto L_Fail;
 			}
 
+			// TODO: Character style security checks (see rebirth)
+
 			// Create character
 			var character = new Character();
 			character.Name = name;
@@ -143,8 +145,25 @@ namespace Aura.Login.Network.Handlers
 			character.Luck = ageInfo.Luck;
 			character.AP = ageInfo.AP;
 
+			// Create start items for card and hair/face
+			var cardItems = AuraData.CharCardSetDb.Find(cardInfo.SetId, character.Race);
+
+			var items = Item.CardItemsToItems(cardItems);
+			Item.GenerateItemColors(ref items, (client.Account.Name + character.Race + character.SkinColor + character.Hair + character.HairColor + character.Age + character.EyeType + character.EyeColor + character.MouthType + character.Face));
+
+			var faceItem = new Item(character.Face, Pocket.Face, character.SkinColor, 0, 0);
+			items.Add(faceItem);
+
+			var hairItem = new Item(character.Hair, Pocket.Hair, character.HairColor + 0x10000000u, 0, 0);
+			if (hairItemData.BeardId != 0)
+			{
+				hairItem.Info.State = (byte)((hairItemData.BeardId >> 0) & 0xFF);
+				hairItem.Info.FigureB = (byte)((hairItemData.BeardId >> 8) & 0xFF);
+			}
+			items.Add(hairItem);
+
 			// Try to create character
-			if (!client.Account.CreateCharacter(character, cardInfo))
+			if (!client.Account.CreateCharacter(character, items))
 			{
 				Log.Error("Character creation: Failed for unknown reasons.");
 				goto L_Fail;

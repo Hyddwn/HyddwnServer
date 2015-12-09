@@ -328,6 +328,7 @@ namespace Aura.Login.Database
 						item.Info.Color2 = reader.GetUInt32("color2");
 						item.Info.Color3 = reader.GetUInt32("color3");
 						item.Info.State = reader.GetByte("state");
+						item.Info.FigureB = reader.GetByte("figureB");
 
 						if (item.IsVisible)
 							result.Add(item);
@@ -514,6 +515,8 @@ namespace Aura.Login.Database
 					cmd.Set("protection", dataInfo.Protection);
 					cmd.Set("attackSpeed", dataInfo.AttackSpeed);
 					cmd.Set("sellPrice", dataInfo.SellingPrice);
+					cmd.Set("state", item.Info.State);
+					cmd.Set("figureB", item.Info.FigureB);
 
 					cmd.Execute();
 				}

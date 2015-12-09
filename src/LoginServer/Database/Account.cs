@@ -96,17 +96,8 @@ namespace Aura.Login.Database
 		/// <param name="character"></param>
 		/// <param name="cardInfo"></param>
 		/// <returns></returns>
-		public bool CreateCharacter(Character character, CharCardData cardInfo)
+		public bool CreateCharacter(Character character, List<Item> items)
 		{
-			// Create start items for card and hair/face
-			var cardItems = AuraData.CharCardSetDb.Find(cardInfo.SetId, character.Race);
-
-			var items = this.CardItemsToItems(cardItems);
-			this.GenerateItemColors(ref items, (this.Name + character.Race + character.SkinColor + character.Hair + character.HairColor + character.Age + character.EyeType + character.EyeColor + character.MouthType + character.Face));
-
-			items.Add(new Item(character.Face, Pocket.Face, character.SkinColor, 0, 0));
-			items.Add(new Item(character.Hair, Pocket.Hair, character.HairColor + 0x10000000u, 0, 0));
-
 			if (!LoginServer.Instance.Database.CreateCharacter(this.Name, character, items))
 				return false;
 
@@ -151,8 +142,8 @@ namespace Aura.Login.Database
 			var cardItems = AuraData.CharCardSetDb.Find(setId, partner.Race);
 
 			// TODO: Hash seems to be incorrect.
-			var items = this.CardItemsToItems(cardItems);
-			this.GenerateItemColors(ref items, (this.Name + partner.Race + partner.SkinColor + partner.Hair + partner.HairColor + 1 + partner.EyeType + partner.EyeColor + partner.MouthType + partner.Face));
+			var items = Item.CardItemsToItems(cardItems);
+			Item.GenerateItemColors(ref items, (this.Name + partner.Race + partner.SkinColor + partner.Hair + partner.HairColor + 1 + partner.EyeType + partner.EyeColor + partner.MouthType + partner.Face));
 
 			items.Add(new Item(partner.Face, Pocket.Face, partner.SkinColor, 0, 0));
 			items.Add(new Item(partner.Hair, Pocket.Hair, partner.HairColor + 0x10000000u, 0, 0));
@@ -163,44 +154,6 @@ namespace Aura.Login.Database
 			this.Pets.Add(partner);
 
 			return true;
-		}
-
-		/// <summary>
-		/// Returns list of items, based on CharCardSetInfo list.
-		/// </summary>
-		/// <param name="cardItems"></param>
-		/// <returns></returns>
-		private List<Item> CardItemsToItems(IEnumerable<CharCardSetData> cardItems)
-		{
-			return cardItems.Select(cardItem => new Item(cardItem.Class, (Pocket)cardItem.Pocket, cardItem.Color1, cardItem.Color2, cardItem.Color3)).ToList();
-		}
-
-		/// <summary>
-		/// Changes item colors, using MTRandom and hash.
-		/// </summary>
-		/// <remarks>
-		/// The hash is converted into an int, which is used as seed for
-		/// MTRandom, the RNG Mabi is using. That is used to get specific
-		/// "random" colors from the color map db.
-		/// 
-		/// Used to generate "random" colors on the equipment of
-		/// new characters and partners.
-		/// </remarks>
-		private void GenerateItemColors(ref List<Item> items, string hash)
-		{
-			var ihash = hash.Aggregate(5381, (current, ch) => current * 33 + (int)ch);
-
-			var rnd = new MTRandom(ihash);
-			foreach (var item in items.Where(a => a.Info.Pocket != Pocket.Face && a.Info.Pocket != Pocket.Hair))
-			{
-				var dataInfo = AuraData.ItemDb.Find(item.Info.Id);
-				if (dataInfo == null)
-					continue;
-
-				item.Info.Color1 = (item.Info.Color1 != 0 ? item.Info.Color1 : AuraData.ColorMapDb.GetRandom(dataInfo.ColorMap1, rnd));
-				item.Info.Color2 = (item.Info.Color2 != 0 ? item.Info.Color2 : AuraData.ColorMapDb.GetRandom(dataInfo.ColorMap2, rnd));
-				item.Info.Color3 = (item.Info.Color3 != 0 ? item.Info.Color3 : AuraData.ColorMapDb.GetRandom(dataInfo.ColorMap3, rnd));
-			}
 		}
 
 		/// <summary>
