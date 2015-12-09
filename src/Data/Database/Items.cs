@@ -172,7 +172,7 @@ namespace Aura.Data.Database
 				info.SplashRadius = entry.ReadFloat("splashRadius");
 				info.SplashAngle = entry.ReadFloat("splashAngle");
 				info.SplashDamage = entry.ReadFloat("splashDamage");
-				info.StaminaUsage = entry.ReadFloat("splashUsage");
+				info.StaminaUsage = entry.ReadFloat("staminaUsage");
 			}
 
 			info.DefenseBonusDefault = entry.ReadInt("defenseBonusDefault");
