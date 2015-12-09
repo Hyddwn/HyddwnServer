@@ -44,6 +44,7 @@ namespace Aura.Data.Database
 		public short Protection { get; set; }
 
 		public byte WeaponType { get; set; }
+		public int BeardId { get; set; }
 		public InstrumentType InstrumentType { get; set; }
 		public int MaxUpgrades { get; set; }
 
@@ -152,6 +153,7 @@ namespace Aura.Data.Database
 			info.Durability = entry.ReadInt("durability");
 			info.Defense = entry.ReadInt("defense");
 			info.Protection = entry.ReadShort("protection");
+			info.BeardId = entry.ReadInt("beardId");
 			info.InstrumentType = (InstrumentType)entry.ReadInt("instrumentType");
 			info.MaxUpgrades = entry.ReadInt("maxUpgrades");
 
