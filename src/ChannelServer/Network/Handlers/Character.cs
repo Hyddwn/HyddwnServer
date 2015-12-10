@@ -125,13 +125,13 @@ namespace Aura.Channel.Network.Handlers
 					goto case ReviveOptions.HereNoPenalty;
 
 				case ReviveOptions.HereNoPenalty:
-					creature.Revive();
+					creature.Revive(option);
 					creature.DeadMenu.Clear();
 					return;
 
 				case ReviveOptions.Town:
 					creature.Warp(creature.LastTown);
-					creature.Revive();
+					creature.Revive(option);
 					creature.DeadMenu.Clear();
 					return;
 
@@ -143,7 +143,7 @@ namespace Aura.Channel.Network.Handlers
 					}
 
 					creature.Warp(dungeonRegion.Dungeon.Data.Exit);
-					creature.Revive();
+					creature.Revive(option);
 					creature.DeadMenu.Clear();
 					return;
 
@@ -155,7 +155,7 @@ namespace Aura.Channel.Network.Handlers
 					}
 
 					creature.Warp(creature.DungeonSaveLocation);
-					creature.Revive();
+					creature.Revive(option);
 					creature.DeadMenu.Clear();
 					return;
 

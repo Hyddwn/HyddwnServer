@@ -1964,20 +1964,78 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Revives creature
+		/// Revives creature.
 		/// </summary>
-		public void Revive()
+		/// <param name="option">Determines the penalty and stat recovery.</param>
+		public void Revive(ReviveOptions option)
 		{
 			if (!this.IsDead)
 				return;
 
-			if (this.Life <= 1)
-				this.Life = 1;
+			switch (option)
+			{
+				case ReviveOptions.Town:
+				case ReviveOptions.TirChonaill:
+				case ReviveOptions.DungeonEntrance:
+				case ReviveOptions.BarriLobby:
+					// 100% life and 50% injury recovery
+					this.Injuries -= this.Injuries * 0.50f;
+					this.Life = this.LifeMax;
+					break;
+
+				case ReviveOptions.Here:
+					// 5 life recovery and 50% additional injuries
+					this.Injuries += this.LifeInjured * 0.50f;
+					this.Life = 5;
+					break;
+
+				case ReviveOptions.HereNoPenalty:
+					// 100% life and 100% injury recovery
+					this.Injuries = 0;
+					this.Life = this.LifeMax;
+					break;
+
+				case ReviveOptions.ArenaLobby:
+				case ReviveOptions.ArenaWaitingRoom:
+					// 100% life, 100% injury, and 100% stamina recovery
+					this.Injuries = 0;
+					this.Life = this.LifeMax;
+					this.Stamina = this.StaminaMax;
+					break;
+
+				case ReviveOptions.ArenaSide:
+					// 50% life, 20% injury, and 50% stamina recovery
+					this.Injuries -= this.Injuries * 0.20f;
+					this.Life = this.LifeMax * 0.50f;
+					this.Stamina = this.StaminaMax * 0.50f;
+					break;
+
+				case ReviveOptions.InCamp:
+				case ReviveOptions.StatueOfGoddess:
+					// 25% life recovery and 10% additional injuries
+					this.Injuries += this.LifeInjured * 0.10f;
+					this.Life = this.LifeMax * 0.25f;
+					break;
+
+				case ReviveOptions.WaitForRescue:
+					// 10% additional injuries
+					this.Injuries += this.LifeInjured * 0.10f;
+					this.Life = 1;
+					break;
+
+				default:
+					Log.Warning("Creature.Revive: Unknown revive option: {0}", option);
+
+					// Fallback, set Life to something positive.
+					if (this.Life <= 1)
+						this.Life = 1;
+					break;
+			}
 
 			this.Deactivate(CreatureStates.Dead);
 
 			Send.RemoveDeathScreen(this);
-			Send.StatUpdate(this, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.LifeMax, Stat.LifeMaxMod);
+			Send.StatUpdate(this, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.LifeMax, Stat.LifeMaxMod, Stat.Stamina, Stat.Hunger);
 			Send.StatUpdate(this, StatUpdateType.Public, Stat.Life, Stat.LifeInjured, Stat.LifeMax, Stat.LifeMaxMod);
 			Send.RiseFromTheDead(this);
 			//Send.DeadFeather(creature);

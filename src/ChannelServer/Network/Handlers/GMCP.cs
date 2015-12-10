@@ -133,7 +133,7 @@ namespace Aura.Channel.Network.Handlers
 			this.EnsureGmcpAuthority(client);
 
 			creature.FullHeal();
-			creature.Revive();
+			creature.Revive(ReviveOptions.HereNoPenalty);
 		}
 
 		/// <summary>
