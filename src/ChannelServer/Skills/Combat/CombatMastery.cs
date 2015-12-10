@@ -185,9 +185,10 @@ namespace Aura.Channel.Skills.Combat
 				SkillHelper.UpdateWeapon(attacker, target, weapon);
 
 				// Consume stamina for weapon
-				if (attacker.Stamina < weapon.Data.StaminaUsage)
+				var staminaUsage = (weapon != null ? weapon.Data.StaminaUsage : Creature.BareHandStaminaUsage);
+				if (attacker.Stamina < staminaUsage)
 					Send.Notice(attacker, Localization.Get("Your stamina is too low to fight properly!"));
-				attacker.Stamina -= weapon.Data.StaminaUsage;
+				attacker.Stamina -= staminaUsage;
 
 				cap.Handle();
 

@@ -33,6 +33,8 @@ namespace Aura.Channel.World.Entities
 		private const float MinWeight = 0.7f, MaxWeight = 1.5f;
 		private const float MaxFoodStatBonus = 100;
 
+		public const int BareHandStaminaUsage = 2;
+
 		public const int MaxElementalAffinity = 9;
 
 		private byte _inquiryId;
