@@ -124,7 +124,7 @@ namespace Aura.Tests.Mabi.Structs
 			Assert.Equal((
 				"01 00 00 00  00 00 00 00  00 00 00 00  00 00 00 00" +
 				"00 00 00 00  0A 00 00 00  00 00 00 00  10 00 00 00" +
-				"00 00 14 00"
+				"14 00 00 00"
 				).Replace(" ", ""), ToHex(effect));
 		}
 
