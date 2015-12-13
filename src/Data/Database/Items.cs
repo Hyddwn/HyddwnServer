@@ -6,16 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Aura.Mabi.Const;
+using Aura.Mabi;
 
 namespace Aura.Data.Database
 {
 	[Serializable]
-	public class ItemData : TaggableData
+	public class ItemData
 	{
 		public int Id { get; set; }
 
 		public string Name { get; set; }
 		public string KorName { get; set; }
+		public Tags Tags { get; set; }
 
 		public ItemType Type { get; set; }
 		public ItemAction Action { get; set; }
@@ -78,6 +80,11 @@ namespace Aura.Data.Database
 		public string OnEquip { get; set; }
 		public string OnUnequip { get; set; }
 		public string OnCreation { get; set; }
+
+		public bool HasTag(string tag)
+		{
+			return this.Tags.Matches(tag);
+		}
 	}
 
 	public class ItemDataTaste

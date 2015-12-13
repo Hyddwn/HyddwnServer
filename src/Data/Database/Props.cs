@@ -5,14 +5,21 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using Aura.Mabi;
 
 namespace Aura.Data.Database
 {
 	[Serializable]
-	public class PropsDbData : TaggableData
+	public class PropsDbData
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
+		public Tags Tags { get; set; }
+
+		public bool HasTag(string tag)
+		{
+			return this.Tags.Matches(tag);
+		}
 	}
 
 	public class PropsDb : DatabaseJsonIndexed<int, PropsDbData>

@@ -28,7 +28,16 @@ namespace Aura.Mabi
 	/// </example>
 	public class Tags
 	{
-		private string _val;
+		public string Value { get; set; }
+
+		/// <summary>
+		/// Creates new tags instance.
+		/// </summary>
+		/// <param name="value"></param>
+		public Tags()
+		{
+			this.Value = "";
+		}
 
 		/// <summary>
 		/// Creates new tags instance.
@@ -36,7 +45,7 @@ namespace Aura.Mabi
 		/// <param name="value"></param>
 		public Tags(string value)
 		{
-			_val = value;
+			this.Value = value;
 		}
 
 		/// <summary>
@@ -45,7 +54,7 @@ namespace Aura.Mabi
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return _val;
+			return this.Value;
 		}
 
 		/// <summary>
@@ -148,9 +157,12 @@ namespace Aura.Mabi
 		/// <returns></returns>
 		private bool Evaluate(string tag)
 		{
+			if (this.Value == null || tag == null)
+				return false;
+
 			tag = tag.Trim().Replace("*", ".*");
 			// TODO: Cache?
-			return Regex.IsMatch(_val, tag);
+			return Regex.IsMatch(this.Value, tag);
 		}
 	}
 }

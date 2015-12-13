@@ -8,15 +8,17 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Aura.Mabi.Const;
+using Aura.Mabi;
 
 namespace Aura.Data.Database
 {
 	[Serializable]
-	public class RaceData : TaggableData
+	public class RaceData
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
 		public string Group { get; set; }
+		public Tags Tags { get; set; }
 		public Gender Gender { get; set; }
 
 		public uint DefaultState { get; set; }
@@ -96,6 +98,11 @@ namespace Aura.Data.Database
 		public bool Is(RaceStands stand)
 		{
 			return (this.Stand & stand) != 0;
+		}
+
+		public bool HasTag(string tag)
+		{
+			return this.Tags.Matches(tag);
 		}
 	}
 
