@@ -51,6 +51,7 @@ namespace Aura.Mabi.Network
 		public const int DisconnectInform = 0x4D;
 		public const int PetCreationOptionsRequest = 0x50;
 		public const int PetCreationOptionsRequestR = 0x51;
+		public const int LoginRedirect = 0x54;
 		public const int PartnerCreationOptionsRequest = 0x55;
 		public const int PartnerCreationOptionsRequestR = 0x56;
 		public const int LoginUnk = 0x5A;  // Sent on login
