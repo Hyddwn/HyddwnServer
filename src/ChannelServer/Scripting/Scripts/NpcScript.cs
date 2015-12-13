@@ -1573,7 +1573,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="upgradeReply"></param>
 		/// <returns></returns>
 		/// <remarks>
-		/// Only warn when something goes wrong because problems can be caused
+		/// Only warn when something goes wrong, because problems can be caused
 		/// by replies unknown to us or an outdated database.
 		/// 
 		/// The NPCs don't have replies for failed upgrades, because the client
@@ -1617,6 +1617,14 @@ namespace Aura.Channel.Scripting.Scripts
 			if (!result.Upgrade.Npcs.Contains(this.NPC.Name.TrimStart('_').ToLower()))
 			{
 				Log.Warning("NpcScript.Upgrade: Player '{0}' (Account: {1}) tried to apply upgrade '{2}' at an invalid NPC ({3}).", this.Player.EntityIdHex, this.Player.Client.Account.Id, result.Upgrade.Ident, this.NPC.Name.TrimStart('_').ToLower());
+				return result;
+			}
+
+			// Check for disabled Artisan
+			// TODO: Feature check, once we do have Artisan.
+			if (result.Upgrade.Effects.Any(a => a.Key == "Artisan"))
+			{
+				Send.MsgBox(this.Player, Localization.Get("Artisan upgrades aren't available yet."));
 				return result;
 			}
 
