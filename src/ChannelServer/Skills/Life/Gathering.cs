@@ -123,6 +123,7 @@ namespace Aura.Channel.Skills.Life
 					reduce = Math.Max(1, reduce / 2);
 
 				creature.RightHand.Durability -= reduce;
+				Send.ItemDurabilityUpdate(creature, creature.RightHand);
 				Send.ItemExpUpdate(creature, creature.RightHand);
 			}
 
