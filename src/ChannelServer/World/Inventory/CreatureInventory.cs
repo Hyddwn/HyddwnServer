@@ -283,13 +283,34 @@ namespace Aura.Channel.World.Inventory
 			Item[] result;
 
 			lock (_pockets)
-				result = _pockets.Values.Where(a => a.Pocket.IsEquip()).SelectMany(pocket => pocket.Items.Where(a => a != null)).ToArray();
+				result = _pockets.Values
+					.Where(a => a.Pocket.IsEquip())
+					.SelectMany(pocket => pocket.Items.Where(a => a != null))
+					.ToArray();
 
 			return result;
 		}
 
 		/// <summary>
-		/// Returns a new list of all items in all equipment pockets,
+		/// Returns a new list of all items that match the predicate,
+		/// in all equipment pockets.
+		/// </summary>
+		/// <returns></returns>
+		public Item[] GetEquipment(Func<Item, bool> predicate)
+		{
+			Item[] result;
+
+			lock (_pockets)
+				result = _pockets.Values
+					.Where(a => a.Pocket.IsEquip())
+					.SelectMany(pocket => pocket.Items.Where(a => a != null && predicate(a)))
+					.ToArray();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a new list of all items in all equipment pockets
 		/// that aren't hair or face.
 		/// </summary>
 		/// <returns></returns>
@@ -298,7 +319,28 @@ namespace Aura.Channel.World.Inventory
 			Item[] result;
 
 			lock (_pockets)
-				result = _pockets.Values.Where(a => a.Pocket.IsEquip() && a.Pocket != Pocket.Hair && a.Pocket != Pocket.Face).SelectMany(pocket => pocket.Items.Where(a => a != null)).ToArray();
+				result = _pockets.Values
+					.Where(a => a.Pocket.IsEquip() && a.Pocket != Pocket.Hair && a.Pocket != Pocket.Face)
+					.SelectMany(pocket => pocket.Items.Where(a => a != null))
+					.ToArray();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a new list of all items that match the predicate,
+		/// in all equipment pockets that aren't hair or face.
+		/// </summary>
+		/// <returns></returns>
+		public Item[] GetActualEquipment(Func<Item, bool> predicate)
+		{
+			Item[] result;
+
+			lock (_pockets)
+				result = _pockets.Values
+					.Where(a => a.Pocket.IsEquip() && a.Pocket != Pocket.Hair && a.Pocket != Pocket.Face)
+					.SelectMany(pocket => pocket.Items.Where(a => a != null && predicate(a)))
+					.ToArray();
 
 			return result;
 		}
