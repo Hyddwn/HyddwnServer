@@ -47,7 +47,7 @@ namespace Aura.Channel.Skills.Hidden
 
 			// TODO: Check loading time
 
-			var items = creature.Inventory.GetActualEquipment();
+			var items = creature.Inventory.GetEquipment();
 			foreach (var item in items)
 			{
 				var blessable = (item.HasTag("/equip/") && !item.HasTag("/not_bless/"));

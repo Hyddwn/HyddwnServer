@@ -154,7 +154,7 @@ namespace Aura.Channel.World.Dungeons.Props
 
 				case 7: // Bless All
 					{
-						foreach (var item in creature.Inventory.GetActualEquipment())
+						foreach (var item in creature.Inventory.GetEquipment())
 						{
 							item.OptionInfo.Flags |= ItemFlags.Blessed;
 							Send.ItemBlessed(creature, item);
@@ -165,7 +165,7 @@ namespace Aura.Channel.World.Dungeons.Props
 
 				case 8: // Bless One
 					{
-						var equip = creature.Inventory.GetActualEquipment(a => !a.IsBlessed);
+						var equip = creature.Inventory.GetEquipment(a => !a.IsBlessed);
 						var count = equip.Count();
 
 						if (count == 0)
@@ -181,7 +181,7 @@ namespace Aura.Channel.World.Dungeons.Props
 
 				case 9: // Repair One
 					{
-						var equip = creature.Inventory.GetActualEquipment(a => a.OptionInfo.Durability != a.OptionInfo.DurabilityMax);
+						var equip = creature.Inventory.GetEquipment(a => a.OptionInfo.Durability != a.OptionInfo.DurabilityMax);
 						var count = equip.Count();
 
 						if (count == 0)
@@ -206,7 +206,7 @@ namespace Aura.Channel.World.Dungeons.Props
 
 				case 11: // Lose one blessing
 					{
-						var equip = creature.Inventory.GetActualEquipment(a => a.IsBlessed);
+						var equip = creature.Inventory.GetEquipment(a => a.IsBlessed);
 						var count = equip.Count();
 
 						if (count == 0)
@@ -238,7 +238,7 @@ namespace Aura.Channel.World.Dungeons.Props
 
 				case 14: // Lose one durability on random equip
 					{
-						var equip = creature.Inventory.GetActualEquipment(a => a.OptionInfo.Durability >= 1000);
+						var equip = creature.Inventory.GetEquipment(a => a.OptionInfo.Durability >= 1000);
 						var count = equip.Count();
 
 						if (count == 0)

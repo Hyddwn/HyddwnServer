@@ -341,7 +341,7 @@ namespace Aura.Channel.Network.Sending
 			{
 				packet.PutLong(target.EntityId);
 
-				var items = target.Inventory.GetEquipment();
+				var items = target.Inventory.GetAllEquipment();
 				packet.PutInt(items.Length);
 				foreach (var item in items)
 					packet.AddItemInfo(item, ItemPacketType.Private);

@@ -1259,7 +1259,7 @@ namespace Aura.Channel.World.Entities
 			if (ChannelServer.Instance.Conf.World.NoDurabilityLoss)
 				return;
 
-			var equipment = this.Inventory.GetActualEquipment();
+			var equipment = this.Inventory.GetEquipment();
 			var update = new List<Item>();
 			var loss = 0;
 

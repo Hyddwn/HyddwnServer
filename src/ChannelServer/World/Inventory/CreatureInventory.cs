@@ -278,7 +278,7 @@ namespace Aura.Channel.World.Inventory
 		/// Returns a new list of all items in all equipment pockets.
 		/// </summary>
 		/// <returns></returns>
-		public Item[] GetEquipment()
+		public Item[] GetAllEquipment()
 		{
 			Item[] result;
 
@@ -296,7 +296,7 @@ namespace Aura.Channel.World.Inventory
 		/// in all equipment pockets.
 		/// </summary>
 		/// <returns></returns>
-		public Item[] GetEquipment(Func<Item, bool> predicate)
+		public Item[] GetAllEquipment(Func<Item, bool> predicate)
 		{
 			Item[] result;
 
@@ -314,7 +314,7 @@ namespace Aura.Channel.World.Inventory
 		/// that aren't hair or face.
 		/// </summary>
 		/// <returns></returns>
-		public Item[] GetActualEquipment()
+		public Item[] GetEquipment()
 		{
 			Item[] result;
 
@@ -332,7 +332,7 @@ namespace Aura.Channel.World.Inventory
 		/// in all equipment pockets that aren't hair or face.
 		/// </summary>
 		/// <returns></returns>
-		public Item[] GetActualEquipment(Func<Item, bool> predicate)
+		public Item[] GetEquipment(Func<Item, bool> predicate)
 		{
 			Item[] result;
 
