@@ -59,7 +59,7 @@ namespace Aura.Channel.Network.Handlers
 				}
 				else
 				{
-					Log.Unimplemented("HitProp: No prop behavior for '{0}'.", prop.EntityIdHex);
+					Log.Unimplemented("HitProp: No prop behavior for '{0:X16}'.", prop.EntityId);
 				}
 			}
 			else
@@ -103,7 +103,7 @@ namespace Aura.Channel.Network.Handlers
 			// Check behavior
 			if (prop.Behavior == null)
 			{
-				Log.Unimplemented("TouchProp: No prop behavior for '{0}'.", prop.EntityIdHex);
+				Log.Unimplemented("TouchProp: No prop behavior for '{0:X16}'.", prop.EntityId);
 				goto L_End;
 			}
 

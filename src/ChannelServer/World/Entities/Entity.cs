@@ -16,11 +16,6 @@ namespace Aura.Channel.World.Entities
 		public long EntityId { get; set; }
 
 		/// <summary>
-		/// Entity id formatted as X16
-		/// </summary>
-		public string EntityIdHex { get { return this.EntityId.ToString("X16"); } }
-
-		/// <summary>
 		/// The region id the entity is in.
 		/// </summary>
 		public abstract int RegionId { get; set; }

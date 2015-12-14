@@ -410,7 +410,7 @@ namespace Aura.Channel.Network.Handlers
 
 			// Check creature's gold
 			if (creature.Inventory.Gold < amount)
-				throw new ModerateViolation("BankDepositGold: '{0}' ({1}) tried to deposit more than he has.", creature.Name, creature.EntityIdHex);
+				throw new ModerateViolation("BankDepositGold: '{0}' ({1:X16}) tried to deposit more than he has.", creature.Name, creature.EntityId);
 
 			// Check bank max gold
 			var goldMax = Math.Min((long)int.MaxValue, client.Account.Characters.Count * (long)ChannelServer.Instance.Conf.World.BankGoldPerCharacter);

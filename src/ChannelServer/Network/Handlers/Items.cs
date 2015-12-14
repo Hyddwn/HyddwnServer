@@ -127,7 +127,7 @@ namespace Aura.Channel.Network.Handlers
 			// Check for filled bags
 			if (item.IsBag && item.OptionInfo.LinkedPocketId != Pocket.None && creature.Inventory.CountItemsInPocket(item.OptionInfo.LinkedPocketId) > 0)
 			{
-				Log.Warning("Player '{0}' ({1}) tried to drop filled item bag.", creature.Name, creature.EntityIdHex);
+				Log.Warning("Player '{0}' ({1:X16}) tried to drop filled item bag.", creature.Name, creature.EntityId);
 				Send.ItemDropR(creature, false);
 				return;
 			}
@@ -631,7 +631,7 @@ namespace Aura.Channel.Network.Handlers
 			var bag = creature.Inventory.GetItemSafe(entityId);
 			if (!bag.IsBag || bag.OptionInfo.LinkedPocketId == Pocket.None)
 			{
-				Log.Warning("Player '{0}' ({1}) tried to unequip invalid bag.", creature.Name, creature.EntityIdHex);
+				Log.Warning("Player '{0}' ({1:X16}) tried to unequip invalid bag.", creature.Name, creature.EntityId);
 				Send.UnequipBagR(creature, false);
 				return;
 			}

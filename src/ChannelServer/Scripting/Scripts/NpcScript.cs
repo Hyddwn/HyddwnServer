@@ -1487,7 +1487,7 @@ namespace Aura.Channel.Scripting.Scripts
 			int pos = -1;
 			if ((pos = repairReply.IndexOf(':')) == -1 || !long.TryParse(repairReply.Substring(pos + 1), out result.ItemEntityId))
 			{
-				Log.Warning("NpcScript.Repair: Player '{0}' (Account: {1}) sent invalid repair reply.", this.Player.EntityIdHex, this.Player.Client.Account.Id);
+				Log.Warning("NpcScript.Repair: Player '{0:X16}' (Account: {1}) sent invalid repair reply.", this.Player.EntityId, this.Player.Client.Account.Id);
 				return result;
 			}
 
@@ -1498,7 +1498,7 @@ namespace Aura.Channel.Scripting.Scripts
 			result.Item = this.Player.Inventory.GetItem(result.ItemEntityId);
 			if (result.Item == null || !tags.Any(a => result.Item.Data.HasTag(a)))
 			{
-				Log.Warning("NpcScript.Repair: Player '{0}' (Account: {1}) tried to repair invalid item.", this.Player.EntityIdHex, this.Player.Client.Account.Id);
+				Log.Warning("NpcScript.Repair: Player '{0:X16}' (Account: {1}) tried to repair invalid item.", this.Player.EntityId, this.Player.Client.Account.Id);
 				return result;
 			}
 
@@ -1588,7 +1588,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var args = upgradeReply.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 			if (args.Length != 3 || !long.TryParse(args[1], out result.ItemEntityId))
 			{
-				Log.Warning("NpcScript.Upgrade: Player '{0}' (Account: {1}) sent invalid reply.", this.Player.EntityIdHex, this.Player.Client.Account.Id);
+				Log.Warning("NpcScript.Upgrade: Player '{0:X16}' (Account: {1}) sent invalid reply.", this.Player.EntityId, this.Player.Client.Account.Id);
 				return result;
 			}
 
@@ -1596,7 +1596,7 @@ namespace Aura.Channel.Scripting.Scripts
 			result.Item = this.Player.Inventory.GetItem(result.ItemEntityId);
 			if (result.Item == null || result.Item.OptionInfo.Upgraded == result.Item.OptionInfo.UpgradeMax)
 			{
-				Log.Warning("NpcScript.Upgrade: Player '{0}' (Account: {1}) tried to upgrade invalid item.", this.Player.EntityIdHex, this.Player.Client.Account.Id);
+				Log.Warning("NpcScript.Upgrade: Player '{0:X16}' (Account: {1}) tried to upgrade invalid item.", this.Player.EntityId, this.Player.Client.Account.Id);
 				return result;
 			}
 
@@ -1604,19 +1604,19 @@ namespace Aura.Channel.Scripting.Scripts
 			result.Upgrade = AuraData.ItemUpgradesDb.Find(args[2]);
 			if (result.Upgrade == null)
 			{
-				Log.Warning("NpcScript.Upgrade: Player '{0}' (Account: {1}) tried to apply an unknown upgrade ({2}).", this.Player.EntityIdHex, this.Player.Client.Account.Id, args[2]);
+				Log.Warning("NpcScript.Upgrade: Player '{0:X16}' (Account: {1}) tried to apply an unknown upgrade ({2}).", this.Player.EntityId, this.Player.Client.Account.Id, args[2]);
 				return result;
 			}
 
 			// Check upgrade and item
 			if (!result.Item.Data.HasTag(result.Upgrade.Filter) || result.Item.Proficiency < result.Upgrade.Exp || !Math2.Between(result.Item.OptionInfo.Upgraded, result.Upgrade.UpgradeMin, result.Upgrade.UpgradeMax))
 			{
-				Log.Warning("NpcScript.Upgrade: Player '{0}' (Account: {1}) tried to apply upgrade to invalid item.", this.Player.EntityIdHex, this.Player.Client.Account.Id);
+				Log.Warning("NpcScript.Upgrade: Player '{0:X16}' (Account: {1}) tried to apply upgrade to invalid item.", this.Player.EntityId, this.Player.Client.Account.Id);
 				return result;
 			}
 			if (!result.Upgrade.Npcs.Contains(this.NPC.Name.TrimStart('_').ToLower()))
 			{
-				Log.Warning("NpcScript.Upgrade: Player '{0}' (Account: {1}) tried to apply upgrade '{2}' at an invalid NPC ({3}).", this.Player.EntityIdHex, this.Player.Client.Account.Id, result.Upgrade.Ident, this.NPC.Name.TrimStart('_').ToLower());
+				Log.Warning("NpcScript.Upgrade: Player '{0:X16}' (Account: {1}) tried to apply upgrade '{2}' at an invalid NPC ({3}).", this.Player.EntityId, this.Player.Client.Account.Id, result.Upgrade.Ident, this.NPC.Name.TrimStart('_').ToLower());
 				return result;
 			}
 
