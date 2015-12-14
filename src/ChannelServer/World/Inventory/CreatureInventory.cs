@@ -88,19 +88,6 @@ namespace Aura.Channel.World.Inventory
 		private Dictionary<Pocket, InventoryPocket> _pockets;
 
 		/// <summary>
-		/// List of all items in equipment slots, minus hair and face.
-		/// </summary>
-		public IEnumerable<Item> ActualEquipment
-		{
-			get
-			{
-				lock (_pockets)
-					return _pockets.Values.Where(a => a.Pocket.IsEquip() && a.Pocket != Pocket.Hair && a.Pocket != Pocket.Face)
-						.SelectMany(pocket => pocket.Items.Where(a => a != null));
-			}
-		}
-
-		/// <summary>
 		/// Sets or returns the selected weapon set.
 		/// </summary>
 		public WeaponSet WeaponSet { get; private set; }
@@ -297,6 +284,21 @@ namespace Aura.Channel.World.Inventory
 
 			lock (_pockets)
 				result = _pockets.Values.Where(a => a.Pocket.IsEquip()).SelectMany(pocket => pocket.Items.Where(a => a != null)).ToArray();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a new list of all items in all equipment pockets,
+		/// that aren't hair or face.
+		/// </summary>
+		/// <returns></returns>
+		public Item[] GetActualEquipment()
+		{
+			Item[] result;
+
+			lock (_pockets)
+				result = _pockets.Values.Where(a => a.Pocket.IsEquip() && a.Pocket != Pocket.Hair && a.Pocket != Pocket.Face).SelectMany(pocket => pocket.Items.Where(a => a != null)).ToArray();
 
 			return result;
 		}
