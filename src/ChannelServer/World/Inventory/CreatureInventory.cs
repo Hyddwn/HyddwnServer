@@ -21,14 +21,52 @@ namespace Aura.Channel.World.Inventory
 	/// </remarks>
 	public class CreatureInventory
 	{
+		/// <summary>
+		/// Default inventory width.
+		/// </summary>
+		/// <remarks>
+		/// Equal to a player's normal inventory width.
+		/// </remarks>
 		private const int DefaultWidth = 6;
+
+		/// <summary>
+		/// Default inventory height.
+		/// </summary>
+		/// <remarks>
+		/// Equal to a player's normal inventory height.
+		/// </remarks>
 		private const int DefaultHeight = 10;
+
+		/// <summary>
+		/// Maximum inventory width.
+		/// </summary>
+		/// <remarks>
+		/// Maximum width supported by the client.
+		/// </remarks>
 		private const int MaxWidth = 32;
+
+		/// <summary>
+		/// Maximum inventory height.
+		/// </summary>
+		/// <remarks>
+		/// Maximum height supported by the client.
+		/// </remarks>
 		private const int MaxHeight = 32;
+
+		/// <summary>
+		/// Item id for gold.
+		/// </summary>
 		private const int GoldItemId = 2000;
 
+		private Creature _creature;
+		private Dictionary<Pocket, InventoryPocket> _pockets;
+
+		/// <summary>
+		/// Initializes static information.
+		/// </summary>
 		static CreatureInventory()
 		{
+			// Set pockets directly modifiable by creatures.
 			AccessiblePockets = new HashSet<Pocket>()
 			{
 				Pocket.Accessory1,
@@ -65,10 +103,9 @@ namespace Aura.Channel.World.Inventory
 				Pocket.VIPInventory,
 			};
 
+			// Add bags to the list of modifiable pockets.
 			for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax; i++)
-			{
 				AccessiblePockets.Add(i);
-			}
 		}
 
 		/// <summary>
@@ -84,15 +121,19 @@ namespace Aura.Channel.World.Inventory
 		/// </summary>
 		public static ISet<Pocket> AccessiblePockets { get; private set; }
 
-		private Creature _creature;
-		private Dictionary<Pocket, InventoryPocket> _pockets;
-
 		/// <summary>
-		/// Sets or returns the selected weapon set.
+		/// The selected weapon set.
 		/// </summary>
 		public WeaponSet WeaponSet { get; private set; }
 
+		/// <summary>
+		/// The currently active right hand pocket (main weapon hand).
+		/// </summary>
 		public Pocket RightHandPocket { get { return (this.WeaponSet == WeaponSet.First ? Pocket.RightHand1 : Pocket.RightHand2); } }
+
+		/// <summary>
+		/// The currently active left hand pocket (off hand).
+		/// </summary>
 		public Pocket LeftHandPocket { get { return (this.WeaponSet == WeaponSet.First ? Pocket.LeftHand1 : Pocket.LeftHand2); } }
 
 		/// <summary>
@@ -128,6 +169,10 @@ namespace Aura.Channel.World.Inventory
 			}
 		}
 
+		/// <summary>
+		/// Creates new creature inventory instance for creature.
+		/// </summary>
+		/// <param name="creature"></param>
 		public CreatureInventory(Creature creature)
 		{
 			_creature = creature;
