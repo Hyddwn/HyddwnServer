@@ -94,7 +94,8 @@ namespace Aura.Channel.World.Inventory
 		{
 			get
 			{
-				return _pockets.Values.SelectMany(pocket => pocket.Items.Where(a => a != null));
+				lock (_pockets)
+					return _pockets.Values.SelectMany(pocket => pocket.Items.Where(a => a != null));
 
 				//var x = (from pocket in _pockets.Values.Where(a => a.Pocket.IsEquip())
 				//         where pocket.Items.Any()
@@ -112,7 +113,8 @@ namespace Aura.Channel.World.Inventory
 		{
 			get
 			{
-				return _pockets.Values.Where(a => a.Pocket.IsEquip()).SelectMany(pocket => pocket.Items.Where(a => a != null));
+				lock (_pockets)
+					return _pockets.Values.Where(a => a.Pocket.IsEquip()).SelectMany(pocket => pocket.Items.Where(a => a != null));
 			}
 		}
 
@@ -123,8 +125,9 @@ namespace Aura.Channel.World.Inventory
 		{
 			get
 			{
-				return _pockets.Values.Where(a => a.Pocket.IsEquip() && a.Pocket != Pocket.Hair && a.Pocket != Pocket.Face)
-					.SelectMany(pocket => pocket.Items.Where(a => a != null));
+				lock (_pockets)
+					return _pockets.Values.Where(a => a.Pocket.IsEquip() && a.Pocket != Pocket.Hair && a.Pocket != Pocket.Face)
+						.SelectMany(pocket => pocket.Items.Where(a => a != null));
 			}
 		}
 
@@ -195,10 +198,13 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="inventoryPocket"></param>
 		public void Add(InventoryPocket inventoryPocket)
 		{
-			if (_pockets.ContainsKey(inventoryPocket.Pocket))
-				Log.Warning("Replacing pocket '{0}' in '{1}'s inventory.", inventoryPocket.Pocket, _creature);
+			lock (_pockets)
+			{
+				if (_pockets.ContainsKey(inventoryPocket.Pocket))
+					Log.Warning("Replacing pocket '{0}' in '{1}'s inventory.", inventoryPocket.Pocket, _creature);
 
-			_pockets[inventoryPocket.Pocket] = inventoryPocket;
+				_pockets[inventoryPocket.Pocket] = inventoryPocket;
+			}
 		}
 
 		/// <summary>
@@ -237,7 +243,8 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public bool Has(Pocket pocket)
 		{
-			return _pockets.ContainsKey(pocket);
+			lock (_pockets)
+				return _pockets.ContainsKey(pocket);
 		}
 
 		/// <summary>
@@ -247,7 +254,8 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public Item GetItem(long entityId)
 		{
-			return _pockets.Values.Select(pocket => pocket.GetItem(entityId)).FirstOrDefault(item => item != null);
+			lock (_pockets)
+				return _pockets.Values.Select(pocket => pocket.GetItem(entityId)).FirstOrDefault(item => item != null);
 		}
 
 		/// <summary>
@@ -261,14 +269,17 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public Item GetItem(Func<Item, bool> predicate, StartAt startAt = StartAt.Random)
 		{
-			foreach (var pocket in _pockets.Values)
+			lock (_pockets)
 			{
-				var item = pocket.GetItem(predicate, startAt);
-				if (item != null)
-					return item;
-			}
+				foreach (var pocket in _pockets.Values)
+				{
+					var item = pocket.GetItem(predicate, startAt);
+					if (item != null)
+						return item;
+				}
 
-			return null;
+				return null;
+			}
 		}
 
 		/// <summary>
@@ -284,8 +295,11 @@ namespace Aura.Channel.World.Inventory
 		{
 			var result = new List<Item>();
 
-			foreach (var pocket in _pockets.Values)
-				result.AddRange(pocket.GetItems(predicate, startAt));
+			lock (_pockets)
+			{
+				foreach (var pocket in _pockets.Values)
+					result.AddRange(pocket.GetItems(predicate, startAt));
+			}
 
 			return result;
 		}
@@ -320,7 +334,11 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public Item GetItemAt(Pocket pocket, int x, int y)
 		{
-			return !this.Has(pocket) ? null : _pockets[pocket].GetItemAt(x, y);
+			if (!this.Has(pocket))
+				return null;
+
+			lock (_pockets)
+				return _pockets[pocket].GetItemAt(x, y);
 		}
 
 		/// <summary>
@@ -329,10 +347,13 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public Pocket GetFreePocketId()
 		{
-			for (var i = Pocket.ItemBags; i < Pocket.ItemBagsMax; ++i)
+			lock (_pockets)
 			{
-				if (!_pockets.ContainsKey(i))
-					return i;
+				for (var i = Pocket.ItemBags; i < Pocket.ItemBagsMax; ++i)
+				{
+					if (!_pockets.ContainsKey(i))
+						return i;
+				}
 			}
 
 			return Pocket.None;
@@ -364,10 +385,13 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public List<Item> GetAllItemsFrom(Pocket pocket)
 		{
-			if (!_pockets.ContainsKey(pocket))
-				return null;
+			lock (_pockets)
+			{
+				if (!_pockets.ContainsKey(pocket))
+					return null;
 
-			return _pockets[pocket].Items.Where(a => a != null).ToList();
+				return _pockets[pocket].Items.Where(a => a != null).ToList();
+			}
 		}
 
 		/// <summary>
@@ -377,10 +401,13 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public bool Remove(Pocket pocket)
 		{
-			if (pocket == Pocket.None || !_pockets.ContainsKey(pocket))
-				return false;
+			lock (_pockets)
+			{
+				if (pocket == Pocket.None || !_pockets.ContainsKey(pocket))
+					return false;
 
-			_pockets.Remove(pocket);
+				_pockets.Remove(pocket);
+			}
 
 			return true;
 		}
@@ -409,37 +436,40 @@ namespace Aura.Channel.World.Inventory
 			var source = item.Info.Pocket;
 			var amount = item.Info.Amount;
 
-			Item collidingItem = null;
-			if (!_pockets[target].TryAdd(item, targetX, targetY, out collidingItem))
-				return false;
-
-			// If amount differs (item was added to stack)
-			if (collidingItem != null && (item.Info.Amount != amount || (item.Info.Amount == 0 && item.Data.Type != ItemType.Sac)))
+			lock (_pockets)
 			{
-				Send.ItemAmount(_creature, collidingItem);
+				Item collidingItem = null;
+				if (!_pockets[target].TryAdd(item, targetX, targetY, out collidingItem))
+					return false;
 
-				// Left overs or sac, update
-				if (item.Info.Amount > 0 || item.Data.Type == ItemType.Sac)
+				// If amount differs (item was added to stack)
+				if (collidingItem != null && (item.Info.Amount != amount || (item.Info.Amount == 0 && item.Data.Type != ItemType.Sac)))
 				{
-					Send.ItemAmount(_creature, item);
+					Send.ItemAmount(_creature, collidingItem);
+
+					// Left overs or sac, update
+					if (item.Info.Amount > 0 || item.Data.Type == ItemType.Sac)
+					{
+						Send.ItemAmount(_creature, item);
+					}
+					// All in, remove from cursor.
+					else
+					{
+						_pockets[item.Info.Pocket].Remove(item);
+						Send.ItemRemove(_creature, item);
+					}
 				}
-				// All in, remove from cursor.
 				else
 				{
-					_pockets[item.Info.Pocket].Remove(item);
-					Send.ItemRemove(_creature, item);
+					// Remove the item from the source pocket
+					_pockets[source].Remove(item);
+
+					// Toss it in, it should be the cursor.
+					if (collidingItem != null)
+						_pockets[source].Add(collidingItem);
+
+					Send.ItemMoveInfo(_creature, item, source, collidingItem);
 				}
-			}
-			else
-			{
-				// Remove the item from the source pocket
-				_pockets[source].Remove(item);
-
-				// Toss it in, it should be the cursor.
-				if (collidingItem != null)
-					_pockets[source].Add(collidingItem);
-
-				Send.ItemMoveInfo(_creature, item, source, collidingItem);
 			}
 
 			this.UpdateInventory(item, source, target);
@@ -471,46 +501,49 @@ namespace Aura.Channel.World.Inventory
 			// http://dev.mabinoger.com/forum/index.php/topic/804-pet-inventory/
 			var newItem = new Item(item);
 
-			Item collidingItem = null;
-			if (!other.Inventory._pockets[target].TryAdd(newItem, (byte)targetX, (byte)targetY, out collidingItem))
-				return false;
-
-			// If amount differs (item was added to stack)
-			if (collidingItem != null && newItem.Info.Amount != amount)
+			lock (_pockets)
 			{
-				Send.ItemAmount(other, collidingItem);
+				Item collidingItem = null;
+				if (!other.Inventory._pockets[target].TryAdd(newItem, (byte)targetX, (byte)targetY, out collidingItem))
+					return false;
 
-				// Left overs, update
-				if (newItem.Info.Amount > 0)
+				// If amount differs (item was added to stack)
+				if (collidingItem != null && newItem.Info.Amount != amount)
 				{
-					Send.ItemAmount(_creature, item);
+					Send.ItemAmount(other, collidingItem);
+
+					// Left overs, update
+					if (newItem.Info.Amount > 0)
+					{
+						Send.ItemAmount(_creature, item);
+					}
+					// All in, remove from cursor.
+					else
+					{
+						_pockets[item.Info.Pocket].Remove(item);
+						Send.ItemRemove(_creature, item);
+					}
 				}
-				// All in, remove from cursor.
 				else
 				{
-					_pockets[item.Info.Pocket].Remove(item);
-					Send.ItemRemove(_creature, item);
+					// Remove the item from the source pocket
+					_pockets[source].Remove(item);
+					Send.ItemRemove(_creature, item, source);
+
+					if (collidingItem != null)
+					{
+						// Remove colliding item
+						Send.ItemRemove(other, collidingItem, target);
+
+						// Toss it in, it should be the cursor.
+						_pockets[source].Add(collidingItem);
+						Send.ItemNew(_creature, collidingItem);
+					}
+
+					Send.ItemNew(other, newItem);
+
+					Send.ItemMoveInfo(_creature, item, source, collidingItem);
 				}
-			}
-			else
-			{
-				// Remove the item from the source pocket
-				_pockets[source].Remove(item);
-				Send.ItemRemove(_creature, item, source);
-
-				if (collidingItem != null)
-				{
-					// Remove colliding item
-					Send.ItemRemove(other, collidingItem, target);
-
-					// Toss it in, it should be the cursor.
-					_pockets[source].Add(collidingItem);
-					Send.ItemNew(_creature, collidingItem);
-				}
-
-				Send.ItemNew(other, newItem);
-
-				Send.ItemMoveInfo(_creature, item, source, collidingItem);
 			}
 
 			pet.Inventory.UpdateInventory(newItem, source, target);
@@ -592,10 +625,16 @@ namespace Aura.Channel.World.Inventory
 		/// </summary>
 		public bool Add(Item item, Pocket pocket)
 		{
-			if (!_pockets.ContainsKey(pocket))
-				return false;
+			var success = false;
 
-			var success = _pockets[pocket].Add(item);
+			lock (_pockets)
+			{
+				if (!_pockets.ContainsKey(pocket))
+					return success;
+
+				success = _pockets[pocket].Add(item);
+			}
+
 			if (success)
 			{
 				Send.ItemNew(_creature, item);
@@ -643,10 +682,14 @@ namespace Aura.Channel.World.Inventory
 		/// </summary>
 		public bool InitAdd(Item item)
 		{
-			if (!_pockets.ContainsKey(item.Info.Pocket))
-				return false;
+			lock (_pockets)
+			{
+				if (!_pockets.ContainsKey(item.Info.Pocket))
+					return false;
 
-			_pockets[item.Info.Pocket].AddUnsafe(item);
+				_pockets[item.Info.Pocket].AddUnsafe(item);
+			}
+
 			this.UpdateEquipReferences(item.Info.Pocket);
 
 			return true;
@@ -730,20 +773,20 @@ namespace Aura.Channel.World.Inventory
 							this.UpdateChangedItems(changed);
 						}
 					}
+				}
 
-					// Add new item stacks as long as needed.
-					while (item.Info.Amount > item.Data.StackMax)
-					{
-						var newStackItem = new Item(item);
-						newStackItem.Info.Amount = item.Data.StackMax;
+				// Add new item stacks as long as needed.
+				while (item.Info.Amount > item.Data.StackMax)
+				{
+					var newStackItem = new Item(item);
+					newStackItem.Info.Amount = item.Data.StackMax;
 
-						// Break if no new items can be added (no space left)
-						if (!this.TryAutoAdd(newStackItem, false))
-							break;
+					// Break if no new items can be added (no space left)
+					if (!this.TryAutoAdd(newStackItem, false))
+						break;
 
-						Send.ItemNew(_creature, newStackItem);
-						item.Info.Amount -= item.Data.StackMax;
-					}
+					Send.ItemNew(_creature, newStackItem);
+					item.Info.Amount -= item.Data.StackMax;
 				}
 
 				if (item.Info.Amount == 0)
@@ -999,10 +1042,13 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public int CountItemsInPocket(Pocket pocket)
 		{
-			if (!_pockets.ContainsKey(pocket))
-				return -1;
+			lock (_pockets)
+			{
+				if (!_pockets.ContainsKey(pocket))
+					return -1;
 
-			return _pockets[pocket].Count;
+				return _pockets[pocket].Count;
+			}
 		}
 
 		/// <summary>
@@ -1056,19 +1102,22 @@ namespace Aura.Channel.World.Inventory
 			// Move 2H weapon if shield is euipped
 			if (target == this.LeftHandPocket && item.IsShieldLike && (rightItem != null && rightItem.IsTwoHand))
 			{
-				// Switch item
-				var success = _pockets[source].Add(rightItem);
-
-				// Fallback, temp inv
-				if (!success)
-					success = _pockets[Pocket.Temporary].Add(rightItem);
-
-				if (success)
+				lock (_pockets)
 				{
-					_pockets[this.RightHandPocket].Remove(rightItem);
+					// Switch item
+					var success = _pockets[source].Add(rightItem);
 
-					Send.ItemMoveInfo(_creature, rightItem, this.RightHandPocket, null);
-					Send.EquipmentMoved(_creature, this.RightHandPocket);
+					// Fallback, temp inv
+					if (!success)
+						success = _pockets[Pocket.Temporary].Add(rightItem);
+
+					if (success)
+					{
+						_pockets[this.RightHandPocket].Remove(rightItem);
+
+						Send.ItemMoveInfo(_creature, rightItem, this.RightHandPocket, null);
+						Send.EquipmentMoved(_creature, this.RightHandPocket);
+					}
 				}
 			}
 		}
@@ -1111,44 +1160,47 @@ namespace Aura.Channel.World.Inventory
 				return;
 
 			// Check LeftHand first, switch to Magazine if it's empty
-			var leftPocket = pocketOfInterest + 2; // Left Hand 1/2
-			var leftItem = _pockets[leftPocket].GetItemAt(0, 0);
-			if (leftItem == null)
+			lock (_pockets)
 			{
-				leftPocket += 2; // Magazine 1/2
-				leftItem = _pockets[leftPocket].GetItemAt(0, 0);
-
-				// Nothing to remove
+				var leftPocket = pocketOfInterest + 2; // Left Hand 1/2
+				var leftItem = _pockets[leftPocket].GetItemAt(0, 0);
 				if (leftItem == null)
-					return;
-			}
+				{
+					leftPocket += 2; // Magazine 1/2
+					leftItem = _pockets[leftPocket].GetItemAt(0, 0);
 
-			// Special handling of shield-likes (shields, books, etc)
-			if (leftItem.IsShieldLike)
-			{
-				// If right hand item is something that can be combined with
-				// a shield, the unequipping must be canceled. Things that
-				// don't go with shields include bows and 2H weapons,
-				// possibly more.
-				// TODO: Is there a better way to check this?
-				if (!item.IsBow && !item.IsTwoHand)
-					return;
-			}
+					// Nothing to remove
+					if (leftItem == null)
+						return;
+				}
 
-			// Try inventory first.
-			// TODO: List of pockets stuff can be auto-moved to.
-			var success = _pockets[Pocket.Inventory].Add(leftItem);
+				// Special handling of shield-likes (shields, books, etc)
+				if (leftItem.IsShieldLike)
+				{
+					// If right hand item is something that can be combined with
+					// a shield, the unequipping must be canceled. Things that
+					// don't go with shields include bows and 2H weapons,
+					// possibly more.
+					// TODO: Is there a better way to check this?
+					if (!item.IsBow && !item.IsTwoHand)
+						return;
+				}
 
-			// Fallback, temp inv
-			if (!success)
-				success = _pockets[Pocket.Temporary].Add(leftItem);
+				// Try inventory first.
+				// TODO: List of pockets stuff can be auto-moved to.
+				var success = _pockets[Pocket.Inventory].Add(leftItem);
 
-			if (success)
-			{
-				_pockets[leftPocket].Remove(leftItem);
+				// Fallback, temp inv
+				if (!success)
+					success = _pockets[Pocket.Temporary].Add(leftItem);
 
-				Send.ItemMoveInfo(_creature, leftItem, leftPocket, null);
-				Send.EquipmentMoved(_creature, leftPocket);
+				if (success)
+				{
+					_pockets[leftPocket].Remove(leftItem);
+
+					Send.ItemMoveInfo(_creature, leftItem, leftPocket, null);
+					Send.EquipmentMoved(_creature, leftPocket);
+				}
 			}
 		}
 
@@ -1166,9 +1218,12 @@ namespace Aura.Channel.World.Inventory
 				// Update all "hands" at once, easier.
 				if (!updatedHands && pocket >= Pocket.RightHand1 && pocket <= Pocket.Magazine2)
 				{
-					this.RightHand = _pockets[firstSet ? Pocket.RightHand1 : Pocket.RightHand2].GetItemAt(0, 0);
-					this.LeftHand = _pockets[firstSet ? Pocket.LeftHand1 : Pocket.LeftHand2].GetItemAt(0, 0);
-					this.Magazine = _pockets[firstSet ? Pocket.Magazine1 : Pocket.Magazine2].GetItemAt(0, 0);
+					lock (_pockets)
+					{
+						this.RightHand = _pockets[firstSet ? Pocket.RightHand1 : Pocket.RightHand2].GetItemAt(0, 0);
+						this.LeftHand = _pockets[firstSet ? Pocket.LeftHand1 : Pocket.LeftHand2].GetItemAt(0, 0);
+						this.Magazine = _pockets[firstSet ? Pocket.Magazine1 : Pocket.Magazine2].GetItemAt(0, 0);
+					}
 
 					// Don't do it twice.
 					updatedHands = true;
@@ -1226,9 +1281,10 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public int GetEquipmentDefense()
 		{
-			return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
-				.SelectMany(pocket => pocket.Items.Where(a => a != null))
-				.Sum(item => item.OptionInfo.Defense);
+			lock (_pockets)
+				return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
+					.SelectMany(pocket => pocket.Items.Where(a => a != null))
+					.Sum(item => item.OptionInfo.Defense);
 		}
 
 		/// <summary>
@@ -1237,9 +1293,10 @@ namespace Aura.Channel.World.Inventory
 		/// <returns></returns>
 		public int GetEquipmentProtection()
 		{
-			return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
-				.SelectMany(pocket => pocket.Items.Where(a => a != null))
-				.Sum(item => item.OptionInfo.Protection);
+			lock (_pockets)
+				return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
+					.SelectMany(pocket => pocket.Items.Where(a => a != null))
+					.Sum(item => item.OptionInfo.Protection);
 		}
 
 		/// <summary>
