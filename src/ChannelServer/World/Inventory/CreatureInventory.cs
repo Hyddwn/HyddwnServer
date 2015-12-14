@@ -264,7 +264,7 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
-		/// Returns items that match predicate.
+		/// Returns  a new list of all items that match the predicate.
 		/// </summary>
 		/// <param name="predicate"></param>
 		/// <param name="startAt">
@@ -281,6 +281,20 @@ namespace Aura.Channel.World.Inventory
 				foreach (var pocket in _pockets.Values)
 					result.AddRange(pocket.GetItems(predicate, startAt));
 			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a new list of all items in the inventory.
+		/// </summary>
+		/// <returns></returns>
+		public Item[] GetItems()
+		{
+			Item[] result;
+
+			lock (_pockets)
+				result = _pockets.Values.SelectMany(pocket => pocket.Items.Where(a => a != null)).ToArray();
 
 			return result;
 		}
@@ -1321,20 +1335,6 @@ namespace Aura.Channel.World.Inventory
 				this.UpdateEquipStats();
 				Send.UpdateWeaponSet(_creature);
 			}
-		}
-
-		/// <summary>
-		/// Returns a new list of all items in the inventory.
-		/// </summary>
-		/// <returns></returns>
-		public Item[] GetItems()
-		{
-			Item[] result;
-
-			lock (_pockets)
-				result = _pockets.Values.SelectMany(pocket => pocket.Items.Where(a => a != null)).ToArray();
-
-			return result;
 		}
 	}
 }
