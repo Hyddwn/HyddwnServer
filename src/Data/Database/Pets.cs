@@ -10,6 +10,7 @@ namespace Aura.Data.Database
 	public class PetData
 	{
 		public int RaceId { get; set; }
+		public string Name { get; set; }
 
 		public short TimeLimit { get; set; }
 		public float ExpMultiplicator { get; set; }
@@ -39,10 +40,11 @@ namespace Aura.Data.Database
 	{
 		protected override void ReadEntry(JObject entry)
 		{
-			entry.AssertNotMissing("raceId", "timeLimit", "exp", "height", "upper", "lower", "life", "mana", "stamina", "str", "int", "dex", "will", "luck", "defense", "protection");
+			entry.AssertNotMissing("raceId", "name", "timeLimit", "exp", "height", "upper", "lower", "life", "mana", "stamina", "str", "int", "dex", "will", "luck", "defense", "protection");
 
 			var info = new PetData();
 			info.RaceId = entry.ReadInt("raceId");
+			info.Name = entry.ReadString("name");
 			info.TimeLimit = entry.ReadShort("timeLimit");
 			info.ExpMultiplicator = entry.ReadFloat("exp");
 

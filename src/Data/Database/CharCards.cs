@@ -35,10 +35,11 @@ namespace Aura.Data.Database
 	{
 		protected override void ReadEntry(JObject entry)
 		{
-			entry.AssertNotMissing("id", "set", "allowed");
+			entry.AssertNotMissing("id", "name", "set", "allowed");
 
 			var info = new CharCardData();
 			info.Id = entry.ReadInt("id");
+			info.Name = entry.ReadString("name");
 			info.SetId = entry.ReadInt("set");
 			info.TradeItem = entry.ReadInt("tradeItem");
 			info.TradePoints = entry.ReadInt("tradePoints");
