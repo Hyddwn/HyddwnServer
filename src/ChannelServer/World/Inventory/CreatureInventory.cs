@@ -88,25 +88,6 @@ namespace Aura.Channel.World.Inventory
 		private Dictionary<Pocket, InventoryPocket> _pockets;
 
 		/// <summary>
-		/// List of all items in this inventory.
-		/// </summary>
-		public IEnumerable<Item> Items
-		{
-			get
-			{
-				lock (_pockets)
-					return _pockets.Values.SelectMany(pocket => pocket.Items.Where(a => a != null));
-
-				//var x = (from pocket in _pockets.Values.Where(a => a.Pocket.IsEquip())
-				//         where pocket.Items.Any()
-				//         select pocket into p
-				//         from item in p.Items
-				//         where item != null
-				//         select item).ToArray();
-			}
-		}
-
-		/// <summary>
 		/// List of all items sitting in equipment pockets in this inventory.
 		/// </summary>
 		public IEnumerable<Item> Equipment
@@ -1340,6 +1321,20 @@ namespace Aura.Channel.World.Inventory
 				this.UpdateEquipStats();
 				Send.UpdateWeaponSet(_creature);
 			}
+		}
+
+		/// <summary>
+		/// Returns a new list of all items in the inventory.
+		/// </summary>
+		/// <returns></returns>
+		public Item[] GetItems()
+		{
+			Item[] result;
+
+			lock (_pockets)
+				result = _pockets.Values.SelectMany(pocket => pocket.Items.Where(a => a != null)).ToArray();
+
+			return result;
 		}
 	}
 }

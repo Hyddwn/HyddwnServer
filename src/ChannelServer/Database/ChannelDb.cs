@@ -1068,7 +1068,7 @@ namespace Aura.Channel.Database
 					mc.ExecuteNonQuery();
 				}
 
-				var items = creature.Inventory.Items.Union(creature.Client.Account.Bank.GetTabItems(creature.Name));
+				var items = creature.Inventory.GetItems().Union(creature.Client.Account.Bank.GetTabItems(creature.Name));
 				foreach (var item in items)
 				{
 					using (var cmd = new InsertCommand("INSERT INTO `items` {0}", conn, transaction))
