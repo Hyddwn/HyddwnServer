@@ -724,7 +724,7 @@ namespace Aura.Channel.World.Inventory
 			if (success)
 			{
 				Send.ItemNew(_creature, item);
-				this.UpdateEquipReferences(pocket);
+				this.UpdateInventory(item, Pocket.None, pocket);
 
 				// Add bag pocket if it doesn't already exist.
 				if (item.OptionInfo.LinkedPocketId != Pocket.None && !this.Has(item.OptionInfo.LinkedPocketId))
@@ -732,19 +732,6 @@ namespace Aura.Channel.World.Inventory
 			}
 
 			return success;
-		}
-
-		/// <summary>
-		/// Tries to add item to pocket and updates clients.
-		/// Returns false if the pocket doesn't exist or there was no space.
-		/// </summary>
-		public bool AddWithUpdate(Item item, Pocket pocket)
-		{
-			if (!this.Add(item, pocket))
-				return false;
-
-			this.CheckEquipMoved(item, Pocket.None, pocket);
-			return true;
 		}
 
 		/// <summary>
@@ -1325,11 +1312,14 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="target"></param>
 		private void CheckEquipMoved(Item item, Pocket source, Pocket target)
 		{
-			if (source.IsEquip())
-				Send.EquipmentMoved(_creature, source);
+			if (_creature.Region != Region.Limbo)
+			{
+				if (source.IsEquip())
+					Send.EquipmentMoved(_creature, source);
 
-			if (target.IsEquip())
-				Send.EquipmentChanged(_creature, item);
+				if (target.IsEquip())
+					Send.EquipmentChanged(_creature, item);
+			}
 
 			// Send stat update when moving equipment
 			if (source.IsEquip() || target.IsEquip())
