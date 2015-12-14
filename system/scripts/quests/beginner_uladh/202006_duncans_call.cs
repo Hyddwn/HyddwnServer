@@ -33,7 +33,7 @@ public class DuncansCallQuestScript : QuestScript
 			Send.Effect(npc.NPC, Effect.ScreenFlash, 3000, 0);
 			
 			// Remove Eiry
-			var eiry = npc.Player.Inventory.Items.FirstOrDefault(item => item.EgoInfo.Race == EgoRace.EirySword);
+			var eiry = npc.Player.Inventory.GetItem(item => item.EgoInfo.Race == EgoRace.EirySword);
 			if(eiry != null)
 				npc.Player.Inventory.Remove(eiry);
 			
