@@ -251,7 +251,7 @@ namespace Aura.Channel.Network.Handlers
 			var item = creature.Temp.CurrentShop.GetItem(entityId);
 			if (item == null)
 			{
-				Log.Warning("NpcShopBuyItem: Item '{0}' doesn't exist in shop.", entityId.ToString("X16"));
+				Log.Warning("NpcShopBuyItem: Item '{0:X16}' doesn't exist in shop.", entityId);
 				goto L_Fail;
 			}
 
@@ -336,7 +336,7 @@ namespace Aura.Channel.Network.Handlers
 			// Remove item from inv
 			if (!creature.Inventory.Remove(item))
 			{
-				Log.Warning("NpcShopSellItem: Failed to remove item '{0}' from '{1}'s inventory.", entityId.ToString("X16"), creature.Name);
+				Log.Warning("NpcShopSellItem: Failed to remove item '{0:X16}' from '{1}'s inventory.", entityId, creature.Name);
 				goto L_End;
 			}
 
