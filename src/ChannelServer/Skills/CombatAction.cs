@@ -350,11 +350,11 @@ namespace Aura.Channel.Skills
 		public override CombatActionCategory Category { get { return CombatActionCategory.Attack; } }
 
 		/// <summary>
-		/// Creates new attacker action.
+		/// Creates new attacker action, setting SkillId to the currently
+		/// active skill.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="creature"></param>
-		/// 
 		/// <param name="targetId"></param>
 		public AttackerAction(CombatActionType type, Creature creature, long targetId)
 		{
@@ -365,6 +365,22 @@ namespace Aura.Channel.Skills
 
 			var active = creature.Skills.ActiveSkill;
 			this.SkillId = (active == null ? SkillId.CombatMastery : active.Info.Id);
+		}
+
+		/// <summary>
+		/// Creates new attacker action.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="creature"></param>
+		/// <param name="targetId"></param>
+		/// <param name="skillId"></param>
+		public AttackerAction(CombatActionType type, Creature creature, long targetId, SkillId skillId)
+		{
+			this.Flags = type;
+			this.Creature = creature;
+			this.TargetId = targetId;
+			this.WeaponParameterType = 1;
+			this.SkillId = skillId;
 		}
 
 		/// <summary>
