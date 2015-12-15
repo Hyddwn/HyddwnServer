@@ -345,6 +345,12 @@ namespace Aura.Channel.Network.Handlers
 		/// <summary>
 		/// Sent when changing an item state, eg hood on robes.
 		/// </summary>
+		/// <remarks>
+		/// The client isn't able to handle multiple state changable items properly,
+		/// like an armor and a robe. The armor will always take priority,
+		/// resulting in only the helmet changing states, if anything,
+		/// when a robe is hiding the armor. Is this official? Should we fix it?
+		/// </remarks>
 		/// <example>
 		/// ...
 		/// </example>
@@ -362,14 +368,22 @@ namespace Aura.Channel.Network.Handlers
 
 			foreach (var target in new[] { firstTarget, secondTarget })
 			{
-				if (target > 0)
+				// Don't change pocket None.
+				if (target == 0)
+					continue;
+
+				// Check if pocket is valid
+				if (target != Pocket.Head && target != Pocket.Robe && target != Pocket.Armor && target != Pocket.HeadStyle && target != Pocket.RobeStyle && target != Pocket.ArmorStyle)
 				{
-					var item = creature.Inventory.GetItemAt(target, 0, 0);
-					if (item != null)
-					{
-						item.Info.State = (byte)(item.Info.State == 1 ? 0 : 1);
-						Send.EquipmentChanged(creature, item);
-					}
+					Log.Warning("ItemStateChange: Creature '{0:X16}' tried to change state of invalid pocket's item ({1}).", creature.EntityId, target);
+					continue;
+				}
+
+				var item = creature.Inventory.GetItemAt(target, 0, 0);
+				if (item != null)
+				{
+					item.Info.State = (byte)(item.Info.State == 1 ? 0 : 1);
+					Send.EquipmentChanged(creature, item);
 				}
 			}
 
