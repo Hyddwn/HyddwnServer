@@ -1003,6 +1003,8 @@ namespace Aura.Channel.World.Inventory
 						item.OptionInfo.LinkedPocketId = Pocket.None;
 					}
 
+					ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, item.Info.Id, item.Info.Amount);
+
 					return true;
 				}
 			}
@@ -1070,6 +1072,7 @@ namespace Aura.Channel.World.Inventory
 
 			if (item.Info.Amount > 0 || item.Data.StackType == StackType.Sac)
 			{
+				ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, item.Info.Id, amount);
 				Send.ItemAmount(_creature, item);
 			}
 			else

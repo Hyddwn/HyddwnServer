@@ -343,9 +343,6 @@ namespace Aura.Channel.Network.Handlers
 			// Add gold
 			creature.Inventory.AddGold(sellingPrice);
 
-			// Remove item event
-			ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, item.Info.Amount);
-
 			// Respond in any case, to unlock the player
 		L_End:
 			Send.NpcShopSellItemR(creature);

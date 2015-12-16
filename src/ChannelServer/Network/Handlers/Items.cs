@@ -143,8 +143,6 @@ namespace Aura.Channel.Network.Handlers
 				item.Drop(creature.Region, creature.GetPosition(), creature, true);
 
 			Send.ItemDropR(creature, true);
-
-			ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, item.Info.Amount);
 		}
 
 		/// <summary>
@@ -250,8 +248,6 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			Send.ItemDestroyR(creature, true);
-
-			ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, item.Info.Amount);
 		}
 
 		/// <summary>
@@ -479,10 +475,7 @@ namespace Aura.Channel.Network.Handlers
 
 			// Decrease item count
 			if (item.Data.Consumed)
-			{
 				creature.Inventory.Decrement(item);
-				ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, 1);
-			}
 
 			// Break seal after use
 			if (item.MetaData1.Has("MGCSEL"))
@@ -622,8 +615,6 @@ namespace Aura.Channel.Network.Handlers
 			client.NpcSession.StartGift(npc, creature, item);
 
 			creature.Inventory.Remove(item);
-
-			ChannelServer.Instance.Events.OnPlayerRemovesItem(target, item.Info.Id, item.Info.Amount);
 
 			Send.GiftItemR(creature, true);
 		}
