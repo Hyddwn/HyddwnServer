@@ -1028,12 +1028,15 @@ namespace Aura.Channel.World.Inventory
 				amount = 0;
 
 			var changed = new List<Item>();
+			var removed = 0;
 
 			lock (_pockets)
 			{
 				foreach (var pocket in _pockets.Values)
 				{
-					amount -= pocket.Remove(itemId, amount, ref changed);
+					var r = pocket.Remove(itemId, amount, ref changed);
+					amount -= r;
+					removed += r;
 
 					if (amount == 0)
 						break;
@@ -1041,6 +1044,8 @@ namespace Aura.Channel.World.Inventory
 			}
 
 			this.UpdateChangedItems(changed);
+
+			ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, itemId, removed);
 
 			return (amount == 0);
 		}
