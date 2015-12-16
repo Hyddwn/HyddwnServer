@@ -274,9 +274,9 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutString("");
 				packet.PutByte(0);
 
-				var items = creature.Inventory.Equipment;
+				var items = creature.Inventory.GetAllEquipment();
 
-				packet.PutInt(items.Count());
+				packet.PutInt(items.Length);
 				foreach (var item in items)
 				{
 					packet.PutLong(item.EntityId);
@@ -315,16 +315,16 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutInt(creature.RaceData.InventoryWidth);
 				packet.PutInt(creature.RaceData.InventoryHeight);
 
-				var items = creature.Inventory.Items;
-				packet.PutInt(items.Count());
+				var items = creature.Inventory.GetItems();
+				packet.PutInt(items.Length);
 				foreach (var item in items)
 					packet.AddItemInfo(item, ItemPacketType.Private);
 			}
 			else if (type == CreaturePacketType.Public)
 			{
-				var items = creature.Inventory.Equipment;
+				var items = creature.Inventory.GetAllEquipment();
 
-				packet.PutInt(items.Count());
+				packet.PutInt(items.Length);
 				foreach (var item in items)
 				{
 					packet.PutLong(item.EntityId);

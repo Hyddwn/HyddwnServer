@@ -251,7 +251,7 @@ namespace Aura.Channel.Network.Handlers
 			var item = creature.Temp.CurrentShop.GetItem(entityId);
 			if (item == null)
 			{
-				Log.Warning("NpcShopBuyItem: Item '{0}' doesn't exist in shop.", entityId.ToString("X16"));
+				Log.Warning("NpcShopBuyItem: Item '{0:X16}' doesn't exist in shop.", entityId);
 				goto L_Fail;
 			}
 
@@ -336,15 +336,12 @@ namespace Aura.Channel.Network.Handlers
 			// Remove item from inv
 			if (!creature.Inventory.Remove(item))
 			{
-				Log.Warning("NpcShopSellItem: Failed to remove item '{0}' from '{1}'s inventory.", entityId.ToString("X16"), creature.Name);
+				Log.Warning("NpcShopSellItem: Failed to remove item '{0:X16}' from '{1}'s inventory.", entityId, creature.Name);
 				goto L_End;
 			}
 
 			// Add gold
 			creature.Inventory.AddGold(sellingPrice);
-
-			// Remove item event
-			ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, item.Info.Amount);
 
 			// Respond in any case, to unlock the player
 		L_End:
@@ -410,7 +407,7 @@ namespace Aura.Channel.Network.Handlers
 
 			// Check creature's gold
 			if (creature.Inventory.Gold < amount)
-				throw new ModerateViolation("BankDepositGold: '{0}' ({1}) tried to deposit more than he has.", creature.Name, creature.EntityIdHex);
+				throw new ModerateViolation("BankDepositGold: '{0}' ({1:X16}) tried to deposit more than he has.", creature.Name, creature.EntityId);
 
 			// Check bank max gold
 			var goldMax = Math.Min((long)int.MaxValue, client.Account.Characters.Count * (long)ChannelServer.Instance.Conf.World.BankGoldPerCharacter);
@@ -563,6 +560,7 @@ namespace Aura.Channel.Network.Handlers
 			var egoRace = (EgoRace)packet.GetInt();
 
 			var creature = client.GetCreatureSafe(packet.Id);
+			var items = creature.Inventory.GetItems();
 
 			// Stop if race is somehow invalid
 			if (egoRace <= EgoRace.None || egoRace > EgoRace.CylinderF)
@@ -577,7 +575,7 @@ namespace Aura.Channel.Network.Handlers
 			// TODO: We can implement multi-ego for the same ego race
 			//   once we know how the client selects them.
 			//   *Should* we implement that without proper support though?
-			if (creature.Inventory.Items.Count(item => item.EgoInfo.Race == egoRace) > 1)
+			if (items.Count(item => item.EgoInfo.Race == egoRace) > 1)
 			{
 				Send.ServerMessage(creature, Localization.Get("Multiple egos of the same type are currently not supported."));
 				Send.NpcTalkEgoR(creature, false, 0, null, null);
@@ -585,7 +583,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Get weapon by race
-			var weapon = creature.Inventory.Items.FirstOrDefault(item => item.EgoInfo.Race == egoRace);
+			var weapon = items.FirstOrDefault(item => item.EgoInfo.Race == egoRace);
 			if (weapon == null)
 				throw new SevereViolation("Player tried to talk to an ego he doesn't have ({0})", egoRace);
 

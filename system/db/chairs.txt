@@ -6,6 +6,9 @@
 
 [
 { itemId: 41157, name: "Special Fishing Chair", propId: 43158, giantPropId: 43159 },
+{ itemId: 41211, name: "Lonely Prison", propId: 45279, giantPropId: 45289 },
+{ itemId: 41212, name: "Less Lonely Prison", propId: 45280, giantPropId: 45290 },
+{ itemId: 41213, name: "Butt-Sized Oak Barrel", propId: 45278, giantPropId: 45282 },
 { itemId: 50087, name: "School Chair", propId: 42598, giantPropId: 42819 },
 { itemId: 50088, name: "Living Room Chair", propId: 42599, giantPropId: 42820 },
 { itemId: 50089, name: "Reading Chair", propId: 42600, giantPropId: 42821 },
@@ -40,4 +43,8 @@
 { itemId: 50886, name: "Teacher's Pet Schooldesk", propId: 44979, giantPropId: 44980 },
 { itemId: 50887, name: "Night Owl Schooldesk", propId: 44981, giantPropId: 44982 },
 { itemId: 50888, name: "Class Clown Schooldesk", propId: 44987, giantPropId: 44988 },
+{ itemId: 50900, name: "Santa Sleigh", propId: 45295, giantPropId: 45296 },
+{ itemId: 50901, name: "Christmas Rocking Horse", propId: 45291, giantPropId: 45292 },
+{ itemId: 50902, name: "Chimney Chair", propId: 45287, giantPropId: 45288 },
+{ itemId: 50903, name: "1-Person Kotatsu", propId: 45284, giantPropId: 45285 },
 ]

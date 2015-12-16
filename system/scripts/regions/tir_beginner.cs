@@ -43,7 +43,7 @@ public class TirBeginnerRegionScript : RegionScript
 					//else
 					{
 						// Eiry Practice Short Sword
-						creature.Inventory.AddWithUpdate(Item.CreateEgo(40524, EgoRace.EirySword, "Eiry"), Pocket.RightHand1);
+						creature.Inventory.Add(Item.CreateEgo(40524, EgoRace.EirySword, "Eiry"), Pocket.RightHand1);
 					}
 				}
 

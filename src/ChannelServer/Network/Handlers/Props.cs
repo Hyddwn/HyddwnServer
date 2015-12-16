@@ -41,7 +41,7 @@ namespace Aura.Channel.Network.Handlers
 			var prop = creature.Region.GetProp(entityId);
 			if (prop == null)
 			{
-				Log.Warning("HitProp: Player '{0}' tried to hit unknown prop '{1}'.", creature.Name, entityId.ToString("X16"));
+				Log.Warning("HitProp: Player '{0}' tried to hit unknown prop '{1:X16}'.", creature.Name, entityId);
 				Send.ServerMessage(creature, "Unknown target.");
 				Send.HitPropR(creature, false);
 				return;
@@ -59,7 +59,7 @@ namespace Aura.Channel.Network.Handlers
 				}
 				else
 				{
-					Log.Unimplemented("HitProp: No prop behavior for '{0}'.", prop.EntityIdHex);
+					Log.Unimplemented("HitProp: No prop behavior for '{0:X16}'.", prop.EntityId);
 				}
 			}
 			else
@@ -95,7 +95,7 @@ namespace Aura.Channel.Network.Handlers
 			var prop = creature.Region.GetProp(entityId);
 			if (prop == null)
 			{
-				Log.Warning("TouchProp: Player '{0}' tried to touch unknown prop '{1}'.", creature.Name, entityId.ToString("X16"));
+				Log.Warning("TouchProp: Player '{0}' tried to touch unknown prop '{1:X16}'.", creature.Name, entityId);
 				Send.ServerMessage(creature, "Unknown target.");
 				goto L_End;
 			}
@@ -103,7 +103,7 @@ namespace Aura.Channel.Network.Handlers
 			// Check behavior
 			if (prop.Behavior == null)
 			{
-				Log.Unimplemented("TouchProp: No prop behavior for '{0}'.", prop.EntityIdHex);
+				Log.Unimplemented("TouchProp: No prop behavior for '{0:X16}'.", prop.EntityId);
 				goto L_End;
 			}
 

@@ -127,7 +127,7 @@ namespace Aura.Channel.Network.Handlers
 			// Check for filled bags
 			if (item.IsBag && item.OptionInfo.LinkedPocketId != Pocket.None && creature.Inventory.CountItemsInPocket(item.OptionInfo.LinkedPocketId) > 0)
 			{
-				Log.Warning("Player '{0}' ({1}) tried to drop filled item bag.", creature.Name, creature.EntityIdHex);
+				Log.Warning("Player '{0}' ({1:X16}) tried to drop filled item bag.", creature.Name, creature.EntityId);
 				Send.ItemDropR(creature, false);
 				return;
 			}
@@ -143,8 +143,6 @@ namespace Aura.Channel.Network.Handlers
 				item.Drop(creature.Region, creature.GetPosition(), creature, true);
 
 			Send.ItemDropR(creature, true);
-
-			ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, item.Info.Amount);
 		}
 
 		/// <summary>
@@ -250,8 +248,6 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			Send.ItemDestroyR(creature, true);
-
-			ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, item.Info.Amount);
 		}
 
 		/// <summary>
@@ -345,6 +341,12 @@ namespace Aura.Channel.Network.Handlers
 		/// <summary>
 		/// Sent when changing an item state, eg hood on robes.
 		/// </summary>
+		/// <remarks>
+		/// The client isn't able to handle multiple state changable items properly,
+		/// like an armor and a robe. The armor will always take priority,
+		/// resulting in only the helmet changing states, if anything,
+		/// when a robe is hiding the armor. Is this official? Should we fix it?
+		/// </remarks>
 		/// <example>
 		/// ...
 		/// </example>
@@ -362,14 +364,22 @@ namespace Aura.Channel.Network.Handlers
 
 			foreach (var target in new[] { firstTarget, secondTarget })
 			{
-				if (target > 0)
+				// Don't change pocket None.
+				if (target == 0)
+					continue;
+
+				// Check if pocket is valid
+				if (target != Pocket.Head && target != Pocket.Robe && target != Pocket.Armor && target != Pocket.HeadStyle && target != Pocket.RobeStyle && target != Pocket.ArmorStyle)
 				{
-					var item = creature.Inventory.GetItemAt(target, 0, 0);
-					if (item != null)
-					{
-						item.Info.State = (byte)(item.Info.State == 1 ? 0 : 1);
-						Send.EquipmentChanged(creature, item);
-					}
+					Log.Warning("ItemStateChange: Creature '{0:X16}' tried to change state of invalid pocket's item ({1}).", creature.EntityId, target);
+					continue;
+				}
+
+				var item = creature.Inventory.GetItemAt(target, 0, 0);
+				if (item != null)
+				{
+					item.Info.State = (byte)(item.Info.State == 1 ? 0 : 1);
+					Send.EquipmentChanged(creature, item);
 				}
 			}
 
@@ -465,10 +475,7 @@ namespace Aura.Channel.Network.Handlers
 
 			// Decrease item count
 			if (item.Data.Consumed)
-			{
 				creature.Inventory.Decrement(item);
-				ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, 1);
-			}
 
 			// Break seal after use
 			if (item.MetaData1.Has("MGCSEL"))
@@ -609,8 +616,6 @@ namespace Aura.Channel.Network.Handlers
 
 			creature.Inventory.Remove(item);
 
-			ChannelServer.Instance.Events.OnPlayerRemovesItem(target, item.Info.Id, item.Info.Amount);
-
 			Send.GiftItemR(creature, true);
 		}
 
@@ -631,7 +636,7 @@ namespace Aura.Channel.Network.Handlers
 			var bag = creature.Inventory.GetItemSafe(entityId);
 			if (!bag.IsBag || bag.OptionInfo.LinkedPocketId == Pocket.None)
 			{
-				Log.Warning("Player '{0}' ({1}) tried to unequip invalid bag.", creature.Name, creature.EntityIdHex);
+				Log.Warning("Player '{0}' ({1:X16}) tried to unequip invalid bag.", creature.Name, creature.EntityId);
 				Send.UnequipBagR(creature, false);
 				return;
 			}

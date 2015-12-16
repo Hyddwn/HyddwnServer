@@ -181,8 +181,6 @@ namespace Aura.Channel.World.Inventory
 			// Remove item from inventory
 			creature.Inventory.Remove(item);
 
-			ChannelServer.Instance.Events.OnPlayerRemovesItem(creature, item.Info.Id, item.Info.Amount);
-
 			return true;
 		}
 

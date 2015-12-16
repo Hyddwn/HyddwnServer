@@ -82,7 +82,7 @@ namespace Aura.Channel.Network.Handlers
 				var npcEntityId = (character.IsCharacter ? MabiId.Nao : MabiId.Tin);
 				var npc = ChannelServer.Instance.World.GetCreature(npcEntityId);
 				if (npc == null)
-					Log.Warning("ChannelLogin: Intro NPC not found ({0}).", npcEntityId.ToString("X16"));
+					Log.Warning("ChannelLogin: Intro NPC not found ({0:X16}).", npcEntityId);
 
 				character.Temp.InSoulStream = true;
 				character.Activate(CreatureStates.Initialized);

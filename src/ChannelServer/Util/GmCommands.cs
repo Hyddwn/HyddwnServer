@@ -991,24 +991,49 @@ namespace Aura.Channel.Util
 				return CommandResult.InvalidArgument;
 
 			int type, race;
+			string name;
 			if (args[0] == "card")
 			{
 				race = 0;
 				if (!int.TryParse(args[1], out type))
 					return CommandResult.InvalidArgument;
+
+				var data = AuraData.CharCardDb.Find(type);
+				if (data == null)
+				{
+					Send.ServerMessage(sender, Localization.Get("Unknown card."));
+					return CommandResult.Fail;
+				}
+
+				name = data.Name;
 			}
 			else
 			{
 				type = MabiId.PetCardType;
 				if (!int.TryParse(args[1], out race))
 					return CommandResult.InvalidArgument;
+
+				var data = AuraData.PetDb.Find(race);
+				if (data == null)
+				{
+					Send.ServerMessage(sender, Localization.Get("Unknown pet."));
+					return CommandResult.Fail;
+				}
+
+				name = data.Name + " Card";
 			}
 
 			ChannelServer.Instance.Database.AddCard(target.Client.Account.Id, type, race);
 
-			Send.ServerMessage(sender, Localization.Get("Added card."));
-			if (target != sender)
-				Send.ServerMessage(target, Localization.Get("You've received a card from '{0}'."), sender.Name);
+			if (target == sender)
+			{
+				Send.ServerMessage(sender, Localization.Get("Added {0} to your account."), name);
+			}
+			else
+			{
+				Send.ServerMessage(sender, Localization.Get("Added {0} to {1}'s account."), name, target.Name);
+				Send.ServerMessage(target, Localization.Get("You've received a {0} from '{1}'."), name, sender.Name);
+			}
 
 			return CommandResult.Okay;
 		}

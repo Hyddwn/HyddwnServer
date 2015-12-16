@@ -39,7 +39,7 @@ namespace Aura.Channel.Network.Handlers
 			var nextRank = skill.Data.GetRankData((int)skill.Info.Rank + 1, creature.RaceId);
 			if (nextRank == null)
 			{
-				Log.Warning("Player '{0}' tried to advance skill '{1}' to unknown rank '{2}'.", creature.EntityIdHex, skill.Info.Id, skill.Info.Rank + 1);
+				Log.Warning("Player '{0:X16}' tried to advance skill '{1}' to unknown rank '{2}'.", creature.EntityId, skill.Info.Id, skill.Info.Rank + 1);
 				goto L_Fail;
 			}
 

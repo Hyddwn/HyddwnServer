@@ -180,7 +180,7 @@ namespace Aura.Channel.Network.Handlers
 			var motionData = AuraData.MotionDb.Find(gestureName);
 			if (motionData == null)
 			{
-				Log.Warning("Creature '{0}' tried to use missing gesture '{1}'.", creature.EntityIdHex, gestureName);
+				Log.Warning("Creature '{0:X16}' tried to use missing gesture '{1}'.", creature.EntityId, gestureName);
 				Send.UseGestureR(creature, false);
 				return;
 			}

@@ -138,7 +138,7 @@
 { raceId: 490025, name: "Warp Imp", timeLimit: 112, exp: 1.7, height: 0.2, upper: 3.6, lower: 1.5, life: 72, mana: 38, stamina: 43, str: 24, int: 31, dex: 26, will: 23, luck: 29, defense: 0, protection: 2 },
 { raceId: 490030, name: "Pumpkin Seal", timeLimit: 92, exp: 1.8, height: 0.6, upper: 1.1, lower: 1.0, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490031, name: "Knitwear Penguin", timeLimit: 92, exp: 1.8, height: 0.8, upper: 1.4, lower: 1.2, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
-{ raceId: 490032, name: "Lite Seal", timeLimit: 92, exp: 1.8, height: 0.6, upper: 1.1, lower: 1.0, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
+{ raceId: 490032, name: "Knitwear Seal", timeLimit: 92, exp: 1.8, height: 0.6, upper: 1.1, lower: 1.0, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490043, name: "Cone Hat Penguin", timeLimit: 92, exp: 1.8, height: 0.8, upper: 1.4, lower: 1.2, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490047, name: "Coach Pengu", timeLimit: 92, exp: 1.8, height: 0.8, upper: 1.4, lower: 1.2, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490057, name: "Umeboshi Blossom", timeLimit: 180, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 200, mana: 50, stamina: 150, str: 70, int: 20, dex: 40, will: 30, luck: 30, defense: 20, protection: 25 },
@@ -354,4 +354,5 @@
 { raceId: 730204, name: "Maid Partner", timeLimit: 180, exp: 0.05, height: 1.0, upper: 1.0, lower: 1.0, life: 300, mana: 60, stamina: 90, str: 60, int: 80, dex: 60, will: 60, luck: 40, defense: 0, protection: 2 },
 { raceId: 730205, name: "Butler Partner", timeLimit: 180, exp: 0.05, height: 1.0, upper: 1.0, lower: 1.0, life: 350, mana: 40, stamina: 90, str: 80, int: 60, dex: 60, will: 60, luck: 40, defense: 0, protection: 2 },
 { raceId: 730206, name: "Commerce Partner", timeLimit: 180, exp: 0.05, height: 1.0, upper: 1.0, lower: 1.0, life: 320, mana: 300, stamina: 90, str: 80, int: 90, dex: 50, will: 80, luck: 80, defense: 2, protection: 2 },
+{ raceId: 730207, name: "Laighlinne Partner", timeLimit: 180, exp: 0.05, height: 1.0, upper: 1.0, lower: 1.0, life: 100, mana: 80, stamina: 90, str: 60, int: 80, dex: 60, will: 50, luck: 40, defense: 0, protection: 2 },
 ]

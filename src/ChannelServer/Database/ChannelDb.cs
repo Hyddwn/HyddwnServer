@@ -315,7 +315,7 @@ namespace Aura.Channel.Database
 				// Ignore items that were in bags that don't exist anymore.
 				if (item.Info.Pocket >= Pocket.ItemBags && item.Info.Pocket <= Pocket.ItemBagsMax && !character.Inventory.Has(item.Info.Pocket))
 				{
-					Log.Debug("GetCharacterItems: Item '{0}' ({1}) is inside a bag that hasn't been loaded yet.", item.Info.Id, item.EntityIdHex);
+					Log.Debug("GetCharacterItems: Item '{0}' ({1:X16}) is inside a bag that hasn't been loaded yet.", item.Info.Id, item.EntityId);
 					continue;
 				}
 
@@ -442,7 +442,7 @@ namespace Aura.Channel.Database
 						{
 							if (!reader.Read())
 							{
-								Log.Warning("ChannelDb.GetItems: No ego data for '{0}'.", item.EntityIdHex);
+								Log.Warning("ChannelDb.GetItems: No ego data for '{0:X16}'.", item.EntityId);
 								continue;
 							}
 
@@ -1068,7 +1068,7 @@ namespace Aura.Channel.Database
 					mc.ExecuteNonQuery();
 				}
 
-				var items = creature.Inventory.Items.Union(creature.Client.Account.Bank.GetTabItems(creature.Name));
+				var items = creature.Inventory.GetItems().Union(creature.Client.Account.Bank.GetTabItems(creature.Name));
 				foreach (var item in items)
 				{
 					using (var cmd = new InsertCommand("INSERT INTO `items` {0}", conn, transaction))

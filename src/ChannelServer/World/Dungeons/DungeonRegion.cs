@@ -83,7 +83,7 @@ namespace Aura.Channel.World.Dungeons
 		/// <param name="creature"></param>
 		public override void RemoveCreature(Creature creature)
 		{
-			foreach (var item in creature.Inventory.Items.ToList().Where(a => a.IsDungeonKey))
+			foreach (var item in creature.Inventory.GetItems(a => a.IsDungeonKey))
 			{
 				creature.Inventory.Remove(item);
 				item.Drop(creature.Region, creature.GetPosition());

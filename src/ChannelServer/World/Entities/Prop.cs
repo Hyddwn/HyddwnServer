@@ -269,7 +269,7 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Format("Prop: 0x{0}, Region: {1}, X: {2}, Y: {3}", this.EntityIdHex, this.Info.Region, this.Info.X, this.Info.Y);
+			return string.Format("Prop: 0x{0:X16}, Region: {1}, X: {2}, Y: {3}", this.EntityId, this.Info.Region, this.Info.X, this.Info.Y);
 		}
 
 		/// <summary>

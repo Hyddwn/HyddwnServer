@@ -446,3 +446,5 @@ femaledisciple/*/run,          373.750000
 Petfairy/dinashee/run,        1268.161000
 Petfairy/dinashee/walk,        211.363800
 Barrel/*/run,                  340.000000
+petship/*/run,                 714.285000
+petship/*/walk,                262.500000

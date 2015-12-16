@@ -78,7 +78,7 @@ namespace Aura.Channel.Network.Handlers
 			Creature target = null;
 			if (targetEntityId != 0 && (target = creature.Region.GetCreature(targetEntityId)) == null)
 			{
-				Log.Warning("Creature '{0}' targetted invalid entity '{1}'.", creature.Name, targetEntityId.ToString("X16"));
+				Log.Warning("Creature '{0}' targetted invalid entity '{1:X16}'.", creature.Name, targetEntityId);
 				Send.Notice(creature, "Invalid target");
 				Send.SetCombatTarget(creature, 0, 0);
 				return;
