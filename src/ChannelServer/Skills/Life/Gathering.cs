@@ -29,7 +29,13 @@ namespace Aura.Channel.Skills.Life
 		/// <summary>
 		/// Range in which gathered items are dropped.
 		/// </summary>
-		private const int DropRange = 50;
+		private const int DropRange = 75;
+
+		/// <summary>
+		/// Distance from the gatherer in which the item is dropped,
+		/// if there's no other item there yet.
+		/// </summary>
+		private const int FeetDropDistance = 20;
 
 		/// <summary>
 		/// Max distance you may be away from the gethering target.
@@ -225,7 +231,16 @@ namespace Aura.Channel.Skills.Life
 				{
 					var item = new Item(itemId);
 					if (collectData.Source == 0)
-						item.Drop(creature.Region, creaturePosition, DropRange, creature, false);
+					{
+						// Try to drop item in the middle, between creature
+						// and target. If there already is an item on that
+						// position, find another random one.
+						var pos = targetPosition.GetRelative(creaturePosition, -FeetDropDistance);
+						for (int i = 0; creature.Region.GetItem(a => a.GetPosition() == pos) != null && i < 10; ++i)
+							pos = creaturePosition.GetRandomInRange(DropRange, rnd);
+
+						item.Drop(creature.Region, pos, 0, creature, false);
+					}
 					else
 					{
 						creature.Inventory.Remove(creature.RightHand);
