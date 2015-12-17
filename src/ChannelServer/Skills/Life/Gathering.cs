@@ -225,7 +225,7 @@ namespace Aura.Channel.Skills.Life
 				{
 					var item = new Item(itemId);
 					if (collectData.Source == 0)
-						item.Drop(creature.Region, creaturePosition.GetRandomInRange(DropRange, rnd), creature, false);
+						item.Drop(creature.Region, creaturePosition, DropRange, creature, false);
 					else
 					{
 						creature.Inventory.Remove(creature.RightHand);
@@ -238,7 +238,7 @@ namespace Aura.Channel.Skills.Life
 				if (itemId != 0)
 				{
 					var item = new Item(itemId);
-					item.Drop(creature.Region, creaturePosition.GetRandomInRange(DropRange, rnd), creature, false);
+					item.Drop(creature.Region, creaturePosition, DropRange, creature, false);
 				}
 			}
 			// TODO: Figure out how fail products work.
@@ -250,7 +250,7 @@ namespace Aura.Channel.Skills.Life
 			//	{
 			//		var item = new Item(itemId);
 			//		if (collectData.Source == 0)
-			//			item.Drop(creature.Region, creaturePosition.GetRandomInRange(DropRange, rnd));
+			//			item.Drop(creature.Region, creaturePosition, DropRange);
 			//		else
 			//		{
 			//			creature.Inventory.Remove(creature.RightHand);
