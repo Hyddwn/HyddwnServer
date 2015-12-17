@@ -1804,7 +1804,7 @@ namespace Aura.Channel.World.Entities
 						}
 
 						var gold = Item.CreateGold(Math.Min(1000, amount));
-						gold.Drop(this.Region, pos, Item.DropRadius, killer, false);
+						gold.Drop(this.Region, dropPos, 0, killer, false);
 
 						amount -= gold.Info.Amount;
 					}
