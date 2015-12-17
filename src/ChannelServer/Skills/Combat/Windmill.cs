@@ -132,7 +132,19 @@ namespace Aura.Channel.Skills.Combat
 			cap.Add(aAction);
 
 			var survived = new List<Creature>();
+			var rnd = RandomProvider.Get();
 
+			// Check crit
+			var crit = false;
+			var critSkill = attacker.Skills.Get(SkillId.CriticalHit);
+			if (critSkill != null && critSkill.Info.Rank > SkillRank.Novice)
+			{
+				var critChance = Math2.Clamp(0, 30, attacker.GetTotalCritChance(0));
+				if (rnd.NextDouble() * 100 < critChance)
+					crit = true;
+			}
+
+			// Handle all targets
 			foreach (var target in targets)
 			{
 				target.StopMove();
@@ -147,8 +159,16 @@ namespace Aura.Channel.Skills.Combat
 				// Elementals
 				damage *= attacker.CalculateElementalDamageMultiplier(target);
 
+				// Crit bonus
+				if (crit)
+				{
+					var bonus = critSkill.RankData.Var1 / 100f;
+					damage = damage + (damage * bonus);
+
+					tAction.Set(TargetOptions.Critical);
+				}
+
 				// Handle skills and reductions
-				CriticalHit.Handle(attacker, attacker.GetTotalCritChance(0), ref damage, tAction);
 				SkillHelper.HandleDefenseProtection(target, ref damage);
 				Defense.Handle(aAction, tAction, ref damage);
 				ManaShield.Handle(target, ref damage, tAction);
@@ -187,7 +207,6 @@ namespace Aura.Channel.Skills.Combat
 			// WM only aggroes one target at a time.
 			if (survived.Count != 0 && attacker.Region.CountAggro(attacker) < 1)
 			{
-				var rnd = RandomProvider.Get();
 				var aggroTarget = survived.Random();
 				aggroTarget.Aggro(attacker);
 			}
