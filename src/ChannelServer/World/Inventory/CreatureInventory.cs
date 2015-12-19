@@ -932,7 +932,7 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="item"></param>
 		/// <param name="tempFallback">Use temp inventory if all others are full?</param>
 		/// <returns></returns>
-		public bool TryAutoAdd(Item item, bool tempFallback)
+		private bool TryAutoAdd(Item item, bool tempFallback)
 		{
 			var success = false;
 
