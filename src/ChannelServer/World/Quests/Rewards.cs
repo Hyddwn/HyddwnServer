@@ -121,7 +121,7 @@ namespace Aura.Channel.World.Quests
 
 		public override void Reward(Creature creature, Quest quest)
 		{
-			creature.Inventory.Add(this.ItemId, this.Amount);
+			creature.GiveItem(this.ItemId, this.Amount);
 			Send.AcquireItemInfo(creature, this.ItemId, this.Amount);
 		}
 	}

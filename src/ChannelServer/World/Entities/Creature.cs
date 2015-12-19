@@ -2278,10 +2278,25 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Adds item to creature's inventory.
 		/// </summary>
-		/// <param name="item"></param>
-		public void GiveItem(Item item)
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public bool GiveItem(int itemId, int amount = 1)
 		{
-			this.Inventory.Add(item, true);
+			var item = new Item(itemId);
+			item.Amount = amount;
+
+			return this.GiveItem(item);
+		}
+
+		/// <summary>
+		/// Adds item to creature's inventory.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public bool GiveItem(Item item)
+		{
+			return this.Inventory.Add(item, true);
 		}
 
 		/// <summary>

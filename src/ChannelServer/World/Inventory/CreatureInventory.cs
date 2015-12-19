@@ -58,6 +58,11 @@ namespace Aura.Channel.World.Inventory
 		/// </summary>
 		private const int GoldItemId = 2000;
 
+		/// <summary>
+		/// Max amount of gold that fit into one stack.
+		/// </summary>
+		private const int GoldStackMax = 1000;
+
 		private Creature _creature;
 		private Dictionary<Pocket, InventoryPocket> _pockets;
 
@@ -860,69 +865,29 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
-		/// Adds a new item to the inventory.
-		/// </summary>
-		/// <remarks>
-		/// For stackables and sacs the amount is capped at stack max.
-		/// - If item is stackable, it will be added to existing stacks first.
-		///   New stacks are added afterwards, if necessary.
-		/// - If item is a sac it's simply added as one item.
-		/// - If it's a normal item, it's added times the amount.
-		/// </remarks>
-		/// <param name="itemId"></param>
-		/// <param name="amount"></param>
-		/// <returns></returns>
-		public bool Add(int itemId, int amount = 1)
-		{
-			var newItem = new Item(itemId);
-			newItem.Amount = amount;
-
-			if (newItem.Data.StackType == StackType.Stackable)
-			{
-				// Insert new stacks till amount is 0.
-				int stackMax = newItem.Data.StackMax;
-				do
-				{
-					var stackAmount = Math.Min(stackMax, amount);
-
-					var stackItem = new Item(itemId);
-					stackItem.Amount = stackAmount;
-
-					var result = this.Insert(stackItem, true);
-					if (!result)
-						return false;
-
-					amount -= stackAmount;
-				}
-				while (amount > 0);
-			}
-			else if (newItem.Data.StackType == StackType.Sac)
-			{
-				// Add sac item with amount once
-				return this.Add(newItem, true);
-			}
-			else
-			{
-				// Add item x times
-				for (int i = 0; i < amount; ++i)
-				{
-					if (!this.Add(new Item(itemId), true))
-						return false;
-				}
-				return true;
-			}
-
-			return false;
-		}
-
-		/// <summary>
-		/// Adds new gold stacks to the inventory until the amount was added.
+		/// Adds new gold stacks to the inventory until the amount was added,
+		/// using temp as fallback. Returns false if something went wrong,
+		/// and not everything could be added.
 		/// </summary>
 		/// <param name="amount"></param>
 		/// <returns></returns>
 		public bool AddGold(int amount)
 		{
-			return this.Add(GoldItemId, amount);
+			// Insert new stacks till amount is 0.
+			do
+			{
+				var stackAmount = Math.Min(GoldStackMax, amount);
+
+				var stackItem = new Item(GoldItemId);
+				stackItem.Amount = stackAmount;
+				amount -= stackAmount;
+
+				if (!this.Insert(stackItem, true))
+					return false;
+			}
+			while (amount > 0);
+
+			return true;
 		}
 
 		/// <summary>

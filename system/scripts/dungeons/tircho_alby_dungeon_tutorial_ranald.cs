@@ -67,7 +67,7 @@ public class AlbyTutorialDungeonScript : DungeonScript
 	{
 		// Give pass again if lost
 		if (!creature.Keywords.Has("Clear_Tutorial_Alby_Dungeon"))
-			creature.Inventory.Add(63180); // Trefor's Pass
+			creature.GiveItem(63180); // Trefor's Pass
 	}
 
 	List<DropData> drops;

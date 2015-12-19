@@ -854,7 +854,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		public bool GiveItem(int itemId, int amount = 1)
 		{
-			return this.Player.Inventory.Add(itemId, amount);
+			return this.Player.GiveItem(itemId, amount);
 		}
 
 		/// <summary>
