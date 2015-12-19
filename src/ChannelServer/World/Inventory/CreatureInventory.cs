@@ -568,6 +568,10 @@ namespace Aura.Channel.World.Inventory
 				}
 			}
 
+			// Inform about temp moves (items in temp don't count for quest objectives?)
+			if (source == Pocket.Temporary && target == Pocket.Cursor)
+				ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Info.Amount);
+
 			this.UpdateInventory(item, source, target);
 
 			return true;
@@ -671,32 +675,10 @@ namespace Aura.Channel.World.Inventory
 			var newItem = new Item(item);
 			newItem.IsNew = true;
 
-			var insertSuccess = this.Insert(newItem, false);
-			var success = false;
+			var success = this.Insert(newItem, false);
 
-			// Success is insert for normals, sacs and stacks that were added
-			// as a whole, or an amount changed for stacks that were added
-			// partially.
-			if (insertSuccess || newItem.Info.Amount != originalAmount)
-			{
-				if (_creature.IsPlayer)
-				{
-					// Notify everybody about receiving the item, amount being
-					// the amount of items actually picked up. The new item
-					// initially has the full amount, which is being reduced
-					// by Insert, for each unit put in a stack.
-					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, newItem.Info.Id, (originalAmount - newItem.Info.Amount));
-
-					// If item was a sac, we have to notify the server about
-					// receiving its *contents* as well.
-					if (newItem.Data.StackType == StackType.Sac)
-						ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, newItem.Data.StackItemId, newItem.Info.Amount);
-				}
-
-				success = (insertSuccess || newItem.Info.Amount == 0);
-			}
-
-			// Remove original item from floor on full success.
+			// Remove item from floor if it was completely added to
+			// the inventory, into existing or new stacks.
 			if (success)
 			{
 				_creature.Region.RemoveItem(item);
@@ -778,6 +760,17 @@ namespace Aura.Channel.World.Inventory
 				// Add bag pocket if it doesn't already exist.
 				if (item.OptionInfo.LinkedPocketId != Pocket.None && !this.Has(item.OptionInfo.LinkedPocketId))
 					this.AddBagPocket(item);
+
+				if (_creature.IsPlayer && pocket != Pocket.Temporary)
+				{
+					// Notify everybody about receiving the item.
+					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Amount);
+
+					// If item was a sac, we have to notify the server about
+					// receiving its *contents* as well.
+					if (item.Data.StackType == StackType.Sac)
+						ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Data.StackItemId, item.Info.Amount);
+				}
 			}
 
 			return success;
@@ -832,6 +825,11 @@ namespace Aura.Channel.World.Inventory
 		{
 			changed = null;
 
+			var originalAmount = item.Amount;
+
+			// TODO: Maybe it would be cleaner to ask the pockets for a list
+			//   of certain items, that we can fill into, instead of them
+			//   returning lists of changed items via out.
 			if (item.Data.StackType == StackType.Stackable)
 			{
 				// Try stacks/sacs first
@@ -863,19 +861,11 @@ namespace Aura.Channel.World.Inventory
 					}
 				}
 
-				// Add new item stacks as long as needed.
-				while (item.Info.Amount > item.Data.StackMax)
-				{
-					var newStackItem = new Item(item);
-					newStackItem.Info.Amount = item.Data.StackMax;
-
-					// Break if no new items can be added (no space left)
-					if (!this.TryAutoAdd(newStackItem, false))
-						break;
-
-					Send.ItemNew(_creature, newStackItem);
-					item.Info.Amount -= item.Data.StackMax;
-				}
+				// Notify everybody about receiving the item, amount being
+				// the amount of items filled into stacks.
+				var inserted = (originalAmount - item.Info.Amount);
+				if (inserted > 0 && _creature.IsPlayer)
+					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, inserted);
 
 				if (item.Info.Amount == 0)
 					return true;
@@ -920,6 +910,7 @@ namespace Aura.Channel.World.Inventory
 		private bool TryAutoAdd(Item item, bool tempFallback)
 		{
 			var success = false;
+			var inTemp = false;
 
 			lock (_pockets)
 			{
@@ -947,7 +938,21 @@ namespace Aura.Channel.World.Inventory
 
 				// Try temp
 				if (!success && tempFallback)
+				{
 					success = _pockets[Pocket.Temporary].Add(item);
+					inTemp = true;
+				}
+			}
+
+			if (success && _creature.IsPlayer && !inTemp)
+			{
+				// Notify everybody about receiving the item.
+				ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Amount);
+
+				// If item was a sac, we have to notify the server about
+				// receiving its *contents* as well.
+				if (item.Data.StackType == StackType.Sac)
+					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Data.StackItemId, item.Info.Amount);
 			}
 
 			return success;

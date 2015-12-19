@@ -259,6 +259,8 @@ namespace Aura.Channel.Network.Handlers
 			// Remove and reveive events for player and pet
 			ChannelServer.Instance.Events.OnPlayerRemovesItem(pet, item.Info.Id, item.Info.Amount);
 			ChannelServer.Instance.Events.OnPlayerReceivesItem(creature, item.Info.Id, item.Info.Amount);
+			if (item.Data.StackType == StackType.Sac)
+				ChannelServer.Instance.Events.OnPlayerReceivesItem(creature, item.Data.StackItemId, item.Info.Amount);
 
 			// Response
 			Send.TakeItemFromPetInvR(creature, true);

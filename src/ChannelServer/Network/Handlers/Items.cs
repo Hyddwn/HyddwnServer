@@ -81,10 +81,6 @@ namespace Aura.Channel.Network.Handlers
 			if (target.IsEquip())
 				ChannelServer.Instance.Events.OnPlayerEquipsItem(creature, item);
 
-			// Inform about temp moves (items in temp don't count for quest objectives?)
-			if (source == Pocket.Temporary && target == Pocket.Cursor)
-				ChannelServer.Instance.Events.OnPlayerReceivesItem(creature, item.Info.Id, item.Info.Amount);
-
 			Send.ItemMoveR(creature, true);
 			return;
 
