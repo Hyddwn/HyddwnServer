@@ -8,8 +8,8 @@ public class TreforBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_trefor");
 		SetRace(10002);
+		SetName("_trefor");
 		SetBody(height: 1.35f);
 		SetFace(skinColor: 20, eyeColor: 27);
 		SetStand("human/male/anim/male_natural_stand_npc_trefor02", "human/male/anim/male_natural_stand_npc_trefor_talk");

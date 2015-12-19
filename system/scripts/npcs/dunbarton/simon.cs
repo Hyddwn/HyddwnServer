@@ -8,8 +8,8 @@ public class SimonScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_simon");
 		SetRace(10002);
+		SetName("_simon");
 		SetBody(height: 1.10f, weight: 0.8f, upper: 0.8f, lower: 0.8f);
 		SetFace(skinColor: 15, eyeType: 8, eyeColor: 25, mouthType: 0);
 		SetStand("human/male/anim/male_natural_stand_npc_Simon");

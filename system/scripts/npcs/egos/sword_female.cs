@@ -8,8 +8,8 @@ public class SpiritSwordFScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ego_female_sword");
 		SetRace(1);
+		SetName("_ego_female_sword");
 		SetLocation(22, 5800, 7100, 0);
 	}
 

@@ -8,8 +8,8 @@ public class AusteynScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_austeyn");
 		SetRace(10002);
+		SetName("_austeyn");
 		SetBody(upper: 1.2f);
 		SetFace(skinColor: 16, eyeType: 8, eyeColor: 84, mouthType: 1);
 		SetLocation(20, 660, 770, 251);

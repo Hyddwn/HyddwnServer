@@ -8,8 +8,8 @@ public class LassarScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_lassar");
 		SetRace(10001);
+		SetName("_lassar");
 		SetBody(height: 1.1f);
 		SetFace(skinColor: 15, eyeType: 153, eyeColor: 25, mouthType: 2);
 		SetStand("human/female/anim/female_natural_stand_npc_lassar02");

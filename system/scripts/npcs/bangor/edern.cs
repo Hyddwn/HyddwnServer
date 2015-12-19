@@ -8,8 +8,8 @@ public class EdernScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_edern");
 		SetRace(10002);
+		SetName("_edern");
 		SetBody(height: 1.3f, weight: 1.4f, upper: 2f, lower: 1.4f);
 		SetFace(skinColor: 25, eyeType: 9, eyeColor: 38, mouthType: 2);
 		SetStand("human/male/anim/male_natural_stand_npc_edern");

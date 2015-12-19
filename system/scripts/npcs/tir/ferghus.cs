@@ -8,8 +8,8 @@ public class FerghusScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ferghus");
 		SetRace(10002);
+		SetName("_ferghus");
 		SetBody(height: 1.1f, upper: 1.4f, lower: 1.1f);
 		SetFace(skinColor: 23, eyeType: 3, eyeColor: 112, mouthType: 4);
 		SetStand("human/male/anim/male_natural_stand_npc_Ferghus_retake");

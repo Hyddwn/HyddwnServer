@@ -8,8 +8,8 @@ public class NoraBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_nora");
 		SetRace(10001);
+		SetName("_nora");
 		SetBody(height: 0.85f);
 		SetFace(skinColor: 17);
 		SetStand("human/female/anim/female_natural_stand_npc_nora02");

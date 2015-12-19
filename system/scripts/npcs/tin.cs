@@ -10,8 +10,8 @@ public class TinScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_tin");
 		SetRace(10002);
+		SetName("_tin");
 		SetBody(height: 0.1f);
 		SetFace(skinColor: 15, eyeType: 15, eyeColor: 47);
 		SetStand("human/male/anim/male_stand_Tarlach_anguish");
@@ -198,9 +198,9 @@ public class TinSoulStreamScript : NpcScript
 {
 	public override void Load()
 	{
+		SetRace(10002);
 		SetId(MabiId.Tin);
 		SetName("_tin_soul_stream");
-		SetRace(10002);
 		SetLocation(22, 6313, 5712);
 	}
 

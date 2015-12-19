@@ -10,9 +10,9 @@ public class NaoScript : NpcScript
 {
 	public override void Load()
 	{
+		SetRace(1);
 		SetId(MabiId.Nao);
 		SetName("_nao");
-		SetRace(1);
 		SetLocation(22, 6013, 5712);
 	}
 

@@ -8,8 +8,8 @@ public class EiryScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ego_eiry");
 		SetRace(1);
+		SetName("_ego_eiry");
 		SetLocation(22, 5800, 7100, 0);
 	}
 

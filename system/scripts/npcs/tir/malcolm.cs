@@ -8,8 +8,8 @@ public class MalcolmBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_malcolm");
 		SetRace(10002);
+		SetName("_malcolm");
 		SetBody(height: 1.22f);
 		SetFace(skinColor: 16, eyeType: 26, eyeColor: 162);
 		SetStand("human/male/anim/male_natural_stand_npc_malcolm_retake", "human/male/anim/male_natural_stand_npc_malcolm_talk");

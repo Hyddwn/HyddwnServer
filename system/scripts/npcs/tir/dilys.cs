@@ -8,8 +8,8 @@ public class DilysScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_dilys");
 		SetRace(10001);
+		SetName("_dilys");
 		SetBody(height: 0.9f, upper: 1.2f);
 		SetFace(skinColor: 17, eyeType: 3, eyeColor: 27, mouthType: 48);
 		SetStand("human/female/anim/female_natural_stand_npc_Dilys_retake");

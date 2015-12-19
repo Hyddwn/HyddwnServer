@@ -8,8 +8,8 @@ public class RiocardScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_riocard");
 		SetRace(10002);
+		SetName("_riocard");
 		SetBody(height: 0.7f);
 		SetFace(skinColor: 20, eyeType: 2, eyeColor: 60, mouthType: 1);
 		SetStand("human/male/anim/male_natural_stand_npc_riocard");

@@ -8,8 +8,8 @@ public class GilmoreScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_gilmore");
 		SetRace(10002);
+		SetName("_gilmore");
 		SetBody(height: 0.8f, weight: 0.4f);
 		SetFace(skinColor: 17, eyeType: 7, eyeColor: 76, mouthType: 1);
 		SetStand("human/male/anim/male_natural_stand_npc_gilmore");

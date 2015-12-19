@@ -8,8 +8,8 @@ public class AeiraScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_aeira");
 		SetRace(10001);
+		SetName("_aeira");
 		SetBody(height: 0.8f);
 		SetFace(skinColor: 16, eyeType: 2, eyeColor: 27, mouthType: 1);
 		SetStand("human/female/anim/female_natural_stand_npc_Aeira");

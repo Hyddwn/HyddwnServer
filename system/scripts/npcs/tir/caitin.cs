@@ -8,8 +8,8 @@ public class CaitinBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_caitin");
 		SetRace(10001);
+		SetName("_caitin");
 		SetBody(height: 1.03f);
 		SetFace(skinColor: 15, eyeType: 82, eyeColor: 27, mouthType: 43);
 		SetStand("human/female/anim/female_natural_stand_npc_Caitin_new");

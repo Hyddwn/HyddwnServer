@@ -8,8 +8,8 @@ public class TriggerPatronScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("Trigger");
 		SetRace(10002);
+		SetName("Trigger");
 		SetFace(skinColor: 16, eyeType: 30, eyeColor: 52, mouthType: 2);
 
 		EquipItem(Pocket.Face, 4909, 16);

@@ -8,8 +8,8 @@ public class BryceScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_bryce");
 		SetRace(10002);
+		SetName("_bryce");
 		SetBody(height: 1.1f, upper: 1.5f);
 		SetFace(skinColor: 20, eyeType: 5, eyeColor: 76, mouthType: 12);
 		SetStand("human/male/anim/male_natural_stand_npc_bryce");

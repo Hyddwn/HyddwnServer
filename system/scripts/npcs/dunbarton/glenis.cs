@@ -8,8 +8,8 @@ public class GlenisScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_glenis");
 		SetRace(10001);
+		SetName("_glenis");
 		SetBody(height: 0.8f, weight: 0.3f, upper: 1.4f, lower: 1.2f);
 		SetFace(skinColor: 15, eyeType: 7, eyeColor: 119, mouthType: 1);
 		SetStand("human/female/anim/female_natural_stand_npc_Glenis");

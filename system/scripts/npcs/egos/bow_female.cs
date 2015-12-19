@@ -8,8 +8,8 @@ public class SpiritBowFScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ego_female_bow");
 		SetRace(1);
+		SetName("_ego_female_bow");
 		SetLocation(22, 5800, 7100, 0);
 	}
 

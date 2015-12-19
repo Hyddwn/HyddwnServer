@@ -8,8 +8,8 @@ public class SpiritSwordMScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ego_male_sword");
 		SetRace(1);
+		SetName("_ego_male_sword");
 		SetLocation(22, 5800, 7100, 0);
 	}
 

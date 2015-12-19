@@ -14,8 +14,8 @@ public class SionScript : NpcScript
 
 	public override void Load()
 	{
-		SetName("_sion");
 		SetRace(10002);
+		SetName("_sion");
 		SetBody(height: 0.1f, upper: 1.3f, lower: 1.3f);
 		SetFace(skinColor: 17, eyeType: 2, eyeColor: 27, mouthType: 3);
 		SetStand("human/anim/tool/Rhand_A/female_tool_Rhand_A02_stand_friendly");

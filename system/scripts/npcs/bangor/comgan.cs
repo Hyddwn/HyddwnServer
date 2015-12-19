@@ -8,8 +8,8 @@ public class ComganScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_comgan");
 		SetRace(10002);
+		SetName("_comgan");
 		SetBody(height: 0.6f);
 		SetFace(skinColor: 15, eyeType: 3, eyeColor: 55, mouthType: 1);
 		SetStand("human/male/anim/male_natural_stand_npc_Duncan");

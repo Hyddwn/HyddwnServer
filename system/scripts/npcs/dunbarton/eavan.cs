@@ -8,8 +8,8 @@ public class EavanScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_eavan");
 		SetRace(10001);
+		SetName("_eavan");
 		SetBody(weight: 0.7f, upper: 0.7f, lower: 0.7f);
 		SetFace(skinColor: 15, eyeType: 3, eyeColor: 3);
 		SetStand("human/female/anim/female_natural_stand_npc_Eavan");

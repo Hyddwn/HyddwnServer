@@ -8,8 +8,8 @@ public class NerysScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_nerys");
 		SetRace(10001);
+		SetName("_nerys");
 		SetBody(height: 0.9f);
 		SetFace(skinColor: 16, eyeType: 4, eyeColor: 31);
 		SetStand("human/female/anim/female_natural_stand_npc_Nerys");

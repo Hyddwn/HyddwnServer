@@ -8,8 +8,8 @@ public class JeniferScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_jenifer");
 		SetRace(10001);
+		SetName("_jenifer");
 		SetBody(height: 1.1f, weight: 1.1f, lower: 1.1f);
 		SetFace(skinColor: 17, eyeType: 4, eyeColor: 119, mouthType: 1);
 		SetStand("human/female/anim/female_natural_stand_npc_lassar");

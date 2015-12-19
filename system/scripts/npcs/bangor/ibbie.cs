@@ -8,8 +8,8 @@ public class IbbieScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ibbie");
 		SetRace(10001);
+		SetName("_ibbie");
 		SetBody(height: 0f);
 		SetFace(skinColor: 15, eyeColor: 90);
 		SetStand("human/anim/female_natural_sit_02");

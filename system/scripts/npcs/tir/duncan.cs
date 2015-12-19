@@ -8,8 +8,8 @@ public class DuncanBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_duncan");
 		SetRace(10002);
+		SetName("_duncan");
 		SetBody(height: 1.3f);
 		SetFace(skinColor: 20, eyeType: 17);
 		SetStand("human/male/anim/male_natural_stand_npc_duncan_new", "male_natural_stand_npc_Duncan_talk");

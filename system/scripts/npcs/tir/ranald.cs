@@ -8,8 +8,8 @@ public class RanaldBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ranald");
 		SetRace(10002);
+		SetName("_ranald");
 		SetBody(upper: 1.1f);
 		SetFace(skinColor: 20);
 		SetStand("human/male/anim/male_natural_stand_npc_ranald02", "human/male/anim/male_natural_stand_npc_ranald_talk");

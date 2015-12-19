@@ -8,8 +8,8 @@ public class EndelyonScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_endelyon");
 		SetRace(10001);
+		SetName("_endelyon");
 		SetBody(height: 1.06f);
 		SetFace(skinColor: 17);
 		SetStand("human/female/anim/female_natural_stand_npc_Endelyon");

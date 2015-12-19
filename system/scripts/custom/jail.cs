@@ -12,8 +12,8 @@ public class JailScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("Warden");
 		SetRace(8002);
+		SetName("Warden");
 		SetBody(height: 1.2f, upper: 1.1f, weight: 1.1f);
 		SetFace(skinColor: 27, eyeType: 55, eyeColor: 76, mouthType: 26);
 

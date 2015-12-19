@@ -8,8 +8,8 @@ public class KristellScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_kristell");
 		SetRace(10001);
+		SetName("_kristell");
 		SetBody(height: 0.97f);
 		SetFace(skinColor: 15, eyeType: 3, eyeColor: 191);
 		SetStand("human/female/anim/female_natural_stand_npc_Kristell");
