@@ -137,6 +137,11 @@ namespace Aura.Channel.World.Inventory
 		public Pocket LeftHandPocket { get { return (this.WeaponSet == WeaponSet.First ? Pocket.LeftHand1 : Pocket.LeftHand2); } }
 
 		/// <summary>
+		/// The currently active magazine pocket (ammunition).
+		/// </summary>
+		public Pocket MagazinePocket { get { return (this.WeaponSet == WeaponSet.First ? Pocket.Magazine1 : Pocket.Magazine2); } }
+
+		/// <summary>
 		/// Reference to the item currently equipped in the right hand.
 		/// </summary>
 		public Item RightHand { get; protected set; }
@@ -701,6 +706,25 @@ namespace Aura.Channel.World.Inventory
 		// Adding
 		// ------------------------------------------------------------------
 
+		/// <summary>
+		/// Adds item to pocket at the position it currently has.
+		/// Returns false if pocket doesn't exist.
+		/// </summary>
+		public bool InitAdd(Item item)
+		{
+			lock (_pockets)
+			{
+				if (!_pockets.ContainsKey(item.Info.Pocket))
+					return false;
+
+				_pockets[item.Info.Pocket].AddUnsafe(item);
+			}
+
+			this.UpdateEquipReferences();
+
+			return true;
+		}
+
 		// TODO: Add central "Add" method that all others use, for central stuff
 		//   like adding bag pockets. This wil require a GetFreePosition
 		//   method in the pockets.
@@ -732,25 +756,6 @@ namespace Aura.Channel.World.Inventory
 			}
 
 			return success;
-		}
-
-		/// <summary>
-		/// Adds item to pocket at the position it currently has.
-		/// Returns false if pocket doesn't exist.
-		/// </summary>
-		public bool InitAdd(Item item)
-		{
-			lock (_pockets)
-			{
-				if (!_pockets.ContainsKey(item.Info.Pocket))
-					return false;
-
-				_pockets[item.Info.Pocket].AddUnsafe(item);
-			}
-
-			this.UpdateEquipReferences(item.Info.Pocket);
-
-			return true;
 		}
 
 		/// <summary>
@@ -1151,7 +1156,7 @@ namespace Aura.Channel.World.Inventory
 		{
 			this.CheckLeftHand(item, source, target);
 			this.CheckRightHand(item, source, target);
-			this.UpdateEquipReferences(source, target);
+			this.UpdateEquipReferences();
 			this.CheckEquipMoved(item, source, target);
 		}
 
@@ -1274,26 +1279,13 @@ namespace Aura.Channel.World.Inventory
 		/// Updates quick access equipment refernces.
 		/// </summary>
 		/// <param name="toCheck"></param>
-		private void UpdateEquipReferences(params Pocket[] toCheck)
+		private void UpdateEquipReferences()
 		{
-			var firstSet = (this.WeaponSet == WeaponSet.First);
-			var updatedHands = false;
-
-			foreach (var pocket in toCheck)
+			lock (_pockets)
 			{
-				// Update all "hands" at once, easier.
-				if (!updatedHands && pocket >= Pocket.RightHand1 && pocket <= Pocket.Magazine2)
-				{
-					lock (_pockets)
-					{
-						this.RightHand = _pockets[firstSet ? Pocket.RightHand1 : Pocket.RightHand2].GetItemAt(0, 0);
-						this.LeftHand = _pockets[firstSet ? Pocket.LeftHand1 : Pocket.LeftHand2].GetItemAt(0, 0);
-						this.Magazine = _pockets[firstSet ? Pocket.Magazine1 : Pocket.Magazine2].GetItemAt(0, 0);
-					}
-
-					// Don't do it twice.
-					updatedHands = true;
-				}
+				this.RightHand = _pockets[this.RightHandPocket].GetItemAt(0, 0);
+				this.LeftHand = _pockets[this.LeftHandPocket].GetItemAt(0, 0);
+				this.Magazine = _pockets[this.MagazinePocket].GetItemAt(0, 0);
 			}
 		}
 
@@ -1401,7 +1393,7 @@ namespace Aura.Channel.World.Inventory
 		public void ChangeWeaponSet(WeaponSet set)
 		{
 			this.WeaponSet = set;
-			this.UpdateEquipReferences(Pocket.RightHand1, Pocket.LeftHand1, Pocket.Magazine1);
+			this.UpdateEquipReferences();
 
 			// Make sure the creature is logged in
 			if (_creature.Region != Region.Limbo)
