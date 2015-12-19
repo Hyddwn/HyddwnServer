@@ -718,14 +718,13 @@ namespace Aura.Channel.World.Inventory
 		public void ChangeWeaponSet(WeaponSet set)
 		{
 			this.WeaponSet = set;
+
 			this.UpdateEquipReferences();
+			this.UpdateEquipStats();
 
 			// Make sure the creature is logged in
 			if (_creature.Region != Region.Limbo)
-			{
-				this.UpdateEquipStats();
 				Send.UpdateWeaponSet(_creature);
-			}
 		}
 
 		// Adding
@@ -745,7 +744,8 @@ namespace Aura.Channel.World.Inventory
 				_pockets[item.Info.Pocket].AddUnsafe(item);
 			}
 
-			this.UpdateEquipReferences();
+			if (item.Info.Pocket.IsEquip())
+				this.UpdateEquipReferences();
 
 			return true;
 		}
@@ -1141,8 +1141,7 @@ namespace Aura.Channel.World.Inventory
 		{
 			this.CheckLeftHand(item, source, target);
 			this.CheckRightHand(item, source, target);
-			this.UpdateEquipReferences();
-			this.CheckEquipMoved(item, source, target);
+			this.UpdateEquip(item, source, target);
 		}
 
 		/// <summary>
@@ -1261,26 +1260,12 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
-		/// Updates quick access equipment refernces.
-		/// </summary>
-		/// <param name="toCheck"></param>
-		private void UpdateEquipReferences()
-		{
-			lock (_pockets)
-			{
-				this.RightHand = _pockets[this.RightHandPocket].GetItemAt(0, 0);
-				this.LeftHand = _pockets[this.LeftHandPocket].GetItemAt(0, 0);
-				this.Magazine = _pockets[this.MagazinePocket].GetItemAt(0, 0);
-			}
-		}
-
-		/// <summary>
 		/// Runs equipment updates if necessary.
 		/// </summary>
 		/// <param name="item"></param>
 		/// <param name="source"></param>
 		/// <param name="target"></param>
-		private void CheckEquipMoved(Item item, Pocket source, Pocket target)
+		private void UpdateEquip(Item item, Pocket source, Pocket target)
 		{
 			if (_creature.Region != Region.Limbo)
 			{
@@ -1293,7 +1278,24 @@ namespace Aura.Channel.World.Inventory
 
 			// Send stat update when moving equipment
 			if (source.IsEquip() || target.IsEquip())
+			{
+				this.UpdateEquipReferences();
 				this.UpdateEquipStats();
+			}
+		}
+
+		/// <summary>
+		/// Updates quick access equipment refernces.
+		/// </summary>
+		/// <param name="toCheck"></param>
+		private void UpdateEquipReferences()
+		{
+			lock (_pockets)
+			{
+				this.RightHand = _pockets[this.RightHandPocket].GetItemAt(0, 0);
+				this.LeftHand = _pockets[this.LeftHandPocket].GetItemAt(0, 0);
+				this.Magazine = _pockets[this.MagazinePocket].GetItemAt(0, 0);
+			}
 		}
 
 		/// <summary>
@@ -1344,6 +1346,9 @@ namespace Aura.Channel.World.Inventory
 					.SelectMany(pocket => pocket.Items.Where(a => a != null))
 					.Sum(item => item.OptionInfo.Protection);
 		}
+
+		// Functions
+		// ------------------------------------------------------------------
 
 		/// <summary>
 		/// Reduces durability and updates client.
