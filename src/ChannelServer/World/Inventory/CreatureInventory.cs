@@ -16,9 +16,6 @@ namespace Aura.Channel.World.Inventory
 	/// <summary>
 	/// Inventory for players
 	/// </summary>
-	/// <remarks>
-	/// TODO: I'm dirty and unsafe, clean me up.
-	/// </remarks>
 	public class CreatureInventory
 	{
 		/// <summary>
@@ -531,10 +528,10 @@ namespace Aura.Channel.World.Inventory
 
 			var source = item.Info.Pocket;
 			var amount = item.Info.Amount;
+			Item collidingItem = null;
 
 			lock (_pockets)
 			{
-				Item collidingItem = null;
 				if (!_pockets[target].TryAdd(item, targetX, targetY, out collidingItem))
 					return false;
 
@@ -572,7 +569,29 @@ namespace Aura.Channel.World.Inventory
 			if (source == Pocket.Temporary && target == Pocket.Cursor)
 				ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Info.Amount);
 
-			this.UpdateInventory(item, source, target);
+			// Check movement
+			this.CheckLeftHand(item, source, target);
+			this.CheckRightHand(item, source, target);
+
+			// Equip handling
+			if (target.IsEquip())
+			{
+				this.UpdateEquipReferences();
+				this.OnEquip(item);
+				if (collidingItem != null)
+					this.OnUnequip(collidingItem);
+				this.UpdateEquipStats();
+
+				Send.EquipmentChanged(_creature, item);
+			}
+			else if (source.IsEquip())
+			{
+				this.UpdateEquipReferences();
+				this.OnUnequip(item);
+				this.UpdateEquipStats();
+
+				Send.EquipmentMoved(_creature, source);
+			}
 
 			return true;
 		}
@@ -601,9 +620,9 @@ namespace Aura.Channel.World.Inventory
 			// http://dev.mabinoger.com/forum/index.php/topic/804-pet-inventory/
 			var newItem = new Item(item);
 
+			Item collidingItem = null;
 			lock (_pockets)
 			{
-				Item collidingItem = null;
 				if (!other.Inventory._pockets[target].TryAdd(newItem, (byte)targetX, (byte)targetY, out collidingItem))
 					return false;
 
@@ -646,7 +665,29 @@ namespace Aura.Channel.World.Inventory
 				}
 			}
 
-			pet.Inventory.UpdateInventory(newItem, source, target);
+			// Check movement
+			pet.Inventory.CheckLeftHand(item, source, target);
+			pet.Inventory.CheckRightHand(item, source, target);
+
+			// Equip handling
+			if (target.IsEquip())
+			{
+				pet.Inventory.UpdateEquipReferences();
+				pet.Inventory.OnEquip(item);
+				if (collidingItem != null)
+					pet.Inventory.OnUnequip(collidingItem);
+				pet.Inventory.UpdateEquipStats();
+
+				Send.EquipmentChanged(_creature, item);
+			}
+			else if (source.IsEquip())
+			{
+				pet.Inventory.UpdateEquipReferences();
+				pet.Inventory.OnUnequip(item);
+				pet.Inventory.UpdateEquipStats();
+
+				Send.EquipmentMoved(_creature, source);
+			}
 
 			return true;
 		}
@@ -699,9 +740,21 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="set"></param>
 		public void ChangeWeaponSet(WeaponSet set)
 		{
-			this.WeaponSet = set;
+			var unequipRightHand = this.RightHand;
+			var unequipLeftHand = this.LeftHand;
+			var unequipMagazine = this.Magazine;
 
+			this.WeaponSet = set;
 			this.UpdateEquipReferences();
+
+			if (unequipRightHand != null) this.OnUnequip(unequipRightHand);
+			if (unequipLeftHand != null) this.OnUnequip(unequipLeftHand);
+			if (unequipMagazine != null) this.OnUnequip(unequipMagazine);
+
+			if (this.RightHand != null) this.OnEquip(this.RightHand);
+			if (this.LeftHand != null) this.OnEquip(this.LeftHand);
+			if (this.Magazine != null) this.OnEquip(this.Magazine);
+
 			this.UpdateEquipStats();
 
 			// Make sure the creature is logged in
@@ -727,7 +780,11 @@ namespace Aura.Channel.World.Inventory
 			}
 
 			if (item.Info.Pocket.IsEquip())
+			{
 				this.UpdateEquipReferences();
+				this.OnEquip(item);
+				this.UpdateEquipStats();
+			}
 
 			return true;
 		}
@@ -755,7 +812,6 @@ namespace Aura.Channel.World.Inventory
 			if (success)
 			{
 				Send.ItemNew(_creature, item);
-				this.UpdateInventory(item, Pocket.None, pocket);
 
 				// Add bag pocket if it doesn't already exist.
 				if (item.OptionInfo.LinkedPocketId != Pocket.None && !this.Has(item.OptionInfo.LinkedPocketId))
@@ -770,6 +826,16 @@ namespace Aura.Channel.World.Inventory
 					// receiving its *contents* as well.
 					if (item.Data.StackType == StackType.Sac)
 						ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Data.StackItemId, item.Info.Amount);
+				}
+
+				if (pocket.IsEquip())
+				{
+					this.UpdateEquipReferences();
+					this.OnEquip(item);
+					this.UpdateEquipStats();
+
+					if (_creature.Region != Region.Limbo)
+						Send.EquipmentChanged(_creature, item);
 				}
 			}
 
@@ -974,8 +1040,6 @@ namespace Aura.Channel.World.Inventory
 				{
 					Send.ItemRemove(_creature, item);
 
-					this.UpdateInventory(item, item.Info.Pocket, Pocket.None);
-
 					// Remove bag pocket
 					if (item.OptionInfo.LinkedPocketId != Pocket.None)
 					{
@@ -984,6 +1048,16 @@ namespace Aura.Channel.World.Inventory
 					}
 
 					ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, item.Info.Id, item.Info.Amount);
+
+					if (item.Info.Pocket.IsEquip())
+					{
+						this.UpdateEquipReferences();
+						this.OnUnequip(item);
+						this.UpdateEquipStats();
+
+						if (_creature.Region != Region.Limbo)
+							Send.EquipmentMoved(_creature, item.Info.Pocket);
+					}
 
 					return true;
 				}
@@ -1137,16 +1211,59 @@ namespace Aura.Channel.World.Inventory
 		// ------------------------------------------------------------------
 
 		/// <summary>
-		/// Checks and updates all equipment references for source and target.
+		/// Called when an item is equipped, or becomes "active".
+		/// Calls and sets the appropriate events and stat bonuses.
+		/// Does not update the client.
 		/// </summary>
+		/// <remarks>
+		/// Before this is called, the references should be updated,
+		/// so the subscribers see the character as he is *after*
+		/// equipping the item. For example, to check the equipment
+		/// for custom set bonuses.
+		/// 
+		/// Afterwards the equip stats should be updated, so the client
+		/// displays the changes.
+		/// 
+		/// Both of these things aren't done inside this method, because
+		/// there are cases where we have to equip/unequip multiple items,
+		/// and we don't want to spam the client.
+		/// 
+		/// You also have to take care of the visual equipment updates,
+		/// for similar reasons.
+		/// </remarks>
 		/// <param name="item"></param>
-		/// <param name="source"></param>
-		/// <param name="target"></param>
-		private void UpdateInventory(Item item, Pocket source, Pocket target)
+		private void OnEquip(Item item)
 		{
-			this.CheckLeftHand(item, source, target);
-			this.CheckRightHand(item, source, target);
-			this.UpdateEquip(item, source, target);
+			if (_creature.IsPlayer)
+				ChannelServer.Instance.Events.OnPlayerEquipsItem(_creature, item);
+		}
+
+		/// <summary>
+		/// Called when an item is unequipped, or becomes "inactive".
+		/// Calls and removes the appropriate events and stat bonuses.
+		/// Does not update the client.
+		/// </summary>
+		/// <remarks>
+		/// Before this is called, the references should be updated,
+		/// so the subscribers see the character as he is *after*
+		/// unequipping the item. For example, to check the equipment
+		/// for custom set bonuses.
+		/// 
+		/// Afterwards the equip stats should be updated, so the client
+		/// displays the changes.
+		/// 
+		/// Both of these things aren't done inside this method, because
+		/// there are cases where we have to equip/unequip multiple items,
+		/// and we don't want to spam the client.
+		/// 
+		/// You also have to take care of the visual equipment updates,
+		/// for similar reasons.
+		/// </remarks>
+		/// <param name="item"></param>
+		private void OnUnequip(Item item)
+		{
+			if (_creature.IsPlayer)
+				ChannelServer.Instance.Events.OnPlayerUnequipsItem(_creature, item);
 		}
 
 		/// <summary>
@@ -1176,7 +1293,8 @@ namespace Aura.Channel.World.Inventory
 						_pockets[this.RightHandPocket].Remove(rightItem);
 
 						Send.ItemMoveInfo(_creature, rightItem, this.RightHandPocket, null);
-						Send.EquipmentMoved(_creature, this.RightHandPocket);
+						if (_creature.Region != Region.Limbo)
+							Send.EquipmentMoved(_creature, this.RightHandPocket);
 					}
 				}
 			}
@@ -1240,7 +1358,8 @@ namespace Aura.Channel.World.Inventory
 					_pockets[leftPocket].Remove(leftItem);
 
 					Send.ItemMoveInfo(_creature, leftItem, leftPocket, null);
-					Send.EquipmentMoved(_creature, leftPocket);
+					if (_creature.Region != Region.Limbo)
+						Send.EquipmentMoved(_creature, leftPocket);
 				}
 			}
 		}
@@ -1261,31 +1380,6 @@ namespace Aura.Channel.World.Inventory
 					Send.ItemAmount(_creature, item);
 				else
 					Send.ItemRemove(_creature, item);
-			}
-		}
-
-		/// <summary>
-		/// Runs equipment updates if necessary.
-		/// </summary>
-		/// <param name="item"></param>
-		/// <param name="source"></param>
-		/// <param name="target"></param>
-		private void UpdateEquip(Item item, Pocket source, Pocket target)
-		{
-			if (_creature.Region != Region.Limbo)
-			{
-				if (source.IsEquip())
-					Send.EquipmentMoved(_creature, source);
-
-				if (target.IsEquip())
-					Send.EquipmentChanged(_creature, item);
-			}
-
-			// Send stat update when moving equipment
-			if (source.IsEquip() || target.IsEquip())
-			{
-				this.UpdateEquipReferences();
-				this.UpdateEquipStats();
 			}
 		}
 

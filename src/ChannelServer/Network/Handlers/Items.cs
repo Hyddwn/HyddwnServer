@@ -77,10 +77,6 @@ namespace Aura.Channel.Network.Handlers
 			if (!creature.Inventory.Move(item, target, targetX, targetY))
 				goto L_Fail;
 
-			// Raise equiped event
-			if (target.IsEquip())
-				ChannelServer.Instance.Events.OnPlayerEquipsItem(creature, item);
-
 			Send.ItemMoveR(creature, true);
 			return;
 

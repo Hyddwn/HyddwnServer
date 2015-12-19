@@ -181,6 +181,7 @@ namespace Aura.Channel.Database
 			ushort title = 0, optionTitle = 0;
 			float lifeDelta = 0, manaDelta = 0, staminaDelta = 0;
 			int bankWidth = 12, bankHeight = 8;
+			WeaponSet weaponSet;
 
 			using (var conn = this.Connection)
 			using (var mc = new MySqlCommand("SELECT * FROM `" + table + "` AS c INNER JOIN `creatures` AS cr ON c.creatureId = cr.creatureId WHERE `entityId` = @entityId", conn))
@@ -214,7 +215,7 @@ namespace Aura.Channel.Database
 					var y = reader.GetInt32("y");
 					character.SetLocation(r, x, y);
 					character.Direction = reader.GetByte("direction");
-					character.Inventory.ChangeWeaponSet((WeaponSet)reader.GetByte("weaponSet"));
+					weaponSet = (WeaponSet)reader.GetByte("weaponSet");
 					character.Level = reader.GetInt16("level");
 					character.TotalLevel = reader.GetInt32("levelTotal");
 					character.Exp = reader.GetInt64("exp");
@@ -293,6 +294,10 @@ namespace Aura.Channel.Database
 			character.Stamina = (character.StaminaMax - staminaDelta);
 
 			character.Vars.Perm = this.LoadVars(account.Id, character.CreatureId);
+
+			// Change weapon set after inventory has been loaded and
+			// everything is set.
+			character.Inventory.ChangeWeaponSet(weaponSet);
 
 			return character;
 		}
