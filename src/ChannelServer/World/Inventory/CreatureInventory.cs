@@ -10,6 +10,7 @@ using Aura.Channel.World.Entities;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
+using Aura.Shared.Network;
 
 namespace Aura.Channel.World.Inventory
 {
@@ -1234,7 +1235,9 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="item"></param>
 		private void OnEquip(Item item)
 		{
-			if (_creature.IsPlayer)
+			// Call event for players who went through ChannelLogin,
+			// this prevents event calls for loading characters.
+			if (_creature.IsPlayer && _creature.Client.State == ClientState.LoggedIn)
 				ChannelServer.Instance.Events.OnPlayerEquipsItem(_creature, item);
 		}
 
@@ -1262,7 +1265,9 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="item"></param>
 		private void OnUnequip(Item item)
 		{
-			if (_creature.IsPlayer)
+			// Call event for players who went through ChannelLogin,
+			// this prevents event calls for loading characters.
+			if (_creature.IsPlayer && _creature.Client.State == ClientState.LoggedIn)
 				ChannelServer.Instance.Events.OnPlayerUnequipsItem(_creature, item);
 		}
 
