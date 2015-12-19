@@ -708,6 +708,23 @@ namespace Aura.Channel.World.Inventory
 			return success;
 		}
 
+		/// <summary>
+		/// Changes weapon set, if necessary, and updates clients.
+		/// </summary>
+		/// <param name="set"></param>
+		public void ChangeWeaponSet(WeaponSet set)
+		{
+			this.WeaponSet = set;
+			this.UpdateEquipReferences();
+
+			// Make sure the creature is logged in
+			if (_creature.Region != Region.Limbo)
+			{
+				this.UpdateEquipStats();
+				Send.UpdateWeaponSet(_creature);
+			}
+		}
+
 		// Adding
 		// ------------------------------------------------------------------
 
@@ -1159,25 +1176,6 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
-		/// Sends amount update or remove packets for all items, depending on
-		/// their amount.
-		/// </summary>
-		/// <param name="items"></param>
-		private void UpdateChangedItems(IEnumerable<Item> items)
-		{
-			if (items == null)
-				return;
-
-			foreach (var item in items)
-			{
-				if (item.Info.Amount > 0 || item.Data.StackType == StackType.Sac)
-					Send.ItemAmount(_creature, item);
-				else
-					Send.ItemRemove(_creature, item);
-			}
-		}
-
-		/// <summary>
 		/// Unequips item in left hand/magazine, if item in right hand is moved.
 		/// </summary>
 		/// <param name="item"></param>
@@ -1237,6 +1235,25 @@ namespace Aura.Channel.World.Inventory
 					Send.ItemMoveInfo(_creature, leftItem, leftPocket, null);
 					Send.EquipmentMoved(_creature, leftPocket);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Sends amount update or remove packets for all items, depending on
+		/// their amount.
+		/// </summary>
+		/// <param name="items"></param>
+		private void UpdateChangedItems(IEnumerable<Item> items)
+		{
+			if (items == null)
+				return;
+
+			foreach (var item in items)
+			{
+				if (item.Info.Amount > 0 || item.Data.StackType == StackType.Sac)
+					Send.ItemAmount(_creature, item);
+				else
+					Send.ItemRemove(_creature, item);
 			}
 		}
 
@@ -1349,23 +1366,6 @@ namespace Aura.Channel.World.Inventory
 			item.Proficiency += amount;
 
 			Send.ItemExpUpdate(_creature, item);
-		}
-
-		/// <summary>
-		/// Changes weapon set, if necessary, and updates clients.
-		/// </summary>
-		/// <param name="set"></param>
-		public void ChangeWeaponSet(WeaponSet set)
-		{
-			this.WeaponSet = set;
-			this.UpdateEquipReferences();
-
-			// Make sure the creature is logged in
-			if (_creature.Region != Region.Limbo)
-			{
-				this.UpdateEquipStats();
-				Send.UpdateWeaponSet(_creature);
-			}
 		}
 	}
 }
