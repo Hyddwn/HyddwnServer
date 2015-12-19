@@ -682,10 +682,13 @@ namespace Aura.Channel.World.Inventory
 				if (_creature.IsPlayer)
 				{
 					// Notify everybody about receiving the item, amount being
-					// the amount of items actually picked up.
+					// the amount of items actually picked up. The new item
+					// initially has the full amount, which is being reduced
+					// by Insert, for each unit put in a stack.
 					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, newItem.Info.Id, (originalAmount - newItem.Info.Amount));
 
-					// Notify everybout receiving the items in the sac.
+					// If item was a sac, we have to notify the server about
+					// receiving its *contents* as well.
 					if (newItem.Data.StackType == StackType.Sac)
 						ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, newItem.Data.StackItemId, newItem.Info.Amount);
 				}
