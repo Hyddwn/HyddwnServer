@@ -415,36 +415,40 @@ namespace Aura.Channel.Skills.Combat
 			if (attackerSkill == null) return;
 
 			var targets = aAction.Pack.GetTargets();
-			var multipleEnemies = false;
-			var multipleEnemiesDefeated = false;
-			var trainingIdx = 4;
+			var trainingIdx = 0;
 
 			switch (attackerSkill.Info.Rank)
 			{
-				case SkillRank.RE:
+				case SkillRank.RF: trainingIdx = 4; break;
+				case SkillRank.RE: trainingIdx = 7; break;
 				case SkillRank.RD: trainingIdx = 7; break;
-				case SkillRank.RC:
+				case SkillRank.RC: trainingIdx = 6; break;
 				case SkillRank.RB: trainingIdx = 6; break;
-				case SkillRank.RA:
-				case SkillRank.R9:
-				case SkillRank.R8:
+				case SkillRank.RA: trainingIdx = 5; break;
+				case SkillRank.R9: trainingIdx = 5; break;
+				case SkillRank.R8: trainingIdx = 6; break;
 				case SkillRank.R7: trainingIdx = 5; break;
-				case SkillRank.R6:
-				case SkillRank.R5:
-				case SkillRank.R4:
-				case SkillRank.R3:
-				case SkillRank.R2:
+				case SkillRank.R6: trainingIdx = 4; break;
+				case SkillRank.R5: trainingIdx = 4; break;
+				case SkillRank.R4: trainingIdx = 4; break;
+				case SkillRank.R3: trainingIdx = 4; break;
+				case SkillRank.R2: trainingIdx = 4; break;
 				case SkillRank.R1: trainingIdx = 4; break;
 			}
 
-			// rF, 3-5
+			// rF
 			if (attackerSkill.Info.Rank == SkillRank.RF)
 			{
-				multipleEnemies = (targets.Length >= 4); // Attack several enemies.
-				multipleEnemiesDefeated = (targets.Count(a => a.IsDead) >= 4); // Defeat several enemies.
+				var multipleEnemies = (targets.Length >= 4);
+				var multipleEnemiesDefeated = (targets.Count(a => a.IsDead) >= 4);
+
+				if (multipleEnemies) attackerSkill.Train(trainingIdx); // Attack several enemies.
+				if (multipleEnemiesDefeated) attackerSkill.Train(trainingIdx + 1); // Defeat several enemies.
+
+				return;
 			}
 
-			// rE-D, 3-8
+			// rE-D
 			if (attackerSkill.Info.Rank >= SkillRank.RE && attackerSkill.Info.Rank <= SkillRank.RD)
 			{
 				// "When training multiple hits/kills, the player must hit four or more targets.
@@ -454,8 +458,13 @@ namespace Aura.Channel.Skills.Combat
 
 				var matches = targets.Where(a => aAction.Creature.GetPowerRating(a) <= PowerRating.Normal);
 
-				multipleEnemies = (matches.Count() >= 4 && matches.Any(a => aAction.Creature.GetPowerRating(a) == PowerRating.Normal)); // Attack several enemies of similar level.
-				multipleEnemiesDefeated = (multipleEnemies && matches.Count(a => a.IsDead) >= 4); // Defeat several enemies of similar level.
+				var multipleEnemies = (matches.Count() >= 4 && matches.Any(a => aAction.Creature.GetPowerRating(a) == PowerRating.Normal));
+				var multipleEnemiesDefeated = (multipleEnemies && matches.Count(a => a.IsDead) >= 4);
+
+				if (multipleEnemies) attackerSkill.Train(trainingIdx); // Attack several enemies of similar level.
+				if (multipleEnemiesDefeated) attackerSkill.Train(trainingIdx + 1); // Defeat several enemies of similar level.
+
+				return;
 			}
 
 			// rC-1
@@ -463,12 +472,14 @@ namespace Aura.Channel.Skills.Combat
 			{
 				var matches = targets.Where(a => aAction.Creature.GetPowerRating(a) <= PowerRating.Strong);
 
-				multipleEnemies = (matches.Count() >= 4 && matches.Any(a => aAction.Creature.GetPowerRating(a) == PowerRating.Strong)); // Attack several powerful enemies.
-				multipleEnemiesDefeated = (multipleEnemies && matches.Count(a => a.IsDead) >= 4); // Defeat several powerful enemies.
-			}
+				var multipleEnemies = (matches.Count() >= 4 && matches.Any(a => aAction.Creature.GetPowerRating(a) == PowerRating.Strong));
+				var multipleEnemiesDefeated = (multipleEnemies && matches.Count(a => a.IsDead) >= 4);
 
-			if (multipleEnemies) attackerSkill.Train(trainingIdx);
-			if (multipleEnemiesDefeated) attackerSkill.Train(trainingIdx + 1);
+				if (multipleEnemies) attackerSkill.Train(trainingIdx); // Attack several powerful enemies.
+				if (multipleEnemiesDefeated) attackerSkill.Train(trainingIdx + 1); // Defeat several powerful enemies.
+
+				return;
+			}
 		}
 	}
 }
