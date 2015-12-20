@@ -217,9 +217,9 @@ namespace Aura.Channel.Skills.Life
 				if (item.HasTag("/potion/hp/"))
 					skill.Train(1); // Drink an HP Potion.
 				else if (item.HasTag("/potion/mana/"))
-					skill.Train(2); // Drink an MP Potion.
+					skill.Train(3); // Drink an MP Potion.
 				else if (item.HasTag("/potion/stamina/"))
-					skill.Train(3); // Drink a Stamina Potion.
+					skill.Train(5); // Drink a Stamina Potion.
 
 				return;
 			}
