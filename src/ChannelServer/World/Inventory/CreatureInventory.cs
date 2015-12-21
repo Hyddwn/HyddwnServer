@@ -784,7 +784,7 @@ namespace Aura.Channel.World.Inventory
 			{
 				this.UpdateEquipReferences();
 				this.OnEquip(item);
-				this.UpdateEquipStats();
+				//this.UpdateEquipStats();
 			}
 
 			return true;
