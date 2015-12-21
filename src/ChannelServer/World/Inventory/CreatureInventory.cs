@@ -11,6 +11,9 @@ using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using Aura.Shared.Network;
+using Aura.Channel.World.Entities.Creatures;
+using Aura.Mabi.Structs;
+using Aura.Mabi;
 
 namespace Aura.Channel.World.Inventory
 {
@@ -1246,6 +1249,11 @@ namespace Aura.Channel.World.Inventory
 				if (itemScript != null)
 					itemScript.OnEquip(_creature, item);
 			}
+
+			// Apply upgrade effects if item is in a main equip pocket,
+			// i.e. no style, hair, face, or second weapon set.
+			if (item.Info.Pocket.IsMainEquip(this.WeaponSet))
+				this.ApplyUpgradeEffects(item);
 		}
 
 		/// <summary>
@@ -1282,6 +1290,126 @@ namespace Aura.Channel.World.Inventory
 				var itemScript = ChannelServer.Instance.ScriptManager.ItemScripts.Get(item.Info.Id);
 				if (itemScript != null)
 					itemScript.OnUnequip(_creature, item);
+			}
+
+			_creature.StatMods.Remove(StatModSource.Equipment, item.EntityId);
+		}
+
+		/// <summary>
+		/// Applies upgrade effects from item.
+		/// </summary>
+		/// <param name="item"></param>
+		private void ApplyUpgradeEffects(Item item)
+		{
+			foreach (var effect in item.GetUpgradeEffects())
+			{
+				var stat = effect.Stat.ToStat();
+				var value = effect.Value;
+
+				// Check stat
+				if (stat == Stat.None)
+				{
+					Log.Warning("ApplyUpgradeEffects: Unknown/unhandled stat '{0}'.", effect.Stat);
+					continue;
+				}
+
+				// Check requirements
+				// TODO: Live update
+				var fulfilled = false;
+
+				// Stat ==, >, >=, <, <=
+				if (effect.CheckType >= UpgradeCheckType.GreaterThan && effect.CheckType <= UpgradeCheckType.Equal)
+				{
+					// Check upgrade stat and get value
+					var valueToCheck = 0;
+					switch (effect.CheckStat)
+					{
+						case UpgradeStat.Level: valueToCheck = _creature.Level; break;
+						case UpgradeStat.TotalLevel: valueToCheck = _creature.TotalLevel; break;
+						case UpgradeStat.ExplorationLevel: valueToCheck = 0; break; // TODO: Set once we have exploration levels.
+						case UpgradeStat.Age: valueToCheck = _creature.Age; break;
+
+						default:
+							Log.Warning("ApplyUpgradeEffects: Unknown/unhandled check stat '{0}'.", effect.CheckStat);
+							continue;
+					}
+
+					// Check value
+					switch (effect.CheckType)
+					{
+						case UpgradeCheckType.Equal: fulfilled = (valueToCheck == effect.CheckValue); break;
+						case UpgradeCheckType.GreaterThan: fulfilled = (valueToCheck > effect.CheckValue); break;
+						case UpgradeCheckType.GreaterEqualThan: fulfilled = (valueToCheck >= effect.CheckValue); break;
+						case UpgradeCheckType.LowerThan: fulfilled = (valueToCheck < effect.CheckValue); break;
+						case UpgradeCheckType.LowerEqualThan: fulfilled = (valueToCheck <= effect.CheckValue); break;
+					}
+				}
+				// Skill rank >, <, ==
+				else if (effect.CheckType >= UpgradeCheckType.SkillRankEqual && effect.CheckType >= UpgradeCheckType.SkillRankLowerThan)
+				{
+					var skillId = effect.CheckSkillId;
+					var skillRank = effect.CheckSkillRank;
+
+					var skill = _creature.Skills.Get(effect.CheckSkillId);
+					if (skill != null)
+					{
+						switch (effect.CheckType)
+						{
+							case UpgradeCheckType.SkillRankEqual: fulfilled = (skill.Info.Rank == effect.CheckSkillRank); break;
+							case UpgradeCheckType.SkillRankGreaterThan: fulfilled = (skill.Info.Rank >= effect.CheckSkillRank); break;
+							case UpgradeCheckType.SkillRankLowerThan: fulfilled = (skill.Info.Rank < effect.CheckSkillRank); break;
+						}
+					}
+				}
+				// Broken
+				else if (effect.CheckType == UpgradeCheckType.WhenBroken)
+				{
+					fulfilled = (effect.CheckBroken && item.Durability == 0) || (!effect.CheckBroken && item.Durability != 0);
+				}
+				// Title
+				else if (effect.CheckType == UpgradeCheckType.HoldingTitle)
+				{
+					fulfilled = (_creature.Titles.SelectedTitle == effect.CheckTitleId);
+				}
+				// Condition
+				else if (effect.CheckType == UpgradeCheckType.InAStateOf)
+				{
+					fulfilled = _creature.Conditions.Has(effect.CheckCondition);
+				}
+				// PTJ
+				else if (effect.CheckType == UpgradeCheckType.IfPtjCompletedMoreThan)
+				{
+					var trackRecord = _creature.Quests.GetPtjTrackRecord(effect.CheckPtj);
+					fulfilled = (trackRecord.Done >= effect.CheckValue);
+				}
+				// Month
+				else if (effect.CheckType == UpgradeCheckType.WhileBeing)
+				{
+					fulfilled = (ErinnTime.Now.Month == (int)effect.CheckMonth);
+				}
+				// Summon
+				else if (effect.CheckType == UpgradeCheckType.WhileSummoned)
+				{
+					switch (effect.CheckStat)
+					{
+						case UpgradeStat.Pet: fulfilled = (_creature.Pet != null); break;
+						case UpgradeStat.Golem: fulfilled = false; break; // TODO: Set once we have golems.
+						case UpgradeStat.BarrierSpikes: fulfilled = false; break; // TODO: Set once we have barrier spikes.
+
+						default:
+							Log.Warning("ApplyUpgradeEffects: Unknown/unhandled check summon '{0}'.", effect.CheckStat);
+							continue;
+					}
+				}
+				else
+				{
+					Log.Warning("ApplyUpgradeEffects: Unknown/unhandled check type '{0}'.", effect.CheckType);
+					continue;
+				}
+
+				// Apply if requirements are fulfilled
+				if (fulfilled)
+					_creature.StatMods.Add(stat, value, StatModSource.Equipment, item.EntityId);
 			}
 		}
 
@@ -1433,7 +1561,16 @@ namespace Aura.Channel.World.Inventory
 				Stat.LeftCriticalMod, Stat.RightCriticalMod,
 				Stat.BalanceBase, Stat.BalanceBaseMod,
 				Stat.LeftBalanceMod, Stat.RightBalanceMod,
-				Stat.DefenseBaseMod, Stat.ProtectionBaseMod
+				Stat.DefenseBaseMod, Stat.ProtectionBaseMod,
+
+				Stat.AttackMinMod, Stat.AttackMaxMod,
+				Stat.InjuryMinMod, Stat.InjuryMaxMod,
+				Stat.CriticalMod, Stat.BalanceMod,
+				Stat.DefenseMod, Stat.ProtectionMod,
+				Stat.StrMod, Stat.DexMod, Stat.IntMod, Stat.WillMod, Stat.LuckMod,
+				Stat.LifeMaxMod, Stat.ManaMaxMod, Stat.StaminaMaxMod,
+				Stat.MagicAttackMod, Stat.MagicDefenseMod,
+				Stat.CombatPower, Stat.PoisonImmuneMod, Stat.ArmorPierceMod
 			);
 		}
 

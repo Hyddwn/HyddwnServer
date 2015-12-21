@@ -803,4 +803,71 @@ namespace Aura.Mabi.Const
 		First = 0,
 		Second = 1,
 	}
+
+	public static class UpgradeStatExtension
+	{
+		public static Stat ToStat(this UpgradeStat upgradeStat)
+		{
+			switch (upgradeStat)
+			{
+				case UpgradeStat.MinDamage: return Stat.AttackMinMod;
+				case UpgradeStat.MaxDamage: return Stat.AttackMaxMod;
+				case UpgradeStat.MinInjuryRate: return Stat.InjuryMinMod;
+				case UpgradeStat.MaxInjuryRate: return Stat.InjuryMaxMod;
+				case UpgradeStat.Critical: return Stat.CriticalMod;
+				case UpgradeStat.DamageBalance: return Stat.BalanceMod;
+				case UpgradeStat.Defense: return Stat.DefenseMod;
+				case UpgradeStat.Protection: return Stat.ProtectionMod;
+				case UpgradeStat.STR: return Stat.StrMod;
+				case UpgradeStat.Dexterity: return Stat.DexMod;
+				case UpgradeStat.Intelligence: return Stat.IntMod;
+				case UpgradeStat.Will: return Stat.WillMod;
+				case UpgradeStat.Luck: return Stat.LuckMod;
+				case UpgradeStat.MaxHP: return Stat.LifeMaxMod;
+				case UpgradeStat.MaxMP: return Stat.ManaMaxMod;
+				case UpgradeStat.MaxStamina: return Stat.StaminaMaxMod;
+				case UpgradeStat.MagicAttack: return Stat.MagicAttackMod;
+				case UpgradeStat.MagicDefense: return Stat.MagicDefenseMod;
+				case UpgradeStat.CombatPower: return Stat.CombatPowerMod;
+				case UpgradeStat.Lightning: return Stat.ElementLightning;
+				case UpgradeStat.Ice: return Stat.ElementIce;
+				case UpgradeStat.Fire: return Stat.ElementFire;
+				case UpgradeStat.PoisonImmunity: return Stat.PoisonImmuneMod;
+				case UpgradeStat.PiercingLevel: return Stat.ArmorPierceMod;
+				//case UpgradeStat.Quality: return Stat.;
+				//case UpgradeStat.StompDefense: return Stat.;
+				//case UpgradeStat.AttackSpeed: return Stat.;
+				//case UpgradeStat.LessenManaUsage: return Stat.;
+				//case UpgradeStat.StaminaUsage: return Stat.;
+				//case UpgradeStat.MusicBuffEffect: return Stat.;
+				//case UpgradeStat.MusicBuffDuration: return Stat.;
+				//case UpgradeStat.MarionetteMinDamage: return Stat.;
+				//case UpgradeStat.MarionetteMaxDamage: return Stat.;
+				//case UpgradeStat.MarionetteMagicDefense: return Stat.;
+				//case UpgradeStat.MarionetteHP: return Stat.;
+				//case UpgradeStat.MarionetteDefense: return Stat.;
+				//case UpgradeStat.MarionetteProtection: return Stat.;
+				//case UpgradeStat.ControlMarionetteMinDamage: return Stat.;
+				//case UpgradeStat.ControlMarionetteMaxDamage: return Stat.;
+				//case UpgradeStat.FrozenBlastDuration: return Stat.;
+				//case UpgradeStat.FrozenBlastRange: return Stat.;
+				//case UpgradeStat.FireAlchemicDamage: return Stat.;
+				//case UpgradeStat.WaterAlchemicDamage: return Stat.;
+				//case UpgradeStat.WindAlchemicDamage: return Stat.;
+				//case UpgradeStat.ClayAlchemicDamage: return Stat.;
+				//case UpgradeStat.AlchemySuccessRateIncreased: return Stat.;
+				//case UpgradeStat.BarrierSpikes: return Stat.;
+				//case UpgradeStat.BarrierSpikesDurability: return Stat.;
+				//case UpgradeStat.ControlCriticalRate: return Stat.;
+				//case UpgradeStat.ControlCriticalBalanceBoosted: return Stat.;
+				//case UpgradeStat.ExplosionDefense: return Stat.;
+				//case UpgradeStat.SynthesisSuccessRate: return Stat.;
+				//case UpgradeStat.CrystalMakingSuccessRate: return Stat.;
+				//case UpgradeStat.FragmentationSuccessRate: return Stat.;
+
+				default:
+					return Stat.None;
+			}
+		}
+	}
 }
