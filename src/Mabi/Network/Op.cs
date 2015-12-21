@@ -108,8 +108,15 @@ namespace Aura.Mabi.Network
 		public const int DeadMenu = 0x5401;
 		public const int DeadMenuR = 0x5402;
 		public const int DeadFeather = 0x5403;
-		public const int UseGesture = 0x540E;
-		public const int UseGestureR = 0x540F;
+
+		// [190200, NA217 (2015-12-16)]
+		// One op was added here, which shifted UseGesture and UseGestureR
+		// by one. DeadMenu and NPCs were working fine, it seemingly didn't
+		// affect anything else.
+
+		public const int UseGesture = 0x540F;
+		public const int UseGestureR = 0x5410;
+
 		public const int IncompatibleUnk = 0x5411;
 		public const int NpcTalkStart = 0x55F0;
 		public const int NpcTalkStartR = 0x55F1;
