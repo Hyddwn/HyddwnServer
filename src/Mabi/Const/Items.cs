@@ -103,6 +103,23 @@ namespace Aura.Mabi.Const
 		}
 
 		/// <summary>
+		/// Returns true if pocket is a main equipment pocket (no style, hair, face, or second weapon set).
+		/// </summary>
+		/// <param name="pocket"></param>
+		/// <returns></returns>
+		public static bool IsMainEquip(this Pocket pocket, WeaponSet set)
+		{
+			if (
+				(pocket >= Pocket.Armor && pocket <= Pocket.Robe) ||
+				(set == WeaponSet.First && (pocket == Pocket.RightHand1 || pocket == Pocket.LeftHand1 || pocket == Pocket.Magazine1)) ||
+				(set == WeaponSet.Second && (pocket == Pocket.RightHand2 || pocket == Pocket.LeftHand2 || pocket == Pocket.Magazine2)) ||
+				(pocket >= Pocket.Accessory1 && pocket <= Pocket.Accessory2)
+			)
+				return true;
+			return false;
+		}
+
+		/// <summary>
 		/// Returns true if pocket is between min and max bag.
 		/// </summary>
 		/// <param name="pocket"></param>
