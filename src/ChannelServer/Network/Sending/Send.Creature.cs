@@ -253,12 +253,14 @@ namespace Aura.Channel.Network.Sending
 
 						case Stat.BalanceBase: packet.PutShort((short)(creature.BalanceBase)); break;
 						case Stat.BalanceBaseMod: packet.PutShort((short)(creature.BalanceBaseMod)); break;
+						case Stat.BalanceMod: packet.PutShort((short)(creature.BalanceMod)); break;
 
 						case Stat.RightBalanceMod: packet.PutShort((short)creature.RightBalanceMod); break;
 						case Stat.LeftBalanceMod: packet.PutShort((short)creature.LeftBalanceMod); break;
 
 						case Stat.CriticalBase: packet.PutFloat(creature.CriticalBase); break;
 						case Stat.CriticalBaseMod: packet.PutFloat(creature.CriticalBaseMod); break;
+						case Stat.CriticalMod: packet.PutFloat(creature.CriticalMod); break;
 
 						case Stat.RightCriticalMod: packet.PutFloat(creature.RightCriticalMod); break;
 						case Stat.LeftCriticalMod: packet.PutFloat(creature.LeftCriticalMod); break;
@@ -292,6 +294,12 @@ namespace Aura.Channel.Network.Sending
 						case Stat.Age: packet.PutShort((short)creature.Age); break;
 
 						case Stat.LastTown: packet.PutString(creature.LastTown); break;
+
+						case Stat.PoisonImmuneMod: packet.PutShort((short)creature.StatMods.Get(Stat.PoisonImmuneMod)); break;
+						case Stat.ArmorPierceMod: packet.PutShort((short)creature.StatMods.Get(Stat.ArmorPierceMod)); break;
+
+						case Stat.MagicAttackMod: packet.PutFloat(creature.MagicAttackMod); break;
+						case Stat.MagicDefenseMod: packet.PutFloat(creature.MagicDefenseMod); break;
 
 						// Client might crash with a mismatching value, 
 						// take a chance and put an int by default.

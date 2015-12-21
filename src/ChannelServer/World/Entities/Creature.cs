@@ -438,7 +438,7 @@ namespace Aura.Channel.World.Entities
 		private short _ap;
 		public short AbilityPoints { get { return _ap; } set { _ap = Math.Max((short)0, value); } }
 
-		public virtual float CombatPower { get { return (this.RaceData != null ? this.RaceData.CombatPower : 1); } }
+		public virtual float CombatPower { get { return Math2.Clamp(1, 9999, (this.RaceData != null ? this.RaceData.CombatPower : 1) + this.StatMods.Get(Stat.CombatPowerMod)); } }
 
 		public float StrBaseSkill { get; set; }
 		public float DexBaseSkill { get; set; }
@@ -479,6 +479,11 @@ namespace Aura.Channel.World.Entities
 		public int BalanceBaseMod { get { return (this.RightHand == null ? this.RaceData.BalanceBaseMod : 0); } }
 
 		/// <summary>
+		/// Balance bonus from enchants and other sources.
+		/// </summary>
+		public int BalanceMod { get { return (int)this.StatMods.Get(Stat.BalanceMod); } }
+
+		/// <summary>
 		/// Balance of right hand weapon.
 		/// </summary>
 		public int RightBalanceMod { get { return (this.RightHand != null ? this.RightHand.OptionInfo.Balance : 0); } }
@@ -497,6 +502,11 @@ namespace Aura.Channel.World.Entities
 		/// Critical from race.
 		/// </summary>
 		public float CriticalBaseMod { get { return (this.RightHand == null ? this.RaceData.CriticalBaseMod : 0); } }
+
+		/// <summary>
+		/// Critical bonus from enchants and other sources.
+		/// </summary>
+		public int CriticalMod { get { return (int)this.StatMods.Get(Stat.CriticalMod); } }
 
 		/// <summary>
 		/// Critical of right hand weapon.
@@ -699,6 +709,11 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// MagicAttack bonus from enchants and other sources.
+		/// </summary>
+		public int MagicAttackMod { get { return (int)this.StatMods.Get(Stat.MagicAttackMod); } }
+
+		/// <summary>
 		/// Returns total magic defense, based on stats, equipment, etc.
 		/// </summary>
 		public float MagicDefense
@@ -712,6 +727,11 @@ namespace Aura.Channel.World.Entities
 				return result;
 			}
 		}
+
+		/// <summary>
+		/// MagicDefense bonus from enchants and other sources.
+		/// </summary>
+		public int MagicDefenseMod { get { return (int)this.StatMods.Get(Stat.MagicDefenseMod); } }
 
 		/// <summary>
 		/// Returns total magic protection, based on stats, equipment, etc.
