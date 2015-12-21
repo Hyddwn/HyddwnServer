@@ -56,6 +56,26 @@ namespace Aura.Channel.World.Entities.Creatures
 		public bool Has(ConditionsE condition) { return ((this.E & condition) != 0); }
 		public bool Has(ConditionsF condition) { return ((this.F & condition) != 0); }
 
+		public bool Has(int condition)
+		{
+			var c = (1L << (condition % 64));
+
+			if (condition < 64 * 1)
+				return this.Has((ConditionsA)c);
+			else if (condition < 64 * 2)
+				return this.Has((ConditionsB)c);
+			else if (condition < 64 * 3)
+				return this.Has((ConditionsC)c);
+			else if (condition < 64 * 4)
+				return this.Has((ConditionsD)c);
+			else if (condition < 64 * 5)
+				return this.Has((ConditionsE)c);
+			else if (condition < 64 * 6)
+				return this.Has((ConditionsF)c);
+
+			throw new ArgumentException("Condition " + condition + " is outside of the known ones.");
+		}
+
 		public void Activate(ConditionsA condition, MabiDictionary extra = null) { this.A |= condition; if (extra != null) this.SetExtra((double)condition, 0, extra); Send.ConditionUpdate(_creature); }
 		public void Activate(ConditionsB condition, MabiDictionary extra = null) { this.B |= condition; if (extra != null) this.SetExtra((double)condition, 1, extra); Send.ConditionUpdate(_creature); }
 		public void Activate(ConditionsC condition, MabiDictionary extra = null) { this.C |= condition; if (extra != null) this.SetExtra((double)condition, 2, extra); Send.ConditionUpdate(_creature); }
