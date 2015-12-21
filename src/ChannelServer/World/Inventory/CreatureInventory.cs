@@ -1235,10 +1235,17 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="item"></param>
 		private void OnEquip(Item item)
 		{
-			// Call event for players who went through ChannelLogin,
-			// this prevents event calls for loading characters.
+			// For *players* who went through ChannelLogin...
 			if (_creature.IsPlayer && _creature.Client.State == ClientState.LoggedIn)
+			{
+				// Raise event
 				ChannelServer.Instance.Events.OnPlayerEquipsItem(_creature, item);
+
+				// Execute script
+				var itemScript = ChannelServer.Instance.ScriptManager.ItemScripts.Get(item.Info.Id);
+				if (itemScript != null)
+					itemScript.OnEquip(_creature, item);
+			}
 		}
 
 		/// <summary>
@@ -1265,10 +1272,17 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="item"></param>
 		private void OnUnequip(Item item)
 		{
-			// Call event for players who went through ChannelLogin,
-			// this prevents event calls for loading characters.
+			// For *players* who went through ChannelLogin...
 			if (_creature.IsPlayer && _creature.Client.State == ClientState.LoggedIn)
+			{
+				// Raise event
 				ChannelServer.Instance.Events.OnPlayerUnequipsItem(_creature, item);
+
+				// Execute script
+				var itemScript = ChannelServer.Instance.ScriptManager.ItemScripts.Get(item.Info.Id);
+				if (itemScript != null)
+					itemScript.OnUnequip(_creature, item);
+			}
 		}
 
 		/// <summary>
