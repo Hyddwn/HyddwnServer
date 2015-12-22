@@ -174,55 +174,35 @@ public class MalcolmShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("General Goods", 40093);		// Pet Instructor Stick
-		Add("General Goods", 61001);		// Score Scroll
-		Add("General Goods", 61001);		// Score Scroll
-		Add("General Goods", 61001);		// Score Scroll
-		Add("General Goods", 61001);		// Score Scroll
-		Add("General Goods", 61001);		// Score Scroll
-		Add("General Goods", 64018, 10);	// Paper x10
-		Add("General Goods", 64018, 100);	// Paper x100
-		Add("General Goods", 62021, 100);	// Six-sided Die x100
-		Add("General Goods", 63020);		// Empty Bottle
-		Add("General Goods", 19001);		// Robe
-		Add("General Goods", 19001);		// Robe
-		Add("General Goods", 19001);		// Robe
-		Add("General Goods", 1006, "MGCSEL:s:yellow;MGCWRD:s:knowskill(10005);");	// Introduction to Music Composition
-		Add("General Goods", 60045);		// Handicraft Kit
-		Add("General Goods", 60034);		// Bait Tin x300
-		Add("General Goods", 40004);		// Lute
-		Add("General Goods", 40004);		// Lute
-		Add("General Goods", 40004);		// Lute
-		Add("General Goods", 19002);		// Slender Robe
-		Add("General Goods", 19002);		// Slender Robe
-		Add("General Goods", 19002);		// Slender Robe
-		Add("General Goods", 51227, 1);		// Ticking Quiz Bomb x1
-		Add("General Goods", 2001);			// Gold Pouch
-		Add("General Goods", 40045);		// Fishing Rod
-		Add("General Goods", 40018);		// Ukulele
-		Add("General Goods", 40018);		// Ukulele
-		Add("General Goods", 40018);		// Ukulele
-		Add("General Goods", 40214);		// Bass Drum
-		Add("General Goods", 40214);		// Bass Drum
-		Add("General Goods", 40214);		// Bass Drum
-		Add("General Goods", 45130, 10);	// Spider Trap
-		Add("General Goods", 41124);		// Standing Microphone
-		Add("General Goods", 41125);		// Wireless Microphone
-		Add("General Goods", 41123);		// Cello
-		Add("General Goods", 2006);			// Big Gold Pouch
-		Add("General Goods", 2005);			// Item Bag (7x5)
-		Add("General Goods", 2029);			// Item Bag (8x6)
-		Add("General Goods", 2024);			// Item Bag (7x6)
-		Add("General Goods", 18029);		// Wood-rimmed Glasses
-		Add("General Goods", 18029);		// Wood-rimmed Glasses
-		Add("General Goods", 91364, 1);		// Seal Scroll (1-day) x1
-		Add("General Goods", 91364, 10);	// Seal Scroll (1-day) x10
-		Add("General Goods", 91365, 1);		// Seal Scroll (7-day) x1
-		Add("General Goods", 91365, 10);	// Seal Scroll (7-day) x10
-		Add("General Goods", 91366, 1);		// Seal Scroll (30-day) x1
-		Add("General Goods", 91366, 10);	// Seal Scroll (30-day) x10
-		Add("General Goods", 85571);		// Reforging Tool
-		Add("General Goods", 2038);			// Item Bag (8X10)
+		Add("General Goods", 40093);      // Pet Instructor Stick
+		Add("General Goods", 61001);      // Score Scroll
+		Add("General Goods", 64018, 10);  // Paper x10
+		Add("General Goods", 64018, 100); // Paper x100
+		Add("General Goods", 62021, 100); // Six-sided Die x100
+		Add("General Goods", 63020);      // Empty Bottle
+		Add("General Goods", 19001);      // Robe
+		Add("General Goods", 1006);       // Introduction to Music Composition
+		Add("General Goods", 60045);      // Handicraft Kit
+		Add("General Goods", 60034);      // Bait Tin x300
+		Add("General Goods", 40004);      // Lute
+		Add("General Goods", 19002);      // Slender Robe
+		Add("General Goods", 51227, 1);   // Ticking Quiz Bomb x1
+		Add("General Goods", 2001);       // Gold Pouch
+		Add("General Goods", 40045);      // Fishing Rod
+		Add("General Goods", 40018);      // Ukulele
+		Add("General Goods", 40214);      // Bass Drum
+		Add("General Goods", 2006);       // Big Gold Pouch
+		Add("General Goods", 2005);       // Item Bag (7x5)
+		Add("General Goods", 2029);       // Item Bag (8x6)
+		Add("General Goods", 2024);       // Item Bag (7x6)
+		Add("General Goods", 18029);      // Wood-rimmed Glasses
+		Add("General Goods", 91364, 1);   // Seal Scroll (1-day) x1
+		Add("General Goods", 91364, 10);  // Seal Scroll (1-day) x10
+		Add("General Goods", 91365, 1);   // Seal Scroll (7-day) x1
+		Add("General Goods", 91365, 10);  // Seal Scroll (7-day) x10
+		Add("General Goods", 91366, 1);   // Seal Scroll (30-day) x1
+		Add("General Goods", 91366, 10);  // Seal Scroll (30-day) x10
+		Add("General Goods", 85571);      // Reforging Tool
 
 		Add("Hats", 18024); //  Hairband
 		Add("Hats", 18017); //  Tail Cap

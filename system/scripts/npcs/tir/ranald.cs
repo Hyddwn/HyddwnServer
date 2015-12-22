@@ -298,15 +298,15 @@ public class RanaldShop : NpcShopScript
 	public override void Setup()
 	{
 		// Arena
-		Add("Arena", 63019, 10); // Alby Battle Arena Coin 10x
-		Add("Arena", 63019, 20); // Alby Battle Arena Coin 20x
-		Add("Arena", 63019, 50); // Alby Battle Arena Coin 50x
+		Add("Arena", 63019, 10);  // Alby Battle Arena Coin 10x
+		Add("Arena", 63019, 20);  // Alby Battle Arena Coin 20x
+		Add("Arena", 63019, 50);  // Alby Battle Arena Coin 50x
 		Add("Arena", 63019, 100); // Alby Battle Arena Coin 100x
 
 		// Quest
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Branches|D_Branches are needed for an owl's nest. Please [collect 10 Branches]. If you see a tree around, [shaking the tree] can make its Branches fall.|A_|R_* 5 Experience Point,* 15G|T_2040000;", 0);
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Berries|D_Berries grow on the trees that can be found all over town. Please [collect 10 Berries]. The berries are edible, but no one can exactly describe how they taste.|A_|R_* 7 Experience Point,* 60G|T_2040000;", 0);
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Large Nails|D_If you shake objects in town, sometimes old nails fall out. Please [collect 10 Large Nails]. The collected nails will be used for repairs around town.|A_|R_* 5 Experience Point,* 20G|T_2040000;", 0);
+		Add("Quest", 70023, 1, 0); // [collect 10 Branches]
+		Add("Quest", 70023, 1, 0); // [collect 10 Berries]
+		Add("Quest", 70023, 1, 0); // [collect 10 Large Nails]
 
 		// Reference Book
 		Add("Reference Book", 1078); // Don't give up!

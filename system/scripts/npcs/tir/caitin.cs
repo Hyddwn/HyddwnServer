@@ -275,14 +275,14 @@ public class CaitinShop : GroceryShop
 		Add("Gift", 52022); // Wine
 		Add("Gift", 52023); // Wild Ginseng
 
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Small Gems|D_Please [collect 5 Small Gems]. The Imps have hidden them all over town. This gem is not very valuable, but rats just love them. They gnaw at everything to get to the gems, and it's become quite a serious problem. You'll find the the gems if you [check suspicious items] around town.|A_|R_* 5 Experience Point,* 1 Small Green Gem|T_2040000;", 0); // Collecting Quest [5 Small Gems]
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Small Green Gems|D_Please [collect 5 Small Green Gems]. The Imps have hidden them all over town. You'll find these gems if you [check suspicious items] around town, but you can also trade other gems to get Green Gems.|A_|R_* 10 Experience Point,* 1 Small Blue Gem|T_3060000;", 1); // Collecting Quest [5 Small Green Gems (1 Small Blue Gem reward)]
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Small Green Gems|D_Please [collect 5 Small Green Gems]. The Imps have hidden them all over town. You'll find these gems if you [check suspicious items] around town, but you can also trade other gems to get Green Gems.|A_|R_* 10 Experience Point,* 20G|T_3060000;", 1); // Collecting Quest [5 Small Green Gems (20g reward)]
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Small Blue Gems|D_Please [collect 5 Small Blue Gems]. The Imps have hidden them all over town. You will find a few of these gems if you [check suspicious items] around town, but you can also trade other gems to get Blue Gems.|A_|R_* 20 Experience Point,* 1 Small Red Gem|T_4080000;", 5); // Collecting Quest [5 Small Blue Gems (1 Small Red Gem reward)]
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Small Blue Gems|D_Please [collect 5 Small Blue Gems]. The Imps have hidden them all over town. You will find a few of these gems if you [check suspicious items] around town, but you can also trade other gems to get Blue Gems.|A_|R_* 20 Experience Point,* 50G|T_4080000;", 5); // Collecting Quest [5 Small Blue Gems (50g reward)]
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Small Red Gems|D_Please [collect 5 Small Red Gems]. The Imps have hidden them all over town. It's difficult to find Red Gems, so you may want to trade other gems to get them.|A_|R_* 50 Experience Point,* 1 Small Silver Gem|T_8160000;", 25); // Collecting Quest [5 Small Red Gems (1 Small Silver Gem reward)]
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Small Red Gems|D_Please [collect 5 Small Red Gems]. The Imps have hidden them all over town. It's difficult to find Red Gems, so you may want to trade other gems to get them.|A_|R_* 50 Experience Point,* 200G|T_8160000;", 25); // Collecting Quest [5 Small Blue Gems (200g reward)]
-		Add("Quest", 70023, "QSTTIP:s:N_Collect Small Silver Gems|D_Please [collect 5 Small Silver Gems]. Even though they're not real silver, Imps value these gems but they are so rare. Rumor has it that there's a way to trade different colored gems for Silver Gems.|A_|R_* 100 Experience Point,* 1200G|T_10200000;", 100); // Collecting Quest [5 Small Silver Gems]
+		Add("Quest", 70023, 1, 0);   // Collecting Quest [5 Small Gems]
+		Add("Quest", 70023, 1, 1);   // Collecting Quest [5 Small Green Gems (1 Small Blue Gem reward)]
+		Add("Quest", 70023, 1, 1);   // Collecting Quest [5 Small Green Gems (20g reward)]
+		Add("Quest", 70023, 1, 5);   // Collecting Quest [5 Small Blue Gems (1 Small Red Gem reward)]
+		Add("Quest", 70023, 1, 5);   // Collecting Quest [5 Small Blue Gems (50g reward)]
+		Add("Quest", 70023, 1, 25);  // Collecting Quest [5 Small Red Gems (1 Small Silver Gem reward)]
+		Add("Quest", 70023, 1, 25);  // Collecting Quest [5 Small Red Gems](200g reward)]
+		Add("Quest", 70023, 1, 100); // Collecting Quest [5 Small Silver Gems]
 
 		Add("Event"); // Empty
 	}

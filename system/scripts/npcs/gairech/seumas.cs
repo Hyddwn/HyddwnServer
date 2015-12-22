@@ -281,37 +281,37 @@ public class SeumasShop : NpcShopScript
 	public override void Setup()
 	{
 		// Quest
-		Add("Quest", 70080, "QSTTIP:s:N_Collect the Skeleton's Fomor Scrolls|D_We need Fomor Scrolls that have retained the wrath and anger of the Skeletons because they can be very helpful for the research on Fomors. If you bring [10 Skeleton's Fomor Scrolls] I will give you a reward.|A_|R_* 7800G|T_0;", 30);
-		Add("Quest", 70086, "QSTTIP:s:N_Collect the Skeleton Wolf's Fomor Scrolls|D_Did you know that the animals in the area are controlled by an evil magic spell? We need to retrieve the Fomor Scrolls from these animals to break this evil spell. If you bring [10 Skeleton Wolf's Fomor Scrolls] I will give you a reward.|A_|R_* 10800G|T_0;", 30);
-		Add("Quest", 70087, "QSTTIP:s:N_Collect the Brown Dire Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Brown Dire Wolf Fomor Scrolls].|A_|R_* 5000G|T_0;", 30);
-		Add("Quest", 70089, "QSTTIP:s:N_Collect the Black Dire Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Black Dire Wolf Fomor Scrolls].|A_|R_* 7100G|T_0;", 30);
-		Add("Quest", 70090, "QSTTIP:s:N_Collect the White Dire Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 White Dire Wolf Fomor Scrolls].|A_|R_* 8900G|T_0;", 30);
-		Add("Quest", 70097, "QSTTIP:s:N_Collect the Gray Fox's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Gray Fox Fomor Scrolls].|A_|R_* 1050G|T_0;", 30);
-		Add("Quest", 70099, "QSTTIP:s:N_Collect the Brown Bear's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Brown Bear Fomor Scrolls].|A_|R_* 7400G|T_0;", 30);
-		Add("Quest", 70100, "QSTTIP:s:N_Collect the Red Bear's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Red Bear Fomor Scrolls].|A_|R_* 11800G|T_0;", 30);
-		Add("Quest", 70102, "QSTTIP:s:N_Collect the Brown Grizzly Bear's Fomor Scrolls|D_Did you know that the animals in the area are controlled by an evil magic spell? We need to retrieve the Fomor Scrolls from these animals to break this evil spell. If you bring [10 Brown Grizzly Bear's Fomor Scrolls] I will give you a reward.|A_|R_* 18500G|T_0;", 30);
-		Add("Quest", 70103, "QSTTIP:s:N_Collect the Red Grizzly Bear's Fomor Scrolls|D_Did you know that the animals in the area are controlled by an evil magic spell? We need to retrieve the Fomor Scrolls from these animals to break this evil spell. If you bring [10 Red Grizzly Bear's Fomor Scrolls] I will give you a reward.|A_|R_* 26400G|T_0;", 30);
-		Add("Quest", 70104, "QSTTIP:s:N_Collect the Black Grizzly Bear's Fomor Scrolls|D_Did you know that the animals in the area are controlled by an evil magic spell? We need to retrieve the Fomor Scrolls from these animals to break this evil spell. If you bring [10 Black Grizzly Bear's Fomor Scrolls] I will give you a reward.|A_|R_* 33400G|T_0;", 30);
-		Add("Quest", 70114, "QSTTIP:s:N_Collect the Kobold's Fomor Scrolls|D_We need the Fomor Scrolls that have retained the wrath and anger of Kobolds because they can be very helpful for the research on Fomors. If you bring [10 Kobold's Fomor Scrolls] I will give you a reward.|A_|R_* 4100G|T_0;", 30);
-		Add("Quest", 70117, "QSTTIP:s:N_Collect the Raccoon's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Raccoon Fomor Scrolls].|A_|R_* 700G|T_0;", 30);
-		Add("Quest", 70119, "QSTTIP:s:N_Collect the Wisp's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Wisp Fomor Scrolls].|A_|R_* 4800G|T_0;", 30);
-		Add("Quest", 70121, "QSTTIP:s:N_Collect the Skeleton Soldier's Fomor Scrolls|D_We'd like to study some Fomor Scrolls from Skeleton Soldiers because they're very useful for our research on Fomors. You will be rewarded for collecting [10 Skeleton Soldier Fomor Scrolls].|A_|R_* 20400G|T_0;", 30);
-		Add("Quest", 70126, "QSTTIP:s:N_Collect the Jackal's Fomor Scrolls|D_Did you know that the animals in the area are controlled by an evil magic spell? We need to retrieve the Fomor Scrolls from these animals to break this evil spell. If you bring [10 Jackal's Fomor Scrolls] I will give you a reward.|A_|R_* 2100G|T_0;", 30);
-		Add("Quest", 70130, "QSTTIP:s:N_Collect the Burgundy Grizzly Bear's Fomor Scrolls|D_Did you know that the animals in the area are controlled by an evil magic spell? We need to retrieve the Fomor Scrolls from these animals to break this evil spell. If you bring [10 Burgundy Grizzly Bear's Fomor Scrolls] I will give you a reward.|A_|R_* 7800G|T_0;", 30);
-		Add("Quest", 70132, "QSTTIP:s:N_Collect the Blue Dire Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Blue Dire Wolf Fomor Scrolls].|A_|R_* 3500G|T_0;", 30);
-		Add("Quest", 70133, "QSTTIP:s:N_Collect the Burgundy Dire Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Burgundy Dire Wolf Fomor Scrolls].|A_|R_* 4000G|T_0;", 30);
-		Add("Quest", 70134, "QSTTIP:s:N_Collect the Wood Jackal's Fomor Scrolls|D_Did you know that the animals in the area are controlled by an evil magic spell? We need to retrieve the Fomor Scrolls from these animals to break this evil spell. If you bring [10 Wood Jackal's Fomor Scrolls] I will give you a reward.|A_|R_* 1500G|T_0;", 30);
-		Add("Quest", 70135, "QSTTIP:s:N_Collect the Wild Boar's Fomor Scrolls|D_Did you know that the animals in the area are controlled by an evil magic spell? We need to retrieve the Fomor Scrolls from these animals to break this evil spell. If you bring [10 Wild Boar's Fomor Scrolls] I will give you a reward.|A_|R_* 1700G|T_0;", 30);
+		Add("Quest", 70080, 1, 30); // [10 Skeleton's Fomor Scrolls] 
+		Add("Quest", 70086, 1, 30); // [10 Skeleton Wolf's Fomor Scrolls] 
+		Add("Quest", 70087, 1, 30); // [10 Brown Dire Wolf Fomor Scrolls]
+		Add("Quest", 70089, 1, 30); // [10 Black Dire Wolf Fomor Scrolls]
+		Add("Quest", 70090, 1, 30); // [10 White Dire Wolf Fomor Scrolls]
+		Add("Quest", 70097, 1, 30); // [10 Gray Fox Fomor Scrolls]
+		Add("Quest", 70099, 1, 30); // [10 Brown Bear Fomor Scrolls]
+		Add("Quest", 70100, 1, 30); // [10 Red Bear Fomor Scrolls]
+		Add("Quest", 70102, 1, 30); // [10 Brown Grizzly Bear's Fomor Scrolls]
+		Add("Quest", 70103, 1, 30); // [10 Red Grizzly Bear's Fomor Scrolls]
+		Add("Quest", 70104, 1, 30); // [10 Black Grizzly Bear's Fomor Scrolls]
+		Add("Quest", 70114, 1, 30); // [10 Kobold's Fomor Scrolls]
+		Add("Quest", 70117, 1, 30); // [10 Raccoon Fomor Scrolls]
+		Add("Quest", 70119, 1, 30); // [10 Wisp Fomor Scrolls]
+		Add("Quest", 70121, 1, 30); // [10 Skeleton Soldier Fomor Scrolls]
+		Add("Quest", 70126, 1, 30); // [10 Jackal's Fomor Scrolls]
+		Add("Quest", 70130, 1, 30); // [10 Burgundy Grizzly Bear's Fomor Scrolls]
+		Add("Quest", 70132, 1, 30); // [10 Blue Dire Wolf Fomor Scrolls]
+		Add("Quest", 70133, 1, 30); // [10 Burgundy Dire Wolf Fomor Scrolls]
+		Add("Quest", 70134, 1, 30); // [10 Wood Jackal's Fomor Scrolls]
+		Add("Quest", 70135, 1, 30); // [10 Wild Boar's Fomor Scrolls] 
 
 		// Party Quest
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Skeletons|D_Have you ever seen a Skeleton? The Skeletons living in Rabbie Dungeon do not have their own will or consciousness. They do not belong in this world. Please hunt [30 Skeletons].|A_|R_* 882 Experience Point,* 2352G|T_72000000;", 30);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Brown Dire Wolves|D_Brown Dire Wolves are under the control of the evil Fomors. Please do me a favor and hunt [30 Brown Dire Wolves].|A_|R_* 636 Experience Point,* 1146G|T_72000000;", 20);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Skeleton Wolves|D_Recently, there has been an emergence of Skeleton Wolves. Skeleton Wolves are under a stronger evil spell than regular Wolves. I will give you a reward if you [Hunt 30 Skeleton Wolves].|A_|R_* 624 Experience Point,* 1560G|T_72000000;", 30);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Dire Wolves|D_Recently, Dire Wolves and Skeleton Wolves which are under a more powerful evil spell than regular Wolves are threatening travelers near the Dragon Ruins. Please [Hunt 10 Brown Dire Wolves and 30 Skeleton Wolves].|A_|R_* 1680 Experience Point,* 2991G|T_72000000;", 30);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Dire Wolves and the Grizzly Bears|D_Recently, Dire Wolves and Grizzly Bears, which are under a  powerful evil spell, are threatening travelers passing through north of Gairech. Please [Hunt 20 Dire Wolves and 20 Grizzly Bears].|A_|R_* 1929 Experience Point,* 3753G|T_90000000;", 50);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Werewolves|D_Werewolves have fallen under an evil spell and are attacking travelers. Please hunt [10 Werewolves].|A_|R_* 2250 Experience Point,* 1539G|T_72000000;", 20);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Wood Jackals|D_Wood Jackals have fallen under an evil spell and are attacking travelers. Please hunt [30 Wood Jackals].|A_|R_* 1350 Experience Point,* 2250G|T_21600000;", 10);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Blue Dire Wolves|D_Blue Dire Wolves have fallen under an evil spell and are attacking travelers. Please hunt [30 Blue Dire Wolves].|A_|R_* 1350 Experience Point,* 2676G|T_21600000;", 10);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Burgundy Dire Wolves|D_Burgundy Dire Wolves have fallen under an evil spell and are attacking travelers. Please hunt [30 Burgundy Dire Wolves].|A_|R_* 1350 Experience Point,* 2676G|T_21600000;", 10);
+		Add("Party Quest", 70025, 1, 30); // [30 Skeletons]
+		Add("Party Quest", 70025, 1, 20); // [30 Brown Dire Wolves]
+		Add("Party Quest", 70025, 1, 30); // [30 Skeleton Wolves]
+		Add("Party Quest", 70025, 1, 30); // [10 Brown Dire Wolves and 30 Skeleton Wolves]
+		Add("Party Quest", 70025, 1, 50); // [20 Dire Wolves and 20 Grizzly Bears]
+		Add("Party Quest", 70025, 1, 20); // [10 Werewolves]
+		Add("Party Quest", 70025, 1, 10); // [30 Wood Jackals]
+		Add("Party Quest", 70025, 1, 10); // [30 Blue Dire Wolves]
+		Add("Party Quest", 70025, 1, 10); // [30 Burgundy Dire Wolves]
 	}
 }

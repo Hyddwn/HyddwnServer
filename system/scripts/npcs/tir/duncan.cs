@@ -353,50 +353,50 @@ public class DuncanShop : NpcShopScript
 	public override void Setup()
 	{
 		// Quest
-		Add("Quest", 70083, "QSTTIP:s:N_Collect the Gray Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Gray Wolf Fomor Scrolls].|A_|R_* 4100G|T_0;", 30);
-		Add("Quest", 70084, "QSTTIP:s:N_Collect the Black Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Black Wolf Fomor Scrolls].|A_|R_* 5050G|T_0;", 30);
-		Add("Quest", 70085, "QSTTIP:s:N_Collect the White Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 White Wolf Fomor Scrolls].|A_|R_* 5900G|T_0;", 30);
-		Add("Quest", 70087, "QSTTIP:s:N_Collect the Brown Dire Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Brown Dire Wolf Fomor Scrolls].|A_|R_* 5000G|T_0;", 30);
-		Add("Quest", 70091, "QSTTIP:s:N_Collect the White Spider's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 White Spider Fomor Scrolls].|A_|R_* 520G|T_0;", 30);
-		Add("Quest", 70092, "QSTTIP:s:N_Collect the Black Spider's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Black Spider Fomor Scrolls].|A_|R_* 1900G|T_0;", 30);
-		Add("Quest", 70093, "QSTTIP:s:N_Collect the Red Spider's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Red Spider Fomor Scrolls].|A_|R_* 3000G|T_0;", 30);
-		Add("Quest", 70095, "QSTTIP:s:N_Collect the Brown Fox's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Brown Fox Fomor Scrolls].|A_|R_* 760G|T_0;", 30);
-		Add("Quest", 70096, "QSTTIP:s:N_Collect the Red Fox's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Red Fox Fomor Scrolls].|A_|R_* 850G|T_0;", 30);
-		Add("Quest", 70097, "QSTTIP:s:N_Collect the Gray Fox's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Gray Fox Fomor Scrolls].|A_|R_* 1050G|T_0;", 30);
-		Add("Quest", 70105, "QSTTIP:s:N_Collect the Bat's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Bat Fomor Scrolls].|A_|R_* 900G|T_0;", 30);
-		Add("Quest", 70106, "QSTTIP:s:N_Collect the Mimic's Fomor Scrolls|D_We'd like to study some Fomor Scrolls from Mimics because they're very useful for our research on Fomors. You will be rewarded for collecting [10 Mimic Fomor Scrolls].|A_|R_* 6000G|T_0;", 30);
-		Add("Quest", 70109, "QSTTIP:s:N_Collect the Gray Town Rat's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Gray Town Rat Fomor Scrolls].|A_|R_* 1740G|T_0;", 30);
-		Add("Quest", 70111, "QSTTIP:s:N_Collect the Goblin's Fomor Scrolls|D_We'd like to study some Fomor Scrolls from Goblins because they're very useful for our research on Fomors. You will be rewarded for collecting [10 Goblin Fomor Scrolls].|A_|R_* 3100G|T_0;", 30);
-		Add("Quest", 70112, "QSTTIP:s:N_Poison Goblin's Fomor Scrolls|D_We'd like to study some Fomor Scrolls from Poison Goblins because they're very useful for our research on Fomors. You will be rewarded for collecting [10 Poison Goblin Fomor Scrolls].|A_|R_* 3240G|T_0;", 30);
-		Add("Quest", 70113, "QSTTIP:s:N_Collect the Gold Goblin's Fomor Scrolls|D_We'd like to study some Fomor Scrolls from Gold Goblins because they're very useful for our research on Fomors. You will be rewarded for collecting [10 Gold Goblin Fomor Scrolls].|A_|R_* 3500G|T_0;", 30);
-		Add("Quest", 70119, "QSTTIP:s:N_Collect the Wisp's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Wisp Fomor Scrolls].|A_|R_* 4800G|T_0;", 30);
-		Add("Quest", 70123, "QSTTIP:s:N_Collect the Snake's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Snake Fomor Scrolls].|A_|R_* 2200G|T_0;", 30);
-		Add("Quest", 70124, "QSTTIP:s:N_Collect the Coyote's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Coyote Fomor Scrolls].|A_|R_* 3700G|T_0;", 30);
-		Add("Quest", 70129, "QSTTIP:s:N_Collect the Blue Grizzly Bear's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Blue Grizzly Bear Fomor Scrolls].|A_|R_* 12200G|T_0;", 30);
-		Add("Quest", 70131, "QSTTIP:s:N_Collect the Burgundy Spider Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Burgundy Spider Fomor Scrolls].|A_|R_* 2000G|T_0;", 30);
-		Add("Quest", 70140, "QSTTIP:s:N_Collect the Rat Man's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Rat Man Fomor Scrolls].|A_|R_* 3120G|T_0;", 30);
-		Add("Quest", 70141, "QSTTIP:s:N_Collect the Blue Wolf's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Blue Wolf Fomor Scrolls].|A_|R_* 2370G|T_0;", 30);
-		Add("Quest", 70142, "QSTTIP:s:N_Collect the Dark Blue Spider's Fomor Scrolls|D_The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Dark Blue Spider Fomor Scrolls].|A_|R_* 1930G|T_0;", 30);
+		Add("Quest", 70083, 1, 30); // [10 Gray Wolf Fomor Scrolls]
+		Add("Quest", 70084, 1, 30); // [10 Black Wolf Fomor Scrolls]
+		Add("Quest", 70085, 1, 30); // [10 White Wolf Fomor Scrolls]
+		Add("Quest", 70087, 1, 30); // [10 Brown Dire Wolf Fomor Scrolls]
+		Add("Quest", 70091, 1, 30); // [10 White Spider Fomor Scrolls]
+		Add("Quest", 70092, 1, 30); // [10 Black Spider Fomor Scrolls]
+		Add("Quest", 70093, 1, 30); // [10 Red Spider Fomor Scrolls]
+		Add("Quest", 70095, 1, 30); // [10 Brown Fox Fomor Scrolls]
+		Add("Quest", 70096, 1, 30); // [10 Red Fox Fomor Scrolls]
+		Add("Quest", 70097, 1, 30); // [10 Gray Fox Fomor Scrolls]
+		Add("Quest", 70105, 1, 30); // [10 Bat Fomor Scrolls]
+		Add("Quest", 70106, 1, 30); // [10 Mimic Fomor Scrolls]
+		Add("Quest", 70109, 1, 30); // [10 Gray Town Rat Fomor Scrolls]
+		Add("Quest", 70111, 1, 30); // [10 Goblin Fomor Scrolls]
+		Add("Quest", 70112, 1, 30); // [10 Poison Goblin Fomor Scrolls]
+		Add("Quest", 70113, 1, 30); // [10 Gold Goblin Fomor Scrolls]
+		Add("Quest", 70119, 1, 30); // [10 Wisp Fomor Scrolls]
+		Add("Quest", 70123, 1, 30); // [10 Snake Fomor Scrolls]
+		Add("Quest", 70124, 1, 30); // [10 Coyote Fomor Scrolls]
+		Add("Quest", 70129, 1, 30); // [10 Blue Grizzly Bear Fomor Scrolls]
+		Add("Quest", 70131, 1, 30); // [10 Burgundy Spider Fomor Scrolls]
+		Add("Quest", 70140, 1, 30); // [10 Rat Man Fomor Scrolls]
+		Add("Quest", 70141, 1, 30); // [10 Blue Wolf Fomor Scrolls]
+		Add("Quest", 70142, 1, 30); // [10 Dark Blue Spider Fomor Scrolls]
 
 		// Party Quest
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Goblins|D_Goblins are small ugly monsters with dull green skin and red eyes. These small bogeyman-like creatures are from the lower class of Fomors. Please do me a favor and [hunt 30 Goblins].|A_|R_* 426 Experience Point,* 957G|T_72000000;", 10);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Poison Goblins|D_Poison Goblins are different from ordinary goblins because of their poisonous purple skin. This threatening creature is from the lower class of Fomors. Please do me a favor and [hunt 30 Poison Goblins].|A_|R_* 447 Experience Point,* 1005G|T_72000000;", 10);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Laghodessas|D_Laghodessas under the control of an evil power are attacking travelers. Please do us a favor and [hunt 30 Laghodessas].|A_|R_* 1200 Experience Point,* 2631G|T_72000000;", 20);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Rat Men|D_Rat Men under the control of an evil power are attacking travelers. Please [hunt 10 Rat Men].|A_|R_* 1500 Experience Point,* 1362G|T_72000000;", 20);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Please offer [Ciar Basic Fomor Pass] on the altar of Ciar Dungeon, and defeat a [Golem] that can be found at the deepest part of the dungeon. The reward will be given to you outside the dungeon after completing the quest.|A_|R_* 3500 Experience Point,* 10000G|T_108000000;", 500);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Please offer [Ciar Intermediate Fomor Pass for 2] on the altar of Ciar Dungeon, and defeat a [Golem] that can be found at the deepest part of the dungeon. The reward will be given to you outside the dungeon after completing the quest.|A_|R_* 6000 Experience Point,* 15000G|T_108000000;", 500);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Please offer [Ciar Intermediate Fomor Pass for 4] on the altar of Ciar Dungeon, and defeat a [Golem] that can be found at the deepest part of the dungeon. The reward will be given to you outside the dungeon after completing the quest.|A_|R_* 11700 Experience Point,* 15000G|T_108000000;", 500);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Please offer [Ciar Adv. Fomor Pass for 2] on the altar of Ciar Dungeon, and defeat a [Golem] that can be found at the deepest part of the dungeon. The reward will be given to you outside the dungeon after completing the quest.|A_|R_* 13500 Experience Point,* 20000G|T_108000000;", 500);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Please offer [Ciar Adv. Fomor Pass for 3] on the altar of Ciar Dungeon, and defeat a [Golem] that can be found at the deepest part of the dungeon. The reward will be given to you outside the dungeon after completing the quest.|A_|R_* 18200 Experience Point,* 20000G|T_108000000;", 500);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Please offer [Ciar Adv. Fomor Pass] on the altar of Ciar Dungeon, and defeat a [Golem] that can be found at the deepest part of the dungeon. The reward will be given to you outside the dungeon after completing the quest.|A_|R_* 19800 Experience Point,* 20000G|T_108000000;", 1000);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Giant Spider|D_Recently a new altar has been found at the back of Alby Dungeon. Try offering an item that isn't a Fomor Pass, and defeat the [Giant Spider] that can be found at the deepest part of the dungeon.|A_|R_* 4600 Experience Point,* 10000G|T_108000000;", 1000);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Giant Red Spider|D_Recently a new altar has been found at the back of Alby Dungeon. Try offering [Alby Basic Fomor Pass], and defeat [Giant Red Spider] that can be found at the deepest part of the dungeon.|A_|R_* 13800 Experience Point,* 15000G|T_108000000;", 1500);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Lycanthrope (Hard Mode)|D_Recently a new altar has been found at the back of Alby Dungeon. Try offering [Alby Intermediate Fomor Pass], and defeat [Lycanthrope] that can be found at the deepest part of the dungeon.|A_|R_* 22600 Experience Point,* 20000G|T_108000000;", 2000);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Arachne|D_Recently a new altar has been found at the back of Alby Dungeon. Try offering [Alby Adv. Fomor Pass], and defeat [Arachne] that can be found at the deepest part of the dungeon.|A_|R_* 55800 Experience Point,* 25000G|T_108000000;", 2500);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Recently a new altar has been found at the back of Ciar Dungeon. Try offering an item that is not a Fomor Pass, and defeat a [Golem] that can be found at the deepest part of the dungeon.|A_|R_* 10000 Experience Point,* 10000G|T_108000000;", 1000);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Recently a new altar has been found at the back of Ciar Dungeon. Try offering [Ciar Basic Fomor Pass], and defeat a [Golem] that can be found at the deepest part of the dungeon.|A_|R_* 21000 Experience Point,* 15000G|T_108000000;", 1500);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Recently a new altar has been found at the back of Ciar Dungeon. Try offering [Ciar Intermediate Fomor Pass], and defeat a [Golem] that can be found at the deepest part of the dungeon.|A_|R_* 16000 Experience Point,* 20000G|T_108000000;", 2000);
-		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Defeat the Golem|D_Recently a new altar has been found at the back of Ciar Dungeon. Try offering [Ciar Adv. Fomor Pass], and defeat a [Golem] that can be found at the deepest part of the dungeon.|A_|R_* 56800 Experience Point,* 25000G|T_108000000;", 2500);
+		Add("Party Quest", 70025, 1, 10);   // [hunt 30 Goblins]
+		Add("Party Quest", 70025, 1, 10);   // [hunt 30 Poison Goblins]
+		Add("Party Quest", 70025, 1, 20);   // [hunt 30 Laghodessas]
+		Add("Party Quest", 70025, 1, 20);   // [hunt 10 Rat Men]
+		Add("Party Quest", 70025, 1, 500);  // [Ciar Basic Fomor Pass] [Golem]
+		Add("Party Quest", 70025, 1, 500);  // [Ciar Intermediate Fomor Pass for 2] [Golem]
+		Add("Party Quest", 70025, 1, 500);  // [Ciar Intermediate Fomor Pass for 4] [Golem]
+		Add("Party Quest", 70025, 1, 500);  // [Ciar Adv. Fomor Pass for 2] [Golem]
+		Add("Party Quest", 70025, 1, 500);  // [Ciar Adv. Fomor Pass for 3] [Golem]
+		Add("Party Quest", 70025, 1, 1000); // [Ciar Adv. Fomor Pass] [Golem]
+		Add("Party Quest", 70025, 1, 1000); // [Giant Spider]
+		Add("Party Quest", 70025, 1, 1500); // [Alby Basic Fomor Pass] [Giant Red Spider]
+		Add("Party Quest", 70025, 1, 2000); // [Alby Intermediate Fomor Pass] [Lycanthrope]
+		Add("Party Quest", 70025, 1, 2500); // [Alby Adv. Fomor Pass] [Arachne]
+		Add("Party Quest", 70025, 1, 1000); // [Golem]
+		Add("Party Quest", 70025, 1, 1500); // [Ciar Basic Fomor Pass] [Golem]
+		Add("Party Quest", 70025, 1, 2000); // [Ciar Intermediate Fomor Pass] [Golem]
+		Add("Party Quest", 70025, 1, 2500); // [Ciar Adv. Fomor Pass] [Golem]
 
 		// Etc.
 		Add("Etc.", 1045); // Hit What You See
