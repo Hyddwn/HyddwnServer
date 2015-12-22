@@ -23,9 +23,9 @@ public class GroceryShop : NpcShopScript
 		Add("Grocery", 50045);     // Pine Nut
 		Add("Grocery", 50046);     // Juniper Berry
 		Add("Grocery", 50047);     // Camellia Seeds
-		Add("Grocery", 50101);     // Potato & Egg Salad
-		Add("Grocery", 50102);     // Potato Salad
-		Add("Grocery", 50104);     // Egg Salad
+		Add("Grocery", 50101, "MKACT:s:mix;MKSLV:2:6;QUAL:4:70;");	// Potato & Egg Salad
+		Add("Grocery", 50102, "MKACT:s:mix;MKSLV:2:6;QUAL:4:70;");	// Potato Salad
+		Add("Grocery", 50104, "MKACT:s:mix;MKSLV:2:6;QUAL:4:60;");	// Egg Salad
 		Add("Grocery", 50108, 1);  // Chicken Wings x1
 		Add("Grocery", 50108, 5);  // Chicken Wings x5
 		Add("Grocery", 50108, 10); // Chicken Wings x10
@@ -42,7 +42,7 @@ public class GroceryShop : NpcShopScript
 		Add("Grocery", 50114, 5);  // Garlic x5
 		Add("Grocery", 50114, 10); // Garlic x10
 		Add("Grocery", 50114, 20); // Garlic x20
-		Add("Grocery", 50120);     // Steamed Rice
+		Add("Grocery", 50120, "MKACT:s:boil;MKSLV:2:6;QUAL:4:50;");	// Steamed Rice
 		Add("Grocery", 50121, 1);  // Butter x1
 		Add("Grocery", 50121, 5);  // Butter x5
 		Add("Grocery", 50121, 10); // Butter x10
@@ -51,7 +51,7 @@ public class GroceryShop : NpcShopScript
 		Add("Grocery", 50122, 5);  // Bacon x5
 		Add("Grocery", 50122, 10); // Bacon x10
 		Add("Grocery", 50122, 20); // Bacon x20
-		Add("Grocery", 50123);     // Roasted Bacon
+		Add("Grocery", 50123, "MKACT:s:cook_with_strong_fire;MKSLV:2:6;QUAL:4:60;");	// Roasted Bacon
 		Add("Grocery", 50127, 1);  // Shrimp x1
 		Add("Grocery", 50127, 5);  // Shrimp x5
 		Add("Grocery", 50127, 10); // Shrimp x10
@@ -69,7 +69,7 @@ public class GroceryShop : NpcShopScript
 		Add("Grocery", 50132, 10); // Salt x10
 		Add("Grocery", 50132, 20); // Salt x20
 		Add("Grocery", 50133);     // Beef
-		Add("Grocery", 50134);     // Sliced Bread
+		Add("Grocery", 50134, "MKACT:s:cook_with_strong_fire;MKSLV:2:6;QUAL:4:65;");	// Sliced Bread
 		Add("Grocery", 50135, 1);  // Rice x1
 		Add("Grocery", 50135, 5);  // Rice x5
 		Add("Grocery", 50135, 10); // Rice x10
@@ -122,7 +122,7 @@ public class GroceryShop : NpcShopScript
 		Add("Grocery", 50189, 5);  // Thyme x5
 		Add("Grocery", 50189, 10); // Thyme x10
 		Add("Grocery", 50189, 20); // Thyme x20
-		Add("Grocery", 50206);     // Chocolate
+		Add("Grocery", 50206, "MKACT:s:mix;MKSLV:2:6;QUAL:4:60;");     // Chocolate
 		Add("Grocery", 50217);     // Celery
 		Add("Grocery", 50218, 1);  // Tomato x1
 		Add("Grocery", 50218, 5);  // Tomato x5

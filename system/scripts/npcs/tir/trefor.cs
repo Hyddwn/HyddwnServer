@@ -245,3 +245,20 @@ public class TreforBaseScript : NpcScript
 		}
 	}
 }
+public class TreforShop : NpcShopScript
+{
+	public override void Setup()
+	{
+		// Party Quest
+		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt White Spiders|D_The White Spiders are a threat for people trying to collect cobwebs. I will reward you for hunting [10 White Spiders].|A_|R_* 66 Experience Point,* 201G,* Hunt 30 White Spiders (1)|T_7200000;", 5);
+		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt White Spiders|D_The White Spiders are a threat for people trying to collect cobwebs. I will reward you for hunting [30 White Spiders].|A_|R_* 195 Experience Point,* 603G|T_36000000;", 10);
+		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Black Spiders|D_The Black Spiders in dungeons are a good source of cobwebs for collectors, but they also pose a serious threat to their safety. I will reward you for hunting [10 Black Spiders].|A_|R_* 117 Experience Point,* 360G,* Hunt 30 Black Spiders (1)|T_14400000;", 5);
+		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Black Spiders|D_The Black Spiders in dungeons are a good source of cobwebs for collectors, but they also pose a serious threat to their safety. I will reward you for hunting [30 Black Spiders].|A_|R_* 330 Experience Point,* 1053G|T_36000000;", 10);
+		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Red Spiders|D_The Red Spiders in dungeons are a good source of cobwebs for collectors, but they also pose a serious threat to their safety. I will reward you for hunting [10 Red Spiders].|A_|R_* 129 Experience Point,* 450G,* Hunt 30 Red Spiders (1)|T_14400000;", 5);
+		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Red Spiders|D_The Red Spiders in dungeons are a good source of cobwebs for collectors, but they also pose a serious threat to their safety. I will reward you for hunting [30 Red Spiders].|A_|R_* 378 Experience Point,* 1278G|T_36000000;", 20);
+		Add("Party Quest", 70025, "QSTTIP:s:N_[PQ] Hunt Down the Coyotes|D_Coyotes have fallen under an evil spell and are attacking travelers. Please [Hunt 100 Coyotes].|A_|R_* 2100 Experience Point,* 3810G|T_72000000;", 20);
+
+		// Etc.
+		Add("Etc.", 1051); // Battle Arena: Aim for a Giant Star
+	}
+}
