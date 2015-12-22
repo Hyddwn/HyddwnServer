@@ -21,6 +21,8 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		private Dictionary<PtjType, PtjTrackRecord> _ptjRecords;
 
+		public event Action<Creature, PtjTrackRecord> PtjTrackRecordChanged;
+
 		public CreatureQuests(Creature creature)
 		{
 			_creature = creature;
@@ -354,6 +356,8 @@ namespace Aura.Channel.World.Entities.Creatures
 			record.Done += done;
 			record.Success += success;
 			record.LastChange = DateTime.Now;
+
+			this.PtjTrackRecordChanged.Raise(_creature, record);
 		}
 
 		/// <summary>

@@ -43,6 +43,11 @@ namespace Aura.Channel.World.Entities.Creatures
 		public ConditionsE E { get; private set; }
 		public ConditionsF F { get; private set; }
 
+		/// <summary>
+		/// Raised when any conditions change.
+		/// </summary>
+		public event Action<Creature> Changed;
+
 		public CreatureConditions(Creature creature)
 		{
 			_creature = creature;
@@ -76,19 +81,19 @@ namespace Aura.Channel.World.Entities.Creatures
 			throw new ArgumentException("Condition " + condition + " is outside of the known ones.");
 		}
 
-		public void Activate(ConditionsA condition, MabiDictionary extra = null) { this.A |= condition; if (extra != null) this.SetExtra((double)condition, 0, extra); Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsB condition, MabiDictionary extra = null) { this.B |= condition; if (extra != null) this.SetExtra((double)condition, 1, extra); Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsC condition, MabiDictionary extra = null) { this.C |= condition; if (extra != null) this.SetExtra((double)condition, 2, extra); Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsD condition, MabiDictionary extra = null) { this.D |= condition; if (extra != null) this.SetExtra((double)condition, 3, extra); Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsE condition, MabiDictionary extra = null) { this.E |= condition; if (extra != null) this.SetExtra((double)condition, 4, extra); Send.ConditionUpdate(_creature); }
-		public void Activate(ConditionsF condition, MabiDictionary extra = null) { this.F |= condition; if (extra != null) this.SetExtra((double)condition, 5, extra); Send.ConditionUpdate(_creature); }
+		public void Activate(ConditionsA condition, MabiDictionary extra = null) { this.A |= condition; if (extra != null) this.SetExtra((double)condition, 0, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Activate(ConditionsB condition, MabiDictionary extra = null) { this.B |= condition; if (extra != null) this.SetExtra((double)condition, 1, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Activate(ConditionsC condition, MabiDictionary extra = null) { this.C |= condition; if (extra != null) this.SetExtra((double)condition, 2, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Activate(ConditionsD condition, MabiDictionary extra = null) { this.D |= condition; if (extra != null) this.SetExtra((double)condition, 3, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Activate(ConditionsE condition, MabiDictionary extra = null) { this.E |= condition; if (extra != null) this.SetExtra((double)condition, 4, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Activate(ConditionsF condition, MabiDictionary extra = null) { this.F |= condition; if (extra != null) this.SetExtra((double)condition, 5, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
 
-		public void Deactivate(ConditionsA condition) { this.A &= ~condition; this.RemoveExtra((double)condition, 0); Send.ConditionUpdate(_creature); }
-		public void Deactivate(ConditionsB condition) { this.B &= ~condition; this.RemoveExtra((double)condition, 1); Send.ConditionUpdate(_creature); }
-		public void Deactivate(ConditionsC condition) { this.C &= ~condition; this.RemoveExtra((double)condition, 2); Send.ConditionUpdate(_creature); }
-		public void Deactivate(ConditionsD condition) { this.D &= ~condition; this.RemoveExtra((double)condition, 3); Send.ConditionUpdate(_creature); }
-		public void Deactivate(ConditionsE condition) { this.E &= ~condition; this.RemoveExtra((double)condition, 4); Send.ConditionUpdate(_creature); }
-		public void Deactivate(ConditionsF condition) { this.F &= ~condition; this.RemoveExtra((double)condition, 5); Send.ConditionUpdate(_creature); }
+		public void Deactivate(ConditionsA condition) { this.A &= ~condition; this.RemoveExtra((double)condition, 0); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Deactivate(ConditionsB condition) { this.B &= ~condition; this.RemoveExtra((double)condition, 1); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Deactivate(ConditionsC condition) { this.C &= ~condition; this.RemoveExtra((double)condition, 2); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Deactivate(ConditionsD condition) { this.D &= ~condition; this.RemoveExtra((double)condition, 3); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Deactivate(ConditionsE condition) { this.E &= ~condition; this.RemoveExtra((double)condition, 4); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Deactivate(ConditionsF condition) { this.F &= ~condition; this.RemoveExtra((double)condition, 5); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
 
 		private void SetExtra(double condition, int offset, MabiDictionary extra)
 		{

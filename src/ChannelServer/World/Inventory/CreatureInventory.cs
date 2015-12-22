@@ -14,6 +14,7 @@ using Aura.Shared.Network;
 using Aura.Channel.World.Entities.Creatures;
 using Aura.Mabi.Structs;
 using Aura.Mabi;
+using Aura.Channel.Skills;
 
 namespace Aura.Channel.World.Inventory
 {
@@ -66,6 +67,9 @@ namespace Aura.Channel.World.Inventory
 
 		private Creature _creature;
 		private Dictionary<Pocket, InventoryPocket> _pockets;
+
+		private object _upgradeEffectSyncLock = new object();
+		private Dictionary<UpgradeCheckType, int> _upgradeCheckTypeCache = new Dictionary<UpgradeCheckType, int>();
 
 		/// <summary>
 		/// Initializes static information.
@@ -202,6 +206,13 @@ namespace Aura.Channel.World.Inventory
 			// Style
 			for (var i = Pocket.ArmorStyle; i <= Pocket.RobeStyle; ++i)
 				this.Add(new InventoryPocketSingle(i));
+
+			// Subscribe to events necessary for upgrade effect live updates.
+			_creature.LeveledUp += this.OnCreatureLeveledUp;
+			_creature.Titles.Changed += this.OnCreatureChangedTitles;
+			_creature.Skills.RankChanged += this.OnCreatureSkillRankChanged;
+			_creature.Conditions.Changed += this.OnCreatureConditionsChanged;
+			ChannelServer.Instance.Events.HoursTimeTick += this.OnHoursTimeTick;
 		}
 
 		/// <summary>
@@ -395,6 +406,43 @@ namespace Aura.Channel.World.Inventory
 			lock (_pockets)
 				result = _pockets.Values
 					.Where(a => a.Pocket.IsEquip() && a.Pocket != Pocket.Hair && a.Pocket != Pocket.Face)
+					.SelectMany(pocket => pocket.Items.Where(a => a != null && predicate(a)))
+					.ToArray();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a new list of all items in all main equipment pockets,
+		/// meaning no style or inactive weapon pockets.
+		/// </summary>
+		/// <returns></returns>
+		public Item[] GetMainEquipment()
+		{
+			Item[] result;
+
+			lock (_pockets)
+				result = _pockets.Values
+					.Where(a => a.Pocket.IsMainEquip(this.WeaponSet))
+					.SelectMany(pocket => pocket.Items.Where(a => a != null))
+					.ToArray();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a new list of all items in all main equipment pockets,
+		/// meaning no style or inactive weapon pockets, that match
+		/// the predicate.
+		/// </summary>
+		/// <returns></returns>
+		public Item[] GetMainEquipment(Func<Item, bool> predicate)
+		{
+			Item[] result;
+
+			lock (_pockets)
+				result = _pockets.Values
+					.Where(a => a.Pocket.IsMainEquip(this.WeaponSet))
 					.SelectMany(pocket => pocket.Items.Where(a => a != null && predicate(a)))
 					.ToArray();
 
@@ -1296,6 +1344,80 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
+		/// Raised when inventory's creature leveled up.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="levelBefore"></param>
+		private void OnCreatureLeveledUp(Creature creature, int levelBefore)
+		{
+			// Would it be more efficient to check if updating is actually
+			// necessary? Or maybe even to filter out the items that need it?
+			// but then we'd be iterating over all items and upgrade effects
+			// *multiple* times...
+
+			this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Raised when inventory's creature changes titles.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void OnCreatureChangedTitles(Creature creature)
+		{
+			this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Raised when one of the inventory's creature's skill's rank changes.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		private void OnCreatureSkillRankChanged(Creature creature, Skill skill)
+		{
+			this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Raised when inventory's creature's conditions change.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void OnCreatureConditionsChanged(Creature creature)
+		{
+			this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Raised once ever RL hour.
+		/// </summary>
+		/// <param name="now"></param>
+		private void OnHoursTimeTick(ErinnTime now)
+		{
+			// Update on midnight, for Erinn month checks
+			if (now.DateTime.Hour == 0)
+				this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Removes all upgrade effect bonuses from current equipment and
+		/// reapplies them.
+		/// </summary>
+		private void UpdateUpgradeEffects()
+		{
+			lock (_upgradeEffectSyncLock)
+			{
+				// Go through all main equipment items, remove their effects
+				// and reapply them.
+				foreach (var item in this.GetMainEquipment())
+				{
+					_creature.StatMods.Remove(StatModSource.Equipment, item.EntityId);
+					this.ApplyUpgradeEffects(item);
+				}
+
+				this.UpdateEquipStats();
+			}
+		}
+
+		/// <summary>
 		/// Applies upgrade effects from item.
 		/// </summary>
 		/// <param name="item"></param>
@@ -1314,7 +1436,6 @@ namespace Aura.Channel.World.Inventory
 				}
 
 				// Check requirements
-				// TODO: Live update
 				var fulfilled = false;
 
 				// Stat ==, >, >=, <, <=

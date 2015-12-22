@@ -10,6 +10,7 @@ using Aura.Data;
 using Aura.Shared.Util;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
+using Aura.Shared.Network;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -24,6 +25,11 @@ namespace Aura.Channel.World.Entities.Creatures
 		public ushort SelectedTitle { get; set; }
 		public ushort SelectedOptionTitle { get; set; }
 		public DateTime Applied { get; private set; }
+
+		/// <summary>
+		/// Raised when creature changes titles.
+		/// </summary>
+		public event Action<Creature> Changed;
 
 		public CreatureTitles(Creature creature)
 		{
@@ -179,6 +185,11 @@ namespace Aura.Channel.World.Entities.Creatures
 
 			if (_creature.Region != Region.Limbo)
 				Send.TitleUpdate(_creature);
+
+			// Raise event only when player does it manually, not when loading
+			// from db, we don't need it there.
+			if (_creature.Client.State == ClientState.LoggedIn)
+				this.Changed.Raise(_creature);
 
 			return true;
 		}

@@ -917,6 +917,18 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public event Action<Creature, Creature> Death;
 
+		/// <summary>
+		/// Raised when creature levels up.
+		/// </summary>
+		/// <remarks>
+		/// Raised only once, even if there are multiple level ups.
+		/// 
+		/// Parameters:
+		/// - The creature leveling up.
+		/// - The level before the level up process.
+		/// </remarks>
+		public event Action<Creature, int> LeveledUp;
+
 		// ------------------------------------------------------------------
 
 
@@ -1928,6 +1940,7 @@ namespace Aura.Channel.World.Entities
 				if ((diff = (this.LuckBase - (int)luck)) >= 1) Send.SimpleAcquireInfo(this, "luck", diff);
 
 				ChannelServer.Instance.Events.OnCreatureLevelUp(this);
+				this.LeveledUp.Raise(this, prevLevel);
 			}
 			else
 				Send.StatUpdate(this, StatUpdateType.Private, Stat.Experience);
