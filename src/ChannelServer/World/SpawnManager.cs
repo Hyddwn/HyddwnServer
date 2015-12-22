@@ -224,7 +224,7 @@ namespace Aura.Channel.World
 		private Point GetRandomPosition()
 		{
 			// Single position
-			if (_points.Length == 1)
+			if (_points.Length == 1 || (_points.All(a => a.X == _points[0].X) && _points.All(a => a.Y == _points[0].Y)))
 				return _points[0];
 
 			var rnd = RandomProvider.Get();
