@@ -960,7 +960,6 @@ namespace Aura.Channel.World.Entities
 			this.Temp = new CreatureTemp();
 			this.Titles = new CreatureTitles(this);
 			this.Keywords = new CreatureKeywords(this);
-			this.Inventory = new CreatureInventory(this);
 			this.Regens = new CreatureRegen(this);
 			this.Skills = new CreatureSkills(this);
 			this.StatMods = new CreatureStatMods(this);
@@ -970,6 +969,7 @@ namespace Aura.Channel.World.Entities
 			this.DeadMenu = new CreatureDeadMenu(this);
 			this.AimMeter = new AimMeter(this);
 			this.Party = Party.CreateDummy(this);
+			this.Inventory = new CreatureInventory(this);
 
 			this.Vars = new ScriptVariables();
 
