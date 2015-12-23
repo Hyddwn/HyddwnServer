@@ -1375,6 +1375,18 @@ namespace Aura.Channel.Scripting.Scripts
 				{
 					this.SwitchAction(_reactions[_state][AiEvent.Hit]);
 				}
+				else
+				{
+					// If the queue isn't cleared, the AI won't restart the
+					// Aggro state, which will make it keep attacking.
+					// This also causes a bug, where when you attack a
+					// monster while it's attacking you with Smash,
+					// it will keep attacking you with Smash, even though
+					// the skill was canceled, due to the received hit.
+					// The result is a really confusing situation, where
+					// normal looking attacks suddenly break through Defense.
+					this.Clear();
+				}
 			}
 		}
 
