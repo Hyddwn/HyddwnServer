@@ -8,8 +8,8 @@ public class BebhinnBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_bebhinn");
 		SetRace(10001);
+		SetName("_bebhinn");
 		SetStand("human/female/anim/female_natural_stand_npc_Bebhinn");
 		SetLocation(2, 1364, 1785, 228);
 

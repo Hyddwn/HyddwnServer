@@ -8,8 +8,8 @@ public class ElenScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_elen");
 		SetRace(10001);
+		SetName("_elen");
 		SetBody(height: 0.6f, upper: 1.1f, lower: 1.1f);
 		SetFace(skinColor: 25, eyeType: 3, eyeColor: 54, mouthType: 1);
 		SetStand("human/female/anim/female_natural_stand_npc_elen");

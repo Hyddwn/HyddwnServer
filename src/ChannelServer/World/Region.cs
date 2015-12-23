@@ -965,6 +965,28 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns first item that matches predicate, or null if none were found.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public Item GetItem(Func<Item, bool> predicate)
+		{
+			Item result;
+
+			_itemsRWLS.EnterReadLock();
+			try
+			{
+				result = _items.Values.FirstOrDefault(predicate);
+			}
+			finally
+			{
+				_itemsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Returns a list of all items on the floor.
 		/// </summary>
 		/// <returns></returns>

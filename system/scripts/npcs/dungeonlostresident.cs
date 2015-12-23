@@ -8,8 +8,8 @@ public class DungeonLostResidentNpcScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_dungeonlostresident");
 		SetRace(1002);
+		SetName("_dungeonlostresident");
 		SetLocation(22, 6313, 5712);
 	}
 

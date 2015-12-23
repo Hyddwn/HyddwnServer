@@ -8,8 +8,8 @@ public class PegwaldPatronScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("Waldon");
 		SetRace(10002);
+		SetName("Waldon");
 		SetFace(skinColor: 24, eyeType: 57, eyeColor: 27, mouthType: 2);
 		SetBody(height: 1.3f);
 		SetStand("data/gfx/char/chapter4/human/anim/social_motion/male_2014_springdress");

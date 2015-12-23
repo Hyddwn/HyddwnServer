@@ -8,8 +8,8 @@ public class ManusScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_manus");
 		SetRace(25);
+		SetName("_manus");
 		SetFace(skinColor: 27, eyeType: 12, eyeColor: 27, mouthType: 18);
 		SetLocation(19, 881, 1194, 0);
 

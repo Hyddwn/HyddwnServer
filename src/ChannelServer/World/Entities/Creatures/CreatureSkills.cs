@@ -35,6 +35,11 @@ namespace Aura.Channel.World.Entities.Creatures
 		public Skill ActiveSkill { get; set; }
 
 		/// <summary>
+		/// Raised when one of the creature's skill's rank changed.
+		/// </summary>
+		public event Action<Creature, Skill> RankChanged;
+
+		/// <summary>
 		/// New skill manager for creature.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -157,7 +162,8 @@ namespace Aura.Channel.World.Entities.Creatures
 				this.Add(skill = new Skill(_creature, id, rank, _creature.RaceId));
 
 				Send.SkillInfo(_creature, skill);
-				Send.RankUp(_creature);
+				if (_creature.Region != Region.Limbo)
+					Send.RankUp(_creature);
 			}
 			else
 			{
@@ -165,7 +171,8 @@ namespace Aura.Channel.World.Entities.Creatures
 				skill.ChangeRank(rank);
 
 				Send.SkillRankUp(_creature, skill);
-				Send.RankUp(_creature, skill.Info.Id);
+				if (_creature.Region != Region.Limbo)
+					Send.RankUp(_creature, skill.Info.Id);
 
 				this.AddBonuses(skill);
 			}
@@ -177,6 +184,8 @@ namespace Aura.Channel.World.Entities.Creatures
 				Stat.Life, Stat.LifeInjured, Stat.LifeMaxMod, Stat.LifeMax, Stat.Mana, Stat.ManaMaxMod, Stat.ManaMax, Stat.Stamina, Stat.Hunger, Stat.StaminaMaxMod, Stat.StaminaMax
 			);
 			Send.StatUpdate(_creature, StatUpdateType.Public, Stat.Life, Stat.LifeInjured, Stat.LifeMaxMod, Stat.LifeMax);
+
+			this.RankChanged.Raise(_creature, skill);
 		}
 
 		/// <summary>

@@ -279,10 +279,7 @@ namespace Aura.Channel.Network.Handlers
 				success = creature.Inventory.Add(item, false);
 
 			if (success)
-			{
 				creature.Inventory.RemoveGold(price);
-				ChannelServer.Instance.Events.OnPlayerReceivesItem(creature, item.Info.Id, item.Info.Amount);
-			}
 
 			// Response
 			Send.NpcShopBuyItemR(creature, success);

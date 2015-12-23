@@ -15,8 +15,8 @@ public class AlissaBaseScript : NpcScript
 
 	public override void Load()
 	{
-		SetName("_alissa");
 		SetRace(10001);
+		SetName("_alissa");
 		SetBody(height: 0.1f, weight: 1.3f, upper: 1.3f, lower: 1.4f);
 		SetFace(skinColor: 19, eyeType: 10, eyeColor: 148, mouthType: 2);
 		SetStand("human/female/anim/female_natural_stand_npc_alissa");

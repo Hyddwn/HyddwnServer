@@ -77,14 +77,6 @@ namespace Aura.Channel.Network.Handlers
 			if (!creature.Inventory.Move(item, target, targetX, targetY))
 				goto L_Fail;
 
-			// Raise equiped event
-			if (target.IsEquip())
-				ChannelServer.Instance.Events.OnPlayerEquipsItem(creature, item);
-
-			// Inform about temp moves (items in temp don't count for quest objectives?)
-			if (source == Pocket.Temporary && target == Pocket.Cursor)
-				ChannelServer.Instance.Events.OnPlayerReceivesItem(creature, item.Info.Id, item.Info.Amount);
-
 			Send.ItemMoveR(creature, true);
 			return;
 
@@ -140,7 +132,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			if (!ChannelServer.Instance.World.DungeonManager.CheckDrop(creature, item))
-				item.Drop(creature.Region, creature.GetPosition(), creature, true);
+				item.Drop(creature.Region, creature.GetPosition(), Item.DropRadius, creature, true);
 
 			Send.ItemDropR(creature, true);
 		}

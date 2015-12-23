@@ -8,8 +8,8 @@ public class SpiritCylinderMScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ego_male_cylinder");
 		SetRace(1);
+		SetName("_ego_male_cylinder");
 		SetLocation(22, 5800, 7100, 0);
 	}
 

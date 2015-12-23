@@ -30,13 +30,13 @@ public class AlbyWhiteDayDungeonScript : DungeonScript
 		for (int i = 0; i < 150; ++i)
 		{
 			var item = Item.CreateGold(rnd.Next(500, 1000 + 1));
-			item.Drop(region, center.GetRandomInRange(500, 1000, rnd));
+			item.Drop(region, center.GetRandomInRange(500, 1000, rnd), 0);
 		}
 
 		for (int i = 0; i < 50; ++i)
 		{
 			var item = Item.CreateCheck(rnd.Next(1, 4 + 1) * 10000);
-			item.Drop(region, center.GetRandomInRange(500, 1000, rnd));
+			item.Drop(region, center.GetRandomInRange(500, 1000, rnd), 0);
 		}
 	}
 }

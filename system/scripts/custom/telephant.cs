@@ -10,8 +10,8 @@ public class _TelephantBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("Telephant");
 		SetRace(550001);
+		SetName("Telephant");
 	}
 
 	protected override async Task Talk()

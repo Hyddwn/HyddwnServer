@@ -8,8 +8,8 @@ public class SpiritWandFScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ego_female_wand");
 		SetRace(1);
+		SetName("_ego_female_wand");
 		SetLocation(22, 5800, 7100, 0);
 	}
 

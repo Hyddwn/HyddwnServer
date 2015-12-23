@@ -18,9 +18,9 @@ namespace Aura.Channel.World.Entities
 	public class Item : Entity
 	{
 		/// <summary>
-		/// Radius in which the item is dropped in Drop().
+		/// Default radius for item drops.
 		/// </summary>
-		private const int DropRadius = 50;
+		public const int DropRadius = 50;
 
 		/// <summary>
 		/// Maximum item experience (proficiency).
@@ -782,11 +782,16 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Drops item at location.
 		/// </summary>
-		/// <param name="region"></param>
-		/// <param name="pos"></param>
-		public void Drop(Region region, Position pos)
+		/// <param name="region">Region to drop the item in.</param>
+		/// <param name="pos">
+		/// Center point of the drop, which is slightly randomized in this method.
+		/// </param>
+		/// <param name="radius">
+		/// Radius around position where the item may drop.
+		/// </param>
+		public void Drop(Region region, Position pos, int radius)
 		{
-			this.Drop(region, pos, null, false);
+			this.Drop(region, pos, radius, null, false);
 		}
 
 		/// <summary>
@@ -795,6 +800,9 @@ namespace Aura.Channel.World.Entities
 		/// <param name="region">Region to drop the item in.</param>
 		/// <param name="pos">
 		/// Center point of the drop, which is slightly randomized in this method.
+		/// </param>
+		/// <param name="radius">
+		/// Radius around position where the item may drop.
 		/// </param>
 		/// <param name="owner">
 		/// The only entity that is allowed to pick up the item for a
@@ -805,13 +813,16 @@ namespace Aura.Channel.World.Entities
 		/// Whether the item is being dropped by a player, the owner.
 		/// If it is, normal items aren't protected.
 		/// </param>
-		public void Drop(Region region, Position pos, Creature owner, bool playerDrop)
+		public void Drop(Region region, Position pos, int radius, Creature owner, bool playerDrop)
 		{
 			var rnd = RandomProvider.Get();
 
-			// Get random drop position
-			var x = rnd.Next(pos.X - DropRadius, pos.X + DropRadius + 1);
-			var y = rnd.Next(pos.Y - DropRadius, pos.Y + DropRadius + 1);
+			// Randomize position if radius was specified
+			if (radius > 0)
+				pos = pos.GetRandomInRange(radius, rnd);
+
+			var x = pos.X;
+			var y = pos.Y;
 
 			//this.SetNewEntityId();
 			this.Move(region.Id, x, y);

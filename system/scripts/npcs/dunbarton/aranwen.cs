@@ -8,8 +8,8 @@ public class AranwenScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_aranwen");
 		SetRace(10001);
+		SetName("_aranwen");
 		SetBody(height: 1.15f, weight: 0.9f, upper: 1.1f, lower: 0.8f);
 		SetFace(skinColor: 15, eyeType: 3, eyeColor: 192);
 		SetLocation(14, 43378, 40048, 125);

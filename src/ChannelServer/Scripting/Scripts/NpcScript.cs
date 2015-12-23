@@ -113,15 +113,16 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		public override bool Init()
 		{
-			this.NPC = new NPC();
-			this.NPC.State = CreatureStates.Npc | CreatureStates.NamedNpc | CreatureStates.GoodNpc;
-			this.NPC.ScriptType = this.GetType();
-
-			this.SetAi("npc_normal");
-
-			// Load script first, to get race set and stuff, then load the NPC data.
+			// Load first, to get race, location, etc.
 			this.Load();
-			this.NPC.LoadDefault();
+
+			if (this.NPC == null)
+			{
+				Log.Error("{0}: No race set.", this.GetType().Name);
+				return false;
+			}
+
+			this.NPC.ScriptType = this.GetType();
 
 			if (this.NPC.RegionId > 0)
 			{
@@ -596,6 +597,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="utility">How much the NPC likes "utility" items.</param>
 		protected void SetGiftWeights(float adult, float anime, float beauty, float individuality, float luxury, float maniac, float meaning, float rarity, float sexy, float toughness, float utility)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			this.NPC.GiftWeights.Adult = adult;
 			this.NPC.GiftWeights.Anime = anime;
 			this.NPC.GiftWeights.Beauty = beauty;
@@ -615,6 +619,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="name"></param>
 		protected void SetName(string name)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			this.NPC.Name = name;
 		}
 
@@ -624,6 +631,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="name"></param>
 		protected void SetPortrait(string name)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			this.NPC.DialogPortrait = name;
 		}
 
@@ -636,6 +646,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="direction"></param>
 		protected void SetLocation(int regionId, int x, int y, byte direction = 0)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			this.NPC.SetLocation(regionId, x, y);
 			this.NPC.Direction = direction;
 		}
@@ -643,10 +656,20 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Sets NPC's race.
 		/// </summary>
+		/// <remarks>
+		/// This must be the first setup method called, since it creates the
+		/// NPC with its default settings.
+		/// </remarks>
 		/// <param name="raceId"></param>
 		protected void SetRace(int raceId)
 		{
-			this.NPC.RaceId = raceId;
+			if (this.NPC != null)
+				throw new InvalidOperationException("The NPC has a race already.");
+
+			this.NPC = new NPC(raceId);
+			this.NPC.State = CreatureStates.Npc | CreatureStates.NamedNpc | CreatureStates.GoodNpc;
+
+			this.SetAi("npc_normal");
 		}
 
 		/// <summary>
@@ -658,6 +681,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="lower"></param>
 		protected void SetBody(float height = 1, float weight = 1, float upper = 1, float lower = 1)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			this.NPC.Height = height;
 			this.NPC.Weight = weight;
 			this.NPC.Upper = upper;
@@ -673,6 +699,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="mouthType"></param>
 		protected void SetFace(byte skinColor = 0, short eyeType = 0, byte eyeColor = 0, byte mouthType = 0)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			this.NPC.SkinColor = skinColor;
 			this.NPC.EyeType = eyeType;
 			this.NPC.EyeColor = eyeColor;
@@ -687,6 +716,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="color3"></param>
 		protected void SetColor(uint color1 = 0x808080, uint color2 = 0x808080, uint color3 = 0x808080)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			this.NPC.Color1 = color1;
 			this.NPC.Color2 = color2;
 			this.NPC.Color3 = color3;
@@ -699,6 +731,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="talkStand"></param>
 		protected void SetStand(string stand, string talkStand = null)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			this.NPC.StandStyle = stand;
 			this.NPC.StandStyleTalking = talkStand;
 		}
@@ -714,6 +749,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="state">For robes and helmets</param>
 		protected void EquipItem(Pocket pocket, int itemId, uint color1 = 0, uint color2 = 0, uint color3 = 0, ItemState state = ItemState.Up)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			if (!pocket.IsEquip())
 			{
 				Log.Error("Pocket '{0}' is not for equipment ({1})", pocket, this.GetType().Name);
@@ -742,6 +780,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="phrase"></param>
 		protected void AddPhrase(string phrase)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			if (this.NPC.AI != null)
 				this.NPC.AI.Phrases.Add(phrase);
 		}
@@ -755,6 +796,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="entityId"></param>
 		protected void SetId(long entityId)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			this.NPC.EntityId = entityId;
 		}
 
@@ -763,6 +807,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		public void SetHoodDown()
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			var item = this.NPC.Inventory.GetItemAt(Pocket.Robe, 0, 0);
 			if (item != null)
 				item.Info.State = 1;
@@ -777,6 +824,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="name"></param>
 		public void SetAi(string name)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			if (this.NPC.AI != null)
 				this.NPC.AI.Dispose();
 
@@ -792,6 +842,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="greetingMessage">Message sent if the player's memory matches.</param>
 		protected void AddGreeting(int memory, string greetingMessage)
 		{
+			if (this.NPC == null)
+				throw new InvalidOperationException("NPC's race has to be set first.");
+
 			if (!this.NPC.Greetings.ContainsKey(memory))
 				this.NPC.Greetings.Add(memory, new List<string>());
 
@@ -854,7 +907,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		public bool GiveItem(int itemId, int amount = 1)
 		{
-			return this.Player.Inventory.Add(itemId, amount);
+			return this.Player.GiveItem(itemId, amount);
 		}
 
 		/// <summary>

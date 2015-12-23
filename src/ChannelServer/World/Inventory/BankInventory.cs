@@ -214,8 +214,6 @@ namespace Aura.Channel.World.Inventory
 			tab.Remove(item);
 			Send.BankRemoveItem(creature, tabName, itemEntityId);
 
-			ChannelServer.Instance.Events.OnPlayerReceivesItem(creature, item.Info.Id, item.Info.Amount);
-
 			return true;
 		}
 	}

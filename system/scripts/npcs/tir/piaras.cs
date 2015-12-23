@@ -8,8 +8,8 @@ public class PiarasBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_piaras");
 		SetRace(10002);
+		SetName("_piaras");
 		SetBody(height: 1.28f, weight: 0.9f, upper: 1.2f);
 		SetFace(skinColor: 22, eyeType: 1);
 		SetStand("human/male/anim/male_natural_stand_npc_Piaras");

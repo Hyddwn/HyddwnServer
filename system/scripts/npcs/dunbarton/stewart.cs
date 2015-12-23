@@ -8,8 +8,8 @@ public class StewartScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_stewart");
 		SetRace(10002);
+		SetName("_stewart");
 		SetFace(skinColor: 16, eyeType: 3, eyeColor: 120);
 		SetLocation(18, 2671, 1771, 99);
 

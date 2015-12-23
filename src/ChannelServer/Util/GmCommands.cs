@@ -542,7 +542,7 @@ namespace Aura.Channel.Util
 			if (!drop)
 				success = target.Inventory.Add(item, Pocket.Temporary);
 			else
-				item.Drop(target.Region, target.GetPosition());
+				item.Drop(target.Region, target.GetPosition(), Item.DropRadius);
 
 			if (success)
 			{
@@ -1390,7 +1390,7 @@ namespace Aura.Channel.Util
 
 				// Add them to inv or drop them if inv is full
 				if (!target.Inventory.Insert(stack, false))
-					stack.Drop(target.Region, target.GetPosition().GetRandomInRange(500, rnd));
+					stack.Drop(target.Region, target.GetPosition(), 500);
 			}
 
 			Send.SystemMessage(sender, Localization.Get("Spawned {0:n0}g."), amount);

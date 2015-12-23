@@ -8,8 +8,8 @@ public class MevenBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_meven");
 		SetRace(10002);
+		SetName("_meven");
 		SetFace(skinColor: 21, eyeType: 5, eyeColor: 27);
 		SetStand("human/male/anim/male_natural_stand_npc_Meven");
 		SetLocation(4, 954, 2271, 198);

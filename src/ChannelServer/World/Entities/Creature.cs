@@ -438,7 +438,7 @@ namespace Aura.Channel.World.Entities
 		private short _ap;
 		public short AbilityPoints { get { return _ap; } set { _ap = Math.Max((short)0, value); } }
 
-		public virtual float CombatPower { get { return (this.RaceData != null ? this.RaceData.CombatPower : 1); } }
+		public virtual float CombatPower { get { return Math2.Clamp(1, 9999, (this.RaceData != null ? this.RaceData.CombatPower : 1) + this.StatMods.Get(Stat.CombatPowerMod)); } }
 
 		public float StrBaseSkill { get; set; }
 		public float DexBaseSkill { get; set; }
@@ -479,6 +479,11 @@ namespace Aura.Channel.World.Entities
 		public int BalanceBaseMod { get { return (this.RightHand == null ? this.RaceData.BalanceBaseMod : 0); } }
 
 		/// <summary>
+		/// Balance bonus from enchants and other sources.
+		/// </summary>
+		public int BalanceMod { get { return (int)this.StatMods.Get(Stat.BalanceMod); } }
+
+		/// <summary>
 		/// Balance of right hand weapon.
 		/// </summary>
 		public int RightBalanceMod { get { return (this.RightHand != null ? this.RightHand.OptionInfo.Balance : 0); } }
@@ -497,6 +502,11 @@ namespace Aura.Channel.World.Entities
 		/// Critical from race.
 		/// </summary>
 		public float CriticalBaseMod { get { return (this.RightHand == null ? this.RaceData.CriticalBaseMod : 0); } }
+
+		/// <summary>
+		/// Critical bonus from enchants and other sources.
+		/// </summary>
+		public int CriticalMod { get { return (int)this.StatMods.Get(Stat.CriticalMod); } }
 
 		/// <summary>
 		/// Critical of right hand weapon.
@@ -699,6 +709,11 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// MagicAttack bonus from enchants and other sources.
+		/// </summary>
+		public int MagicAttackMod { get { return (int)this.StatMods.Get(Stat.MagicAttackMod); } }
+
+		/// <summary>
 		/// Returns total magic defense, based on stats, equipment, etc.
 		/// </summary>
 		public float MagicDefense
@@ -712,6 +727,11 @@ namespace Aura.Channel.World.Entities
 				return result;
 			}
 		}
+
+		/// <summary>
+		/// MagicDefense bonus from enchants and other sources.
+		/// </summary>
+		public int MagicDefenseMod { get { return (int)this.StatMods.Get(Stat.MagicDefenseMod); } }
 
 		/// <summary>
 		/// Returns total magic protection, based on stats, equipment, etc.
@@ -897,6 +917,18 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public event Action<Creature, Creature> Death;
 
+		/// <summary>
+		/// Raised when creature levels up.
+		/// </summary>
+		/// <remarks>
+		/// Raised only once, even if there are multiple level ups.
+		/// 
+		/// Parameters:
+		/// - The creature leveling up.
+		/// - The level before the level up process.
+		/// </remarks>
+		public event Action<Creature, int> LeveledUp;
+
 		// ------------------------------------------------------------------
 
 
@@ -928,7 +960,6 @@ namespace Aura.Channel.World.Entities
 			this.Temp = new CreatureTemp();
 			this.Titles = new CreatureTitles(this);
 			this.Keywords = new CreatureKeywords(this);
-			this.Inventory = new CreatureInventory(this);
 			this.Regens = new CreatureRegen(this);
 			this.Skills = new CreatureSkills(this);
 			this.StatMods = new CreatureStatMods(this);
@@ -938,6 +969,7 @@ namespace Aura.Channel.World.Entities
 			this.DeadMenu = new CreatureDeadMenu(this);
 			this.AimMeter = new AimMeter(this);
 			this.Party = Party.CreateDummy(this);
+			this.Inventory = new CreatureInventory(this);
 
 			this.Vars = new ScriptVariables();
 
@@ -1795,7 +1827,7 @@ namespace Aura.Channel.World.Entities
 						Position dropPos;
 						if (!pattern)
 						{
-							dropPos = pos.GetRandomInRange(50, rnd);
+							dropPos = pos.GetRandomInRange(Item.DropRadius, rnd);
 						}
 						else
 						{
@@ -1804,7 +1836,7 @@ namespace Aura.Channel.World.Entities
 						}
 
 						var gold = Item.CreateGold(Math.Min(1000, amount));
-						gold.Drop(this.Region, pos, killer, false);
+						gold.Drop(this.Region, dropPos, 0, killer, false);
 
 						amount -= gold.Info.Amount;
 					}
@@ -1828,17 +1860,15 @@ namespace Aura.Channel.World.Entities
 					if (dropped.Contains(dropData.ItemId))
 						continue;
 
-					var dropPos = pos.GetRandomInRange(50, rnd);
-
 					var item = new Item(dropData);
-					item.Drop(this.Region, pos, killer, false);
+					item.Drop(this.Region, pos, Item.DropRadius, killer, false);
 
 					dropped.Add(dropData.ItemId);
 				}
 			}
 
 			foreach (var item in this.Drops.StaticDrops)
-				item.Drop(this.Region, pos, killer, false);
+				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
 
 			this.Drops.ClearStaticDrops();
 		}
@@ -1910,6 +1940,7 @@ namespace Aura.Channel.World.Entities
 				if ((diff = (this.LuckBase - (int)luck)) >= 1) Send.SimpleAcquireInfo(this, "luck", diff);
 
 				ChannelServer.Instance.Events.OnCreatureLevelUp(this);
+				this.LeveledUp.Raise(this, prevLevel);
 			}
 			else
 				Send.StatUpdate(this, StatUpdateType.Private, Stat.Experience);
@@ -2280,10 +2311,25 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Adds item to creature's inventory.
 		/// </summary>
-		/// <param name="item"></param>
-		public void GiveItem(Item item)
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public bool GiveItem(int itemId, int amount = 1)
 		{
-			this.Inventory.Add(item, true);
+			var item = new Item(itemId);
+			item.Amount = amount;
+
+			return this.GiveItem(item);
+		}
+
+		/// <summary>
+		/// Adds item to creature's inventory.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public bool GiveItem(Item item)
+		{
+			return this.Inventory.Add(item, true);
 		}
 
 		/// <summary>

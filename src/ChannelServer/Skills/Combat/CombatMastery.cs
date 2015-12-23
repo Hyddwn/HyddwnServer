@@ -170,11 +170,20 @@ namespace Aura.Channel.Skills.Combat
 						aAction.Options &= ~AttackerOptions.DualWield;
 				}
 
-				// Set stun time
+				// Set stun time if not defended, Defense handles the stun
+				// in case the target used it.
 				if (tAction.SkillId != SkillId.Defense)
 				{
 					aAction.Stun = GetAttackerStun(attacker, weapon, tAction.IsKnockBack && skill.Info.Id != SkillId.FinalHit);
 					tAction.Stun = GetTargetStun(attacker, weapon, tAction.IsKnockBack);
+				}
+				// No second hit if defended
+				else
+				{
+					// If this isn't done, the client allows the second hit,
+					// despite of the stun.
+					maxHits = 1;
+					aAction.Options &= ~AttackerOptions.DualWield;
 				}
 
 				// Second hit doubles stun time for normal hits

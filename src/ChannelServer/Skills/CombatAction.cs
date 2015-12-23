@@ -477,8 +477,16 @@ namespace Aura.Channel.Skills
 			this.Attacker = attacker;
 			this.AttackerSkillId = attackerSkillId;
 
-			var active = creature.Skills.ActiveSkill;
-			this.SkillId = (active == null ? SkillId.CombatMastery : active.Info.Id);
+			// The target's skill id is 'CombatMastery' if no skill is loaded,
+			// 'None' if a skill is currently being loaded, and equal to the
+			// loaded skill if it's ready.
+			var activeSkill = creature.Skills.ActiveSkill;
+			if (activeSkill == null)
+				this.SkillId = SkillId.CombatMastery;
+			else if (activeSkill.State != SkillState.Ready)
+				this.SkillId = SkillId.None;
+			else
+				this.SkillId = activeSkill.Info.Id;
 		}
 
 		/// <summary>

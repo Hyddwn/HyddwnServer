@@ -8,8 +8,8 @@ public class TreforBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_trefor");
 		SetRace(10002);
+		SetName("_trefor");
 		SetBody(height: 1.35f);
 		SetFace(skinColor: 20, eyeColor: 27);
 		SetStand("human/male/anim/male_natural_stand_npc_trefor02", "human/male/anim/male_natural_stand_npc_trefor_talk");
@@ -243,5 +243,22 @@ public class TreforBaseScript : NpcScript
 				ModifyRelation(0, 0, Random(2));
 				break;
 		}
+	}
+}
+public class TreforShop : NpcShopScript
+{
+	public override void Setup()
+	{
+		// Party Quest
+		Add("Party Quest", 70025, 1, 5);  // [10 White Spiders]
+		Add("Party Quest", 70025, 1, 10); // [30 White Spiders]
+		Add("Party Quest", 70025, 1, 5);  // [10 Black Spiders]
+		Add("Party Quest", 70025, 1, 10); // [30 Black Spiders]
+		Add("Party Quest", 70025, 1, 5);  // [10 Red Spiders]
+		Add("Party Quest", 70025, 1, 20); // [30 Red Spiders]
+		Add("Party Quest", 70025, 1, 20); // [Hunt 100 Coyotes]
+
+		// Etc.
+		Add("Etc.", 1051); // Battle Arena: Aim for a Giant Star
 	}
 }

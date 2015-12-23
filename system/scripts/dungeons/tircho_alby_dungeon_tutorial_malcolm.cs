@@ -42,7 +42,7 @@ public class AlbyTutorialMalcolmDungeonScript : DungeonScript
 	{
 		// Give pass again if dungeon is being left before the spider is killed
 		if (creature.Quests.IsActive(202004, "kill_spider"))
-			creature.Inventory.Add(63181); // Malcolm's Pass
+			creature.GiveItem(63181); // Malcolm's Pass
 	}
 
 	List<DropData> drops;

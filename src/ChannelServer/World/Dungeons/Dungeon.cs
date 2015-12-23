@@ -138,6 +138,8 @@ namespace Aura.Channel.World.Dungeons
 		{
 			dungeonName = dungeonName.ToLower();
 
+			Log.Debug("Dungeon: Creating '{0}', item id: {1}, seed: {2}, floorPlan: {3}", dungeonName, itemId, seed, floorPlan);
+
 			// Get data
 			this.Data = AuraData.DungeonDb.Find(dungeonName);
 			if (this.Data == null)

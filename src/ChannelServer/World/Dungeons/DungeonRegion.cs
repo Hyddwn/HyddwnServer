@@ -86,7 +86,7 @@ namespace Aura.Channel.World.Dungeons
 			foreach (var item in creature.Inventory.GetItems(a => a.IsDungeonKey))
 			{
 				creature.Inventory.Remove(item);
-				item.Drop(creature.Region, creature.GetPosition());
+				item.Drop(creature.Region, creature.GetPosition(), Item.DropRadius);
 			}
 
 			base.RemoveCreature(creature);

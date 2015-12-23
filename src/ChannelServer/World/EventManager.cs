@@ -118,6 +118,12 @@ namespace Aura.Channel.World
 		public void OnPlayerEquipsItem(Creature creature, Item item) { PlayerEquipsItem.Raise(creature, item); }
 
 		/// <summary>
+		/// Raised when player unequips an item.
+		/// </summary>
+		public event Action<Creature, Item> PlayerUnequipsItem;
+		public void OnPlayerUnequipsItem(Creature creature, Item item) { PlayerUnequipsItem.Raise(creature, item); }
+
+		/// <summary>
 		/// Raised when player completes a quest.
 		/// </summary>
 		public event Action<Creature, int> PlayerCompletesQuest;

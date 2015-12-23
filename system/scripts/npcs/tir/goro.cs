@@ -8,8 +8,8 @@ public class GoroScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_goro");
 		SetRace(10105);
+		SetName("_goro");
 		SetBody(height: 0.3f);
 		SetFace(skinColor: 32, eyeType: 3, eyeColor: 7, mouthType: 2);
 		SetLocation(28, 1283, 3485, 198);

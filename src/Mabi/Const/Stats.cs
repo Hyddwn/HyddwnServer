@@ -101,7 +101,7 @@ namespace Aura.Mabi.Const
 		DefenseBase,
 		DefenseMod,
 		BalanceBase,
-		RateMod,
+		BalanceMod,
 		Rank1,
 		Rank2,
 		ArmorPierceMod, // [180300, NA166 (18.09.2013)]
@@ -132,7 +132,7 @@ namespace Aura.Mabi.Const
 		PoisonImmuneMod,
 		PoisonDamageRatio1,
 		PoisonDamageRatio2,
-		EnchantCombatPowerMod,
+		CombatPowerMod,
 		CumulateStr,
 		CumulateDex,
 		CumulateInt,
@@ -174,5 +174,7 @@ namespace Aura.Mabi.Const
 		BareInjuryMax,
 		BareCritical,
 		BareRate,
+
+		None = 0xFF,
 	}
 }

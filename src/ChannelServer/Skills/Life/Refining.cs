@@ -183,6 +183,11 @@ namespace Aura.Channel.Skills.Life
 					else
 						skill.Train(8); // Fail to refine Copper Ore.
 				}
+				else if (data.ItemData.HasTag("/ironingot/"))
+				{
+					if (success)
+						skill.Train(9); // Successfully refine Iron Ore.
+				}
 				return;
 			}
 

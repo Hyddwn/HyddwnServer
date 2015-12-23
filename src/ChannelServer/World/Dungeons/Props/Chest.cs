@@ -50,12 +50,8 @@ namespace Aura.Channel.World.Dungeons.Props
 			lock (_items)
 			{
 				foreach (var item in _items)
-				{
-					if (opener == null)
-						item.Drop(this.Region, this.GetPosition());
-					else
-						item.Drop(this.Region, this.GetPosition(), opener, false);
-				}
+					item.Drop(this.Region, this.GetPosition(), Item.DropRadius, opener, false);
+
 				_items.Clear();
 			}
 		}

@@ -8,8 +8,8 @@ public class TracyScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_tracy");
 		SetRace(10002);
+		SetName("_tracy");
 		SetBody(height: 1.2f, weight: 1.5f, upper: 2f);
 		SetFace(skinColor: 19, eyeType: 9, eyeColor: 27);
 		SetLocation(16, 22900, 59500, 56);

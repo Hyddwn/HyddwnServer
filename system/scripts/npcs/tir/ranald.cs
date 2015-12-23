@@ -8,8 +8,8 @@ public class RanaldBaseScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ranald");
 		SetRace(10002);
+		SetName("_ranald");
 		SetBody(upper: 1.1f);
 		SetFace(skinColor: 20);
 		SetStand("human/male/anim/male_natural_stand_npc_ranald02", "human/male/anim/male_natural_stand_npc_ranald_talk");
@@ -52,7 +52,7 @@ public class RanaldBaseScript : NpcScript
 
 			case "@shop":
 				Msg("Tell me if you need a Quest Scroll.<br/>Working on these quests can also be a good way to train yourself.");
-				Msg("(Unimplemented)");
+				OpenShop("RanaldShop");
 				break;
 
 			case "@upgrade":
@@ -290,5 +290,25 @@ public class RanaldBaseScript : NpcScript
 				ModifyRelation(0, 0, Random(2));
 				break;
 		}
+	}
+}
+
+public class RanaldShop : NpcShopScript
+{
+	public override void Setup()
+	{
+		// Arena
+		Add("Arena", 63019, 10);  // Alby Battle Arena Coin 10x
+		Add("Arena", 63019, 20);  // Alby Battle Arena Coin 20x
+		Add("Arena", 63019, 50);  // Alby Battle Arena Coin 50x
+		Add("Arena", 63019, 100); // Alby Battle Arena Coin 100x
+
+		// Quest
+		Add("Quest", 70023, 1, 0); // [collect 10 Branches]
+		Add("Quest", 70023, 1, 0); // [collect 10 Berries]
+		Add("Quest", 70023, 1, 0); // [collect 10 Large Nails]
+
+		// Reference Book
+		Add("Reference Book", 1078); // Don't give up!
 	}
 }

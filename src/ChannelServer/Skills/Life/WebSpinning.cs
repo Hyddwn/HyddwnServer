@@ -67,7 +67,7 @@ namespace Aura.Channel.Skills.Life
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
 			var cobweb = new Item(ItemId);
-			cobweb.Drop(creature.Region, creature.GetPosition().GetRandomInRange(200, RandomProvider.Get()), creature, true);
+			cobweb.Drop(creature.Region, creature.GetPosition(), 200, creature, true);
 
 			Send.SkillComplete(creature, skill.Info.Id);
 		}

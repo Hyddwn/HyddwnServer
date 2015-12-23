@@ -8,8 +8,8 @@ public class SpiritBluntFScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_ego_female_blunt");
 		SetRace(1);
+		SetName("_ego_female_blunt");
 		SetLocation(22, 5800, 7100, 0);
 	}
 

@@ -8,8 +8,8 @@ public class WalterScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_walter");
 		SetRace(10002);
+		SetName("_walter");
 		SetBody(height: 1.1f, weight: 1.2f, lower: 1.2f);
 		SetFace(skinColor: 22, eyeType: 13, eyeColor: 27);
 		SetLocation(14, 35770, 39528, 252);

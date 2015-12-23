@@ -10,15 +10,17 @@ using Aura.Channel.World.Entities;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
+using Aura.Shared.Network;
+using Aura.Channel.World.Entities.Creatures;
+using Aura.Mabi.Structs;
+using Aura.Mabi;
+using Aura.Channel.Skills;
 
 namespace Aura.Channel.World.Inventory
 {
 	/// <summary>
 	/// Inventory for players
 	/// </summary>
-	/// <remarks>
-	/// TODO: I'm dirty and unsafe, clean me up.
-	/// </remarks>
 	public class CreatureInventory
 	{
 		/// <summary>
@@ -58,8 +60,16 @@ namespace Aura.Channel.World.Inventory
 		/// </summary>
 		private const int GoldItemId = 2000;
 
+		/// <summary>
+		/// Max amount of gold that fit into one stack.
+		/// </summary>
+		private const int GoldStackMax = 1000;
+
 		private Creature _creature;
 		private Dictionary<Pocket, InventoryPocket> _pockets;
+
+		private object _upgradeEffectSyncLock = new object();
+		private Dictionary<UpgradeCheckType, int> _upgradeCheckTypeCache = new Dictionary<UpgradeCheckType, int>();
 
 		/// <summary>
 		/// Initializes static information.
@@ -137,6 +147,11 @@ namespace Aura.Channel.World.Inventory
 		public Pocket LeftHandPocket { get { return (this.WeaponSet == WeaponSet.First ? Pocket.LeftHand1 : Pocket.LeftHand2); } }
 
 		/// <summary>
+		/// The currently active magazine pocket (ammunition).
+		/// </summary>
+		public Pocket MagazinePocket { get { return (this.WeaponSet == WeaponSet.First ? Pocket.Magazine1 : Pocket.Magazine2); } }
+
+		/// <summary>
 		/// Reference to the item currently equipped in the right hand.
 		/// </summary>
 		public Item RightHand { get; protected set; }
@@ -191,6 +206,13 @@ namespace Aura.Channel.World.Inventory
 			// Style
 			for (var i = Pocket.ArmorStyle; i <= Pocket.RobeStyle; ++i)
 				this.Add(new InventoryPocketSingle(i));
+
+			// Subscribe to events necessary for upgrade effect live updates.
+			_creature.LeveledUp += this.OnCreatureLeveledUp;
+			_creature.Titles.Changed += this.OnCreatureChangedTitles;
+			_creature.Skills.RankChanged += this.OnCreatureSkillRankChanged;
+			_creature.Conditions.Changed += this.OnCreatureConditionsChanged;
+			ChannelServer.Instance.Events.HoursTimeTick += this.OnHoursTimeTick;
 		}
 
 		/// <summary>
@@ -391,6 +413,43 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
+		/// Returns a new list of all items in all main equipment pockets,
+		/// meaning no style or inactive weapon pockets.
+		/// </summary>
+		/// <returns></returns>
+		public Item[] GetMainEquipment()
+		{
+			Item[] result;
+
+			lock (_pockets)
+				result = _pockets.Values
+					.Where(a => a.Pocket.IsMainEquip(this.WeaponSet))
+					.SelectMany(pocket => pocket.Items.Where(a => a != null))
+					.ToArray();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a new list of all items in all main equipment pockets,
+		/// meaning no style or inactive weapon pockets, that match
+		/// the predicate.
+		/// </summary>
+		/// <returns></returns>
+		public Item[] GetMainEquipment(Func<Item, bool> predicate)
+		{
+			Item[] result;
+
+			lock (_pockets)
+				result = _pockets.Values
+					.Where(a => a.Pocket.IsMainEquip(this.WeaponSet))
+					.SelectMany(pocket => pocket.Items.Where(a => a != null && predicate(a)))
+					.ToArray();
+
+			return result;
+		}
+
+		/// <summary>
 		/// Returns item or throws security violation exception,
 		/// if item didn't exist or isn't allowed to be accessed.
 		/// </summary>
@@ -521,10 +580,10 @@ namespace Aura.Channel.World.Inventory
 
 			var source = item.Info.Pocket;
 			var amount = item.Info.Amount;
+			Item collidingItem = null;
 
 			lock (_pockets)
 			{
-				Item collidingItem = null;
 				if (!_pockets[target].TryAdd(item, targetX, targetY, out collidingItem))
 					return false;
 
@@ -558,7 +617,33 @@ namespace Aura.Channel.World.Inventory
 				}
 			}
 
-			this.UpdateInventory(item, source, target);
+			// Inform about temp moves (items in temp don't count for quest objectives?)
+			if (source == Pocket.Temporary && target == Pocket.Cursor)
+				ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Info.Amount);
+
+			// Check movement
+			this.CheckLeftHand(item, source, target);
+			this.CheckRightHand(item, source, target);
+
+			// Equip handling
+			if (target.IsEquip())
+			{
+				this.UpdateEquipReferences();
+				this.OnEquip(item);
+				if (collidingItem != null)
+					this.OnUnequip(collidingItem);
+				this.UpdateEquipStats();
+
+				Send.EquipmentChanged(_creature, item);
+			}
+			else if (source.IsEquip())
+			{
+				this.UpdateEquipReferences();
+				this.OnUnequip(item);
+				this.UpdateEquipStats();
+
+				Send.EquipmentMoved(_creature, source);
+			}
 
 			return true;
 		}
@@ -587,9 +672,9 @@ namespace Aura.Channel.World.Inventory
 			// http://dev.mabinoger.com/forum/index.php/topic/804-pet-inventory/
 			var newItem = new Item(item);
 
+			Item collidingItem = null;
 			lock (_pockets)
 			{
-				Item collidingItem = null;
 				if (!other.Inventory._pockets[target].TryAdd(newItem, (byte)targetX, (byte)targetY, out collidingItem))
 					return false;
 
@@ -632,7 +717,29 @@ namespace Aura.Channel.World.Inventory
 				}
 			}
 
-			pet.Inventory.UpdateInventory(newItem, source, target);
+			// Check movement
+			pet.Inventory.CheckLeftHand(item, source, target);
+			pet.Inventory.CheckRightHand(item, source, target);
+
+			// Equip handling
+			if (target.IsEquip())
+			{
+				pet.Inventory.UpdateEquipReferences();
+				pet.Inventory.OnEquip(item);
+				if (collidingItem != null)
+					pet.Inventory.OnUnequip(collidingItem);
+				pet.Inventory.UpdateEquipStats();
+
+				Send.EquipmentChanged(_creature, item);
+			}
+			else if (source.IsEquip())
+			{
+				pet.Inventory.UpdateEquipReferences();
+				pet.Inventory.OnUnequip(item);
+				pet.Inventory.UpdateEquipStats();
+
+				Send.EquipmentMoved(_creature, source);
+			}
 
 			return true;
 		}
@@ -661,29 +768,10 @@ namespace Aura.Channel.World.Inventory
 			var newItem = new Item(item);
 			newItem.IsNew = true;
 
-			var insertSuccess = this.Insert(newItem, false);
-			var success = false;
+			var success = this.Insert(newItem, false);
 
-			// Success is insert for normals, sacs and stacks that were added
-			// as a whole, or an amount changed for stacks that were added
-			// partially.
-			if (insertSuccess || newItem.Info.Amount != originalAmount)
-			{
-				if (_creature.IsPlayer)
-				{
-					// Notify everybody about receiving the item, amount being
-					// the amount of items actually picked up.
-					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, newItem.Info.Id, (originalAmount - newItem.Info.Amount));
-
-					// Notify everybout receiving the items in the sac.
-					if (newItem.Data.StackType == StackType.Sac)
-						ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, newItem.Data.StackItemId, newItem.Info.Amount);
-				}
-
-				success = (insertSuccess || newItem.Info.Amount == 0);
-			}
-
-			// Remove original item from floor on full success.
+			// Remove item from floor if it was completely added to
+			// the inventory, into existing or new stacks.
 			if (success)
 			{
 				_creature.Region.RemoveItem(item);
@@ -698,8 +786,60 @@ namespace Aura.Channel.World.Inventory
 			return success;
 		}
 
+		/// <summary>
+		/// Changes weapon set, if necessary, and updates clients.
+		/// </summary>
+		/// <param name="set"></param>
+		public void ChangeWeaponSet(WeaponSet set)
+		{
+			var unequipRightHand = this.RightHand;
+			var unequipLeftHand = this.LeftHand;
+			var unequipMagazine = this.Magazine;
+
+			this.WeaponSet = set;
+			this.UpdateEquipReferences();
+
+			if (unequipRightHand != null) this.OnUnequip(unequipRightHand);
+			if (unequipLeftHand != null) this.OnUnequip(unequipLeftHand);
+			if (unequipMagazine != null) this.OnUnequip(unequipMagazine);
+
+			if (this.RightHand != null) this.OnEquip(this.RightHand);
+			if (this.LeftHand != null) this.OnEquip(this.LeftHand);
+			if (this.Magazine != null) this.OnEquip(this.Magazine);
+
+			this.UpdateEquipStats();
+
+			// Make sure the creature is logged in
+			if (_creature.Region != Region.Limbo)
+				Send.UpdateWeaponSet(_creature);
+		}
+
 		// Adding
 		// ------------------------------------------------------------------
+
+		/// <summary>
+		/// Adds item to pocket at the position it currently has.
+		/// Returns false if pocket doesn't exist.
+		/// </summary>
+		public bool InitAdd(Item item)
+		{
+			lock (_pockets)
+			{
+				if (!_pockets.ContainsKey(item.Info.Pocket))
+					return false;
+
+				_pockets[item.Info.Pocket].AddUnsafe(item);
+			}
+
+			if (item.Info.Pocket.IsEquip())
+			{
+				this.UpdateEquipReferences();
+				this.OnEquip(item);
+				//this.UpdateEquipStats();
+			}
+
+			return true;
+		}
 
 		// TODO: Add central "Add" method that all others use, for central stuff
 		//   like adding bag pockets. This wil require a GetFreePosition
@@ -724,48 +864,34 @@ namespace Aura.Channel.World.Inventory
 			if (success)
 			{
 				Send.ItemNew(_creature, item);
-				this.UpdateInventory(item, Pocket.None, pocket);
 
 				// Add bag pocket if it doesn't already exist.
 				if (item.OptionInfo.LinkedPocketId != Pocket.None && !this.Has(item.OptionInfo.LinkedPocketId))
 					this.AddBagPocket(item);
+
+				if (_creature.IsPlayer && pocket != Pocket.Temporary)
+				{
+					// Notify everybody about receiving the item.
+					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Amount);
+
+					// If item was a sac, we have to notify the server about
+					// receiving its *contents* as well.
+					if (item.Data.StackType == StackType.Sac)
+						ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Data.StackItemId, item.Info.Amount);
+				}
+
+				if (pocket.IsEquip())
+				{
+					this.UpdateEquipReferences();
+					this.OnEquip(item);
+					this.UpdateEquipStats();
+
+					if (_creature.Region != Region.Limbo)
+						Send.EquipmentChanged(_creature, item);
+				}
 			}
 
 			return success;
-		}
-
-		/// <summary>
-		/// Tries to add item to pocket. Returns false if the pocket
-		/// doesn't exist or there was no space.
-		/// </summary>
-		public bool Add(int itemId, Pocket pocket)
-		{
-			var item = new Item(itemId);
-
-			if (!this.Add(item, pocket))
-				return false;
-
-			this.CheckEquipMoved(item, Pocket.None, pocket);
-			return true;
-		}
-
-		/// <summary>
-		/// Adds item to pocket at the position it currently has.
-		/// Returns false if pocket doesn't exist.
-		/// </summary>
-		public bool InitAdd(Item item)
-		{
-			lock (_pockets)
-			{
-				if (!_pockets.ContainsKey(item.Info.Pocket))
-					return false;
-
-				_pockets[item.Info.Pocket].AddUnsafe(item);
-			}
-
-			this.UpdateEquipReferences(item.Info.Pocket);
-
-			return true;
 		}
 
 		/// <summary>
@@ -817,6 +943,11 @@ namespace Aura.Channel.World.Inventory
 		{
 			changed = null;
 
+			var originalAmount = item.Amount;
+
+			// TODO: Maybe it would be cleaner to ask the pockets for a list
+			//   of certain items, that we can fill into, instead of them
+			//   returning lists of changed items via out.
 			if (item.Data.StackType == StackType.Stackable)
 			{
 				// Try stacks/sacs first
@@ -848,19 +979,11 @@ namespace Aura.Channel.World.Inventory
 					}
 				}
 
-				// Add new item stacks as long as needed.
-				while (item.Info.Amount > item.Data.StackMax)
-				{
-					var newStackItem = new Item(item);
-					newStackItem.Info.Amount = item.Data.StackMax;
-
-					// Break if no new items can be added (no space left)
-					if (!this.TryAutoAdd(newStackItem, false))
-						break;
-
-					Send.ItemNew(_creature, newStackItem);
-					item.Info.Amount -= item.Data.StackMax;
-				}
+				// Notify everybody about receiving the item, amount being
+				// the amount of items filled into stacks.
+				var inserted = (originalAmount - item.Info.Amount);
+				if (inserted > 0 && _creature.IsPlayer)
+					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, inserted);
 
 				if (item.Info.Amount == 0)
 					return true;
@@ -870,69 +993,29 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
-		/// Adds a new item to the inventory.
-		/// </summary>
-		/// <remarks>
-		/// For stackables and sacs the amount is capped at stack max.
-		/// - If item is stackable, it will be added to existing stacks first.
-		///   New stacks are added afterwards, if necessary.
-		/// - If item is a sac it's simply added as one item.
-		/// - If it's a normal item, it's added times the amount.
-		/// </remarks>
-		/// <param name="itemId"></param>
-		/// <param name="amount"></param>
-		/// <returns></returns>
-		public bool Add(int itemId, int amount = 1)
-		{
-			var newItem = new Item(itemId);
-			newItem.Amount = amount;
-
-			if (newItem.Data.StackType == StackType.Stackable)
-			{
-				// Insert new stacks till amount is 0.
-				int stackMax = newItem.Data.StackMax;
-				do
-				{
-					var stackAmount = Math.Min(stackMax, amount);
-
-					var stackItem = new Item(itemId);
-					stackItem.Amount = stackAmount;
-
-					var result = this.Insert(stackItem, true);
-					if (!result)
-						return false;
-
-					amount -= stackAmount;
-				}
-				while (amount > 0);
-			}
-			else if (newItem.Data.StackType == StackType.Sac)
-			{
-				// Add sac item with amount once
-				return this.Add(newItem, true);
-			}
-			else
-			{
-				// Add item x times
-				for (int i = 0; i < amount; ++i)
-				{
-					if (!this.Add(new Item(itemId), true))
-						return false;
-				}
-				return true;
-			}
-
-			return false;
-		}
-
-		/// <summary>
-		/// Adds new gold stacks to the inventory until the amount was added.
+		/// Adds new gold stacks to the inventory until the amount was added,
+		/// using temp as fallback. Returns false if something went wrong,
+		/// and not everything could be added.
 		/// </summary>
 		/// <param name="amount"></param>
 		/// <returns></returns>
 		public bool AddGold(int amount)
 		{
-			return this.Add(GoldItemId, amount);
+			// Insert new stacks till amount is 0.
+			do
+			{
+				var stackAmount = Math.Min(GoldStackMax, amount);
+
+				var stackItem = new Item(GoldItemId);
+				stackItem.Amount = stackAmount;
+				amount -= stackAmount;
+
+				if (!this.Insert(stackItem, true))
+					return false;
+			}
+			while (amount > 0);
+
+			return true;
 		}
 
 		/// <summary>
@@ -942,9 +1025,10 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="item"></param>
 		/// <param name="tempFallback">Use temp inventory if all others are full?</param>
 		/// <returns></returns>
-		public bool TryAutoAdd(Item item, bool tempFallback)
+		private bool TryAutoAdd(Item item, bool tempFallback)
 		{
 			var success = false;
+			var inTemp = false;
 
 			lock (_pockets)
 			{
@@ -972,7 +1056,21 @@ namespace Aura.Channel.World.Inventory
 
 				// Try temp
 				if (!success && tempFallback)
+				{
 					success = _pockets[Pocket.Temporary].Add(item);
+					inTemp = true;
+				}
+			}
+
+			if (success && _creature.IsPlayer && !inTemp)
+			{
+				// Notify everybody about receiving the item.
+				ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Amount);
+
+				// If item was a sac, we have to notify the server about
+				// receiving its *contents* as well.
+				if (item.Data.StackType == StackType.Sac)
+					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Data.StackItemId, item.Info.Amount);
 			}
 
 			return success;
@@ -994,8 +1092,6 @@ namespace Aura.Channel.World.Inventory
 				{
 					Send.ItemRemove(_creature, item);
 
-					this.UpdateInventory(item, item.Info.Pocket, Pocket.None);
-
 					// Remove bag pocket
 					if (item.OptionInfo.LinkedPocketId != Pocket.None)
 					{
@@ -1004,6 +1100,16 @@ namespace Aura.Channel.World.Inventory
 					}
 
 					ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, item.Info.Id, item.Info.Amount);
+
+					if (item.Info.Pocket.IsEquip())
+					{
+						this.UpdateEquipReferences();
+						this.OnUnequip(item);
+						this.UpdateEquipStats();
+
+						if (_creature.Region != Region.Limbo)
+							Send.EquipmentMoved(_creature, item.Info.Pocket);
+					}
 
 					return true;
 				}
@@ -1028,12 +1134,15 @@ namespace Aura.Channel.World.Inventory
 				amount = 0;
 
 			var changed = new List<Item>();
+			var removed = 0;
 
 			lock (_pockets)
 			{
 				foreach (var pocket in _pockets.Values)
 				{
-					amount -= pocket.Remove(itemId, amount, ref changed);
+					var r = pocket.Remove(itemId, amount, ref changed);
+					amount -= r;
+					removed += r;
 
 					if (amount == 0)
 						break;
@@ -1041,6 +1150,8 @@ namespace Aura.Channel.World.Inventory
 			}
 
 			this.UpdateChangedItems(changed);
+
+			ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, itemId, removed);
 
 			return (amount == 0);
 		}
@@ -1152,17 +1263,275 @@ namespace Aura.Channel.World.Inventory
 		// ------------------------------------------------------------------
 
 		/// <summary>
-		/// Checks and updates all equipment references for source and target.
+		/// Called when an item is equipped, or becomes "active".
+		/// Calls and sets the appropriate events and stat bonuses.
+		/// Does not update the client.
+		/// </summary>
+		/// <remarks>
+		/// Before this is called, the references should be updated,
+		/// so the subscribers see the character as he is *after*
+		/// equipping the item. For example, to check the equipment
+		/// for custom set bonuses.
+		/// 
+		/// Afterwards the equip stats should be updated, so the client
+		/// displays the changes.
+		/// 
+		/// Both of these things aren't done inside this method, because
+		/// there are cases where we have to equip/unequip multiple items,
+		/// and we don't want to spam the client.
+		/// 
+		/// You also have to take care of the visual equipment updates,
+		/// for similar reasons.
+		/// </remarks>
+		/// <param name="item"></param>
+		private void OnEquip(Item item)
+		{
+			// For *players* who went through ChannelLogin...
+			if (_creature.IsPlayer && _creature.Client.State == ClientState.LoggedIn)
+			{
+				// Raise event
+				ChannelServer.Instance.Events.OnPlayerEquipsItem(_creature, item);
+
+				// Execute script
+				var itemScript = ChannelServer.Instance.ScriptManager.ItemScripts.Get(item.Info.Id);
+				if (itemScript != null)
+					itemScript.OnEquip(_creature, item);
+			}
+
+			// Apply upgrade effects if item is in a main equip pocket,
+			// i.e. no style, hair, face, or second weapon set.
+			if (item.Info.Pocket.IsMainEquip(this.WeaponSet))
+				this.ApplyUpgradeEffects(item);
+		}
+
+		/// <summary>
+		/// Called when an item is unequipped, or becomes "inactive".
+		/// Calls and removes the appropriate events and stat bonuses.
+		/// Does not update the client.
+		/// </summary>
+		/// <remarks>
+		/// Before this is called, the references should be updated,
+		/// so the subscribers see the character as he is *after*
+		/// unequipping the item. For example, to check the equipment
+		/// for custom set bonuses.
+		/// 
+		/// Afterwards the equip stats should be updated, so the client
+		/// displays the changes.
+		/// 
+		/// Both of these things aren't done inside this method, because
+		/// there are cases where we have to equip/unequip multiple items,
+		/// and we don't want to spam the client.
+		/// 
+		/// You also have to take care of the visual equipment updates,
+		/// for similar reasons.
+		/// </remarks>
+		/// <param name="item"></param>
+		private void OnUnequip(Item item)
+		{
+			// For *players* who went through ChannelLogin...
+			if (_creature.IsPlayer && _creature.Client.State == ClientState.LoggedIn)
+			{
+				// Raise event
+				ChannelServer.Instance.Events.OnPlayerUnequipsItem(_creature, item);
+
+				// Execute script
+				var itemScript = ChannelServer.Instance.ScriptManager.ItemScripts.Get(item.Info.Id);
+				if (itemScript != null)
+					itemScript.OnUnequip(_creature, item);
+			}
+
+			_creature.StatMods.Remove(StatModSource.Equipment, item.EntityId);
+		}
+
+		/// <summary>
+		/// Raised when inventory's creature leveled up.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="levelBefore"></param>
+		private void OnCreatureLeveledUp(Creature creature, int levelBefore)
+		{
+			// Would it be more efficient to check if updating is actually
+			// necessary? Or maybe even to filter out the items that need it?
+			// but then we'd be iterating over all items and upgrade effects
+			// *multiple* times...
+
+			this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Raised when inventory's creature changes titles.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void OnCreatureChangedTitles(Creature creature)
+		{
+			this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Raised when one of the inventory's creature's skill's rank changes.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		private void OnCreatureSkillRankChanged(Creature creature, Skill skill)
+		{
+			this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Raised when inventory's creature's conditions change.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void OnCreatureConditionsChanged(Creature creature)
+		{
+			this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Raised once ever RL hour.
+		/// </summary>
+		/// <param name="now"></param>
+		private void OnHoursTimeTick(ErinnTime now)
+		{
+			// Update on midnight, for Erinn month checks
+			if (now.DateTime.Hour == 0)
+				this.UpdateUpgradeEffects();
+		}
+
+		/// <summary>
+		/// Removes all upgrade effect bonuses from current equipment and
+		/// reapplies them.
+		/// </summary>
+		private void UpdateUpgradeEffects()
+		{
+			lock (_upgradeEffectSyncLock)
+			{
+				// Go through all main equipment items, remove their effects
+				// and reapply them.
+				foreach (var item in this.GetMainEquipment())
+				{
+					_creature.StatMods.Remove(StatModSource.Equipment, item.EntityId);
+					this.ApplyUpgradeEffects(item);
+				}
+
+				this.UpdateEquipStats();
+			}
+		}
+
+		/// <summary>
+		/// Applies upgrade effects from item.
 		/// </summary>
 		/// <param name="item"></param>
-		/// <param name="source"></param>
-		/// <param name="target"></param>
-		private void UpdateInventory(Item item, Pocket source, Pocket target)
+		private void ApplyUpgradeEffects(Item item)
 		{
-			this.CheckLeftHand(item, source, target);
-			this.CheckRightHand(item, source, target);
-			this.UpdateEquipReferences(source, target);
-			this.CheckEquipMoved(item, source, target);
+			foreach (var effect in item.GetUpgradeEffects())
+			{
+				var stat = effect.Stat.ToStat();
+				var value = effect.Value;
+
+				// Check stat
+				if (stat == Stat.None)
+				{
+					Log.Warning("ApplyUpgradeEffects: Unknown/unhandled stat '{0}'.", effect.Stat);
+					continue;
+				}
+
+				// Check requirements
+				var fulfilled = false;
+
+				// Stat ==, >, >=, <, <=
+				if (effect.CheckType >= UpgradeCheckType.GreaterThan && effect.CheckType <= UpgradeCheckType.Equal)
+				{
+					// Check upgrade stat and get value
+					var valueToCheck = 0;
+					switch (effect.CheckStat)
+					{
+						case UpgradeStat.Level: valueToCheck = _creature.Level; break;
+						case UpgradeStat.TotalLevel: valueToCheck = _creature.TotalLevel; break;
+						case UpgradeStat.ExplorationLevel: valueToCheck = 0; break; // TODO: Set once we have exploration levels.
+						case UpgradeStat.Age: valueToCheck = _creature.Age; break;
+
+						default:
+							Log.Warning("ApplyUpgradeEffects: Unknown/unhandled check stat '{0}'.", effect.CheckStat);
+							continue;
+					}
+
+					// Check value
+					switch (effect.CheckType)
+					{
+						case UpgradeCheckType.Equal: fulfilled = (valueToCheck == effect.CheckValue); break;
+						case UpgradeCheckType.GreaterThan: fulfilled = (valueToCheck > effect.CheckValue); break;
+						case UpgradeCheckType.GreaterEqualThan: fulfilled = (valueToCheck >= effect.CheckValue); break;
+						case UpgradeCheckType.LowerThan: fulfilled = (valueToCheck < effect.CheckValue); break;
+						case UpgradeCheckType.LowerEqualThan: fulfilled = (valueToCheck <= effect.CheckValue); break;
+					}
+				}
+				// Skill rank >, <, ==
+				else if (effect.CheckType >= UpgradeCheckType.SkillRankEqual && effect.CheckType >= UpgradeCheckType.SkillRankLowerThan)
+				{
+					var skillId = effect.CheckSkillId;
+					var skillRank = effect.CheckSkillRank;
+
+					var skill = _creature.Skills.Get(effect.CheckSkillId);
+					if (skill != null)
+					{
+						switch (effect.CheckType)
+						{
+							case UpgradeCheckType.SkillRankEqual: fulfilled = (skill.Info.Rank == effect.CheckSkillRank); break;
+							case UpgradeCheckType.SkillRankGreaterThan: fulfilled = (skill.Info.Rank >= effect.CheckSkillRank); break;
+							case UpgradeCheckType.SkillRankLowerThan: fulfilled = (skill.Info.Rank < effect.CheckSkillRank); break;
+						}
+					}
+				}
+				// Broken
+				else if (effect.CheckType == UpgradeCheckType.WhenBroken)
+				{
+					fulfilled = (effect.CheckBroken && item.Durability == 0) || (!effect.CheckBroken && item.Durability != 0);
+				}
+				// Title
+				else if (effect.CheckType == UpgradeCheckType.HoldingTitle)
+				{
+					fulfilled = (_creature.Titles.SelectedTitle == effect.CheckTitleId);
+				}
+				// Condition
+				else if (effect.CheckType == UpgradeCheckType.InAStateOf)
+				{
+					fulfilled = _creature.Conditions.Has(effect.CheckCondition);
+				}
+				// PTJ
+				else if (effect.CheckType == UpgradeCheckType.IfPtjCompletedMoreThan)
+				{
+					var trackRecord = _creature.Quests.GetPtjTrackRecord(effect.CheckPtj);
+					fulfilled = (trackRecord.Done >= effect.CheckValue);
+				}
+				// Month
+				else if (effect.CheckType == UpgradeCheckType.WhileBeing)
+				{
+					fulfilled = (ErinnTime.Now.Month == (int)effect.CheckMonth);
+				}
+				// Summon
+				else if (effect.CheckType == UpgradeCheckType.WhileSummoned)
+				{
+					switch (effect.CheckStat)
+					{
+						case UpgradeStat.Pet: fulfilled = (_creature.Pet != null); break;
+						case UpgradeStat.Golem: fulfilled = false; break; // TODO: Set once we have golems.
+						case UpgradeStat.BarrierSpikes: fulfilled = false; break; // TODO: Set once we have barrier spikes.
+
+						default:
+							Log.Warning("ApplyUpgradeEffects: Unknown/unhandled check summon '{0}'.", effect.CheckStat);
+							continue;
+					}
+				}
+				else
+				{
+					Log.Warning("ApplyUpgradeEffects: Unknown/unhandled check type '{0}'.", effect.CheckType);
+					continue;
+				}
+
+				// Apply if requirements are fulfilled
+				if (fulfilled)
+					_creature.StatMods.Add(stat, value, StatModSource.Equipment, item.EntityId);
+			}
 		}
 
 		/// <summary>
@@ -1192,28 +1561,10 @@ namespace Aura.Channel.World.Inventory
 						_pockets[this.RightHandPocket].Remove(rightItem);
 
 						Send.ItemMoveInfo(_creature, rightItem, this.RightHandPocket, null);
-						Send.EquipmentMoved(_creature, this.RightHandPocket);
+						if (_creature.Region != Region.Limbo)
+							Send.EquipmentMoved(_creature, this.RightHandPocket);
 					}
 				}
-			}
-		}
-
-		/// <summary>
-		/// Sends amount update or remove packets for all items, depending on
-		/// their amount.
-		/// </summary>
-		/// <param name="items"></param>
-		private void UpdateChangedItems(IEnumerable<Item> items)
-		{
-			if (items == null)
-				return;
-
-			foreach (var item in items)
-			{
-				if (item.Info.Amount > 0 || item.Data.StackType == StackType.Sac)
-					Send.ItemAmount(_creature, item);
-				else
-					Send.ItemRemove(_creature, item);
 			}
 		}
 
@@ -1275,8 +1626,28 @@ namespace Aura.Channel.World.Inventory
 					_pockets[leftPocket].Remove(leftItem);
 
 					Send.ItemMoveInfo(_creature, leftItem, leftPocket, null);
-					Send.EquipmentMoved(_creature, leftPocket);
+					if (_creature.Region != Region.Limbo)
+						Send.EquipmentMoved(_creature, leftPocket);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Sends amount update or remove packets for all items, depending on
+		/// their amount.
+		/// </summary>
+		/// <param name="items"></param>
+		private void UpdateChangedItems(IEnumerable<Item> items)
+		{
+			if (items == null)
+				return;
+
+			foreach (var item in items)
+			{
+				if (item.Info.Amount > 0 || item.Data.StackType == StackType.Sac)
+					Send.ItemAmount(_creature, item);
+				else
+					Send.ItemRemove(_creature, item);
 			}
 		}
 
@@ -1284,49 +1655,14 @@ namespace Aura.Channel.World.Inventory
 		/// Updates quick access equipment refernces.
 		/// </summary>
 		/// <param name="toCheck"></param>
-		private void UpdateEquipReferences(params Pocket[] toCheck)
+		private void UpdateEquipReferences()
 		{
-			var firstSet = (this.WeaponSet == WeaponSet.First);
-			var updatedHands = false;
-
-			foreach (var pocket in toCheck)
+			lock (_pockets)
 			{
-				// Update all "hands" at once, easier.
-				if (!updatedHands && pocket >= Pocket.RightHand1 && pocket <= Pocket.Magazine2)
-				{
-					lock (_pockets)
-					{
-						this.RightHand = _pockets[firstSet ? Pocket.RightHand1 : Pocket.RightHand2].GetItemAt(0, 0);
-						this.LeftHand = _pockets[firstSet ? Pocket.LeftHand1 : Pocket.LeftHand2].GetItemAt(0, 0);
-						this.Magazine = _pockets[firstSet ? Pocket.Magazine1 : Pocket.Magazine2].GetItemAt(0, 0);
-					}
-
-					// Don't do it twice.
-					updatedHands = true;
-				}
+				this.RightHand = _pockets[this.RightHandPocket].GetItemAt(0, 0);
+				this.LeftHand = _pockets[this.LeftHandPocket].GetItemAt(0, 0);
+				this.Magazine = _pockets[this.MagazinePocket].GetItemAt(0, 0);
 			}
-		}
-
-		/// <summary>
-		/// Runs equipment updates if necessary.
-		/// </summary>
-		/// <param name="item"></param>
-		/// <param name="source"></param>
-		/// <param name="target"></param>
-		private void CheckEquipMoved(Item item, Pocket source, Pocket target)
-		{
-			if (_creature.Region != Region.Limbo)
-			{
-				if (source.IsEquip())
-					Send.EquipmentMoved(_creature, source);
-
-				if (target.IsEquip())
-					Send.EquipmentChanged(_creature, item);
-			}
-
-			// Send stat update when moving equipment
-			if (source.IsEquip() || target.IsEquip())
-				this.UpdateEquipStats();
 		}
 
 		/// <summary>
@@ -1346,7 +1682,16 @@ namespace Aura.Channel.World.Inventory
 				Stat.LeftCriticalMod, Stat.RightCriticalMod,
 				Stat.BalanceBase, Stat.BalanceBaseMod,
 				Stat.LeftBalanceMod, Stat.RightBalanceMod,
-				Stat.DefenseBaseMod, Stat.ProtectionBaseMod
+				Stat.DefenseBaseMod, Stat.ProtectionBaseMod,
+
+				Stat.AttackMinMod, Stat.AttackMaxMod,
+				Stat.InjuryMinMod, Stat.InjuryMaxMod,
+				Stat.CriticalMod, Stat.BalanceMod,
+				Stat.DefenseMod, Stat.ProtectionMod,
+				Stat.StrMod, Stat.DexMod, Stat.IntMod, Stat.WillMod, Stat.LuckMod,
+				Stat.LifeMaxMod, Stat.ManaMaxMod, Stat.StaminaMaxMod,
+				Stat.MagicAttackMod, Stat.MagicDefenseMod,
+				Stat.CombatPower, Stat.PoisonImmuneMod, Stat.ArmorPierceMod
 			);
 		}
 
@@ -1378,6 +1723,9 @@ namespace Aura.Channel.World.Inventory
 					.Sum(item => item.OptionInfo.Protection);
 		}
 
+		// Functions
+		// ------------------------------------------------------------------
+
 		/// <summary>
 		/// Reduces durability and updates client.
 		/// </summary>
@@ -1402,23 +1750,6 @@ namespace Aura.Channel.World.Inventory
 			item.Proficiency += amount;
 
 			Send.ItemExpUpdate(_creature, item);
-		}
-
-		/// <summary>
-		/// Changes weapon set, if necessary, and updates clients.
-		/// </summary>
-		/// <param name="set"></param>
-		public void ChangeWeaponSet(WeaponSet set)
-		{
-			this.WeaponSet = set;
-			this.UpdateEquipReferences(Pocket.RightHand1, Pocket.LeftHand1, Pocket.Magazine1);
-
-			// Make sure the creature is logged in
-			if (_creature.Region != Region.Limbo)
-			{
-				this.UpdateEquipStats();
-				Send.UpdateWeaponSet(_creature);
-			}
 		}
 	}
 }

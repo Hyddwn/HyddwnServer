@@ -8,8 +8,8 @@ public class DeianScript : NpcScript
 {
 	public override void Load()
 	{
-		SetName("_deian");
 		SetRace(10002);
+		SetName("_deian");
 		SetBody(height: 0.85f);
 		SetFace(skinColor: 23, eyeType: 19, eyeColor: 0, mouthType: 0);
 		SetStand("human/male/anim/male_natural_stand_npc_deian");
