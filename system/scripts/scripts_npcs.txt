@@ -62,6 +62,9 @@ npcs/egos/bow_female.cs
 npcs/egos/cylinder_male.cs
 npcs/egos/cylinder_female.cs
 
+npcs/gairech/seumas.cs
+npcs/gairech/seumas_part_timer.cs
+
 custom/patrons/trigger.cs
 custom/patrons/pegwald.cs
 

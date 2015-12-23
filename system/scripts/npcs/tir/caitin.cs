@@ -275,14 +275,14 @@ public class CaitinShop : GroceryShop
 		Add("Gift", 52022); // Wine
 		Add("Gift", 52023); // Wild Ginseng
 
-		Add("Quest", 70023); // Collecting Quest [5 Small Gems]
-		Add("Quest", 70023); // Collecting Quest [5 Small Green Gems (1 Small Blue Gem reward)]
-		Add("Quest", 70023); // Collecting Quest [5 Small Green Gems (20g reward)]
-		Add("Quest", 70023); // Collecting Quest [5 Small Blue Gems (1 Small Red Gem reward)]
-		Add("Quest", 70023); // Collecting Quest [5 Small Blue Gems (50g reward)]
-		Add("Quest", 70023); // Collecting Quest [5 Small Red Gems (1 Small Silver Gem reward)]
-		Add("Quest", 70023); // Collecting Quest [5 Small Blue Gems (200g reward)]
-		Add("Quest", 70023); // Collecting Quest [5 Small Silver Gems]
+		Add("Quest", 70023, 1, 0);   // Collecting Quest [5 Small Gems]
+		Add("Quest", 70023, 1, 1);   // Collecting Quest [5 Small Green Gems (1 Small Blue Gem reward)]
+		Add("Quest", 70023, 1, 1);   // Collecting Quest [5 Small Green Gems (20g reward)]
+		Add("Quest", 70023, 1, 5);   // Collecting Quest [5 Small Blue Gems (1 Small Red Gem reward)]
+		Add("Quest", 70023, 1, 5);   // Collecting Quest [5 Small Blue Gems (50g reward)]
+		Add("Quest", 70023, 1, 25);  // Collecting Quest [5 Small Red Gems (1 Small Silver Gem reward)]
+		Add("Quest", 70023, 1, 25);  // Collecting Quest [5 Small Red Gems](200g reward)]
+		Add("Quest", 70023, 1, 100); // Collecting Quest [5 Small Silver Gems]
 
 		Add("Event"); // Empty
 	}

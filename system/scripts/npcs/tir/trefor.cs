@@ -245,3 +245,20 @@ public class TreforBaseScript : NpcScript
 		}
 	}
 }
+public class TreforShop : NpcShopScript
+{
+	public override void Setup()
+	{
+		// Party Quest
+		Add("Party Quest", 70025, 1, 5);  // [10 White Spiders]
+		Add("Party Quest", 70025, 1, 10); // [30 White Spiders]
+		Add("Party Quest", 70025, 1, 5);  // [10 Black Spiders]
+		Add("Party Quest", 70025, 1, 10); // [30 Black Spiders]
+		Add("Party Quest", 70025, 1, 5);  // [10 Red Spiders]
+		Add("Party Quest", 70025, 1, 20); // [30 Red Spiders]
+		Add("Party Quest", 70025, 1, 20); // [Hunt 100 Coyotes]
+
+		// Etc.
+		Add("Etc.", 1051); // Battle Arena: Aim for a Giant Star
+	}
+}
