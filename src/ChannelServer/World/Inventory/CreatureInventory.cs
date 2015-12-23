@@ -1401,7 +1401,7 @@ namespace Aura.Channel.World.Inventory
 		/// Removes all upgrade effect bonuses from current equipment and
 		/// reapplies them.
 		/// </summary>
-		private void UpdateUpgradeEffects()
+		public void UpdateUpgradeEffects()
 		{
 			lock (_upgradeEffectSyncLock)
 			{
