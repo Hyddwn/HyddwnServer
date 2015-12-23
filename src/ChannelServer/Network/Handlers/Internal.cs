@@ -96,5 +96,30 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.Notice(NoticeType.TopRed, Math.Max(20000, notice.Length * 350), notice);
 		}
+
+		/// <summary>
+		/// Request for the channel to shutdown.
+		/// </summary>
+		/// <remarks>
+		/// Logs an error if the server is already shutting down.
+		/// </remarks>
+		/// <example>
+		/// ...
+		/// </example>
+		[PacketHandler(Op.Internal.ChannelShutdown)]
+		public void ChannelShutdown(ChannelClient client, Packet packet)
+		{
+
+			int time = packet.GetInt();
+
+			if (!ChannelServer.Instance.ShuttingDown)
+			{
+				ChannelServer.Instance.Shutdown(time, client);
+			}
+			else
+			{
+				Log.Error("There was an attempt to shutdown this channel while it is already shutting down.");
+			}
+		}
 	}
 }

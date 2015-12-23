@@ -620,5 +620,16 @@ namespace Aura.Login.Network
 
 			packet.PutByte(0);
 		}
+
+		/// <summary>
+		/// Sends shutdown request to all channels.
+		/// </summary>
+		/// <param name="time">Seconds until shutdown.</param>
+		public static void ShutdownRequest(int time)
+		{
+			var packet = new Packet(Op.Internal.ChannelShutdown, MabiId.Channel);
+			packet.PutInt(time);
+			LoginServer.Instance.BroadcastChannels(packet);
+		}
 	}
 }

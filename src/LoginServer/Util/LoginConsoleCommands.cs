@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Aura.Login.Database;
 using Aura.Shared.Util;
 using Aura.Shared.Util.Commands;
+using Aura.Login.Network;
 
 namespace Aura.Login.Util
 {
@@ -19,7 +20,21 @@ namespace Aura.Login.Util
 
 		private CommandResult HandleShutDown(string command, IList<string> args)
 		{
-			Log.Info("(Unimplemented)");
+			int time = 0;
+
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			// Get time
+			if (!int.TryParse(args[1], out time))
+				return CommandResult.InvalidArgument;
+
+			// TODO: (Enhancement) If there is no ChannelServer running, refuse shutdown command
+
+			time = Math2.Clamp(20, 1800, time);
+
+			Send.ShutdownRequest(time);
+			Log.Info("Shutting down in {0} seconds...", time);
 
 			return CommandResult.Okay;
 		}

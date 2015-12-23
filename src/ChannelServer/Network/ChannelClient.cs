@@ -113,6 +113,9 @@ namespace Aura.Channel.Network
 			foreach (var creature in this.Creatures.Values)
 				creature.Dispose();
 
+			// Prevent additional packets from being sent to this client since it is being removed shortly
+			this.State = ClientState.Dead;
+
 			foreach (var creature in this.Creatures.Values.Where(a => a.Region != Region.Limbo))
 			{
 				// Close NPC sessions

@@ -91,6 +91,7 @@ namespace Aura.Channel.Util
 			Add(99, -1, "reloadscripts", "", HandleReloadScripts);
 			Add(99, -1, "reloadconf", "", HandleReloadConf);
 			Add(99, 99, "closenpc", "", HandleCloseNpc);
+			Add(99, 99, "shutdown", "<time>", HandleShutdown);
 
 			// Aliases
 			AddAlias("item", "drop");
@@ -1880,6 +1881,30 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Pon modificated: {0} -> {1}."), oldVal, target.Client.Account.Points);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("Your Pon have been modificated by {2}: {0} -> {1}."), oldVal, newVal, sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleShutdown(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			int time = 0;
+
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			// Get time
+			if (!int.TryParse(args[1], out time))
+				return CommandResult.InvalidArgument;
+
+			if (ChannelServer.Instance.ShuttingDown)
+			{
+				Send.MsgBox(client.Controlling, Localization.Get("Server is already being shut down."));
+				return CommandResult.Fail;
+			}
+
+			time = Math2.Clamp(20, 1800, time);
+
+			ChannelServer.Instance.Shutdown(time);
 
 			return CommandResult.Okay;
 		}

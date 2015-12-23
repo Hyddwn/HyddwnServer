@@ -21,6 +21,7 @@ using Aura.Shared.Util.Configuration;
 using System;
 using System.Net.Sockets;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Aura.Channel
 {
@@ -70,6 +71,8 @@ namespace Aura.Channel
 		public PartyManager PartyManager { get; private set; }
 
 		public WorldManager World { get; private set; }
+		public bool ShuttingDown { get; private set; }
+		private List<ChannelClient> ShutdownClientList { get; set; }
 
 		private ChannelServer()
 		{
@@ -292,6 +295,83 @@ namespace Aura.Channel
 			{
 				Log.Warning("InitDatabase: Found items with temp entity ids.");
 				// TODO: clean up dbs
+			}
+		}
+
+		public void Shutdown(int time, ChannelClient client)
+		{
+			if (client.Address.Equals(ChannelServer.Instance.Conf.Channel.LoginHost + ":" + ChannelServer.Instance.Conf.Channel.LoginPort))
+			{
+				Log.Info("Address confirmed to be login server. Proceeding with shutdown.");
+				Shutdown(time);
+			}
+			else
+			{
+				Log.Error("Address does not match the login server. Rejecting shutdown request.");
+				return;
+			}
+		}
+
+		public void Shutdown(int time)
+		{
+
+			this.ShuttingDown = true;
+
+			// Shutdown warning
+			Send.Internal_Broadcast(Localization.Get("The server will be brought down for maintenance in " + time + " seconds. Please log out safely before then."));
+
+			// Send MsgBox to all users
+			foreach (var user in ChannelServer.Instance.Server.Clients)
+			{
+				try
+				{
+					Send.MsgBox(user.Controlling, Localization.Get("You will be logged out automatically in {0} seconds."), time);
+				}
+				catch (Exception e)
+				{
+					Log.Exception(e, "Failed to send MsgBox to user.");
+				}
+			}
+
+			Log.Info("Shutting down in {0} seconds...", time);
+
+			Timer t = new Timer(new TimerCallback(ShutdownTimerDone));
+			t.Change(time * 1000, Timeout.Infinite);
+
+			// Save a list of all clients logged in prior to shutdown
+			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients;
+
+		}
+
+		private void ShutdownTimerDone(object timer)
+		{
+			((Timer)timer).Dispose();
+
+			// Get stored list of all clients logged in prior to shutdown and kill
+			this.KillConnectedClients();
+
+			// Double check that nobody is left (in case someone logged in while the server was switching to shutdown mode)
+			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients;
+			this.KillConnectedClients();
+
+			Log.Info("Waiting an additional 10 seconds to save data before closing...");
+			Thread.Sleep(10 * 1000);
+			CliUtil.Exit(0, false);
+		}
+
+		private void KillConnectedClients()
+		{
+			foreach (var user in ChannelServer.Instance.ShutdownClientList)
+			{
+				try
+				{
+					if (user.State == ClientState.LoggedIn)
+						user.Kill();
+				}
+				catch (Exception e)
+				{
+					Log.Exception(e, "Error killing client.");
+				}
 			}
 		}
 	}
