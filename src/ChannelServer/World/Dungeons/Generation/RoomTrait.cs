@@ -121,7 +121,9 @@ namespace Aura.Channel.World.Dungeons.Generation
 			for (var dir = 0; dir < 4; ++dir)
 			{
 				this.ReserveDoor(dir);
-				this.SetDoorType(dir, (int) DungeonBlockType.Door);
+				var doorType = this.GetDoorType(dir);
+				if (doorType != (int)DungeonBlockType.BossDoor && doorType != (int)DungeonBlockType.Door)
+					this.SetDoorType(dir, (int) DungeonBlockType.Door);
 			}
 		}
 
