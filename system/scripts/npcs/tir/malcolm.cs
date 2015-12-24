@@ -328,7 +328,6 @@ public class MalcolmScript : NpcScript
 	}
 }
 
-//Add("General Goods", 1006, "MGCSEL:s:yellow;MGCWRD:s:knowskill(10005);"); // Introduction to Music Composition
 public class MalcolmShop : NpcShopScript
 {
 	public override void Setup()
