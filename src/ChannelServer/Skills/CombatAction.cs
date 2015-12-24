@@ -166,7 +166,7 @@ namespace Aura.Channel.Skills
 					var npc = action.Creature as NPC;
 					if (npc != null && npc.AI != null)
 					{
-						npc.AI.OnHit(tAction);
+						npc.AI.OnTargetActionHit(tAction);
 					}
 
 					// Cancel target's skill

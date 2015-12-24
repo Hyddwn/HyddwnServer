@@ -55,7 +55,7 @@ namespace Aura.Channel.Network.Handlers
 			pet.Save = true;
 			pet.Client = client;
 
-			// Add pet to controled creature list
+			// Add pet to controlled creature list
 			client.Creatures.Add(pet.EntityId, pet);
 
 			// Register and response
@@ -64,6 +64,10 @@ namespace Aura.Channel.Network.Handlers
 
 			// Make pet appear by "warping" it (sends EnterRegion)
 			pet.Warp(pet.GetLocation());
+
+			// Update master's upgrade effects, for potential summon checks.
+			// XXX: Do we need an event for this?
+			creature.Inventory.UpdateUpgradeEffects();
 		}
 
 		/// <summary>
@@ -103,6 +107,10 @@ namespace Aura.Channel.Network.Handlers
 			Send.PetUnregister(creature, pet);
 			Send.Disappear(pet);
 			Send.UnsummonPetR(creature, true, entityId);
+
+			// Update master's upgrade effects, for potential summon checks.
+			// XXX: Do we need an event for this?
+			creature.Inventory.UpdateUpgradeEffects();
 		}
 
 		/// <summary>

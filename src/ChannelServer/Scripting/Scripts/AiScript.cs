@@ -1343,7 +1343,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Called when creature is hit.
 		/// </summary>
 		/// <param name="action"></param>
-		public virtual void OnHit(TargetAction action)
+		public virtual void OnTargetActionHit(TargetAction action)
 		{
 			// Aggro attacker if there is not current target,
 			// or if there is a target but it's not a player, and the attacker is one,

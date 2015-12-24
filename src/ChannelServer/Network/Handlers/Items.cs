@@ -116,10 +116,18 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check pocket, players only have limited access.
+			if (!CreatureInventory.AccessiblePockets.Contains(item.Info.Pocket))
+			{
+				Log.Warning("ItemDrop: Player '{0}' ({1:X16}) tried to drop from inaccessible pocket.", creature.Name, creature.EntityId);
+				Send.ItemDropR(creature, false);
+				return;
+			}
+
 			// Check for filled bags
 			if (item.IsBag && item.OptionInfo.LinkedPocketId != Pocket.None && creature.Inventory.CountItemsInPocket(item.OptionInfo.LinkedPocketId) > 0)
 			{
-				Log.Warning("Player '{0}' ({1:X16}) tried to drop filled item bag.", creature.Name, creature.EntityId);
+				Log.Warning("ItemDrop: Player '{0}' ({1:X16}) tried to drop filled item bag.", creature.Name, creature.EntityId);
 				Send.ItemDropR(creature, false);
 				return;
 			}
@@ -131,6 +139,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Drop item if it wasn't used to access a dungeon
 			if (!ChannelServer.Instance.World.DungeonManager.CheckDrop(creature, item))
 				item.Drop(creature.Region, creature.GetPosition(), Item.DropRadius, creature, true);
 

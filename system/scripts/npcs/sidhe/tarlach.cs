@@ -2,6 +2,7 @@
 // Tarlach
 //--- Description -----------------------------------------------------------
 // Druid form
+//--- History ---------------------------------------------------------------
 // 1.0 Added general keyword responses and day/night cycle
 // Missing: Any Quest related conversations and Spirit Weapon
 //---------------------------------------------------------------------------
@@ -44,7 +45,7 @@ public class TarlachScript : NpcScript
 	}
 
 	[On("ErinnDaytimeTick")]
-	public void TarlachWarp(ErinnTime time)
+	public void OnErinnDaytimeTick(ErinnTime time)
 	{
 		if (time.IsNight)
 			NPC.WarpFlash(48, 11100, 30400);
@@ -70,11 +71,13 @@ public class TarlachScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 				if (Title == 11002)
+				{
 					Msg("...You've accomplished what<br/>Mari, Ruairi and myself could not do....<br/>...Thank you.");
-				Msg("......");
-				Msg("...But...Ruairi...<br/>What's going to happen to him...?");
-				Msg("...Please. <username/>...<br/>If you hear anything about Ruairi...");
-				Msg("...Please let me know...");
+					Msg("......");
+					Msg("...But...Ruairi...<br/>What's going to happen to him...?");
+					Msg("...Please. <username/>...<br/>If you hear anything about Ruairi...");
+					Msg("...Please let me know...");
+				}
 				await Conversation();
 				break;
 		}
