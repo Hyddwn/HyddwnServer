@@ -241,7 +241,11 @@ namespace Aura.Channel.World.Dungeons.Puzzles
 			for (var dir = 0; dir < 4; ++dir)
 			{
 				if (_room.Links[dir] == LinkType.From || _room.Links[dir] == LinkType.To)
-					this.AddDoor(dir, DungeonBlockType.Door);
+				{
+					// Boss door supposed to be locked, skip it and let Dungeon.InitFloorRegion() create it.
+					if ((DungeonBlockType) _room.DoorType[dir] != DungeonBlockType.BossDoor)
+						this.AddDoor(dir, DungeonBlockType.Door);
+				}
 			}
 
 			this.OpenAllDoors();
