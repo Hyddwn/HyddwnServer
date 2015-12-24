@@ -26,12 +26,10 @@ public class TarlachBearScript : NpcScript
 		AddPhrase("Rooooar... ");
 		AddPhrase("Roar... ");
 		AddPhrase("Rooar... ");
-
-		TarlachBearWarp(ErinnTime.Now);
 	}
 
 	[On("ErinnDaytimeTick")]
-	public void TarlachBearWarp(ErinnTime time)
+	public void OnErinnDaytimeTick(ErinnTime time)
 	{
 		if (!time.IsNight)
 			NPC.Warp(48, 11100, 30400);

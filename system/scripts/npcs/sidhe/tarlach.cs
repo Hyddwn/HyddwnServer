@@ -44,7 +44,7 @@ public class TarlachScript : NpcScript
 	}
 
 	[On("ErinnDaytimeTick")]
-	public void TarlachWarp(ErinnTime time)
+	public void OnErinnDaytimeTick(ErinnTime time)
 	{
 		if (time.IsNight)
 			NPC.WarpFlash(48, 11100, 30400);
