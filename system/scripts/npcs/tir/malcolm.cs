@@ -291,7 +291,7 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "shop_bookstore":
-				GiveKeyowrd("shop_misc");
+				GiveKeyword("shop_misc");
 				Msg("Ah, are you looking for books?<br/>I once brought in a lot of books, but nobody bought them and I lost a lot of money.<br/>Since then, I haven't been stocking books.");
 				Msg("At least some books on the Composing skill did sell pretty well.");
 				break;
