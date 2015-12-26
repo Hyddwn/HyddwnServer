@@ -8,6 +8,7 @@ using Aura.Channel.Skills.Combat;
 using Aura.Channel.Skills.Life;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
+using Aura.Data;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Shared.Network;
@@ -651,20 +652,50 @@ namespace Aura.Channel.Scripting.Scripts
 		/// The Wiki is speaking of a passive Sharp Mind skill, but it doesn't
 		/// seem to be a skill at all anymore.
 		/// 
-		/// TODO: Implement old Sharp Mind (optional).
+		/// A failed Sharp Mind is supposed to be displayed as an "X",
+		/// assumingly statuses 3 and 4 were used for this in the past,
+		/// but the current NA client doesn't do anything when sending
+		/// them, so we use skill id 0 instead, which results in a
+		/// question mark, originally used for skills unknown to the
+		/// player.
 		/// 
-		/// TODO: To implement the old Sharp Mind we have to figure out how
-		///   to display a failed Sharp Mind (X). "?" is shown for skill id 0.
-		///   Older logs make use of status 3 and 4, but the current NA client
-		///   doesn't seem to react to them.
-		///   If we can't get X to work we could use ? for both.
+		/// Even on servers that didn't have Sharp Mind officially,
+		/// the packets were still sent to the client, it just didn't
+		/// display them, assumingly because the players didn't have
+		/// the skill. Since this is not the case for the NA client,
+		/// we control it from the server.
+		/// 
+		/// TODO: When we move AIs to an NPC client, the entire SharpMind
+		///   handling would move to the SkillPrepare handler.
 		/// </remarks>
 		/// <param name="skillId"></param>
 		/// <param name="status"></param>
 		protected void SharpMind(SkillId skillId, SharpMindStatus status)
 		{
+			// Some races are "immune" to Sharp Mind
+			if (this.Creature.RaceData.SharpMindImmune)
+				return;
+
+			var passive = AuraData.FeaturesDb.IsEnabled("PassiveSharpMind");
+
+			// Send to players in range, one after the other, so we have control
+			// over the recipients.
 			foreach (var creature in _playersInRange)
 			{
+				// Handle active (old) Sharp Mind
+				if (!passive)
+				{
+					// Don't send if player doesn't have Sharp Mind.
+					if (!creature.Skills.Has(SkillId.SharpMind))
+						continue;
+
+					// Set skill id to 0, so the bubble displays a question mark,
+					// if skill is unknown to the player or Sharp Mind fails.
+					if (!creature.Skills.Has(skillId) || this.Random() >= ChannelServer.Instance.Conf.World.SharpMindChance)
+						skillId = SkillId.None;
+				}
+
+				// Cancel and None are sent for removing the bubble
 				if (status == SharpMindStatus.Cancelling || status == SharpMindStatus.None)
 				{
 					Send.SharpMind(this.Creature, creature, skillId, SharpMindStatus.Cancelling);

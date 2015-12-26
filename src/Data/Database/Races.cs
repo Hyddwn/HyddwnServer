@@ -63,6 +63,7 @@ namespace Aura.Data.Database
 		public int SplashAngle { get; set; }
 		public float SplashDamage { get; set; }
 		public RaceStands Stand { get; set; }
+		public bool SharpMindImmune { get; set; }
 
 		public int Level { get; set; }
 		public float Str { get; set; }
@@ -323,6 +324,7 @@ namespace Aura.Data.Database
 			raceData.SplashAngle = entry.ReadInt("splashAngle");
 			raceData.SplashDamage = entry.ReadFloat("splashDamage");
 			raceData.Stand = (RaceStands)entry.ReadInt("stand");
+			raceData.SharpMindImmune = entry.ReadBool("sharpMindImmune");
 			raceData.AI = entry.ReadString("ai");
 
 			// Looks
