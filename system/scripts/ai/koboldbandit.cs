@@ -11,79 +11,83 @@
 [AiScript("koboldbandit")]
 public class KoboldBanditAi : AiScript
 {
-	// Kobold Phrases
-	string[] koboldBanditIdle = new[] {
-		"Filthy humans, I remember.",
-		"Fish... I want some fish.",
-		"Hahaha",
-		"I hate light.",
-		"I will take revenge on those humans.",
-		"Kobold hate humans.",
-		"Kobold is looking around.",
-		"Kobold is looking for humans.",
-		"Kobold will keep a look out",
-		"Let's pay back those humans.",
-		"Sniff...",
-		"Stupid humans double-crossed me.",
-		"Those horrible humans...",
-		"Where are you?!",
-		"You humans...",
-		};
+	readonly string[] koboldBanditIdle = new[] 
+	{
+		L("Filthy humans, I remember."),
+		L("Fish... I want some fish."),
+		L("Hahaha"),
+		L("I hate light."),
+		L("I will take revenge on those humans."),
+		L("Kobold hate humans."),
+		L("Kobold is looking around."),
+		L("Kobold is looking for humans."),
+		L("Kobold will keep a look out"),
+		L("Let's pay back those humans."),
+		L("Sniff..."),
+		L("Stupid humans double-crossed me."),
+		L("Those horrible humans..."),
+		L("Where are you?!"),
+		L("You humans..."),
+	};
 
-	string[] koboldBanditAlert = new[] {
-		"Are you frightened?",
-		"Why have you come here?",
-		"You cruel humans...",
-		"Planning to steal this land as well?",
-		};
+	readonly string[] koboldBanditAlert = new[]
+	{
+		L("Are you frightened?"),
+		L("Why have you come here?"),
+		L("You cruel humans..."),
+		L("Planning to steal this land as well?"),
+	};
 
-	string[] koboldBanditAttack = new[] {
-		"Come here",
-		"Give me everything you've got.",
-		"Grr...",
-		"Hahaha",
-		"Whoopee",
-		"Hahaha",
-		"Ha ha",
-		};
+	readonly string[] koboldBanditAttack = new[] 
+	{
+		L("Come here"),
+		L("Give me everything you've got."),
+		L("Grr..."),
+		L("Hahaha"),
+		L("Whoopee"),
+		L("Hahaha"),
+		L("Ha ha"),
+	};
 
-	string[] koboldBanditCounterDefense = new[] {
-		"Coward",
-		"What are you looking at, hah?",
-		"You're quick to catch on.",
-		"What's this?",
-		"You want a piece of me!",
-		"The underground used to be our land.",
-		};
+	readonly string[] koboldBanditCounterDefense = new[]
+	{
+		L("Coward"),
+		L("What are you looking at, hah?"),
+		L("You're quick to catch on."),
+		L("What's this?"),
+		L("You want a piece of me!"),
+		L("The underground used to be our land."),
+	};
 
-	string[] koboldBanditOnDefenseHit = new[] {
-		"Now you're in for some trouble!",
-		"Use your brain!",
-		"Talk about primitive!",
-		};
+	readonly string[] koboldBanditOnDefenseHit = new[]
+	{
+		L("Now you're in for some trouble!"),
+		L("Use your brain!"),
+		L("Talk about primitive!"),
+	};
 
-	string[] koboldBanditOnKnockDown = new[] {
-		"Burp",
-		"Hehe He",
-		"Ah",
-		"A ha ha",
-		"Auh!",
-		"Huh Huh",
-		"Shoot",
-		"Hahaha",
-		"Ah hak!",
-		};
+	readonly string[] koboldBanditOnKnockDown = new[]
+	{
+		L("Burp"),
+		L("Hehe He"),
+		L("Ah"),
+		L("A ha ha"),
+		L("Auh!"),
+		L("Huh Huh"),
+		L("Shoot"),
+		L("Hahaha"),
+		L("Ah hak!"),
+	};
 
-	string[] koboldBanditOnHit = new[] {
-		"Eukk",
-		"Aah",
-		"Snore",
-		"Oop",
-		"Ouch!",
-		};
+	readonly string[] koboldBanditOnHit = new[] 
+	{
+		L("Eukk"),
+		L("Aah"),
+		L("Snore"),
+		L("Oop"),
+		L("Ouch!"),
+	};
 
-
-	// Real AI starts here
 	public KoboldBanditAi()
 	{
 		SetAggroRadius(850); // angle 120 audiorange 200
@@ -94,15 +98,12 @@ public class KoboldBanditAi : AiScript
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);
-
 	}
 
 	protected override IEnumerable Idle()
 	{
 		if (Random() < 90)
-		{
-			Do(Say(koboldBanditIdle[Random(koboldBanditIdle.Length)]));
-		}
+			Do(Say(koboldBanditIdle));
 		var rndIdle = Random();
 		if (rndIdle < 20)
 		{
@@ -125,10 +126,8 @@ public class KoboldBanditAi : AiScript
 		var rndAlert = Random();
 		if (rndAlert < 5)
 		{
-			if (Random() < 90) // for "blanks"
-			{
-				Do(Say(koboldBanditAttack[Random(koboldBanditAttack.Length)]));
-			}
+			if (Random() < 90)
+				Do(Say(koboldBanditAttack));
 			Do(Attack(3, 4000));
 		}
 		else if (rndAlert < 45)
@@ -139,9 +138,7 @@ public class KoboldBanditAi : AiScript
 				{
 					Do(PrepareSkill(SkillId.Defense));
 					if (Random() < 80)
-					{
-						Do(Say(koboldBanditCounterDefense[Random(koboldBanditCounterDefense.Length)]));
-					}
+						Do(Say(koboldBanditCounterDefense));
 					Do(Circle(500, 1000, 5000, true));
 					Do(CancelSkill());
 				}
@@ -149,9 +146,7 @@ public class KoboldBanditAi : AiScript
 				{
 					Do(PrepareSkill(SkillId.Defense));
 					if (Random() < 80)
-					{
-						Do(Say(koboldBanditCounterDefense[Random(koboldBanditCounterDefense.Length)]));
-					}
+						Do(Say(koboldBanditCounterDefense));
 					Do(Circle(500, 1000, 5000, false));
 					Do(CancelSkill());
 				}
@@ -160,9 +155,7 @@ public class KoboldBanditAi : AiScript
 			{
 				Do(PrepareSkill(SkillId.Counterattack));
 				if (Random() < 80)
-				{
-					Do(Say(koboldBanditCounterDefense[Random(koboldBanditCounterDefense.Length)]));
-				}
+					Do(Say(koboldBanditCounterDefense));
 				Do(Wait(5000));
 				Do(CancelSkill());
 			}
@@ -170,9 +163,7 @@ public class KoboldBanditAi : AiScript
 		else if (rndAlert < 90)
 		{
 			if (Random() < 80)
-			{
-				Do(Say(koboldBanditAlert[Random(koboldBanditAlert.Length)]));
-			}
+				Do(Say(koboldBanditAlert));
 			if (Random() < 55)
 			{
 				Do(Circle(500, 1000, 4000, true));
@@ -185,9 +176,7 @@ public class KoboldBanditAi : AiScript
 		else
 		{
 			if (Random() < 50)
-			{
-				Do(Say(koboldBanditAlert[Random(koboldBanditAlert.Length)]));
-			}
+				Do(Say(koboldBanditAlert));
 			if (Random() < 50)
 			{
 				Do(Circle(500, 1000, 1000, true, false));
@@ -208,9 +197,7 @@ public class KoboldBanditAi : AiScript
 		{
 			Do(Attack(3, 5000));
 			if (Random() < 90)
-			{
-				Do(Say(koboldBanditAttack[Random(koboldBanditAttack.Length)]));
-			}
+				Do(Say(koboldBanditAttack));
 		}
 		else if (rndAggro < 75)
 		{
@@ -218,18 +205,14 @@ public class KoboldBanditAi : AiScript
 			Do(Follow(200, false, 5000));
 			Do(Attack(1, 4000));
 			if (Random() < 90)
-			{
-				Do(Say(koboldBanditAttack[Random(koboldBanditAttack.Length)]));
-			}
+				Do(Say(koboldBanditAttack));
 		}
 		else if (rndAggro < 90)
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(CancelSkill());
 			if (Random() < 90)
-			{
-				Do(Say(koboldBanditCounterDefense[Random(koboldBanditCounterDefense.Length)]));
-			}
+				Do(Say(koboldBanditCounterDefense));
 		}
 		else
 		{
@@ -241,16 +224,14 @@ public class KoboldBanditAi : AiScript
 
 	private IEnumerable OnDefenseHit()
 	{
-		Do(Say(koboldBanditOnDefenseHit[Random(koboldBanditOnDefenseHit.Length)]));
+		Do(Say(koboldBanditOnDefenseHit));
 		Do(Attack());
 		Do(Wait(3000));
 	}
 	private IEnumerable OnHit()
 	{
 		if (Random() < 90)
-		{
-			Do(Say(koboldBanditOnHit[Random(koboldBanditOnHit.Length)]));
-		}
+			Do(Say(koboldBanditOnHit));
 		if (Random() < 20)
 		{
 			Do(Timeout(2000, KeepDistance(10000, true)));
@@ -264,9 +245,7 @@ public class KoboldBanditAi : AiScript
 	private IEnumerable OnKnockDown()
 	{
 		if (Random() < 90)
-		{
-			Do(Say(koboldBanditOnKnockDown[Random(koboldBanditOnKnockDown.Length)]));
-		}
+			Do(Say(koboldBanditOnKnockDown));
 		var rndOKD = Random();
 		if (rndOKD < 20)
 		{
@@ -299,9 +278,7 @@ public class KoboldBanditAi : AiScript
 		{
 			Do(Attack(3, 5000));
 			if (Random() < 90)
-			{
-				Do(Say(koboldBanditAttack[Random(koboldBanditAttack.Length)]));
-			}
+				Do(Say(koboldBanditAttack));
 		}
 		else
 		{
@@ -309,9 +286,7 @@ public class KoboldBanditAi : AiScript
 			Do(CancelSkill());
 			Do(Attack(3, 5000));
 			if (Random() < 90)
-			{
-				Do(Say(koboldBanditAttack[Random(koboldBanditAttack.Length)]));
-			}
+				Do(Say(koboldBanditAttack));
 		}
 	}
 }

@@ -677,6 +677,15 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 		}
 
+		/// <summary>
+		/// Proxy for Localization.Get.
+		/// </summary>
+		/// <param name="phrase"></param>
+		protected static string L(string phrase)
+		{
+			return Localization.Get(phrase);
+		}
+
 		// Flow control
 		// ------------------------------------------------------------------
 
