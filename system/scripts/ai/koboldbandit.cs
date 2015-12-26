@@ -164,13 +164,27 @@ public class KoboldBanditAi : AiScript
 		{
 			if (Random() < 80)
 				Do(Say(koboldBanditAlert));
-			Do(Circle(500, 1000, 4000, false));
+			if (Random() < 55)
+			{
+				Do(Circle(500, 1000, 4000, true));
+			}
+			else
+			{
+				Do(Circle(500, 1000, 4000, false));
+			}
 		}
 		else
 		{
 			if (Random() < 50)
 				Do(Say(koboldBanditAlert));
-			Do(Circle(500, 1000, 1000, false));
+			if (Random() < 50)
+			{
+				Do(Circle(500, 1000, 1000, true, false));
+			}
+			else
+			{
+				Do(Circle(500, 1000, 1000, false, false));
+			}
 		}
 	}
 
