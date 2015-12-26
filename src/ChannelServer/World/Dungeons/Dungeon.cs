@@ -424,12 +424,17 @@ namespace Aura.Channel.World.Dungeons
 					_bossDoor.Behavior = (cr, pr) => { _bossDoor.Open(); };
 					_bossDoor.Behavior += this.BossDoorBehavior;
 					_bossDoor.UpdateShapes();
-					endRoomTrait.PuzzleDoors[Direction.Down] = _bossDoor; // making sure another open dummy door won't be added here
+					endRoomTrait.SetPuzzleDoor(_bossDoor, Direction.Down); // making sure another open dummy door won't be added here
 					region.AddProp(_bossDoor);
 				}
 				else
 				{
 					_bossDoor = endRoomTrait.PuzzleDoors[Direction.Down];
+					if (_bossDoor.State == "open")
+					{
+						Log.Warning("Dungeon.InitFloorRegion: Boss door was left open, closing. Dungeon: '{0}'.", this.Name);
+						_bossDoor.Close(endRoomTrait.X, endRoomTrait.Y);
+					}
 				}
 
 				// Create exit statue

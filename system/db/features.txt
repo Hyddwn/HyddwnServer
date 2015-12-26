@@ -336,7 +336,9 @@
 	
 	// Season 2
 	{ name: "G16S2", enabled: true, children: [
-		{ name: "CombatSystemRenewal", enabled: true },
+		{ name: "CombatSystemRenewal", enabled: true, children: [
+			{ name: "PassiveSharpMind", enabled: true },
+		]},
 	]},
 ]},
 
