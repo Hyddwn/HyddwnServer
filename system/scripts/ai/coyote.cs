@@ -7,7 +7,7 @@
 // Missing: aggro over time, visual angle, wolf support, fear
 //---------------------------------------------------------------------------
 
-[AiScript("Coyote")]
+[AiScript("coyote")]
 public class CoyoteAi : AiScript
 {
 	public CoyoteAi()
