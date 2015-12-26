@@ -749,6 +749,20 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Makes creature say one of the messages in public chat.
+		/// </summary>
+		/// <param name="msg"></param>
+		/// <returns></returns>
+		protected IEnumerable Say(params string[] msgs)
+		{
+			if (msgs == null || msgs.Length == 0)
+				yield break;
+
+			Send.Chat(this.Creature, msgs[this.Random(msgs.Length)]);
+			yield break;
+		}
+
+		/// <summary>
 		/// Makes creature say a random phrase in public chat.
 		/// </summary>
 		/// <returns></returns>
