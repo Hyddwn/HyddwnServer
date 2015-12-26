@@ -38,18 +38,9 @@ public class CoyoteAi : AiScript
 		{
 			if (Random() < 70) // 70%
 			{
-				if (Random() < 50) // 50%
-				{
-					Do(PrepareSkill(SkillId.Defense));
-					Do(Circle(500, 1000, 5000, true));
-					Do(CancelSkill());
-				}
-				else // 50%
-				{
-					Do(PrepareSkill(SkillId.Defense));
-					Do(Circle(500, 1000, 5000, false));
-					Do(CancelSkill());
-				}
+				Do(PrepareSkill(SkillId.Defense));
+				Do(Circle(500, 1000, 5000));
+				Do(CancelSkill());
 			}
 			else // 30%
 			{
@@ -64,25 +55,11 @@ public class CoyoteAi : AiScript
 		}
 		else if (rndAlert < 90) // 45%
 		{
-			if (Random() < 50)
-			{
-				Do(Circle(500, 1000, 4000, true));
-			}
-			else
-			{
-				Do(Circle(500, 1000, 4000, false));
-			}
+			Do(Circle(500, 1000, 4000));
 		}
 		else // 10%
 		{
-			if (Random() < 50)
-			{
-				Do(Circle(500, 1000, 5000, true, false));
-			}
-			else
-			{
-				Do(Circle(500, 1000, 5000, false, false));
-			}
+			Do(Circle(500, 1000, 5000, false));
 		}
 	}
 
@@ -94,16 +71,8 @@ public class CoyoteAi : AiScript
 			if (rndnum < 25) // 25%
 			{
 				Do(PrepareSkill(SkillId.Defense));
-				if (Random() < 50)
-				{
-					Do(Circle(400, 1000, 5000, true));
-					Do(CancelSkill());
-				}
-				else
-				{
-					Do(Circle(400, 1000, 5000, false));
-					Do(CancelSkill());
-				}
+				Do(Circle(400, 1000, 5000));
+				Do(CancelSkill());
 			}
 			else if (rndnum < 50) // 25%
 			{
@@ -118,14 +87,7 @@ public class CoyoteAi : AiScript
 			}
 			else // 25%
 			{
-				if (Random() < 50)
-				{
-					Do(Circle(400, 1000, 1000, true, false));
-				}
-				else
-				{
-					Do(Circle(400, 1000, 1000, false, false));
-				}
+				Do(Circle(400, 1000, 1000,false));
 			}
 		}
 		else // 40%

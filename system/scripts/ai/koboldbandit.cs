@@ -134,22 +134,11 @@ public class KoboldBanditAi : AiScript
 		{
 			if (Random() < 70)
 			{
-				if (Random() < 50)
-				{
-					Do(PrepareSkill(SkillId.Defense));
-					if (Random() < 80)
-						Do(Say(koboldBanditCounterDefense));
-					Do(Circle(500, 1000, 5000, true));
-					Do(CancelSkill());
-				}
-				else
-				{
-					Do(PrepareSkill(SkillId.Defense));
-					if (Random() < 80)
-						Do(Say(koboldBanditCounterDefense));
-					Do(Circle(500, 1000, 5000, false));
-					Do(CancelSkill());
-				}
+				Do(PrepareSkill(SkillId.Defense));
+				if (Random() < 80)
+					Do(Say(koboldBanditCounterDefense));
+				Do(Circle(500, 1000, 5000));
+				Do(CancelSkill());
 			}
 			else
 			{
@@ -164,27 +153,14 @@ public class KoboldBanditAi : AiScript
 		{
 			if (Random() < 80)
 				Do(Say(koboldBanditAlert));
-			if (Random() < 55)
-			{
-				Do(Circle(500, 1000, 4000, true));
-			}
-			else
-			{
-				Do(Circle(500, 1000, 4000, false));
-			}
+			Do(Circle(500, 1000, 4000));
+
 		}
 		else
 		{
 			if (Random() < 50)
 				Do(Say(koboldBanditAlert));
-			if (Random() < 50)
-			{
-				Do(Circle(500, 1000, 1000, true, false));
-			}
-			else
-			{
-				Do(Circle(500, 1000, 1000, false, false));
-			}
+			Do(Circle(500, 1000, 1000, false));
 		}
 	}
 
