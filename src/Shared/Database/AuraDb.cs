@@ -37,9 +37,9 @@ namespace Aura.Shared.Database
 		/// <param name="user"></param>
 		/// <param name="pass"></param>
 		/// <param name="db"></param>
-		public void Init(string host, string user, string pass, string db)
+		public void Init(string host, int port, string user, string pass, string db)
 		{
-			_connectionString = string.Format("server={0}; database={1}; uid={2}; password={3}; pooling=true; min pool size=0; max pool size=100;", host, db, user, pass);
+			_connectionString = string.Format("server={0}; port={1}; database={2}; uid={3}; password={4}; pooling=true; min pool size=0; max pool size=100;", host, port, db, user, pass);
 			this.TestConnection();
 		}
 
