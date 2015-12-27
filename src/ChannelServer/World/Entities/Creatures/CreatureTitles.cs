@@ -256,6 +256,11 @@ namespace Aura.Channel.World.Entities.Creatures
 						case "MaxAttack": _creature.StatMods.Add(Stat.AttackMaxMod, effect.Value, StatModSource.Title, data.Id); break;
 						case "MinInjury": _creature.StatMods.Add(Stat.InjuryMinMod, effect.Value, StatModSource.Title, data.Id); break;
 						case "MaxInjury": _creature.StatMods.Add(Stat.InjuryMaxMod, effect.Value, StatModSource.Title, data.Id); break;
+						case "Crit": _creature.StatMods.Add(Stat.CriticalMod, effect.Value, StatModSource.Title, data.Id); break;
+						case "CP": _creature.StatMods.Add(Stat.CombatPowerMod, effect.Value, StatModSource.Title, data.Id); break;
+						case "MagicAttack": _creature.StatMods.Add(Stat.MagicAttackMod, effect.Value, StatModSource.Title, data.Id); break;
+						case "MagicDefense": _creature.StatMods.Add(Stat.MagicDefenseMod, effect.Value, StatModSource.Title, data.Id); break;
+						case "MagicProtection": _creature.StatMods.Add(Stat.MagicProtectMod, effect.Value, StatModSource.Title, data.Id); break;
 						default:
 							Log.Warning("SwitchStatMods: Unknown title effect '{0}' in title {1}.", effect.Key, data.Id);
 							break;
@@ -267,11 +272,15 @@ namespace Aura.Channel.World.Entities.Creatures
 			if (_creature.Region != Region.Limbo)
 			{
 				Send.StatUpdate(_creature, StatUpdateType.Private,
-					Stat.LifeMaxMod, Stat.Life, Stat.LifeInjured, Stat.ManaMaxMod, Stat.Mana, Stat.StaminaMaxMod,
-					Stat.Stamina, Stat.StrMod, Stat.IntMod, Stat.DexMod, Stat.WillMod, Stat.LuckMod,
+					Stat.LifeMaxMod, Stat.Life, Stat.LifeInjured,
+					Stat.ManaMaxMod, Stat.Mana,
+					Stat.StaminaMaxMod, Stat.Stamina,
+					Stat.StrMod, Stat.IntMod, Stat.DexMod, Stat.WillMod, Stat.LuckMod,
 					Stat.DefenseBaseMod, Stat.ProtectionBaseMod,
 					Stat.AttackMinMod, Stat.AttackMaxMod,
-					Stat.InjuryMinMod, Stat.InjuryMaxMod
+					Stat.InjuryMinMod, Stat.InjuryMaxMod,
+					Stat.CriticalMod, Stat.CombatPowerMod,
+					Stat.MagicAttackMod, Stat.MagicDefenseMod, Stat.MagicProtectMod
 				);
 				Send.StatUpdate(_creature, StatUpdateType.Public, Stat.Life, Stat.LifeMaxMod, Stat.LifeMax);
 			}
