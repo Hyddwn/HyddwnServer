@@ -706,7 +706,7 @@ namespace Aura.Channel.Util
 				rank = Math2.Clamp(0, 18, 16 - rank);
 
 			// Check rank data
-			var rankData = skillData.GetRankData(rank, target.RaceId);
+			var rankData = skillData.GetRankData((SkillRank)rank, target.RaceId);
 			if (rankData == null)
 			{
 				Send.ServerMessage(sender, Localization.Get("Skill '{0}' doesn't have rank '{1}'."), args[1], (SkillRank)rank);
