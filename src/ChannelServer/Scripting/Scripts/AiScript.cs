@@ -810,7 +810,9 @@ namespace Aura.Channel.Scripting.Scripts
 			if (msgs == null || msgs.Length == 0)
 				yield break;
 
-			Send.Chat(this.Creature, msgs[this.Random(msgs.Length)]);
+			var msg = msgs[this.Random(msgs.Length)];
+			if (!string.IsNullOrWhiteSpace(msg))
+				Send.Chat(this.Creature, msg);
 			yield break;
 		}
 
