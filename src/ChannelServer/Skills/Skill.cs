@@ -111,12 +111,7 @@ namespace Aura.Channel.Skills
 				throw new Exception("Skill.LoadRankData: Skill data not found for '" + this.Info.Id.ToString() + "'.");
 
 			if ((this.RankData = this.Data.GetRankData(this.Info.Rank, _race)) == null)
-			{
-				if ((this.RankData = this.Data.GetFirstRankData(_race)) == null)
-					throw new Exception("Skill.LoadRankData: No rank data found for '" + this.Info.Id.ToString() + "@" + this.Info.Rank.ToString() + "'.");
-
-				Log.Warning("Skill.LoadRankData: Missing rank data for '{0},{1}', using '{2}' instead.", this.Info.Id, this.Info.Rank, this.RankData.Rank);
-			}
+				throw new Exception("Skill.LoadRankData: No rank data found for '" + this.Info.Id.ToString() + "@" + this.Info.Rank.ToString() + "'.");
 
 			this.Info.MaxRank = this.Data.MaxRank;
 

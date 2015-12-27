@@ -29,6 +29,14 @@ namespace Aura.Data.Database
 
 		public Dictionary<int, Dictionary<SkillRank, SkillRankData>> RankData { get; set; }
 
+		/// <summary>
+		/// Returns the rank data for the given rank and race, or null if no
+		/// rank data could be found. If the rank exceeds the max rank,
+		/// the data for highest available rank is returned.
+		/// </summary>
+		/// <param name="rank"></param>
+		/// <param name="raceId"></param>
+		/// <returns></returns>
 		public SkillRankData GetRankData(SkillRank rank, int raceId)
 		{
 			if (this.RankData == null)
@@ -42,23 +50,14 @@ namespace Aura.Data.Database
 				if ((skill = this.RankData.GetValueOrDefault(0)) == null)
 					return null;
 
-			return skill.GetValueOrDefault(rank);
-		}
+			// Cap at max rank
+			SkillRankData rankData;
+			if (rank > this.MaxRank)
+				rankData = skill.GetValueOrDefault(this.MaxRank);
+			else
+				rankData = skill.GetValueOrDefault(rank);
 
-		public SkillRankData GetFirstRankData(int raceId)
-		{
-			if (this.RankData == null)
-				return null;
-
-			raceId = raceId & ~3;
-
-			// Check race specific first, fall back to default (0).
-			var skill = this.RankData.GetValueOrDefault(raceId);
-			if (skill == null)
-				if ((skill = this.RankData.GetValueOrDefault(0)) == null)
-					return null;
-
-			return skill.Values.First();
+			return rankData;
 		}
 	}
 
