@@ -184,14 +184,12 @@ namespace Aura.Channel.Skills.Combat
 				// Target action if hit
 				if (successfulHit)
 				{
-					var targetSkillId = target.Skills.ActiveSkill != null ? target.Skills.ActiveSkill.Info.Id : SkillId.CombatMastery;
-
-					var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, targetSkillId);
+					var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
 					tAction.Set(TargetOptions.Result);
-					tAction.AttackerSkillId = skill.Info.Id;
 					tAction.Stun = (short)(actionType == CombatActionPackType.ChainRangeAttack ? TargetStunElf : TargetStun);
 					if (actionType == CombatActionPackType.ChainRangeAttack)
 						tAction.EffectFlags = 0x20;
+
 					cap.Add(tAction);
 
 					// Damage
