@@ -1007,12 +1007,15 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Creature tries to get away from target.
 		/// </summary>
 		/// <param name="minDistance"></param>
+		/// <param name="walk"></param>
+		/// <param name="timeout"></param>
 		/// <returns></returns>
-		protected IEnumerable KeepDistance(int minDistance, bool walk = false)
+		protected IEnumerable KeepDistance(int minDistance, bool walk = false, int timeout = 5000)
 		{
 			Position pos, targetPos;
+			var until = _timestamp + Math.Max(0, timeout);
 
-			while ((pos = this.Creature.GetPosition()).InRange((targetPos = this.Creature.Target.GetPosition()), minDistance))
+			while (_timestamp < until && (pos = this.Creature.GetPosition()).InRange((targetPos = this.Creature.Target.GetPosition()), minDistance))
 			{
 				// The position to move to is on the line between pos and targetPos,
 				// -distance from target to creature, resulting in a position
