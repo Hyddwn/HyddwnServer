@@ -730,7 +730,7 @@ namespace Aura.Channel.World.Inventory
 					pet.Inventory.OnUnequip(collidingItem);
 				pet.Inventory.UpdateEquipStats();
 
-				Send.EquipmentChanged(_creature, item);
+				Send.EquipmentChanged(pet, newItem);
 			}
 			else if (source.IsEquip())
 			{
@@ -738,7 +738,7 @@ namespace Aura.Channel.World.Inventory
 				pet.Inventory.OnUnequip(item);
 				pet.Inventory.UpdateEquipStats();
 
-				Send.EquipmentMoved(_creature, source);
+				Send.EquipmentMoved(pet, source);
 			}
 
 			return true;
