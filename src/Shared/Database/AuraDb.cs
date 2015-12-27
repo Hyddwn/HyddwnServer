@@ -34,6 +34,7 @@ namespace Aura.Shared.Database
 		/// Sets connection string and calls TestConnection.
 		/// </summary>
 		/// <param name="host"></param>
+		/// <param name="port"></param>
 		/// <param name="user"></param>
 		/// <param name="pass"></param>
 		/// <param name="db"></param>
