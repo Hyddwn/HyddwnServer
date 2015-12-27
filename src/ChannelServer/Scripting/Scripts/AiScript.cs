@@ -1166,7 +1166,12 @@ namespace Aura.Channel.Scripting.Scripts
 			var skill = this.Creature.Skills.Get(skillId);
 			if (skill == null)
 			{
-				Log.Warning("AI.PrepareSkill: AI '{0}' tried to prepare skill '{2}', that its creature '{1}' doesn't have.", this.GetType().Name, this.Creature.RaceId, skillId);
+				// The AIs are designed to work with multiple races,
+				// even if they might not possess certain skills.
+				// We don't need a warning if they don't have the skill,
+				// they simply shouldn't do anythig in that case.
+
+				//Log.Warning("AI.PrepareSkill: AI '{0}' tried to prepare skill '{2}', that its creature '{1}' doesn't have.", this.GetType().Name, this.Creature.RaceId, skillId);
 				yield break;
 			}
 
@@ -1410,6 +1415,16 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				Log.Unimplemented("AI.StopSkill: Skill stop method for '{0}'.", skillId);
 			}
+		}
+
+		/// <summary>
+		/// Returns true if AI creature has the skill.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		protected bool HasSkill(SkillId skillId)
+		{
+			return this.Creature.Skills.Has(skillId);
 		}
 
 		// ------------------------------------------------------------------
