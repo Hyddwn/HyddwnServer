@@ -1438,8 +1438,13 @@ namespace Aura.Channel.World.Inventory
 				// Check requirements
 				var fulfilled = false;
 
+				// None
+				if (effect.CheckType == UpgradeCheckType.None)
+				{
+					fulfilled = true;
+				}
 				// Stat ==, >, >=, <, <=
-				if (effect.CheckType >= UpgradeCheckType.GreaterThan && effect.CheckType <= UpgradeCheckType.Equal)
+				else if (effect.CheckType >= UpgradeCheckType.GreaterThan && effect.CheckType <= UpgradeCheckType.Equal)
 				{
 					// Check upgrade stat and get value
 					var valueToCheck = 0;
