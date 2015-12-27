@@ -166,7 +166,7 @@ public class KoboldBanditAi : AiScript
 
 	protected override IEnumerable Aggro()
 	{
-		Do(Timeout(2000, KeepDistance(400, true)));
+		Do(KeepDistance(400, true, 2000));
 		Do(Circle(300, 1000, 1000));
 		var rndAggro = Random();
 		if (rndAggro < 60)
@@ -210,11 +210,11 @@ public class KoboldBanditAi : AiScript
 			Do(Say(koboldBanditOnHit));
 		if (Random() < 20)
 		{
-			Do(Timeout(2000, KeepDistance(10000, true)));
+			Do(KeepDistance(10000, true, 2000));
 		}
 		else
 		{
-			Do(Timeout(4000, Attack(3)));
+			Do(Attack(3, 4000));
 		}
 	}
 
@@ -258,7 +258,8 @@ public class KoboldBanditAi : AiScript
 		}
 		else
 		{
-			Do(Timeout(500, PrepareSkill(SkillId.Defense)));
+			Do(PrepareSkill(SkillId.Defense));
+			Do(Wait(500));
 			Do(CancelSkill());
 			Do(Attack(3, 5000));
 			if (Random() < 90)

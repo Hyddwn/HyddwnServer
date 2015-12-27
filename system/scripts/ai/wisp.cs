@@ -182,7 +182,7 @@ public class WispAi : AiScript
 			}
 			else
 			{
-				Do(Timeout(5000, KeepDistance(1000, false)));
+				Do(KeepDistance(1000, false, 5000));
 			}
 		}
 		else if (rndagr < 80) // 10%
@@ -210,7 +210,7 @@ public class WispAi : AiScript
 	{
 		if (Random() < 50)
 		{
-			Do(Timeout(2000, KeepDistance(1000, false)));
+			Do(KeepDistance(1000, false, 2000));
 		}
 		else
 		{

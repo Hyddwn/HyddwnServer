@@ -87,7 +87,7 @@ public class CoyoteAi : AiScript
 			}
 			else // 25%
 			{
-				Do(Circle(400, 1000, 1000,false));
+				Do(Circle(400, 1000, 1000, false));
 			}
 		}
 		else // 40%
@@ -107,7 +107,7 @@ public class CoyoteAi : AiScript
 		var rndOH = Random();
 		if (rndOH < 15) // 15%
 		{
-			Do(Timeout(2000, KeepDistance(1000, true)));
+			Do(KeepDistance(1000, true, 2000));
 		}
 		else if (rndOH < 30) // 15%
 		{

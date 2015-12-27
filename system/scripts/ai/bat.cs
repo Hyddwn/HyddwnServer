@@ -42,7 +42,7 @@ public class BatAi : AiScript
 		if (num < 20) // 20%
 			Do(Circle(600, 1000, 3000));
 		else if (num < 70) // 50%
-			Do(Timeout(2000, KeepDistance(400, Random(100) < 60)));
+			Do(KeepDistance(400, Random(100) < 60, 2000));
 		else // 30%
 			Do(Wait(3000, 3000));
 

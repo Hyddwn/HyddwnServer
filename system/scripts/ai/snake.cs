@@ -39,11 +39,11 @@ public class SnakeAi : AiScript
 
 		if (num < 40) // 40%
 		{
-			Do(Timeout(3000, KeepDistance(400, true)));
+			Do(KeepDistance(400, true, 3000));
 		}
 		else if (num < 70) // 30%
 		{
-			Do(Timeout(3000, KeepDistance(700, false)));
+			Do(KeepDistance(700, false, 3000));
 		}
 		else // 30%
 		{

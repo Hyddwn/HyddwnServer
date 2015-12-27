@@ -27,7 +27,7 @@ public class RatManAi : AiScript
 
 		if (num < 30) // 30%
 		{
-			Do(Timeout(2000, KeepDistance(1000)));
+			Do(KeepDistance(1000, false, 2000));
 			Do(Circle(600, 1000, 2000));
 		}
 		else if (num < 50) // 20%

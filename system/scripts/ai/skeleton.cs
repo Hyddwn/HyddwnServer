@@ -23,7 +23,7 @@ public class SkeletonAi : AiScript
 
 	protected override IEnumerable Aggro()
 	{
-		Do(Timeout(2000, KeepDistance(400)));
+		Do(KeepDistance(400, false, 2000));
 		Do(Circle(300, 1000, 1000));
 
 		var num = Random(100);
