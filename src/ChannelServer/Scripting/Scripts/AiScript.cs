@@ -1169,7 +1169,7 @@ namespace Aura.Channel.Scripting.Scripts
 				// The AIs are designed to work with multiple races,
 				// even if they might not possess certain skills.
 				// We don't need a warning if they don't have the skill,
-				// they simply shouldn't do anythig in that case.
+				// they simply shouldn't do anything in that case.
 
 				//Log.Warning("AI.PrepareSkill: AI '{0}' tried to prepare skill '{2}', that its creature '{1}' doesn't have.", this.GetType().Name, this.Creature.RaceId, skillId);
 				yield break;
