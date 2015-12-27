@@ -1012,19 +1012,23 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		protected IEnumerable KeepDistance(int minDistance, bool walk = false, int timeout = 5000)
 		{
-			Position pos, targetPos;
 			var until = _timestamp + Math.Max(0, timeout);
 
-			while (_timestamp < until && (pos = this.Creature.GetPosition()).InRange((targetPos = this.Creature.Target.GetPosition()), minDistance))
+			while (_timestamp < until)
 			{
-				// The position to move to is on the line between pos and targetPos,
-				// -distance from target to creature, resulting in a position
-				// "behind" the creature.
-				foreach (var action in this.MoveTo(pos.GetRelative(targetPos, -(minDistance + 50)), walk))
-					yield return action;
-			}
+				var pos = this.Creature.GetPosition();
+				var targetPos = this.Creature.Target.GetPosition();
 
-			yield return true;
+				if (pos.InRange(targetPos, minDistance))
+				{
+					// The position to move to is on the line between pos and targetPos,
+					// -distance from target to creature, resulting in a position
+					// "behind" the creature.
+					this.ExecuteOnce(this.MoveTo(pos.GetRelative(targetPos, -(minDistance + 50)), walk));
+				}
+
+				yield return true;
+			}
 		}
 
 		/// <summary>
