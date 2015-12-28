@@ -1427,6 +1427,19 @@ namespace Aura.Channel.Scripting.Scripts
 			return this.Creature.Skills.Has(skillId);
 		}
 
+		/// <summary>
+		/// Switches to the given weapon set.
+		/// </summary>
+		/// <param name="set"></param>
+		/// <returns></returns>
+		protected IEnumerable SwitchTo(WeaponSet set)
+		{
+			if (this.Creature.Inventory.WeaponSet == set)
+				yield break;
+
+			this.Creature.Inventory.ChangeWeaponSet(set);
+		}
+
 		// ------------------------------------------------------------------
 
 		/// <summary>
