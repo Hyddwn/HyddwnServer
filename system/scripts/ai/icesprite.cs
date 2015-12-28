@@ -1,13 +1,13 @@
 //--- Aura Script -----------------------------------------------------------
-// Lightning Sprite AI
+// Ice Sprite AI
 //--- Description -----------------------------------------------------------
-// AI for Lightning Sprites.
+// AI for Ice Sprites.
 //---------------------------------------------------------------------------
 
-[AiScript("lightningsprite")]
-public class LightningSpriteAi : AiScript
+[AiScript("icesprite")]
+public class IceSpriteAi : AiScript
 {
-	public LightningSpriteAi()
+	public IceSpriteAi()
 	{
 		Hates("/pc/", "/pet/");
 		//HatesAttacking("/elemental/");
@@ -20,9 +20,9 @@ public class LightningSpriteAi : AiScript
 	protected override IEnumerable Idle()
 	{
 		if (Random() < 50)
-			Do(Wander(300, 500, false));
+			Do(Wander(300, 500));
 		else
-			Do(Wait(2000, 5000));
+			Do(Wait(2000, 4000));
 	}
 
 	protected override IEnumerable Alert()
@@ -30,20 +30,15 @@ public class LightningSpriteAi : AiScript
 		var num = Random();
 		if (num < 20) // 20%
 		{
-			Do(Say("?"));
 			Do(Wait(1000, 2000));
 		}
 		else if (num < 50) // 30%
 		{
-			Do(Say("?"));
 			Do(Wait(1000, 4000));
-
-			Do(Say("..."));
 			Do(Circle(600, 2000, 2000));
 		}
 
-		Do(Say("!!!"));
-		Do(PrepareSkill(SkillId.Lightningbolt)); // TODO: Stacks 1|2
+		Do(PrepareSkill(SkillId.Icebolt)); // TODO: Stacks 1|2
 		Do(Wait(2000, 10000));
 	}
 
@@ -55,19 +50,17 @@ public class LightningSpriteAi : AiScript
 			if (Random() < 50)
 				Do(Wander(100, 200, false));
 
-			Do(Say("!"));
 			Do(Attack(3, 4000));
 
 			num = Random();
 			if (num < 60) // 60%
 			{
 				Do(Say("!!!"));
-				Do(PrepareSkill(SkillId.Lightningbolt));
+				Do(PrepareSkill(SkillId.Icebolt));
 
 			}
 			else if (num < 80) // 20%
 			{
-				Do(Say("!!"));
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Follow(50, true, 1000));
 			}
@@ -76,10 +69,9 @@ public class LightningSpriteAi : AiScript
 		else if (num < 20) // 10%
 		{
 			Do(PrepareSkill(SkillId.Defense));
-			Do(Say("!!"));
 
 			if (Random() < 60)
-				Do(Circle(400, 2000, 2000, false));
+				Do(Circle(400, 2000, 2000));
 			else
 				Do(Follow(400, true, 5000));
 
@@ -89,7 +81,7 @@ public class LightningSpriteAi : AiScript
 		{
 			num = Random();
 			if (num < 60) // 60%
-				Do(Circle(400, 2000, 2000, false));
+				Do(Circle(400, 2000, 2000));
 			else if (num < 80) // 20%
 				Do(Follow(400, false, 5000));
 			else // 20%
@@ -97,27 +89,32 @@ public class LightningSpriteAi : AiScript
 		}
 		else // 70%
 		{
-			Do(Say("!!!"));
-			Do(PrepareSkill(SkillId.Lightningbolt));
-			Do(Say("!"));
+			Do(PrepareSkill(SkillId.Icebolt)); // 1|1|1|1|1|2|3|4|5
 			Do(Attack(1, 4000));
-			Do(Attack(2, 4000));
+			Do(Attack(1, 4000));
+			Do(Attack(1, 4000));
 
-			if (Random() < 40)
+			if (Random() < 50)
 			{
-				if (Random() < 50)
-					Do(PrepareSkill(SkillId.Lightningbolt)); // 2 stacks
-				else
-					Do(PrepareSkill(SkillId.Lightningbolt)); // 3 stacks
+				Do(PrepareSkill(SkillId.Icebolt));
 				Do(Attack(1, 4000));
-				Do(Attack(2, 4000));
+				Do(Attack(1, 4000));
+				Do(Attack(1, 4000));
+
+				if (Random() < 40)
+				{
+					Do(PrepareSkill(SkillId.Icebolt));
+					Do(Attack(1, 4000));
+					Do(Attack(1, 4000));
+					Do(Attack(1, 4000));
+				}
 			}
 		}
 	}
 
 	private IEnumerable OnHit()
 	{
-		if (Random() < 40)
+		if (Random() < 50)
 			Do(KeepDistance(1000, false, 2000));
 		else
 			Do(Attack(3, 4000));
@@ -128,7 +125,6 @@ public class LightningSpriteAi : AiScript
 		if (Random() < 50)
 		{
 			Do(PrepareSkill(SkillId.Defense));
-			Do(Say("!!"));
 			if (Random() < 60)
 				Do(Circle(400, 2000, 2000));
 			else
@@ -137,21 +133,23 @@ public class LightningSpriteAi : AiScript
 		}
 		else
 		{
-			Do(Say("!"));
 			Do(Attack(3, 8000));
-			Do(Say("!!!"));
+			if (Random() < 40)
+			{
+				Do(PrepareSkill(SkillId.Icebolt));
+				Do(Wait(1000, 2000));
+			}
 		}
 	}
 
 	private IEnumerable OnDefenseHit()
 	{
-		Do(Say("?!?!"));
 		Do(Attack(3, 4000));
 
 		if (Random() < 40)
 		{
 			Do(Say("!"));
-			Do(PrepareSkill(SkillId.Lightningbolt));
+			Do(PrepareSkill(SkillId.Icebolt));
 			Do(Wait(1000, 2000));
 			Do(KeepDistance(1000, false, 2000));
 		}
