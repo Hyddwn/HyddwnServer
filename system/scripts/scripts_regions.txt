@@ -6,7 +6,7 @@
 
 regions/tir_beginner.cs
 regions/tir.cs
-regions/tir_another_world.cs
+regions/tir_na_nog.cs
 regions/sidhe.cs
 regions/dugald.cs
 regions/dunbarton.cs
