@@ -729,6 +729,16 @@ namespace Aura.Channel.Scripting.Scripts
 			return Localization.Get(phrase);
 		}
 
+		/// <summary>
+		/// Returns true if AI creature has the skill.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		protected bool HasSkill(SkillId skillId)
+		{
+			return this.Creature.Skills.Has(skillId);
+		}
+
 		// Flow control
 		// ------------------------------------------------------------------
 
@@ -1415,16 +1425,6 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				Log.Unimplemented("AI.StopSkill: Skill stop method for '{0}'.", skillId);
 			}
-		}
-
-		/// <summary>
-		/// Returns true if AI creature has the skill.
-		/// </summary>
-		/// <param name="skillId"></param>
-		/// <returns></returns>
-		protected bool HasSkill(SkillId skillId)
-		{
-			return this.Creature.Skills.Has(skillId);
 		}
 
 		/// <summary>
