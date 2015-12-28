@@ -22,11 +22,6 @@ public class MeekBatAi : AiScript
 		Do(Wait(2000, 5000));
 	}
 
-	protected override IEnumerable Alert()
-	{
-		Do(Wait(0, 0));
-	}
-
 	protected override IEnumerable Aggro()
 	{
 		Do(Wait(5000));
