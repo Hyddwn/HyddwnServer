@@ -90,7 +90,7 @@ namespace Aura.Mabi.Const
 		LeftBalanceMod,
 		RightBalanceMod,
 		MagicDefenseMod,
-		MagicProtectMod, // [180300, NA166 (18.09.2013)]
+		MagicProtectionMod, // [180300, NA166 (18.09.2013)]
 		MagicAttackMod,
 		MeleeAttackRateMod,
 		RangeAttackRateMod,

@@ -749,6 +749,11 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// MagicProtection bonus from enchants and other sources.
+		/// </summary>
+		public int MagicProtectionMod { get { return (int)this.StatMods.Get(Stat.MagicProtectionMod); } }
+
+		/// <summary>
 		/// Creature's affinity to the element lightning.
 		/// </summary>
 		public int ElementLightning { get { return (this.RaceData.ElementLightning + (int)this.StatMods.Get(Stat.ElementLightning)); } }
