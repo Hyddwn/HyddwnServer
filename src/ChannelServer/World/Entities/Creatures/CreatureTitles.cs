@@ -279,7 +279,7 @@ namespace Aura.Channel.World.Entities.Creatures
 					Stat.DefenseBaseMod, Stat.ProtectionBaseMod,
 					Stat.AttackMinMod, Stat.AttackMaxMod,
 					Stat.InjuryMinMod, Stat.InjuryMaxMod,
-					Stat.CriticalMod, Stat.CombatPowerMod,
+					Stat.CriticalMod, Stat.CombatPower,
 					Stat.MagicAttackMod, Stat.MagicDefenseMod, Stat.MagicProtectMod
 				);
 				Send.StatUpdate(_creature, StatUpdateType.Public, Stat.Life, Stat.LifeMaxMod, Stat.LifeMax);
