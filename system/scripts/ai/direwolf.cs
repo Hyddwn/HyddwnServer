@@ -3,7 +3,8 @@
 //--- Description -----------------------------------------------------------
 //  AI for direwolf creatures.
 //--- Missing ---------------------------------------------------------------
-//  Wolf- Support is missing.
+//  Fear, HatesAttacking, Aggro over time, Visual Angle and Audio Aggro
+//	Hates Battlestance delay
 //---------------------------------------------------------------------------
 
 [AiScript("direwolf")]
@@ -14,6 +15,7 @@ public class DirewolfAi : AiScript
 		Doubts("/pc/", "/pet/", "/cow/");
 		Hates("/dog/", "/sheep/");
 		//Fear ("/bear/");
+		//HatesAttacking("/direwolfkid/"); duration="500"
 		HatesBattleStance(); // needs a 3000 delay
 		SetAggroRadius(650); // 400 range audio missing
 		//SetAggroDelay(6000);
