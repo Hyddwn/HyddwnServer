@@ -38,7 +38,7 @@ public class GoblinKidAi : AiScript
 		{
 			Do(Say("!!!"));
 			Do(PrepareSkill(SkillId.Smash));
-			Do(Wander(300, 500, false));
+			Do(Wander(300, 500));
 			Do(Attack(1, 5000));
 		}
 		else if (rndAggro < 90) // 15%
