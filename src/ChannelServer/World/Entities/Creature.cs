@@ -842,17 +842,17 @@ namespace Aura.Channel.World.Entities
 			get { return _life; }
 			set
 			{
+				var before = _life;
+
 				_life = Math2.Clamp(-this.LifeMax, this.LifeInjured, value);
 
-				//if (_life < 0 && !this.Has(CreatureConditionA.Deadly))
-				//{
-				//    this.Activate(CreatureConditionA.Deadly);
-				//}
-				//else if (_life >= 0 && this.Has(CreatureConditionA.Deadly))
-				//{
-				//    this.Deactivate(CreatureConditionA.Deadly);
-				//}
-
+				if (this.Region != Region.Limbo)
+				{
+					if ((_life < 0 && before >= 0) && !this.Conditions.Has(ConditionsA.Deadly))
+						this.Conditions.Activate(ConditionsA.Deadly);
+					else if ((_life >= 0 && before < 0) && this.Conditions.Has(ConditionsA.Deadly))
+						this.Conditions.Deactivate(ConditionsA.Deadly);
+				}
 			}
 		}
 		public float Injuries
