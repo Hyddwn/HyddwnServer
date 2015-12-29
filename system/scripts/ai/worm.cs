@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Worm AI
+// Worm AI
 //--- Description -----------------------------------------------------------
-//  AI for Worm type monster.
+// AI for Worm type monster.
 //--- History ---------------------------------------------------------------
 // 1.0 Added general AI behaviors
 // Missing: aggro over time, visual angle, original circle Idle

@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Wisp AI
+// Wisp AI
 //--- Description -----------------------------------------------------------
-//  AI for wisps.
+// AI for wisps.
 //--- History ---------------------------------------------------------------
 // 1.0 Official AI behavior
 // Missing: Stacking charges, Aggro over time, Audio Range and Visual Angle

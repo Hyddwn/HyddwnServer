@@ -1,17 +1,17 @@
 //--- Aura Script -----------------------------------------------------------
-//  Imp AI
+// Imp AI
 //--- Description -----------------------------------------------------------
-//  AI for Imps.
+// AI for Imps.
 //---   Missing   -----------------------------------------------------------
-//  Magic Charges and Magic Attack
-//  Do(Wait(1000, 2000)); Do(Attack(1, 4000)); are not official.
-//  Without the wait the AI would be WAY to fast.
+// Magic Charges and Magic Attack
+// Do(Wait(1000, 2000)); Do(Attack(1, 4000)); are not official.
+// Without the wait the AI would be WAY to fast.
 //---------------------------------------------------------------------------
 
 [AiScript("imp")]
 public class ImpAi : AiScript
 {
-	readonly string[] ImpIdle = new[] // only a 10% chance to be triggered
+	readonly string[] ImpIdle = new[]
 	{
 		L("Booyah!"),
 		L("Ha ha"),
@@ -20,7 +20,7 @@ public class ImpAi : AiScript
 		L("What?"),
 	};
 
-	readonly string[] ImpAlert = new[] 
+	readonly string[] ImpAlert = new[]
 	{
 		L("Why have you come?"),
 		L("What's your business..."),
@@ -30,13 +30,13 @@ public class ImpAi : AiScript
 		L("Go get lost."),
 		L("My mouse got dirty."),
 		L("Rubbish..."),
-		"", // To prevent Spam
+		"",
 		"",
 		"",
 		"",
 	};
 
-	readonly string[] ImpAttack = new[] 
+	readonly string[] ImpAttack = new[]
 	{
 		L("Attack!"),
 		L("Here I come!"),
@@ -48,7 +48,7 @@ public class ImpAi : AiScript
 		"",
 	};
 
-	readonly string[] ImpDefense = new[] 
+	readonly string[] ImpDefense = new[]
 	{
 		L("Do you know how to use the Smash skill?"),
 		L("Do you know how to use magic?"),
@@ -57,7 +57,7 @@ public class ImpAi : AiScript
 		"",
 	};
 
-	readonly string[] ImpCounter = new[] 
+	readonly string[] ImpCounter = new[]
 	{
 		L("Do you know how to use the Smash skill?"),
 		L("Do you know how to attack?"),
@@ -66,7 +66,7 @@ public class ImpAi : AiScript
 		"",
 	};
 
-	readonly string[] ImpChargeLB1 = new[] 
+	readonly string[] ImpChargeLB1 = new[]
 	{
 		L("There is something under the keyboard!"),
 		L("You like that?"),

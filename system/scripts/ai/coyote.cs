@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Coyote AI
+// Coyote AI
 //--- Description -----------------------------------------------------------
-//  AI for Coyote type monster.
+// AI for Coyote type monster.
 //--- History ---------------------------------------------------------------
 // 1.0 Added general AI behaviors
 // Missing: aggro over time, visual angle, wolf support, fear

@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Zombie AI
+// Zombie AI
 //--- Description -----------------------------------------------------------
-//  AI for Zombie type monster.
+// AI for Zombie type monster.
 //--- History ---------------------------------------------------------------
 // 1.0 Added general AI behaviors
 // Missing: aggro over time, visual angle

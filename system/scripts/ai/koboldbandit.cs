@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Kobold Bandit AI
+// Kobold Bandit AI
 //--- Description -----------------------------------------------------------
-//  AI for kobold bandits.
+// AI for kobold bandits.
 //--- History ---------------------------------------------------------------
 // 1.0 Added general AI behaviors
 // Missing: weaponswap, aggro over time, visual angle...

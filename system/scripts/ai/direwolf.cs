@@ -1,10 +1,10 @@
 //--- Aura Script -----------------------------------------------------------
-//  Direwolf AI
+// Direwolf AI
 //--- Description -----------------------------------------------------------
-//  AI for direwolf creatures.
+// AI for direwolf creatures.
 //--- Missing ---------------------------------------------------------------
-//  Fear, HatesAttacking, Aggro over time, Visual Angle and Audio Aggro
-//	Hates Battlestance delay
+// Fear, HatesAttacking, Aggro over time, Visual Angle and Audio Aggro
+// Hates Battlestance delay
 //---------------------------------------------------------------------------
 
 [AiScript("direwolf")]
