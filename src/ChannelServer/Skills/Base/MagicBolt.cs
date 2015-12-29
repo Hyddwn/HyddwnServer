@@ -175,6 +175,7 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="target"></param>
 		protected virtual void UseSkillOnTarget(Creature attacker, Skill skill, Creature target)
 		{
+			attacker.StopMove();
 			target.StopMove();
 
 			// Create actions
