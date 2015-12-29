@@ -219,7 +219,7 @@ public class ImpAi : AiScript
 			var charge = Random();
 			if (charge < 56)
 			{
-				Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge ?? Only attacks with Do(Attack(3, 4000)); that follows later
+				Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
 				Do(Wait(1000));
 				Do(Attack(1, 4000));
 			}
