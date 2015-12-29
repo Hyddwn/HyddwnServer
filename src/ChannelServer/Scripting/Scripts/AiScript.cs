@@ -1166,6 +1166,87 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Attacks target with a ranged attack.
+		/// </summary>
+		/// <param name="timeout"></param>
+		/// <returns></returns>
+		protected IEnumerable RangedAttack(int timeout = 5000)
+		{
+			var target = this.Creature.Target;
+
+			// Check active skill
+			var activeSkill = this.Creature.Skills.ActiveSkill;
+			if (activeSkill != null)
+			{
+				if (activeSkill.Data.Type != SkillType.RangedCombat)
+				{
+					Log.Warning("AI.RangedAttack: Active skill is no ranged skill.", this.Creature.RaceId);
+					yield break;
+				}
+			}
+			else
+			{
+				// Get skill
+				activeSkill = this.Creature.Skills.Get(SkillId.RangedAttack);
+				if (activeSkill == null)
+				{
+					Log.Warning("AI.RangedAttack: Creature '{0}' doesn't have RangedAttack.", this.Creature.RaceId);
+					yield break;
+				}
+
+				// Get handler
+				var rangedHandler = ChannelServer.Instance.SkillManager.GetHandler<RangedAttack>(activeSkill.Info.Id);
+
+				// Start loading
+				this.SharpMind(activeSkill.Info.Id, SharpMindStatus.Loading);
+
+				// Prepare skill
+				rangedHandler.Prepare(this.Creature, activeSkill, null);
+
+				this.Creature.Skills.ActiveSkill = activeSkill;
+				activeSkill.State = SkillState.Prepared;
+
+				// Wait for loading to be done
+				foreach (var action in this.Wait(activeSkill.RankData.LoadTime))
+					yield return action;
+
+				// Call ready
+				rangedHandler.Ready(this.Creature, activeSkill, null);
+				activeSkill.State = SkillState.Ready;
+
+				// Done loading
+				this.SharpMind(activeSkill.Info.Id, SharpMindStatus.Loaded);
+			}
+
+			// Get combat handler for active skill
+			var combatHandler = ChannelServer.Instance.SkillManager.GetHandler<ICombatSkill>(activeSkill.Info.Id);
+
+			// Start aiming
+			this.Creature.AimMeter.Start(target.EntityId);
+
+			// Wait till aim is 99% or timeout is reached
+			var until = _timestamp + Math.Max(0, timeout);
+			var aim = 0.0;
+			while (_timestamp < until && (aim = this.Creature.AimMeter.GetAimChance(target)) < 99)
+				yield return true;
+
+			// Cancel if 99 aim weren't reached
+			if (aim < 99)
+			{
+				this.SharpMind(activeSkill.Info.Id, SharpMindStatus.Cancelling);
+				this.Creature.Skills.CancelActiveSkill();
+				this.Creature.AimMeter.Stop();
+				yield break;
+			}
+
+			// Attack
+			combatHandler.Use(this.Creature, activeSkill, target.EntityId);
+			activeSkill.State = SkillState.Completed;
+
+			// Complete is called automatically from OnUsedSkill
+		}
+
+		/// <summary>
 		/// Makes creature prepare given skill.
 		/// </summary>
 		/// <param name="skillId"></param>
