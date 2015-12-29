@@ -798,7 +798,8 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends CombatSetAimR to creature's client.
+		/// Broadcasts CombatSetAimR in creature's range, putting it in
+		/// "aim mode".
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="targetEntityId">Set 0 for negative response.</param>
@@ -815,7 +816,7 @@ namespace Aura.Channel.Network.Sending
 				packet.PutByte(flag);
 			}
 
-			creature.Client.Send(packet);
+			creature.Region.Broadcast(packet, creature);
 		}
 
 		/// <summary>
