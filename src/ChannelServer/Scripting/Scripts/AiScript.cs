@@ -1518,7 +1518,17 @@ namespace Aura.Channel.Scripting.Scripts
 			if (this.Creature.Inventory.WeaponSet == set)
 				yield break;
 
+			// Wait a moment before and after switching,
+			// to let the animation play.
+			var waitTime = 500;
+
+			foreach (var action in this.Wait(waitTime))
+				yield return action;
+
 			this.Creature.Inventory.ChangeWeaponSet(set);
+
+			foreach (var action in this.Wait(waitTime))
+				yield return action;
 		}
 
 		// ------------------------------------------------------------------

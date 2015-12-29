@@ -1,14 +1,14 @@
 //--- Aura Script -----------------------------------------------------------
-//  Goblin Kid AI
+// Young Goblin AI
 //--- Description -----------------------------------------------------------
-//  AI for Goblin Kids and Poison Goblin Kids.
-//	Custom Wander and Circle Values, Official Values are insane & buggy
+// AI for Young Goblins and Poison Goblins.
+// Custom Wander and Circle Values, official Values are insane & buggy.
 //---------------------------------------------------------------------------
 
 [AiScript("goblinkid")]
-public class GoblinKidAi : AiScript
+public class YoungGoblinAi : AiScript
 {
-	public GoblinKidAi()
+	public YoungGoblinAi()
 	{
 		SetAggroRadius(600); // angle 120 audio 200
 		Hates("/pc/", "/pet/");
