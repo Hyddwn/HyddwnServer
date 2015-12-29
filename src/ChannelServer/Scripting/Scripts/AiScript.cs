@@ -1531,6 +1531,54 @@ namespace Aura.Channel.Scripting.Scripts
 				yield return action;
 		}
 
+		/// <summary>
+		/// Changes the AI's creature's height.
+		/// </summary>
+		/// <param name="height"></param>
+		/// <returns></returns>
+		protected IEnumerable SetHeight(double height)
+		{
+			this.Creature.Height = (float)height;
+			Send.CreatureBodyUpdate(this.Creature);
+
+			yield break;
+		}
+
+		/// <summary>
+		/// Plays sound effect in rage of AI's creature.
+		/// </summary>
+		/// <param name="file"></param>
+		/// <returns></returns>
+		protected IEnumerable PlaySound(string file)
+		{
+			Send.PlaySound(this.Creature, file);
+
+			yield break;
+		}
+
+		/// <summary>
+		/// Adds stat mod to the AI's creature.
+		/// </summary>
+		/// <param name="stat"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		protected IEnumerable SetStat(Stat stat, float value)
+		{
+			switch (stat)
+			{
+				case Stat.Str: this.Creature.StrBase = value; break;
+				case Stat.Int: this.Creature.IntBase = value; break;
+				case Stat.Dex: this.Creature.DexBase = value; break;
+				case Stat.Will: this.Creature.WillBase = value; break;
+				case Stat.Luck: this.Creature.LuckBase = value; break;
+				default:
+					Log.Warning("AI.SetState: Unhandled stat: {0}", stat);
+					break;
+			}
+
+			yield break;
+		}
+
 		// ------------------------------------------------------------------
 
 		/// <summary>
