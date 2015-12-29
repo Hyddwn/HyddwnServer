@@ -30,7 +30,7 @@ public class GoblinArcherKidAi : AiScript
 		Do(SwitchTo(WeaponSet.First));
 		Do(Wait(500));
 		Do(KeepDistance(800, false, 2000));
-		Do(Circle(800, 1000, 1000, false, false));
+		Do(Circle(800, 1000, 1000, false);
 		var rndAggro = Random();
 		if (rndAggro < 30)
 		{
