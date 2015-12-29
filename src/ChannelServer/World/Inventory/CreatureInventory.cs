@@ -71,6 +71,8 @@ namespace Aura.Channel.World.Inventory
 		private object _upgradeEffectSyncLock = new object();
 		private Dictionary<UpgradeCheckType, int> _upgradeCheckTypeCache = new Dictionary<UpgradeCheckType, int>();
 
+		private bool _liveUpdateStarted;
+
 		/// <summary>
 		/// Initializes static information.
 		/// </summary>
@@ -206,13 +208,6 @@ namespace Aura.Channel.World.Inventory
 			// Style
 			for (var i = Pocket.ArmorStyle; i <= Pocket.RobeStyle; ++i)
 				this.Add(new InventoryPocketSingle(i));
-
-			// Subscribe to events necessary for upgrade effect live updates.
-			_creature.LeveledUp += this.OnCreatureLeveledUp;
-			_creature.Titles.Changed += this.OnCreatureChangedTitles;
-			_creature.Skills.RankChanged += this.OnCreatureSkillRankChanged;
-			_creature.Conditions.Changed += this.OnCreatureConditionsChanged;
-			ChannelServer.Instance.Events.HoursTimeTick += this.OnHoursTimeTick;
 		}
 
 		/// <summary>
@@ -257,6 +252,22 @@ namespace Aura.Channel.World.Inventory
 			this.Add(new InventoryPocketNormal(Pocket.Inventory, width, height));
 			this.Add(new InventoryPocketNormal(Pocket.PersonalInventory, width, height));
 			this.Add(new InventoryPocketNormal(Pocket.VIPInventory, width, height));
+		}
+
+		/// <summary>
+		/// Subscribes inventory to events necessary for upgrade effect live updates.
+		/// </summary>
+		public void StartLiveUpdate()
+		{
+			if (_liveUpdateStarted)
+				return;
+			_liveUpdateStarted = true;
+
+			_creature.LeveledUp += this.OnCreatureLeveledUp;
+			_creature.Titles.Changed += this.OnCreatureChangedTitles;
+			_creature.Skills.RankChanged += this.OnCreatureSkillRankChanged;
+			_creature.Conditions.Changed += this.OnCreatureConditionsChanged;
+			ChannelServer.Instance.Events.HoursTimeTick += this.OnHoursTimeTick;
 		}
 
 		/// <summary>

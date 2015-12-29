@@ -985,6 +985,11 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Loads race and handles some basic stuff, like adding regens.
 		/// </summary>
+		/// <remarks>
+		/// Has to be called before anything is actually done with the creature,
+		/// as it initializes the race data, the inventory, and other vital
+		/// parts.
+		/// </remarks>
 		public virtual void LoadDefault()
 		{
 			if (this.RaceId == 0)
@@ -1003,6 +1008,7 @@ namespace Aura.Channel.World.Entities
 
 			// Add inventory
 			this.Inventory.AddMainInventory();
+			this.Inventory.StartLiveUpdate();
 
 			// Add regens
 			// The wiki says it's 0.125 life, but the packets have 0.12.
