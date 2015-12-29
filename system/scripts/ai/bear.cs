@@ -16,7 +16,7 @@ public class BearAi : AiScript
 
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);
-		On(AiState.Aggro, AiEvent.DefenseHit, Aggro);
+		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 	}
 
 	protected override IEnumerable Idle()
@@ -139,7 +139,7 @@ public class BearAi : AiScript
 
 	private IEnumerable OnDefenseHit()
 	{
-		Do(Attack());
+		Do(Attack(3));
 		Do(Wait(3000));
 	}
 }
