@@ -1547,30 +1547,38 @@ namespace Aura.Channel.Scripting.Scripts
 
 			lock (_reactions)
 			{
+				// Knock down event
+				if ((action.Has(TargetOptions.KnockDown) || action.Has(TargetOptions.Smash)) && _reactions[_state].ContainsKey(AiEvent.KnockDown))
+				{
+					this.SwitchAction(_reactions[_state][AiEvent.KnockDown]);
+					return;
+				}
+
+				// Defense event
 				if (activeSkillWas == SkillId.Defense && _reactions[_state].ContainsKey(AiEvent.DefenseHit))
 				{
 					this.SwitchAction(_reactions[_state][AiEvent.DefenseHit]);
+					return;
 				}
-				else if ((action.Has(TargetOptions.KnockDown) || action.Has(TargetOptions.Smash)) && _reactions[_state].ContainsKey(AiEvent.KnockDown))
-				{
-					this.SwitchAction(_reactions[_state][AiEvent.KnockDown]);
-				}
-				else if (_reactions[_state].ContainsKey(AiEvent.Hit))
+
+				// Hit event
+				if (_reactions[_state].ContainsKey(AiEvent.Hit))
 				{
 					this.SwitchAction(_reactions[_state][AiEvent.Hit]);
+					return;
 				}
-				else
-				{
-					// If the queue isn't cleared, the AI won't restart the
-					// Aggro state, which will make it keep attacking.
-					// This also causes a bug, where when you attack a
-					// monster while it's attacking you with Smash,
-					// it will keep attacking you with Smash, even though
-					// the skill was canceled, due to the received hit.
-					// The result is a really confusing situation, where
-					// normal looking attacks suddenly break through Defense.
-					this.Clear();
-				}
+
+				// Creature was hit, but there's no event
+
+				// If the queue isn't cleared, the AI won't restart the
+				// Aggro state, which will make it keep attacking.
+				// This also causes a bug, where when you attack a
+				// monster while it's attacking you with Smash,
+				// it will keep attacking you with Smash, even though
+				// the skill was canceled, due to the received hit.
+				// The result is a really confusing situation, where
+				// normal looking attacks suddenly break through Defense.
+				this.Clear();
 			}
 		}
 
