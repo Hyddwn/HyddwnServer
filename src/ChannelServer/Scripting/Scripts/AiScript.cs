@@ -799,7 +799,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		protected IEnumerable Say(string msg)
 		{
-			Send.Chat(this.Creature, msg);
+			if (!string.IsNullOrWhiteSpace(msg))
+				Send.Chat(this.Creature, msg);
+
 			yield break;
 		}
 
@@ -816,6 +818,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var msg = msgs[this.Random(msgs.Length)];
 			if (!string.IsNullOrWhiteSpace(msg))
 				Send.Chat(this.Creature, msg);
+
 			yield break;
 		}
 
