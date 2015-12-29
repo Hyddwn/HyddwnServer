@@ -1537,16 +1537,18 @@ namespace Aura.Channel.Scripting.Scripts
 			lock (_reactions)
 			{
 				// Knock down event
-				if ((action.Has(TargetOptions.KnockDown) || action.Has(TargetOptions.Smash)) && _reactions[_state].ContainsKey(AiEvent.KnockDown))
+				if (action.Has(TargetOptions.KnockDown) || action.Has(TargetOptions.Smash))
 				{
-					this.SwitchAction(_reactions[_state][AiEvent.KnockDown]);
+					if (_reactions[_state].ContainsKey(AiEvent.KnockDown))
+						this.SwitchAction(_reactions[_state][AiEvent.KnockDown]);
 					return;
 				}
 
 				// Defense event
-				if (action.SkillId == SkillId.Defense && _reactions[_state].ContainsKey(AiEvent.DefenseHit))
+				if (action.SkillId == SkillId.Defense)
 				{
-					this.SwitchAction(_reactions[_state][AiEvent.DefenseHit]);
+					if (_reactions[_state].ContainsKey(AiEvent.DefenseHit))
+						this.SwitchAction(_reactions[_state][AiEvent.DefenseHit]);
 					return;
 				}
 
