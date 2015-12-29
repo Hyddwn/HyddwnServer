@@ -36,7 +36,7 @@ public class GoblinKidAi : AiScript
 		}
 		else if (rndAggro < 75) // 15%
 		{
-			// <cmd name="say_to_all" text="_LT[xml.ai.995]" /> ... They talk?
+			Do(Say("!!!"));
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Wander(300, 500, false));
 			Do(Attack(1, 5000));
@@ -49,7 +49,7 @@ public class GoblinKidAi : AiScript
 		}
 		else // 10%
 		{
-			// <cmd name="say_to_all" text="_LT[xml.ai.996]" />
+			Do(Say("..."));
 			Do(PrepareSkill(SkillId.Counterattack));
 			Do(Wait(3000, 5000));
 			Do(CancelSkill());
