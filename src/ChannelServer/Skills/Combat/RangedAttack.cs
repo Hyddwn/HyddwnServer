@@ -223,6 +223,13 @@ namespace Aura.Channel.Skills.Combat
 						SkillHelper.HandleInjury(attacker, target, damage);
 					}
 
+					// Knock down on deadly
+					if (target.Conditions.Has(ConditionsA.Deadly))
+					{
+						tAction.Set(TargetOptions.KnockDown);
+						tAction.Stun = (short)(actionType == CombatActionPackType.ChainRangeAttack ? TargetStunElf : TargetStun);
+					}
+
 					// Aggro
 					target.Aggro(attacker);
 
@@ -230,7 +237,6 @@ namespace Aura.Channel.Skills.Combat
 					if (target.IsDead)
 					{
 						tAction.Set(TargetOptions.FinishingKnockDown);
-						attacker.Shove(target, KnockBackDistance);
 						maxHits = 1;
 					}
 					else
@@ -253,10 +259,12 @@ namespace Aura.Channel.Skills.Combat
 							if (target.IsUnstable)
 							{
 								tAction.Set(TargetOptions.KnockBack);
-								attacker.Shove(target, KnockBackDistance);
 							}
 						}
 					}
+
+					if (tAction.IsKnockBack)
+						attacker.Shove(target, KnockBackDistance);
 				}
 
 				// Skill training

@@ -181,6 +181,13 @@ namespace Aura.Channel.Skills.Combat
 				if (damage > 0)
 					target.TakeDamage(tAction.Damage = damage, attacker);
 
+				// Knock down on deadly
+				if (target.Conditions.Has(ConditionsA.Deadly))
+				{
+					tAction.Set(TargetOptions.KnockDown);
+					tAction.Stun = CombatMastery.GetTargetStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
+				}
+
 				// Finish if dead, knock down if not defended
 				if (target.IsDead)
 					tAction.Set(TargetOptions.KnockDownFinish);
@@ -192,7 +199,7 @@ namespace Aura.Channel.Skills.Combat
 					survived.Add(target);
 
 				// Stun and shove if not defended
-				if (target.IsDead || tAction.SkillId != SkillId.Defense)
+				if (target.IsDead || tAction.SkillId != SkillId.Defense || target.Conditions.Has(ConditionsA.Deadly))
 				{
 					tAction.Stun = CombatMastery.GetTargetStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
 					target.Stability = Creature.MinStability;
