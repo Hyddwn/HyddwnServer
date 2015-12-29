@@ -4,15 +4,14 @@
 //  AI for Imps.
 //---   Missing   -----------------------------------------------------------
 //  Magic Charges and Magic Attack
-//	Maybe add some sort of "Anti-Spam" for their chat.
-//	Do(Wait(1000, 2000)); Do(Attack(1, 4000)); are not official.
-//	Without the wait the AI would be WAY to fast.
+//  Do(Wait(1000, 2000)); Do(Attack(1, 4000)); are not official.
+//  Without the wait the AI would be WAY to fast.
 //---------------------------------------------------------------------------
 
 [AiScript("imp")]
 public class ImpAi : AiScript
 {
-	readonly string[] ImpIdle = new[] 
+	readonly string[] ImpIdle = new[] // only a 10% chance to be triggered
 	{
 		L("Booyah!"),
 		L("Ha ha"),
@@ -31,6 +30,10 @@ public class ImpAi : AiScript
 		L("Go get lost."),
 		L("My mouse got dirty."),
 		L("Rubbish..."),
+		"", // To prevent Spam
+		"",
+		"",
+		"",
 	};
 
 	readonly string[] ImpAttack = new[] 
@@ -40,6 +43,9 @@ public class ImpAi : AiScript
 		L("Fool."),
 		L("Ha ha"),
 		L("Hahaha"),
+		"",
+		"",
+		"",
 	};
 
 	readonly string[] ImpDefense = new[] 
@@ -47,6 +53,8 @@ public class ImpAi : AiScript
 		L("Do you know how to use the Smash skill?"),
 		L("Do you know how to use magic?"),
 		L("Let's see what you've got!"),
+		"",
+		"",
 	};
 
 	readonly string[] ImpCounter = new[] 
@@ -54,6 +62,8 @@ public class ImpAi : AiScript
 		L("Do you know how to use the Smash skill?"),
 		L("Do you know how to attack?"),
 		L("Let's see what you've got!"),
+		"",
+		"",
 	};
 
 	readonly string[] ImpChargeLB1 = new[] 
@@ -65,11 +75,17 @@ public class ImpAi : AiScript
 		L("Please wait."),
 		L("Hey, wait."),
 		L("Ran out of cash..."),
+		"",
+		"",
+		"",
+		"",
 	};
 
 	readonly string[] ImpChargeLB2 = new[] 
 	{
 		L("What is your IP?"),
+		"",
+		"",
 	};
 
 	readonly string[] ImpSmash = new[] 
@@ -78,6 +94,8 @@ public class ImpAi : AiScript
 		L("Here comes a Smash!"),
 		L("Why don't you start over again."),
 		L("Can I really use the Smash skill?"),
+		"",
+		"",
 	};
 
 	readonly string[] ImpOnHit = new[] 
@@ -85,6 +103,8 @@ public class ImpAi : AiScript
 		L("Umph..."),
 		L("Mmph!"),
 		L("Gah!"),
+		"",
+		"",
 	};
 
 	readonly string[] ImpOnKnockDown = new[] 
@@ -92,6 +112,8 @@ public class ImpAi : AiScript
 		L("Ouch!"),
 		L("Are you a noob?"),
 		L("It hurts."),
+		"",
+		"",
 	};
 
 	public ImpAi()
@@ -109,23 +131,23 @@ public class ImpAi : AiScript
 	protected override IEnumerable Idle()
 	{
 		var rndidle = Random();
-		if (rndidle < 10)
+		if (rndidle < 10) // 10%
 		{
 			Do(Say(ImpIdle));
 		}
-		else if (rndidle < 20)
+		else if (rndidle < 20) // 10%
 		{
 			Do(Wander(100, 500));
 		}
-		else if (rndidle < 50)
+		else if (rndidle < 50) // 30%
 		{
 			Do(Wander(100, 500, false));
 		}
-		else if (rndidle < 70)
+		else if (rndidle < 70) // 20%
 		{
 			Do(Wait(4000, 6000));
 		}
-		else if (rndidle < 80)
+		else if (rndidle < 80) // 10%
 		{
 			Do(PrepareSkill(SkillId.Lightningbolt)); // Just prepare - NO ATTACK
 		}
