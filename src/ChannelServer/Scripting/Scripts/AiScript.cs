@@ -1529,19 +1529,8 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="action"></param>
 		public virtual void OnTargetActionHit(TargetAction action)
 		{
-			// Aggro attacker if there is not current target,
-			// or if there is a target but it's not a player, and the attacker is one,
-			// or if the current target is not aggroed yet.
-			//if (this.Creature.Target == null || (this.Creature.Target != null && action.Attacker != null && !this.Creature.Target.IsPlayer && action.Attacker.IsPlayer) || _state != AiState.Aggro)
-			//{
-			//	this.AggroCreature(action.Attacker);
-			//}
-
-			var activeSkillWas = SkillId.None;
-
 			if (this.Creature.Skills.ActiveSkill != null)
 			{
-				activeSkillWas = this.Creature.Skills.ActiveSkill.Info.Id;
 				this.SharpMind(this.Creature.Skills.ActiveSkill.Info.Id, SharpMindStatus.Cancelling);
 			}
 
@@ -1555,7 +1544,7 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 
 				// Defense event
-				if (activeSkillWas == SkillId.Defense && _reactions[_state].ContainsKey(AiEvent.DefenseHit))
+				if (action.SkillId == SkillId.Defense && _reactions[_state].ContainsKey(AiEvent.DefenseHit))
 				{
 					this.SwitchAction(_reactions[_state][AiEvent.DefenseHit]);
 					return;
