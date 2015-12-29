@@ -256,11 +256,8 @@ namespace Aura.Channel.Skills.Combat
 								attacker.Shove(target, KnockBackDistance);
 							}
 						}
-						tAction.Creature.Stun = tAction.Stun;
 					}
 				}
-
-				aAction.Creature.Stun = aAction.Stun;
 
 				// Skill training
 				if (skill.Info.Rank == SkillRank.Novice || skill.Info.Rank == SkillRank.RF)
