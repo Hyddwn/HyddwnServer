@@ -192,7 +192,7 @@ namespace Aura.Channel.Skills.Combat
 					survived.Add(target);
 
 				// Stun and shove if not defended
-				if (tAction.SkillId != SkillId.Defense)
+				if (target.IsDead || tAction.SkillId != SkillId.Defense)
 				{
 					tAction.Stun = CombatMastery.GetTargetStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
 					target.Stability = Creature.MinStability;
