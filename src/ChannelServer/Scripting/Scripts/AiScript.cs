@@ -56,7 +56,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 		// Settings
 		protected int _aggroRadius, _aggroMaxRadius;
-		protected TimeSpan _alertDelay;
+		protected TimeSpan _alertDelay, _aggroDelay, _hateBattleStanceDelay, _hateOverTimeDelay;
 		protected DateTime _awareTime, _alertTime;
 		protected AggroLimit _aggroLimit;
 		protected Dictionary<string, string> _hateTags, _loveTags, _doubtTags;
@@ -102,7 +102,10 @@ namespace Aura.Channel.Scripting.Scripts
 			_state = AiState.Idle;
 			_aggroRadius = 500;
 			_aggroMaxRadius = 3000;
-			_alertDelay = TimeSpan.FromMilliseconds(8000);
+			_alertDelay = TimeSpan.FromMilliseconds(6000);
+			_aggroDelay = TimeSpan.FromMilliseconds(500);
+			_hateOverTimeDelay = TimeSpan.FromDays(365);
+			_hateBattleStanceDelay = TimeSpan.FromMilliseconds(3000);
 			_hateTags = new Dictionary<string, string>();
 			_loveTags = new Dictionary<string, string>();
 			_doubtTags = new Dictionary<string, string>();
@@ -377,7 +380,17 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 
 			// Switch to aggro from alert
-			if (_state == AiState.Alert && (this.DoesHate(this.Creature.Target) || (_hatesBattleStance && this.Creature.Target.IsInBattleStance)))
+			if (_state == AiState.Alert &&
+			(
+				// Aggro hated creatures after aggro delay
+				(this.DoesHate(this.Creature.Target) && DateTime.Now >= _alertTime + _aggroDelay) ||
+
+				// Aggro battle stance targets
+				(_hatesBattleStance && this.Creature.Target.IsInBattleStance && DateTime.Now >= _alertTime + _hateBattleStanceDelay) ||
+
+				// Hate over time
+				(DateTime.Now >= _awareTime + _hateOverTimeDelay)
+			))
 			{
 				// Check aggro limit
 				var aggroCount = this.Creature.Region.CountAggro(this.Creature.Target, this.Creature.RaceId);
@@ -450,8 +463,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="time"></param>
 		protected void SetAggroDelay(int time)
 		{
-			//_aggroDelay = TimeSpan.FromMilliseconds(time);
-			Log.Warning("{0}: SetAggroDelay is obsolete.", this.GetType().Name);
+			_aggroDelay = TimeSpan.FromMilliseconds(time);
 		}
 
 		/// <summary>
@@ -535,9 +547,20 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Specifies that the AI will go from alert into aggro when enemy
 		/// changes into battle mode.
 		/// </summary>
-		protected void HatesBattleStance()
+		protected void HatesBattleStance(int delay = 3000)
 		{
 			_hatesBattleStance = true;
+			_hateBattleStanceDelay = TimeSpan.FromMilliseconds(delay);
+		}
+
+		/// <summary>
+		/// Specifies that the AI will go from alert into aggro when a
+		/// doubted target sticks around for too long.
+		/// </summary>
+		/// <param name="delay"></param>
+		protected void HatesNearby(int delay = 6000)
+		{
+			_hateOverTimeDelay = TimeSpan.FromMilliseconds(delay);
 		}
 
 		/// <summary>

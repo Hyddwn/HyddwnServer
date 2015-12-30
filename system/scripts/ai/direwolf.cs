@@ -16,9 +16,9 @@ public class DirewolfAi : AiScript
 		Hates("/dog/", "/sheep/");
 		//Fear ("/bear/");
 		//HatesAttacking("/direwolfkid/"); duration="500"
-		HatesBattleStance(); // needs a 3000 delay
+		HatesBattleStance(3000);
+		HatesNearby(6000);
 		SetAggroRadius(650); // 400 range audio missing
-		//SetAggroDelay(6000);
 		SetAggroLimit(AggroLimit.One);
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
