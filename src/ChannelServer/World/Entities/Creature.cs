@@ -348,12 +348,6 @@ namespace Aura.Channel.World.Entities
 		public bool WasKnockedBack { get; set; }
 
 		/// <summary>
-		/// Returns weapon's knock count or the race's if not weapon
-		/// is equipped.
-		/// </summary>
-		public int KnockCount { get { return (this.RightHand != null ? this.RightHand.Info.KnockCount + 1 : this.RaceData.KnockCount + 1); } }
-
-		/// <summary>
 		/// Returns average knock count of both equipped weapons, or race's
 		/// if none are equipped.
 		/// </summary>
