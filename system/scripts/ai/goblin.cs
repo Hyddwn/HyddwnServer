@@ -13,7 +13,7 @@ public class GoblinAi : AiScript
 		Hates("/pc/", "/pet/");
 		Hates("/ahchemy_golem/");
 		Hates("/rp/");
-		SetAggroLimit(AggroLimit.None);
+		SetAggroLimit(AggroLimit.One);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 	}
