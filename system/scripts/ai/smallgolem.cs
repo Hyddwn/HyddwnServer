@@ -1,13 +1,13 @@
 //--- Aura Script -----------------------------------------------------------
-// Ciar Beginner Golem AI
+// Small Golem AI
 //--- Description -----------------------------------------------------------
 // AI for Ciar Beginner Golem (ID 130014)
 //---------------------------------------------------------------------------
 
-[AiScript("ciarbeginnergolem")]
-public class CiarBeginnerGolemAi : AiScript
+[AiScript("smallgolem")]
+public class SmallGolemAi : AiScript
 {
-	public CiarBeginnerGolemAi()
+	public SmallGolemAi()
 	{
 		SetAggroRadius(1500); // angle 90 audio 1200
 		Hates("/pc/", "/pet/");
