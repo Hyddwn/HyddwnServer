@@ -33,7 +33,7 @@ public class GoblinAi : AiScript
 		{
 			Do(SwitchTo(WeaponSet.First));
 			Do(Attack(2, 5000));
-			Do(Wait(500)); // Custom slow down
+			Do(Wait(500));
 		}
 		else if (rndAggro < 75) // 15%
 		{

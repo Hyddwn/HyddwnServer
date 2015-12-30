@@ -33,7 +33,7 @@ public class GoldGoblinAi : AiScript
 		{
 			Do(SwitchTo(WeaponSet.First));
 			Do(Timeout(5000, Attack()));
-			Do(Wait(500)); // Custom to ensure 3-hit combo
+			Do(Wait(500));
 		}
 		else if (rndAggro < 75) // 15%
 		{
