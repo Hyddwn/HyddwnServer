@@ -13,7 +13,7 @@ public class GrizzlybearAi : AiScript
 		Doubts("/pc/", "/pet/");
 		//SetAggroDelay(4000); 
 		//HatesAttacking("/grizzlybearkid/"); duration="500"
-		SetAggroLimit(AggroLimit.None);
+		SetAggroLimit(AggroLimit.One);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);

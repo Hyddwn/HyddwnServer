@@ -19,7 +19,7 @@ public class DirewolfAi : AiScript
 		HatesBattleStance(); // needs a 3000 delay
 		SetAggroRadius(650); // 400 range audio missing
 		//SetAggroDelay(6000);
-		SetAggroLimit(AggroLimit.None);
+		SetAggroLimit(AggroLimit.One);
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
 	}
