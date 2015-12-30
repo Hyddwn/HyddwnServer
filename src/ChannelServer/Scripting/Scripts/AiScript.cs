@@ -1057,7 +1057,8 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		protected IEnumerable Attack()
 		{
-			return this.Attack(this.Creature.RaceData.KnockCount);
+			var count = 1 + (this.Creature.Inventory.RightHand != null ? this.Creature.Inventory.RightHand.Info.KnockCount : this.Creature.RaceData.KnockCount);
+			return this.Attack(count);
 		}
 
 		/// <summary>
