@@ -1,28 +1,33 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Channel.Network.Sending;
+using Aura.Channel.Util;
+using Aura.Channel.World.Quests;
+using Aura.Mabi.Const;
+using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Aura.Channel.Util;
-using Aura.Channel.World.Quests;
-using Aura.Channel.Network.Sending;
-using Aura.Shared.Util;
-using Aura.Mabi.Const;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
 	public class CreatureQuests
 	{
 		private Creature _creature;
-
 		private Dictionary<int, Quest> _quests;
-
 		private Dictionary<PtjType, PtjTrackRecord> _ptjRecords;
 
+		/// <summary>
+		/// Raised whenever a PTJ's track record changes, i.e. when the
+		/// creature finishes or fails it.
+		/// </summary>
 		public event Action<Creature, PtjTrackRecord> PtjTrackRecordChanged;
 
+		/// <summary>
+		/// Creates new quest manager for creature.
+		/// </summary>
+		/// <param name="creature"></param>
 		public CreatureQuests(Creature creature)
 		{
 			_creature = creature;
@@ -31,8 +36,12 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Adds quest.
+		/// Adds quest to manager, does not update client, send owl,
+		/// or anything else.
 		/// </summary>
+		/// <remarks>
+		/// This method is for initialization, use Give during run-time.
+		/// </remarks>
 		/// <param name="quest"></param>
 		public void Add(Quest quest)
 		{
@@ -41,7 +50,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Returns true if creature has quest (completed or not).
+		/// Returns true if creature has quest with the given quest id,
+		/// completed or not.
 		/// </summary>
 		/// <param name="questId"></param>
 		/// <returns></returns>
@@ -52,7 +62,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Returns quest or null.
+		/// Returns first quest with the given quest id, or null if none
+		/// were found.
 		/// </summary>
 		/// <param name="questId"></param>
 		/// <returns></returns>
@@ -65,7 +76,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Returns quest or null.
+		/// Returns quest by unique quest id, or null if it wasn't found.
 		/// </summary>
 		/// <param name="uniqueId"></param>
 		/// <returns></returns>
@@ -76,7 +87,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Returns quest or null.
+		/// Returns first quest that maches the predicate, or null if there
+		/// were none.
 		/// </summary>
 		/// <param name="predicate"></param>
 		/// <returns></returns>
@@ -94,7 +106,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		public Quest GetSafe(long uniqueId)
 		{
 			var q = this.Get(uniqueId);
-
 			if (q == null)
 				throw new SevereViolation("Creature does not have quest 0x{0:X}", uniqueId);
 
@@ -102,7 +113,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Returns true if quest is complete.
+		/// Returns true if quest with the given id has been completed.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -113,7 +124,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Returns new list of quests.
+		/// Returns new list of all quests in manager.
 		/// </summary>
 		/// <returns></returns>
 		public ICollection<Quest> GetList()
@@ -123,7 +134,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Returns new list of incomplete quests.
+		/// Returns new list of incomplete quests in manager.
 		/// </summary>
 		/// <returns></returns>
 		public ICollection<Quest> GetIncompleteList()
@@ -133,9 +144,11 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Starts quest
+		/// Starts new quest with the given id, after giving up other quests
+		/// with the same id.
 		/// </summary>
 		/// <param name="questId"></param>
+		/// <param name="owl">Show owl delivering the quest?</param>
 		public void Start(int questId, bool owl)
 		{
 			// Remove quest if it's aleady there and not completed,
@@ -153,6 +166,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// to the creature's inventory.
 		/// </summary>
 		/// <param name="quest"></param>
+		/// <param name="owl">Show owl delivering the quest?</param>
 		public void Start(Quest quest, bool owl)
 		{
 			this.Add(quest);
@@ -182,6 +196,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// </summary>
 		/// <param name="questId"></param>
 		/// <param name="objective"></param>
+		/// <returns></returns>
 		public bool Finish(int questId, string objective)
 		{
 			var quest = this.Get(questId);
@@ -202,6 +217,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// Completes and removes quest, if it exists.
 		/// </summary>
 		/// <param name="questId"></param>
+		/// <param name="owl">Show owl delivering the quest?</param>
+		/// <returns></returns>
 		public bool Complete(int questId, bool owl)
 		{
 			var quest = this.Get(questId);
@@ -216,6 +233,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// group 0, result "Perfect", because the objectives are set done.
 		/// </summary>
 		/// <param name="quest"></param>
+		/// <param name="owl">Show owl delivering the quest?</param>
+		/// <returns></returns>
 		public bool Complete(Quest quest, bool owl)
 		{
 			quest.CompleteAllObjectives();
@@ -229,6 +248,9 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// Primarily used by PTJs.
 		/// </summary>
 		/// <param name="quest"></param>
+		/// <param name="rewardGroup">Reward group to use.</param>
+		/// <param name="owl">Show owl delivering the quest?</param>
+		/// <returns></returns>
 		public bool Complete(Quest quest, int rewardGroup, bool owl)
 		{
 			var success = this.EndQuest(quest, rewardGroup, owl);
@@ -302,6 +324,12 @@ namespace Aura.Channel.World.Entities.Creatures
 			return true;
 		}
 
+		/// <summary>
+		/// Gives quest rewards to creature.
+		/// </summary>
+		/// <param name="quest">Quest the rewards come from.</param>
+		/// <param name="rewards">Rewards to give to the creature.</param>
+		/// <param name="owl">Show owl delivering the rewards?</param>
 		private void GiveRewards(Quest quest, ICollection<QuestReward> rewards, bool owl)
 		{
 			if (rewards.Count == 0)
@@ -324,7 +352,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Returns true if the quest is in progress.
+		/// Returns true if the quest is in progress, optionally also checking
+		/// if it's on the given objective .
 		/// </summary>
 		/// <param name="questId"></param>
 		/// <param name="objective"></param>
