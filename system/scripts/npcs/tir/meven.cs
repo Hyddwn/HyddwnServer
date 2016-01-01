@@ -65,9 +65,6 @@ public class MevenScript : NpcScript
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_misc");
-				GiveKeyword("shop_grocery");
-				GiveKeyword("shop_headman");
 				Msg("The General Shop, Grocery Store and the Bank<br/>surround the Square of the town.<br/>A bit higher up the hill is the Chief's House.");
 				ModifyRelation(Random(2), 0, Random(2));
 				break;
@@ -86,7 +83,6 @@ public class MevenScript : NpcScript
 				break;
 
 			case "shop_healing":
-				GiveKeyword("temple");
 				GiveKeyword("tir_na_nog");
 				Msg("A diseased body can be treated at the Healer's House, but an ill mind should be treated at the Church.<br/>I hope you can stay away from an obsession with the external appearance of a person<br/>since it may erode the innocence of your soul.<br/>A soul that has lost its innocence further delays the advent of Tir Na Nog.");
 				Msg("Go to the other side of the Square and walk up the path a little and you'll find the Healer's House.");
@@ -220,8 +216,6 @@ public class MevenScript : NpcScript
 				break;
 
 			case "shop_bookstore":
-				GiveKeyword("shop_misc");
-				GiveKeyword("skill_composing");
 				GiveKeyword("mabinogi");
 				Msg("If you are looking for a book, please go to the General Shop.<br/>Malcolm may have some books on the Composing skill, at least.<br/>This town has few books, if any. Not even a book on Mabinogi, which I know is pretty common in other cities.");
 				Msg("I guess everybody is busy making a living.<br/>That's why nobody has time to read books.");
