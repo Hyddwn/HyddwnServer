@@ -18,7 +18,7 @@ public class CoyoteAi : AiScript
 		Hates("/sheep/");
 		Hates("/dog/");
 		//Fears("/junglewolf/")
-		HatesBattleStance(); // 3000 delay
+		HatesBattleStance(3000);
 		// Aggro over time 10000
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);

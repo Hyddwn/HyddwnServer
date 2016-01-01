@@ -15,7 +15,7 @@ public class WolfAi : AiScript
 		Doubts("/cow/");
 		Hates("/sheep/");
 		Hates("/dog/");
-		HatesBattleStance();
+		HatesBattleStance(3000);
 		
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 	}
