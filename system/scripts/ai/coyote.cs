@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Coyote AI
+// Coyote AI
 //--- Description -----------------------------------------------------------
-//  AI for Coyote type monster.
+// AI for Coyote type monster.
 //--- History ---------------------------------------------------------------
 // 1.0 Added general AI behaviors
 // Missing: aggro over time, visual angle, wolf support, fear
@@ -18,7 +18,7 @@ public class CoyoteAi : AiScript
 		Hates("/sheep/");
 		Hates("/dog/");
 		//Fears("/junglewolf/")
-		HatesBattleStance(); // 3000 delay
+		HatesBattleStance(3000);
 		// Aggro over time 10000
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
