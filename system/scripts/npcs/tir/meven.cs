@@ -60,6 +60,7 @@ public class MevenScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
+				GiveKeyword("temple");
 				Msg("I am Priest <npcname/>.<br/>It's so nice to see someone cares for an old man.<br/>Ha ha.");
 				ModifyRelation(Random(2), 0, Random(2));
 				break;
