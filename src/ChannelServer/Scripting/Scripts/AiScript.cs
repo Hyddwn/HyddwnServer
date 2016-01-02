@@ -1583,40 +1583,44 @@ namespace Aura.Channel.Scripting.Scripts
 
 			lock (_reactions)
 			{
+				var state = _reactions[_state];
+				var ev = AiEvent.None;
+
 				// Knock down event
 				if (action.Has(TargetOptions.KnockDown) || action.Has(TargetOptions.Smash))
 				{
-					if (_reactions[_state].ContainsKey(AiEvent.KnockDown))
-						this.SwitchAction(_reactions[_state][AiEvent.KnockDown]);
-					return;
+					ev = AiEvent.KnockDown;
 				}
-
 				// Defense event
-				if (action.SkillId == SkillId.Defense)
+				else if (action.SkillId == SkillId.Defense)
 				{
-					if (_reactions[_state].ContainsKey(AiEvent.DefenseHit))
-						this.SwitchAction(_reactions[_state][AiEvent.DefenseHit]);
-					return;
+					ev = AiEvent.DefenseHit;
 				}
-
 				// Hit event
-				if (_reactions[_state].ContainsKey(AiEvent.Hit))
+				else
 				{
-					this.SwitchAction(_reactions[_state][AiEvent.Hit]);
-					return;
+					ev = AiEvent.Hit;
 				}
 
-				// Creature was hit, but there's no event
+				// Execute event or clear action queue
+				if (state.ContainsKey(ev))
+				{
+					this.SwitchAction(state[ev]);
+				}
+				else
+				{
+					// Creature was hit, but there's no event
 
-				// If the queue isn't cleared, the AI won't restart the
-				// Aggro state, which will make it keep attacking.
-				// This also causes a bug, where when you attack a
-				// monster while it's attacking you with Smash,
-				// it will keep attacking you with Smash, even though
-				// the skill was canceled, due to the received hit.
-				// The result is a really confusing situation, where
-				// normal looking attacks suddenly break through Defense.
-				this.Clear();
+					// If the queue isn't cleared, the AI won't restart the
+					// Aggro state, which will make it keep attacking.
+					// This also causes a bug, where when you attack a
+					// monster while it's attacking you with Smash,
+					// it will keep attacking you with Smash, even though
+					// the skill was canceled, due to the received hit.
+					// The result is a really confusing situation, where
+					// normal looking attacks suddenly break through Defense.
+					this.Clear();
+				}
 			}
 		}
 
@@ -1723,6 +1727,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 		public enum AiEvent
 		{
+			None,
 			Hit,
 			DefenseHit,
 			KnockDown,
