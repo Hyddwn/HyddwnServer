@@ -1097,7 +1097,7 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 
 			timeout = Math2.Clamp(0, 300000, timeout);
-			var timeoutDt = DateTime.Now.AddMilliseconds(timeout);
+			var until = _timestamp + timeout;
 
 			// Get skill
 			var skill = this.Creature.Skills.ActiveSkill;
@@ -1121,7 +1121,7 @@ namespace Aura.Channel.Scripting.Scripts
 			for (int i = 0; ; )
 			{
 				// Stop timeout was reached
-				if (DateTime.Now >= timeoutDt)
+				if (_timestamp >= until)
 					break;
 
 				// Attack
