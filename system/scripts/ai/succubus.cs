@@ -271,6 +271,7 @@ public class SuccubusAi : AiScript
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);
+		On(AiState.Aggro, AiEvent.KnockDown, SkillId.Counterattack, OnCounterKnockDown);
 	}
 
 	protected override IEnumerable Idle()
@@ -770,5 +771,10 @@ public class SuccubusAi : AiScript
 	{
 		Do(Wait(500));
 		Do(Say(OnKDwn));
+	}
+
+	private IEnumerable OnCounterKnockDown()
+	{
+		Do(SwitchArmor(15046, 15047, 15048, 15049, 15050));
 	}
 }

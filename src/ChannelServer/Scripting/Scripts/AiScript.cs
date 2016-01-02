@@ -1584,6 +1584,76 @@ namespace Aura.Channel.Scripting.Scripts
 			yield break;
 		}
 
+		/// <summary>
+		/// Changes armor in sequence, starting the first item id that
+		/// matches the current armor.
+		/// </summary>
+		/// <example>
+		/// itemIds = [15046, 15047, 15048, 15049, 15050]
+		/// If current armor is 15046, it's changed to 15047,
+		/// if current armor is 15047, it's changed to 15048,
+		/// and so on, until there are no more ids.
+		/// 
+		/// The first id needs to be the default armor, otherwise no
+		/// change will occur, since no starting point can be found.
+		/// If a creature doesn't have any armor, 0 can be used as the
+		/// default, to make it put on armor.
+		/// 
+		/// Duplicate item ids will not work.
+		/// </example>
+		/// <param name="itemIds"></param>
+		protected IEnumerable SwitchArmor(params int[] itemIds)
+		{
+			if (itemIds == null || itemIds.Length == 0)
+				throw new ArgumentException("A minimum of 1 item id is required.");
+
+			var current = 0;
+			var newItemId = -1;
+
+			// Get current item
+			var item = this.Creature.Inventory.GetItemAt(Pocket.Armor, 0, 0);
+			if (item != null)
+				current = item.Info.Id;
+
+			// Search for next item id
+			for (int i = 0; i < itemIds.Length - 1; ++i)
+			{
+				if (itemIds[i] == current)
+				{
+					newItemId = itemIds[i + 1];
+					break;
+				}
+			}
+
+			// No new id, current not found or end reached
+			if (newItemId == -1)
+				yield break;
+
+			// Create new item
+			Item newItem = null;
+			if (newItemId != 0)
+			{
+				newItem = new Item(newItemId);
+				if (item != null)
+				{
+					// Use same color as the previous armor. Succubi go through
+					// more and more revealing clothes, making it look like they
+					// lose them, but the colors are variable if we don't set them.
+					newItem.Info.Color1 = item.Info.Color1;
+					newItem.Info.Color2 = item.Info.Color2;
+					newItem.Info.Color3 = item.Info.Color3;
+				}
+			}
+
+			// Equip new item and remove old one
+			if (item != null)
+				this.Creature.Inventory.Remove(item);
+			if (newItem != null)
+				this.Creature.Inventory.Add(newItem, Pocket.Armor);
+
+			yield break;
+		}
+
 		// ------------------------------------------------------------------
 
 		/// <summary>
