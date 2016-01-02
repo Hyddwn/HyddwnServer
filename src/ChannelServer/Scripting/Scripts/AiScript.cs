@@ -1589,7 +1589,10 @@ namespace Aura.Channel.Scripting.Scripts
 				// Knock down event
 				if (action.Has(TargetOptions.KnockDown) || action.Has(TargetOptions.Smash))
 				{
-					ev = AiEvent.KnockDown;
+					if (action.Has(TargetOptions.Critical))
+						ev = AiEvent.CriticalKnockDown;
+					else
+						ev = AiEvent.KnockDown;
 				}
 				// Defense event
 				else if (action.SkillId == SkillId.Defense)
@@ -1731,6 +1734,7 @@ namespace Aura.Channel.Scripting.Scripts
 			Hit,
 			DefenseHit,
 			KnockDown,
+			CriticalKnockDown,
 		}
 	}
 
