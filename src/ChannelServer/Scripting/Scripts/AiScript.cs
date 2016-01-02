@@ -49,7 +49,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected IEnumerator _curAction;
 		protected Creature _newAttackable;
 
-		protected Dictionary<AiState, Dictionary<AiEvent, Func<IEnumerable>>> _reactions;
+		protected Dictionary<AiState, Dictionary<AiEvent, Dictionary<SkillId, Func<IEnumerable>>>> _reactions;
 
 		// Heartbeat cache
 		protected IList<Creature> _playersInRange;
@@ -92,12 +92,12 @@ namespace Aura.Channel.Scripting.Scripts
 			_heartbeatTimer = new Timer(this.Heartbeat, null, -1, -1);
 
 			_rnd = new Random(RandomProvider.Get().Next());
-			_reactions = new Dictionary<AiState, Dictionary<AiEvent, Func<IEnumerable>>>();
-			_reactions[AiState.Idle] = new Dictionary<AiEvent, Func<IEnumerable>>();
-			_reactions[AiState.Aware] = new Dictionary<AiEvent, Func<IEnumerable>>();
-			_reactions[AiState.Alert] = new Dictionary<AiEvent, Func<IEnumerable>>();
-			_reactions[AiState.Aggro] = new Dictionary<AiEvent, Func<IEnumerable>>();
-			_reactions[AiState.Love] = new Dictionary<AiEvent, Func<IEnumerable>>();
+			_reactions = new Dictionary<AiState, Dictionary<AiEvent, Dictionary<SkillId, Func<IEnumerable>>>>();
+			_reactions[AiState.Idle] = new Dictionary<AiEvent, Dictionary<SkillId, Func<IEnumerable>>>();
+			_reactions[AiState.Aware] = new Dictionary<AiEvent, Dictionary<SkillId, Func<IEnumerable>>>();
+			_reactions[AiState.Alert] = new Dictionary<AiEvent, Dictionary<SkillId, Func<IEnumerable>>>();
+			_reactions[AiState.Aggro] = new Dictionary<AiEvent, Dictionary<SkillId, Func<IEnumerable>>>();
+			_reactions[AiState.Love] = new Dictionary<AiEvent, Dictionary<SkillId, Func<IEnumerable>>>();
 
 			_state = AiState.Idle;
 			_aggroRadius = 500;
@@ -579,8 +579,24 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="func">The reaction to the event.</param>
 		protected void On(AiState state, AiEvent ev, Func<IEnumerable> func)
 		{
+			this.On(state, ev, SkillId.None, func);
+		}
+
+		/// <summary>
+		/// Reigsters a reaction.
+		/// </summary>
+		/// <param name="state">The state the event is for.</param>
+		/// <param name="ev">The event on which func should be executed.</param>
+		/// <param name="skillId">The skill the should trigger the event.</param>
+		/// <param name="func">The reaction to the event.</param>
+		protected void On(AiState state, AiEvent ev, SkillId skillId, Func<IEnumerable> func)
+		{
 			lock (_reactions)
-				_reactions[state][ev] = func;
+			{
+				if (!_reactions[state].ContainsKey(ev))
+					_reactions[state][ev] = new Dictionary<SkillId, Func<IEnumerable>>();
+				_reactions[state][ev][skillId] = func;
+			}
 		}
 
 		// Functions
@@ -1605,25 +1621,45 @@ namespace Aura.Channel.Scripting.Scripts
 					ev = AiEvent.Hit;
 				}
 
-				// Execute event or clear action queue
+				// Try to find and execute event
 				if (state.ContainsKey(ev))
 				{
-					this.SwitchAction(state[ev]);
-				}
-				else
-				{
-					// Creature was hit, but there's no event
+					var evs = state[ev];
 
-					// If the queue isn't cleared, the AI won't restart the
-					// Aggro state, which will make it keep attacking.
-					// This also causes a bug, where when you attack a
-					// monster while it's attacking you with Smash,
-					// it will keep attacking you with Smash, even though
-					// the skill was canceled, due to the received hit.
-					// The result is a really confusing situation, where
-					// normal looking attacks suddenly break through Defense.
-					this.Clear();
+					// Since events can be defined for specific skills,
+					// but assumingly still trigger the default events if no
+					// skill specific event was defined, we have to check for
+					// the specific skill first, and then fall back to "None",
+					// for non skill specific events. If both weren't found,
+					// we fall through to clear, since only a skill specific
+					// event for a different skill was defined, and we still
+					// have to reset the current action.
+
+					// Try skill specific event
+					if (evs.ContainsKey(action.AttackerSkillId))
+					{
+						this.SwitchAction(evs[action.AttackerSkillId]);
+						return;
+					}
+					// Try general event
+					else if (evs.ContainsKey(SkillId.None))
+					{
+						this.SwitchAction(evs[SkillId.None]);
+						return;
+					}
 				}
+
+				// Creature was hit, but there's no event
+
+				// If the queue isn't cleared, the AI won't restart the
+				// Aggro state, which will make it keep attacking.
+				// This also causes a bug, where when you attack a
+				// monster while it's attacking you with Smash,
+				// it will keep attacking you with Smash, even though
+				// the skill was canceled, due to the received hit.
+				// The result is a really confusing situation, where
+				// normal looking attacks suddenly break through Defense.
+				this.Clear();
 			}
 		}
 
