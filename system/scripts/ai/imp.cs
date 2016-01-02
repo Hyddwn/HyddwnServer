@@ -119,9 +119,10 @@ public class ImpAi : AiScript
 	public ImpAi()
 	{
 		SetAggroRadius(950); // Angle 120 Audio 400
-		//SetAggroDelay(2000);
-		Doubts("/pc/", "/pet/");
 		SetAggroLimit(AggroLimit.Two);
+
+		Doubts("/pc/", "/pet/");
+		HatesNearby(2000);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);

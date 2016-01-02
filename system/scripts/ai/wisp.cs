@@ -20,9 +20,10 @@ public class WispAi : AiScript
 	public WispAi()
 	{
 		SetAggroRadius(950); // Angle 120 Audio 400
-		//SetAggroDelay(7000);
 		SetAggroLimit(AggroLimit.None);
+
 		Doubts("/pc/", "/pet/");
+		HatesNearby(7000);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);

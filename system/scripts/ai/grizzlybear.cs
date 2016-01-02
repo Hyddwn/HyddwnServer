@@ -10,10 +10,11 @@ public class GrizzlybearAi : AiScript
 	public GrizzlybearAi()
 	{
 		SetAggroRadius(700); //90 angle Audio 400
-		Doubts("/pc/", "/pet/");
-		//SetAggroDelay(4000); 
-		//HatesAttacking("/grizzlybearkid/"); duration="500"
 		SetAggroLimit(AggroLimit.One);
+
+		Doubts("/pc/", "/pet/");
+		HatesNearby(4000);
+		//HatesAttacking("/grizzlybearkid/"); duration="500"
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
