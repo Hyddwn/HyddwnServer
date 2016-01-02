@@ -1152,37 +1152,7 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 			}
 
-			// Handle completing of skill, if it hasn't been canceled
-			if (skill.Info.Id != SkillId.CombatMastery && this.Creature.Skills.ActiveSkill != null)
-			{
-				// Get handler
-				var completeHandler = skillHandler as ICompletable;
-				if (completeHandler == null)
-				{
-					Log.Error("AI.Attack: Missing complete handler for {0}.", skill.Info.Id);
-				}
-				else
-				{
-					// Try completing
-					try
-					{
-						completeHandler.Complete(this.Creature, skill, null);
-					}
-					catch (NullReferenceException)
-					{
-						Log.Warning("AI.Attack: Null ref exception while completing '{0}', skill might have parameters.", skill.Info.Id);
-					}
-					catch (NotImplementedException)
-					{
-						Log.Unimplemented("AI.Attack: Skill complete method for '{0}'.", skill.Info.Id);
-					}
-				}
-
-				this.SharpMind(this.Creature.Skills.ActiveSkill.Info.Id, SharpMindStatus.Cancelling);
-
-				// Reset active skill in any case.
-				this.Creature.Skills.ActiveSkill = null;
-			}
+			// Complete is called automatically from OnUsedSkill
 		}
 
 		/// <summary>
