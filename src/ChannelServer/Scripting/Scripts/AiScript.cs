@@ -1099,27 +1099,25 @@ namespace Aura.Channel.Scripting.Scripts
 			timeout = Math2.Clamp(0, 300000, timeout);
 			var until = _timestamp + timeout;
 
-			// Get skill
-			var skill = this.Creature.Skills.ActiveSkill;
-			if (skill == null && (skill = this.Creature.Skills.Get(SkillId.CombatMastery)) == null)
-			{
-				Log.Warning("AI.Attack: Creature '{0}' doesn't have Combat Mastery.", this.Creature.RaceId);
-				yield break;
-			}
-
-			// Get skill handler
-			var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<ICombatSkill>(skill.Info.Id);
-			if (skillHandler == null)
-			{
-				Log.Error("AI.Attack: Skill handler not found for '{0}'.", skill.Info.Id);
-				yield break;
-			}
-
-			var attackRange = this.Creature.AttackRangeFor(this.Creature.Target);
-
 			// Each successful hit counts, attack until count or timeout is reached.
 			for (int i = 0; ; )
 			{
+				// Get skill
+				var skill = this.Creature.Skills.ActiveSkill;
+				if (skill == null && (skill = this.Creature.Skills.Get(SkillId.CombatMastery)) == null)
+				{
+					Log.Warning("AI.Attack: Creature '{0}' doesn't have Combat Mastery.", this.Creature.RaceId);
+					yield break;
+				}
+
+				// Get skill handler
+				var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<ICombatSkill>(skill.Info.Id);
+				if (skillHandler == null)
+				{
+					Log.Error("AI.Attack: Skill handler not found for '{0}'.", skill.Info.Id);
+					yield break;
+				}
+
 				// Stop timeout was reached
 				if (_timestamp >= until)
 					break;
@@ -1140,6 +1138,7 @@ namespace Aura.Channel.Scripting.Scripts
 					var pos = this.Creature.GetPosition();
 					var targetPos = this.Creature.Target.GetPosition();
 
+					//var attackRange = this.Creature.AttackRangeFor(this.Creature.Target);
 					//this.ExecuteOnce(this.RunTo(pos.GetRelative(targetPos, -attackRange + 50)));
 					this.ExecuteOnce(this.RunTo(targetPos));
 
