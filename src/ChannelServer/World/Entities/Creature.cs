@@ -1475,7 +1475,7 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public virtual bool CanTarget(Creature creature)
 		{
-			if (this.IsDead || creature.IsDead)
+			if (this.IsDead || creature.IsDead || creature == this)
 				return false;
 
 			return true;
