@@ -1258,6 +1258,16 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		protected IEnumerable PrepareSkill(SkillId skillId)
 		{
+			return this.PrepareSkill(skillId, 1);
+		}
+
+		/// <summary>
+		/// Makes creature prepare given skill.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		protected IEnumerable PrepareSkill(SkillId skillId, int stacks)
+		{
 			// Get skill
 			var skill = this.Creature.Skills.Get(skillId);
 			if (skill == null)
@@ -1271,70 +1281,73 @@ namespace Aura.Channel.Scripting.Scripts
 				yield break;
 			}
 
-			skill.State = SkillState.None;
-
 			// Cancel previous skill
-			if (this.Creature.Skills.ActiveSkill != null)
+			var activeSkill = this.Creature.Skills.ActiveSkill;
+			if (activeSkill != null && activeSkill.Info.Id != skillId)
 				this.ExecuteOnce(this.CancelSkill());
 
-			// Explicit handling
-			if (skillId == SkillId.WebSpinning)
+			stacks = Math2.Clamp(1, skill.RankData.StackMax, skill.Stacks + stacks);
+			while (skill.Stacks < stacks)
 			{
-				var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<WebSpinning>(skillId);
-				skillHandler.Prepare(this.Creature, skill, null);
-				this.Creature.Skills.ActiveSkill = skill;
-				skillHandler.Complete(this.Creature, skill, null);
-			}
-			// Try to handle implicitly
-			else
-			{
-				// Get preparable handler
-				var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<IPreparable>(skillId);
-				if (skillHandler == null)
+				// Explicit handling
+				if (skillId == SkillId.WebSpinning)
 				{
-					Log.Unimplemented("AI.PrepareSkill: Missing handler or IPreparable for '{0}'.", skillId);
-					yield break;
-				}
-
-				// Get readyable handler.
-				// TODO: There are skills that don't have ready, but go right to
-				//   use from Prepare. Handle somehow.
-				var readyHandler = skillHandler as IReadyable;
-				if (readyHandler == null)
-				{
-					Log.Unimplemented("AI.PrepareSkill: Missing IReadyable for '{0}'.", skillId);
-					yield break;
-				}
-
-				this.SharpMind(skillId, SharpMindStatus.Loading);
-
-				// Prepare skill
-				try
-				{
-					if (!skillHandler.Prepare(this.Creature, skill, null))
-						yield break;
-
+					var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<WebSpinning>(skillId);
+					skillHandler.Prepare(this.Creature, skill, null);
 					this.Creature.Skills.ActiveSkill = skill;
-					skill.State = SkillState.Prepared;
+					skillHandler.Complete(this.Creature, skill, null);
 				}
-				catch (NullReferenceException)
+				// Try to handle implicitly
+				else
 				{
-					Log.Warning("AI.PrepareSkill: Null ref exception while preparing '{0}', skill might have parameters.", skillId);
+					// Get preparable handler
+					var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<IPreparable>(skillId);
+					if (skillHandler == null)
+					{
+						Log.Unimplemented("AI.PrepareSkill: Missing handler or IPreparable for '{0}'.", skillId);
+						yield break;
+					}
+
+					// Get readyable handler.
+					// TODO: There are skills that don't have ready, but go right to
+					//   use from Prepare. Handle somehow.
+					var readyHandler = skillHandler as IReadyable;
+					if (readyHandler == null)
+					{
+						Log.Unimplemented("AI.PrepareSkill: Missing IReadyable for '{0}'.", skillId);
+						yield break;
+					}
+
+					this.SharpMind(skillId, SharpMindStatus.Loading);
+
+					// Prepare skill
+					try
+					{
+						if (!skillHandler.Prepare(this.Creature, skill, null))
+							yield break;
+
+						this.Creature.Skills.ActiveSkill = skill;
+						skill.State = SkillState.Prepared;
+					}
+					catch (NullReferenceException)
+					{
+						Log.Warning("AI.PrepareSkill: Null ref exception while preparing '{0}', skill might have parameters.", skillId);
+					}
+					catch (NotImplementedException)
+					{
+						Log.Unimplemented("AI.PrepareSkill: Skill prepare method for '{0}'.", skillId);
+					}
+
+					// Wait for loading to be done
+					foreach (var action in this.Wait(skill.RankData.LoadTime))
+						yield return action;
+
+					// Call ready
+					readyHandler.Ready(this.Creature, skill, null);
+					skill.State = SkillState.Ready;
+
+					this.SharpMind(skillId, SharpMindStatus.Loaded);
 				}
-				catch (NotImplementedException)
-				{
-					Log.Unimplemented("AI.PrepareSkill: Skill prepare method for '{0}'.", skillId);
-				}
-
-				// Wait for loading to be done
-				foreach (var action in this.Wait(skill.RankData.LoadTime))
-					yield return action;
-
-				// Call ready
-				readyHandler.Ready(this.Creature, skill, null);
-				skill.State = SkillState.Ready;
-
-				this.SharpMind(skillId, SharpMindStatus.Loaded);
 			}
 		}
 
@@ -1394,11 +1407,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var skill = this.Creature.Skills.ActiveSkill;
 			var skillId = this.Creature.Skills.ActiveSkill.Info.Id;
 
-			this.Creature.Skills.ActiveSkill = null;
-			skill.State = SkillState.Completed;
-
-			this.SharpMind(skillId, SharpMindStatus.Cancelling);
-
+			// Get skill handler
 			var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<ICompletable>(skillId);
 			if (skillHandler == null)
 			{
@@ -1409,7 +1418,7 @@ namespace Aura.Channel.Scripting.Scripts
 			try
 			{
 				skillHandler.Complete(this.Creature, skill, null);
-				skill.State = SkillState.Completed;
+			// Run complete
 			}
 			catch (NullReferenceException)
 			{
@@ -1418,6 +1427,18 @@ namespace Aura.Channel.Scripting.Scripts
 			catch (NotImplementedException)
 			{
 				Log.Unimplemented("AI.CompleteSkill: Skill complete method for '{0}'.", skillId);
+			}
+
+			// Finalize complete or ready again
+			if (skill.Stacks == 0)
+			{
+				this.Creature.Skills.ActiveSkill = null;
+				skill.State = SkillState.Completed;
+				this.SharpMind(skillId, SharpMindStatus.Cancelling);
+			}
+			else if (skill.State != SkillState.Canceled)
+			{
+				skill.State = SkillState.Ready;
 			}
 		}
 
