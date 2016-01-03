@@ -1252,6 +1252,98 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Attacks with the given skill, charging it first, if it doesn't
+		/// have the given amount of stacks yet. Attacks until all stacks
+		/// have been used, or timeout is reached.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="stacks"></param>
+		/// <param name="timeout"></param>
+		/// <returns></returns>
+		protected IEnumerable StackAttack(SkillId skillId, int stacks = 1, int timeout = 30000)
+		{
+			var target = this.Creature.Target;
+			var until = _timestamp + Math.Max(0, timeout);
+
+			// Get handler
+			var prepareHandler = ChannelServer.Instance.SkillManager.GetHandler<IPreparable>(skillId);
+			var readyHandler = prepareHandler as IReadyable;
+			var combatHandler = prepareHandler as ICombatSkill;
+
+			if (prepareHandler == null || readyHandler == null || combatHandler == null)
+			{
+				Log.Warning("AI.StackAttack: {0}'s handler doesn't exist, or doesn't implement the necessary interfaces.", skillId);
+				yield break;
+			}
+
+			// Cancel active skill if it's not the one we want
+			var skill = this.Creature.Skills.ActiveSkill;
+			if (skill != null && skill.Info.Id != skillId)
+			{
+				foreach (var action in this.CancelSkill())
+					yield return action;
+			}
+
+			// Get skill if we don't have one yet
+			if (skill == null)
+			{
+				// Get skill
+				skill = this.Creature.Skills.Get(skillId);
+				if (skill == null)
+				{
+					Log.Warning("AI.StackAttack: Creature '{0}' doesn't have {1}.", this.Creature.RaceId, skillId);
+					yield break;
+				}
+			}
+
+			// Stack up
+			stacks = Math2.Clamp(1, skill.RankData.StackMax, stacks);
+			while (skill.Stacks < stacks)
+			{
+				// Start loading
+				this.SharpMind(skill.Info.Id, SharpMindStatus.Loading);
+
+				// Prepare skill
+				prepareHandler.Prepare(this.Creature, skill, null);
+
+				this.Creature.Skills.ActiveSkill = skill;
+				skill.State = SkillState.Prepared;
+
+				// Wait for loading to be done
+				foreach (var action in this.Wait(skill.RankData.LoadTime))
+					yield return action;
+
+				// Call ready
+				readyHandler.Ready(this.Creature, skill, null);
+				skill.State = SkillState.Ready;
+
+				// Done loading
+				this.SharpMind(skill.Info.Id, SharpMindStatus.Loaded);
+			}
+
+			// Small delay
+			foreach (var action in this.Wait(500))
+				yield return action;
+
+			// Attack
+			while (skill.Stacks > 0)
+			{
+				if (_timestamp >= until)
+					break;
+
+				combatHandler.Use(this.Creature, skill, target.EntityId);
+				yield return true;
+			}
+
+			// Cancel skill if there are left over stacks
+			if (skill.Stacks != 0)
+			{
+				foreach (var action in this.CancelSkill())
+					yield return action;
+			}
+		}
+
+		/// <summary>
 		/// Makes creature prepare given skill.
 		/// </summary>
 		/// <param name="skillId"></param>
@@ -1415,10 +1507,10 @@ namespace Aura.Channel.Scripting.Scripts
 				yield break;
 			}
 
+			// Run complete
 			try
 			{
 				skillHandler.Complete(this.Creature, skill, null);
-			// Run complete
 			}
 			catch (NullReferenceException)
 			{
