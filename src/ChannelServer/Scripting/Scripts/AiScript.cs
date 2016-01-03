@@ -56,6 +56,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 		// Settings
 		protected int _aggroRadius, _aggroMaxRadius;
+		protected int _visualRadius;
+		protected double _visualRadian;
 		protected TimeSpan _alertDelay, _aggroDelay, _hateBattleStanceDelay, _hateOverTimeDelay;
 		protected DateTime _awareTime, _alertTime;
 		protected AggroLimit _aggroLimit;
@@ -102,6 +104,8 @@ namespace Aura.Channel.Scripting.Scripts
 			_state = AiState.Idle;
 			_aggroRadius = 500;
 			_aggroMaxRadius = 3000;
+			_visualRadius = 900;
+			_visualRadian = 90;
 			_alertDelay = TimeSpan.FromMilliseconds(6000);
 			_aggroDelay = TimeSpan.FromMilliseconds(500);
 			_hateOverTimeDelay = TimeSpan.FromDays(365);
@@ -288,7 +292,12 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		private void SelectState()
 		{
-			var potentialTargets = this.Creature.Region.GetVisibleCreaturesInRange(this.Creature, _aggroRadius).Where(c => !c.Warping);
+			var pos = this.Creature.GetPosition();
+
+			// Get perceivable targets
+			var radius = (_aggroRadius + _visualRadius);
+			var potentialTargets = this.Creature.Region.GetVisibleCreaturesInRange(this.Creature, radius).Where(c => !c.Warping);
+			potentialTargets = potentialTargets.Where(a => this.CanPerceive(pos, this.Creature.Direction, a.GetPosition()));
 
 			// Stay in idle if there's no visible creature in aggro range
 			if (!potentialTargets.Any() && this.Creature.Target == null)
@@ -361,7 +370,7 @@ namespace Aura.Channel.Scripting.Scripts
 			if (_state == AiState.Aware && DateTime.Now >= _awareTime + _alertDelay)
 			{
 				// Check if target is still in immediate range
-				if (this.Creature.GetPosition().InRange(this.Creature.Target.GetPosition(), _aggroRadius))
+				if (this.CanPerceive(pos, this.Creature.Direction, this.Creature.Target.GetPosition()))
 				{
 					this.Clear();
 
@@ -401,6 +410,57 @@ namespace Aura.Channel.Scripting.Scripts
 				_state = AiState.Aggro;
 				Send.SetCombatTarget(this.Creature, this.Creature.Target.EntityId, TargetMode.Aggro);
 			}
+		}
+
+		/// <summary>
+		/// Returns true if AI can hear or see at target pos from pos.
+		/// </summary>
+		/// <param name="pos">Position AI's creature is at.</param>
+		/// <param name="direction">AI creature's current direction.</param>
+		/// <param name="targetPos">Position of the potential target.</param>
+		/// <returns></returns>
+		protected virtual bool CanPerceive(Position pos, byte direction, Position targetPos)
+		{
+			return (this.CanHear(pos, targetPos) || this.CanSee(pos, direction, targetPos));
+		}
+
+		/// <summary>
+		/// Returns true if target position is within hearing range.
+		/// </summary>
+		/// <param name="pos">Position from which AI creature listens.</param>
+		/// <param name="targetPos">Position of the potential target.</param>
+		/// <returns></returns>
+		protected virtual bool CanHear(Position pos, Position targetPos)
+		{
+			return pos.InRange(targetPos, _aggroRadius);
+		}
+
+		/// <summary>
+		/// Returns true if target position is within visual field.
+		/// </summary>
+		/// <param name="pos">Position from which AI creature listens.</param>
+		/// <param name="direction">AI creature's current direction.</param>
+		/// <param name="targetPos">Position of the potential target.</param>
+		/// <returns></returns>
+		protected virtual bool CanSee(Position pos, byte direction, Position targetPos)
+		{
+			var halfAngle = _visualRadian / 2;
+			var dirRadian = MabiMath.ByteToRadian(direction);
+
+			var tx1 = pos.X + (Math.Cos(-halfAngle + dirRadian) * _visualRadius);
+			var ty1 = pos.Y + (Math.Sin(-halfAngle + dirRadian) * _visualRadius);
+			var tx2 = pos.X + (Math.Cos(halfAngle + dirRadian) * _visualRadius);
+			var ty2 = pos.Y + (Math.Sin(halfAngle + dirRadian) * _visualRadius);
+			var tx3 = pos.X;
+			var ty3 = pos.Y;
+
+			// http://stackoverflow.com/questions/2049582/how-to-determine-a-point-in-a-2d-triangle
+			var A = 1.0 / 2.0 * (-ty2 * tx3 + ty1 * (-tx2 + tx3) + tx1 * (ty2 - ty3) + tx2 * ty3);
+			var sign = A < 0 ? -1 : 1;
+			var s = (ty1 * tx3 - tx1 * ty3 + (ty3 - ty1) * targetPos.X + (tx1 - tx3) * targetPos.Y) * sign;
+			var t = (tx1 * ty2 - ty1 * tx2 + (ty1 - ty2) * targetPos.X + (tx2 - tx1) * targetPos.Y) * sign;
+
+			return s > 0 && t > 0 && (s + t) < 2 * A * sign;
 		}
 
 		/// <summary>
@@ -473,6 +533,17 @@ namespace Aura.Channel.Scripting.Scripts
 		protected void SetAggroRadius(int radius)
 		{
 			_aggroRadius = radius;
+		}
+
+		/// <summary>
+		/// Sets visual field used for aggroing.
+		/// </summary>
+		/// <param name="radius"></param>
+		/// <param name="angle"></param>
+		protected void SetVisualField(int radius, int angle)
+		{
+			_visualRadius = radius;
+			_visualRadian = MabiMath.DegreeToRadian(angle);
 		}
 
 		/// <summary>
