@@ -1847,6 +1847,7 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				var state = _reactions[_state];
 				var ev = AiEvent.None;
+				var fallback = AiEvent.None;
 
 				// Knock down event
 				if (action.Has(TargetOptions.KnockDown) || action.Has(TargetOptions.Smash))
@@ -1861,6 +1862,14 @@ namespace Aura.Channel.Scripting.Scripts
 				{
 					ev = AiEvent.DefenseHit;
 				}
+				// Magic hit event
+				// Use skill ids for now, until we know more about what
+				// exactly classifies as a magic hit and what doesn't.
+				else if (action.AttackerSkillId >= SkillId.Lightningbolt && action.AttackerSkillId <= SkillId.Inspiration)
+				{
+					ev = AiEvent.MagicHit;
+					fallback = AiEvent.Hit;
+				}
 				// Hit event
 				else
 				{
@@ -1868,10 +1877,14 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 
 				// Try to find and execute event
+				Dictionary<SkillId, Func<IEnumerable>> evs = null;
 				if (state.ContainsKey(ev))
-				{
-					var evs = state[ev];
+					evs = state[ev];
+				else if (state.ContainsKey(fallback))
+					evs = state[fallback];
 
+				if (evs != null)
+				{
 					// Since events can be defined for specific skills,
 					// but assumingly still trigger the default events if no
 					// skill specific event was defined, we have to check for
@@ -2015,6 +2028,7 @@ namespace Aura.Channel.Scripting.Scripts
 			None,
 			Hit,
 			DefenseHit,
+			MagicHit,
 			KnockDown,
 			CriticalKnockDown,
 		}
