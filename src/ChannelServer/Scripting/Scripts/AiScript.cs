@@ -444,23 +444,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		protected virtual bool CanSee(Position pos, byte direction, Position targetPos)
 		{
-			var halfAngle = _visualRadian / 2;
-			var dirRadian = MabiMath.ByteToRadian(direction);
-
-			var tx1 = pos.X + (Math.Cos(-halfAngle + dirRadian) * _visualRadius);
-			var ty1 = pos.Y + (Math.Sin(-halfAngle + dirRadian) * _visualRadius);
-			var tx2 = pos.X + (Math.Cos(halfAngle + dirRadian) * _visualRadius);
-			var ty2 = pos.Y + (Math.Sin(halfAngle + dirRadian) * _visualRadius);
-			var tx3 = pos.X;
-			var ty3 = pos.Y;
-
-			// http://stackoverflow.com/questions/2049582/how-to-determine-a-point-in-a-2d-triangle
-			var A = 1.0 / 2.0 * (-ty2 * tx3 + ty1 * (-tx2 + tx3) + tx1 * (ty2 - ty3) + tx2 * ty3);
-			var sign = A < 0 ? -1 : 1;
-			var s = (ty1 * tx3 - tx1 * ty3 + (ty3 - ty1) * targetPos.X + (tx1 - tx3) * targetPos.Y) * sign;
-			var t = (tx1 * ty2 - ty1 * tx2 + (ty1 - ty2) * targetPos.X + (tx2 - tx1) * targetPos.Y) * sign;
-
-			return s > 0 && t > 0 && (s + t) < 2 * A * sign;
+			return targetPos.InCone(pos, MabiMath.ByteToRadian(direction), _visualRadius, _visualRadian);
 		}
 
 		/// <summary>
