@@ -112,7 +112,7 @@ public class KeychestSkeleton2Script : KeychestSkeletonScript
 		// 10% chance for giant skeletons
 		if (Random(100) < 10)
 		{
-			puzzle.GetMonsterData("Mob1")[0].RaceId = 11101; // Giant Skeleton
+			puzzle.GetMonsterData("Mob1")[0].RaceId = 11005; // Giant Skeleton
 			puzzle.GetMonsterData("Mob1")[0].Amount = 3;
 		}
 	}
