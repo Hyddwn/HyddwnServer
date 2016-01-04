@@ -66,6 +66,17 @@ public abstract class Keychest9ChestScript : PuzzleScript
 	}
 }
 
+[PuzzleScript("keychest_9chest")]
+public class Keychest9ChestNormalScript : Keychest9ChestScript
+{
+	protected override void AddChestDrops(Chest chest, int chestNum, bool isMonsterChest, bool isEnchantChest)
+	{
+		// Gold
+		if (!isMonsterChest)
+			chest.Add(Item.Create(id: 2000, amountMin: 250, amountMax: 1000));
+	}
+}
+
 [PuzzleScript("keychest_9chest_ciar")]
 public class Keychest9ChestCiarScript : Keychest9ChestScript
 {
