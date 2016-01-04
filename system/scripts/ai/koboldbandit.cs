@@ -100,6 +100,7 @@ public class KoboldBanditAi : AiScript
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);
+		On(AiState.Aggro, AiEvent.KnockDown, SkillId.Counterattack, OnCounterKnockDown);
 	}
 
 	protected override IEnumerable Idle()
@@ -267,5 +268,9 @@ public class KoboldBanditAi : AiScript
 			if (Random() < 90)
 				Do(Say(koboldBanditAttack));
 		}
+	}
+	private IEnumerable OnCounterKnockDown()
+	{
+		Do(SwitchArmor(24001, 25005));
 	}
 }
