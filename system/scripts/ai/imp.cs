@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-// Imp AI
+// Imp AIs
 //--- Description -----------------------------------------------------------
-// AI for Imps.
+// AIs for Imps and Giant Imps.
 //--- Missing ---------------------------------------------------------------
 // Magic Charges and Magic Attack
 // Do(Wait(1000, 2000)); Do(Attack(1, 4000)); are not official.
@@ -391,5 +391,16 @@ public class ImpAi : AiScript
 				Do(Wait(1000, 2000));
 			}
 		}
+	}
+}
+
+[AiScript("giantimp")]
+public class GiantImpAi : ImpAi
+{
+	public GiantImpAi()
+	{
+		SetVisualField(1500, 120);
+		SetAggroRadius(600);
+		SetAggroLimit(AggroLimit.None);
 	}
 }
