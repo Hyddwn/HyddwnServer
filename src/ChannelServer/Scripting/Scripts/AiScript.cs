@@ -542,8 +542,10 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="angle"></param>
 		protected void SetVisualField(int radius, double angle)
 		{
+			var a = Math2.Clamp(0, 160, (int)angle);
+
 			_visualRadius = radius;
-			_visualRadian = MabiMath.DegreeToRadian((int)angle);
+			_visualRadian = MabiMath.DegreeToRadian(a);
 		}
 
 		/// <summary>
