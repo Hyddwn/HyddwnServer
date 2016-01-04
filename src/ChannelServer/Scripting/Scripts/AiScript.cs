@@ -1497,6 +1497,12 @@ namespace Aura.Channel.Scripting.Scripts
 
 					this.SharpMind(skillId, SharpMindStatus.Loaded);
 				}
+
+				// If stacks are still 0 after preparing, we'll have to assume
+				// that the skill didn't set it. We have to break the loop,
+				// otherwise the AI would prepare the skill indefinitely.
+				if (skill.Stacks == 0)
+					break;
 			}
 		}
 
