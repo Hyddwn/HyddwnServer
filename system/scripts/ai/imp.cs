@@ -122,7 +122,7 @@ public class ImpAi : AiScript
 		SetAggroRadius(600);
 		SetAggroLimit(AggroLimit.Two);
 
-		Hates("/pc/", "/pet/");
+		Doubts("/pc/", "/pet/");
 		HatesNearby(2000);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
