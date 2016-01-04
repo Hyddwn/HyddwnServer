@@ -295,7 +295,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var pos = this.Creature.GetPosition();
 
 			// Get perceivable targets
-			var radius = (_aggroRadius + _visualRadius);
+			var radius = Math.Max(_aggroRadius, _visualRadius);
 			var potentialTargets = this.Creature.Region.GetVisibleCreaturesInRange(this.Creature, radius).Where(c => !c.Warping);
 			potentialTargets = potentialTargets.Where(a => this.CanPerceive(pos, this.Creature.Direction, a.GetPosition()));
 
