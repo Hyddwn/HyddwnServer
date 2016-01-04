@@ -35,6 +35,33 @@ public class GargoyleAi : AiScript
 		Do(Wait(2000, 5000));
 	}
 
+	protected override IEnumerable Alert()
+	{
+		Do(Say("When will my time come...", "Hahaha...", "", ""));
+
+		var num = Random();
+		if (num < 20) // 20%
+		{
+			Do(Wait(1000, 2000));
+		}
+		else if (num < 40) // 30%
+		{
+			Do(Wait(1000, 4000));
+
+			num = Random();
+			if (num < 90) // 90%
+			{
+				Do(Circle(600, 2000, 2000));
+			}
+			else // 10%
+			{
+				Do(Attack(Rnd(1, 2, 3), 4000));
+			}
+		}
+
+		Do(Wait(2000, 5000));
+	}
+
 	protected override IEnumerable Aggro()
 	{
 		var num = Random();
