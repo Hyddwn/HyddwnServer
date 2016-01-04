@@ -17,7 +17,7 @@ public class GargoyleAi : AiScript
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
-		//On(AiState.Aggro, AiEvent.MagicHit, OnMagicHit);
+		On(AiState.Aggro, AiEvent.MagicHit, OnMagicHit);
 	}
 
 	protected override IEnumerable Idle()
@@ -168,5 +168,10 @@ public class GargoyleAi : AiScript
 			Do(Say("!!!!!"));
 			Do(Wait(1000, 2000));
 		}
+	}
+
+	private IEnumerable OnMagicHit()
+	{
+		Do(Say("..."));
 	}
 }
