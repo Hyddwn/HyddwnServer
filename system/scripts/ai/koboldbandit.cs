@@ -4,7 +4,7 @@
 // AI for kobold bandits.
 //--- History ---------------------------------------------------------------
 // 1.0 Added general AI behaviors
-// Missing: weaponswap, aggro over time, visual angle...
+// Missing: weaponswap
 //---------------------------------------------------------------------------
 
 
@@ -90,7 +90,8 @@ public class KoboldBanditAi : AiScript
 
 	public KoboldBanditAi()
 	{
-		SetAggroRadius(850); // angle 120 audiorange 200
+		SetVisualField(850, 120);
+		SetAggroRadius(200);
 		SetAggroLimit(AggroLimit.Two);
 
 		Doubts("/pc/", "/pet/");

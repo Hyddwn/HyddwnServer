@@ -9,10 +9,11 @@ public class BearAi : AiScript
 {
 	public BearAi()
 	{
-		SetAggroRadius(700);
+		SetVisualField(700, 90);
+		SetAggroRadius(400);
 
-		Hates("/pc/", "/pet/"); // Doubt
-		//HatesNearby(5000);
+		Doubts("/pc/", "/pet/");
+		HatesNearby(5000);
 
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);

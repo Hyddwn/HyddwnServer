@@ -9,6 +9,9 @@ public class FireSpriteAi : AiScript
 {
 	public FireSpriteAi()
 	{
+		SetVisualField(1200, 120);
+		SetAggroRadius(800);
+
 		Hates("/pc/", "/pet/");
 		//HatesAttacking("/elemental/");
 

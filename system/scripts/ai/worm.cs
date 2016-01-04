@@ -4,7 +4,6 @@
 // AI for Worm type monster.
 //--- History ---------------------------------------------------------------
 // 1.0 Added general AI behaviors
-// Missing: aggro over time, visual angle, original circle Idle
 //---------------------------------------------------------------------------
 
 [AiScript("worm")]
@@ -12,19 +11,13 @@ public class WormAi : AiScript
 {
 	public WormAi()
 	{
-		SetAggroRadius(600); // audio 400 visual Angle 45°
+		SetVisualField(600, 45);
+		SetAggroRadius(400);
+
 		Doubts("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
-	}
-
-	protected override IEnumerable Idle()
-	{
-		//if (Random() < 60) // 60%
-		//Do(Circle(400, 1000, 3000));
-		Do(Wait(2000, 10000));
-		Do(CancelSkill());
 	}
 
 	protected override IEnumerable Alert()
@@ -34,7 +27,6 @@ public class WormAi : AiScript
 		Do(Circle(500, 1000, 3000));
 		Do(Wait(2000, 4000));
 		Do(CancelSkill());
-
 	}
 
 	protected override IEnumerable Aggro()

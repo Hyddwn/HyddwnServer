@@ -9,6 +9,9 @@ public class BatAi : AiScript
 {
 	public BatAi()
 	{
+		SetVisualField(200, 120);
+		SetAggroRadius(1000);
+
 		Doubts("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);

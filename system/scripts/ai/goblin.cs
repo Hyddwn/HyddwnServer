@@ -9,11 +9,13 @@ public class GoblinAi : AiScript
 {
 	public GoblinAi()
 	{
-		SetAggroRadius(850); // angle 120 audio 200
+		SetVisualField(850, 120);
+		SetAggroRadius(200);
+		SetAggroLimit(AggroLimit.One);
+
 		Hates("/pc/", "/pet/");
 		Hates("/ahchemy_golem/");
 		Hates("/rp/");
-		SetAggroLimit(AggroLimit.One);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 	}

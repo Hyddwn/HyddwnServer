@@ -9,12 +9,13 @@ public class ChickenAi : AiScript
 {
 	public ChickenAi()
 	{
-		SetAggroRadius(400);
-		
+		SetVisualField(400, 90);
+		SetAggroRadius(300);
+
 		Hates("/fox/");
 		Loves("/hen/");
 	}
-	
+
 	protected override IEnumerable Idle()
 	{
 		Do(Wander());
@@ -23,13 +24,13 @@ public class ChickenAi : AiScript
 		Do(Wait(2000, 30000));
 		Do(StopSkill(SkillId.Rest));
 	}
-	
+
 	protected override IEnumerable Aggro()
 	{
 		Do(Attack(3));
 		Do(Wait(3000));
 	}
-	
+
 	protected override IEnumerable Love()
 	{
 		Do(Follow(300, true));

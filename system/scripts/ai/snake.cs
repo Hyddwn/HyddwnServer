@@ -9,6 +9,9 @@ public class SnakeAi : AiScript
 {
 	public SnakeAi()
 	{
+		SetVisualField(600, 90);
+		SetAggroRadius(400);
+
 		Hates("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);

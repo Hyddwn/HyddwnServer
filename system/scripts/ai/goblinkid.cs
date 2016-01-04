@@ -10,9 +10,11 @@ public class YoungGoblinAi : AiScript
 {
 	public YoungGoblinAi()
 	{
-		SetAggroRadius(600); // angle 120 audio 200
-		Hates("/pc/", "/pet/");
+		SetVisualField(600, 120);
+		SetAggroRadius(200);
 		SetAggroLimit(AggroLimit.One);
+
+		Hates("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);

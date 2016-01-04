@@ -9,7 +9,8 @@ public class GrizzlybearAi : AiScript
 {
 	public GrizzlybearAi()
 	{
-		SetAggroRadius(700); //90 angle Audio 400
+		SetVisualField(700, 90);
+		SetAggroRadius(400);
 		SetAggroLimit(AggroLimit.One);
 
 		Doubts("/pc/", "/pet/");

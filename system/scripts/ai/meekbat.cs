@@ -9,8 +9,10 @@ public class MeekBatAi : AiScript
 {
 	public MeekBatAi()
 	{
+		SetVisualField(200, 120);
+		SetAggroRadius(1000);
+
 		Doubts("/pc/", "/pet/");
-		SetAggroRadius(200); // 120 angle 1000 audio
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);

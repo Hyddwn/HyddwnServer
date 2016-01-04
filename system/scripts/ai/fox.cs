@@ -9,9 +9,12 @@ public class FoxAi : AiScript
 {
 	public FoxAi()
 	{
+		SetVisualField(700, 90);
+		SetAggroRadius(400);
+
 		Doubts("/pc/", "/pet/");
 		Hates("/chicken/");
-		
+
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 	}
 
@@ -20,31 +23,31 @@ public class FoxAi : AiScript
 		Do(Wander());
 		Do(Wait(2000, 5000));
 	}
-	
+
 	protected override IEnumerable Alert()
 	{
-		if(Random() < 50)
+		if (Random() < 50)
 			Do(PrepareSkill(SkillId.Defense));
 		Do(Circle(400, 1000, 5000));
 		Do(Wait(2000, 5000));
 		Do(CancelSkill());
 	}
-	
+
 	protected override IEnumerable Aggro()
 	{
-		if(Random() < 50)
+		if (Random() < 50)
 			Do(PrepareSkill(SkillId.Defense));
 		else
 			Do(Attack());
-			
-		if(Random() < 50)
+
+		if (Random() < 50)
 			Do(Circle(400, 1000, 5000));
 		else
 			Do(Wait(3000));
-		
+
 		Do(CancelSkill());
 	}
-	
+
 	private IEnumerable OnDefenseHit()
 	{
 		Do(Attack());

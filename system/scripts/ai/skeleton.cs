@@ -9,6 +9,9 @@ public class SkeletonAi : AiScript
 {
 	public SkeletonAi()
 	{
+		SetVisualField(950, 120);
+		SetAggroRadius(400);
+
 		Hates("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);

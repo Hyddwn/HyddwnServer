@@ -4,7 +4,7 @@
 // AI for Coyote type monster.
 //--- History ---------------------------------------------------------------
 // 1.0 Added general AI behaviors
-// Missing: aggro over time, visual angle, wolf support, fear
+// Missing: wolf support, fear
 //---------------------------------------------------------------------------
 
 [AiScript("coyote")]
@@ -12,14 +12,16 @@ public class CoyoteAi : AiScript
 {
 	public CoyoteAi()
 	{
-		SetAggroRadius(650); // audio 500 visual Angle 120°
+		SetVisualField(650, 120);
+		SetAggroRadius(500);
+
 		Doubts("/pc/", "/pet/");
 		Doubts("/cow/");
 		Hates("/sheep/");
 		Hates("/dog/");
 		//Fears("/junglewolf/")
+		HatesNearby(10000);
 		HatesBattleStance(3000);
-		// Aggro over time 10000
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);

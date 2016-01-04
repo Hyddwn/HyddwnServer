@@ -9,6 +9,9 @@ public class RaccoonAi : AiScript
 {
 	public RaccoonAi()
 	{
+		SetVisualField(700, 90);
+		SetAggroRadius(400);
+
 		Doubts("/pc/", "/pet/");
 		Hates("/chicken/");
 

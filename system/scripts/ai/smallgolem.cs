@@ -9,7 +9,9 @@ public class SmallGolemAi : AiScript
 {
 	public SmallGolemAi()
 	{
-		SetAggroRadius(1500); // angle 90 audio 1200
+		SetVisualField(1500, 90);
+		SetAggroRadius(1200);
+
 		Hates("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);

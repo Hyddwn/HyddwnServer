@@ -4,7 +4,6 @@
 // AI for Succubi.
 //--- History ---------------------------------------------------------------
 // 1.0 Official Succubus AI
-// Missing: countered_change_item ("armor" value="15046 15047 15048 15049 15050")
 //---------------------------------------------------------------------------
 
 [AiScript("succubus")]
@@ -263,10 +262,12 @@ public class SuccubusAi : AiScript
 
 	public SuccubusAi()
 	{
-		SetAggroRadius(950); // Angle 120 Audio 400
+		SetVisualField(950, 120);
+		SetAggroRadius(400);
+		SetAggroLimit(AggroLimit.One);
+
 		Doubts("/pc/", "/pet/");
 		HatesBattleStance(8000);
-		SetAggroLimit(AggroLimit.One);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);

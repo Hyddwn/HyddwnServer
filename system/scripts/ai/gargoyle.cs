@@ -9,6 +9,9 @@ public class GargoyleAi : AiScript
 {
 	public GargoyleAi()
 	{
+		SetVisualField(1200, 120);
+		SetAggroRadius(800);
+
 		Hates("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.Hit, OnHit);

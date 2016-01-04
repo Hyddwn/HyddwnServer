@@ -9,8 +9,9 @@ public class DogAi : AiScript
 {
 	public DogAi()
 	{
-		SetAggroRadius(600);
-		
+		SetVisualField(600, 90);
+		SetAggroRadius(400);
+
 		Hates("/wolf/");
 	}
 
@@ -22,10 +23,10 @@ public class DogAi : AiScript
 		Do(Wait(2000, 30000));
 		Do(StopSkill(SkillId.Rest));
 	}
-	
+
 	protected override IEnumerable Aggro()
 	{
-		if(Random() < 50)
+		if (Random() < 50)
 			Do(Attack(3));
 		else
 			Do(Circle(400, 1000, 3000));

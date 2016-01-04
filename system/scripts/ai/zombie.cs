@@ -4,7 +4,6 @@
 // AI for Zombie type monster.
 //--- History ---------------------------------------------------------------
 // 1.0 Added general AI behaviors
-// Missing: aggro over time, visual angle
 //---------------------------------------------------------------------------
 
 [AiScript("zombie")]
@@ -28,7 +27,8 @@ public class ZombieAi : AiScript
 
 	public ZombieAi()
 	{
-		SetAggroRadius(1500); // audio 1200 visual Angle 90°
+		SetVisualField(1500, 90);
+		SetAggroRadius(1200);
 		Hates("/pc/", "/pet/");
 		Hates("/ahchemy_golem/");
 

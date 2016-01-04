@@ -9,11 +9,13 @@ public class GoldGoblinAi : AiScript
 {
 	public GoldGoblinAi()
 	{
-		SetAggroRadius(850); // angle 120 audio 200
+		SetVisualField(850, 120);
+		SetAggroRadius(200);
+		SetAggroLimit(AggroLimit.None);
+
 		Hates("/pc/", "/pet/");
 		//Fears("/hippopotamus/");
 		//HatesAttacking("goblinarcher");
-		SetAggroLimit(AggroLimit.None);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 	}

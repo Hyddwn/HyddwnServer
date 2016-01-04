@@ -3,8 +3,7 @@
 //--- Description -----------------------------------------------------------
 // AI for direwolf creatures.
 //--- Missing ---------------------------------------------------------------
-// Fear, HatesAttacking, Aggro over time, Visual Angle and Audio Aggro
-// Hates Battlestance delay
+// Fear, HatesAttacking
 //---------------------------------------------------------------------------
 
 [AiScript("direwolf")]
@@ -12,14 +11,17 @@ public class DirewolfAi : AiScript
 {
 	public DirewolfAi()
 	{
+		SetVisualField(650, 120);
+		SetAggroRadius(400);
+		SetAggroLimit(AggroLimit.One);
+
 		Doubts("/pc/", "/pet/", "/cow/");
 		Hates("/dog/", "/sheep/");
 		//Fear ("/bear/");
-		//HatesAttacking("/direwolfkid/"); duration="500"
+		//HatesAttacking("/direwolfkid/", 500);
 		HatesBattleStance(3000);
 		HatesNearby(6000);
-		SetAggroRadius(650); // 400 range audio missing
-		SetAggroLimit(AggroLimit.One);
+
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
 	}

@@ -4,7 +4,7 @@
 // AI for wisps.
 //--- History ---------------------------------------------------------------
 // 1.0 Official AI behavior
-// Missing: Stacking charges, Aggro over time, Audio Range and Visual Angle
+// Missing: Stacking charges
 //---------------------------------------------------------------------------
 
 [AiScript("wisp")]
@@ -19,7 +19,8 @@ public class WispAi : AiScript
 
 	public WispAi()
 	{
-		SetAggroRadius(950); // Angle 120 Audio 400
+		SetVisualField(950, 120);
+		SetAggroRadius(600);
 		SetAggroLimit(AggroLimit.None);
 
 		Doubts("/pc/", "/pet/");

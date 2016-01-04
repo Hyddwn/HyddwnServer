@@ -9,6 +9,7 @@ public class CowAi : AiScript
 {
 	public CowAi()
 	{
+		SetVisualField(2000, 90);
 		SetAggroRadius(2000);
 
 		//HatesAttacking("/cow/");

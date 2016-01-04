@@ -9,12 +9,14 @@ public class GoblinArcherAi : AiScript
 {
 	public GoblinArcherAi()
 	{
-		SetAggroRadius(1000); // angle 120 audio 500
+		SetVisualField(1000, 120);
+		SetAggroRadius(500);
+		SetAggroLimit(AggroLimit.Two);
+
 		Hates("/pc/", "/pet/");
 		Hates("/ahchemy_golem/");
 		//Fears("/waterbuffalo/");
 		//HatesAttacking("redgoblin"); // support one
-		SetAggroLimit(AggroLimit.Two);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);

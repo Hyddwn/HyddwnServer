@@ -9,6 +9,9 @@ public class IceSpriteAi : AiScript
 {
 	public IceSpriteAi()
 	{
+		SetVisualField(1200, 120);
+		SetAggroRadius(800);
+
 		Hates("/pc/", "/pet/");
 		//HatesAttacking("/elemental/");
 
