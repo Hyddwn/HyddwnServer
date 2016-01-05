@@ -1449,7 +1449,7 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 
 			// Small delay
-			foreach (var action in this.Wait(500))
+			foreach (var action in this.Wait(1000, 2000))
 				yield return action;
 
 			// Attack
