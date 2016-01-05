@@ -49,7 +49,7 @@ public class WispAi : AiScript
 		else if (Case(10))
 		{
 			Do(Say(LightningChat));
-			Do(PrepareSkill(SkillId.Lightningbolt)); // can charge more than once if the wait time allows it
+			Do(PrepareSkill(SkillId.Lightningbolt));
 		}
 
 		Do(Wait(2000, 5000));
@@ -74,7 +74,7 @@ public class WispAi : AiScript
 		}
 
 		Do(Say(LightningChat));
-		Do(PrepareSkill(SkillId.Lightningbolt));
+		Do(PrepareSkill(SkillId.Lightningbolt, Rnd(1, 2)));
 		Do(Wait(2000, 10000));
 	}
 
@@ -93,7 +93,7 @@ public class WispAi : AiScript
 			if (Case(60))
 			{
 				Do(Say(LightningChat));
-				Do(PrepareSkill(SkillId.Lightningbolt));
+				Do(StackAttack(SkillId.Lightningbolt));
 			}
 			else if (Case(20))
 			{
@@ -106,7 +106,7 @@ public class WispAi : AiScript
 		else if (Case(20))
 		{
 			Do(Say(LightningChat));
-			Do(PrepareSkill(SkillId.Lightningbolt, Rnd(1, 1, 1, 1, 1, 2, 3, 4, 5)));
+			Do(StackAttack(SkillId.Lightningbolt, Rnd(1, 1, 1, 1, 1, 2, 3, 4, 5)));
 
 			if (Random() < 80)
 			{
@@ -187,7 +187,7 @@ public class WispAi : AiScript
 		if (Random() < 40)
 		{
 			Do(Say(LightningChat));
-			Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
+			Do(StackAttack(SkillId.Lightningbolt));
 			Do(Wait(1000, 2000));
 		}
 	}
@@ -232,7 +232,7 @@ public class WispAi : AiScript
 			if (Random() < 40)
 			{
 				Do(Say(LightningChat));
-				Do(PrepareSkill(SkillId.Lightningbolt));
+				Do(StackAttack(SkillId.Lightningbolt));
 				Do(Wait(1000, 2000));
 			}
 		}
