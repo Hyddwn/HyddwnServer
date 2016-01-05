@@ -2,10 +2,6 @@
 // Imp AIs
 //--- Description -----------------------------------------------------------
 // AIs for Imps and Giant Imps.
-//--- Missing ---------------------------------------------------------------
-// Magic Charges and Magic Attack
-// Do(Wait(1000, 2000)); Do(Attack(1, 4000)); are not official.
-// Without the wait the AI would be WAY to fast.
 //---------------------------------------------------------------------------
 
 [AiScript("imp")]
@@ -151,7 +147,7 @@ public class ImpAi : AiScript
 		}
 		else if (Case(10))
 		{
-			Do(PrepareSkill(SkillId.Lightningbolt)); // Just prepare - NO ATTACK
+			Do(PrepareSkill(SkillId.Lightningbolt));
 		}
 		Do(Wait(2000, 5000));
 	}
@@ -174,22 +170,13 @@ public class ImpAi : AiScript
 			Do(Circle(600, 1000, 2000));
 		}
 
-		if (Random() < 50)
-		{
-			Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge NO attack
-		}
-		else
-		{
-			Do(PrepareSkill(SkillId.Lightningbolt)); // 2 charges NO attack
-		}
+		Do(PrepareSkill(SkillId.Lightningbolt, Rnd(1, 2)));
 		Do(Wait(2000, 10000));
 	}
 
 	protected override IEnumerable Aggro()
 	{
-		Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge and then attacks
-		Do(Wait(1000, 2000));
-		Do(Attack(1, 4000));
+		Do(StackAttack(SkillId.Lightningbolt));
 		Do(CancelSkill());
 
 		SwitchRandom();
@@ -206,9 +193,7 @@ public class ImpAi : AiScript
 			if (Case(60))
 			{
 				Do(Say(ImpChargeLB1));
-				Do(PrepareSkill(SkillId.Lightningbolt));
-				Do(Wait(1000, 2000));
-				Do(Attack(1, 4000));
+				Do(StackAttack(SkillId.Lightningbolt));
 			}
 			else if (Case(20))
 			{
@@ -222,10 +207,7 @@ public class ImpAi : AiScript
 		else if (Case(20))
 		{
 			Do(Say(ImpChargeLB2));
-
-			Do(PrepareSkill(SkillId.Lightningbolt, Rnd(1, 1, 1, 1, 1, 2, 3, 4, 5)));
-			Do(Wait(1000));
-			Do(Attack(1, 4000));
+			Do(StackAttack(SkillId.Lightningbolt, Rnd(1, 1, 1, 1, 1, 2, 3, 4, 5)));
 
 			if (Random() < 80)
 			{
@@ -309,9 +291,7 @@ public class ImpAi : AiScript
 		if (Random() < 40)
 		{
 			Do(Say(ImpChargeLB1));
-			Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
-			Do(Wait(1000, 2000));
-			Do(Attack(1, 4000));
+			Do(StackAttack(SkillId.Lightningbolt));
 			Do(Wait(1000, 2000));
 		}
 	}
@@ -360,9 +340,7 @@ public class ImpAi : AiScript
 			if (Random() < 40)
 			{
 				Do(Say(ImpChargeLB1));
-				Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
-				Do(Wait(1000, 2000));
-				Do(Attack(1, 4000));
+				Do(StackAttack(SkillId.Lightningbolt));
 				Do(Wait(1000, 2000));
 			}
 		}
