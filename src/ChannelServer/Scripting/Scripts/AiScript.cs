@@ -43,6 +43,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected bool _active;
 		protected DateTime _minRunTime;
 		private bool _inside = false;
+		private int _stuckTestCount = 0;
 
 		protected Random _rnd;
 		protected AiState _state;
@@ -193,10 +194,16 @@ namespace Aura.Channel.Scripting.Scripts
 			if (this.Creature == null || this.Creature.Region == Region.Limbo)
 				return;
 
+			// Skip tick if the previous one is still on.
 			if (_inside)
-				Log.Debug("AI crash in '{0}'.", this.GetType().Name);
+			{
+				if (++_stuckTestCount == 10)
+					Log.Warning("AiScript.Heartbeat: {0} stuck?", this.GetType().Name);
+				return;
+			}
 
 			_inside = true;
+			_stuckTestCount = 0;
 			try
 			{
 				var now = this.UpdateTimestamp();
