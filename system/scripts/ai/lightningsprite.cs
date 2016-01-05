@@ -65,8 +65,7 @@ public class LightningSpriteAi : AiScript
 			if (Case(60))
 			{
 				Do(Say("!!!"));
-				Do(PrepareSkill(SkillId.Lightningbolt));
-
+				Do(StackAttack(SkillId.Lightningbolt));
 			}
 			else if (Case(20))
 			{
@@ -101,16 +100,15 @@ public class LightningSpriteAi : AiScript
 		else if (Case(70))
 		{
 			Do(Say("!!!"));
-			Do(PrepareSkill(SkillId.Lightningbolt));
+			Do(StackAttack(SkillId.Lightningbolt));
+
 			Do(Say("!"));
-			Do(Attack(1, 4000));
-			Do(Attack(2, 4000));
+			Do(Attack(3, 4000));
 
 			if (Random() < 40)
 			{
-				Do(PrepareSkill(SkillId.Lightningbolt, Rnd(2, 3)));
-				Do(Attack(1, 4000));
-				Do(Attack(2, 4000));
+				Do(StackAttack(SkillId.Lightningbolt, Rnd(2, 3)));
+				Do(Attack(3, 4000));
 			}
 		}
 	}
@@ -151,7 +149,7 @@ public class LightningSpriteAi : AiScript
 		if (Random() < 40)
 		{
 			Do(Say("!"));
-			Do(PrepareSkill(SkillId.Lightningbolt));
+			Do(StackAttack(SkillId.Lightningbolt));
 			Do(Wait(1000, 2000));
 			Do(KeepDistance(1000, false, 2000));
 		}

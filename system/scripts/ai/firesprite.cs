@@ -62,11 +62,10 @@ public class FireSpriteAi : AiScript
 			Do(Attack(3, 4000));
 
 			SwitchRandom();
-			if (Case(30))
+			if (Case(60))
 			{
 				Do(Say("!!!"));
-				Do(PrepareSkill(SkillId.Firebolt));
-
+				Do(StackAttack(SkillId.Firebolt));
 			}
 			else if (Case(20))
 			{
@@ -101,16 +100,15 @@ public class FireSpriteAi : AiScript
 		else if (Case(70))
 		{
 			Do(Say("!!!"));
-			Do(PrepareSkill(SkillId.Firebolt));
+			Do(StackAttack(SkillId.Firebolt));
+
 			Do(Say("!"));
-			Do(Attack(1, 4000));
-			Do(Attack(2, 4000));
+			Do(Attack(3, 4000));
 
 			if (Random() < 40)
 			{
-				Do(PrepareSkill(SkillId.Firebolt, Rnd(2, 3)));
-				Do(Attack(1, 4000));
-				Do(Attack(2, 4000));
+				Do(StackAttack(SkillId.Firebolt, Rnd(2, 3)));
+				Do(Attack(3, 4000));
 			}
 		}
 	}
@@ -139,7 +137,13 @@ public class FireSpriteAi : AiScript
 		{
 			Do(Say("!"));
 			Do(Attack(3, 8000));
-			Do(Say("!!!"));
+
+			if (Random() < 40)
+			{
+				Do(Say("!!!"));
+				Do(StackAttack(SkillId.Firebolt));
+				Do(Wait(1000, 2000));
+			}
 		}
 	}
 
@@ -151,7 +155,7 @@ public class FireSpriteAi : AiScript
 		if (Random() < 40)
 		{
 			Do(Say("!"));
-			Do(PrepareSkill(SkillId.Firebolt));
+			Do(StackAttack(SkillId.Firebolt));
 			Do(Wait(1000, 2000));
 			Do(KeepDistance(1000, false, 2000));
 		}

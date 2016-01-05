@@ -59,7 +59,7 @@ public class IceSpriteAi : AiScript
 			if (Case(60))
 			{
 				Do(Say("!!!"));
-				Do(PrepareSkill(SkillId.Icebolt));
+				Do(StackAttack(SkillId.Icebolt));
 
 			}
 			else if (Case(20))
@@ -92,26 +92,22 @@ public class IceSpriteAi : AiScript
 		}
 		else if (Case(70))
 		{
-			Do(PrepareSkill(SkillId.Icebolt, Rnd(1, 1, 1, 1, 1, 2, 3, 4, 5)));
-			Do(Attack(1, 4000));
-			Do(Attack(1, 4000));
-			Do(Attack(1, 4000));
+			Do(StackAttack(SkillId.Icebolt, Rnd(1, 1, 1, 1, 1, 2, 3, 4, 5)));
+			Do(Attack(3, 4000));
 
 			if (Random() < 50)
 			{
-				Do(PrepareSkill(SkillId.Icebolt));
-				Do(Attack(1, 4000));
-				Do(Attack(1, 4000));
-				Do(Attack(1, 4000));
+				Do(StackAttack(SkillId.Icebolt));
+				Do(Attack(3, 4000));
 
 				if (Random() < 40)
 				{
-					Do(PrepareSkill(SkillId.Icebolt));
-					Do(Attack(1, 4000));
-					Do(Attack(1, 4000));
-					Do(Attack(1, 4000));
+					Do(StackAttack(SkillId.Icebolt));
+					Do(Attack(3, 4000));
 				}
 			}
+
+			Do(Wait(500, 2000));
 		}
 	}
 
@@ -139,7 +135,7 @@ public class IceSpriteAi : AiScript
 			Do(Attack(3, 8000));
 			if (Random() < 40)
 			{
-				Do(PrepareSkill(SkillId.Icebolt));
+				Do(StackAttack(SkillId.Icebolt));
 				Do(Wait(1000, 2000));
 			}
 		}
@@ -152,7 +148,7 @@ public class IceSpriteAi : AiScript
 		if (Random() < 40)
 		{
 			Do(Say("!"));
-			Do(PrepareSkill(SkillId.Icebolt));
+			Do(StackAttack(SkillId.Icebolt));
 			Do(Wait(1000, 2000));
 			Do(KeepDistance(1000, false, 2000));
 		}
