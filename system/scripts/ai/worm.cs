@@ -22,8 +22,9 @@ public class WormAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		if (Random() < 25) // 25%
+		if (Random() < 25)
 			Do(PrepareSkill(SkillId.Defense));
+
 		Do(Circle(500, 1000, 3000));
 		Do(Wait(2000, 4000));
 		Do(CancelSkill());
@@ -31,32 +32,28 @@ public class WormAi : AiScript
 
 	protected override IEnumerable Aggro()
 	{
-		if (Random() < 75) // 75%
+		if (Random() < 75)
 		{
-			var rndAggro = Random();
-			if (rndAggro < 40) // 40%
-			{
+			if (Random() < 40)
 				Do(Attack(2, 10000));
-			}
-			else // 60%
-			{
+			else
 				Do(Attack(3, 10000));
-			}
 		}
 		else
 		{
 			Do(PrepareSkill(SkillId.Defense));
 		}
-		var rndnum = Random();
-		if (rndnum < 40) // 40%
+
+		SwitchRandom();
+		if (Case(40))
 		{
 			Do(KeepDistance(400, true, 3000));
 		}
-		else if (rndnum < 70) // 30%
+		else if (Case(30))
 		{
 			Do(KeepDistance(700, false, 3000));
 		}
-		else // 30%
+		else if (Case(30))
 		{
 			Do(Wait(3000));
 		}
@@ -71,16 +68,16 @@ public class WormAi : AiScript
 
 	private IEnumerable OnHit()
 	{
-		var rndOH = Random();
-		if (rndOH < 15) // 15%
+		SwitchRandom();
+		if (Case(15))
 		{
 			Do(KeepDistance(1000, false, 2000));
 		}
-		else if (rndOH < 30) // 15%
+		else if (Case(15))
 		{
 			Do(Timeout(2000, Wander(100, 500, false)));
 		}
-		else // 70%
+		else if (Case(70))
 		{
 			Do(Attack(3, 4000));
 		}

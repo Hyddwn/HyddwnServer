@@ -30,26 +30,27 @@ public class GoblinAi : AiScript
 	{
 		Do(KeepDistance(400, false, 2000));
 		Do(Circle(300, 700, 1000, false));
-		var rndAggro = Random();
-		if (rndAggro < 60) // 60%
+
+		SwitchRandom();
+		if (Case(60))
 		{
 			Do(SwitchTo(WeaponSet.First));
 			Do(Attack(2, 5000));
 			Do(Wait(500));
 		}
-		else if (rndAggro < 75) // 15%
+		else if (Case(15))
 		{
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Follow(200, true, 5000));
 			Do(Attack(1, 5000));
 		}
-		else if (rndAggro < 90) // 15%
+		else if (Case(15))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Follow(200, true, 5000));
 			Do(CancelSkill());
 		}
-		else // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Counterattack));
 			Do(Wait(2000, 4000));

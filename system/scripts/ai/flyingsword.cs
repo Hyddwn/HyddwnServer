@@ -25,20 +25,20 @@ public class FlyingSwordAi : AiScript
 
 	protected override IEnumerable Idle()
 	{
-		var num = Random();
-		if (num < 10) // 10%
+		SwitchRandom();
+		if (Case(10))
 		{
 			Do(Wander(250, 500));
 		}
-		else if (num < 40) // 30%
+		else if (Case(30))
 		{
 			Do(Wander(250, 500, false));
 		}
-		else if (num < 60) // 20%
+		else if (Case(20))
 		{
 			Do(Wait(4000, 6000));
 		}
-		else if (num < 70) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Lightningbolt));
 		}
@@ -50,12 +50,12 @@ public class FlyingSwordAi : AiScript
 	{
 		Do(CancelSkill());
 
-		var num = Random();
-		if (num < 20) // 20%
+		SwitchRandom();
+		if (Case(20))
 		{
 			Do(Wait(1000, 2000));
 		}
-		else if (num < 50) // 30%
+		else if (Case(30))
 		{
 			Do(Wait(1000, 4000));
 
@@ -78,8 +78,8 @@ public class FlyingSwordAi : AiScript
 		Do(StackAttack(SkillId.Lightningbolt, 1));
 		Do(CancelSkill());
 
-		var num = Random();
-		if (num < 10) // 10%
+		SwitchRandom();
+		if (Case(10))
 		{
 			if (Random() < 50)
 				Do(Wander(200, 200, false));
@@ -97,7 +97,7 @@ public class FlyingSwordAi : AiScript
 
 			Do(Wait(500, 2000));
 		}
-		else if (num < 30) // 20%
+		else if (Case(20))
 		{
 			Do(StackAttack(SkillId.Lightningbolt, Rnd(1, 1, 1, 1, 1, 2, 3, 4, 5)));
 			if (Random() < 50)
@@ -105,21 +105,21 @@ public class FlyingSwordAi : AiScript
 
 			Do(Wait(500, 2000));
 		}
-		else if (num < 50) // 20%
+		else if (Case(20))
 		{
-			num = Random();
-			if (num < 40) // 40%
+			SwitchRandom();
+			if (Case(40))
 			{
 				Do(PrepareSkill(SkillId.Smash));
 				Do(Attack(1, 4000));
 			}
-			else if (num < 70) // 30%
+			else if (Case(30))
 			{
 				Do(PrepareSkill(SkillId.Smash));
 				Do(CancelSkill());
 				Do(Attack(3, 4000));
 			}
-			else // 30%
+			else if (Case(30))
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Wait(1000, 2000));
@@ -127,39 +127,38 @@ public class FlyingSwordAi : AiScript
 
 			Do(Wait(1000, 2000));
 		}
-		else if (num < 60) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 
-			num = Random();
-			if (num < 60) // 60%
+			if (Random() < 60)
 			{
 				Do(Circle(400, 2000, 2000));
 			}
-			else // 40%
+			else
 			{
 				Do(Follow(400, true, 5000));
 			}
 
 			Do(CancelSkill());
 		}
-		else if (num < 70) // 10%
+		else if (Case(10))
 		{
-			num = Random();
-			if (num < 60) // 60%
+			SwitchRandom();
+			if (Case(60))
 			{
 				Do(Circle(400, 2000, 2000));
 			}
-			else if (num < 80) // 20%
+			else if (Case(20))
 			{
 				Do(Follow(400, true, 5000));
 			}
-			else // 20%
+			else if (Case(20))
 			{
 				Do(KeepDistance(1000, false, 5000));
 			}
 		}
-		else if (num < 80) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Counterattack));
 			Do(Wait(1000, 10000));
@@ -169,12 +168,12 @@ public class FlyingSwordAi : AiScript
 
 	private IEnumerable OnHit()
 	{
-		var num = Random();
-		if (num < 50) // 50%
+		SwitchRandom();
+		if (Case(50))
 		{
 			Do(Attack(3, 4000));
 		}
-		else if (num < 70) // 20%
+		else if (Case(20))
 		{
 			Do(KeepDistance(1000, false, 2000));
 		}
@@ -199,29 +198,28 @@ public class FlyingSwordAi : AiScript
 
 	private IEnumerable OnKnockDown()
 	{
-		var num = Random();
-		if (num < 50) // 50%
+		SwitchRandom();
+		if (Case(50))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 
-			num = Random();
-			if (num < 60) // 60%
+			if (Random() < 60)
 			{
 				Do(Circle(400, 2000, 2000));
 			}
-			else // 40%
+			else
 			{
 				Do(Follow(400, true, 5000));
 			}
 
 			Do(CancelSkill());
 		}
-		else if (num < 75) // 25%
+		else if (Case(25))
 		{
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Attack(1, 4000));
 		}
-		else // 25%
+		else if (Case(25))
 		{
 			Do(Attack(3, 4000));
 			Do(StackAttack(SkillId.Lightningbolt));

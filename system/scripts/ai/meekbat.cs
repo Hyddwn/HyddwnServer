@@ -39,16 +39,16 @@ public class MeekBatAi : AiScript
 
 	private IEnumerable OnHit()
 	{
-		var rndOH = Random();
-		if (rndOH < 15)
+		SwitchRandom();
+		if (Case(15))
 		{
 			Do(KeepDistance(1000, false, 2000));
 		}
-		else if (rndOH < 30)
+		else if (Case(15))
 		{
 			Do(Timeout(2000, Wander(100, 500, false)));
 		}
-		else
+		else if (Case(70))
 		{
 			Do(Attack(3, 4000));
 		}

@@ -30,13 +30,13 @@ public class LightningSpriteAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		var num = Random();
-		if (num < 20) // 20%
+		SwitchRandom();
+		if (Case(20))
 		{
 			Do(Say("?"));
 			Do(Wait(1000, 2000));
 		}
-		else if (num < 50) // 30%
+		else if (Case(50))
 		{
 			Do(Say("?"));
 			Do(Wait(1000, 4000));
@@ -46,14 +46,14 @@ public class LightningSpriteAi : AiScript
 		}
 
 		Do(Say("!!!"));
-		Do(PrepareSkill(SkillId.Lightningbolt)); // TODO: Stacks 1|2
+		Do(PrepareSkill(SkillId.Lightningbolt, Rnd(1, 2)));
 		Do(Wait(2000, 10000));
 	}
 
 	protected override IEnumerable Aggro()
 	{
-		var num = Random();
-		if (num < 10) // 10%
+		SwitchRandom();
+		if (Case(10))
 		{
 			if (Random() < 50)
 				Do(Wander(100, 200, false));
@@ -61,14 +61,14 @@ public class LightningSpriteAi : AiScript
 			Do(Say("!"));
 			Do(Attack(3, 4000));
 
-			num = Random();
-			if (num < 60) // 60%
+			SwitchRandom();
+			if (Case(60))
 			{
 				Do(Say("!!!"));
 				Do(PrepareSkill(SkillId.Lightningbolt));
 
 			}
-			else if (num < 80) // 20%
+			else if (Case(20))
 			{
 				Do(Say("!!"));
 				Do(PrepareSkill(SkillId.Defense));
@@ -76,7 +76,7 @@ public class LightningSpriteAi : AiScript
 			}
 			Do(Wait(500, 2000));
 		}
-		else if (num < 20) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Say("!!"));
@@ -88,17 +88,17 @@ public class LightningSpriteAi : AiScript
 
 			Do(CancelSkill());
 		}
-		else if (num < 30) // 10%
+		else if (Case(10))
 		{
-			num = Random();
-			if (num < 60) // 60%
+			SwitchRandom();
+			if (Case(60))
 				Do(Circle(400, 2000, 2000, false));
-			else if (num < 80) // 20%
+			else if (Case(20))
 				Do(Follow(400, false, 5000));
-			else // 20%
+			else if (Case(20))
 				Do(KeepDistance(1000, false, 5000));
 		}
-		else // 70%
+		else if (Case(70))
 		{
 			Do(Say("!!!"));
 			Do(PrepareSkill(SkillId.Lightningbolt));
@@ -108,10 +108,7 @@ public class LightningSpriteAi : AiScript
 
 			if (Random() < 40)
 			{
-				if (Random() < 50)
-					Do(PrepareSkill(SkillId.Lightningbolt)); // 2 stacks
-				else
-					Do(PrepareSkill(SkillId.Lightningbolt)); // 3 stacks
+				Do(PrepareSkill(SkillId.Lightningbolt, Rnd(2, 3)));
 				Do(Attack(1, 4000));
 				Do(Attack(2, 4000));
 			}

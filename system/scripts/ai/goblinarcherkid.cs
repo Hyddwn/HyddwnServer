@@ -31,15 +31,12 @@ public class YoungGoblinArcherAi : AiScript
 		Do(SwitchTo(WeaponSet.First));
 		Do(KeepDistance(800, false, 2000));
 		Do(Circle(800, 1000, 1000, false));
-		var rndAggro = Random();
-		if (rndAggro < 30)
+
+		if (Random() < 60)
 		{
 			Do(RangedAttack());
-		}
-		else if (rndAggro < 60)
-		{
-			Do(RangedAttack());
-			Do(RangedAttack());
+			if (Random() < 50)
+				Do(RangedAttack());
 		}
 		else
 		{

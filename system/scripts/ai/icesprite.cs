@@ -30,46 +30,46 @@ public class IceSpriteAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		var num = Random();
-		if (num < 20) // 20%
+		SwitchRandom();
+		if (Case(20))
 		{
 			Do(Wait(1000, 2000));
 		}
-		else if (num < 50) // 30%
+		else if (Case(30))
 		{
 			Do(Wait(1000, 4000));
 			Do(Circle(600, 2000, 2000));
 		}
 
-		Do(PrepareSkill(SkillId.Icebolt)); // TODO: Stacks 1|2
+		Do(PrepareSkill(SkillId.Icebolt, Rnd(1, 2)));
 		Do(Wait(2000, 10000));
 	}
 
 	protected override IEnumerable Aggro()
 	{
-		var num = Random();
-		if (num < 10) // 10%
+		SwitchRandom();
+		if (Case(10))
 		{
 			if (Random() < 50)
 				Do(Wander(100, 200, false));
 
 			Do(Attack(3, 4000));
 
-			num = Random();
-			if (num < 60) // 60%
+			SwitchRandom();
+			if (Case(60))
 			{
 				Do(Say("!!!"));
 				Do(PrepareSkill(SkillId.Icebolt));
 
 			}
-			else if (num < 80) // 20%
+			else if (Case(20))
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Follow(50, true, 1000));
 			}
 			Do(Wait(500, 2000));
 		}
-		else if (num < 20) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 
@@ -80,19 +80,19 @@ public class IceSpriteAi : AiScript
 
 			Do(CancelSkill());
 		}
-		else if (num < 30) // 10%
+		else if (Case(10))
 		{
-			num = Random();
-			if (num < 60) // 60%
+			SwitchRandom();
+			if (Case(60))
 				Do(Circle(400, 2000, 2000));
-			else if (num < 80) // 20%
+			else if (Case(20))
 				Do(Follow(400, false, 5000));
-			else // 20%
+			else if (Case(20))
 				Do(KeepDistance(1000, false, 5000));
 		}
-		else // 70%
+		else if (Case(70))
 		{
-			Do(PrepareSkill(SkillId.Icebolt)); // 1|1|1|1|1|2|3|4|5
+			Do(PrepareSkill(SkillId.Icebolt, Rnd(1, 1, 1, 1, 1, 2, 3, 4, 5)));
 			Do(Attack(1, 4000));
 			Do(Attack(1, 4000));
 			Do(Attack(1, 4000));

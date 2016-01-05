@@ -277,8 +277,8 @@ public class SuccubusAi : AiScript
 
 	protected override IEnumerable Idle()
 	{
-		var rndidle = Random();
-		if (rndidle < 10) // 10%
+		SwitchRandom();
+		if (Case(10))
 		{
 			Do(Say("La la"));
 			Do(Wait(2000, 4000));
@@ -314,19 +314,19 @@ public class SuccubusAi : AiScript
 			Do(Wait(4000, 6000));
 			Do(Say("La la... (*Laugh*)"));
 		}
-		else if (rndidle < 20) // 10%
+		else if (Case(10))
 		{
 			Do(Say("..."));
 		}
-		else if (rndidle < 50) // 30%
+		else if (Case(30))
 		{
 			Do(Wander(100, 500));
 		}
-		else if (rndidle < 70) // 20%
+		else if (Case(20))
 		{
 			Do(Wander(100, 500, false));
 		}
-		else if (rndidle < 80) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Firebolt)); // Just prepare - NO ATTACK
 		}
@@ -336,8 +336,9 @@ public class SuccubusAi : AiScript
 	protected override IEnumerable Alert()
 	{
 		Do(CancelSkill());
-		var rndalert = Random();
-		if (rndalert < 20) // 20%
+
+		SwitchRandom();
+		if (Case(20))
 		{
 			Do(Say(Alert1));
 			Do(Wait(2000, 4000));
@@ -356,13 +357,14 @@ public class SuccubusAi : AiScript
 			Do(Wait(3000, 5000));
 			Do(Say(Alert6));
 			Do(Wait(4000, 7000));
-			if (Random() < 70) // 70%
+
+			if (Random() < 70)
 			{
 				Do(KeepDistance(600, false, 2000));
 				Do(Wait(1000, 2000));
 				Do(Say(Alert7));
 			}
-			else // 30%
+			else
 			{
 				Do(Say("I'm about to blush."));
 				Do(Attack(3, 4000));
@@ -374,7 +376,7 @@ public class SuccubusAi : AiScript
 				Do(Say("I adore you."));
 			}
 		}
-		else if (rndalert < 40) // 20%
+		else if (Case(20))
 		{
 			Do(Say(Alert8));
 			if (Random() < 33)
@@ -394,8 +396,8 @@ public class SuccubusAi : AiScript
 			Do(Wait(3000, 4000));
 			Do(Say(Alert2));
 			Do(Wait(4000, 5000));
-			var rndnum = Random();
-			if (rndnum < 30) // 30%
+
+			if (Random() < 30)
 			{
 				Do(PrepareSkill(SkillId.Firebolt)); // Actually does only attack with previous charges, charges only if no charges
 				Do(Wait(1000, 2000));
@@ -409,7 +411,7 @@ public class SuccubusAi : AiScript
 				Do(Say(Alert10));
 			}
 		}
-		else if (rndalert < 70) // 30%
+		else if (Case(30))
 		{
 			Do(Say(Alert11));
 			Do(Wait(1000, 4000));
@@ -430,24 +432,27 @@ public class SuccubusAi : AiScript
 	protected override IEnumerable Aggro()
 	{
 		Do(CancelSkill());
-		var rndagr = Random();
-		if (rndagr < 10) // 10%
+
+		SwitchRandom();
+		if (Case(10))
 		{
-			if (Random() < 50) // 50%
-			{
+			if (Random() < 50)
 				Do(Wander(100, 200, false));
-			}
+
 			Do(Say(AggroAttack));
 			Do(Attack(3, 4000));
 			Do(Wait(1000, 2000));
-			var rndagr2 = Random();
-			if (rndagr2 < 60) // 60%
+
+			SwitchRandom();
+			if (Case(60))
 			{
 				Do(Say(AggroLB1));
 				Do(PrepareSkill(SkillId.Lightningbolt));
 				Do(Wait(1000, 2000));
 				Do(Attack(1, 4000));
-				if (Random() < 40) // 40%
+
+				SwitchRandom();
+				if (Case(40))
 				{
 					Do(Say(AggroLB2));
 					Do(PrepareSkill(SkillId.Lightningbolt));
@@ -455,7 +460,7 @@ public class SuccubusAi : AiScript
 					Do(Attack(1, 4000));
 					Do(Wait(1000, 2000));
 				}
-				else if (Random() < 80) // 40%
+				else if (Case(40))
 				{
 					Do(Say(AggroAttack));
 					Do(Attack(3, 4000));
@@ -463,7 +468,7 @@ public class SuccubusAi : AiScript
 					Do(Wait(1000, 2000));
 				}
 			}
-			else if (rndagr2 < 80) // 20%
+			else if (Case(20))
 			{
 				Do(Say(Defense));
 				Do(PrepareSkill(SkillId.Defense));
@@ -471,14 +476,16 @@ public class SuccubusAi : AiScript
 			}
 			Do(Wait(500, 2000));
 		}
-		else if (rndagr < 30) // 20%
+		else if (Case(20))
 		{
 			Do(Say(AggroLB1));
 			Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
 			Do(Wait(1000, 2000));
 			Do(Attack(1, 4000));
 			Do(Wait(500));
-			if (Random() < 10) // 10%
+
+			SwitchRandom();
+			if (Case(10))
 			{
 				Do(Say(AggroLB2));
 				Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
@@ -486,7 +493,7 @@ public class SuccubusAi : AiScript
 				Do(Attack(1, 4000));
 				Do(Wait(1000, 2000));
 			}
-			else if (Random() < 20) // 10%
+			else if (Case(10))
 			{
 				Do(Say(AggroFB2));
 				Do(PrepareSkill(SkillId.Firebolt)); // 1 charge
@@ -494,7 +501,7 @@ public class SuccubusAi : AiScript
 				Do(Attack(1, 4000));
 				Do(Wait(1000, 2000));
 			}
-			else // 80%
+			else if (Case(80))
 			{
 				Do(Say(AggroAttack));
 				Do(Attack(3, 4000));
@@ -502,17 +509,17 @@ public class SuccubusAi : AiScript
 			}
 			Do(Wait(500, 2000));
 		}
-		else if (rndagr < 50) // 20%
+		else if (Case(20))
 		{
-			var rndagr3 = Random();
-			if (rndagr3 < 40) // 40%
+			SwitchRandom();
+			if (Case(40))
 			{
 				Do(PrepareSkill(SkillId.Smash));
 				Do(Say(Smash));
 				Do(Attack(1, 4000));
 				Do(Say(AfterSmash));
 			}
-			else if (rndagr3 < 70) // 30%
+			else if (Case(30))
 			{
 				Do(PrepareSkill(SkillId.Smash));
 				Do(Say(Smash));
@@ -520,7 +527,7 @@ public class SuccubusAi : AiScript
 				Do(Attack(3, 4000));
 				Do(Say(FakeSmash));
 			}
-			else // 30 %
+			else if (Case(30))
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Say(Defense));
@@ -529,12 +536,12 @@ public class SuccubusAi : AiScript
 			}
 			Do(Wait(1000, 2000));
 		}
-		else if (rndagr < 60) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Say(Defense));
-			var rndagr4 = Random();
-			if (rndagr4 < 60)
+
+			if (Random() < 60)
 			{
 				Do(Circle(400, 1000, 2000));
 			}
@@ -544,29 +551,29 @@ public class SuccubusAi : AiScript
 			}
 			Do(CancelSkill());
 		}
-		else if (rndagr < 70) // 10%
+		else if (Case(10))
 		{
-			var rndagr5 = Random();
-			if (rndagr5 < 30)
+			SwitchRandom();
+			if (Case(30))
 			{
 				Do(Say("What about this side?"));
 				Do(Circle(400, 1000, 2000, true, false));
 			}
-			else if (rndagr5 < 60)
+			else if (Case(30))
 			{
 				Do(Say("The right side seems to be open...", "Which hand do you use to attack?"));
 				Do(Circle(400, 1000, 2000, false, false));
 			}
-			else if (rndagr5 < 80)
+			else if (Case(20))
 			{
 				Do(Follow(400, false, 5000));
 			}
-			else
+			else if (Case(20))
 			{
 				Do(KeepDistance(1000, false, 5000));
 			}
 		}
-		else if (rndagr < 80) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Counterattack));
 			Do(Say(Counter));
@@ -574,16 +581,17 @@ public class SuccubusAi : AiScript
 			Do(CancelSkill());
 			Do(Say(AfterCounter));
 		}
-		else // 20%
+		else if (Case(20))
 		{
-			var rndagr6 = Random();
-			if (rndagr6 < 50) // 50%
+			SwitchRandom();
+			if (Case(50))
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Say(WalkDefense));
 				Do(KeepDistance(1000, false, 3000));
-				var rndnum = Random();
-				if (rndnum < 21) // 21%
+
+				SwitchRandom();
+				if (Case(20))
 				{
 					Do(CancelSkill());
 					Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
@@ -591,7 +599,9 @@ public class SuccubusAi : AiScript
 					Do(Attack(1, 4000));
 					Do(Wait(500));
 					Do(Say(AggroLB1));
-					if (Random() < 10) // 10%
+
+					SwitchRandom();
+					if (Case(10))
 					{
 						Do(Say(AggroLB2));
 						Do(PrepareSkill(SkillId.Lightningbolt));
@@ -599,7 +609,7 @@ public class SuccubusAi : AiScript
 						Do(Attack(1, 4000));
 						Do(Wait(1000, 2000));
 					}
-					else if (Random() < 20) // 10%
+					else if (Case(10))
 					{
 						Do(Say(AggroFB2));
 						Do(PrepareSkill(SkillId.Firebolt));
@@ -607,14 +617,14 @@ public class SuccubusAi : AiScript
 						Do(Attack(1, 4000));
 						Do(Wait(1000, 2000));
 					}
-					else // 80%
+					else if (Case(80))
 					{
 						Do(Say(AggroAttack));
 						Do(Attack(3, 4000));
 						Do(Say(AfterAttack));
 					}
 				}
-				else if (rndnum < 42) // 21%
+				else if (Case(20))
 				{
 					Do(CancelSkill());
 					Do(PrepareSkill(SkillId.Firebolt));
@@ -623,14 +633,16 @@ public class SuccubusAi : AiScript
 					Do(Say(AggroFB2));
 					Do(Wait(1000, 2000));
 				}
-				else if (rndnum < 63) // 21%
+				else if (Case(20))
 				{
 					Do(CancelSkill());
 					Do(PrepareSkill(SkillId.Icebolt));
 					Do(Wait(1000, 2000));
 					Do(Attack(1, 4000));
 					Do(Say(AggroIB1));
-					if (Random() < 10) // 10%
+
+					SwitchRandom();
+					if (Case(10))
 					{
 						Do(Say(AggroLB2));
 						Do(PrepareSkill(SkillId.Lightningbolt));
@@ -638,7 +650,7 @@ public class SuccubusAi : AiScript
 						Do(Attack(1, 4000));
 						Do(Wait(1000, 2000));
 					}
-					else if (Random() < 20) // 10%
+					else if (Case(10))
 					{
 						Do(Say(AggroFB2));
 						Do(PrepareSkill(SkillId.Firebolt));
@@ -646,7 +658,7 @@ public class SuccubusAi : AiScript
 						Do(Attack(1, 4000));
 						Do(Wait(1000, 2000));
 					}
-					else // 80%
+					else if (Case(80))
 					{
 						Do(Say(AggroAttack));
 						Do(Attack(3, 4000));
@@ -654,7 +666,7 @@ public class SuccubusAi : AiScript
 						Do(Wait(1000, 2000));
 					}
 				}
-				else // 37 %
+				else if (Case(40))
 				{
 					Do(Wait(3000, 4000));
 					Do(Say("..."));
@@ -662,15 +674,17 @@ public class SuccubusAi : AiScript
 					Do(CancelSkill());
 				}
 			}
-			else if (rndagr6 < 70) // 20%
+			else if (Case(20))
 			{
 				Do(Say(WalkDefense));
 				Do(KeepDistance(1400, false, 3000));
-				if (Random() < 21) // 21%
+
+				SwitchRandom();
+				if (Case(20))
 				{
 					Do(CancelSkill());
-					var rndcharge = Random();
-					if (rndcharge < 67) // 67%
+
+					if (Random() < 70)
 					{
 						Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
 						Do(Wait(1000, 2000));
@@ -686,7 +700,7 @@ public class SuccubusAi : AiScript
 					}
 					Do(Say("Flash!"));
 				}
-				else if (Random() < 42) // 21%
+				else if (Case(20))
 				{
 					Do(CancelSkill());
 					Do(PrepareSkill(SkillId.Firebolt));
@@ -695,7 +709,7 @@ public class SuccubusAi : AiScript
 					Do(Say(AggroFB2));
 					Do(Wait(1000, 2000));
 				}
-				else if (Random() < 63) // 21%
+				else if (Case(20))
 				{
 					Do(CancelSkill());
 					Do(PrepareSkill(SkillId.Icebolt));
@@ -703,7 +717,7 @@ public class SuccubusAi : AiScript
 					Do(Attack(1, 4000));
 					Do(Say(AggroIB1));
 				}
-				else
+				else if (Case(40))
 				{
 					Do(Wait(3000, 4000));
 					Do(Say("..."));
@@ -711,7 +725,7 @@ public class SuccubusAi : AiScript
 					Do(CancelSkill());
 				}
 			}
-			else
+			else if (Case(30))
 			{
 				Do(Say(Counter));
 				Do(PrepareSkill(SkillId.Counterattack));
@@ -726,12 +740,12 @@ public class SuccubusAi : AiScript
 	private IEnumerable OnDefenseHit()
 	{
 		Do(Say(OnDefHit));
-		var rndnum = Random();
-		if (rndnum < 40)
+
+		if (Random() < 40)
 		{
 			Do(Attack(3, 4000));
 			Do(Wait(500));
-			if (Random() < 70) // 70%
+			if (Random() < 70)
 			{
 				Do(Say(AggroLB1));
 				Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
@@ -755,13 +769,14 @@ public class SuccubusAi : AiScript
 
 	private IEnumerable OnHit()
 	{
-		var rndOH = Random();
 		Do(Say(OnHitSay));
-		if (rndOH < 20)
+
+		SwitchRandom();
+		if (Case(20))
 		{
 			Do(KeepDistance(10000, false, 2000));
 		}
-		else if (rndOH < 70)
+		else if (Case(50))
 		{
 			Do(Attack(3, 4000));
 			Do(Wait(500));

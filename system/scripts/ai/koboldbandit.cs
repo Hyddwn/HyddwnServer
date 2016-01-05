@@ -107,18 +107,19 @@ public class KoboldBanditAi : AiScript
 	{
 		if (Random() < 90)
 			Do(Say(koboldBanditIdle));
-		var rndIdle = Random();
-		if (rndIdle < 20)
+
+		SwitchRandom();
+		if (Case(20))
 		{
 			Do(Wander(100, 500));
 			Do(Wait(2000, 5000));
 		}
-		else if (rndIdle < 60)
+		else if (Case(40))
 		{
 			Do(Wander(300, 500, false));
 			Do(Wait(4000, 7000));
 		}
-		else
+		else if (Case(40))
 		{
 			Do(Wait(2000, 5000));
 		}
@@ -126,14 +127,14 @@ public class KoboldBanditAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		var rndAlert = Random();
-		if (rndAlert < 5)
+		SwitchRandom();
+		if (Case(5))
 		{
 			if (Random() < 90)
 				Do(Say(koboldBanditAttack));
 			Do(Attack(3, 4000));
 		}
-		else if (rndAlert < 45)
+		else if (Case(40))
 		{
 			if (Random() < 70)
 			{
@@ -152,14 +153,14 @@ public class KoboldBanditAi : AiScript
 				Do(CancelSkill());
 			}
 		}
-		else if (rndAlert < 90)
+		else if (Case(45))
 		{
 			if (Random() < 80)
 				Do(Say(koboldBanditAlert));
 			Do(Circle(500, 1000, 4000));
 
 		}
-		else
+		else if (Case(10))
 		{
 			if (Random() < 50)
 				Do(Say(koboldBanditAlert));
@@ -171,14 +172,15 @@ public class KoboldBanditAi : AiScript
 	{
 		Do(KeepDistance(400, true, 2000));
 		Do(Circle(300, 1000, 1000));
-		var rndAggro = Random();
-		if (rndAggro < 60)
+
+		SwitchRandom();
+		if (Case(60))
 		{
 			Do(Attack(3, 5000));
 			if (Random() < 90)
 				Do(Say(koboldBanditAttack));
 		}
-		else if (rndAggro < 75)
+		else if (Case(15))
 		{
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Follow(200, false, 5000));
@@ -186,14 +188,14 @@ public class KoboldBanditAi : AiScript
 			if (Random() < 90)
 				Do(Say(koboldBanditAttack));
 		}
-		else if (rndAggro < 90)
+		else if (Case(15))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(CancelSkill());
 			if (Random() < 90)
 				Do(Say(koboldBanditCounterDefense));
 		}
-		else
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Counterattack));
 			Do(Wait(2000, 4000));
@@ -225,8 +227,9 @@ public class KoboldBanditAi : AiScript
 	{
 		if (Random() < 90)
 			Do(Say(koboldBanditOnKnockDown));
-		var rndOKD = Random();
-		if (rndOKD < 20)
+
+		SwitchRandom();
+		if (Case(20))
 		{
 			if (Random() < 50)
 			{
@@ -241,25 +244,25 @@ public class KoboldBanditAi : AiScript
 				Do(CancelSkill());
 			}
 		}
-		else if (rndOKD < 30)
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Counterattack));
 			Do(Wait(2000, 4000));
 			Do(CancelSkill());
 		}
-		else if (rndOKD < 40)
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Attack(1, 5000));
 			Do(CancelSkill());
 		}
-		else if (rndOKD < 70)
+		else if (Case(30))
 		{
 			Do(Attack(3, 5000));
 			if (Random() < 90)
 				Do(Say(koboldBanditAttack));
 		}
-		else
+		else if (Case(30))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Wait(500));

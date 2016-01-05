@@ -26,7 +26,7 @@ public class BatAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		if (Random(100) < 25)
+		if (Random() < 25)
 			Do(PrepareSkill(SkillId.Defense));
 		Do(Circle(300, 1000, 3000));
 		Do(Wait(2000, 4000));
@@ -35,18 +35,17 @@ public class BatAi : AiScript
 
 	protected override IEnumerable Aggro()
 	{
-		if (Random(100) < 75)
+		if (Random() < 75)
 			Do(Attack());
 		else
 			Do(PrepareSkill(SkillId.Defense));
 
-		var num = Random(100);
-
-		if (num < 20) // 20%
+		SwitchRandom();
+		if (Case(20))
 			Do(Circle(600, 1000, 3000));
-		else if (num < 70) // 50%
-			Do(KeepDistance(400, Random(100) < 60, 2000));
-		else // 30%
+		else if (Case(50))
+			Do(KeepDistance(400, Random() < 60, 2000));
+		else if (Case(30))
 			Do(Wait(3000, 3000));
 
 		Do(CancelSkill());
@@ -60,19 +59,18 @@ public class BatAi : AiScript
 
 	private IEnumerable OnKnockDown()
 	{
-		var num = Random(100);
-
-		if (num < 30) // 30%
+		SwitchRandom();
+		if (Case(30))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Wait(4000, 8000));
 			Do(CancelSkill());
 		}
-		else if (num < 70) // 40%
+		else if (Case(40))
 		{
 			Do(Wait(7000, 8000));
 		}
-		else // 30%
+		else if (Case(30))
 		{
 			Do(Attack(1, 4000));
 		}

@@ -26,36 +26,35 @@ public class RatManAi : AiScript
 
 	protected override IEnumerable Aggro()
 	{
-		var num = Random(100);
-
-		if (num < 30) // 30%
+		SwitchRandom();
+		if (Case(30))
 		{
 			Do(KeepDistance(1000, false, 2000));
 			Do(Circle(600, 1000, 2000));
 		}
-		else if (num < 50) // 20%
+		else if (Case(20))
 		{
 			Do(CancelSkill());
 			Do(Attack(3));
 		}
-		else if (num < 70) // 20%
+		else if (Case(20))
 		{
 			Do(PrepareSkill(SkillId.Smash));
 			Do(CancelSkill());
 			Do(Attack(3));
 		}
-		else if (num < 90) // 20%
+		else if (Case(20))
 		{
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Attack(1, 4000));
 		}
-		else if (num < 95) // 5%
+		else if (Case(5))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Follow(600, true));
 			Do(CancelSkill());
 		}
-		else // 5%
+		else if (Case(5))
 		{
 			Do(PrepareSkill(SkillId.Counterattack));
 			//Do(Follow(600, true));

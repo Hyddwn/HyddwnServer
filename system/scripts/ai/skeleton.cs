@@ -29,24 +29,23 @@ public class SkeletonAi : AiScript
 		Do(KeepDistance(400, false, 2000));
 		Do(Circle(300, 1000, 1000));
 
-		var num = Random(100);
-
-		if (num < 40) // 40%
+		SwitchRandom();
+		if (Case(40))
 		{
 			Do(Attack(3));
 		}
-		else if (num < 60) // 20%
+		else if (Case(20))
 		{
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Attack(1, 4000));
 		}
-		else if (num < 80) // 20%
+		else if (Case(20))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Follow(600, true));
 			Do(CancelSkill());
 		}
-		else // 20%
+		else if (Case(20))
 		{
 			Do(PrepareSkill(SkillId.Counterattack));
 			Do(CancelSkill());

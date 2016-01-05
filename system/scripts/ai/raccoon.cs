@@ -32,12 +32,12 @@ public class RaccoonAi : AiScript
 			Do(PrepareSkill(SkillId.Defense));
 		Do(Wait(2000, 4000));
 
-		var num = Random();
-		if (num < 50) // 50%
+		SwitchRandom();
+		if (Case(50))
 			Do(Circle(400, 800, 800));
-		else if (num < 75) // 25%
+		else if (Case(25))
 			Do(KeepDistance(500, true, 800));
-		else // 25%
+		else if (Case(25))
 			Do(Follow(300, true, 800));
 
 		Do(Wait(2000, 4000));
@@ -51,14 +51,14 @@ public class RaccoonAi : AiScript
 		else
 			Do(Attack(Rnd(1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4000));
 
-		var num = Random();
-		if (num < 10) // 20%
+		SwitchRandom();
+		if (Case(20))
 			Do(Circle(400, 800, 800));
-		else if (num < 45) // 25%
+		else if (Case(25))
 			Do(KeepDistance(500, true, 800));
-		else if (num < 70) // 25%
+		else if (Case(25))
 			Do(Follow(100, true, 800));
-		else // 30%
+		else if (Case(30))
 			Do(Wait(2000, 3000));
 
 		Do(CancelSkill());
@@ -71,19 +71,19 @@ public class RaccoonAi : AiScript
 
 	private IEnumerable OnKnockDown()
 	{
-		var num = Random();
-		if (num < 10) // 20%
+		SwitchRandom();
+		if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Say("..."));
 			Do(Wait(4000, 8000));
 			Do(CancelSkill());
 		}
-		else if (num < 70) // 60%
+		else if (Case(60))
 		{
 			Do(Wait(7000, 8000));
 		}
-		else // 30%
+		else if (Case(30))
 		{
 			Do(Wait(1000));
 			Do(Attack(1, 4000));

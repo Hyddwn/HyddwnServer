@@ -24,7 +24,7 @@ public class SnakeAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		if (Random(100) < 25)
+		if (Random() < 25)
 			Do(PrepareSkill(SkillId.Defense));
 		Do(Circle(600, 1000, 3000));
 		Do(Wait(2000, 4000));
@@ -33,22 +33,21 @@ public class SnakeAi : AiScript
 
 	protected override IEnumerable Aggro()
 	{
-		if (Random(100) < 75)
+		if (Random() < 75)
 			Do(Attack());
 		else
 			Do(PrepareSkill(SkillId.Defense));
 
-		var num = Random(100);
-
-		if (num < 40) // 40%
+		SwitchRandom();
+		if (Case(40))
 		{
 			Do(KeepDistance(400, true, 3000));
 		}
-		else if (num < 70) // 30%
+		else if (Case(30))
 		{
 			Do(KeepDistance(700, false, 3000));
 		}
-		else // 30%
+		else if (Case(30))
 		{
 			Do(Wait(3000));
 		}

@@ -74,24 +74,24 @@ public class BannerImpAi : AiScript
 
 	protected override IEnumerable Idle()
 	{
-		var num = Random();
-		if (num < 30) // 30%
+		SwitchRandom();
+		if (Case(30))
 		{
 			Do(Say(ChatIdle));
 		}
-		else if (num < 40) // 10%
+		else if (Case(10))
 		{
 			Do(Wander(100, 500));
 		}
-		else if (num < 60) // 20%
+		else if (Case(20))
 		{
 			Do(Wander(100, 500, false));
 		}
-		else if (num < 80) // 20%
+		else if (Case(20))
 		{
 			Do(Wait(4000, 6000));
 		}
-		else if (num < 90) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Lightningbolt));
 		}
@@ -102,13 +102,13 @@ public class BannerImpAi : AiScript
 	{
 		Do(CancelSkill());
 
-		var num = Random();
-		if (num < 20) // 20%
+		SwitchRandom();
+		if (Case(20))
 		{
 			Do(Say(ChatAlert));
 			Do(Wait(1000, 2000));
 		}
-		else // 80%
+		else if (Case(80))
 		{
 			Do(Wait(1000, 4000));
 			Do(Say(ChatAlert));
@@ -137,13 +137,12 @@ public class BannerImpAi : AiScript
 		{
 			Do(PrepareSkill(SkillId.Defense));
 
-			var num = Random();
-			if (num < 60) // 60%
+			if (Random() < 60)
 			{
 				Do(Say(ChatOnKnockDown));
 				Do(Circle(500, 2000, 2000));
 			}
-			else // 40%
+			else
 			{
 				Do(KeepDistance(1000, true, 4000));
 			}
@@ -157,11 +156,11 @@ public class BannerImpAi : AiScript
 		Do(Say(ChatAlert));
 		Do(Attack(3, 4000));
 
-		if (Random() < 50) // 50%
+		if (Random() < 50)
 		{
 			Do(Circle(500, 2000, 2000, false));
 		}
-		else // 50%
+		else
 		{
 			Do(KeepDistance(1000, false, 4000));
 			Do(Wait(1000, 2000));

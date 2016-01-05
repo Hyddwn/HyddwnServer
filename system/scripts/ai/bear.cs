@@ -28,12 +28,12 @@ public class BearAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		var num = Random();
-		if (num < 45) // 45%
+		SwitchRandom();
+		if (Case(45))
 		{
 			Do(Circle(400, 2000, 4000));
 		}
-		else if (num < 85) // 40%
+		else if (Case(40))
 		{
 			if (Random() < 70)
 			{
@@ -48,7 +48,7 @@ public class BearAi : AiScript
 				Do(CancelSkill());
 			}
 		}
-		else // 15%
+		else if (Case(15))
 		{
 			Do(Circle(400, 500, 1000));
 		}
@@ -58,20 +58,20 @@ public class BearAi : AiScript
 	{
 		if (Random() < 50)
 		{
-			var rndnum = Random();
-			if (rndnum < 40) // 40%
+			SwitchRandom();
+			if (Case(40))
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Circle(400, 3000, 6000));
 				Do(CancelSkill());
 			}
-			else if (rndnum < 70) // 30%
+			else if (Case(30))
 			{
 				Do(PrepareSkill(SkillId.Smash));
 				Do(Attack(1, 5000));
 				Do(CancelSkill());
 			}
-			else // 30%
+			else if (Case(30))
 			{
 				Do(PrepareSkill(SkillId.Counterattack));
 				Do(Wait(5000));
@@ -86,12 +86,11 @@ public class BearAi : AiScript
 
 	private IEnumerable OnHit()
 	{
-		var rndnum = Random();
-		if (rndnum < 70) // 70%
+		if (Random() < 70)
 		{
 			Do(Attack(3, 4000));
 		}
-		else // 30%
+		else
 		{
 			Wander(500, 500, false);
 		}
@@ -99,8 +98,8 @@ public class BearAi : AiScript
 
 	private IEnumerable OnKnockDown()
 	{
-		var rndnum = Random();
-		if (rndnum < 20) // 20%
+		SwitchRandom();
+		if (Case(20))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			if (Random() < 50)
@@ -113,23 +112,23 @@ public class BearAi : AiScript
 			}
 			Do(CancelSkill());
 		}
-		else if (rndnum < 30) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Counterattack));
 			Do(Wait(2000, 4000));
 			Do(CancelSkill());
 		}
-		else if (rndnum < 40) // 10%
+		else if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Attack(1, 5000));
 			Do(CancelSkill());
 		}
-		else if (rndnum < 70) // 30%
+		else if (Case(30))
 		{
 			Do(Attack(3, 5000));
 		}
-		else // 30%
+		else if (Case(30))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Wait(500));

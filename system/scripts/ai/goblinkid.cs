@@ -29,27 +29,28 @@ public class YoungGoblinAi : AiScript
 	protected override IEnumerable Aggro()
 	{
 		Do(CancelSkill());
-		var rndAggro = Random();
-		if (rndAggro < 60) // 60%
+
+		SwitchRandom();
+		if (Case(60))
 		{
 			Do(Wait(1000, 3000));
 			Do(SwitchTo(WeaponSet.First));
 			Do(Attack(2, 5000));
 		}
-		else if (rndAggro < 75) // 15%
+		else if (Case(15))
 		{
 			Do(Say("!!!"));
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Wander(300, 500));
 			Do(Attack(1, 5000));
 		}
-		else if (rndAggro < 90) // 15%
+		else if (Case(15))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Circle(500, 1000, 1000, false));
 			Do(CancelSkill());
 		}
-		else // 10%
+		else if (Case(10))
 		{
 			Do(Say("..."));
 			Do(PrepareSkill(SkillId.Counterattack));

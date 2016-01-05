@@ -55,20 +55,20 @@ public class WolfAi : AiScript
 	{
 		if (Random() < 50)
 		{
-			var rndnum = Random();
-			if (rndnum < 20) // 20%
+			SwitchRandom();
+			if (Case(20))
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Circle(500, 1000, 5000));
 				Do(CancelSkill());
 			}
-			else if (rndnum < 60) // 40%
+			else if (Case(40))
 			{
 				Do(PrepareSkill(SkillId.Smash));
 				Do(Attack(1, 5000));
 				Do(Wait(3000, 8000));
 			}
-			else // 40%
+			else if (Case(40))
 			{
 				Do(PrepareSkill(SkillId.Counterattack));
 				Do(Wait(5000));

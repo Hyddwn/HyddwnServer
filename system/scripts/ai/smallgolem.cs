@@ -26,8 +26,8 @@ public class SmallGolemAi : AiScript
 
 	protected override IEnumerable Aggro()
 	{
-		var rndAggro = Random();
-		if (rndAggro < 50)
+		SwitchRandom();
+		if (Case(50))
 		{
 			if (Random() < 20)
 			{
@@ -39,13 +39,13 @@ public class SmallGolemAi : AiScript
 				Do(Attack(3, 4000));
 			}
 		}
-		else if (rndAggro < 70)
+		else if (Case(20))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Follow(600, true, 5000));
 			Do(CancelSkill());
 		}
-		else if (rndAggro < 90)
+		else if (Case(20))
 		{
 			Do(PrepareSkill(SkillId.Stomp));
 			Do(Wait(500, 2000));
@@ -64,6 +64,7 @@ public class SmallGolemAi : AiScript
 	private IEnumerable OnKnockDown()
 	{
 		Do(Wait(500));
+
 		if (Creature.Life < Creature.LifeMax * 0.50f)
 		{
 			Do(Say("Tachy granide inchatora mana prow!"));
@@ -71,47 +72,27 @@ public class SmallGolemAi : AiScript
 			Do(SetStat(Stat.Str, 100));
 			Do(PlaySound("data/sound/Glasgavelen_MagicCasting.wav"));
 		}
-		if (Creature.Life < Creature.LifeMax * 0.30f)
+
+		SwitchRandom();
+		if (Case(20))
 		{
-			var rndOKD = Random();
-			if (rndOKD < 20)
-			{
+			if (Creature.Life < Creature.LifeMax * 0.30f)
 				Do(PrepareSkill(SkillId.Stomp));
-				Do(UseSkill());
-				Do(Wait(1500));
-			}
-			else if (rndOKD < 25)
-			{
-				Do(PrepareSkill(SkillId.Smash));
-				Do(Attack(1, 4000));
-			}
-			else if (rndOKD < 35)
-			{
-				Do(PrepareSkill(SkillId.Defense));
-				Do(Wait(2000, 4000));
-				Do(CancelSkill());
-			}
-		}
-		else
-		{
-			var rndOKD2 = Random();
-			if (rndOKD2 < 20)
-			{
+			else
 				Do(PrepareSkill(SkillId.Windmill));
-				Do(Wait(4000));
-				Do(UseSkill());
-			}
-			else if (rndOKD2 < 25)
-			{
-				Do(PrepareSkill(SkillId.Smash));
-				Do(Attack(1, 4000));
-			}
-			else if (rndOKD2 < 35)
-			{
-				Do(PrepareSkill(SkillId.Defense));
-				Do(Wait(2000, 4000));
-				Do(CancelSkill());
-			}
+			Do(UseSkill());
+			Do(Wait(1500));
+		}
+		else if (Case(5))
+		{
+			Do(PrepareSkill(SkillId.Smash));
+			Do(Attack(1, 4000));
+		}
+		else if (Case(10))
+		{
+			Do(PrepareSkill(SkillId.Defense));
+			Do(Wait(2000, 4000));
+			Do(CancelSkill());
 		}
 	}
 }
