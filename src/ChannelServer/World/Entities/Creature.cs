@@ -1691,11 +1691,20 @@ namespace Aura.Channel.World.Entities
 			return (damage * this.GetRndMagicBalance());
 		}
 
+		/// <summary>
+		/// Returns random base damage for a ranged attack,
+		/// e.g. Ranged Attack or Magnum Shot, based on race, weapon, etc.
+		/// </summary>
+		/// <returns></returns>
 		public float GetRndRangedDamage()
 		{
 			// Base damage
-			float min = (this.RightHand == null ? 0 : this.RightHand.OptionInfo.AttackMin);
-			float max = (this.RightHand == null ? 0 : this.RightHand.OptionInfo.AttackMax);
+			float min = this.AttackMinBase;
+			float max = this.AttackMaxBase;
+
+			// Weapon
+			min += (this.RightHand == null ? 0 : this.RightHand.OptionInfo.AttackMin);
+			max += (this.RightHand == null ? 0 : this.RightHand.OptionInfo.AttackMax);
 
 			// Dex bonus
 			min += (this.Dex - 10) / 3.5f;
