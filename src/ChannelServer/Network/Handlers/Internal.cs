@@ -70,12 +70,14 @@ namespace Aura.Channel.Network.Handlers
 					var host = packet.GetString();
 					var port = packet.GetInt();
 					var users = packet.GetInt();
+					var maxUsers = packet.GetInt();
 
 					// Add channel
 					var channel = new ChannelInfo(channelName, serverName, host, port);
 					channel.State = state;
 					channel.Events = events;
 					channel.Users = users;
+					channel.MaxUsers = maxUsers;
 
 					ChannelServer.Instance.ServerList.Add(channel);
 				}
