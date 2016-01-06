@@ -137,6 +137,8 @@ namespace Aura.Login.Database
 				setId = 1001;
 			else if (partner.Race == 730206)
 				setId = 1002;
+			else if (partner.Race == 730207)
+				setId = 1004;
 
 			// Create start items for card and hair/face
 			var cardItems = AuraData.CharCardSetDb.Find(setId, partner.Race);
