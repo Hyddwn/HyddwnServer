@@ -53,6 +53,7 @@ public class KoboldArcherAi : AiScript
 
 	private IEnumerable OnKnockDown()
 	{
+		SwitchRandom();
 		if (Case(30))
 		{
 			Do(SwitchTo(WeaponSet.Second));
