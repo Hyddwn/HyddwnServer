@@ -60,4 +60,11 @@
 { id: 1002, race: 730206, itemId: 15932, pocket: 5, color1: 0xFFFFFF, color2: 0xFF624A, color3: 0x800000 },
 { id: 1002, race: 730206, itemId: 17977, pocket: 7, color1: 0x282828, color2: 0xFFFFFF, color3: 0xFF624A },
 { id: 1002, race: 730206, itemId: 18395, pocket: 8, color1: 0xFF624A, color2: 0xFFFF00 },
+
+// Laighlinne
+//---------------------------------------------------------------------------
+{ id: 1004, race: 730207, itemId: 80817, pocket: 5, color1: 0xF2EEEB, color2: 0xDD6A17, color3: 0x4F3223 },
+{ id: 1004, race: 730207, itemId: 16257, pocket: 6, color1: 0x2E1513 },
+{ id: 1004, race: 730207, itemId: 17473, pocket: 7, color1: 0x4C2C15, color2: 0x897676 },
+{ id: 1004, race: 730207, itemId: 41072, pocket: 10, color1: 0xB17A49, color2: 0xA18967 },
 ]

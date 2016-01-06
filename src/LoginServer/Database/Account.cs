@@ -9,6 +9,7 @@ using Aura.Data.Database;
 using Aura.Shared.Database;
 using Aura.Mabi.Const;
 using Aura.Mabi.Util;
+using Aura.Shared.Util;
 
 namespace Aura.Login.Database
 {
@@ -137,9 +138,16 @@ namespace Aura.Login.Database
 				setId = 1001;
 			else if (partner.Race == 730206)
 				setId = 1002;
+			else if (partner.Race == 730207)
+				setId = 1004;
 
 			// Create start items for card and hair/face
 			var cardItems = AuraData.CharCardSetDb.Find(setId, partner.Race);
+			if (cardItems == null)
+			{
+				Log.Error("Partner creation: Invalid item set ({0}) for race {1}.", setId, partner.Race);
+				return false;
+			}
 
 			// TODO: Hash seems to be incorrect.
 			var items = Item.CardItemsToItems(cardItems);
@@ -149,7 +157,10 @@ namespace Aura.Login.Database
 			items.Add(new Item(partner.Hair, Pocket.Hair, partner.HairColor + 0x10000000u, 0, 0));
 
 			if (!LoginServer.Instance.Database.CreatePartner(this.Name, partner, items))
+			{
+				Log.Error("Partner creation: Failed for unknown reasons.");
 				return false;
+			}
 
 			this.Pets.Add(partner);
 

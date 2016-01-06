@@ -147,6 +147,11 @@ namespace Aura.Login.Network.Handlers
 
 			// Create start items for card and hair/face
 			var cardItems = AuraData.CharCardSetDb.Find(cardInfo.SetId, character.Race);
+			if (cardItems == null)
+			{
+				Log.Error("Partner creation: Invalid item set ({0}) for race {1}.", cardInfo.SetId, character.Race);
+				goto L_Fail;
+			}
 
 			var items = Item.CardItemsToItems(cardItems);
 			Item.GenerateItemColors(ref items, (client.Account.Name + character.Race + character.SkinColor + character.Hair + character.HairColor + character.Age + character.EyeType + character.EyeColor + character.MouthType + character.Face));
@@ -420,10 +425,7 @@ namespace Aura.Login.Network.Handlers
 
 			// Try to create character
 			if (!client.Account.CreatePartner(partner))
-			{
-				Log.Error("Partner creation: Failed for unknown reasons.");
 				goto L_Fail;
-			}
 
 			// Delete card
 			if (LoginServer.Instance.Conf.Login.ConsumePartnerCards)
