@@ -171,7 +171,7 @@ public class KoboldBanditAi : AiScript
 	protected override IEnumerable Aggro()
 	{
 		Do(KeepDistance(400, true, 2000));
-		Do(Circle(300, 1000, 1000));
+		Do(Circle(300, 1000, 1000, false));
 
 		SwitchRandom();
 		if (Case(60))
