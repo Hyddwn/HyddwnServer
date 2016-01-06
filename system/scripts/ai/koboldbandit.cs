@@ -183,7 +183,7 @@ public class KoboldBanditAi : AiScript
 		else if (Case(15))
 		{
 			Do(PrepareSkill(SkillId.Smash));
-			Do(Follow(200, false, 5000));
+			Do(Follow(200, true, 5000));
 			Do(Attack(1, 4000));
 			if (Random() < 90)
 				Do(Say(koboldBanditAttack));
