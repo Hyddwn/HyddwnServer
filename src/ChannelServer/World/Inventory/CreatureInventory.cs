@@ -1369,7 +1369,7 @@ namespace Aura.Channel.World.Inventory
 			// but then we'd be iterating over all items and upgrade effects
 			// *multiple* times...
 
-			this.UpdateUpgradeEffects();
+			this.UpdateStatBonuses();
 		}
 
 		/// <summary>
@@ -1378,7 +1378,7 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="creature"></param>
 		private void OnCreatureChangedTitles(Creature creature)
 		{
-			this.UpdateUpgradeEffects();
+			this.UpdateStatBonuses();
 		}
 
 		/// <summary>
@@ -1388,7 +1388,7 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="skill"></param>
 		private void OnCreatureSkillRankChanged(Creature creature, Skill skill)
 		{
-			this.UpdateUpgradeEffects();
+			this.UpdateStatBonuses();
 		}
 
 		/// <summary>
@@ -1397,7 +1397,7 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="creature"></param>
 		private void OnCreatureConditionsChanged(Creature creature)
 		{
-			this.UpdateUpgradeEffects();
+			this.UpdateStatBonuses();
 		}
 
 		/// <summary>
@@ -1408,14 +1408,14 @@ namespace Aura.Channel.World.Inventory
 		{
 			// Update on midnight, for Erinn month checks
 			if (now.DateTime.Hour == 0)
-				this.UpdateUpgradeEffects();
+				this.UpdateStatBonuses();
 		}
 
 		/// <summary>
 		/// Removes all upgrade effect bonuses from current equipment and
 		/// reapplies them.
 		/// </summary>
-		public void UpdateUpgradeEffects()
+		public void UpdateStatBonuses()
 		{
 			lock (_upgradeEffectSyncLock)
 			{
@@ -1424,6 +1424,7 @@ namespace Aura.Channel.World.Inventory
 				foreach (var item in this.GetMainEquipment())
 				{
 					_creature.StatMods.Remove(StatModSource.Equipment, item.EntityId);
+					this.ApplyDefenseBonuses(item);
 					this.ApplyUpgradeEffects(item);
 				}
 

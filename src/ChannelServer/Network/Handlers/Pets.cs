@@ -67,7 +67,7 @@ namespace Aura.Channel.Network.Handlers
 
 			// Update master's upgrade effects, for potential summon checks.
 			// XXX: Do we need an event for this?
-			creature.Inventory.UpdateUpgradeEffects();
+			creature.Inventory.UpdateStatBonuses();
 		}
 
 		/// <summary>
@@ -110,7 +110,7 @@ namespace Aura.Channel.Network.Handlers
 
 			// Update master's upgrade effects, for potential summon checks.
 			// XXX: Do we need an event for this?
-			creature.Inventory.UpdateUpgradeEffects();
+			creature.Inventory.UpdateStatBonuses();
 		}
 
 		/// <summary>
