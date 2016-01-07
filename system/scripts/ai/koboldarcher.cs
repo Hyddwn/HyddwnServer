@@ -6,7 +6,6 @@
 // 1.0 Added general AI behaviors
 //---------------------------------------------------------------------------
 
-
 [AiScript("koboldarcher")]
 public class KoboldArcherAi : AiScript
 {

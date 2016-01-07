@@ -7,7 +7,6 @@
 // Missing: weaponswap
 //---------------------------------------------------------------------------
 
-
 [AiScript("koboldbandit")]
 public class KoboldBanditAi : AiScript
 {
