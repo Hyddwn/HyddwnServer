@@ -784,7 +784,7 @@ namespace Aura.Channel.World.Entities
 		/// Defense from monster xml
 		/// </summary>
 		public int DefenseBase { get { return this.RaceData.Defense; } }
-		public int DefenseBaseMod { get { return (int)this.StatMods.Get(Stat.DefenseBaseMod) + this.Inventory.GetEquipmentDefense(); } } // Skills, Titles, etc?
+		public int DefenseBaseMod { get { return (int)this.StatMods.Get(Stat.DefenseBaseMod); } } // Skills, Titles, etc?
 		public int DefenseMod { get { return (int)this.StatMods.Get(Stat.DefenseMod); } } // eg Reforging? (yellow)
 		public int Defense
 		{
@@ -813,7 +813,7 @@ namespace Aura.Channel.World.Entities
 		/// Protect from monster xml
 		/// </summary>
 		public float ProtectionBase { get { return this.RaceData.Protection; } }
-		public float ProtectionBaseMod { get { return this.StatMods.Get(Stat.ProtectionBaseMod) + this.Inventory.GetEquipmentProtection(); } }
+		public float ProtectionBaseMod { get { return this.StatMods.Get(Stat.ProtectionBaseMod); } }
 		public float ProtectionMod { get { return this.StatMods.Get(Stat.ProtectionMod); } }
 		public float Protection
 		{

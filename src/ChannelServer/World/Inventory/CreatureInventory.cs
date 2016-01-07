@@ -1309,10 +1309,13 @@ namespace Aura.Channel.World.Inventory
 					itemScript.OnEquip(_creature, item);
 			}
 
-			// Apply upgrade effects if item is in a main equip pocket,
+			// Apply bonuses if item is in a main equip pocket,
 			// i.e. no style, hair, face, or second weapon set.
 			if (item.Info.Pocket.IsMainEquip(this.WeaponSet))
+			{
+				this.ApplyDefenseBonuses(item);
 				this.ApplyUpgradeEffects(item);
+			}
 		}
 
 		/// <summary>
@@ -1426,6 +1429,16 @@ namespace Aura.Channel.World.Inventory
 
 				this.UpdateEquipStats();
 			}
+		}
+
+		/// <summary>
+		/// Applies non-upgrade Defense and Protection bonuses from the item.
+		/// </summary>
+		/// <param name="item"></param>
+		private void ApplyDefenseBonuses(Item item)
+		{
+			_creature.StatMods.Add(Stat.DefenseBaseMod, item.OptionInfo.Defense, StatModSource.Equipment, item.EntityId);
+			_creature.StatMods.Add(Stat.ProtectionBaseMod, item.OptionInfo.Protection, StatModSource.Equipment, item.EntityId);
 		}
 
 		/// <summary>
@@ -1709,34 +1722,6 @@ namespace Aura.Channel.World.Inventory
 				Stat.MagicAttackMod, Stat.MagicDefenseMod,
 				Stat.CombatPower, Stat.PoisonImmuneMod, Stat.ArmorPierceMod
 			);
-		}
-
-		// Stat mods
-		// TODO: Use the actual stat mods on equip/unequip.
-		// ------------------------------------------------------------------
-
-		/// <summary>
-		/// Returns defense granted by equipment.
-		/// </summary>
-		/// <returns></returns>
-		public int GetEquipmentDefense()
-		{
-			lock (_pockets)
-				return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
-					.SelectMany(pocket => pocket.Items.Where(a => a != null))
-					.Sum(item => item.OptionInfo.Defense);
-		}
-
-		/// <summary>
-		/// Returns protection granted by equipment.
-		/// </summary>
-		/// <returns></returns>
-		public int GetEquipmentProtection()
-		{
-			lock (_pockets)
-				return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
-					.SelectMany(pocket => pocket.Items.Where(a => a != null))
-					.Sum(item => item.OptionInfo.Protection);
 		}
 
 		// Functions
