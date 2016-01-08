@@ -279,6 +279,15 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Sets id of the quest's item scroll.
+		/// </summary>
+		/// <param name="id"></param>
+		protected void SetScrollId(int id)
+		{
+			this.ScrollId = id;
+		}
+
+		/// <summary>
 		/// Adds prerequisite that has to be met before auto receiving the quest.
 		/// </summary>
 		/// <param name="prerequisite"></param>
