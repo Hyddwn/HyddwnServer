@@ -399,9 +399,14 @@ namespace Aura.Channel.World.Entities
 			this.Data = baseItem.Data;
 			this.MetaData1 = new MabiDictionary(baseItem.MetaData1.ToString());
 			this.MetaData2 = new MabiDictionary(baseItem.MetaData2.ToString());
-			this.Quest = (baseItem.Quest == null ? null : new Quest(baseItem.Quest.Id));
 			this.EgoInfo = baseItem.EgoInfo.Copy();
 			this.AddUpgradeEffect(baseItem.GetUpgradeEffects());
+
+			if (baseItem.Quest != null)
+			{
+				this.Quest = new Quest(baseItem.Quest.Id);
+				this.Quest.QuestItem = this;
+			}
 
 			this.SetNewEntityId();
 		}
