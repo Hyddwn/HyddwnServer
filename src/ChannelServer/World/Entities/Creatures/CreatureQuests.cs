@@ -133,6 +133,17 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Returns all incomplete quests with the given id.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public Quest[] GetAllIncomplete(int questId)
+		{
+			lock (_quests)
+				return _quests.Where(a => a.Id == questId && a.State == QuestState.InProgress).ToArray();
+		}
+
+		/// <summary>
 		/// Calls <see cref="Get(long)"/>. If the result is null, throws <see cref="SevereViolation"/>.
 		/// </summary>
 		/// <param name="uniqueId"></param>

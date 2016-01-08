@@ -511,67 +511,68 @@ namespace Aura.Channel.Scripting.Scripts
 			if (creature == null || !creature.IsPlayer)
 				return;
 
-			var quest = creature.Quests.GetFirstIncomplete(this.Id);
-			if (quest == null) return;
-
-			var progress = quest.CurrentObjectiveOrLast;
-			if (progress == null) return;
-
-			var objective = this.Objectives[progress.Ident];
-			if (objective == null) return;
-
-			var prevCount = progress.Count;
-			switch (objective.Type)
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
 			{
-				case ObjectiveType.ReachRank:
-					var reachRankObjective = (objective as QuestObjectiveReachRank);
-					var skillId = reachRankObjective.Id;
-					var rank = reachRankObjective.Rank;
-					var skill = creature.Skills.Get(skillId);
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
 
-					if (skill != null && skill.Info.Rank >= rank)
-						quest.SetDone(progress.Ident);
-					else
-						quest.SetUndone(progress.Ident);
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null) return;
 
-					break;
+				var prevCount = progress.Count;
+				switch (objective.Type)
+				{
+					case ObjectiveType.ReachRank:
+						var reachRankObjective = (objective as QuestObjectiveReachRank);
+						var skillId = reachRankObjective.Id;
+						var rank = reachRankObjective.Rank;
+						var skill = creature.Skills.Get(skillId);
 
-				case ObjectiveType.ReachLevel:
-					var reachLevelObjective = (objective as QuestObjectiveReachLevel);
+						if (skill != null && skill.Info.Rank >= rank)
+							quest.SetDone(progress.Ident);
+						else
+							quest.SetUndone(progress.Ident);
 
-					if (creature.Level >= reachLevelObjective.Amount)
-						quest.SetDone(progress.Ident);
+						break;
 
-					break;
+					case ObjectiveType.ReachLevel:
+						var reachLevelObjective = (objective as QuestObjectiveReachLevel);
 
-				case ObjectiveType.Collect:
-					var itemId = (objective as QuestObjectiveCollect).ItemId;
-					var count = creature.Inventory.Count(itemId);
+						if (creature.Level >= reachLevelObjective.Amount)
+							quest.SetDone(progress.Ident);
 
-					if (!progress.Done && count >= objective.Amount)
-						quest.SetDone(progress.Ident);
-					else if (progress.Done && count < objective.Amount)
-						quest.SetUndone(progress.Ident);
+						break;
 
-					// Set(Un)Done modifies the count, has to be set afterwards
-					progress.Count = count;
-					break;
+					case ObjectiveType.Collect:
+						var itemId = (objective as QuestObjectiveCollect).ItemId;
+						var count = creature.Inventory.Count(itemId);
 
-				case ObjectiveType.GetKeyword:
-					var getKeywordObjective = (objective as QuestObjectiveGetKeyword);
+						if (!progress.Done && count >= objective.Amount)
+							quest.SetDone(progress.Ident);
+						else if (progress.Done && count < objective.Amount)
+							quest.SetUndone(progress.Ident);
 
-					if (creature.Keywords.Has((ushort)getKeywordObjective.KeywordId))
-						quest.SetDone(progress.Ident);
+						// Set(Un)Done modifies the count, has to be set afterwards
+						progress.Count = count;
+						break;
 
-					break;
+					case ObjectiveType.GetKeyword:
+						var getKeywordObjective = (objective as QuestObjectiveGetKeyword);
 
-				default:
-					// Objective that can't be checked here.
-					break;
+						if (creature.Keywords.Has((ushort)getKeywordObjective.KeywordId))
+							quest.SetDone(progress.Ident);
+
+						break;
+
+					default:
+						// Objective that can't be checked here.
+						break;
+				}
+
+				if (progress.Count != prevCount)
+					Send.QuestUpdate(creature, quest);
 			}
-
-			if (progress.Count != prevCount)
-				Send.QuestUpdate(creature, quest);
 		}
 
 		/// <summary>
@@ -583,23 +584,24 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			if (creature == null || killer == null) return;
 
-			var quest = killer.Quests.GetFirstIncomplete(this.Id);
-			if (quest == null) return;
+			var quests = killer.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
+			{
+				var progress = quest.CurrentObjective;
+				if (progress == null) return;
 
-			var progress = quest.CurrentObjective;
-			if (progress == null) return;
+				var objective = this.Objectives[progress.Ident] as QuestObjectiveKill;
+				if (objective == null || objective.Type != ObjectiveType.Kill || !objective.Check(creature)) return;
 
-			var objective = this.Objectives[progress.Ident] as QuestObjectiveKill;
-			if (objective == null || objective.Type != ObjectiveType.Kill || !objective.Check(creature)) return;
+				if (progress.Count >= objective.Amount) return;
 
-			if (progress.Count >= objective.Amount) return;
+				progress.Count++;
 
-			progress.Count++;
+				if (progress.Count >= objective.Amount)
+					quest.SetDone(progress.Ident);
 
-			if (progress.Count >= objective.Amount)
-				quest.SetDone(progress.Ident);
-
-			Send.QuestUpdate(killer, quest);
+				Send.QuestUpdate(killer, quest);
+			}
 		}
 
 		/// <summary>
@@ -666,20 +668,21 @@ namespace Aura.Channel.Scripting.Scripts
 			if (creature == null || !creature.IsPlayer || item == null || !item.Info.Pocket.IsEquip())
 				return;
 
-			var quest = creature.Quests.GetFirstIncomplete(this.Id);
-			if (quest == null) return;
-
-			var progress = quest.CurrentObjectiveOrLast;
-			if (progress == null) return;
-
-			var objective = this.Objectives[progress.Ident];
-			if (objective == null || objective.Type != ObjectiveType.Equip) return;
-
-			var equipObjective = (objective as QuestObjectiveEquip);
-			if (!progress.Done && item.HasTag(equipObjective.Tag))
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
 			{
-				quest.SetDone(progress.Ident);
-				Send.QuestUpdate(creature, quest);
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
+
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null || objective.Type != ObjectiveType.Equip) return;
+
+				var equipObjective = (objective as QuestObjectiveEquip);
+				if (!progress.Done && item.HasTag(equipObjective.Tag))
+				{
+					quest.SetDone(progress.Ident);
+					Send.QuestUpdate(creature, quest);
+				}
 			}
 		}
 
@@ -689,23 +692,24 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="args"></param>
 		private void OnCreatureGathered(CollectEventArgs args)
 		{
-			var quest = args.Creature.Quests.GetFirstIncomplete(this.Id);
-			if (quest == null) return;
-
-			var progress = quest.CurrentObjectiveOrLast;
-			if (progress == null) return;
-
-			var objective = this.Objectives[progress.Ident];
-			if (objective == null || objective.Type != ObjectiveType.Gather) return;
-
-			var gatherObjective = (objective as QuestObjectiveGather);
-			if (!progress.Done && args.Success && args.ItemId == gatherObjective.ItemId)
+			var quests = args.Creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
 			{
-				progress.Count++;
-				if (progress.Count == gatherObjective.Amount)
-					quest.SetDone(progress.Ident);
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
 
-				Send.QuestUpdate(args.Creature, quest);
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null || objective.Type != ObjectiveType.Gather) return;
+
+				var gatherObjective = (objective as QuestObjectiveGather);
+				if (!progress.Done && args.Success && args.ItemId == gatherObjective.ItemId)
+				{
+					progress.Count++;
+					if (progress.Count == gatherObjective.Amount)
+						quest.SetDone(progress.Ident);
+
+					Send.QuestUpdate(args.Creature, quest);
+				}
 			}
 		}
 	}
