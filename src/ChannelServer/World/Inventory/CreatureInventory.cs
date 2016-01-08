@@ -15,6 +15,7 @@ using Aura.Channel.World.Entities.Creatures;
 using Aura.Mabi.Structs;
 using Aura.Mabi;
 using Aura.Channel.Skills;
+using Aura.Channel.World.Quests;
 
 namespace Aura.Channel.World.Inventory
 {
@@ -630,7 +631,10 @@ namespace Aura.Channel.World.Inventory
 
 			// Inform about temp moves (items in temp don't count for quest objectives?)
 			if (source == Pocket.Temporary && target == Pocket.Cursor)
+			{
+				this.OnItemEntersInventory(item);
 				ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Info.Amount);
+			}
 
 			// Check movement
 			this.CheckLeftHand(item, source, target);
@@ -882,6 +886,8 @@ namespace Aura.Channel.World.Inventory
 
 				if (_creature.IsPlayer && pocket != Pocket.Temporary)
 				{
+					this.OnItemEntersInventory(item);
+
 					// Notify everybody about receiving the item.
 					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Amount);
 
@@ -1075,6 +1081,8 @@ namespace Aura.Channel.World.Inventory
 
 			if (success && _creature.IsPlayer && !inTemp)
 			{
+				this.OnItemEntersInventory(item);
+
 				// Notify everybody about receiving the item.
 				ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Amount);
 
@@ -1110,6 +1118,7 @@ namespace Aura.Channel.World.Inventory
 						item.OptionInfo.LinkedPocketId = Pocket.None;
 					}
 
+					this.OnItemLeavesInventory(item);
 					ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, item.Info.Id, item.Info.Amount);
 
 					if (item.Info.Pocket.IsEquip())
@@ -1723,6 +1732,49 @@ namespace Aura.Channel.World.Inventory
 				Stat.MagicAttackMod, Stat.MagicDefenseMod,
 				Stat.CombatPower, Stat.PoisonImmuneMod, Stat.ArmorPierceMod
 			);
+		}
+
+		/// <summary>
+		/// Handles events that need to happen when an item "enters" the
+		/// inventory.
+		/// </summary>
+		/// <remarks>
+		/// Only called when an item is actually new to the inventory.
+		/// </remarks>
+		/// <param name="item"></param>
+		private void OnItemEntersInventory(Item item)
+		{
+			// Add quest to quest manager
+			if (item.Quest != null)
+			{
+				var quest = item.Quest;
+
+				// Add
+				_creature.Quests.Add(quest);
+			}
+		}
+
+		/// <summary>
+		/// Handles events that need to happen when an item "leaves" the
+		/// inventory.
+		/// </summary>
+		/// <remarks>
+		/// Only called when an item is completely removed from the inventory.
+		/// </remarks>
+		/// <param name="item"></param>
+		private void OnItemLeavesInventory(Item item)
+		{
+			// Remove quest from quest manager
+			if (item.Quest != null)
+			{
+				var quest = item.Quest;
+
+				// Only give up quest if it's incomplete, otherwise the
+				// completed quest would be removed from the quest manager,
+				// and the player would receive auto quests again.
+				if (quest.State != QuestState.Complete)
+					_creature.Quests.GiveUp(item.Quest);
+			}
 		}
 
 		// Functions

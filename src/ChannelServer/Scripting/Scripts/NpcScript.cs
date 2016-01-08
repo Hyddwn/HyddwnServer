@@ -1096,7 +1096,11 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			try
 			{
-				this.Player.Quests.Start(questId, false);
+				var scroll = Item.CreateQuestScroll(questId);
+
+				// Do quests given out by NPCs *always* go into the
+				// quest pocket?
+				this.Player.Inventory.Add(scroll, Pocket.Quests);
 			}
 			catch (Exception ex)
 			{
@@ -1122,7 +1126,8 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			try
 			{
-				var quest = new Quest(questId);
+				var scroll = Item.CreateQuestScroll(questId);
+				var quest = scroll.Quest;
 
 				quest.MetaData.SetByte("QMRTCT", (byte)quest.Data.RewardGroups.Count);
 				quest.MetaData.SetInt("QMRTBF", 0x4321); // (specifies which groups to display at which position, 1 group per hex char)
@@ -1136,7 +1141,9 @@ namespace Aura.Channel.Scripting.Scripts
 				var deadline = DateTime.Now.AddTicks(diffHours * ErinnTime.TicksPerHour + diffMins * ErinnTime.TicksPerMinute);
 				quest.Deadline = deadline;
 
-				this.Player.Quests.Start(quest, false);
+				// Do quests given out by NPCs *always* go into the
+				// quest pocket?
+				this.Player.Inventory.Add(scroll, Pocket.Quests);
 			}
 			catch (Exception ex)
 			{

@@ -480,7 +480,8 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Starts quest if prerequisites are met.
+		/// Returns true if all prerequisites are met, receive method is auto,
+		/// and the creature doesn't have the quest yet.
 		/// </summary>
 		/// <param name="character"></param>
 		/// <returns></returns>
@@ -621,7 +622,7 @@ namespace Aura.Channel.Scripting.Scripts
 		private void OnPlayerCompletesQuest(Creature creature, int questId)
 		{
 			if (this.CheckPrerequisites(creature))
-				creature.Quests.Start(this.Id, true);
+				creature.Quests.SendOwl(this.Id);
 		}
 
 		/// <summary>

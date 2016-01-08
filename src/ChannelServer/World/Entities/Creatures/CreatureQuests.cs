@@ -43,10 +43,37 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// This method is for initialization, use Give during run-time.
 		/// </remarks>
 		/// <param name="quest"></param>
-		public void Add(Quest quest)
+		public void AddSilent(Quest quest)
 		{
 			lock (_quests)
 				_quests.Add(quest);
+		}
+
+		/// <summary>
+		/// Adds quest to manager and informs the client about it.
+		/// </summary>
+		/// <param name="quest"></param>
+		public void Add(Quest quest)
+		{
+			// Check quest item
+			if (quest.QuestItem == null)
+				throw new InvalidOperationException("Quest item can't be null.");
+
+			if (!_creature.Inventory.Has(quest.QuestItem))
+				throw new InvalidOperationException("The quest item needs to be in the creature's inventory first.");
+
+			this.AddSilent(quest);
+
+			// Quest info
+			Send.NewQuest(_creature, quest);
+
+			// Start PTJ clock
+			if (quest.Data.Type == QuestType.Deliver)
+				Send.QuestStartPtj(_creature, quest.UniqueId);
+
+			// Initial objective check, for things like collect and reach rank,
+			// that may be done already.
+			quest.Data.CheckCurrentObjective(_creature);
 		}
 
 		/// <summary>
@@ -59,6 +86,17 @@ namespace Aura.Channel.World.Entities.Creatures
 		{
 			lock (_quests)
 				return _quests.Exists(a => a.Id == questId);
+		}
+
+		/// <summary>
+		/// Returns true if creature has the given quest.
+		/// </summary>
+		/// <param name="quest"></param>
+		/// <returns></returns>
+		public bool Has(Quest quest)
+		{
+			lock (_quests)
+				return _quests.Contains(quest);
 		}
 
 		/// <summary>
@@ -140,50 +178,32 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Starts new quest with the given id, after giving up other quests
-		/// with the same id.
+		/// Sends an owl to deliver a quest scroll fort he given quest id
+		/// to the player.
 		/// </summary>
 		/// <param name="questId"></param>
-		/// <param name="owl">Show owl delivering the quest?</param>
-		public void Start(int questId, bool owl)
+		public void SendOwl(int questId)
 		{
-			// Remove quest if it's aleady there and not completed,
-			// or it will be shown twice till next relog.
-			var existingQuest = this.Get(questId);
-			if (existingQuest != null && existingQuest.State < QuestState.Complete)
-				this.GiveUp(existingQuest);
+			var item = Item.CreateQuestScroll(questId);
 
-			var quest = new Quest(questId);
-			this.Start(quest, owl);
+			Send.QuestOwlNew(_creature, item.QuestId);
+
+			// Do quests that are received via owl *always* go into the
+			// quest pocket?
+			_creature.Inventory.Add(item, Pocket.Quests);
 		}
 
 		/// <summary>
-		/// Starts quest, sending it to the client and adding the quest item
-		/// to the creature's inventory.
+		/// Gives quest scroll for the given quest id to the player.
 		/// </summary>
-		/// <param name="quest"></param>
-		/// <param name="owl">Show owl delivering the quest?</param>
-		public void Start(Quest quest, bool owl)
+		/// <param name="questId"></param>
+		public void Start(int questId)
 		{
-			this.Add(quest);
+			var item = Item.CreateQuestScroll(questId);
 
-			// Owl
-			if (owl)
-				Send.QuestOwlNew(_creature, quest.UniqueId);
-
-			// Quest item (required to complete quests)
-			_creature.Inventory.Add(quest.QuestItem, Pocket.Quests);
-
-			// Quest info
-			Send.NewQuest(_creature, quest);
-
-			// Start PTJ clock
-			if (quest.Data.Type == QuestType.Deliver)
-				Send.QuestStartPtj(_creature, quest.UniqueId);
-
-			// Initial objective check, for things like collect and reach rank,
-			// that may be done already.
-			quest.Data.CheckCurrentObjective(_creature);
+			// Do quests that are received via owl *always* go into the
+			// quest pocket?
+			_creature.Inventory.Add(item, Pocket.Quests);
 		}
 
 		/// <summary>
@@ -210,15 +230,17 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Completes and removes quest, if it exists.
+		/// Completes and removes first incomplete instance of the given quest,
+		/// provided that an incomplete one exists.
 		/// </summary>
 		/// <param name="questId"></param>
 		/// <param name="owl">Show owl delivering the quest?</param>
 		/// <returns></returns>
 		public bool Complete(int questId, bool owl)
 		{
-			var quest = this.Get(questId);
-			if (quest == null) return false;
+			var quest = this.Get(a => a.Id == questId && a.State == QuestState.InProgress);
+			if (quest == null)
+				return false;
 
 			return this.Complete(quest, owl);
 		}
@@ -233,6 +255,9 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public bool Complete(Quest quest, bool owl)
 		{
+			if (!this.Has(quest))
+				throw new ArgumentException("Quest not found in this manager.");
+
 			quest.CompleteAllObjectives();
 
 			return this.Complete(quest, 0, owl);
@@ -249,10 +274,17 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public bool Complete(Quest quest, int rewardGroup, bool owl)
 		{
+			if (!this.Has(quest))
+				throw new ArgumentException("Quest not found in this manager.");
+
 			var success = this.EndQuest(quest, rewardGroup, owl);
 			if (success)
 			{
 				quest.State = QuestState.Complete;
+
+				// Remove quest item after the state was set, so the item
+				// is removed, but not the quest.
+				_creature.Inventory.Remove(quest.QuestItem);
 
 				ChannelServer.Instance.Events.OnPlayerCompletesQuest(_creature, quest.Id);
 			}
@@ -266,17 +298,15 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public bool GiveUp(Quest quest)
 		{
-			bool success;
+			if (!this.Has(quest))
+				throw new ArgumentException("Quest not found in this manager.");
 
-			lock (_quests)
-			{
-				if (!_quests.Contains(quest))
-					throw new ArgumentException("Quest not found in this manager.");
+			var success = this.EndQuest(quest, -1, false);
 
-				success = this.EndQuest(quest, -1, false);
-				if (success)
-					_quests.Remove(quest);
-			}
+			// Remove quest item on success, which will also remove the
+			// quest from the manager.
+			if (success)
+				_creature.Inventory.Remove(quest.QuestItem);
 
 			return success;
 		}
@@ -291,9 +321,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		private bool EndQuest(Quest quest, int rewardGroup, bool owl)
 		{
-			if (!this.Has(quest.Id))
-				return false;
-
 			var result = quest.GetResult();
 
 			// Increase PTJ done/success
@@ -309,8 +336,6 @@ namespace Aura.Channel.World.Entities.Creatures
 				else
 					this.GiveRewards(quest, rewards, owl);
 			}
-
-			_creature.Inventory.Remove(quest.QuestItem);
 
 			// Remove from quest log.
 			Send.QuestClear(_creature, quest.UniqueId);
