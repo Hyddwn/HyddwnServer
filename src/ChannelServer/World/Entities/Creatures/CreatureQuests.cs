@@ -15,7 +15,7 @@ namespace Aura.Channel.World.Entities.Creatures
 	public class CreatureQuests
 	{
 		private Creature _creature;
-		private Dictionary<int, Quest> _quests;
+		private List<Quest> _quests;
 		private Dictionary<PtjType, PtjTrackRecord> _ptjRecords;
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public CreatureQuests(Creature creature)
 		{
 			_creature = creature;
-			_quests = new Dictionary<int, Quest>();
+			_quests = new List<Quest>();
 			_ptjRecords = new Dictionary<PtjType, PtjTrackRecord>();
 		}
 
@@ -46,7 +46,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public void Add(Quest quest)
 		{
 			lock (_quests)
-				_quests[quest.Id] = quest;
+				_quests.Add(quest);
 		}
 
 		/// <summary>
@@ -58,7 +58,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public bool Has(int questId)
 		{
 			lock (_quests)
-				return _quests.ContainsKey(questId);
+				return _quests.Exists(a => a.Id == questId);
 		}
 
 		/// <summary>
@@ -69,10 +69,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public Quest Get(int questId)
 		{
-			Quest result;
-			lock (_quests)
-				_quests.TryGetValue(questId, out result);
-			return result;
+			return this.Get(a => a.Id == questId);
 		}
 
 		/// <summary>
@@ -82,8 +79,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public Quest Get(long uniqueId)
 		{
-			lock (_quests)
-				return _quests.Values.FirstOrDefault(a => a.UniqueId == uniqueId);
+			return this.Get(a => a.UniqueId == uniqueId);
 		}
 
 		/// <summary>
@@ -95,7 +91,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public Quest Get(Func<Quest, bool> predicate)
 		{
 			lock (_quests)
-				return _quests.Values.FirstOrDefault(predicate);
+				return _quests.FirstOrDefault(predicate);
 		}
 
 		/// <summary>
@@ -105,11 +101,11 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public Quest GetSafe(long uniqueId)
 		{
-			var q = this.Get(uniqueId);
-			if (q == null)
+			var quest = this.Get(uniqueId);
+			if (quest == null)
 				throw new SevereViolation("Creature does not have quest 0x{0:X}", uniqueId);
 
-			return q;
+			return quest;
 		}
 
 		/// <summary>
@@ -130,7 +126,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public ICollection<Quest> GetList()
 		{
 			lock (_quests)
-				return _quests.Values.ToArray();
+				return _quests.ToArray();
 		}
 
 		/// <summary>
@@ -140,7 +136,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public ICollection<Quest> GetIncompleteList()
 		{
 			lock (_quests)
-				return _quests.Values.Where(a => a.State != QuestState.Complete).ToArray();
+				return _quests.Where(a => a.State != QuestState.Complete).ToArray();
 		}
 
 		/// <summary>
@@ -270,10 +266,17 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public bool GiveUp(Quest quest)
 		{
-			var success = this.EndQuest(quest, -1, false);
-			if (success)
-				lock (_quests)
-					_quests.Remove(quest.Id);
+			bool success;
+
+			lock (_quests)
+			{
+				if (!_quests.Contains(quest))
+					throw new ArgumentException("Quest not found in this manager.");
+
+				success = this.EndQuest(quest, -1, false);
+				if (success)
+					_quests.Remove(quest);
+			}
 
 			return success;
 		}
@@ -288,7 +291,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		private bool EndQuest(Quest quest, int rewardGroup, bool owl)
 		{
-			if (!_quests.ContainsValue(quest))
+			if (!this.Has(quest.Id))
 				return false;
 
 			var result = quest.GetResult();
