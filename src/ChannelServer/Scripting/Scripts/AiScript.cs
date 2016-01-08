@@ -1149,6 +1149,10 @@ namespace Aura.Channel.Scripting.Scripts
 
 			for (int i = 0; _timestamp < until || i == 0; ++i)
 			{
+				// Stop if target vanished somehow
+				if (this.Creature.Target == null)
+					yield break;
+
 				var targetPos = this.Creature.Target.GetPosition();
 				var pos = this.Creature.GetPosition();
 
@@ -1176,6 +1180,10 @@ namespace Aura.Channel.Scripting.Scripts
 
 			while (_timestamp < until)
 			{
+				// Stop if target vanished somehow
+				if (this.Creature.Target == null)
+					yield break;
+
 				var pos = this.Creature.GetPosition();
 				var targetPos = this.Creature.Target.GetPosition();
 
@@ -1264,6 +1272,10 @@ namespace Aura.Channel.Scripting.Scripts
 				// Stop timeout was reached
 				if (_timestamp >= until)
 					break;
+
+				// Stop if target vanished somehow
+				if (this.Creature.Target == null)
+					yield break;
 
 				// Attack
 				var result = skillHandler.Use(this.Creature, skill, this.Creature.Target.EntityId);
