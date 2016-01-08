@@ -1184,14 +1184,20 @@ namespace Aura.Channel.Scripting.Scripts
 			else
 				rewardGroup = group.Id;
 
-			// Remove quest items
+			// Get objective
 			var progress = quest.CurrentObjectiveOrLast;
-			var objective = quest.Data.Objectives[quest.CurrentObjectiveOrLast.Ident] as QuestObjectiveCollect;
-			if (objective != null)
-				this.Player.Inventory.Remove(objective.ItemId, Math.Min(objective.Amount, progress.Count));
+			var objective = quest.Data.Objectives[progress.Ident];
+			var collectObjective = objective as QuestObjectiveCollect;
 
 			// Complete
 			this.Player.Quests.Complete(quest, rewardGroup, false);
+
+			// Remove quest items after quest was completed, as they might be
+			// needed inside Complete, to calculate the result.
+			if (collectObjective != null)
+				this.Player.Inventory.Remove(collectObjective.ItemId, Math.Min(collectObjective.Amount, progress.Count));
+			else
+				Log.Warning("NpcScript.CompletePtj: Failed to remove quest items, last objective '{0}' is not Collect, but '{1}'.", progress.Ident, objective.GetType().Name);
 		}
 
 		/// <summary>
