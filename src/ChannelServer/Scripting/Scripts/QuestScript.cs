@@ -511,7 +511,7 @@ namespace Aura.Channel.Scripting.Scripts
 			if (creature == null || !creature.IsPlayer)
 				return;
 
-			var quest = creature.Quests.Get(this.Id);
+			var quest = creature.Quests.GetFirstIncomplete(this.Id);
 			if (quest == null) return;
 
 			var progress = quest.CurrentObjectiveOrLast;
@@ -583,7 +583,7 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			if (creature == null || killer == null) return;
 
-			var quest = killer.Quests.Get(this.Id);
+			var quest = killer.Quests.GetFirstIncomplete(this.Id);
 			if (quest == null) return;
 
 			var progress = quest.CurrentObjective;
@@ -666,7 +666,7 @@ namespace Aura.Channel.Scripting.Scripts
 			if (creature == null || !creature.IsPlayer || item == null || !item.Info.Pocket.IsEquip())
 				return;
 
-			var quest = creature.Quests.Get(this.Id);
+			var quest = creature.Quests.GetFirstIncomplete(this.Id);
 			if (quest == null) return;
 
 			var progress = quest.CurrentObjectiveOrLast;
@@ -689,7 +689,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="args"></param>
 		private void OnCreatureGathered(CollectEventArgs args)
 		{
-			var quest = args.Creature.Quests.Get(this.Id);
+			var quest = args.Creature.Quests.GetFirstIncomplete(this.Id);
 			if (quest == null) return;
 
 			var progress = quest.CurrentObjectiveOrLast;

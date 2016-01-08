@@ -1077,7 +1077,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		public string QuestObjective(int questId)
 		{
-			var quest = this.Player.Quests.Get(questId);
+			var quest = this.Player.Quests.GetFirstIncomplete(questId);
 			if (quest == null)
 				throw new Exception("NPC.GetQuestObjective: Player doesn't have quest '" + questId.ToString() + "'.");
 

@@ -100,14 +100,14 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Returns first quest with the given quest id, or null if none
-		/// were found.
+		/// Returns first uncompleted quest with the given quest id,
+		/// or null if none were found.
 		/// </summary>
 		/// <param name="questId"></param>
 		/// <returns></returns>
-		public Quest Get(int questId)
+		public Quest GetFirstIncomplete(int questId)
 		{
-			return this.Get(a => a.Id == questId);
+			return this.Get(a => a.Id == questId && a.State == QuestState.InProgress);
 		}
 
 		/// <summary>
@@ -153,8 +153,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public bool IsComplete(int id)
 		{
-			var quest = this.Get(id);
-			return (quest != null && quest.State == QuestState.Complete);
+			lock (_quests)
+				return _quests.Exists(a => a.Id == id && a.State == QuestState.Complete);
 		}
 
 		/// <summary>
@@ -215,7 +215,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public bool Finish(int questId, string objective)
 		{
-			var quest = this.Get(questId);
+			var quest = this.GetFirstIncomplete(questId);
 			if (quest == null) return false;
 
 			var progress = quest.GetProgress(objective);
@@ -388,7 +388,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <returns></returns>
 		public bool IsActive(int questId, string objective = null)
 		{
-			var quest = this.Get(questId);
+			var quest = this.GetFirstIncomplete(questId);
 			if (quest == null) return false;
 
 			var current = quest.CurrentObjective;
