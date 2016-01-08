@@ -18,27 +18,100 @@ using Aura.Channel.World;
 
 namespace Aura.Channel.Scripting.Scripts
 {
+	/// <summary>
+	/// Provides information about a quests.
+	/// </summary>
 	public class QuestScript : GeneralScript
 	{
+		/// <summary>
+		/// Quest id.
+		/// </summary>
 		public int Id { get; protected set; }
 
+		/// <summary>
+		/// Name display in quest log, etc.
+		/// </summary>
 		public string Name { get; protected set; }
+
+		/// <summary>
+		/// Description displayed in quest information.
+		/// </summary>
 		public string Description { get; protected set; }
+
+		/// <summary>
+		/// Additional information displayed in quest information.
+		/// </summary>
 		public string AdditionalInfo { get; protected set; }
 
+		/// <summary>
+		/// The type of quest.
+		/// </summary>
+		/// <remarks>
+		/// It's important that this type is set correctly, as it affects
+		/// packet structures.
+		/// </remarks>
 		public QuestType Type { get; protected set; }
+
+		/// <summary>
+		/// The PTJ type, used for the Deliver quest type.
+		/// </summary>
 		public PtjType PtjType { get; protected set; }
+
+		/// <summary>
+		/// The quest level, mainly used by PTJ quests, for different reward
+		/// tiers.
+		/// </summary>
 		public QuestLevel Level { get; protected set; }
 
+		/// <summary>
+		/// The Erinn hour at which the quest can be started.
+		/// </summary>
 		public int StartHour { get; protected set; }
+
+		/// <summary>
+		/// The Erinn hour at which the quest results can be reported.
+		/// </summary>
 		public int ReportHour { get; protected set; }
+
+		/// <summary>
+		/// The Erinn hour at which the quest has to reported, otherwise the
+		/// NPC won't give you a positive result.
+		/// </summary>
 		public int DeadlineHour { get; protected set; }
 
+		/// <summary>
+		/// The method by which the quest is received.
+		/// </summary>
+		/// <remarks>
+		/// While Manually requires the quest to be given to a player by an
+		/// NPC or via item, Automatically will give it automatically, as soon
+		/// as all prerequisites are met.
+		/// </remarks>
 		public Receive ReceiveMethod { get; protected set; }
+
+		/// <summary>
+		/// Specifies whether the quest can be canceled.
+		/// </summary>
 		public bool Cancelable { get; protected set; }
 
+		/// <summary>
+		/// Prerequisites that have to be met for the quest to be given
+		/// automatically.
+		/// </summary>
 		public List<QuestPrerequisite> Prerequisites { get; protected set; }
+
+		/// <summary>
+		/// Objectives that have to carried out, to complete the quest.
+		/// </summary>
 		public OrderedDictionary<string, QuestObjective> Objectives { get; protected set; }
+
+		/// <summary>
+		/// Groups of rewards that the player can get for completing the quest.
+		/// </summary>
+		/// <remarks>
+		/// Usually quests have only one reward group (group 0),
+		/// multiple groups are mainly used by PTJs.
+		/// </remarks>
 		public Dictionary<int, QuestRewardGroup> RewardGroups { get; protected set; }
 
 		/// <summary>
@@ -46,6 +119,14 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		public MabiDictionary MetaData { get; protected set; }
 
+		/// <summary>
+		/// The quest scroll item to use.
+		/// </summary>
+		public int ScrollId { get; protected set; }
+
+		/// <summary>
+		/// Creates a new quest script instance.
+		/// </summary>
 		public QuestScript()
 		{
 			this.Prerequisites = new List<QuestPrerequisite>();
@@ -55,8 +136,15 @@ namespace Aura.Channel.Scripting.Scripts
 			this.MetaData = new MabiDictionary();
 
 			this.Type = QuestType.Normal;
+
+			this.ScrollId = 70024; // Hunting Quest
 		}
 
+		/// <summary>
+		/// Initializes the script, loading the information and adding it to
+		/// the script manager.
+		/// </summary>
+		/// <returns></returns>
 		public override bool Init()
 		{
 			this.Load();
@@ -83,6 +171,9 @@ namespace Aura.Channel.Scripting.Scripts
 			return true;
 		}
 
+		/// <summary>
+		/// Disposes quest script, removing all subscriptions.
+		/// </summary>
 		public override void Dispose()
 		{
 			base.Dispose();
@@ -278,11 +369,26 @@ namespace Aura.Channel.Scripting.Scripts
 			this.Objectives.Add(ident, objective);
 		}
 
+		/// <summary>
+		/// Adds reward the player can get for completing the quest.
+		/// </summary>
+		/// <param name="reward"></param>
 		protected void AddReward(QuestReward reward)
 		{
 			this.AddReward(0, RewardGroupType.Item, QuestResult.Perfect, reward);
 		}
 
+		/// <summary>
+		/// Adds reward to a specific reward group, that the player can select
+		/// after completing the quest.
+		/// </summary>
+		/// <remarks>
+		/// Mainly used for PTJs.
+		/// </remarks>
+		/// <param name="groupId"></param>
+		/// <param name="type"></param>
+		/// <param name="result"></param>
+		/// <param name="reward"></param>
 		protected void AddReward(int groupId, RewardGroupType type, QuestResult result, QuestReward reward)
 		{
 			if (!this.RewardGroups.ContainsKey(groupId))
@@ -293,6 +399,10 @@ namespace Aura.Channel.Scripting.Scripts
 			this.RewardGroups[groupId].Add(reward);
 		}
 
+		/// <summary>
+		/// Returns the default reward group (0 or 1).
+		/// </summary>
+		/// <returns></returns>
 		public QuestRewardGroup GetDefaultRewardGroup()
 		{
 			QuestRewardGroup result;
@@ -303,6 +413,15 @@ namespace Aura.Channel.Scripting.Scripts
 			return result;
 		}
 
+		/// <summary>
+		/// Returns rewards for the given group and result.
+		/// </summary>
+		/// <remarks>
+		/// Mainly used for PTJs.
+		/// </remarks>
+		/// <param name="rewardGroup"></param>
+		/// <param name="result"></param>
+		/// <returns></returns>
 		public ICollection<QuestReward> GetRewards(int rewardGroup, QuestResult result)
 		{
 			var rewards = new List<QuestReward>();
@@ -357,7 +476,7 @@ namespace Aura.Channel.Scripting.Scripts
 		private void OnPlayerLoggedIn(Creature character)
 		{
 			if (this.CheckPrerequisites(character))
-				character.Quests.Start(this.Id, true);
+				character.Quests.SendOwl(this.Id);
 		}
 
 		/// <summary>
@@ -581,12 +700,18 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 	}
 
+	/// <summary>
+	/// The method of how a player can get a quest.
+	/// </summary>
 	public enum Receive
 	{
 		Manually,
 		Automatically,
 	}
 
+	/// <summary>
+	/// The PTJ quest level.
+	/// </summary>
 	public enum QuestLevel
 	{
 		None,
