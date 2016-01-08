@@ -286,13 +286,13 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			this.Prerequisites.Add(prerequisite);
 
-			if (prerequisite is QuestPrerequisiteQuestCompleted)
+			if (prerequisite.Is(typeof(QuestPrerequisiteQuestCompleted)))
 			{
 				ChannelServer.Instance.Events.PlayerCompletesQuest -= this.OnPlayerCompletesQuest;
 				ChannelServer.Instance.Events.PlayerCompletesQuest += this.OnPlayerCompletesQuest;
 			}
 
-			if (prerequisite is QuestPrerequisiteReachedLevel || prerequisite is QuestPrerequisiteReachedTotalLevel)
+			if (prerequisite.Is(typeof(QuestPrerequisiteReachedLevel)) || prerequisite.Is(typeof(QuestPrerequisiteReachedTotalLevel)))
 			{
 				ChannelServer.Instance.Events.CreatureLevelUp -= this.OnCreatureLevelUp;
 				ChannelServer.Instance.Events.CreatureLevelUp += this.OnCreatureLevelUp;
@@ -630,8 +630,8 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="creature"></param>
 		private void OnCreatureLevelUp(Creature creature)
 		{
-			if (!creature.Quests.Has(this.Id) && this.CheckPrerequisites(creature))
-				creature.Quests.Start(this.Id, true);
+			if (this.CheckPrerequisites(creature))
+				creature.Quests.SendOwl(this.Id);
 
 			this.CheckCurrentObjective(creature);
 		}

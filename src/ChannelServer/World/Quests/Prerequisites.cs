@@ -4,12 +4,26 @@
 using System.Linq;
 using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
+using System;
 
 namespace Aura.Channel.World.Quests
 {
 	public abstract class QuestPrerequisite
 	{
+		/// <summary>
+		/// Returns true if character meets the requirement.
+		/// </summary>
+		/// <param name="character"></param>
+		/// <returns></returns>
 		public abstract bool Met(Creature character);
+
+		/// <summary>
+		/// Returns true if this prerequisite, or on of its nested ones,
+		/// is of the given type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public abstract bool Is(Type type);
 	}
 
 	/// <summary>
@@ -27,6 +41,11 @@ namespace Aura.Channel.World.Quests
 		public override bool Met(Creature character)
 		{
 			return character.Quests.IsComplete(this.Id);
+		}
+
+		public override bool Is(Type type)
+		{
+			return (this.GetType() == type);
 		}
 	}
 
@@ -46,6 +65,11 @@ namespace Aura.Channel.World.Quests
 		{
 			return (character.Level >= this.Level);
 		}
+
+		public override bool Is(Type type)
+		{
+			return (this.GetType() == type);
+		}
 	}
 
 	/// <summary>
@@ -63,6 +87,11 @@ namespace Aura.Channel.World.Quests
 		public override bool Met(Creature character)
 		{
 			return (character.TotalLevel >= this.Level);
+		}
+
+		public override bool Is(Type type)
+		{
+			return (this.GetType() == type);
 		}
 	}
 
@@ -83,6 +112,11 @@ namespace Aura.Channel.World.Quests
 		public override bool Met(Creature character)
 		{
 			return !character.Skills.Has(this.Id, this.Rank);
+		}
+
+		public override bool Is(Type type)
+		{
+			return (this.GetType() == type);
 		}
 	}
 
@@ -105,6 +139,11 @@ namespace Aura.Channel.World.Quests
 
 			return this.Prerequisites.All(p => p.Met(character));
 		}
+
+		public override bool Is(Type type)
+		{
+			return this.Prerequisites.Any(a => a.Is(type));
+		}
 	}
 
 	/// <summary>
@@ -126,6 +165,11 @@ namespace Aura.Channel.World.Quests
 
 			return this.Prerequisites.Any(p => p.Met(character));
 		}
+
+		public override bool Is(Type type)
+		{
+			return this.Prerequisites.Any(a => a.Is(type));
+		}
 	}
 
 	/// <summary>
@@ -143,6 +187,11 @@ namespace Aura.Channel.World.Quests
 		public override bool Met(Creature character)
 		{
 			return !_prereq.Met(character);
+		}
+
+		public override bool Is(Type type)
+		{
+			return (_prereq.GetType() == type);
 		}
 	}
 }
