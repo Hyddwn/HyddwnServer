@@ -125,7 +125,7 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
-	/// Objective to reach a rank in a certain skill.
+	/// Objective to reach a certain level.
 	/// </summary>
 	public class QuestObjectiveReachLevel : QuestObjective
 	{
@@ -140,7 +140,7 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
-	/// Objective to get a specified keyword.
+	/// Objective to get a certain keyword.
 	/// </summary>
 	public class QuestObjectiveGetKeyword : QuestObjective
 	{
@@ -170,7 +170,7 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
-	/// Objective to equip something.
+	/// Objective to equip a certain type of item.
 	/// </summary>
 	public class QuestObjectiveEquip : QuestObjective
 	{
@@ -188,7 +188,7 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
-	/// Objective to equip something.
+	/// Objective to gather a specific item.
 	/// </summary>
 	public class QuestObjectiveGather : QuestObjective
 	{
