@@ -281,21 +281,25 @@ public class TracyShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		// Hunting quests aren't implemented yet
-		//Add("Quest", 70095);			// Hunting Quest (Brown Fox)
-		//Add("Quest", 70099);			// Hunting Quest (Brown Bear)
-		//Add("Quest", 70100);			// Hunting Quest (Red Bear)
-		//Add("Quest", 70089);			// Hunting Quest (Black Dire Wolf)
-		//Add("Quest", 70090);			// Hunting Quest (White Dire Wolf)
-		//Add("Quest", 70117);			// Hunting Quest (Raccoon)
-		//Add("Quest", 70119);			// Hunting Quest (Wisp)
+		AddQuest("Quest", 71015, 30); // Collect the Black Dire Wolf's Fomor Scrolls
+		AddQuest("Quest", 71016, 30); // Collect the White Dire Wolf's Fomor Scrolls
+		AddQuest("Quest", 71021, 30); // Collect the Brown Fox's Fomor Scrolls
+		AddQuest("Quest", 71025, 30); // Collect the Brown Bear's Fomor Scrolls
+		AddQuest("Quest", 71026, 30); // Collect the Red Bear's Fomor Scrolls
+		AddQuest("Quest", 71043, 30); // Collect the Raccoon's Fomor Scrolls
+		AddQuest("Quest", 71045, 30); // Collect the Wisp's Fomor Scrolls
 
-		// Party Quest tab
+		//AddQuest("Party Quest", InsertQuestId, 5); // [PQ] Hunt Down the Brown Bears
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Brown Bears
+		//AddQuest("Party Quest", InsertQuestId, 5); // [PQ] The Hunt for Red Bears
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] The Hunt for Red Bears
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Black Dire Wolves
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the White Dire Wolves
 
-		Add("Food", 50004);				// Bread
+		Add("Food", 50004); // Bread
 
-		Add("Carpentry Tool", 40022);	// Gathering Axe
-		Add("Carpentry Tool", 63223);	// Woodworking Plane
-		Add("Carpentry Tool", 63222);	// Lumber Axe
+		Add("Carpentry Tool", 40022); // Gathering Axe
+		Add("Carpentry Tool", 63223); // Woodworking Plane
+		Add("Carpentry Tool", 63222); // Lumber Axe
 	}
 }
