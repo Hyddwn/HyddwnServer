@@ -831,6 +831,12 @@ namespace Aura.Channel.Database
 						continue;
 					}
 
+					// Don't save scroll hunting quests
+					// TODO: Would it be better to use a general "repeatable"
+					//   setting to decide which quests not to save?
+					if (quest.Data.Type == QuestType.Hunting && quest.Id >= 71001 && quest.Id <= 71075)
+						continue;
+
 					using (var cmd = new InsertCommand("INSERT INTO `quests` {0}", conn, transaction))
 					{
 						if (quest.UniqueId < MabiId.QuestsTmp)
