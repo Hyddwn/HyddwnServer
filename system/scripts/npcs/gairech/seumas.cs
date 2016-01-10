@@ -280,38 +280,36 @@ public class SeumasShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		// Quest
-		Add("Quest", 70080, 1, 30); // [10 Skeleton's Fomor Scrolls] 
-		Add("Quest", 70086, 1, 30); // [10 Skeleton Wolf's Fomor Scrolls] 
-		Add("Quest", 70087, 1, 30); // [10 Brown Dire Wolf Fomor Scrolls]
-		Add("Quest", 70089, 1, 30); // [10 Black Dire Wolf Fomor Scrolls]
-		Add("Quest", 70090, 1, 30); // [10 White Dire Wolf Fomor Scrolls]
-		Add("Quest", 70097, 1, 30); // [10 Gray Fox Fomor Scrolls]
-		Add("Quest", 70099, 1, 30); // [10 Brown Bear Fomor Scrolls]
-		Add("Quest", 70100, 1, 30); // [10 Red Bear Fomor Scrolls]
-		Add("Quest", 70102, 1, 30); // [10 Brown Grizzly Bear's Fomor Scrolls]
-		Add("Quest", 70103, 1, 30); // [10 Red Grizzly Bear's Fomor Scrolls]
-		Add("Quest", 70104, 1, 30); // [10 Black Grizzly Bear's Fomor Scrolls]
-		Add("Quest", 70114, 1, 30); // [10 Kobold's Fomor Scrolls]
-		Add("Quest", 70117, 1, 30); // [10 Raccoon Fomor Scrolls]
-		Add("Quest", 70119, 1, 30); // [10 Wisp Fomor Scrolls]
-		Add("Quest", 70121, 1, 30); // [10 Skeleton Soldier Fomor Scrolls]
-		Add("Quest", 70126, 1, 30); // [10 Jackal's Fomor Scrolls]
-		Add("Quest", 70130, 1, 30); // [10 Burgundy Grizzly Bear's Fomor Scrolls]
-		Add("Quest", 70132, 1, 30); // [10 Blue Dire Wolf Fomor Scrolls]
-		Add("Quest", 70133, 1, 30); // [10 Burgundy Dire Wolf Fomor Scrolls]
-		Add("Quest", 70134, 1, 30); // [10 Wood Jackal's Fomor Scrolls]
-		Add("Quest", 70135, 1, 30); // [10 Wild Boar's Fomor Scrolls] 
+		AddQuest("Quest", 71006, 30); // Collect the Skeleton's Fomor Scrolls
+		AddQuest("Quest", 71012, 30); // Collect the Skeleton Wolf's Fomor Scrolls
+		AddQuest("Quest", 71013, 30); // Collect the Brown Dire Wolf's Fomor Scrolls
+		AddQuest("Quest", 71015, 30); // Collect the Black Dire Wolf's Fomor Scrolls
+		AddQuest("Quest", 71016, 30); // Collect the White Dire Wolf's Fomor Scrolls
+		AddQuest("Quest", 71023, 30); // Collect the Gray Fox's Fomor Scrolls
+		AddQuest("Quest", 71025, 30); // Collect the Brown Bear's Fomor Scrolls
+		AddQuest("Quest", 71026, 30); // Collect the Red Bear's Fomor Scrolls
+		AddQuest("Quest", 71028, 30); // Collect the Brown Grizzly Bear's Fomor Scrolls
+		AddQuest("Quest", 71029, 30); // Collect the Red Grizzly Bear's Fomor Scrolls
+		AddQuest("Quest", 71030, 30); // Collect the Black Grizzly Bear's Fomor Scrolls
+		AddQuest("Quest", 71040, 30); // Collect the Kobold's Fomor Scrolls
+		AddQuest("Quest", 71043, 30); // Collect the Raccoon's Fomor Scrolls
+		AddQuest("Quest", 71045, 30); // Collect the Wisp's Fomor Scrolls
+		AddQuest("Quest", 71047, 30); // Collect the Skeleton Soldier's Fomor Scrolls
+		AddQuest("Quest", 71052, 30); // Collect the Jackal's Fomor Scrolls
+		AddQuest("Quest", 71057, 30); // Collect the Burgundy Grizzly Bear's Fomor Scrolls
+		AddQuest("Quest", 71059, 30); // Collect the Blue Dire Wolf's Fomor Scrolls
+		AddQuest("Quest", 71060, 30); // Collect the Burgundy Dire Wolf's Fomor Scrolls
+		AddQuest("Quest", 71061, 30); // Collect the Wood Jackal's Fomor Scrolls
+		AddQuest("Quest", 71062, 30); // Collect the Wild Boar's Fomor Scrolls
 
-		// Party Quest
-		Add("Party Quest", 70025, 1, 30); // [30 Skeletons]
-		Add("Party Quest", 70025, 1, 20); // [30 Brown Dire Wolves]
-		Add("Party Quest", 70025, 1, 30); // [30 Skeleton Wolves]
-		Add("Party Quest", 70025, 1, 30); // [10 Brown Dire Wolves and 30 Skeleton Wolves]
-		Add("Party Quest", 70025, 1, 50); // [20 Dire Wolves and 20 Grizzly Bears]
-		Add("Party Quest", 70025, 1, 20); // [10 Werewolves]
-		Add("Party Quest", 70025, 1, 10); // [30 Wood Jackals]
-		Add("Party Quest", 70025, 1, 10); // [30 Blue Dire Wolves]
-		Add("Party Quest", 70025, 1, 10); // [30 Burgundy Dire Wolves]
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Skeletons
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Brown Dire Wolves
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Skeleton Wolves
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Dire Wolves
+		//AddQuest("Party Quest", InsertQuestId, 50); // [PQ] Hunt Down the Dire Wolves and the Grizzly Bears
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Werewolves
+		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Wood Jackals
+		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Blue Dire Wolves
+		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Burgundy Dire Wolves
 	}
 }
