@@ -28,6 +28,7 @@ namespace Aura.Mabi.Const
 
 	public enum QuestType : byte
 	{
+		Hunting = 0,
 		Deliver = 1,
 		Normal = 2,
 	}
