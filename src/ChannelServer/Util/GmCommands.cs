@@ -91,6 +91,7 @@ namespace Aura.Channel.Util
 			Add(99, -1, "reloadscripts", "", HandleReloadScripts);
 			Add(99, -1, "reloadconf", "", HandleReloadConf);
 			Add(99, 99, "closenpc", "", HandleCloseNpc);
+			Add(99, 99, "nosave", "", HandleNoSave);
 
 			// Aliases
 			AddAlias("item", "drop");
@@ -1879,6 +1880,24 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Pon modificated: {0} -> {1}."), oldVal, target.Client.Account.Points);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("Your Pon have been modificated by {2}: {0} -> {1}."), oldVal, newVal, sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleNoSave(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			var creatures = target.Client.Creatures.Values.ToArray();
+
+			foreach (var creature in creatures)
+			{
+				var pc = creature as PlayerCreature;
+				if (pc != null)
+					pc.Save = false;
+			}
+
+			Send.ServerMessage(sender, Localization.Get("Marked {0} creatures to *not* be saved."), creatures.Length);
+			if (sender != target)
+				Send.ServerMessage(sender, Localization.Get("{0} marked your creatures to *not* be saved on logout."), sender.Name);
 
 			return CommandResult.Okay;
 		}

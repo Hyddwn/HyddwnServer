@@ -353,50 +353,51 @@ public class DuncanShop : NpcShopScript
 	public override void Setup()
 	{
 		// Quest
-		Add("Quest", 70083, 1, 30); // [10 Gray Wolf Fomor Scrolls]
-		Add("Quest", 70084, 1, 30); // [10 Black Wolf Fomor Scrolls]
-		Add("Quest", 70085, 1, 30); // [10 White Wolf Fomor Scrolls]
-		Add("Quest", 70087, 1, 30); // [10 Brown Dire Wolf Fomor Scrolls]
-		Add("Quest", 70091, 1, 30); // [10 White Spider Fomor Scrolls]
-		Add("Quest", 70092, 1, 30); // [10 Black Spider Fomor Scrolls]
-		Add("Quest", 70093, 1, 30); // [10 Red Spider Fomor Scrolls]
-		Add("Quest", 70095, 1, 30); // [10 Brown Fox Fomor Scrolls]
-		Add("Quest", 70096, 1, 30); // [10 Red Fox Fomor Scrolls]
-		Add("Quest", 70097, 1, 30); // [10 Gray Fox Fomor Scrolls]
-		Add("Quest", 70105, 1, 30); // [10 Bat Fomor Scrolls]
-		Add("Quest", 70106, 1, 30); // [10 Mimic Fomor Scrolls]
-		Add("Quest", 70109, 1, 30); // [10 Gray Town Rat Fomor Scrolls]
-		Add("Quest", 70111, 1, 30); // [10 Goblin Fomor Scrolls]
-		Add("Quest", 70112, 1, 30); // [10 Poison Goblin Fomor Scrolls]
-		Add("Quest", 70113, 1, 30); // [10 Gold Goblin Fomor Scrolls]
-		Add("Quest", 70119, 1, 30); // [10 Wisp Fomor Scrolls]
-		Add("Quest", 70123, 1, 30); // [10 Snake Fomor Scrolls]
-		Add("Quest", 70124, 1, 30); // [10 Coyote Fomor Scrolls]
-		Add("Quest", 70129, 1, 30); // [10 Blue Grizzly Bear Fomor Scrolls]
-		Add("Quest", 70131, 1, 30); // [10 Burgundy Spider Fomor Scrolls]
-		Add("Quest", 70140, 1, 30); // [10 Rat Man Fomor Scrolls]
-		Add("Quest", 70141, 1, 30); // [10 Blue Wolf Fomor Scrolls]
-		Add("Quest", 70142, 1, 30); // [10 Dark Blue Spider Fomor Scrolls]
+		AddQuest("Quest", 71009, 30); // Collect the Gray Wolf's Fomor Scrolls
+		AddQuest("Quest", 71010, 30); // Collect the Black Wolf's Fomor Scrolls
+		AddQuest("Quest", 71011, 30); // Collect the White Wolf's Fomor Scrolls
+		AddQuest("Quest", 71013, 30); // Collect the Brown Dire Wolf's Fomor Scrolls
+		AddQuest("Quest", 71017, 30); // Collect the White Spider's Fomor Scrolls
+		AddQuest("Quest", 71018, 30); // Collect the Black Spider's Fomor Scrolls
+		AddQuest("Quest", 71019, 30); // Collect the Red Spider's Fomor Scrolls
+		AddQuest("Quest", 71021, 30); // Collect the Brown Fox's Fomor Scrolls
+		AddQuest("Quest", 71022, 30); // Collect the Red Fox's Fomor Scrolls
+		AddQuest("Quest", 71023, 30); // Collect the Gray Fox's Fomor Scrolls
+		AddQuest("Quest", 71031, 30); // Collect the Bat's Fomor Scrolls
+		AddQuest("Quest", 71032, 30); // Collect the Mimic's Fomor Scrolls
+		AddQuest("Quest", 71035, 30); // Collect the Gray Town Rat's Fomor Scrolls
+		AddQuest("Quest", 71037, 30); // Collect the Goblin's Fomor Scrolls
+		AddQuest("Quest", 71038, 30); // Poison Goblin's Fomor Scrolls
+		if (IsEnabled("EmainMacha"))
+			AddQuest("Quest", 71039, 30); // Collect the Gold Goblin's Fomor Scrolls
+		AddQuest("Quest", 71045, 30); // Collect the Wisp's Fomor Scrolls
+		AddQuest("Quest", 71049, 30); // Collect the Snake's Fomor Scrolls
+		AddQuest("Quest", 71050, 30); // Collect the Coyote's Fomor Scrolls
+		AddQuest("Quest", 71056, 30); // Collect the Blue Grizzly Bear's Fomor Scrolls
+		AddQuest("Quest", 71058, 30); // Collect the Burgundy Spider Fomor Scrolls
+		AddQuest("Quest", 71064, 30); // Collect the Rat Man's Fomor Scrolls
+		AddQuest("Quest", 71068, 30); // Collect the Blue Wolf's Fomor Scrolls
+		AddQuest("Quest", 71069, 30); // Collect the Dark Blue Spider's Fomor Scrolls
 
 		// Party Quest
-		Add("Party Quest", 70025, 1, 10);   // [hunt 30 Goblins]
-		Add("Party Quest", 70025, 1, 10);   // [hunt 30 Poison Goblins]
-		Add("Party Quest", 70025, 1, 20);   // [hunt 30 Laghodessas]
-		Add("Party Quest", 70025, 1, 20);   // [hunt 10 Rat Men]
-		Add("Party Quest", 70025, 1, 500);  // [Ciar Basic Fomor Pass] [Golem]
-		Add("Party Quest", 70025, 1, 500);  // [Ciar Intermediate Fomor Pass for 2] [Golem]
-		Add("Party Quest", 70025, 1, 500);  // [Ciar Intermediate Fomor Pass for 4] [Golem]
-		Add("Party Quest", 70025, 1, 500);  // [Ciar Adv. Fomor Pass for 2] [Golem]
-		Add("Party Quest", 70025, 1, 500);  // [Ciar Adv. Fomor Pass for 3] [Golem]
-		Add("Party Quest", 70025, 1, 1000); // [Ciar Adv. Fomor Pass] [Golem]
-		Add("Party Quest", 70025, 1, 1000); // [Giant Spider]
-		Add("Party Quest", 70025, 1, 1500); // [Alby Basic Fomor Pass] [Giant Red Spider]
-		Add("Party Quest", 70025, 1, 2000); // [Alby Intermediate Fomor Pass] [Lycanthrope]
-		Add("Party Quest", 70025, 1, 2500); // [Alby Adv. Fomor Pass] [Arachne]
-		Add("Party Quest", 70025, 1, 1000); // [Golem]
-		Add("Party Quest", 70025, 1, 1500); // [Ciar Basic Fomor Pass] [Golem]
-		Add("Party Quest", 70025, 1, 2000); // [Ciar Intermediate Fomor Pass] [Golem]
-		Add("Party Quest", 70025, 1, 2500); // [Ciar Adv. Fomor Pass] [Golem]
+		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Goblins
+		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Poison Goblins
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Laghodessas
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Rat Men
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
+		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the Golem
+		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the Giant Spider
+		//AddQuest("Party Quest", InsertQuestId, 1500); // [PQ] Defeat the Giant Red Spider
+		//AddQuest("Party Quest", InsertQuestId, 2000); // [PQ] Defeat the Lycanthrope (Hard Mode)
+		//AddQuest("Party Quest", InsertQuestId, 2500); // [PQ] Defeat the Arachne
+		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the Golem
+		//AddQuest("Party Quest", InsertQuestId, 1500); // [PQ] Defeat the Golem
+		//AddQuest("Party Quest", InsertQuestId, 2000); // [PQ] Defeat the Golem
+		//AddQuest("Party Quest", InsertQuestId, 2500); // [PQ] Defeat the Golem
 
 		// Etc.
 		Add("Etc.", 1045); // Hit What You See

@@ -281,24 +281,24 @@ public class ComganShop : NpcShopScript
 		Add("First Aid Kits", 63716, 10); // Marionette Repair Set x10
 		Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
 
-		Add("Quest", 70105); // Hunting Quest - 10 Goblin Former Scrolls
-		Add("Quest", 70106); // Hunting Quest - 10 Imp Former Scrolls
-		Add("Quest", 70111); // Hunting Quest - 10 Mimic Former Scrolls
-		Add("Quest", 70118); // Hunting Quest - 10 Bat Former Scrolls
-		Add("Quest", 70139); // Hunting Quest - 10 Flying Sword Scrolls
+		AddQuest("Quest", 71031, 30); // Collect the Bat's Fomor Scrolls
+		AddQuest("Quest", 71032, 30); // Collect the Mimic's Fomor Scrolls
+		AddQuest("Quest", 71037, 30); // Collect the Goblin's Fomor Scrolls
+		AddQuest("Quest", 71044, 30); // Collect the Imp's Fomor Scrolls
+		AddQuest("Quest", 71066, 30); // Collect the Flying Sword's Fomor Scrolls
 
-		Add("Party Quest", 70025); // Party Quest - 30 Brown Dire Wolves
-		Add("Party Quest", 70025); // Party Quest - 30 Laghodessas
-		Add("Party Quest", 70025); // Party Quest - 10 Green Gremlins
-		Add("Party Quest", 70025); // Party Quest - 10 Gray Gremlins
-		Add("Party Quest", 70025); // Party Quest - 10 Brown Gremlins
-		Add("Party Quest", 70025); // Party Quest - 10 Flying Swords
-		Add("Party Quest", 70025); // Party Quest - 30 White Dire Wolves
-		Add("Party Quest", 70025); // Party Quest - 30 Kobold Bandits
-		Add("Party Quest", 70025); // Party Quest - Werewolf (Barri Basic)
-		Add("Party Quest", 70025); // Party Quest - New Gremlin (Barri Adv. for 2)
-		Add("Party Quest", 70025); // Party Quest - New Gremlin (Barri Adv. for 3)
-		Add("Party Quest", 70025); // Party Quest - New Gremlin (Barri Adv.)
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Brown Dire Wolves
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the White Dire Wolves
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Kobold Bandits
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Laghodessas
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Green Gremlins
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt down the Gray Gremlins
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Brown Gremlins
+		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Flying Swords
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Werewolf
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the New Gremlin
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the New Gremlin
+		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the New Gremlin
 
 		Add("Etc.", 91563, 1); // Hot Spring Ticket x1
 		Add("Etc.", 91563, 5); // Hot Spring Ticket x5

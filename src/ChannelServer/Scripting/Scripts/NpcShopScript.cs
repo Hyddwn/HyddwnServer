@@ -157,6 +157,20 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds quest scroll item to tab.
+		/// </summary>
+		/// <param name="tabTitle"></param>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <param name="price"></param>
+		public void AddQuest(string tabTitle, int questId, int price)
+		{
+			var item = Item.CreateQuestScroll(questId);
+
+			this.Add(tabTitle, item, price);
+		}
+
+		/// <summary>
 		/// Adds item to tab.
 		/// </summary>
 		/// <param name="tabTitle"></param>
