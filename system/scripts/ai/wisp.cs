@@ -21,7 +21,7 @@ public class WispAi : AiScript
 	{
 		SetVisualField(950, 120);
 		SetAggroRadius(600);
-		SetAggroLimit(AggroLimit.None);
+		SetAggroLimit(AggroLimit.One);
 
 		Doubts("/pc/", "/pet/");
 		HatesNearby(7000);
