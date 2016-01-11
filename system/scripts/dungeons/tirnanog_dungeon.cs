@@ -31,7 +31,7 @@ public class AlbeyDungeonScript : DungeonScript
 			var member = dungeon.Party[i];
 			var treasureChest = new TreasureChest();
 
-			treasureChest.AddGold(rnd.Next(9000, 16000)); // Gold
+			treasureChest.AddGold(rnd.Next(1440, 2560)); // Gold
 			treasureChest.Add(GetRandomTreasureItem(rnd)); // Random item
 
 			dungeon.AddChest(treasureChest);
