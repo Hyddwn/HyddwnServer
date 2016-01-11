@@ -472,10 +472,12 @@ namespace Aura.Channel.Skills.Combat
 				if (highestRating == PowerRating.Normal)
 				{
 					if (targets.Length >= 4)
+					{
 						attackerSkill.Train(trainingIdx); // Attack several enemies of similar level.
 
-					if (targets.All(a => a.IsDead))
-						attackerSkill.Train(trainingIdx + 1); // Defeat several enemies of similar level.
+						if (targets.All(a => a.IsDead))
+							attackerSkill.Train(trainingIdx + 1); // Defeat several enemies of similar level.
+					}
 				}
 
 				return;
@@ -489,10 +491,12 @@ namespace Aura.Channel.Skills.Combat
 				if (highestRating == PowerRating.Strong)
 				{
 					if (targets.Length >= 4)
+					{
 						attackerSkill.Train(trainingIdx); // Attack several powerful enemies.
 
-					if (targets.All(a => a.IsDead))
-						attackerSkill.Train(trainingIdx + 1); // Defeat several powerful enemies.
+						if (targets.All(a => a.IsDead))
+							attackerSkill.Train(trainingIdx + 1); // Defeat several powerful enemies.
+					}
 				}
 
 				return;
