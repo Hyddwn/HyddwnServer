@@ -596,6 +596,57 @@ namespace Aura.Channel.World.Inventory
 
 			lock (_pockets)
 			{
+				// Hotfix for #200, ctrl+click-equipping.
+				// If an item is moved from the inventory to a filled equip
+				// slot, but there's not enough space in the source pocket
+				// for the colliding item, it would vanish, because the Add
+				// failed. ("Toss it in, it should be the cursor.")
+				//
+				// The following code tries to prevent that, by explicitly
+				// checking if this is a ctrl+click-equip move, and whether
+				// the potentially colliding item fits into the inventory.
+				// 
+				// Is there a better way to solve this? Maybe a more
+				// generalized one? *Without* reverting the move on fail?
+				if (source != Pocket.Cursor && target.IsEquip())
+				{
+					//Log.Debug("Inv2EqMove: {0} -> {1}", source, target);
+
+					if ((collidingItem = _pockets[target].GetItemAt(0, 0)) != null)
+					{
+						// Cursor will work by default, as it will be
+						// empty after moving the new item out of it.
+						var success = (source == Pocket.Cursor);
+
+						// Try main inv
+						if (!success)
+						{
+							if (_pockets.ContainsKey(Pocket.Inventory))
+								success = _pockets[Pocket.Inventory].HasSpace(collidingItem);
+						}
+
+						// VIP inv
+						if (!success)
+						{
+							if (_pockets.ContainsKey(Pocket.VIPInventory))
+								success = _pockets[Pocket.VIPInventory].HasSpace(collidingItem);
+						}
+
+						// Try bags
+						for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax && !success; ++i)
+						{
+							if (_pockets.ContainsKey(i))
+								success = _pockets[i].HasSpace(collidingItem);
+						}
+
+						if (!success)
+						{
+							Send.Notice(_creature, Localization.Get("There is no room in your inventory."));
+							return false;
+						}
+					}
+				}
+
 				if (!_pockets[target].TryAdd(item, targetX, targetY, out collidingItem))
 					return false;
 
@@ -621,9 +672,47 @@ namespace Aura.Channel.World.Inventory
 					// Remove the item from the source pocket
 					_pockets[source].Remove(item);
 
-					// Toss it in, it should be the cursor.
+					// ~~Toss it in, it should be the cursor.~~
 					if (collidingItem != null)
-						_pockets[source].Add(collidingItem);
+					{
+						//_pockets[source].Add(collidingItem);
+
+						var success = false;
+
+						// Try source pocket first if it was the cursor,
+						// so normal swaps work as expected. Moves from the
+						// inventory via ctrl+click should start at the main
+						// inventory.
+						if (source == Pocket.Cursor)
+							success = _pockets[source].Add(collidingItem);
+
+						// Try main inv
+						if (!success)
+						{
+							if (_pockets.ContainsKey(Pocket.Inventory))
+								success = _pockets[Pocket.Inventory].Add(collidingItem);
+						}
+
+						// VIP inv
+						if (!success)
+						{
+							if (_pockets.ContainsKey(Pocket.VIPInventory))
+								success = _pockets[Pocket.VIPInventory].Add(collidingItem);
+						}
+
+						// Try bags
+						for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax && !success; ++i)
+						{
+							if (_pockets.ContainsKey(i))
+								success = _pockets[i].Add(collidingItem);
+						}
+
+						// Should never happen, as it was tested above beforehand.
+						if (!success)
+						{
+							Log.Error("CreatureInventory: Inv2EqMove error? Please report. {0} -> {1}", source, target);
+						}
+					}
 
 					Send.ItemMoveInfo(_creature, item, source, collidingItem);
 				}

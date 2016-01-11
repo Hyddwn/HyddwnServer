@@ -26,6 +26,13 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
+		/// Returns true if there's enough space for the item in this pocket.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public abstract bool HasSpace(Item item);
+
+		/// <summary>
 		/// Attempts to put item at the coordinates. If another item is
 		/// in the new item's space it's returned in colliding.
 		/// Returns whether the attempt was successful.
@@ -254,6 +261,23 @@ namespace Aura.Channel.World.Inventory
 			}
 
 			return result;
+		}
+
+		protected bool HasCollisions(uint targetX, uint targetY, Item item)
+		{
+			for (var x = targetX; x < targetX + item.Data.Width; ++x)
+			{
+				for (var y = targetY; y < targetY + item.Data.Height; ++y)
+				{
+					if (x > _width - 1 || y > _height - 1)
+						continue;
+
+					if (_map[x, y] != null)
+						return true;
+				}
+			}
+
+			return false;
 		}
 
 		public override bool Remove(Item item)
@@ -504,6 +528,23 @@ namespace Aura.Channel.World.Inventory
 
 			return result;
 		}
+
+		public override bool HasSpace(Item item)
+		{
+			for (byte y = 0; y <= _height - item.Data.Height; ++y)
+			{
+				for (byte x = 0; x <= _width - item.Data.Width; ++x)
+				{
+					if (_map[x, y] != null)
+						continue;
+
+					if (!this.HasCollisions(x, y, item))
+						return true;
+				}
+			}
+
+			return false;
+		}
 	}
 
 	/// <summary>
@@ -640,6 +681,11 @@ namespace Aura.Channel.World.Inventory
 
 			return result;
 		}
+
+		public override bool HasSpace(Item item)
+		{
+			return (_item == null);
+		}
 	}
 
 	/// <summary>
@@ -732,6 +778,11 @@ namespace Aura.Channel.World.Inventory
 		public override List<Item> GetItems(Func<Item, bool> predicate, StartAt startAt)
 		{
 			return _items.Where(predicate).ToList();
+		}
+
+		public override bool HasSpace(Item item)
+		{
+			return true;
 		}
 	}
 
