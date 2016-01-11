@@ -592,7 +592,9 @@ namespace Aura.Channel.World.Inventory
 
 			var source = item.Info.Pocket;
 			var amount = item.Info.Amount;
+
 			Item collidingItem = null;
+			var collidingItemTarget = source;
 
 			lock (_pockets)
 			{
@@ -614,29 +616,44 @@ namespace Aura.Channel.World.Inventory
 
 					if ((collidingItem = _pockets[target].GetItemAt(0, 0)) != null)
 					{
+						var success = false;
+
 						// Cursor will work by default, as it will be
 						// empty after moving the new item out of it.
-						var success = (source == Pocket.Cursor);
+						if (source == Pocket.Cursor)
+						{
+							success = true;
+							collidingItemTarget = Pocket.Cursor;
+						}
 
 						// Try main inv
 						if (!success)
 						{
 							if (_pockets.ContainsKey(Pocket.Inventory))
+							{
 								success = _pockets[Pocket.Inventory].HasSpace(collidingItem);
+								collidingItemTarget = Pocket.Inventory;
+							}
 						}
 
 						// VIP inv
 						if (!success)
 						{
 							if (_pockets.ContainsKey(Pocket.VIPInventory))
+							{
 								success = _pockets[Pocket.VIPInventory].HasSpace(collidingItem);
+								collidingItemTarget = Pocket.VIPInventory;
+							}
 						}
 
 						// Try bags
 						for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax && !success; ++i)
 						{
 							if (_pockets.ContainsKey(i))
+							{
 								success = _pockets[i].HasSpace(collidingItem);
+								collidingItemTarget = i;
+							}
 						}
 
 						if (!success)
@@ -672,44 +689,13 @@ namespace Aura.Channel.World.Inventory
 					// Remove the item from the source pocket
 					_pockets[source].Remove(item);
 
-					// ~~Toss it in, it should be the cursor.~~
 					if (collidingItem != null)
 					{
-						//_pockets[source].Add(collidingItem);
-
-						var success = false;
-
-						// Try source pocket first if it was the cursor,
-						// so normal swaps work as expected. Moves from the
-						// inventory via ctrl+click should start at the main
-						// inventory.
-						if (source == Pocket.Cursor)
-							success = _pockets[source].Add(collidingItem);
-
-						// Try main inv
-						if (!success)
+						// Move colliding item into the pocket ascertained to
+						// be free in the beginning.
+						if (!_pockets[collidingItemTarget].Add(collidingItem))
 						{
-							if (_pockets.ContainsKey(Pocket.Inventory))
-								success = _pockets[Pocket.Inventory].Add(collidingItem);
-						}
-
-						// VIP inv
-						if (!success)
-						{
-							if (_pockets.ContainsKey(Pocket.VIPInventory))
-								success = _pockets[Pocket.VIPInventory].Add(collidingItem);
-						}
-
-						// Try bags
-						for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax && !success; ++i)
-						{
-							if (_pockets.ContainsKey(i))
-								success = _pockets[i].Add(collidingItem);
-						}
-
-						// Should never happen, as it was tested above beforehand.
-						if (!success)
-						{
+							// Should never happen, as it was checked above.
 							Log.Error("CreatureInventory: Inv2EqMove error? Please report. {0} -> {1}", source, target);
 						}
 					}
