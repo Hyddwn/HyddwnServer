@@ -960,16 +960,16 @@ namespace Aura.Channel.Util
 			return CommandResult.Okay;
 		}
 
-
 		private CommandResult HandleCloseNpc(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
 			if (!target.Client.NpcSession.IsValid())
 				return CommandResult.Fail;
 
-			if (target != sender)
-				Send.ServerMessage(sender, Localization.Get("Closed npc dialog for {0}"), target.Name);
-
 			Send.NpcTalkEndR(target.Client.NpcSession.Script.Player, target.Client.NpcSession.Script.NPC.EntityId, "Ended by closenpc command.");
+
+			Send.ServerMessage(sender, Localization.Get("Closed NPC dialog."));
+			if (target != sender)
+				Send.ServerMessage(target, Localization.Get("{0} closed your NPC dialog."), sender.Name);
 
 			return CommandResult.Okay;
 		}
