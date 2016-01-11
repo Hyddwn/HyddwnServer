@@ -67,22 +67,8 @@ public class GremlinAi : AiScript
 		if (Case(70))
 		{
 			Do(SwitchTo(WeaponSet.First));
-			SwitchRandom();
-			if (Case(14))
-			{
-				Do(Attack(1, 4000));
-				Do(Wait(500, 2000));
-			}
-			else if (Case(28))
-			{
-				Do(Attack(1, 4000));
-				Do(Wait(500, 2000));
-			}
-			else if (Case(58))
-			{
-				Do(Attack(1, 4000));
-				Do(Wait(500, 2000));
-			}
+			Do(Attack(1, 4000));
+			Do(Wait(500, 2000));
 		}
 		else if (Case(20))
 		{
