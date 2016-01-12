@@ -12,6 +12,7 @@ using Aura.Shared.Util;
 using Aura.Mabi;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Aura.Channel.World.Quests;
 
 namespace Aura.Channel.World.Entities
 {
@@ -107,9 +108,19 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Quest id, used for quest items.
+		/// If item includes a quest, this value is equal to its unique id.
 		/// </summary>
-		public long QuestId { get; set; }
+		public long QuestId { get { return (this.Quest == null ? 0 : this.Quest.UniqueId); } }
+
+		/// <summary>
+		/// Gets or sets the quest this item includes.
+		/// </summary>
+		/// <remarks>
+		/// Mainly used by quest scrolls. If an item that includes a quest
+		/// is added/removed to/from the inventory, the quest is
+		/// added/removed as well.
+		/// </remarks>
+		public Quest Quest { get; set; }
 
 		/// <summary>
 		/// Sets and returns the current amount (Info.Amount).
@@ -388,9 +399,14 @@ namespace Aura.Channel.World.Entities
 			this.Data = baseItem.Data;
 			this.MetaData1 = new MabiDictionary(baseItem.MetaData1.ToString());
 			this.MetaData2 = new MabiDictionary(baseItem.MetaData2.ToString());
-			this.QuestId = baseItem.QuestId;
 			this.EgoInfo = baseItem.EgoInfo.Copy();
 			this.AddUpgradeEffect(baseItem.GetUpgradeEffects());
+
+			if (baseItem.Quest != null)
+			{
+				this.Quest = new Quest(baseItem.Quest.Id);
+				this.Quest.QuestItem = this;
+			}
 
 			this.SetNewEntityId();
 		}
@@ -671,6 +687,32 @@ namespace Aura.Channel.World.Entities
 		{
 			var item = new Item(itemId);
 			item.MetaData1.SetString("TARGET", "pos@{0},{1},{2}", regionId, x, y);
+
+			return item;
+		}
+
+		/// <summary>
+		/// Creates quest scroll for the given quest id.
+		/// </summary>
+		/// <remarks>
+		/// During the creation, a quest is created and included with the item.
+		/// </remarks>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public static Item CreateQuestScroll(int questId)
+		{
+			// Get quest information
+			var questScript = ChannelServer.Instance.ScriptManager.QuestScripts.Get(questId);
+			if (questScript == null)
+				throw new ArgumentException("Quest '" + questId + "' not found.");
+
+			var quest = new Quest(questId);
+
+			var item = new Item(questScript.ScrollId);
+			item.MetaData1.Parse(quest.Data.MetaData.ToString());
+
+			item.Quest = quest;
+			quest.QuestItem = item;
 
 			return item;
 		}

@@ -124,6 +124,13 @@ namespace Aura.Channel.Skills.Combat
 					SkillHelper.HandleInjury(attacker, target, damage);
 				}
 
+				// Knock down on deadly
+				if (target.Conditions.Has(ConditionsA.Deadly))
+				{
+					tAction.Set(TargetOptions.KnockDown);
+					tAction.Stun = GetTargetStun(attacker, weapon, tAction.IsKnockBack);
+				}
+
 				// Aggro
 				target.Aggro(attacker);
 

@@ -9,6 +9,9 @@ public class SnakeAi : AiScript
 {
 	public SnakeAi()
 	{
+		SetVisualField(600, 90);
+		SetAggroRadius(400);
+
 		Hates("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
@@ -21,7 +24,7 @@ public class SnakeAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		if (Random(100) < 25)
+		if (Random() < 25)
 			Do(PrepareSkill(SkillId.Defense));
 		Do(Circle(600, 1000, 3000));
 		Do(Wait(2000, 4000));
@@ -30,22 +33,21 @@ public class SnakeAi : AiScript
 
 	protected override IEnumerable Aggro()
 	{
-		if (Random(100) < 75)
+		if (Random() < 75)
 			Do(Attack());
 		else
 			Do(PrepareSkill(SkillId.Defense));
 
-		var num = Random(100);
-
-		if (num < 40) // 40%
+		SwitchRandom();
+		if (Case(40))
 		{
-			Do(Timeout(3000, KeepDistance(400, true)));
+			Do(KeepDistance(400, true, 3000));
 		}
-		else if (num < 70) // 30%
+		else if (Case(30))
 		{
-			Do(Timeout(3000, KeepDistance(700, false)));
+			Do(KeepDistance(700, false, 3000));
 		}
-		else // 30%
+		else if (Case(30))
 		{
 			Do(Wait(3000));
 		}

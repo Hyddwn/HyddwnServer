@@ -33,24 +33,33 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check skill
 			var skill = creature.Skills.GetSafe(skillId);
-			if (!skill.IsRankable) goto L_Fail;
+			if (!skill.IsRankable)
+				goto L_Fail;
 
-			var nextRank = skill.Data.GetRankData((int)skill.Info.Rank + 1, creature.RaceId);
-			if (nextRank == null)
+			// Check rank
+			var nextRank = skill.Info.Rank + 1;
+			if (nextRank > skill.Data.MaxRank)
 			{
-				Log.Warning("Player '{0:X16}' tried to advance skill '{1}' to unknown rank '{2}'.", creature.EntityId, skill.Info.Id, skill.Info.Rank + 1);
+				Log.Warning("SkillAdvance: Player '{0:X16}' tried to advance skill '{1}' to unknown rank '{2}'.", creature.EntityId, skill.Info.Id, nextRank);
 				goto L_Fail;
 			}
 
-			if (creature.AbilityPoints < nextRank.AP)
+			// Get rank data
+			var nextRankData = skill.Data.GetRankData(nextRank, creature.RaceId);
+			var ap = nextRankData.AP;
+
+			// Check AP
+			if (creature.AbilityPoints < ap)
 			{
 				Send.MsgBox(creature, Localization.Get("You don't have enough AP."));
 				goto L_Fail;
 			}
 
-			creature.GiveAp(-nextRank.AP);
-			creature.Skills.Give(skill.Info.Id, skill.Info.Rank + 1);
+			// Advance
+			creature.GiveAp(-ap);
+			creature.Skills.Give(skill.Info.Id, nextRank);
 
 			return;
 

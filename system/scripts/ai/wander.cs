@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Wandering Creature AI
+// Wandering creature AI
 //--- Description -----------------------------------------------------------
-//  Dummy AI for monsters, makes them wander around.
+// Dummy AI for monsters, makes them wander around.
 //---------------------------------------------------------------------------
 
 [AiScript("wander")]

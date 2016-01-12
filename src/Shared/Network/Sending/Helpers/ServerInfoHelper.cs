@@ -61,6 +61,7 @@ namespace Aura.Shared.Network.Sending.Helpers
 				packet.PutString(channel.Host);
 				packet.PutInt(channel.Port);
 				packet.PutInt(channel.Users);
+				packet.PutInt(channel.MaxUsers);
 			}
 		}
 	}

@@ -17,7 +17,14 @@ public class KeychestSkeletonScript : PuzzleScript
 		chestPlace.DeclareUnlock(lockedPlace);
 		chestPlace.ReservePlace();
 		chestPlace.ReserveDoors();
-		
+
+		RandomSkeletons(puzzle);
+
+		puzzle.Set("ChestOpen", false);
+	}
+
+	protected virtual void RandomSkeletons(Puzzle puzzle)
+	{
 		// 20% chance for small skeletons
 		if (Random(100) < 20)
 		{
@@ -25,8 +32,6 @@ public class KeychestSkeletonScript : PuzzleScript
 			puzzle.GetMonsterData("Mob2")[0].RaceId = 11102; // Small Light Armor Skeleton
 			puzzle.GetMonsterData("Mob3")[0].RaceId = 11103; // Small Heavy Armor Skeleton
 		}
-
-		puzzle.Set("ChestOpen", false);
 	}
 
 	public override void OnPuzzleCreate(Puzzle puzzle)
@@ -65,7 +70,7 @@ public class KeychestSkeletonScript : PuzzleScript
 
 				var chestPlace = puzzle.GetPlace("ChestPlace");
 				chestPlace.CloseAllDoors();
-				
+
 				chestPlace.SpawnSingleMob("ChainMob1", "Mob1");
 			}
 		}
@@ -95,6 +100,20 @@ public class KeychestSkeletonScript : PuzzleScript
 		else if (group.Name == "LastMob")
 		{
 			puzzle.GetPlace("ChestPlace").OpenAllDoors();
+		}
+	}
+}
+
+[PuzzleScript("keychest_skeleton2")]
+public class KeychestSkeleton2Script : KeychestSkeletonScript
+{
+	protected override void RandomSkeletons(Puzzle puzzle)
+	{
+		// 10% chance for giant skeletons
+		if (Random(100) < 10)
+		{
+			puzzle.GetMonsterData("Mob3")[0].RaceId = 11005; // Giant Skeleton
+			puzzle.GetMonsterData("Mob3")[0].Amount = 3;
 		}
 	}
 }

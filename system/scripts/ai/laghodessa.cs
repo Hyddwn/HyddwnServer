@@ -11,6 +11,9 @@ public class LaghodessaAi : AiScript
 {
 	public LaghodessaAi()
 	{
+		SetVisualField(600, 45);
+		SetAggroRadius(400);
+
 		Hates("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);

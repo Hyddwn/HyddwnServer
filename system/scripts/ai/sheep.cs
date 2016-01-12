@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Sheep AI
+// Sheep AI
 //--- Description -----------------------------------------------------------
-//  AI for sheeps.
+// AI for sheeps.
 //---------------------------------------------------------------------------
 
 [AiScript("sheep")]
@@ -11,11 +11,6 @@ public class SheepAi : AiScript
 	{
 		Do(Wander());
 		Do(Wait(10000, 14000));
-	}
-	
-	protected override IEnumerable Alert()
-	{
-		Return();
 	}
 	
 	protected override IEnumerable Aggro()

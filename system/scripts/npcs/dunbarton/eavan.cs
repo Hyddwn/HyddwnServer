@@ -238,48 +238,47 @@ public class EavanShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Quest", 70080); // Hunting Quest - 10 Skeleton's Former Scrolls
-		Add("Quest", 70081); // Hunting Quest - 10 Red Skeleton's Former Scrolls
-		Add("Quest", 70082); // Hunting Quest - 10 Metal Skeleton's Former Scrolls
-		Add("Quest", 70086); // Hunting Quest - 10 Skeletons Wolf's Former Scrolls
-		Add("Quest", 70095); // Hunting Quest - 10 Brown Fox Former Scrools
-		Add("Quest", 70081); // Hunting Quest - 10 Red Fox Former Scrolls
-		Add("Quest", 70097); // Hunting Quest - 10 Gray Fox Former Scrolls
-		Add("Quest", 70100); // Hunting Quest - 10 Red Bear Former Scrolls
-		Add("Quest", 70102); // Hunting Quest - 10 Brown Grizzly Bear's Former Scrolls
-		Add("Quest", 70103); // Hunting Quest - 10 Red Grizzly Bear's Former Scrolls
-		Add("Quest", 70104); // Hunting Quest - 10 Black Grizzly Bear's Former Scrolls
-		Add("Quest", 70106); // Hunting Quest - 10 Mimic Former Scrolls
-		Add("Quest", 70105); // Hunting Quest - 10 Bat Former Scrolls
-		Add("Quest", 70108); // Hunting Quest - 10 Brown Town Rat's Former Scrolls
-		Add("Quest", 70109); // Hunting Quest - 10 Gray Town Rat Former Scrolls
-		Add("Quest", 70114); // Hunting Quest - 10 Kobold's Former Scrolls
-		Add("Quest", 70115); // Hunting Quest - 10 Poison Kobold's Former Scrolls
-		Add("Quest", 70116); // Hunting Quest - 10 Gold Kobold's Former Scrolls
-		Add("Quest", 70118); // Hunting Quest - 10 Imp's Former Scrolls
-		Add("Quest", 70139); // Hunting Quest - 10 Flying Sword's Former Scrolls
-		Add("Quest", 70119); // Hunting Quest - 10 Whisp Former Scrolls
-		Add("Quest", 70099); // Hunting Quest - 10 Brown Bear Former Former Scrolls
-		Add("Quest", 70091); // Hunting Quest - 10 White Spider Former Scrolls
-		Add("Quest", 70092); // Hunting Quest - 10 Black Spider Former Scrolls
-		Add("Quest", 70093); // Hunting Quest - 10 Red Spider Former Scrolls
-		Add("Quest", 70137); // Hunting Quest - 10 Ice Sprite's Former Scrolls
-		Add("Quest", 70138); // Hunting Quest - 10 Fire Sprite's Former Scrolls
-		Add("Quest", 70137); // Hunting Quest - 10 Ice Sprite's Former Scrolls
+		AddQuest("Quest", 71006, 30); // Collect the Skeleton's Fomor Scrolls
+		AddQuest("Quest", 71007, 30); // Collect the Red Skeleton's Fomor Scrolls
+		AddQuest("Quest", 71008, 30); // Collect the Metal Skeleton's Fomor Scrolls
+		AddQuest("Quest", 71012, 30); // Collect the Skeleton Wolf's Fomor Scrolls
+		AddQuest("Quest", 71017, 30); // Collect the White Spider's Fomor Scrolls
+		AddQuest("Quest", 71018, 30); // Collect the Black Spider's Fomor Scrolls
+		AddQuest("Quest", 71019, 30); // Collect the Red Spider's Fomor Scrolls
+		AddQuest("Quest", 71021, 30); // Collect the Brown Fox's Fomor Scrolls
+		AddQuest("Quest", 71022, 30); // Collect the Red Fox's Fomor Scrolls
+		AddQuest("Quest", 71023, 30); // Collect the Gray Fox's Fomor Scrolls
+		AddQuest("Quest", 71025, 30); // Collect the Brown Bear's Fomor Scrolls
+		AddQuest("Quest", 71026, 30); // Collect the Red Bear's Fomor Scrolls
+		AddQuest("Quest", 71028, 30); // Collect the Brown Grizzly Bear's Fomor Scrolls
+		AddQuest("Quest", 71029, 30); // Collect the Red Grizzly Bear's Fomor Scrolls
+		AddQuest("Quest", 71030, 30); // Collect the Black Grizzly Bear's Fomor Scrolls
+		AddQuest("Quest", 71031, 30); // Collect the Bat's Fomor Scrolls
+		AddQuest("Quest", 71032, 30); // Collect the Mimic's Fomor Scrolls
+		AddQuest("Quest", 71034, 30); // Collect the Brown Town Rat's Fomor Scrolls
+		AddQuest("Quest", 71035, 30); // Collect the Gray Town Rat's Fomor Scrolls
+		AddQuest("Quest", 71040, 30); // Collect the Kobold's Fomor Scrolls
+		AddQuest("Quest", 71041, 30); // Collect the Poison Kobold's Fomor Scrolls
+		AddQuest("Quest", 71042, 30); // Collect the Gold Kobold's Fomor Scrolls
+		AddQuest("Quest", 71044, 30); // Collect the Imp's Fomor Scrolls
+		AddQuest("Quest", 71045, 30); // Collect the Wisp's Fomor Scrolls
+		AddQuest("Quest", 71064, 30); // Collect the Ice Sprite's Fomor Scrolls
+		AddQuest("Quest", 71065, 30); // Collect the Fire Sprite's Fomor Scrolls
+		AddQuest("Quest", 71066, 30); // Collect the Flying Sword's Fomor Scrolls
 
-		Add("Party Quest", 70025); // Party Quest - 10 Gold Goblins
-		Add("Party Quest", 70025); // Party Quest - 30 Skeletons
-		Add("Party Quest", 70025); // Party Quest - 30 Red Skeletons
-		Add("Party Quest", 70025); // Party Quest - 30 Metal Skeletons
-		Add("Party Quest", 70025); // Party Quest - 30 Skeleton Wolves
-		Add("Party Quest", 70025); // Party Quest - 10 Metal Skeletons and 20 Red Skeletons
-		Add("Party Quest", 70025); // Party Quest - 30 Kobolds
-		Add("Party Quest", 70025); // Party Quest - 30 Poison Kobolds
-		Add("Party Quest", 70025); // Party Quest - 10 Poison Kobolds and 20 Kobold Archers
-		Add("Party Quest", 70025); // Party Quest - Lycanthrope in Rabbie Basic
-		Add("Party Quest", 70025); // Party Quest - Black Succubus in Rabbie Adv. for 2
-		Add("Party Quest", 70025); // Party Quest - Red Succubus in Rabbie Adv. for 3
-		Add("Party Quest", 70025); // Party Quest - Red Succubus in Rabbie Adv.
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Skeletons
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Red Skeletons
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Metal Skeletons
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Skeleton Wolves
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Skeletons
+		//AddQuest("Party Quest", InsertQuestId, 5); // [PQ] Hunt Down the Gold Goblins
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Kobolds
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Poison Kobolds
+		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Kobolds
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Lycanthrope (Hard Mode)
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Black Succubus
+		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Red Succubus
+		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the Red Succubus
 
 		Add("Guild", 63040); // Guild Formation Permit
 		Add("Guild", 63041); // Guild Stone Installation Permit
@@ -294,12 +293,12 @@ public class EavanShop : NpcShopScript
 		Add("Arena", 63050, 50);  // Rabbie Battle Arena Coin x50
 		Add("Arena", 63050, 100); // Rabbie Battle Arena Coin x100
 
-		Add("Guild Quest", 70152); // Guild Quest - Demi Lich
-		Add("Guild Quest", 70152); // Guild Quest - Banshee
-		Add("Guild Quest", 70152); // Guild Quest - Goblin Bandits
-		Add("Guild Quest", 70152); // Guild Quest - Giant Ogre
-		Add("Guild Quest", 70152); // Guild Quest - Gaint Bear
+		//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Demi Lich
+		//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate Banshee
+		//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Goblin Bandits
+		//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Giant Ogre
+		//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Giant Bear
 
-		Add("Guild Robe", 19047); // [Guild Name] Guild Robe
+		//Add("Guild Robe", 19047); // [Guild Name] Guild Robe
 	}
 }

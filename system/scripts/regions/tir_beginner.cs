@@ -18,7 +18,14 @@ public class TirBeginnerRegionScript : RegionScript
 	
 	public override void LoadSpawns()
 	{
-		// ...
+		// Gargoyle area
+		CreateSpawner(race: 160005, amount: 20, region: 125, coordinates: A(8537, 68655, 10012, 72110, 13584, 70584, 12109, 67129)); // Light Gargoyle
+
+		// Path
+		CreateSpawner(race: 50106, amount: 6, region: 125, coordinates: A(24383, 70785, 25431, 72488, 27133, 71440, 26085, 69737)); // Young Raccoon
+		CreateSpawner(race: 60002, amount: 3, region: 125, coordinates: A(24383, 70785, 25431, 72488, 27133, 71440, 26085, 69737)); // Rooster
+		CreateSpawner(race: 60003, amount: 4, region: 125, coordinates: A(24383, 70785, 25431, 72488, 27133, 71440, 26085, 69737)); // Hen
+		CreateSpawner(race: 60004, amount: 3, region: 125, coordinates: A(24383, 70785, 25431, 72488, 27133, 71440, 26085, 69737)); // Chick
 	}
 
 	public override void LoadEvents()
@@ -31,7 +38,7 @@ public class TirBeginnerRegionScript : RegionScript
 				return;
 
 			if (!creature.Quests.Has(202001))
-				creature.Quests.Start(202001, false); // Nao's Letter of Introduction
+				creature.Quests.Start(202001); // Nao's Letter of Introduction
 
 			Cutscene.Play("tuto_meet_tin", creature, (scene) =>
 			{

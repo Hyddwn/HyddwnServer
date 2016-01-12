@@ -120,6 +120,7 @@ namespace Aura.Channel.Network.Handlers
 			// we have no choice but to use the prop's center and hope for the best.
 			var creaturePos = creature.GetPosition();
 			var inRange = false;
+			var range = 1200;
 
 			if (prop.Shapes.Count != 0)
 			{
@@ -130,7 +131,7 @@ namespace Aura.Channel.Network.Handlers
 					var centerY = (shape.Min(a => a.Y) + shape.Max(a => a.Y)) / 2;
 					var pos = new Position(centerX, centerY);
 
-					if (creaturePos.InRange(pos, 1000))
+					if (creaturePos.InRange(pos, range))
 					{
 						inRange = true;
 						break;
@@ -138,7 +139,7 @@ namespace Aura.Channel.Network.Handlers
 				}
 			}
 			else
-				inRange = creaturePos.InRange(prop.GetPosition(), 1000);
+				inRange = creaturePos.InRange(prop.GetPosition(), range);
 
 			if (!inRange)
 			{

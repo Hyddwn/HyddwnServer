@@ -175,6 +175,7 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="target"></param>
 		protected virtual void UseSkillOnTarget(Creature attacker, Skill skill, Creature target)
 		{
+			attacker.StopMove();
 			target.StopMove();
 
 			// Create actions
@@ -204,6 +205,13 @@ namespace Aura.Channel.Skills.Base
 				target.TakeDamage(tAction.Damage = damage, attacker);
 			target.Aggro(attacker);
 
+			// Knock down on deadly
+			if (target.Conditions.Has(ConditionsA.Deadly))
+			{
+				tAction.Set(TargetOptions.KnockDown);
+				tAction.Stun = TargetStun;
+			}
+
 			// Death/Knockback
 			this.HandleKnockBack(attacker, target, tAction, false);
 
@@ -230,7 +238,6 @@ namespace Aura.Channel.Skills.Base
 			if (target.IsDead)
 			{
 				tAction.Set(TargetOptions.FinishingKnockDown);
-				attacker.Shove(target, KnockbackDistance);
 			}
 			else
 			{
@@ -255,10 +262,12 @@ namespace Aura.Channel.Skills.Base
 					if (target.IsUnstable)
 					{
 						tAction.Set(TargetOptions.KnockBack);
-						attacker.Shove(target, KnockbackDistance);
 					}
 				}
 			}
+
+			if (tAction.IsKnockBack)
+				attacker.Shove(target, KnockbackDistance);
 		}
 
 		/// <summary>

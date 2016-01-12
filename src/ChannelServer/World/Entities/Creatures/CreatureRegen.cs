@@ -180,6 +180,13 @@ namespace Aura.Channel.World.Entities.Creatures
 			if (this.Creature.Region == Region.Limbo || this.Creature.IsDead)
 				return;
 
+			// Recover from knock back/down after stun ended
+			if (this.Creature.WasKnockedBack && !this.Creature.IsStunned)
+			{
+				Send.RiseFromTheDead(this.Creature);
+				this.Creature.WasKnockedBack = false;
+			}
+
 			lock (_regens)
 			{
 				var toRemove = new List<int>();

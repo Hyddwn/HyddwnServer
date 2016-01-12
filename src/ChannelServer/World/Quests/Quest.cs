@@ -90,8 +90,13 @@ namespace Aura.Channel.World.Quests
 		}
 
 		/// <summary>
-		/// Holds quest item, after it was generated.
+		/// The item this quest belongs to.
 		/// </summary>
+		/// <remarks>
+		/// QuestItem is null after the quest was completed, as the item will
+		/// be removed from the inventory at that point. The quest is kept
+		/// around, so we know it was completed.
+		/// </remarks>
 		public Item QuestItem { get; set; }
 
 		/// <summary>
@@ -108,6 +113,7 @@ namespace Aura.Channel.World.Quests
 		/// <param name="questId"></param>
 		/// <param name="uniqueId"></param>
 		/// <param name="state"></param>
+		/// <param name="metaData"></param>
 		public Quest(int questId, long uniqueId, QuestState state, string metaData)
 			: this()
 		{
@@ -133,8 +139,6 @@ namespace Aura.Channel.World.Quests
 		public Quest(int questId)
 			: this(questId, Interlocked.Increment(ref _questId), QuestState.InProgress, "")
 		{
-			this.GenerateQuestItem();
-
 			// Default meta data entries
 			this.MetaData.SetFloat("QMBEXP", 1);
 			this.MetaData.SetFloat("QMBGLD", 1);
@@ -222,25 +226,6 @@ namespace Aura.Channel.World.Quests
 		{
 			var last = _progresses.Values.Last();
 			this.SetDone(last.Ident);
-		}
-
-		/// <summary>
-		/// Generates, caches, and returns new quest item.
-		/// </summary>
-		/// <remarks>
-		/// Officialy quest item ids are always
-		/// unique quest id - offset, that doesn't work
-		/// with our auto-incrementing table though,
-		/// so we use normal ids. Seems to work fine.
-		/// </remarks>
-		private Item GenerateQuestItem(int itemId = 70024)
-		{
-			this.QuestItem = new Item(itemId);
-			//this.QuestItem.EntityId = (this.UniqueId - MabiId.QuestItemOffset);
-			this.QuestItem.QuestId = this.UniqueId;
-			this.QuestItem.MetaData1.Parse(this.Data.MetaData.ToString());
-
-			return this.QuestItem;
 		}
 
 		/// <summary>
