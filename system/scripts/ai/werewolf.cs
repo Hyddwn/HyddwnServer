@@ -1,12 +1,15 @@
 //--- Aura Script -----------------------------------------------------------
-// Werewolf AI
+// Werewolf AIs
 //--- Description -----------------------------------------------------------
-// AI for normal werewolves.
+// AIs for werewolves. Gray and Blue Werewolves are the same as normal ones,
+// the only difference are wander and aggro radii.
 //---------------------------------------------------------------------------
 
 [AiScript("werewolf")]
 public class WerewolfAi : AiScript
 {
+	protected int WanderRadius = 500;
+
 	public WerewolfAi()
 	{
 		SetVisualField(1500, 120);
@@ -20,7 +23,7 @@ public class WerewolfAi : AiScript
 
 	protected override IEnumerable Idle()
 	{
-		Do(Wander(300, 500));
+		Do(Wander(WanderRadius, WanderRadius));
 		Do(Wait(2000, 5000));
 	}
 
@@ -87,5 +90,17 @@ public class WerewolfAi : AiScript
 	{
 		Do(Attack(3));
 		Do(Wait(3000));
+	}
+}
+
+[AiScript("werewolf2")]
+public class WerewolfAi2 : AiScript
+{
+	public WerewolfAi2()
+	{
+		SetVisualField(1600, 120);
+		SetAggroRadius(1600);
+
+		WanderRadius = 1600;
 	}
 }
