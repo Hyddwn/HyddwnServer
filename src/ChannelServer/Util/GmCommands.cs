@@ -1906,7 +1906,7 @@ namespace Aura.Channel.Util
 				return CommandResult.Fail;
 			}
 
-			time = Math2.Clamp(20, 1800, time);
+			time = Math2.Clamp(60, 1800, time);
 
 			ChannelServer.Instance.Shutdown(time);
 

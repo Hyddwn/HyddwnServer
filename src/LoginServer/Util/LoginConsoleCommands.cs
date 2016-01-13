@@ -31,7 +31,7 @@ namespace Aura.Login.Util
 
 			// TODO: (Enhancement) If there is no ChannelServer running, refuse shutdown command
 
-			time = Math2.Clamp(20, 1800, time);
+			time = Math2.Clamp(60, 1800, time);
 
 			Send.ShutdownRequest(time);
 			Log.Info("Shutting down in {0} seconds...", time);
