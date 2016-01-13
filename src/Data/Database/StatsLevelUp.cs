@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,9 @@ namespace Aura.Data.Database
 	[Serializable]
 	public class StatsLevelUpData
 	{
-		public ushort Race { get; set; }
-		public byte Age { get; set; }
+		public int Age { get; set; }
 
-		public short AP { get; set; }
+		public int AP { get; set; }
 		public float Life { get; set; }
 		public float Mana { get; set; }
 		public float Stamina { get; set; }
@@ -24,19 +24,10 @@ namespace Aura.Data.Database
 		public float Luck { get; set; }
 	}
 
-	public class StatsLevelUpDb : DatabaseCsvIndexed<int, Dictionary<int, StatsLevelUpData>>
+	public class StatsLevelUpDb : DatabaseJsonIndexed<int, Dictionary<int, StatsLevelUpData>>
 	{
-		/// <summary>
-		/// Returns the age info for the given race
-		/// at the given age, or null.
-		/// </summary>
-		/// <param name="raceId"></param>
-		/// <param name="age"></param>
-		/// <returns></returns>
 		public StatsLevelUpData Find(int raceId, int age)
 		{
-			raceId = (raceId & ~3);
-
 			var race = this.Entries.GetValueOrDefault(raceId);
 			if (race == null)
 				return null;
@@ -44,26 +35,30 @@ namespace Aura.Data.Database
 			return race.GetValueOrDefault(Math.Min((byte)25, age));
 		}
 
-		[MinFieldCount(11)]
-		protected override void ReadEntry(CsvEntry entry)
+		protected override void ReadEntry(JObject entry)
 		{
-			var info = new StatsLevelUpData();
-			info.Age = entry.ReadByte();
-			info.Race = entry.ReadUShort();
-			info.AP = entry.ReadShort();
-			info.Life = entry.ReadFloat();
-			info.Mana = entry.ReadFloat();
-			info.Stamina = entry.ReadFloat();
-			info.Str = entry.ReadFloat();
-			info.Int = entry.ReadFloat();
-			info.Dex = entry.ReadFloat();
-			info.Will = entry.ReadFloat();
-			info.Luck = entry.ReadFloat();
+			entry.AssertNotMissing("race", "age", "ap", "life", "mana", "stamina", "str", "int", "dex", "will", "luck");
 
-			if (!this.Entries.ContainsKey(info.Race))
-				this.Entries[info.Race] = new Dictionary<int, StatsLevelUpData>();
+			var data = new StatsLevelUpData();
 
-			this.Entries[info.Race][info.Age] = info;
+			data.Age = entry.ReadByte("age");
+			data.AP = entry.ReadInt("ap");
+			data.Life = entry.ReadFloat("life");
+			data.Mana = entry.ReadFloat("mana");
+			data.Stamina = entry.ReadFloat("stamina");
+			data.Str = entry.ReadFloat("str");
+			data.Int = entry.ReadFloat("int");
+			data.Dex = entry.ReadFloat("dex");
+			data.Will = entry.ReadFloat("will");
+			data.Luck = entry.ReadFloat("luck");
+
+			foreach (int raceId in entry["race"])
+			{
+				if (!this.Entries.ContainsKey(raceId))
+					this.Entries[raceId] = new Dictionary<int, StatsLevelUpData>();
+
+				this.Entries[raceId][data.Age] = data;
+			}
 		}
 	}
 }

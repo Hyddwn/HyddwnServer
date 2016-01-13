@@ -1926,7 +1926,7 @@ namespace Aura.Channel.World.Entities
 				if (levelStats == null)
 					continue;
 
-				this.AbilityPoints += levelStats.AP;
+				this.AbilityPoints += (short)levelStats.AP;
 				this.LifeMaxBase += levelStats.Life;
 				this.ManaMaxBase += levelStats.Mana;
 				this.StaminaMaxBase += levelStats.Stamina;
