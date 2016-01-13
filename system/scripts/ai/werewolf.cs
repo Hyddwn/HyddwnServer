@@ -94,7 +94,7 @@ public class WerewolfAi : AiScript
 }
 
 [AiScript("werewolf2")]
-public class WerewolfAi2 : AiScript
+public class WerewolfAi2 : WerewolfAi
 {
 	public WerewolfAi2()
 	{
