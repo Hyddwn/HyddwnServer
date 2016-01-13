@@ -15,7 +15,7 @@ namespace Aura.Data.Database
 		public ushort Id { get; set; }
 		public string Name { get; set; }
 		public ushort MasterTitle { get; set; }
-		public byte MaxRank { get; set; }
+		public SkillRank MaxRank { get; set; }
 		public SkillType Type { get; set; }
 
 		public Locks PrepareLock { get; set; }
@@ -27,9 +27,17 @@ namespace Aura.Data.Database
 		public Locks CompleteLock { get; set; }
 		public Locks CompleteUnlock { get; set; }
 
-		public Dictionary<int, Dictionary<int, SkillRankData>> RankData { get; set; }
+		public Dictionary<int, Dictionary<SkillRank, SkillRankData>> RankData { get; set; }
 
-		public SkillRankData GetRankData(int rank, int raceId)
+		/// <summary>
+		/// Returns the rank data for the given rank and race, or null if no
+		/// rank data could be found. If the rank exceeds the max rank,
+		/// the data for highest available rank is returned.
+		/// </summary>
+		/// <param name="rank"></param>
+		/// <param name="raceId"></param>
+		/// <returns></returns>
+		public SkillRankData GetRankData(SkillRank rank, int raceId)
 		{
 			if (this.RankData == null)
 				return null;
@@ -42,23 +50,14 @@ namespace Aura.Data.Database
 				if ((skill = this.RankData.GetValueOrDefault(0)) == null)
 					return null;
 
-			return skill.GetValueOrDefault(rank);
-		}
+			// Cap at max rank
+			SkillRankData rankData;
+			if (rank > this.MaxRank)
+				rankData = skill.GetValueOrDefault(this.MaxRank);
+			else
+				rankData = skill.GetValueOrDefault(rank);
 
-		public SkillRankData GetFirstRankData(int raceId)
-		{
-			if (this.RankData == null)
-				return null;
-
-			raceId = raceId & ~3;
-
-			// Check race specific first, fall back to default (0).
-			var skill = this.RankData.GetValueOrDefault(raceId);
-			if (skill == null)
-				if ((skill = this.RankData.GetValueOrDefault(0)) == null)
-					return null;
-
-			return skill.Values.First();
+			return rankData;
 		}
 	}
 
@@ -67,7 +66,7 @@ namespace Aura.Data.Database
 	{
 		public ushort SkillId { get; set; }
 		public int Race { get; set; }
-		public byte Rank { get; set; }
+		public SkillRank Rank { get; set; }
 		public byte AP { get; set; }
 		public float CP { get; set; }
 		public int Range { get; set; }
@@ -180,7 +179,7 @@ namespace Aura.Data.Database
 			skillInfo.CompleteUnlock = this.ReadLocks(entry, "complete", "unlock");
 
 			// Ranks
-			skillInfo.RankData = new Dictionary<int, Dictionary<int, SkillRankData>>();
+			skillInfo.RankData = new Dictionary<int, Dictionary<SkillRank, SkillRankData>>();
 			foreach (JObject rank in entry["ranks"].Where(a => a.Type == JTokenType.Object))
 			{
 				rank.AssertNotMissing("rank", "ap", "cp", "range", "stack", "stackMax", "loadTime", "newLoadTime", "coolDown", "staminaCost", "staminaPrepare", "staminaWait", "staminaActive", "manaCost", "manaPrepare", "manaWait", "manaActive", "life", "mana", "stamina", "str", "int", "dex", "will", "luck", "var1", "var2", "var3", "var4", "var5", "var6", "var7", "var8", "var9", "training");
@@ -188,7 +187,7 @@ namespace Aura.Data.Database
 				var rankInfo = new SkillRankData();
 				rankInfo.SkillId = skillInfo.Id;
 				rankInfo.Race = rank.ReadInt("race");
-				rankInfo.Rank = rank.ReadByte("rank");
+				rankInfo.Rank = (SkillRank)rank.ReadByte("rank");
 				rankInfo.AP = rank.ReadByte("ap");
 				rankInfo.CP = rank.ReadFloat("cp");
 				rankInfo.Range = rank.ReadInt("range");
@@ -256,7 +255,7 @@ namespace Aura.Data.Database
 				}
 
 				if (!skillInfo.RankData.ContainsKey(rankInfo.Race))
-					skillInfo.RankData[rankInfo.Race] = new Dictionary<int, SkillRankData>();
+					skillInfo.RankData[rankInfo.Race] = new Dictionary<SkillRank, SkillRankData>();
 
 				skillInfo.RankData[rankInfo.Race][rankInfo.Rank] = rankInfo;
 			}
@@ -299,7 +298,7 @@ namespace Aura.Data.Database
 				{
 					float lifeT = 0, manaT = 0, staminaT = 0, strT = 0, intT = 0, dexT = 0, willT = 0, luckT = 0;
 
-					for (byte i = 0; i <= 18; i++) // Novice -> D3
+					for (var i = SkillRank.Novice; i <= SkillRank.Dan3; ++i)
 					{
 						var sInfo = raceList.GetValueOrDefault(i);
 

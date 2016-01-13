@@ -184,14 +184,12 @@ namespace Aura.Channel.Skills.Combat
 				// Target action if hit
 				if (successfulHit)
 				{
-					var targetSkillId = target.Skills.ActiveSkill != null ? target.Skills.ActiveSkill.Info.Id : SkillId.CombatMastery;
-
-					var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, targetSkillId);
+					var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
 					tAction.Set(TargetOptions.Result);
-					tAction.AttackerSkillId = skill.Info.Id;
 					tAction.Stun = (short)(actionType == CombatActionPackType.ChainRangeAttack ? TargetStunElf : TargetStun);
 					if (actionType == CombatActionPackType.ChainRangeAttack)
 						tAction.EffectFlags = 0x20;
+
 					cap.Add(tAction);
 
 					// Damage
@@ -225,6 +223,13 @@ namespace Aura.Channel.Skills.Combat
 						SkillHelper.HandleInjury(attacker, target, damage);
 					}
 
+					// Knock down on deadly
+					if (target.Conditions.Has(ConditionsA.Deadly))
+					{
+						tAction.Set(TargetOptions.KnockDown);
+						tAction.Stun = (short)(actionType == CombatActionPackType.ChainRangeAttack ? TargetStunElf : TargetStun);
+					}
+
 					// Aggro
 					target.Aggro(attacker);
 
@@ -232,7 +237,6 @@ namespace Aura.Channel.Skills.Combat
 					if (target.IsDead)
 					{
 						tAction.Set(TargetOptions.FinishingKnockDown);
-						attacker.Shove(target, KnockBackDistance);
 						maxHits = 1;
 					}
 					else
@@ -255,14 +259,13 @@ namespace Aura.Channel.Skills.Combat
 							if (target.IsUnstable)
 							{
 								tAction.Set(TargetOptions.KnockBack);
-								attacker.Shove(target, KnockBackDistance);
 							}
 						}
-						tAction.Creature.Stun = tAction.Stun;
 					}
-				}
 
-				aAction.Creature.Stun = aAction.Stun;
+					if (tAction.IsKnockBack)
+						attacker.Shove(target, KnockBackDistance);
+				}
 
 				// Skill training
 				if (skill.Info.Rank == SkillRank.Novice || skill.Info.Rank == SkillRank.RF)

@@ -15,6 +15,7 @@ using Aura.Channel.World.Entities.Creatures;
 using Aura.Mabi.Structs;
 using Aura.Mabi;
 using Aura.Channel.Skills;
+using Aura.Channel.World.Quests;
 
 namespace Aura.Channel.World.Inventory
 {
@@ -70,6 +71,8 @@ namespace Aura.Channel.World.Inventory
 
 		private object _upgradeEffectSyncLock = new object();
 		private Dictionary<UpgradeCheckType, int> _upgradeCheckTypeCache = new Dictionary<UpgradeCheckType, int>();
+
+		private bool _liveUpdateStarted;
 
 		/// <summary>
 		/// Initializes static information.
@@ -206,13 +209,6 @@ namespace Aura.Channel.World.Inventory
 			// Style
 			for (var i = Pocket.ArmorStyle; i <= Pocket.RobeStyle; ++i)
 				this.Add(new InventoryPocketSingle(i));
-
-			// Subscribe to events necessary for upgrade effect live updates.
-			_creature.LeveledUp += this.OnCreatureLeveledUp;
-			_creature.Titles.Changed += this.OnCreatureChangedTitles;
-			_creature.Skills.RankChanged += this.OnCreatureSkillRankChanged;
-			_creature.Conditions.Changed += this.OnCreatureConditionsChanged;
-			ChannelServer.Instance.Events.HoursTimeTick += this.OnHoursTimeTick;
 		}
 
 		/// <summary>
@@ -257,6 +253,22 @@ namespace Aura.Channel.World.Inventory
 			this.Add(new InventoryPocketNormal(Pocket.Inventory, width, height));
 			this.Add(new InventoryPocketNormal(Pocket.PersonalInventory, width, height));
 			this.Add(new InventoryPocketNormal(Pocket.VIPInventory, width, height));
+		}
+
+		/// <summary>
+		/// Subscribes inventory to events necessary for upgrade effect live updates.
+		/// </summary>
+		public void StartLiveUpdate()
+		{
+			if (_liveUpdateStarted)
+				return;
+			_liveUpdateStarted = true;
+
+			_creature.LeveledUp += this.OnCreatureLeveledUp;
+			_creature.Titles.Changed += this.OnCreatureChangedTitles;
+			_creature.Skills.RankChanged += this.OnCreatureSkillRankChanged;
+			_creature.Conditions.Changed += this.OnCreatureConditionsChanged;
+			ChannelServer.Instance.Events.HoursTimeTick += this.OnHoursTimeTick;
 		}
 
 		/// <summary>
@@ -580,10 +592,78 @@ namespace Aura.Channel.World.Inventory
 
 			var source = item.Info.Pocket;
 			var amount = item.Info.Amount;
+
 			Item collidingItem = null;
+			var collidingItemTarget = source;
 
 			lock (_pockets)
 			{
+				// Hotfix for #200, ctrl+click-equipping.
+				// If an item is moved from the inventory to a filled equip
+				// slot, but there's not enough space in the source pocket
+				// for the colliding item, it would vanish, because the Add
+				// failed. ("Toss it in, it should be the cursor.")
+				//
+				// The following code tries to prevent that, by explicitly
+				// checking if this is a ctrl+click-equip move, and whether
+				// the potentially colliding item fits into the inventory.
+				// 
+				// Is there a better way to solve this? Maybe a more
+				// generalized one? *Without* reverting the move on fail?
+				if (source != Pocket.Cursor && target.IsEquip())
+				{
+					//Log.Debug("Inv2EqMove: {0} -> {1}", source, target);
+
+					if ((collidingItem = _pockets[target].GetItemAt(0, 0)) != null)
+					{
+						var success = false;
+
+						// Cursor will work by default, as it will be
+						// empty after moving the new item out of it.
+						if (source == Pocket.Cursor)
+						{
+							success = true;
+							collidingItemTarget = Pocket.Cursor;
+						}
+
+						// Try main inv
+						if (!success)
+						{
+							if (_pockets.ContainsKey(Pocket.Inventory))
+							{
+								success = _pockets[Pocket.Inventory].HasSpace(collidingItem);
+								collidingItemTarget = Pocket.Inventory;
+							}
+						}
+
+						// VIP inv
+						if (!success)
+						{
+							if (_pockets.ContainsKey(Pocket.VIPInventory))
+							{
+								success = _pockets[Pocket.VIPInventory].HasSpace(collidingItem);
+								collidingItemTarget = Pocket.VIPInventory;
+							}
+						}
+
+						// Try bags
+						for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax && !success; ++i)
+						{
+							if (_pockets.ContainsKey(i))
+							{
+								success = _pockets[i].HasSpace(collidingItem);
+								collidingItemTarget = i;
+							}
+						}
+
+						if (!success)
+						{
+							Send.Notice(_creature, Localization.Get("There is no room in your inventory."));
+							return false;
+						}
+					}
+				}
+
 				if (!_pockets[target].TryAdd(item, targetX, targetY, out collidingItem))
 					return false;
 
@@ -609,9 +689,16 @@ namespace Aura.Channel.World.Inventory
 					// Remove the item from the source pocket
 					_pockets[source].Remove(item);
 
-					// Toss it in, it should be the cursor.
 					if (collidingItem != null)
-						_pockets[source].Add(collidingItem);
+					{
+						// Move colliding item into the pocket ascertained to
+						// be free in the beginning.
+						if (!_pockets[collidingItemTarget].Add(collidingItem))
+						{
+							// Should never happen, as it was checked above.
+							Log.Error("CreatureInventory: Inv2EqMove error? Please report. {0} -> {1}", source, target);
+						}
+					}
 
 					Send.ItemMoveInfo(_creature, item, source, collidingItem);
 				}
@@ -619,7 +706,10 @@ namespace Aura.Channel.World.Inventory
 
 			// Inform about temp moves (items in temp don't count for quest objectives?)
 			if (source == Pocket.Temporary && target == Pocket.Cursor)
+			{
+				this.OnItemEntersInventory(item);
 				ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Info.Amount);
+			}
 
 			// Check movement
 			this.CheckLeftHand(item, source, target);
@@ -730,7 +820,7 @@ namespace Aura.Channel.World.Inventory
 					pet.Inventory.OnUnequip(collidingItem);
 				pet.Inventory.UpdateEquipStats();
 
-				Send.EquipmentChanged(_creature, item);
+				Send.EquipmentChanged(pet, newItem);
 			}
 			else if (source.IsEquip())
 			{
@@ -738,7 +828,7 @@ namespace Aura.Channel.World.Inventory
 				pet.Inventory.OnUnequip(item);
 				pet.Inventory.UpdateEquipStats();
 
-				Send.EquipmentMoved(_creature, source);
+				Send.EquipmentMoved(pet, source);
 			}
 
 			return true;
@@ -871,6 +961,8 @@ namespace Aura.Channel.World.Inventory
 
 				if (_creature.IsPlayer && pocket != Pocket.Temporary)
 				{
+					this.OnItemEntersInventory(item);
+
 					// Notify everybody about receiving the item.
 					ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Amount);
 
@@ -1064,6 +1156,8 @@ namespace Aura.Channel.World.Inventory
 
 			if (success && _creature.IsPlayer && !inTemp)
 			{
+				this.OnItemEntersInventory(item);
+
 				// Notify everybody about receiving the item.
 				ChannelServer.Instance.Events.OnPlayerReceivesItem(_creature, item.Info.Id, item.Amount);
 
@@ -1099,6 +1193,7 @@ namespace Aura.Channel.World.Inventory
 						item.OptionInfo.LinkedPocketId = Pocket.None;
 					}
 
+					this.OnItemLeavesInventory(item);
 					ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, item.Info.Id, item.Info.Amount);
 
 					if (item.Info.Pocket.IsEquip())
@@ -1298,10 +1393,13 @@ namespace Aura.Channel.World.Inventory
 					itemScript.OnEquip(_creature, item);
 			}
 
-			// Apply upgrade effects if item is in a main equip pocket,
+			// Apply bonuses if item is in a main equip pocket,
 			// i.e. no style, hair, face, or second weapon set.
 			if (item.Info.Pocket.IsMainEquip(this.WeaponSet))
+			{
+				this.ApplyDefenseBonuses(item);
 				this.ApplyUpgradeEffects(item);
+			}
 		}
 
 		/// <summary>
@@ -1355,7 +1453,7 @@ namespace Aura.Channel.World.Inventory
 			// but then we'd be iterating over all items and upgrade effects
 			// *multiple* times...
 
-			this.UpdateUpgradeEffects();
+			this.UpdateStatBonuses();
 		}
 
 		/// <summary>
@@ -1364,7 +1462,7 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="creature"></param>
 		private void OnCreatureChangedTitles(Creature creature)
 		{
-			this.UpdateUpgradeEffects();
+			this.UpdateStatBonuses();
 		}
 
 		/// <summary>
@@ -1374,7 +1472,7 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="skill"></param>
 		private void OnCreatureSkillRankChanged(Creature creature, Skill skill)
 		{
-			this.UpdateUpgradeEffects();
+			this.UpdateStatBonuses();
 		}
 
 		/// <summary>
@@ -1383,7 +1481,7 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="creature"></param>
 		private void OnCreatureConditionsChanged(Creature creature)
 		{
-			this.UpdateUpgradeEffects();
+			this.UpdateStatBonuses();
 		}
 
 		/// <summary>
@@ -1394,14 +1492,14 @@ namespace Aura.Channel.World.Inventory
 		{
 			// Update on midnight, for Erinn month checks
 			if (now.DateTime.Hour == 0)
-				this.UpdateUpgradeEffects();
+				this.UpdateStatBonuses();
 		}
 
 		/// <summary>
 		/// Removes all upgrade effect bonuses from current equipment and
 		/// reapplies them.
 		/// </summary>
-		private void UpdateUpgradeEffects()
+		public void UpdateStatBonuses()
 		{
 			lock (_upgradeEffectSyncLock)
 			{
@@ -1410,11 +1508,22 @@ namespace Aura.Channel.World.Inventory
 				foreach (var item in this.GetMainEquipment())
 				{
 					_creature.StatMods.Remove(StatModSource.Equipment, item.EntityId);
+					this.ApplyDefenseBonuses(item);
 					this.ApplyUpgradeEffects(item);
 				}
 
 				this.UpdateEquipStats();
 			}
+		}
+
+		/// <summary>
+		/// Applies non-upgrade Defense and Protection bonuses from the item.
+		/// </summary>
+		/// <param name="item"></param>
+		private void ApplyDefenseBonuses(Item item)
+		{
+			_creature.StatMods.Add(Stat.DefenseBaseMod, item.OptionInfo.Defense, StatModSource.Equipment, item.EntityId);
+			_creature.StatMods.Add(Stat.ProtectionBaseMod, item.OptionInfo.Protection, StatModSource.Equipment, item.EntityId);
 		}
 
 		/// <summary>
@@ -1438,8 +1547,13 @@ namespace Aura.Channel.World.Inventory
 				// Check requirements
 				var fulfilled = false;
 
+				// None
+				if (effect.CheckType == UpgradeCheckType.None)
+				{
+					fulfilled = true;
+				}
 				// Stat ==, >, >=, <, <=
-				if (effect.CheckType >= UpgradeCheckType.GreaterThan && effect.CheckType <= UpgradeCheckType.Equal)
+				else if (effect.CheckType >= UpgradeCheckType.GreaterThan && effect.CheckType <= UpgradeCheckType.Equal)
 				{
 					// Check upgrade stat and get value
 					var valueToCheck = 0;
@@ -1695,32 +1809,47 @@ namespace Aura.Channel.World.Inventory
 			);
 		}
 
-		// Stat mods
-		// TODO: Use the actual stat mods on equip/unequip.
-		// ------------------------------------------------------------------
-
 		/// <summary>
-		/// Returns defense granted by equipment.
+		/// Handles events that need to happen when an item "enters" the
+		/// inventory.
 		/// </summary>
-		/// <returns></returns>
-		public int GetEquipmentDefense()
+		/// <remarks>
+		/// Only called when an item is actually new to the inventory.
+		/// </remarks>
+		/// <param name="item"></param>
+		private void OnItemEntersInventory(Item item)
 		{
-			lock (_pockets)
-				return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
-					.SelectMany(pocket => pocket.Items.Where(a => a != null))
-					.Sum(item => item.OptionInfo.Defense);
+			// Add quest to quest manager
+			if (item.Quest != null)
+			{
+				var quest = item.Quest;
+
+				// Add
+				_creature.Quests.Add(quest);
+			}
 		}
 
 		/// <summary>
-		/// Returns protection granted by equipment.
+		/// Handles events that need to happen when an item "leaves" the
+		/// inventory.
 		/// </summary>
-		/// <returns></returns>
-		public int GetEquipmentProtection()
+		/// <remarks>
+		/// Only called when an item is completely removed from the inventory.
+		/// </remarks>
+		/// <param name="item"></param>
+		private void OnItemLeavesInventory(Item item)
 		{
-			lock (_pockets)
-				return _pockets.Values.Where(a => (a.Pocket >= Pocket.Armor && a.Pocket <= Pocket.Robe) || (a.Pocket >= Pocket.Accessory1 && a.Pocket <= Pocket.Accessory2) || a.Pocket == RightHandPocket || a.Pocket == LeftHandPocket)
-					.SelectMany(pocket => pocket.Items.Where(a => a != null))
-					.Sum(item => item.OptionInfo.Protection);
+			// Remove quest from quest manager
+			if (item.Quest != null)
+			{
+				var quest = item.Quest;
+
+				// Only give up quest if it's incomplete, otherwise the
+				// completed quest would be removed from the quest manager,
+				// and the player would receive auto quests again.
+				if (quest.State != QuestState.Complete)
+					_creature.Quests.GiveUp(item.Quest);
+			}
 		}
 
 		// Functions

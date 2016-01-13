@@ -250,8 +250,11 @@ namespace Aura.Channel.World.Entities
 		public bool WarpFlash(int regionId, int x, int y)
 		{
 			// "Departing" effect
-			Send.Effect(this, Effect.ScreenFlash, 3000, 0);
-			Send.PlaySound(this, "data/sound/Tarlach_change.wav");
+			if (this.Region != Region.Limbo)
+			{
+				Send.Effect(this, Effect.ScreenFlash, 3000, 0);
+				Send.PlaySound(this, "data/sound/Tarlach_change.wav");
+			}
 
 			if (!this.Warp(regionId, x, y))
 				return false;

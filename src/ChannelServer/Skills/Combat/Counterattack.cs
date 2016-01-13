@@ -170,7 +170,7 @@ namespace Aura.Channel.Skills.Combat
 			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, target.EntityId);
 			aAction.Options |= AttackerOptions.Result | AttackerOptions.KnockBackHit2;
 
-			var tAction = new TargetAction(CombatActionType.CounteredHit2, target, attacker, target.Skills.IsReady(SkillId.Smash) ? SkillId.Smash : SkillId.CombatMastery);
+			var tAction = new TargetAction(CombatActionType.CounteredHit2, target, attacker, skill.Info.Id);
 			tAction.Options |= TargetOptions.Result | TargetOptions.Smash;
 
 			var cap = new CombatActionPack(attacker, skill.Info.Id);

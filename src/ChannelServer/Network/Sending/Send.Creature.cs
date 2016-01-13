@@ -300,6 +300,7 @@ namespace Aura.Channel.Network.Sending
 
 						case Stat.MagicAttackMod: packet.PutFloat(creature.MagicAttackMod); break;
 						case Stat.MagicDefenseMod: packet.PutFloat(creature.MagicDefenseMod); break;
+						case Stat.MagicProtectionMod: packet.PutFloat(creature.MagicProtectionMod); break;
 
 						// Client might crash with a mismatching value, 
 						// take a chance and put an int by default.

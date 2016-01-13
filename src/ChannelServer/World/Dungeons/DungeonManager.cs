@@ -28,25 +28,27 @@ namespace Aura.Channel.World.Dungeons
 
 		private static readonly HashSet<int> _entryRegionIds = new HashSet<int>()
 		{
-			13,    // Uladh_Dungeon_Beginners_Hall1 (Alby)
 			11,    // Uladh_Dungeon_Black_Wolfs_Hall1 (Ciar)
-			32,    // Ula_DgnHall_Bangor_before1 (Bangor)
-			33,    // Ula_DgnHall_Bangor_before2
-			54,    // Ula_DgnHall_Coill_before (Coil)
-			49,    // Ula_DgnHall_Danu_before (Fiodh)
+			13,    // Uladh_Dungeon_Beginners_Hall1 (Alby)
 			24,    // Ula_DgnHall_Dunbarton_before1 (Rabbie)
 			25,    // Ula_DgnHall_Dunbarton_before2 (Math)
-			64,    // Ula_DgnHall_Runda_before (Rundal)
+			27,    // Ula_hardmode_DgnHall_TirChonaill_before (Alby Hard)
+			32,    // Ula_DgnHall_Bangor_before1 (Bangor)
+			33,    // Ula_DgnHall_Bangor_before2 (Bangor)
 			44,    // Ula_DgnHall_Tirnanog_before1 (Albey)
+			45,    // Ula_DgnHall_Tirnanog_before2 (Albey)
+			49,    // Ula_DgnHall_Danu_before (Fiodh)
+			54,    // Ula_DgnHall_Coill_before (Coil)
+			64,    // Ula_DgnHall_Runda_before (Rundal)
+			74,    // Ula_Dgnhall_Peaca_before (Peaca)
 			78,    // Ula_DgnHall_Tirnanog_G3_before (Baol)
 			121,   // Ula_hardmode_DgnHall_Ciar_before (Ciar Hard)
 			123,   // Ula_hardmode_DgnHall_Runda_before (Rundal Hard)
-			27,    // Ula_hardmode_DgnHall_TirChonaill_before (Alby Hard)
-			217,   // Abb_Neagh_keep_DgnHall_before
-			205,   // Dugald_Aisle_keep_DgnHall_before
-			207,   // Sen_Mag_keep_DgnHall_before
-			60206, // Tara_keep_DgnHall_before
-			600,   // JP_Nekojima_islet
+			205,   // Dugald_Aisle_keep_DgnHall_before (Dugald Castle)
+			207,   // Sen_Mag_keep_DgnHall_before (Sen Mag Castle)
+			217,   // Abb_Neagh_keep_DgnHall_before (Abb Neagh Castle)
+			600,   // JP_Nekojima_islet (Nekojima)
+			60206, // Tara_keep_DgnHall_before (Tara Castle)
 		};
 
 		private Dictionary<long, Dungeon> _dungeons;

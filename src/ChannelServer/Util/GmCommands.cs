@@ -91,7 +91,11 @@ namespace Aura.Channel.Util
 			Add(99, -1, "reloadscripts", "", HandleReloadScripts);
 			Add(99, -1, "reloadconf", "", HandleReloadConf);
 			Add(99, 99, "closenpc", "", HandleCloseNpc);
+<<<<<<< HEAD
 			Add(99, 99, "shutdown", "<time>", HandleShutdown);
+=======
+			Add(99, 99, "nosave", "", HandleNoSave);
+>>>>>>> refs/heads/master
 
 			// Aliases
 			AddAlias("item", "drop");
@@ -707,8 +711,7 @@ namespace Aura.Channel.Util
 				rank = Math2.Clamp(0, 18, 16 - rank);
 
 			// Check rank data
-			var rankData = skillData.GetRankData(rank, target.RaceId);
-			if (rankData == null)
+			if ((SkillRank)rank > skillData.MaxRank)
 			{
 				Send.ServerMessage(sender, Localization.Get("Skill '{0}' doesn't have rank '{1}'."), args[1], (SkillRank)rank);
 				return CommandResult.Fail;
@@ -963,10 +966,14 @@ namespace Aura.Channel.Util
 
 		private CommandResult HandleCloseNpc(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
-			if (!client.NpcSession.IsValid())
+			if (!target.Client.NpcSession.IsValid())
 				return CommandResult.Fail;
 
-			Send.NpcTalkEndR(client.NpcSession.Script.Player, client.NpcSession.Script.NPC.EntityId, "Ended by closenpc command.");
+			Send.NpcTalkEndR(target.Client.NpcSession.Script.Player, target.Client.NpcSession.Script.NPC.EntityId, "Ended by closenpc command.");
+
+			Send.ServerMessage(sender, Localization.Get("Closed NPC dialog."));
+			if (target != sender)
+				Send.ServerMessage(target, Localization.Get("{0} closed your NPC dialog."), sender.Name);
 
 			return CommandResult.Okay;
 		}
@@ -1885,6 +1892,7 @@ namespace Aura.Channel.Util
 			return CommandResult.Okay;
 		}
 
+<<<<<<< HEAD
 		private CommandResult HandleShutdown(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
 			int time = 0;
@@ -1905,6 +1913,22 @@ namespace Aura.Channel.Util
 			time = Math2.Clamp(20, 1800, time);
 
 			ChannelServer.Instance.Shutdown(time);
+=======
+		private CommandResult HandleNoSave(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			var creatures = target.Client.Creatures.Values.ToArray();
+
+			foreach (var creature in creatures)
+			{
+				var pc = creature as PlayerCreature;
+				if (pc != null)
+					pc.Save = false;
+			}
+
+			Send.ServerMessage(sender, Localization.Get("Marked {0} creatures to *not* be saved."), creatures.Length);
+			if (sender != target)
+				Send.ServerMessage(sender, Localization.Get("{0} marked your creatures to *not* be saved on logout."), sender.Name);
+>>>>>>> refs/heads/master
 
 			return CommandResult.Okay;
 		}

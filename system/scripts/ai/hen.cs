@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Hen AI
+// Hen AI
 //--- Description -----------------------------------------------------------
-//  AI for hens.
+// AI for hens.
 //---------------------------------------------------------------------------
 
 [AiScript("hen")]
@@ -9,12 +9,13 @@ public class HenAi : AiScript
 {
 	public HenAi()
 	{
-		SetAggroRadius(400);
-		
+		SetVisualField(400, 90);
+		SetAggroRadius(300);
+
 		Hates("/fox/");
 		Loves("/cock/");
 	}
-	
+
 	protected override IEnumerable Idle()
 	{
 		Do(Wander());
@@ -23,13 +24,13 @@ public class HenAi : AiScript
 		Do(Wait(2000, 30000));
 		Do(StopSkill(SkillId.Rest));
 	}
-	
+
 	protected override IEnumerable Aggro()
 	{
 		Do(Attack(3));
 		Do(Wait(3000));
 	}
-	
+
 	protected override IEnumerable Love()
 	{
 		Do(Follow(300, true));

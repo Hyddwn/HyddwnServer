@@ -66,4 +66,7 @@ quests/20006_elen_refine.cs
 quests/20007_ranald_windmill.cs
 quests/204003_malcolm_weaving_g7.cs
 
+// Scroll Hunting
+quests/scrolls/*
+
 include "/user/scripts/scripts_quests.txt"

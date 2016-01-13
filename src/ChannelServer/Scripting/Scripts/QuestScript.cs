@@ -18,27 +18,100 @@ using Aura.Channel.World;
 
 namespace Aura.Channel.Scripting.Scripts
 {
+	/// <summary>
+	/// Provides information about a quests.
+	/// </summary>
 	public class QuestScript : GeneralScript
 	{
+		/// <summary>
+		/// Quest id.
+		/// </summary>
 		public int Id { get; protected set; }
 
+		/// <summary>
+		/// Name display in quest log, etc.
+		/// </summary>
 		public string Name { get; protected set; }
+
+		/// <summary>
+		/// Description displayed in quest information.
+		/// </summary>
 		public string Description { get; protected set; }
+
+		/// <summary>
+		/// Additional information displayed in quest information.
+		/// </summary>
 		public string AdditionalInfo { get; protected set; }
 
+		/// <summary>
+		/// The type of quest.
+		/// </summary>
+		/// <remarks>
+		/// It's important that this type is set correctly, as it affects
+		/// packet structures.
+		/// </remarks>
 		public QuestType Type { get; protected set; }
+
+		/// <summary>
+		/// The PTJ type, used for the Deliver quest type.
+		/// </summary>
 		public PtjType PtjType { get; protected set; }
+
+		/// <summary>
+		/// The quest level, mainly used by PTJ quests, for different reward
+		/// tiers.
+		/// </summary>
 		public QuestLevel Level { get; protected set; }
 
+		/// <summary>
+		/// The Erinn hour at which the quest can be started.
+		/// </summary>
 		public int StartHour { get; protected set; }
+
+		/// <summary>
+		/// The Erinn hour at which the quest results can be reported.
+		/// </summary>
 		public int ReportHour { get; protected set; }
+
+		/// <summary>
+		/// The Erinn hour at which the quest has to reported, otherwise the
+		/// NPC won't give you a positive result.
+		/// </summary>
 		public int DeadlineHour { get; protected set; }
 
+		/// <summary>
+		/// The method by which the quest is received.
+		/// </summary>
+		/// <remarks>
+		/// While Manually requires the quest to be given to a player by an
+		/// NPC or via item, Automatically will give it automatically, as soon
+		/// as all prerequisites are met.
+		/// </remarks>
 		public Receive ReceiveMethod { get; protected set; }
+
+		/// <summary>
+		/// Specifies whether the quest can be canceled.
+		/// </summary>
 		public bool Cancelable { get; protected set; }
 
+		/// <summary>
+		/// Prerequisites that have to be met for the quest to be given
+		/// automatically.
+		/// </summary>
 		public List<QuestPrerequisite> Prerequisites { get; protected set; }
+
+		/// <summary>
+		/// Objectives that have to carried out, to complete the quest.
+		/// </summary>
 		public OrderedDictionary<string, QuestObjective> Objectives { get; protected set; }
+
+		/// <summary>
+		/// Groups of rewards that the player can get for completing the quest.
+		/// </summary>
+		/// <remarks>
+		/// Usually quests have only one reward group (group 0),
+		/// multiple groups are mainly used by PTJs.
+		/// </remarks>
 		public Dictionary<int, QuestRewardGroup> RewardGroups { get; protected set; }
 
 		/// <summary>
@@ -46,6 +119,14 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		public MabiDictionary MetaData { get; protected set; }
 
+		/// <summary>
+		/// The quest scroll item to use.
+		/// </summary>
+		public int ScrollId { get; protected set; }
+
+		/// <summary>
+		/// Creates a new quest script instance.
+		/// </summary>
 		public QuestScript()
 		{
 			this.Prerequisites = new List<QuestPrerequisite>();
@@ -55,8 +136,15 @@ namespace Aura.Channel.Scripting.Scripts
 			this.MetaData = new MabiDictionary();
 
 			this.Type = QuestType.Normal;
+
+			this.ScrollId = 70024; // Hunting Quest
 		}
 
+		/// <summary>
+		/// Initializes the script, loading the information and adding it to
+		/// the script manager.
+		/// </summary>
+		/// <returns></returns>
 		public override bool Init()
 		{
 			this.Load();
@@ -83,6 +171,9 @@ namespace Aura.Channel.Scripting.Scripts
 			return true;
 		}
 
+		/// <summary>
+		/// Disposes quest script, removing all subscriptions.
+		/// </summary>
 		public override void Dispose()
 		{
 			base.Dispose();
@@ -188,6 +279,15 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Sets id of the quest's item scroll.
+		/// </summary>
+		/// <param name="id"></param>
+		protected void SetScrollId(int id)
+		{
+			this.ScrollId = id;
+		}
+
+		/// <summary>
 		/// Adds prerequisite that has to be met before auto receiving the quest.
 		/// </summary>
 		/// <param name="prerequisite"></param>
@@ -195,13 +295,13 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			this.Prerequisites.Add(prerequisite);
 
-			if (prerequisite is QuestPrerequisiteQuestCompleted)
+			if (prerequisite.Is(typeof(QuestPrerequisiteQuestCompleted)))
 			{
 				ChannelServer.Instance.Events.PlayerCompletesQuest -= this.OnPlayerCompletesQuest;
 				ChannelServer.Instance.Events.PlayerCompletesQuest += this.OnPlayerCompletesQuest;
 			}
 
-			if (prerequisite is QuestPrerequisiteReachedLevel || prerequisite is QuestPrerequisiteReachedTotalLevel)
+			if (prerequisite.Is(typeof(QuestPrerequisiteReachedLevel)) || prerequisite.Is(typeof(QuestPrerequisiteReachedTotalLevel)))
 			{
 				ChannelServer.Instance.Events.CreatureLevelUp -= this.OnCreatureLevelUp;
 				ChannelServer.Instance.Events.CreatureLevelUp += this.OnCreatureLevelUp;
@@ -278,11 +378,26 @@ namespace Aura.Channel.Scripting.Scripts
 			this.Objectives.Add(ident, objective);
 		}
 
+		/// <summary>
+		/// Adds reward the player can get for completing the quest.
+		/// </summary>
+		/// <param name="reward"></param>
 		protected void AddReward(QuestReward reward)
 		{
 			this.AddReward(0, RewardGroupType.Item, QuestResult.Perfect, reward);
 		}
 
+		/// <summary>
+		/// Adds reward to a specific reward group, that the player can select
+		/// after completing the quest.
+		/// </summary>
+		/// <remarks>
+		/// Mainly used for PTJs.
+		/// </remarks>
+		/// <param name="groupId"></param>
+		/// <param name="type"></param>
+		/// <param name="result"></param>
+		/// <param name="reward"></param>
 		protected void AddReward(int groupId, RewardGroupType type, QuestResult result, QuestReward reward)
 		{
 			if (!this.RewardGroups.ContainsKey(groupId))
@@ -293,6 +408,10 @@ namespace Aura.Channel.Scripting.Scripts
 			this.RewardGroups[groupId].Add(reward);
 		}
 
+		/// <summary>
+		/// Returns the default reward group (0 or 1).
+		/// </summary>
+		/// <returns></returns>
 		public QuestRewardGroup GetDefaultRewardGroup()
 		{
 			QuestRewardGroup result;
@@ -303,6 +422,15 @@ namespace Aura.Channel.Scripting.Scripts
 			return result;
 		}
 
+		/// <summary>
+		/// Returns rewards for the given group and result.
+		/// </summary>
+		/// <remarks>
+		/// Mainly used for PTJs.
+		/// </remarks>
+		/// <param name="rewardGroup"></param>
+		/// <param name="result"></param>
+		/// <returns></returns>
 		public ICollection<QuestReward> GetRewards(int rewardGroup, QuestResult result)
 		{
 			var rewards = new List<QuestReward>();
@@ -357,11 +485,12 @@ namespace Aura.Channel.Scripting.Scripts
 		private void OnPlayerLoggedIn(Creature character)
 		{
 			if (this.CheckPrerequisites(character))
-				character.Quests.Start(this.Id, true);
+				character.Quests.SendOwl(this.Id);
 		}
 
 		/// <summary>
-		/// Starts quest if prerequisites are met.
+		/// Returns true if all prerequisites are met, receive method is auto,
+		/// and the creature doesn't have the quest yet.
 		/// </summary>
 		/// <param name="character"></param>
 		/// <returns></returns>
@@ -382,67 +511,68 @@ namespace Aura.Channel.Scripting.Scripts
 			if (creature == null || !creature.IsPlayer)
 				return;
 
-			var quest = creature.Quests.Get(this.Id);
-			if (quest == null) return;
-
-			var progress = quest.CurrentObjectiveOrLast;
-			if (progress == null) return;
-
-			var objective = this.Objectives[progress.Ident];
-			if (objective == null) return;
-
-			var prevCount = progress.Count;
-			switch (objective.Type)
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
 			{
-				case ObjectiveType.ReachRank:
-					var reachRankObjective = (objective as QuestObjectiveReachRank);
-					var skillId = reachRankObjective.Id;
-					var rank = reachRankObjective.Rank;
-					var skill = creature.Skills.Get(skillId);
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
 
-					if (skill != null && skill.Info.Rank >= rank)
-						quest.SetDone(progress.Ident);
-					else
-						quest.SetUndone(progress.Ident);
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null) return;
 
-					break;
+				var prevCount = progress.Count;
+				switch (objective.Type)
+				{
+					case ObjectiveType.ReachRank:
+						var reachRankObjective = (objective as QuestObjectiveReachRank);
+						var skillId = reachRankObjective.Id;
+						var rank = reachRankObjective.Rank;
+						var skill = creature.Skills.Get(skillId);
 
-				case ObjectiveType.ReachLevel:
-					var reachLevelObjective = (objective as QuestObjectiveReachLevel);
+						if (skill != null && skill.Info.Rank >= rank)
+							quest.SetDone(progress.Ident);
+						else
+							quest.SetUndone(progress.Ident);
 
-					if (creature.Level >= reachLevelObjective.Amount)
-						quest.SetDone(progress.Ident);
+						break;
 
-					break;
+					case ObjectiveType.ReachLevel:
+						var reachLevelObjective = (objective as QuestObjectiveReachLevel);
 
-				case ObjectiveType.Collect:
-					var itemId = (objective as QuestObjectiveCollect).ItemId;
-					var count = creature.Inventory.Count(itemId);
+						if (creature.Level >= reachLevelObjective.Amount)
+							quest.SetDone(progress.Ident);
 
-					if (!progress.Done && count >= objective.Amount)
-						quest.SetDone(progress.Ident);
-					else if (progress.Done && count < objective.Amount)
-						quest.SetUndone(progress.Ident);
+						break;
 
-					// Set(Un)Done modifies the count, has to be set afterwards
-					progress.Count = count;
-					break;
+					case ObjectiveType.Collect:
+						var itemId = (objective as QuestObjectiveCollect).ItemId;
+						var count = creature.Inventory.Count(itemId);
 
-				case ObjectiveType.GetKeyword:
-					var getKeywordObjective = (objective as QuestObjectiveGetKeyword);
+						if (!progress.Done && count >= objective.Amount)
+							quest.SetDone(progress.Ident);
+						else if (progress.Done && count < objective.Amount)
+							quest.SetUndone(progress.Ident);
 
-					if (creature.Keywords.Has((ushort)getKeywordObjective.KeywordId))
-						quest.SetDone(progress.Ident);
+						// Set(Un)Done modifies the count, has to be set afterwards
+						progress.Count = count;
+						break;
 
-					break;
+					case ObjectiveType.GetKeyword:
+						var getKeywordObjective = (objective as QuestObjectiveGetKeyword);
 
-				default:
-					// Objective that can't be checked here.
-					break;
+						if (creature.Keywords.Has((ushort)getKeywordObjective.KeywordId))
+							quest.SetDone(progress.Ident);
+
+						break;
+
+					default:
+						// Objective that can't be checked here.
+						break;
+				}
+
+				if (progress.Count != prevCount)
+					Send.QuestUpdate(creature, quest);
 			}
-
-			if (progress.Count != prevCount)
-				Send.QuestUpdate(creature, quest);
 		}
 
 		/// <summary>
@@ -454,23 +584,24 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			if (creature == null || killer == null) return;
 
-			var quest = killer.Quests.Get(this.Id);
-			if (quest == null) return;
+			var quests = killer.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
+			{
+				var progress = quest.CurrentObjective;
+				if (progress == null) return;
 
-			var progress = quest.CurrentObjective;
-			if (progress == null) return;
+				var objective = this.Objectives[progress.Ident] as QuestObjectiveKill;
+				if (objective == null || objective.Type != ObjectiveType.Kill || !objective.Check(creature)) return;
 
-			var objective = this.Objectives[progress.Ident] as QuestObjectiveKill;
-			if (objective == null || objective.Type != ObjectiveType.Kill || !objective.Check(creature)) return;
+				if (progress.Count >= objective.Amount) return;
 
-			if (progress.Count >= objective.Amount) return;
+				progress.Count++;
 
-			progress.Count++;
+				if (progress.Count >= objective.Amount)
+					quest.SetDone(progress.Ident);
 
-			if (progress.Count >= objective.Amount)
-				quest.SetDone(progress.Ident);
-
-			Send.QuestUpdate(killer, quest);
+				Send.QuestUpdate(killer, quest);
+			}
 		}
 
 		/// <summary>
@@ -502,7 +633,7 @@ namespace Aura.Channel.Scripting.Scripts
 		private void OnPlayerCompletesQuest(Creature creature, int questId)
 		{
 			if (this.CheckPrerequisites(creature))
-				creature.Quests.Start(this.Id, true);
+				creature.Quests.SendOwl(this.Id);
 		}
 
 		/// <summary>
@@ -511,8 +642,8 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="creature"></param>
 		private void OnCreatureLevelUp(Creature creature)
 		{
-			if (!creature.Quests.Has(this.Id) && this.CheckPrerequisites(creature))
-				creature.Quests.Start(this.Id, true);
+			if (this.CheckPrerequisites(creature))
+				creature.Quests.SendOwl(this.Id);
 
 			this.CheckCurrentObjective(creature);
 		}
@@ -537,20 +668,21 @@ namespace Aura.Channel.Scripting.Scripts
 			if (creature == null || !creature.IsPlayer || item == null || !item.Info.Pocket.IsEquip())
 				return;
 
-			var quest = creature.Quests.Get(this.Id);
-			if (quest == null) return;
-
-			var progress = quest.CurrentObjectiveOrLast;
-			if (progress == null) return;
-
-			var objective = this.Objectives[progress.Ident];
-			if (objective == null || objective.Type != ObjectiveType.Equip) return;
-
-			var equipObjective = (objective as QuestObjectiveEquip);
-			if (!progress.Done && item.HasTag(equipObjective.Tag))
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
 			{
-				quest.SetDone(progress.Ident);
-				Send.QuestUpdate(creature, quest);
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
+
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null || objective.Type != ObjectiveType.Equip) return;
+
+				var equipObjective = (objective as QuestObjectiveEquip);
+				if (!progress.Done && item.HasTag(equipObjective.Tag))
+				{
+					quest.SetDone(progress.Ident);
+					Send.QuestUpdate(creature, quest);
+				}
 			}
 		}
 
@@ -560,33 +692,40 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="args"></param>
 		private void OnCreatureGathered(CollectEventArgs args)
 		{
-			var quest = args.Creature.Quests.Get(this.Id);
-			if (quest == null) return;
-
-			var progress = quest.CurrentObjectiveOrLast;
-			if (progress == null) return;
-
-			var objective = this.Objectives[progress.Ident];
-			if (objective == null || objective.Type != ObjectiveType.Gather) return;
-
-			var gatherObjective = (objective as QuestObjectiveGather);
-			if (!progress.Done && args.Success && args.ItemId == gatherObjective.ItemId)
+			var quests = args.Creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
 			{
-				progress.Count++;
-				if (progress.Count == gatherObjective.Amount)
-					quest.SetDone(progress.Ident);
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
 
-				Send.QuestUpdate(args.Creature, quest);
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null || objective.Type != ObjectiveType.Gather) return;
+
+				var gatherObjective = (objective as QuestObjectiveGather);
+				if (!progress.Done && args.Success && args.ItemId == gatherObjective.ItemId)
+				{
+					progress.Count++;
+					if (progress.Count == gatherObjective.Amount)
+						quest.SetDone(progress.Ident);
+
+					Send.QuestUpdate(args.Creature, quest);
+				}
 			}
 		}
 	}
 
+	/// <summary>
+	/// The method of how a player can get a quest.
+	/// </summary>
 	public enum Receive
 	{
 		Manually,
 		Automatically,
 	}
 
+	/// <summary>
+	/// The PTJ quest level.
+	/// </summary>
 	public enum QuestLevel
 	{
 		None,

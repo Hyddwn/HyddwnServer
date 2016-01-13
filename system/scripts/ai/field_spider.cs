@@ -9,27 +9,30 @@ public class FieldSpiderAi : AiScript
 {
 	public FieldSpiderAi()
 	{
+		SetVisualField(600, 45);
+		SetAggroRadius(400);
+
 		Doubts("/pc/", "/pet/");
-		
+
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 	}
 
 	protected override IEnumerable Idle()
 	{
 		Do(Wander());
-		if(Random() < 25)
+		if (Random() < 25)
 			Do(PrepareSkill(SkillId.WebSpinning));
 		Do(Wait(2000, 5000));
 	}
-	
+
 	protected override IEnumerable Alert()
 	{
 		Do(Follow(400, true));
 	}
-	
+
 	protected override IEnumerable Aggro()
 	{
-		if(Random() < 50)
+		if (Random() < 50)
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Circle(400, 1000, 5000));
@@ -40,7 +43,7 @@ public class FieldSpiderAi : AiScript
 			Do(Attack());
 		}
 	}
-	
+
 	private IEnumerable OnDefenseHit()
 	{
 		Do(Attack());

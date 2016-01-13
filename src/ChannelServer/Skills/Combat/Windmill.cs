@@ -181,6 +181,13 @@ namespace Aura.Channel.Skills.Combat
 				if (damage > 0)
 					target.TakeDamage(tAction.Damage = damage, attacker);
 
+				// Knock down on deadly
+				if (target.Conditions.Has(ConditionsA.Deadly))
+				{
+					tAction.Set(TargetOptions.KnockDown);
+					tAction.Stun = CombatMastery.GetTargetStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
+				}
+
 				// Finish if dead, knock down if not defended
 				if (target.IsDead)
 					tAction.Set(TargetOptions.KnockDownFinish);
@@ -192,7 +199,7 @@ namespace Aura.Channel.Skills.Combat
 					survived.Add(target);
 
 				// Stun and shove if not defended
-				if (tAction.SkillId != SkillId.Defense)
+				if (target.IsDead || tAction.SkillId != SkillId.Defense || target.Conditions.Has(ConditionsA.Deadly))
 				{
 					tAction.Stun = CombatMastery.GetTargetStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
 					target.Stability = Creature.MinStability;
@@ -455,14 +462,23 @@ namespace Aura.Channel.Skills.Combat
 				// To fulfill the "kill" condition, the player must finish all four targets simultaneously.
 				// At least one must be "Strong" while the rest are either lower or equal in power or else you will not receive the points."
 				// http://wiki.mabinogiworld.com/view/Windmill#Training_Method
+				// Apparently the enemy with the highest power rating becomes
+				// the rule for the entire "group" that was killed, e.g. if
+				// you kill 4 strongs and 1 awful, it doesn't count towards
+				// the "several strong" training.
 
-				var matches = targets.Where(a => aAction.Creature.GetPowerRating(a) <= PowerRating.Normal);
+				var highestRating = targets.Max(a => aAction.Creature.GetPowerRating(a));
 
-				var multipleEnemies = (matches.Count() >= 4 && matches.Any(a => aAction.Creature.GetPowerRating(a) == PowerRating.Normal));
-				var multipleEnemiesDefeated = (multipleEnemies && matches.Count(a => a.IsDead) >= 4);
+				if (highestRating == PowerRating.Normal)
+				{
+					if (targets.Length >= 4)
+					{
+						attackerSkill.Train(trainingIdx); // Attack several enemies of similar level.
 
-				if (multipleEnemies) attackerSkill.Train(trainingIdx); // Attack several enemies of similar level.
-				if (multipleEnemiesDefeated) attackerSkill.Train(trainingIdx + 1); // Defeat several enemies of similar level.
+						if (targets.All(a => a.IsDead))
+							attackerSkill.Train(trainingIdx + 1); // Defeat several enemies of similar level.
+					}
+				}
 
 				return;
 			}
@@ -470,13 +486,18 @@ namespace Aura.Channel.Skills.Combat
 			// rC-1
 			if (attackerSkill.Info.Rank >= SkillRank.RC && attackerSkill.Info.Rank <= SkillRank.R1)
 			{
-				var matches = targets.Where(a => aAction.Creature.GetPowerRating(a) <= PowerRating.Strong);
+				var highestRating = targets.Max(a => aAction.Creature.GetPowerRating(a));
 
-				var multipleEnemies = (matches.Count() >= 4 && matches.Any(a => aAction.Creature.GetPowerRating(a) == PowerRating.Strong));
-				var multipleEnemiesDefeated = (multipleEnemies && matches.Count(a => a.IsDead) >= 4);
+				if (highestRating == PowerRating.Strong)
+				{
+					if (targets.Length >= 4)
+					{
+						attackerSkill.Train(trainingIdx); // Attack several powerful enemies.
 
-				if (multipleEnemies) attackerSkill.Train(trainingIdx); // Attack several powerful enemies.
-				if (multipleEnemiesDefeated) attackerSkill.Train(trainingIdx + 1); // Defeat several powerful enemies.
+						if (targets.All(a => a.IsDead))
+							attackerSkill.Train(trainingIdx + 1); // Defeat several powerful enemies.
+					}
+				}
 
 				return;
 			}

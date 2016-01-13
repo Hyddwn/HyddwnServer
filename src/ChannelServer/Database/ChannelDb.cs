@@ -664,17 +664,18 @@ namespace Aura.Channel.Database
 								if (quest.State == QuestState.InProgress)
 								{
 									// Don't add quest if quest item is missing
-									quest.QuestItem = character.Inventory.GetItem(itemEntityId);
-									if (quest.QuestItem == null)
+									var item = character.Inventory.GetItem(itemEntityId);
+									if (item == null)
 									{
 										Log.Error("Db.GetCharacterQuests: Unable to find quest item for '{0}'.", quest.Id);
 										continue;
 									}
 
-									quest.QuestItem.QuestId = quest.UniqueId;
+									item.Quest = quest;
+									quest.QuestItem = item;
 								}
 
-								character.Quests.Add(quest);
+								character.Quests.AddSilent(quest);
 							}
 							catch (Exception ex)
 							{
@@ -829,6 +830,12 @@ namespace Aura.Channel.Database
 							character.Quests.ModifyPtjTrackRecord(quest.Data.PtjType, +1, 0);
 						continue;
 					}
+
+					// Don't save scroll hunting quests
+					// TODO: Would it be better to use a general "repeatable"
+					//   setting to decide which quests not to save?
+					if (quest.Data.Type == QuestType.Hunting && quest.Id >= 71001 && quest.Id <= 71075)
+						continue;
 
 					using (var cmd = new InsertCommand("INSERT INTO `quests` {0}", conn, transaction))
 					{

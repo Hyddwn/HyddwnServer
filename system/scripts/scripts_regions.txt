@@ -6,6 +6,7 @@
 
 regions/tir_beginner.cs
 regions/tir.cs
+regions/tir_na_nog.cs
 regions/sidhe.cs
 regions/dugald.cs
 regions/dunbarton.cs
@@ -15,5 +16,6 @@ regions/sen_mag.cs
 regions/osna_snail.cs
 regions/emain.cs
 regions/ceo.cs
+regions/crossroad.cs
 
 include "/user/scripts/scripts_regions.txt"

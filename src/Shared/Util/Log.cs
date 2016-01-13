@@ -137,7 +137,7 @@ namespace Aura.Shared.Util
 		public static void Progress(int current, int max)
 		{
 			var donePerc = (100f / max * current);
-			var done = (int)Math.Ceiling(20f / max * current);
+			var done = (int)Math.Min(20, Math.Ceiling(20f / max * current));
 
 			Write(LogLevel.Info, false, "[" + ("".PadRight(done, '#') + "".PadLeft(20 - done, '.')) + "] {0,5}%\r", donePerc.ToString("0.0", CultureInfo.InvariantCulture));
 		}

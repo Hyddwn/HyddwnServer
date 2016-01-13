@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Wander NPC AI
+// Wander NPC AI
 //--- Description -----------------------------------------------------------
-//  AI for wandering NPCs, random phrases and random walking.
+// AI for wandering NPCs, random phrases and random walking.
 //---------------------------------------------------------------------------
 
 [AiScript("npc_wander")]

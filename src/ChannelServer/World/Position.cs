@@ -75,6 +75,36 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns true if this position is in a cone, based on the parameters.
+		/// </summary>
+		/// <param name="tip">Tip of the cone.</param>
+		/// <param name="direction">Cone's direction as radian.</param>
+		/// <param name="radius">Cone's radius.</param>
+		/// <param name="angle">Cone's angle as radian.</param>
+		/// <returns></returns>
+		public bool InCone(Position tip, double direction, int radius, double angle)
+		{
+			var halfAngle = angle / 2;
+
+			var tx1 = tip.X + (Math.Cos(-halfAngle + direction) * radius);
+			var ty1 = tip.Y + (Math.Sin(-halfAngle + direction) * radius);
+			var tx2 = tip.X + (Math.Cos(halfAngle + direction) * radius);
+			var ty2 = tip.Y + (Math.Sin(halfAngle + direction) * radius);
+			var tx3 = tip.X;
+			var ty3 = tip.Y;
+			var px = X;
+			var py = Y;
+
+			// http://stackoverflow.com/questions/2049582/how-to-determine-a-point-in-a-2d-triangle
+			var A = 1.0 / 2.0 * (-ty2 * tx3 + ty1 * (-tx2 + tx3) + tx1 * (ty2 - ty3) + tx2 * ty3);
+			var sign = (A < 0 ? -1 : 1);
+			var s = (ty1 * tx3 - tx1 * ty3 + (ty3 - ty1) * px + (tx1 - tx3) * py) * sign;
+			var t = (tx1 * ty2 - ty1 * tx2 + (ty1 - ty2) * px + (tx2 - tx1) * py) * sign;
+
+			return (s > 0 && t > 0 && (s + t) < 2 * A * sign);
+		}
+
+		/// <summary>
 		/// Returns random position around this position,
 		/// not nearer than min, and not further than max.
 		/// </summary>

@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-//  Wolf AI
+// Wolf AI
 //--- Description -----------------------------------------------------------
-//  AI for wolves.
+// AI for "normal" wolves.
 //---------------------------------------------------------------------------
 
 [AiScript("wolf")]
@@ -9,14 +9,15 @@ public class WolfAi : AiScript
 {
 	public WolfAi()
 	{
-		SetAggroRadius(650);
-		
+		SetVisualField(650, 120);
+		SetAggroRadius(400);
+
 		Doubts("/pc/", "/pet/");
 		Doubts("/cow/");
 		Hates("/sheep/");
 		Hates("/dog/");
-		HatesBattleStance();
-		
+		HatesBattleStance(3000);
+
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 	}
 
@@ -25,12 +26,12 @@ public class WolfAi : AiScript
 		Do(Wander());
 		Do(Wait(2000, 5000));
 	}
-	
+
 	protected override IEnumerable Alert()
 	{
-		if(Random() < 50)
+		if (Random() < 50)
 		{
-			if(Random() < 50)
+			if (Random() < 50)
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Circle(500, 1000, 5000));
@@ -49,25 +50,25 @@ public class WolfAi : AiScript
 			Do(Wait(1000, 5000));
 		}
 	}
-	
+
 	protected override IEnumerable Aggro()
 	{
-		if(Random() < 50)
+		if (Random() < 50)
 		{
-			var rndnum = Random();
-			if(rndnum < 20) // 20%
+			SwitchRandom();
+			if (Case(20))
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Circle(500, 1000, 5000));
 				Do(CancelSkill());
 			}
-			else if(rndnum < 60) // 40%
+			else if (Case(40))
 			{
 				Do(PrepareSkill(SkillId.Smash));
 				Do(Attack(1, 5000));
 				Do(Wait(3000, 8000));
 			}
-			else // 40%
+			else if (Case(40))
 			{
 				Do(PrepareSkill(SkillId.Counterattack));
 				Do(Wait(5000));
@@ -79,7 +80,7 @@ public class WolfAi : AiScript
 			Do(Attack(3, 5000));
 		}
 	}
-	
+
 	private IEnumerable OnDefenseHit()
 	{
 		Do(Attack());
