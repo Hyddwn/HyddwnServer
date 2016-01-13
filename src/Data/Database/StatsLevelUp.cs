@@ -32,7 +32,15 @@ namespace Aura.Data.Database
 			if (race == null)
 				return null;
 
-			return race.GetValueOrDefault(Math.Min((byte)25, age));
+			// Get data for age, if age doesn't exist, use last entry.
+			// Creatures can get pretty old, but data is only available
+			// until age 15/25. That last entry usually has 0 for all
+			// stats.
+			var data = race.GetValueOrDefault(age);
+			if (data == null)
+				data = race.Values.Last();
+
+			return data;
 		}
 
 		protected override void ReadEntry(JObject entry)
