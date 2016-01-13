@@ -125,6 +125,11 @@ namespace Aura.Channel.Scripting.Scripts
 		public int ScrollId { get; protected set; }
 
 		/// <summary>
+		/// Who this quest is available to.
+		/// </summary>
+		protected QuestAvailability Availability { get; set; }
+
+		/// <summary>
 		/// Creates a new quest script instance.
 		/// </summary>
 		public QuestScript()
@@ -496,9 +501,16 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		private bool CheckPrerequisites(Creature character)
 		{
+			// Check if creature can receive the quest,
+			// based on the quest's settings.
+			if (this.Availability <= QuestAvailability.Characters && !character.IsCharacter)
+				return false;
+
+			// Check if receive method is auto and creature doesn't have it yet.
 			if (this.ReceiveMethod != Receive.Automatically || character.Quests.Has(this.Id))
 				return false;
 
+			// Actually check prerequisites
 			return this.Prerequisites.All(prerequisite => prerequisite.Met(character));
 		}
 
@@ -732,5 +744,14 @@ namespace Aura.Channel.Scripting.Scripts
 		Basic,
 		Int,
 		Adv,
+	}
+
+	/// <summary>
+	/// Who this quest is available to.
+	/// </summary>
+	public enum QuestAvailability
+	{
+		Characters,
+		CharactersAndPets,
 	}
 }
