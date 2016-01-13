@@ -91,11 +91,8 @@ namespace Aura.Channel.Util
 			Add(99, -1, "reloadscripts", "", HandleReloadScripts);
 			Add(99, -1, "reloadconf", "", HandleReloadConf);
 			Add(99, 99, "closenpc", "", HandleCloseNpc);
-<<<<<<< HEAD
 			Add(99, 99, "shutdown", "<time>", HandleShutdown);
-=======
 			Add(99, 99, "nosave", "", HandleNoSave);
->>>>>>> refs/heads/master
 
 			// Aliases
 			AddAlias("item", "drop");
@@ -1892,7 +1889,6 @@ namespace Aura.Channel.Util
 			return CommandResult.Okay;
 		}
 
-<<<<<<< HEAD
 		private CommandResult HandleShutdown(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
 			int time = 0;
@@ -1913,7 +1909,10 @@ namespace Aura.Channel.Util
 			time = Math2.Clamp(20, 1800, time);
 
 			ChannelServer.Instance.Shutdown(time);
-=======
+
+			return CommandResult.Okay;
+		}
+
 		private CommandResult HandleNoSave(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
 			var creatures = target.Client.Creatures.Values.ToArray();
@@ -1928,7 +1927,6 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Marked {0} creatures to *not* be saved."), creatures.Length);
 			if (sender != target)
 				Send.ServerMessage(sender, Localization.Get("{0} marked your creatures to *not* be saved on logout."), sender.Name);
->>>>>>> refs/heads/master
 
 			return CommandResult.Okay;
 		}

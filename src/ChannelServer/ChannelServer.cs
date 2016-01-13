@@ -73,6 +73,7 @@ namespace Aura.Channel
 		public WorldManager World { get; private set; }
 		public bool ShuttingDown { get; private set; }
 		private List<ChannelClient> ShutdownClientList { get; set; }
+		private Timer timer { get; set; }
 
 		private ChannelServer()
 		{
@@ -320,8 +321,11 @@ namespace Aura.Channel
 			// Shutdown warning
 			Send.Internal_Broadcast(Localization.Get("The server will be brought down for maintenance in " + time + " seconds. Please log out safely before then."));
 
+			// Save a list of all clients logged in prior to shutdown
+			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients;
+
 			// Send MsgBox to all users
-			foreach (var user in ChannelServer.Instance.Server.Clients)
+			foreach (var user in ChannelServer.Instance.ShutdownClientList)
 			{
 				try
 				{
@@ -335,11 +339,8 @@ namespace Aura.Channel
 
 			Log.Info("Shutting down in {0} seconds...", time);
 
-			Timer t = new Timer(new TimerCallback(ShutdownTimerDone));
-			t.Change(time * 1000, Timeout.Infinite);
-
-			// Save a list of all clients logged in prior to shutdown
-			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients;
+			timer = new Timer(new TimerCallback(ShutdownTimerDone));
+			timer.Change(time * 1000, Timeout.Infinite);
 
 		}
 
