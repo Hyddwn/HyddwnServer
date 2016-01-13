@@ -45,7 +45,7 @@ namespace Aura.Data.Database
 
 		protected override void ReadEntry(JObject entry)
 		{
-			entry.AssertNotMissing("race", "age", "ap", "life", "mana", "stamina", "str", "int", "dex", "will", "luck");
+			entry.AssertNotMissing("race", "age", "life", "mana", "stamina", "str", "int", "dex", "will", "luck");
 
 			var data = new StatsLevelUpData();
 
