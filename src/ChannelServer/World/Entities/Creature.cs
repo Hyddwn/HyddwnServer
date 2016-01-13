@@ -141,11 +141,6 @@ namespace Aura.Channel.World.Entities
 		public Locks Locks { get; protected set; }
 
 		/// <summary>
-		/// Returns whether creature is able to receive exp and level up.
-		/// </summary>
-		public virtual bool LevelingEnabled { get { return false; } }
-
-		/// <summary>
 		/// Returns whether creature is able to learn skills automatically
 		/// (e.g. Counterattack).
 		/// </summary>
@@ -1893,11 +1888,24 @@ namespace Aura.Channel.World.Entities
 		/// <param name="val"></param>
 		public void GiveExp(long val)
 		{
-			if (!this.LevelingEnabled) return;
-
 			this.Exp += val;
 
 			var levelStats = AuraData.StatsLevelUpDb.Find(this.RaceId, this.Age);
+			if (levelStats == null)
+			{
+				if ((levelStats = AuraData.StatsLevelUpDb.Find(10000, 17)) == null)
+				{
+					Log.Error("Creature.GiveExp: No valid level up stats found for race {0}, age {1}. Canceling.", this.RaceId, this.Age);
+				}
+				else
+				{
+					// Only warn when creature was a player, we'll let NPCs fall
+					// back to Human 17 silently, until we know if they
+					// have specific level up stats.
+					if (this.IsPlayer)
+						Log.Warning("Creature.GiveExp: Level up stats missing for race {0}, age {1}. Falling back to Human 17.", this.RaceId, this.Age);
+				}
+			}
 
 			var prevLevel = this.Level;
 			float ap = this.AbilityPoints;
@@ -1929,19 +1937,16 @@ namespace Aura.Channel.World.Entities
 				this.LuckBase += levelStats.Luck;
 			}
 
+			// Only notify on level up
 			if (prevLevel < this.Level)
 			{
-				// Only notify on level up
-				if (levelStats == null)
-					Log.Unimplemented("GiveExp: Level up stats missing for race '{0}'.", this.RaceId);
-
 				this.FullHeal();
 
 				Send.StatUpdateDefault(this);
 				Send.LevelUp(this);
 
 				// Only send aquire if stat crosses the X.0 border.
-				// Eg, 50.9 -> 50.1
+				// Eg, 50.9 -> 51.1
 				float diff = 0;
 				if ((diff = (this.AbilityPoints - (int)ap)) >= 1) Send.SimpleAcquireInfo(this, "ap", diff);
 				if ((diff = (this.LifeMaxBase - (int)life)) >= 1) Send.SimpleAcquireInfo(this, "life", diff);

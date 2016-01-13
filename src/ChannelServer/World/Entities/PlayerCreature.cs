@@ -80,11 +80,6 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Returns whether creature is able to receive exp and level up.
-		/// </summary>
-		public override bool LevelingEnabled { get { return true; } }
-
-		/// <summary>
 		/// Creatures new PlayerCreature.
 		/// </summary>
 		public PlayerCreature()
