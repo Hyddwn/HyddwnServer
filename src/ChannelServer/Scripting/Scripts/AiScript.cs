@@ -1958,12 +1958,18 @@ namespace Aura.Channel.Scripting.Scripts
 				else if (action.AttackerSkillId >= SkillId.Lightningbolt && action.AttackerSkillId <= SkillId.Inspiration)
 				{
 					ev = AiEvent.MagicHit;
-					fallback = AiEvent.Hit;
+					if (action.Has(TargetOptions.Critical))
+						fallback = AiEvent.CriticalHit;
+					else
+						fallback = AiEvent.Hit;
 				}
 				// Hit event
 				else
 				{
-					ev = AiEvent.Hit;
+					if (action.Has(TargetOptions.Critical))
+						ev = AiEvent.CriticalHit;
+					else
+						ev = AiEvent.Hit;
 				}
 
 				// Try to find and execute event
@@ -2117,6 +2123,7 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			None,
 			Hit,
+			CriticalHit,
 			DefenseHit,
 			MagicHit,
 			KnockDown,
