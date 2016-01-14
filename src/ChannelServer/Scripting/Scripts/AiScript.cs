@@ -1938,10 +1938,14 @@ namespace Aura.Channel.Scripting.Scripts
 				// Knock down event
 				if (action.Has(TargetOptions.KnockDown) || action.Has(TargetOptions.Smash))
 				{
-					if (action.Has(TargetOptions.Critical))
-						ev = AiEvent.CriticalKnockDown;
-					else
-						ev = AiEvent.KnockDown;
+					// Windmill doesn't trigger the knock down event
+					if (action.AttackerSkillId != SkillId.Windmill)
+					{
+						if (action.Has(TargetOptions.Critical))
+							ev = AiEvent.CriticalKnockDown;
+						else
+							ev = AiEvent.KnockDown;
+					}
 				}
 				// Defense event
 				else if (action.SkillId == SkillId.Defense)
