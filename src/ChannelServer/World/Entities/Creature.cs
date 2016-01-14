@@ -1985,7 +1985,7 @@ namespace Aura.Channel.World.Entities
 				return;
 
 			float life = 0, mana = 0, stamina = 0, str = 0, dex = 0, int_ = 0, will = 0, luck = 0;
-			short ap = 0;
+			var ap = 0;
 
 			var newAge = this.Age + years;
 			while (this.Age < newAge)
@@ -2028,7 +2028,7 @@ namespace Aura.Channel.World.Entities
 			this.IntBase += int_;
 			this.WillBase += will;
 			this.LuckBase += luck;
-			this.AbilityPoints += ap;
+			this.AbilityPoints += (short)ap;
 
 			this.LastAging = DateTime.Now;
 
