@@ -201,71 +201,67 @@ namespace Aura.Channel.Network.Handlers
 					Send.VehicleInfo(creature);
 			}
 
-			var playerCreature = creature as PlayerCreature;
-			if (playerCreature != null)
+			var now = DateTime.Now;
+
+			// Update last login
+			creature.LastLogin = now;
+
+			// Age check
+			var lastSaturday = ErinnTime.Now.GetLastSaturday();
+			var lastAging = creature.LastAging;
+			var diff = (lastSaturday - lastAging).TotalDays;
+
+			if (lastAging < lastSaturday)
+				creature.AgeUp((short)(1 + diff / 7));
+
+			// Name/Chat color conditions
+			if (creature.Vars.Perm["NameColorEnd"] != null)
 			{
-				var now = DateTime.Now;
-
-				// Update last login
-				playerCreature.LastLogin = now;
-
-				// Age check
-				var lastSaturday = ErinnTime.Now.GetLastSaturday();
-				var lastAging = playerCreature.LastAging;
-				var diff = (lastSaturday - lastAging).TotalDays;
-
-				if (lastAging < lastSaturday)
-					playerCreature.AgeUp((short)(1 + diff / 7));
-
-				// Name/Chat color conditions
-				if (creature.Vars.Perm["NameColorEnd"] != null)
+				var dt = (DateTime)creature.Vars.Perm["NameColorEnd"];
+				if (now > dt)
 				{
-					var dt = (DateTime)creature.Vars.Perm["NameColorEnd"];
-					if (now > dt)
-					{
-						creature.Vars.Perm["NameColorIdx"] = null;
-						creature.Vars.Perm["NameColorEnd"] = null;
-					}
+					creature.Vars.Perm["NameColorIdx"] = null;
+					creature.Vars.Perm["NameColorEnd"] = null;
 				}
-				if (creature.Vars.Perm["ChatColorEnd"] != null)
-				{
-					var dt = (DateTime)creature.Vars.Perm["ChatColorEnd"];
-					if (now > dt)
-					{
-						creature.Vars.Perm["ChatColorIdx"] = null;
-						creature.Vars.Perm["ChatColorEnd"] = null;
-					}
-				}
-				if (creature.Vars.Perm["NameColorIdx"] != null)
-				{
-					var extra = new MabiDictionary();
-					extra.SetInt("IDX", (int)creature.Vars.Perm["NameColorIdx"]);
-
-					creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
-				}
-				if (creature.Vars.Perm["ChatColorIdx"] != null)
-				{
-					var extra = new MabiDictionary();
-					extra.SetInt("IDX", (int)creature.Vars.Perm["ChatColorIdx"]);
-
-					creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
-				}
-
-				// Chat sticker hack
-				// You don't see your own chat stickers on Aura without this packet
-				// for unknown reasons.
-				if (creature.Vars.Perm["ChatStickerId"] != null)
-				{
-					var sticker = (ChatSticker)creature.Vars.Perm["ChatStickerId"];
-					var end = (DateTime)creature.Vars.Perm["ChatStickerEnd"];
-
-					if (now < end)
-						Send.ChatSticker(creature, sticker, end);
-				}
-
-				// Update Pon
-				Send.PonsUpdate(creature, creature.Client.Account.Points);
 			}
+			if (creature.Vars.Perm["ChatColorEnd"] != null)
+			{
+				var dt = (DateTime)creature.Vars.Perm["ChatColorEnd"];
+				if (now > dt)
+				{
+					creature.Vars.Perm["ChatColorIdx"] = null;
+					creature.Vars.Perm["ChatColorEnd"] = null;
+				}
+			}
+			if (creature.Vars.Perm["NameColorIdx"] != null)
+			{
+				var extra = new MabiDictionary();
+				extra.SetInt("IDX", (int)creature.Vars.Perm["NameColorIdx"]);
+
+				creature.Conditions.Activate(ConditionsB.NameColorChange, extra);
+			}
+			if (creature.Vars.Perm["ChatColorIdx"] != null)
+			{
+				var extra = new MabiDictionary();
+				extra.SetInt("IDX", (int)creature.Vars.Perm["ChatColorIdx"]);
+
+				creature.Conditions.Activate(ConditionsB.ChatColorChange, extra);
+			}
+
+			// Chat sticker hack
+			// You don't see your own chat stickers on Aura without this packet
+			// for unknown reasons.
+			if (creature.Vars.Perm["ChatStickerId"] != null)
+			{
+				var sticker = (ChatSticker)creature.Vars.Perm["ChatStickerId"];
+				var end = (DateTime)creature.Vars.Perm["ChatStickerEnd"];
+
+				if (now < end)
+					Send.ChatSticker(creature, sticker, end);
+			}
+
+			// Update Pon
+			Send.PonsUpdate(creature, creature.Client.Account.Points);
 		}
 
 		/// <summary>
