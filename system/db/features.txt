@@ -10,6 +10,9 @@
 //---------------------------------------------------------------------------
 
 [
+// General
+{ name: "SharpMind", enabled: true },
+
 // Generation 1
 { name: "G1", enabled: true, children: [
 	{ name: "MainStreamG1", enabled: true },

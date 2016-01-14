@@ -787,6 +787,10 @@ namespace Aura.Channel.Scripting.Scripts
 			if (this.Creature.RaceData.SharpMindImmune)
 				return;
 
+			// Check if SharpMind is enabled
+			if (!AuraData.FeaturesDb.IsEnabled("SharpMind"))
+				return;
+
 			var passive = AuraData.FeaturesDb.IsEnabled("PassiveSharpMind");
 
 			// Send to players in range, one after the other, so we have control
