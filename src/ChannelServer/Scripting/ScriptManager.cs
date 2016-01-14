@@ -181,8 +181,15 @@ namespace Aura.Channel.Scripting
 		/// <param name="time"></param>
 		public void OnMabiTick(ErinnTime time)
 		{
-			ChannelServer.Instance.Database.SaveVars("Aura System", 0, this.GlobalVars.Perm);
-			Log.Info("Saved global script variables.");
+			try
+			{
+				ChannelServer.Instance.Database.SaveVars("Aura System", 0, this.GlobalVars.Perm);
+				Log.Info("Saved global script variables.");
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex, "Failed to save global script variables.");
+			}
 		}
 	}
 
