@@ -1905,7 +1905,7 @@ namespace Aura.Channel.World.Entities
 			{
 				if ((levelStats = AuraData.StatsLevelUpDb.Find(10000, 17)) == null)
 				{
-					Log.Error("Creature.GiveExp: No valid level up stats found for race {0}, age {1}. Canceling.", this.RaceId, this.Age);
+					Log.Error("Creature.GiveExp: No valid level up stats found for race {0}, age {1}.", this.RaceId, this.Age);
 				}
 				else
 				{
@@ -1997,11 +1997,17 @@ namespace Aura.Channel.World.Entities
 				var statUp = AuraData.StatsAgeUpDb.Find(this.RaceId, this.Age);
 				if (statUp == null)
 				{
-					// Continue silently, creatures age past 25 without
-					// bonuses, and if someone changes that we don't know what
-					// the max will be.
-					//Log.Debug("AgeUp: Missing stat data for race '{0}', age '{1}'.", this.Race, this.Age);
-					continue;
+					if ((statUp = AuraData.StatsAgeUpDb.Find(10000, 17)) == null)
+					{
+						Log.Error("Creature.AgeUp: No valid age up stats found for race {0}, age {1}.", this.RaceId, this.Age);
+					}
+					else
+					{
+						// Only warn when creature was a player, we'll let NPCs fall
+						// back to Human 17 silently.
+						if (this.IsPlayer)
+							Log.Warning("Creature.AgeUp: Age up stats missing for race {0}, age {1}. Falling back to Human 17.", this.RaceId, this.Age);
+					}
 				}
 
 				// Collect bonuses for multi aging
