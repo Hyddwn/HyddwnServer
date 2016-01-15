@@ -1902,7 +1902,7 @@ namespace Aura.Channel.Util
 
 			if (ChannelServer.Instance.ShuttingDown)
 			{
-				Send.MsgBox(client.Controlling, Localization.Get("Server is already being shut down."));
+				Send.MsgBox(sender, Localization.Get("Server is already being shut down."));
 				return CommandResult.Fail;
 			}
 
