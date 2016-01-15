@@ -1956,7 +1956,10 @@ namespace Aura.Channel.Util
 			var entityIds = args.Any(a => a == "entityIds");
 
 			if (args.Count > 1)
-				int.TryParse(args[1], out scale);
+			{
+				if (!int.TryParse(args[1], out scale))
+					scale = 20;
+			}
 
 			var regionName = target.Region.Name;
 			var props = target.Region.GetProps(a => true);
