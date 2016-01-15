@@ -23,6 +23,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
+using Aura.Mabi;
 
 namespace Aura.Channel
 {
@@ -334,6 +335,7 @@ namespace Aura.Channel
 			// Grab a copy of the list of users still currently logged in
 			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients.ToList<ChannelClient>();
 
+			// Kill all clients still logged in
 			foreach (var user in ChannelServer.Instance.ShutdownClientList)
 			{
 				try
@@ -346,6 +348,9 @@ namespace Aura.Channel
 					Log.Exception(e, "Error killing client.");
 				}
 			}
+
+			// Save global variables
+			this.ScriptManager.OnMabiTick(ErinnTime.Now);
 		}
 	}
 }
