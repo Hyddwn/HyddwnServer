@@ -1195,6 +1195,16 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Stops movement and resets creature to the given position.
+		/// </summary>
+		/// <param name="pos"></param>
+		public void ResetPosition(Position pos)
+		{
+			this.SetPosition(pos.X, pos.Y);
+			Send.SetLocation(this, pos.X, pos.Y);
+		}
+
+		/// <summary>
 		/// Warps creature to target location,
 		/// returns false if warp is unsuccessful.
 		/// </summary>
