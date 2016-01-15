@@ -310,23 +310,9 @@ namespace Aura.Channel
 		{
 			this.ShuttingDown = true;
 
-			// Shutdown warning
 			Send.Internal_Broadcast(Localization.Get(String.Format("The server will be brought down for maintenance in {0} seconds. Please log out safely before then.", time)));
 
-			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients.ToList<ChannelClient>();
-
-			// Send MsgBox to all users
-			foreach (var user in ChannelServer.Instance.ShutdownClientList)
-			{
-				try
-				{
-					Send.MsgBox(user.Controlling, Localization.Get("You will be logged out automatically in {0} seconds."), time);
-				}
-				catch (Exception e)
-				{
-					Log.Exception(e, "Failed to send MsgBox to user.");
-				}
-			}
+			Send.MsgBox(time, Localization.Get("You will be logged out automatically in {0} seconds."), time);
 
 			Log.Info("Shutting down in {0} seconds...", time);
 
