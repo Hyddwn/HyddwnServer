@@ -42,13 +42,7 @@ namespace Aura.Channel.Skills.Life
 		/// Calculates bonus chance for Herbalism, based on rank.
 		/// </summary>
 		/// <remarks>
-		/// Reference: http://wiki.mabinogiworld.com/view/Herbalism#Details
-		/// 
-		/// This actually seems to be incorrect and will require more research.
-		/// Base patches on fields have a 15% chance with Herbalism on Novice
-		/// and 50% with Herbalism on rF, according to the devCAT title debug
-		/// output. With what we have here we'd get 0% on Novice and 75% on rF
-		/// (plus the Production Mastery bonus.)
+		/// Chances based on devCAT title debug output.
 		/// </remarks>
 		/// <param name="creature"></param>
 		/// <param name="collectData"></param>
@@ -63,75 +57,176 @@ namespace Aura.Channel.Skills.Life
 
 			if (collectData.Target.Contains("/baseherb"))
 			{
-				if (herbalism.Info.Rank >= SkillRank.RF)
+				switch (herbalism.Info.Rank)
 				{
-					successChance += HerbalismPickBonus;
-					successChance += HerbalismIdentifyBonus;
+					case SkillRank.Novice: successChance = 15; break;
+					case SkillRank.RF: successChance = 50; break;
+					case SkillRank.RE: successChance = 55; break;
+					case SkillRank.RD: successChance = 60; break;
+					case SkillRank.RC: successChance = 65; break;
+					case SkillRank.RB: successChance = 70; break;
+					case SkillRank.RA: successChance = 75; break;
+					case SkillRank.R9: successChance = 80; break;
+					case SkillRank.R8: successChance = 85; break;
+					case SkillRank.R7: successChance = 90; break;
+					case SkillRank.R6: successChance = 95; break;
+					case SkillRank.R5: successChance = 97; break;
+					case SkillRank.R4: successChance = 98; break;
+					case SkillRank.R3: successChance = 99; break;
+					case SkillRank.R2: successChance = 99; break;
+					case SkillRank.R1: successChance = 99; break;
 				}
 			}
 			else if (collectData.Target.Contains("/bloodyherb"))
 			{
-				if (herbalism.Info.Rank >= SkillRank.RF)
-					successChance += HerbalismPickBonus;
-
-				if (herbalism.Info.Rank >= SkillRank.RC)
-					successChance += HerbalismIdentifyBonus;
+				switch (herbalism.Info.Rank)
+				{
+					case SkillRank.Novice: successChance = 8; break;
+					case SkillRank.RF: successChance = 20; break;
+					case SkillRank.RE: successChance = 25; break;
+					case SkillRank.RD: successChance = 30; break;
+					case SkillRank.RC: successChance = 50; break;
+					case SkillRank.RB: successChance = 60; break;
+					case SkillRank.RA: successChance = 65; break;
+					case SkillRank.R9: successChance = 70; break;
+					case SkillRank.R8: successChance = 75; break;
+					case SkillRank.R7: successChance = 80; break;
+					case SkillRank.R6: successChance = 85; break;
+					case SkillRank.R5: successChance = 90; break;
+					case SkillRank.R4: successChance = 93; break;
+					case SkillRank.R3: successChance = 96; break;
+					case SkillRank.R2: successChance = 99; break;
+					case SkillRank.R1: successChance = 99; break;
+				}
 			}
 			else if (collectData.Target.Contains("/sunlightherb"))
 			{
-				if (herbalism.Info.Rank >= SkillRank.RF)
-					successChance += HerbalismPickBonus;
-
-				if (herbalism.Info.Rank >= SkillRank.RB)
-					successChance += HerbalismIdentifyBonus;
+				switch (herbalism.Info.Rank)
+				{
+					case SkillRank.Novice: successChance = 5; break;
+					case SkillRank.RF: successChance = 15; break;
+					case SkillRank.RE: successChance = 20; break;
+					case SkillRank.RD: successChance = 30; break;
+					case SkillRank.RC: successChance = 35; break;
+					case SkillRank.RB: successChance = 50; break;
+					case SkillRank.RA: successChance = 55; break;
+					case SkillRank.R9: successChance = 57; break;
+					case SkillRank.R8: successChance = 60; break;
+					case SkillRank.R7: successChance = 62; break;
+					case SkillRank.R6: successChance = 64; break;
+					case SkillRank.R5: successChance = 66; break;
+					case SkillRank.R4: successChance = 68; break;
+					case SkillRank.R3: successChance = 75; break;
+					case SkillRank.R2: successChance = 80; break;
+					case SkillRank.R1: successChance = 83; break;
+				}
 			}
 			else if (collectData.Target.Contains("/manaherb"))
 			{
-				if (herbalism.Info.Rank >= SkillRank.RF)
-					successChance += HerbalismPickBonus;
-
-				if (herbalism.Info.Rank >= SkillRank.R9)
-					successChance += HerbalismIdentifyBonus;
+				switch (herbalism.Info.Rank)
+				{
+					case SkillRank.Novice: successChance = 3; break;
+					case SkillRank.RF: successChance = 10; break;
+					case SkillRank.RE: successChance = 15; break;
+					case SkillRank.RD: successChance = 20; break;
+					case SkillRank.RC: successChance = 25; break;
+					case SkillRank.RB: successChance = 30; break;
+					case SkillRank.RA: successChance = 35; break;
+					case SkillRank.R9: successChance = 50; break;
+					case SkillRank.R8: successChance = 53; break;
+					case SkillRank.R7: successChance = 56; break;
+					case SkillRank.R6: successChance = 60; break;
+					case SkillRank.R5: successChance = 70; break;
+					case SkillRank.R4: successChance = 72; break;
+					case SkillRank.R3: successChance = 74; break;
+					case SkillRank.R2: successChance = 76; break;
+					case SkillRank.R1: successChance = 80; break;
+				}
 			}
 			else if (collectData.Target.Contains("/whiteherb"))
 			{
-				if (herbalism.Info.Rank >= SkillRank.RE)
-					successChance += HerbalismPickBonus;
-
-				if (herbalism.Info.Rank >= SkillRank.R6)
-					successChance += HerbalismIdentifyBonus;
+				switch (herbalism.Info.Rank)
+				{
+					case SkillRank.RE: successChance = 10; break;
+					case SkillRank.RD: successChance = 15; break;
+					case SkillRank.RC: successChance = 20; break;
+					case SkillRank.RB: successChance = 25; break;
+					case SkillRank.RA: successChance = 30; break;
+					case SkillRank.R9: successChance = 35; break;
+					case SkillRank.R8: successChance = 40; break;
+					case SkillRank.R7: successChance = 45; break;
+					case SkillRank.R6: successChance = 50; break;
+					case SkillRank.R5: successChance = 55; break;
+					case SkillRank.R4: successChance = 60; break;
+					case SkillRank.R3: successChance = 65; break;
+					case SkillRank.R2: successChance = 70; break;
+					case SkillRank.R1: successChance = 75; break;
+				}
 			}
 			else if (collectData.Target.Contains("/goldherb"))
 			{
-				if (herbalism.Info.Rank >= SkillRank.RD)
-					successChance += HerbalismPickBonus;
-
-				if (herbalism.Info.Rank >= SkillRank.R3)
-					successChance += HerbalismIdentifyBonus;
+				switch (herbalism.Info.Rank)
+				{
+					case SkillRank.RD: successChance = 7; break;
+					case SkillRank.RC: successChance = 9; break;
+					case SkillRank.RB: successChance = 13; break;
+					case SkillRank.RA: successChance = 15; break;
+					case SkillRank.R9: successChance = 17; break;
+					case SkillRank.R8: successChance = 19; break;
+					case SkillRank.R7: successChance = 21; break;
+					case SkillRank.R6: successChance = 23; break;
+					case SkillRank.R5: successChance = 25; break;
+					case SkillRank.R4: successChance = 27; break;
+					case SkillRank.R3: successChance = 50; break;
+					case SkillRank.R2: successChance = 50; break;
+					case SkillRank.R1: successChance = 50; break;
+				}
 			}
 			else if (collectData.Target.Contains("/ivoryherb"))
 			{
-				if (herbalism.Info.Rank >= SkillRank.RC)
-					successChance += HerbalismPickBonus;
-
-				if (herbalism.Info.Rank >= SkillRank.R5)
-					successChance += HerbalismIdentifyBonus;
+				switch (herbalism.Info.Rank)
+				{
+					case SkillRank.R9: successChance = 25; break;
+					case SkillRank.R8: successChance = 30; break;
+					case SkillRank.R7: successChance = 35; break;
+					case SkillRank.R6: successChance = 40; break;
+					case SkillRank.R5: successChance = 50; break;
+					case SkillRank.R4: successChance = 55; break;
+					case SkillRank.R3: successChance = 60; break;
+					case SkillRank.R2: successChance = 65; break;
+					case SkillRank.R1: successChance = 70; break;
+				}
 			}
 			else if (collectData.Target.Contains("/purpleherb"))
 			{
-				if (herbalism.Info.Rank >= SkillRank.RB)
-					successChance += HerbalismPickBonus;
-
-				if (herbalism.Info.Rank >= SkillRank.R3)
-					successChance += HerbalismIdentifyBonus;
+				switch (herbalism.Info.Rank)
+				{
+					case SkillRank.R9: successChance = 10; break;
+					case SkillRank.R8: successChance = 14; break;
+					case SkillRank.R7: successChance = 17; break;
+					case SkillRank.R6: successChance = 20; break;
+					case SkillRank.R5: successChance = 30; break;
+					case SkillRank.R4: successChance = 39; break;
+					case SkillRank.R3: successChance = 50; break;
+					case SkillRank.R2: successChance = 55; break;
+					case SkillRank.R1: successChance = 60; break;
+				}
 			}
 			else if (collectData.Target.Contains("/orangeherb/"))
 			{
-				if (herbalism.Info.Rank >= SkillRank.RA)
-					successChance += HerbalismPickBonus;
-
-				if (herbalism.Info.Rank >= SkillRank.R1)
-					successChance += HerbalismIdentifyBonus;
+				switch (herbalism.Info.Rank)
+				{
+					case SkillRank.RA: successChance = 10; break;
+					case SkillRank.R9: successChance = 12; break;
+					case SkillRank.R8: successChance = 16; break;
+					case SkillRank.R7: successChance = 18; break;
+					case SkillRank.R6: successChance = 23; break;
+					case SkillRank.R5: successChance = 25; break;
+					case SkillRank.R4: successChance = 27; break;
+					case SkillRank.R3: successChance = 32; break;
+					case SkillRank.R2: successChance = 45; break;
+					case SkillRank.R1: successChance = 50; break;
+				}
 			}
 
 			return successChance;

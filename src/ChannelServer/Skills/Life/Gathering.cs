@@ -311,11 +311,24 @@ namespace Aura.Channel.Skills.Life
 		private float GetSuccessChance(Creature creature, CollectingData collectData)
 		{
 			// Base
-			var successChance = collectData.SuccessRate;
+			var successChance = 0f;
 
-			// Add chance for herbs based on Herbalism rank
+			// Herbalism
 			if (collectData.Target.Contains("/herb/"))
-				successChance += Herbalism.GetChance(creature, collectData);
+			{
+				successChance = Herbalism.GetChance(creature, collectData);
+
+				// If base chance is 0, gathering herbs fails. Adding the PM
+				// bonus would make it possible to pick unpickable herbs
+				// without Herbalism.
+				if (successChance == 0)
+					return 0;
+			}
+			// Others
+			else
+			{
+				successChance = collectData.SuccessRate;
+			}
 
 			// Add Production Mastery bonus
 			successChance = ProductionMastery.IncreaseChance(creature, successChance);
