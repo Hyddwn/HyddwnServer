@@ -83,6 +83,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "weather", "[0.0~2.0|clear|rain|storm|type1~type12]", HandleWeather);
 			Add(50, 50, "telewalk", "", HandleTeleWalk);
 			Add(50, 50, "points", "<modificator>", HandlePoints);
+			Add(50, 50, "fillpotions", "", HandleFillPotions);
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", HandleDynamic);
@@ -1910,6 +1911,34 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Marked {0} creatures to *not* be saved."), creatures.Length);
 			if (sender != target)
 				Send.ServerMessage(sender, Localization.Get("{0} marked your creatures to *not* be saved on logout."), sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleFillPotions(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			var count = 0;
+
+			var items = target.Inventory.GetItems();
+			foreach (var item in items)
+			{
+				if (item.Amount < item.Data.StackMax && item.HasTag("/usable/potion/"))
+				{
+					item.Amount = item.Data.StackMax;
+					Send.ItemUpdate(target, item);
+					count++;
+				}
+			}
+
+			if (count == 0)
+			{
+				Send.ServerMessage(sender, Localization.Get("No potions found."));
+				return CommandResult.Okay;
+			}
+
+			Send.ServerMessage(sender, Localization.Get("Filled {0} potion stacks."), count);
+			if (target != sender)
+				Send.ServerMessage(sender, Localization.Get("{0} filled {1} of your potion stacks."), sender.Name, count);
 
 			return CommandResult.Okay;
 		}
