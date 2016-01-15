@@ -22,6 +22,7 @@ using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aura.Channel
 {
@@ -73,7 +74,7 @@ namespace Aura.Channel
 		public WorldManager World { get; private set; }
 		public bool ShuttingDown { get; private set; }
 		private List<ChannelClient> ShutdownClientList { get; set; }
-		private Timer timer { get; set; }
+		private Timer Timer { get; set; }
 
 		private ChannelServer()
 		{
@@ -94,6 +95,8 @@ namespace Aura.Channel
 			this.Events = new EventManager();
 			this.Weather = new WeatherManager();
 			this.PartyManager = new PartyManager();
+
+			this.Timer = new Timer(new TimerCallback(ShutdownTimerDone));
 		}
 
 		/// <summary>
@@ -299,30 +302,18 @@ namespace Aura.Channel
 			}
 		}
 
-		public void Shutdown(int time, ChannelClient client)
-		{
-			if (client.Address.Equals(ChannelServer.Instance.Conf.Channel.LoginHost + ":" + ChannelServer.Instance.Conf.Channel.LoginPort))
-			{
-				Log.Info("Address confirmed to be login server. Proceeding with shutdown.");
-				Shutdown(time);
-			}
-			else
-			{
-				Log.Error("Address does not match the login server. Rejecting shutdown request.");
-				return;
-			}
-		}
-
+		/// <summary>
+		/// Shutdown procedure for the current channel.
+		/// </summary>
+		/// <param name="time">The amount of time in seconds until shutdown.</param>
 		public void Shutdown(int time)
 		{
-
 			this.ShuttingDown = true;
 
 			// Shutdown warning
-			Send.Internal_Broadcast(Localization.Get("The server will be brought down for maintenance in " + time + " seconds. Please log out safely before then."));
+			Send.Internal_Broadcast(Localization.Get(String.Format("The server will be brought down for maintenance in {0} seconds. Please log out safely before then.", time)));
 
-			// Save a list of all clients logged in prior to shutdown
-			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients;
+			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients.ToList<ChannelClient>();
 
 			// Send MsgBox to all users
 			foreach (var user in ChannelServer.Instance.ShutdownClientList)
@@ -339,8 +330,7 @@ namespace Aura.Channel
 
 			Log.Info("Shutting down in {0} seconds...", time);
 
-			timer = new Timer(new TimerCallback(ShutdownTimerDone));
-			timer.Change(time * 1000, Timeout.Infinite);
+			this.Timer.Change(time * 1000, Timeout.Infinite);
 
 		}
 
@@ -348,20 +338,16 @@ namespace Aura.Channel
 		{
 			((Timer)timer).Dispose();
 
-			// Get stored list of all clients logged in prior to shutdown and kill
 			this.KillConnectedClients();
 
-			// Double check that nobody is left (in case someone logged in while the server was switching to shutdown mode)
-			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients;
-			this.KillConnectedClients();
-
-			Log.Info("Waiting an additional 10 seconds to save data before closing...");
-			Thread.Sleep(10 * 1000);
 			CliUtil.Exit(0, false);
 		}
 
 		private void KillConnectedClients()
 		{
+			// Grab a copy of the list of users still currently logged in
+			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients.ToList<ChannelClient>();
+
 			foreach (var user in ChannelServer.Instance.ShutdownClientList)
 			{
 				try
