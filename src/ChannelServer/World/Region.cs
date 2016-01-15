@@ -231,6 +231,23 @@ namespace Aura.Channel.World
 			}
 		}
 
+		/// <summary>
+		/// Returns all events that matches the predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public ClientEvent[] GetClientEvents(Func<ClientEvent, bool> predicate)
+		{
+			_clientEventsRWLS.EnterReadLock();
+			try
+			{
+				return _clientEvents.Values.Where(predicate).ToArray();
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitReadLock();
+			}
+		}
 
 		/// <summary>
 		/// Returns a list of events that start with the given path,

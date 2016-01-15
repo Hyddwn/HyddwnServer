@@ -22,6 +22,11 @@ using System.Linq;
 using Aura.Mabi.Network;
 using Aura.Channel.World;
 using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using Aura.Channel.World.Dungeons;
+using System.Drawing.Text;
 
 namespace Aura.Channel.Util
 {
@@ -93,6 +98,7 @@ namespace Aura.Channel.Util
 			Add(99, -1, "reloadconf", "", HandleReloadConf);
 			Add(99, 99, "closenpc", "", HandleCloseNpc);
 			Add(99, 99, "nosave", "", HandleNoSave);
+			Add(99, 99, "dbgregion", "[scale=20] [entityIds]", HandleDebugRegion);
 
 			// Aliases
 			AddAlias("item", "drop");
@@ -1941,6 +1947,116 @@ namespace Aura.Channel.Util
 				Send.ServerMessage(sender, Localization.Get("{0} filled {1} of your potion stacks."), sender.Name, count);
 
 			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleDebugRegion(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			var scale = 20;
+			var padding = 60;
+			var entityIds = args.Any(a => a == "entityIds");
+
+			if (args.Count > 1)
+				int.TryParse(args[1], out scale);
+
+			var regionName = target.Region.Name;
+			var props = target.Region.GetProps(a => true);
+			var events = target.Region.GetClientEvents(a => true);
+
+			var width = (target.Region.Data.X1 + target.Region.Data.X2) / scale;
+			var height = (target.Region.Data.Y1 + target.Region.Data.Y2) / scale;
+
+			var floorRegion = target.Region as DungeonFloorRegion;
+			if (floorRegion != null)
+			{
+				width = floorRegion.Floor.MazeGenerator.Width * (Dungeon.TileSize / scale);
+				height = floorRegion.Floor.MazeGenerator.Height * (Dungeon.TileSize / scale);
+			}
+
+			width += padding * 2;
+			height += padding * 2;
+
+			try
+			{
+				Send.ServerMessage(sender, Localization.Get("Please wait..."));
+
+				using (var bmp = new Bitmap(width, height))
+				using (var gfx = Graphics.FromImage(bmp))
+				{
+					gfx.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+
+					var sf = new StringFormat();
+					sf.Alignment = StringAlignment.Center;
+					sf.LineAlignment = StringAlignment.Center;
+
+					foreach (var entity in events)
+					{
+						var pen = (entity.IsCollision ? Pens.Blue : Pens.LightGray);
+
+						foreach (var points in entity.Shapes)
+						{
+							gfx.DrawLine(pen, points[0].X / scale + padding, (bmp.Height - points[0].Y / scale) - padding, points[1].X / scale + padding, (bmp.Height - points[1].Y / scale) - padding);
+							gfx.DrawLine(pen, points[1].X / scale + padding, (bmp.Height - points[1].Y / scale) - padding, points[2].X / scale + padding, (bmp.Height - points[2].Y / scale) - padding);
+							gfx.DrawLine(pen, points[2].X / scale + padding, (bmp.Height - points[2].Y / scale) - padding, points[3].X / scale + padding, (bmp.Height - points[3].Y / scale) - padding);
+							gfx.DrawLine(pen, points[3].X / scale + padding, (bmp.Height - points[3].Y / scale) - padding, points[0].X / scale + padding, (bmp.Height - points[0].Y / scale) - padding);
+						}
+					}
+
+					var posCache = new Dictionary<long, int>();
+
+					foreach (var entity in props)
+					{
+						var pen = Pens.Black;
+
+						foreach (var points in entity.Shapes)
+						{
+							gfx.DrawLine(pen, points[0].X / scale + padding, (bmp.Height - points[0].Y / scale) - padding, points[1].X / scale + padding, (bmp.Height - points[1].Y / scale) - padding);
+							gfx.DrawLine(pen, points[1].X / scale + padding, (bmp.Height - points[1].Y / scale) - padding, points[2].X / scale + padding, (bmp.Height - points[2].Y / scale) - padding);
+							gfx.DrawLine(pen, points[2].X / scale + padding, (bmp.Height - points[2].Y / scale) - padding, points[3].X / scale + padding, (bmp.Height - points[3].Y / scale) - padding);
+							gfx.DrawLine(pen, points[3].X / scale + padding, (bmp.Height - points[3].Y / scale) - padding, points[0].X / scale + padding, (bmp.Height - points[0].Y / scale) - padding);
+						}
+
+						if (entityIds && entity.Shapes.Any())
+						{
+							var x = entity.Info.X / scale + padding;
+							var y = (bmp.Height - entity.Info.Y / scale) - padding;
+
+							var xy = ((long)x << 32) + (long)y;
+							var same = (posCache.ContainsKey(xy) ? posCache[xy] : 0);
+							if (same == 0)
+								posCache[xy] = 1;
+							else
+								posCache[xy]++;
+
+							y += SystemFonts.DefaultFont.Height * same;
+
+							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y - 0), sf);
+							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x + 1, y - 0), sf);
+							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 0, y - 1), sf);
+							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 0, y + 1), sf);
+							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y - 1), sf);
+							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x + 1, y + 1), sf);
+							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y + 1), sf);
+							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y + 1), sf);
+							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.White, new PointF(x, y), sf);
+						}
+					}
+
+					if (!Directory.Exists("user/debug/"))
+						Directory.CreateDirectory("user/debug/");
+
+					var path = "user/debug/" + regionName + ".png";
+					bmp.Save(path, ImageFormat.Png);
+
+					Send.ServerMessage(sender, Localization.Get("Debug image created: {0}"), path);
+
+					return CommandResult.Okay;
+				}
+			}
+			catch (ArgumentException)
+			{
+				Send.ServerMessage(sender, Localization.Get("Failed to create debug image, try to use a larger scale."));
+				return CommandResult.Fail;
+			}
 		}
 	}
 
