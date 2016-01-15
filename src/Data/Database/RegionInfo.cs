@@ -194,6 +194,7 @@ namespace Aura.Data.Database
 		public float Y { get; set; }
 		public float Direction { get; set; }
 		public float Scale { get; set; }
+		public string State { get; set; }
 		public List<ShapeData> Shapes { get; set; }
 		public List<RegionElementData> Parameters { get; set; }
 
@@ -465,6 +466,7 @@ namespace Aura.Data.Database
 						pi.Y = br.ReadSingle();
 						pi.Direction = br.ReadSingle();
 						pi.Scale = br.ReadSingle();
+						pi.State = br.ReadString();
 
 						var cShapes = br.ReadInt32();
 						for (int k = 0; k < cShapes; ++k)
