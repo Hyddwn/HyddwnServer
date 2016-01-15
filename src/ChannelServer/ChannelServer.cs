@@ -312,7 +312,7 @@ namespace Aura.Channel
 
 			Send.Internal_Broadcast(Localization.Get(String.Format("The server will be brought down for maintenance in {0} seconds. Please log out safely before then.", time)));
 
-			Send.MsgBox(time, Localization.Get("You will be logged out automatically in {0} seconds."), time);
+			Send.MsgBox(time);
 
 			Log.Info("Shutting down in {0} seconds...", time);
 

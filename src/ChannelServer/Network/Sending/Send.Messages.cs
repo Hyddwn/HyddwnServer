@@ -187,12 +187,10 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends MsgBox to creature's client.
+		/// Sends MsgBox to creature's client notifying automatic logout.
 		/// </summary>
-		/// <param name="time"></param>
-		/// <param name="format"></param>
-		/// <param name="args"></param>
-		public static void MsgBox(int time, string format, params object[] args)
+		/// <param name="time">Time in seconds until automatic logout.</param>
+		public static void MsgBox(int time)
 		{
 			ChannelServer.Instance.World.Broadcast(new Packet(Op.RequestClientDisconnect, MabiId.Channel).PutInt(time * 1000));
 		}
