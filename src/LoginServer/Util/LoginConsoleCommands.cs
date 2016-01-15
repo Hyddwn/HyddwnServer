@@ -33,7 +33,7 @@ namespace Aura.Login.Util
 
 			time = Math2.Clamp(60, 1800, time);
 
-			Send.ShutdownRequest(time);
+			Send.ChannelShutdown(time);
 			Log.Info("Shutting down in {0} seconds...", time);
 
 			return CommandResult.Okay;
