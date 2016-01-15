@@ -116,7 +116,15 @@ namespace Aura.Channel.Network.Handlers
 
 			if (!ChannelServer.Instance.ShuttingDown)
 			{
-				ChannelServer.Instance.Shutdown(time, client);
+				if (client.Equals(ChannelServer.Instance.LoginServer))
+				{
+					Log.Info("Shutdown request confirmed to be from the LoginServer. Proceeding with shutdown.");
+					ChannelServer.Instance.Shutdown(time);
+				}
+				else
+				{
+					Log.Error("Shutdown request is not from the LoginServer. Rejecting shutdown request.");
+				}
 			}
 			else
 			{
