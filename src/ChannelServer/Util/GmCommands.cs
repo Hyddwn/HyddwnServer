@@ -1891,13 +1891,14 @@ namespace Aura.Channel.Util
 
 		private CommandResult HandleShutdown(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
-			int time = 0;
+			// Default shutdown time is 60 seconds
+			int time = 60;
 
-			if (args.Count < 2)
+			if (args.Count > 2)
 				return CommandResult.InvalidArgument;
 
-			// Get time
-			if (!int.TryParse(args[1], out time))
+			// Get time if a time argument is provided
+			if (args.Count == 2 && !int.TryParse(args[1], out time))
 				return CommandResult.InvalidArgument;
 
 			if (ChannelServer.Instance.ShuttingDown)
