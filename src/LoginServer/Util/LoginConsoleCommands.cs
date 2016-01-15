@@ -20,13 +20,14 @@ namespace Aura.Login.Util
 
 		private CommandResult HandleShutDown(string command, IList<string> args)
 		{
-			int time = 0;
+			// Default shutdown time is 60 seconds
+			int time = 60;
 
-			if (args.Count < 2)
+			if (args.Count > 2)
 				return CommandResult.InvalidArgument;
 
-			// Get time
-			if (!int.TryParse(args[1], out time))
+			// Get time if a time argument is provided
+			if (args.Count == 2 && !int.TryParse(args[1], out time))
 				return CommandResult.InvalidArgument;
 
 			// TODO: (Enhancement) If there is no ChannelServer running, refuse shutdown command
@@ -34,7 +35,7 @@ namespace Aura.Login.Util
 			time = Math2.Clamp(60, 1800, time);
 
 			Send.ChannelShutdown(time);
-			Log.Info("Shutting down in {0} seconds...", time);
+			Log.Info("Shutdown request sent to all channels.");
 
 			return CommandResult.Okay;
 		}
