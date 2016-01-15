@@ -189,6 +189,17 @@ namespace Aura.Channel.Network.Sending
 		/// <summary>
 		/// Sends MsgBox to creature's client.
 		/// </summary>
+		/// <param name="time"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public static void MsgBox(int time, string format, params object[] args)
+		{
+			ChannelServer.Instance.World.Broadcast(new Packet(Op.RequestClientDisconnect, MabiId.Channel).PutInt(time * 1000));
+		}
+
+		/// <summary>
+		/// Sends MsgBox to creature's client.
+		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
