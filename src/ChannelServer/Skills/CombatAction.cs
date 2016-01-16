@@ -137,12 +137,6 @@ namespace Aura.Channel.Skills
 		{
 			foreach (var action in this.Actions)
 			{
-				// Max target stun for players == 2000?
-				if (action.Category == CombatActionCategory.Target && action.Creature.IsPlayer)
-					action.Stun = (short)Math.Min(2000, (int)action.Stun);
-
-				action.Creature.Stun = action.Stun;
-
 				// Stat update
 				Send.StatUpdate(action.Creature, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.Mana, Stat.Stamina);
 				Send.StatUpdate(action.Creature, StatUpdateType.Public, Stat.Life, Stat.LifeInjured);
@@ -151,6 +145,16 @@ namespace Aura.Channel.Skills
 				if (action.Category == CombatActionCategory.Target)
 				{
 					var tAction = action as TargetAction;
+
+					// Max target stun for players == 2000?
+					if (action.Creature.IsPlayer)
+						action.Stun = Math.Min((short)2000, action.Stun);
+
+					// Reduce stun if pinged
+					if (tAction.Has(EffectFlags.HeavyStander) || tAction.Has(EffectFlags.NaturalShield) || tAction.Has(EffectFlags.ManaDeflector))
+						action.Stun = Math.Min((short)1000, action.Stun);
+
+					action.Creature.Stun = action.Stun;
 
 					// Mana Shield flag
 					if (tAction.ManaDamage > 0 && tAction.Damage == 0)
@@ -213,11 +217,12 @@ namespace Aura.Channel.Skills
 					foreach (var cr in visibleCreatures)
 						Send.StabilityMeterUpdate(cr, tAction.Creature);
 				}
-
 				// If attacker action
-				if (action.Category == CombatActionCategory.Attack)
+				else if (action.Category == CombatActionCategory.Attack)
 				{
 					var aAction = action as AttackerAction;
+
+					action.Creature.Stun = action.Stun;
 
 					var npc = action.Creature as NPC;
 					if (npc != null && npc.AI != null && action.SkillId != SkillId.CombatMastery)
