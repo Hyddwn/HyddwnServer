@@ -1373,11 +1373,11 @@ namespace Aura.Channel.Scripting.Scripts
 			// Wait till aim is 99% or timeout is reached
 			var until = _timestamp + Math.Max(0, timeout);
 			var aim = 0.0;
-			while (_timestamp < until && (aim = this.Creature.AimMeter.GetAimChance(target)) < 99)
+			while (_timestamp < until && (aim = this.Creature.AimMeter.GetAimChance(target)) < 90)
 				yield return true;
 
-			// Cancel if 99 aim weren't reached
-			if (aim < 99)
+			// Cancel if 90 aim weren't reached
+			if (aim < 90)
 			{
 				this.SharpMind(activeSkill.Info.Id, SharpMindStatus.Cancelling);
 				this.Creature.Skills.CancelActiveSkill();
