@@ -23,14 +23,13 @@ namespace Aura.Login.Util
 			// Default shutdown time is 60 seconds
 			int time = 60;
 
-			if (args.Count > 2)
+			// If there are too many arguments or there is no ChannelServer running, refuse shutdown command
+			if (args.Count > 2 || LoginServer.Instance.ServerList.List.Count == 0)
 				return CommandResult.InvalidArgument;
 
 			// Get time if a time argument is provided
 			if (args.Count == 2 && !int.TryParse(args[1], out time))
 				return CommandResult.InvalidArgument;
-
-			// TODO: (Enhancement) If there is no ChannelServer running, refuse shutdown command
 
 			time = Math2.Clamp(60, 1800, time);
 
