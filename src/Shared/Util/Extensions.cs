@@ -82,6 +82,18 @@ namespace Aura.Shared.Util
 		}
 
 		/// <summary>
+		/// Returns a random value from the given ones.
+		/// </summary>
+		/// <param name="values"></param>
+		public static T Rnd<T>(this Random rnd, params T[] values)
+		{
+			if (values == null || values.Length == 0)
+				throw new ArgumentException("Values may not be null or empty.");
+
+			return values[rnd.Next(values.Length)];
+		}
+
+		/// <summary>
 		/// Returns float, formatted with InvariantCulture.
 		/// </summary>
 		/// <param name="f"></param>
