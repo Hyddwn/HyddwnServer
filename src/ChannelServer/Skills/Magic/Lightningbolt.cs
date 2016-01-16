@@ -91,12 +91,19 @@ namespace Aura.Channel.Skills.Magic
 				SkillHelper.HandleMagicDefenseProtection(target, ref targetDamage);
 				ManaShield.Handle(target, ref targetDamage, tAction);
 
+				// Mana Deflector
+				var delayReduction = ManaDeflector.Handle(attacker, target, ref damage, tAction);
+
 				// Deal damage
 				if (targetDamage > 0)
 					target.TakeDamage(tAction.Damage = targetDamage, attacker);
 
 				if (target == mainTarget)
 					target.Aggro(attacker);
+
+				// Reduce stun, based on ping
+				if (delayReduction > 0)
+					tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
 
 				// Death/Knockback
 				var overcharge = (skill.Stacks > targets.Count);

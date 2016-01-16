@@ -200,6 +200,9 @@ namespace Aura.Channel.Skills.Base
 			SkillHelper.HandleMagicDefenseProtection(target, ref damage);
 			ManaShield.Handle(target, ref damage, tAction);
 
+			// Mana Deflector
+			var delayReduction = ManaDeflector.Handle(attacker, target, ref damage, tAction);
+
 			// Deal damage
 			if (damage > 0)
 				target.TakeDamage(tAction.Damage = damage, attacker);
@@ -211,6 +214,10 @@ namespace Aura.Channel.Skills.Base
 				tAction.Set(TargetOptions.KnockDown);
 				tAction.Stun = TargetStun;
 			}
+
+			// Reduce stun, based on ping
+			if (delayReduction > 0)
+				tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
 
 			// Death/Knockback
 			this.HandleKnockBack(attacker, target, tAction, false);
