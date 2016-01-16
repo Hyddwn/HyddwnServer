@@ -151,7 +151,7 @@ namespace Aura.Channel.Skills
 						action.Stun = Math.Min((short)2000, action.Stun);
 
 					// Reduce stun if pinged
-					if (tAction.Has(EffectFlags.HeavyStander) || tAction.Has(EffectFlags.NaturalShield) || tAction.Has(EffectFlags.ManaDeflector))
+					if (!tAction.IsKnockBack && (tAction.Has(EffectFlags.HeavyStander) || tAction.Has(EffectFlags.NaturalShield) || tAction.Has(EffectFlags.ManaDeflector)))
 						action.Stun = Math.Min((short)1000, action.Stun);
 
 					action.Creature.Stun = action.Stun;
