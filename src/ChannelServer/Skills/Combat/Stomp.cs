@@ -129,6 +129,7 @@ namespace Aura.Channel.Skills.Combat
 				CriticalHit.Handle(attacker, attacker.GetTotalCritChance(0), ref damage, tAction);
 				SkillHelper.HandleDefenseProtection(target, ref damage);
 				ManaShield.Handle(target, ref damage, tAction);
+				HeavyStander.Handle(attacker, target, ref damage, tAction);
 
 				// Clean Hit if not critical
 				if (!tAction.Has(TargetOptions.Critical))
