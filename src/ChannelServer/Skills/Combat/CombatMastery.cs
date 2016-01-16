@@ -118,7 +118,8 @@ namespace Aura.Channel.Skills.Combat
 				ManaShield.Handle(target, ref damage, tAction);
 
 				// Heavy Stander
-				var pinged = HeavyStander.Handle(attacker, target, ref damage, tAction);
+				// Can only happen on the first hit
+				var pinged = (cap.Hit == 1 && HeavyStander.Handle(attacker, target, ref damage, tAction));
 
 				// Deal with it!
 				if (damage > 0)
