@@ -180,6 +180,10 @@ namespace Aura.Channel.Skills.Combat
 				// Mana Shield
 				ManaShield.Handle(target, ref damage, tAction);
 
+				// Natural Shield
+				// Ignore delay reduction, as knock downs shouldn't be shortened
+				NaturalShield.Handle(attacker, target, ref damage, tAction);
+
 				// Deal with it!
 				if (damage > 0)
 				{
