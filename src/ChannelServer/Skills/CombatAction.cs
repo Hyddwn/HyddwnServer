@@ -156,7 +156,7 @@ namespace Aura.Channel.Skills
 					// on the server, which causes a little glitch, where a
 					// monster might attack while it's still visibly stunned.
 					// Should stun from combat be *added*, instead of *set*?
-					if (!tAction.IsKnockBack && (tAction.Has(EffectFlags.HeavyStander) || tAction.Has(EffectFlags.NaturalShield) || tAction.Has(EffectFlags.ManaDeflector)))
+					if (!tAction.IsKnockBack && tAction.Has(EffectFlags.HeavyStander))
 						action.Stun = Math.Min((short)1000, action.Stun);
 
 					action.Creature.Stun = action.Stun;
