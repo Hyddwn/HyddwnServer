@@ -148,8 +148,7 @@ namespace Aura.Channel.Network.Sending
 						actionPacket.PutUInt(0); // MultiHitDamageCount
 						actionPacket.PutUInt(0); // MultiHitDamageShowTime
 					}
-
-					actionPacket.PutByte(tAction.EffectFlags); // PDef? Seen as 0x20 in a normal attack (G18)
+					actionPacket.PutByte((byte)tAction.EffectFlags);
 					actionPacket.PutInt(tAction.Delay);
 					actionPacket.PutLong(tAction.Attacker.EntityId);
 				}

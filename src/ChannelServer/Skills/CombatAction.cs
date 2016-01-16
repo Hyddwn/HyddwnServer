@@ -442,7 +442,7 @@ namespace Aura.Channel.Skills
 		/// <summary>
 		/// Action's effect flags.
 		/// </summary>
-		public byte EffectFlags { get; set; }
+		public EffectFlags EffectFlags { get; set; }
 
 		/// <summary>
 		/// Skill used by the attacker
@@ -497,6 +497,16 @@ namespace Aura.Channel.Skills
 		public bool Has(TargetOptions option)
 		{
 			return ((this.Options & option) != 0);
+		}
+
+		/// <summary>
+		/// Returns true if the specified flag is set.
+		/// </summary>
+		/// <param name="flags"></param>
+		/// <returns></returns>
+		public bool Has(EffectFlags flags)
+		{
+			return ((this.EffectFlags & flags) != 0);
 		}
 
 		/// <summary>

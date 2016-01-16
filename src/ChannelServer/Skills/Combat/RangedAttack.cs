@@ -188,7 +188,7 @@ namespace Aura.Channel.Skills.Combat
 					tAction.Set(TargetOptions.Result);
 					tAction.Stun = (short)(actionType == CombatActionPackType.ChainRangeAttack ? TargetStunElf : TargetStun);
 					if (actionType == CombatActionPackType.ChainRangeAttack)
-						tAction.EffectFlags = 0x20;
+						tAction.EffectFlags = EffectFlags.Unknown;
 
 					cap.Add(tAction);
 
