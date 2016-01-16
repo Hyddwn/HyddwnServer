@@ -151,6 +151,11 @@ namespace Aura.Channel.Skills
 						action.Stun = Math.Min((short)2000, action.Stun);
 
 					// Reduce stun if pinged
+					// If the second hit of the second set of dual wield hits
+					// pings, the monster's stun on the client is longer than
+					// on the server, which causes a little glitch, where a
+					// monster might attack while it's still visibly stunned.
+					// Should stun from combat be *added*, instead of *set*?
 					if (!tAction.IsKnockBack && (tAction.Has(EffectFlags.HeavyStander) || tAction.Has(EffectFlags.NaturalShield) || tAction.Has(EffectFlags.ManaDeflector)))
 						action.Stun = Math.Min((short)1000, action.Stun);
 
