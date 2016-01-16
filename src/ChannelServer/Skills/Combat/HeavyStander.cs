@@ -168,7 +168,7 @@ namespace Aura.Channel.Skills.Combat
 		{
 			// Apply damage reduction
 			if (damageReduction > 0)
-				damage = Math.Max(1, damage / 100 * damageReduction);
+				damage = Math.Max(1, damage - (damage / 100 * damageReduction));
 
 			// Apply auto defense
 			if (rnd.Next(100) < activationChance)
