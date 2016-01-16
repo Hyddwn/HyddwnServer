@@ -60,6 +60,9 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public override StartStopResult Start(Creature creature, Skill skill, MabiDictionary dict)
 		{
+			// Give an indication of activation, official behavior unknown.
+			Send.Notice(creature, Localization.Get("Heavy Stander activated."));
+
 			return StartStopResult.Okay;
 		}
 
@@ -72,6 +75,8 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public override StartStopResult Stop(Creature creature, Skill skill, MabiDictionary dict)
 		{
+			Send.Notice(creature, Localization.Get("Heavy Stander deactivated."));
+
 			return StartStopResult.Okay;
 		}
 
