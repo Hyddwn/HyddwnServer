@@ -13,7 +13,7 @@ namespace Aura.Login.Util
 	{
 		public LoginConsoleCommands()
 		{
-			this.Add("shutdown", "Orders all servers to shut down", HandleShutDown);
+			this.Add("shutdown", "<seconds>", "Orders all servers to shut down", HandleShutDown);
 			this.Add("auth", "<account> <level>", "Changes authority level of account", HandleAuth);
 			this.Add("passwd", "<account> <password>", "Changes password of account", HandlePasswd);
 		}
@@ -23,9 +23,14 @@ namespace Aura.Login.Util
 			// Default shutdown time is 60 seconds
 			int time = 60;
 
-			// If there are too many arguments or there is no ChannelServer running, refuse shutdown command
-			if (args.Count > 2 || LoginServer.Instance.ServerList.List.Count == 0)
+			if (args.Count > 2)
 				return CommandResult.InvalidArgument;
+
+			if (LoginServer.Instance.ChannelClients.Count == 0)
+			{
+				Log.Error("There are no channel servers currently running.");
+				return CommandResult.Fail;
+			}
 
 			// Get time if a time argument is provided
 			if (args.Count == 2 && !int.TryParse(args[1], out time))
@@ -34,7 +39,7 @@ namespace Aura.Login.Util
 			time = Math2.Clamp(60, 1800, time);
 
 			Send.ChannelShutdown(time);
-			Log.Info("Shutdown request sent to all channels.");
+			Log.Info("Shutdown request sent to all channel servers.");
 
 			return CommandResult.Okay;
 		}
