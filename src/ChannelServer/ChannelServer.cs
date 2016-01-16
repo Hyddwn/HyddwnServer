@@ -74,8 +74,8 @@ namespace Aura.Channel
 
 		public WorldManager World { get; private set; }
 		public bool ShuttingDown { get; private set; }
-		private List<ChannelClient> ShutdownClientList { get; set; }
-		private Timer Timer { get; set; }
+		private List<ChannelClient> _shutdownclientlist { get; set; }
+		private Timer _timer { get; set; }
 
 		private ChannelServer()
 		{
@@ -97,7 +97,7 @@ namespace Aura.Channel
 			this.Weather = new WeatherManager();
 			this.PartyManager = new PartyManager();
 
-			this.Timer = new Timer(new TimerCallback(ShutdownTimerDone));
+			_timer = new Timer(new TimerCallback(ShutdownTimerDone));
 		}
 
 		/// <summary>
@@ -317,7 +317,7 @@ namespace Aura.Channel
 
 			Log.Info("Shutting down in {0} seconds...", time);
 
-			this.Timer.Change(time * 1000, Timeout.Infinite);
+			_timer.Change(time * 1000, Timeout.Infinite);
 
 		}
 
@@ -333,10 +333,10 @@ namespace Aura.Channel
 		private void KillConnectedClients()
 		{
 			// Grab a copy of the list of users still currently logged in
-			ChannelServer.Instance.ShutdownClientList = ChannelServer.Instance.Server.Clients.ToList<ChannelClient>();
+			ChannelServer.Instance._shutdownclientlist = ChannelServer.Instance.Server.Clients.ToList<ChannelClient>();
 
 			// Kill all clients still logged in
-			foreach (var user in ChannelServer.Instance.ShutdownClientList)
+			foreach (var user in ChannelServer.Instance._shutdownclientlist)
 			{
 				try
 				{
