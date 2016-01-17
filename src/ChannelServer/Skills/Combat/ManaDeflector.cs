@@ -35,6 +35,8 @@ namespace Aura.Channel.Skills.Combat
 		private const float DefaultDamageReduction = 50;
 		private const float DefaultDelayReduction = 50;
 
+		private static readonly SkillId[] Skills = { SkillId.ManaDeflector, SkillId.ManaDeflectorPassive };
+
 		private static string[] Lv1Msgs =
 		{
 			Localization.Get("My attack is being defended by a skill!"),
@@ -91,11 +93,10 @@ namespace Aura.Channel.Skills.Combat
 		/// or not Mana Deflector pinged.
 		/// </summary>
 		/// <remarks>
-		/// All active and passive Mana Deflector are check in sequence,
-		/// followed by the equipment, until one pings. Until one does,
-		/// the passive damage reduction stacks. It's unknown whether
-		/// this is official, and assumedly no monsters have multiple
-		/// Mana Deflector skills.
+		/// All active and passive Mana Deflectors are checked in sequence,
+		/// followed by the equipment. The first one found is the one that
+		/// is used for the damage and delay reduction. It's unknown whether
+		/// this is official behavior, but stacking them would be overkill.
 		/// </remarks>
 		/// <param name="attacker"></param>
 		/// <param name="target"></param>
@@ -104,36 +105,30 @@ namespace Aura.Channel.Skills.Combat
 		public static float Handle(Creature attacker, Creature target, ref float damage, TargetAction tAction)
 		{
 			var pinged = false;
+			var used = false;
 			var damageReduction = 0f;
 			var delayReduction = 0f;
 			var rank = DefaultMsgRank;
 			var rnd = RandomProvider.Get();
 
-			// Check active Mana Deflector
-			var skill = target.Skills.Get(SkillId.ManaDeflector);
-			if (skill != null && skill.Has(SkillFlags.InUse))
+			// Check skills
+			for (int i = 0; i < Skills.Length; ++i)
 			{
-				damageReduction = skill.RankData.Var1;
-				delayReduction = skill.RankData.Var2;
-				pinged = (skill.RankData.Var3 == 1);
-				rank = skill.Info.Rank;
-			}
-
-			// Check passive Mana Deflector
-			if (!pinged)
-			{
-				skill = target.Skills.Get(SkillId.ManaDeflectorPassive);
-				if (skill != null)
+				// Check if skill exists and it's either in use or passive
+				var skill = target.Skills.Get(Skills[i]);
+				if (skill != null && (skill.Info.Id == SkillId.ManaDeflectorPassive || skill.Has(SkillFlags.InUse)))
 				{
 					damageReduction = skill.RankData.Var1;
 					delayReduction = skill.RankData.Var2;
 					pinged = (skill.RankData.Var3 == 1);
 					rank = skill.Info.Rank;
+					used = true;
+					break;
 				}
 			}
 
 			// Check equipment
-			if (!pinged)
+			if (!used)
 			{
 				var equipment = target.Inventory.GetMainEquipment();
 				foreach (var item in equipment)
@@ -141,7 +136,7 @@ namespace Aura.Channel.Skills.Combat
 					var chance = item.Data.AutoDefenseMagic;
 					if (chance > 0)
 					{
-						if (pinged = (rnd.Next(100) < chance))
+						if (used = pinged = (rnd.Next(100) < chance))
 						{
 							damageReduction = DefaultDamageReduction;
 							delayReduction = DefaultDelayReduction;
