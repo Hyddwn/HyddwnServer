@@ -3,7 +3,8 @@
 // 
 // This file is for the server, enabling features here does not enable them
 // in the client, which might be necessary in some cases for them to
-// work as expected.
+// work as expected, though some features are custom, and can't be found
+// in the client.
 // 
 // Warning: Enabling/disabling features in an unusual order might have
 //   unexpected side-effects (e.g. enabling G8 without 4-6).
@@ -100,6 +101,7 @@
 		{ name: "PartyBoard", enabled: true },
 		{ name: "GuildRobe", enabled: true },
 		{ name: "MarkerMyGuildStone", enabled: true },
+		{ name: "PortCeann", enabled: true },
 	]},
 	
 	// Season 2
@@ -260,7 +262,9 @@
 // Generation 10
 { name: "G10", enabled: false, children: [
 	// Season 1
-	{ name: "G10S1", enabled: true, children: []},
+	{ name: "G10S1", enabled: true, children: [
+		{ name: "TaraSealStone", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G10S2", enabled: true, children: [
@@ -312,7 +316,9 @@
 	{ name: "G14S3", enabled: true, children: []},
 	
 	// Season 4
-	{ name: "G14S4", enabled: true, children: []},
+	{ name: "G14S4", enabled: true, children: [
+		{ name: "CobhWorld", enabled: true },
+	]},
 ]},
 
 // Generation 15

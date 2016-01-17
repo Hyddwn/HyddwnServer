@@ -9,13 +9,13 @@ public class FeatureFencesScript : GeneralScript
 {
 	public override void Load()
 	{
-		if (!IsEnabled("G4S1"))
+		if (!IsEnabled("PortCeann"))
 		{
 			// Bangor -> Morva Aisle
 			SpawnProp(41277, 31, 12400, 4900, 4.712389f);
 		}
 
-		if (!IsEnabled("G10S1"))
+		if (!IsEnabled("TaraSealStone"))
 		{
 			// Emain Macha -> Blago Prairie
 			SpawnProp(41894, 52, 18131, 46040, 5.85575f);
@@ -26,7 +26,7 @@ public class FeatureFencesScript : GeneralScript
 		if (prop != null) prop.SetState(IsEnabled("Housing") ? "open" : "close");
 
 		// Dunbarton -> Port Cobh
-		if (!IsEnabled("G14S4"))
+		if (!IsEnabled("CobhWorld"))
 		{
 			for (int i = 0; i < 6; ++i)
 			{
