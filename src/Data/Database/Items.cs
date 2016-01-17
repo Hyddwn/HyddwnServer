@@ -69,6 +69,10 @@ namespace Aura.Data.Database
 		public int DefenseBonusMeleePassive { get; set; }
 		public int DefenseBonusCrit { get; set; }
 
+		public float AutoDefenseMelee { get; set; }
+		public float AutoDefenseRanged { get; set; }
+		public float AutoDefenseMagic { get; set; }
+
 		public int BagWidth { get; set; }
 		public int BagHeight { get; set; }
 
@@ -186,6 +190,10 @@ namespace Aura.Data.Database
 			info.DefenseBonusMelee = entry.ReadInt("defenseBonusMelee");
 			info.DefenseBonusMeleePassive = entry.ReadInt("defenseBonusMeleePassive");
 			info.DefenseBonusCrit = entry.ReadInt("defenseBonusCrit");
+
+			info.AutoDefenseMelee = entry.ReadFloat("autoDefenseMelee");
+			info.AutoDefenseRanged = entry.ReadFloat("autoDefenseRanged");
+			info.AutoDefenseMagic = entry.ReadFloat("autoDefenseMagic");
 
 			info.BagWidth = entry.ReadInt("bagWidth");
 			info.BagHeight = entry.ReadInt("bagHeight");
