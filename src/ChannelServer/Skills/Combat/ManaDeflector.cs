@@ -35,7 +35,7 @@ namespace Aura.Channel.Skills.Combat
 		private const float DefaultDamageReduction = 50;
 		private const float DefaultDelayReduction = 50;
 
-		private static readonly SkillId[] Skills = { SkillId.ManaDeflector, SkillId.ManaDeflectorPassive, SkillId.PaladinManaRefractor, SkillId.DarkManaDeflector, SkillId.ConnousManaRefractor, SkillId.PhysisManaRefractor };
+		private static readonly SkillId[] Skills = { SkillId.ManaDeflector, SkillId.ManaDeflectorPassive, SkillId.PaladinManaDeflector, SkillId.DarkManaDeflector, SkillId.ConnousManaDeflector, SkillId.PhysisManaDeflector };
 
 		private static string[] Lv1Msgs =
 		{
