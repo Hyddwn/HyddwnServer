@@ -92,7 +92,7 @@ namespace Aura.Channel.Skills.Magic
 				ManaShield.Handle(target, ref targetDamage, tAction);
 
 				// Mana Deflector
-				var delayReduction = ManaDeflector.Handle(attacker, target, ref damage, tAction);
+				var delayReduction = ManaDeflector.Handle(attacker, target, ref targetDamage, tAction);
 
 				// Deal damage
 				if (targetDamage > 0)
