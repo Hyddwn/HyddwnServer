@@ -30,7 +30,11 @@ namespace Aura.Channel.Skills.Combat
 	[Skill(SkillId.HeavyStander)]
 	public class HeavyStander : StartStopSkillHandler
 	{
-		private static string[] Lv1Msgs =
+		private const SkillRank DefaultMsgRank = SkillRank.R1;
+
+		private static readonly SkillId[] Skills = { SkillId.HeavyStander, SkillId.HeavyStanderPassive };
+
+		private static readonly string[] Lv1Msgs =
 		{
 			Localization.Get("My attack is being defended by a skill!"),
 			Localization.Get("My attack is very ineffective right now..."),
@@ -38,14 +42,14 @@ namespace Aura.Channel.Skills.Combat
 			Localization.Get("My attack is a bit off the mark...")
 		};
 
-		private static string[] Lv2Msgs =
+		private static readonly string[] Lv2Msgs =
 		{
 			Localization.Get("This is not enough to stop the target..."),
 			Localization.Get("Can't shake the target's balance!"),
 			Localization.Get("That may have inflicted some damage, but the target still has its guard up.")
 		};
 
-		private static string[] Lv3Msgs =
+		private static readonly string[] Lv3Msgs =
 		{
 			Localization.Get("The target takes no damage at all!"),
 			Localization.Get("This attack is completely useless!")
@@ -86,11 +90,12 @@ namespace Aura.Channel.Skills.Combat
 		/// or not Heavy Stander pinged.
 		/// </summary>
 		/// <remarks>
-		/// All active and passive Heavy Standers are check in sequence,
-		/// followed by the equipment, until one pings. Until one does,
-		/// the passive damage reduction stacks. It's unknown whether
-		/// this is official, and assumedly no monsters have multiple
-		/// Heavy Stander skills.
+		/// All active and passive Heavy Standers are checked in sequence,
+		/// followed by the equipment, with the passive damage reduction
+		/// stacking. It's unknown whether this is official, and assumedly
+		/// no monsters have multiple Heavy Stander skills.
+		/// The ping reduction is only applied once, no matter where it
+		/// came from.
 		/// </remarks>
 		/// <param name="attacker"></param>
 		/// <param name="target"></param>
@@ -99,25 +104,29 @@ namespace Aura.Channel.Skills.Combat
 		public static bool Handle(Creature attacker, Creature target, ref float damage, TargetAction tAction)
 		{
 			var pinged = false;
-			var rank = SkillRank.R1;
+			var rank = DefaultMsgRank;
 			var rnd = RandomProvider.Get();
 
-			// Check active Heavy Stander
-			var skill = target.Skills.Get(SkillId.HeavyStander);
-			if (skill != null && skill.Has(SkillFlags.InUse))
+			// Check skills
+			for (int i = 0; i < Skills.Length; ++i)
 			{
-				pinged = ReduceDamage(ref damage, skill.RankData.Var1, skill.RankData.Var3, rnd);
-				rank = skill.Info.Rank;
-			}
-
-			// Check passive Heavy Stander
-			if (!pinged)
-			{
-				skill = target.Skills.Get(SkillId.HeavyStanderPassive);
-				if (skill != null)
+				// Check if skill exists and it's either in use or passive
+				var skill = target.Skills.Get(Skills[i]);
+				if (skill != null && (skill.Info.Id == SkillId.HeavyStanderPassive || skill.Has(SkillFlags.InUse)))
 				{
-					pinged = ReduceDamage(ref damage, skill.RankData.Var1, skill.RankData.Var3, rnd);
-					rank = skill.Info.Rank;
+					var damageReduction = skill.RankData.Var1;
+					var activationChance = skill.RankData.Var3;
+
+					// Apply damage reduction
+					if (damageReduction > 0)
+						damage = Math.Max(1, damage - (damage / 100 * damageReduction));
+
+					// Apply auto defense
+					if (!pinged && rnd.Next(100) < activationChance)
+					{
+						pinged = true;
+						rank = skill.Info.Rank;
+					}
 				}
 			}
 
@@ -125,20 +134,23 @@ namespace Aura.Channel.Skills.Combat
 			if (!pinged)
 			{
 				var equipment = target.Inventory.GetMainEquipment();
-				foreach (var item in equipment)
+				for (int i = 0; i < equipment.Length; ++i)
 				{
-					var chance = item.Data.AutoDefenseMelee;
-					if (chance > 0)
+					var activationChance = equipment[i].Data.AutoDefenseMelee;
+
+					if (activationChance > 0 && rnd.Next(100) < activationChance)
 					{
-						if (pinged = ReduceDamage(ref damage, 0, chance, rnd))
-							break;
+						pinged = true;
+						break;
 					}
 				}
 			}
 
-			// Notice and flag
+			// Notice, flag, and damage reduction
 			if (pinged)
 			{
+				damage = Math.Max(1, damage / 2);
+
 				tAction.EffectFlags |= EffectFlags.HeavyStander;
 
 				var msg = "";
@@ -153,31 +165,6 @@ namespace Aura.Channel.Skills.Combat
 			}
 
 			return pinged;
-		}
-
-		/// <summary>
-		/// Reduces damage based on parameters, and whether auto defense
-		/// activates. If it does, this returns true.
-		/// </summary>
-		/// <param name="damage"></param>
-		/// <param name="damageReduction"></param>
-		/// <param name="activationChance"></param>
-		/// <param name="rnd"></param>
-		/// <returns></returns>
-		private static bool ReduceDamage(ref float damage, float damageReduction, float activationChance, Random rnd)
-		{
-			// Apply damage reduction
-			if (damageReduction > 0)
-				damage = Math.Max(1, damage - (damage / 100 * damageReduction));
-
-			// Apply auto defense
-			if (rnd.Next(100) < activationChance)
-			{
-				damage = Math.Max(1, damage / 2);
-				return true;
-			}
-
-			return false;
 		}
 	}
 }
