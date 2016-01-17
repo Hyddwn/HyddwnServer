@@ -28,9 +28,9 @@ public class FeatureFencesScript : GeneralScript
 		// Dunbarton -> Port Cobh
 		if (!IsEnabled("G14S4"))
 		{
-			for (int i = 0; i < 5; ++i)
+			for (int i = 0; i < 6; ++i)
 			{
-				prop = SpawnProp(15035, 14, 62400, 37300 + i * 800, 3.14159f);
+				prop = SpawnProp(15035, 14, 62400, 37300 + i * 700, 3.14159f);
 				prop.Info.Color1 = 0xFFFFFF;
 			}
 		}
