@@ -11,31 +11,73 @@ namespace Aura.Shared.Util
 {
 	public class CliUtil
 	{
-		/// <summary>
-		/// Prints Aura's ASCII art.
-		/// </summary>
-		/// <param name="title">Name of this server (for the console's title)</param>
-		/// <param name="color">Color of the header</param>
-		public static void WriteHeader(string title, ConsoleColor color)
+		private const string TitlePrefix = "Aura : ";
+
+		private static readonly string[] Logo = new string[]
 		{
-			if (title != null)
-				Console.Title = "Aura : " + title;
+			@"   __     __  __  _ __    __     ",
+			@" /'__`\  /\ \/\ \/\`'__\/'__`\   ",
+			@"/\ \L\.\_\ \ \_\ \ \ \//\ \L\.\_ ",
+			@"\ \__/.\_\\ \____/\ \_\\ \__/.\_\",
+			@" \/__/\/_/ \/___/  \/_/ \/__/\/_/",
+		};
+
+		private static readonly string[] Credits = new string[]
+		{
+			@"by the Aura development team",
+		};
+
+		/// <summary>
+		/// Writes logo and credits to Console.
+		/// </summary>
+		/// <param name="color">Color of the logo.</param>
+		public static void WriteHeader(string consoleTitle, ConsoleColor color)
+		{
+			Console.Title = TitlePrefix + consoleTitle;
 
 			Console.ForegroundColor = color;
-			Console.Write(@"                          __     __  __  _ __    __                             ");
-			Console.Write(@"                        /'__`\  /\ \/\ \/\`'__\/'__`\                           ");
-			Console.Write(@"                       /\ \L\.\_\ \ \_\ \ \ \//\ \L\.\_                         ");
-			Console.Write(@"                       \ \__/.\_\\ \____/\ \_\\ \__/.\_\                        ");
-			Console.Write(@"                        \/__/\/_/ \/___/  \/_/ \/__/\/_/                        ");
-			Console.Write(@"                                                                                ");
+			WriteLinesCentered(Logo);
+
+			Console.WriteLine();
 
 			Console.ForegroundColor = ConsoleColor.White;
-			Console.Write(@"                         by the Aura development team                           ");
+			WriteLinesCentered(Credits);
 
-			Console.ForegroundColor = ConsoleColor.DarkGray;
-			Console.Write(@"________________________________________________________________________________");
+			Console.ResetColor();
+			WriteSeperator();
+		}
 
-			Console.WriteLine("");
+		/// <summary>
+		/// Writes seperator in form of 80 underscores to Console.
+		/// </summary>
+		public static void WriteSeperator()
+		{
+			Console.WriteLine("".PadLeft(Console.WindowWidth, '_'));
+		}
+
+		/// <summary>
+		/// Writes lines to Console, centering them as a group.
+		/// </summary>
+		/// <param name="lines"></param>
+		private static void WriteLinesCentered(string[] lines)
+		{
+			var longestLine = lines.Max(a => a.Length);
+			foreach (var line in lines)
+				WriteLineCentered(line, longestLine);
+		}
+
+		/// <summary>
+		/// Writes line to Console, centering it either with the string's
+		/// length or the given length as reference.
+		/// </summary>
+		/// <param name="line"></param>
+		/// <param name="referenceLength">Set to greater than 0, to use it as reference length, to align a text group.</param>
+		private static void WriteLineCentered(string line, int referenceLength = -1)
+		{
+			if (referenceLength < 0)
+				referenceLength = line.Length;
+
+			Console.WriteLine(line.PadLeft(line.Length + Console.WindowWidth / 2 - referenceLength / 2));
 		}
 
 		/// <summary>
