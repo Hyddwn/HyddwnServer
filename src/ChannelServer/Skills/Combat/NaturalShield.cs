@@ -138,7 +138,7 @@ namespace Aura.Channel.Skills.Combat
 				var equipment = target.Inventory.GetMainEquipment();
 				foreach (var item in equipment)
 				{
-					var chance = 0; //item.Data.NaturalShield;
+					var chance = item.Data.AutoDefenseRanged;
 					if (chance > 0)
 					{
 						if (pinged = (rnd.Next(100) < chance))

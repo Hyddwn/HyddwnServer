@@ -127,7 +127,7 @@ namespace Aura.Channel.Skills.Combat
 				var equipment = target.Inventory.GetMainEquipment();
 				foreach (var item in equipment)
 				{
-					var chance = 0; //item.Data.HeavyStander;
+					var chance = item.Data.AutoDefenseMelee;
 					if (chance > 0)
 					{
 						if (pinged = ReduceDamage(ref damage, 0, chance, rnd))
