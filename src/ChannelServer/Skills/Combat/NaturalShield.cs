@@ -35,7 +35,7 @@ namespace Aura.Channel.Skills.Combat
 		private const float DefaultDamageReduction = 50;
 		private const float DefaultDelayReduction = 50;
 
-		private static readonly SkillId[] Skills = { SkillId.NaturalShield, SkillId.NaturalShieldPassive };
+		private static readonly SkillId[] Skills = { SkillId.NaturalShield, SkillId.NaturalShieldPassive, SkillId.PaladinNaturalShield, SkillId.DarkNaturalShield, SkillId.ConnousNaturalShield, SkillId.PhysisNaturalShield };
 
 		private static string[] Lv1Msgs =
 		{

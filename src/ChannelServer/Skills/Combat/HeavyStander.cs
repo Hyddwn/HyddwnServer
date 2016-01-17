@@ -32,7 +32,7 @@ namespace Aura.Channel.Skills.Combat
 	{
 		private const SkillRank DefaultMsgRank = SkillRank.RF;
 
-		private static readonly SkillId[] Skills = { SkillId.HeavyStander, SkillId.HeavyStanderPassive };
+		private static readonly SkillId[] Skills = { SkillId.HeavyStander, SkillId.HeavyStanderPassive, SkillId.PaladinHeavyStander, SkillId.DarkHeavyStander, SkillId.ConnousHeavyStander, SkillId.PhysisHeavyStander };
 
 		private static readonly string[] Lv1Msgs =
 		{
