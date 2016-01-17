@@ -9,6 +9,8 @@ public class FeatureFencesScript : GeneralScript
 {
 	public override void Load()
 	{
+		Prop prop;
+
 		if (!IsEnabled("PortCeann"))
 		{
 			// Bangor -> Morva Aisle
@@ -22,7 +24,11 @@ public class FeatureFencesScript : GeneralScript
 		}
 
 		// Dugald Aisle -> Dugald Residential Area
-		var prop = ChannelServer.Instance.World.GetRegion(16).GetProp(a => a.Info.Id == 25219); // toggleable fence
+		prop = ChannelServer.Instance.World.GetRegion(16).GetProp(a => a.Info.Id == 25219); // toggleable fence
+		if (prop != null) prop.SetState(IsEnabled("Housing") ? "open" : "close");
+
+		// Sen Mag -> Sen Mag Residential Area
+		prop = ChannelServer.Instance.World.GetRegion(53).GetProp(a => a.Info.Id == 25219); // toggleable fence
 		if (prop != null) prop.SetState(IsEnabled("Housing") ? "open" : "close");
 
 		// Dunbarton -> Port Cobh
