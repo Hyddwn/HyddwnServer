@@ -24,19 +24,15 @@ namespace Aura.Channel.Skills.Life
 	/// Var1: Min Injury Heal
 	/// Var2: Max Injury Heal
 	/// 
-	/// According to the Wiki the skill does nothing on Novice, that's because
+	/// According to the Wiki, the skill does nothing on Novice, that's because
 	/// min and max are 0.
 	/// 
 	/// According to the Wiki the skill *can* fail if the target is moving,
 	/// but research shows that it seemingly *always* fails.
-	/// 
-	/// TODO: We need a new inventory method to get an item of a specific class,
-	/// in a specific order to get the best bandage candidate.
 	/// </remarks>
 	[Skill(SkillId.FirstAid)]
 	public class FirstAid : ISkillHandler, IPreparable, IReadyable, IUseable, ICompletable, ICancelable
 	{
-		private const int BandageItemId = 60005;
 		private const int Range = 500;
 
 		/// <summary>
@@ -205,6 +201,14 @@ namespace Aura.Channel.Skills.Life
 			// Heal injuries
 			var rnd = RandomProvider.Get();
 			var heal = rnd.Next((int)skill.RankData.Var1, (int)skill.RankData.Var2 + 1);
+
+			// Add bonus from higher grade bandages
+			if (creature.Temp.SkillItem1.HasTag("/common_grade/"))
+				heal += 3;
+			else if (creature.Temp.SkillItem1.HasTag("/high_grade/"))
+				heal += 6;
+			else if (creature.Temp.SkillItem1.HasTag("/highest_grade/"))
+				heal += 10;
 
 			// 50% efficiency if target isn't resting
 			if (!target.Has(CreatureStates.SitDown))
