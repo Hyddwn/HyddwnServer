@@ -30,7 +30,7 @@ namespace Aura.Channel.Skills.Combat
 	[Skill(SkillId.HeavyStander)]
 	public class HeavyStander : StartStopSkillHandler
 	{
-		private const SkillRank DefaultMsgRank = SkillRank.R1;
+		private const SkillRank DefaultMsgRank = SkillRank.RF;
 
 		private static readonly SkillId[] Skills = { SkillId.HeavyStander, SkillId.HeavyStanderPassive };
 

@@ -31,7 +31,7 @@ namespace Aura.Channel.Skills.Combat
 	[Skill(SkillId.ManaDeflector)]
 	public class ManaDeflector : StartStopSkillHandler
 	{
-		private const SkillRank DefaultMsgRank = SkillRank.R1;
+		private const SkillRank DefaultMsgRank = SkillRank.RF;
 		private const float DefaultDamageReduction = 50;
 		private const float DefaultDelayReduction = 50;
 

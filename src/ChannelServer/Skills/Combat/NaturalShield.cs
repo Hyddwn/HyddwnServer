@@ -31,7 +31,7 @@ namespace Aura.Channel.Skills.Combat
 	[Skill(SkillId.NaturalShield)]
 	public class NaturalShield : StartStopSkillHandler
 	{
-		private const SkillRank DefaultMsgRank = SkillRank.R1;
+		private const SkillRank DefaultMsgRank = SkillRank.RF;
 		private const float DefaultDamageReduction = 50;
 		private const float DefaultDelayReduction = 50;
 
