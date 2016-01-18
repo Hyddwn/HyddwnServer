@@ -121,6 +121,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			}
 
 			var activeSkill = this.Creature.Skills.ActiveSkill;
+			var activeSkillId = (activeSkill == null ? SkillId.None : activeSkill.Info.Id);
 
 			var d1 = 5000.0;
 			var d2 = 500.0;
@@ -141,8 +142,12 @@ namespace Aura.Channel.World.Entities.Creatures
 			var aimMod = aimTime;
 
 			// Bonus for ranged attack
-			if (activeSkill != null && activeSkill.Info.Id == SkillId.RangedAttack)
-				aimMod *= activeSkill.RankData.Var3 / 100f;
+			if (activeSkillId == SkillId.RangedAttack || activeSkillId == SkillId.SupportShot)
+			{
+				var rangedSkill = this.Creature.Skills.Get(SkillId.RangedAttack);
+				if (rangedSkill != null)
+					aimMod *= rangedSkill.RankData.Var3 / 100f;
+			}
 
 			var hitRatio = 1.0;
 			hitRatio = ((d1 - d2) / bowRange) * distance * hitRatio + d2;
