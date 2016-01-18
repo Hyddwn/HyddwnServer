@@ -33,7 +33,12 @@ namespace Aura.Channel.Skills.Magic
 		/// <summary>
 		/// Splash Range for target search.
 		/// </summary>
-		private int SplashRange = 500;
+		private const int SplashRange = 500;
+
+		/// <summary>
+		/// Stability reduction on overcharge.
+		/// </summary>
+		protected const float OverchargeStabilityReduction = 110;
 
 		/// <summary>
 		/// ID of the skill, used in training.
@@ -106,8 +111,6 @@ namespace Aura.Channel.Skills.Magic
 					tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
 
 				// Death/Knockback
-				var overcharge = (skill.Stacks > targets.Count);
-
 				if (target.IsDead)
 				{
 					tAction.Set(TargetOptions.FinishingKnockDown);
@@ -127,10 +130,22 @@ namespace Aura.Channel.Skills.Magic
 					}
 					else
 					{
-						if (overcharge)
-							target.Stability = Creature.MinStability;
-						else
-							target.Stability -= StabilityReduction;
+						// If number of stacks is greater than the number of
+						// targets hit, the targets are knocked back, which is
+						// done by reducing the stability to min here.
+						// Targets with high enough Mana Deflector might
+						// negate this knock back, by reducing the stability
+						// reduction to 0.
+						var stabilityReduction = (skill.Stacks > targets.Count ? OverchargeStabilityReduction : StabilityReduction);
+
+						// Reduce reduction, based on ping
+						// While the Wiki says that "the Knockdown Gauge [does not]
+						// build up", tests show that it does. However, it's
+						// reduced, assumedly based on the MD rank.
+						if (delayReduction > 0)
+							stabilityReduction = (short)Math.Max(0, stabilityReduction - (stabilityReduction / 100 * delayReduction));
+
+						target.Stability -= stabilityReduction;
 
 						if (target.IsUnstable)
 						{

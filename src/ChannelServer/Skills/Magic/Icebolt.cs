@@ -113,7 +113,16 @@ namespace Aura.Channel.Skills.Magic
 				}
 				else
 				{
-					target.Stability -= StabilityReduction;
+					var stabilityReduction = StabilityReduction;
+
+					// Reduce reduction, based on ping
+					// While the Wiki says that "the Knockdown Gauge [does not]
+					// build up", tests show that it does. However, it's
+					// reduced, assumedly based on the MD rank.
+					if (delayReduction > 0)
+						stabilityReduction = (short)Math.Max(0, stabilityReduction - (stabilityReduction / 100 * delayReduction));
+
+					target.Stability -= stabilityReduction;
 
 					if (target.IsUnstable)
 					{
