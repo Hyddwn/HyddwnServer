@@ -386,20 +386,23 @@ namespace Aura.Channel.World.Dungeons
 			region.AddProp(portal);
 
 			// Create save statue
-			var saveStatue = new Prop(this.Data.SaveStatuePropId, region.Id, startPos.X, startPos.Y, MabiMath.DegreeToRadian(stairsBlock.Rotation + 180), 1, 0, "single");
-			saveStatue.Info.Color1 = floorData.Color1;
-			saveStatue.Info.Color2 = floorData.Color1;
-			saveStatue.Info.Color3 = floorData.Color3;
-			saveStatue.Behavior = (cr, pr) =>
+			if (floorData.Statue)
 			{
-				cr.DungeonSaveLocation = cr.GetLocation();
-				Send.Notice(cr, Localization.Get("You have memorized this location."));
+				var saveStatue = new Prop(this.Data.SaveStatuePropId, region.Id, startPos.X, startPos.Y, MabiMath.DegreeToRadian(stairsBlock.Rotation + 180), 1, 0, "single");
+				saveStatue.Info.Color1 = floorData.Color1;
+				saveStatue.Info.Color2 = floorData.Color1;
+				saveStatue.Info.Color3 = floorData.Color3;
+				saveStatue.Behavior = (cr, pr) =>
+				{
+					cr.DungeonSaveLocation = cr.GetLocation();
+					Send.Notice(cr, Localization.Get("You have memorized this location."));
 
-				// Scroll message
-				var msg = string.Format("You're currently on Floor {0} of {1}. ", iRegion, this.Data.EngName);
-				Send.Notice(cr, NoticeType.Top, ScrollMessageDuration, msg + this.GetPlayerListScrollMessage());
-			};
-			region.AddProp(saveStatue);
+					// Scroll message
+					var msg = string.Format("You're currently on Floor {0} of {1}. ", iRegion, this.Data.EngName);
+					Send.Notice(cr, NoticeType.Top, ScrollMessageDuration, msg + this.GetPlayerListScrollMessage());
+				};
+				region.AddProp(saveStatue);
+			}
 
 			// Spawn boss or downstair props
 			// TODO: There is one dungeon that has two boss rooms.
