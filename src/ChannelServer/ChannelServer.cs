@@ -74,8 +74,7 @@ namespace Aura.Channel
 
 		public WorldManager World { get; private set; }
 		public bool ShuttingDown { get; private set; }
-		private List<ChannelClient> _shutdownclientlist { get; set; }
-		private Timer _timer { get; set; }
+		private Timer Timer { get; set; }
 
 		private ChannelServer()
 		{
@@ -97,7 +96,7 @@ namespace Aura.Channel
 			this.Weather = new WeatherManager();
 			this.PartyManager = new PartyManager();
 
-			_timer = new Timer(new TimerCallback(ShutdownTimerDone));
+			this.Timer = new Timer(new TimerCallback(ShutdownTimerDone));
 		}
 
 		/// <summary>
@@ -313,11 +312,11 @@ namespace Aura.Channel
 
 			Send.Internal_Broadcast(Localization.Get(String.Format("The server will be brought down for maintenance in {0} seconds. Please log out safely before then.", time)));
 
-			Send.MsgBox(time);
+			Send.RequestClientDisconnect(time);
 
 			Log.Info("Shutting down in {0} seconds...", time);
 
-			_timer.Change(time * 1000, Timeout.Infinite);
+			this.Timer.Change(time * 1000, Timeout.Infinite);
 
 		}
 
@@ -333,10 +332,10 @@ namespace Aura.Channel
 		private void KillConnectedClients()
 		{
 			// Grab a copy of the list of users still currently logged in
-			ChannelServer.Instance._shutdownclientlist = ChannelServer.Instance.Server.Clients.ToList<ChannelClient>();
+			var shutdownClientList = ChannelServer.Instance.Server.Clients.ToList<ChannelClient>();
 
 			// Kill all clients still logged in
-			foreach (var user in ChannelServer.Instance._shutdownclientlist)
+			foreach (var user in shutdownClientList)
 			{
 				try
 				{
@@ -350,7 +349,7 @@ namespace Aura.Channel
 			}
 
 			// Save global variables
-			this.ScriptManager.OnMabiTick(ErinnTime.Now);
+			this.Database.SaveVars("Aura System", 0, this.ScriptManager.GlobalVars.Perm);
 		}
 	}
 }

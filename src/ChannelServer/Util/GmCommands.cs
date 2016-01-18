@@ -91,7 +91,7 @@ namespace Aura.Channel.Util
 			Add(99, -1, "reloadscripts", "", HandleReloadScripts);
 			Add(99, -1, "reloadconf", "", HandleReloadConf);
 			Add(99, 99, "closenpc", "", HandleCloseNpc);
-			Add(99, 99, "shutdown", "<time>", HandleShutdown);
+			Add(99, 99, "shutdown", "[seconds]", HandleShutdown);
 			Add(99, 99, "nosave", "", HandleNoSave);
 
 			// Aliases

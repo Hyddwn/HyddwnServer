@@ -1,4 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
+﻿// Copyight (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
 using System;
@@ -187,15 +187,6 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends MsgBox to creature's client notifying automatic logout.
-		/// </summary>
-		/// <param name="time">Time in seconds until automatic logout.</param>
-		public static void MsgBox(int time)
-		{
-			ChannelServer.Instance.World.Broadcast(new Packet(Op.RequestClientDisconnect, MabiId.Channel).PutInt(time * 1000));
-		}
-
-		/// <summary>
 		/// Sends MsgBox to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -344,6 +335,15 @@ namespace Aura.Channel.Network.Sending
 				packet.PutInt(duration);
 
 			region.Broadcast(packet);
+		}
+
+		/// <summary>
+		/// Sends RequestClientDisconnect to creature's client notifying automatic logout.
+		/// </summary>
+		/// <param name="time">Time in seconds until automatic logout.</param>
+		public static void RequestClientDisconnect(int time)
+		{
+			ChannelServer.Instance.World.Broadcast(new Packet(Op.RequestClientDisconnect, MabiId.Channel).PutInt(time * 1000));
 		}
 	}
 }

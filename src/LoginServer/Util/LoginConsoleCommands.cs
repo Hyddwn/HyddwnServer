@@ -13,7 +13,7 @@ namespace Aura.Login.Util
 	{
 		public LoginConsoleCommands()
 		{
-			this.Add("shutdown", "<seconds>", "Orders all servers to shut down", HandleShutDown);
+			this.Add("shutdown", "[seconds]", "Orders all servers to shut down", HandleShutDown);
 			this.Add("auth", "<account> <level>", "Changes authority level of account", HandleAuth);
 			this.Add("passwd", "<account> <password>", "Changes password of account", HandlePasswd);
 		}
