@@ -28,7 +28,7 @@ namespace Aura.Channel.Skills.Magic
 	/// same as Icebolt, the Wiki is either outdated or incorrect.
 	/// </remarks>
 	[Skill(SkillId.Lightningbolt)]
-	public class Lightningbolt : Icebolt
+	public class Lightningbolt : MagicBolt
 	{
 		/// <summary>
 		/// Splash Range for target search.
@@ -107,7 +107,40 @@ namespace Aura.Channel.Skills.Magic
 
 				// Death/Knockback
 				var overcharge = (skill.Stacks > targets.Count);
-				this.HandleKnockBack(attacker, target, tAction, overcharge);
+
+				if (target.IsDead)
+				{
+					tAction.Set(TargetOptions.FinishingKnockDown);
+				}
+				else
+				{
+					// If knocked down, instant recovery,
+					// if repeat hit, knock down,
+					// otherwise potential knock back.
+					if (target.IsKnockedDown)
+					{
+						tAction.Stun = 0;
+					}
+					else if (target.Stability < MinStability)
+					{
+						tAction.Set(TargetOptions.KnockDown);
+					}
+					else
+					{
+						if (overcharge)
+							target.Stability = Creature.MinStability;
+						else
+							target.Stability -= StabilityReduction;
+
+						if (target.IsUnstable)
+						{
+							tAction.Set(TargetOptions.KnockBack);
+						}
+					}
+				}
+
+				if (tAction.IsKnockBack)
+					attacker.Shove(target, KnockbackDistance);
 
 				cap.Add(tAction);
 			}
@@ -118,19 +151,9 @@ namespace Aura.Channel.Skills.Magic
 			Send.Effect(attacker, Effect.UseMagic, EffectSkillName);
 			Send.SkillUseStun(attacker, skill.Info.Id, aAction.Stun, 1);
 
-			this.BeforeHandlingPack(attacker, skill);
+			skill.Stacks = 0;
 
 			cap.Handle();
-		}
-
-		/// <summary>
-		/// Actions to be done before the combat action pack is handled.
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <param name="skill"></param>
-		protected override void BeforeHandlingPack(Creature attacker, Skill skill)
-		{
-			skill.Stacks = 0;
 		}
 
 		/// <summary>
