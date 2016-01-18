@@ -215,7 +215,7 @@ namespace Aura.Channel.Skills.Life
 				heal /= 2;
 
 			target.Injuries -= heal;
-			Send.StatUpdateDefault(creature);
+			Send.StatUpdateDefault(target);
 
 			// Skill training
 			if (skill.Info.Rank == SkillRank.Novice)
