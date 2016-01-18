@@ -40,7 +40,9 @@
 	{ name: "EmainMacha", enabled: true },
 	
 	// Season 1
-	{ name: "G2S1", enabled: true, children: []},
+	{ name: "G2S1", enabled: true, children: [
+		{ name: "PeacaDungeon", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G2S2", enabled: true, children: [

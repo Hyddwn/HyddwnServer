@@ -31,14 +31,21 @@ public class FeatureFencesScript : GeneralScript
 		prop = ChannelServer.Instance.World.GetRegion(53).GetProp(a => a.Info.Id == 25219); // toggleable fence
 		if (prop != null) prop.SetState(IsEnabled("Housing") ? "open" : "close");
 
-		// Dunbarton -> Port Cobh
 		if (!IsEnabled("CobhWorld"))
 		{
+			// Dunbarton -> Port Cobh
 			for (int i = 0; i < 6; ++i)
 			{
 				prop = SpawnProp(15035, 14, 62400, 37300 + i * 700, 3.14159f);
 				prop.Info.Color1 = 0xFFFFFF;
 			}
+		}
+
+		if (!IsEnabled("PeacaDungeon"))
+		{
+			// Peaca Dungeon entrance
+			SpawnProp(40000, 53, 75600, 118000, 1.57f);
+			SpawnProp(40000, 53, 75600, 117600, 2.00f);
 		}
 	}
 }
