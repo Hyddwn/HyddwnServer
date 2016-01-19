@@ -108,7 +108,7 @@ public class TreforBaseScript : NpcScript
 							Msg("...In this case, how would you shoot your arrows?<br/>How can you shoot so that<br/>you won't interrupt your friend, while still injuring the enemy?<br/>Why don't you close your eyes and visualize it?", Button("I visualized it."));
 							await Select();
 
-							GiveSkill(SkillId.SupportShot);
+							GiveSkill(SkillId.SupportShot, SkillRank.RF);
 							Msg("I'm not certain how well you followed<br/>my instructions with your eyes closed, but it's all good.<br/>I gave you an easy-to-follow guide,<br/>so you shouldn't have any difficulties using Support Shot.");
 							Msg("I pray in the name of Morrighan the Goddess<br/>that you, whose arrows fly with bravery, will always be surrounded by glory.<p/>Also, don't forget to drop by the Blacksmith's Shop when you run out of arrows.");
 
