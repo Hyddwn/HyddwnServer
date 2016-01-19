@@ -76,6 +76,11 @@ namespace Aura.Channel.Network.Handlers
 				Send.GmcpOpen(creature);
 
 			ChannelServer.Instance.Events.OnPlayerLoggedIn(creature);
+
+			// Temp fix for Novice rank Support Shot, that shouldn't have been
+			// given to players. TODO: Remove in a few days. (exec, 2015-01-19)
+			if (creature.Skills.Is(SkillId.SupportShot, SkillRank.Novice))
+				creature.Skills.Give(SkillId.SupportShot, SkillRank.RF);
 		}
 
 		/// <summary>
