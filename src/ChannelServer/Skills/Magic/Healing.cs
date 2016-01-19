@@ -233,7 +233,8 @@ namespace Aura.Channel.Skills.Magic
 		/// Called when creature is hit while Healing is active.
 		/// </summary>
 		/// <param name="creature"></param>
-		public void CustomHitCancel(Creature creature)
+		/// <param name="tAction"></param>
+		public void CustomHitCancel(Creature creature, TargetAction tAction)
 		{
 			// Lose only 2 stacks if r1
 			var skill = creature.Skills.ActiveSkill;

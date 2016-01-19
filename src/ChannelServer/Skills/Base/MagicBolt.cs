@@ -472,7 +472,8 @@ namespace Aura.Channel.Skills.Base
 		/// Called when creature is hit while a bolt skill is active.
 		/// </summary>
 		/// <param name="creature"></param>
-		public virtual void CustomHitCancel(Creature creature)
+		/// <param name="tAction"></param>
+		public virtual void CustomHitCancel(Creature creature, TargetAction tAction)
 		{
 			// Lose only 2 stacks if r1
 			var skill = creature.Skills.ActiveSkill;

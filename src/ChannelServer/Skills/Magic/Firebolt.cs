@@ -129,7 +129,8 @@ namespace Aura.Channel.Skills.Magic
 		/// Called when creature is hit while Firebolt is active.
 		/// </summary>
 		/// <param name="creature"></param>
-		public override void CustomHitCancel(Creature creature)
+		/// <param name="tAction"></param>
+		public override void CustomHitCancel(Creature creature, TargetAction tAction)
 		{
 			// Lose no stacks on r1
 			var skill = creature.Skills.ActiveSkill;

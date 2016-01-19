@@ -91,6 +91,6 @@ namespace Aura.Channel.Skills.Base
 	/// </summary>
 	public interface ICustomHitCanceler
 	{
-		void CustomHitCancel(Creature creature);
+		void CustomHitCancel(Creature creature, TargetAction tAction);
 	}
 }

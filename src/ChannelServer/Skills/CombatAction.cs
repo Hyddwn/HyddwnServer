@@ -195,7 +195,7 @@ namespace Aura.Channel.Skills
 								if (custom == null)
 									action.Creature.Skills.CancelActiveSkill();
 								else
-									custom.CustomHitCancel(action.Creature);
+									custom.CustomHitCancel(action.Creature, tAction);
 							}
 						}
 						else
