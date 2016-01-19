@@ -1679,6 +1679,8 @@ namespace Aura.Channel.World.Inventory
 						Send.ItemMoveInfo(_creature, rightItem, this.RightHandPocket, null);
 						if (_creature.Region != Region.Limbo)
 							Send.EquipmentMoved(_creature, this.RightHandPocket);
+
+						this.OnUnequip(rightItem);
 					}
 				}
 			}
@@ -1744,6 +1746,8 @@ namespace Aura.Channel.World.Inventory
 					Send.ItemMoveInfo(_creature, leftItem, leftPocket, null);
 					if (_creature.Region != Region.Limbo)
 						Send.EquipmentMoved(_creature, leftPocket);
+
+					this.OnUnequip(leftItem);
 				}
 			}
 		}
