@@ -69,9 +69,14 @@ namespace Aura.Channel.Skills.Magic
 
 			var cap = new CombatActionPack(attacker, skill.Info.Id, aAction);
 
+			// Get targets
+			// Add the main target as first target, so it gets the first hit,
+			// and the full damage.
 			var targets = new List<Creature>();
 			targets.Add(mainTarget);
-			targets.AddRange(mainTarget.Region.GetCreaturesInRange(mainTarget.GetPosition(), SplashRange).Where(a => a != mainTarget && attacker.CanTarget(a)));
+
+			var inSplashRange = attacker.GetTargetableCreaturesAround(mainTarget.GetPosition(), SplashRange);
+			targets.AddRange(inSplashRange.Where(a => a != mainTarget));
 
 			// Damage
 			var damage = this.GetDamage(attacker, skill);
