@@ -1,7 +1,8 @@
 //--- Aura Script -----------------------------------------------------------
 // Endelyon's Church Part-Time Job
 //--- Description -----------------------------------------------------------
-// Handles Endelyon's PTJs via hooks.
+// All quests used by Endelyon's PTJ, and a script to handle the PTJ
+// via hooks.
 //---------------------------------------------------------------------------
 
 public class EndelyonPtjScript : GeneralScript
@@ -168,5 +169,236 @@ public class EndelyonPtjScript : GeneralScript
 		{
 			npc.Msg("If you don't want to do it, then I guess that's that.");
 		}
+	}
+}
+
+// Basic Barley quest
+public class EndelyonBarleyBasicPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502102);
+		SetName("Church Part-Time Job");
+		SetDescription("This task is to harvest grain from the farmland. Cut [10 bundles of barley] today. Barley can be harvested using a sickle on the farmlands around town.");
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Basic);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", "Harvest 10 Bundles of Barley", 0, 0, 0, Collect(52028, 10));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(200));
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 4));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(100));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 2));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(40));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1));
+	}
+}
+
+// Int Barley quest
+public class EndelyonBarleyIntPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502132);
+		SetName("Church Part-Time Job");
+		SetDescription("This task is to harvest grain from the farmland. Cut [15 bundles of barley] today. Barley can be harvested using a sickle on the farmlands around town.");
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Int);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", "Harvest 15 Bundles of Barley", 0, 0, 0, Collect(52028, 15));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 6));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 3));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(60));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1));
+	}
+}
+
+// Adv Barley quest
+public class EndelyonBarleyAdvPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502162);
+		SetName("Church Part-Time Job");
+		SetDescription("This task is to harvest grain from the farmland. Cut [20 bundles of barley] today. Barley can be harvested using a sickle on the farmlands around town.");
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Adv);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", "Harvest 20 Bundles of Barley", 0, 0, 0, Collect(52028, 20));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(500));
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 10));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(250));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 5));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(100));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 2));
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(40004, 1));
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(19001, 1));
+	}
+}
+
+// Basic Wheat quest
+public class EndelyonWheatBasicPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502103);
+		SetName("Church Part-Time Job");
+		SetDescription("This task is to harvest grain from the farmland. Cut [10 bundles of wheat] today. Use a sickle to harvest wheat from farmlands around town.");
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Basic);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", "Harvest 10 Bundles of Wheat", 0, 0, 0, Collect(52027, 10));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(200));
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 4));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(100));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 2));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(40));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1));
+	}
+}
+
+// Int Wheat quest
+public class EndelyonWheatIntPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502133);
+		SetName("Church Part-Time Job");
+		SetDescription("This task is to harvest grain from the farmland. Cut [15 bundles of wheat] today. Use a sickle to harvest wheat from farmlands around town.");
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Int);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", "Harvest 15 Bundles of Wheat", 0, 0, 0, Collect(52027, 15));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 6));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 3));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(60));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1));
+	}
+}
+
+// Adv Wheat quest
+public class EndelyonWheatAdvPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502163);
+		SetName("Church Part-Time Job");
+		SetDescription("This task is to harvest grain from the farmland. Cut [20 bundles of wheat] today. Use a sickle to harvest wheat from farmlands around town.");
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Adv);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", "Harvest 20 Bundles of Wheat", 0, 0, 0, Collect(52027, 20));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(500));
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 10));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(250));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 5));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(100));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 2));
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(40004, 1));
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(19001, 1));
+	}
+}
+
+// Basic Eggs quest
+public class EndelyonEggsBasicPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502105);
+		SetName("Church Part-Time Job");
+		SetDescription("This job is to gather eggs from chickens. Please bring [15 eggs] today. Gather eggs from the chickens around town.");
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Basic);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", "Collect 15 Eggs", 0, 0, 0, Collect(50009, 15));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(200));
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 4));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(100));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 2));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(40));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1));
+	}
+}
+
+// Int Eggs quest
+public class EndelyonEggsIntPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502135);
+		SetName("Church Part-Time Job");
+		SetDescription("This job is to gather eggs from chickens. Please bring [20 eggs] today. Gather eggs from the chickens around town.");
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Int);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", "Collect 20 Eggs", 0, 0, 0, Collect(50009, 20));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 6));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 3));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(60));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1));
+	}
+}
+
+// Adv Eggs quest
+public class EndelyonEggsAdvPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502165);
+		SetName("Church Part-Time Job");
+		SetDescription("This job is to gather eggs from chickens. Please bring [30 eggs] today. Gather eggs from the chickens around town.");
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Adv);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", "Collect 30 Eggs", 0, 0, 0, Collect(50009, 30));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(500));
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 10));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(250));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 5));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(100));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 2));
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(40004, 1));
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(19001, 1));
 	}
 }
