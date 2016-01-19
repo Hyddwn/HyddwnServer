@@ -11,7 +11,7 @@ public class OnEquipSkillLearnScript : GeneralScript
 	public void PlayerEquipsItem(Creature creature, Item item)
 	{
 		// Give Ranged Attack when equipping a (cross)bow
-		if ((item.HasTag("/bow/|/crossbow/")) && !creature.Skills.Has(SkillId.RangedAttack))
+		if ((item.HasTag("/bow/|/bow01/|/crossbow/")) && !creature.Skills.Has(SkillId.RangedAttack))
 			creature.Skills.Give(SkillId.RangedAttack, SkillRank.Novice);
 
 		// Give Dice Tossing When equiping Dice
