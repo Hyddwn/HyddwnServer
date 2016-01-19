@@ -38,7 +38,7 @@ Installation
 
 Afterwards, you should be able to start Aura via the provided scripts or
 directly from the bin directories. If not, or if you need a more detailed guide,
-head over to our [forums](http://aura-project.org/forum/), [Gitter chat](https://gitter.im/aura-project/aura), or [wiki](https://gitter.im/aura-project/aura/wiki).
+head over to our [forums](http://aura-project.org/forum/), [Gitter chat](https://gitter.im/aura-project/aura), or [wiki](https://github.com/aura-project/aura/wiki).
 
 Contribution
 ------------------------------
