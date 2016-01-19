@@ -197,6 +197,12 @@ public class FerghusScript : NpcScript
 				Msg("I think Ranald knows better.<br/>Why don't you ask him directly?<br/>It's true I make good bows.<br/>But making it and using it is totally different, you know.");
 				break;
 
+			case "bow":
+				RemoveKeyword("bow");
+				RemoveKeyword("skill_range");
+				Msg("Ha, ha. You are looking for bows. You came to the right place.<br/>I certainly have bows. In fact, you know what?<br/>This is a great chance to get your own bow!<br/>By the way, you know that you need arrows too, right?<br/>I mean, what can we do with just a bow and a string?<br/>Play with it?");
+				break;
+
 			case "skill_instrument":
 				Msg("Looks like you like music a lot,<br/>but I don't think I can help you with that.<br/>You know, I'm a blacksmith. I've never played any instruments before.");
 				break;
