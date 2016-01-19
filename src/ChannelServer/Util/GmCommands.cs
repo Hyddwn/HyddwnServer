@@ -1199,6 +1199,13 @@ namespace Aura.Channel.Util
 			if (!int.TryParse(args[1], out propId))
 				return CommandResult.InvalidArgument;
 
+			// Check prop
+			if (!AuraData.PropsDb.Exists(propId))
+			{
+				Send.ServerMessage(sender, Localization.Get("Unknown prop."));
+				return CommandResult.Fail;
+			}
+
 			// Create and spawn prop
 			var pos = target.GetPosition();
 			var prop = new Prop(propId, target.RegionId, pos.X, pos.Y, MabiMath.ByteToRadian(target.Direction));
