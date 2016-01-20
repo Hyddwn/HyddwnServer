@@ -157,6 +157,21 @@ public class DilysPtjScript : GeneralScript
 					npc.Msg(npc.FavorExpression(), "You don't seem to be at the top of your game today.<br/>Sorry, I can only pay you for what you've completed.");
 					npc.ModifyRelation(0, -Random(2), 0);
 				}
+
+				// Herbalism quest
+				if (npc.GetPtjSuccessCount(JobType) >= 10 && !npc.HasSkill(SkillId.Herbalism) && !npc.HasQuest(200042) && !npc.HasQuest(200063))
+				{
+					npc.Msg("Say, <username/>.  Do you have any interest in learning Herbalism?<br/>You've been such a great help to me here, I thought you might be interested in becoming a healer.<br/>If you're interested in Herbalism, I have a favor to ask you.<br/>If you do it, then I'll teach you.<button title='I will do it' keyword='@yes' /><button title='No, thanks' keyword='@no' />");
+					if (await npc.Select() == "@yes")
+					{
+						npc.StartQuest(200063); // Gather Base Herb (Dilys)
+						npc.Msg("You sound really interested in becoming a healer...<br/>If you step outside, an owl will deliver my request to you.");
+					}
+					else
+					{
+						npc.Msg("Really?<br/>Then, I will see you next time when you need another part-time job.");
+					}
+				}
 			}
 			return;
 		}
