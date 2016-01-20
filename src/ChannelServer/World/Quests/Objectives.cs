@@ -103,6 +103,32 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Objective to deliver something to a specific NPC.
+	/// </summary>
+	/// <remarks>
+	/// The item is automatically given to the player on quest start,
+	/// if this is the first quest objective.
+	/// </remarks>
+	public class QuestObjectiveDeliver : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Deliver; } }
+
+		public int ItemId { get; set; }
+		public string NpcName { get; set; }
+
+		public QuestObjectiveDeliver(int itemId, int amount, string npcName)
+			: base(amount)
+		{
+			this.ItemId = itemId;
+			this.NpcName = npcName;
+
+			this.MetaData.SetString("TARGECHAR", this.NpcName);
+			this.MetaData.SetInt("TARGETCOUNT", this.Amount);
+			this.MetaData.SetInt("TARGETITEM", this.ItemId);
+		}
+	}
+
+	/// <summary>
 	/// Objective to reach a rank in a certain skill.
 	/// </summary>
 	public class QuestObjectiveReachRank : QuestObjective
