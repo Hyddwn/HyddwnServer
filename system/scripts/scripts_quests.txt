@@ -51,6 +51,7 @@ quests/beginner_uladh/hunting/1000060_hunting_ogre_warrior.cs
 
 // Part-Time Jobs
 quests/ptj/church_endelyon.cs
+quests/ptj/healer_dilys.cs
 
 // Skills
 quests/20006_elen_refine.cs
