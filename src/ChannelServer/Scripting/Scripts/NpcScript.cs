@@ -1049,6 +1049,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Returns true if player has quest, completed or not.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public bool HasQuest(int questId)
+		{
+			return this.Player.Quests.Has(questId);
+		}
+
+		/// <summary>
 		/// Returns true if quest was completed.
 		/// </summary>
 		/// <param name="questId"></param>
@@ -1370,6 +1380,16 @@ namespace Aura.Channel.Scripting.Scripts
 		public int GetPtjDoneCount(PtjType type)
 		{
 			return this.Player.Quests.GetPtjTrackRecord(type).Done;
+		}
+
+		/// <summary>
+		/// Returns number of times the player has successfully done the given PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public int GetPtjSuccessCount(PtjType type)
+		{
+			return this.Player.Quests.GetPtjTrackRecord(type).Success;
 		}
 
 		/// <summary>
