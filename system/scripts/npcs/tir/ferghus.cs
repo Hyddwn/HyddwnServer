@@ -364,11 +364,6 @@ public class FerghusShop : NpcShopScript
 		Add("Weapon", 40025);      // Pickaxe
 		Add("Weapon", 40026);      // Sickle
 		Add("Weapon", 40027);      // Weeding Hoe
-		Add("Weapon", 40179);      // Spiked Knuckle
-		Add("Weapon", 40180);      // Hobnail Knuckle
-		Add("Weapon", 40244);      // Bear Knuckle
-		Add("Weapon", 40745);      // Basic Control Bar
-		Add("Weapon", 40841);      // Spiral Shuriken
 		Add("Weapon", 45001, 100); // Arrow x100
 		Add("Weapon", 45001, 20);  // Arrow x20
 		Add("Weapon", 45002, 50);  // Bolt x50
@@ -395,6 +390,23 @@ public class FerghusShop : NpcShopScript
 		Add("Armor", 14008); // Full Leather Armor Set
 		Add("Armor", 14010); // Light Leather Mail (M)
 
-		Add("Event"); // Empty
+		Add("Event");
+
+		if (IsEnabled("FighterJob"))
+		{
+			Add("Weapon", 40179); // Spiked Knuckle
+			Add("Weapon", 40180); // Hobnail Knuckle
+			Add("Weapon", 40244); // Bear Knuckle
+		}
+
+		if (IsEnabled("PuppetMasterJob"))
+		{
+			Add("Weapon", 40745); // Basic Control Bar
+		}
+
+		if (IsEnabled("Ninjajob"))
+		{
+			Add("Weapon", 40841); // Spiral Shuriken
+		}
 	}
 }

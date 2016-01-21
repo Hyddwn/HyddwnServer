@@ -347,6 +347,7 @@
 	// Season 1
 	{ name: "G16S1", enabled: true, children: [
 		{ name: "MoonTunnel", enabled: true },
+		{ name: "FighterJob", enabled: true },
 	]},
 	
 	// Season 2
@@ -403,7 +404,9 @@
 	{ name: "G18S7", enabled: true, children: []},
 	
 	// Season 8
-	{ name: "G18S8", enabled: true, children: []},
+	{ name: "G18S8", enabled: true, children: [
+		{ name: "Ninjajob", enabled: true },
+	]},
 ]},
 
 // Generation 19
