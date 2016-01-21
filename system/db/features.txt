@@ -115,6 +115,7 @@
 		{ name: "IriaRebirth", enabled: true },
 		{ name: "Exploration", enabled: true },
 		{ name: "ContinentWarp", enabled: true },
+		{ name: "IceSpear", enabled: true },
 	]},
 	
 	// Season 3
