@@ -42,6 +42,7 @@
 	// Season 1
 	{ name: "G2S1", enabled: true, children: [
 		{ name: "PeacaDungeon", enabled: true },
+		{ name: "Fireball", enabled: true },
 	]},
 	
 	// Season 2
