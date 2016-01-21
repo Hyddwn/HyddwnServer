@@ -1,20 +1,20 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
-// For more information, see license file in the main folder
+//--- Aura Script -----------------------------------------------------------
+// Registration
+//--- Description -----------------------------------------------------------
+// Provides a simple registration page.
+//---------------------------------------------------------------------------
 
-using Aura.Shared.Database;
+using Aura.Shared.Scripting.Scripts;
 using Aura.Shared.Util;
+using Aura.Web;
 using SharpExpress;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Aura.Web.Controllers
+public class RegistrationControllerScript : IScript
 {
-	public class RegisterController : IController
+	public bool Init()
 	{
-		public void Index(Request req, Response res)
+		WebServer.Instance.App.All("/register", (req, res) =>
 		{
 			var name = req.Parameter("name");
 			var pass1 = req.Parameter("password1");
@@ -68,6 +68,8 @@ namespace Aura.Web.Controllers
 
 		L_Send:
 			res.Render("web/register.htm", new { error, success, name });
-		}
+		});
+
+		return true;
 	}
 }
