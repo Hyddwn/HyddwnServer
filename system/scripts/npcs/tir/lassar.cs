@@ -103,12 +103,14 @@ public class LassarScript : NpcScript
 							RndMsg(
 								"I didn't make any mistakes. Hehe",
 								"It has been repaired perfectly!"
-						);
+							);
 						else
+						{
 							// TODO: Use string format once we have XML dialogues.
 							Msg("I did repair it but...<br/>" + result.Fails + " point(s) have not been repaired.<br/>I guess I need more training.");
 							// I got this message when doing a full repair with only 2 points being repaired, and one failed
 							// Msg("Repair has been finished, but I made some mistakes.");
+						}
 					}
 				}
 
@@ -353,7 +355,6 @@ public class LassarShop : NpcShopScript
 		Add("Magic Items", 62003, 1);  // Blessed Magic Powder x1
 		Add("Magic Items", 62003, 10); // Blessed Magic Powder x10
 		Add("Magic Items", 62012);     // Elemental Remover
-		Add("Magic Items", 62014);     // Spirit Weapon Restoration Potion
 		Add("Magic Items", 63000, 1);  // Phoenix Feather x1
 		Add("Magic Items", 63000, 10); // Phoenix Feather x10
 		Add("Magic Items", 63001, 1);  // Wings of a Goddess x1
@@ -368,9 +369,18 @@ public class LassarShop : NpcShopScript
 		Add("Magic Weapon", 40040); // Fire Wand
 		Add("Magic Weapon", 40041); // Combat Wand
 		Add("Magic Weapon", 40090); // Healing Wand
-		Add("Magic Weapon", 40231); // Crystal Lightning Wand
-		Add("Magic Weapon", 40232); // Crown Ice Wand
-		Add("Magic Weapon", 40233); // Phoenix Fire Wand
-		Add("Magic Weapon", 40234); // Tikka Wood Healing Wand
+
+		if (IsEnabled("SpiritWeapons"))
+		{
+			Add("Magic Items", 62014);     // Spirit Weapon Restoration Potion
+		}
+
+		if (IsEnabled("WandUpgradeAndChainCasting"))
+		{
+			Add("Magic Weapon", 40231); // Crystal Lightning Wand
+			Add("Magic Weapon", 40232); // Crown Ice Wand
+			Add("Magic Weapon", 40233); // Phoenix Fire Wand
+			Add("Magic Weapon", 40234); // Tikka Wood Healing Wand
+		}
 	}
 }

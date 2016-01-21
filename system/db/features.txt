@@ -58,7 +58,9 @@
 	]},
 	
 	// Season 4
-	{ name: "G2S4", enabled: true, children: []},
+	{ name: "G2S4", enabled: true, children: [
+		{ name: "SpiritWeapons", enabled: true },
+	]},
 ]},
 
 // Generation 3
