@@ -48,7 +48,9 @@
 	
 	// Season 2
 	{ name: "G2S2", enabled: true, children: [
-		{ name: "SystemPet", enabled: true },
+		{ name: "SystemPet", enabled: true, children: [
+			{ name: "PetBirds", enabled: true },
+		]},
 	]},
 	
 	// Season 3
@@ -332,7 +334,9 @@
 // Generation 15
 { name: "G15", enabled: false, children: [
 	// Season 1
-	{ name: "G15S1", enabled: true, children: []},
+	{ name: "G15S1", enabled: true, children: [
+		{ name: "ItemSeal2", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G15S2", enabled: true, children: []},
@@ -394,13 +398,20 @@
 	{ name: "G18S3", enabled: true, children: []},
 	
 	// Season 4
-	{ name: "G18S4", enabled: true, children: []},
+	{ name: "G18S4", enabled: true, children: [
+		{ name: "Singing", enabled: true },
+		{ name: "PropInstruments", enabled: true },
+		{ name: "Tunnel24Free", enabled: true },
+	]},
 	
 	// Season 5
 	{ name: "G18S5", enabled: true, children: []},
 	
 	// Season 6
-	{ name: "G18S6", enabled: true, children: []},
+	{ name: "G18S6", enabled: true, children: [
+		{ name: "Reforges", enabled: true },
+		{ name: "FreeRebirthWeekly", enabled: true },
+	]},
 	
 	// Season 7
 	{ name: "G18S7", enabled: true, children: []},
