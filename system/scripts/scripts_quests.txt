@@ -51,10 +51,12 @@ quests/beginner_uladh/hunting/1000060_hunting_ogre_warrior.cs
 
 // Part-Time Jobs
 quests/ptj/church_endelyon.cs
+quests/ptj/healer_dilys.cs
 
 // Skills
 quests/20006_elen_refine.cs
 quests/20007_ranald_windmill.cs
+quests/200063_dilys_herbalism.cs
 quests/204003_malcolm_weaving_g7.cs
 
 // Scroll Hunting

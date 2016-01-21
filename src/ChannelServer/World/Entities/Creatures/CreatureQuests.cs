@@ -74,6 +74,16 @@ namespace Aura.Channel.World.Entities.Creatures
 			// Initial objective check, for things like collect and reach rank,
 			// that may be done already.
 			quest.Data.CheckCurrentObjective(_creature);
+
+			// Give item to deliver for first deliver objective
+			var deliverObjective = quest.Data.Objectives[quest.CurrentObjectiveOrLast.Ident] as QuestObjectiveDeliver;
+			if (deliverObjective != null)
+			{
+				var item = new Item(deliverObjective.ItemId);
+				item.Amount = Math.Min(1, deliverObjective.Amount);
+
+				_creature.Inventory.Add(item, true);
+			}
 		}
 
 		/// <summary>

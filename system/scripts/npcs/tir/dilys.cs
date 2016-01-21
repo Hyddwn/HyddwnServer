@@ -158,12 +158,6 @@ public class DilysScript : NpcScript
 				}
 				break;
 
-			case "about_arbeit":
-				Msg("Unimplemented");
-				//Msg("It's not time to start work yet.<br/>Can you come back and ask for a job later?");
-				//Msg("Do you need some work to do?<br/>If you want, you can help me here.<br/>The pay is not great, but I will definitely pay you for your work.<br/>The pay also depends on how long you've worked for me.<br/>Would you like to try?);
-				break;
-
 			case "shop_misc":
 				Msg("Follow the road all the way down until you see the Square.<br/>The building on the left is the General Shop.<br/>You can't miss it.<br/>And please say hello to Malcolm for me.");
 				break;
