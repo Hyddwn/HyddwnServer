@@ -312,9 +312,9 @@ public class RanaldShop : NpcShopScript
 		Add("Arena", 63019, 100); // Alby Battle Arena Coin 100x
 
 		// Quest
-		Add("Quest", 70023, 1, 0); // [collect 10 Branches]
-		Add("Quest", 70023, 1, 0); // [collect 10 Berries]
-		Add("Quest", 70023, 1, 0); // [collect 10 Large Nails]
+		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Branches]
+		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Berries]
+		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Large Nails]
 
 		// Reference Book
 		Add("Reference Book", 1078); // Don't give up!
