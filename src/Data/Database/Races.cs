@@ -395,6 +395,11 @@ namespace Aura.Data.Database
 				{
 					drop.AssertNotMissing("itemId", "chance");
 
+					// Check feature
+					var feature = drop.ReadString("feature");
+					if (!string.IsNullOrWhiteSpace(feature) && !AuraData.FeaturesDb.IsEnabled(feature))
+						continue;
+
 					var dropData = new DropData();
 					dropData.ItemId = drop.ReadInt("itemId");
 					dropData.Chance = drop.ReadFloat("chance");
