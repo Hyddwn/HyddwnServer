@@ -319,24 +319,32 @@ public class DilysShop : NpcShopScript
 		Add("Potions", 51012, 10); // Stamina 30 Potion x10
 		Add("Potions", 51012, 20); // Stamina 30 Potion x20
 		Add("Potions", 51037, 10); // Base Potion x10
-		Add("Potions", 51201, 1);  // Marionette 30 Potion x1
-		Add("Potions", 51201, 10); // Marionette 30 Potion x10
-		Add("Potions", 51201, 20); // Marionette 30 Potion x20
-		Add("Potions", 51202, 1);  // Marionette 50 Potion x1
-		Add("Potions", 51202, 10); // Marionette 50 Potion x10
-		Add("Potions", 51202, 20); // Marionette 50 Potion x20
 
 		Add("First Aid Kits", 60005, 10); // Bandage x10
 		Add("First Aid Kits", 60005, 20); // Bandage x20
 		Add("First Aid Kits", 63000, 10); // Phoenix Feather x10
 		Add("First Aid Kits", 63000, 20); // Phoenix Feather x20
 		Add("First Aid Kits", 63032);     // Pet First-Aid Kit
-		Add("First Aid Kits", 63715, 10); // Fine Marionette Repair Set x10
-		Add("First Aid Kits", 63715, 20); // Fine Marionette Repair Set x20
-		Add("First Aid Kits", 63716, 10); // Marionette Repair Set x10
-		Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
 
-		Add("Etc.", 91563, 1); // Hot Spring Ticket x1
-		Add("Etc.", 91563, 5); // Hot Spring Ticket x5
+		if (IsEnabled("G16HotSpringRenewal"))
+		{
+			Add("Etc.", 91563, 1); // Hot Spring Ticket x1
+			Add("Etc.", 91563, 5); // Hot Spring Ticket x5
+		}
+
+		if (IsEnabled("PuppetMasterJob"))
+		{
+			Add("Potions", 51201, 1);  // Marionette 30 Potion x1
+			Add("Potions", 51201, 10); // Marionette 30 Potion x10
+			Add("Potions", 51201, 20); // Marionette 30 Potion x20
+			Add("Potions", 51202, 1);  // Marionette 50 Potion x1
+			Add("Potions", 51202, 10); // Marionette 50 Potion x10
+			Add("Potions", 51202, 20); // Marionette 50 Potion x20
+
+			Add("First Aid Kits", 63715, 10); // Fine Marionette Repair Set x10
+			Add("First Aid Kits", 63715, 20); // Fine Marionette Repair Set x20
+			Add("First Aid Kits", 63716, 10); // Marionette Repair Set x10
+			Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
+		}
 	}
 }

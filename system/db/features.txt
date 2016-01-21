@@ -355,6 +355,11 @@
 			{ name: "PassiveSharpMind", enabled: true },
 		]},
 	]},
+	
+	// Season 3
+	{ name: "G16S3", enabled: true, children: [
+		{ name: "G16HotSpringRenewal", enabled: true },
+	]},
 ]},
 
 // Generation 17
@@ -363,7 +368,9 @@
 	{ name: "G17S1", enabled: true, children: []},
 	
 	// Season 2
-	{ name: "G17S2", enabled: true, children: []},
+	{ name: "G17S2", enabled: true, children: [
+		{ name: "PuppetMasterJob", enabled: true },
+	]},
 	
 	// Season 3
 	{ name: "G17S3", enabled: true, children: []},
