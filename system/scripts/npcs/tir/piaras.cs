@@ -212,32 +212,28 @@ public class PiarasShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		//--- Book ---------------------------------
-		//------------------------------------------
-		Add("Book", 1055);     //The Road to Becoming a Magic Warrior
-		Add("Book", 1056);     //How to Enjoy Field Hunting
-		Add("Book", 1124);     //An Easy Guide to Taking Up Residence in a Home
-		Add("Book", 1037);     //Experiencing the Miracle of Resurrection with 100 Gold
-		Add("Book", 1041);     //A Story About Eggs
-		Add("Book", 1038);     //Nora Talks about the Tailoring Skill
-		Add("Book", 1039);     //Easy Part-Time Jobs
-		Add("Book", 1062);     //The Greedy Snow Imp
-		Add("Book", 1048);     //My Fluffy Life with Wool
-		Add("Book", 1049);     //The Holy Water of Lymilark
-		Add("Book", 1057);     //Introduction to Field Bosses
-		Add("Book", 1054);     //Behold the Dungeon - Advice for Young Generations
-		Add("Book", 1058);     //Understanding Wisps
-		Add("Book", 1015);     //Seal Stone Research Almanac : Rabbie Dungeon
-		Add("Book", 1016);     //Seal Stone Research Almanac : Ciar Dungeon
-		Add("Book", 1017);     //Seal Stone Research Almanac : Dugald Aisle
-		Add("Book", 1505);     //The World of Handicrafts
+		Add("Book", 1055); // The Road to Becoming a Magic Warrior
+		Add("Book", 1056); // How to Enjoy Field Hunting
+		Add("Book", 1124); // An Easy Guide to Taking Up Residence in a Home
+		Add("Book", 1037); // Experiencing the Miracle of Resurrection with 100 Gold
+		Add("Book", 1041); // A Story About Eggs
+		Add("Book", 1038); // Nora Talks about the Tailoring Skill
+		Add("Book", 1039); // Easy Part-Time Jobs
+		Add("Book", 1062); // The Greedy Snow Imp
+		Add("Book", 1048); // My Fluffy Life with Wool
+		Add("Book", 1049); // The Holy Water of Lymilark
+		Add("Book", 1057); // Introduction to Field Bosses
+		Add("Book", 1054); // Behold the Dungeon - Advice for Young Generations
+		Add("Book", 1058); // Understanding Wisps
+		Add("Book", 1015); // Seal Stone Research Almanac : Rabbie Dungeon
+		Add("Book", 1016); // Seal Stone Research Almanac : Ciar Dungeon
+		Add("Book", 1017); // Seal Stone Research Almanac : Dugald Aisle
+		Add("Book", 1505); // The World of Handicrafts
 
-		//--- Gift ---------------------------------
-		//------------------------------------------
-		Add("Gift", 52011);     //Socks
-		Add("Gift", 52018);     //Hammer
-		Add("Gift", 52008);     //Anthology
-		Add("Gift", 52009);     //Cubic Puzzle
-		Add("Gift", 52017);     //Underwear Set
+		Add("Gift", 52011); // Socks
+		Add("Gift", 52018); // Hammer
+		Add("Gift", 52008); // Anthology
+		Add("Gift", 52009); // Cubic Puzzle
+		Add("Gift", 52017); // Underwear Set
 	}
 }
