@@ -54,6 +54,7 @@
 	// Season 3
 	{ name: "G2S3", enabled: true, children: [
 		{ name: "PotionPartyMaking", enabled: true },
+		{ name: "Thunder", enabled: true },
 	]},
 	
 	// Season 4
