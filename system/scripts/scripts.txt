@@ -7,7 +7,6 @@
 divert  "/user/scripts/scripts.txt"
 
 include "scripts_special.txt"
-include "scripts_shops.txt"
 include "scripts_quests.txt"
 include "scripts_npcs.txt"
 include "scripts_others.txt"
