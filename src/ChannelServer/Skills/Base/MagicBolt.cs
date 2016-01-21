@@ -156,6 +156,9 @@ namespace Aura.Channel.Skills.Base
 			if (!attackerPosition.InRange(targetPosition, this.GetRange(attacker, skill)))
 				return CombatSkillResult.OutOfRange;
 
+			if (attacker.Region.Collisions.Any(attackerPosition, targetPosition))
+				return CombatSkillResult.OutOfRange;
+
 			// Use
 			this.UseSkillOnTarget(attacker, skill, target);
 
