@@ -560,7 +560,7 @@ public class MoonGateScript : GeneralScript
 
 	private void UpdateGates(ErinnTime now)
 	{
-		var state = now.IsNight || AlwaysOpen || IsEnabled("G18") ? "open" : "closed";
+		var state = now.IsNight || AlwaysOpen || IsEnabled("Tunnel24Free") ? "open" : "closed";
 
 		foreach (var gate in gates.Values)
 		{
