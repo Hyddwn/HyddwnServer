@@ -186,6 +186,7 @@
     <Compile Include="Skills\Combat\AdministrativePicking2.cs" />
     <Compile Include="Skills\Actions\DiceTossing.cs" />
     <Compile Include="Skills\Hidden\HiddenEnchant.cs" />
+    <Compile Include="Skills\Hidden\HiddenResurrection.cs" />
     <Compile Include="Skills\Hidden\HiddenTownBack.cs" />
     <Compile Include="Skills\Hidden\UseItemChattingColorChange.cs" />
     <Compile Include="Skills\Hidden\NameColorChange.cs" />
