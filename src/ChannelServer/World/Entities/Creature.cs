@@ -2415,6 +2415,16 @@ namespace Aura.Channel.World.Entities
 			var x = pos.X - creaturePos.X;
 			var y = pos.Y - creaturePos.Y;
 
+			this.TurnTo(x, y);
+		}
+
+		/// <summary>
+		/// Turns creature in given direction.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		public void TurnTo(float x, float y)
+		{
 			this.Direction = MabiMath.DirectionToByte(x, y);
 			Send.TurnTo(this, x, y);
 		}
