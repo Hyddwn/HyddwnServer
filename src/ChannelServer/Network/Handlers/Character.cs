@@ -105,7 +105,6 @@ namespace Aura.Channel.Network.Handlers
 			var option = (ReviveOptions)(1 << (packet.GetInt() - 1));
 
 			var creature = client.GetCreatureSafe(packet.Id);
-			if (creature == null) return;
 
 			if (!creature.IsDead || !creature.DeadMenu.Has(option))
 			{
