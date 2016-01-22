@@ -69,7 +69,11 @@ namespace Aura.Channel.Network.Handlers
 			if (creature.Region is DungeonRegion)
 			{
 				creature.DeadMenu.Add(ReviveOptions.DungeonEntrance);
-				creature.DeadMenu.Add(ReviveOptions.StatueOfGoddess);
+
+				// Show statue option only if there is a statue on this floor
+				var floorRegion = (creature.Region as DungeonFloorRegion);
+				if (floorRegion == null || floorRegion.Floor.Statue)
+					creature.DeadMenu.Add(ReviveOptions.StatueOfGoddess);
 			}
 			// Fields
 			else

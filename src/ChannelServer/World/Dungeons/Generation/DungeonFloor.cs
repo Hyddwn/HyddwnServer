@@ -28,6 +28,7 @@ namespace Aura.Channel.World.Dungeons.Generation
 		private int _coverageFactor;
 
 		public bool HasBossRoom { get; private set; }
+		public bool Statue { get; private set; }
 		public MazeGenerator MazeGenerator { get; private set; }
 		public int Width { get; private set; }
 		public int Height { get; private set; }
@@ -50,6 +51,7 @@ namespace Aura.Channel.World.Dungeons.Generation
 			_prevFloor = prevFloor;
 
 			this.HasBossRoom = floorData.HasBoss;
+			this.Statue = floorData.Statue;
 
 			this.CalculateSize(floorData);
 			this.InitRoomtraits();
