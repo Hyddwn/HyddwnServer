@@ -40,6 +40,9 @@ namespace Aura.Channel.World.Entities.Creatures
 		// Final Hit training counters
 		public int FinalHitKillCount, FinalHitKillCountStrong, FinalHitKillCountAwful, FinalHitKillCountBoss;
 
+		// Lightning Rod full charge variable
+		public bool LightningRodFullCharge;
+
 		// Backup of target's position when gathering, for run away check
 		public Position GatheringTargetPosition;
 

@@ -202,5 +202,25 @@ namespace Aura.Channel.Network.Handlers
 
 			// Do something with this information?
 		}
+
+		/// <summary>
+		/// Used when the client triggers TurnTo
+		/// </summary>
+		/// <example>
+		/// 001 [........BFE318C3] Float  : -0.59677
+		/// 002 [........BFE9AD58] Float  : -0.80241
+		/// </example>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.TurnTo)]
+		public void TurnTo(ChannelClient client, Packet packet)
+		{
+			var x = packet.GetFloat();
+			var y = packet.GetFloat();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			creature.TurnTo(x, y);
+		}
 	}
 }
