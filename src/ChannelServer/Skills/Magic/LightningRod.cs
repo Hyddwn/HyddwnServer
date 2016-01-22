@@ -62,11 +62,6 @@ namespace Aura.Channel.Skills.Magic
 			if (creature.RightHand == null)
 				Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
 
-			if (creature.Mana < skill.RankData.ManaCost)
-			{
-				creature.Skills.ActiveSkill = null;
-			}
-
 			creature.StopMove();
 
 			skill.State = SkillState.Prepared;
@@ -82,17 +77,7 @@ namespace Aura.Channel.Skills.Magic
 			---------------------------- - */
 			creature.Lock(Locks.Walk | Locks.Run);
 
-			// Full Charge Variable
-			System.Threading.Timer t = null;
-			t = new System.Threading.Timer(_ =>
-			{
-				if (skill.State == SkillState.Ready)
-				{
-					creature.Temp.LightningRodFullCharge = true;
-				}
-				else
-					creature.Temp.LightningRodFullCharge = false;
-			}, null, (int)skill.RankData.Var3, System.Threading.Timeout.Infinite);
+			creature.Temp.LightningRodPrepareTime = DateTime.Now;
 
 			return true;
 		}
@@ -105,7 +90,10 @@ namespace Aura.Channel.Skills.Magic
 		/// <param name="packet"></param>
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
-			skill.State = SkillState.Used;
+			// Set full charge variable
+			if (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3))
+				attacker.Temp.LightningRodFullCharge = true;
+
 			Log.Debug("Lightning Rod Full Charge: " + attacker.Temp.LightningRodFullCharge.ToString());
 
 			/* Locks -----------------------
@@ -149,7 +137,28 @@ namespace Aura.Channel.Skills.Magic
 			var p3 = this.RotatePoint(pointTemp2, endPoint, rotationAngle);
 			var p4 = this.RotatePoint(pointTemp2, endPoint, (rotationAngle * -1));
 
-			// PropAppears?
+			// Debug
+			var prop1 = new Prop(1, attacker.RegionId, p1.X, p1.Y, 1, 0.5f);
+			var prop2 = new Prop(1, attacker.RegionId, p2.X, p2.Y, 1, 0.5f);
+			var prop3 = new Prop(1, attacker.RegionId, p3.X, p3.Y, 1, 0.5f);
+			var prop4 = new Prop(1, attacker.RegionId, p4.X, p4.Y, 1, 0.5f);
+			attacker.Region.AddProp(prop1);
+			attacker.Region.AddProp(prop2);
+			attacker.Region.AddProp(prop3);
+			attacker.Region.AddProp(prop4);
+
+			System.Threading.Timer t = null;
+			t = new System.Threading.Timer (_ =>
+			{
+				attacker.Region.RemoveProp(prop1);
+				attacker.Region.RemoveProp(prop2);
+				attacker.Region.RemoveProp(prop3);
+				attacker.Region.RemoveProp(prop4);
+				GC.KeepAlive(t);
+			}, null, 10000, System.Threading.Timeout.Infinite);
+			// Debug
+
+			// TargetProp
 			var LProp = new Prop(280, attacker.RegionId, endPoint.X, endPoint.Y, attacker.Direction, 1f, 0f, "single");
 			attacker.Region.AddProp(LProp);
 
@@ -199,8 +208,6 @@ namespace Aura.Channel.Skills.Magic
 
 				// Apply Damage
 				target.TakeDamage(tAction.Damage = damage, attacker);
-
-				// Does this aggro?
 
 				// Stun Time
 				tAction.Stun = targetStun;
