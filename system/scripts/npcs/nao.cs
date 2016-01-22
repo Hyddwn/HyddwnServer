@@ -125,6 +125,13 @@ public class NaoScript : NpcScript
 	{
 		Msg("Hello, <username/>!<br/>Is life here in Erinn pleasant for you?");
 
+		if (!IsEnabled("Rebirth"))
+		{
+			// Unofficial
+			Msg("I'm afraid I can't let you rebirth just yet, the gods won't allow it.");
+			goto L_End;
+		}
+
 		if (!RebirthAllowed())
 		{
 			Msg("Barely any time has passed since your last rebirth.<br/>Why don't you enjoy your current life in Erinn for a bit longer?");
