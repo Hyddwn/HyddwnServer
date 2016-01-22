@@ -2172,11 +2172,17 @@ namespace Aura.Channel.World.Entities
 					this.Life = this.LifeMax * 0.25f;
 					break;
 
-				case ReviveOptions.WaitForRescue:
+				case ReviveOptions.PhoenixFeather:
 					// 10% additional injuries
 					this.Injuries += this.LifeInjured * 0.10f;
 					this.Life = 1;
 					break;
+
+				case ReviveOptions.WaitForRescue:
+					this.DeadMenu.Options ^= ReviveOptions.PhoenixFeather;
+					Send.DeadFeather(this);
+					Send.Revived(this);
+					return;
 
 				default:
 					Log.Warning("Creature.Revive: Unknown revive option: {0}", option);

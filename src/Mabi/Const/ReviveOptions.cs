@@ -18,7 +18,7 @@ namespace Aura.Mabi.Const
 		//
 		NaoRevival1 = 0x80,
 		WaitForRescue = 0x100,
-		FeatherUp = 0x200,
+		PhoenixFeather = 0x200,
 		//
 		BarriLobby = 0x800,
 		//

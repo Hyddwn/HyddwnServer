@@ -92,10 +92,8 @@ namespace Aura.Channel.Network.Handlers
 			switch (option)
 			{
 				case ReviveOptions.WaitForRescue:
-					// TODO: Implement hidden revive skill
-					//Send.DeadFeather(creature, ...);
-					//Send.Revived(creature, true, 0, 0, 0);
-					break;
+					creature.Revive(option);
+					return;
 
 				case ReviveOptions.Here:
 					goto case ReviveOptions.HereNoPenalty;

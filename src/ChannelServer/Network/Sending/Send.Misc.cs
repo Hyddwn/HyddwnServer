@@ -168,9 +168,23 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="creature"></param>
 		public static void DeadFeather(Creature creature)
 		{
+			var bits = (int)creature.DeadMenu.Options;
+			var flags = new List<int>();
+			flags.Add(0);
+
+			// Break down options bit by bit, and add them to flags if set.
+			for (var i = 1; bits != 0; ++i, bits >>= 1)
+			{
+				if ((bits & 1) != 0)
+					flags.Add(i);
+			}
+
 			var packet = new Packet(Op.DeadFeather, creature.EntityId);
-			packet.PutShort(1);
-			packet.PutInt(0);
+
+			packet.PutShort((short)flags.Count);
+			foreach (var flag in flags)
+				packet.PutInt(flag);
+
 			packet.PutByte(0);
 
 			creature.Region.Broadcast(packet, creature);
