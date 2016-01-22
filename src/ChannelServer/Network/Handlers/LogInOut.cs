@@ -262,6 +262,9 @@ namespace Aura.Channel.Network.Handlers
 
 			// Update Pon
 			Send.PonsUpdate(creature, creature.Client.Account.Points);
+
+			// Update dead menu, in case creature is dead
+			creature.DeadMenu.Update();
 		}
 
 		/// <summary>
