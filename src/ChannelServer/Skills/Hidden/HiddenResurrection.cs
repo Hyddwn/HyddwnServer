@@ -55,6 +55,13 @@ namespace Aura.Channel.Skills.Hidden
 				return false;
 			}
 
+			// Check if any party members are actually dead if party feather
+			if (item.HasTag("/party/") && !creature.Party.GetMembers().Any(a => a != creature && a.IsDead && a.DeadMenu.Has(ReviveOptions.PhoenixFeather)))
+			{
+				Send.MsgBox(creature, Localization.Get("There is no one available to resurrect."));
+				return false;
+			}
+
 			creature.Temp.SkillItem1 = item;
 
 			// Response
@@ -101,6 +108,15 @@ namespace Aura.Channel.Skills.Hidden
 			else
 			{
 				target.Revive(ReviveOptions.PhoenixFeather);
+
+				// Revive other party members if party feather
+				if (item.HasTag("/party/"))
+				{
+					var targets = creature.Party.GetMembers().Where(a => a != creature && a != target && a.IsDead && a.DeadMenu.Has(ReviveOptions.PhoenixFeather));
+					foreach (var target2 in targets)
+						target.Revive(ReviveOptions.PhoenixFeather);
+				}
+
 				creature.Inventory.Decrement(item);
 			}
 
