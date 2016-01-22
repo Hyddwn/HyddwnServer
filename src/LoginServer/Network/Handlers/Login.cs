@@ -12,6 +12,7 @@ using Aura.Shared.Network;
 using Aura.Shared.Util;
 using System.Collections.Generic;
 using Aura.Mabi.Network;
+using Aura.Data;
 
 namespace Aura.Login.Network.Handlers
 {
@@ -256,7 +257,7 @@ namespace Aura.Login.Network.Handlers
 			account.Gifts = LoginServer.Instance.Database.GetGifts(account.Name);
 
 			// Add free cards if there are none.
-			// If you don't have chars and char cards, you get a new free card,
+			// If you don't have chars or char cards, you get a new free card,
 			// if you don't have pets or pet cards either, you'll also get a 7-day horse.
 			if (account.CharacterCards.Count < 1 && account.Characters.Count < 1)
 			{
@@ -264,7 +265,7 @@ namespace Aura.Login.Network.Handlers
 				var card = LoginServer.Instance.Database.AddCard(account.Name, 147, 0);
 				account.CharacterCards.Add(card);
 
-				if (account.PetCards.Count < 1 && account.Pets.Count < 1)
+				if (AuraData.FeaturesDb.IsEnabled("SystemPet") && account.PetCards.Count < 1 && account.Pets.Count < 1)
 				{
 					// 7-day Horse
 					card = LoginServer.Instance.Database.AddCard(account.Name, MabiId.PetCardType, 260016);
