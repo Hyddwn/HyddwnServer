@@ -1900,6 +1900,8 @@ namespace Aura.Channel.World.Entities
 				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
 
 			this.Drops.ClearStaticDrops();
+
+			this.DeadMenu.Update();
 		}
 
 		/// <summary>
@@ -2186,6 +2188,7 @@ namespace Aura.Channel.World.Entities
 			}
 
 			this.Deactivate(CreatureStates.Dead);
+			this.DeadMenu.Clear();
 
 			Send.RemoveDeathScreen(this);
 			Send.StatUpdate(this, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.LifeMax, Stat.LifeMaxMod, Stat.Stamina, Stat.Hunger);

@@ -59,33 +59,6 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			creature.DeadMenu.Clear();
-
-			// Defaults
-			creature.DeadMenu.Add(ReviveOptions.Town);
-			creature.DeadMenu.Add(ReviveOptions.WaitForRescue);
-
-			// Dungeons
-			if (creature.Region is DungeonRegion)
-			{
-				creature.DeadMenu.Add(ReviveOptions.DungeonEntrance);
-
-				// Show statue option only if there is a statue on this floor
-				var floorRegion = (creature.Region as DungeonFloorRegion);
-				if (floorRegion == null || floorRegion.Floor.Statue)
-					creature.DeadMenu.Add(ReviveOptions.StatueOfGoddess);
-			}
-			// Fields
-			else
-			{
-				//if(creature.Exp > -90%)
-				creature.DeadMenu.Add(ReviveOptions.Here);
-			}
-
-			// Special
-			if (creature.Titles.SelectedTitle == TitleId.devCAT)
-				creature.DeadMenu.Add(ReviveOptions.HereNoPenalty);
-
 			Send.DeadMenuR(creature, creature.DeadMenu);
 		}
 

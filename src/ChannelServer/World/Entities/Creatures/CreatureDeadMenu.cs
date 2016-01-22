@@ -3,6 +3,7 @@
 
 using System.Text;
 using Aura.Mabi.Const;
+using Aura.Channel.World.Dungeons;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -66,6 +67,36 @@ namespace Aura.Channel.World.Entities.Creatures
 				sb.Append("stay;");
 
 			return sb.ToString().Trim(';');
+		}
+
+		public void Update()
+		{
+			this.Clear();
+
+			// Defaults
+			this.Add(ReviveOptions.Town);
+			this.Add(ReviveOptions.WaitForRescue);
+
+			// Dungeons
+			if (this.Creature.Region is DungeonRegion)
+			{
+				this.Add(ReviveOptions.DungeonEntrance);
+
+				// Show statue option only if there is a statue on this floor
+				var floorRegion = (this.Creature.Region as DungeonFloorRegion);
+				if (floorRegion == null || floorRegion.Floor.Statue)
+					this.Add(ReviveOptions.StatueOfGoddess);
+			}
+			// Fields
+			else
+			{
+				//if(creature.Exp > -90%)
+				this.Add(ReviveOptions.Here);
+			}
+
+			// Special
+			if (this.Creature.Titles.SelectedTitle == TitleId.devCAT)
+				this.Add(ReviveOptions.HereNoPenalty);
 		}
 	}
 }
