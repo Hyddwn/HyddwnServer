@@ -553,6 +553,10 @@ namespace Aura.Mabi.Network
 
 		public const int Weather = 0x1ADB0;
 
+		// Nexon Game Security?
+		public const int NGS1 = 0x1D4C2;
+		public const int NGS2 = 0x1D4C3;
+
 		public const int GmcpOpen = 0x1D589;
 		public const int GmcpClose = 0x1D58A;
 		public const int GmcpSummon = 0x1D58B;
