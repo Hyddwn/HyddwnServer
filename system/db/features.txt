@@ -205,6 +205,7 @@
 		{ name: "CombatRenewal", enabled: true },
 		{ name: "AdvancedItemRenewal", enabled: true },
 		{ name: "Aviation", enabled: true },
+		{ name: "DeadlyNPCs", enabled: true },
 	]},
 	
 	// Season 2

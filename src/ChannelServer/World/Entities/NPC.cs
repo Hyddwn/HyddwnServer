@@ -10,6 +10,7 @@ using Aura.Shared.Util;
 using System;
 using Aura.Channel.Network.Sending;
 using Aura.Data.Database;
+using Aura.Data;
 
 namespace Aura.Channel.World.Entities
 {
@@ -368,7 +369,7 @@ namespace Aura.Channel.World.Entities
 			if (lifeBefore < 0)
 				return false;
 
-			if (!ChannelServer.Instance.Conf.World.DeadlyNpcs)
+			if (!AuraData.FeaturesDb.IsEnabled("DeadlyNPCs"))
 				return false;
 
 			// Chance = Will/10, capped at 50%
