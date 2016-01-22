@@ -72,10 +72,8 @@ namespace Aura.Channel.Skills.Hidden
 		/// <param name="packet"></param>
 		public void Use(Creature creature, Skill skill, Packet packet)
 		{
-			var targetEntityId = packet.GetLong();
-			// 2 unk ints in older logs
-			//var unkInt1 = packet.GetInt();
-			//var unkInt2 = packet.GetInt();
+			var target = this.GetTarget(packet);
+			var targetEntityId = (target == null ? 0 : target.EntityId);
 
 			Send.Effect(creature, Effect.UseMagic, "healing_phoenix", targetEntityId);
 			Send.Echo(creature, packet);
@@ -89,16 +87,10 @@ namespace Aura.Channel.Skills.Hidden
 		/// <param name="packet"></param>
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
-			var targetEntityId = packet.GetLong();
-			// 2 unk ints in older logs
-			//var unkInt1 = packet.GetInt();
-			//var unkInt2 = packet.GetInt();
-
+			var target = this.GetTarget(packet);
 			var item = creature.Temp.SkillItem1;
 
-			// Check for target in world, as remote feathers probably use this
-			// handler as well. Check for region or remote afterwards.
-			var target = ChannelServer.Instance.World.GetCreature(targetEntityId);
+			// Check target validity
 			if (target == null || !target.IsDead || !target.DeadMenu.Has(ReviveOptions.PhoenixFeather) || (creature.RegionId != target.RegionId && !item.HasTag("/remote/")))
 			{
 				// Unofficial
@@ -122,6 +114,45 @@ namespace Aura.Channel.Skills.Hidden
 		/// <param name="skill"></param>
 		public void Cancel(Creature creature, Skill skill)
 		{
+		}
+
+		/// <summary>
+		/// Gets target, based on packet's values.
+		/// </summary>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		private Creature GetTarget(Packet packet)
+		{
+			Creature target = null;
+
+			switch (packet.Peek())
+			{
+				case PacketElementType.Long:
+					var targetEntityId = packet.GetLong();
+					// 2 unk ints in older logs
+					//var unkInt1 = packet.GetInt();
+					//var unkInt2 = packet.GetInt();
+
+					// Get from world, in case there's a remote feather that
+					// doesn't use names.
+					target = ChannelServer.Instance.World.GetCreature(targetEntityId);
+
+					break;
+
+				case PacketElementType.String:
+					var targetName = packet.GetString();
+
+					// Get from world, as advanced feathers can be used remotely
+					target = ChannelServer.Instance.World.GetCreature(targetName);
+
+					break;
+
+				default:
+					Log.Warning("HiddenResurrection: Unknown target var type '{0}'.", packet.Peek());
+					break;
+			}
+
+			return target;
 		}
 	}
 }
