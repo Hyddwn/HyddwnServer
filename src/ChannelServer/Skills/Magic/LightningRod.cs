@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Aura.Mabi;
 
 namespace Aura.Channel.Skills.Magic
 {
@@ -31,13 +32,19 @@ namespace Aura.Channel.Skills.Magic
 	public class LightningRod : ISkillHandler, IPreparable, IUseable, ICompletable, ICancelable
 	{
 		/// <summary>
-		/// Length of attack area; unofficial.
+		/// Length of attack area; unconfirmed.
 		/// </summary>
+		/// <remarks>
+		/// "http://wiki.mabinogiworld.com/view/Lightning_Rod#Summary"
+		/// </remarks>
 		private const int skillLength = 1400;
 
 		/// <summary>
-		/// Width of attack area; unnoficial.
+		/// Width of attack area; unconfirmed.
 		/// </summary>
+		/// <remarks>
+		/// "http://wiki.mabinogiworld.com/view/Lightning_Rod#Summary"
+		/// </remarks>
 		private const int skillWidth = 200;
 
 		/// <summary>
@@ -67,7 +74,7 @@ namespace Aura.Channel.Skills.Magic
 			skill.State = SkillState.Prepared;
 
 			Send.MotionCancel2(creature, 0);
-			Send.Effect(creature, 418, 2, 0); // Magic Circle?
+			Send.Effect(creature, Effect.LightningRod, 2, 0); // Magic Circle?
 
 			Send.SkillReady(creature, skill.Info.Id);
 			skill.State = SkillState.Ready;
@@ -94,8 +101,6 @@ namespace Aura.Channel.Skills.Magic
 			if (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3))
 				attacker.Temp.LightningRodFullCharge = true;
 
-			Log.Debug("Lightning Rod Full Charge: " + attacker.Temp.LightningRodFullCharge.ToString());
-
 			/* Locks -----------------------
 			Walk|Run
 			---------------------------- - */
@@ -103,69 +108,51 @@ namespace Aura.Channel.Skills.Magic
 
 			// Get direction for target Area
 			var direction = Mabi.MabiMath.ByteToRadian(attacker.Direction);
-			Log.Debug("New Direction: " + direction.ToString());
 
 			var attackerPos = attacker.GetPosition();
 
-			// The goal here is to get a random position
-			// that is distance skillLength from the attacker.
-			// Afterwards, it will be rotated to where the attack should be.
-			var endPos = new Position(attackerPos.X + (skillLength / 2), (int)(attackerPos.Y + ((skillLength / 2) * Math.Sqrt(3)))); // 30, 60, 90 triangle.
+			// Calculate polygon points
+			var r = MabiMath.ByteToRadian(attacker.Direction);
+			var poe = attackerPos.GetRelative(r, 800);
+			var pivot = new Point(poe.X, poe.Y);
+			var p1 = new Point(pivot.X - skillLength / 2, pivot.Y - skillWidth / 2);
+			var p2 = new Point(pivot.X - skillLength / 2, pivot.Y + skillWidth / 2);
+			var p3 = new Point(pivot.X + skillLength / 2, pivot.Y + skillWidth / 2);
+			var p4 = new Point(pivot.X + skillLength / 2, pivot.Y - skillWidth / 2);
+			p1 = this.RotatePoint(p1, pivot, r);
+			p2 = this.RotatePoint(p2, pivot, r);
+			p3 = this.RotatePoint(p3, pivot, r);
+			p4 = this.RotatePoint(p4, pivot, r);
 
-			// Calculate Center Points
-			var attackerPoint = new Point(attackerPos.X, attackerPos.Y);
-			var endPoint = new Point(endPos.X, endPos.Y); // Point where length from attacker point is skillLength.
-
-			var pivotAngle = direction - (Math.Atan(endPoint.Y / endPoint.X)); // Angle to rotate endpoint.
-			endPoint = this.RotatePoint(endPoint, attackerPoint, pivotAngle); // Rotate point to where the endPoint should truly be.
-
-			// Restate Position
-			var newEndPos = new Position(endPoint.X, endPoint.Y);
-
-			var pointDist = Math.Sqrt((skillLength * skillLength) + (skillWidth * skillWidth)); // Pythagorean Theorem - Distance between point and opposite side's center.
-			var rotationAngle = Math.Asin(skillWidth / pointDist);
-
-			// Calculate Points 1 and 2
-			var posTemp1 = attackerPos.GetRelative(newEndPos, (int)(pointDist - skillLength));
-			var pointTemp1 = new Point(posTemp1.X, posTemp1.Y);
-			var p1 = this.RotatePoint(pointTemp1, attackerPoint, rotationAngle);
-			var p2 = this.RotatePoint(pointTemp1, attackerPoint, (rotationAngle * -1));
-
-			// Calculate Points 3 and 4
-			var posTemp2 = newEndPos.GetRelative(attackerPos, (int)(pointDist - skillLength));
-			var pointTemp2 = new Point(posTemp2.X, posTemp2.Y);
-			var p3 = this.RotatePoint(pointTemp2, endPoint, rotationAngle);
-			var p4 = this.RotatePoint(pointTemp2, endPoint, (rotationAngle * -1));
-
-			// Debug
-			var prop1 = new Prop(1, attacker.RegionId, p1.X, p1.Y, 1, 0.5f);
-			var prop2 = new Prop(1, attacker.RegionId, p2.X, p2.Y, 1, 0.5f);
-			var prop3 = new Prop(1, attacker.RegionId, p3.X, p3.Y, 1, 0.5f);
-			var prop4 = new Prop(1, attacker.RegionId, p4.X, p4.Y, 1, 0.5f);
+			// Debug ----
+			/*
+			var prop1 = new Prop(10, attacker.RegionId, p1.X, p1.Y, 1, 0.5f);
+			var prop2 = new Prop(10, attacker.RegionId, p2.X, p2.Y, 1, 0.5f);
+			var prop3 = new Prop(10, attacker.RegionId, p3.X, p3.Y, 1, 0.5f);
+			var prop4 = new Prop(10, attacker.RegionId, p4.X, p4.Y, 1, 0.5f);
 			attacker.Region.AddProp(prop1);
 			attacker.Region.AddProp(prop2);
 			attacker.Region.AddProp(prop3);
 			attacker.Region.AddProp(prop4);
 
-			System.Threading.Timer t = null;
-			t = new System.Threading.Timer (_ =>
+			Task.Delay(10000).ContinueWith(_ =>
 			{
 				attacker.Region.RemoveProp(prop1);
 				attacker.Region.RemoveProp(prop2);
 				attacker.Region.RemoveProp(prop3);
 				attacker.Region.RemoveProp(prop4);
-				GC.KeepAlive(t);
-			}, null, 10000, System.Threading.Timeout.Infinite);
-			// Debug
+			});
+			*/
+			// ----------
 
 			// TargetProp
-			var LProp = new Prop(280, attacker.RegionId, endPoint.X, endPoint.Y, attacker.Direction, 1f, 0f, "single");
+			var LProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
 			attacker.Region.AddProp(LProp);
 
 			// Prepare Combat Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-			var targetAreaId = new Location(attacker.RegionId, newEndPos).ToLocationId();
+			var targetAreaId = new Location(attacker.RegionId, poe).ToLocationId();
 
 			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetAreaId);
 			aAction.Set(AttackerOptions.KnockBackHit1 | AttackerOptions.UseEffect);
@@ -190,8 +177,6 @@ namespace Aura.Channel.Skills.Magic
 				{
 					damage += (damage * dmgMultiplier);
 				}
-
-				// Master Title
 
 				// Critical Hit
 				var critChance = attacker.GetRightCritChance(target.MagicProtection);
@@ -235,7 +220,7 @@ namespace Aura.Channel.Skills.Magic
 			}
 			cap.Handle();
 
-			Send.Effect(attacker, 418, 3, newEndPos.X, newEndPos.Y); // Lightning Shooting Effect?
+			Send.Effect(attacker, Effect.LightningRod, 3, poe.X, poe.Y); // Lightning Shooting Effect?
 
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 
@@ -251,7 +236,7 @@ namespace Aura.Channel.Skills.Magic
 
 			creature.Temp.LightningRodFullCharge = false;
 
-			Send.Effect(creature, 418, 0); // End Magic Circle
+			Send.Effect(creature, Effect.LightningRod, 0); // End Effect
 			Send.SkillComplete(creature, skill.Info.Id);
 		}
 
@@ -264,7 +249,7 @@ namespace Aura.Channel.Skills.Magic
 
 			creature.Temp.LightningRodFullCharge = false;
 
-			Send.Effect(creature, 418, 0); // End Magic Circle
+			Send.Effect(creature, Effect.LightningRod, 0); // End Effect
 		}
 
 		private Point RotatePoint(Point point, Point pivot, double radians)

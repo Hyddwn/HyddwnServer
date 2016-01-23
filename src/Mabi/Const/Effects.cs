@@ -197,6 +197,12 @@ namespace Aura.Mabi.Const
 		/// byte:1|0 (on/off)
 		/// </summary>
 		public static readonly int OutfitAction = 366;
+
+		/// <summary>
+		/// Effects for Lightning Rod.
+		/// Different bytes cover the skill's spectrum of effects.
+		/// </summary>
+		public static readonly int LightningRod = 418;
 	}
 
 	public enum SpawnEffect : byte
