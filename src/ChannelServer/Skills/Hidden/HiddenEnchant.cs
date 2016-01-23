@@ -202,6 +202,7 @@ namespace Aura.Channel.Skills.Hidden
 
 			// Handle result
 			var result = EnchantResult.Fail;
+			var destroy = true;
 			if (success)
 			{
 				item.ApplyOptionSet(optionSetData, true);
@@ -212,20 +213,21 @@ namespace Aura.Channel.Skills.Hidden
 			}
 			else
 			{
-				// Destroy enchant on fail if not using Enchant skill,
-				// otherwise reduce durability
-				if (skill.Info.Id == SkillId.HiddenEnchant)
-				{
-					// Decrement enchant
-					//creature.Inventory.Decrement(enchant);
-					Log.Debug("destroyed");
-				}
-				else
-				{
-					creature.Inventory.ReduceDurability(enchant, DurabilityReduction);
-				}
+				// Don't default destroy enchant when using Enchant
+				if (skill.Info.Id == SkillId.Enchant)
+					destroy = false;
 			}
 
+			// Destroy or decrement items
+			if (skill.Info.Id == SkillId.Enchant && rightHand != null)
+				creature.Inventory.Decrement(rightHand);
+
+			if (destroy)
+				creature.Inventory.Decrement(enchant);
+			else
+				creature.Inventory.ReduceDurability(enchant, DurabilityReduction);
+
+			// Response
 			Send.Effect(creature, Effect.Enchant, (byte)result);
 			if (result == EnchantResult.Success)
 			{
