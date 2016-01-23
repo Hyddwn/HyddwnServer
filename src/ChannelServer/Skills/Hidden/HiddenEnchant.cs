@@ -101,6 +101,39 @@ namespace Aura.Channel.Skills.Hidden
 				return false;
 			}
 
+			// Check ranks
+			bool prefix, suffix;
+			var optionSetId = this.GetOptionSetid(enchant, out prefix, out suffix);
+			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
+			if (optionSetData == null)
+			{
+				Log.Warning("HiddenEnchant.Prepare: Creature '{0:X16}' tried to enchant with unknown option set '{0}'.", optionSetId);
+				return false;
+			}
+
+			if (!optionSetData.IgnoreRank)
+			{
+				// Skill rank for enchants of r5 and above
+				if (optionSetData.Rank >= SkillRank.R5 && skill.Info.Rank < SkillRank.R5)
+				{
+					Send.Notice(creature, Localization.Get("Your Enchant skill must be Rank 5 or above to use this Enchant Scroll."));
+					return false;
+				}
+
+				// Sequence for enchants of r9 and above
+				if (optionSetData.Rank >= SkillRank.R9)
+				{
+					var checkSetId = (optionSetData.Type == UpgradeType.Prefix ? item.OptionInfo.Prefix : item.OptionInfo.Suffix);
+					var checkSetData = AuraData.OptionSetDb.Find(checkSetId);
+					if (checkSetData == null || checkSetData.Rank + 1 < optionSetData.Rank)
+					{
+						// Unofficial
+						Send.Notice(creature, Localization.Get("You need to enchant Enchantments of R9 and above in sequence."));
+						return false;
+					}
+				}
+			}
+
 			// Save items for Complete
 			creature.Temp.SkillItem1 = item;
 			creature.Temp.SkillItem2 = enchant;
@@ -135,46 +168,7 @@ namespace Aura.Channel.Skills.Hidden
 			creature.Temp.SkillItem2 = null;
 
 			// Get option set id
-
-			// Elementals
-			if (enchant.HasTag("/elemental/"))
-			{
-				optionSetId = enchant.MetaData1.GetInt("ENELEM");
-			}
-			// Enchants
-			else if (enchant.MetaData1.Has("ENPFIX") || enchant.MetaData1.Has("ENSFIX"))
-			{
-				var prefixId = enchant.MetaData1.GetInt("ENPFIX");
-				var suffixId = enchant.MetaData1.GetInt("ENSFIX");
-
-				if (prefixId != 0)
-				{
-					optionSetId = prefixId;
-					prefix = true;
-				}
-				else if (suffixId != 0)
-				{
-					optionSetId = suffixId;
-					suffix = true;
-				}
-			}
-			// Fallback? (Pages)
-			else
-			{
-				var prefixId = enchant.OptionInfo.Prefix;
-				var suffixId = enchant.OptionInfo.Suffix;
-
-				if (prefixId != 0)
-				{
-					optionSetId = prefixId;
-					prefix = true;
-				}
-				else if (suffixId != 0)
-				{
-					optionSetId = suffixId;
-					suffix = true;
-				}
-			}
+			optionSetId = this.GetOptionSetid(enchant, out prefix, out suffix);
 
 			// Get and apply option set
 			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
@@ -340,6 +334,55 @@ namespace Aura.Channel.Skills.Hidden
 			}
 
 			return points * 1000;
+		}
+
+		private int GetOptionSetid(Item enchant, out bool prefix, out bool suffix)
+		{
+			var optionSetId = 0;
+			prefix = false;
+			suffix = false;
+
+			// Elementals
+			if (enchant.HasTag("/elemental/"))
+			{
+				optionSetId = enchant.MetaData1.GetInt("ENELEM");
+			}
+			// Enchants
+			else if (enchant.MetaData1.Has("ENPFIX") || enchant.MetaData1.Has("ENSFIX"))
+			{
+				var prefixId = enchant.MetaData1.GetInt("ENPFIX");
+				var suffixId = enchant.MetaData1.GetInt("ENSFIX");
+
+				if (prefixId != 0)
+				{
+					optionSetId = prefixId;
+					prefix = true;
+				}
+				else if (suffixId != 0)
+				{
+					optionSetId = suffixId;
+					suffix = true;
+				}
+			}
+			// Fallback? (Pages)
+			else
+			{
+				var prefixId = enchant.OptionInfo.Prefix;
+				var suffixId = enchant.OptionInfo.Suffix;
+
+				if (prefixId != 0)
+				{
+					optionSetId = prefixId;
+					prefix = true;
+				}
+				else if (suffixId != 0)
+				{
+					optionSetId = suffixId;
+					suffix = true;
+				}
+			}
+
+			return optionSetId;
 		}
 	}
 }
