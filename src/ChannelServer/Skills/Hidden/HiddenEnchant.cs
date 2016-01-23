@@ -230,10 +230,17 @@ namespace Aura.Channel.Skills.Hidden
 					creature.Inventory.ReduceMaxDurability(item, durabilityLoss);
 			}
 
-			// Destroy and decrement items
-			if (skill.Info.Id == SkillId.Enchant && rightHand != null)
-				creature.Inventory.Decrement(rightHand);
+			if (skill.Info.Id == SkillId.Enchant)
+			{
+				// Training
+				this.Training(skill, result);
 
+				// Decrement powder
+				if (rightHand != null)
+					creature.Inventory.Decrement(rightHand);
+			}
+
+			// Destroy or decrement enchant
 			if (destroy)
 				creature.Inventory.Decrement(enchant);
 			else
@@ -394,6 +401,39 @@ namespace Aura.Channel.Skills.Hidden
 			}
 
 			return optionSetId;
+		}
+
+		/// <summary>
+		/// Handles skill training from enchanting.
+		/// </summary>
+		/// <param name="skill"></param>
+		/// <param name="result"></param>
+		private void Training(Skill skill, EnchantResult result)
+		{
+			// Novice and r8 have no relevant training
+			if (skill.Info.Rank < SkillRank.RF || skill.Info.Rank > SkillRank.R1 || skill.Info.Rank == SkillRank.R8)
+				return;
+
+			switch (result)
+			{
+				case EnchantResult.Success:
+					skill.Train(1); // Get a success.
+					return;
+
+				case EnchantResult.HugeSuccess:
+					skill.Train(2); // Get a great success.
+					return;
+
+				case EnchantResult.Fail:
+					if (skill.Info.Rank <= SkillRank.RE)
+						skill.Train(3); // Get a failure.
+					return;
+
+				case EnchantResult.HugeFail:
+					if (skill.Info.Rank <= SkillRank.R6)
+						skill.Train(4); // Get a horrible result.
+					return;
+			}
 		}
 	}
 }
