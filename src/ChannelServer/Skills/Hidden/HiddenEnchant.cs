@@ -125,6 +125,7 @@ namespace Aura.Channel.Skills.Hidden
 			var item = creature.Temp.SkillItem1;
 			var enchant = creature.Temp.SkillItem2;
 			var rightHand = creature.RightHand;
+			var rnd = RandomProvider.Get();
 
 			var optionSetId = 0;
 			var prefix = false;
@@ -194,7 +195,6 @@ namespace Aura.Channel.Skills.Hidden
 			var success = optionSetData.AlwaysSuccess;
 			if (!success)
 			{
-				var rnd = RandomProvider.Get();
 				var num = rnd.Next(100);
 				var chance = this.GetChance(creature, rightHand, skill, optionSetData);
 				success = num < chance;
@@ -216,6 +216,13 @@ namespace Aura.Channel.Skills.Hidden
 				// Don't default destroy enchant when using Enchant
 				if (skill.Info.Id == SkillId.Enchant)
 					destroy = false;
+
+				// Random item durability loss, based on rank.
+				var durabilityLoss = this.GetDurabilityLoss(rnd, optionSetData.Rank);
+				if (durabilityLoss == -1)
+					creature.Inventory.Remove(item);
+				else if (durabilityLoss != 0)
+					creature.Inventory.ReduceDurability(item, durabilityLoss);
 			}
 
 			// Destroy or decrement items
@@ -301,6 +308,38 @@ namespace Aura.Channel.Skills.Hidden
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Returns random durability loss for rank. Returns -1 if item should
+		/// be destroyed.
+		/// </summary>
+		/// <remarks>
+		/// Reference: http://wiki.mabinogiworld.com/view/Enchant#Enchanting
+		/// </remarks>
+		/// <param name="rnd"></param>
+		/// <param name="enchantRank"></param>
+		/// <returns></returns>
+		private int GetDurabilityLoss(Random rnd, SkillRank enchantRank)
+		{
+			var points = 0;
+
+			switch (enchantRank)
+			{
+				case SkillRank.Novice: return 0;
+				case SkillRank.RF: points = rnd.Next(0, 1); break;
+				case SkillRank.RE: points = rnd.Next(0, 2); break;
+				case SkillRank.RD: points = rnd.Next(0, 2); break;
+				case SkillRank.RC: points = rnd.Next(0, 3); break;
+				case SkillRank.RB: points = rnd.Next(0, 3); break;
+				case SkillRank.RA: points = rnd.Next(0, 4); break;
+				case SkillRank.R9: points = rnd.Next(1, 6); break;
+				case SkillRank.R8: points = rnd.Next(2, 7); break;
+				case SkillRank.R7: points = rnd.Next(2, 8); break;
+				default: return -1;
+			}
+
+			return points * 1000;
 		}
 	}
 }
