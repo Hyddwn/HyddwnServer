@@ -21,6 +21,15 @@ namespace Aura.Channel.Skills.Hidden
 	/// <summary>
 	/// Handler for both the hidden Enchant skill used by items and the normal one.
 	/// </summary>
+	/// <remarks>
+	/// Var1: Failure Durability Loss
+	/// Var2: ?
+	/// Var3: Burning Success Rate
+	/// Var4: ?
+	/// Var5: ?
+	/// Var6: ?
+	/// Var7: ?
+	/// </remarks>
 	[Skill(SkillId.HiddenEnchant, SkillId.Enchant)]
 	public class HiddenEnchant : IPreparable, ICompletable
 	{
@@ -29,11 +38,6 @@ namespace Aura.Channel.Skills.Hidden
 		private float[] _baseChanceB10 = { 77, 71, 66, 61, 56, 51, 35, 33, 30, 27, 22, 16, 11, 7, 5 };
 		private float[] _baseChanceB50 = { 90, 90, 90, 85, 78, 71, 50, 47, 42, 38, 31, 22, 15, 10, 7 };
 		private float[] _baseChanceB60 = { 90, 90, 90, 90, 84, 76, 53, 50, 45, 41, 33, 24, 16, 10, 7 };
-
-		/// <summary>
-		/// Durability reduction for enchant scrolls.
-		/// </summary>
-		private const int DurabilityReduction = 1000;
 
 		/// <summary>
 		/// Prepares skill.
@@ -226,7 +230,7 @@ namespace Aura.Channel.Skills.Hidden
 			if (destroy)
 				creature.Inventory.Decrement(enchant);
 			else
-				creature.Inventory.ReduceDurability(enchant, DurabilityReduction);
+				creature.Inventory.ReduceDurability(enchant, (int)skill.RankData.Var1 * 100);
 
 			// Response
 			Send.Effect(creature, Effect.Enchant, (byte)result);
