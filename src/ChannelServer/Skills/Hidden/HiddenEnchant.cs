@@ -40,6 +40,11 @@ namespace Aura.Channel.Skills.Hidden
 		private float[] _baseChanceB60 = { 90, 90, 90, 90, 84, 76, 53, 50, 45, 41, 33, 24, 16, 10, 7 };
 
 		/// <summary>
+		/// Chance for a huge success/fail.
+		/// </summary>
+		private const float HugeSuccessFailChance = 10;
+
+		/// <summary>
 		/// Prepares skill.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -207,7 +212,7 @@ namespace Aura.Channel.Skills.Hidden
 				if (prefix) item.OptionInfo.Prefix = (ushort)optionSetId;
 				if (suffix) item.OptionInfo.Suffix = (ushort)optionSetId;
 
-				result = EnchantResult.Success;
+				result = (rnd.Next(100) < HugeSuccessFailChance ? EnchantResult.HugeSuccess : EnchantResult.Success);
 			}
 			else
 			{
@@ -215,15 +220,17 @@ namespace Aura.Channel.Skills.Hidden
 				if (skill.Info.Id == SkillId.Enchant)
 					destroy = false;
 
+				result = (rnd.Next(100) < HugeSuccessFailChance ? EnchantResult.HugeFail : EnchantResult.Fail);
+
 				// Random item durability loss, based on rank.
-				var durabilityLoss = this.GetDurabilityLoss(rnd, optionSetData.Rank);
+				var durabilityLoss = this.GetDurabilityLoss(rnd, optionSetData.Rank, result);
 				if (durabilityLoss == -1)
 					creature.Inventory.Remove(item);
 				else if (durabilityLoss != 0)
 					creature.Inventory.ReduceMaxDurability(item, durabilityLoss);
 			}
 
-			// Destroy or decrement items
+			// Destroy and decrement items
 			if (skill.Info.Id == SkillId.Enchant && rightHand != null)
 				creature.Inventory.Decrement(rightHand);
 
@@ -234,7 +241,7 @@ namespace Aura.Channel.Skills.Hidden
 
 			// Response
 			Send.Effect(creature, Effect.Enchant, (byte)result);
-			if (result == EnchantResult.Success)
+			if (success)
 			{
 				Send.ItemUpdate(creature, item);
 				Send.AcquireEnchantedItemInfo(creature, item.EntityId, item.Info.Id, optionSetId);
@@ -318,22 +325,22 @@ namespace Aura.Channel.Skills.Hidden
 		/// <param name="rnd"></param>
 		/// <param name="enchantRank"></param>
 		/// <returns></returns>
-		private int GetDurabilityLoss(Random rnd, SkillRank enchantRank)
+		private int GetDurabilityLoss(Random rnd, SkillRank enchantRank, EnchantResult result)
 		{
 			var points = 0;
 
 			switch (enchantRank)
 			{
 				case SkillRank.Novice: return 0;
-				case SkillRank.RF: points = rnd.Next(0, 1); break;
-				case SkillRank.RE: points = rnd.Next(0, 2); break;
-				case SkillRank.RD: points = rnd.Next(0, 2); break;
-				case SkillRank.RC: points = rnd.Next(0, 3); break;
-				case SkillRank.RB: points = rnd.Next(0, 3); break;
-				case SkillRank.RA: points = rnd.Next(0, 4); break;
-				case SkillRank.R9: points = rnd.Next(1, 6); break;
-				case SkillRank.R8: points = rnd.Next(2, 7); break;
-				case SkillRank.R7: points = rnd.Next(2, 8); break;
+				case SkillRank.RF: points = (result == EnchantResult.Fail ? rnd.Next(0, 1) : rnd.Next(0, 2)); break;
+				case SkillRank.RE: points = (result == EnchantResult.Fail ? rnd.Next(0, 2) : rnd.Next(0, 4)); break;
+				case SkillRank.RD: points = (result == EnchantResult.Fail ? rnd.Next(0, 2) : rnd.Next(0, 4)); break;
+				case SkillRank.RC: points = (result == EnchantResult.Fail ? rnd.Next(0, 3) : rnd.Next(0, 6)); break;
+				case SkillRank.RB: points = (result == EnchantResult.Fail ? rnd.Next(0, 3) : rnd.Next(0, 7)); break;
+				case SkillRank.RA: points = (result == EnchantResult.Fail ? rnd.Next(0, 4) : rnd.Next(0, 8)); break;
+				case SkillRank.R9: points = (result == EnchantResult.Fail ? rnd.Next(1, 6) : rnd.Next(1, 10)); break;
+				case SkillRank.R8: points = (result == EnchantResult.Fail ? rnd.Next(2, 7) : rnd.Next(2, 12)); break;
+				case SkillRank.R7: points = (result == EnchantResult.Fail ? rnd.Next(2, 8) : rnd.Next(2, 14)); break;
 				default: return -1;
 			}
 
