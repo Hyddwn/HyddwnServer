@@ -99,7 +99,7 @@ namespace Aura.Channel.Skills.Hidden
 				return false;
 			}
 
-			if (enchant.Durability == 0)
+			if (enchant.OptionInfo.Durability == 0 && enchant.OptionInfo.DurabilityOriginal != 0)
 			{
 				Send.Notice(creature, Localization.Get("This scroll is no longer valid for enchantment."));
 				return false;
