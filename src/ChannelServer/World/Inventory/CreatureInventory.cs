@@ -1198,6 +1198,9 @@ namespace Aura.Channel.World.Inventory
 
 					if (item.Info.Pocket.IsEquip())
 					{
+						this.CheckLeftHand(item, item.Info.Pocket, Pocket.None);
+						this.CheckRightHand(item, item.Info.Pocket, Pocket.None);
+
 						this.UpdateEquipReferences();
 						this.OnUnequip(item);
 						this.UpdateEquipStats();
