@@ -220,7 +220,7 @@ namespace Aura.Channel.Skills.Hidden
 				if (durabilityLoss == -1)
 					creature.Inventory.Remove(item);
 				else if (durabilityLoss != 0)
-					creature.Inventory.ReduceDurability(item, durabilityLoss);
+					creature.Inventory.ReduceMaxDurability(item, durabilityLoss);
 			}
 
 			// Destroy or decrement items

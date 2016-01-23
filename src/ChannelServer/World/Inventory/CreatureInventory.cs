@@ -1879,6 +1879,24 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
+		/// Reduces max durability and updates client.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="amount"></param>
+		public void ReduceMaxDurability(Item item, int amount)
+		{
+			if (!this.Has(item))
+				return;
+
+			item.OptionInfo.DurabilityMax = Math.Max(1000, item.OptionInfo.DurabilityMax - amount);
+			if (item.OptionInfo.DurabilityMax < item.OptionInfo.Durability)
+				item.Durability = item.OptionInfo.DurabilityMax;
+
+			Send.ItemDurabilityUpdate(_creature, item);
+			Send.ItemMaxDurabilityUpdate(_creature, item);
+		}
+
+		/// <summary>
 		/// Increases item's proficiency and updates client.
 		/// </summary>
 		/// <param name="item"></param>
