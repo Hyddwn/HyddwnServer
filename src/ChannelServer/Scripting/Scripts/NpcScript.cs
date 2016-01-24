@@ -1106,11 +1106,7 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			try
 			{
-				var scroll = Item.CreateQuestScroll(questId);
-
-				// Do quests given out by NPCs *always* go into the
-				// quest pocket?
-				this.Player.Inventory.Add(scroll, Pocket.Quests);
+				this.Player.Quests.Start(questId);
 			}
 			catch (Exception ex)
 			{
