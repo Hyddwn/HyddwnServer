@@ -18,7 +18,7 @@ using Aura.Shared.Util;
 using Aura.Channel.World.Inventory;
 using Aura.Mabi.Network;
 using Aura.Data;
-using Aura.Channel.Skills.Hidden;
+using Aura.Channel.Skills.Magic;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -724,10 +724,10 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Get skill handler
-			var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<HiddenEnchant>(SkillId.HiddenEnchant);
+			var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<Enchant>(SkillId.Enchant);
 			if (skillHandler == null)
 			{
-				Log.Error("BurnItem: HiddenEnchant handler missing.");
+				Log.Error("BurnItem: Enchant handler missing.");
 				Send.BurnItemR(creature, false);
 				return;
 			}

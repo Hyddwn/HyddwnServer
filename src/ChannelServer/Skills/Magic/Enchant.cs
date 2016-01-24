@@ -16,7 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aura.Channel.Skills.Hidden
+namespace Aura.Channel.Skills.Magic
 {
 	/// <summary>
 	/// Handler for both the hidden Enchant skill used by items and the normal one.
@@ -30,8 +30,8 @@ namespace Aura.Channel.Skills.Hidden
 	/// Var6: ?
 	/// Var7: ?
 	/// </remarks>
-	[Skill(SkillId.HiddenEnchant, SkillId.Enchant)]
-	public class HiddenEnchant : IPreparable, ICompletable
+	[Skill(SkillId.Enchant, SkillId.HiddenEnchant)]
+	public class Enchant : IPreparable, ICompletable
 	{
 		private float[] _baseChanceB00 = { 69, 65, 60, 55, 51, 46, 32, 30, 27, 25, 20, 14, 10, 6, 4 };
 		private float[] _baseChanceB05 = { 73, 68, 63, 58, 53, 48, 34, 32, 29, 26, 21, 15, 10, 6, 4 };
@@ -69,13 +69,13 @@ namespace Aura.Channel.Skills.Hidden
 
 				if (rightHand == null || !rightHand.HasTag("/enchant/powder/"))
 				{
-					Log.Warning("HiddenEnchant.Prepare: Creature '{0:X16}' tried to use Enchant without powder.");
+					Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without powder.");
 					return false;
 				}
 
 				if (magazine == null || !magazine.HasTag("/lefthand/enchant/"))
 				{
-					Log.Warning("HiddenEnchant.Prepare: Creature '{0:X16}' tried to use Enchant without enchant.");
+					Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without enchant.");
 					return false;
 				}
 			}
@@ -87,20 +87,20 @@ namespace Aura.Channel.Skills.Hidden
 			// Check item
 			if (item == null)
 			{
-				Log.Warning("HiddenEnchant.Prepare: Creature '{0:X16}' tried to enchant non-existing item.");
+				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant non-existing item.");
 				return false;
 			}
 
 			// Check enchant
 			if (enchant == null)
 			{
-				Log.Warning("HiddenEnchant.Prepare: Creature '{0:X16}' tried to enchant with non-existing enchant item.");
+				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant with non-existing enchant item.");
 				return false;
 			}
 
 			if (!enchant.HasTag("/enchant/"))
 			{
-				Log.Warning("HiddenEnchant.Prepare: Creature '{0:X16}' tried to enchant with invalid enchant scroll.");
+				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant with invalid enchant scroll.");
 				return false;
 			}
 
@@ -115,7 +115,7 @@ namespace Aura.Channel.Skills.Hidden
 			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
 			if (optionSetData == null)
 			{
-				Log.Warning("HiddenEnchant.Prepare: Creature '{0:X16}' tried to enchant with unknown option set '{0}'.", optionSetId);
+				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant with unknown option set '{0}'.", optionSetId);
 				return false;
 			}
 
@@ -182,14 +182,14 @@ namespace Aura.Channel.Skills.Hidden
 			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
 			if (optionSetData == null)
 			{
-				Log.Error("HiddenEnchant.Complete: Unknown option set '{0}'.", optionSetId);
+				Log.Error("Enchant.Complete: Unknown option set '{0}'.", optionSetId);
 				goto L_End;
 			}
 
 			// Check target
 			if (!item.HasTag(optionSetData.Allow) || item.HasTag(optionSetData.Disallow))
 			{
-				Log.Warning("HiddenEnchant.Complete: Creature '{0:X16}' tried to use set '{0}' on invalid item '{1}'.", optionSetData.Id, item.Info.Id);
+				Log.Warning("Enchant.Complete: Creature '{0:X16}' tried to use set '{0}' on invalid item '{1}'.", optionSetData.Id, item.Info.Id);
 				goto L_End;
 			}
 
