@@ -398,6 +398,9 @@ namespace Aura.Channel.Skills.Hidden
 				creature.Inventory.Remove(51102, 1); // Mana Herb
 				creature.Inventory.Remove(63016, 1); // Holy Water
 
+				// Training
+				this.BurnTraining(skill, enchantBurnSuccess, powderBurnSuccess);
+
 				// Success/Fail motion
 				Send.UseMotion(creature, 14, enchantBurnSuccess ? 0 : 3);
 			}
@@ -530,6 +533,34 @@ namespace Aura.Channel.Skills.Hidden
 					if (skill.Info.Rank <= SkillRank.R6)
 						skill.Train(4); // Get a horrible result.
 					return;
+			}
+		}
+
+		/// <summary>
+		/// Handles skill training from burning.
+		/// </summary>
+		/// <param name="skill"></param>
+		/// <param name="enchantSuccess"></param>
+		/// <param name="powderSuccess"></param>
+		private void BurnTraining(Skill skill, bool enchantSuccess, bool powderSuccess)
+		{
+			if (skill == null || skill.Info.Rank >= SkillRank.R7)
+				return;
+
+			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.RE)
+			{
+				if (enchantSuccess) skill.Train(5); // Get an Enchant Scroll from enchant burning.
+				if (powderSuccess) skill.Train(6); // Get a Magic Powder from enchant burning.
+			}
+			else if (skill.Info.Rank >= SkillRank.RD && skill.Info.Rank <= SkillRank.R9)
+			{
+				if (enchantSuccess) skill.Train(4); // Get an Enchant Scroll from enchant burning.
+				if (powderSuccess) skill.Train(5); // Get a Magic Powder from enchant burning.
+			}
+			else if (skill.Info.Rank == SkillRank.R8)
+			{
+				if (enchantSuccess) skill.Train(1); // Get an Enchant Scroll from enchant burning.
+				if (powderSuccess) skill.Train(2); // Get a Magic Powder from enchant burning.
 			}
 		}
 	}
