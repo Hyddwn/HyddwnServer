@@ -18,6 +18,7 @@ using Aura.Shared.Util;
 using Aura.Channel.World.Inventory;
 using Aura.Mabi.Network;
 using Aura.Data;
+using Aura.Channel.Skills.Hidden;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -695,9 +696,9 @@ namespace Aura.Channel.Network.Handlers
 		/// Sent when trying to burn an item in a campfire.
 		/// </summary>
 		/// <example>
-		/// 001 [00A1000E000A000E] Long   : 45317531380613134  Fire prop
-		/// 002 [00500000000003B9] Long   : 22517998136853433  Item to burn
-		/// 003 [..............00] Byte   : 0  Enchanter's Burn?
+		/// 001 [00A1000E000A000E] Long   : 45317531380613134
+		/// 002 [00500000000003B9] Long   : 22517998136853433
+		/// 003 [..............00] Byte   : 0
 		/// </example>
 		/// <remarks>
 		/// TODO: How to get the Enchanter's Burn button? Having the items isn't enough.
@@ -707,34 +708,33 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var propEntityId = packet.GetLong();
 			var itemEntityId = packet.GetLong();
-			var option = packet.GetBool();
+			var enchantersBurn = packet.GetBool();
 
 			// Get creature and item
 			var creature = client.GetCreatureSafe(packet.Id);
 			var item = creature.Inventory.GetItemSafe(itemEntityId);
 
-			// Check if prop is still there (campfires may vanish)
+			// Check if prop is still there (campfires may vanish),
+			// fail if it's gone or creature is not in range.
 			var prop = creature.Region.GetProp(propEntityId);
-			if (prop != null)
+			if (prop == null || !creature.GetPosition().InRange(prop.GetPosition(), 1000))
 			{
-				var enchantBurnSuccess = false;
-				var exp = 0;
-
-				// Add exp based on item buying price (random+unofficial)
-				if (item.OptionInfo.Price > 0)
-					exp = 40 + (int)(item.OptionInfo.Price / (float)item.Data.StackMax / 100f * item.Info.Amount);
-
-				// Remove item from cursor
-				creature.Inventory.Remove(item);
-
-				// Effect
-				Send.Effect(MabiId.Broadcast, creature, Effect.BurnItem, propEntityId, enchantBurnSuccess);
-				Send.ServerMessage(creature, Localization.Get("Burning EXP {0}"), exp);
-				Send.Notice(creature, Localization.Get("Burning EXP {0}"), exp);
+				Send.BurnItemR(creature, false);
+				return;
 			}
 
-			// Fail if prop is gone
-			Send.BurnItemR(creature, prop != null);
+			// Get skill handler
+			var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<HiddenEnchant>(SkillId.HiddenEnchant);
+			if (skillHandler == null)
+			{
+				Log.Error("BurnItem: HiddenEnchant handler missing.");
+				Send.BurnItemR(creature, false);
+				return;
+			}
+
+			// Burn
+			var success = skillHandler.Burn(creature, item, prop, enchantersBurn);
+			Send.BurnItemR(creature, success);
 		}
 
 		/// <summary>

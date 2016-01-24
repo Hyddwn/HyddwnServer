@@ -323,6 +323,103 @@ namespace Aura.Channel.Skills.Hidden
 		}
 
 		/// <summary>
+		/// Handles item burning, retruns whether it was successful.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="item"></param>
+		/// <param name="campfire"></param>
+		/// <param name="enchantersBurn"></param>
+		public bool Burn(Creature creature, Item item, Prop campfire, bool enchantersBurn)
+		{
+			var skill = creature.Skills.Get(SkillId.Enchant);
+			var enchantBurnSuccess = false;
+			var powderBurnSuccess = false;
+			var exp = 0;
+
+			// Enchanter's Burn
+			if (enchantersBurn)
+			{
+				var rnd = RandomProvider.Get();
+
+				var isEquip = item.HasTag("/equip/");
+				var hasEnchantBurnItems = (creature.Inventory.Has(51102) && creature.Inventory.Has(63016)); // Mana Herb + Holy Water
+
+				// Enchant burning
+				if (!isEquip || !hasEnchantBurnItems)
+				{
+					// Unofficial
+					Send.SystemMessage(creature, Localization.Get("You don't the necessary items."));
+					return false;
+				}
+
+				// Get chances
+				// All unofficial
+				var rank = (skill == null ? 16 : (int)skill.Info.Rank);
+				var enchantChance = (skill == null ? 0 : skill.RankData.Var3);
+
+				// Campfire r8+ bonus
+				if (enchantChance > 0 && campfire.Temp.CampfireSkillRank.Rank >= SkillRank.R8)
+					enchantChance += (16 - rank);
+
+				// Powder = double enchant chance, based on the Wiki saying
+				// r1 doesn't guarantee getting the enchants, but it does
+				// guarantee getting powder.
+				var powderChance = enchantChance * 2;
+
+				// Debug
+				if (creature.Titles.SelectedTitle == TitleId.devCAT)
+					Send.ServerMessage(creature, "Debug: Chance for enchant: {0}, chance for powder: {1}", enchantChance.ToInvariant("0"), powderChance.ToInvariant("0"));
+
+				// Try prefix
+				if (item.OptionInfo.Prefix != 0 && rnd.Next(100) < enchantChance)
+				{
+					var enchant = Item.CreateEnchant(item.OptionInfo.Prefix);
+					creature.AcquireItem(enchant);
+					enchantBurnSuccess = true;
+				}
+
+				// Try suffix
+				if (item.OptionInfo.Suffix != 0 && rnd.Next(100) < enchantChance)
+				{
+					var enchant = Item.CreateEnchant(item.OptionInfo.Suffix);
+					creature.AcquireItem(enchant);
+					enchantBurnSuccess = true;
+				}
+
+				// Try suffix
+				if (item.OptionInfo.Prefix + item.OptionInfo.Suffix != 0 && rnd.Next(100) < powderChance)
+				{
+					var powder = new Item(62003); // Blessed Magic Powder
+					creature.AcquireItem(powder);
+					powderBurnSuccess = true;
+				}
+
+				// Reduce items
+				creature.Inventory.Remove(51102, 1); // Mana Herb
+				creature.Inventory.Remove(63016, 1); // Holy Water
+
+				// Success/Fail motion
+				Send.UseMotion(creature, 14, enchantBurnSuccess ? 0 : 3);
+			}
+
+			// Add exp based on item buying price (random+unofficial)
+			if (item.OptionInfo.Price > 0)
+			{
+				exp = 40 + (int)(item.OptionInfo.Price / (float)item.Data.StackMax / 100f * item.Info.Amount);
+				creature.GiveExp(exp);
+			}
+
+			// Remove item from cursor
+			creature.Inventory.Remove(item);
+
+			// Effect
+			Send.Effect(MabiId.Broadcast, creature, Effect.BurnItem, campfire.EntityId, enchantBurnSuccess);
+			Send.Notice(creature, NoticeType.MiddleSystem, Localization.Get("Burning EXP {0}"), exp);
+
+			return true;
+		}
+
+		/// <summary>
 		/// Returns random durability loss for rank. Returns -1 if item should
 		/// be destroyed.
 		/// </summary>
