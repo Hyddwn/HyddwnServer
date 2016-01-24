@@ -1120,6 +1120,23 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Sends quest to player via owl.
+		/// </summary>
+		/// <param name="questId"></param>
+		public void SendOwl(int questId)
+		{
+			try
+			{
+				this.Player.Quests.SendOwl(questId);
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex, "NpcScript.SendOwl: Quest '{0}'", questId);
+				this.Msg("(Error)");
+			}
+		}
+
+		/// <summary>
 		/// Completes quest (incl rewards).
 		/// </summary>
 		/// <param name="questId"></param>
