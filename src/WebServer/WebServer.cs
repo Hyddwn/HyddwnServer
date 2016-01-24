@@ -108,10 +108,10 @@ namespace Aura.Web
 
 				Log.Status("Server ready, listening on 0.0.0.0:{0}.", this.Conf.Web.Port);
 			}
-			catch (HttpListenerException)
+			catch (NHttp.NHttpException)
 			{
 				Log.Error("Failed to start web server.");
-				Log.Info("The port might already be in use, make sure no other application, like other web servers or Skype, are using it or set a different port in web.conf.");
+				Log.Info("Port {0} might already be in use, make sure no other application, like other web servers or Skype, are using it or set a different port in web.conf.", this.Conf.Web.Port);
 				CliUtil.Exit(1);
 			}
 		}
