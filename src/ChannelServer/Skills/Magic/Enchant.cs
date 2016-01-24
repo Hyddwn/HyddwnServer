@@ -31,7 +31,7 @@ namespace Aura.Channel.Skills.Magic
 	/// Var7: ?
 	/// </remarks>
 	[Skill(SkillId.Enchant, SkillId.HiddenEnchant)]
-	public class Enchant : IPreparable, ICompletable
+	public class Enchant : IPreparable, ICompletable, ICancelable
 	{
 		private float[] _baseChanceB00 = { 69, 65, 60, 55, 51, 46, 32, 30, 27, 25, 20, 14, 10, 6, 4 };
 		private float[] _baseChanceB05 = { 73, 68, 63, 58, 53, 48, 34, 32, 29, 26, 21, 15, 10, 6, 4 };
@@ -255,6 +255,15 @@ namespace Aura.Channel.Skills.Magic
 
 		L_End:
 			Send.Echo(creature, packet);
+		}
+
+		/// <summary>
+		/// Cancel actions.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		public void Cancel(Creature creature, Skill skill)
+		{
 		}
 
 		/// <summary>
