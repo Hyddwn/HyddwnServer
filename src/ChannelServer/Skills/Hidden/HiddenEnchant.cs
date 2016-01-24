@@ -111,8 +111,7 @@ namespace Aura.Channel.Skills.Hidden
 			}
 
 			// Check ranks
-			bool prefix, suffix;
-			var optionSetId = this.GetOptionSetid(enchant, out prefix, out suffix);
+			var optionSetId = this.GetOptionSetid(enchant);
 			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
 			if (optionSetData == null)
 			{
@@ -177,7 +176,7 @@ namespace Aura.Channel.Skills.Hidden
 			creature.Temp.SkillItem2 = null;
 
 			// Get option set id
-			optionSetId = this.GetOptionSetid(enchant, out prefix, out suffix);
+			optionSetId = this.GetOptionSetid(enchant);
 
 			// Get and apply option set
 			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
@@ -209,8 +208,8 @@ namespace Aura.Channel.Skills.Hidden
 			if (success)
 			{
 				item.ApplyOptionSet(optionSetData, true);
-				if (prefix) item.OptionInfo.Prefix = (ushort)optionSetId;
-				if (suffix) item.OptionInfo.Suffix = (ushort)optionSetId;
+				if (optionSetData.Category == OptionSetCategory.Prefix) item.OptionInfo.Prefix = (ushort)optionSetId;
+				if (optionSetData.Category == OptionSetCategory.Suffix) item.OptionInfo.Suffix = (ushort)optionSetId;
 
 				result = (rnd.Next(100) < HugeSuccessFailChance ? EnchantResult.HugeSuccess : EnchantResult.Success);
 			}
@@ -454,11 +453,14 @@ namespace Aura.Channel.Skills.Hidden
 			return points * 1000;
 		}
 
-		private int GetOptionSetid(Item enchant, out bool prefix, out bool suffix)
+		/// <summary>
+		/// Returns option set id from "enchant scrolls", based on their data.
+		/// </summary>
+		/// <param name="enchant"></param>
+		/// <returns></returns>
+		private int GetOptionSetid(Item enchant)
 		{
 			var optionSetId = 0;
-			prefix = false;
-			suffix = false;
 
 			// Elementals
 			if (enchant.HasTag("/elemental/"))
@@ -472,15 +474,9 @@ namespace Aura.Channel.Skills.Hidden
 				var suffixId = enchant.MetaData1.GetInt("ENSFIX");
 
 				if (prefixId != 0)
-				{
 					optionSetId = prefixId;
-					prefix = true;
-				}
 				else if (suffixId != 0)
-				{
 					optionSetId = suffixId;
-					suffix = true;
-				}
 			}
 			// Fallback? (Pages)
 			else
@@ -489,15 +485,9 @@ namespace Aura.Channel.Skills.Hidden
 				var suffixId = enchant.OptionInfo.Suffix;
 
 				if (prefixId != 0)
-				{
 					optionSetId = prefixId;
-					prefix = true;
-				}
 				else if (suffixId != 0)
-				{
 					optionSetId = suffixId;
-					suffix = true;
-				}
 			}
 
 			return optionSetId;
