@@ -387,7 +387,6 @@ public class MalcolmShop : NpcShopScript
 		Add("Shoes && Gloves", 16003); // Sesamoid Gloves
 		Add("Shoes && Gloves", 16011); // Cores' Healer Gloves
 		Add("Shoes && Gloves", 16012); // Swordswoman Gloves
-		Add("Shoes && Gloves", 16024); // Pet Instructor Glove
 		Add("Shoes && Gloves", 16029); // Leather Stitched Glove
 		Add("Shoes && Gloves", 16030); // Big Band Glove
 		Add("Shoes && Gloves", 16034); // Two-lined Belt Glove
@@ -425,16 +424,19 @@ public class MalcolmShop : NpcShopScript
 		Add("Event");
 
 		if (IsEnabled("PetBirds"))
-			Add("General Goods", 40093); // Pet Instructor Stick
+		{
+			Add("Shoes && Gloves", 16024); // Pet Instructor Glove
+			Add("General Goods", 40093);   // Pet Instructor Stick
+		}
 
 		if (IsEnabled("ItemSeal2"))
 		{
-			Add("General Goods", 91364, 1);   // Seal Scroll (1-day) x1
-			Add("General Goods", 91364, 10);  // Seal Scroll (1-day) x10
-			Add("General Goods", 91365, 1);   // Seal Scroll (7-day) x1
-			Add("General Goods", 91365, 10);  // Seal Scroll (7-day) x10
-			Add("General Goods", 91366, 1);   // Seal Scroll (30-day) x1
-			Add("General Goods", 91366, 10);  // Seal Scroll (30-day) x10
+			Add("General Goods", 91364, 1);  // Seal Scroll (1-day) x1
+			Add("General Goods", 91364, 10); // Seal Scroll (1-day) x10
+			Add("General Goods", 91365, 1);  // Seal Scroll (7-day) x1
+			Add("General Goods", 91365, 10); // Seal Scroll (7-day) x10
+			Add("General Goods", 91366, 1);  // Seal Scroll (30-day) x1
+			Add("General Goods", 91366, 10); // Seal Scroll (30-day) x10
 		}
 
 		if (IsEnabled("Singing"))
