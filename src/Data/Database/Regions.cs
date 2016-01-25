@@ -12,6 +12,7 @@ namespace Aura.Data.Database
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
+		public bool Indoor { get; set; }
 	}
 
 	/// <summary>
@@ -33,11 +34,12 @@ namespace Aura.Data.Database
 
 		protected override void ReadEntry(JObject entry)
 		{
-			entry.AssertNotMissing("id", "name");
+			entry.AssertNotMissing("id", "name", "indoor");
 
 			var info = new RegionData();
 			info.Id = entry.ReadInt("id");
 			info.Name = entry.ReadString("name");
+			info.Indoor = entry.ReadBool("indoor");
 
 			this.Entries[info.Id] = info;
 		}
