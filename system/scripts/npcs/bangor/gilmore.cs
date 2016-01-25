@@ -258,17 +258,11 @@ public class GilmoreShop : NpcShopScript
 		Add("General Goods", 2024);       // Item Bag (7x6)
 		Add("General Goods", 2029);       // Item Bag (8x6)
 		Add("General Goods", 2038);       // Item Bag (8X10)
-		Add("General Goods", 16024);      // Pet Instructor Glove
 		Add("General Goods", 40004);      // Lute
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40018);      // Ukulele
-		Add("General Goods", 40093);      // Pet Instructor Stick
 		Add("General Goods", 40216);      // Cymbals
-		Add("General Goods", 41123);      // Cello
-		Add("General Goods", 41124);      // Standing Microphone
-		Add("General Goods", 41125);      // Wireless Microphone
-		Add("General Goods", 45130, 10);  // Spider Trap
 		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -276,13 +270,6 @@ public class GilmoreShop : NpcShopScript
 		Add("General Goods", 63020);      // Empty Bottle
 		Add("General Goods", 64018, 10);  // Paper x10
 		Add("General Goods", 64018, 100); // Paper x100
-		Add("General Goods", 85571);      // Reforging Tool
-		Add("General Goods", 91364, 1);   // Seal Scroll (1-day) x1
-		Add("General Goods", 91364, 10);  // Seal Scroll (1-day) x10
-		Add("General Goods", 91365, 1);   // Seal Scroll (7-day) x1
-		Add("General Goods", 91365, 10);  // Seal Scroll (7-day) x10
-		Add("General Goods", 91366, 1);   // Seal Scroll (30-day) x1
-		Add("General Goods", 91366, 10);  // Seal Scroll (30-day) x10
 
 		Add("Blacksmith", 64500, "FORMID:4:20101;", 300);    // Blacksmith Manual - Weeding Hoe
 		Add("Blacksmith", 64500, "FORMID:4:20102;", 2000);   // Blacksmith Manual - Dagger
@@ -361,5 +348,35 @@ public class GilmoreShop : NpcShopScript
 		Add("Gift", 52018); // Hammer
 
 		Add("Event"); // Empty
+		if (IsEnabled("PetBirds"))
+		{
+			Add("General Goods", 16024); // Pet Instructor Glove
+			Add("General Goods", 40093); // Pet Instructor Stick
+		}
+
+		if (IsEnabled("ItemSeal2"))
+		{
+			Add("General Goods", 91364, 1);  // Seal Scroll (1-day) x1
+			Add("General Goods", 91364, 10); // Seal Scroll (1-day) x10
+			Add("General Goods", 91365, 1);  // Seal Scroll (7-day) x1
+			Add("General Goods", 91365, 10); // Seal Scroll (7-day) x10
+			Add("General Goods", 91366, 1);  // Seal Scroll (30-day) x1
+			Add("General Goods", 91366, 10); // Seal Scroll (30-day) x10
+		}
+
+		if (IsEnabled("Singing"))
+		{
+			Add("General Goods", 41124); // Standing Microphone
+			Add("General Goods", 41125); // Wireless Microphone
+		}
+
+		if (IsEnabled("PropInstruments"))
+			Add("General Goods", 41123); // Cello
+
+		if (IsEnabled("Reforges"))
+			Add("General Goods", 85571); // Reforging Tool
+
+		if (IsEnabled("TalentRenovationArchery"))
+			Add("General Goods", 45130, 10); // Spider Trap
 	}
 }
