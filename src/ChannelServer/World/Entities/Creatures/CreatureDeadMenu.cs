@@ -5,6 +5,7 @@ using System.Text;
 using Aura.Mabi.Const;
 using Aura.Channel.World.Dungeons;
 using Aura.Channel.Network.Sending;
+using Aura.Data;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -101,7 +102,6 @@ namespace Aura.Channel.World.Entities.Creatures
 				// Fields
 				else
 				{
-					//if(creature.Exp > -90%)
 					this.Add(ReviveOptions.Here);
 				}
 
@@ -112,6 +112,36 @@ namespace Aura.Channel.World.Entities.Creatures
 
 			if (this.Options != before || this.Creature.IsDead)
 				Send.DeadFeather(this.Creature);
+		}
+
+		/// <summary>
+		/// Returns exp penalty for given level and option.
+		/// </summary>
+		/// <param name="level"></param>
+		/// <param name="option"></param>
+		/// <returns></returns>
+		public int GetExpPenalty(int level, ReviveOptions option)
+		{
+			float optionMultiplicator;
+			switch (option)
+			{
+				case ReviveOptions.Here: optionMultiplicator = 0.01f; break;
+				case ReviveOptions.PhoenixFeather: optionMultiplicator = 0.0025f; break;
+				case ReviveOptions.DungeonEntrance: optionMultiplicator = 0.005f; break;
+				case ReviveOptions.StatueOfGoddess: optionMultiplicator = 0.0075f; break;
+				default: return 0;
+			}
+
+			float levelMultiplicator;
+			if (level < 10) levelMultiplicator = 1;
+			else if (level < 30) levelMultiplicator = 3;
+			else if (level < 50) levelMultiplicator = 4;
+			else if (level < 100) levelMultiplicator = 5;
+			else levelMultiplicator = 6;
+
+			var exp = AuraData.ExpDb.GetForLevel(level);
+
+			return (int)(exp * optionMultiplicator * levelMultiplicator);
 		}
 	}
 }

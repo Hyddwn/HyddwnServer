@@ -2127,6 +2127,23 @@ namespace Aura.Channel.World.Entities
 			if (!this.IsDead)
 				return;
 
+			// Get and check exp penalty
+			// "Here" wil be disabled by the client if not enough exp are
+			// available, nothing else though, so we send an error message
+			// if creature doesn't have enough exp, instead of issuing a
+			// warning.
+			var expPenalty = this.DeadMenu.GetExpPenalty(this.Level, option);
+			var minExp = AuraData.ExpDb.GetTotalForNextLevel(this.Level - 2);
+
+			if (this.Exp - expPenalty < minExp)
+			{
+				// Unofficial
+				Send.Notice(this, NoticeType.MiddleSystem, Localization.Get("Insufficient EXP."));
+				Send.DeadFeather(this);
+				Send.Revived(this);
+				return;
+			}
+
 			switch (option)
 			{
 				case ReviveOptions.Town:
@@ -2195,6 +2212,12 @@ namespace Aura.Channel.World.Entities
 
 			this.Deactivate(CreatureStates.Dead);
 			this.DeadMenu.Clear();
+
+			if (expPenalty != 0)
+			{
+				this.Exp = Math.Max(minExp, this.Exp - expPenalty);
+				Send.StatUpdate(this, StatUpdateType.Private, Stat.Experience);
+			}
 
 			Send.RemoveDeathScreen(this);
 			Send.StatUpdate(this, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.LifeMax, Stat.LifeMaxMod, Stat.Stamina, Stat.Hunger);
