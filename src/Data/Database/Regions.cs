@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 
@@ -16,13 +17,8 @@ namespace Aura.Data.Database
 	/// <summary>
 	/// Indexed by region id.
 	/// </summary>
-	public class RegionDb : DatabaseCsvIndexed<int, RegionData>
+	public class RegionDb : DatabaseJsonIndexed<int, RegionData>
 	{
-		public RegionData Find(uint id)
-		{
-			return this.Entries.FirstOrDefault(a => a.Value.Id == id).Value;
-		}
-
 		public bool TryGetRegionName(int regionId, out string name)
 		{
 			name = null;
@@ -35,12 +31,13 @@ namespace Aura.Data.Database
 			return true;
 		}
 
-		[MinFieldCount(2)]
-		protected override void ReadEntry(CsvEntry entry)
+		protected override void ReadEntry(JObject entry)
 		{
+			entry.AssertNotMissing("id", "name");
+
 			var info = new RegionData();
-			info.Id = entry.ReadInt();
-			info.Name = entry.ReadString();
+			info.Id = entry.ReadInt("id");
+			info.Name = entry.ReadString("name");
 
 			this.Entries[info.Id] = info;
 		}
