@@ -55,10 +55,32 @@ public class DuncanBaseScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+				switch(Title)
 				{
-					Msg("Oh. <username/>! You finally did it...<br/>I can't believe you became the Knight of Light and saved Erinn...<br/>Nao would be so proud.");
-					Msg("I'm starting to understand Goddess Morrighan and Nao's will<br/>for sending people like you to this world.");
+					case 11002: // the Savior of Erinn
+						Msg("Oh. <username/>! You finally did it...<br/>I can't believe you became the Knight of Light and saved Erinn...<br/>Nao would be so proud.");
+						Msg("I'm starting to understand Goddess Morrighan and Nao's will<br/>for sending people like you to this world.");
+						break;
+
+					case 10059: // is a friend of Trefor
+						Msg("That's great, <username/>.<br/>Seeing you and Trefor are such good friends<br/>makes me feel great as the chief of this town.");
+						Msg("I hope you can continue to help us and care for the town, haha...");
+						break;
+
+					case 10060: // is a friend of Deian
+						Msg("That's great, <username/>.<br/>Seeing you and Deian are such good friends<br/>makes me feel great as the chief of this town.");
+						Msg("I hope you can continue to help us and care for the town, haha...");
+						break;
+
+					case 10061: // is a friend of Malcolm
+						Msg("That's great, <username/>.<br/>Seeing you and Malcolm are such good friends<br/>makes me feel great as the chief of this town.");
+						Msg("I hope you can continue to help us and care for the town, haha...");
+						break;
+
+					case 10062: // is a friend of Nora
+						Msg("That's great, <username/>.<br/>Seeing you and Nora are such good friends<br/>makes me feel great as the chief of this town.");
+						Msg("I hope you can continue to help us and care for the town, haha...");
+						break;
 				}
 				await Conversation();
 				break;
