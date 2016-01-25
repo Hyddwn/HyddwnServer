@@ -125,10 +125,12 @@ namespace Aura.Channel.World.Entities.Creatures
 			float optionMultiplicator;
 			switch (option)
 			{
-				case ReviveOptions.Here: optionMultiplicator = 0.01f; break;
+				case ReviveOptions.NaoStone: optionMultiplicator = 0.001f; break;
 				case ReviveOptions.PhoenixFeather: optionMultiplicator = 0.0025f; break;
+				case ReviveOptions.Town: optionMultiplicator = 0.005f; break;
 				case ReviveOptions.DungeonEntrance: optionMultiplicator = 0.005f; break;
 				case ReviveOptions.StatueOfGoddess: optionMultiplicator = 0.0075f; break;
+				case ReviveOptions.Here: optionMultiplicator = 0.01f; break;
 				default: return 0;
 			}
 
