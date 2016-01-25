@@ -279,6 +279,7 @@
 	// Season 1
 	{ name: "G10S1", enabled: true, children: [
 		{ name: "TaraSealStone", enabled: true },
+		{ name: "FineArrows", enabled: true },
 	]},
 	
 	// Season 2

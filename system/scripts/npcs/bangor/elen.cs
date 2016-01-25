@@ -262,7 +262,6 @@ public class ElenShop : NpcShopScript
 		Add("Weapon", 40243);      // Battle Short Sword
 		Add("Weapon", 40015);      // Fluted Short Sword
 		Add("Weapon", 40025);      // Pickaxe
-		Add("Weapon", 40179);      // Spiked Knuckle
 		Add("Weapon", 40005);      // Short Sword
 		Add("Weapon", 40007);      // Hatchet
 		Add("Weapon", 40014);      // Composite Bow
@@ -271,8 +270,6 @@ public class ElenShop : NpcShopScript
 		Add("Weapon", 40011);      // Broad Sword
 		Add("Weapon", 40010);      // longsword
 		Add("Weapon", 40016);      // War Hammer
-		Add("Weapon", 40180);      // Hobnail Knuckle
-		Add("Weapon", 40244);      // Bear Knuckle	
 		Add("Weapon", 40012);      // Bastard Sword
 		Add("Weapon", 40242);      // Battle Sword
 		Add("Weapon", 46001);      // Round Shield
@@ -335,7 +332,14 @@ public class ElenShop : NpcShopScript
 
 		Add("Event"); // Empty
 
-		if (IsEnabled("G10"))
+		if (IsEnabled("FighterJob"))
+		{
+			Add("Weapon", 40179); // Spiked Knuckle
+			Add("Weapon", 40180); // Hobnail Knuckle
+			Add("Weapon", 40244); // Bear Knuckle
+		}
+
+		if (IsEnabled("FineArrows"))
 		{
 			Add("Arrowhead", 64011); // Bundle of Arrowheads
 			Add("Arrowhead", 64015); // Bundle of Boltheads
