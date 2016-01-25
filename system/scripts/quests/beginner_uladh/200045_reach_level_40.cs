@@ -9,7 +9,7 @@ public class ReachLevl40QuestScript : QuestScript
 {
 	public override void Load()
 	{
-		SetId(1000030);
+		SetId(200045);
 		SetName("Reach Level 40");
 		SetDescription("I am Chief Duncan of Tir Chonaill. How are you? I've heard about your name and fame as a heroic adventurer recently around here. Come to me when you reach level 40 and then I'll tell you something to help you with your training.");
 		

@@ -9,7 +9,7 @@ public class ReachLevl30QuestScript : QuestScript
 {
 	public override void Load()
 	{
-		SetId(1000029);
+		SetId(200044);
 		SetName("Reach Level 30");
 		SetDescription("I am Aranwen from the Dunbarton School. I heard you have been training very hard lately. Come to me when you reach Level 30 and then I will tell you something that will be of help to you.");
 		

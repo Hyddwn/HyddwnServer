@@ -8,7 +8,7 @@ public class BeginnerUladhRestQuestScript : QuestScript
 {
 	public override void Load()
 	{
-		SetId(1000003);
+		SetId(200009);
 		SetName("Let's Learn the Resting Skill");
 		SetDescription("This is Nora, working for the Inn. Welcome to Tir Chonaill. All Travelers seem to sleep outdoors. They just show up and vanish. How can we make money at this rate!? Teee Heee... Well, it's no secret.... I'll let you know the Resting Skill. - Nora -");
 		
