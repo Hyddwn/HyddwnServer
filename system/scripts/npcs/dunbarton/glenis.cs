@@ -400,14 +400,14 @@ public class GlenisShop : NpcShopScript
 		Add("Gift", 52022); // Wine
 		Add("Gift", 52023); // Wild Ginseng
 
-		Add("Quest", 70070); // Cooking Quest - Curry Paste
-		Add("Quest", 70070); // Cooking Quest - Fry Batter
-		Add("Quest", 70070); // Cooking Quest - Flour Dough
-		Add("Quest", 70070); // Cooking Quest - Mayonnaise
-		Add("Quest", 70070); // Cooking Quest - Steamed Potato
-		Add("Quest", 70070); // Cooking Quest - Hard-Boiled Egg
-		Add("Quest", 70070); // Cooking Quest - Assorted Fruits
-		Add("Quest", 70070); // Cooking Quest - Rice
+		//AddQuest("Quest", InsertQuestId); // Cooking Quest - Curry Paste
+		//AddQuest("Quest", InsertQuestId); // Cooking Quest - Fry Batter
+		//AddQuest("Quest", InsertQuestId); // Cooking Quest - Flour Dough
+		//AddQuest("Quest", InsertQuestId); // Cooking Quest - Mayonnaise
+		//AddQuest("Quest", InsertQuestId); // Cooking Quest - Steamed Potato
+		//AddQuest("Quest", InsertQuestId); // Cooking Quest - Hard-Boiled Egg
+		//AddQuest("Quest", InsertQuestId); // Cooking Quest - Assorted Fruits
+		//AddQuest("Quest", InsertQuestId); // Cooking Quest - Rice
 
 		Add("Event"); // Empty
 	}
