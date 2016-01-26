@@ -135,6 +135,12 @@ namespace Aura.Channel.World.Dungeons.Generation
 		public List<Puzzle> Puzzles { get; private set; }
 
 		/// <summary>
+		/// Returns true if all of the section's puzzles have been solved.
+		/// </summary>
+		/// <returns></returns>
+		public bool HasBeenCleared { get { return this.Puzzles.All(a => a.HasBeenSolved); } }
+
+		/// <summary>
 		/// Section of teh floor, contain Puzzles.
 		/// </summary>
 		/// <param name="startRoom">Start room of this section.</param>

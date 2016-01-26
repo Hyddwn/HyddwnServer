@@ -41,6 +41,8 @@ namespace Aura.Channel.World.Dungeons
 		private object _partyEnterSyncLock = new object();
 		private bool _partyEnterEventFired;
 
+		private HashSet<int> _clearedSections;
+
 		/// <summary>
 		/// The size (width and height) of a dungeon tile.
 		/// </summary>
@@ -151,6 +153,7 @@ namespace Aura.Channel.World.Dungeons
 			_treasureChests = new List<TreasureChest>();
 			_treasurePlacementProvider = new PlacementProvider(Placement.Treasure8, 750);
 			this.Regions = new List<DungeonRegion>();
+			_clearedSections = new HashSet<int>();
 
 			this.InstanceId = instanceId;
 			this.Name = dungeonName;
@@ -830,6 +833,40 @@ namespace Aura.Channel.World.Dungeons
 			sb.AppendFormat(Localization.Get("... {0} player(s) total"), count);
 
 			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Checks if any sections have just been cleared, and calls the
+		/// corresponding script method.
+		/// </summary>
+		public void CheckSectionClear()
+		{
+			// This is certainly not the most efficient way to do this,
+			// but it's easy to understand and maintain, and didn't require
+			// refactoring half the dungeon system.
+			for (int i = 0; i < this.Regions.Count; ++i)
+			{
+				var floorRegion = this.Regions[i] as DungeonFloorRegion;
+				if (floorRegion == null)
+					continue;
+
+				for (int j = 1; j <= floorRegion.Floor.Sections.Count; ++j)
+				{
+					var id = i * 1000 + j;
+
+					// Already called clear?
+					if (_clearedSections.Contains(id))
+						continue;
+
+					// If clear hasn't been called yet, but the section has
+					// been cleared, call the event.
+					if (floorRegion.Floor.Sections[j - 1].HasBeenCleared)
+					{
+						_clearedSections.Add(id);
+						this.Script.OnSectionCleared(this, i, j);
+					}
+				}
+			}
 		}
 	}
 }
