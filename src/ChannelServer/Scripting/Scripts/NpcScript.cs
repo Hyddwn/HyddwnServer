@@ -1651,6 +1651,8 @@ namespace Aura.Channel.Scripting.Scripts
 			// Send result
 			Send.ItemRepairResult(this.Player, result.Item, result.Successes);
 
+			this.Player.Keywords.Give("ExperienceRepair");
+
 			return result;
 		}
 
@@ -1844,6 +1846,8 @@ namespace Aura.Channel.Scripting.Scripts
 			Send.ItemUpgradeResult(this.Player, result.Item, result.Upgrade.Ident);
 
 			result.Success = true;
+
+			this.Player.Keywords.Give("ExperienceUpgrade");
 
 			return result;
 		}
