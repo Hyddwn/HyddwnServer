@@ -297,7 +297,9 @@
 	{ name: "G11S1", enabled: true, children: []},
 	
 	// Season 2
-	{ name: "G11S2", enabled: true, children: []},
+	{ name: "G11S2", enabled: true, children: [
+		{ name: "Carpentry", enabled: true },
+	]},
 ]},
 
 // Generation 12
