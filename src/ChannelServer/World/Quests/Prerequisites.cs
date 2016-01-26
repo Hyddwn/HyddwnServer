@@ -96,6 +96,31 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Skill prerequisite, met if character reaches the given rank.
+	/// </summary>
+	public class QuestPrerequisiteReachedRank : QuestPrerequisite
+	{
+		public SkillId Id { get; protected set; }
+		public SkillRank Rank { get; protected set; }
+
+		public QuestPrerequisiteReachedRank(SkillId skillId, SkillRank rank)
+		{
+			this.Id = skillId;
+			this.Rank = rank;
+		}
+
+		public override bool Met(Creature character)
+		{
+			return character.Skills.Has(this.Id, this.Rank);
+		}
+
+		public override bool Is(Type type)
+		{
+			return (this.GetType() == type);
+		}
+	}
+
+	/// <summary>
 	/// Skill prerequisite, met if character doesn't have the skill or rank yet.
 	/// </summary>
 	public class QuestPrerequisiteNotSkill : QuestPrerequisite

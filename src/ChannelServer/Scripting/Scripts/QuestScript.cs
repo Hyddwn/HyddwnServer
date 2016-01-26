@@ -312,6 +312,12 @@ namespace Aura.Channel.Scripting.Scripts
 				ChannelServer.Instance.Events.CreatureLevelUp -= this.OnCreatureLevelUp;
 				ChannelServer.Instance.Events.CreatureLevelUp += this.OnCreatureLevelUp;
 			}
+
+			if (prerequisite.Is(typeof(QuestPrerequisiteReachedRank)))
+			{
+				ChannelServer.Instance.Events.SkillRankChanged -= this.OnSkillRankChanged;
+				ChannelServer.Instance.Events.SkillRankChanged += this.OnSkillRankChanged;
+			}
 		}
 
 		/// <summary>
@@ -461,6 +467,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestPrerequisite Completed(int questId) { return new QuestPrerequisiteQuestCompleted(questId); }
 		protected QuestPrerequisite ReachedLevel(int level) { return new QuestPrerequisiteReachedLevel(level); }
 		protected QuestPrerequisite ReachedTotalLevel(int level) { return new QuestPrerequisiteReachedTotalLevel(level); }
+		protected QuestPrerequisite ReachedRank(SkillId skillId, SkillRank rank) { return new QuestPrerequisiteReachedRank(skillId, rank); }
 		protected QuestPrerequisite NotSkill(SkillId skillId, SkillRank rank = SkillRank.Novice) { return new QuestPrerequisiteNotSkill(skillId, rank); }
 		protected QuestPrerequisite And(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteAnd(prerequisites); }
 		protected QuestPrerequisite Or(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteOr(prerequisites); }
@@ -643,6 +650,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="skill"></param>
 		private void OnSkillRankChanged(Creature creature, Skill skill)
 		{
+			if (this.CheckPrerequisites(creature))
+				creature.Quests.SendOwl(this.Id);
+
 			this.CheckCurrentObjective(creature);
 		}
 
