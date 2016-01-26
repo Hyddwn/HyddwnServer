@@ -324,7 +324,9 @@ public class DilysShop : NpcShopScript
 		Add("First Aid Kits", 60005, 20); // Bandage x20
 		Add("First Aid Kits", 63000, 10); // Phoenix Feather x10
 		Add("First Aid Kits", 63000, 20); // Phoenix Feather x20
-		Add("First Aid Kits", 63032);     // Pet First-Aid Kit
+
+		if (IsEnabled("SystemPet"))
+			Add("First Aid Kits", 63032); // Pet First-Aid Kit
 
 		if (IsEnabled("G16HotSpringRenewal"))
 		{
