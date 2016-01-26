@@ -89,6 +89,7 @@
 		{ name: "CiarAdvanced", enabled: true },
 		{ name: "BarriAdvanced", enabled: true },
 		{ name: "PaladinPassiveDefence", enabled: true },
+		{ name: "RabbieArena", enabled: true },
 	]},
 	
 	// Season 4
