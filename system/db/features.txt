@@ -327,7 +327,9 @@
 // Generation 14
 { name: "G14", enabled: false, children: [
 	// Season 1
-	{ name: "G14S1", enabled: true, children: []},
+	{ name: "G14S1", enabled: true, children: [
+		{ name: "Lance", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G14S2", enabled: true, children: []},
