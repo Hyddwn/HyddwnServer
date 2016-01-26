@@ -323,9 +323,8 @@ public class StewartShop : NpcShopScript
 		Add("Magic Items", 62001, 10); // Elite Magic Powder x10
 		Add("Magic Items", 62003, 1);  // Blessed Magic Powder x1
 		Add("Magic Items", 62003, 10); // Blessed Magic Powder x10
-		Add("Magic Items", 62014);     // Spirit Weapon Restoration Potion
-		Add("Magic Items", 63000, 1);  // Spika Silver Plate Armor (Giants) x1
-		Add("Magic Items", 63000, 10); // Spika Silver Plate Armor (Giants) x10
+		Add("Magic Items", 63000, 1);  // Phoenix Feather x1
+		Add("Magic Items", 63000, 10); // Phoenix Feather x10
 		Add("Magic Items", 63001, 1);  // Wings of a Goddess x1
 		Add("Magic Items", 63001, 5);  // Wings of a Goddess x5
 
@@ -339,16 +338,26 @@ public class StewartShop : NpcShopScript
 		Add("Magic Weapons", 40040); // Fire Wand
 		Add("Magic Weapons", 40041); // Combat Wand
 		Add("Magic Weapons", 40090); // Healing Wand
-		Add("Magic Weapons", 40231); // Crystal Lightning Wand
-		Add("Magic Weapons", 40232); // Crown Ice Wand
-		Add("Magic Weapons", 40233); // Phoenix Fire Wand
-		Add("Magic Weapons", 40234); // Tikka Wood Healing Wand
 
-		Add("Quest", 70023); // Collecting Quest - 10 Ice Elementals
-		Add("Quest", 70023); // Collecting Quest - 10 Fire Elementals
-		Add("Quest", 70023); // Collecting Quest - 10 Lightning Elementals
+		//AddQuests("Quest", InsertQuestId); // Collecting Quest - 10 Ice Elementals
+		//AddQuests("Quest", InsertQuestId); // Collecting Quest - 10 Fire Elementals
+		//AddQuests("Quest", InsertQuestId); // Collecting Quest - 10 Lightning Elementals
 
-		Add("Fomor Scroll", 71072, 1);  // Black Fomor Scroll x1
-		Add("Fomor Scroll", 71072, 10); // Black Fomor Scroll x10
+		if (IsEnabled("SpiritWeapons"))
+			Add("Magic Items", 62014); // Spirit Weapon Restoration Potion
+
+		if (IsEnabled("DarkKnight"))
+		{
+			Add("Fomor Scroll", 71072, 1);  // Black Fomor Scroll x1
+			Add("Fomor Scroll", 71072, 10); // Black Fomor Scroll x10
+		}
+
+		if (IsEnabled("WandUpgradeAndChainCasting"))
+		{
+			Add("Magic Weapons", 40231); // Crystal Lightning Wand
+			Add("Magic Weapons", 40232); // Crown Ice Wand
+			Add("Magic Weapons", 40233); // Phoenix Fire Wand
+			Add("Magic Weapons", 40234); // Tikka Wood Healing Wand
+		}
 	}
 }
