@@ -38,6 +38,9 @@ namespace Aura.Channel.World.Dungeons
 		private Prop _bossExitDoor;
 		private bool _bossSpawned;
 
+		private object _partyEnterSyncLock = new object();
+		private bool _partyEnterEventFired;
+
 		/// <summary>
 		/// The size (width and height) of a dungeon tile.
 		/// </summary>
@@ -762,6 +765,17 @@ namespace Aura.Channel.World.Dungeons
 				msg = Localization.Get("This dungeon has been created by another player.") + msg;
 
 			Send.Notice(creature, NoticeType.Top, ScrollMessageDuration, msg + this.GetPlayerListScrollMessage());
+
+			// Enter events
+			this.Script.OnPlayerEntered(this, creature);
+			lock (_partyEnterSyncLock)
+			{
+				if (!_partyEnterEventFired && this.CountPlayers() == this.Party.Count)
+				{
+					_partyEnterEventFired = true;
+					this.Script.OnPartyEntered(this, creature);
+				}
+			}
 		}
 
 		/// <summary>

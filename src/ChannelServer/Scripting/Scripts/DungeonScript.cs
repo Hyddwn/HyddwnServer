@@ -100,6 +100,25 @@ namespace Aura.Channel.Scripting.Scripts
 		public virtual void OnLeftEarly(Dungeon dungeon, Creature creature)
 		{
 		}
+
+		/// <summary>
+		/// Called whenever a player enters the dungeon's lobby.
+		/// </summary>
+		/// <param name="dungeon"></param>
+		/// <param name="creature">The creature that entered.</param>
+		public virtual void OnPlayerEntered(Dungeon dungeon, Creature creature)
+		{
+		}
+
+		/// <summary>
+		/// Called once, when the entire initial party has entered the
+		/// dungeon's lobby.
+		/// </summary>
+		/// <param name="dungeon"></param>
+		/// <param name="creature">The last creature that entered.</param>
+		public virtual void OnPartyEntered(Dungeon dungeon, Creature creature)
+		{
+		}
 	}
 
 	public class DungeonScriptAttribute : Attribute
