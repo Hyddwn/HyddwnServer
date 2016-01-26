@@ -260,7 +260,7 @@ namespace Aura.Channel
 		{
 			this.Events.MinutesTimeTick += (_) =>
 			{
-				if (this.LoginServer == null || this.LoginServer.State != ClientState.LoggedIn)
+				if (this.LoginServer == null || this.LoginServer.State != ClientState.LoggedIn || ShuttingDown)
 					return;
 
 				Send.Internal_ChannelStatus();
@@ -309,6 +309,19 @@ namespace Aura.Channel
 		public void Shutdown(int time)
 		{
 			this.ShuttingDown = true;
+
+			var channel = this.ServerList.GetChannel(this.Conf.Channel.ChannelServer, this.Conf.Channel.ChannelName);
+
+			if (channel == null)
+			{
+				Log.Warning("Unregistered channel.");
+			}
+			else
+			{
+				channel.State = ChannelState.Maintenance;
+				Send.Internal_ChannelStatus_Maintenance();
+				Log.Info("{0} switched to maintenance.", this.Conf.Channel.ChannelName);
+			}
 
 			Send.Internal_Broadcast(Localization.Get(String.Format("The server will be brought down for maintenance in {0} seconds. Please log out safely before then.", time)));
 
