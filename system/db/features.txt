@@ -181,6 +181,7 @@
 	{ name: "G6S4", enabled: true, children: [
 		{ name: "ElfGiantTransform", enabled: true },
 		{ name: "FreeRebirth", enabled: true },
+		{ name: "AntiMacroCaptcha", enabled: true },
 	]},
 	
 	// Season 5
@@ -316,6 +317,7 @@
 	// Season 1
 	{ name: "G13S1", enabled: true, children: [
 		{ name: "FiodhAdvanced", enabled: true },
+		{ name: "Kiosk", enabled: true },
 	]},
 	
 	// Season 2
