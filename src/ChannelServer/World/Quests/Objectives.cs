@@ -231,4 +231,23 @@ namespace Aura.Channel.World.Quests
 			this.MetaData.SetInt("TARGETCOUNT", this.Amount);
 		}
 	}
+
+	/// <summary>
+	/// Objective to use a certain skill.
+	/// </summary>
+	public class QuestObjectiveUseSkill : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.UseSkill; } }
+
+		public SkillId Id { get; set; }
+
+		public QuestObjectiveUseSkill(SkillId skillId)
+			: base(1)
+		{
+			this.Id = skillId;
+
+			this.MetaData.SetUShort("TGTSKL", (ushort)skillId);
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
+	}
 }
