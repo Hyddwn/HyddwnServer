@@ -135,6 +135,12 @@ namespace Aura.Channel.World
 		public event Action<Creature, Skill> SkillRankChanged;
 		public void OnSkillRankChanged(Creature creature, Skill skill) { SkillRankChanged.Raise(creature, skill); }
 
+		/// <summary>
+		/// Raised when player used skill.
+		/// </summary>
+		public event Action<Creature, Skill> PlayerUsedSkill;
+		public void OnPlayerUsedSkill(Creature creature, Skill skill) { PlayerUsedSkill.Raise(creature, skill); }
+
 		// ------------------------------------------------------------------
 
 		/// <summary>

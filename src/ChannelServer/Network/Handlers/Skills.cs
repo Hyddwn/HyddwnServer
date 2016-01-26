@@ -114,6 +114,7 @@ namespace Aura.Channel.Network.Handlers
 			try
 			{
 				handler.Start(creature, skill, packet);
+				ChannelServer.Instance.Events.OnPlayerUsedSkill(creature, skill);
 			}
 			catch (NotImplementedException)
 			{
@@ -463,6 +464,7 @@ namespace Aura.Channel.Network.Handlers
 				creature.Unlock(skill.Data.CompleteLock);
 
 				handler.Complete(creature, skill, packet);
+				ChannelServer.Instance.Events.OnPlayerUsedSkill(creature, skill);
 			}
 			catch (NotImplementedException)
 			{
