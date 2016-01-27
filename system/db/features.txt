@@ -89,6 +89,7 @@
 		{ name: "CiarAdvanced", enabled: true },
 		{ name: "BarriAdvanced", enabled: true },
 		{ name: "PaladinPassiveDefence", enabled: true },
+		{ name: "RabbieArena", enabled: true },
 	]},
 	
 	// Season 4
@@ -181,6 +182,7 @@
 	{ name: "G6S4", enabled: true, children: [
 		{ name: "ElfGiantTransform", enabled: true },
 		{ name: "FreeRebirth", enabled: true },
+		{ name: "AntiMacroCaptcha", enabled: true },
 	]},
 	
 	// Season 5
@@ -279,6 +281,7 @@
 	// Season 1
 	{ name: "G10S1", enabled: true, children: [
 		{ name: "TaraSealStone", enabled: true },
+		{ name: "FineArrows", enabled: true },
 	]},
 	
 	// Season 2
@@ -296,7 +299,9 @@
 	{ name: "G11S1", enabled: true, children: []},
 	
 	// Season 2
-	{ name: "G11S2", enabled: true, children: []},
+	{ name: "G11S2", enabled: true, children: [
+		{ name: "Carpentry", enabled: true },
+	]},
 ]},
 
 // Generation 12
@@ -313,6 +318,7 @@
 	// Season 1
 	{ name: "G13S1", enabled: true, children: [
 		{ name: "FiodhAdvanced", enabled: true },
+		{ name: "Kiosk", enabled: true },
 	]},
 	
 	// Season 2
@@ -322,7 +328,9 @@
 // Generation 14
 { name: "G14", enabled: false, children: [
 	// Season 1
-	{ name: "G14S1", enabled: true, children: []},
+	{ name: "G14S1", enabled: true, children: [
+		{ name: "Lance", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G14S2", enabled: true, children: []},

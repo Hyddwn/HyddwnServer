@@ -251,5 +251,6 @@ namespace Aura.Mabi.Const
 		HugeFail = 1,
 		Fail = 2,
 		Success = 4,
+		HugeSuccess = 8,
 	}
 }

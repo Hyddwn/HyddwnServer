@@ -233,8 +233,27 @@ public class DeianScript : NpcScript
 				break;
 
 			case "skill_campfire":
-				RemoveKeyword("skill_campfire");
-				Msg("Hey, you! What are you doing!<br/>Are you trying to use the Campfire skill here?<br/>Are you crazy!? You want to burn all my wool?<br/>Go away! Go away!<br/>You want to play with fire? Go do it far away from here!");
+				if (!HasSkill(SkillId.Campfire))
+				{
+					if (!HasKeyword("deian_01"))
+					{
+						GiveItem(1012); // Campfire Manual
+						GiveItem(63002, 5); // Firewood
+						GiveKeyword("deian_01");
+
+						Msg("(Missing dialog: Campfire explanation)");
+					}
+					else
+					{
+						Msg("(Missing dialog: Another Campfire explanation)");
+					}
+				}
+				else
+				{
+					RemoveKeyword("skill_campfire");
+					RemoveKeyword("deian_01");
+					Msg("Hey, you! What are you doing!<br/>Are you trying to use the Campfire skill here?<br/>Are you crazy!? You want to burn all my wool?<br/>Go away! Go away!<br/>You want to play with fire? Go do it far away from here!");
+				}
 				break;
 
 			case "shop_restaurant":

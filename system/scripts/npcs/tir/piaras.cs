@@ -72,10 +72,12 @@ public class PiarasBaseScript : NpcScript
 			case "about_skill":
 				if (Player.Skills.Has(SkillId.Campfire))
 				{
+					RemoveKeyword("skill_campfire");
 					Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
 				}
 				else
 				{
+					GiveKeyword("skill_campfire");
 					Msg("Do you by chance know about the Campfire Skill?");
 					Msg("If you start a fire using the Campfire Skill,<br/>people would come by one at a time after seeing the bright fire from afar...");
 					Msg("People share what they have in their inventory<br/>and spend long summer nights sharing stories about their adventures.");

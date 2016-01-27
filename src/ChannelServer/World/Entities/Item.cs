@@ -658,7 +658,7 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Returns new check with the given amount.
+		/// Returns wing to the given portal.
 		/// </summary>
 		/// <param name="itemId"></param>
 		/// <param name="portal"></param>
@@ -676,7 +676,7 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Returns new check with the given amount.
+		/// Returns wing to the given location.
 		/// </summary>
 		/// <param name="itemId"></param>
 		/// <param name="regionId"></param>

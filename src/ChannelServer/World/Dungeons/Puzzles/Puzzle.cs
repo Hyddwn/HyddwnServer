@@ -69,6 +69,19 @@ namespace Aura.Channel.World.Dungeons.Puzzles
 		public Dictionary<string, Item> Keys { get; private set; }
 
 		/// <summary>
+		/// Returns true if all locked places have been unlocked.
+		/// </summary>
+		/// <returns></returns>
+		public bool HasBeenSolved
+		{
+			get
+			{
+				// Check for != closed, so boss doors that don't open count
+				return _places.Values.All(a => !a.IsLock || a.GetLockDoor().State != "closed");
+			}
+		}
+
+		/// <summary>
 		/// Creates new puzzle.
 		/// </summary>
 		/// <param name="dungeon"></param>

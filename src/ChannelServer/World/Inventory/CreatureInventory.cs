@@ -1198,6 +1198,9 @@ namespace Aura.Channel.World.Inventory
 
 					if (item.Info.Pocket.IsEquip())
 					{
+						this.CheckLeftHand(item, item.Info.Pocket, Pocket.None);
+						this.CheckRightHand(item, item.Info.Pocket, Pocket.None);
+
 						this.UpdateEquipReferences();
 						this.OnUnequip(item);
 						this.UpdateEquipStats();
@@ -1873,6 +1876,24 @@ namespace Aura.Channel.World.Inventory
 
 			item.OptionInfo.Durability = Math.Max(0, item.OptionInfo.Durability - amount);
 			Send.ItemDurabilityUpdate(_creature, item);
+		}
+
+		/// <summary>
+		/// Reduces max durability and updates client.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="amount"></param>
+		public void ReduceMaxDurability(Item item, int amount)
+		{
+			if (!this.Has(item))
+				return;
+
+			item.OptionInfo.DurabilityMax = Math.Max(1000, item.OptionInfo.DurabilityMax - amount);
+			if (item.OptionInfo.DurabilityMax < item.OptionInfo.Durability)
+				item.Durability = item.OptionInfo.DurabilityMax;
+
+			Send.ItemDurabilityUpdate(_creature, item);
+			Send.ItemMaxDurabilityUpdate(_creature, item);
 		}
 
 		/// <summary>

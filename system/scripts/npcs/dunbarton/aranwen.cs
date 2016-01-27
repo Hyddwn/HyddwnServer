@@ -245,14 +245,15 @@ public class AranwenShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Party Quest", 70025); // Party Quest Scroll - 10 Red Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 30 Red Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 30 Brown Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 30 Red Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 30 Black Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 10 Black Grizzly Bears and 10 Brown Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 15 Black Grizzly Bear Cubs and Brown Grizzly Bear Cubs
-		Add("Party Quest", 70025); // Party Quest Scroll - 10 Red Grizzly Bears and 10 Brown Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 15 Red Grizzly Bear Cubs and Brown Grizzly Bear Cubs
+		Add("Party Quest"); // Dummy
+		//AddQuest("Party Quest", InsertQuestId); // Party Quest Scroll - 10 Red Bears
+		//AddQuest("Party Quest", InsertQuestId); // Party Quest Scroll - 30 Red Bears
+		//AddQuest("Party Quest", InsertQuestId); // Party Quest Scroll - 30 Brown Grizzly Bears
+		//AddQuest("Party Quest", InsertQuestId); // Party Quest Scroll - 30 Red Grizzly Bears
+		//AddQuest("Party Quest", InsertQuestId); // Party Quest Scroll - 30 Black Grizzly Bears
+		//AddQuest("Party Quest", InsertQuestId); // Party Quest Scroll - 10 Black Grizzly Bears and 10 Brown Grizzly Bears
+		//AddQuest("Party Quest", InsertQuestId); // Party Quest Scroll - 15 Black Grizzly Bear Cubs and Brown Grizzly Bear Cubs
+		//AddQuest("Party Quest", InsertQuestId); // Party Quest Scroll - 10 Red Grizzly Bears and 10 Brown Grizzly Bears
+		//AddQuest("Party Quest", InsertQuestId); // Party Quest Scroll - 15 Red Grizzly Bear Cubs and Brown Grizzly Bear Cubs
 	}
 }

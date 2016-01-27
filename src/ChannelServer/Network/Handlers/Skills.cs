@@ -114,6 +114,7 @@ namespace Aura.Channel.Network.Handlers
 			try
 			{
 				handler.Start(creature, skill, packet);
+				ChannelServer.Instance.Events.OnPlayerUsedSkill(creature, skill);
 			}
 			catch (NotImplementedException)
 			{
@@ -463,6 +464,7 @@ namespace Aura.Channel.Network.Handlers
 				creature.Unlock(skill.Data.CompleteLock);
 
 				handler.Complete(creature, skill, packet);
+				ChannelServer.Instance.Events.OnPlayerUsedSkill(creature, skill);
 			}
 			catch (NotImplementedException)
 			{
@@ -710,6 +712,31 @@ namespace Aura.Channel.Network.Handlers
 			}
 			else
 				Log.Warning("ProductionSuccessRequest: Unknown packet structure.");
+		}
+
+		/// <summary>
+		/// Dummy handler for EntrustedEnchant.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.EntrustedEnchant)]
+		public void EntrustedEnchant(ChannelClient client, Packet packet)
+		{
+			var memberEntityId = packet.GetLong();
+			var unkByte = packet.GetByte();
+			var unkLong = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			if (!AuraData.FeaturesDb.IsEnabled("EnchantEntrust") || true)
+			{
+				Send.Notice(creature, Localization.Get("Requesting enchantments isn't possible yet."));
+				Send.EntrustedEnchantR(creature, false);
+				return;
+			}
+
+			// No party members: "There is no party member available to ask for an Enchantment."
+			// Member doesn't have rF+: "You cannot request the enchantment."
 		}
 	}
 }

@@ -371,9 +371,7 @@ public class LassarShop : NpcShopScript
 		Add("Magic Weapon", 40090); // Healing Wand
 
 		if (IsEnabled("SpiritWeapons"))
-		{
-			Add("Magic Items", 62014);     // Spirit Weapon Restoration Potion
-		}
+			Add("Magic Items", 62014); // Spirit Weapon Restoration Potion
 
 		if (IsEnabled("WandUpgradeAndChainCasting"))
 		{

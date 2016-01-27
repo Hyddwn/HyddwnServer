@@ -193,6 +193,7 @@ namespace Aura.Channel.Scripting.Scripts
 			ChannelServer.Instance.Events.CreatureGotKeyword -= this.CreatureGotKeyword;
 			ChannelServer.Instance.Events.PlayerEquipsItem -= this.OnPlayerEquipsItem;
 			ChannelServer.Instance.Events.CreatureGathered -= this.OnCreatureGathered;
+			ChannelServer.Instance.Events.PlayerUsedSkill -= this.OnPlayerUsedSkill;
 		}
 
 		// Setup
@@ -311,6 +312,12 @@ namespace Aura.Channel.Scripting.Scripts
 				ChannelServer.Instance.Events.CreatureLevelUp -= this.OnCreatureLevelUp;
 				ChannelServer.Instance.Events.CreatureLevelUp += this.OnCreatureLevelUp;
 			}
+
+			if (prerequisite.Is(typeof(QuestPrerequisiteReachedRank)))
+			{
+				ChannelServer.Instance.Events.SkillRankChanged -= this.OnSkillRankChanged;
+				ChannelServer.Instance.Events.SkillRankChanged += this.OnSkillRankChanged;
+			}
 		}
 
 		/// <summary>
@@ -378,6 +385,12 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				ChannelServer.Instance.Events.CreatureGathered -= this.OnCreatureGathered;
 				ChannelServer.Instance.Events.CreatureGathered += this.OnCreatureGathered;
+			}
+
+			if (objective.Type == ObjectiveType.UseSkill)
+			{
+				ChannelServer.Instance.Events.PlayerUsedSkill -= this.OnPlayerUsedSkill;
+				ChannelServer.Instance.Events.PlayerUsedSkill += this.OnPlayerUsedSkill;
 			}
 
 			this.Objectives.Add(ident, objective);
@@ -454,6 +467,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestPrerequisite Completed(int questId) { return new QuestPrerequisiteQuestCompleted(questId); }
 		protected QuestPrerequisite ReachedLevel(int level) { return new QuestPrerequisiteReachedLevel(level); }
 		protected QuestPrerequisite ReachedTotalLevel(int level) { return new QuestPrerequisiteReachedTotalLevel(level); }
+		protected QuestPrerequisite ReachedRank(SkillId skillId, SkillRank rank) { return new QuestPrerequisiteReachedRank(skillId, rank); }
 		protected QuestPrerequisite NotSkill(SkillId skillId, SkillRank rank = SkillRank.Novice) { return new QuestPrerequisiteNotSkill(skillId, rank); }
 		protected QuestPrerequisite And(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteAnd(prerequisites); }
 		protected QuestPrerequisite Or(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteOr(prerequisites); }
@@ -470,6 +484,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestObjective GetKeyword(string keyword) { return new QuestObjectiveGetKeyword(keyword); }
 		protected QuestObjective Equip(string tag) { return new QuestObjectiveEquip(tag); }
 		protected QuestObjective Gather(int itemId, int amount) { return new QuestObjectiveGather(itemId, amount); }
+		protected QuestObjective UseSkill(SkillId skillId) { return new QuestObjectiveUseSkill(skillId); }
 
 		// Reward Factory
 		// ------------------------------------------------------------------
@@ -635,6 +650,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="skill"></param>
 		private void OnSkillRankChanged(Creature creature, Skill skill)
 		{
+			if (this.CheckPrerequisites(creature))
+				creature.Quests.SendOwl(this.Id);
+
 			this.CheckCurrentObjective(creature);
 		}
 
@@ -722,6 +740,33 @@ namespace Aura.Channel.Scripting.Scripts
 						quest.SetDone(progress.Ident);
 
 					Send.QuestUpdate(args.Creature, quest);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates UseSkill objectives.
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnPlayerUsedSkill(Creature creature, Skill skill)
+		{
+			if (creature == null || skill == null)
+				return;
+
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
+			{
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
+
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null || objective.Type != ObjectiveType.UseSkill) return;
+
+				var useSkillObjective = (objective as QuestObjectiveUseSkill);
+				if (!progress.Done && skill.Info.Id == useSkillObjective.Id)
+				{
+					quest.SetDone(progress.Ident);
+					Send.QuestUpdate(creature, quest);
 				}
 			}
 		}

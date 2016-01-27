@@ -37,5 +37,12 @@ public class OnEquipSkillLearnScript : GeneralScript
 		// Give Blacksmithing when equipping a Blacksmith Hammer
 		if ((item.HasTag("/tool/blacksmith/")) && !creature.Skills.Has(SkillId.Blacksmithing))
 			creature.Skills.Give(SkillId.Blacksmithing, SkillRank.Novice);
+
+		// Give Enchant when equipping Magic Powder
+		if ((item.HasTag("/enchant/powder/")) && !creature.Skills.Has(SkillId.Enchant))
+		{
+			creature.Skills.Give(SkillId.Enchant, SkillRank.Novice);
+			creature.Skills.Train(SkillId.Enchant, 1);
+		}
 	}
 }

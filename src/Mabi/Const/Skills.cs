@@ -215,8 +215,7 @@ namespace Aura.Mabi.Const
 
 		// Magic
 		Meditation = 30003,
-		Enchant = 30004,
-		Enchant2 = 30005,
+		Enchant = 30005,
 		Healing = 30006,
 		MagicMastery = 30007,
 		PartyHealing = 30008,

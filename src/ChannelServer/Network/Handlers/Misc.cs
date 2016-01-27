@@ -438,5 +438,22 @@ namespace Aura.Channel.Network.Handlers
 			else if (chatChange)
 				Send.Notice(creature, NoticeType.Middle, Localization.Get("Your chat text color has changed."));
 		}
+
+		/// <summary>
+		/// Dummy handler.
+		/// </summary>
+		/// <remarks>
+		/// Client and server exchange those packets from time to time.
+		/// As they just contain bins, and were seemingly added when NGS
+		/// was added to NA, it's probably a security mechanism.
+		/// </remarks>
+		[PacketHandler(Op.NGS1)]
+		public void NGS1(ChannelClient client, Packet packet)
+		{
+			var length = packet.GetInt();
+			var payload = packet.GetBin();
+
+			// Ignore, client doesn't require an answer.
+		}
 	}
 }

@@ -99,6 +99,18 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Returns true if creature has quest with any of the the given
+		/// quest ids, completed or not.
+		/// </summary>
+		/// <param name="questIds"></param>
+		/// <returns></returns>
+		public bool HasAny(params int[] questIds)
+		{
+			lock (_quests)
+				return questIds.Any(questId => _quests.Exists(a => a.Id == questId));
+		}
+
+		/// <summary>
 		/// Returns true if creature has the given quest.
 		/// </summary>
 		/// <param name="quest"></param>

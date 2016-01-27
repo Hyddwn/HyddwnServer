@@ -13,6 +13,7 @@ namespace Aura.Mabi.Const
 		ReachLevel = 15,
 		Equip = 31,
 		Gather = 32,
+		UseSkill = 98, // TODO: Actual type?
 		GetKeyword = 99, // TODO: Actual type?
 	}
 

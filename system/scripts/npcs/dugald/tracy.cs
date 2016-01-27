@@ -298,8 +298,11 @@ public class TracyShop : NpcShopScript
 
 		Add("Food", 50004); // Bread
 
-		Add("Carpentry Tool", 40022); // Gathering Axe
-		Add("Carpentry Tool", 63223); // Woodworking Plane
-		Add("Carpentry Tool", 63222); // Lumber Axe
+		if (IsEnabled("Carpentry"))
+		{
+			Add("Carpentry Tool", 40022); // Gathering Axe
+			Add("Carpentry Tool", 63223); // Woodworking Plane
+			Add("Carpentry Tool", 63222); // Lumber Axe
+		}
 	}
 }

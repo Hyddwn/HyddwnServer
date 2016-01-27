@@ -96,6 +96,7 @@
     <Compile Include="Network\Handlers\GMCP.cs" />
     <Compile Include="Network\Handlers\Parties.cs" />
     <Compile Include="Network\Handlers\Pets.cs" />
+    <Compile Include="Network\Handlers\Trading.cs" />
     <Compile Include="Network\Handlers\Props.cs" />
     <Compile Include="Network\Handlers\Quests.cs" />
     <Compile Include="Network\Handlers\Rebirth.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Network\Sending\Send.Dungeons.cs" />
     <Compile Include="Network\Sending\Send.GMCP.cs" />
     <Compile Include="Network\Sending\Send.Parties.cs" />
+    <Compile Include="Network\Sending\Send.Trading.cs" />
     <Compile Include="Network\Sending\Send.Quests.cs" />
     <Compile Include="Network\Sending\Send.Effects.cs" />
     <Compile Include="Network\Sending\Send.Pets.cs" />
@@ -185,7 +187,7 @@
     <Compile Include="Skills\Hidden\Dye.cs" />
     <Compile Include="Skills\Combat\AdministrativePicking2.cs" />
     <Compile Include="Skills\Actions\DiceTossing.cs" />
-    <Compile Include="Skills\Hidden\HiddenEnchant.cs" />
+    <Compile Include="Skills\Magic\Enchant.cs" />
     <Compile Include="Skills\Hidden\HiddenResurrection.cs" />
     <Compile Include="Skills\Hidden\HiddenTownBack.cs" />
     <Compile Include="Skills\Hidden\UseItemChattingColorChange.cs" />

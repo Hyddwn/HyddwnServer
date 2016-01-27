@@ -9,7 +9,7 @@ public class ReachLevl20QuestScript : QuestScript
 {
 	public override void Load()
 	{
-		SetId(1000028);
+		SetId(200043);
 		SetName("Reach Level 20");
 		SetDescription("I am Instructor Ranald. I heard you were training devotedly. Come to me when you reach level 20 and then I will give you something to help with your training.");
 		
