@@ -29,7 +29,7 @@ namespace Aura.Channel.Skills.Magic
 	/// Var4: Max Charge Damage Bonus (%)
 	/// Var5: ?
 	[Skill(SkillId.LightningRod)]
-	public class LightningRod : ISkillHandler, IPreparable, IUseable, ICompletable, ICancelable
+	public class LightningRod : ISkillHandler, IPreparable, IUseable, ICompletable, ICancelable, IInitiableSkillHandler
 	{
 		/// <summary>
 		/// Length of attack area; unconfirmed.
@@ -56,6 +56,15 @@ namespace Aura.Channel.Skills.Magic
 		/// Distance target gets knocked back
 		/// </summary>
 		private const int knockbackDistance = 720;
+
+		/// <summary>
+		/// Subscribes handlers to events required for training.
+		/// </summary>
+		public void Init()
+		{
+			ChannelServer.Instance.Events.CreatureAttackedByPlayer += this.OnCreatureAttackedByPlayer;
+			ChannelServer.Instance.Events.CreatureAttacks += this.OnCreatureAttacks;
+		}
 
 		/// <summary>
 		/// Prepares the skill
@@ -223,6 +232,7 @@ namespace Aura.Channel.Skills.Magic
 			Send.Effect(attacker, Effect.LightningRod, 3, poe.X, poe.Y); // Lightning Shooting Effect?
 
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
+			skill.Train(1); // Use the Skill
 
 			attacker.Region.RemoveProp(LProp);
 		}
@@ -250,6 +260,152 @@ namespace Aura.Channel.Skills.Magic
 			creature.Temp.LightningRodFullCharge = false;
 
 			Send.Effect(creature, Effect.LightningRod, 0); // End Effect
+		}
+
+		/// <summary>
+		/// Training, called when someone attacks something.
+		/// </summary>
+		/// <param name="action"></param>
+		public void OnCreatureAttackedByPlayer(TargetAction action)
+		{
+			// Check if skill used is LightningRod
+			if (action.AttackerSkillId != SkillId.LightningRod)
+				return;
+
+			// Get skill
+			var attackerSkill = action.Attacker.Skills.Get(SkillId.LightningRod);
+			if (attackerSkill == null) return; // Should be impossible.
+
+			// Learning by attacking
+			switch (attackerSkill.Info.Rank)
+			{
+				case SkillRank.RF:
+				case SkillRank.RE:
+					attackerSkill.Train(2); // Attack an enemy
+					break;
+				case SkillRank.RD:
+				case SkillRank.RC:
+					attackerSkill.Train(2); // Attack an enemy
+					if (action.Attacker.Temp.LightningRodFullCharge == true) attackerSkill.Train(3); // Attack an Enemy with a Max Charge
+					break;
+				case SkillRank.RB:
+				case SkillRank.RA:
+				case SkillRank.R9:
+				case SkillRank.R8:
+				case SkillRank.R7:
+                case SkillRank.R6:
+				case SkillRank.R5:
+				case SkillRank.R4:
+				case SkillRank.R3:
+				case SkillRank.R2:
+				case SkillRank.R1:
+					if (action.Creature.IsDead) attackerSkill.Train(2); // Defeat an enemy
+					if (action.Creature.IsDead && action.Attacker.Temp.LightningRodFullCharge == true) attackerSkill.Train(3); // Defeat an Enemy with a Max Charge
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Training, called when a creature attacks another creature(s)
+		/// </summary>
+		/// <param name="aAction"></param>
+		public void OnCreatureAttacks(AttackerAction aAction)
+		{
+			// Handles the multiple target training requirements
+
+			// Check if skill used is LightningRod
+			if (aAction.SkillId != SkillId.LightningRod)
+				return;
+
+			// Get skill
+			var attackerSkill = aAction.Creature.Skills.Get(SkillId.LightningRod);
+			if (attackerSkill == null) return; // Should be impossible.
+
+			// Get targets
+			var targets = aAction.Pack.GetTargets();
+
+			// Learning by attacking
+			switch (attackerSkill.Info.Rank)
+			{
+				case SkillRank.RF:
+				case SkillRank.RE:
+				case SkillRank.RD:
+				case SkillRank.RC:
+				case SkillRank.RB:
+				case SkillRank.RA:
+					break;
+				case SkillRank.R9:
+				case SkillRank.R8:
+				case SkillRank.R7:
+					if (targets.Length >= 2) // Defeat 2 or more enemies
+					{
+						var killCount = 0;
+						foreach (Creature target in targets)
+						{
+							if (target.IsDead)
+							{
+								killCount++;
+							}
+						}
+						if (killCount >= 2)
+							attackerSkill.Train(4);
+					}
+					break;
+				case SkillRank.R6:
+				case SkillRank.R5:
+				case SkillRank.R4:
+					if (targets.Length >= 3) // Defeat 3 or more enemies
+					{
+						var killCount = 0;
+						foreach (Creature target in targets)
+						{
+							if (target.IsDead)
+							{
+								killCount++;
+							}
+						}
+						if (killCount >= 3)
+							attackerSkill.Train(4);
+					}
+					break;
+				case SkillRank.R3:
+				case SkillRank.R2:
+					if (targets.Length >= 4) // Defeat 4 or more enemies
+					{
+						var killCount = 0;
+						foreach (Creature target in targets)
+						{
+							if (target.IsDead)
+							{
+								killCount++;
+							}
+						}
+						if (killCount >= 4)
+							attackerSkill.Train(4);
+
+						if (killCount >= 4 && aAction.Creature.Temp.LightningRodFullCharge == true) // Defeat 4 or more Enemies with a Max Charge
+							attackerSkill.Train(5);
+					}
+					break;
+				case SkillRank.R1:
+					if (targets.Length >= 5) // Defeat 5 or more enemies
+					{
+						var killCount = 0;
+						foreach (Creature target in targets)
+						{
+							if (target.IsDead)
+							{
+								killCount++;
+							}
+						}
+						if (killCount >= 5)
+							attackerSkill.Train(4);
+
+						if (killCount >= 5 && aAction.Creature.Temp.LightningRodFullCharge == true) // Defeat 5 or more Enemies with a Max Charge
+							attackerSkill.Train(5);
+					}
+					break;
+			}
 		}
 
 		private Point RotatePoint(Point point, Point pivot, double radians)
