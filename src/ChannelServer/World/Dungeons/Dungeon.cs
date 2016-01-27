@@ -191,7 +191,7 @@ namespace Aura.Channel.World.Dungeons
 			// Create lobby
 			var lobbyRegionId = ChannelServer.Instance.World.DungeonManager.GetRegionId();
 			var lobbyRegion = new DungeonLobbyRegion(lobbyRegionId, this.Data.LobbyRegionId, this);
-			lobbyRegion.PlayerEnters += this.OnPlayerEntersLobby;
+			//lobbyRegion.PlayerEnters += this.OnPlayerEntersLobby;
 			this.Regions.Add(lobbyRegion);
 
 			// Create floors
@@ -749,7 +749,7 @@ namespace Aura.Channel.World.Dungeons
 		/// Called when a creature enters the lobby region.
 		/// </summary>
 		/// <param name="creature"></param>
-		private void OnPlayerEntersLobby(Creature creature)
+		public void OnPlayerEntersLobby(Creature creature)
 		{
 			// Save location
 			// This happens whenever you enter the lobby.
