@@ -8,6 +8,7 @@
 quests/beginner_uladh/200007_go_to_school.cs
 quests/beginner_uladh/200009_lets_learn_the_resting_skill.cs
 quests/beginner_uladh/200024_caution_against_fire.cs
+quests/beginner_uladh/200079_production_mastery.cs
 quests/beginner_uladh/202001_naos_letter.cs
 quests/beginner_uladh/202002_rescue_resident.cs
 quests/beginner_uladh/202003_save_my_sheep.cs
