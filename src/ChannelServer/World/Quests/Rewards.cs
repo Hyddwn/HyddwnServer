@@ -127,6 +127,34 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Rewards quest (scroll).
+	/// </summary>
+	public class QuestRewardQuestScroll : QuestReward
+	{
+		public override RewardType Type { get { return RewardType.Item; } }
+
+		public int QuestId { get; protected set; }
+
+		public QuestRewardQuestScroll(int questId)
+		{
+			this.QuestId = questId;
+		}
+
+		public override string ToString()
+		{
+			var data = ChannelServer.Instance.ScriptManager.QuestScripts.Get(this.QuestId);
+			if (data == null)
+				return "Unknown quest";
+			return data.Name;
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.Inventory.Add(Item.CreateQuestScroll(this.QuestId), true);
+		}
+	}
+
+	/// <summary>
 	/// Rewards skill x of rank y. Optionally trains a condition.
 	/// </summary>
 	public class QuestRewardSkill : QuestReward

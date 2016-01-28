@@ -25,6 +25,7 @@ namespace Aura.Mabi.Const
 		ExplExp = 4,
 		AP = 5,
 		Skill = 8, // ?
+		QuestScroll = 99, // TODO: Actual type?
 	}
 
 	public enum QuestType : byte
