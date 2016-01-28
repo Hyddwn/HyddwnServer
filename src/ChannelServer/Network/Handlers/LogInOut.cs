@@ -12,6 +12,7 @@ using Aura.Channel.World.Entities;
 using System;
 using Aura.Mabi;
 using Aura.Mabi.Network;
+using Aura.Channel.World.Dungeons;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -152,6 +153,17 @@ namespace Aura.Channel.Network.Handlers
 
 			// Automatically done by the world update
 			//Send.EntitiesAppear(client, region.GetEntitiesInRange(creature));
+
+			// Inform dungeon about player entering the lobby
+			// Originally this was done inside the dungeon, via event on
+			// the lobby region, fired from AddCreature, but AddCreature is
+			// supposed to run before WarpRegion, and we need this to run
+			// afterwards, so the client is done with the warping process,
+			// when things like cutscenes are started from the OnEnter
+			// events in  the dungeon script.
+			var dungeonLobbyRegion = creature.Region as DungeonLobbyRegion;
+			if (dungeonLobbyRegion != null)
+				dungeonLobbyRegion.Dungeon.OnPlayerEntersLobby(creature);
 		}
 
 		/// <summary>

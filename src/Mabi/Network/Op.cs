@@ -519,6 +519,7 @@ namespace Aura.Mabi.Network
 		public const int SosButtonRequest = 0xA9A9;
 		public const int SosButtonRequestR = 0xA9AA;
 		public const int SkillTeleport = 0xA9F0;
+		public const int SetCamera = 0xA9F4;
 		public const int EnterRebirth = 0xA9F9;
 		public const int EnterRebirthR = 0xA9FA;
 

@@ -293,12 +293,12 @@ namespace Aura.Channel.World.Entities.Creatures
 				if (this.Duration == -1)
 					return -1;
 
-				var passed = DateTime.Now - this.Started;
+				var passed = (int)(DateTime.Now - this.Started).TotalMilliseconds;
 
-				if (passed.Milliseconds > this.Duration)
+				if (passed > this.Duration)
 					return 0;
 				else
-					return this.Duration - passed.Milliseconds;
+					return this.Duration - passed;
 			}
 		}
 

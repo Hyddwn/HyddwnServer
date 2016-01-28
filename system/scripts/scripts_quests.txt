@@ -5,9 +5,10 @@
 //---------------------------------------------------------------------------
 
 // Beginner Quests
-quests/beginner_uladh/200007_school_1.cs
-quests/beginner_uladh/200009_skills_rest.cs
+quests/beginner_uladh/200007_go_to_school.cs
+quests/beginner_uladh/200009_lets_learn_the_resting_skill.cs
 quests/beginner_uladh/200024_caution_against_fire.cs
+quests/beginner_uladh/200079_production_mastery.cs
 quests/beginner_uladh/202001_naos_letter.cs
 quests/beginner_uladh/202002_rescue_resident.cs
 quests/beginner_uladh/202003_save_my_sheep.cs
@@ -17,7 +18,9 @@ quests/beginner_uladh/202026_campfire.cs
 quests/beginner_uladh/202027_playing_instruments.cs
 quests/beginner_uladh/202030_lets_gather_green_gem.cs
 quests/beginner_uladh/202033_gathering_berries.cs
+quests/beginner_uladh/202034_gather_cobweb.cs
 quests/beginner_uladh/202035_sheep_shearing.cs
+quests/beginner_uladh/202042_repair_an_item.cs
 quests/beginner_uladh/duncans_praise.cs
 
 quests/beginner_uladh/200043_reach_level_20.cs

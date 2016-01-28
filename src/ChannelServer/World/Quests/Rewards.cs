@@ -127,7 +127,7 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
-	/// Rewards skill x of rank y.
+	/// Rewards skill x of rank y. Optionally trains a condition.
 	/// </summary>
 	public class QuestRewardSkill : QuestReward
 	{
@@ -135,11 +135,13 @@ namespace Aura.Channel.World.Quests
 
 		public SkillId SkillId { get; protected set; }
 		public SkillRank Rank { get; protected set; }
+		public int Training { get; protected set; }
 
-		public QuestRewardSkill(SkillId id, SkillRank rank)
+		public QuestRewardSkill(SkillId id, SkillRank rank, int training = 0)
 		{
 			this.SkillId = id;
 			this.Rank = rank;
+			this.Training = training;
 		}
 
 		public override string ToString()
@@ -157,6 +159,9 @@ namespace Aura.Channel.World.Quests
 				return;
 
 			creature.Skills.Give(this.SkillId, this.Rank);
+
+			if (this.Training != 0)
+				creature.Skills.Train(this.SkillId, this.Rank, this.Training);
 		}
 	}
 

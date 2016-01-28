@@ -19,6 +19,9 @@ public abstract class DuncansPraiseQuestScript : QuestScript
 	protected abstract string FriendName { get; }
 	protected abstract string FriendIdent { get; }
 	protected abstract ushort FriendTitle { get; }
+	protected abstract ushort FriendRegion { get; }
+	protected abstract ushort FriendX { get; }
+	protected abstract ushort FriendY { get; }
 
 	public override void Load()
 	{
@@ -27,7 +30,7 @@ public abstract class DuncansPraiseQuestScript : QuestScript
 		SetDescription("I heard you worked hard and made a difference helping the town residents. Can you visit me for a second? I will recommend a friend to you. - Duncan -");
 
 		AddObjective("talk_duncan", "Talk with Chief Duncan", 1, 15409, 38310, Talk("duncan"));
-		AddObjective("talk_friend", "A Talk with " + FriendName, 8, 1238, 1655, Talk(FriendIdent));
+		AddObjective("talk_friend", "A Talk with " + FriendName, FriendRegion, FriendX, FriendY, Talk(FriendIdent));
 
 		AddReward(Exp(300));
 		AddReward(Gold(1200));
@@ -43,7 +46,7 @@ public abstract class DuncansPraiseQuestScript : QuestScript
 		npc.FinishQuest(this.Id, "talk_duncan");
 
 		// Unofficial
-		npc.Msg("Hello <username/>.<br/>I heard you worked hard and made a difference helping the town residents.<br/>Why don't you pay "+FriendName+ " a visit?<br/>I think you could become good friends.");
+		npc.Msg("Hello <username/>.<br/>I heard you worked hard and made a difference helping the town residents.<br/>Why don't you pay " + FriendName + " a visit?<br/>I think you could become good friends.");
 
 		return HookResult.Break;
 	}
@@ -73,6 +76,9 @@ public class DuncansPraiseMalcolmQuestScript : DuncansPraiseQuestScript
 	protected override string FriendName { get { return "Malcolm"; } }
 	protected override string FriendIdent { get { return "malcolm"; } }
 	protected override ushort FriendTitle { get { return 10061; } } // is a friend of Malcolm
+	protected override ushort FriendRegion { get { return 8; } }
+	protected override ushort FriendX { get { return 1238; } }
+	protected override ushort FriendY { get { return 1655; } }
 }
 
 public class DuncansPraiseNoraQuestScript : DuncansPraiseQuestScript
@@ -81,6 +87,9 @@ public class DuncansPraiseNoraQuestScript : DuncansPraiseQuestScript
 	protected override string FriendName { get { return "Nora"; } }
 	protected override string FriendIdent { get { return "nora"; } }
 	protected override ushort FriendTitle { get { return 10062; } } // is a friend of Nora
+	protected override ushort FriendRegion { get { return 1; } }
+	protected override ushort FriendX { get { return 15933; } }
+	protected override ushort FriendY { get { return 33363; } }
 }
 
 public class DuncansPraiseDeianQuestScript : DuncansPraiseQuestScript
@@ -89,6 +98,9 @@ public class DuncansPraiseDeianQuestScript : DuncansPraiseQuestScript
 	protected override string FriendName { get { return "Deian"; } }
 	protected override string FriendIdent { get { return "deian"; } }
 	protected override ushort FriendTitle { get { return 10060; } } // is a friend of Deian
+	protected override ushort FriendRegion { get { return 1; } }
+	protected override ushort FriendX { get { return 27953; } }
+	protected override ushort FriendY { get { return 42287; } }
 }
 
 public class DuncansPraiseTreforQuestScript : DuncansPraiseQuestScript
@@ -97,6 +109,9 @@ public class DuncansPraiseTreforQuestScript : DuncansPraiseQuestScript
 	protected override string FriendName { get { return "Trefor"; } }
 	protected override string FriendIdent { get { return "trefor"; } }
 	protected override ushort FriendTitle { get { return 10059; } } // is a friend of Trefor
+	protected override ushort FriendRegion { get { return 1; } }
+	protected override ushort FriendX { get { return 8692; } }
+	protected override ushort FriendY { get { return 52637; } }
 }
 
 public class DuncansPraiseStarterScript : GeneralScript

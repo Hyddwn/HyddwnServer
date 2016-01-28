@@ -189,6 +189,22 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Unsets AI's creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		public void Detach()
+		{
+			var npc = this.Creature as NPC;
+			if (npc == null || npc.AI == null)
+				return;
+
+			npc.AI.Dispose();
+			npc.Death -= OnDeath;
+			npc.AI = null;
+			this.Creature = null;
+		}
+
+		/// <summary>
 		/// Main "loop"
 		/// </summary>
 		/// <param name="state"></param>
