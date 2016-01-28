@@ -255,7 +255,9 @@ namespace Aura.Channel.Network.Handlers
 				// TODO: Use regens, for shiny gradually depleting bars
 				if (skill.RankData.ManaCost != 0 || skill.RankData.StaminaCost != 0)
 				{
-					creature.Mana -= skill.RankData.ManaCost;
+					if (skill.Info.Id != SkillId.LightningRod) // Lightning Rod is excluded
+						creature.Mana -= skill.RankData.ManaCost;
+
 					creature.Stamina -= skill.RankData.StaminaCost;
 					Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana, Stat.Stamina);
 				}
@@ -378,6 +380,14 @@ namespace Aura.Channel.Network.Handlers
 			{
 				Log.Unimplemented("SkillUse: Skill handler or interface for '{0}'.", skillId);
 				Send.ServerMessage(creature, Localization.Get("This skill isn't implemented yet."));
+				Send.SkillUseSilentCancel(creature);
+				return;
+			}
+
+			// Lightning Rod Use Check
+			if (skill.Info.Id == SkillId.LightningRod && creature.Skills.ActiveSkill != skill)
+			{
+				creature.Skills.ActiveSkill = skill;
 				Send.SkillUseSilentCancel(creature);
 				return;
 			}

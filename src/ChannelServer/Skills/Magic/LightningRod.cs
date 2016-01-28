@@ -58,6 +58,11 @@ namespace Aura.Channel.Skills.Magic
 		private const int knockbackDistance = 720;
 
 		/// <summary>
+		/// Time for mana degeneration (ms)
+		/// </summary>
+		private const int degenTime = 1000;
+
+		/// <summary>
 		/// Subscribes handlers to events required for training.
 		/// </summary>
 		public void Init()
@@ -106,6 +111,13 @@ namespace Aura.Channel.Skills.Magic
 		/// <param name="packet"></param>
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
+			// Mana degeneration
+			var degen = attacker.Regens.Add(Stat.Mana, (-1 * skill.RankData.ManaCost), attacker.ManaMax, degenTime);
+			Task.Delay(degenTime).ContinueWith(_ =>
+			{
+				attacker.Regens.Remove(degen.Id);
+			});
+
 			// Set full charge variable
 			if (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3))
 				attacker.Temp.LightningRodFullCharge = true;
