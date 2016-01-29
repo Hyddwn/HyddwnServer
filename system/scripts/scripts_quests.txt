@@ -23,6 +23,7 @@ quests/beginner_uladh/202035_sheep_shearing.cs
 quests/beginner_uladh/202041_logging_camp_at_dugald_aisle.cs
 quests/beginner_uladh/202042_repair_an_item.cs
 quests/beginner_uladh/202043_talk_with_stewart.cs
+quests/beginner_uladh/202047_gather_eggs.cs
 quests/beginner_uladh/duncans_praise.cs
 
 quests/beginner_uladh/200043_reach_level_20.cs
