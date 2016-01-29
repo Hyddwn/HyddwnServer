@@ -152,8 +152,8 @@ namespace Aura.Shared.Database
 		/// <summary>
 		/// Resets password for account to its name.
 		/// </summary>
-		/// <param name="accName"></param>
-		/// <returns></returns>
+		/// <param name="accountName"></param>
+		/// <param name="password"></param>
 		public void SetAccountPassword(string accountName, string password)
 		{
 			using (var conn = this.Connection)
