@@ -25,6 +25,7 @@ quests/beginner_uladh/202042_repair_an_item.cs
 quests/beginner_uladh/202043_talk_with_stewart.cs
 quests/beginner_uladh/202044_harvest_potato.cs
 quests/beginner_uladh/202045_visiting_bangor.cs
+quests/beginner_uladh/202046_talk_with_eavan.cs
 quests/beginner_uladh/202047_gather_eggs.cs
 quests/beginner_uladh/duncans_praise.cs
 
