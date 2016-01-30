@@ -468,6 +468,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestPrerequisite ReachedLevel(int level) { return new QuestPrerequisiteReachedLevel(level); }
 		protected QuestPrerequisite ReachedTotalLevel(int level) { return new QuestPrerequisiteReachedTotalLevel(level); }
 		protected QuestPrerequisite ReachedRank(SkillId skillId, SkillRank rank) { return new QuestPrerequisiteReachedRank(skillId, rank); }
+		protected QuestPrerequisite ReachedAge(int age) { return new QuestPrerequisiteReachedAge(age); }
 		protected QuestPrerequisite NotSkill(SkillId skillId, SkillRank rank = SkillRank.Novice) { return new QuestPrerequisiteNotSkill(skillId, rank); }
 		protected QuestPrerequisite And(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteAnd(prerequisites); }
 		protected QuestPrerequisite Or(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteOr(prerequisites); }
