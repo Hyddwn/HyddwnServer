@@ -43,7 +43,7 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Sent to actually revive, after NaoStone.
 		/// </summary>
-		NaoRevival1 = 0x80,
+		NaoStoneRevive = 0x80,
 
 		/// <summary>
 		/// Put up feather, so other's can revive the player.
