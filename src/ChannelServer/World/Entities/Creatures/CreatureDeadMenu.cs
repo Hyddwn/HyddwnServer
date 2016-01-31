@@ -89,8 +89,10 @@ namespace Aura.Channel.World.Entities.Creatures
 				if (this.Creature.IsPet)
 					this.Add(ReviveOptions.PhoenixFeather);
 
-				// Nao Stone option if creature is not in TNN (35: Tir, 84: Bangor).
-				if (this.Creature.RegionId != 35 && this.Creature.RegionId != 84)
+				// Nao Stone option if it's enabled, and creature is not
+				// in TNN (35: Tir, 84: Bangor).
+				// TODO: Check dungeons...? Maybe the dungeon groups?
+				if (AuraData.FeaturesDb.IsEnabled("NaoCoupon") && this.Creature.RegionId != 35 && this.Creature.RegionId != 84)
 					this.Add(ReviveOptions.NaoStone);
 
 				// Dungeons

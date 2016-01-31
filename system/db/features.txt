@@ -262,6 +262,7 @@
 		{ name: "ShadowMissionBoard", enabled: true },
 		{ name: "Alchemy", enabled: true },
 		{ name: "IceMine", enabled: true },
+		{ name: "NaoCoupon", enabled: true },
 	]},
 	
 	// Season 2
