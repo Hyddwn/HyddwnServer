@@ -87,17 +87,12 @@ namespace Aura.Channel.Network.Handlers
 
 			var dungeonRegion = creature.Region as DungeonRegion;
 
-			// TODO: Penalty
-
 			switch (option)
 			{
 				case ReviveOptions.WaitForRescue:
-					creature.Revive(option);
-					return;
-
+				case ReviveOptions.NaoStone:
+				case ReviveOptions.NaoStoneRevive:
 				case ReviveOptions.Here:
-					goto case ReviveOptions.HereNoPenalty;
-
 				case ReviveOptions.HereNoPenalty:
 					creature.Revive(option);
 					return;

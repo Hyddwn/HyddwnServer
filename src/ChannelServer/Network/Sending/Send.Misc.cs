@@ -400,5 +400,28 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends NaoRevivalEntrance to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="result"></param>
+		public static void NaoRevivalEntrance(Creature creature)
+		{
+			var packet = new Packet(Op.NaoRevivalEntrance, creature.EntityId);
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends NaoRevivalExit to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="result"></param>
+		public static void NaoRevivalExit(Creature creature)
+		{
+			var packet = new Packet(Op.NaoRevivalExit, creature.EntityId);
+			packet.PutByte(0);
+			creature.Client.Send(packet);
+		}
 	}
 }
