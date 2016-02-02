@@ -33,7 +33,9 @@ namespace Aura.Login.Util
 	public class LoginConfFile : ConfFile
 	{
 		public int Port { get; protected set; }
+
 		public bool NewAccounts { get; protected set; }
+		public int NewAccountPoints { get; protected set; }
 		public bool EnableSecondaryPassword { get; protected set; }
 
 		public bool ConsumeCharacterCards { get; protected set; }
@@ -53,6 +55,7 @@ namespace Aura.Login.Util
 
 			this.Port = this.GetInt("port", 11000);
 			this.NewAccounts = this.GetBool("new_accounts", true);
+			this.NewAccountPoints = this.GetInt("new_account_points", 0);
 			this.EnableSecondaryPassword = this.GetBool("enable_secondary", false);
 
 			this.ConsumeCharacterCards = this.GetBool("consume_character_cards", true);

@@ -126,7 +126,9 @@ namespace Aura.Login.Network.Handlers
 
 						if (!LoginServer.Instance.Database.AccountExists(accountId) && password != "")
 						{
-							LoginServer.Instance.Database.CreateAccount(accountId, password);
+							var starterPoints = LoginServer.Instance.Conf.Login.NewAccountPoints;
+
+							LoginServer.Instance.Database.CreateAccount(accountId, password, starterPoints);
 							Log.Info("New account '{0}' was created.", accountId);
 						}
 					}
