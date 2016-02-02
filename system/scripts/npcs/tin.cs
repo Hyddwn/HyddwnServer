@@ -2,7 +2,7 @@
 // Tin
 //--- Description -----------------------------------------------------------
 // There are 2 Tins, the counter part to Nao for pets in Soul Stream
-// and the on in the Tir beginner area. Both are needed because the client
+// and the one in the Tir beginner area. Both are needed because the client
 // sends LeaveSoulStream when ending the conversation with a special NPC.
 //---------------------------------------------------------------------------
 
@@ -40,19 +40,86 @@ public class TinScript : NpcScript
 			Msg("Hey, who are you?");
 			Msg("You don't look like you're from this world. Am I right?<br/>Did you make your way down here from Soul Stream?<br/>Ahhh, so Nao sent you here!");
 			Msg("She's way too obedient to the Goddess' wishes.<br/>Anyway, she's a good girl, so be nice to her.");
+
+			Msg("Was there something else you wanted to talk about?");
+			await StartConversation();
+
+			Close(Hide.None, "Go all the way to the right and you will find Tir Chonaill. <br/>I wish you the best of luck.<br/>Have a great journey. <br/>I'll see you around...");
 		}
 		else
 		{
-			Msg("Hey, <username/>.  Were you reborn?<br/>Do you remember me?");
-			Msg("Well... your appearance changed a little bit, but you still seem the same to me.");
+			if (!HasKeyword("tutorial_present"))
+			{
+				Msg("Hey, <username/>.  Were you reborn?<br/>Do you remember me?");
+				Msg("Well... your appearance changed a little bit, but you still seem the same to me.");
 
-			// Dyes? Check CreatureStates.FreeRebirth?
+				//Msg(Hide.Name, "(Tin is slowly looking me over.)"); // mood?
+				Msg("Was there something else you wanted to talk about?");
+				await StartConversation();
+
+				// Check CreatureStates.FreeRebirth?
+
+				Msg("Hmmm... How about I give you a present since you've been reborn and all.<br/>This is a Dye you can use to dye your clothes, but unlike regular Dye, the color is already set.<br/>I'll show you ten different colors in order, so choose the one that you'd like to keep.<br/>If you don't pick one while I'm showing it to you, I won't be able to give it to you, so be sure to pick one.");
+
+				// Select color
+				var rnd = RandomProvider.Get();
+				var itemId = 63030; // Fixed Color Dye Ampoule
+				uint color = 0x000000;
+				int start = 1, max = 10;
+				var options = "<button title='Yea, I like it.' keyword='@yes'/><button title='Show me another one.' keyword='@no'/>";
+
+				for (int i = start; i <= max; ++i)
+				{
+					// There are 9 keywords to save the "progress" you make
+					// on the dyes, so you can't disconnect to get another 9
+					// chances. Once max is reached, you simply get whatever
+					// color is selected, without any chances to cheat.
+					if (i < max)
+					{
+						if (HasKeyword("Tin_ColorAmpul_" + i))
+							continue;
+
+						GiveKeyword("Tin_ColorAmpul_" + i);
+					}
+
+					// Completely random color
+					// Officials probably used a predefined list of colors.
+					// This call generates completely random colors, incl.
+					// all kinds of flashies.
+					color = (uint)rnd.Next(int.MinValue, int.MaxValue);
+
+					var image = string.Format("<image item='{0}' col1='{1:X8}'/><br/>", itemId, color);
+					var result = "@no";
+
+					if (i == 1)
+					{
+						Msg(image + "Okay, let's see...<br/>How do you like this color? Do you like it?" + options);
+						result = await Select();
+					}
+					else if (i < max)
+					{
+						Msg(image + "Well then, what about this color?<br/>This one seems nice..." + options);
+						result = await Select();
+					}
+					else
+					{
+						Msg(image + "This is the last one.<br/>Since this is the last one, you'll just have to take it.");
+						result = "@yes";
+					}
+
+					if (result == "@yes")
+						break;
+				}
+
+				// Give dye
+				Player.AcquireItem(Item.Create(itemId, color1: color));
+				GiveKeyword("tutorial_present");
+
+				Msg("I'll give you a useful book here.<br/>You know how Nao keeps giving you all sorts of rare accessories?<br/>Well, try collecting all those things in this book.");
+			}
+
+			Close(Hide.None, "I wish you the best of luck.<br/>Have a great journey.<br/>I'll see you around.");
 		}
-
-		Msg("Was there something else you wanted to talk about?");
-		await StartConversation();
-
-		End("Go all the way to the right and you will find Tir Chonaill. <br/>I wish you the best of luck.<br/>Have a great journey. <br/>I'll see you around...");
 	}
 
 	protected override async Task Keywords(string keyword)
