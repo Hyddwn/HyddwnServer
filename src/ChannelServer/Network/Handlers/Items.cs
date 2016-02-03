@@ -913,5 +913,21 @@ namespace Aura.Channel.Network.Handlers
 			// Warp
 			creature.Warp(regionId, x, y);
 		}
+
+		/// <summary>
+		/// Sent to open the cash item shop.
+		/// </summary>
+		/// <remarks>
+		/// No parameters.
+		/// </remarks>
+		[PacketHandler(Op.OpenItemShop)]
+		public void OpenItemShop(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var parameter = client.Account.Id;
+
+			Send.ServerMessage(creature, Localization.Get("The item shop isn't available yet."));
+			Send.OpenItemShopR(creature, false, null);
+		}
 	}
 }

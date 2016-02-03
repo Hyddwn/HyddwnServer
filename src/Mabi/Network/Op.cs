@@ -494,6 +494,7 @@ namespace Aura.Mabi.Network
 		public const int ContinentWarpCoolDownR = 0xA43E;
 		public const int PartyTypeUpdate = 0xA44B;
 		public const int OpenItemShop = 0xA44D;
+		public const int OpenItemShopR = 0xA44E;
 
 		// [150000~180000] Something was removed here
 

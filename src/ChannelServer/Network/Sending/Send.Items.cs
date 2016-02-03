@@ -457,5 +457,22 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Region.Broadcast(packet, creature);
 		}
+
+		/// <summary>
+		/// Sends OpenItemShopR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		/// <param name="parameter">Parameter passed to the item shop website. Set to null if not successful.</param>
+		public static void OpenItemShopR(Creature creature, bool success, string parameter)
+		{
+			var packet = new Packet(Op.OpenItemShopR, creature.EntityId);
+
+			packet.PutByte(success);
+			if (success)
+				packet.PutString(parameter);
+
+			creature.Client.Send(packet);
+		}
 	}
 }
