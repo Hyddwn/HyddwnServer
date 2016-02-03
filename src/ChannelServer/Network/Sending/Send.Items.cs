@@ -133,10 +133,15 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
-		public static void ItemPickUpR(Creature creature, bool success)
+		public static void ItemPickUpR(Creature creature, ItemPickUpResult result, long itemEntityId)
 		{
 			var packet = new Packet(Op.ItemPickUpR, creature.EntityId);
-			packet.PutByte(success ? (byte)1 : (byte)2);
+			packet.PutByte(result == ItemPickUpResult.Success);
+			if (result != ItemPickUpResult.Success)
+			{
+				packet.PutByte((byte)result);
+				packet.PutLong(itemEntityId);
+			}
 
 			creature.Client.Send(packet);
 		}
@@ -474,5 +479,18 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+	}
+
+	public enum ItemPickUpResult : byte
+	{
+		Fail = 0,
+		NotFound = 1,
+		NoSpace = 3,
+		CannotAddToInventory = 4,
+		NotYours = 4,
+		OnlyOnePer = 8,
+		OutOfRange = 9,
+
+		Success = 255,
 	}
 }

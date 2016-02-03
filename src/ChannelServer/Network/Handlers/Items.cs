@@ -147,6 +147,7 @@ namespace Aura.Channel.Network.Handlers
 			Send.ItemDropR(creature, true);
 		}
 
+		static byte x = 0;
 		/// <summary>
 		/// Sent when clicking an item on the ground, to pick it up.
 		/// </summary>
@@ -166,7 +167,7 @@ namespace Aura.Channel.Network.Handlers
 			if (!creature.Can(Locks.PickUpAndDrop))
 			{
 				Log.Debug("PickUpAndDrop locked for '{0}'.", creature.Name);
-				Send.ItemPickUpR(creature, false);
+				Send.ItemPickUpR(creature, ItemPickUpResult.Fail, entityId);
 				return;
 			}
 
@@ -174,7 +175,7 @@ namespace Aura.Channel.Network.Handlers
 			var item = creature.Region.GetItem(entityId);
 			if (item == null)
 			{
-				Send.ItemPickUpR(creature, false);
+				Send.ItemPickUpR(creature, ItemPickUpResult.NotFound, entityId);
 				return;
 			}
 
@@ -187,7 +188,7 @@ namespace Aura.Channel.Network.Handlers
 				}
 				else
 				{
-					Send.ItemPickUpR(creature, false);
+					Send.ItemPickUpR(creature, ItemPickUpResult.NotYours, entityId);
 					return;
 				}
 			}
@@ -207,9 +208,8 @@ namespace Aura.Channel.Network.Handlers
 			// Try to pick up item
 			if (!creature.Inventory.PickUp(item))
 			{
-				Send.SystemMessage(creature, Localization.Get("Not enough space."));
 				creature.Inventory.Remove(item.OptionInfo.LinkedPocketId);
-				Send.ItemPickUpR(creature, false);
+				Send.ItemPickUpR(creature, ItemPickUpResult.NoSpace, entityId);
 				return;
 			}
 
@@ -217,7 +217,7 @@ namespace Aura.Channel.Network.Handlers
 			if (item.HasTag("/key/"))
 				Send.Effect(creature, Effect.PickUpItem, (byte)1, item.Info.Id, item.Info.Color1, item.Info.Color2, item.Info.Color3);
 
-			Send.ItemPickUpR(creature, true);
+			Send.ItemPickUpR(creature, ItemPickUpResult.Success, entityId);
 		}
 
 		/// <summary>
