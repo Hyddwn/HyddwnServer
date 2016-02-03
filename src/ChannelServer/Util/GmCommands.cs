@@ -89,6 +89,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "telewalk", "", HandleTeleWalk);
 			Add(50, 50, "points", "<modificator>", HandlePoints);
 			Add(50, 50, "fillpotions", "", HandleFillPotions);
+			Add(50, 50, "keyword", "[-|+]<name>", HandleKeyword);
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", HandleDynamic);
@@ -2067,6 +2068,47 @@ namespace Aura.Channel.Util
 				Send.ServerMessage(sender, Localization.Get("Failed to create debug image, try to use a larger scale."));
 				return CommandResult.Fail;
 			}
+		}
+
+		private CommandResult HandleKeyword(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			var remove = args[1].StartsWith("-");
+			var keyword = args[1].Trim(new char[] { '-', '+' });
+
+			if (!AuraData.KeywordDb.Exists(keyword))
+			{
+				Send.ServerMessage(sender, Localization.Get("Keyword doesn't exist."));
+				return CommandResult.Okay;
+			}
+
+			var success = (remove ? target.Keywords.Remove(keyword) : target.Keywords.Give(keyword));
+			if (!success)
+			{
+				if (remove)
+					Send.ServerMessage(sender, Localization.Get("Failed to remove keyword. Maybe the target doesn't have it?"));
+				else
+					Send.ServerMessage(sender, Localization.Get("Failed to add keyword. Maybe the target already has it?"));
+			}
+			else
+			{
+				if (remove)
+				{
+					Send.ServerMessage(sender, Localization.Get("Removed keyword '{0}'."), keyword);
+					if (sender != target)
+						Send.ServerMessage(sender, Localization.Get("{0} removed your '{1}' keyword."), sender.Name, keyword);
+				}
+				else
+				{
+					Send.ServerMessage(sender, Localization.Get("Added keyword '{0}'."), keyword);
+					if (sender != target)
+						Send.ServerMessage(sender, Localization.Get("{0} gave you the keyword '{1}'."), sender.Name, keyword);
+				}
+			}
+
+			return CommandResult.Okay;
 		}
 	}
 
