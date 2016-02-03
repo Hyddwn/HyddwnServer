@@ -48,17 +48,16 @@ public class TinScript : NpcScript
 		}
 		else
 		{
-			if (!HasKeyword("tutorial_present"))
+			Msg("Hey, <username/>.  Were you reborn?<br/>Do you remember me?");
+			Msg("Well... your appearance changed a little bit, but you still seem the same to me.");
+
+			Msg("Was there something else you wanted to talk about?");
+			await StartConversation();
+
+			// Check CreatureStates.FreeRebirth?
+
+			if (!HasKeyword("tutorial_present") && !IsEnabled("NoRebirthPresent"))
 			{
-				Msg("Hey, <username/>.  Were you reborn?<br/>Do you remember me?");
-				Msg("Well... your appearance changed a little bit, but you still seem the same to me.");
-
-				//Msg(Hide.Name, "(Tin is slowly looking me over.)"); // mood?
-				Msg("Was there something else you wanted to talk about?");
-				await StartConversation();
-
-				// Check CreatureStates.FreeRebirth?
-
 				Msg("Hmmm... How about I give you a present since you've been reborn and all.<br/>This is a Dye you can use to dye your clothes, but unlike regular Dye, the color is already set.<br/>I'll show you ten different colors in order, so choose the one that you'd like to keep.<br/>If you don't pick one while I'm showing it to you, I won't be able to give it to you, so be sure to pick one.");
 
 				// Select color

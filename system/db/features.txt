@@ -320,6 +320,9 @@
 	{ name: "G13S1", enabled: true, children: [
 		{ name: "FiodhAdvanced", enabled: true },
 		{ name: "Kiosk", enabled: true },
+		{ name: "TutorialRenewal2010", enabled: true, children: [
+			{ name: "NoRebirthPresent", enabled: true },
+		]},
 	]},
 	
 	// Season 2
