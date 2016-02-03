@@ -179,6 +179,16 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check distance
+			// The client usually tries to get to the item first, but if
+			// there's an obstacle, it tries to send ItemPickUp early.
+			// We have to tell it when it's not in range yet.
+			if (!creature.GetPosition().InRange(item.GetPosition(), 200))
+			{
+				Send.ItemPickUpR(creature, ItemPickUpResult.OutOfRange, entityId);
+				return;
+			}
+
 			// Check protection
 			if (!creature.CanPickUp(item))
 			{
