@@ -221,7 +221,7 @@ namespace Aura.Channel.Skills.Life
 				else if (data.ItemData.HasTag("/silk/03/"))
 					skill.Train(5); // Successfully make Fine Silk.
 				else if (data.ItemData.HasTag("/leather_strap/02/"))
-					skill.Train(7); // Successfully make Common Leather Strap.
+					skill.Train(6); // Successfully make Common Leather Strap.
 
 				return;
 			}
@@ -229,17 +229,17 @@ namespace Aura.Channel.Skills.Life
 			if (skill.Info.Rank == SkillRank.R6)
 			{
 				if (data.ItemData.HasTag("/texture/04/"))
-					skill.Train(2); // Successfully make Finest Fabric.
+					skill.Train(1); // Successfully make Finest Fabric.
 				else if (data.ItemData.HasTag("/texture/03/"))
-					skill.Train(3); // Successfully make Fine Fabric.
+					skill.Train(2); // Successfully make Fine Fabric.
 				else if (data.ItemData.HasTag("/silk/04/"))
-					skill.Train(4); // Successfully make Finest Silk.
+					skill.Train(3); // Successfully make Finest Silk.
 				else if (data.ItemData.HasTag("/silk/03/"))
-					skill.Train(5); // Successfully make Fine Silk.
+					skill.Train(4); // Successfully make Fine Silk.
 				else if (data.ItemData.HasTag("/leather_strap/03/"))
-					skill.Train(7); // Successfully make Fine Leather Strap.
+					skill.Train(5); // Successfully make Fine Leather Strap.
 				else if (data.ItemData.HasTag("/leather_strap/02/"))
-					skill.Train(7); // Successfully make Common Leather Strap.
+					skill.Train(6); // Successfully make Common Leather Strap.
 
 				return;
 			}
@@ -291,13 +291,13 @@ namespace Aura.Channel.Skills.Life
 				if (data.ItemData.HasTag("/toughyarn/"))
 					skill.Train(1); // Successfully make Tough Thread.
 				else if (data.ItemData.HasTag("/toughband/"))
-					skill.Train(1); // Successfully make a Tough String.
+					skill.Train(2); // Successfully make a Tough String.
 				else if (data.ItemData.HasTag("/texture/04/"))
-					skill.Train(2); // Successfully make Finest Fabric.
+					skill.Train(3); // Successfully make Finest Fabric.
 				else if (data.ItemData.HasTag("/silk/04/"))
-					skill.Train(3); // Successfully make Finest Silk.
+					skill.Train(4); // Successfully make Finest Silk.
 				else if (data.ItemData.HasTag("/leather_strap/04/"))
-					skill.Train(4); // Successfully make Finest Leather Strap.
+					skill.Train(5); // Successfully make Finest Leather Strap.
 
 				return;
 			}
