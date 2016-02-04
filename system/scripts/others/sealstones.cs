@@ -21,7 +21,7 @@ public class DugaldSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Dugald Aisle", "_sealstone_dugald");
 		SetLocation(16, 19798, 4456, 1.48f);
-		SetHelp("The Seal of Dugald Aisle\n\nGet 20 ranks in skills.");
+		SetHelp("The Seal of Dugald Aisle\n\nOnly the one who has mastered various skills can break the seal.");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
