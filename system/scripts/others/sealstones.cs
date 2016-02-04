@@ -126,7 +126,7 @@ public class BangorSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Bangor", "_sealstone_bangor");
 		SetLocation(30, 39189, 17014, 1.54f);
-		SetHelp("The Seal of Bangor\n\nBangor needs archers! Eh...");
+		SetHelp("The Seal of Bangor\n\nOnly a person who aims far can break the seal.");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
