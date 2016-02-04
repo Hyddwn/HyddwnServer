@@ -174,7 +174,7 @@ public class NorthEmainSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of North Emain Macha", "_sealstone_osnasail");
 		SetLocation(70, 7844, 13621, 0);
-		SetHelp("The Seal of North Emain Macha\n\nExperience before Age.");
+		SetHelp("The Seal of North Emain Macha\n\nThose who achieve more in the same time period may break the seal.]");
 
 		if (!IsEnabled("EmainMacha"))
 			SetLock(true);
@@ -200,7 +200,7 @@ public class SouthEmainSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of South Emain Macha", "_sealstone_south_emainmacha");
 		SetLocation(53, 67830, 107710, 0);
-		SetHelp("The Seal of South Emain Macha\n\nExperience before Age.");
+		SetHelp("The Seal of South Emain Macha\n\nThose who achieve more in the same time period may break the seal.]");
 
 		if (!IsEnabled("EmainMacha"))
 			SetLock(true);
