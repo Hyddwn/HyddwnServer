@@ -46,7 +46,7 @@ public class CiarSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Ciar Dungeon", "_sealstone_ciar");
 		SetLocation(1, 28003, 30528, 0.16f);
-		SetHelp("The Seal of Ciar Dungeon\n\nGet over 35 Strength.");
+		SetHelp("The Seal of Ciar Dungeon\n\nOnly the person with strong power can destroy this Seal.");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
