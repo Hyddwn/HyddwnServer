@@ -2,6 +2,14 @@
 // Seal Stones
 //--- Description -----------------------------------------------------------
 // Restrict access to specific areas through placement of shapely rocks.
+//--- Notes -----------------------------------------------------------------
+// A player can break multiple stones only if they have the devCAT title
+// selected, or if the AllowMultiple option in SealStoneScript is set to
+// true.
+// 
+// Some stones are "locked" until certain features have been enabled,
+// which makes them unbreakable. For example, the Emain Seal Stones can't
+// be broken until the "EmainMacha" feature has been enabled.
 //---------------------------------------------------------------------------
 
 // Dugald
@@ -167,8 +175,8 @@ public class NorthEmainSealStoneScript : SealStoneScript
 		SetName("Seal Stone of North Emain Macha", "_sealstone_osnasail");
 		SetLocation(70, 7844, 13621, 0);
 		SetHelp("The Seal of North Emain Macha\n\nExperience before Age.");
-		
-		if(!IsEnabled("EmainMacha"))
+
+		if (!IsEnabled("EmainMacha"))
 			SetLock(true);
 	}
 
@@ -193,8 +201,8 @@ public class SouthEmainSealStoneScript : SealStoneScript
 		SetName("Seal Stone of South Emain Macha", "_sealstone_south_emainmacha");
 		SetLocation(53, 67830, 107710, 0);
 		SetHelp("The Seal of South Emain Macha\n\nExperience before Age.");
-		
-		if(!IsEnabled("EmainMacha"))
+
+		if (!IsEnabled("EmainMacha"))
 			SetLock(true);
 	}
 
