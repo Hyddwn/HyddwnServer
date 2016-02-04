@@ -71,7 +71,7 @@ public class RabbieSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Rabbie Dungeon", "_sealstone_rabbie");
 		SetLocation(14, 16801, 58978, 4.71f);
-		SetHelp("The Seal of Rabbie Dungeon\n\nReach level 35+.");
+		SetHelp("The Seal of Rabbie Dungeon\n\nOnly the strong can break the seal.");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
