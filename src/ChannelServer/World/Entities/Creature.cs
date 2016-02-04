@@ -1948,7 +1948,7 @@ namespace Aura.Channel.World.Entities
 				if (levelStats == null)
 					continue;
 
-				this.AbilityPoints += (short)levelStats.AP;
+				this.AbilityPoints += (short)Math2.Clamp(0, short.MaxValue, levelStats.AP * ChannelServer.Instance.Conf.World.LevelApRate);
 				this.LifeMaxBase += levelStats.Life;
 				this.ManaMaxBase += levelStats.Mana;
 				this.StaminaMaxBase += levelStats.Stamina;
@@ -2046,7 +2046,7 @@ namespace Aura.Channel.World.Entities
 			this.IntBase += int_;
 			this.WillBase += will;
 			this.LuckBase += luck;
-			this.AbilityPoints += (short)ap;
+			this.AbilityPoints += (short)Math2.Clamp(0, short.MaxValue, ap * ChannelServer.Instance.Conf.World.AgeApRate);
 
 			this.LastAging = DateTime.Now;
 

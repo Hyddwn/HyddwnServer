@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Aura.Channel.Network.Sending;
 using System.Collections.Generic;
+using Aura.Shared.Util;
 
 namespace Aura.Channel.World.Quests
 {
@@ -271,6 +272,13 @@ namespace Aura.Channel.World.Quests
 	/// <summary>
 	/// Rewards ability points
 	/// </summary>
+	/// <remarks>
+	/// The quest AP rate option is only applied when the scripts are loaded,
+	/// so the players see the actual AP they'll get if they complete the
+	/// quest. Should the rate be changed at runtime, players will still see
+	/// the previous AP amount, and will get that amount if they complete a
+	/// quest.
+	/// </remarks>
 	public class QuestRewardAp : QuestReward
 	{
 		public override RewardType Type { get { return RewardType.AP; } }
@@ -279,7 +287,7 @@ namespace Aura.Channel.World.Quests
 
 		public QuestRewardAp(short amount)
 		{
-			this.Amount = amount;
+			this.Amount = (short)Math2.Clamp(0, short.MaxValue, amount * ChannelServer.Instance.Conf.World.QuestApRate);
 		}
 
 		public override string ToString()
