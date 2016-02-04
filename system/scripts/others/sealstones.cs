@@ -151,7 +151,7 @@ public class FiodhSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Fiodh Dungeon", "_sealstone_fiodh");
 		SetLocation(30, 10696, 83099, 4.7f);
-		SetHelp("The Seal of Fiodh Dungeon\n\nGot titles?");
+		SetHelp("The Seal of Fiodh Dungeon\n\n...Honorable...only an honorable person can break this seal...");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
