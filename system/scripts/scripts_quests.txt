@@ -76,4 +76,14 @@ quests/204003_malcolm_weaving_g7.cs
 // Scroll Hunting
 quests/scrolls/*
 
+// Collection
+quests/collection/60021_make_assorted_fruits.cs
+quests/collection/60022_make_mayonnaise.cs
+quests/collection/60023_make_curry_paste.cs
+quests/collection/60024_make_a_steamed_potato.cs
+quests/collection/60025_cook_a_hard-boiled_egg.cs
+quests/collection/60026_make_some_flour_dough.cs
+quests/collection/60027_make_some_fry_batter.cs
+quests/collection/60028_make_some_rice.cs
+
 include "/user/scripts/scripts_quests.txt"
