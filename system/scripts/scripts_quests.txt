@@ -68,10 +68,10 @@ quests/ptj/church_endelyon.cs
 quests/ptj/healer_dilys.cs
 
 // Skills
-quests/20006_elen_refine.cs
-quests/20007_ranald_windmill.cs
-quests/200063_dilys_herbalism.cs
-quests/204003_malcolm_weaving_g7.cs
+quests/skills/20006_elen_refine.cs
+quests/skills/20007_ranald_windmill.cs
+quests/skills/200063_dilys_herbalism.cs
+quests/skills/204003_malcolm_weaving_g7.cs
 
 // Scroll Hunting
 quests/scrolls/*
