@@ -12,7 +12,7 @@ public class MakeSteamedPotatoQuestScript : QuestScript
 		SetScrollId(70070);
 		SetName("Make a Steamed Potato");
 		SetDescription("Do you need a Steamed Potato? If so, then please gather up [Potatoes, water, salt]. The ingredients will be exchanged for some  [Steamed Potato].");
-		SetType(QuestType.Hunting);
+		SetType(QuestType.Collect);
 
 		AddObjective("collect1", "Gather 1 Potato", 0, 0, 0, Collect(50010, 1));
 		AddObjective("collect2", "Gather 1 cup of water", 0, 0, 0, Collect(50118, 1));

@@ -12,7 +12,7 @@ public class LightningSpriteBoarScrollQuest : QuestScript
 		SetScrollId(70136);
 		SetName("Collect the Lightning Sprite's Fomor Scrolls");
 		SetDescription("The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Lightning Sprite Fomor Scrolls].");
-		SetType(QuestType.Hunting);
+		SetType(QuestType.Collect);
 
 		AddObjective("collect", "Collect 10 Lightning Sprite Fomor Scrolls", 0, 0, 0, Collect(71063, 10));
 

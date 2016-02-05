@@ -12,7 +12,7 @@ public class MakeSomeRiceQuestScript : QuestScript
 		SetScrollId(70070);
 		SetName("Make Some Rice");
 		SetDescription("Do you need to make rice? If so, then please gather up [rice, water]. The ingredients will be exchanged for some [Rice].");
-		SetType(QuestType.Hunting);
+		SetType(QuestType.Collect);
 
 		AddObjective("collect1", "Gather 1 bag of rice", 0, 0, 0, Collect(50135, 1));
 		AddObjective("collect2", "Gather 1 Bottle of water", 0, 0, 0, Collect(50118, 1));

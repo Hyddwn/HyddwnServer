@@ -12,7 +12,7 @@ public class MakeSomeFryBatterQuestScript : QuestScript
 		SetScrollId(70070);
 		SetName("Make Some Fry Batter");
 		SetDescription("Do you need some Fry Batter? If so, then please gather up [frying powder, egg, and water]. The ingredients will be exchanged for some [Fry Batter].");
-		SetType(QuestType.Hunting);
+		SetType(QuestType.Collect);
 
 		AddObjective("collect1", "Gather 1 bag of Frying Powder", 0, 0, 0, Collect(50153, 1));
 		AddObjective("collect2", "Gather 1 Egg", 0, 0, 0, Collect(50009, 1));

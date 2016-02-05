@@ -12,7 +12,7 @@ public class MakeCurryPasteQuestScript : QuestScript
 		SetScrollId(70070);
 		SetName("Make Curry Paste");
 		SetDescription("Do you need Curry Paste? If so, then please gather up [Potatoes, Meat, Curry Powder]. The ingredients will be exchanged for some [Curry Paste].");
-		SetType(QuestType.Hunting);
+		SetType(QuestType.Collect);
 
 		AddObjective("collect1", "Gather 1 Potato", 0, 0, 0, Collect(50010, 1));
 		AddObjective("collect2", "Gather 1 Pieces of Meat", 0, 0, 0, Collect(50006, 1));
