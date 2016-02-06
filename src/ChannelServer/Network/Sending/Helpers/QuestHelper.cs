@@ -62,7 +62,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			packet.PutInt(1);
 			packet.PutInt(quest.QuestItem.Info.Id);
-			packet.PutByte(quest.Data.Cancelable); // Doesn't seem to work?
+			packet.PutByte(quest.Data.Cancelable);
 			packet.PutByte(0);
 			packet.PutByte(0); // 1 = blue icon
 			packet.PutByte(0);

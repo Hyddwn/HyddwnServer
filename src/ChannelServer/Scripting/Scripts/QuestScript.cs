@@ -92,6 +92,10 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Specifies whether the quest can be canceled.
 		/// </summary>
+		/// <remarks>
+		/// The client will always show the [Give up] button if you're using
+		/// the devCAT title.
+		/// </remarks>
 		public bool Cancelable { get; protected set; }
 
 		/// <summary>
