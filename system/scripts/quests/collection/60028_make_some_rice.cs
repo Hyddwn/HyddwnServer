@@ -18,6 +18,6 @@ public class MakeSomeRiceQuestScript : QuestScript
 		AddObjective("collect2", "Gather 1 Bottle of water", 0, 0, 0, Collect(50118, 1));
 
 		AddReward(Item(50120)); // Steamed Rice
-		AddReward(Item(63020)); // Empty Bottle
+		AddReward(Item(63020), RewardOptions.Hidden); // Empty Bottle
 	}
 }

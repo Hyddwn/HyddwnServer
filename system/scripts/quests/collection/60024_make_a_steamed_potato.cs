@@ -19,6 +19,6 @@ public class MakeSteamedPotatoQuestScript : QuestScript
 		AddObjective("collect3", "Gather 1 Salt", 0, 0, 0, Collect(50132, 1));
 
 		AddReward(Item(50125)); // Steamed Potato
-		AddReward(Item(63020)); // Empty Bottle
+		AddReward(Item(63020), RewardOptions.Hidden); // Empty Bottle
 	}
 }

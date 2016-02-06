@@ -19,6 +19,6 @@ public class MakeSomeFryBatterQuestScript : QuestScript
 		AddObjective("collect3", "Gather 1 Bottle of water", 0, 0, 0, Collect(50118, 1));
 
 		AddReward(Item(50154)); // Fry Batter
-		AddReward(Item(63020)); // Empty Bottle
+		AddReward(Item(63020), RewardOptions.Hidden); // Empty Bottle
 	}
 }
