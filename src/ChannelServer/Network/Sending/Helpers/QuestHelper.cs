@@ -177,7 +177,12 @@ namespace Aura.Channel.Network.Sending.Helpers
 					packet.PutString(reward.ToString());
 					packet.PutByte((byte)reward.Result);
 					packet.PutByte(reward.Visible);
-					packet.PutByte(1);
+
+					// If false, displays "(시간초과시)" (timeout) after the
+					// reward. Probably not used anymore, maybe players could
+					// still get certain rewards after a timeout at some
+					// point?
+					packet.PutByte(true);
 				}
 			}
 
