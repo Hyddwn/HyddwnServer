@@ -138,6 +138,30 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Rewards Enchant Scroll.
+	/// </summary>
+	/// <remarks>
+	/// Uses Type and ToString from Item reward, but generates an enchant
+	/// scroll on Reward, based on the option set id, ignoring the Item
+	/// information.
+	/// </remarks>
+	public class QuestRewardEnchant : QuestRewardItem
+	{
+		public int OptionSetId { get; protected set; }
+
+		public QuestRewardEnchant(int optionSetId)
+			: base(62005, 1) // Enchant Scroll
+		{
+			this.OptionSetId = optionSetId;
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.AcquireItem(Item.CreateEnchant(OptionSetId));
+		}
+	}
+
+	/// <summary>
 	/// Rewards quest (scroll).
 	/// </summary>
 	public class QuestRewardQuestScroll : QuestReward
