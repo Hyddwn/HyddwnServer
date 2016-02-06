@@ -30,8 +30,19 @@ namespace Aura.Mabi.Const
 
 	public enum QuestType : byte
 	{
+		/// <summary>
+		/// Collection quest (blue icon)
+		/// </summary>
 		Collect = 0,
+
+		/// <summary>
+		/// PTJ?
+		/// </summary>
 		Deliver = 1,
+
+		/// <summary>
+		/// Normal quest
+		/// </summary>
 		Normal = 2,
 	}
 
