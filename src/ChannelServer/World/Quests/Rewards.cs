@@ -83,6 +83,16 @@ namespace Aura.Channel.World.Quests
 		public QuestResult Result { get; set; }
 
 		/// <summary>
+		/// Specifies whether the reward is visible on the client.
+		/// </summary>
+		/// <remarks>
+		/// Hidden rewards are still sent to the client with the quest info,
+		/// but if this switch is set, they aren't displayed, leaving a blank
+		/// space.
+		/// </remarks>
+		public bool Visible { get; set; }
+
+		/// <summary>
 		/// Gives reward to creature.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -300,5 +310,21 @@ namespace Aura.Channel.World.Quests
 			creature.GiveAp(this.Amount);
 			Send.AcquireInfo(creature, "ap", this.Amount);
 		}
+	}
+
+	[Flags]
+	public enum RewardOptions
+	{
+		None = 0,
+
+		/// <summary>
+		/// Hides reward on the client side.
+		/// </summary>
+		/// <remarks>
+		/// Hidden rewards are still sent to the client with the quest info,
+		/// but if this switch is set, they aren't displayed, leaving a blank
+		/// space.
+		/// </remarks>
+		Hidden = 1,
 	}
 }

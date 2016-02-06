@@ -404,9 +404,10 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Adds reward the player can get for completing the quest.
 		/// </summary>
 		/// <param name="reward"></param>
-		protected void AddReward(QuestReward reward)
+		/// <param name="options"></param>
+		protected void AddReward(QuestReward reward, RewardOptions options = RewardOptions.None)
 		{
-			this.AddReward(0, RewardGroupType.Item, QuestResult.Perfect, reward);
+			this.AddReward(0, RewardGroupType.Item, QuestResult.Perfect, reward, options);
 		}
 
 		/// <summary>
@@ -420,12 +421,14 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="type"></param>
 		/// <param name="result"></param>
 		/// <param name="reward"></param>
-		protected void AddReward(int groupId, RewardGroupType type, QuestResult result, QuestReward reward)
+		/// <param name="options"></param>
+		protected void AddReward(int groupId, RewardGroupType type, QuestResult result, QuestReward reward, RewardOptions options = RewardOptions.None)
 		{
 			if (!this.RewardGroups.ContainsKey(groupId))
 				this.RewardGroups[groupId] = new QuestRewardGroup(groupId, type);
 
 			reward.Result = result;
+			reward.Visible = (options & RewardOptions.Hidden) == 0;
 
 			this.RewardGroups[groupId].Add(reward);
 		}

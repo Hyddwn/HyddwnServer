@@ -176,7 +176,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 					packet.PutByte((byte)reward.Type);
 					packet.PutString(reward.ToString());
 					packet.PutByte((byte)reward.Result);
-					packet.PutByte(1);
+					packet.PutByte(reward.Visible);
 					packet.PutByte(1);
 				}
 			}
