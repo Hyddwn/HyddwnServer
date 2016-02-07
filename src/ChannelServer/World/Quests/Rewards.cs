@@ -227,7 +227,9 @@ namespace Aura.Channel.World.Quests
 		}
 	}
 
-	// Rewards gold
+	/// <summary>
+	/// Rewards gold
+	/// </summary>
 	public class QuestRewardGold : QuestReward
 	{
 		public override RewardType Type { get { return RewardType.Gold; } }
