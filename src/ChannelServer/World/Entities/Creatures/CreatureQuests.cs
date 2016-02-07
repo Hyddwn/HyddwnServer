@@ -319,14 +319,24 @@ namespace Aura.Channel.World.Entities.Creatures
 				// is removed, but not the quest.
 				_creature.Inventory.Remove(quest.QuestItem);
 
-				// Remove collected items if last objective was Collect.
-				// Should mainly apply to PTJ and scroll quests, that only
-				// have that one objective.
-				var progress = quest.CurrentObjectiveOrLast;
-				var objective = quest.Data.Objectives[progress.Ident];
-				var collectObjective = objective as QuestObjectiveCollect;
-				if (collectObjective != null)
+				// Remove collected items for Collect objectives at the end
+				// of the objectives. This way all items that were to be
+				// collected are removed automatically, unless the last
+				// objectives are different, like Talk, in which case the
+				// NPC should control what happens.
+				// Starts at the last objective and goes back until the first
+				// one or a non-Collect objective is reached.
+				for (var i = quest.Data.Objectives.Count - 1; i >= 0; --i)
+				{
+					var progress = quest.GetProgress(i);
+					var objective = quest.Data.Objectives[progress.Ident];
+
+					var collectObjective = objective as QuestObjectiveCollect;
+					if (collectObjective == null)
+						break;
+
 					_creature.Inventory.Remove(collectObjective.ItemId, Math.Min(collectObjective.Amount, progress.Count));
+				}
 
 				ChannelServer.Instance.Events.OnPlayerCompletesQuest(_creature, quest.Id);
 			}

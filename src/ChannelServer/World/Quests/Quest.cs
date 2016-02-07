@@ -152,6 +152,7 @@ namespace Aura.Channel.World.Quests
 
 		/// <summary>
 		/// Returns progress for objective.
+		/// Returns null if objective doesn't exist.
 		/// </summary>
 		/// <param name="objective"></param>
 		/// <returns></returns>
@@ -160,6 +161,20 @@ namespace Aura.Channel.World.Quests
 			QuestObjectiveProgress result;
 			_progresses.TryGetValue(objective, out result);
 			return result;
+		}
+
+		/// <summary>
+		/// Returns progress for objective by index.
+		/// Returns null if out of bounds.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public QuestObjectiveProgress GetProgress(int index)
+		{
+			if (index < 0 || index > _progresses.Count - 1)
+				return null;
+
+			return _progresses[index];
 		}
 
 		/// <summary>
