@@ -134,6 +134,24 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestAvailability Availability { get; set; }
 
 		/// <summary>
+		/// Returns true if this quest is a party quest.
+		/// </summary>
+		/// <remarks>
+		/// Party quests don't have a unique type, but they do have a
+		/// unique id range, which we can use to identify them.
+		/// </remarks>
+		public bool IsPartyQuest { get { return Math2.Between(this.Id, 100001, 109999); } }
+
+		/// <summary>
+		/// Returns true if this quest is a guild quest.
+		/// </summary>
+		/// <remarks>
+		/// Guild quests don't have a unique type, but they do have a
+		/// unique id range, which we can use to identify them.
+		/// </remarks>
+		public bool IsGuildQuest { get { return Math2.Between(this.Id, 110000, 119999); } }
+
+		/// <summary>
 		/// Creates a new quest script instance.
 		/// </summary>
 		public QuestScript()
