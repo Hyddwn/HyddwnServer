@@ -59,6 +59,7 @@ namespace Aura.Channel.Util.Configuration.Files
 
 		public float PartyExpBonus { get; protected set; }
 		public int PartyMaxSize { get; protected set; }
+		public int PartyQuestMinSize { get; protected set; }
 
 		public void Load()
 		{
@@ -114,6 +115,7 @@ namespace Aura.Channel.Util.Configuration.Files
 
 			this.PartyExpBonus = this.GetFloat("party_exp_bonus", 0);
 			this.PartyMaxSize = Math2.Clamp(1, 99, this.GetInt("party_max_size", 8));
+			this.PartyQuestMinSize = Math2.Clamp(1, this.PartyMaxSize, this.GetInt("party_quest_min_size", 2));
 		}
 	}
 }

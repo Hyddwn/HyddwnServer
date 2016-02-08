@@ -504,6 +504,7 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 			var quest = creature.Quests.GetSafe(uniqueQuestId);
+			var min = ChannelServer.Instance.Conf.World.PartyQuestMinSize;
 
 			// Check party
 			if (!creature.IsInParty)
@@ -514,9 +515,9 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Check party members
-			if (creature.Party.MemberCount < 2)
+			if (creature.Party.MemberCount < min)
 			{
-				Send.MsgBox(creature, Localization.Get("Your party must consist of 2 or more members\nto register a party quest."));
+				Send.MsgBox(creature, Localization.Get("Your party must consist of {0} or more members\nto register a party quest."), min);
 				Send.PartySetQuestR(creature, false);
 				return;
 			}
