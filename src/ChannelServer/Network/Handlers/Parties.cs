@@ -196,7 +196,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Add
-			partyLeader.Party.AddMember(creature, password);
+			party.AddMember(creature);
 
 			// Response and party update
 			Send.PartyJoinR(creature, PartyJoinResult.Success);

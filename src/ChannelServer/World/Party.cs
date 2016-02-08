@@ -319,9 +319,8 @@ namespace Aura.Channel.World
 		/// Adds creature to party and updates the clients.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="password"></param>
 		/// <returns></returns>
-		public void AddMember(Creature creature, string password)
+		public void AddMember(Creature creature)
 		{
 			this.AddMemberSilent(creature);
 			Send.PartyJoinUpdateMembers(creature);
