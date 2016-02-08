@@ -188,5 +188,26 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			packet.PutByte(0);
 		}
+
+		public static void AddQuestUpdate(this Packet packet, Quest quest)
+		{
+			var progress = quest.GetList();
+
+			packet.PutLong(quest.UniqueId);
+			packet.PutByte(1);
+			packet.PutInt(progress.Count);
+			foreach (var p in progress)
+			{
+				packet.PutInt(p.Count);
+				// [180600, NA187 (25.06.2014)] ?
+				{
+					packet.PutFloat(0);
+				}
+				packet.PutByte(p.Done);
+				packet.PutByte(p.Unlocked);
+			}
+			packet.PutByte(0);
+			packet.PutByte(0);
+		}
 	}
 }

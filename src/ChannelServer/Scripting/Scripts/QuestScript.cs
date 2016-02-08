@@ -762,7 +762,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="args"></param>
 		private void OnCreatureGathered(CollectEventArgs args)
 		{
-			var quests = args.Creature.Quests.GetAllIncomplete(this.Id);
+			var creature = args.Creature;
+
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
 				var progress = quest.CurrentObjectiveOrLast;
@@ -778,7 +780,7 @@ namespace Aura.Channel.Scripting.Scripts
 					if (progress.Count == gatherObjective.Amount)
 						quest.SetDone(progress.Ident);
 
-					UpdateQuest(args.Creature, quest);
+					UpdateQuest(creature, quest);
 				}
 			}
 		}

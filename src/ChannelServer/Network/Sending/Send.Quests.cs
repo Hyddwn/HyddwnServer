@@ -38,26 +38,23 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="quest"></param>
 		public static void QuestUpdate(Creature creature, Quest quest)
 		{
-			var progress = quest.GetList();
-
 			var packet = new Packet(Op.QuestUpdate, creature.EntityId);
-			packet.PutLong(quest.UniqueId);
-			packet.PutByte(1);
-			packet.PutInt(progress.Count);
-			foreach (var p in progress)
-			{
-				packet.PutInt(p.Count);
-				// [180600, NA187 (25.06.2014)] ?
-				{
-					packet.PutFloat(0);
-				}
-				packet.PutByte(p.Done);
-				packet.PutByte(p.Unlocked);
-			}
-			packet.PutByte(0);
-			packet.PutByte(0);
+			packet.AddQuestUpdate(quest);
 
 			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Broadcasts QuestUpdate in party.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="quest"></param>
+		public static void QuestUpdate(Party party, Quest quest)
+		{
+			var packet = new Packet(Op.QuestUpdate, 0);
+			packet.AddQuestUpdate(quest);
+
+			party.Broadcast(packet, true);
 		}
 
 		/// <summary>
