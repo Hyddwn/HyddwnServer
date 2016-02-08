@@ -560,6 +560,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Updates quest on client(s), depending on its type.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="quest"></param>
+		private void UpdateQuest(Creature creature, Quest quest)
+		{
+			Send.QuestUpdate(creature, quest);
+		}
+
+		/// <summary>
 		/// Checks and updates current obective's count.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -628,7 +638,7 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 
 				if (progress.Count != prevCount)
-					Send.QuestUpdate(creature, quest);
+					UpdateQuest(creature, quest);
 			}
 		}
 
@@ -657,7 +667,7 @@ namespace Aura.Channel.Scripting.Scripts
 				if (progress.Count >= objective.Amount)
 					quest.SetDone(progress.Ident);
 
-				Send.QuestUpdate(killer, quest);
+				UpdateQuest(killer, quest);
 			}
 		}
 
@@ -741,7 +751,7 @@ namespace Aura.Channel.Scripting.Scripts
 				if (!progress.Done && item.HasTag(equipObjective.Tag))
 				{
 					quest.SetDone(progress.Ident);
-					Send.QuestUpdate(creature, quest);
+					UpdateQuest(creature, quest);
 				}
 			}
 		}
@@ -768,7 +778,7 @@ namespace Aura.Channel.Scripting.Scripts
 					if (progress.Count == gatherObjective.Amount)
 						quest.SetDone(progress.Ident);
 
-					Send.QuestUpdate(args.Creature, quest);
+					UpdateQuest(args.Creature, quest);
 				}
 			}
 		}
@@ -795,7 +805,7 @@ namespace Aura.Channel.Scripting.Scripts
 				if (!progress.Done && skill.Info.Id == useSkillObjective.Id)
 				{
 					quest.SetDone(progress.Ident);
-					Send.QuestUpdate(creature, quest);
+					UpdateQuest(creature, quest);
 				}
 			}
 		}
