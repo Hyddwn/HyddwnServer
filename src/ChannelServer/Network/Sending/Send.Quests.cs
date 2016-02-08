@@ -219,5 +219,58 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends PartySetQuestR to creature's client.
+		/// </summary>
+		/// <param name="party"></param>
+		/// <param name="success"></param>
+		public static void PartySetQuestR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.PartySetQuestR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends PartyUnsetQuestR to creature's client.
+		/// </summary>
+		/// <param name="party"></param>
+		/// <param name="success"></param>
+		public static void PartyUnsetQuestR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.PartyUnsetQuestR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Broadcasts PartySetActiveQuest in party.
+		/// </summary>
+		/// <param name="party"></param>
+		/// <param name="uniqueQuestId"></param>
+		public static void PartySetActiveQuest(Party party, long uniqueQuestId)
+		{
+			var packet = new Packet(Op.PartySetActiveQuest, 0);
+			packet.PutLong(uniqueQuestId);
+
+			party.Broadcast(packet, true);
+		}
+
+		/// <summary>
+		/// Broadcasts PartyUnsetActiveQuest in party.
+		/// </summary>
+		/// <param name="party"></param>
+		/// <param name="uniqueQuestId"></param>
+		public static void PartyUnsetActiveQuest(Party party, long uniqueQuestId)
+		{
+			var packet = new Packet(Op.PartyUnsetActiveQuest, 0);
+			packet.PutLong(uniqueQuestId);
+			packet.PutByte(1);
+
+			party.Broadcast(packet, true);
+		}
 	}
 }
