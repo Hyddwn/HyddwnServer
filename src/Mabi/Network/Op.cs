@@ -381,6 +381,12 @@ namespace Aura.Mabi.Network
 		public const int PartyWantedHide = 0x8EAC;
 		public const int PartyWantedHideR = 0x8EAD;
 		public const int PartyWantedClosed = 0x8EAE;
+		public const int PartySetQuest = 0x8EAF;
+		public const int PartySetQuestR = 0x8EB0;
+		public const int PartySetActiveQuest = 0x8EB1;
+		public const int PartyUnsetQuest = 0x8EB2;
+		public const int PartyUnsetQuestR = 0x8EB3;
+		public const int PartyUnsetActiveQuest = 0x8EB4;
 		public const int PartyChangeFinish = 0x8EB5;
 		public const int PartyChangeFinishR = 0x8EB6;
 		public const int PartyFinishUpdate = 0x8EB7;
