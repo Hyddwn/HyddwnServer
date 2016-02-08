@@ -63,6 +63,12 @@ namespace Aura.Channel.World.Quests
 		}
 
 		/// <summary>
+		/// Returns true if any progress has been made towards completing
+		/// the quest.
+		/// </summary>
+		public bool HasProgress { get { return _progresses.Values.Any(a => a.Done || a.Count != 0); } }
+
+		/// <summary>
 		/// Returns progress for current objective or null,
 		/// if all objectives are done.
 		/// </summary>

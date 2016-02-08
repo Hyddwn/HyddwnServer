@@ -173,6 +173,20 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends negative ItemDropR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="failMessage"></param>
+		public static void ItemDropR(Creature creature, string failMessage)
+		{
+			var packet = new Packet(Op.ItemDropR, creature.EntityId);
+			packet.PutByte(false);
+			packet.PutString(failMessage);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends ItemDestroyR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

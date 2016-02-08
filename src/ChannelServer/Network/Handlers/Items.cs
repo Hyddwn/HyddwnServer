@@ -133,6 +133,16 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check quest items for progress, you can't drop quests that
+			// have been "started". If you can get rid of the progress,
+			// e.g. by dropping all items that were to be collected,
+			// you can drop the quest.
+			if (item.Quest != null && item.Quest.HasProgress)
+			{
+				Send.ItemDropR(creature, Localization.Get("You cannot drop a quest that has already started."));
+				return;
+			}
+
 			// Try to remove item
 			if (!creature.Inventory.Remove(item))
 			{
