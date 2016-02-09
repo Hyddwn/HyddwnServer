@@ -443,18 +443,28 @@ namespace Aura.Channel.World.Entities.Creatures
 			if (rewards.Count == 0)
 				return;
 
-			if (owl)
-				Send.QuestOwlComplete(_creature, quest.UniqueId);
+			// Create list of creatures that will get the rewards.
+			var creatures = new List<Creature>();
+			if (quest.Data.IsPartyQuest)
+				creatures.AddRange(_creature.Party.GetMembers());
+			else
+				creatures.Add(_creature);
 
-			foreach (var reward in rewards)
+			foreach (var creature in creatures)
 			{
-				try
+				if (owl)
+					Send.QuestOwlComplete(_creature, quest.UniqueId);
+
+				foreach (var reward in rewards)
 				{
-					reward.Reward(_creature, quest);
-				}
-				catch (NotImplementedException)
-				{
-					Log.Unimplemented("Quest.Complete: Reward '{0}'.", reward.Type);
+					try
+					{
+						reward.Reward(_creature, quest);
+					}
+					catch (NotImplementedException)
+					{
+						Log.Unimplemented("Quest.Complete: Reward '{0}'.", reward.Type);
+					}
 				}
 			}
 		}
