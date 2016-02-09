@@ -256,16 +256,14 @@ public class TreforShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		// Party Quest
-		//AddQuest("Party Quest", InsertQuestId, 5);  // [10 White Spiders]
-		//AddQuest("Party Quest", InsertQuestId, 10); // [30 White Spiders]
-		//AddQuest("Party Quest", InsertQuestId, 5);  // [10 Black Spiders]
-		//AddQuest("Party Quest", InsertQuestId, 10); // [30 Black Spiders]
-		//AddQuest("Party Quest", InsertQuestId, 5);  // [10 Red Spiders]
-		//AddQuest("Party Quest", InsertQuestId, 20); // [30 Red Spiders]
-		//AddQuest("Party Quest", InsertQuestId, 20); // [Hunt 100 Coyotes]
+		AddQuest("Party Quest", 100013, 5);  // [PQ] Hunt White Spiders (10)
+		AddQuest("Party Quest", 100014, 10); // [PQ] Hunt White Spiders (30)
+		AddQuest("Party Quest", 100015, 5);  // [PQ] Hunt Black Spiders (10)
+		AddQuest("Party Quest", 100016, 10); // [PQ] Hunt Black Spiders (30)
+		AddQuest("Party Quest", 100017, 5);  // [PQ] Hunt Red Spiders (10)
+		AddQuest("Party Quest", 100018, 20); // [PQ] Hunt Red Spiders (30)
+		AddQuest("Party Quest", 100055, 20); // [PQ] Hunt Down the Coyotes (100)
 
-		// Etc.
 		Add("Etc.", 1051); // Battle Arena: Aim for a Giant Star
 	}
 }

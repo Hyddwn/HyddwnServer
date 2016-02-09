@@ -75,6 +75,7 @@ quests/skills/204003_malcolm_weaving_g7.cs
 
 // Scroll Hunting
 quests/scrolls/*
+quests/party/*
 
 // Collection
 quests/collection/60021_make_assorted_fruits.cs
