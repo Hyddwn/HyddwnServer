@@ -34,7 +34,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 			// Bingo: 9
 			// GameQuest: 2|4|5
 			// GuildQuest: 0 (id >= 110001 < 120000?)
-			// PartyQuest: 0 (id >= 100000 < 110000?)
+			// PartyQuest: 0 (id >= 100000 < 110000?), blue icon with party symbol, turns yellow if active
 
 			packet.PutInt(quest.Id); // Range is important for the tabs.
 			// 201000~201999 : event
