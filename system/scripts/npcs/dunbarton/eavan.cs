@@ -266,19 +266,16 @@ public class EavanShop : NpcShopScript
 		AddQuest("Quest", 71065, 30); // Collect the Fire Sprite's Fomor Scrolls
 		AddQuest("Quest", 71066, 30); // Collect the Flying Sword's Fomor Scrolls
 
-		//AddQuest("Party Quest", InsertQuestId, 30);   // [PQ] Hunt Down the Skeletons
-		//AddQuest("Party Quest", InsertQuestId, 30);   // [PQ] Hunt Down the Red Skeletons
-		//AddQuest("Party Quest", InsertQuestId, 30);   // [PQ] Hunt Down the Metal Skeletons
-		//AddQuest("Party Quest", InsertQuestId, 30);   // [PQ] Hunt Down the Skeleton Wolves
-		//AddQuest("Party Quest", InsertQuestId, 30);   // [PQ] Hunt Skeletons
-		//AddQuest("Party Quest", InsertQuestId, 5);    // [PQ] Hunt Down the Gold Goblins
-		//AddQuest("Party Quest", InsertQuestId, 30);   // [PQ] Hunt Down the Kobolds
-		//AddQuest("Party Quest", InsertQuestId, 30);   // [PQ] Hunt Down the Poison Kobolds
-		//AddQuest("Party Quest", InsertQuestId, 30);   // [PQ] Hunt Kobolds
-		//AddQuest("Party Quest", InsertQuestId, 500);  // [PQ] Defeat the Lycanthrope (Hard Mode)
-		//AddQuest("Party Quest", InsertQuestId, 500);  // [PQ] Defeat the Black Succubus
-		//AddQuest("Party Quest", InsertQuestId, 500);  // [PQ] Defeat the Red Succubus
-		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the Red Succubus
+		AddQuest("Party Quest", 100026, 30);  // [PQ] Hunt Down the Skeletons (30)
+		AddQuest("Party Quest", 100028, 30);  // [PQ] Hunt Down the Red Skeletons (30)
+		AddQuest("Party Quest", 100030, 30);  // [PQ] Hunt Down the Metal Skeletons (30)
+		AddQuest("Party Quest", 100045, 30);  // [PQ] Hunt Down the Skeleton Wolves (30)
+		AddQuest("Party Quest", 100047, 30);  // [PQ] Hunt Skeletons (30)
+		AddQuest("Party Quest", 100041, 5);   // [PQ] Hunt Down the Gold Goblins (10)
+		AddQuest("Party Quest", 100042, 30);  // [PQ] Hunt Down the Kobolds (30)
+		AddQuest("Party Quest", 100043, 30);  // [PQ] Hunt Down the Poison Kobolds (30)
+		AddQuest("Party Quest", 100046, 30);  // [PQ] Hunt Kobolds (30)
+		AddQuest("Party Quest", 100086, 500); // [PQ] Defeat the Lycanthrope (Rabbie Basic)
 
 		Add("Gift", 52014); // Teddy Bear
 		Add("Gift", 52016); // Bunny Doll
@@ -305,6 +302,13 @@ public class EavanShop : NpcShopScript
 			Add("Arena", 63050, 20);  // Rabbie Battle Arena Coin x20
 			Add("Arena", 63050, 50);  // Rabbie Battle Arena Coin x50
 			Add("Arena", 63050, 100); // Rabbie Battle Arena Coin x100
+		}
+
+		if (IsEnabled("RabbieAdvanced"))
+		{
+			AddQuest("Party Quest", 100087, 500);  // [PQ] Defeat the Black Succubus (Rabbie Adv. for 2)
+			AddQuest("Party Quest", 100088, 500);  // [PQ] Defeat the Red Succubus (Rabbie Adv. for 3)
+			AddQuest("Party Quest", 100089, 1000); // [PQ] Defeat the Red Succubus (Rabbie Adv.)
 		}
 	}
 }

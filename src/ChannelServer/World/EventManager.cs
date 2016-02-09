@@ -11,6 +11,7 @@ using Aura.Channel.World.Entities;
 using Aura.Channel.Skills;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
+using Aura.Channel.World.Dungeons;
 
 namespace Aura.Channel.World
 {
@@ -140,6 +141,12 @@ namespace Aura.Channel.World
 		/// </summary>
 		public event Action<Creature, Skill> PlayerUsedSkill;
 		public void OnPlayerUsedSkill(Creature creature, Skill skill) { PlayerUsedSkill.Raise(creature, skill); }
+
+		/// <summary>
+		/// Raised when player cleared a dungeon.
+		/// </summary>
+		public event Action<Creature, Dungeon> PlayerClearedDungeon;
+		public void OnPlayerClearedDungeon(Creature creature, Dungeon dungeon) { PlayerClearedDungeon.Raise(creature, dungeon); }
 
 		// ------------------------------------------------------------------
 

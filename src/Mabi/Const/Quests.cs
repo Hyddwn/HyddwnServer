@@ -10,6 +10,7 @@ namespace Aura.Mabi.Const
 		Talk = 3,
 		Deliver = 4,
 		ReachRank = 9,
+		ClearDungeon = 13,
 		ReachLevel = 15,
 		Equip = 31,
 		Gather = 32,

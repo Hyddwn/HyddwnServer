@@ -231,7 +231,9 @@
 // Generation 8
 { name: "G8", enabled: false, children: [
 	// Season 1
-	{ name: "G8S1", enabled: true, children: []},
+	{ name: "G8S1", enabled: true, children: [
+		{ name: "HardModeDungeons", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G8S2", enabled: true, children: [

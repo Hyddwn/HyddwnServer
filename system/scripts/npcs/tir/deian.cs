@@ -315,13 +315,13 @@ public class DeianShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		//AddQuest("Party Quest", InsertQuestId, 5);  // Party Quest [10 Gray Wolves]
-		//AddQuest("Party Quest", InsertQuestId, 10); // Party Quest [10 White Wolves]
-		//AddQuest("Party Quest", InsertQuestId, 10); // Party Quest [30 White Wolves]
-		//AddQuest("Party Quest", InsertQuestId, 15); // Party Quest [10 Black Wolves]
-		//AddQuest("Party Quest", InsertQuestId, 20); // Party Quest [30 Gray Wolves]
-		//AddQuest("Party Quest", InsertQuestId, 20); // Party Quest [30 Brown Dire Wolves]
-		//AddQuest("Party Quest", InsertQuestId, 50); // Party Quest [30 Black Wolves]
+		AddQuest("Party Quest", 100007, 5); // [PQ] Hunt Gray Wolves (10)
+		AddQuest("Party Quest", 100008, 20); // [PQ] Hunt Gray Wolves (30)
+		AddQuest("Party Quest", 100009, 15); // [PQ] Hunt Black Wolves (10)
+		AddQuest("Party Quest", 100010, 50); // [PQ] Hunt Black Wolves (30)
+		AddQuest("Party Quest", 100011, 10); // [PQ] Hunt White Wolves (10)
+		AddQuest("Party Quest", 100012, 10); // [PQ] Hunt White Wolves (30)
+		AddQuest("Party Quest", 100035, 20); // [PQ] Hunt Down the Brown Dire Wolves (30)
 
 		Add("Gathering Tools", 40023); // Gathering Knife
 	}

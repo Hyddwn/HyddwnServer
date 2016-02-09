@@ -87,6 +87,34 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Removes quest from manager and updates client, returns false
+		/// if quest doesn't exist in this manager.
+		/// </summary>
+		/// <param name="quest"></param>
+		/// <returns></returns>
+		public bool Remove(Quest quest)
+		{
+			lock (_quests)
+			{
+				// Try to remove quest
+				if (_quests.Remove(quest))
+				{
+					Send.QuestClear(_creature, quest.UniqueId);
+
+					// Removing the item will silently fail if creature
+					// doesn't have it. We don't really care at this point,
+					// and if the quest is a party quest, only the leader
+					// has the quest item.
+					_creature.Inventory.Remove(quest.QuestItem);
+
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Returns true if creature has quest with the given quest id,
 		/// completed or not.
 		/// </summary>
@@ -358,8 +386,10 @@ namespace Aura.Channel.World.Entities.Creatures
 			// Remove quest item on success, which will also remove the
 			// quest from the manager.
 			if (success)
+			{
+				quest.State = QuestState.Complete;
 				_creature.Inventory.Remove(quest.QuestItem);
-
+			}
 			return success;
 		}
 
@@ -392,6 +422,10 @@ namespace Aura.Channel.World.Entities.Creatures
 			// Remove from quest log.
 			Send.QuestClear(_creature, quest.UniqueId);
 
+			// Unset party quest
+			if (quest.Data.IsPartyQuest)
+				_creature.Party.UnsetPartyQuest();
+
 			// Update PTJ stuff and stop clock
 			if (quest.Data.Type == QuestType.Deliver)
 			{
@@ -415,18 +449,28 @@ namespace Aura.Channel.World.Entities.Creatures
 			if (rewards.Count == 0)
 				return;
 
-			if (owl)
-				Send.QuestOwlComplete(_creature, quest.UniqueId);
+			// Create list of creatures that will get the rewards.
+			var creatures = new List<Creature>();
+			if (quest.Data.IsPartyQuest)
+				creatures.AddRange(_creature.Party.GetMembers());
+			else
+				creatures.Add(_creature);
 
-			foreach (var reward in rewards)
+			foreach (var creature in creatures)
 			{
-				try
+				if (owl)
+					Send.QuestOwlComplete(creature, quest.UniqueId);
+
+				foreach (var reward in rewards)
 				{
-					reward.Reward(_creature, quest);
-				}
-				catch (NotImplementedException)
-				{
-					Log.Unimplemented("Quest.Complete: Reward '{0}'.", reward.Type);
+					try
+					{
+						reward.Reward(creature, quest);
+					}
+					catch (NotImplementedException)
+					{
+						Log.Unimplemented("Quest.Complete: Reward '{0}'.", reward.Type);
+					}
 				}
 			}
 		}

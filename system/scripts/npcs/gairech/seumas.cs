@@ -302,14 +302,14 @@ public class SeumasShop : NpcShopScript
 		AddQuest("Quest", 71061, 30); // Collect the Wood Jackal's Fomor Scrolls
 		AddQuest("Quest", 71062, 30); // Collect the Wild Boar's Fomor Scrolls
 
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Skeletons
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Brown Dire Wolves
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Skeleton Wolves
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Dire Wolves
-		//AddQuest("Party Quest", InsertQuestId, 50); // [PQ] Hunt Down the Dire Wolves and the Grizzly Bears
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Werewolves
-		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Wood Jackals
-		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Blue Dire Wolves
-		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Burgundy Dire Wolves
+		AddQuest("Party Quest", 100026, 30); // [PQ] Hunt Down the Skeletons (30)
+		AddQuest("Party Quest", 100035, 20); // [PQ] Hunt Down the Brown Dire Wolves (30)
+		AddQuest("Party Quest", 100045, 30); // [PQ] Hunt Down the Skeleton Wolves (30)
+		AddQuest("Party Quest", 100052, 30); // [PQ] Hunt Down the Dire Wolves (40)
+		AddQuest("Party Quest", 100053, 50); // [PQ] Hunt Down the Dire Wolves and the Grizzly Bears (40)
+		AddQuest("Party Quest", 100062, 20); // [PQ] Hunt Down the Werewolves (10)
+		AddQuest("Party Quest", 100063, 10); // [PQ] Hunt Down the Wood Jackals (30)
+		AddQuest("Party Quest", 100064, 10); // [PQ] Hunt Down the Blue Dire Wolves (30)
+		AddQuest("Party Quest", 100065, 10); // [PQ] Hunt Down the Burgundy Dire Wolves (30)
 	}
 }

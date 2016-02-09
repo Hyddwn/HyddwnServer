@@ -15,6 +15,7 @@ using Aura.Channel.Network.Sending;
 using System.Threading;
 using Aura.Channel.Skills;
 using Aura.Channel.World;
+using Aura.Channel.World.Dungeons;
 
 namespace Aura.Channel.Scripting.Scripts
 {
@@ -216,6 +217,7 @@ namespace Aura.Channel.Scripting.Scripts
 			ChannelServer.Instance.Events.PlayerEquipsItem -= this.OnPlayerEquipsItem;
 			ChannelServer.Instance.Events.CreatureGathered -= this.OnCreatureGathered;
 			ChannelServer.Instance.Events.PlayerUsedSkill -= this.OnPlayerUsedSkill;
+			ChannelServer.Instance.Events.PlayerClearedDungeon -= this.OnPlayerClearedDungeon;
 		}
 
 		// Setup
@@ -415,6 +417,12 @@ namespace Aura.Channel.Scripting.Scripts
 				ChannelServer.Instance.Events.PlayerUsedSkill += this.OnPlayerUsedSkill;
 			}
 
+			if (objective.Type == ObjectiveType.ClearDungeon)
+			{
+				ChannelServer.Instance.Events.PlayerClearedDungeon -= this.OnPlayerClearedDungeon;
+				ChannelServer.Instance.Events.PlayerClearedDungeon += this.OnPlayerClearedDungeon;
+			}
+
 			this.Objectives.Add(ident, objective);
 		}
 
@@ -511,6 +519,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestObjective Equip(string tag) { return new QuestObjectiveEquip(tag); }
 		protected QuestObjective Gather(int itemId, int amount) { return new QuestObjectiveGather(itemId, amount); }
 		protected QuestObjective UseSkill(SkillId skillId) { return new QuestObjectiveUseSkill(skillId); }
+		protected QuestObjective ClearDungeon(string dungeonName) { return new QuestObjectiveClearDungeon(dungeonName); }
 
 		// Reward Factory
 		// ------------------------------------------------------------------
@@ -566,7 +575,31 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="quest"></param>
 		private void UpdateQuest(Creature creature, Quest quest)
 		{
-			Send.QuestUpdate(creature, quest);
+			if (!this.IsPartyQuest)
+				Send.QuestUpdate(creature, quest);
+			else
+				Send.QuestUpdate(creature.Party, quest);
+		}
+
+		/// <summary>
+		/// Returns true if creature can make progress on this quest.
+		/// </summary>
+		/// <remarks>
+		/// Used from objective event handlers, to see if the quest should
+		/// receive the progress.
+		/// </remarks>
+		/// <param name="creature"></param>
+		/// <param name="quest"></param>
+		/// <returns></returns>
+		private bool CanMakeProgress(Creature creature, Quest quest)
+		{
+			// Party quests can only make progress if they're active
+			if (this.IsPartyQuest)
+				return (creature.IsInParty && creature.Party.Quest == quest);
+
+			// TODO: Guild quests, outside, delay
+
+			return true;
 		}
 
 		/// <summary>
@@ -581,6 +614,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
 				var progress = quest.CurrentObjectiveOrLast;
 				if (progress == null) return;
 
@@ -654,6 +690,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var quests = killer.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(killer, quest))
+					continue;
+
 				var progress = quest.CurrentObjective;
 				if (progress == null) return;
 
@@ -741,6 +780,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
 				var progress = quest.CurrentObjectiveOrLast;
 				if (progress == null) return;
 
@@ -762,9 +804,14 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="args"></param>
 		private void OnCreatureGathered(CollectEventArgs args)
 		{
-			var quests = args.Creature.Quests.GetAllIncomplete(this.Id);
+			var creature = args.Creature;
+
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
 				var progress = quest.CurrentObjectiveOrLast;
 				if (progress == null) return;
 
@@ -778,7 +825,7 @@ namespace Aura.Channel.Scripting.Scripts
 					if (progress.Count == gatherObjective.Amount)
 						quest.SetDone(progress.Ident);
 
-					UpdateQuest(args.Creature, quest);
+					UpdateQuest(creature, quest);
 				}
 			}
 		}
@@ -795,6 +842,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
 				var progress = quest.CurrentObjectiveOrLast;
 				if (progress == null) return;
 
@@ -803,6 +853,37 @@ namespace Aura.Channel.Scripting.Scripts
 
 				var useSkillObjective = (objective as QuestObjectiveUseSkill);
 				if (!progress.Done && skill.Info.Id == useSkillObjective.Id)
+				{
+					quest.SetDone(progress.Ident);
+					UpdateQuest(creature, quest);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates ClearDungeon objectives.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="dungeon"></param>
+		private void OnPlayerClearedDungeon(Creature creature, Dungeon dungeon)
+		{
+			if (creature == null || dungeon == null)
+				return;
+
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
+			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
+
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null || objective.Type != ObjectiveType.ClearDungeon) return;
+
+				var clearDungeonObjective = (objective as QuestObjectiveClearDungeon);
+				if (!progress.Done && dungeon.Name.ToLower() == clearDungeonObjective.DungeonName.ToLower())
 				{
 					quest.SetDone(progress.Ident);
 					UpdateQuest(creature, quest);

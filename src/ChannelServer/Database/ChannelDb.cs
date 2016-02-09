@@ -831,10 +831,13 @@ namespace Aura.Channel.Database
 						continue;
 					}
 
-					// Don't save scroll hunting quests
+					// Don't save completed collection quests, they would
+					// just fill up the db over time and we don't need to
+					// know how often these quests were done. Should that
+					// change, we should add a new table for it.
 					// TODO: Would it be better to use a general "repeatable"
 					//   setting to decide which quests not to save?
-					if (quest.Data.Type == QuestType.Collect && quest.Id >= 71001 && quest.Id <= 71075)
+					if (quest.Data.Type == QuestType.Collect && quest.State == QuestState.Complete)
 						continue;
 
 					using (var cmd = new InsertCommand("INSERT INTO `quests` {0}", conn, transaction))

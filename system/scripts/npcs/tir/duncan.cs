@@ -55,7 +55,7 @@ public class DuncanBaseScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				switch(Title)
+				switch (Title)
 				{
 					case 11002: // the Savior of Erinn
 						Msg("Oh. <username/>! You finally did it...<br/>I can't believe you became the Knight of Light and saved Erinn...<br/>Nao would be so proud.");
@@ -390,8 +390,6 @@ public class DuncanShop : NpcShopScript
 		AddQuest("Quest", 71035, 30); // Collect the Gray Town Rat's Fomor Scrolls
 		AddQuest("Quest", 71037, 30); // Collect the Goblin's Fomor Scrolls
 		AddQuest("Quest", 71038, 30); // Poison Goblin's Fomor Scrolls
-		if (IsEnabled("EmainMacha"))
-			AddQuest("Quest", 71039, 30); // Collect the Gold Goblin's Fomor Scrolls
 		AddQuest("Quest", 71045, 30); // Collect the Wisp's Fomor Scrolls
 		AddQuest("Quest", 71049, 30); // Collect the Snake's Fomor Scrolls
 		AddQuest("Quest", 71050, 30); // Collect the Coyote's Fomor Scrolls
@@ -401,27 +399,36 @@ public class DuncanShop : NpcShopScript
 		AddQuest("Quest", 71068, 30); // Collect the Blue Wolf's Fomor Scrolls
 		AddQuest("Quest", 71069, 30); // Collect the Dark Blue Spider's Fomor Scrolls
 
-		// Party Quest
-		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Goblins
-		//AddQuest("Party Quest", InsertQuestId, 10); // [PQ] Hunt Down the Poison Goblins
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Laghodessas
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Rat Men
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Golem
-		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the Golem
-		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the Giant Spider
-		//AddQuest("Party Quest", InsertQuestId, 1500); // [PQ] Defeat the Giant Red Spider
-		//AddQuest("Party Quest", InsertQuestId, 2000); // [PQ] Defeat the Lycanthrope (Hard Mode)
-		//AddQuest("Party Quest", InsertQuestId, 2500); // [PQ] Defeat the Arachne
-		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the Golem
-		//AddQuest("Party Quest", InsertQuestId, 1500); // [PQ] Defeat the Golem
-		//AddQuest("Party Quest", InsertQuestId, 2000); // [PQ] Defeat the Golem
-		//AddQuest("Party Quest", InsertQuestId, 2500); // [PQ] Defeat the Golem
+		AddQuest("Party Quest", 100039, 10);   // [PQ] Hunt Down the Goblins (30)
+		AddQuest("Party Quest", 100040, 10);   // [PQ] Hunt Down the Poison Goblins (30)
+		AddQuest("Party Quest", 100056, 20);   // [PQ] Hunt Down the Laghodessas (30)
+		AddQuest("Party Quest", 100057, 20);   // [PQ] Hunt Down the Rat Men (10)
+		AddQuest("Party Quest", 100090, 500);  // [PQ] Defeat the Golem (Ciar Basic)
+		AddQuest("Party Quest", 100091, 500);  // [PQ] Defeat the Golem (Ciar Int. for 2)
+		AddQuest("Party Quest", 100092, 500);  // [PQ] Defeat the Golem (Ciar Int. for 4)
 
-		// Etc.
 		Add("Etc.", 1045); // Hit What You See
+
+		if (IsEnabled("EmainMacha"))
+			AddQuest("Quest", 71039, 30); // Collect the Gold Goblin's Fomor Scrolls
+
+		if (IsEnabled("CiarAdvanced"))
+		{
+			AddQuest("Party Quest", 100093, 500);  // [PQ] Defeat the Golem (Ciar Adv. for 2)
+			AddQuest("Party Quest", 100094, 500);  // [PQ] Defeat the Golem (Ciar Adv. for 3)
+			AddQuest("Party Quest", 100095, 1000); // [PQ] Defeat the Golem (Ciar Adv.)
+		}
+
+		if (IsEnabled("HardModeDungeons"))
+		{
+			AddQuest("Party Quest", 100070, 1000); // [PQ] Defeat the Giant Spider (Alby Normal Hard Mode)
+			AddQuest("Party Quest", 100071, 1500); // [PQ] Defeat the Giant Red Spider (Alby Basic Hard Mode)
+			AddQuest("Party Quest", 100072, 2000); // [PQ] Defeat the Lycanthrope (Alby Int. Hard Mode)
+			AddQuest("Party Quest", 100073, 2500); // [PQ] Defeat the Arachne (Alby Adv. Hard Mode)
+			AddQuest("Party Quest", 100074, 1000); // [PQ] Defeat the Golem (Ciar Normal Hard Mode)
+			AddQuest("Party Quest", 100075, 1500); // [PQ] Defeat the Golem (Ciar Basic Hard Mode)
+			AddQuest("Party Quest", 100076, 2000); // [PQ] Defeat the Golem (Ciar Int. Hard Mode)
+			AddQuest("Party Quest", 100077, 2500); // [PQ] Defeat the Golem (Ciar Adv. Hard Mode)
+		}
 	}
 }
