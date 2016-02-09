@@ -575,7 +575,10 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="quest"></param>
 		private void UpdateQuest(Creature creature, Quest quest)
 		{
-			Send.QuestUpdate(creature, quest);
+			if (!this.IsPartyQuest)
+				Send.QuestUpdate(creature, quest);
+			else
+				Send.QuestUpdate(creature.Party, quest);
 		}
 
 		/// <summary>
