@@ -420,6 +420,10 @@ namespace Aura.Channel.World.Entities.Creatures
 			// Remove from quest log.
 			Send.QuestClear(_creature, quest.UniqueId);
 
+			// Unset party quest
+			if (quest.Data.IsPartyQuest)
+				_creature.Party.UnsetPartyQuest();
+
 			// Update PTJ stuff and stop clock
 			if (quest.Data.Type == QuestType.Deliver)
 			{

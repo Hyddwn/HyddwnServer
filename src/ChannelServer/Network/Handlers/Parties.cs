@@ -522,7 +522,8 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			Send.PartySetQuestR(creature, false);
+			creature.Party.SetPartyQuest(quest);
+			Send.PartySetQuestR(creature, true);
 		}
 
 		/// <summary>
@@ -544,7 +545,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			Send.PartyUnsetQuestR(creature, false);
+			// Try to unset, fails if no quest set.
+			var success = creature.Party.UnsetPartyQuest();
+
+			Send.PartyUnsetQuestR(creature, success);
 		}
 	}
 }
