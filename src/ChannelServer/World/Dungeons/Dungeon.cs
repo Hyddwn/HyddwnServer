@@ -452,7 +452,11 @@ namespace Aura.Channel.World.Dungeons
 				exitStatue.Info.Color2 = floorData.Color1;
 				exitStatue.Info.Color3 = floorData.Color3;
 				exitStatue.Extensions.AddSilent(new ConfirmationPropExtension("GotoLobby", "_LT[code.standard.msg.dungeon_exit_notice_msg]", "_LT[code.standard.msg.dungeon_exit_notice_title]", "haskey(chest)"));
-				exitStatue.Behavior = (cr, pr) => { cr.Warp(this.Data.Exit); };
+				exitStatue.Behavior = (cr, pr) =>
+				{
+					ChannelServer.Instance.Events.OnPlayerClearedDungeon(cr, this);
+					cr.Warp(this.Data.Exit);
+				};
 				region.AddProp(exitStatue);
 			}
 			else

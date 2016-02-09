@@ -15,6 +15,7 @@ using Aura.Channel.Network.Sending;
 using System.Threading;
 using Aura.Channel.Skills;
 using Aura.Channel.World;
+using Aura.Channel.World.Dungeons;
 
 namespace Aura.Channel.Scripting.Scripts
 {
@@ -216,6 +217,7 @@ namespace Aura.Channel.Scripting.Scripts
 			ChannelServer.Instance.Events.PlayerEquipsItem -= this.OnPlayerEquipsItem;
 			ChannelServer.Instance.Events.CreatureGathered -= this.OnCreatureGathered;
 			ChannelServer.Instance.Events.PlayerUsedSkill -= this.OnPlayerUsedSkill;
+			ChannelServer.Instance.Events.PlayerClearedDungeon -= this.OnPlayerClearedDungeon;
 		}
 
 		// Setup
@@ -415,6 +417,12 @@ namespace Aura.Channel.Scripting.Scripts
 				ChannelServer.Instance.Events.PlayerUsedSkill += this.OnPlayerUsedSkill;
 			}
 
+			if (objective.Type == ObjectiveType.ClearDungeon)
+			{
+				ChannelServer.Instance.Events.PlayerClearedDungeon -= this.OnPlayerClearedDungeon;
+				ChannelServer.Instance.Events.PlayerClearedDungeon += this.OnPlayerClearedDungeon;
+			}
+
 			this.Objectives.Add(ident, objective);
 		}
 
@@ -511,6 +519,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestObjective Equip(string tag) { return new QuestObjectiveEquip(tag); }
 		protected QuestObjective Gather(int itemId, int amount) { return new QuestObjectiveGather(itemId, amount); }
 		protected QuestObjective UseSkill(SkillId skillId) { return new QuestObjectiveUseSkill(skillId); }
+		protected QuestObjective ClearDungeon(string dungeonName) { return new QuestObjectiveClearDungeon(dungeonName); }
 
 		// Reward Factory
 		// ------------------------------------------------------------------
@@ -841,6 +850,37 @@ namespace Aura.Channel.Scripting.Scripts
 
 				var useSkillObjective = (objective as QuestObjectiveUseSkill);
 				if (!progress.Done && skill.Info.Id == useSkillObjective.Id)
+				{
+					quest.SetDone(progress.Ident);
+					UpdateQuest(creature, quest);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates ClearDungeon objectives.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="dungeon"></param>
+		private void OnPlayerClearedDungeon(Creature creature, Dungeon dungeon)
+		{
+			if (creature == null || dungeon == null)
+				return;
+
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
+			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
+
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null || objective.Type != ObjectiveType.ClearDungeon) return;
+
+				var clearDungeonObjective = (objective as QuestObjectiveClearDungeon);
+				if (!progress.Done && dungeon.Name.ToLower() == clearDungeonObjective.DungeonName.ToLower())
 				{
 					quest.SetDone(progress.Ident);
 					UpdateQuest(creature, quest);

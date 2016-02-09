@@ -128,6 +128,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// 54 - TARGETRACE:4:9;TARGETCOUNT:4:1; - Collect Frail Green Kiwi perfectly.
 				// 31 - TARGETCOUNT:4:1;TGTSID:s:/Gathering_Knife/; - Equip Gathering Knife
 				// 32 - TARGETCOUNT:4:5;TARGETITEM:4:60009;TGTSID:s:/Gathering_Knife/; - Sheared 5 Sheep
+				// 13 - TARGETCOUNT:4:1;TGTCLS:s:TirCho_Ciar_Low_Dungeon; - Clear Ciar Basic Dungeon
 
 				// Type theory:
 				// 1  : Kill x of y
@@ -135,6 +136,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// 3  : Talk to x
 				// 4  : Bring x to y
 				// 9  : Reach rank x on skill y
+				// 13 : Clear dungeon
 				// 14 : ?
 				// 15 : Reach lvl x
 				// 18 : Do something with item x ?
