@@ -386,8 +386,10 @@ namespace Aura.Channel.World.Entities.Creatures
 			// Remove quest item on success, which will also remove the
 			// quest from the manager.
 			if (success)
+			{
+				quest.State = QuestState.Complete;
 				_creature.Inventory.Remove(quest.QuestItem);
-
+			}
 			return success;
 		}
 
