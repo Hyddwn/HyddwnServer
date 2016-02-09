@@ -87,6 +87,34 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Removes quest from manager and updates client, returns false
+		/// if quest doesn't exist in this manager.
+		/// </summary>
+		/// <param name="quest"></param>
+		/// <returns></returns>
+		public bool Remove(Quest quest)
+		{
+			lock (_quests)
+			{
+				// Try to remove quest
+				if (_quests.Remove(quest))
+				{
+					Send.QuestClear(_creature, quest.UniqueId);
+
+					// Removing the item will silently fail if creature
+					// doesn't have it. We don't really care at this point,
+					// and if the quest is a party quest, only the leader
+					// has the quest item.
+					_creature.Inventory.Remove(quest.QuestItem);
+
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Returns true if creature has quest with the given quest id,
 		/// completed or not.
 		/// </summary>
