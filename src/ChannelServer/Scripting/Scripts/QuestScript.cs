@@ -570,6 +570,23 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Returns true if creature can make progress on this quest.
+		/// </summary>
+		/// <remarks>
+		/// Used from objective event handlers, to see if the quest should
+		/// receive the progress.
+		/// </remarks>
+		/// <param name="creature"></param>
+		/// <param name="quest"></param>
+		/// <returns></returns>
+		private bool CanMakeProgress(Creature creature, Quest quest)
+		{
+			// TODO: Guild quests, outside, delay
+
+			return true;
+		}
+
+		/// <summary>
 		/// Checks and updates current obective's count.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -581,6 +598,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
 				var progress = quest.CurrentObjectiveOrLast;
 				if (progress == null) return;
 
@@ -654,6 +674,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var quests = killer.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(killer, quest))
+					continue;
+
 				var progress = quest.CurrentObjective;
 				if (progress == null) return;
 
@@ -741,6 +764,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
 				var progress = quest.CurrentObjectiveOrLast;
 				if (progress == null) return;
 
@@ -767,6 +793,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
 				var progress = quest.CurrentObjectiveOrLast;
 				if (progress == null) return;
 
@@ -797,6 +826,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
 			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
 				var progress = quest.CurrentObjectiveOrLast;
 				if (progress == null) return;
 
