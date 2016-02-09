@@ -453,13 +453,13 @@ namespace Aura.Channel.World.Entities.Creatures
 			foreach (var creature in creatures)
 			{
 				if (owl)
-					Send.QuestOwlComplete(_creature, quest.UniqueId);
+					Send.QuestOwlComplete(creature, quest.UniqueId);
 
 				foreach (var reward in rewards)
 				{
 					try
 					{
-						reward.Reward(_creature, quest);
+						reward.Reward(creature, quest);
 					}
 					catch (NotImplementedException)
 					{
