@@ -581,6 +581,10 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		private bool CanMakeProgress(Creature creature, Quest quest)
 		{
+			// Party quests can only make progress if they're active
+			if (this.IsPartyQuest)
+				return (creature.IsInParty && creature.Party.Quest == quest);
+
 			// TODO: Guild quests, outside, delay
 
 			return true;

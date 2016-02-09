@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World.Quests;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
@@ -92,6 +93,11 @@ namespace Aura.Channel.World
 		/// Returns true if member count is lower than max size.
 		/// </summary>
 		public bool HasFreeSpace { get { return (this.MemberCount < this.MaxSize); } }
+
+		/// <summary>
+		/// Unique id of the quest set as party quest.
+		/// </summary>
+		public Quest Quest { get; private set; }
 
 		/// <summary>
 		/// Initializes party.
