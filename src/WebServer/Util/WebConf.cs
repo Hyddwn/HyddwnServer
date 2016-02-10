@@ -33,6 +33,7 @@ namespace Aura.Web.Util
 	{
 		public int Port { get; protected set; }
 		public string NumberFormat { get; protected set; }
+		public string Favicon { get; protected set; }
 
 		public void Load()
 		{
@@ -40,6 +41,7 @@ namespace Aura.Web.Util
 
 			this.Port = this.GetInt("port", 80);
 			this.NumberFormat = this.GetString("number_format", "en-US");
+			this.Favicon = this.GetString("favicon", "system/web/public/favicon.ico");
 		}
 	}
 }
