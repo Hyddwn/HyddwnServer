@@ -35,7 +35,9 @@
 	]},
 	
 	// Season 2
-	{ name: "G1S2", enabled: true, children: []},
+	{ name: "G1S2", enabled: true, children: [
+		{ name: "ItemShop", enabled: false },
+	]},
 ]},
 
 // Generation 2
