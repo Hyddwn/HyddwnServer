@@ -67,7 +67,7 @@ public class RegistrationControllerScript : IScript
 			}
 
 		L_Send:
-			res.Render("web/register.htm", new { error, success, name });
+			res.Render("system/web/register.htm", new { error, success, name });
 		});
 
 		return true;

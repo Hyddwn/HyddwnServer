@@ -944,10 +944,16 @@ namespace Aura.Channel.Network.Handlers
 		public void OpenItemShop(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
-			var parameter = client.Account.Id;
 
-			Send.ServerMessage(creature, Localization.Get("The item shop isn't available yet."));
-			Send.OpenItemShopR(creature, false, null);
+			if (!AuraData.FeaturesDb.IsEnabled("ItemShop"))
+			{
+				Send.ServerMessage(creature, Localization.Get("The item shop isn't available yet."));
+				Send.OpenItemShopR(creature, false, null);
+				return;
+			}
+
+			var parameter = client.Account.Id;
+			Send.OpenItemShopR(creature, true, parameter);
 		}
 	}
 }

@@ -93,9 +93,11 @@ namespace Aura.Web
 
 			this.App.Engine("htm", new HandlebarsEngine());
 
+			this.App.Get("/favicon.ico", new StaticController(this.Conf.Web.Favicon));
+
 			this.App.Static("user/save/");
 			this.App.Static("user/resources/");
-			this.App.Static("web/public/");
+			this.App.Static("system/web/public/");
 			this.App.Static("user/web/public/");
 
 			this.App.Get("/", new MainController());
