@@ -42,11 +42,11 @@ Creating a new translation:
   select "UTF-8" as source code charset.
 * Switch to the "Source keywords" and add the following new items,
   without quotation:
-  "Localization.Get"
-  "Localization.GetPlural"
-  "Localization.GetParticular"
-  "Localization.GetParticularPlural"
-  "L"
+  "Localization.Get:1"
+  "Localization.GetPlural:1,2"
+  "Localization.GetParticular:1c,2"
+  "Localization.GetParticularPlural:1c,2,3"
+  "L:1"
   These are the function names the program will look for to get strings.
   Localization.Get[...] is usually used inside the core, e.g. for the Eweca
   messages. The other methods are used in scripts for various things.
