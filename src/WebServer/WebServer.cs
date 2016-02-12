@@ -68,6 +68,9 @@ namespace Aura.Web
 			// Database
 			this.InitDatabase(this.Database = new AuraDb(), this.Conf);
 
+			// Localization
+			this.LoadLocalization(this.Conf);
+
 			// Server
 			this.StartWebServer();
 

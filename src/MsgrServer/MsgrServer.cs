@@ -77,6 +77,9 @@ namespace Aura.Msgr
 			// Database
 			this.InitDatabase(this.Database = new MsgrDb(), this.Conf);
 
+			// Localization
+			this.LoadLocalization(this.Conf);
+
 			// Start
 			this.Server.Start(this.Conf.Msgr.Port);
 
