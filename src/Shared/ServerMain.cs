@@ -290,27 +290,29 @@ namespace Aura.Shared
 		/// </summary>
 		public void LoadLocalization(BaseConf conf)
 		{
-			Log.Info("Loading localization ({0})...", conf.Localization.Language);
+			var language = conf.Localization.Language;
+			var path = Path.Combine("localization", language + ".po");
 
-			// System
+			Log.Info("Loading localization ({0})...", language);
+
+			// Try user first
 			try
 			{
-				Localization.LoadFromFile("system/localization/" + conf.Localization.Language + ".po");
+				Localization.Load(Path.Combine("user", path));
 			}
 			catch (FileNotFoundException)
 			{
-				// Don't warn, users are supposed to use the user folder,
-				// a missing system folder is natural.
-				//Log.Warning("Unable to load localization: " + ex.Message);
-			}
-
-			// User
-			try
-			{
-				Localization.LoadFromFile("user/localization/" + conf.Localization.Language + ".po");
-			}
-			catch (FileNotFoundException)
-			{
+				// Try system second, if the file wasn't in user
+				try
+				{
+					Localization.Load(Path.Combine("system", path));
+				}
+				catch (FileNotFoundException)
+				{
+					// Warn if language wasn't the default
+					if (language != "en-US")
+						Log.Warning("Localization file '{0}.po' not found.", language);
+				}
 			}
 		}
 	}

@@ -23,14 +23,15 @@ namespace Aura.Shared.Util
 		private static Dictionary<string, Message> _storage = new Dictionary<string, Message>();
 
 		/// <summary>
-		/// Starts parsing on path.
+		/// Loads messages from given PO file, or PO files in the given
+		/// directory.
 		/// </summary>
 		/// <remarks>
 		/// If path is a file, it simply reads the file. If path is a directory,
 		/// it starts parsing all files recursively.
 		/// </remarks>
 		/// <param name="path">What to parse</param>
-		public static void Parse(string path)
+		public static void Load(string path)
 		{
 			if (File.Exists(path))
 			{
