@@ -139,7 +139,7 @@ namespace Aura.Shared.Util
 			var donePerc = (100f / max * current);
 			var done = (int)Math.Min(20, Math.Ceiling(20f / max * current));
 
-			Write(LogLevel.Info, false, "[" + ("".PadRight(done, '#') + "".PadLeft(20 - done, '.')) + "] {0,5}%\r", donePerc.ToString("0.0", CultureInfo.InvariantCulture));
+			Write(LogLevel.Info, false, "[" + ("".PadRight(done, '#') + "".PadLeft(20 - done, '.')) + "] {0,5:0.0}%\r", donePerc);
 		}
 
 		public static void WriteLine(LogLevel level, string format, params object[] args)

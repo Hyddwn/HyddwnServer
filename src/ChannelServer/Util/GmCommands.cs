@@ -241,12 +241,12 @@ namespace Aura.Channel.Util
 		{
 			var pos = target.GetPosition();
 			var msg = sender == target
-				? Localization.Get("You're here: Region: {0} @ {1}/{2}, Area: {5}, Dir: {4} (Radian: {6})")
-				: Localization.Get("{3} is here: Region: {0} @ {1}/{2}, Area: {5}, Dir: {4} (Radian: {6})");
+				? Localization.Get("You're here: Region: {0} @ {1}/{2}, Area: {5}, Dir: {4} (Radian: {6:#.###})")
+				: Localization.Get("{3} is here: Region: {0} @ {1}/{2}, Area: {5}, Dir: {4} (Radian: {6:#.###})");
 
 			var areaId = target.Region.GetAreaId(pos.X, pos.Y);
 
-			Send.ServerMessage(sender, msg, target.RegionId, pos.X, pos.Y, target.Name, target.Direction, areaId, MabiMath.ByteToRadian(target.Direction).ToInvariant("#.###"));
+			Send.ServerMessage(sender, msg, target.RegionId, pos.X, pos.Y, target.Name, target.Direction, areaId, MabiMath.ByteToRadian(target.Direction));
 
 			return CommandResult.Okay;
 		}
@@ -473,7 +473,7 @@ namespace Aura.Channel.Util
 					if (all.Count > 1 && score != 0)
 					{
 						var perc = 100 - (100f / itemData.Name.Length * score);
-						Send.ServerMessage(sender, Localization.Get("No exact match found for '{0}', using best result, '{1}' ({2}%)."), args[1], itemData.Name, perc.ToString("0.0", CultureInfo.InvariantCulture));
+						Send.ServerMessage(sender, Localization.Get("No exact match found for '{0}', using best result, '{1}' ({2:0.0}%)."), args[1], itemData.Name, perc);
 					}
 				}
 			}
@@ -760,7 +760,7 @@ namespace Aura.Channel.Util
 
 			Send.CreatureBodyUpdate(target);
 
-			Send.ServerMessage(sender, Localization.Get("Change successful, new value: {0}"), val.ToInvariant("0.0"));
+			Send.ServerMessage(sender, Localization.Get("Change successful, new value: {0:0.0}"), val);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("Your appearance has been changed by {0}."), sender.Name);
 
@@ -770,9 +770,9 @@ namespace Aura.Channel.Util
 		private CommandResult HandleCp(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
 			if (sender == target)
-				Send.ServerMessage(sender, Localization.Get("Your combat power: {0}"), target.CombatPower.ToInvariant("0.0"));
+				Send.ServerMessage(sender, Localization.Get("Your combat power: {0:0.0}"), target.CombatPower);
 			else
-				Send.ServerMessage(sender, Localization.Get("{0}'s combat power: {1}"), target.Name, target.CombatPower.ToInvariant("0.0"));
+				Send.ServerMessage(sender, Localization.Get("{0}'s combat power: {1:0.0}"), target.Name, target.CombatPower);
 
 			return CommandResult.Okay;
 		}

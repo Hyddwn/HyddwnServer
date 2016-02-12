@@ -273,7 +273,7 @@ namespace Aura.Channel.Network.Handlers
 				creature.Conditions.Activate(ConditionsC.Hurry, extra);
 			}
 
-			Send.ServerMessage(creature, Localization.Get("Speed boost: {0}x"), multiplier.ToString("0.0", CultureInfo.InvariantCulture));
+			Send.ServerMessage(creature, Localization.Get("Speed boost: {0:0.0}x"), multiplier);
 		}
 	}
 }
