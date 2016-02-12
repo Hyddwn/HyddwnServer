@@ -189,7 +189,7 @@ namespace Aura.Shared.Util
 				{
 					using (var file = new StreamWriter(_logFile, true))
 					{
-						file.Write(DateTime.Now + " ");
+						file.Write("{0:yyyy-MM-dd HH:mm} ", DateTime.Now);
 						if (level != LogLevel.None)
 							file.Write("[{0}] - ", level);
 						file.Write(format, args);
