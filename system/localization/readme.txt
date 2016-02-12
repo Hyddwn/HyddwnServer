@@ -47,6 +47,7 @@ Creating a new translation:
   These are the function names the program will look for to get strings.
   Localization.Get is usually used inside the core, e.g. for the Eweca
   messages. The other methods are used in scripts for various things.
+  (Note: Most scripts don't support localization yet.)
   You can also create multiple po files and group those a little,
   e.g. make one file for the core, where you only look for Localization.Get.
 * Poedit will now search all files for translatable texts.
