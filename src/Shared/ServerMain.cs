@@ -297,9 +297,11 @@ namespace Aura.Shared
 			{
 				Localization.Parse("system/localization/" + conf.Localization.Language);
 			}
-			catch (FileNotFoundException ex)
+			catch (FileNotFoundException)
 			{
-				Log.Warning("Unable to load localization: " + ex.Message);
+				// Don't warn, users are supposed to use the user folder,
+				// a missing system folder is natural.
+				//Log.Warning("Unable to load localization: " + ex.Message);
 			}
 
 			// User
