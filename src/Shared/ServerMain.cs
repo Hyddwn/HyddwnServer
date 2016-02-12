@@ -295,7 +295,7 @@ namespace Aura.Shared
 			// System
 			try
 			{
-				Localization.Parse("system/localization/" + conf.Localization.Language);
+				Localization.LoadFromFile("system/localization/" + conf.Localization.Language + ".po");
 			}
 			catch (FileNotFoundException)
 			{
@@ -307,7 +307,7 @@ namespace Aura.Shared
 			// User
 			try
 			{
-				Localization.Parse("user/localization/" + conf.Localization.Language);
+				Localization.LoadFromFile("user/localization/" + conf.Localization.Language + ".po");
 			}
 			catch (FileNotFoundException)
 			{
