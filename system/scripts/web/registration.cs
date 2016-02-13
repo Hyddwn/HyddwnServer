@@ -58,7 +58,7 @@ public class RegistrationControllerScript : IScript
 
 				var passHash = Password.RawToMD5SHA256(pass1);
 
-				WebServer.Instance.Database.CreateAccount(name, passHash);
+				WebServer.Instance.Database.CreateAccount(name, passHash, 0);
 
 				Log.Info("New account created: {0}", name);
 
@@ -67,7 +67,7 @@ public class RegistrationControllerScript : IScript
 			}
 
 		L_Send:
-			res.Render("web/register.htm", new { error, success, name });
+			res.Render("system/web/register.htm", new { error, success, name });
 		});
 
 		return true;

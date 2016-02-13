@@ -126,7 +126,9 @@ namespace Aura.Login.Network.Handlers
 
 						if (!LoginServer.Instance.Database.AccountExists(accountId) && password != "")
 						{
-							LoginServer.Instance.Database.CreateAccount(accountId, password);
+							var starterPoints = LoginServer.Instance.Conf.Login.NewAccountPoints;
+
+							LoginServer.Instance.Database.CreateAccount(accountId, password, starterPoints);
 							Log.Info("New account '{0}' was created.", accountId);
 						}
 					}
@@ -200,7 +202,7 @@ namespace Aura.Login.Network.Handlers
 			// Check bans
 			if (account.BannedExpiration > DateTime.Now)
 			{
-				Send.LoginR_Msg(client, Localization.Get("You've been banned till {0}.\r\nReason: {1}"), account.BannedExpiration, account.BannedReason);
+				Send.LoginR_Msg(client, Localization.Get("You've been banned till {0}.\nReason: {1}"), account.BannedExpiration, account.BannedReason);
 				return;
 			}
 

@@ -152,6 +152,10 @@ public class NaoScript : NpcScript
 					switch (await Select())
 					{
 						case "@rebirth":
+							for (int i = 1; i < 10; ++i)
+								RemoveKeyword("Tin_ColorAmpul_" + i);
+							RemoveKeyword("tutorial_present");
+
 							// Old:
 							//   Msg("Would you like to be reborn with the currently selected features?<br/><button title='Yes' keyword='@rebirthyes' /><button title='No' keyword='@rebirthhelp' />");
 							//   Msg("<username/>, you have been reborn with a new appearance.<br/>Did you enjoy having Close Combat as your active Talent?<br/>Would you like to choose a different active Talent for this life?<button title='New Talent' keyword='@yes' /><button title='Keep Old Talent' keyword='@no' />");

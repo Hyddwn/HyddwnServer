@@ -1948,7 +1948,7 @@ namespace Aura.Channel.World.Entities
 				if (levelStats == null)
 					continue;
 
-				this.AbilityPoints += (short)levelStats.AP;
+				this.AbilityPoints += (short)Math2.Clamp(0, short.MaxValue, levelStats.AP * ChannelServer.Instance.Conf.World.LevelApRate);
 				this.LifeMaxBase += levelStats.Life;
 				this.ManaMaxBase += levelStats.Mana;
 				this.StaminaMaxBase += levelStats.Stamina;
@@ -2046,7 +2046,7 @@ namespace Aura.Channel.World.Entities
 			this.IntBase += int_;
 			this.WillBase += will;
 			this.LuckBase += luck;
-			this.AbilityPoints += (short)ap;
+			this.AbilityPoints += (short)Math2.Clamp(0, short.MaxValue, ap * ChannelServer.Instance.Conf.World.AgeApRate);
 
 			this.LastAging = DateTime.Now;
 
@@ -2201,6 +2201,39 @@ namespace Aura.Channel.World.Entities
 					Send.Revived(this);
 					return;
 
+				case ReviveOptions.NaoStone:
+					this.DeadMenu.Options = ReviveOptions.NaoStoneRevive;
+					Send.DeadFeather(this);
+					Send.NaoRevivalEntrance(this);
+					Send.Revived(this);
+					return;
+
+				case ReviveOptions.NaoStoneRevive:
+					// First try beginner stones, then normals
+					var item = this.Inventory.GetItem(a => a.HasTag("/notTransServer/nao_coupon/"), StartAt.BottomRight);
+					if (item == null)
+					{
+						item = this.Inventory.GetItem(a => a.HasTag("/nao_coupon/"), StartAt.BottomRight);
+						if (item == null)
+						{
+							Log.Error("Creature.Revive: Unable to remove Nao Soul Stone, none found.");
+							return;
+						}
+					}
+
+					// 100% life and 100% injury recovery
+					this.Injuries = 0;
+					this.Life = this.LifeMax;
+
+					// Blessing of all items
+					this.BlessAll();
+
+					// Remove Soul Stone
+					this.Inventory.Decrement(item);
+
+					Send.NaoRevivalExit(this);
+					break;
+
 				default:
 					Log.Warning("Creature.Revive: Unknown revive option: {0}", option);
 
@@ -2223,7 +2256,7 @@ namespace Aura.Channel.World.Entities
 			Send.StatUpdate(this, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.LifeMax, Stat.LifeMaxMod, Stat.Stamina, Stat.Hunger);
 			Send.StatUpdate(this, StatUpdateType.Public, Stat.Life, Stat.LifeInjured, Stat.LifeMax, Stat.LifeMaxMod);
 			Send.RiseFromTheDead(this);
-			//Send.DeadFeather(creature);
+			Send.DeadFeather(this);
 			Send.Revived(this);
 		}
 
@@ -2861,6 +2894,18 @@ namespace Aura.Channel.World.Entities
 			result += Math.Min(myLightning, targetIce) / 3f;
 
 			return 1f + (result / 9f);
+		}
+
+		/// <summary>
+		/// Blesses all main equip items and updates client.
+		/// </summary>
+		public void BlessAll()
+		{
+			foreach (var item in this.Inventory.GetMainEquipment())
+			{
+				item.OptionInfo.Flags |= ItemFlags.Blessed;
+				Send.ItemBlessed(this, item);
+			}
 		}
 	}
 

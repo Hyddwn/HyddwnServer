@@ -133,6 +133,16 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check quest items for progress, you can't drop quests that
+			// have been "started". If you can get rid of the progress,
+			// e.g. by dropping all items that were to be collected,
+			// you can drop the quest.
+			if (item.Quest != null && item.Quest.HasProgress)
+			{
+				Send.ItemDropR(creature, Localization.Get("You cannot drop a quest that has already started."));
+				return;
+			}
+
 			// Try to remove item
 			if (!creature.Inventory.Remove(item))
 			{
@@ -147,6 +157,7 @@ namespace Aura.Channel.Network.Handlers
 			Send.ItemDropR(creature, true);
 		}
 
+		static byte x = 0;
 		/// <summary>
 		/// Sent when clicking an item on the ground, to pick it up.
 		/// </summary>
@@ -166,7 +177,7 @@ namespace Aura.Channel.Network.Handlers
 			if (!creature.Can(Locks.PickUpAndDrop))
 			{
 				Log.Debug("PickUpAndDrop locked for '{0}'.", creature.Name);
-				Send.ItemPickUpR(creature, false);
+				Send.ItemPickUpR(creature, ItemPickUpResult.Fail, entityId);
 				return;
 			}
 
@@ -174,7 +185,17 @@ namespace Aura.Channel.Network.Handlers
 			var item = creature.Region.GetItem(entityId);
 			if (item == null)
 			{
-				Send.ItemPickUpR(creature, false);
+				Send.ItemPickUpR(creature, ItemPickUpResult.NotFound, entityId);
+				return;
+			}
+
+			// Check distance
+			// The client usually tries to get to the item first, but if
+			// there's an obstacle, it tries to send ItemPickUp early.
+			// We have to tell it when it's not in range yet.
+			if (!creature.GetPosition().InRange(item.GetPosition(), 200))
+			{
+				Send.ItemPickUpR(creature, ItemPickUpResult.OutOfRange, entityId);
 				return;
 			}
 
@@ -187,7 +208,7 @@ namespace Aura.Channel.Network.Handlers
 				}
 				else
 				{
-					Send.ItemPickUpR(creature, false);
+					Send.ItemPickUpR(creature, ItemPickUpResult.NotYours, entityId);
 					return;
 				}
 			}
@@ -207,9 +228,8 @@ namespace Aura.Channel.Network.Handlers
 			// Try to pick up item
 			if (!creature.Inventory.PickUp(item))
 			{
-				Send.SystemMessage(creature, Localization.Get("Not enough space."));
 				creature.Inventory.Remove(item.OptionInfo.LinkedPocketId);
-				Send.ItemPickUpR(creature, false);
+				Send.ItemPickUpR(creature, ItemPickUpResult.NoSpace, entityId);
 				return;
 			}
 
@@ -217,7 +237,7 @@ namespace Aura.Channel.Network.Handlers
 			if (item.HasTag("/key/"))
 				Send.Effect(creature, Effect.PickUpItem, (byte)1, item.Info.Id, item.Info.Color1, item.Info.Color2, item.Info.Color3);
 
-			Send.ItemPickUpR(creature, true);
+			Send.ItemPickUpR(creature, ItemPickUpResult.Success, entityId);
 		}
 
 		/// <summary>
@@ -912,6 +932,33 @@ namespace Aura.Channel.Network.Handlers
 
 			// Warp
 			creature.Warp(regionId, x, y);
+		}
+
+		/// <summary>
+		/// Sent to open the cash item shop.
+		/// </summary>
+		/// <remarks>
+		/// No parameters.
+		/// </remarks>
+		[PacketHandler(Op.OpenItemShop)]
+		public void OpenItemShop(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			if (!AuraData.FeaturesDb.IsEnabled("ItemShop"))
+			{
+				Send.ServerMessage(creature, Localization.Get("The item shop isn't available yet."));
+				Send.OpenItemShopR(creature, false, null);
+				return;
+			}
+
+			// The item shop URL has one parameter, "key", that is set to
+			// the value we send here. The web page has to use this value
+			// to identify the user. To provide some security, we send the
+			// session key, which should only be known by this client.
+			var parameter = client.Account.SessionKey.ToString();
+
+			Send.OpenItemShopR(creature, true, parameter);
 		}
 	}
 }

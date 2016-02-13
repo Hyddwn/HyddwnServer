@@ -250,4 +250,23 @@ namespace Aura.Channel.World.Quests
 			this.MetaData.SetInt("TARGETCOUNT", 1);
 		}
 	}
+
+	/// <summary>
+	/// Objective to clear a certain dungeon.
+	/// </summary>
+	public class QuestObjectiveClearDungeon : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.ClearDungeon; } }
+
+		public string DungeonName { get; set; }
+
+		public QuestObjectiveClearDungeon(string dungeonName)
+			: base(1)
+		{
+			this.DungeonName = dungeonName;
+
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+			this.MetaData.SetString("TGTCLS", dungeonName);
+		}
+	}
 }

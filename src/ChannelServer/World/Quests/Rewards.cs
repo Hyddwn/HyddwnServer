@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Aura.Channel.Network.Sending;
 using System.Collections.Generic;
+using Aura.Shared.Util;
 
 namespace Aura.Channel.World.Quests
 {
@@ -82,6 +83,16 @@ namespace Aura.Channel.World.Quests
 		public QuestResult Result { get; set; }
 
 		/// <summary>
+		/// Specifies whether the reward is visible on the client.
+		/// </summary>
+		/// <remarks>
+		/// Hidden rewards are still sent to the client with the quest info,
+		/// but if this switch is set, they aren't displayed, leaving a blank
+		/// space.
+		/// </remarks>
+		public bool Visible { get; set; }
+
+		/// <summary>
 		/// Gives reward to creature.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -121,8 +132,59 @@ namespace Aura.Channel.World.Quests
 
 		public override void Reward(Creature creature, Quest quest)
 		{
-			creature.GiveItem(this.ItemId, this.Amount);
-			Send.AcquireItemInfo(creature, this.ItemId, this.Amount);
+			creature.AcquireItem(Item.Create(this.ItemId, this.Amount));
+		}
+	}
+
+	/// <summary>
+	/// Rewards Enchant Scroll.
+	/// </summary>
+	/// <remarks>
+	/// Uses Type and ToString from Item reward, but generates an enchant
+	/// scroll on Reward, based on the option set id, ignoring the Item
+	/// information.
+	/// </remarks>
+	public class QuestRewardEnchant : QuestRewardItem
+	{
+		public int OptionSetId { get; protected set; }
+
+		public QuestRewardEnchant(int optionSetId)
+			: base(62005, 1) // Enchant Scroll
+		{
+			this.OptionSetId = optionSetId;
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.AcquireItem(Item.CreateEnchant(OptionSetId));
+		}
+	}
+
+	/// <summary>
+	/// Rewards quest (scroll).
+	/// </summary>
+	public class QuestRewardQuestScroll : QuestReward
+	{
+		public override RewardType Type { get { return RewardType.Item; } }
+
+		public int QuestId { get; protected set; }
+
+		public QuestRewardQuestScroll(int questId)
+		{
+			this.QuestId = questId;
+		}
+
+		public override string ToString()
+		{
+			var data = ChannelServer.Instance.ScriptManager.QuestScripts.Get(this.QuestId);
+			if (data == null)
+				return "Unknown quest";
+			return data.Name;
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.Inventory.Add(Item.CreateQuestScroll(this.QuestId), true);
 		}
 	}
 
@@ -165,7 +227,9 @@ namespace Aura.Channel.World.Quests
 		}
 	}
 
-	// Rewards gold
+	/// <summary>
+	/// Rewards gold
+	/// </summary>
 	public class QuestRewardGold : QuestReward
 	{
 		public override RewardType Type { get { return RewardType.Gold; } }
@@ -243,6 +307,13 @@ namespace Aura.Channel.World.Quests
 	/// <summary>
 	/// Rewards ability points
 	/// </summary>
+	/// <remarks>
+	/// The quest AP rate option is only applied when the scripts are loaded,
+	/// so the players see the actual AP they'll get if they complete the
+	/// quest. Should the rate be changed at runtime, players will still see
+	/// the previous AP amount, and will get that amount if they complete a
+	/// quest.
+	/// </remarks>
 	public class QuestRewardAp : QuestReward
 	{
 		public override RewardType Type { get { return RewardType.AP; } }
@@ -251,7 +322,7 @@ namespace Aura.Channel.World.Quests
 
 		public QuestRewardAp(short amount)
 		{
-			this.Amount = amount;
+			this.Amount = (short)Math2.Clamp(0, short.MaxValue, amount * ChannelServer.Instance.Conf.World.QuestApRate);
 		}
 
 		public override string ToString()
@@ -264,5 +335,21 @@ namespace Aura.Channel.World.Quests
 			creature.GiveAp(this.Amount);
 			Send.AcquireInfo(creature, "ap", this.Amount);
 		}
+	}
+
+	[Flags]
+	public enum RewardOptions
+	{
+		None = 0,
+
+		/// <summary>
+		/// Hides reward on the client side.
+		/// </summary>
+		/// <remarks>
+		/// Hidden rewards are still sent to the client with the quest info,
+		/// but if this switch is set, they aren't displayed, leaving a blank
+		/// space.
+		/// </remarks>
+		Hidden = 1,
 	}
 }

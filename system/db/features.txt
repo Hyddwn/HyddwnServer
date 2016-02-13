@@ -35,7 +35,9 @@
 	]},
 	
 	// Season 2
-	{ name: "G1S2", enabled: true, children: []},
+	{ name: "G1S2", enabled: true, children: [
+		{ name: "ItemShop", enabled: false },
+	]},
 ]},
 
 // Generation 2
@@ -231,7 +233,9 @@
 // Generation 8
 { name: "G8", enabled: false, children: [
 	// Season 1
-	{ name: "G8S1", enabled: true, children: []},
+	{ name: "G8S1", enabled: true, children: [
+		{ name: "HardModeDungeons", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G8S2", enabled: true, children: [
@@ -262,6 +266,7 @@
 		{ name: "ShadowMissionBoard", enabled: true },
 		{ name: "Alchemy", enabled: true },
 		{ name: "IceMine", enabled: true },
+		{ name: "NaoCoupon", enabled: true },
 	]},
 	
 	// Season 2
@@ -319,6 +324,9 @@
 	{ name: "G13S1", enabled: true, children: [
 		{ name: "FiodhAdvanced", enabled: true },
 		{ name: "Kiosk", enabled: true },
+		{ name: "TutorialRenewal2010", enabled: true, children: [
+			{ name: "NoRebirthPresent", enabled: true },
+		]},
 	]},
 	
 	// Season 2

@@ -320,11 +320,8 @@ namespace Aura.Channel.Skills.Magic
 			if (creature.Titles.SelectedTitle == TitleId.devCAT)
 			{
 				Send.ServerMessage(creature,
-					"Debug: Enchant success chance: {0} (base: {1}, int: {2}, thu: {3})",
-					result.ToInvariant("0"),
-					chance.ToInvariant("0"),
-					(chance / 1f * (intBonus - 1f)).ToInvariant("0"),
-					thursdayBonus.ToInvariant("0"));
+					"Debug: Enchant success chance: {0:0} (base: {1:0}, int: {2:0}, thu: {3:0})",
+					result, chance, (chance / 1f * (intBonus - 1f)), thursdayBonus);
 			}
 
 			return result;
@@ -376,7 +373,7 @@ namespace Aura.Channel.Skills.Magic
 
 				// Debug
 				if (creature.Titles.SelectedTitle == TitleId.devCAT)
-					Send.ServerMessage(creature, "Debug: Chance for enchant: {0}, chance for powder: {1}", enchantChance.ToInvariant("0"), powderChance.ToInvariant("0"));
+					Send.ServerMessage(creature, "Debug: Chance for enchant: {0:0}, chance for powder: {1:0}", enchantChance, powderChance);
 
 				// Try prefix
 				if (item.OptionInfo.Prefix != 0 && rnd.Next(100) < enchantChance)

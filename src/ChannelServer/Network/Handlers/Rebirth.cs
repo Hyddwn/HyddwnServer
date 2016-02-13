@@ -268,7 +268,7 @@ namespace Aura.Channel.Network.Handlers
 			player.RebirthCount++;
 
 			// Prevent pre-G4 Iria rebirth
-			if (!AuraData.FeaturesDb.IsEnabled("IriaRebirth"))
+			if (location == RebirthLocation.Iria && !AuraData.FeaturesDb.IsEnabled("IriaRebirth"))
 				location = RebirthLocation.Tir;
 
 			// Location

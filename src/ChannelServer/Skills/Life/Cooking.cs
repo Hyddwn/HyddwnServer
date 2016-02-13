@@ -169,14 +169,14 @@ namespace Aura.Channel.Skills.Life
 						var rnd = RandomProvider.Get();
 						var helpmsg = "";
 						if (judgement.HelpAmount < 0)
-							helpmsg += Localization.Get("There may have been {1}%-{2}% less {0} than required.");
+							helpmsg += Localization.Get("There may have been {1:0.0}%-{2:0.0}% less {0} than required.");
 						else
-							helpmsg += Localization.Get("There may have been {1}%-{2}% more {0} than required.");
+							helpmsg += Localization.Get("There may have been {1:0.0}%-{2:0.0}% more {0} than required.");
 
 						var name = judgement.HelpItem.Data.Name;
 						var amount = Math.Abs(judgement.HelpAmount) * 100;
-						var min = (amount - rnd.NextDouble()).ToString("0.0", CultureInfo.InvariantCulture);
-						var max = (amount + rnd.NextDouble()).ToString("0.0", CultureInfo.InvariantCulture);
+						var min = (amount - rnd.NextDouble());
+						var max = (amount + rnd.NextDouble());
 
 						msg += string.Format("\n" + helpmsg, name, min, max);
 					}

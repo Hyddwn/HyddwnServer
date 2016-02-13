@@ -85,7 +85,8 @@ namespace Aura.Shared.Database
 		/// </summary>
 		/// <param name="accountId"></param>
 		/// <param name="password"></param>
-		public void CreateAccount(string accountId, string password)
+		/// <param name="points">Starter cash points.</param>
+		public void CreateAccount(string accountId, string password, int points)
 		{
 			password = Password.Hash(password);
 
@@ -95,6 +96,7 @@ namespace Aura.Shared.Database
 				cmd.Set("accountId", accountId);
 				cmd.Set("password", password);
 				cmd.Set("creation", DateTime.Now);
+				cmd.Set("points", points);
 
 				cmd.Execute();
 			}
@@ -152,8 +154,8 @@ namespace Aura.Shared.Database
 		/// <summary>
 		/// Resets password for account to its name.
 		/// </summary>
-		/// <param name="accName"></param>
-		/// <returns></returns>
+		/// <param name="accountName"></param>
+		/// <param name="password"></param>
 		public void SetAccountPassword(string accountName, string password)
 		{
 			using (var conn = this.Connection)

@@ -34,7 +34,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 			// Bingo: 9
 			// GameQuest: 2|4|5
 			// GuildQuest: 0 (id >= 110001 < 120000?)
-			// PartyQuest: 0 (id >= 100000 < 110000?)
+			// PartyQuest: 0 (id >= 100000 < 110000?), blue icon with party symbol, turns yellow if active
 
 			packet.PutInt(quest.Id); // Range is important for the tabs.
 			// 201000~201999 : event
@@ -62,7 +62,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			packet.PutInt(1);
 			packet.PutInt(quest.QuestItem.Info.Id);
-			packet.PutByte(quest.Data.Cancelable); // Doesn't seem to work?
+			packet.PutByte(quest.Data.Cancelable);
 			packet.PutByte(0);
 			packet.PutByte(0); // 1 = blue icon
 			packet.PutByte(0);
@@ -128,6 +128,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// 54 - TARGETRACE:4:9;TARGETCOUNT:4:1; - Collect Frail Green Kiwi perfectly.
 				// 31 - TARGETCOUNT:4:1;TGTSID:s:/Gathering_Knife/; - Equip Gathering Knife
 				// 32 - TARGETCOUNT:4:5;TARGETITEM:4:60009;TGTSID:s:/Gathering_Knife/; - Sheared 5 Sheep
+				// 13 - TARGETCOUNT:4:1;TGTCLS:s:TirCho_Ciar_Low_Dungeon; - Clear Ciar Basic Dungeon
 
 				// Type theory:
 				// 1  : Kill x of y
@@ -135,6 +136,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// 3  : Talk to x
 				// 4  : Bring x to y
 				// 9  : Reach rank x on skill y
+				// 13 : Clear dungeon
 				// 14 : ?
 				// 15 : Reach lvl x
 				// 18 : Do something with item x ?
@@ -176,11 +178,37 @@ namespace Aura.Channel.Network.Sending.Helpers
 					packet.PutByte((byte)reward.Type);
 					packet.PutString(reward.ToString());
 					packet.PutByte((byte)reward.Result);
-					packet.PutByte(1);
-					packet.PutByte(1);
+					packet.PutByte(reward.Visible);
+
+					// If false, displays "(시간초과시)" (timeout) after the
+					// reward. Probably not used anymore, maybe players could
+					// still get certain rewards after a timeout at some
+					// point?
+					packet.PutByte(true);
 				}
 			}
 
+			packet.PutByte(0);
+		}
+
+		public static void AddQuestUpdate(this Packet packet, Quest quest)
+		{
+			var progress = quest.GetList();
+
+			packet.PutLong(quest.UniqueId);
+			packet.PutByte(1);
+			packet.PutInt(progress.Count);
+			foreach (var p in progress)
+			{
+				packet.PutInt(p.Count);
+				// [180600, NA187 (25.06.2014)] ?
+				{
+					packet.PutFloat(0);
+				}
+				packet.PutByte(p.Done);
+				packet.PutByte(p.Unlocked);
+			}
+			packet.PutByte(0);
 			packet.PutByte(0);
 		}
 	}

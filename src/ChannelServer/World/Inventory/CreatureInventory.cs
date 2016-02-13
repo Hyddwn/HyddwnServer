@@ -1320,6 +1320,19 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
+		/// Returns the amount of items in the inventory that match the
+		/// given tag.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <returns></returns>
+		public int Count(string tag)
+		{
+			lock (_pockets)
+				return _pockets.Values.Where(a => !InvisiblePockets.Contains(a.Pocket))
+					.Sum(pocket => pocket.CountItem(tag));
+		}
+
+		/// <summary>
 		/// Returns the number of items in the given pocket.
 		/// Returns -1 if the pocket doesn't exist.
 		/// </summary>

@@ -89,6 +89,12 @@ namespace Aura.Channel.World.Entities.Creatures
 				if (this.Creature.IsPet)
 					this.Add(ReviveOptions.PhoenixFeather);
 
+				// Nao Stone option if it's enabled, and creature is not
+				// in TNN (35: Tir, 84: Bangor).
+				// TODO: Check dungeons...? Maybe the dungeon groups?
+				if (AuraData.FeaturesDb.IsEnabled("NaoCoupon") && this.Creature.RegionId != 35 && this.Creature.RegionId != 84)
+					this.Add(ReviveOptions.NaoStone);
+
 				// Dungeons
 				if (this.Creature.Region is DungeonRegion)
 				{
@@ -125,12 +131,22 @@ namespace Aura.Channel.World.Entities.Creatures
 			float optionMultiplicator;
 			switch (option)
 			{
+				// Check both Nao Stone options for exp, as the exp aren't
+				// reduced until the second option gets in.
 				case ReviveOptions.NaoStone: optionMultiplicator = 0.001f; break;
+				case ReviveOptions.NaoStoneRevive: optionMultiplicator = 0.001f; break;
+
 				case ReviveOptions.PhoenixFeather: optionMultiplicator = 0.0025f; break;
-				case ReviveOptions.Town: optionMultiplicator = 0.005f; break;
 				case ReviveOptions.DungeonEntrance: optionMultiplicator = 0.005f; break;
 				case ReviveOptions.StatueOfGoddess: optionMultiplicator = 0.0075f; break;
 				case ReviveOptions.Here: optionMultiplicator = 0.01f; break;
+
+				case ReviveOptions.Town:
+					var premium = true;
+					if (premium)
+						goto default;
+					optionMultiplicator = 0.005f; break;
+
 				default: return 0;
 			}
 

@@ -289,12 +289,12 @@ public class TracyShop : NpcShopScript
 		AddQuest("Quest", 71043, 30); // Collect the Raccoon's Fomor Scrolls
 		AddQuest("Quest", 71045, 30); // Collect the Wisp's Fomor Scrolls
 
-		//AddQuest("Party Quest", InsertQuestId, 5); // [PQ] Hunt Down the Brown Bears
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Brown Bears
-		//AddQuest("Party Quest", InsertQuestId, 5); // [PQ] The Hunt for Red Bears
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] The Hunt for Red Bears
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Black Dire Wolves
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the White Dire Wolves
+		AddQuest("Party Quest", 100019, 5);  // [PQ] Hunt Down the Brown Bears (10)
+		AddQuest("Party Quest", 100020, 30); // [PQ] Hunt Down the Brown Bears (30)
+		AddQuest("Party Quest", 100021, 5);  // [PQ] The Hunt for Red Bears (10)
+		AddQuest("Party Quest", 100022, 30); // [PQ] The Hunt for Red Bears (30)
+		AddQuest("Party Quest", 100037, 30); // [PQ] Hunt Down the Black Dire Wolves (30)
+		AddQuest("Party Quest", 100038, 30); // [PQ] Hunt Down the White Dire Wolves (30)
 
 		Add("Food", 50004); // Bread
 

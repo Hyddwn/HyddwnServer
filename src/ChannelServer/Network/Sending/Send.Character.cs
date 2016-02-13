@@ -450,8 +450,8 @@ namespace Aura.Channel.Network.Sending
 			if (menu != null)
 			{
 				packet.PutString(menu.ToString());
-				packet.PutInt(0); // Beginner Nao Stone count
-				packet.PutInt(0); // Nao Stone Count
+				packet.PutInt(creature.Inventory.Count("/notTransServer/nao_coupon/")); // Beginner Nao Stone count
+				packet.PutInt(creature.Inventory.Count("/nao_coupon/")); // Nao Stone Count
 			}
 
 			creature.Client.Send(packet);

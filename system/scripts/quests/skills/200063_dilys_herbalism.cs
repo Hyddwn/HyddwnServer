@@ -13,7 +13,7 @@ public class GatherBaseHerbDilysQuestScript : QuestScript
 		SetName("Gather Base Herb");
 		SetDescription("Didn't you say you were interested in Herbalism? If you get me [1 base herb] from Ciar Dungeon, I will teach you the Herbalism skill as a reward. - Dilys");
 
-		AddObjective("gather", "Gather 1 Base Herb", 0, 0, 0, Collect(51104, 1)); // 1 Base Herb
+		AddObjective("gather", "Gather 1 Base Herb", 0, 0, 0, Gather(51104, 1)); // 1 Base Herb
 		AddObjective("talk", "Give 1 Base Herb to Dilys", 6, 1107, 1050, Talk("dilys"));
 
 		AddReward(Exp(500));

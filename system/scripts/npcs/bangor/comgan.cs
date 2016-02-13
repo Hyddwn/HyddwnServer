@@ -277,18 +277,22 @@ public class ComganShop : NpcShopScript
 		AddQuest("Quest", 71044, 30); // Collect the Imp's Fomor Scrolls
 		AddQuest("Quest", 71066, 30); // Collect the Flying Sword's Fomor Scrolls
 
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Brown Dire Wolves
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the White Dire Wolves
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Kobold Bandits
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Laghodessas
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Green Gremlins
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt down the Gray Gremlins
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Brown Gremlins
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Flying Swords
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Werewolf
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the New Gremlin
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the New Gremlin
-		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the New Gremlin
+		AddQuest("Party Quest", 100035, 20);   // [PQ] Hunt Down the Brown Dire Wolves (30)
+		AddQuest("Party Quest", 100038, 30);   // [PQ] Hunt Down the White Dire Wolves (30)
+		AddQuest("Party Quest", 100054, 30);   // [PQ] Hunt Down the Kobold Bandits (30)
+		AddQuest("Party Quest", 100056, 20);   // [PQ] Hunt Down the Laghodessas (30)
+		AddQuest("Party Quest", 100058, 20);   // [PQ] Hunt Down the Green Gremlins (10)
+		AddQuest("Party Quest", 100059, 20);   // [PQ] Hunt down the Gray Gremlins (10)
+		AddQuest("Party Quest", 100060, 20);   // [PQ] Hunt Down the Brown Gremlins (10)
+		AddQuest("Party Quest", 100061, 20);   // [PQ] Hunt Down the Flying Swords (10)
+		AddQuest("Party Quest", 100082, 500);  // [PQ] Defeat the Werewolf (Barri Basic)
+
+		if (IsEnabled("BarriAdvanced"))
+		{
+			AddQuest("Party Quest", 100083, 500);  // [PQ] Defeat the New Gremlin (Barri Adv. for 2)
+			AddQuest("Party Quest", 100084, 500);  // [PQ] Defeat the New Gremlin (Barri Adv. for 3)
+			AddQuest("Party Quest", 100085, 1000); // [PQ] Defeat the New Gremlin (Barri Adv.)
+		}
 
 		if (IsEnabled("G16HotSpringRenewal"))
 		{

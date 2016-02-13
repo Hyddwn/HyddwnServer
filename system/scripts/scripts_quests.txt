@@ -8,6 +8,7 @@
 quests/beginner_uladh/200007_go_to_school.cs
 quests/beginner_uladh/200009_lets_learn_the_resting_skill.cs
 quests/beginner_uladh/200024_caution_against_fire.cs
+quests/beginner_uladh/200076_adulthood_cerenomy.cs
 quests/beginner_uladh/200079_production_mastery.cs
 quests/beginner_uladh/202001_naos_letter.cs
 quests/beginner_uladh/202002_rescue_resident.cs
@@ -20,7 +21,14 @@ quests/beginner_uladh/202030_lets_gather_green_gem.cs
 quests/beginner_uladh/202033_gathering_berries.cs
 quests/beginner_uladh/202034_gather_cobweb.cs
 quests/beginner_uladh/202035_sheep_shearing.cs
+quests/beginner_uladh/202040_mine_lumps_of_iron_ore.cs
+quests/beginner_uladh/202041_logging_camp_at_dugald_aisle.cs
 quests/beginner_uladh/202042_repair_an_item.cs
+quests/beginner_uladh/202043_talk_with_stewart.cs
+quests/beginner_uladh/202044_harvest_potato.cs
+quests/beginner_uladh/202045_visiting_bangor.cs
+quests/beginner_uladh/202046_talk_with_eavan.cs
+quests/beginner_uladh/202047_gather_eggs.cs
 quests/beginner_uladh/duncans_praise.cs
 
 quests/beginner_uladh/200043_reach_level_20.cs
@@ -60,12 +68,23 @@ quests/ptj/church_endelyon.cs
 quests/ptj/healer_dilys.cs
 
 // Skills
-quests/20006_elen_refine.cs
-quests/20007_ranald_windmill.cs
-quests/200063_dilys_herbalism.cs
-quests/204003_malcolm_weaving_g7.cs
+quests/skills/20006_elen_refine.cs
+quests/skills/20007_ranald_windmill.cs
+quests/skills/200063_dilys_herbalism.cs
+quests/skills/204003_malcolm_weaving_g7.cs
 
 // Scroll Hunting
 quests/scrolls/*
+quests/party/*
+
+// Collection
+quests/collection/60021_make_assorted_fruits.cs
+quests/collection/60022_make_mayonnaise.cs
+quests/collection/60023_make_curry_paste.cs
+quests/collection/60024_make_a_steamed_potato.cs
+quests/collection/60025_cook_a_hard-boiled_egg.cs
+quests/collection/60026_make_some_flour_dough.cs
+quests/collection/60027_make_some_fry_batter.cs
+quests/collection/60028_make_some_rice.cs
 
 include "/user/scripts/scripts_quests.txt"

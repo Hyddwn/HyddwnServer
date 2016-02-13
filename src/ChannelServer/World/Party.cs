@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World.Quests;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
@@ -92,6 +93,11 @@ namespace Aura.Channel.World
 		/// Returns true if member count is lower than max size.
 		/// </summary>
 		public bool HasFreeSpace { get { return (this.MemberCount < this.MaxSize); } }
+
+		/// <summary>
+		/// Unique id of the quest set as party quest.
+		/// </summary>
+		public Quest Quest { get; private set; }
 
 		/// <summary>
 		/// Initializes party.
@@ -319,12 +325,19 @@ namespace Aura.Channel.World
 		/// Adds creature to party and updates the clients.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="password"></param>
 		/// <returns></returns>
-		public void AddMember(Creature creature, string password)
+		public void AddMember(Creature creature)
 		{
 			this.AddMemberSilent(creature);
 			Send.PartyJoinUpdateMembers(creature);
+
+			// Inform about party quest if set
+			var quest = this.Quest;
+			if (quest != null)
+			{
+				creature.Quests.AddSilent(quest);
+				Send.NewQuest(creature, quest);
+			}
 
 			if (this.IsOpen)
 				Send.PartyMemberWantedRefresh(this);
@@ -354,6 +367,17 @@ namespace Aura.Channel.World
 		public void RemoveMember(Creature creature)
 		{
 			this.RemoveMemberSilent(creature);
+
+			// Handle quest
+			if (this.Quest != null)
+			{
+				// Unset if leader left or not enough members remain,
+				// or remove quest from member's manager.
+				if (creature == this.Leader || this.MemberCount < ChannelServer.Instance.Conf.World.PartyQuestMinSize)
+					this.UnsetPartyQuest();
+				else
+					creature.Quests.Remove(this.Quest);
+			}
 
 			if (this.MemberCount == 0)
 			{
@@ -634,6 +658,17 @@ namespace Aura.Channel.World
 				_occupiedSlots.Remove(creature.PartyPosition);
 			}
 
+			// Handle quest
+			if (this.Quest != null)
+			{
+				// Unset if leader left or not enough members remain,
+				// or remove quest from member's manager.
+				if (creature == this.Leader || this.MemberCount < ChannelServer.Instance.Conf.World.PartyQuestMinSize)
+					this.UnsetPartyQuest();
+				else
+					creature.Quests.Remove(this.Quest);
+			}
+
 			if (this.MemberCount > 0)
 			{
 				// Choose new leader if the old one disconnected
@@ -694,6 +729,54 @@ namespace Aura.Channel.World
 				return true;
 
 			return (password == this.Password);
+		}
+
+		/// <summary>
+		/// Sets party quest, removing previous ones and updating all members.
+		/// </summary>
+		/// <param name="quest"></param>
+		public void SetPartyQuest(Quest quest)
+		{
+			if (this.Quest != null)
+				this.UnsetPartyQuest();
+
+			this.Quest = quest;
+
+			// Give quest to other members
+			lock (_sync)
+			{
+				foreach (var member in _members.Where(a => a != this.Leader))
+				{
+					member.Quests.AddSilent(quest);
+					Send.NewQuest(member, quest);
+				}
+			}
+
+			Send.PartySetActiveQuest(this, quest.UniqueId);
+		}
+
+		/// <summary>
+		/// Unsets party quest, removes it from all normal member's managers,
+		/// and updates the clients. Returns false if no party quest was set.
+		/// </summary>
+		/// <param name="quest"></param>
+		public bool UnsetPartyQuest()
+		{
+			var quest = this.Quest;
+			if (quest == null)
+				return false;
+
+			this.Quest = null;
+
+			// Remove quest from other members
+			lock (_sync)
+			{
+				foreach (var member in _members.Where(a => a != this.Leader))
+					member.Quests.Remove(quest);
+			}
+
+			Send.PartyUnsetActiveQuest(this, quest.UniqueId);
+			return true;
 		}
 	}
 }

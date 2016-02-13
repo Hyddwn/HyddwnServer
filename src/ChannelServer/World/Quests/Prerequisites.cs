@@ -121,6 +121,35 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Age prerequisite, met if character's age is greater or equal.
+	/// </summary>
+	/// <remarks>
+	/// Since aging only happens on relog, we don't need any special handling
+	/// for this one, the quests will simply check their prerequisites on
+	/// login, as they always do, and will give the quest if the age is
+	/// reached.
+	/// </remarks>
+	public class QuestPrerequisiteReachedAge : QuestPrerequisite
+	{
+		public int Age { get; protected set; }
+
+		public QuestPrerequisiteReachedAge(int age)
+		{
+			this.Age = age;
+		}
+
+		public override bool Met(Creature character)
+		{
+			return (character.Age >= this.Age);
+		}
+
+		public override bool Is(Type type)
+		{
+			return (this.GetType() == type);
+		}
+	}
+
+	/// <summary>
 	/// Skill prerequisite, met if character doesn't have the skill or rank yet.
 	/// </summary>
 	public class QuestPrerequisiteNotSkill : QuestPrerequisite
