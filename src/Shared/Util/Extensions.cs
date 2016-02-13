@@ -94,28 +94,6 @@ namespace Aura.Shared.Util
 		}
 
 		/// <summary>
-		/// Returns float, formatted with InvariantCulture.
-		/// </summary>
-		/// <param name="f"></param>
-		/// <param name="format"></param>
-		/// <returns></returns>
-		public static string ToInvariant(this float f, string format = "g")
-		{
-			return f.ToString(format, CultureInfo.InvariantCulture);
-		}
-
-		/// <summary>
-		/// Returns float, formatted with InvariantCulture.
-		/// </summary>
-		/// <param name="f"></param>
-		/// <param name="format"></param>
-		/// <returns></returns>
-		public static string ToInvariant(this double f, string format = "g")
-		{
-			return f.ToString(format, CultureInfo.InvariantCulture);
-		}
-
-		/// <summary>
 		/// Breaks the specified string into chunks no longer than the
 		/// given maximum length. This can be used for word wrapping purposes.
 		/// 

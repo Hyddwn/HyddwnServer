@@ -241,12 +241,12 @@ namespace Aura.Channel.Util
 		{
 			var pos = target.GetPosition();
 			var msg = sender == target
-				? Localization.Get("You're here: Region: {0} @ {1}/{2}, Area: {5}, Dir: {4} (Radian: {6})")
-				: Localization.Get("{3} is here: Region: {0} @ {1}/{2}, Area: {5}, Dir: {4} (Radian: {6})");
+				? Localization.Get("You're here: Region: {0} @ {1}/{2}, Area: {5}, Dir: {4} (Radian: {6:#.###})")
+				: Localization.Get("{3} is here: Region: {0} @ {1}/{2}, Area: {5}, Dir: {4} (Radian: {6:#.###})");
 
 			var areaId = target.Region.GetAreaId(pos.X, pos.Y);
 
-			Send.ServerMessage(sender, msg, target.RegionId, pos.X, pos.Y, target.Name, target.Direction, areaId, MabiMath.ByteToRadian(target.Direction).ToInvariant("#.###"));
+			Send.ServerMessage(sender, msg, target.RegionId, pos.X, pos.Y, target.Name, target.Direction, areaId, MabiMath.ByteToRadian(target.Direction));
 
 			return CommandResult.Okay;
 		}
@@ -473,7 +473,7 @@ namespace Aura.Channel.Util
 					if (all.Count > 1 && score != 0)
 					{
 						var perc = 100 - (100f / itemData.Name.Length * score);
-						Send.ServerMessage(sender, Localization.Get("No exact match found for '{0}', using best result, '{1}' ({2}%)."), args[1], itemData.Name, perc.ToString("0.0", CultureInfo.InvariantCulture));
+						Send.ServerMessage(sender, Localization.Get("No exact match found for '{0}', using best result, '{1}' ({2:0.0}%)."), args[1], itemData.Name, perc);
 					}
 				}
 			}
@@ -760,7 +760,7 @@ namespace Aura.Channel.Util
 
 			Send.CreatureBodyUpdate(target);
 
-			Send.ServerMessage(sender, Localization.Get("Change successful, new value: {0}"), val.ToInvariant("0.0"));
+			Send.ServerMessage(sender, Localization.Get("Change successful, new value: {0:0.0}"), val);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("Your appearance has been changed by {0}."), sender.Name);
 
@@ -770,9 +770,9 @@ namespace Aura.Channel.Util
 		private CommandResult HandleCp(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
 			if (sender == target)
-				Send.ServerMessage(sender, Localization.Get("Your combat power: {0}"), target.CombatPower.ToInvariant("0.0"));
+				Send.ServerMessage(sender, Localization.Get("Your combat power: {0:0.0}"), target.CombatPower);
 			else
-				Send.ServerMessage(sender, Localization.Get("{0}'s combat power: {1}"), target.Name, target.CombatPower.ToInvariant("0.0"));
+				Send.ServerMessage(sender, Localization.Get("{0}'s combat power: {1:0.0}"), target.Name, target.CombatPower);
 
 			return CommandResult.Okay;
 		}
@@ -969,9 +969,9 @@ namespace Aura.Channel.Util
 			// Add ap
 			target.GiveAp(amount);
 
-			Send.ServerMessage(sender, Localization.Get("Added {0} AP."), amount);
+			Send.ServerMessage(sender, Localization.GetPlural("Added {0} AP.", "Added {0} AP.", amount), amount);
 			if (target != sender)
-				Send.ServerMessage(target, Localization.Get("{0} gave you {1} AP."), sender.Name, amount);
+				Send.ServerMessage(target, Localization.GetPlural("{0} gave you {1} AP.", "{0} gave you {1} AP.", amount), sender.Name, amount);
 
 			return CommandResult.Okay;
 		}
@@ -1420,9 +1420,9 @@ namespace Aura.Channel.Util
 					stack.Drop(target.Region, target.GetPosition(), 500);
 			}
 
-			Send.SystemMessage(sender, Localization.Get("Spawned {0:n0}g."), amount);
+			Send.SystemMessage(sender, Localization.GetPlural("Spawned {0:n0}g.", "Spawned {0:n0}g.", amount), amount);
 			if (sender != target)
-				Send.SystemMessage(target, Localization.Get("{0} gave you {1:n0}g."), sender.Name, amount);
+				Send.SystemMessage(target, Localization.GetPlural("{0} gave you {1:n0}g.", "{0} gave you {1:n0}g.", amount), sender.Name, amount);
 
 			return CommandResult.Okay;
 		}
@@ -1888,9 +1888,9 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 			{
 				if (sender == target)
-					Send.ServerMessage(sender, Localization.Get("Your Pon: {0}"), oldVal);
+					Send.ServerMessage(sender, Localization.GetPlural("You have {0} Pon.", "You have {0} Pon.", oldVal), oldVal);
 				else
-					Send.ServerMessage(sender, Localization.Get("{1}'s Pon: {0}"), oldVal, target.Name);
+					Send.ServerMessage(sender, Localization.GetPlural("{1} has {0} Pon.", "{1} has {0} Pon.", oldVal), oldVal, target.Name);
 
 				return CommandResult.Okay;
 			}
@@ -1922,7 +1922,7 @@ namespace Aura.Channel.Util
 					pc.Save = false;
 			}
 
-			Send.ServerMessage(sender, Localization.Get("Marked {0} creatures to *not* be saved."), creatures.Length);
+			Send.ServerMessage(sender, Localization.GetPlural("Marked {0} creature to *not* be saved.", "Marked {0} creatures to *not* be saved.", creatures.Length), creatures.Length);
 			if (sender != target)
 				Send.ServerMessage(sender, Localization.Get("{0} marked your creatures to *not* be saved on logout."), sender.Name);
 
@@ -1950,9 +1950,9 @@ namespace Aura.Channel.Util
 				return CommandResult.Okay;
 			}
 
-			Send.ServerMessage(sender, Localization.Get("Filled {0} potion stacks."), count);
+			Send.ServerMessage(sender, Localization.GetPlural("Filled {0} potion stack.", "Filled {0} potion stacks.", count), count);
 			if (target != sender)
-				Send.ServerMessage(sender, Localization.Get("{0} filled {1} of your potion stacks."), sender.Name, count);
+				Send.ServerMessage(sender, Localization.GetPlural("{0} filled {1} of your potion stacks.", "{0} filled {1} of your potion stacks.", count), sender.Name, count);
 
 			return CommandResult.Okay;
 		}

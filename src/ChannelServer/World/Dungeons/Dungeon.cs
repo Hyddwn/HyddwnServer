@@ -834,7 +834,7 @@ namespace Aura.Channel.World.Dungeons
 				}
 			}
 
-			sb.AppendFormat(Localization.Get("... {0} player(s) total"), count);
+			sb.AppendFormat(Localization.GetPlural("... {0} player total", "... {0} players total", count), count);
 
 			return sb.ToString();
 		}

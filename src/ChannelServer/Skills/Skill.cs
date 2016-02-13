@@ -165,7 +165,7 @@ namespace Aura.Channel.Skills
 			if (ChannelServer.Instance.Conf.World.SkillExpRate != 1)
 			{
 				amount = (int)(amount * ChannelServer.Instance.Conf.World.SkillExpRate);
-				bonus = string.Format(Localization.Get(" (Skill Exp Rate Bonus: x{0})"), ChannelServer.Instance.Conf.World.SkillExpRate.ToString(CultureInfo.InvariantCulture));
+				bonus = string.Format(Localization.Get(" (Skill Exp Rate Bonus: x{0})"), ChannelServer.Instance.Conf.World.SkillExpRate);
 			}
 
 			// Change count and reveal the condition
