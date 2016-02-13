@@ -113,10 +113,6 @@ namespace Aura.Channel.Skills.Magic
 		{
 			// Mana degeneration
 			var degen = attacker.Regens.Add(Stat.Mana, (-1 * skill.RankData.ManaCost), attacker.ManaMax, degenTime);
-			Task.Delay(degenTime).ContinueWith(_ =>
-			{
-				attacker.Regens.Remove(degen.Id);
-			});
 
 			// Set full charge variable
 			if (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3))
