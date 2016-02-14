@@ -110,8 +110,7 @@ namespace Aura.Channel.Skills.Magic
 			var degen = attacker.Regens.Add(Stat.Mana, (-1 * skill.RankData.ManaCost), attacker.ManaMax, degenTime);
 
 			// Set full charge variable
-			if (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3))
-				attacker.Temp.LightningRodFullCharge = true;
+			attacker.Temp.LightningRodFullCharge = (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3));
 
 			// Get direction for target Area
 			var direction = Mabi.MabiMath.ByteToRadian(attacker.Direction);
