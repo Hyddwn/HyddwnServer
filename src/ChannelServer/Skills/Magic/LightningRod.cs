@@ -329,6 +329,14 @@ namespace Aura.Channel.Skills.Magic
 			// Get targets
 			var targets = aAction.Pack.GetTargets();
 
+			// Kill count
+			var killCount = 0;
+			foreach (Creature target in targets)
+			{
+				if (target.IsDead)
+					killCount++;
+			}
+
 			// Learning by attacking
 			switch (attackerSkill.Info.Rank)
 			{
@@ -338,20 +346,11 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.RC:
 				case SkillRank.RB:
 				case SkillRank.RA:
-					break;
 				case SkillRank.R9:
 				case SkillRank.R8:
 				case SkillRank.R7:
 					if (targets.Length >= 2) // Defeat 2 or more enemies
 					{
-						var killCount = 0;
-						foreach (Creature target in targets)
-						{
-							if (target.IsDead)
-							{
-								killCount++;
-							}
-						}
 						if (killCount >= 2)
 							attackerSkill.Train(4);
 					}
@@ -361,14 +360,6 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.R4:
 					if (targets.Length >= 3) // Defeat 3 or more enemies
 					{
-						var killCount = 0;
-						foreach (Creature target in targets)
-						{
-							if (target.IsDead)
-							{
-								killCount++;
-							}
-						}
 						if (killCount >= 3)
 							attackerSkill.Train(4);
 					}
@@ -377,14 +368,6 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.R2:
 					if (targets.Length >= 4) // Defeat 4 or more enemies
 					{
-						var killCount = 0;
-						foreach (Creature target in targets)
-						{
-							if (target.IsDead)
-							{
-								killCount++;
-							}
-						}
 						if (killCount >= 4)
 							attackerSkill.Train(4);
 
@@ -395,14 +378,6 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.R1:
 					if (targets.Length >= 5) // Defeat 5 or more enemies
 					{
-						var killCount = 0;
-						foreach (Creature target in targets)
-						{
-							if (target.IsDead)
-							{
-								killCount++;
-							}
-						}
 						if (killCount >= 5)
 							attackerSkill.Train(4);
 
