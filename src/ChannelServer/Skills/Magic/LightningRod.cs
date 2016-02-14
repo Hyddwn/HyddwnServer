@@ -93,11 +93,6 @@ namespace Aura.Channel.Skills.Magic
 			Send.SkillReady(creature, skill.Info.Id);
 			skill.State = SkillState.Ready;
 
-			/* Locks -----------------------
-			Walk|Run
-			---------------------------- - */
-			creature.Lock(Locks.Walk | Locks.Run);
-
 			creature.Temp.LightningRodPrepareTime = DateTime.Now;
 
 			return true;
@@ -117,11 +112,6 @@ namespace Aura.Channel.Skills.Magic
 			// Set full charge variable
 			if (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3))
 				attacker.Temp.LightningRodFullCharge = true;
-
-			/* Locks -----------------------
-			Walk|Run
-			---------------------------- - */
-			attacker.Lock(Locks.Walk | Locks.Run);
 
 			// Get direction for target Area
 			var direction = Mabi.MabiMath.ByteToRadian(attacker.Direction);
@@ -264,11 +254,6 @@ namespace Aura.Channel.Skills.Magic
 
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
-			/* Unlocks ---------------------
-			Walk|Run
-			---------------------------- - */
-			creature.Unlock(Locks.Walk | Locks.Run);
-
 			creature.Temp.LightningRodFullCharge = false;
 
 			Send.Effect(creature, Effect.LightningRod, 0); // End Effect
@@ -277,11 +262,6 @@ namespace Aura.Channel.Skills.Magic
 
 		public void Cancel(Creature creature, Skill skill)
 		{
-			/* Unlocks ---------------------
-			Walk|Run
-			---------------------------- - */
-			creature.Unlock(Locks.Walk | Locks.Run);
-
 			creature.Temp.LightningRodFullCharge = false;
 
 			Send.Effect(creature, Effect.LightningRod, 0); // End Effect
