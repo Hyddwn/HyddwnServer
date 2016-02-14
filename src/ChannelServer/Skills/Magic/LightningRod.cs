@@ -179,6 +179,18 @@ namespace Aura.Channel.Skills.Magic
 			// Get targets in Polygon
 			var targets = attacker.Region.GetCreaturesInPolygon(p1, p2, p3, p4).Where(x => attacker.CanTarget(x)).ToList();
 
+			var rnd = RandomProvider.Get();
+
+			// Check crit
+			var crit = false;
+			var critSkill = attacker.Skills.Get(SkillId.CriticalHit);
+			if (critSkill != null && critSkill.Info.Rank > SkillRank.Novice)
+			{
+				var critChance = Math2.Clamp(0, 30, attacker.GetTotalCritChance(0));
+				if (rnd.NextDouble() * 100 < critChance)
+					crit = true;
+			}
+
 			foreach (var target in targets)
 			{
 				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, SkillId.CombatMastery);
@@ -196,8 +208,13 @@ namespace Aura.Channel.Skills.Magic
 				}
 
 				// Critical Hit
-				var critChance = attacker.GetRightCritChance(target.MagicProtection);
-				CriticalHit.Handle(attacker, critChance, ref damage, tAction);
+				if (crit)
+				{
+					var bonus = critSkill.RankData.Var1 / 100f;
+					damage = damage + (damage * bonus);
+
+					tAction.Set(TargetOptions.Critical);
+				}
 
 				// MDef and MProt
 				SkillHelper.HandleMagicDefenseProtection(target, ref damage);
