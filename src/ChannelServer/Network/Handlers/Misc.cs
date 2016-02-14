@@ -141,6 +141,9 @@ namespace Aura.Channel.Network.Handlers
 				// This can happen if multiple member's cutscenes end at the
 				// same time, they all send the finish packet, no matter whether
 				// they're the leader or not. (Is that normal?)
+				// The cutscene could also be set to null due to a bug though,
+				// in which case players get stuck in it, without any error
+				// message... TODO: We need a better check than "== null".
 				//Log.Error("FinishedCutscene: Player '{0}' tried to finish invalid cutscene.", creature.EntityIdHex);
 				return;
 			}

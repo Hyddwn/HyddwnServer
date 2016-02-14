@@ -208,7 +208,13 @@ namespace Aura.Channel.World
 				_callback(this);
 
 			foreach (var member in _viewers)
-				member.Temp.CurrentCutscene = null;
+			{
+				// Only set cutscene to null if callback didn't start
+				// another one, otherwise players wouldn't be able to
+				// finish the new one, getting stuck.
+				if (member.Temp.CurrentCutscene == this)
+					member.Temp.CurrentCutscene = null;
+			}
 		}
 	}
 }
