@@ -477,8 +477,6 @@ namespace Aura.Channel.World.Inventory
 			if (!AccessiblePockets.Contains(result.Info.Pocket))
 				throw new SevereViolation("Item 0x{0:X16} is located in inaccessible pocket {1}", entityId, result.Info.Pocket);
 
-			// TODO: Check item data type?
-
 			return result;
 		}
 

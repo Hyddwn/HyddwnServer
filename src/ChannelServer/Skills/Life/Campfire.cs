@@ -47,9 +47,6 @@ namespace Aura.Channel.Skills.Life
 		/// <summary>
 		/// How much Firewood is required/being removed.
 		/// </summary>
-		/// <remarks>
-		/// TODO: Move to conf?
-		/// </remarks>
 		private const int FirewoodCost = 5;
 
 		/// <summary>
