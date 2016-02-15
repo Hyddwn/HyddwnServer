@@ -1700,8 +1700,6 @@ namespace Aura.Channel.World.Entities
 			if (skill.Info.Id == SkillId.Firebolt || skill.Info.Id == SkillId.IceSpear || skill.Info.Id == SkillId.HailStorm)
 				chargeMultiplier = skill.Stacks;
 
-			// TODO: Enchants
-
 			var damage = (float)(baseDamage + Math.Floor(wandBonus * (1 + chargeMultiplier)) + (factor * totalMagicAttack));
 
 			return (damage * this.GetRndMagicBalance());
