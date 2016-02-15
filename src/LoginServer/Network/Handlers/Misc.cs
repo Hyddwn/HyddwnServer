@@ -81,7 +81,7 @@ namespace Aura.Login.Network.Handlers
 				goto L_Fail;
 
 			// Add goods
-			LoginServer.Instance.Database.TradeCard(character, cardData);
+			LoginServer.Instance.Database.TradeCard(client.Account, character, cardData);
 
 			// Success
 			Send.TradeCardR(client, cardId);
