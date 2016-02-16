@@ -1180,8 +1180,6 @@ namespace Aura.Channel.World.Entities
 			if (result == 0)
 				result = 1;
 
-			// TODO: modifiers
-
 			return result * points;
 		}
 

@@ -720,9 +720,6 @@ namespace Aura.Channel.Network.Handlers
 		/// 002 [00500000000003B9] Long   : 22517998136853433
 		/// 003 [..............00] Byte   : 0
 		/// </example>
-		/// <remarks>
-		/// TODO: How to get the Enchanter's Burn button? Having the items isn't enough.
-		/// </remarks>
 		[PacketHandler(Op.BurnItem)]
 		public void BurnItem(ChannelClient client, Packet packet)
 		{

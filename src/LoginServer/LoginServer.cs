@@ -28,7 +28,7 @@ namespace Aura.Login
 		/// <summary>
 		/// Instance of the actual server component.
 		/// </summary>
-		private DefaultServer<LoginClient> Server { get; set; }
+		public DefaultServer<LoginClient> Server { get; set; }
 
 		/// <summary>
 		/// List of servers and channels.

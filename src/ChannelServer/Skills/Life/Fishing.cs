@@ -122,7 +122,6 @@ namespace Aura.Channel.Skills.Life
 			var rnd = RandomProvider.Get();
 
 			// Update prop state
-			// TODO: update prop state method
 			creature.Temp.FishingProp.SetState("empty");
 
 			// Get auto success

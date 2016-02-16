@@ -1685,6 +1685,7 @@ namespace Aura.Channel.World.Entities
 
 			var baseDamage = rnd.Between(baseMin, baseMax);
 			var factor = rnd.Between(skill.RankData.FactorMin, skill.RankData.FactorMax);
+			var totalMagicAttack = this.MagicAttack + this.MagicAttackMod;
 
 			var wandBonus = 0f;
 			var chargeMultiplier = 0f;
@@ -1699,9 +1700,7 @@ namespace Aura.Channel.World.Entities
 			if (skill.Info.Id == SkillId.Firebolt || skill.Info.Id == SkillId.IceSpear || skill.Info.Id == SkillId.HailStorm)
 				chargeMultiplier = skill.Stacks;
 
-			// TODO: Enchants
-
-			var damage = (float)(baseDamage + Math.Floor(wandBonus * (1 + chargeMultiplier)) + (factor * this.MagicAttack));
+			var damage = (float)(baseDamage + Math.Floor(wandBonus * (1 + chargeMultiplier)) + (factor * totalMagicAttack));
 
 			return (damage * this.GetRndMagicBalance());
 		}
