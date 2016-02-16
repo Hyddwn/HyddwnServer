@@ -201,6 +201,7 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Effects for Lightning Rod.
 		/// Different bytes cover the skill's spectrum of effects.
+		/// byte:0|2|3 (cancel | charging effect | shooting effect [position.x, position.y])
 		/// </summary>
 		public static readonly int LightningRod = 418;
 	}
