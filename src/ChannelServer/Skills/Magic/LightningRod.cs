@@ -88,7 +88,7 @@ namespace Aura.Channel.Skills.Magic
 			skill.State = SkillState.Prepared;
 
 			Send.MotionCancel2(creature, 0);
-			Send.Effect(creature, Effect.LightningRod, 2, 0); // Magic Circle?
+			Send.Effect(creature, Effect.LightningRod, 2, 0); // Magic Circle
 
 			Send.SkillReady(creature, skill.Info.Id);
 			skill.State = SkillState.Ready;
@@ -129,27 +129,6 @@ namespace Aura.Channel.Skills.Magic
 			p2 = this.RotatePoint(p2, pivot, r);
 			p3 = this.RotatePoint(p3, pivot, r);
 			p4 = this.RotatePoint(p4, pivot, r);
-
-			// Debug ----
-			/*
-			var prop1 = new Prop(10, attacker.RegionId, p1.X, p1.Y, 1, 0.5f);
-			var prop2 = new Prop(10, attacker.RegionId, p2.X, p2.Y, 1, 0.5f);
-			var prop3 = new Prop(10, attacker.RegionId, p3.X, p3.Y, 1, 0.5f);
-			var prop4 = new Prop(10, attacker.RegionId, p4.X, p4.Y, 1, 0.5f);
-			attacker.Region.AddProp(prop1);
-			attacker.Region.AddProp(prop2);
-			attacker.Region.AddProp(prop3);
-			attacker.Region.AddProp(prop4);
-
-			Task.Delay(10000).ContinueWith(_ =>
-			{
-				attacker.Region.RemoveProp(prop1);
-				attacker.Region.RemoveProp(prop2);
-				attacker.Region.RemoveProp(prop3);
-				attacker.Region.RemoveProp(prop4);
-			});
-			*/
-			// ----------
 
 			// TargetProp
 			var LProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
@@ -208,11 +187,11 @@ namespace Aura.Channel.Skills.Magic
 				// MDef and MProt
 				SkillHelper.HandleMagicDefenseProtection(target, ref damage);
 
-				// Mana Shield
-				ManaShield.Handle(target, ref damage, tAction);
-
 				// Mana Deflector
 				var delayReduction = ManaDeflector.Handle(attacker, target, ref damage, tAction);
+
+				// Mana Shield
+				ManaShield.Handle(target, ref damage, tAction);
 
 				// Apply Damage
 				target.TakeDamage(tAction.Damage = damage, attacker);
@@ -243,7 +222,7 @@ namespace Aura.Channel.Skills.Magic
 			}
 			cap.Handle();
 
-			Send.Effect(attacker, Effect.LightningRod, 3, poe.X, poe.Y); // Lightning Shooting Effect?
+			Send.Effect(attacker, Effect.LightningRod, 3, poe.X, poe.Y); // Lightning Shooting Effect
 
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 			skill.Train(1); // Use the Skill
