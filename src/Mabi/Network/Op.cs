@@ -573,11 +573,24 @@ namespace Aura.Mabi.Network
 
 		// ItemMagnet got increased by one, some time between NA200 and NA204.
 
-		public const int ItemMagnet = 0xABAC; // [190100, NA200 (2015-01-15)]
+		// [190100, NA200 (2015-01-15)] Added
+		// [190200, NA221 (2016-02-17)] Increased by one, ABAC->ABAD
+		public const int ItemMagnet = 0xABAD;
+
+		// [190200, NA221 (2016-02-17)] Added
+		public const int DestroyExpiredItems = 0xABAE;
+		public const int DestroyExpiredItemsConfirm = 0xABAF;
+		public const int DestroyExpiredItemsR = 0xABB0;
 
 		public const int AmmoRequired = 0xABBB;
 
 		public const int ChatSticker = 0xAC0A;
+
+		// [190200, NA221 (2016-02-17)] Added
+		// DcUnk, purpose unknown, requires answer on disconnect,
+		// or the player gets stuck.
+		public const int DcUnk = 0xAC1D;
+		public const int DcUnkR = 0xAC1E;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
