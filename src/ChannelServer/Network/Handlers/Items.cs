@@ -957,5 +957,25 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.OpenItemShopR(creature, true, parameter);
 		}
+
+		/// <summary>
+		/// Requests list of expired items to destroy, sent when clicking
+		/// the respective button in the inventory window.
+		/// </summary>
+		/// <remarks>
+		/// Response doesn't seem to be required for fail, but it is sent
+		/// on officials.
+		/// </remarks>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.DestroyExpiredItems)]
+		public void DestroyExpiredItems(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.MsgBox(creature, Localization.Get("Not supported yet."));
+			Send.DestroyExpiredItemsR(creature, false);
+		}
 	}
 }
