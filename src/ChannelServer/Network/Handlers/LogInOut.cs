@@ -390,5 +390,21 @@ namespace Aura.Channel.Network.Handlers
 			// Success
 			Send.SwitchChannelR(creature, channel);
 		}
+
+		/// <summary>
+		/// Dummy client for DcUnk.
+		/// </summary>
+		/// <remarks>
+		/// Sent on logout, purpose unknown. Client waits for an answer,
+		/// which makes logging out impossible without sending DcUnkR.
+		/// </remarks>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.DcUnk)]
+		public void DcUnk(ChannelClient client, Packet packet)
+		{
+			Send.DcUnkR(client, 0);
+		}
 	}
 }

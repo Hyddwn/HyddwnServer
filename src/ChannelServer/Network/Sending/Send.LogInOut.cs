@@ -118,5 +118,18 @@ namespace Aura.Channel.Network.Sending
 
 			client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends DcUnkR to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="val"></param>
+		public static void DcUnkR(ChannelClient client, long val)
+		{
+			var packet = new Packet(Op.DcUnkR, MabiId.Channel);
+			packet.PutLong(val);
+
+			client.Send(packet);
+		}
 	}
 }
