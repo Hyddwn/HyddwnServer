@@ -51,20 +51,18 @@ namespace Aura.Shared.Util.Commands
 		/// </summary>
 		public void Wait()
 		{
+			// Just wait if not running in a console
+			if (!CliUtil.UserInteractive)
+			{
+				var reset = new ManualResetEvent(false);
+				reset.WaitOne();
+				return;
+			}
+
 			Log.Info("Type 'help' for a list of console commands.");
 
 			while (true)
 			{
-#if __MonoCS__
-				// Just wait if not running in a console
-				var reset = new ManualResetEvent(false);
-				if (!(Console.In is StreamReader))
-				{
-					reset.WaitOne();
-					break;
-				}
-#endif
-
 				var line = Console.ReadLine();
 
 				var args = this.ParseLine(line);

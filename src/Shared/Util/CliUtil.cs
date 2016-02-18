@@ -105,11 +105,7 @@ namespace Aura.Shared.Util
 		/// <param name="wait"></param>
 		public static void Exit(int exitCode, bool wait = true)
 		{
-#if __MonoCS__
-			// Wait if running in a console
-			if (Console.In is StreamReader)
-#endif
-			if (wait)
+			if (wait && UserInteractive)
 			{
 				Log.Info("Press Enter to exit.");
 				Console.ReadLine();
@@ -127,6 +123,30 @@ namespace Aura.Shared.Util
 			var principal = new WindowsPrincipal(id);
 
 			return principal.IsInRole(WindowsBuiltInRole.Administrator);
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether the current process is running
+		/// in user interactive mode.
+		/// </summary>
+		/// <remarks>
+		/// Custom property wrapping Environment.UserInteractive, with special
+		/// behavior for Mono, which currently doesn't support that property.
+		/// </remarks>
+		/// <returns></returns>
+		public static bool UserInteractive
+		{
+			get
+			{
+#if __MonoCS__
+				// "In" is CStreamReader when running normally
+				// (TextReader on Windows) and SynchronizedReader
+				// when running in background.
+				return (Console.In is System.IO.StreamReader);
+#else
+				return Environment.UserInteractive;
+#endif
+			}
 		}
 	}
 }
