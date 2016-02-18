@@ -120,5 +120,22 @@ namespace Aura.Channel.Scripting
 					_variables[key] = value;
 			}
 		}
+
+		/// <summary>
+		/// Returns the value for key, or def if variable doesn't exist.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public T Get<T>(string key, T def)
+		{
+			object result;
+			lock (_variables)
+			{
+				if (!_variables.TryGetValue(key, out result))
+					return def;
+			}
+			return (T)result;
+		}
 	}
 }
