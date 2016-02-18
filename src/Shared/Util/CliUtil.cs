@@ -105,8 +105,11 @@ namespace Aura.Shared.Util
 		/// <param name="wait"></param>
 		public static void Exit(int exitCode, bool wait = true)
 		{
+#if __MonoCS__
 			// Wait if running in a console
-			if (wait && Console.In is StreamReader)
+			if (Console.In is StreamReader)
+#endif
+			if (wait)
 			{
 				Log.Info("Press Enter to exit.");
 				Console.ReadLine();

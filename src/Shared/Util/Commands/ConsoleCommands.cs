@@ -53,15 +53,17 @@ namespace Aura.Shared.Util.Commands
 		{
 			Log.Info("Type 'help' for a list of console commands.");
 
-			var reset = new ManualResetEvent(false);
 			while (true)
 			{
+#if __MonoCS__
 				// Just wait if not running in a console
+				var reset = new ManualResetEvent(false);
 				if (!(Console.In is StreamReader))
 				{
 					reset.WaitOne();
 					break;
 				}
+#endif
 
 				var line = Console.ReadLine();
 
