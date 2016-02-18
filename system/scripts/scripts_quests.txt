@@ -30,6 +30,7 @@ quests/beginner_uladh/202045_visiting_bangor.cs
 quests/beginner_uladh/202046_talk_with_eavan.cs
 quests/beginner_uladh/202047_gather_eggs.cs
 quests/beginner_uladh/duncans_praise.cs
+quests/beginner_uladh/school_ranald.cs
 
 quests/beginner_uladh/200043_reach_level_20.cs
 quests/beginner_uladh/200044_reach_level_30.cs
