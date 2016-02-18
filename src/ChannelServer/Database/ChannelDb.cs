@@ -254,6 +254,11 @@ namespace Aura.Channel.Database
 					character.DexFoodMod = reader.GetFloat("dexFood");
 					character.WillFoodMod = reader.GetFloat("willFood");
 					character.LuckFoodMod = reader.GetFloat("luckFood");
+					character.StrBonus = reader.GetFloat("strBonus");
+					character.IntBonus = reader.GetFloat("intBonus");
+					character.DexBonus = reader.GetFloat("dexBonus");
+					character.WillBonus = reader.GetFloat("willBonus");
+					character.LuckBonus = reader.GetFloat("luckBonus");
 
 					title = reader.GetUInt16("title");
 					optionTitle = reader.GetUInt16("optionTitle");
@@ -976,6 +981,11 @@ namespace Aura.Channel.Database
 				cmd.Set("dexFood", creature.DexFoodMod);
 				cmd.Set("willFood", creature.WillFoodMod);
 				cmd.Set("luckFood", creature.LuckFoodMod);
+				cmd.Set("strBonus", creature.StrBonus);
+				cmd.Set("intBonus", creature.IntBonus);
+				cmd.Set("dexBonus", creature.DexBonus);
+				cmd.Set("willBonus", creature.WillBonus);
+				cmd.Set("luckBonus", creature.LuckBonus);
 				cmd.Set("title", creature.Titles.SelectedTitle);
 				cmd.Set("optionTitle", creature.Titles.SelectedOptionTitle);
 				cmd.Set("state", (uint)creature.State);
