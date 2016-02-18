@@ -533,6 +533,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestReward Exp(int amount) { return new QuestRewardExp(amount); }
 		protected QuestReward ExplExp(int amount) { return new QuestRewardExplExp(amount); }
 		protected QuestReward AP(short amount) { return new QuestRewardAp(amount); }
+		protected QuestReward StatBonus(Stat stat, int amount) { return new QuestRewardStatBonus(stat, amount); }
 
 		// Where the magic happens~
 		// ------------------------------------------------------------------
