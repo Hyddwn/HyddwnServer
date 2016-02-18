@@ -97,10 +97,7 @@ public class RanaldBaseScript : NpcScript
 				}
 				goto default;
 
-			case "about_study":
-				Msg("This is not the time for class. Come back tomorrow morning.");
-				//Msg("Are you interested in the combat class?<br/>If you're sick and tired of battles run by simple mouse clicks,<br/>my class is definitely worth spending some time and money on.");
-				break;
+			//case "about_study": // Handled in quest script
 
 			case "shop_misc":
 				GiveKeyword("shop_armory");
