@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -104,7 +105,8 @@ namespace Aura.Shared.Util
 		/// <param name="wait"></param>
 		public static void Exit(int exitCode, bool wait = true)
 		{
-			if (wait)
+			// Wait if running in a console
+			if (wait && Console.In is StreamReader)
 			{
 				Log.Info("Press Enter to exit.");
 				Console.ReadLine();

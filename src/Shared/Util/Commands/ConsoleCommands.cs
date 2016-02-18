@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Aura.Shared.Util.Commands
 {
@@ -51,8 +53,16 @@ namespace Aura.Shared.Util.Commands
 		{
 			Log.Info("Type 'help' for a list of console commands.");
 
+			var reset = new ManualResetEvent(false);
 			while (true)
 			{
+				// Just wait if not running in a console
+				if (!(Console.In is StreamReader))
+				{
+					reset.WaitOne();
+					break;
+				}
+
 				var line = Console.ReadLine();
 
 				var args = this.ParseLine(line);
