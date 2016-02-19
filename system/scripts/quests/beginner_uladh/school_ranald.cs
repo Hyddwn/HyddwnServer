@@ -197,6 +197,9 @@ public class SchoolCombatRanaldQuestScript : GeneralScript
 
 				await func(npc);
 
+				if (exp > 0)
+					npc.Player.GiveExp(exp);
+
 				npc.Player.Vars.Perm[stateName] = state + 1;
 				npc.Player.Vars.Perm[lastName] = today;
 			}
