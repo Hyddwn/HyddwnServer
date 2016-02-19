@@ -20,22 +20,22 @@ public class SchoolCombatRanaldQuestScript : GeneralScript
 
 		var stateName = "RanaldClassState";
 		var lastName = "RanaldClassLast";
-		var state = (int)npc.Player.Vars.Perm.Get("RanaldClassState", 0);
+		var state = (int)npc.Player.Vars.Perm.Get(stateName, 0);
 		var last = (string)npc.Player.Vars.Perm.Get(lastName, "never");
 		var now = ErinnTime.Now;
-		var today = ErinnTime.Now.ToString("yyyy-MM-dd");
+		var today = now.ToString("yyyy-MM-dd");
 		var start = 9;
 		var end = 21;
 		var remaintime = end - now.Hour;
 		var lastState = 10;
 
-		if (state > lastState)
-		{
-			npc.Msg(L("I've got nothing more to teach you.<br/>But don't forget that you're still learning. Maintain your focus and keep up the good work."));
-		}
-		else if (npc.QuestActiveUncompleted(200040) || npc.QuestActiveUncompleted(200041) || npc.QuestActiveUncompleted(200028))
+		if (npc.QuestActiveUncompleted(200040) || npc.QuestActiveUncompleted(200041) || npc.QuestActiveUncompleted(200028))
 		{
 			npc.Msg(L("Are you working on the assignment I gave you?<br/>You can't proceed to the next class unless you complete the assignment first."));
+		}
+		else if (state > lastState)
+		{
+			npc.Msg(L("I've got nothing more to teach you.<br/>But don't forget that you're still learning. Maintain your focus and keep up the good work."));
 		}
 		else if (last == today)
 		{
@@ -43,6 +43,7 @@ public class SchoolCombatRanaldQuestScript : GeneralScript
 		}
 		else if (now.Hour < start)
 		{
+			// Unofficial
 			npc.Msg(L("This is not the time for class. Come back later."));
 		}
 		else if (now.Hour >= end)
@@ -427,7 +428,7 @@ public class BasicCombat3MissionQuestScript : QuestScript
 	{
 		SetId(200028);
 		SetName(L("Basic Combat 3 Mission"));
-		SetDescription(L("Today's assignment is to hunt monsters. Remember the importance of defense, then go to Alby Dungeon and knock down [5 White Spiders]. - Ranald -"));
+		SetDescription(L("Today's assignment is to hunt dungeon monsters. Drop an item on Alby Dungeon alter and defeat the boss. You can go alone or with friends. - Ranald -"));
 
 		AddObjective("obj1", L("Clear Alby Dungeon"), 13, 3190, 3200, ClearDungeon("tircho_alby_dungeon"));
 		AddObjective("obj2", L("Talk to Ranald"), 1, 4651, 32166, Talk("ranald"));
