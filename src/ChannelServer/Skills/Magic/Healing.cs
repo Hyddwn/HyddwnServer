@@ -121,6 +121,7 @@ namespace Aura.Channel.Skills.Magic
 			// Skill training
 			// Call before heal to calculate if in distress
 			this.OnUseSkillOnTarget(creature, target);
+			ChannelServer.Instance.Events.OnPlayerHealsCreature(creature, target, skill);
 
 			// Heal target
 			target.Life += healAmount;
