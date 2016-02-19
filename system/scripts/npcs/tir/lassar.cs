@@ -165,12 +165,7 @@ public class LassarScript : NpcScript
 				Msg("Good luck...ha ha ha.");
 				break;
 
-			case "about_study":
-				//Msg("So, you already know Icebolt, do you? Did you have any trouble using it?<br/>Since you know the basics already, I'll give you a tuition discount.<br/>Tuition is a lump sum that includes three days of lessons including today.<br/>This tuition covers up to the end of Basic Sorcery Chapter One.");
-				//<school><name>Basic Sorcery1-1</name><title>The Basics of Magic and Understanding of Mana</title><values paydesc = 'Total tuition for three days is 1000G.' remaintime = '12' history = '0'/><rewards><reward>* Icebolt Spell<br/>* EXP Reward</reward></rewards><desc>The first thing you learn about and use in the three classes in Basic Sorcery Chapter One is Mana, which is the most fundamental element in magic.</desc></school>
-				//Msg("Class has started long ago.<br/>You should come back later.");
-				Msg("Sorry, my classes aren't ready to be studied.");
-				break;
+			//case "about_study": // Handled in quest script
 
 			case "shop_misc":
 				Msg("You're going to have to walk a long distance.<br/>Follow this road to the left, and you'll see the Square.<br/>The General Shop is around there.<br/>If you can't find it, ask other people near the Square.");
