@@ -228,6 +228,30 @@ namespace Aura.Channel.Scripting.Scripts
 			Send.ChatSticker(creature, sticker, end);
 			Send.Notice(creature, Localization.Get("You carefully attach the sticker to your Chat Bubble."));
 		}
+
+		/// <summary>
+		/// Activates food stat mods for the given timeout and stats.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="timeout"></param>
+		/// <param name="str"></param>
+		/// <param name="int_"></param>
+		/// <param name="dex"></param>
+		/// <param name="will"></param>
+		/// <param name="luck"></param>
+		/// <param name="life"></param>
+		/// <param name="mana"></param>
+		/// <param name="stamina"></param>
+		/// <param name="lifeRecovery"></param>
+		/// <param name="manaRecovery"></param>
+		/// <param name="staminaRecovery"></param>
+		/// <param name="injuryRecovery"></param>
+		/// <param name="defense"></param>
+		/// <param name="protection"></param>
+		protected void Buff(Creature creature, int timeout, double str = 0, double int_ = 0, double dex = 0, double will = 0, double luck = 0, double life = 0, double mana = 0, double stamina = 0, double lifeRecovery = 0, double manaRecovery = 0, double staminaRecovery = 0, double injuryRecovery = 0, int defense = 0, int protection = 0)
+		{
+			// TODO: Apply time limited stat bonus
+		}
 	}
 
 	/// <summary>
