@@ -32,6 +32,7 @@ namespace Aura.Channel.World.Entities
 
 		private const float MinWeight = 0.7f, MaxWeight = 1.5f;
 		private const float MaxFoodStatBonus = 100;
+		private const float MaxStatBonus = 100;
 
 		public const int BareHandStaminaUsage = 2;
 
@@ -456,11 +457,11 @@ namespace Aura.Channel.World.Entities
 		public float IntBase { get; set; }
 		public float WillBase { get; set; }
 		public float LuckBase { get; set; }
-		public float StrBaseTotal { get { return this.StrBase + this.StrBaseSkill; } }
-		public float DexBaseTotal { get { return this.DexBase + this.DexBaseSkill; } }
-		public float IntBaseTotal { get { return this.IntBase + this.IntBaseSkill; } }
-		public float WillBaseTotal { get { return this.WillBase + this.WillBaseSkill; } }
-		public float LuckBaseTotal { get { return this.LuckBase + this.LuckBaseSkill; } }
+		public float StrBaseTotal { get { return this.StrBase + this.StrBaseSkill + this.StrBonus; } }
+		public float DexBaseTotal { get { return this.DexBase + this.DexBaseSkill + this.DexBonus; } }
+		public float IntBaseTotal { get { return this.IntBase + this.IntBaseSkill + this.IntBonus; } }
+		public float WillBaseTotal { get { return this.WillBase + this.WillBaseSkill + this.WillBonus; } }
+		public float LuckBaseTotal { get { return this.LuckBase + this.LuckBaseSkill + this.LuckBonus; } }
 		public float Str { get { return this.StrBaseTotal + this.StrMod + this.StrFoodMod; } }
 		public float Dex { get { return this.DexBaseTotal + this.DexMod + this.DexFoodMod; } }
 		public float Int { get { return this.IntBaseTotal + this.IntMod + this.IntFoodMod; } }
@@ -781,6 +782,17 @@ namespace Aura.Channel.World.Entities
 		public float DexFoodMod { get { return _dexFoodMod; } set { _dexFoodMod = Math2.Clamp(0, MaxFoodStatBonus, value); } }
 		public float WillFoodMod { get { return _willFoodMod; } set { _willFoodMod = Math2.Clamp(0, MaxFoodStatBonus, value); } }
 		public float LuckFoodMod { get { return _luckFoodMod; } set { _luckFoodMod = Math2.Clamp(0, MaxFoodStatBonus, value); } }
+
+		// Stat Bonuses
+		// ------------------------------------------------------------------
+
+		private float _strBonus, _intBonus, _dexBonus, _willBonus, _luckBonus;
+
+		public float StrBonus { get { return _strBonus; } set { _strBonus = Math2.Clamp(0, MaxStatBonus, value); } }
+		public float IntBonus { get { return _intBonus; } set { _intBonus = Math2.Clamp(0, MaxStatBonus, value); } }
+		public float DexBonus { get { return _dexBonus; } set { _dexBonus = Math2.Clamp(0, MaxStatBonus, value); } }
+		public float WillBonus { get { return _willBonus; } set { _willBonus = Math2.Clamp(0, MaxStatBonus, value); } }
+		public float LuckBonus { get { return _luckBonus; } set { _luckBonus = Math2.Clamp(0, MaxStatBonus, value); } }
 
 		// Defense/Protection
 		// ------------------------------------------------------------------

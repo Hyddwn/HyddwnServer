@@ -337,6 +337,56 @@ namespace Aura.Channel.World.Quests
 		}
 	}
 
+	/// <summary>
+	/// Rewards stat points.
+	/// </summary>
+	public class QuestRewardStatBonus : QuestReward
+	{
+		public override RewardType Type { get { return RewardType.Skill; } }
+
+		public Stat Stat { get; protected set; }
+		public int Amount { get; protected set; }
+
+		public QuestRewardStatBonus(Stat stat, int amount)
+		{
+			if (stat != Stat.Str && stat != Stat.Dex && stat != Stat.Int && stat != Stat.Will && stat != Stat.Luck)
+				throw new ArgumentException("Unsupported stat '" + stat + "'");
+
+			if (amount <= 0)
+				throw new ArgumentException("Amount must be a positive value.");
+
+			this.Stat = stat;
+			this.Amount = amount;
+		}
+
+		public override string ToString()
+		{
+			switch (this.Stat)
+			{
+				case Stat.Str: return string.Format(Localization.Get("Strength +{0}"), this.Amount);
+				case Stat.Dex: return string.Format(Localization.Get("Dexterity +{0}"), this.Amount);
+				case Stat.Int: return string.Format(Localization.Get("Intelligence +{0}"), this.Amount);
+				case Stat.Will: return string.Format(Localization.Get("Will +{0}"), this.Amount);
+				case Stat.Luck: return string.Format(Localization.Get("Luck +{0}"), this.Amount);
+				default: return string.Format(Localization.Get("Unknown +{0}"), this.Amount);
+			}
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			switch (this.Stat)
+			{
+				case Stat.Str: creature.StrBonus += this.Amount; break;
+				case Stat.Dex: creature.DexBonus += this.Amount; break;
+				case Stat.Int: creature.IntBonus += this.Amount; break;
+				case Stat.Will: creature.WillBonus += this.Amount; break;
+				case Stat.Luck: creature.LuckBonus += this.Amount; break;
+			}
+
+			Send.StatUpdate(creature, StatUpdateType.Private, Stat.Str, Stat.Dex, Stat.Int, Stat.Will, Stat.Luck);
+		}
+	}
+
 	[Flags]
 	public enum RewardOptions
 	{

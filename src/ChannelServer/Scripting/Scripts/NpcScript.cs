@@ -1069,6 +1069,17 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Returns true if player has quest, but it's not done yet,
+		/// or hasn't been completed.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public bool QuestActiveUncompleted(int questId)
+		{
+			return (this.HasQuest(questId) && !this.QuestCompleted(questId));
+		}
+
+		/// <summary>
 		/// Finishes objective in quest.
 		/// </summary>
 		/// <param name="questId"></param>

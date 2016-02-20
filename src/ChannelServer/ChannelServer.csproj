@@ -213,6 +213,7 @@
     <Compile Include="Skills\Magic\Lightningbolt.cs" />
     <Compile Include="Skills\Magic\Firebolt.cs" />
     <Compile Include="Skills\Magic\LightningRod.cs" />
+    <Compile Include="Skills\Magic\MagicMastery.cs" />
     <Compile Include="Skills\Magic\Meditation.cs" />
     <Compile Include="Skills\Magic\SuperIcebolt.cs" />
     <Compile Include="Skills\Magic\Icebolt.cs" />

@@ -148,6 +148,12 @@ namespace Aura.Channel.World
 		public event Action<Creature, Dungeon> PlayerClearedDungeon;
 		public void OnPlayerClearedDungeon(Creature creature, Dungeon dungeon) { PlayerClearedDungeon.Raise(creature, dungeon); }
 
+		/// <summary>
+		/// Raised when player heals someone, before the heal is actually applied.
+		/// </summary>
+		public event Action<Creature, Creature, Skill> PlayerHealsCreature;
+		public void OnPlayerHealsCreature(Creature creature, Creature target, Skill skill) { PlayerHealsCreature.Raise(creature, target, skill); }
+
 		// ------------------------------------------------------------------
 
 		/// <summary>
