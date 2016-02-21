@@ -1318,6 +1318,7 @@ namespace Aura.Channel.World.Entities
 		{
 			// TODO: General creature components in a list, with Update interface?
 			this.Regens.OnSecondsTimeTick(time);
+			this.StatMods.OnSecondsTimeTick(time);
 		}
 
 		/// <summary>

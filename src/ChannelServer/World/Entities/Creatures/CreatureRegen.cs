@@ -19,7 +19,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		private Dictionary<int, StatRegen> _regens;
 		private Dictionary<string, List<StatRegen>> _regenGroups;
 
-		private bool _night ;
+		private bool _night;
 
 		public Creature Creature { get; private set; }
 
