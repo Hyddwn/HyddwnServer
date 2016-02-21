@@ -1028,9 +1028,9 @@ namespace Aura.Channel.World.Entities
 			this.Regens.Add(Stat.Stamina, 0.4f, this.StaminaMax);
 			if (ChannelServer.Instance.Conf.World.EnableHunger)
 				this.Regens.Add(Stat.Hunger, 0.01f, this.StaminaMax);
-			this.Regens.OnErinnDaytimeTick(ErinnTime.Now);
 
-			// Subscribe to 5 minute event
+			// Subscribe to time events
+			ChannelServer.Instance.Events.SecondsTimeTick += this.OnSecondsTimeTick;
 			ChannelServer.Instance.Events.MabiTick += this.OnMabiTick;
 		}
 
@@ -1040,7 +1040,7 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public virtual void Dispose()
 		{
-			this.Regens.Dispose();
+			ChannelServer.Instance.Events.SecondsTimeTick -= this.OnSecondsTimeTick;
 			ChannelServer.Instance.Events.MabiTick -= this.OnMabiTick;
 
 			// Stop rest, so character doesn't appear sitting anymore
@@ -1307,6 +1307,17 @@ namespace Aura.Channel.World.Entities
 		{
 			this.UpdateBody();
 			this.EquipmentDecay();
+		}
+
+		/// <summary>
+		/// Called once per second, running updates on different
+		/// creature components.
+		/// </summary>
+		/// <param name="obj"></param>
+		private void OnSecondsTimeTick(ErinnTime time)
+		{
+			// TODO: General creature components in a list, with Update interface?
+			this.Regens.OnSecondsTimeTick(time);
 		}
 
 		/// <summary>

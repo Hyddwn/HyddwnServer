@@ -14,10 +14,12 @@ namespace Aura.Channel.World.Entities.Creatures
 	/// <summary>
 	/// Manages all regens for a creature.
 	/// </summary>
-	public class CreatureRegen : IDisposable
+	public class CreatureRegen
 	{
 		private Dictionary<int, StatRegen> _regens;
 		private Dictionary<string, List<StatRegen>> _regenGroups;
+
+		private bool _night ;
 
 		public Creature Creature { get; private set; }
 
@@ -26,15 +28,6 @@ namespace Aura.Channel.World.Entities.Creatures
 			_regens = new Dictionary<int, StatRegen>();
 			_regenGroups = new Dictionary<string, List<StatRegen>>();
 			this.Creature = creature;
-
-			ChannelServer.Instance.Events.SecondsTimeTick += this.OnSecondsTimeTick;
-			ChannelServer.Instance.Events.ErinnDaytimeTick += this.OnErinnDaytimeTick;
-		}
-
-		public void Dispose()
-		{
-			ChannelServer.Instance.Events.SecondsTimeTick -= this.OnSecondsTimeTick;
-			ChannelServer.Instance.Events.ErinnDaytimeTick -= this.OnErinnDaytimeTick;
 		}
 
 		/// <summary>
@@ -152,22 +145,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Adds additional mana regen at night.
-		/// </summary>
-		/// <param name="time"></param>
-		public void OnErinnDaytimeTick(ErinnTime time)
-		{
-			if (time.IsNight)
-			{
-				this.Add("NightMana", Stat.Mana, 0.1f, this.Creature.ManaMax);
-			}
-			else
-			{
-				this.Remove("NightMana");
-			}
-		}
-
-		/// <summary>
 		/// Applies regens to creature.
 		/// </summary>
 		/// <remarks>
@@ -201,8 +178,6 @@ namespace Aura.Channel.World.Entities.Creatures
 
 					switch (regen.Stat)
 					{
-						// TODO: Triple mana automatically at night?
-
 						case Stat.Life: this.Creature.Life += regen.Change; break;
 						case Stat.Mana: this.Creature.Mana += regen.Change; break;
 						case Stat.Stamina:
@@ -221,6 +196,17 @@ namespace Aura.Channel.World.Entities.Creatures
 
 				foreach (var id in toRemove)
 					this.Remove(id);
+			}
+
+			// Add additional mana regen at night
+			if (_night != time.IsNight)
+			{
+				if (time.IsNight)
+					this.Add("NightMana", Stat.Mana, 0.1f, this.Creature.ManaMax);
+				else
+					this.Remove("NightMana");
+
+				_night = time.IsNight;
 			}
 		}
 
