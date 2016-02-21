@@ -208,17 +208,17 @@ namespace Aura.Channel.World.Entities.Creatures
 
 			if (skill.Info.Id == SkillId.CombatMastery)
 			{
-				_creature.StatMods.Add(Stat.LifeMaxMod, skill.RankData.Var3, StatModSource.SkillRank, skill.Info.Id);
+				_creature.StatMods.Add(Stat.LifeMaxMod, skill.RankData.Var3, StatModSource.SkillRank, (int)skill.Info.Id);
 				_creature.Life += skill.RankData.Var3;
 			}
 			else if (skill.Info.Id == SkillId.MagicMastery)
 			{
-				_creature.StatMods.Add(Stat.ManaMaxMod, skill.RankData.Var1, StatModSource.SkillRank, skill.Info.Id);
+				_creature.StatMods.Add(Stat.ManaMaxMod, skill.RankData.Var1, StatModSource.SkillRank, (int)skill.Info.Id);
 				_creature.Mana += skill.RankData.Var1;
 			}
 			else if (skill.Info.Id == SkillId.Defense)
 			{
-				_creature.StatMods.Add(Stat.DefenseBaseMod, skill.RankData.Var1, StatModSource.SkillRank, skill.Info.Id);
+				_creature.StatMods.Add(Stat.DefenseBaseMod, skill.RankData.Var1, StatModSource.SkillRank, (int)skill.Info.Id);
 			}
 
 			this.UpdateHighestSkills();

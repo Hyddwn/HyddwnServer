@@ -28,18 +28,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <param name="value">Amount</param>
 		/// <param name="source">What is changing the stat?</param>
 		/// <param name="ident">Identificator for the source, eg skill or title id.</param>
-		public void Add(Stat stat, float value, StatModSource source, SkillId ident)
-		{
-			this.Add(stat, value, source, (long)ident);
-		}
-
-		/// <summary>
-		/// Adds stat mod.
-		/// </summary>
-		/// <param name="stat">Stat to change</param>
-		/// <param name="value">Amount</param>
-		/// <param name="source">What is changing the stat?</param>
-		/// <param name="ident">Identificator for the source, eg skill or title id.</param>
 		public void Add(Stat stat, float value, StatModSource source, long ident)
 		{
 			lock (_mods)
