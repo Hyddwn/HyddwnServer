@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
@@ -35,9 +36,52 @@ namespace Aura.Channel.Network.Sending
 			packet.PutInt(ChannelServer.Instance.Conf.Channel.ChannelPort);
 			packet.PutInt(cur);
 			packet.PutInt(max);
-			packet.PutInt((int)ChannelState.Normal);
+			packet.PutInt((int) GetServerState(cur, max, ChannelServer.Instance.IsRunning, 
+				ChannelServer.Instance.IsInMaintenance));
 
 			ChannelServer.Instance.LoginServer.Send(packet);
+		}
+
+		/// <summary>
+		/// Calculates the state of the channel.
+		/// </summary>
+		/// <remarks>
+		/// When calculating the <see cref="ChannelState"/> we take into account
+		/// whether the server is running as well as if it is in Maintenance.
+		/// </remarks>
+		/// <param name="current"></param>
+		/// <param name="max"></param>
+		/// <param name="isRunning"></param>
+		/// <param name="isInMaintenance"></param>
+		/// <returns></returns>
+		private static ChannelState GetServerState(int current, int max, bool isRunning, bool isInMaintenance)
+		{
+			if (isInMaintenance)
+				// In case we do support the booting channel state
+				return isRunning ? ChannelState.Maintenance : ChannelState.Booting;
+
+			double stress;
+
+			try
+			{
+				stress = (current / max) * 100;
+			}
+			catch (DivideByZeroException ex)
+			{
+				Log.Exception(ex, "Max user count was zero, falling back to Normal.");
+				
+				// Fallback value
+				return ChannelState.Normal;
+			}
+
+			if (stress >= 40 && stress <= 70)
+				return ChannelState.Busy;
+			if (stress > 70 && stress <= 95)
+				return ChannelState.Full;
+			if (stress > 95)
+				return ChannelState.Bursting;
+
+			return ChannelState.Normal;
 		}
 
 		/// <summary>

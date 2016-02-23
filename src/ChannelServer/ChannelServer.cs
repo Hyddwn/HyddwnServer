@@ -33,7 +33,15 @@ namespace Aura.Channel
 		/// </summary>
 		private const int LoginTryTime = 10 * 1000;
 
-		private bool _running = false;
+		/// <summary>
+		/// Used to determine if the server is running
+		/// </summary>
+		public bool IsRunning { get; private set; }
+
+		/// <summary>
+		/// Gets or sets whether the server is in maintenance. 
+		/// </summary>
+		public bool IsInMaintenance { get; set; }
 
 		/// <summary>
 		/// Instance of the actual server component.
@@ -97,7 +105,7 @@ namespace Aura.Channel
 		/// </summary>
 		public void Run()
 		{
-			if (_running)
+			if (this.IsRunning)
 				throw new Exception("Server is already running.");
 
 			CliUtil.WriteHeader("Channel Server", ConsoleColor.DarkGreen);
@@ -141,7 +149,7 @@ namespace Aura.Channel
 			this.StartStatusUpdateTimer();
 
 			CliUtil.RunningTitle();
-			_running = true;
+			this.IsRunning = true;
 
 			// Commands
 			this.ConsoleCommands.Wait();
@@ -208,6 +216,16 @@ namespace Aura.Channel
 
 			Log.Info("Connection to login server at '{0}' established.", this.LoginServer.Address);
 			Log.WriteLine();
+		}
+
+		/// <summary>
+		/// Sets whether the server is in maintenance with notification to the login server
+		/// </summary>
+		/// <param name="isInMaintenance"></param>
+		public void SetMaintenance(bool isInMaintenance)
+		{
+			this.IsInMaintenance = isInMaintenance;
+			Send.Internal_ChannelStatus();
 		}
 
 		private void OnClientDisconnected(ChannelClient client)
