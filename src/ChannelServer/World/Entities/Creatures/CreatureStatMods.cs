@@ -150,7 +150,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		{
 			lock (_mods)
 			{
-				var now = DateTime.Now;
 				foreach (var mod in _mods)
 				{
 					var stat = mod.Key;

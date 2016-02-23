@@ -103,7 +103,7 @@ namespace Aura.Channel.World.Entities
 					// -100~100 + 100 = 0~200 / 2 = 0~100
 					return (this.MetaData1.GetInt("QUAL") + 100) / 2;
 
-				// Return 0 if no quality was set.
+				// Return 0 if no quality was set, the client does the same.
 				return 0;
 			}
 		}
