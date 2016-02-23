@@ -117,8 +117,10 @@ namespace Aura.Channel.World.Entities.Creatures
 				if (!_regenGroups.ContainsKey(group))
 					return false;
 
-				foreach (var regen in _regenGroups[group])
-					this.Remove(regen);
+				// Cretate copy, the groups are modified from Remove
+				var regens = _regenGroups[group].ToArray();
+				foreach (var regen in regens)
+					this.Remove(regen.Id);
 
 				_regenGroups.Remove(group);
 			}
@@ -136,13 +138,20 @@ namespace Aura.Channel.World.Entities.Creatures
 		{
 			StatRegen regen;
 
+			// Remove from regens
 			lock (_regens)
 			{
-				_regens.TryGetValue(regenId, out regen);
-				if (regen == null)
+				if (!_regens.TryGetValue(regenId, out regen))
 					return false;
 
 				_regens.Remove(regenId);
+			}
+
+			// Remove from groups
+			lock (_regenGroups)
+			{
+				foreach (var group in _regenGroups)
+					group.Value.Remove(regen);
 			}
 
 			// Always send private update, only send public if stat is
