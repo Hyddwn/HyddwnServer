@@ -83,6 +83,17 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Returns true if there are any regens fort he given group name.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		public bool Has(string group)
+		{
+			lock (_regenGroups)
+				return (_regenGroups.ContainsKey(group) && _regenGroups[group].Count != 0);
+		}
+
+		/// <summary>
 		/// Removes regen by id, returns false if regen didn't exist.
 		/// Sends stat update if successful.
 		/// </summary>

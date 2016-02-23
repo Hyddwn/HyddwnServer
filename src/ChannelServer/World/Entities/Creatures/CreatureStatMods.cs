@@ -25,6 +25,26 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Returns true if any mod for the given source and ident exists.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="ident"></param>
+		/// <returns></returns>
+		public bool Has(StatModSource source, long ident)
+		{
+			lock (_mods)
+			{
+				foreach (var mods in _mods)
+				{
+					if (mods.Value.Any(a => a.Source == source && a.Ident == ident))
+						return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Adds stat mod.
 		/// </summary>
 		/// <param name="stat">Stat to change</param>
@@ -39,8 +59,7 @@ namespace Aura.Channel.World.Entities.Creatures
 				if (!_mods.ContainsKey(stat))
 					_mods.Add(stat, new List<StatMod>(1));
 
-				var mod = _mods[stat].FirstOrDefault(a => a.Source == source && a.Ident == ident);
-				if (mod != null)
+				if (_mods[stat].Any(a => a.Source == source && a.Ident == ident))
 					Log.Warning("StatMods.Add: Double stat mod for '{0}:{1}'.", source, ident);
 
 				_mods[stat].Add(new StatMod(stat, value, source, ident, timeout));
