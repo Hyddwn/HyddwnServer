@@ -234,7 +234,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Activates food stat mods for the given timeout and stats.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="entityId"></param>
+		/// <param name="item"></param>
 		/// <param name="timeout"></param>
 		/// <param name="str"></param>
 		/// <param name="int_"></param>
@@ -250,7 +250,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="injuryRecovery"></param>
 		/// <param name="defense"></param>
 		/// <param name="protection"></param>
-		protected void Buff(Creature creature, long entityId, int timeout, double str = 0, double int_ = 0, double dex = 0, double will = 0, double luck = 0, double life = 0, double mana = 0, double stamina = 0, double lifeRecovery = 0, double manaRecovery = 0, double staminaRecovery = 0, double injuryRecovery = 0, int defense = 0, int protection = 0)
+		protected void Buff(Creature creature, Item item, int timeout, double str = 0, double int_ = 0, double dex = 0, double will = 0, double luck = 0, double life = 0, double mana = 0, double stamina = 0, double lifeRecovery = 0, double manaRecovery = 0, double staminaRecovery = 0, double injuryRecovery = 0, int defense = 0, int protection = 0)
 		{
 			// TODO: Apply time limited stat bonus
 		}
