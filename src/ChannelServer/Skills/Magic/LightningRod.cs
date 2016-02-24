@@ -27,7 +27,7 @@ namespace Aura.Channel.Skills.Magic
 	/// Var2: Max Damage
 	/// Var3: Max Chargning Time (ms)
 	/// Var4: Max Charge Damage Bonus (%)
-	/// Var5: ?
+	/// Var5: Cooldown
 	[Skill(SkillId.LightningRod)]
 	public class LightningRod : ISkillHandler, IPreparable, IUseable, ICompletable, ICancelable, IInitiableSkillHandler
 	{
@@ -109,7 +109,7 @@ namespace Aura.Channel.Skills.Magic
 			skill.State = SkillState.Prepared;
 
 			Send.MotionCancel2(creature, 0);
-			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Prepare, 0);
+			Send.Effect(creature, Effect.LightningRod, (int)LightningRodEffect.Prepare, 0);
 
 			Send.SkillReady(creature, skill.Info.Id);
 			skill.State = SkillState.Ready;
@@ -220,10 +220,6 @@ namespace Aura.Channel.Skills.Magic
 				// Stun Time
 				tAction.Stun = TargetStun;
 
-				// Reduce stun, based on ping
-				if (delayReduction > 0)
-					tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
-
 				// Death or Knockback
 				if (target.IsDead)
 				{
@@ -243,7 +239,7 @@ namespace Aura.Channel.Skills.Magic
 			}
 			cap.Handle();
 
-			Send.Effect(attacker, Effect.LightningRod, LightningRodEffect.Attack, poe.X, poe.Y);
+			Send.Effect(attacker, Effect.LightningRod, (int)LightningRodEffect.Attack, poe.X, poe.Y);
 
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 			skill.Train(1); // Use the Skill
@@ -255,7 +251,7 @@ namespace Aura.Channel.Skills.Magic
 		{
 			creature.Temp.LightningRodFullCharge = false;
 
-			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
+			Send.Effect(creature, Effect.LightningRod, (int)LightningRodEffect.Cancel);
 			Send.SkillComplete(creature, skill.Info.Id);
 		}
 
@@ -263,7 +259,7 @@ namespace Aura.Channel.Skills.Magic
 		{
 			creature.Temp.LightningRodFullCharge = false;
 
-			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
+			Send.Effect(creature, Effect.LightningRod, (int)LightningRodEffect.Cancel);
 		}
 
 		/// <summary>
@@ -297,7 +293,7 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.R9:
 				case SkillRank.R8:
 				case SkillRank.R7:
-                case SkillRank.R6:
+				case SkillRank.R6:
 				case SkillRank.R5:
 				case SkillRank.R4:
 				case SkillRank.R3:
