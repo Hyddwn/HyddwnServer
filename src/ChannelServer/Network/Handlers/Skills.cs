@@ -255,7 +255,7 @@ namespace Aura.Channel.Network.Handlers
 				// TODO: Use regens, for shiny gradually depleting bars
 				if (skill.RankData.ManaCost != 0 || skill.RankData.StaminaCost != 0)
 				{
-					if (skill.Info.Id != SkillId.LightningRod) // Lightning Rod is excluded
+					if (skill.Info.Id != SkillId.LightningRod) // Lightning Rod is excluded; mana is subtracted on Use
 						creature.Mana -= skill.RankData.ManaCost;
 
 					creature.Stamina -= skill.RankData.StaminaCost;
@@ -383,8 +383,12 @@ namespace Aura.Channel.Network.Handlers
 				Send.SkillUseSilentCancel(creature);
 				return;
 			}
-
-			// Lightning Rod Use Check
+ 
+			// Lightning Rod Use Check:
+			// Lightning rod will send Use any time its hotkey is released.
+			// This will lock the client if the skill is canceled for any reason (such as insufficient mana),
+			// as there is no Active Skill - yet Lightning Rod sends use.
+			// To counter this, the Active Skill must be set back to Lightning Rod and THEN canceled.
 			if (skill.Info.Id == SkillId.LightningRod && creature.Skills.ActiveSkill != skill)
 			{
 				creature.Skills.ActiveSkill = skill;
