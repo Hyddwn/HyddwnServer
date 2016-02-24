@@ -477,8 +477,6 @@ namespace Aura.Channel.World.Inventory
 			if (!AccessiblePockets.Contains(result.Info.Pocket))
 				throw new SevereViolation("Item 0x{0:X16} is located in inaccessible pocket {1}", entityId, result.Info.Pocket);
 
-			// TODO: Check item data type?
-
 			return result;
 		}
 
@@ -1198,6 +1196,9 @@ namespace Aura.Channel.World.Inventory
 
 					if (item.Info.Pocket.IsEquip())
 					{
+						this.CheckLeftHand(item, item.Info.Pocket, Pocket.None);
+						this.CheckRightHand(item, item.Info.Pocket, Pocket.None);
+
 						this.UpdateEquipReferences();
 						this.OnUnequip(item);
 						this.UpdateEquipStats();
@@ -1314,6 +1315,19 @@ namespace Aura.Channel.World.Inventory
 			lock (_pockets)
 				return _pockets.Values.Where(a => !InvisiblePockets.Contains(a.Pocket))
 					.Sum(pocket => pocket.CountItem(itemId));
+		}
+
+		/// <summary>
+		/// Returns the amount of items in the inventory that match the
+		/// given tag.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <returns></returns>
+		public int Count(string tag)
+		{
+			lock (_pockets)
+				return _pockets.Values.Where(a => !InvisiblePockets.Contains(a.Pocket))
+					.Sum(pocket => pocket.CountItem(tag));
 		}
 
 		/// <summary>
@@ -1522,8 +1536,10 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="item"></param>
 		private void ApplyDefenseBonuses(Item item)
 		{
-			_creature.StatMods.Add(Stat.DefenseBaseMod, item.OptionInfo.Defense, StatModSource.Equipment, item.EntityId);
-			_creature.StatMods.Add(Stat.ProtectionBaseMod, item.OptionInfo.Protection, StatModSource.Equipment, item.EntityId);
+			if (item.OptionInfo.Defense != 0)
+				_creature.StatMods.Add(Stat.DefenseBaseMod, item.OptionInfo.Defense, StatModSource.Equipment, item.EntityId);
+			if (item.OptionInfo.Protection != 0)
+				_creature.StatMods.Add(Stat.ProtectionBaseMod, item.OptionInfo.Protection, StatModSource.Equipment, item.EntityId);
 		}
 
 		/// <summary>
@@ -1677,6 +1693,8 @@ namespace Aura.Channel.World.Inventory
 						Send.ItemMoveInfo(_creature, rightItem, this.RightHandPocket, null);
 						if (_creature.Region != Region.Limbo)
 							Send.EquipmentMoved(_creature, this.RightHandPocket);
+
+						this.OnUnequip(rightItem);
 					}
 				}
 			}
@@ -1742,6 +1760,8 @@ namespace Aura.Channel.World.Inventory
 					Send.ItemMoveInfo(_creature, leftItem, leftPocket, null);
 					if (_creature.Region != Region.Limbo)
 						Send.EquipmentMoved(_creature, leftPocket);
+
+					this.OnUnequip(leftItem);
 				}
 			}
 		}
@@ -1867,6 +1887,24 @@ namespace Aura.Channel.World.Inventory
 
 			item.OptionInfo.Durability = Math.Max(0, item.OptionInfo.Durability - amount);
 			Send.ItemDurabilityUpdate(_creature, item);
+		}
+
+		/// <summary>
+		/// Reduces max durability and updates client.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="amount"></param>
+		public void ReduceMaxDurability(Item item, int amount)
+		{
+			if (!this.Has(item))
+				return;
+
+			item.OptionInfo.DurabilityMax = Math.Max(1000, item.OptionInfo.DurabilityMax - amount);
+			if (item.OptionInfo.DurabilityMax < item.OptionInfo.Durability)
+				item.Durability = item.OptionInfo.DurabilityMax;
+
+			Send.ItemDurabilityUpdate(_creature, item);
+			Send.ItemMaxDurabilityUpdate(_creature, item);
 		}
 
 		/// <summary>

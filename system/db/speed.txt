@@ -432,8 +432,8 @@ disciple/*/run,                549.530300
 disciple/*/walk,               549.530300
 miniskeleton/*/run,            373.850600
 miniskeleton/*/walk,           207.689200
-PetLamb/*/Run,                1004.967000
-PetLamb/*/Walk,                164.226000
+PetLamb/*/Run,                 649.672000
+PetLamb/*/Walk,                262.513800
 albangolem/*/run,              900.000000
 albangolem/*/walk,             207.689000
 PetSouloftuan/*/run,          1245.000000
@@ -448,3 +448,7 @@ Petfairy/dinashee/walk,        211.363800
 Barrel/*/run,                  340.000000
 petship/*/run,                 714.285000
 petship/*/walk,                262.500000
+lich/master/walk,               43.381000
+lich/master/run,               625.000000
+succubusqueen/*/run,           400.227000
+succubusqueen/*/walk,          400.227000

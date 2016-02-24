@@ -82,25 +82,15 @@ namespace Aura.Shared.Util
 		}
 
 		/// <summary>
-		/// Returns float, formatted with InvariantCulture.
+		/// Returns a random value from the given ones.
 		/// </summary>
-		/// <param name="f"></param>
-		/// <param name="format"></param>
-		/// <returns></returns>
-		public static string ToInvariant(this float f, string format = "g")
+		/// <param name="values"></param>
+		public static T Rnd<T>(this Random rnd, params T[] values)
 		{
-			return f.ToString(format, CultureInfo.InvariantCulture);
-		}
+			if (values == null || values.Length == 0)
+				throw new ArgumentException("Values may not be null or empty.");
 
-		/// <summary>
-		/// Returns float, formatted with InvariantCulture.
-		/// </summary>
-		/// <param name="f"></param>
-		/// <param name="format"></param>
-		/// <returns></returns>
-		public static string ToInvariant(this double f, string format = "g")
-		{
-			return f.ToString(format, CultureInfo.InvariantCulture);
+			return values[rnd.Next(values.Length)];
 		}
 
 		/// <summary>

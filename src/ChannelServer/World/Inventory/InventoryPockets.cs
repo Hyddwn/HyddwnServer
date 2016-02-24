@@ -127,6 +127,13 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="itemId"></param>
 		/// <returns></returns>
 		public abstract int CountItem(int itemId);
+
+		/// <summary>
+		/// Returns amount of items by matching tag.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <returns></returns>
+		public abstract int CountItem(string tag);
 	}
 
 	/// <summary>
@@ -460,6 +467,12 @@ namespace Aura.Channel.World.Inventory
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 
+		public override int CountItem(string tag)
+		{
+			return _items.Values.Where(item => item.HasTag(tag) || (item.Data.StackItem != null && item.Data.StackItem.HasTag(tag)))
+				.Aggregate(0, (current, item) => current + item.Info.Amount);
+		}
+
 		public override Item GetItem(long id)
 		{
 			Item item;
@@ -652,6 +665,13 @@ namespace Aura.Channel.World.Inventory
 			return 0;
 		}
 
+		public override int CountItem(string tag)
+		{
+			if (_item != null && _item.HasTag(tag))
+				return _item.Info.Amount;
+			return 0;
+		}
+
 		public override Item GetItem(long id)
 		{
 			if (_item != null && _item.EntityId == id)
@@ -757,6 +777,12 @@ namespace Aura.Channel.World.Inventory
 		public override int CountItem(int itemId)
 		{
 			return _items.Where(item => item.Info.Id == itemId || item.Data.StackItemId == itemId)
+				.Aggregate(0, (current, item) => current + item.Info.Amount);
+		}
+
+		public override int CountItem(string tag)
+		{
+			return _items.Where(item => item.HasTag(tag) || (item.Data.StackItem != null && item.Data.StackItem.HasTag(tag)))
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 

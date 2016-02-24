@@ -180,6 +180,10 @@ namespace Aura.Channel.Skills.Combat
 				// Mana Shield
 				ManaShield.Handle(target, ref damage, tAction);
 
+				// Natural Shield
+				// Ignore delay reduction, as knock downs shouldn't be shortened
+				NaturalShield.Handle(attacker, target, ref damage, tAction);
+
 				// Deal with it!
 				if (damage > 0)
 				{
@@ -187,14 +191,18 @@ namespace Aura.Channel.Skills.Combat
 					SkillHelper.HandleInjury(attacker, target, damage);
 				}
 
-				// TODO: We have to calculate knockback distance right
-				// TODO: Target with Defense and shield shouldn't be knocked back
-				attacker.Shove(target, KnockBackDistance);
+				// Knock down
+				// If target is using a shield and defense, don't KD.
+				var targetLeftHand = target.LeftHand;
+				if (tAction.SkillId != SkillId.Defense || targetLeftHand == null || !targetLeftHand.IsShield)
+				{
+					// TODO: We have to calculate knockback distance right
+					attacker.Shove(target, KnockBackDistance);
+					tAction.Set(TargetOptions.KnockDownFinish);
+				}
 
 				// Aggro
 				target.Aggro(attacker);
-
-				tAction.Set(TargetOptions.KnockDownFinish);
 
 				if (target.IsDead)
 				{

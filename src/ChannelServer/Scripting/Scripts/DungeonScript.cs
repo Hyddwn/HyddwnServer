@@ -100,6 +100,35 @@ namespace Aura.Channel.Scripting.Scripts
 		public virtual void OnLeftEarly(Dungeon dungeon, Creature creature)
 		{
 		}
+
+		/// <summary>
+		/// Called whenever a player enters the dungeon's lobby.
+		/// </summary>
+		/// <param name="dungeon"></param>
+		/// <param name="creature">The creature that entered.</param>
+		public virtual void OnPlayerEntered(Dungeon dungeon, Creature creature)
+		{
+		}
+
+		/// <summary>
+		/// Called once, when the entire initial party has entered the
+		/// dungeon's lobby.
+		/// </summary>
+		/// <param name="dungeon"></param>
+		/// <param name="creature">The last creature that entered.</param>
+		public virtual void OnPartyEntered(Dungeon dungeon, Creature creature)
+		{
+		}
+
+		/// <summary>
+		/// Called when all puzzles of a section have been solved.
+		/// </summary>
+		/// <param name="dungeon"></param>
+		/// <param name="floor">The floor, starting at 1 (lobby is ignored).</param>
+		/// <param name="section">The section, starting at 1.</param>
+		public virtual void OnSectionCleared(Dungeon dungeon, int floor, int section)
+		{
+		}
 	}
 
 	public class DungeonScriptAttribute : Attribute

@@ -279,4 +279,27 @@ namespace Aura.Mabi.Const
 	}
 
 	public enum TargetMode : byte { Normal = 0, Alert = 1, Aggro = 2 }
+
+	public enum EffectFlags : byte
+	{
+		/// <summary>
+		/// Red flash on target (0x01)
+		/// </summary>
+		HeavyStander = 0x01,
+
+		/// <summary>
+		/// Yellow flash on target (0x02)
+		/// </summary>
+		NaturalShield = 0x02,
+
+		/// <summary>
+		/// Blue flash on target (0x03)
+		/// </summary>
+		ManaDeflector = 0x04,
+
+		/// <summary>
+		/// ? (0x20)
+		/// </summary>
+		Unknown = 0x20,
+	}
 }

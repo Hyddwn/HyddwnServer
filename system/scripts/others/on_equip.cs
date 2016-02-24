@@ -11,7 +11,7 @@ public class OnEquipSkillLearnScript : GeneralScript
 	public void PlayerEquipsItem(Creature creature, Item item)
 	{
 		// Give Ranged Attack when equipping a (cross)bow
-		if ((item.HasTag("/bow/|/crossbow/")) && !creature.Skills.Has(SkillId.RangedAttack))
+		if ((item.HasTag("/bow/|/bow01/|/crossbow/")) && !creature.Skills.Has(SkillId.RangedAttack))
 			creature.Skills.Give(SkillId.RangedAttack, SkillRank.Novice);
 
 		// Give Dice Tossing When equiping Dice
@@ -37,5 +37,12 @@ public class OnEquipSkillLearnScript : GeneralScript
 		// Give Blacksmithing when equipping a Blacksmith Hammer
 		if ((item.HasTag("/tool/blacksmith/")) && !creature.Skills.Has(SkillId.Blacksmithing))
 			creature.Skills.Give(SkillId.Blacksmithing, SkillRank.Novice);
+
+		// Give Enchant when equipping Magic Powder
+		if ((item.HasTag("/enchant/powder/")) && !creature.Skills.Has(SkillId.Enchant))
+		{
+			creature.Skills.Give(SkillId.Enchant, SkillRank.Novice);
+			creature.Skills.Train(SkillId.Enchant, 1);
+		}
 	}
 }

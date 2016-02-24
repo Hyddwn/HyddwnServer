@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
+using Aura.Mabi;
+using System;
+using Aura.Channel.Network.Sending;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -22,15 +25,23 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Adds stat mod.
+		/// Returns true if any mod for the given source and ident exists.
 		/// </summary>
-		/// <param name="stat">Stat to change</param>
-		/// <param name="value">Amount</param>
-		/// <param name="source">What is changing the stat?</param>
-		/// <param name="ident">Identificator for the source, eg skill or title id.</param>
-		public void Add(Stat stat, float value, StatModSource source, SkillId ident)
+		/// <param name="source"></param>
+		/// <param name="ident"></param>
+		/// <returns></returns>
+		public bool Has(StatModSource source, long ident)
 		{
-			this.Add(stat, value, source, (long)ident);
+			lock (_mods)
+			{
+				foreach (var mods in _mods)
+				{
+					if (mods.Value.Any(a => a.Source == source && a.Ident == ident))
+						return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -40,18 +51,18 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <param name="value">Amount</param>
 		/// <param name="source">What is changing the stat?</param>
 		/// <param name="ident">Identificator for the source, eg skill or title id.</param>
-		public void Add(Stat stat, float value, StatModSource source, long ident)
+		/// <param name="timeout">Time in seconds after which the mod is removed.</param>
+		public void Add(Stat stat, float value, StatModSource source, long ident, int timeout = 0)
 		{
 			lock (_mods)
 			{
 				if (!_mods.ContainsKey(stat))
 					_mods.Add(stat, new List<StatMod>(1));
 
-				var mod = _mods[stat].FirstOrDefault(a => a.Source == source && a.Ident == ident);
-				if (mod != null)
+				if (_mods[stat].Any(a => a.Source == source && a.Ident == ident))
 					Log.Warning("StatMods.Add: Double stat mod for '{0}:{1}'.", source, ident);
 
-				_mods[stat].Add(new StatMod(stat, value, source, ident));
+				_mods[stat].Add(new StatMod(stat, value, source, ident, timeout));
 			}
 
 			this.UpdateCache(stat);
@@ -130,6 +141,33 @@ namespace Aura.Channel.World.Entities.Creatures
 			lock (_cache)
 				_cache[stat] = _mods[stat].Sum(a => a.Value);
 		}
+
+		/// <summary>
+		/// Called once a second, updates stat mods with timeout.
+		/// </summary>
+		/// <param name="time"></param>
+		public void OnSecondsTimeTick(ErinnTime time)
+		{
+			lock (_mods)
+			{
+				foreach (var mod in _mods)
+				{
+					var stat = mod.Key;
+					var list = mod.Value;
+					var creature = _creature;
+
+					var count = mod.Value.RemoveAll(a => a.TimeoutReached);
+					if (count != 0)
+					{
+						this.UpdateCache(stat);
+
+						Send.StatUpdate(creature, StatUpdateType.Private, stat);
+						if (stat >= Stat.Life && stat <= Stat.LifeMaxMod)
+							Send.StatUpdate(creature, StatUpdateType.Public, Stat.Life, Stat.LifeInjured, Stat.LifeMaxMod, Stat.LifeMax);
+					}
+				}
+			}
+		}
 	}
 
 	public class StatMod
@@ -139,12 +177,25 @@ namespace Aura.Channel.World.Entities.Creatures
 		public StatModSource Source { get; protected set; }
 		public long Ident { get; protected set; }
 
-		public StatMod(Stat stat, float value, StatModSource source, long ident)
+		public int Timeout { get; protected set; }
+		public DateTime Start { get; protected set; }
+		public DateTime End { get; protected set; }
+
+		/// <summary>
+		/// Returns true if stat mod reached timeout and should be removed.
+		/// </summary>
+		public bool TimeoutReached { get { return (this.Timeout > 0 && this.End < DateTime.Now); } }
+
+		public StatMod(Stat stat, float value, StatModSource source, long ident, int timeout)
 		{
 			this.Stat = stat;
 			this.Value = value;
 			this.Source = source;
 			this.Ident = ident;
+
+			this.Timeout = timeout;
+			this.Start = DateTime.Now;
+			this.End = (this.Timeout > 0 ? this.Start.AddSeconds(this.Timeout) : DateTime.MaxValue);
 		}
 	}
 
@@ -154,5 +205,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		SkillRank,
 		Title,
 		Equipment,
+		Food,
 	}
 }

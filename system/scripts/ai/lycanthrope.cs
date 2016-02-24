@@ -77,7 +77,7 @@ public class LycanthropeAi : AiScript
 
 	private IEnumerable OnHit()
 	{
-		Creature.GiveExp(5000);
+		Creature.GiveExp(2000);
 		Do(Say("Ha ha", "Ha", "My, you have gained EXP...", "Is this all you've got?", "Is this it?", "", "", ""));
 
 		if (Random() < 80)
@@ -88,7 +88,7 @@ public class LycanthropeAi : AiScript
 
 	private IEnumerable OnKnockDown()
 	{
-		Creature.GiveExp(5000);
+		Creature.GiveExp(2000);
 		Do(Say("You're a great opponent...", "Show me what you've got.", "Thank you.", "", "", ""));
 
 		if (Creature.Life < Creature.LifeMax * 0.20f)

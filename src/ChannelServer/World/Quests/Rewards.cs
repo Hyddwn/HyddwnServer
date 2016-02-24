@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Aura.Channel.Network.Sending;
 using System.Collections.Generic;
+using Aura.Shared.Util;
 
 namespace Aura.Channel.World.Quests
 {
@@ -82,6 +83,16 @@ namespace Aura.Channel.World.Quests
 		public QuestResult Result { get; set; }
 
 		/// <summary>
+		/// Specifies whether the reward is visible on the client.
+		/// </summary>
+		/// <remarks>
+		/// Hidden rewards are still sent to the client with the quest info,
+		/// but if this switch is set, they aren't displayed, leaving a blank
+		/// space.
+		/// </remarks>
+		public bool Visible { get; set; }
+
+		/// <summary>
 		/// Gives reward to creature.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -121,13 +132,64 @@ namespace Aura.Channel.World.Quests
 
 		public override void Reward(Creature creature, Quest quest)
 		{
-			creature.GiveItem(this.ItemId, this.Amount);
-			Send.AcquireItemInfo(creature, this.ItemId, this.Amount);
+			creature.AcquireItem(Item.Create(this.ItemId, this.Amount));
 		}
 	}
 
 	/// <summary>
-	/// Rewards skill x of rank y.
+	/// Rewards Enchant Scroll.
+	/// </summary>
+	/// <remarks>
+	/// Uses Type and ToString from Item reward, but generates an enchant
+	/// scroll on Reward, based on the option set id, ignoring the Item
+	/// information.
+	/// </remarks>
+	public class QuestRewardEnchant : QuestRewardItem
+	{
+		public int OptionSetId { get; protected set; }
+
+		public QuestRewardEnchant(int optionSetId)
+			: base(62005, 1) // Enchant Scroll
+		{
+			this.OptionSetId = optionSetId;
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.AcquireItem(Item.CreateEnchant(OptionSetId));
+		}
+	}
+
+	/// <summary>
+	/// Rewards quest (scroll).
+	/// </summary>
+	public class QuestRewardQuestScroll : QuestReward
+	{
+		public override RewardType Type { get { return RewardType.Item; } }
+
+		public int QuestId { get; protected set; }
+
+		public QuestRewardQuestScroll(int questId)
+		{
+			this.QuestId = questId;
+		}
+
+		public override string ToString()
+		{
+			var data = ChannelServer.Instance.ScriptManager.QuestScripts.Get(this.QuestId);
+			if (data == null)
+				return "Unknown quest";
+			return data.Name;
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.Inventory.Add(Item.CreateQuestScroll(this.QuestId), true);
+		}
+	}
+
+	/// <summary>
+	/// Rewards skill x of rank y. Optionally trains a condition.
 	/// </summary>
 	public class QuestRewardSkill : QuestReward
 	{
@@ -135,11 +197,13 @@ namespace Aura.Channel.World.Quests
 
 		public SkillId SkillId { get; protected set; }
 		public SkillRank Rank { get; protected set; }
+		public int Training { get; protected set; }
 
-		public QuestRewardSkill(SkillId id, SkillRank rank)
+		public QuestRewardSkill(SkillId id, SkillRank rank, int training = 0)
 		{
 			this.SkillId = id;
 			this.Rank = rank;
+			this.Training = training;
 		}
 
 		public override string ToString()
@@ -157,10 +221,15 @@ namespace Aura.Channel.World.Quests
 				return;
 
 			creature.Skills.Give(this.SkillId, this.Rank);
+
+			if (this.Training != 0)
+				creature.Skills.Train(this.SkillId, this.Rank, this.Training);
 		}
 	}
 
-	// Rewards gold
+	/// <summary>
+	/// Rewards gold
+	/// </summary>
 	public class QuestRewardGold : QuestReward
 	{
 		public override RewardType Type { get { return RewardType.Gold; } }
@@ -238,6 +307,13 @@ namespace Aura.Channel.World.Quests
 	/// <summary>
 	/// Rewards ability points
 	/// </summary>
+	/// <remarks>
+	/// The quest AP rate option is only applied when the scripts are loaded,
+	/// so the players see the actual AP they'll get if they complete the
+	/// quest. Should the rate be changed at runtime, players will still see
+	/// the previous AP amount, and will get that amount if they complete a
+	/// quest.
+	/// </remarks>
 	public class QuestRewardAp : QuestReward
 	{
 		public override RewardType Type { get { return RewardType.AP; } }
@@ -246,7 +322,7 @@ namespace Aura.Channel.World.Quests
 
 		public QuestRewardAp(short amount)
 		{
-			this.Amount = amount;
+			this.Amount = (short)Math2.Clamp(0, short.MaxValue, amount * ChannelServer.Instance.Conf.World.QuestApRate);
 		}
 
 		public override string ToString()
@@ -259,5 +335,71 @@ namespace Aura.Channel.World.Quests
 			creature.GiveAp(this.Amount);
 			Send.AcquireInfo(creature, "ap", this.Amount);
 		}
+	}
+
+	/// <summary>
+	/// Rewards stat points.
+	/// </summary>
+	public class QuestRewardStatBonus : QuestReward
+	{
+		public override RewardType Type { get { return RewardType.Skill; } }
+
+		public Stat Stat { get; protected set; }
+		public int Amount { get; protected set; }
+
+		public QuestRewardStatBonus(Stat stat, int amount)
+		{
+			if (stat != Stat.Str && stat != Stat.Dex && stat != Stat.Int && stat != Stat.Will && stat != Stat.Luck)
+				throw new ArgumentException("Unsupported stat '" + stat + "'");
+
+			if (amount <= 0)
+				throw new ArgumentException("Amount must be a positive value.");
+
+			this.Stat = stat;
+			this.Amount = amount;
+		}
+
+		public override string ToString()
+		{
+			switch (this.Stat)
+			{
+				case Stat.Str: return string.Format(Localization.Get("Strength +{0}"), this.Amount);
+				case Stat.Dex: return string.Format(Localization.Get("Dexterity +{0}"), this.Amount);
+				case Stat.Int: return string.Format(Localization.Get("Intelligence +{0}"), this.Amount);
+				case Stat.Will: return string.Format(Localization.Get("Will +{0}"), this.Amount);
+				case Stat.Luck: return string.Format(Localization.Get("Luck +{0}"), this.Amount);
+				default: return string.Format(Localization.Get("Unknown +{0}"), this.Amount);
+			}
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			switch (this.Stat)
+			{
+				case Stat.Str: creature.StrBonus += this.Amount; break;
+				case Stat.Dex: creature.DexBonus += this.Amount; break;
+				case Stat.Int: creature.IntBonus += this.Amount; break;
+				case Stat.Will: creature.WillBonus += this.Amount; break;
+				case Stat.Luck: creature.LuckBonus += this.Amount; break;
+			}
+
+			Send.StatUpdate(creature, StatUpdateType.Private, Stat.Str, Stat.Dex, Stat.Int, Stat.Will, Stat.Luck);
+		}
+	}
+
+	[Flags]
+	public enum RewardOptions
+	{
+		None = 0,
+
+		/// <summary>
+		/// Hides reward on the client side.
+		/// </summary>
+		/// <remarks>
+		/// Hidden rewards are still sent to the client with the quest info,
+		/// but if this switch is set, they aren't displayed, leaving a blank
+		/// space.
+		/// </remarks>
+		Hidden = 1,
 	}
 }

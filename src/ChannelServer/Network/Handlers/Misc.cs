@@ -76,6 +76,11 @@ namespace Aura.Channel.Network.Handlers
 				Send.GmcpOpen(creature);
 
 			ChannelServer.Instance.Events.OnPlayerLoggedIn(creature);
+
+			// Temp fix for Novice rank Support Shot, that shouldn't have been
+			// given to players. TODO: Remove in a few days. (exec, 2015-01-19)
+			if (creature.Skills.Is(SkillId.SupportShot, SkillRank.Novice))
+				creature.Skills.Give(SkillId.SupportShot, SkillRank.RF);
 		}
 
 		/// <summary>
@@ -136,6 +141,9 @@ namespace Aura.Channel.Network.Handlers
 				// This can happen if multiple member's cutscenes end at the
 				// same time, they all send the finish packet, no matter whether
 				// they're the leader or not. (Is that normal?)
+				// The cutscene could also be set to null due to a bug though,
+				// in which case players get stuck in it, without any error
+				// message... TODO: We need a better check than "== null".
 				//Log.Error("FinishedCutscene: Player '{0}' tried to finish invalid cutscene.", creature.EntityIdHex);
 				return;
 			}
@@ -432,6 +440,23 @@ namespace Aura.Channel.Network.Handlers
 				Send.Notice(creature, NoticeType.Middle, Localization.Get("Your name color has changed."));
 			else if (chatChange)
 				Send.Notice(creature, NoticeType.Middle, Localization.Get("Your chat text color has changed."));
+		}
+
+		/// <summary>
+		/// Dummy handler.
+		/// </summary>
+		/// <remarks>
+		/// Client and server exchange those packets from time to time.
+		/// As they just contain bins, and were seemingly added when NGS
+		/// was added to NA, it's probably a security mechanism.
+		/// </remarks>
+		[PacketHandler(Op.NGS1)]
+		public void NGS1(ChannelClient client, Packet packet)
+		{
+			var length = packet.GetInt();
+			var payload = packet.GetBin();
+
+			// Ignore, client doesn't require an answer.
 		}
 	}
 }

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Globalization;
 
 namespace Aura.Channel.Database
 {
@@ -253,6 +254,11 @@ namespace Aura.Channel.Database
 					character.DexFoodMod = reader.GetFloat("dexFood");
 					character.WillFoodMod = reader.GetFloat("willFood");
 					character.LuckFoodMod = reader.GetFloat("luckFood");
+					character.StrBonus = reader.GetFloat("strBonus");
+					character.IntBonus = reader.GetFloat("intBonus");
+					character.DexBonus = reader.GetFloat("dexBonus");
+					character.WillBonus = reader.GetFloat("willBonus");
+					character.LuckBonus = reader.GetFloat("luckBonus");
 
 					title = reader.GetUInt16("title");
 					optionTitle = reader.GetUInt16("optionTitle");
@@ -831,10 +837,13 @@ namespace Aura.Channel.Database
 						continue;
 					}
 
-					// Don't save scroll hunting quests
+					// Don't save completed collection quests, they would
+					// just fill up the db over time and we don't need to
+					// know how often these quests were done. Should that
+					// change, we should add a new table for it.
 					// TODO: Would it be better to use a general "repeatable"
 					//   setting to decide which quests not to save?
-					if (quest.Data.Type == QuestType.Hunting && quest.Id >= 71001 && quest.Id <= 71075)
+					if (quest.Data.Type == QuestType.Collect && quest.State == QuestState.Complete)
 						continue;
 
 					using (var cmd = new InsertCommand("INSERT INTO `quests` {0}", conn, transaction))
@@ -972,6 +981,11 @@ namespace Aura.Channel.Database
 				cmd.Set("dexFood", creature.DexFoodMod);
 				cmd.Set("willFood", creature.WillFoodMod);
 				cmd.Set("luckFood", creature.LuckFoodMod);
+				cmd.Set("strBonus", creature.StrBonus);
+				cmd.Set("intBonus", creature.IntBonus);
+				cmd.Set("dexBonus", creature.DexBonus);
+				cmd.Set("willBonus", creature.WillBonus);
+				cmd.Set("luckBonus", creature.LuckBonus);
 				cmd.Set("title", creature.Titles.SelectedTitle);
 				cmd.Set("optionTitle", creature.Titles.SelectedOptionTitle);
 				cmd.Set("state", (uint)creature.State);
@@ -1253,11 +1267,25 @@ namespace Aura.Channel.Database
 							case "2": vars[name] = short.Parse(val); break;
 							case "4": vars[name] = int.Parse(val); break;
 							case "8": vars[name] = long.Parse(val); break;
-							case "f": vars[name] = float.Parse(val); break;
-							case "d": vars[name] = double.Parse(val); break;
+							case "f": vars[name] = float.Parse(val, CultureInfo.InvariantCulture); break;
+							case "d": vars[name] = double.Parse(val, CultureInfo.InvariantCulture); break;
 							case "b": vars[name] = bool.Parse(val); break;
 							case "s": vars[name] = val; break;
-							case "dt": vars[name] = DateTime.Parse(val); break;
+							case "dt":
+								// Prior to the localization updates, invariant
+								// wasn't enforced. Users might have old dt
+								// entries in their db, which we have to
+								// handle for the time being.
+								// TODO: Remove.
+								try
+								{
+									vars[name] = DateTime.Parse(val, CultureInfo.InvariantCulture);
+								}
+								catch (FormatException)
+								{
+									vars[name] = DateTime.Parse(val, CultureInfo.InstalledUICulture);
+								}
+								break;
 							case "o":
 								var buffer = Convert.FromBase64String(val);
 								var bf = new BinaryFormatter();
@@ -1335,7 +1363,15 @@ namespace Aura.Channel.Database
 					}
 					else if (type == "dt")
 					{
-						val = var.Value.ToString();
+						val = ((DateTime)var.Value).ToString(CultureInfo.InvariantCulture);
+					}
+					else if (type == "f")
+					{
+						val = ((float)var.Value).ToString(CultureInfo.InvariantCulture);
+					}
+					else if (type == "d")
+					{
+						val = ((double)var.Value).ToString(CultureInfo.InvariantCulture);
 					}
 					else
 					{

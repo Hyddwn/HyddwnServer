@@ -9,7 +9,7 @@ using System.Linq;
 namespace Aura.Data.Database
 {
 	[Serializable]
-	public class StatsLevelUpData
+	public class StatsUpData
 	{
 		public int Age { get; set; }
 
@@ -24,9 +24,9 @@ namespace Aura.Data.Database
 		public float Luck { get; set; }
 	}
 
-	public class StatsLevelUpDb : DatabaseJsonIndexed<int, Dictionary<int, StatsLevelUpData>>
+	public class StatsLevelUpDb : DatabaseJsonIndexed<int, Dictionary<int, StatsUpData>>
 	{
-		public StatsLevelUpData Find(int raceId, int age)
+		public StatsUpData Find(int raceId, int age)
 		{
 			var race = this.Entries.GetValueOrDefault(raceId);
 			if (race == null)
@@ -47,7 +47,7 @@ namespace Aura.Data.Database
 		{
 			entry.AssertNotMissing("race", "age", "life", "mana", "stamina", "str", "int", "dex", "will", "luck");
 
-			var data = new StatsLevelUpData();
+			var data = new StatsUpData();
 
 			data.Age = entry.ReadByte("age");
 			data.AP = entry.ReadInt("ap");
@@ -63,7 +63,7 @@ namespace Aura.Data.Database
 			foreach (int raceId in entry["race"])
 			{
 				if (!this.Entries.ContainsKey(raceId))
-					this.Entries[raceId] = new Dictionary<int, StatsLevelUpData>();
+					this.Entries[raceId] = new Dictionary<int, StatsUpData>();
 
 				this.Entries[raceId][data.Age] = data;
 			}

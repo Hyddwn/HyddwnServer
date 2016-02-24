@@ -189,6 +189,22 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Unsets AI's creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		public void Detach()
+		{
+			var npc = this.Creature as NPC;
+			if (npc == null || npc.AI == null)
+				return;
+
+			npc.AI.Dispose();
+			npc.Death -= OnDeath;
+			npc.AI = null;
+			this.Creature = null;
+		}
+
+		/// <summary>
 		/// Main "loop"
 		/// </summary>
 		/// <param name="state"></param>
@@ -708,10 +724,8 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="values"></param>
 		protected T Rnd<T>(params T[] values)
 		{
-			if (values == null || values.Length == 0)
-				throw new ArgumentException("values may not be null or empty.");
-
-			return values[this.Random(values.Length)];
+			lock (_rnd)
+				return _rnd.Rnd(values);
 		}
 
 		/// <summary>
@@ -785,6 +799,10 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			// Some races are "immune" to Sharp Mind
 			if (this.Creature.RaceData.SharpMindImmune)
+				return;
+
+			// Check if SharpMind is enabled
+			if (!AuraData.FeaturesDb.IsEnabled("SharpMind"))
 				return;
 
 			var passive = AuraData.FeaturesDb.IsEnabled("PassiveSharpMind");
@@ -1371,11 +1389,11 @@ namespace Aura.Channel.Scripting.Scripts
 			// Wait till aim is 99% or timeout is reached
 			var until = _timestamp + Math.Max(0, timeout);
 			var aim = 0.0;
-			while (_timestamp < until && (aim = this.Creature.AimMeter.GetAimChance(target)) < 99)
+			while (_timestamp < until && (aim = this.Creature.AimMeter.GetAimChance(target)) < 90)
 				yield return true;
 
-			// Cancel if 99 aim weren't reached
-			if (aim < 99)
+			// Cancel if 90 aim weren't reached
+			if (aim < 90)
 			{
 				this.SharpMind(activeSkill.Info.Id, SharpMindStatus.Cancelling);
 				this.Creature.Skills.CancelActiveSkill();
@@ -1934,10 +1952,14 @@ namespace Aura.Channel.Scripting.Scripts
 				// Knock down event
 				if (action.Has(TargetOptions.KnockDown) || action.Has(TargetOptions.Smash))
 				{
-					if (action.Has(TargetOptions.Critical))
-						ev = AiEvent.CriticalKnockDown;
-					else
-						ev = AiEvent.KnockDown;
+					// Windmill doesn't trigger the knock down event
+					if (action.AttackerSkillId != SkillId.Windmill)
+					{
+						if (action.Has(TargetOptions.Critical))
+							ev = AiEvent.CriticalKnockDown;
+						else
+							ev = AiEvent.KnockDown;
+					}
 				}
 				// Defense event
 				else if (action.SkillId == SkillId.Defense)
@@ -1950,12 +1972,18 @@ namespace Aura.Channel.Scripting.Scripts
 				else if (action.AttackerSkillId >= SkillId.Lightningbolt && action.AttackerSkillId <= SkillId.Inspiration)
 				{
 					ev = AiEvent.MagicHit;
-					fallback = AiEvent.Hit;
+					if (action.Has(TargetOptions.Critical))
+						fallback = AiEvent.CriticalHit;
+					else
+						fallback = AiEvent.Hit;
 				}
 				// Hit event
 				else
 				{
-					ev = AiEvent.Hit;
+					if (action.Has(TargetOptions.Critical))
+						ev = AiEvent.CriticalHit;
+					else
+						ev = AiEvent.Hit;
 				}
 
 				// Try to find and execute event
@@ -2109,6 +2137,7 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			None,
 			Hit,
+			CriticalHit,
 			DefenseHit,
 			MagicHit,
 			KnockDown,

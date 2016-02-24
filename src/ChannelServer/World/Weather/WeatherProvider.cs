@@ -28,8 +28,9 @@ namespace Aura.Channel.World.Weather
 		float Weather { get; }
 	}
 
-	public interface IWeatherProviderConstantSmooth : IWeatherProviderConstant
+	public interface IWeatherProviderConstantSmooth : IWeatherProvider
 	{
+		float Weather { get; }
 		float WeatherBefore { get; }
 		int TransitionTime { get; }
 	}

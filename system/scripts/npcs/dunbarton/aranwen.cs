@@ -245,14 +245,14 @@ public class AranwenShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Party Quest", 70025); // Party Quest Scroll - 10 Red Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 30 Red Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 30 Brown Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 30 Red Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 30 Black Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 10 Black Grizzly Bears and 10 Brown Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 15 Black Grizzly Bear Cubs and Brown Grizzly Bear Cubs
-		Add("Party Quest", 70025); // Party Quest Scroll - 10 Red Grizzly Bears and 10 Brown Grizzly Bears
-		Add("Party Quest", 70025); // Party Quest Scroll - 15 Red Grizzly Bear Cubs and Brown Grizzly Bear Cubs
+		AddQuest("Party Quest", 100021, 5);  // [PQ] The Hunt for Red Bears (10)
+		AddQuest("Party Quest", 100022, 30); // [PQ] The Hunt for Red Bears (30)
+		AddQuest("Party Quest", 100032, 30); // [PQ] Hunt Down the Brown Grizzly Bears (30)
+		AddQuest("Party Quest", 100033, 30); // [PQ] Hunt Down the Red Grizzly Bears (30)
+		AddQuest("Party Quest", 100034, 30); // [PQ] Hunt Down the Black Grizzly Bears (30)
+		AddQuest("Party Quest", 100048, 30); // [PQ] Hunt Down the Grizzly Bears (20)
+		AddQuest("Party Quest", 100049, 30); // [PQ] Hunt Down the Young Grizzly Bears (30)
+		AddQuest("Party Quest", 100050, 30); // [PQ] Hunt Down the Grizzly Bears (20)
+		AddQuest("Party Quest", 100051, 30); // [PQ] Hunt Down the Young Grizzly Bears (30)
 	}
 }

@@ -137,12 +137,6 @@ namespace Aura.Channel.Skills
 		{
 			foreach (var action in this.Actions)
 			{
-				// Max target stun for players == 2000?
-				if (action.Category == CombatActionCategory.Target && action.Creature.IsPlayer)
-					action.Stun = (short)Math.Min(2000, (int)action.Stun);
-
-				action.Creature.Stun = action.Stun;
-
 				// Stat update
 				Send.StatUpdate(action.Creature, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.Mana, Stat.Stamina);
 				Send.StatUpdate(action.Creature, StatUpdateType.Public, Stat.Life, Stat.LifeInjured);
@@ -151,6 +145,21 @@ namespace Aura.Channel.Skills
 				if (action.Category == CombatActionCategory.Target)
 				{
 					var tAction = action as TargetAction;
+
+					// Max target stun for players == 2000?
+					if (action.Creature.IsPlayer)
+						action.Stun = Math.Min((short)2000, action.Stun);
+
+					// Reduce stun if pinged
+					// If the second hit of the second set of dual wield hits
+					// pings, the monster's stun on the client is longer than
+					// on the server, which causes a little glitch, where a
+					// monster might attack while it's still visibly stunned.
+					// Should stun from combat be *added*, instead of *set*?
+					if (!tAction.IsKnockBack && tAction.Has(EffectFlags.HeavyStander))
+						action.Stun = Math.Min((short)1000, action.Stun);
+
+					action.Creature.Stun = action.Stun;
 
 					// Mana Shield flag
 					if (tAction.ManaDamage > 0 && tAction.Damage == 0)
@@ -186,7 +195,7 @@ namespace Aura.Channel.Skills
 								if (custom == null)
 									action.Creature.Skills.CancelActiveSkill();
 								else
-									custom.CustomHitCancel(action.Creature);
+									custom.CustomHitCancel(action.Creature, tAction);
 							}
 						}
 						else
@@ -213,11 +222,12 @@ namespace Aura.Channel.Skills
 					foreach (var cr in visibleCreatures)
 						Send.StabilityMeterUpdate(cr, tAction.Creature);
 				}
-
 				// If attacker action
-				if (action.Category == CombatActionCategory.Attack)
+				else if (action.Category == CombatActionCategory.Attack)
 				{
 					var aAction = action as AttackerAction;
+
+					action.Creature.Stun = action.Stun;
 
 					var npc = action.Creature as NPC;
 					if (npc != null && npc.AI != null && action.SkillId != SkillId.CombatMastery)
@@ -442,7 +452,7 @@ namespace Aura.Channel.Skills
 		/// <summary>
 		/// Action's effect flags.
 		/// </summary>
-		public byte EffectFlags { get; set; }
+		public EffectFlags EffectFlags { get; set; }
 
 		/// <summary>
 		/// Skill used by the attacker
@@ -497,6 +507,16 @@ namespace Aura.Channel.Skills
 		public bool Has(TargetOptions option)
 		{
 			return ((this.Options & option) != 0);
+		}
+
+		/// <summary>
+		/// Returns true if the specified flag is set.
+		/// </summary>
+		/// <param name="flags"></param>
+		/// <returns></returns>
+		public bool Has(EffectFlags flags)
+		{
+			return ((this.EffectFlags & flags) != 0);
 		}
 
 		/// <summary>

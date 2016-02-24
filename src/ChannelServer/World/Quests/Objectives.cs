@@ -103,6 +103,32 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Objective to deliver something to a specific NPC.
+	/// </summary>
+	/// <remarks>
+	/// The item is automatically given to the player on quest start,
+	/// if this is the first quest objective.
+	/// </remarks>
+	public class QuestObjectiveDeliver : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Deliver; } }
+
+		public int ItemId { get; set; }
+		public string NpcName { get; set; }
+
+		public QuestObjectiveDeliver(int itemId, int amount, string npcName)
+			: base(amount)
+		{
+			this.ItemId = itemId;
+			this.NpcName = npcName;
+
+			this.MetaData.SetString("TARGECHAR", this.NpcName);
+			this.MetaData.SetInt("TARGETCOUNT", this.Amount);
+			this.MetaData.SetInt("TARGETITEM", this.ItemId);
+		}
+	}
+
+	/// <summary>
 	/// Objective to reach a rank in a certain skill.
 	/// </summary>
 	public class QuestObjectiveReachRank : QuestObjective
@@ -203,6 +229,44 @@ namespace Aura.Channel.World.Quests
 			this.MetaData.SetInt("TARGETITEM", this.ItemId);
 			//this.MetaData.SetString("TGTSID", "/Gathering_Knife/"); // Tool to use (ignored?)
 			this.MetaData.SetInt("TARGETCOUNT", this.Amount);
+		}
+	}
+
+	/// <summary>
+	/// Objective to use a certain skill.
+	/// </summary>
+	public class QuestObjectiveUseSkill : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.UseSkill; } }
+
+		public SkillId Id { get; set; }
+
+		public QuestObjectiveUseSkill(SkillId skillId)
+			: base(1)
+		{
+			this.Id = skillId;
+
+			this.MetaData.SetUShort("TGTSKL", (ushort)skillId);
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
+	}
+
+	/// <summary>
+	/// Objective to clear a certain dungeon.
+	/// </summary>
+	public class QuestObjectiveClearDungeon : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.ClearDungeon; } }
+
+		public string DungeonName { get; set; }
+
+		public QuestObjectiveClearDungeon(string dungeonName)
+			: base(1)
+		{
+			this.DungeonName = dungeonName;
+
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+			this.MetaData.SetString("TGTCLS", dungeonName);
 		}
 	}
 }

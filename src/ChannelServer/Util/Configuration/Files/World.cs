@@ -14,6 +14,10 @@ namespace Aura.Channel.Util.Configuration.Files
 		public float QuestExpRate { get; protected set; }
 		public float SkillExpRate { get; protected set; }
 
+		public float LevelApRate { get; protected set; }
+		public float QuestApRate { get; protected set; }
+		public float AgeApRate { get; protected set; }
+
 		public float DropRate { get; protected set; }
 		public float GoldDropChance { get; protected set; }
 		public float GoldDropRate { get; protected set; }
@@ -55,6 +59,7 @@ namespace Aura.Channel.Util.Configuration.Files
 
 		public float PartyExpBonus { get; protected set; }
 		public int PartyMaxSize { get; protected set; }
+		public int PartyQuestMinSize { get; protected set; }
 
 		public void Load()
 		{
@@ -63,6 +68,10 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.ExpRate = this.GetFloat("exp_rate", 100) / 100.0f;
 			this.QuestExpRate = this.GetFloat("quest_exp_rate", 100) / 100.0f;
 			this.SkillExpRate = this.GetFloat("skill_exp_rate", 100) / 100.0f;
+
+			this.LevelApRate = this.GetFloat("level_ap_rate", 100) / 100.0f;
+			this.QuestApRate = this.GetFloat("quest_ap_rate", 100) / 100.0f;
+			this.AgeApRate = this.GetFloat("age_ap_rate", 100) / 100.0f;
 
 			this.DropRate = this.GetFloat("drop_rate", 100) / 100.0f;
 			this.GoldDropChance = this.GetFloat("gold_drop_chance", 30) / 100.0f;
@@ -106,6 +115,7 @@ namespace Aura.Channel.Util.Configuration.Files
 
 			this.PartyExpBonus = this.GetFloat("party_exp_bonus", 0);
 			this.PartyMaxSize = Math2.Clamp(1, 99, this.GetInt("party_max_size", 8));
+			this.PartyQuestMinSize = Math2.Clamp(1, this.PartyMaxSize, this.GetInt("party_quest_min_size", 2));
 		}
 	}
 }

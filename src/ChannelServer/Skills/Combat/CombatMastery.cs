@@ -117,6 +117,10 @@ namespace Aura.Channel.Skills.Combat
 				// Mana Shield
 				ManaShield.Handle(target, ref damage, tAction);
 
+				// Heavy Stander
+				// Can only happen on the first hit
+				var pinged = (cap.Hit == 1 && HeavyStander.Handle(attacker, target, ref damage, tAction));
+
 				// Deal with it!
 				if (damage > 0)
 				{
@@ -168,13 +172,7 @@ namespace Aura.Channel.Skills.Combat
 				if (tAction.IsKnockBack)
 				{
 					attacker.Shove(target, KnockBackDistance);
-
 					aAction.Set(AttackerOptions.KnockBackHit2);
-
-					// Remove dual wield option if last hit doesn't come from
-					// the second weapon.
-					if (cap.Hit != 2)
-						aAction.Options &= ~AttackerOptions.DualWield;
 				}
 
 				// Set stun time if not defended, Defense handles the stun
@@ -184,17 +182,13 @@ namespace Aura.Channel.Skills.Combat
 					aAction.Stun = GetAttackerStun(attacker, weapon, tAction.IsKnockBack && skill.Info.Id != SkillId.FinalHit);
 					tAction.Stun = GetTargetStun(attacker, weapon, tAction.IsKnockBack);
 				}
-				// No second hit if defended
-				else
-				{
-					// If this isn't done, the client allows the second hit,
-					// despite of the stun.
-					maxHits = 1;
-					aAction.Options &= ~AttackerOptions.DualWield;
-				}
+
+				// Set increased stun if target pinged
+				if (pinged)
+					aAction.Stun = GetAttackerStun(attacker, weapon, true);
 
 				// Second hit doubles stun time for normal hits
-				if (cap.Hit == 2 && !tAction.IsKnockBack)
+				if (cap.Hit == 2 && !tAction.IsKnockBack && !pinged)
 					aAction.Stun *= 2;
 
 				// Update current weapon
@@ -206,11 +200,21 @@ namespace Aura.Channel.Skills.Combat
 					Send.Notice(attacker, Localization.Get("Your stamina is too low to fight properly!"));
 				attacker.Stamina -= staminaUsage;
 
-				cap.Handle();
+				// No second hit if defended, pinged, or knocked back
+				if (tAction.IsKnockBack || tAction.SkillId == SkillId.Defense || pinged)
+				{
+					// Set to 1 to prevent second run
+					maxHits = 1;
 
-				// No second hit if target was knocked back
-				if (tAction.IsKnockBack)
-					break;
+					// Remove dual wield option if last hit doesn't come from
+					// the second weapon. If this isn't done, the client shows
+					// the second hit.
+					if (cap.Hit != 2)
+						aAction.Options &= ~AttackerOptions.DualWield;
+				}
+
+				// Handle
+				cap.Handle();
 			}
 
 			return CombatSkillResult.Okay;

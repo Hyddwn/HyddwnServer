@@ -188,7 +188,7 @@ namespace Aura.Channel.Skills.Combat
 					tAction.Set(TargetOptions.Result);
 					tAction.Stun = (short)(actionType == CombatActionPackType.ChainRangeAttack ? TargetStunElf : TargetStun);
 					if (actionType == CombatActionPackType.ChainRangeAttack)
-						tAction.EffectFlags = 0x20;
+						tAction.EffectFlags = EffectFlags.Unknown;
 
 					cap.Add(tAction);
 
@@ -215,6 +215,9 @@ namespace Aura.Channel.Skills.Combat
 
 					// Mana Shield
 					ManaShield.Handle(target, ref damage, tAction);
+
+					// Natural Shield
+					var delayReduction = NaturalShield.Handle(attacker, target, ref damage, tAction);
 
 					// Deal with it!
 					if (damage > 0)
@@ -255,7 +258,17 @@ namespace Aura.Channel.Skills.Combat
 						// Normal stability reduction
 						else
 						{
-							target.Stability -= (actionType == CombatActionPackType.ChainRangeAttack ? StabilityReductionElf : StabilityReduction);
+							var stabilityReduction = (actionType == CombatActionPackType.ChainRangeAttack ? StabilityReductionElf : StabilityReduction);
+
+							// Reduce reduction, based on ping
+							// According to the Wiki, "the Knockdown Gauge
+							// [does not] build up", but it's still possible
+							// to knock back with repeated hits. The stability
+							// reduction is probably reduced, just like stun.
+							if (delayReduction > 0)
+								stabilityReduction = (short)Math.Max(0, stabilityReduction - (stabilityReduction / 100 * delayReduction));
+
+							target.Stability -= stabilityReduction;
 							if (target.IsUnstable)
 							{
 								tAction.Set(TargetOptions.KnockBack);
@@ -263,8 +276,13 @@ namespace Aura.Channel.Skills.Combat
 						}
 					}
 
+					// Knock Back
 					if (tAction.IsKnockBack)
 						attacker.Shove(target, KnockBackDistance);
+
+					// Reduce stun, based on ping
+					if (delayReduction > 0)
+						tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
 				}
 
 				// Skill training

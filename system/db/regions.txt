@@ -1,394 +1,403 @@
 // Aura
 // Database file
-// 
-// Structure:
-// Id  Name
 //---------------------------------------------------------------------------
 
-1, "Uladh_main"
-2, "Uladh_TirCho_Bank"
-3, "Uladh_TirCho_ChiefHouse"
-4, "Uladh_TirCho_Church"
-5, "Uladh_TirCho_Grocery"
-6, "Uladh_TirCho_Healer"
-7, "Uladh_TirCho_Inn"
-8, "Uladh_TirCho_MiscShop"
-9, "Uladh_TirCho_School"
-11, "Uladh_Dungeon_Black_Wolfs_Hall1"
-12, "Uladh_Dungeon_Black_Wolfs_Hall2"
-13, "Uladh_Dungeon_Beginners_Hall1"
-14, "Uladh_Dunbarton"
-15, "MonsterRegion"
-16, "Uladh_Dun_to_Tircho"
-17, "Uladh_Dunbarton_Cloth"
-18, "Uladh_Dunbarton_School"
-19, "Uladh_Dunbarton_Healer"
-20, "Uladh_Dunbarton_Bank"
-21, "Uladh_Dunbarton_Church"
-22, "_TestRegion"
-23, "Uladh_Cobh_harbor"
-24, "Ula_DgnHall_Dunbarton_before1"
-25, "Ula_DgnHall_Dunbarton_before2"
-26, "Ula_DgnHall_Dunbarton_after"
-27, "Ula_hardmode_DgnHall_TirChonaill_before"
-28, "Ula_DgnArena_Tircho_Lobby"
-29, "Ula_DgnArena_Tircho_Arena"
-30, "Ula_Dun_to_Bangor"
-31, "Ula_Bangor"
-32, "Ula_DgnHall_Bangor_before1"
-33, "Ula_DgnHall_Bangor_before2"
-34, "Ula_DgnHall_Bangor_after"
-35, "Ula_Tirnanog"
-36, "Ula_Tirnanog_ChiefHouse"
-37, "Ula_Tirnanog_Church"
-38, "Ula_Tirnanog_Grocery"
-39, "Ula_Tirnanog_Healer"
-40, "Ula_Tirnanog_Inn"
-41, "Ula_Tirnanog_MiscShop"
-42, "Ula_Tirnanog_School"
-43, "Ula_Tirnanog_Bank"
-44, "Ula_DgnHall_Tirnanog_before1"
-45, "Ula_DgnHall_Tirnanog_before2"
-46, "Ula_DgnHall_Tirnanog_after"
-47, "Sidhe_Sneachta_S"
-48, "Sidhe_Sneachta_N"
-49, "Ula_DgnHall_Danu_before"
-50, "Ula_DgnHall_Danu_after"
-51, "Ula_Crossroad"
-52, "Ula_Emainmacha"
-53, "Ula_Sen_Mag"
-54, "Ula_DgnHall_Coill_before"
-55, "Ula_DgnHall_Coill_after"
-56, "Ula_Emainmacha_Ceo"
-57, "Ula_Emainmacha_club"
-58, "Ula_Emainmacha_lookout_1st"
-59, "Ula_Emainmacha_lookout_2nd"
-60, "Ula_Emainmacha_castle"
-61, "Ula_Emainmacha_cathedral"
-62, "Ula_Emainmacha_bank"
-63, "Ula_Emainmacha_Rua"
-64, "Ula_DgnHall_Runda_before"
-65, "Ula_DgnHall_Runda_after"
-66, "Ula_Emainmacha_castle_chamber_A"
-67, "Ula_Emainmacha_castle_chamber_B"
-68, "Ula_Emainmacha_OidTobar_Hall"
-69, "Studio_Runda"
-70, "Ula_Osna_Sail"
-71, "Uladh_Dunbarton_SchoolHall_before"
-72, "Uladh_Dunbarton_School_LectureRoom"
-73, "Private_Camp_01"
-74, "Ula_Dgnhall_Peaca_before"
-75, "Ula_Dgnhall_Peaca_after"
-76, "Uladh_Dunbarton_School_LectureRoom_night"
-77, "Ula_Emainmacha_Fightzone"
-78, "Ula_DgnHall_Tirnanog_G3_before"
-79, "Ula_DgnHall_Tirnanog_G3_after"
-80, "Private_Wedding_waitingroom"
-81, "Private_Wedding_ceremonialhall"
-82, "Dugald_Aisle_UserHouse"
-83, "Ula_Tirnanog_G3_Gairech_Hill"
-84, "Ula_Tirnanog_G3"
-85, "Beginner_Tutorial_DG"
-86, "Dugald_Aisle_UserCastleTest1"
-87, "Dugald_Aisle_UserCastleTest2"
-88, "_TestRegion88"
-89, "Dugald_Aisle_UserHouse_int_01"
-90, "Dugald_Aisle_UserHouse_int_02"
-91, "Dugald_Aisle_UserHouse_int_03"
-92, "Dugald_Aisle_UserCastle_hall"
-93, "Dugald_Aisle_UserCastle_guildroom"
-94, "Dugald_Aisle_UserCastle_warehouse"
-95, "Dugald_Aisle_ModelHouse"
-96, "Ula_Morva_Aisle"
-97, "Ula_DgnArena_Dunbarton_Arena"
-98, "Ula_DgnArena_Dunbarton_Lobby"
-99, "Ula_DgnArena_Dunbarton_waitingroom"
-100, "Ula_Ceann_Harbor"
-101, "Iria_Harbor_01"
-102, "Iria_Harbor_01_onboard"
-103, "Ula_Ceann_Harbor_onboard"
-104, "Iria_SW_ruins_DG_before"
-105, "Iria_SW_ruins_DG_after"
-106, "ArenaTest001"
-107, "ArenaTest002"
-108, "Iria_SE_Desert_01_DG_after"
-109, "Iria_SE_Desert_01_DG_before"
-110, "Loginstage_001"
-111, "Loginstage_002"
-112, "Loginstage_003"
-113, "Loginstage_004"
-114, "Private_Elf_Wedding_waitingroom"
-115, "Private_Elf_Wedding_ceremonialhall"
-116, "Loginstage_005"
-117, "Private_igloo_01"
-118, "Uladh_main_Tutorial"
-119, "Iria_NN_dragoncave01"
-120, "Ula_hardmode_DgnHall_TirChonaill_after"
-121, "Ula_hardmode_DgnHall_Ciar_before"
-122, "Ula_hardmode_DgnHall_Ciar_after"
-123, "Ula_hardmode_DgnHall_Runda_before"
-124, "Ula_hardmode_DgnHall_Runda_after"
-125, "Tin_Beginner_Tutorial"
-126, "BlockRegion"
-127, "Loginstage_006"
-128, "Loginstage_007"
-129, "Loginstage_008"
-130, "Loginstage_009"
-131, "Loginstage_010"
-132, "Loginstage_011"
-133, "Loginstage_012"
-134, "Loginstage_013"
-135, "Loginstage_014"
-136, "Uladh_Cobh_bar"
-137, "Loginstage_015"
-138, "Loginstage_016"
-139, "Ula_Emainmacha_dollwalker"
-140, "DramaIriaS2_Uladh_Cobh_bar_1"
-141, "Loginstage_017"
-142, "Loginstage_018"
-168, "Studio_OidTobar_Hall"
-172, "Studio_Dunbarton_LectureRoom_Buchanan"
-200, "Dugald_Aisle_Town"
-201, "Dugald_Aisle_Keep"
-202, "Sen_Mag_town"
-203, "Sen_Mag_Keep"
-204, "Dugald_Aisle_keep_DgnHall_after"
-205, "Dugald_Aisle_keep_DgnHall_before"
-206, "Sen_Mag_keep_DgnHall_after"
-207, "Sen_Mag_keep_DgnHall_before"
-208, "Studio_keep_DG"
-209, "Housing_CharDummyStage"
-210, "Private_giant_Wedding_ceremonialhall"
-211, "Private_giant_Wedding_waitingroom"
-212, "Private_Promotion_testRoom_waiting"
-213, "Private_Promotion_testRoom"
-214, "Abb_Neagh_town"
-215, "Abb_Neagh_Keep"
-216, "Abb_Neagh_keep_DgnHall_after"
-217, "Abb_Neagh_keep_DgnHall_before"
-218, "Soulstream_region"
-219, "Soulstream_past_region"
-220, "Soulstream_future_region"
-226, "character_stage_night01"
-227, "character_stage_am01"
-228, "character_stage_pm01"
-229, "character_stage_night01_god"
-230, "character_stage_am01_god"
-231, "character_stage_pm01_god"
-300, "taillteann_main_field"
-301, "Taillteann_E_field"
-302, "Taillteann_SE_field"
-400, "Tara_N_Field"
-401, "Tara_main_field"
-402, "Tara_SE_Field"
-403, "Tara_castle_kingroom"
-410, "Tara_castle_1F"
-411, "Tara_castle_gatehall"
-412, "Tara_castle_pot"
-413, "Tara_castle_greathall"
-414, "Tara_castle_guildhall"
-415, "Tara_castle_nobleroom_01"
-416, "Tara_castle_nobleroom_02"
-417, "Tara_castle_library"
-418, "Tara_castle_B1"
-419, "Tara_castle_B1_entrance"
-420, "Studio_Tara_gatehall"
-421, "Tara_church"
-422, "Tara_church_confessional"
-427, "Studio_Tara_library"
-428, "Tara_tournament_field"
-429, "Tara_healer"
-430, "Tara_cloth"
-431, "Tara_bank"
-432, "Tara_alchemist"
-433, "Tara_misc"
-434, "Tara_magic"
-435, "Tara_weapon"
-436, "Shakespere_room"
-437, "Tara_main_kingdom_field"
-438, "Tara_main_field_shadowversion"
-500, "Falias_main_field"
-501, "Avon_main_field"
-502, "Avon_stage_hamlet"
-503, "Avon_stage_Juliette"
-504, "Bella_Vally"
-505, "Bella_Vally_cutscene"
-600, "JP_Nekojima_islet"
-601, "JP_Nekojima_dungeon_hall_after"
-602, "Studio_JP_Nekojima_dungeon_bossroom"
-603, "Studio_JP_Nekojima_dungeon_entrance"
-604, "RE_Nekojima_islet"
-701, "Farm_A"
-800, "Farm_TestA"
-801, "Farm_TestB"
-802, "Farm_TestC"
-803, "Farm_TestD"
-804, "Farm_TestE"
-805, "Farm_Desert_8"
-806, "Farm_Desert_16"
-807, "Farm_Desert_24"
-808, "Farm_Desert_32"
-809, "Farm_Desert_48"
-810, "Farm_Desert_64"
-811, "Farm_Grassland_8"
-812, "Farm_Grassland_16"
-813, "Farm_Grassland_24"
-814, "Farm_Grassland_32"
-815, "Farm_Grassland_48"
-816, "Farm_Grassland_64"
-817, "Farm_snowyfields_8"
-818, "Farm_snowyfields_16"
-819, "Farm_snowyfields_24"
-820, "Farm_snowyfields_32"
-821, "Farm_snowyfields_48"
-822, "Farm_snowyfields_64"
-823, "Studio_Farm_Desert_8"
-824, "Studio_Farm_Desert_16"
-825, "Studio_Farm_Grassland_8"
-826, "Studio_Farm_Grassland_16"
-827, "Studio_Farm_snowfield_8"
-828, "Studio_Farm_snowfield_16"
-829, "Farm_Deaert_48_02"
-830, "Farm_Grassland_48_criminal"
-831, "Farm_Grassland_48_vacationland"
-832, "Farm_snowyfields_48_02"
-833, "Farm_Desert_48_00"
-834, "Farm_Grassland_48_00"
-835, "Farm_snowyfields_48_00"
-900, "Studio_Alby"
-901, "Studio_Ciar"
-902, "Studio_Math"
-903, "Studio_Rabbie"
-904, "Studio_Barri"
-905, "Studio_TirnanogDG"
-906, "Studio_Alby_Lobby_After"
-907, "Studio_Math_Lobby_After"
-908, "Studio_TirnanogDG_Lobby_After"
-909, "Studio_Fiodhe"
-910, "Studio_Barri_Lobby_after"
-911, "Studio_Coill"
-912, "Studio_Pala_training"
-913, "Studio_Coill_blackregion"
-914, "Studio_Peaca"
-915, "Studio_Dunbarton_School_LectureRoom"
-916, "Studio_Tirnanog_G3_DG"
-917, "Studio_Iria_SW_ruins_DG"
-918, "Studio_Iria_SE_Desert_01_DG"
-919, "Studio_Iria_NW_glacier01_DG_bossroom"
-920, "Studio_Iria_NW_glacier01_DG_bossroom_Nomirror"
-921, "Studio_Alby_higher"
-922, "Studio_Iria_C_field_waterfall_01"
-923, "Studio_Alby_exitroom"
-924, "Studio_Iria_SE_Desert_01_DG_stair_down"
-925, "Studio_Iria_SE_Desert_01_DG_after"
-927, "Studio_Iria_SE_Desert_01_DG_stair_down_02"
-928, "Studio_Iria_NN_field_lavafall_01"
-929, "Studio_hardmode_Alby"
-930, "Studio_hardmode_Ciar"
-931, "Studio_hardmode_Runda"
-932, "Studio_hardmode_Alby_arachne"
-933, "Studio_Iria_SE_Desert_01_DG_bossroom_01"
-934, "Studio_Iria_SW_ruins_DG_after_01"
-935, "Studio_Iria_SW_ruins_DG_after_00"
-936, "Studio_Tara_N_Field"
-937, "Studio_Tara_N_Field_02"
-994, "Studio_Peaca_G12"
-1000, "Nao_tutorial"
-1001, "Event_snowfield"
-1002, "G1_GoddessStage"
-1003, "Event_moonsurface"
-1004, "Beginner_Tutorial"
-1005, "pvp_event_arena"
-1006, "pvp_event_Lobby1"
-1007, "pvp_event_Lobby2"
-1011, "Event_impdream"
-1102, "Sen_Mag_Arena"
-2998, "Iria_to_Uladh_Ocean"
-2999, "Uladh_to_Iria_Ocean"
-3001, "Iria_SW_main_field"
-3002, "Iria_Uladh_Ocean_fishingboat_float"
-3003, "Iria_to_fishingboat"
-3004, "fishingboat_to_Iria"
-3005, "Iria_Ocean_drifting"
-3006, "Iria_drifting_beach"
-3010, "Studio_Iria_drifting_beach"
-3100, "Iria_SE_main_field"
-3101, "Iria_SE_Desert_underground"
-3102, "Iria_Elf_Tutorial"
-3103, "Iria_SE_ElfArena_Lobby"
-3104, "Iria_SE_ElfArena_Arena"
-3105, "Iria_SE_monsterraid01"
-3106, "Iria_SE_Portia_room"
-3107, "Iria_SE_MineField"
-3108, "Iria_SE_MineField01"
-3109, "Iria_SE_MineField02"
-3110, "Iria_SE_chiefhouse"
-3111, "Studio_Coill_RE"
-3112, "Studio_Peaca_RE"
-3113, "Studio_Peaca_RE01"
-3114, "Studio_Coil_RE_01"
-3115, "Iria_SE_Desert_Treasure_01"
-3116, "dg_halloween_alley_01"
-3117, "dg_halloween_lobby_01"
-3118, "dg_halloween_lobby_02"
-3119, "Uladh_Cobh_bar_C01"
-3120, "scene_DramaIriaS2_stair_01"
-3121, "Uladh_Cobh_bar_C02"
-3122, "dg_Hideandseek_room"
-3123, "scene_building_emain_stage_Night"
-3124, "DramaIriaS2_nightmare_alley01"
-3125, "scene_DramaIriaS2_Nemeton_field"
-3126, "DramaIriaS2_cuberoom_01"
-3127, "scene_DramaIriaS2_Nemeton_dc_room"
-3128, "scene_DramaIriaS2_Nemeton_lobby"
-3129, "scene_DramaIriaS2_Nemeton_alley01"
-3130, "scene_DramaIriaS2_Nemeton_library01"
-3131, "scene_DramaIriaS2_Nemeton_altar01"
-3132, "scene_DramaIriaS2_Nemeton_altar02"
-3200, "Iria_NW_main_field"
-3201, "Iria_NW_tunnel_S"
-3202, "Iria_NW_tunnel_N"
-3203, "Iria_NW_tunnel_Outside"
-3204, "Iria_NW_Tutorial"
-3206, "Iria_NW_mine"
-3207, "Iria_NW_mine_hall"
-3208, "Studio_Iria_SW_ruins_DG_02"
-3209, "Studio_Iria_SW_ruins_DG_03"
-3210, "Iria_SW_woodruins_DG_alley"
-3211, "Iria_SW_ruins_DG_after_02"
-3212, "Iria_NW_mineB2"
-3213, "Iria_NW_mineB3"
-3215, "Iria_NW_chiefhouse"
-3300, "Iria_C_main_field"
-3400, "Iria_NN_main_field"
-4000, "Belfast_sea_01"
-4001, "Belfast_sea_02"
-4002, "Belfast_sea_03"
-4003, "Belfast_sea_04"
-4004, "Belfast_sea_05"
-4005, "Belfast_human"
-4006, "Cobh_to_Belfast"
-4007, "Belfast_to_Cobh"
-4008, "Belfast_human_cutscene"
-4009, "Befast_courthouse"
-4010, "Uladh_Cobh_to_Belfast"
-4011, "Uladh_Cobh_to_Kela"
-4012, "Cobh_to_Belfast_Qwest"
-4013, "Uladh_Belfast_to_Cobh"
-4014, "Belfast_Skatha_main_field"
-4015, "Belfast_Skatha_cave_01"
-5000, "Region_test"
-5001, "Region_zelda"
-5003, "dungeon_test"
-9000, "Iria_NW_glacier01_DG_after"
-9001, "Iria_NW_glacier01_DG_before"
-60200, "_TestRegion99"
-60201, "Test01"
-60202, "Test02"
-60203, "Tara_keep_RG"
-60204, "Tara_town_RG"
-60205, "Tara_keep_DgnHall_after"
-60206, "Tara_keep_DgnHall_before"
-60207, "Orient_main_field"
-60208, "Belfast_test_01"
-60209, "Beautyshop"
+[
+{ id: 1, name: "Uladh_main", indoor: false },
+{ id: 2, name: "Uladh_TirCho_Bank", indoor: true },
+{ id: 3, name: "Uladh_TirCho_ChiefHouse", indoor: true },
+{ id: 4, name: "Uladh_TirCho_Church", indoor: true },
+{ id: 5, name: "Uladh_TirCho_Grocery", indoor: true },
+{ id: 6, name: "Uladh_TirCho_Healer", indoor: true },
+{ id: 7, name: "Uladh_TirCho_Inn", indoor: true },
+{ id: 8, name: "Uladh_TirCho_MiscShop", indoor: true },
+{ id: 9, name: "Uladh_TirCho_School", indoor: true },
+{ id: 11, name: "Uladh_Dungeon_Black_Wolfs_Hall1", indoor: true },
+{ id: 12, name: "Uladh_Dungeon_Black_Wolfs_Hall2", indoor: true },
+{ id: 13, name: "Uladh_Dungeon_Beginners_Hall1", indoor: true },
+{ id: 14, name: "Uladh_Dunbarton", indoor: false },
+{ id: 15, name: "MonsterRegion", indoor: false },
+{ id: 16, name: "Uladh_Dun_to_Tircho", indoor: false },
+{ id: 17, name: "Uladh_Dunbarton_Cloth", indoor: true },
+{ id: 18, name: "Uladh_Dunbarton_School", indoor: true },
+{ id: 19, name: "Uladh_Dunbarton_Healer", indoor: true },
+{ id: 20, name: "Uladh_Dunbarton_Bank", indoor: true },
+{ id: 21, name: "Uladh_Dunbarton_Church", indoor: true },
+{ id: 22, name: "_TestRegion", indoor: false },
+{ id: 23, name: "Uladh_Cobh_harbor", indoor: false },
+{ id: 24, name: "Ula_DgnHall_Dunbarton_before1", indoor: true },
+{ id: 25, name: "Ula_DgnHall_Dunbarton_before2", indoor: true },
+{ id: 26, name: "Ula_DgnHall_Dunbarton_after", indoor: true },
+{ id: 27, name: "Ula_hardmode_DgnHall_TirChonaill_before", indoor: true },
+{ id: 28, name: "Ula_DgnArena_Tircho_Lobby", indoor: true },
+{ id: 29, name: "Ula_DgnArena_Tircho_Arena", indoor: true },
+{ id: 30, name: "Ula_Dun_to_Bangor", indoor: false },
+{ id: 31, name: "Ula_Bangor", indoor: false },
+{ id: 32, name: "Ula_DgnHall_Bangor_before1", indoor: true },
+{ id: 33, name: "Ula_DgnHall_Bangor_before2", indoor: true },
+{ id: 34, name: "Ula_DgnHall_Bangor_after", indoor: true },
+{ id: 35, name: "Ula_Tirnanog", indoor: false },
+{ id: 36, name: "Ula_Tirnanog_ChiefHouse", indoor: true },
+{ id: 37, name: "Ula_Tirnanog_Church", indoor: true },
+{ id: 38, name: "Ula_Tirnanog_Grocery", indoor: true },
+{ id: 39, name: "Ula_Tirnanog_Healer", indoor: true },
+{ id: 40, name: "Ula_Tirnanog_Inn", indoor: true },
+{ id: 41, name: "Ula_Tirnanog_MiscShop", indoor: true },
+{ id: 42, name: "Ula_Tirnanog_School", indoor: true },
+{ id: 43, name: "Ula_Tirnanog_Bank", indoor: true },
+{ id: 44, name: "Ula_DgnHall_Tirnanog_before1", indoor: true },
+{ id: 45, name: "Ula_DgnHall_Tirnanog_before2", indoor: true },
+{ id: 46, name: "Ula_DgnHall_Tirnanog_after", indoor: true },
+{ id: 47, name: "Sidhe_Sneachta_S", indoor: false },
+{ id: 48, name: "Sidhe_Sneachta_N", indoor: false },
+{ id: 49, name: "Ula_DgnHall_Danu_before", indoor: false },
+{ id: 50, name: "Ula_DgnHall_Danu_after", indoor: false },
+{ id: 51, name: "Ula_Crossroad", indoor: true },
+{ id: 52, name: "Ula_Emainmacha", indoor: false },
+{ id: 53, name: "Ula_Sen_Mag", indoor: false },
+{ id: 54, name: "Ula_DgnHall_Coill_before", indoor: false },
+{ id: 55, name: "Ula_DgnHall_Coill_after", indoor: false },
+{ id: 56, name: "Ula_Emainmacha_Ceo", indoor: false },
+{ id: 57, name: "Ula_Emainmacha_club", indoor: true },
+{ id: 58, name: "Ula_Emainmacha_lookout_1st", indoor: true },
+{ id: 59, name: "Ula_Emainmacha_lookout_2nd", indoor: true },
+{ id: 60, name: "Ula_Emainmacha_castle", indoor: true },
+{ id: 61, name: "Ula_Emainmacha_cathedral", indoor: true },
+{ id: 62, name: "Ula_Emainmacha_bank", indoor: true },
+{ id: 63, name: "Ula_Emainmacha_Rua", indoor: true },
+{ id: 64, name: "Ula_DgnHall_Runda_before", indoor: true },
+{ id: 65, name: "Ula_DgnHall_Runda_after", indoor: true },
+{ id: 66, name: "Ula_Emainmacha_castle_chamber_A", indoor: true },
+{ id: 67, name: "Ula_Emainmacha_castle_chamber_B", indoor: true },
+{ id: 68, name: "Ula_Emainmacha_OidTobar_Hall", indoor: true },
+{ id: 69, name: "Studio_Runda", indoor: true },
+{ id: 70, name: "Ula_Osna_Sail", indoor: false },
+{ id: 71, name: "Uladh_Dunbarton_SchoolHall_before", indoor: true },
+{ id: 72, name: "Uladh_Dunbarton_School_LectureRoom", indoor: true },
+{ id: 73, name: "Private_Camp_01", indoor: false },
+{ id: 74, name: "Ula_Dgnhall_Peaca_before", indoor: true },
+{ id: 75, name: "Ula_Dgnhall_Peaca_after", indoor: true },
+{ id: 76, name: "Uladh_Dunbarton_School_LectureRoom_night", indoor: true },
+{ id: 77, name: "Ula_Emainmacha_Fightzone", indoor: false },
+{ id: 78, name: "Ula_DgnHall_Tirnanog_G3_before", indoor: true },
+{ id: 79, name: "Ula_DgnHall_Tirnanog_G3_after", indoor: true },
+{ id: 80, name: "Private_Wedding_waitingroom", indoor: true },
+{ id: 81, name: "Private_Wedding_ceremonialhall", indoor: true },
+{ id: 82, name: "Dugald_Aisle_UserHouse", indoor: true },
+{ id: 83, name: "Ula_Tirnanog_G3_Gairech_Hill", indoor: false },
+{ id: 84, name: "Ula_Tirnanog_G3", indoor: false },
+{ id: 85, name: "Beginner_Tutorial_DG", indoor: false },
+{ id: 86, name: "Dugald_Aisle_UserCastleTest1", indoor: false },
+{ id: 87, name: "Dugald_Aisle_UserCastleTest2", indoor: false },
+{ id: 88, name: "_TestRegion88", indoor: true },
+{ id: 89, name: "Dugald_Aisle_UserHouse_int_01", indoor: true },
+{ id: 90, name: "Dugald_Aisle_UserHouse_int_02", indoor: true },
+{ id: 91, name: "Dugald_Aisle_UserHouse_int_03", indoor: true },
+{ id: 92, name: "Dugald_Aisle_UserCastle_hall", indoor: true },
+{ id: 93, name: "Dugald_Aisle_UserCastle_guildroom", indoor: true },
+{ id: 94, name: "Dugald_Aisle_UserCastle_warehouse", indoor: true },
+{ id: 95, name: "Dugald_Aisle_ModelHouse", indoor: true },
+{ id: 96, name: "Ula_Morva_Aisle", indoor: false },
+{ id: 97, name: "Ula_DgnArena_Dunbarton_Arena", indoor: true },
+{ id: 98, name: "Ula_DgnArena_Dunbarton_Lobby", indoor: true },
+{ id: 99, name: "Ula_DgnArena_Dunbarton_waitingroom", indoor: true },
+{ id: 100, name: "Ula_Ceann_Harbor", indoor: false },
+{ id: 101, name: "Iria_Harbor_01", indoor: false },
+{ id: 102, name: "Iria_Harbor_01_onboard", indoor: false },
+{ id: 103, name: "Ula_Ceann_Harbor_onboard", indoor: false },
+{ id: 104, name: "Iria_SW_ruins_DG_before", indoor: true },
+{ id: 105, name: "Iria_SW_ruins_DG_after", indoor: true },
+{ id: 106, name: "ArenaTest001", indoor: true },
+{ id: 107, name: "ArenaTest002", indoor: true },
+{ id: 108, name: "Iria_SE_Desert_01_DG_after", indoor: true },
+{ id: 109, name: "Iria_SE_Desert_01_DG_before", indoor: true },
+{ id: 110, name: "Loginstage_001", indoor: false },
+{ id: 111, name: "Loginstage_002", indoor: false },
+{ id: 112, name: "Loginstage_003", indoor: false },
+{ id: 113, name: "Loginstage_004", indoor: false },
+{ id: 114, name: "Private_Elf_Wedding_waitingroom", indoor: true },
+{ id: 115, name: "Private_Elf_Wedding_ceremonialhall", indoor: false },
+{ id: 116, name: "Loginstage_005", indoor: false },
+{ id: 117, name: "Private_igloo_01", indoor: true },
+{ id: 118, name: "Uladh_main_Tutorial", indoor: false },
+{ id: 119, name: "Iria_NN_dragoncave01", indoor: true },
+{ id: 120, name: "Ula_hardmode_DgnHall_TirChonaill_after", indoor: true },
+{ id: 121, name: "Ula_hardmode_DgnHall_Ciar_before", indoor: true },
+{ id: 122, name: "Ula_hardmode_DgnHall_Ciar_after", indoor: true },
+{ id: 123, name: "Ula_hardmode_DgnHall_Runda_before", indoor: true },
+{ id: 124, name: "Ula_hardmode_DgnHall_Runda_after", indoor: true },
+{ id: 125, name: "Tin_Beginner_Tutorial", indoor: false },
+{ id: 126, name: "BlockRegion", indoor: true },
+{ id: 127, name: "Loginstage_006", indoor: false },
+{ id: 128, name: "Loginstage_007", indoor: true },
+{ id: 129, name: "Loginstage_008", indoor: false },
+{ id: 130, name: "Loginstage_009", indoor: false },
+{ id: 131, name: "Loginstage_010", indoor: false },
+{ id: 132, name: "Loginstage_011", indoor: true },
+{ id: 133, name: "Loginstage_012", indoor: false },
+{ id: 134, name: "Loginstage_013", indoor: false },
+{ id: 135, name: "Loginstage_014", indoor: true },
+{ id: 136, name: "Uladh_Cobh_bar", indoor: true },
+{ id: 137, name: "Loginstage_015", indoor: false },
+{ id: 138, name: "Loginstage_016", indoor: true },
+{ id: 139, name: "Ula_Emainmacha_dollwalker", indoor: true },
+{ id: 140, name: "DramaIriaS2_Uladh_Cobh_bar_1", indoor: true },
+{ id: 141, name: "Loginstage_017", indoor: false },
+{ id: 142, name: "Loginstage_018", indoor: true },
+{ id: 168, name: "Studio_OidTobar_Hall", indoor: true },
+{ id: 172, name: "Studio_Dunbarton_LectureRoom_Buchanan", indoor: true },
+{ id: 200, name: "Dugald_Aisle_Town", indoor: false },
+{ id: 201, name: "Dugald_Aisle_Keep", indoor: false },
+{ id: 202, name: "Sen_Mag_town", indoor: false },
+{ id: 203, name: "Sen_Mag_Keep", indoor: false },
+{ id: 204, name: "Dugald_Aisle_keep_DgnHall_after", indoor: true },
+{ id: 205, name: "Dugald_Aisle_keep_DgnHall_before", indoor: true },
+{ id: 206, name: "Sen_Mag_keep_DgnHall_after", indoor: true },
+{ id: 207, name: "Sen_Mag_keep_DgnHall_before", indoor: true },
+{ id: 208, name: "Studio_keep_DG", indoor: true },
+{ id: 209, name: "Housing_CharDummyStage", indoor: false },
+{ id: 210, name: "Private_giant_Wedding_ceremonialhall", indoor: true },
+{ id: 211, name: "Private_giant_Wedding_waitingroom", indoor: true },
+{ id: 212, name: "Private_Promotion_testRoom_waiting", indoor: true },
+{ id: 213, name: "Private_Promotion_testRoom", indoor: true },
+{ id: 214, name: "Abb_Neagh_town", indoor: false },
+{ id: 215, name: "Abb_Neagh_Keep", indoor: false },
+{ id: 216, name: "Abb_Neagh_keep_DgnHall_after", indoor: true },
+{ id: 217, name: "Abb_Neagh_keep_DgnHall_before", indoor: true },
+{ id: 218, name: "Soulstream_region", indoor: false },
+{ id: 219, name: "Soulstream_past_region", indoor: false },
+{ id: 220, name: "Soulstream_future_region", indoor: false },
+{ id: 226, name: "character_stage_night01", indoor: false },
+{ id: 227, name: "character_stage_am01", indoor: false },
+{ id: 228, name: "character_stage_pm01", indoor: false },
+{ id: 229, name: "character_stage_night01_god", indoor: false },
+{ id: 230, name: "character_stage_am01_god", indoor: false },
+{ id: 231, name: "character_stage_pm01_god", indoor: false },
+{ id: 300, name: "taillteann_main_field", indoor: false },
+{ id: 301, name: "Taillteann_E_field", indoor: false },
+{ id: 302, name: "Taillteann_SE_field", indoor: false },
+{ id: 400, name: "Tara_N_Field", indoor: false },
+{ id: 401, name: "Tara_main_field", indoor: false },
+{ id: 402, name: "Tara_SE_Field", indoor: false },
+{ id: 403, name: "Tara_castle_kingroom", indoor: true },
+{ id: 410, name: "Tara_castle_1F", indoor: true },
+{ id: 411, name: "Tara_castle_gatehall", indoor: true },
+{ id: 412, name: "Tara_castle_pot", indoor: true },
+{ id: 413, name: "Tara_castle_greathall", indoor: true },
+{ id: 414, name: "Tara_castle_guildhall", indoor: true },
+{ id: 415, name: "Tara_castle_nobleroom_01", indoor: true },
+{ id: 416, name: "Tara_castle_nobleroom_02", indoor: true },
+{ id: 417, name: "Tara_castle_library", indoor: true },
+{ id: 418, name: "Tara_castle_B1", indoor: true },
+{ id: 419, name: "Tara_castle_B1_entrance", indoor: true },
+{ id: 420, name: "Studio_Tara_gatehall", indoor: true },
+{ id: 421, name: "Tara_church", indoor: true },
+{ id: 422, name: "Tara_church_confessional", indoor: true },
+{ id: 427, name: "Studio_Tara_library", indoor: true },
+{ id: 428, name: "Tara_tournament_field", indoor: false },
+{ id: 429, name: "Tara_healer", indoor: true },
+{ id: 430, name: "Tara_cloth", indoor: true },
+{ id: 431, name: "Tara_bank", indoor: true },
+{ id: 432, name: "Tara_alchemist", indoor: true },
+{ id: 433, name: "Tara_misc", indoor: true },
+{ id: 434, name: "Tara_magic", indoor: true },
+{ id: 435, name: "Tara_weapon", indoor: true },
+{ id: 436, name: "Shakespere_room", indoor: true },
+{ id: 437, name: "Tara_main_kingdom_field", indoor: false },
+{ id: 438, name: "Tara_main_field_shadowversion", indoor: false },
+{ id: 500, name: "Falias_main_field", indoor: false },
+{ id: 501, name: "Avon_main_field", indoor: false },
+{ id: 502, name: "Avon_stage_hamlet", indoor: true },
+{ id: 503, name: "Avon_stage_Juliette", indoor: true },
+{ id: 504, name: "Bella_Vally", indoor: false },
+{ id: 505, name: "Bella_Vally_cutscene", indoor: false },
+{ id: 600, name: "JP_Nekojima_islet", indoor: false },
+{ id: 601, name: "JP_Nekojima_dungeon_hall_after", indoor: true },
+{ id: 602, name: "Studio_JP_Nekojima_dungeon_bossroom", indoor: true },
+{ id: 603, name: "Studio_JP_Nekojima_dungeon_entrance", indoor: false },
+{ id: 604, name: "RE_Nekojima_islet", indoor: false },
+{ id: 701, name: "Farm_A", indoor: false },
+{ id: 800, name: "Farm_TestA", indoor: false },
+{ id: 801, name: "Farm_TestB", indoor: false },
+{ id: 802, name: "Farm_TestC", indoor: false },
+{ id: 803, name: "Farm_TestD", indoor: false },
+{ id: 804, name: "Farm_TestE", indoor: false },
+{ id: 805, name: "Farm_Desert_8", indoor: false },
+{ id: 806, name: "Farm_Desert_16", indoor: false },
+{ id: 807, name: "Farm_Desert_24", indoor: false },
+{ id: 808, name: "Farm_Desert_32", indoor: false },
+{ id: 809, name: "Farm_Desert_48", indoor: false },
+{ id: 810, name: "Farm_Desert_64", indoor: false },
+{ id: 811, name: "Farm_Grassland_8", indoor: false },
+{ id: 812, name: "Farm_Grassland_16", indoor: false },
+{ id: 813, name: "Farm_Grassland_24", indoor: false },
+{ id: 814, name: "Farm_Grassland_32", indoor: false },
+{ id: 815, name: "Farm_Grassland_48", indoor: false },
+{ id: 816, name: "Farm_Grassland_64", indoor: false },
+{ id: 817, name: "Farm_snowyfields_8", indoor: false },
+{ id: 818, name: "Farm_snowyfields_16", indoor: false },
+{ id: 819, name: "Farm_snowyfields_24", indoor: false },
+{ id: 820, name: "Farm_snowyfields_32", indoor: false },
+{ id: 821, name: "Farm_snowyfields_48", indoor: false },
+{ id: 822, name: "Farm_snowyfields_64", indoor: false },
+{ id: 823, name: "Studio_Farm_Desert_8", indoor: false },
+{ id: 824, name: "Studio_Farm_Desert_16", indoor: false },
+{ id: 825, name: "Studio_Farm_Grassland_8", indoor: false },
+{ id: 826, name: "Studio_Farm_Grassland_16", indoor: false },
+{ id: 827, name: "Studio_Farm_snowfield_8", indoor: false },
+{ id: 828, name: "Studio_Farm_snowfield_16", indoor: false },
+{ id: 829, name: "Farm_Deaert_48_02", indoor: false },
+{ id: 830, name: "Farm_Grassland_48_criminal", indoor: false },
+{ id: 831, name: "Farm_Grassland_48_vacationland", indoor: false },
+{ id: 832, name: "Farm_snowyfields_48_02", indoor: false },
+{ id: 833, name: "Farm_Desert_48_00", indoor: false },
+{ id: 834, name: "Farm_Grassland_48_00", indoor: false },
+{ id: 835, name: "Farm_snowyfields_48_00", indoor: false },
+{ id: 900, name: "Studio_Alby", indoor: true },
+{ id: 901, name: "Studio_Ciar", indoor: true },
+{ id: 902, name: "Studio_Math", indoor: true },
+{ id: 903, name: "Studio_Rabbie", indoor: true },
+{ id: 904, name: "Studio_Barri", indoor: true },
+{ id: 905, name: "Studio_TirnanogDG", indoor: true },
+{ id: 906, name: "Studio_Alby_Lobby_After", indoor: true },
+{ id: 907, name: "Studio_Math_Lobby_After", indoor: true },
+{ id: 908, name: "Studio_TirnanogDG_Lobby_After", indoor: true },
+{ id: 909, name: "Studio_Fiodhe", indoor: false },
+{ id: 910, name: "Studio_Barri_Lobby_after", indoor: true },
+{ id: 911, name: "Studio_Coill", indoor: false },
+{ id: 912, name: "Studio_Pala_training", indoor: false },
+{ id: 913, name: "Studio_Coill_blackregion", indoor: true },
+{ id: 914, name: "Studio_Peaca", indoor: true },
+{ id: 915, name: "Studio_Dunbarton_School_LectureRoom", indoor: true },
+{ id: 916, name: "Studio_Tirnanog_G3_DG", indoor: true },
+{ id: 917, name: "Studio_Iria_SW_ruins_DG", indoor: true },
+{ id: 918, name: "Studio_Iria_SE_Desert_01_DG", indoor: true },
+{ id: 919, name: "Studio_Iria_NW_glacier01_DG_bossroom", indoor: true },
+{ id: 920, name: "Studio_Iria_NW_glacier01_DG_bossroom_Nomirror", indoor: true },
+{ id: 921, name: "Studio_Alby_higher", indoor: true },
+{ id: 922, name: "Studio_Iria_C_field_waterfall_01", indoor: false },
+{ id: 923, name: "Studio_Alby_exitroom", indoor: true },
+{ id: 924, name: "Studio_Iria_SE_Desert_01_DG_stair_down", indoor: true },
+{ id: 925, name: "Studio_Iria_SE_Desert_01_DG_after", indoor: true },
+{ id: 927, name: "Studio_Iria_SE_Desert_01_DG_stair_down_02", indoor: true },
+{ id: 928, name: "Studio_Iria_NN_field_lavafall_01", indoor: false },
+{ id: 929, name: "Studio_hardmode_Alby", indoor: true },
+{ id: 930, name: "Studio_hardmode_Ciar", indoor: true },
+{ id: 931, name: "Studio_hardmode_Runda", indoor: true },
+{ id: 932, name: "Studio_hardmode_Alby_arachne", indoor: true },
+{ id: 933, name: "Studio_Iria_SE_Desert_01_DG_bossroom_01", indoor: true },
+{ id: 934, name: "Studio_Iria_SW_ruins_DG_after_01", indoor: true },
+{ id: 935, name: "Studio_Iria_SW_ruins_DG_after_00", indoor: true },
+{ id: 936, name: "Studio_Tara_N_Field", indoor: false },
+{ id: 937, name: "Studio_Tara_N_Field_02", indoor: false },
+{ id: 994, name: "Studio_Peaca_G12", indoor: true },
+{ id: 1000, name: "Nao_tutorial", indoor: false },
+{ id: 1001, name: "Event_snowfield", indoor: false },
+{ id: 1002, name: "G1_GoddessStage", indoor: true },
+{ id: 1003, name: "Event_moonsurface", indoor: true },
+{ id: 1004, name: "Beginner_Tutorial", indoor: false },
+{ id: 1005, name: "pvp_event_arena", indoor: true },
+{ id: 1006, name: "pvp_event_Lobby1", indoor: true },
+{ id: 1007, name: "pvp_event_Lobby2", indoor: true },
+{ id: 1008, name: "DM_CatchingTail_Lobby", indoor: true },
+{ id: 1011, name: "Event_impdream", indoor: true },
+{ id: 1102, name: "Sen_Mag_Arena", indoor: false },
+{ id: 2998, name: "Iria_to_Uladh_Ocean", indoor: false },
+{ id: 2999, name: "Uladh_to_Iria_Ocean", indoor: false },
+{ id: 3001, name: "Iria_SW_main_field", indoor: false },
+{ id: 3002, name: "Iria_Uladh_Ocean_fishingboat_float", indoor: false },
+{ id: 3003, name: "Iria_to_fishingboat", indoor: false },
+{ id: 3004, name: "fishingboat_to_Iria", indoor: false },
+{ id: 3005, name: "Iria_Ocean_drifting", indoor: true },
+{ id: 3006, name: "Iria_drifting_beach", indoor: false },
+{ id: 3010, name: "Studio_Iria_drifting_beach", indoor: false },
+{ id: 3100, name: "Iria_SE_main_field", indoor: false },
+{ id: 3101, name: "Iria_SE_Desert_underground", indoor: true },
+{ id: 3102, name: "Iria_Elf_Tutorial", indoor: false },
+{ id: 3103, name: "Iria_SE_ElfArena_Lobby", indoor: true },
+{ id: 3104, name: "Iria_SE_ElfArena_Arena", indoor: true },
+{ id: 3105, name: "Iria_SE_monsterraid01", indoor: false },
+{ id: 3106, name: "Iria_SE_Portia_room", indoor: true },
+{ id: 3107, name: "Iria_SE_MineField", indoor: false },
+{ id: 3108, name: "Iria_SE_MineField01", indoor: false },
+{ id: 3109, name: "Iria_SE_MineField02", indoor: false },
+{ id: 3110, name: "Iria_SE_chiefhouse", indoor: true },
+{ id: 3111, name: "Studio_Coill_RE", indoor: false },
+{ id: 3112, name: "Studio_Peaca_RE", indoor: true },
+{ id: 3113, name: "Studio_Peaca_RE01", indoor: true },
+{ id: 3114, name: "Studio_Coil_RE_01", indoor: false },
+{ id: 3115, name: "Iria_SE_Desert_Treasure_01", indoor: true },
+{ id: 3116, name: "dg_halloween_alley_01", indoor: true },
+{ id: 3117, name: "dg_halloween_lobby_01", indoor: true },
+{ id: 3118, name: "dg_halloween_lobby_02", indoor: true },
+{ id: 3119, name: "Uladh_Cobh_bar_C01", indoor: true },
+{ id: 3120, name: "scene_DramaIriaS2_stair_01", indoor: true },
+{ id: 3121, name: "Uladh_Cobh_bar_C02", indoor: true },
+{ id: 3122, name: "dg_Hideandseek_room", indoor: true },
+{ id: 3123, name: "scene_building_emain_stage_Night", indoor: true },
+{ id: 3124, name: "DramaIriaS2_nightmare_alley01", indoor: true },
+{ id: 3125, name: "scene_DramaIriaS2_Nemeton_field", indoor: true },
+{ id: 3126, name: "DramaIriaS2_cuberoom_01", indoor: true },
+{ id: 3127, name: "scene_DramaIriaS2_Nemeton_dc_room", indoor: true },
+{ id: 3128, name: "scene_DramaIriaS2_Nemeton_lobby", indoor: true },
+{ id: 3129, name: "scene_DramaIriaS2_Nemeton_alley01", indoor: true },
+{ id: 3130, name: "scene_DramaIriaS2_Nemeton_library01", indoor: true },
+{ id: 3131, name: "scene_DramaIriaS2_Nemeton_altar01", indoor: true },
+{ id: 3132, name: "scene_DramaIriaS2_Nemeton_altar02", indoor: false },
+{ id: 3200, name: "Iria_NW_main_field", indoor: false },
+{ id: 3201, name: "Iria_NW_tunnel_S", indoor: true },
+{ id: 3202, name: "Iria_NW_tunnel_N", indoor: true },
+{ id: 3203, name: "Iria_NW_tunnel_Outside", indoor: false },
+{ id: 3204, name: "Iria_NW_Tutorial", indoor: false },
+{ id: 3206, name: "Iria_NW_mine", indoor: true },
+{ id: 3207, name: "Iria_NW_mine_hall", indoor: true },
+{ id: 3208, name: "Studio_Iria_SW_ruins_DG_02", indoor: true },
+{ id: 3209, name: "Studio_Iria_SW_ruins_DG_03", indoor: true },
+{ id: 3210, name: "Iria_SW_woodruins_DG_alley", indoor: true },
+{ id: 3211, name: "Iria_SW_ruins_DG_after_02", indoor: true },
+{ id: 3212, name: "Iria_NW_mineB2", indoor: true },
+{ id: 3213, name: "Iria_NW_mineB3", indoor: true },
+{ id: 3215, name: "Iria_NW_chiefhouse", indoor: true },
+{ id: 3300, name: "Iria_C_main_field", indoor: false },
+{ id: 3400, name: "Iria_NN_main_field", indoor: false },
+{ id: 4000, name: "Belfast_sea_01", indoor: false },
+{ id: 4001, name: "Belfast_sea_02", indoor: false },
+{ id: 4002, name: "Belfast_sea_03", indoor: false },
+{ id: 4003, name: "Belfast_sea_04", indoor: true },
+{ id: 4004, name: "Belfast_sea_05", indoor: true },
+{ id: 4005, name: "Belfast_human", indoor: false },
+{ id: 4006, name: "Cobh_to_Belfast", indoor: false },
+{ id: 4007, name: "Belfast_to_Cobh", indoor: false },
+{ id: 4008, name: "Belfast_human_cutscene", indoor: false },
+{ id: 4009, name: "Befast_courthouse", indoor: true },
+{ id: 4010, name: "Uladh_Cobh_to_Belfast", indoor: false },
+{ id: 4011, name: "Uladh_Cobh_to_Kela", indoor: false },
+{ id: 4012, name: "Cobh_to_Belfast_Qwest", indoor: false },
+{ id: 4013, name: "Uladh_Belfast_to_Cobh", indoor: false },
+{ id: 4014, name: "Belfast_Skatha_main_field", indoor: false },
+{ id: 4015, name: "Belfast_Skatha_cave_01", indoor: true },
+{ id: 5000, name: "Region_test", indoor: false },
+{ id: 5001, name: "Region_zelda", indoor: false },
+{ id: 5002, name: "AK_test", indoor: false },
+{ id: 5003, name: "dungeon_test", indoor: false },
+{ id: 5005, name: "dg_Albantraning_stage", indoor: true },
+{ id: 5006, name: "dg_Albantraing_lobby01", indoor: false },
+{ id: 5011, name: "Samhain_room01", indoor: true },
+{ id: 5012, name: "Samhain_banquethall01", indoor: true },
+{ id: 5013, name: "Samhain_alley01", indoor: true },
+{ id: 5014, name: "Samhain_Ceann_Hobor01", indoor: false },
+{ id: 5015, name: "Samhain_onboard01", indoor: false },
+{ id: 9000, name: "Iria_NW_glacier01_DG_after", indoor: true },
+{ id: 9001, name: "Iria_NW_glacier01_DG_before", indoor: true },
+{ id: 60200, name: "_TestRegion99", indoor: true },
+{ id: 60201, name: "Test01", indoor: false },
+{ id: 60202, name: "Test02", indoor: false },
+{ id: 60203, name: "Tara_keep_RG", indoor: false },
+{ id: 60204, name: "Tara_town_RG", indoor: false },
+{ id: 60205, name: "Tara_keep_DgnHall_after", indoor: true },
+{ id: 60206, name: "Tara_keep_DgnHall_before", indoor: true },
+{ id: 60207, name: "Orient_main_field", indoor: false },
+{ id: 60208, name: "Belfast_test_01", indoor: false },
+{ id: 60209, name: "Beautyshop", indoor: true },
+{ id: 60211, name: "VIP_Beautyshop", indoor: true },
+]

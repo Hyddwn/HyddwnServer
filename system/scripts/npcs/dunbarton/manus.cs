@@ -293,13 +293,10 @@ public class ManusShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Potions", 51037, 10);     // Base Potion
+		Add("Potions", 51037, 10); // Base Potion
 		Add("Potions", 51001);     // HP 10 Potion
 		Add("Potions", 51011);     // Stamina 10 Potion
 		Add("Potions", 51000);     // Potion Concoction Kit
-		Add("Potions", 51201);     // Marionette 30 x1
-		Add("Potions", 51201, 10); // Marionette 30 x10
-		Add("Potions", 51201, 20); // Marionette 30 x20
 		Add("Potions", 51002);     // HP 30 Potion x1
 		Add("Potions", 51002, 10); // HP 30 Potion x10
 		Add("Potions", 51002, 20); // HP 30 Potion x20
@@ -311,13 +308,27 @@ public class ManusShop : NpcShopScript
 		Add("First Aid Kits", 60005, 20); // Bandage x20
 		Add("First Aid Kits", 63000, 10); // Phoenix Feather x10
 		Add("First Aid Kits", 63000, 20); // Phoenix Feather x20
-		Add("First Aid Kits", 63032);     // Pet First-Aid Kit
-		Add("First Aid Kits", 63716, 10); // Marionette Repair Set x10
-		Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
 
 		Add("Etc", 1044);     // Reshaping Your Body
 		Add("Etc", 1047);     // On Effective Treatment of Wounds
-		Add("Etc", 91563);    // Hot Spring Ticket x1
-		Add("Etc", 91563, 5); // Hot Spring Ticket x5
+
+		if (IsEnabled("SystemPet"))
+			Add("First Aid Kits", 63032); // Pet First-Aid Kit
+
+		if (IsEnabled("G16HotSpringRenewal"))
+		{
+			Add("Etc", 91563);    // Hot Spring Ticket x1
+			Add("Etc", 91563, 5); // Hot Spring Ticket x5
+		}
+
+		if (IsEnabled("PuppetMasterJob"))
+		{
+			Add("Potions", 51201);     // Marionette 30 Potion x1
+			Add("Potions", 51201, 10); // Marionette 30 Potion x10
+			Add("Potions", 51201, 20); // Marionette 30 Potion x20
+
+			Add("First Aid Kits", 63716, 10); // Marionette Repair Set x10
+			Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
+		}
 	}
 }

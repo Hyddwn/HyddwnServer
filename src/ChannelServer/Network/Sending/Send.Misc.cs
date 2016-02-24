@@ -168,9 +168,23 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="creature"></param>
 		public static void DeadFeather(Creature creature)
 		{
+			var bits = (int)creature.DeadMenu.Options;
+			var flags = new List<int>();
+			flags.Add(0);
+
+			// Break down options bit by bit, and add them to flags if set.
+			for (var i = 1; bits != 0; ++i, bits >>= 1)
+			{
+				if ((bits & 1) != 0)
+					flags.Add(i);
+			}
+
 			var packet = new Packet(Op.DeadFeather, creature.EntityId);
-			packet.PutShort(1);
-			packet.PutInt(0);
+
+			packet.PutShort((short)flags.Count);
+			foreach (var flag in flags)
+				packet.PutInt(flag);
+
 			packet.PutByte(0);
 
 			creature.Region.Broadcast(packet, creature);
@@ -384,6 +398,29 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.SpinColorWheelR, creature.EntityId);
 			packet.PutFloat(result);
 
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends NaoRevivalEntrance to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="result"></param>
+		public static void NaoRevivalEntrance(Creature creature)
+		{
+			var packet = new Packet(Op.NaoRevivalEntrance, creature.EntityId);
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends NaoRevivalExit to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="result"></param>
+		public static void NaoRevivalExit(Creature creature)
+		{
+			var packet = new Packet(Op.NaoRevivalExit, creature.EntityId);
+			packet.PutByte(0);
 			creature.Client.Send(packet);
 		}
 	}

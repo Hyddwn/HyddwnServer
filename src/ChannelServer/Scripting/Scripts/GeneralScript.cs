@@ -170,10 +170,8 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="values"></param>
 		protected T Rnd<T>(params T[] values)
 		{
-			if (values == null || values.Length == 0)
-				throw new ArgumentException("values may not be null or empty.");
-
-			return values[this.Random(values.Length)];
+			var rnd = RandomProvider.Get();
+			return rnd.Rnd(values);
 		}
 
 		/// <summary>

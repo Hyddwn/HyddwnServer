@@ -38,26 +38,23 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="quest"></param>
 		public static void QuestUpdate(Creature creature, Quest quest)
 		{
-			var progress = quest.GetList();
-
 			var packet = new Packet(Op.QuestUpdate, creature.EntityId);
-			packet.PutLong(quest.UniqueId);
-			packet.PutByte(1);
-			packet.PutInt(progress.Count);
-			foreach (var p in progress)
-			{
-				packet.PutInt(p.Count);
-				// [180600, NA187 (25.06.2014)] ?
-				{
-					packet.PutFloat(0);
-				}
-				packet.PutByte(p.Done);
-				packet.PutByte(p.Unlocked);
-			}
-			packet.PutByte(0);
-			packet.PutByte(0);
+			packet.AddQuestUpdate(quest);
 
 			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Broadcasts QuestUpdate in party.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="quest"></param>
+		public static void QuestUpdate(Party party, Quest quest)
+		{
+			var packet = new Packet(Op.QuestUpdate, 0);
+			packet.AddQuestUpdate(quest);
+
+			party.Broadcast(packet, true);
 		}
 
 		/// <summary>
@@ -218,6 +215,59 @@ namespace Aura.Channel.Network.Sending
 			packet.PutString(counter, amount);
 
 			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends PartySetQuestR to creature's client.
+		/// </summary>
+		/// <param name="party"></param>
+		/// <param name="success"></param>
+		public static void PartySetQuestR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.PartySetQuestR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends PartyUnsetQuestR to creature's client.
+		/// </summary>
+		/// <param name="party"></param>
+		/// <param name="success"></param>
+		public static void PartyUnsetQuestR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.PartyUnsetQuestR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Broadcasts PartySetActiveQuest in party.
+		/// </summary>
+		/// <param name="party"></param>
+		/// <param name="uniqueQuestId"></param>
+		public static void PartySetActiveQuest(Party party, long uniqueQuestId)
+		{
+			var packet = new Packet(Op.PartySetActiveQuest, 0);
+			packet.PutLong(uniqueQuestId);
+
+			party.Broadcast(packet, true);
+		}
+
+		/// <summary>
+		/// Broadcasts PartyUnsetActiveQuest in party.
+		/// </summary>
+		/// <param name="party"></param>
+		/// <param name="uniqueQuestId"></param>
+		public static void PartyUnsetActiveQuest(Party party, long uniqueQuestId)
+		{
+			var packet = new Packet(Op.PartyUnsetActiveQuest, 0);
+			packet.PutLong(uniqueQuestId);
+			packet.PutByte(1);
+
+			party.Broadcast(packet, true);
 		}
 	}
 }

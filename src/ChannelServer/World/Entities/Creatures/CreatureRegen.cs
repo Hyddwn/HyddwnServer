@@ -14,10 +14,12 @@ namespace Aura.Channel.World.Entities.Creatures
 	/// <summary>
 	/// Manages all regens for a creature.
 	/// </summary>
-	public class CreatureRegen : IDisposable
+	public class CreatureRegen
 	{
 		private Dictionary<int, StatRegen> _regens;
 		private Dictionary<string, List<StatRegen>> _regenGroups;
+
+		private bool _night;
 
 		public Creature Creature { get; private set; }
 
@@ -26,15 +28,6 @@ namespace Aura.Channel.World.Entities.Creatures
 			_regens = new Dictionary<int, StatRegen>();
 			_regenGroups = new Dictionary<string, List<StatRegen>>();
 			this.Creature = creature;
-
-			ChannelServer.Instance.Events.SecondsTimeTick += this.OnSecondsTimeTick;
-			ChannelServer.Instance.Events.ErinnDaytimeTick += this.OnErinnDaytimeTick;
-		}
-
-		public void Dispose()
-		{
-			ChannelServer.Instance.Events.SecondsTimeTick -= this.OnSecondsTimeTick;
-			ChannelServer.Instance.Events.ErinnDaytimeTick -= this.OnErinnDaytimeTick;
 		}
 
 		/// <summary>
@@ -90,6 +83,17 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Returns true if there are any regens fort he given group name.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		public bool Has(string group)
+		{
+			lock (_regenGroups)
+				return (_regenGroups.ContainsKey(group) && _regenGroups[group].Count != 0);
+		}
+
+		/// <summary>
 		/// Removes regen by id, returns false if regen didn't exist.
 		/// Sends stat update if successful.
 		/// </summary>
@@ -113,8 +117,10 @@ namespace Aura.Channel.World.Entities.Creatures
 				if (!_regenGroups.ContainsKey(group))
 					return false;
 
-				foreach (var regen in _regenGroups[group])
-					this.Remove(regen);
+				// Cretate copy, the groups are modified from Remove
+				var regens = _regenGroups[group].ToArray();
+				foreach (var regen in regens)
+					this.Remove(regen.Id);
 
 				_regenGroups.Remove(group);
 			}
@@ -132,13 +138,20 @@ namespace Aura.Channel.World.Entities.Creatures
 		{
 			StatRegen regen;
 
+			// Remove from regens
 			lock (_regens)
 			{
-				_regens.TryGetValue(regenId, out regen);
-				if (regen == null)
+				if (!_regens.TryGetValue(regenId, out regen))
 					return false;
 
 				_regens.Remove(regenId);
+			}
+
+			// Remove from groups
+			lock (_regenGroups)
+			{
+				foreach (var group in _regenGroups)
+					group.Value.Remove(regen);
 			}
 
 			// Always send private update, only send public if stat is
@@ -149,22 +162,6 @@ namespace Aura.Channel.World.Entities.Creatures
 				Send.RemoveRegens(this.Creature, StatUpdateType.Public, regen);
 
 			return true;
-		}
-
-		/// <summary>
-		/// Adds additional mana regen at night.
-		/// </summary>
-		/// <param name="time"></param>
-		public void OnErinnDaytimeTick(ErinnTime time)
-		{
-			if (time.IsNight)
-			{
-				this.Add("NightMana", Stat.Mana, 0.1f, this.Creature.ManaMax);
-			}
-			else
-			{
-				this.Remove("NightMana");
-			}
 		}
 
 		/// <summary>
@@ -201,8 +198,6 @@ namespace Aura.Channel.World.Entities.Creatures
 
 					switch (regen.Stat)
 					{
-						// TODO: Triple mana automatically at night?
-
 						case Stat.Life: this.Creature.Life += regen.Change; break;
 						case Stat.Mana: this.Creature.Mana += regen.Change; break;
 						case Stat.Stamina:
@@ -221,6 +216,17 @@ namespace Aura.Channel.World.Entities.Creatures
 
 				foreach (var id in toRemove)
 					this.Remove(id);
+			}
+
+			// Add additional mana regen at night
+			if (_night != time.IsNight)
+			{
+				if (time.IsNight)
+					this.Add("NightMana", Stat.Mana, 0.1f, this.Creature.ManaMax);
+				else
+					this.Remove("NightMana");
+
+				_night = time.IsNight;
 			}
 		}
 
@@ -293,12 +299,12 @@ namespace Aura.Channel.World.Entities.Creatures
 				if (this.Duration == -1)
 					return -1;
 
-				var passed = DateTime.Now - this.Started;
+				var passed = (int)(DateTime.Now - this.Started).TotalMilliseconds;
 
-				if (passed.Milliseconds > this.Duration)
+				if (passed > this.Duration)
 					return 0;
 				else
-					return this.Duration - passed.Milliseconds;
+					return this.Duration - passed;
 			}
 		}
 

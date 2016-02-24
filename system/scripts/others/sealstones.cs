@@ -2,6 +2,14 @@
 // Seal Stones
 //--- Description -----------------------------------------------------------
 // Restrict access to specific areas through placement of shapely rocks.
+//--- Notes -----------------------------------------------------------------
+// A player can break multiple stones only if they have the devCAT title
+// selected, or if the AllowMultiple option in SealStoneScript is set to
+// true.
+// 
+// Some stones are "locked" until certain features have been enabled,
+// which makes them unbreakable. For example, the Emain Seal Stones can't
+// be broken until the "EmainMacha" feature has been enabled.
 //---------------------------------------------------------------------------
 
 // Dugald
@@ -13,7 +21,7 @@ public class DugaldSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Dugald Aisle", "_sealstone_dugald");
 		SetLocation(16, 19798, 4456, 1.48f);
-		SetHelp("The Seal of Dugald Aisle\n\nGet 20 ranks in skills.");
+		SetHelp("The Seal of Dugald Aisle\n\nOnly the one who has mastered various skills can break the seal.");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -38,7 +46,7 @@ public class CiarSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Ciar Dungeon", "_sealstone_ciar");
 		SetLocation(1, 28003, 30528, 0.16f);
-		SetHelp("The Seal of Ciar Dungeon\n\nGet over 35 Strength.");
+		SetHelp("The Seal of Ciar Dungeon\n\nOnly the person with strong power can destroy this Seal.");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -63,7 +71,7 @@ public class RabbieSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Rabbie Dungeon", "_sealstone_rabbie");
 		SetLocation(14, 16801, 58978, 4.71f);
-		SetHelp("The Seal of Rabbie Dungeon\n\nReach level 35+.");
+		SetHelp("The Seal of Rabbie Dungeon\n\nOnly the strong can break the seal.");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -118,7 +126,7 @@ public class BangorSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Bangor", "_sealstone_bangor");
 		SetLocation(30, 39189, 17014, 1.54f);
-		SetHelp("The Seal of Bangor\n\nBangor needs archers! Eh...");
+		SetHelp("The Seal of Bangor\n\nOnly a person who aims far can break the seal.");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -143,7 +151,7 @@ public class FiodhSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of Fiodh Dungeon", "_sealstone_fiodh");
 		SetLocation(30, 10696, 83099, 4.7f);
-		SetHelp("The Seal of Fiodh Dungeon\n\nGot titles?");
+		SetHelp("The Seal of Fiodh Dungeon\n\n...Honorable...only an honorable person can break this seal...");
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -166,9 +174,9 @@ public class NorthEmainSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of North Emain Macha", "_sealstone_osnasail");
 		SetLocation(70, 7844, 13621, 0);
-		SetHelp("The Seal of North Emain Macha\n\nExperience before Age.");
-		
-		if(!IsEnabled("EmainMacha"))
+		SetHelp("The Seal of North Emain Macha\n\nThose who achieve more in the same time period may break the seal.");
+
+		if (!IsEnabled("EmainMacha"))
 			SetLock(true);
 	}
 
@@ -192,9 +200,9 @@ public class SouthEmainSealStoneScript : SealStoneScript
 	{
 		SetName("Seal Stone of South Emain Macha", "_sealstone_south_emainmacha");
 		SetLocation(53, 67830, 107710, 0);
-		SetHelp("The Seal of South Emain Macha\n\nExperience before Age.");
-		
-		if(!IsEnabled("EmainMacha"))
+		SetHelp("The Seal of South Emain Macha\n\nThose who achieve more in the same time period may break the seal.");
+
+		if (!IsEnabled("EmainMacha"))
 			SetLock(true);
 	}
 
@@ -399,7 +407,7 @@ public abstract class SealStoneScript : GeneralScript
 
 	private void SetBreaker(Prop prop, long entityId, string characterName)
 	{
-		prop.State = "state3";
+		prop.SetState("state3");
 		prop.Xml.SetAttributeValue("breaker_id", entityId);
 		prop.Xml.SetAttributeValue("breaker_name", characterName);
 		_hits = _required;

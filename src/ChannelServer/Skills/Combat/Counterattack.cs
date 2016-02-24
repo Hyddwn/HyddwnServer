@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
+using Aura.Channel.Skills.Magic;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data;
@@ -183,12 +184,25 @@ namespace Aura.Channel.Skills.Combat
 			// Elementals
 			damage *= attacker.CalculateElementalDamageMultiplier(target);
 
+			// Critical Hit
 			var critChance = attacker.GetTotalCritChance(target.Protection) + skill.RankData.Var3;
-
 			CriticalHit.Handle(attacker, critChance, ref damage, tAction, true);
+
+			// Subtract target def/prot
 			SkillHelper.HandleDefenseProtection(target, ref damage, true, true);
 
-			target.TakeDamage(tAction.Damage = damage, attacker);
+			// Mana Shield
+			ManaShield.Handle(target, ref damage, tAction);
+
+			// Heavy Stander
+			HeavyStander.Handle(attacker, target, ref damage, tAction);
+
+			// Deal with it!
+			if (damage > 0)
+			{
+				target.TakeDamage(tAction.Damage = damage, attacker);
+				SkillHelper.HandleInjury(attacker, target, damage);
+			}
 
 			target.Aggro(attacker);
 

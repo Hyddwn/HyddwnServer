@@ -1049,6 +1049,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Returns true if player has quest, completed or not.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public bool HasQuest(int questId)
+		{
+			return this.Player.Quests.Has(questId);
+		}
+
+		/// <summary>
 		/// Returns true if quest was completed.
 		/// </summary>
 		/// <param name="questId"></param>
@@ -1056,6 +1066,17 @@ namespace Aura.Channel.Scripting.Scripts
 		public bool QuestCompleted(int questId)
 		{
 			return this.Player.Quests.IsComplete(questId);
+		}
+
+		/// <summary>
+		/// Returns true if player has quest, but it's not done yet,
+		/// or hasn't been completed.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public bool QuestActiveUncompleted(int questId)
+		{
+			return (this.HasQuest(questId) && !this.QuestCompleted(questId));
 		}
 
 		/// <summary>
@@ -1096,15 +1117,28 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			try
 			{
-				var scroll = Item.CreateQuestScroll(questId);
-
-				// Do quests given out by NPCs *always* go into the
-				// quest pocket?
-				this.Player.Inventory.Add(scroll, Pocket.Quests);
+				this.Player.Quests.Start(questId);
 			}
 			catch (Exception ex)
 			{
 				Log.Exception(ex, "NpcScript.StartQuest: Quest '{0}'", questId);
+				this.Msg("(Error)");
+			}
+		}
+
+		/// <summary>
+		/// Sends quest to player via owl.
+		/// </summary>
+		/// <param name="questId"></param>
+		public void SendOwl(int questId)
+		{
+			try
+			{
+				this.Player.Quests.SendOwl(questId);
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex, "NpcScript.SendOwl: Quest '{0}'", questId);
 				this.Msg("(Error)");
 			}
 		}
@@ -1373,6 +1407,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Returns number of times the player has successfully done the given PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public int GetPtjSuccessCount(PtjType type)
+		{
+			return this.Player.Quests.GetPtjTrackRecord(type).Success;
+		}
+
+		/// <summary>
 		/// Returns how well the current PTJ has been done (so far).
 		/// </summary>
 		/// <returns></returns>
@@ -1618,6 +1662,8 @@ namespace Aura.Channel.Scripting.Scripts
 			// Send result
 			Send.ItemRepairResult(this.Player, result.Item, result.Successes);
 
+			this.Player.Keywords.Give("ExperienceRepair");
+
 			return result;
 		}
 
@@ -1812,6 +1858,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 			result.Success = true;
 
+			this.Player.Keywords.Give("ExperienceUpgrade");
+
 			return result;
 		}
 
@@ -1879,9 +1927,61 @@ namespace Aura.Channel.Scripting.Scripts
 							"</arguments>" +
 						"</function>" +
 				"</call>",
-			this.Player.EntityId, HttpUtility.HtmlEncode(element.ToString()));
+			this.Player.EntityId, HtmlEncode(element.ToString()));
 
 			Send.NpcTalk(this.Player, xml);
+		}
+
+		/// <summary>
+		/// Encodes HTML characters in string.
+		/// </summary>
+		/// <remarks>
+		/// Encodes &, >, <, ", and \.
+		/// 
+		/// Custom method, as HttpUtility.HtmlEncode encodes UTF8 characters,
+		/// but the client doesn't understand the codes.
+		/// </remarks>
+		/// <param name="html"></param>
+		/// <returns></returns>
+		private string HtmlEncode(string html)
+		{
+			if (string.IsNullOrWhiteSpace(html))
+				return html;
+
+			var result = new StringBuilder();
+
+			for (int i = 0; i < html.Length; ++i)
+			{
+				var chr = html[i];
+				switch (chr)
+				{
+					case '&':
+						result.Append("&amp;");
+						break;
+
+					case '>':
+						result.Append("&gt;");
+						break;
+
+					case '<':
+						result.Append("&lt;");
+						break;
+
+					case '"':
+						result.Append("&quot;");
+						break;
+
+					case '\'':
+						result.Append("&#39;");
+						break;
+
+					default:
+						result.Append(chr);
+						break;
+				}
+			}
+
+			return result.ToString();
 		}
 
 		/// <summary>

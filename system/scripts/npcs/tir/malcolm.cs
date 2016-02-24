@@ -354,14 +354,9 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40045);      // Fishing Rod
-		Add("General Goods", 40093);      // Pet Instructor Stick
 		Add("General Goods", 40214);      // Big Drum
 		Add("General Goods", 40214);      // Big Drum
 		Add("General Goods", 40214);      // Big Drum
-		Add("General Goods", 41123);      // Cello
-		Add("General Goods", 41124);      // Standing Microphone
-		Add("General Goods", 41125);      // Wireless Microphone
-		Add("General Goods", 45130, 10);  // Spider Trap x10
 		Add("General Goods", 60034, 300); // Bait Tin x300
 		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
@@ -373,13 +368,6 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 63020);      // Empty Bottle
 		Add("General Goods", 64018, 10);  // Paper x10
 		Add("General Goods", 64018, 100); // Paper x100
-		Add("General Goods", 85571);      // Reforging Tool
-		Add("General Goods", 91364, 1);   // Seal Scroll (1-day) x1
-		Add("General Goods", 91364, 10);  // Seal Scroll (1-day) x10
-		Add("General Goods", 91365, 1);   // Seal Scroll (7-day) x1
-		Add("General Goods", 91365, 10);  // Seal Scroll (7-day) x10
-		Add("General Goods", 91366, 1);   // Seal Scroll (30-day) x1
-		Add("General Goods", 91366, 10);  // Seal Scroll (30-day) x10
 
 		Add("Hats", 18015); // Leather Hat
 		Add("Hats", 18016); // Hat
@@ -399,7 +387,6 @@ public class MalcolmShop : NpcShopScript
 		Add("Shoes && Gloves", 16003); // Sesamoid Gloves
 		Add("Shoes && Gloves", 16011); // Cores' Healer Gloves
 		Add("Shoes && Gloves", 16012); // Swordswoman Gloves
-		Add("Shoes && Gloves", 16024); // Pet Instructor Glove
 		Add("Shoes && Gloves", 16029); // Leather Stitched Glove
 		Add("Shoes && Gloves", 16030); // Big Band Glove
 		Add("Shoes && Gloves", 16034); // Two-lined Belt Glove
@@ -434,6 +421,37 @@ public class MalcolmShop : NpcShopScript
 		Add("Formal", 15059); // Terks' Tank Top and Shorts
 		Add("Formal", 15061); // Wave-print Side-slit Tunic
 
-		Add("Event"); // Empty
+		Add("Event");
+
+		if (IsEnabled("PetBirds"))
+		{
+			Add("Shoes && Gloves", 16024); // Pet Instructor Glove
+			Add("General Goods", 40093);   // Pet Instructor Stick
+		}
+
+		if (IsEnabled("ItemSeal2"))
+		{
+			Add("General Goods", 91364, 1);  // Seal Scroll (1-day) x1
+			Add("General Goods", 91364, 10); // Seal Scroll (1-day) x10
+			Add("General Goods", 91365, 1);  // Seal Scroll (7-day) x1
+			Add("General Goods", 91365, 10); // Seal Scroll (7-day) x10
+			Add("General Goods", 91366, 1);  // Seal Scroll (30-day) x1
+			Add("General Goods", 91366, 10); // Seal Scroll (30-day) x10
+		}
+
+		if (IsEnabled("Singing"))
+		{
+			Add("General Goods", 41124); // Standing Microphone
+			Add("General Goods", 41125); // Wireless Microphone
+		}
+
+		if (IsEnabled("PropInstruments"))
+			Add("General Goods", 41123); // Cello
+
+		if (IsEnabled("Reforges"))
+			Add("General Goods", 85571); // Reforging Tool
+
+		if (IsEnabled("TalentRenovationArchery"))
+			Add("General Goods", 45130, 10); // Spider Trap x10
 	}
 }

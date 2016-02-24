@@ -263,12 +263,6 @@ public class ComganShop : NpcShopScript
 		Add("Potions", 51012, 1);  // Stamina 30 Potion x1
 		Add("Potions", 51012, 10); // Stamina 30 Potion x10
 		Add("Potions", 51012, 20); // Stamina 30 Potion x20
-		Add("Potions", 51201, 1);  // Marionette 30 Potion x1
-		Add("Potions", 51201, 10); // Marionette 30 Potion x10
-		Add("Potions", 51201, 20); // Marionette 30 Potion x20
-		Add("Potions", 51202, 1);  // Marionette 50 Potion x1
-		Add("Potions", 51202, 10); // Marionette 50 Potion x10
-		Add("Potions", 51202, 20); // Marionette 50 Potion x20
 
 		Add("First Aid Kits", 60005, 10); // Bandage x10
 		Add("First Aid Kits", 60005, 20); // Bandage x20
@@ -276,10 +270,6 @@ public class ComganShop : NpcShopScript
 		Add("First Aid Kits", 63000, 20); // Phoenix Feather x20
 		Add("First Aid Kits", 63001, 1);  // Wings of a Goddess x1
 		Add("First Aid Kits", 63001, 5);  // Wings of a Goddess x5
-		Add("First Aid Kits", 63715, 10); // Fine Marionette Repair Set x10
-		Add("First Aid Kits", 63715, 20); // Fine Marionette Repair Set x20
-		Add("First Aid Kits", 63716, 10); // Marionette Repair Set x10
-		Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
 
 		AddQuest("Quest", 71031, 30); // Collect the Bat's Fomor Scrolls
 		AddQuest("Quest", 71032, 30); // Collect the Mimic's Fomor Scrolls
@@ -287,20 +277,42 @@ public class ComganShop : NpcShopScript
 		AddQuest("Quest", 71044, 30); // Collect the Imp's Fomor Scrolls
 		AddQuest("Quest", 71066, 30); // Collect the Flying Sword's Fomor Scrolls
 
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Brown Dire Wolves
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the White Dire Wolves
-		//AddQuest("Party Quest", InsertQuestId, 30); // [PQ] Hunt Down the Kobold Bandits
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Laghodessas
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Green Gremlins
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt down the Gray Gremlins
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Brown Gremlins
-		//AddQuest("Party Quest", InsertQuestId, 20); // [PQ] Hunt Down the Flying Swords
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the Werewolf
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the New Gremlin
-		//AddQuest("Party Quest", InsertQuestId, 500); // [PQ] Defeat the New Gremlin
-		//AddQuest("Party Quest", InsertQuestId, 1000); // [PQ] Defeat the New Gremlin
+		AddQuest("Party Quest", 100035, 20);   // [PQ] Hunt Down the Brown Dire Wolves (30)
+		AddQuest("Party Quest", 100038, 30);   // [PQ] Hunt Down the White Dire Wolves (30)
+		AddQuest("Party Quest", 100054, 30);   // [PQ] Hunt Down the Kobold Bandits (30)
+		AddQuest("Party Quest", 100056, 20);   // [PQ] Hunt Down the Laghodessas (30)
+		AddQuest("Party Quest", 100058, 20);   // [PQ] Hunt Down the Green Gremlins (10)
+		AddQuest("Party Quest", 100059, 20);   // [PQ] Hunt down the Gray Gremlins (10)
+		AddQuest("Party Quest", 100060, 20);   // [PQ] Hunt Down the Brown Gremlins (10)
+		AddQuest("Party Quest", 100061, 20);   // [PQ] Hunt Down the Flying Swords (10)
+		AddQuest("Party Quest", 100082, 500);  // [PQ] Defeat the Werewolf (Barri Basic)
 
-		Add("Etc.", 91563, 1); // Hot Spring Ticket x1
-		Add("Etc.", 91563, 5); // Hot Spring Ticket x5
+		if (IsEnabled("BarriAdvanced"))
+		{
+			AddQuest("Party Quest", 100083, 500);  // [PQ] Defeat the New Gremlin (Barri Adv. for 2)
+			AddQuest("Party Quest", 100084, 500);  // [PQ] Defeat the New Gremlin (Barri Adv. for 3)
+			AddQuest("Party Quest", 100085, 1000); // [PQ] Defeat the New Gremlin (Barri Adv.)
+		}
+
+		if (IsEnabled("G16HotSpringRenewal"))
+		{
+			Add("Etc.", 91563, 1); // Hot Spring Ticket x1
+			Add("Etc.", 91563, 5); // Hot Spring Ticket x5
+		}
+
+		if (IsEnabled("PuppetMasterJob"))
+		{
+			Add("Potions", 51201, 1);  // Marionette 30 Potion x1
+			Add("Potions", 51201, 10); // Marionette 30 Potion x10
+			Add("Potions", 51201, 20); // Marionette 30 Potion x20
+			Add("Potions", 51202, 1);  // Marionette 50 Potion x1
+			Add("Potions", 51202, 10); // Marionette 50 Potion x10
+			Add("Potions", 51202, 20); // Marionette 50 Potion x20
+
+			Add("First Aid Kits", 63715, 10); // Fine Marionette Repair Set x10
+			Add("First Aid Kits", 63715, 20); // Fine Marionette Repair Set x20
+			Add("First Aid Kits", 63716, 10); // Marionette Repair Set x10
+			Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
+		}
 	}
 }

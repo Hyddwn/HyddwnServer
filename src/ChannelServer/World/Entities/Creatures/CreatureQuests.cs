@@ -74,6 +74,44 @@ namespace Aura.Channel.World.Entities.Creatures
 			// Initial objective check, for things like collect and reach rank,
 			// that may be done already.
 			quest.Data.CheckCurrentObjective(_creature);
+
+			// Give item to deliver for first deliver objective
+			var deliverObjective = quest.Data.Objectives[quest.CurrentObjectiveOrLast.Ident] as QuestObjectiveDeliver;
+			if (deliverObjective != null)
+			{
+				var item = new Item(deliverObjective.ItemId);
+				item.Amount = Math.Min(1, deliverObjective.Amount);
+
+				_creature.Inventory.Add(item, true);
+			}
+		}
+
+		/// <summary>
+		/// Removes quest from manager and updates client, returns false
+		/// if quest doesn't exist in this manager.
+		/// </summary>
+		/// <param name="quest"></param>
+		/// <returns></returns>
+		public bool Remove(Quest quest)
+		{
+			lock (_quests)
+			{
+				// Try to remove quest
+				if (_quests.Remove(quest))
+				{
+					Send.QuestClear(_creature, quest.UniqueId);
+
+					// Removing the item will silently fail if creature
+					// doesn't have it. We don't really care at this point,
+					// and if the quest is a party quest, only the leader
+					// has the quest item.
+					_creature.Inventory.Remove(quest.QuestItem);
+
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -86,6 +124,18 @@ namespace Aura.Channel.World.Entities.Creatures
 		{
 			lock (_quests)
 				return _quests.Exists(a => a.Id == questId);
+		}
+
+		/// <summary>
+		/// Returns true if creature has quest with any of the the given
+		/// quest ids, completed or not.
+		/// </summary>
+		/// <param name="questIds"></param>
+		/// <returns></returns>
+		public bool HasAny(params int[] questIds)
+		{
+			lock (_quests)
+				return questIds.Any(questId => _quests.Exists(a => a.Id == questId));
 		}
 
 		/// <summary>
@@ -297,14 +347,24 @@ namespace Aura.Channel.World.Entities.Creatures
 				// is removed, but not the quest.
 				_creature.Inventory.Remove(quest.QuestItem);
 
-				// Remove collected items if last objective was Collect.
-				// Should mainly apply to PTJ and scroll quests, that only
-				// have that one objective.
-				var progress = quest.CurrentObjectiveOrLast;
-				var objective = quest.Data.Objectives[progress.Ident];
-				var collectObjective = objective as QuestObjectiveCollect;
-				if (collectObjective != null)
+				// Remove collected items for Collect objectives at the end
+				// of the objectives. This way all items that were to be
+				// collected are removed automatically, unless the last
+				// objectives are different, like Talk, in which case the
+				// NPC should control what happens.
+				// Starts at the last objective and goes back until the first
+				// one or a non-Collect objective is reached.
+				for (var i = quest.Data.Objectives.Count - 1; i >= 0; --i)
+				{
+					var progress = quest.GetProgress(i);
+					var objective = quest.Data.Objectives[progress.Ident];
+
+					var collectObjective = objective as QuestObjectiveCollect;
+					if (collectObjective == null)
+						break;
+
 					_creature.Inventory.Remove(collectObjective.ItemId, Math.Min(collectObjective.Amount, progress.Count));
+				}
 
 				ChannelServer.Instance.Events.OnPlayerCompletesQuest(_creature, quest.Id);
 			}
@@ -326,8 +386,10 @@ namespace Aura.Channel.World.Entities.Creatures
 			// Remove quest item on success, which will also remove the
 			// quest from the manager.
 			if (success)
+			{
+				quest.State = QuestState.Complete;
 				_creature.Inventory.Remove(quest.QuestItem);
-
+			}
 			return success;
 		}
 
@@ -360,6 +422,10 @@ namespace Aura.Channel.World.Entities.Creatures
 			// Remove from quest log.
 			Send.QuestClear(_creature, quest.UniqueId);
 
+			// Unset party quest
+			if (quest.Data.IsPartyQuest)
+				_creature.Party.UnsetPartyQuest();
+
 			// Update PTJ stuff and stop clock
 			if (quest.Data.Type == QuestType.Deliver)
 			{
@@ -383,18 +449,28 @@ namespace Aura.Channel.World.Entities.Creatures
 			if (rewards.Count == 0)
 				return;
 
-			if (owl)
-				Send.QuestOwlComplete(_creature, quest.UniqueId);
+			// Create list of creatures that will get the rewards.
+			var creatures = new List<Creature>();
+			if (quest.Data.IsPartyQuest)
+				creatures.AddRange(_creature.Party.GetMembers());
+			else
+				creatures.Add(_creature);
 
-			foreach (var reward in rewards)
+			foreach (var creature in creatures)
 			{
-				try
+				if (owl)
+					Send.QuestOwlComplete(creature, quest.UniqueId);
+
+				foreach (var reward in rewards)
 				{
-					reward.Reward(_creature, quest);
-				}
-				catch (NotImplementedException)
-				{
-					Log.Unimplemented("Quest.Complete: Reward '{0}'.", reward.Type);
+					try
+					{
+						reward.Reward(creature, quest);
+					}
+					catch (NotImplementedException)
+					{
+						Log.Unimplemented("Quest.Complete: Reward '{0}'.", reward.Type);
+					}
 				}
 			}
 		}

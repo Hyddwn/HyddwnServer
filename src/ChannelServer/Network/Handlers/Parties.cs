@@ -196,7 +196,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Add
-			partyLeader.Party.AddMember(creature, password);
+			party.AddMember(creature);
 
 			// Response and party update
 			Send.PartyJoinR(creature, PartyJoinResult.Success);
@@ -489,6 +489,66 @@ namespace Aura.Channel.Network.Handlers
 			var parties = new List<Party>();
 
 			Send.PartyBoardRequestR(creature, parties);
+		}
+
+		/// <summary>
+		/// Sent when a party quest is selected.
+		/// </summary>
+		/// <example>
+		/// 001 [006000CCB3841234] Long   : 27022476949328436
+		/// </example>
+		[PacketHandler(Op.PartySetQuest)]
+		public void PartySetQuest(ChannelClient client, Packet packet)
+		{
+			var uniqueQuestId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var quest = creature.Quests.GetSafe(uniqueQuestId);
+			var min = ChannelServer.Instance.Conf.World.PartyQuestMinSize;
+
+			// Check party
+			if (!creature.IsInParty)
+			{
+				Log.Warning("PartySetQuest: Creature '{0:X16}' tried to set party quest without being in a party.", creature.EntityId);
+				Send.PartySetQuestR(creature, false);
+				return;
+			}
+
+			// Check party members
+			if (creature.Party.MemberCount < min)
+			{
+				Send.MsgBox(creature, Localization.Get("Your party must consist of {0} or more members\nto register a party quest."), min);
+				Send.PartySetQuestR(creature, false);
+				return;
+			}
+
+			creature.Party.SetPartyQuest(quest);
+			Send.PartySetQuestR(creature, true);
+		}
+
+		/// <summary>
+		/// Sent when resetting party quest.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.PartyUnsetQuest)]
+		public void PartyUnsetQuest(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check party
+			if (!creature.IsInParty)
+			{
+				Log.Warning("PartyUnsetQuest: Creature '{0:X16}' tried to unset party quest without being in a party.", creature.EntityId);
+				Send.PartySetQuestR(creature, false);
+				return;
+			}
+
+			// Try to unset, fails if no quest set.
+			var success = creature.Party.UnsetPartyQuest();
+
+			Send.PartyUnsetQuestR(creature, success);
 		}
 	}
 }

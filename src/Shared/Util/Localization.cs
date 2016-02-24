@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+using nettext;
 
 namespace Aura.Shared.Util
 {
@@ -12,86 +10,61 @@ namespace Aura.Shared.Util
 	/// </summary>
 	public static class Localization
 	{
-		private static Dictionary<string, string> _storage = new Dictionary<string, string>();
+		private static PoFile _catalog = new PoFile();
 
 		/// <summary>
-		/// Starts parsing on path.
-		/// </summary>
-		/// <remarks>
-		/// If path is a file, it simply reads the file. If path is a directory,
-		/// it starts parsing all files recursively.
-		/// </remarks>
-		/// <param name="path">What to parse</param>
-		public static void Parse(string path)
+		/// Loads messages from given PO file.
+		public static void Load(string path)
 		{
-			if (File.Exists(path))
-			{
-				LoadFile(path);
-			}
-			else if (Directory.Exists(path))
-			{
-				var di = new DirectoryInfo(path);
-
-				var files = Directory.EnumerateFiles(path);
-				foreach (var file in files)
-					LoadFile(file);
-
-				var dirs = Directory.EnumerateDirectories(path);
-				foreach (var dir in dirs)
-					Parse(dir);
-			}
-			else
-			{
-				throw new FileNotFoundException(path + " not found.");
-			}
+			_catalog.LoadFromFile(path);
 		}
 
 		/// <summary>
-		/// Adds strings in file to collection.
+		/// Returns translated string, or id if no translated version
+		/// of id exists.
 		/// </summary>
-		/// <param name="path"></param>
-		private static void LoadFile(string path)
-		{
-			using (var sr = new StreamReader(path, Encoding.UTF8))
-			{
-				if (!File.Exists(path))
-					return;
-
-				while (!sr.EndOfStream)
-				{
-					var line = sr.ReadLine().Trim();
-					if (line.Length < 3 || line.StartsWith("//"))
-						continue;
-
-					// Next line if not tab found
-					var pos = line.IndexOf('\t');
-					if (pos < 0) continue;
-
-					var key = line.Substring(0, pos).Trim();
-					var val = line.Substring(pos + 1).Trim();
-
-					// Replace \t and [\r]\n
-					val = val.Replace("\\t", "\t");
-					val = val.Replace("\\r\\n", "\n");
-					val = val.Replace("\\n", "\n");
-
-					_storage[key] = val;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Returns localization string, or the key, if it doesn't exist.
-		/// </summary>
-		/// <param name="key"></param>
+		/// <param name="id"></param>
 		/// <returns></returns>
-		public static string Get(string key)
+		public static string Get(string id)
 		{
-			string val;
-			_storage.TryGetValue(key, out val);
-			if (val != null)
-				return val;
-			return key;
+			return _catalog.GetString(id);
+		}
+
+		/// <summary>
+		/// Returns translated string in context, or id if no translated
+		/// version of id exists.
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public static string GetParticular(string context, string id)
+		{
+			return _catalog.GetParticularString(context, id);
+		}
+
+		/// <summary>
+		/// Returns translated string as singular or plural, based on n,
+		/// or id/id_plural if no translated version of id exists.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="id_plural"></param>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		public static string GetPlural(string id, string id_plural, int n)
+		{
+			return _catalog.GetPluralString(id, id_plural, n);
+		}
+
+		/// <summary>
+		/// Returns translated string in context as singular or plural,
+		/// based on n, or id/id_plural if no translated version of id exists.
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public static string GetParticularPlural(string context, string id, string id_plural, int n)
+		{
+			return _catalog.GetParticularPluralString(context, id, id_plural, n);
 		}
 	}
 }

@@ -103,12 +103,14 @@ public class LassarScript : NpcScript
 							RndMsg(
 								"I didn't make any mistakes. Hehe",
 								"It has been repaired perfectly!"
-						);
+							);
 						else
+						{
 							// TODO: Use string format once we have XML dialogues.
 							Msg("I did repair it but...<br/>" + result.Fails + " point(s) have not been repaired.<br/>I guess I need more training.");
 							// I got this message when doing a full repair with only 2 points being repaired, and one failed
 							// Msg("Repair has been finished, but I made some mistakes.");
+						}
 					}
 				}
 
@@ -163,12 +165,7 @@ public class LassarScript : NpcScript
 				Msg("Good luck...ha ha ha.");
 				break;
 
-			case "about_study":
-				//Msg("So, you already know Icebolt, do you? Did you have any trouble using it?<br/>Since you know the basics already, I'll give you a tuition discount.<br/>Tuition is a lump sum that includes three days of lessons including today.<br/>This tuition covers up to the end of Basic Sorcery Chapter One.");
-				//<school><name>Basic Sorcery1-1</name><title>The Basics of Magic and Understanding of Mana</title><values paydesc = 'Total tuition for three days is 1000G.' remaintime = '12' history = '0'/><rewards><reward>* Icebolt Spell<br/>* EXP Reward</reward></rewards><desc>The first thing you learn about and use in the three classes in Basic Sorcery Chapter One is Mana, which is the most fundamental element in magic.</desc></school>
-				//Msg("Class has started long ago.<br/>You should come back later.");
-				Msg("Sorry, my classes aren't ready to be studied.");
-				break;
+			//case "about_study": // Handled in quest script
 
 			case "shop_misc":
 				Msg("You're going to have to walk a long distance.<br/>Follow this road to the left, and you'll see the Square.<br/>The General Shop is around there.<br/>If you can't find it, ask other people near the Square.");
@@ -353,7 +350,6 @@ public class LassarShop : NpcShopScript
 		Add("Magic Items", 62003, 1);  // Blessed Magic Powder x1
 		Add("Magic Items", 62003, 10); // Blessed Magic Powder x10
 		Add("Magic Items", 62012);     // Elemental Remover
-		Add("Magic Items", 62014);     // Spirit Weapon Restoration Potion
 		Add("Magic Items", 63000, 1);  // Phoenix Feather x1
 		Add("Magic Items", 63000, 10); // Phoenix Feather x10
 		Add("Magic Items", 63001, 1);  // Wings of a Goddess x1
@@ -368,9 +364,16 @@ public class LassarShop : NpcShopScript
 		Add("Magic Weapon", 40040); // Fire Wand
 		Add("Magic Weapon", 40041); // Combat Wand
 		Add("Magic Weapon", 40090); // Healing Wand
-		Add("Magic Weapon", 40231); // Crystal Lightning Wand
-		Add("Magic Weapon", 40232); // Crown Ice Wand
-		Add("Magic Weapon", 40233); // Phoenix Fire Wand
-		Add("Magic Weapon", 40234); // Tikka Wood Healing Wand
+
+		if (IsEnabled("SpiritWeapons"))
+			Add("Magic Items", 62014); // Spirit Weapon Restoration Potion
+
+		if (IsEnabled("WandUpgradeAndChainCasting"))
+		{
+			Add("Magic Weapon", 40231); // Crystal Lightning Wand
+			Add("Magic Weapon", 40232); // Crown Ice Wand
+			Add("Magic Weapon", 40233); // Phoenix Fire Wand
+			Add("Magic Weapon", 40234); // Tikka Wood Healing Wand
+		}
 	}
 }

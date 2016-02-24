@@ -26,7 +26,7 @@ namespace Aura.Channel.Skills.Base
 		/// <summary>
 		/// Minimum stability required to not get knocked down.
 		/// </summary>
-		private const float MinStability = 20;
+		protected const float MinStability = 20;
 
 		/// <summary>
 		/// Stun time of attacker after use in ms.
@@ -47,11 +47,6 @@ namespace Aura.Channel.Skills.Base
 		/// Amount added to the knock back meter on each hit.
 		/// </summary>
 		protected virtual float StabilityReduction { get { return 45; } }
-
-		/// <summary>
-		/// Returns whether the skill can be blocked with Defense.
-		/// </summary>
-		protected virtual bool Defendable { get { return true; } }
 
 		/// <summary>
 		/// ID of the skill, used in training.
@@ -161,6 +156,9 @@ namespace Aura.Channel.Skills.Base
 			if (!attackerPosition.InRange(targetPosition, this.GetRange(attacker, skill)))
 				return CombatSkillResult.OutOfRange;
 
+			if (attacker.Region.Collisions.Any(attackerPosition, targetPosition))
+				return CombatSkillResult.OutOfRange;
+
 			// Use
 			this.UseSkillOnTarget(attacker, skill, target);
 
@@ -173,112 +171,7 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="attacker"></param>
 		/// <param name="skill"></param>
 		/// <param name="target"></param>
-		protected virtual void UseSkillOnTarget(Creature attacker, Skill skill, Creature target)
-		{
-			attacker.StopMove();
-			target.StopMove();
-
-			// Create actions
-			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, target.EntityId);
-			aAction.Set(AttackerOptions.Result);
-
-			var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-			tAction.Set(TargetOptions.Result);
-			tAction.Stun = TargetStun;
-
-			var cap = new CombatActionPack(attacker, skill.Info.Id, aAction, tAction);
-
-			// Damage
-			var damage = this.GetDamage(attacker, skill);
-
-			// Elements
-			damage *= this.GetElementalDamageMultiplier(attacker, target);
-
-			// Reduce damage
-			if (this.Defendable)
-				Defense.Handle(aAction, tAction, ref damage);
-			SkillHelper.HandleMagicDefenseProtection(target, ref damage);
-			ManaShield.Handle(target, ref damage, tAction);
-
-			// Deal damage
-			if (damage > 0)
-				target.TakeDamage(tAction.Damage = damage, attacker);
-			target.Aggro(attacker);
-
-			// Knock down on deadly
-			if (target.Conditions.Has(ConditionsA.Deadly))
-			{
-				tAction.Set(TargetOptions.KnockDown);
-				tAction.Stun = TargetStun;
-			}
-
-			// Death/Knockback
-			this.HandleKnockBack(attacker, target, tAction, false);
-
-			// Override stun set by defense
-			aAction.Stun = AttackerStun;
-
-			Send.Effect(attacker, Effect.UseMagic, EffectSkillName);
-			Send.SkillUseStun(attacker, skill.Info.Id, aAction.Stun, 1);
-
-			this.BeforeHandlingPack(attacker, skill);
-
-			cap.Handle();
-		}
-
-		/// <summary>
-		/// Handles knock back/stun/death.
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <param name="target"></param>
-		/// <param name="tAction"></param>
-		/// <param name="overcharge">If true, the target will be knock back instantly.</param>
-		protected virtual void HandleKnockBack(Creature attacker, Creature target, TargetAction tAction, bool overcharge)
-		{
-			if (target.IsDead)
-			{
-				tAction.Set(TargetOptions.FinishingKnockDown);
-			}
-			else
-			{
-				// If knocked down, instant recovery,
-				// if repeat hit, knock down,
-				// otherwise potential knock back.
-				if (target.IsKnockedDown)
-				{
-					tAction.Stun = 0;
-				}
-				else if (target.Stability < MinStability)
-				{
-					tAction.Set(TargetOptions.KnockDown);
-				}
-				else
-				{
-					if (overcharge)
-						target.Stability = Creature.MinStability;
-					else
-						target.Stability -= StabilityReduction;
-
-					if (target.IsUnstable)
-					{
-						tAction.Set(TargetOptions.KnockBack);
-					}
-				}
-			}
-
-			if (tAction.IsKnockBack)
-				attacker.Shove(target, KnockbackDistance);
-		}
-
-		/// <summary>
-		/// Actions to be done before the combat action pack is handled.
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <param name="skill"></param>
-		protected virtual void BeforeHandlingPack(Creature attacker, Skill skill)
-		{
-			skill.Stacks--;
-		}
+		protected abstract void UseSkillOnTarget(Creature attacker, Skill skill, Creature target);
 
 		/// <summary>
 		/// Returns range for skill.
@@ -289,7 +182,7 @@ namespace Aura.Channel.Skills.Base
 		{
 			var range = skill.RankData.Range;
 
-			// +200 for ice wands
+			// +200 for the respective special wand
 			if (creature.RightHand != null && creature.RightHand.HasTag(SpecialWandTag))
 				range += 200;
 
@@ -582,7 +475,8 @@ namespace Aura.Channel.Skills.Base
 		/// Called when creature is hit while a bolt skill is active.
 		/// </summary>
 		/// <param name="creature"></param>
-		public virtual void CustomHitCancel(Creature creature)
+		/// <param name="tAction"></param>
+		public virtual void CustomHitCancel(Creature creature, TargetAction tAction)
 		{
 			// Lose only 2 stacks if r1
 			var skill = creature.Skills.ActiveSkill;

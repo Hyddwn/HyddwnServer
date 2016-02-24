@@ -97,10 +97,7 @@ public class RanaldBaseScript : NpcScript
 				}
 				goto default;
 
-			case "about_study":
-				Msg("This is not the time for class. Come back tomorrow morning.");
-				//Msg("Are you interested in the combat class?<br/>If you're sick and tired of battles run by simple mouse clicks,<br/>my class is definitely worth spending some time and money on.");
-				break;
+			//case "about_study": // Handled in quest script
 
 			case "shop_misc":
 				GiveKeyword("shop_armory");
@@ -150,6 +147,14 @@ public class RanaldBaseScript : NpcScript
 				Msg("Counterattack skill...<br/>Simply knowing the skill won't help you.<br/>It's all about timing.");
 				Msg("This skill cannot be mastered unless you practice it in a real combat situation, which means...<br/>You'll need to get hit first.");
 				Msg("I could show you a demonstration right now and teach you this skill, but... I'll probably break you in half.<br/>You should go to Trefor instead and ask him to show you the Counterattack skill.<br/>It would be a lot safer for you. Go now.<br/>");
+				break;
+
+			case "skill_range":
+				GiveKeyword("bow");
+				RemoveKeyword("skill_range");
+				Msg("Long range attacks? Hmm... Desire alone doesn't cut it.<br/>You'll also need to be equipped with an appropriate weapon.<br/>There are a number of long range weapons, but go get a bow first.");
+				Msg("Just use it a couple of times.<br/>You won't need any help from others in understanding the basics.");
+				Msg("If you practice a few times and get to know about the Ranged Attack skill,<br/>it means you're doing your job. Ferghus is usually the source for weapons in this town,<br/>so go see him at the Blacksmith's Shop.");
 				break;
 
 			case "skill_magnum_shot":
@@ -304,9 +309,9 @@ public class RanaldShop : NpcShopScript
 		Add("Arena", 63019, 100); // Alby Battle Arena Coin 100x
 
 		// Quest
-		Add("Quest", 70023, 1, 0); // [collect 10 Branches]
-		Add("Quest", 70023, 1, 0); // [collect 10 Berries]
-		Add("Quest", 70023, 1, 0); // [collect 10 Large Nails]
+		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Branches]
+		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Berries]
+		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Large Nails]
 
 		// Reference Book
 		Add("Reference Book", 1078); // Don't give up!

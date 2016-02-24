@@ -91,33 +91,40 @@ public class TreforBaseScript : NpcScript
 				break;
 
 			case "about_skill":
-				GiveKeyword("skill_range");
-				Msg("I've been observing your combat style for some time now.<br/>If you want to be a warrior, you shouldn't limit yourself to just melee attacks.<p/>I'm sure Ranald at the School can teach you some things about ranged attacks<br/>which will allow you to attack monsters from a distance.");
-				//Msg("Since you've learned the Support Shot skill now,<br/>why don't you start your training by going back to Alby Dungeon.<br/>You can hone your archery skills there.<p/>If you form a party,<br/>you'll be able to learn how archers assist warriors engaged in melee combat.<br/>I guarantee it, in the name of the number one town guard of Tir Chonaill.");
-				/* Check archery skill... Requirement unknown (Ranged Attack Rank E?)
-				Msg("Ah! <username/>. Haha. Has your archery skills improved since I last saw you?<br/>Hmm...It seems like you improved quite a bit, even though you're not as skilled as I am.");
-				Msg("Are you interested in learning the Support Shot skill?<br/>It's a skill that will help<br/>other members when you're in a party.", Button("I am interested!", "@yes"), Button("Can... I trust you?", "@no"));
-				switch(await Select())
+				if (!HasSkill(SkillId.RangedAttack))
 				{
-					case "@yes:"
-						Msg("I knew you'd be interested. Hahaha.<br/>Then, as a special courtesy, I'll teach you.<br/>Listen carefully and do as I instruct.<p/>Now, close your eyes and imagine yourself holding a bow.<br/>In front of you, your friend is struggling with a big sword against an enemy.<br/>Your friend calculates the right timing to hit the enemy<br/>while causing steady damage.");
-						Msg("...In this case, how would you shoot your arrows?<br/>How can you shoot so that<br/>you won't interrupt your friend, while still injuring the enemy?<br/>Why don't you close your eyes and visualize it?", Button("I visualized it.", "@yes"));
-						switch(await Select())
-						{
-							case "@yes:"
-							//Teach support shot skill
-							Msg("I'm not certain how well you followed<br/>my instructions with your eyes closed, but it's all good.<br/>I gave you an easy-to-follow guide,<br/>so you shouldn't have any difficulties using Support Shot.<p/>I pray in the name of Morrighan the Goddess<br/>that you, whose arrows fly with bravery, will always be surrounded by glory.<p/>Also, don't forget to drop by the Blacksmith's Shop when you run out of arrows.");
-							break;
-						}
-						break;
-					case "@no:"
-						Msg("Are you saying that you won't travel with other people?<br/>You're pretty confident.<p/>But you see <username/>,<br/>there are limits to how much you can accomplish all by yourself.<br/>I hope you don't end up regretting not taking my advice, <username/>.<p/>...Come by anytime if you change your mind.<br/>I'll show you the true art of archery.");
-						break;
-					default:
-						Msg("...");
-						break;
+					GiveKeyword("skill_range");
+					Msg("I've been observing your combat style for some time now.<br/>If you want to be a warrior, you shouldn't limit yourself to just melee attacks.");
+					Msg("I'm sure Ranald at the School can teach you some things about ranged attacks<br/>which will allow you to attack monsters from a distance.");
 				}
-				*/
+				else if (!HasSkill(SkillId.SupportShot))
+				{
+					Msg("Ah! <username/>. Haha. Has your archery skills improved since I last saw you?<br/>Hmm...It seems like you improved quite a bit, even though you're not as skilled as I am.");
+					Msg("Are you interested in learning the Support Shot skill?<br/>It's a skill that will help<br/>other members when you're in a party.", Button("I am interested!", "@yes"), Button("Can... I trust you?", "@no"));
+					switch (await Select())
+					{
+						case "@yes":
+							Msg("I knew you'd be interested. Hahaha.<br/>Then, as a special courtesy, I'll teach you.<br/>Listen carefully and do as I instruct.<p/>Now, close your eyes and imagine yourself holding a bow.<br/>In front of you, your friend is struggling with a big sword against an enemy.<br/>Your friend calculates the right timing to hit the enemy<br/>while causing steady damage.");
+							Msg("...In this case, how would you shoot your arrows?<br/>How can you shoot so that<br/>you won't interrupt your friend, while still injuring the enemy?<br/>Why don't you close your eyes and visualize it?", Button("I visualized it."));
+							await Select();
+
+							GiveSkill(SkillId.SupportShot, SkillRank.RF);
+							Msg("I'm not certain how well you followed<br/>my instructions with your eyes closed, but it's all good.<br/>I gave you an easy-to-follow guide,<br/>so you shouldn't have any difficulties using Support Shot.");
+							Msg("I pray in the name of Morrighan the Goddess<br/>that you, whose arrows fly with bravery, will always be surrounded by glory.<p/>Also, don't forget to drop by the Blacksmith's Shop when you run out of arrows.");
+
+							break;
+						case "@no":
+							Msg("Are you saying that you won't travel with other people?<br/>You're pretty confident.");
+							Msg("But you see <username/>,<br/>there are limits to how much you can accomplish all by yourself.<br/>I hope you don't end up regretting not taking my advice, <username/>.");
+							Msg("...Come by anytime if you change your mind.<br/>I'll show you the true art of archery.");
+							break;
+					}
+				}
+				else
+				{
+					Msg("Since you've learned the Support Shot skill now,<br/>why don't you start your training by going back to Alby Dungeon.<br/>You can hone your archery skills there.");
+					Msg("If you form a party,<br/>you'll be able to learn how archers assist warriors engaged in melee combat.<br/>I guarantee it, in the name of the number one town guard of Tir Chonaill.");
+				}
 				break;
 
 			case "about_arbeit":
@@ -249,16 +256,14 @@ public class TreforShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		// Party Quest
-		Add("Party Quest", 70025, 1, 5);  // [10 White Spiders]
-		Add("Party Quest", 70025, 1, 10); // [30 White Spiders]
-		Add("Party Quest", 70025, 1, 5);  // [10 Black Spiders]
-		Add("Party Quest", 70025, 1, 10); // [30 Black Spiders]
-		Add("Party Quest", 70025, 1, 5);  // [10 Red Spiders]
-		Add("Party Quest", 70025, 1, 20); // [30 Red Spiders]
-		Add("Party Quest", 70025, 1, 20); // [Hunt 100 Coyotes]
+		AddQuest("Party Quest", 100013, 5);  // [PQ] Hunt White Spiders (10)
+		AddQuest("Party Quest", 100014, 10); // [PQ] Hunt White Spiders (30)
+		AddQuest("Party Quest", 100015, 5);  // [PQ] Hunt Black Spiders (10)
+		AddQuest("Party Quest", 100016, 10); // [PQ] Hunt Black Spiders (30)
+		AddQuest("Party Quest", 100017, 5);  // [PQ] Hunt Red Spiders (10)
+		AddQuest("Party Quest", 100018, 20); // [PQ] Hunt Red Spiders (30)
+		AddQuest("Party Quest", 100055, 20); // [PQ] Hunt Down the Coyotes (100)
 
-		// Etc.
 		Add("Etc.", 1051); // Battle Arena: Aim for a Giant Star
 	}
 }

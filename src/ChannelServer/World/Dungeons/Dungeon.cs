@@ -38,6 +38,11 @@ namespace Aura.Channel.World.Dungeons
 		private Prop _bossExitDoor;
 		private bool _bossSpawned;
 
+		private object _partyEnterSyncLock = new object();
+		private bool _partyEnterEventFired;
+
+		private HashSet<int> _clearedSections;
+
 		/// <summary>
 		/// The size (width and height) of a dungeon tile.
 		/// </summary>
@@ -148,6 +153,7 @@ namespace Aura.Channel.World.Dungeons
 			_treasureChests = new List<TreasureChest>();
 			_treasurePlacementProvider = new PlacementProvider(Placement.Treasure8, 750);
 			this.Regions = new List<DungeonRegion>();
+			_clearedSections = new HashSet<int>();
 
 			this.InstanceId = instanceId;
 			this.Name = dungeonName;
@@ -185,7 +191,7 @@ namespace Aura.Channel.World.Dungeons
 			// Create lobby
 			var lobbyRegionId = ChannelServer.Instance.World.DungeonManager.GetRegionId();
 			var lobbyRegion = new DungeonLobbyRegion(lobbyRegionId, this.Data.LobbyRegionId, this);
-			lobbyRegion.PlayerEnters += this.OnPlayerEntersLobby;
+			//lobbyRegion.PlayerEnters += this.OnPlayerEntersLobby;
 			this.Regions.Add(lobbyRegion);
 
 			// Create floors
@@ -386,20 +392,23 @@ namespace Aura.Channel.World.Dungeons
 			region.AddProp(portal);
 
 			// Create save statue
-			var saveStatue = new Prop(this.Data.SaveStatuePropId, region.Id, startPos.X, startPos.Y, MabiMath.DegreeToRadian(stairsBlock.Rotation + 180), 1, 0, "single");
-			saveStatue.Info.Color1 = floorData.Color1;
-			saveStatue.Info.Color2 = floorData.Color1;
-			saveStatue.Info.Color3 = floorData.Color3;
-			saveStatue.Behavior = (cr, pr) =>
+			if (floorData.Statue)
 			{
-				cr.DungeonSaveLocation = cr.GetLocation();
-				Send.Notice(cr, Localization.Get("You have memorized this location."));
+				var saveStatue = new Prop(this.Data.SaveStatuePropId, region.Id, startPos.X, startPos.Y, MabiMath.DegreeToRadian(stairsBlock.Rotation + 180), 1, 0, "single");
+				saveStatue.Info.Color1 = floorData.Color1;
+				saveStatue.Info.Color2 = floorData.Color1;
+				saveStatue.Info.Color3 = floorData.Color3;
+				saveStatue.Behavior = (cr, pr) =>
+				{
+					cr.DungeonSaveLocation = cr.GetLocation();
+					Send.Notice(cr, Localization.Get("You have memorized this location."));
 
-				// Scroll message
-				var msg = string.Format("You're currently on Floor {0} of {1}. ", iRegion, this.Data.EngName);
-				Send.Notice(cr, NoticeType.Top, ScrollMessageDuration, msg + this.GetPlayerListScrollMessage());
-			};
-			region.AddProp(saveStatue);
+					// Scroll message
+					var msg = string.Format("You're currently on Floor {0} of {1}. ", iRegion, this.Data.EngName);
+					Send.Notice(cr, NoticeType.Top, ScrollMessageDuration, msg + this.GetPlayerListScrollMessage());
+				};
+				region.AddProp(saveStatue);
+			}
 
 			// Spawn boss or downstair props
 			// TODO: There is one dungeon that has two boss rooms.
@@ -443,7 +452,11 @@ namespace Aura.Channel.World.Dungeons
 				exitStatue.Info.Color2 = floorData.Color1;
 				exitStatue.Info.Color3 = floorData.Color3;
 				exitStatue.Extensions.AddSilent(new ConfirmationPropExtension("GotoLobby", "_LT[code.standard.msg.dungeon_exit_notice_msg]", "_LT[code.standard.msg.dungeon_exit_notice_title]", "haskey(chest)"));
-				exitStatue.Behavior = (cr, pr) => { cr.Warp(this.Data.Exit); };
+				exitStatue.Behavior = (cr, pr) =>
+				{
+					ChannelServer.Instance.Events.OnPlayerClearedDungeon(cr, this);
+					cr.Warp(this.Data.Exit);
+				};
 				region.AddProp(exitStatue);
 			}
 			else
@@ -740,7 +753,7 @@ namespace Aura.Channel.World.Dungeons
 		/// Called when a creature enters the lobby region.
 		/// </summary>
 		/// <param name="creature"></param>
-		private void OnPlayerEntersLobby(Creature creature)
+		public void OnPlayerEntersLobby(Creature creature)
 		{
 			// Save location
 			// This happens whenever you enter the lobby.
@@ -759,6 +772,17 @@ namespace Aura.Channel.World.Dungeons
 				msg = Localization.Get("This dungeon has been created by another player.") + msg;
 
 			Send.Notice(creature, NoticeType.Top, ScrollMessageDuration, msg + this.GetPlayerListScrollMessage());
+
+			// Enter events
+			this.Script.OnPlayerEntered(this, creature);
+			lock (_partyEnterSyncLock)
+			{
+				if (!_partyEnterEventFired && this.CountPlayers() == this.Party.Count)
+				{
+					_partyEnterEventFired = true;
+					this.Script.OnPartyEntered(this, creature);
+				}
+			}
 		}
 
 		/// <summary>
@@ -810,9 +834,43 @@ namespace Aura.Channel.World.Dungeons
 				}
 			}
 
-			sb.AppendFormat(Localization.Get("... {0} player(s) total"), count);
+			sb.AppendFormat(Localization.GetPlural("... {0} player total", "... {0} players total", count), count);
 
 			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Checks if any sections have just been cleared, and calls the
+		/// corresponding script method.
+		/// </summary>
+		public void CheckSectionClear()
+		{
+			// This is certainly not the most efficient way to do this,
+			// but it's easy to understand and maintain, and didn't require
+			// refactoring half the dungeon system.
+			for (int i = 0; i < this.Regions.Count; ++i)
+			{
+				var floorRegion = this.Regions[i] as DungeonFloorRegion;
+				if (floorRegion == null)
+					continue;
+
+				for (int j = 1; j <= floorRegion.Floor.Sections.Count; ++j)
+				{
+					var id = i * 1000 + j;
+
+					// Already called clear?
+					if (_clearedSections.Contains(id))
+						continue;
+
+					// If clear hasn't been called yet, but the section has
+					// been cleared, call the event.
+					if (floorRegion.Floor.Sections[j - 1].HasBeenCleared)
+					{
+						_clearedSections.Add(id);
+						this.Script.OnSectionCleared(this, i, j);
+					}
+				}
+			}
 		}
 	}
 }

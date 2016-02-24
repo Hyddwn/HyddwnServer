@@ -199,6 +199,8 @@ namespace Aura.Channel.World.Entities
 				this.Behavior = Prop.GetDropBehavior(dropType);
 
 			// Replace default shapes with the ones loaded from region.
+			// (Is this really necessary?)
+			this.State = propData.State;
 			this.Shapes.Clear();
 			this.Shapes.AddRange(propData.Shapes.Select(a => a.GetPoints(0, 0, 0)));
 		}

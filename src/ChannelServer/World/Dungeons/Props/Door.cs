@@ -129,9 +129,20 @@ namespace Aura.Channel.World.Dungeons.Props
 				if (this.State != "unlocked")
 				{
 					this.SetState("unlocked");
+					var wasLocked = this.IsLocked;
 					this.IsLocked = false;
 					_closedFrom = new Position(_closedFrom.X, _closedFrom.Y + 1); // Fix closed from to be inside boss room.
 					this.AddConfirmation();
+
+					// Check sections if door was unlocked
+					// This has to be done here and in Open because some
+					// doors are opened without being touched.
+					if (wasLocked && !this.IsLocked)
+					{
+						var dungeonRegion = this.Region as DungeonRegion;
+						if (dungeonRegion != null)
+							dungeonRegion.Dungeon.CheckSectionClear();
+					}
 				}
 				this.WarpInside(creature, prop);
 			}
@@ -208,8 +219,18 @@ namespace Aura.Channel.World.Dungeons.Props
 		{
 			if (!this.IsLocked)
 				this.Extensions.Clear();
+
+			var wasLocked = this.IsLocked;
 			this.IsLocked = false;
 			this.SetState("open");
+
+			// Check sections if door was unlocked
+			if (wasLocked && !this.IsLocked)
+			{
+				var dungeonRegion = this.Region as DungeonRegion;
+				if (dungeonRegion != null)
+					dungeonRegion.Dungeon.CheckSectionClear();
+			}
 		}
 
 		/// <summary>

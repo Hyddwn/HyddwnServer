@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Aura.Shared.Util.Commands
 {
@@ -49,6 +51,14 @@ namespace Aura.Shared.Util.Commands
 		/// </summary>
 		public void Wait()
 		{
+			// Just wait if not running in a console
+			if (!CliUtil.UserInteractive)
+			{
+				var reset = new ManualResetEvent(false);
+				reset.WaitOne();
+				return;
+			}
+
 			Log.Info("Type 'help' for a list of console commands.");
 
 			while (true)

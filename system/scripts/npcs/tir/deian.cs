@@ -233,8 +233,27 @@ public class DeianScript : NpcScript
 				break;
 
 			case "skill_campfire":
-				RemoveKeyword("skill_campfire");
-				Msg("Hey, you! What are you doing!<br/>Are you trying to use the Campfire skill here?<br/>Are you crazy!? You want to burn all my wool?<br/>Go away! Go away!<br/>You want to play with fire? Go do it far away from here!");
+				if (!HasSkill(SkillId.Campfire))
+				{
+					if (!HasKeyword("deian_01"))
+					{
+						GiveItem(1012); // Campfire Manual
+						GiveItem(63002, 5); // Firewood
+						GiveKeyword("deian_01");
+
+						Msg("(Missing dialog: Campfire explanation)");
+					}
+					else
+					{
+						Msg("(Missing dialog: Another Campfire explanation)");
+					}
+				}
+				else
+				{
+					RemoveKeyword("skill_campfire");
+					RemoveKeyword("deian_01");
+					Msg("Hey, you! What are you doing!<br/>Are you trying to use the Campfire skill here?<br/>Are you crazy!? You want to burn all my wool?<br/>Go away! Go away!<br/>You want to play with fire? Go do it far away from here!");
+				}
 				break;
 
 			case "shop_restaurant":
@@ -296,13 +315,13 @@ public class DeianShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Party Quest", 70025); // Party Quest [10 Gray Wolves]
-		Add("Party Quest", 70025); // Party Quest [10 White Wolves]
-		Add("Party Quest", 70025); // Party Quest [30 White Wolves]
-		Add("Party Quest", 70025); // Party Quest [10 Black Wolves]
-		Add("Party Quest", 70025); // Party Quest [30 Gray Wolves]
-		Add("Party Quest", 70025); // Party Quest [30 Brown Dire Wolves]
-		Add("Party Quest", 70025); // Party Quest [30 Black Wolves]
+		AddQuest("Party Quest", 100007, 5); // [PQ] Hunt Gray Wolves (10)
+		AddQuest("Party Quest", 100008, 20); // [PQ] Hunt Gray Wolves (30)
+		AddQuest("Party Quest", 100009, 15); // [PQ] Hunt Black Wolves (10)
+		AddQuest("Party Quest", 100010, 50); // [PQ] Hunt Black Wolves (30)
+		AddQuest("Party Quest", 100011, 10); // [PQ] Hunt White Wolves (10)
+		AddQuest("Party Quest", 100012, 10); // [PQ] Hunt White Wolves (30)
+		AddQuest("Party Quest", 100035, 20); // [PQ] Hunt Down the Brown Dire Wolves (30)
 
 		Add("Gathering Tools", 40023); // Gathering Knife
 	}

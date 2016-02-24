@@ -305,6 +305,23 @@ namespace Aura.Mabi.Network
 		public const int RecallMail = 0x7252;
 		public const int RecallMailR = 0x7253;
 		public const int UnreadMailCount = 0x7255;
+		public const int EntrustedEnchant = 0x7469;
+		public const int EntrustedEnchantR = 0x746A;
+		public const int EntrustedEnchantRequest = 0x746B;
+		public const int EntrustedEnchantUnk1 = 0x746C; // Equip set?
+		public const int EntrustedEnchantUnk2 = 0x746D; // Equip unset?
+		public const int EntrustedEnchantFinalizeRequest = 0x746E;
+		public const int EntrustedEnchantFinalizeRequestR = 0x746F;
+		public const int EntrustedEnchantRequestFinalized = 0x7470;
+		public const int EntrustedEnchantCancel = 0x7471;
+		public const int EntrustedEnchantCancelUnk = 0x7473; // Sent from other client after cancel
+		public const int EntrustedEnchantClose = 0x7475;
+		public const int EntrustedEnchantAcceptRequest = 0x7477;
+		public const int EntrustedEnchantAcceptRequestR = 0x7478;
+		public const int EntrustedEnchantUnk3 = 0x7479; // Disable button?
+		public const int EntrustedEnchantChanceUpdate = 0x747A;
+		public const int EntrustedEnchantAddItem = 0x747B;
+		public const int EntrustedEnchantRemoveItem = 0x747C;
 		public const int StatUpdatePrivate = 0x7530;
 		public const int StatUpdatePublic = 0x7532;
 		public const int CombatTargetUpdate = 0x791A; // ?
@@ -364,6 +381,12 @@ namespace Aura.Mabi.Network
 		public const int PartyWantedHide = 0x8EAC;
 		public const int PartyWantedHideR = 0x8EAD;
 		public const int PartyWantedClosed = 0x8EAE;
+		public const int PartySetQuest = 0x8EAF;
+		public const int PartySetQuestR = 0x8EB0;
+		public const int PartySetActiveQuest = 0x8EB1;
+		public const int PartyUnsetQuest = 0x8EB2;
+		public const int PartyUnsetQuestR = 0x8EB3;
+		public const int PartyUnsetActiveQuest = 0x8EB4;
 		public const int PartyChangeFinish = 0x8EB5;
 		public const int PartyChangeFinishR = 0x8EB6;
 		public const int PartyFinishUpdate = 0x8EB7;
@@ -386,6 +409,23 @@ namespace Aura.Mabi.Network
 		public const int GuildDonate = 0x8F07;
 		public const int GuildDonateR = 0x8F08;
 		public const int GuildMessage = 0x8F0F;
+		public const int TradeStart = 0x8F5C;
+		public const int TradeInfo = 0x8F5D;
+		public const int TradeStartR = 0x8F5E;
+		public const int TradeRequest = 0x8F5F;
+		public const int TradeCancel = 0x8F60;
+		public const int TradeCancelR = 0x8F61;
+		public const int TradeRequestCanceled = 0x8F62; // ?
+		public const int TradeComplete = 0x8F63; // ?
+		public const int TradeWait = 0x8F64;
+		public const int TradeAcceptRequest = 0x8F65;
+		public const int TradeAcceptRequestR = 0x8F66;
+		public const int TradePartnerInfo = 0x8F67;
+		public const int TradeReady = 0x8F68;
+		public const int TradeReadyR = 0x8F69;
+		public const int TradeReadied = 0x8F6A;
+		public const int TradeItemAdded = 0x8F6E;
+		public const int TradeItemRemoved = 0x8F6F;
 		public const int AddTitleKnowledge = 0x8FC0;
 		public const int AddTitle = 0x8FC1;
 		public const int ChangeTitle = 0x8FC4;
@@ -460,6 +500,7 @@ namespace Aura.Mabi.Network
 		public const int ContinentWarpCoolDownR = 0xA43E;
 		public const int PartyTypeUpdate = 0xA44B;
 		public const int OpenItemShop = 0xA44D;
+		public const int OpenItemShopR = 0xA44E;
 
 		// [150000~180000] Something was removed here
 
@@ -485,6 +526,7 @@ namespace Aura.Mabi.Network
 		public const int SosButtonRequest = 0xA9A9;
 		public const int SosButtonRequestR = 0xA9AA;
 		public const int SkillTeleport = 0xA9F0;
+		public const int SetCamera = 0xA9F4;
 		public const int EnterRebirth = 0xA9F9;
 		public const int EnterRebirthR = 0xA9FA;
 
@@ -531,11 +573,24 @@ namespace Aura.Mabi.Network
 
 		// ItemMagnet got increased by one, some time between NA200 and NA204.
 
-		public const int ItemMagnet = 0xABAC; // [190100, NA200 (2015-01-15)]
+		// [190100, NA200 (2015-01-15)] Added
+		// [190200, NA221 (2016-02-17)] Increased by one, ABAC->ABAD
+		public const int ItemMagnet = 0xABAD;
+
+		// [190200, NA221 (2016-02-17)] Added
+		public const int DestroyExpiredItems = 0xABAE;
+		public const int DestroyExpiredItemsConfirm = 0xABAF;
+		public const int DestroyExpiredItemsR = 0xABB0;
 
 		public const int AmmoRequired = 0xABBB;
 
 		public const int ChatSticker = 0xAC0A;
+
+		// [190200, NA221 (2016-02-17)] Added
+		// DcUnk, purpose unknown, requires answer on disconnect,
+		// or the player gets stuck.
+		public const int DcUnk = 0xAC1D;
+		public const int DcUnkR = 0xAC1E;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
@@ -552,6 +607,10 @@ namespace Aura.Mabi.Network
 		public const int CutsceneUnk = 0x186A8;
 
 		public const int Weather = 0x1ADB0;
+
+		// Nexon Game Security?
+		public const int NGS1 = 0x1D4C2;
+		public const int NGS2 = 0x1D4C3;
 
 		public const int GmcpOpen = 0x1D589;
 		public const int GmcpClose = 0x1D58A;

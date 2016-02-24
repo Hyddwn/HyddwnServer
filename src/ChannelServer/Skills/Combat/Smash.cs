@@ -136,6 +136,9 @@ namespace Aura.Channel.Skills.Combat
 			// Mana Shield
 			ManaShield.Handle(target, ref damage, tAction);
 
+			// Heavy Stander
+			HeavyStander.Handle(attacker, target, ref damage, tAction);
+
 			// Apply damage
 			if (damage > 0)
 			{

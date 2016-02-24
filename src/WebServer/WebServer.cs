@@ -68,6 +68,9 @@ namespace Aura.Web
 			// Database
 			this.InitDatabase(this.Database = new AuraDb(), this.Conf);
 
+			// Localization
+			this.LoadLocalization(this.Conf);
+
 			// Server
 			this.StartWebServer();
 
@@ -93,14 +96,16 @@ namespace Aura.Web
 
 			this.App.Engine("htm", new HandlebarsEngine());
 
+			this.App.Get("/favicon.ico", new StaticController(this.Conf.Web.Favicon));
+
 			this.App.Static("user/save/");
 			this.App.Static("user/resources/");
-			this.App.Static("web/public/");
+			this.App.Static("system/web/public/");
+			this.App.Static("user/web/public/");
 
 			this.App.Get("/", new MainController());
 			this.App.Post("/ui", new UiStorageController());
 			this.App.Post("/visual-chat", new VisualChatController());
-			this.App.All("/register", new RegisterController());
 			this.App.Post("/avatar-upload", new AvatarUploadController());
 
 			try
@@ -109,10 +114,10 @@ namespace Aura.Web
 
 				Log.Status("Server ready, listening on 0.0.0.0:{0}.", this.Conf.Web.Port);
 			}
-			catch (HttpListenerException)
+			catch (NHttp.NHttpException)
 			{
 				Log.Error("Failed to start web server.");
-				Log.Info("The port might already be in use, make sure no other application, like other web servers or Skype, are using it or set a different port in web.conf.");
+				Log.Info("Port {0} might already be in use, make sure no other application, like other web servers or Skype, are using it or set a different port in web.conf.", this.Conf.Web.Port);
 				CliUtil.Exit(1);
 			}
 		}

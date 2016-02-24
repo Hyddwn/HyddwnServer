@@ -183,6 +183,25 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns position in direction and distance.
+		/// </summary>
+		/// <param name="radian"></param>
+		/// <param name="distance"></param>
+		/// <returns></returns>
+		public Position GetRelative(double radian, int distance)
+		{
+			var deltaX = Math.Cos(radian);
+			var deltaY = Math.Sin(radian);
+
+			var deltaXY = Math.Sqrt(Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2));
+
+			var newX = this.X + (distance / deltaXY) * (deltaX);
+			var newY = this.Y + (distance / deltaXY) * (deltaY);
+
+			return new Position((int)newX, (int)newY);
+		}
+
+		/// <summary>
 		/// Returns whether the position is inside the given points.
 		/// </summary>
 		public bool InPolygon(params Point[] points)

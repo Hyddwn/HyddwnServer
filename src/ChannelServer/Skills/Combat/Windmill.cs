@@ -112,7 +112,7 @@ namespace Aura.Channel.Skills.Combat
 		public void Use(Creature attacker, Skill skill, long targetAreaId, int unkInt1, int unkInt2)
 		{
 			var range = this.GetRange(attacker, skill);
-			var targets = attacker.GetTargetableCreaturesInRange(range, true);
+			var targets = attacker.GetTargetableCreaturesInRange(range, TargetableOptions.AddAttackRange);
 
 			// Check targets
 			if (targets.Count == 0)
@@ -172,6 +172,7 @@ namespace Aura.Channel.Skills.Combat
 				SkillHelper.HandleDefenseProtection(target, ref damage);
 				Defense.Handle(aAction, tAction, ref damage);
 				ManaShield.Handle(target, ref damage, tAction);
+				HeavyStander.Handle(attacker, target, ref damage, tAction);
 
 				// Clean Hit if not defended nor critical
 				if (tAction.SkillId != SkillId.Defense && !tAction.Has(TargetOptions.Critical))

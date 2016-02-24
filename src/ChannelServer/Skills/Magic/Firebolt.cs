@@ -36,11 +36,6 @@ namespace Aura.Channel.Skills.Magic
 		protected override SkillId SkillId { get { return SkillId.Firebolt; } }
 
 		/// <summary>
-		/// Returns whether the skill can be blocked with Defense.
-		/// </summary>
-		protected override bool Defendable { get { return false; } }
-
-		/// <summary>
 		/// String used in effect packets.
 		/// </summary>
 		protected override string EffectSkillName { get { return "firebolt"; } }
@@ -51,25 +46,65 @@ namespace Aura.Channel.Skills.Magic
 		protected override string SpecialWandTag { get { return "fire_wand"; } }
 
 		/// <summary>
-		/// Handles knock back/stun/death.
+		/// Bolt specific use code.
 		/// </summary>
-		protected override void HandleKnockBack(Creature attacker, Creature target, TargetAction tAction, bool overcharge)
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="target"></param>
+		protected override void UseSkillOnTarget(Creature attacker, Skill skill, Creature target)
 		{
+			attacker.StopMove();
+			target.StopMove();
+
+			// Create actions
+			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, target.EntityId);
+			aAction.Set(AttackerOptions.Result);
+
+			var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
+			tAction.Set(TargetOptions.Result);
+			tAction.Stun = TargetStun;
+
+			var cap = new CombatActionPack(attacker, skill.Info.Id, aAction, tAction);
+
+			// Damage
+			var damage = this.GetDamage(attacker, skill);
+
+			// Elements
+			damage *= this.GetElementalDamageMultiplier(attacker, target);
+
+			// Reduce damage
+			SkillHelper.HandleMagicDefenseProtection(target, ref damage);
+			ManaShield.Handle(target, ref damage, tAction);
+			ManaDeflector.Handle(attacker, target, ref damage, tAction);
+
+			// Deal damage
+			if (damage > 0)
+				target.TakeDamage(tAction.Damage = damage, attacker);
+			target.Aggro(attacker);
+
+			// Knock down on deadly
+			if (target.Conditions.Has(ConditionsA.Deadly))
+			{
+				tAction.Set(TargetOptions.KnockDown);
+				tAction.Stun = TargetStun;
+			}
+
+			// Death/Knockback
 			attacker.Shove(target, KnockbackDistance);
 			if (target.IsDead)
 				tAction.Set(TargetOptions.FinishingKnockDown);
 			else
 				tAction.Set(TargetOptions.KnockDown);
-		}
 
-		/// <summary>
-		/// Actions to be done before the combat action pack is handled.
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <param name="skill"></param>
-		protected override void BeforeHandlingPack(Creature attacker, Skill skill)
-		{
+			// Override stun set by defense
+			aAction.Stun = AttackerStun;
+
+			Send.Effect(attacker, Effect.UseMagic, EffectSkillName);
+			Send.SkillUseStun(attacker, skill.Info.Id, aAction.Stun, 1);
+
 			skill.Stacks = 0;
+
+			cap.Handle();
 		}
 
 		/// <summary>
@@ -94,7 +129,8 @@ namespace Aura.Channel.Skills.Magic
 		/// Called when creature is hit while Firebolt is active.
 		/// </summary>
 		/// <param name="creature"></param>
-		public override void CustomHitCancel(Creature creature)
+		/// <param name="tAction"></param>
+		public override void CustomHitCancel(Creature creature, TargetAction tAction)
 		{
 			// Lose no stacks on r1
 			var skill = creature.Skills.ActiveSkill;

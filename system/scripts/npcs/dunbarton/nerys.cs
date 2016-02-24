@@ -302,21 +302,15 @@ public class NerysShop : NpcShopScript
 		Add("Weapon", 40027);      // Weeding Hoe
 		Add("Weapon", 40003);      // Shortbow
 		Add("Weapon", 40006);      // Dagger
-		Add("Weapon", 40179);      // Spiked Knuckle
 		Add("Weapon", 40243);      // Battle Short Sword
 		Add("Weapon", 40013);      // Longbow
 		Add("Weapon", 40015);      // Fluted Short Sword
 		Add("Weapon", 40014);      // Composite Bow
 		Add("Weapon", 40010);      // Longsword
 		Add("Weapon", 40016);      // Warhammer
-		Add("Weapon", 40244);      // Bear Knuckle
 		Add("Weapon", 40011);      // Broadsword
-		Add("Weapon", 40180);      // Hobnail Knuckle
 		Add("Weapon", 40424);      // Battle Sword
 		Add("Weapon", 40031);      // Crossbow
-		Add("Weapon", 40745);      // Basic Control Bar
-		Add("Weapon", 40841);      // Shuriken
-		Add("Weapon", 40404);      // Physis Wooden Lance
 		Add("Weapon", 46001);      // Round Shield
 		Add("Weapon", 46006);      // Kite Shield
 
@@ -362,7 +356,7 @@ public class NerysShop : NpcShopScript
 
 		Add("Event"); // Empty
 
-		if (IsEnabled("G10"))
+		if (IsEnabled("FineArrows"))
 		{
 			Add("Arrowhead", 64011); // Bundle of Arrowheads
 			Add("Arrowhead", 64015); // Bundle of Boltheads
@@ -371,5 +365,21 @@ public class NerysShop : NpcShopScript
 			Add("Arrowhead", 64014); // Bundle of Finest Arrowheads
 			Add("Arrowhead", 64017); // Bundle of Finest Boltheads
 		}
+
+		if (IsEnabled("Lance"))
+			Add("Weapon", 40404); // Physis Wooden Lance
+
+		if (IsEnabled("FighterJob"))
+		{
+			Add("Weapon", 40179); // Spiked Knuckle
+			Add("Weapon", 40244); // Bear Knuckle
+			Add("Weapon", 40180); // Hobnail Knuckle
+		}
+
+		if (IsEnabled("PuppetMasterJob"))
+			Add("Weapon", 40745); // Basic Control Bar
+
+		if (IsEnabled("Ninjajob"))
+			Add("Weapon", 40841); // Shuriken
 	}
 }

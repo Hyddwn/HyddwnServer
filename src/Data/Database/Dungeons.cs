@@ -49,6 +49,7 @@ namespace Aura.Data.Database
 		public uint LightColor1 { get; set; }
 		public uint LightColor2 { get; set; }
 		public uint LightColor3 { get; set; }
+		public bool Statue { get; set; }
 		public bool HasBoss { get; set; }
 		public bool Custom { get; set; }
 		public string Extra { get; set; }
@@ -154,6 +155,7 @@ namespace Aura.Data.Database
 				floorData.CritPathMax = floorEntry.ReadInt("critPathMax");
 				floorData.Branch = floorEntry.ReadInt("branch");
 				floorData.Coverage = floorEntry.ReadInt("coverage");
+				floorData.Statue = floorEntry.ReadBool("statue", true);
 				floorData.HasBoss = floorEntry.ReadBool("hasBoss");
 				floorData.Custom = floorEntry.ReadBool("custom");
 				floorData.Extra = floorEntry.ReadString("extra", null);

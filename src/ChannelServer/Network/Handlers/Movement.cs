@@ -64,13 +64,17 @@ namespace Aura.Channel.Network.Handlers
 			if (!creature.IsElf && creature.AimMeter.IsAiming)
 				creature.AimMeter.Stop();
 
-			//Position intersection
-			// TODO: Reset position if intersection found.
-			// TODO: Figure out how to handle getting stuck in props (the client allows walking out).
-			//if (creature.Region.Collissions.Find(from, to, out intersection))
-			//{
-			//    Aura.Shared.Util.Log.Debug("Intersection at '{0}'", intersection);
-			//}
+			// Check for collisions on path
+			// Normally the client shouldn't let a player run through a wall,
+			// but occasionally, you're able to glitch through crannies,
+			// or straight up walk through walls in dungeons (#176).
+			// For that reason, and for general security, we need to check
+			// player movement.
+			if (creature.Region.Collisions.Any(from, to))
+			{
+				creature.ResetPosition(from);
+				return;
+			}
 
 			// Telewalk command
 			if (walk && creature.Vars.Temp["telewalk"] != null)

@@ -10,9 +10,11 @@ namespace Aura.Mabi.Const
 		Talk = 3,
 		Deliver = 4,
 		ReachRank = 9,
+		ClearDungeon = 13,
 		ReachLevel = 15,
 		Equip = 31,
 		Gather = 32,
+		UseSkill = 98, // TODO: Actual type?
 		GetKeyword = 99, // TODO: Actual type?
 	}
 
@@ -24,12 +26,24 @@ namespace Aura.Mabi.Const
 		ExplExp = 4,
 		AP = 5,
 		Skill = 8, // ?
+		QuestScroll = 99, // TODO: Actual type?
 	}
 
 	public enum QuestType : byte
 	{
-		Hunting = 0,
+		/// <summary>
+		/// Collection quest (blue icon)
+		/// </summary>
+		Collect = 0,
+
+		/// <summary>
+		/// PTJ?
+		/// </summary>
 		Deliver = 1,
+
+		/// <summary>
+		/// Normal quest
+		/// </summary>
 		Normal = 2,
 	}
 

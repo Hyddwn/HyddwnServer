@@ -197,6 +197,12 @@ public class FerghusScript : NpcScript
 				Msg("I think Ranald knows better.<br/>Why don't you ask him directly?<br/>It's true I make good bows.<br/>But making it and using it is totally different, you know.");
 				break;
 
+			case "bow":
+				RemoveKeyword("bow");
+				RemoveKeyword("skill_range");
+				Msg("Ha, ha. You are looking for bows. You came to the right place.<br/>I certainly have bows. In fact, you know what?<br/>This is a great chance to get your own bow!<br/>By the way, you know that you need arrows too, right?<br/>I mean, what can we do with just a bow and a string?<br/>Play with it?");
+				break;
+
 			case "skill_instrument":
 				Msg("Looks like you like music a lot,<br/>but I don't think I can help you with that.<br/>You know, I'm a blacksmith. I've never played any instruments before.");
 				break;
@@ -358,11 +364,6 @@ public class FerghusShop : NpcShopScript
 		Add("Weapon", 40025);      // Pickaxe
 		Add("Weapon", 40026);      // Sickle
 		Add("Weapon", 40027);      // Weeding Hoe
-		Add("Weapon", 40179);      // Spiked Knuckle
-		Add("Weapon", 40180);      // Hobnail Knuckle
-		Add("Weapon", 40244);      // Bear Knuckle
-		Add("Weapon", 40745);      // Basic Control Bar
-		Add("Weapon", 40841);      // Spiral Shuriken
 		Add("Weapon", 45001, 100); // Arrow x100
 		Add("Weapon", 45001, 20);  // Arrow x20
 		Add("Weapon", 45002, 50);  // Bolt x50
@@ -389,6 +390,23 @@ public class FerghusShop : NpcShopScript
 		Add("Armor", 14008); // Full Leather Armor Set
 		Add("Armor", 14010); // Light Leather Mail (M)
 
-		Add("Event"); // Empty
+		Add("Event");
+
+		if (IsEnabled("FighterJob"))
+		{
+			Add("Weapon", 40179); // Spiked Knuckle
+			Add("Weapon", 40180); // Hobnail Knuckle
+			Add("Weapon", 40244); // Bear Knuckle
+		}
+
+		if (IsEnabled("PuppetMasterJob"))
+		{
+			Add("Weapon", 40745); // Basic Control Bar
+		}
+
+		if (IsEnabled("Ninjajob"))
+		{
+			Add("Weapon", 40841); // Spiral Shuriken
+		}
 	}
 }

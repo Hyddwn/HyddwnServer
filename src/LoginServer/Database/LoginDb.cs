@@ -586,10 +586,12 @@ namespace Aura.Login.Database
 		/// <summary>
 		/// Adds trade item and points of card to character.
 		/// </summary>
+		/// <param name="account"></param>
 		/// <param name="targetCharacter"></param>
 		/// <param name="charCard"></param>
-		public void TradeCard(Character targetCharacter, CharCardData charCard)
+		public void TradeCard(Account account, Character targetCharacter, CharCardData charCard)
 		{
+			// Add item
 			using (var conn = this.Connection)
 			using (var cmd = new InsertCommand("INSERT INTO `items` {0}", conn))
 			{
@@ -603,7 +605,15 @@ namespace Aura.Login.Database
 				cmd.Execute();
 			}
 
-			// TODO: Add points (pons)...
+			// Add points
+			using (var conn = this.Connection)
+			using (var cmd = new InsertCommand("UPDATE `accounts` SET `points` = `points` + @points WHERE `accountId` = @accountId", conn))
+			{
+				cmd.Set("accountId", account.Name);
+				cmd.Set("points", charCard.TradePoints);
+
+				cmd.Execute();
+			}
 		}
 	}
 

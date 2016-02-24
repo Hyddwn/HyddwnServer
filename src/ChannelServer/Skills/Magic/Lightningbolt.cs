@@ -28,12 +28,17 @@ namespace Aura.Channel.Skills.Magic
 	/// same as Icebolt, the Wiki is either outdated or incorrect.
 	/// </remarks>
 	[Skill(SkillId.Lightningbolt)]
-	public class Lightningbolt : Icebolt
+	public class Lightningbolt : MagicBolt
 	{
 		/// <summary>
 		/// Splash Range for target search.
 		/// </summary>
-		private int SplashRange = 500;
+		private const int SplashRange = 500;
+
+		/// <summary>
+		/// Stability reduction on overcharge.
+		/// </summary>
+		protected const float OverchargeStabilityReduction = 110;
 
 		/// <summary>
 		/// ID of the skill, used in training.
@@ -64,9 +69,14 @@ namespace Aura.Channel.Skills.Magic
 
 			var cap = new CombatActionPack(attacker, skill.Info.Id, aAction);
 
+			// Get targets
+			// Add the main target as first target, so it gets the first hit,
+			// and the full damage.
 			var targets = new List<Creature>();
 			targets.Add(mainTarget);
-			targets.AddRange(mainTarget.Region.GetCreaturesInRange(mainTarget.GetPosition(), SplashRange).Where(a => a != mainTarget && attacker.CanTarget(a)));
+
+			var inSplashRange = attacker.GetTargetableCreaturesAround(mainTarget.GetPosition(), SplashRange);
+			targets.AddRange(inSplashRange.Where(a => a != mainTarget));
 
 			// Damage
 			var damage = this.GetDamage(attacker, skill);
@@ -91,6 +101,9 @@ namespace Aura.Channel.Skills.Magic
 				SkillHelper.HandleMagicDefenseProtection(target, ref targetDamage);
 				ManaShield.Handle(target, ref targetDamage, tAction);
 
+				// Mana Deflector
+				var delayReduction = ManaDeflector.Handle(attacker, target, ref targetDamage, tAction);
+
 				// Deal damage
 				if (targetDamage > 0)
 					target.TakeDamage(tAction.Damage = targetDamage, attacker);
@@ -98,9 +111,56 @@ namespace Aura.Channel.Skills.Magic
 				if (target == mainTarget)
 					target.Aggro(attacker);
 
+				// Reduce stun, based on ping
+				if (delayReduction > 0)
+					tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
+
 				// Death/Knockback
-				var overcharge = (skill.Stacks > targets.Count);
-				this.HandleKnockBack(attacker, target, tAction, overcharge);
+				if (target.IsDead)
+				{
+					tAction.Set(TargetOptions.FinishingKnockDown);
+				}
+				else
+				{
+					// If knocked down, instant recovery,
+					// if repeat hit, knock down,
+					// otherwise potential knock back.
+					if (target.IsKnockedDown)
+					{
+						tAction.Stun = 0;
+					}
+					else if (target.Stability < MinStability)
+					{
+						tAction.Set(TargetOptions.KnockDown);
+					}
+					else
+					{
+						// If number of stacks is greater than the number of
+						// targets hit, the targets are knocked back, which is
+						// done by reducing the stability to min here.
+						// Targets with high enough Mana Deflector might
+						// negate this knock back, by reducing the stability
+						// reduction to 0.
+						var stabilityReduction = (skill.Stacks > targets.Count ? OverchargeStabilityReduction : StabilityReduction);
+
+						// Reduce reduction, based on ping
+						// While the Wiki says that "the Knockdown Gauge [does not]
+						// build up", tests show that it does. However, it's
+						// reduced, assumedly based on the MD rank.
+						if (delayReduction > 0)
+							stabilityReduction = (short)Math.Max(0, stabilityReduction - (stabilityReduction / 100 * delayReduction));
+
+						target.Stability -= stabilityReduction;
+
+						if (target.IsUnstable)
+						{
+							tAction.Set(TargetOptions.KnockBack);
+						}
+					}
+				}
+
+				if (tAction.IsKnockBack)
+					attacker.Shove(target, KnockbackDistance);
 
 				cap.Add(tAction);
 			}
@@ -111,19 +171,9 @@ namespace Aura.Channel.Skills.Magic
 			Send.Effect(attacker, Effect.UseMagic, EffectSkillName);
 			Send.SkillUseStun(attacker, skill.Info.Id, aAction.Stun, 1);
 
-			this.BeforeHandlingPack(attacker, skill);
+			skill.Stacks = 0;
 
 			cap.Handle();
-		}
-
-		/// <summary>
-		/// Actions to be done before the combat action pack is handled.
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <param name="skill"></param>
-		protected override void BeforeHandlingPack(Creature attacker, Skill skill)
-		{
-			skill.Stacks = 0;
 		}
 
 		/// <summary>

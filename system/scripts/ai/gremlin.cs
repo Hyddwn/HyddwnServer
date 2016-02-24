@@ -16,11 +16,11 @@ public class GremlinAi : AiScript
 		L("....."),
 		L("Grrr.."),
 		L("Grr.."),
-		L(""),
-		L(""),
-		L(""),
-		L(""),
-		L(""),
+		"",
+		"",
+		"",
+		"",
+		"",
 	};
 
 	public GremlinAi()

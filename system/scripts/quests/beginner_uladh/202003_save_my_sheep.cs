@@ -2,7 +2,7 @@
 // Save my Sheep
 //--- Description -----------------------------------------------------------
 // Auomatically started after Rescue Resident, involves the player being
-// warped to a dynamic region, where he has to protect sheep from being
+// warped to a dynamic region, where they have to protect sheep from being
 // killed by wolves.
 //---------------------------------------------------------------------------
 
@@ -80,6 +80,7 @@ public class SaveMySheepQuestScript : QuestScript
 		var timer = SetTimeout(Time, () =>
 		{
 			// Unofficial, I think the msg also depends on how well you did.
+			// Official >10: Thanks to my dilligent supervision, over 10 sheep are safe.
 			Send.Notice(creature, NoticeType.MiddleSystem, L("The time is over, you did it."));
 			Send.RemoveQuestTimer(creature);
 			creature.Keywords.Give("TirChonaill_Tutorial_Thinking");
