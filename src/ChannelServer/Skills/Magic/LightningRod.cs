@@ -37,7 +37,7 @@ namespace Aura.Channel.Skills.Magic
 		/// <remarks>
 		/// "http://wiki.mabinogiworld.com/view/Lightning_Rod#Summary"
 		/// </remarks>
-		private const int skillLength = 1400;
+		private const int SkillLength = 1400;
 
 		/// <summary>
 		/// Width of attack area; unconfirmed.
@@ -45,22 +45,43 @@ namespace Aura.Channel.Skills.Magic
 		/// <remarks>
 		/// "http://wiki.mabinogiworld.com/view/Lightning_Rod#Summary"
 		/// </remarks>
-		private const int skillWidth = 200;
+		private const int SkillWidth = 200;
 
 		/// <summary>
 		/// Length of target's stun
 		/// </summary>
-		private const int targetStun = 2000;
+		private const int TargetStun = 2000;
 
 		/// <summary>
 		/// Distance target gets knocked back
 		/// </summary>
-		private const int knockbackDistance = 720;
+		private const int KnockbackDistance = 720;
 
 		/// <summary>
 		/// Time for mana degeneration (ms)
 		/// </summary>
-		private const int degenTime = 1000;
+		private const int DegenTime = 1000;
+
+		/// <summary>
+		/// Effect Enums
+		/// </summary>
+		private enum LightningRodEffect : byte
+		{
+			/// <summary>
+			/// Cancels the entire effect
+			/// </summary>
+			Cancel = 0,
+
+			/// <summary>
+			/// Contains magic circle and lightning ball.
+			/// </summary>
+			Prepare = 2,
+
+			/// <summary>
+			/// Burst of lightning; the effect for the attack.
+			/// </summary>
+			Attack = 3,
+		}
 
 		/// <summary>
 		/// Subscribes handlers to events required for training.
@@ -88,7 +109,7 @@ namespace Aura.Channel.Skills.Magic
 			skill.State = SkillState.Prepared;
 
 			Send.MotionCancel2(creature, 0);
-			Send.Effect(creature, Effect.LightningRod, 2, 0); // Magic Circle
+			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Prepare, 0);
 
 			Send.SkillReady(creature, skill.Info.Id);
 			skill.State = SkillState.Ready;
@@ -107,7 +128,7 @@ namespace Aura.Channel.Skills.Magic
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
 			// Mana degeneration
-			var degen = attacker.Regens.Add(Stat.Mana, (-1 * skill.RankData.ManaCost), attacker.ManaMax, degenTime);
+			var degen = attacker.Regens.Add(Stat.Mana, skill.RankData.ManaActive, attacker.ManaMax, DegenTime);
 
 			// Set full charge variable
 			attacker.Temp.LightningRodFullCharge = (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3));
@@ -121,18 +142,18 @@ namespace Aura.Channel.Skills.Magic
 			var r = MabiMath.ByteToRadian(attacker.Direction);
 			var poe = attackerPos.GetRelative(r, 800);
 			var pivot = new Point(poe.X, poe.Y);
-			var p1 = new Point(pivot.X - skillLength / 2, pivot.Y - skillWidth / 2);
-			var p2 = new Point(pivot.X - skillLength / 2, pivot.Y + skillWidth / 2);
-			var p3 = new Point(pivot.X + skillLength / 2, pivot.Y + skillWidth / 2);
-			var p4 = new Point(pivot.X + skillLength / 2, pivot.Y - skillWidth / 2);
+			var p1 = new Point(pivot.X - SkillLength / 2, pivot.Y - SkillWidth / 2);
+			var p2 = new Point(pivot.X - SkillLength / 2, pivot.Y + SkillWidth / 2);
+			var p3 = new Point(pivot.X + SkillLength / 2, pivot.Y + SkillWidth / 2);
+			var p4 = new Point(pivot.X + SkillLength / 2, pivot.Y - SkillWidth / 2);
 			p1 = this.RotatePoint(p1, pivot, r);
 			p2 = this.RotatePoint(p2, pivot, r);
 			p3 = this.RotatePoint(p3, pivot, r);
 			p4 = this.RotatePoint(p4, pivot, r);
 
 			// TargetProp
-			var LProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
-			attacker.Region.AddProp(LProp);
+			var lProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
+			attacker.Region.AddProp(lProp);
 
 			// Prepare Combat Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
@@ -141,7 +162,7 @@ namespace Aura.Channel.Skills.Magic
 
 			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetAreaId);
 			aAction.Set(AttackerOptions.KnockBackHit1 | AttackerOptions.UseEffect);
-			aAction.PropId = LProp.EntityId;
+			aAction.PropId = lProp.EntityId;
 			cap.Add(aAction);
 
 			// Get targets in Polygon
@@ -170,7 +191,7 @@ namespace Aura.Channel.Skills.Magic
 
 				// Add damage if the skill is fully charged
 				var dmgMultiplier = skill.RankData.Var4 / 100f;
-				if (attacker.Temp.LightningRodFullCharge == true)
+				if (attacker.Temp.LightningRodFullCharge)
 				{
 					damage += (damage * dmgMultiplier);
 				}
@@ -197,7 +218,7 @@ namespace Aura.Channel.Skills.Magic
 				target.TakeDamage(tAction.Damage = damage, attacker);
 
 				// Stun Time
-				tAction.Stun = targetStun;
+				tAction.Stun = TargetStun;
 
 				// Reduce stun, based on ping
 				if (delayReduction > 0)
@@ -207,7 +228,7 @@ namespace Aura.Channel.Skills.Magic
 				if (target.IsDead)
 				{
 					tAction.Set(TargetOptions.FinishingKnockDown);
-					attacker.Shove(target, knockbackDistance);
+					attacker.Shove(target, KnockbackDistance);
 				}
 				else
 				{
@@ -215,26 +236,26 @@ namespace Aura.Channel.Skills.Magic
 					if (target.Is(RaceStands.KnockDownable))
 					{
 						tAction.Set(TargetOptions.KnockDown);
-						attacker.Shove(target, knockbackDistance);
+						attacker.Shove(target, KnockbackDistance);
 					}
 				}
 				tAction.Creature.Stun = tAction.Stun;
 			}
 			cap.Handle();
 
-			Send.Effect(attacker, Effect.LightningRod, 3, poe.X, poe.Y); // Lightning Shooting Effect
+			Send.Effect(attacker, Effect.LightningRod, LightningRodEffect.Attack, poe.X, poe.Y);
 
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 			skill.Train(1); // Use the Skill
 
-			attacker.Region.RemoveProp(LProp);
+			attacker.Region.RemoveProp(lProp);
 		}
 
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
 			creature.Temp.LightningRodFullCharge = false;
 
-			Send.Effect(creature, Effect.LightningRod, 0); // End Effect
+			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
 			Send.SkillComplete(creature, skill.Info.Id);
 		}
 
@@ -242,7 +263,7 @@ namespace Aura.Channel.Skills.Magic
 		{
 			creature.Temp.LightningRodFullCharge = false;
 
-			Send.Effect(creature, Effect.LightningRod, 0); // End Effect
+			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
 		}
 
 		/// <summary>
@@ -269,7 +290,7 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.RD:
 				case SkillRank.RC:
 					attackerSkill.Train(2); // Attack an enemy
-					if (action.Attacker.Temp.LightningRodFullCharge == true) attackerSkill.Train(3); // Attack an Enemy with a Max Charge
+					if (action.Attacker.Temp.LightningRodFullCharge) attackerSkill.Train(3); // Attack an Enemy with a Max Charge
 					break;
 				case SkillRank.RB:
 				case SkillRank.RA:
@@ -283,7 +304,7 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.R2:
 				case SkillRank.R1:
 					if (action.Creature.IsDead) attackerSkill.Train(2); // Defeat an enemy
-					if (action.Creature.IsDead && action.Attacker.Temp.LightningRodFullCharge == true) attackerSkill.Train(3); // Defeat an Enemy with a Max Charge
+					if (action.Creature.IsDead && action.Attacker.Temp.LightningRodFullCharge) attackerSkill.Train(3); // Defeat an Enemy with a Max Charge
 					break;
 			}
 		}
@@ -337,7 +358,7 @@ namespace Aura.Channel.Skills.Magic
 					{
 						attackerSkill.Train(4);
 
-						if (aAction.Creature.Temp.LightningRodFullCharge == true) // Defeat 4 or more Enemies with a Max Charge
+						if (aAction.Creature.Temp.LightningRodFullCharge) // Defeat 4 or more Enemies with a Max Charge
 							attackerSkill.Train(5);
 					}
 					break;
@@ -346,7 +367,7 @@ namespace Aura.Channel.Skills.Magic
 					{
 						attackerSkill.Train(4);
 
-						if (aAction.Creature.Temp.LightningRodFullCharge == true) // Defeat 5 or more Enemies with a Max Charge
+						if (aAction.Creature.Temp.LightningRodFullCharge) // Defeat 5 or more Enemies with a Max Charge
 							attackerSkill.Train(5);
 					}
 					break;
