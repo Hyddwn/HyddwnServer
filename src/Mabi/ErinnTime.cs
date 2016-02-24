@@ -20,9 +20,9 @@ namespace Aura.Mabi
 		public const long TicksPerHour = TicksPerMinute * 60;
 
 		/// <summary>
-		/// Erinn months in English, starting on Imbolic (Sunday).
+		/// Erinn months, starting on Imbolic (Sunday).
 		/// </summary>
-		protected static readonly string[] Months = new string[] { "Imbolic", "Alban Eiler", "Baltane", "Alban Heruin", "Lughnasadh", "Alban Elved", "Samhain" };
+		protected static string[] _months = new string[] { "Imbolic", "Alban Eiler", "Baltane", "Alban Heruin", "Lughnasadh", "Alban Elved", "Samhain" };
 
 		/// <summary>
 		/// Release of KR.
@@ -90,8 +90,15 @@ namespace Aura.Mabi
 		/// </summary>
 		public bool IsDusk { get { return (this.Hour == 18 && this.Minute == 0); } }
 
+		/// <summary>
+		/// Creates new instance, based on DateTime.Now.
+		/// </summary>
 		public ErinnTime() : this(DateTime.Now) { }
 
+		/// <summary>
+		/// Creates new instance, based on given DateTime.
+		/// </summary>
+		/// <param name="dt"></param>
 		public ErinnTime(DateTime dt)
 		{
 			this.DateTime = dt;
@@ -162,7 +169,7 @@ namespace Aura.Mabi
 			format = format.Replace("dd", this.Day.ToString("00"));
 			format = format.Replace("d", this.Day.ToString());
 
-			format = format.Replace("MMMM", Months[this.Month]);
+			format = format.Replace("MMMM", _months[this.Month]);
 			format = format.Replace("MM", this.Month.ToString("00"));
 			format = format.Replace("M", this.Month.ToString());
 
@@ -170,6 +177,27 @@ namespace Aura.Mabi
 			format = format.Replace("t", (this.Hour < 12 ? "A" : "P"));
 
 			return format;
+		}
+
+		/// <summary>
+		/// Sets month names used in formatting for all instances of ErinnTime.
+		/// </summary>
+		/// <param name="imbolic">Sunday</param>
+		/// <param name="albanEiler">Monday</param>
+		/// <param name="baltane">Tuesday</param>
+		/// <param name="albanHeruin">Wednesday</param>
+		/// <param name="lughnasadh">Thursday</param>
+		/// <param name="albanElved">Friday</param>
+		/// <param name="samhain">Saturday</param>
+		public static void SetMonthNames(string imbolic, string albanEiler, string baltane, string albanHeruin, string lughnasadh, string albanElved, string samhain)
+		{
+			_months[0] = imbolic;
+			_months[1] = albanEiler;
+			_months[2] = baltane;
+			_months[3] = albanHeruin;
+			_months[4] = lughnasadh;
+			_months[5] = albanElved;
+			_months[6] = samhain;
 		}
 	}
 }
