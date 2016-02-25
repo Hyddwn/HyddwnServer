@@ -20,6 +20,7 @@ using Aura.Shared.Util;
 using Aura.Shared.Util.Configuration;
 using System;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Aura.Channel
@@ -226,6 +227,46 @@ namespace Aura.Channel
 		{
 			this.IsInMaintenance = isInMaintenance;
 			Send.Internal_ChannelStatus();
+		}
+
+		/// <summary>
+		/// Calculates the state of the channel.
+		/// </summary>
+		/// <remarks>
+		/// When calculating the <see cref="ChannelState"/> we take into account
+		/// whether the server is running as well as if it is in Maintenance.
+		/// </remarks>
+		/// <returns></returns>
+		public ChannelState CalculateChannelState()
+		{
+			if (this.IsInMaintenance)
+				// In case we do support the booting channel state
+				return this.IsRunning ? ChannelState.Maintenance : ChannelState.Booting;
+
+			double stress;
+			var current = this.World.CountPlayers();
+			var max = this.Conf.Channel.MaxUsers;
+
+			try
+			{
+				stress = (current / max) * 100;
+			}
+			catch (DivideByZeroException)
+			{
+				Log.Warning("Max user count was zero, falling back to Normal.");
+
+				// Fallback value
+				return ChannelState.Normal;
+			}
+
+			if (stress >= 40 && stress <= 70)
+				return ChannelState.Busy;
+			if (stress > 70 && stress <= 95)
+				return ChannelState.Full;
+			if (stress > 95)
+				return ChannelState.Bursting;
+
+			return ChannelState.Normal;
 		}
 
 		private void OnClientDisconnected(ChannelClient client)
