@@ -20,7 +20,6 @@ using Aura.Shared.Util;
 using Aura.Shared.Util.Configuration;
 using System;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Aura.Channel
