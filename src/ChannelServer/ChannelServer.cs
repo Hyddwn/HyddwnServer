@@ -36,10 +36,7 @@ namespace Aura.Channel
 		/// </summary>
 		private const int LoginTryTime = 10 * 1000;
 
-		/// <summary>
-		/// Used to determine if the server is running
-		/// </summary>
-		public bool IsRunning { get; private set; }
+		private bool _isRunning;
 
 		/// <summary>
 		/// Gets or sets whether the server is in maintenance. 
@@ -112,7 +109,7 @@ namespace Aura.Channel
 		/// </summary>
 		public void Run()
 		{
-			if (this.IsRunning)
+			if (_isRunning)
 				throw new Exception("Server is already running.");
 
 			CliUtil.WriteHeader("Channel Server", ConsoleColor.DarkGreen);
@@ -156,7 +153,7 @@ namespace Aura.Channel
 			this.StartStatusUpdateTimer();
 
 			CliUtil.RunningTitle();
-			this.IsRunning = true;
+			_isRunning = true;
 
 			// Commands
 			this.ConsoleCommands.Wait();
@@ -245,9 +242,13 @@ namespace Aura.Channel
 		/// <returns></returns>
 		public ChannelState CalculateChannelState()
 		{
+			// Just in case this gets called
+			if (this.ShuttingDown)               
+				return ChannelState.Maintenance;
+
 			if (this.IsInMaintenance)
 				// In case we do support the booting channel state
-				return this.IsRunning ? ChannelState.Maintenance : ChannelState.Booting;
+				return this._isRunning ? ChannelState.Maintenance : ChannelState.Booting;
 
 			double stress;
 			var current = this.World.CountPlayers();
@@ -318,10 +319,10 @@ namespace Aura.Channel
 		{
 			this.Events.MinutesTimeTick += (_) =>
 			{
-				if (this.LoginServer == null || this.LoginServer.State != ClientState.LoggedIn || ShuttingDown)
+				if (this.LoginServer == null || this.LoginServer.State != ClientState.LoggedIn || this.ShuttingDown)
 					return;
 
-				Send.Internal_ChannelStatus(ChannelState.Normal);
+				Send.Internal_ChannelStatus();
 			};
 		}
 
@@ -377,7 +378,7 @@ namespace Aura.Channel
 			else
 			{
 				channel.State = ChannelState.Maintenance;
-				Send.Internal_ChannelStatus(ChannelState.Maintenance);
+				this.SetMaintenance(true);
 				Log.Info("{0} switched to maintenance.", this.Conf.Channel.ChannelName);
 			}
 

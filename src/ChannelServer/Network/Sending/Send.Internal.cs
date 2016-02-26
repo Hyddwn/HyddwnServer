@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
@@ -23,6 +22,14 @@ namespace Aura.Channel.Network.Sending
 
 		/// <summary>
 		/// Sends Internal.ChannelStatus to login server.
+		/// </summary>
+		public static void Internal_ChannelStatus()
+		{
+			Internal_ChannelStatus(ChannelServer.Instance.CalculateChannelState());
+		}
+
+		/// <summary>
+		/// Sends Internal.ChannelStatus to login server with specified ChannelState.
 		/// </summary>
 		public static void Internal_ChannelStatus(ChannelState state)
 		{
