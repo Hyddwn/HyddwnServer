@@ -23,7 +23,7 @@ namespace Aura.Channel.Network.Sending
 		/// <summary>
 		/// Sends Internal.ChannelStatus to login server.
 		/// </summary>
-		public static void Internal_ChannelStatus()
+		public static void Internal_ChannelStatus(ChannelState state)
 		{
 			var cur = ChannelServer.Instance.World.CountPlayers();
 			var max = ChannelServer.Instance.Conf.Channel.MaxUsers;
@@ -35,7 +35,7 @@ namespace Aura.Channel.Network.Sending
 			packet.PutInt(ChannelServer.Instance.Conf.Channel.ChannelPort);
 			packet.PutInt(cur);
 			packet.PutInt(max);
-			packet.PutInt((int)ChannelState.Normal);
+			packet.PutInt((int) state);
 
 			ChannelServer.Instance.LoginServer.Send(packet);
 		}

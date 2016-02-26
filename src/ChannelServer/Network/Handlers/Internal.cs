@@ -26,7 +26,7 @@ namespace Aura.Channel.Network.Handlers
 
 			client.State = ClientState.LoggedIn;
 
-			Send.Internal_ChannelStatus();
+			Send.Internal_ChannelStatus(ChannelState.Normal);
 		}
 
 		/// <summary>
@@ -97,6 +97,39 @@ namespace Aura.Channel.Network.Handlers
 			var notice = packet.GetString();
 
 			Send.Notice(NoticeType.TopRed, Math.Max(20000, notice.Length * 350), notice);
+		}
+
+		/// <summary>
+		/// Request for the channel to shutdown.
+		/// </summary>
+		/// <remarks>
+		/// Logs an error if the server is already shutting down.
+		/// </remarks>
+		/// <example>
+		/// ...
+		/// </example>
+		[PacketHandler(Op.Internal.ChannelShutdown)]
+		public void ChannelShutdown(ChannelClient client, Packet packet)
+		{
+
+			int time = packet.GetInt();
+
+			if (!ChannelServer.Instance.ShuttingDown)
+			{
+				if (client.Equals(ChannelServer.Instance.LoginServer))
+				{
+					Log.Info("Shutdown request confirmed to be from the LoginServer. Proceeding with shutdown.");
+					ChannelServer.Instance.Shutdown(time);
+				}
+				else
+				{
+					Log.Error("Shutdown request is not from the LoginServer. Rejecting shutdown request.");
+				}
+			}
+			else
+			{
+				Log.Error("There was an attempt to shutdown this channel while it is already shutting down.");
+			}
 		}
 	}
 }
