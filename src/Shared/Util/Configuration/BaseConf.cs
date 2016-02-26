@@ -27,12 +27,18 @@ namespace Aura.Shared.Util.Configuration
 		/// </summary>
 		public InterConfFile Internal { get; private set; }
 
+		/// <summary>
+		/// premium.conf
+		/// </summary>
+		public PremiumConfFile Premium { get; private set; }
+
 		protected BaseConf()
 		{
 			this.Log = new LogConfFile();
 			this.Database = new DatabaseConfFile();
 			this.Localization = new LocalizationConfFile();
 			this.Internal = new InterConfFile();
+			this.Premium = new PremiumConfFile();
 		}
 
 		/// <summary>
@@ -45,6 +51,7 @@ namespace Aura.Shared.Util.Configuration
 			this.Database.Load();
 			this.Localization.Load();
 			this.Internal.Load();
+			this.Premium.Load();
 
 			if (this.Internal.Password == "change_me")
 				Aura.Shared.Util.Log.Warning("Using the default inter server password is risky, please change it in 'inter.conf'.");

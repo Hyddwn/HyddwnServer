@@ -87,6 +87,9 @@ namespace Aura.Login.Database
 					account.SessionKey = reader.GetInt64("sessionKey");
 					account.BannedExpiration = reader.GetDateTimeSafe("banExpiration");
 					account.BannedReason = reader.GetStringSafe("banReason");
+					account.PremiumServices.InventoryPlusExpiration = reader.GetDateTimeSafe("inventoryPlusExpiration");
+					account.PremiumServices.PremiumExpiration = reader.GetDateTimeSafe("premiumExpiration");
+					account.PremiumServices.VipExpiration = reader.GetDateTimeSafe("vipExpiration");
 
 					return account;
 				}

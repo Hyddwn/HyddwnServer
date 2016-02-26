@@ -91,6 +91,7 @@
     <Compile Include="Database\Card.cs" />
     <Compile Include="Database\Commands.cs" />
     <Compile Include="Database\AuraDb.cs" />
+    <Compile Include="Database\PremiumServices.cs" />
     <Compile Include="Scripting\Compilers\BooCompiler.cs" />
     <Compile Include="Scripting\Compilers\Compiler.cs" />
     <Compile Include="Scripting\Compilers\CompilerErrors.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Scripting\ScriptManager.cs" />
     <Compile Include="Scripting\Scripts\IScript.cs" />
     <Compile Include="Util\Collection.cs" />
+    <Compile Include="Util\Configuration\Files\Premium.cs" />
     <Compile Include="Util\Password.cs" />
     <Compile Include="Network\BaseClient.cs" />
     <Compile Include="Network\BaseServer.cs" />

@@ -31,6 +31,8 @@ namespace Aura.Login.Database
 
 		public bool LoggedIn { get; set; }
 
+		public PremiumServices PremiumServices { get; private set; }
+
 		public List<Card> CharacterCards { get; set; }
 		public List<Card> PetCards { get; set; }
 		public List<Character> Characters { get; set; }
@@ -41,6 +43,8 @@ namespace Aura.Login.Database
 		{
 			this.Creation = DateTime.Now;
 			this.LastLogin = DateTime.Now;
+
+			this.PremiumServices = new PremiumServices();
 
 			this.CharacterCards = new List<Card>();
 			this.PetCards = new List<Card>();

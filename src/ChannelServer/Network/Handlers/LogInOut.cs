@@ -65,6 +65,9 @@ namespace Aura.Channel.Network.Handlers
 			// Check character
 			var character = account.GetCharacterOrPetSafe(characterId);
 
+			// Free premium
+			account.PremiumServices.EvaluateFreeServices(ChannelServer.Instance.Conf.Premium);
+
 			client.Account = account;
 			client.Controlling = character;
 			client.Creatures.Add(character.EntityId, character);

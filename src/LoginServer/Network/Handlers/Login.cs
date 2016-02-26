@@ -251,6 +251,9 @@ namespace Aura.Login.Network.Handlers
 			account.LoggedIn = true;
 			LoginServer.Instance.Database.UpdateAccount(account);
 
+			// Free premium
+			account.PremiumServices.EvaluateFreeServices(LoginServer.Instance.Conf.Premium);
+
 			// Req. Info
 			account.CharacterCards = LoginServer.Instance.Database.GetCharacterCards(account.Name);
 			account.PetCards = LoginServer.Instance.Database.GetPetCards(account.Name);

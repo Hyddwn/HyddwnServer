@@ -503,6 +503,15 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check premium
+			if (!client.Account.PremiumServices.CanUseAllBankTabs && tabName != creature.Name)
+			{
+				// Unofficial
+				Send.MsgBox(creature, Localization.Get("Inventory Plus is required to access other character's bank tabs."));
+				Send.BankDepositItemR(creature, false);
+				return;
+			}
+
 			// Deposit item
 			// TODO: Handle different banks in different towns.
 			var success = client.Account.Bank.DepositItem(creature, itemEntityId, "Global", tabName, posX, posY);
@@ -524,6 +533,15 @@ namespace Aura.Channel.Network.Handlers
 			var itemEntityId = packet.GetLong();
 
 			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check premium
+			if (!client.Account.PremiumServices.CanUseAllBankTabs && tabName != creature.Name)
+			{
+				// Unofficial
+				Send.MsgBox(creature, Localization.Get("Inventory Plus is required to access other character's bank tabs."));
+				Send.BankWithdrawItemR(creature, false);
+				return;
+			}
 
 			// Withdraw item
 			// TODO: Handle different banks in different towns.
