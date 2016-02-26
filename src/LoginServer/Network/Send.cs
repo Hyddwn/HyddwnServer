@@ -517,12 +517,12 @@ namespace Aura.Login.Network
 			packet.PutByte(1);
 
 			// Always visible?
-			packet.PutByte(false);          // Inventory Plus Kit
-			packet.PutLong(0);              // DateTime
-			packet.PutByte(false);          // Mabinogi Premium Pack
-			packet.PutLong(0);
-			packet.PutByte(false);          // Mabinogi VIP
-			packet.PutLong(0);
+			packet.PutByte(account.PremiumServices.HasInventoryPlusService);
+			packet.PutLong(account.PremiumServices.InventoryPlusExpiration);
+			packet.PutByte(account.PremiumServices.HasPremiumService);
+			packet.PutLong(account.PremiumServices.PremiumExpiration);
+			packet.PutByte(account.PremiumServices.HasVipService);
+			packet.PutLong(account.PremiumServices.VipExpiration);
 
 			// [170402, TW170300] New premium thing
 			{
