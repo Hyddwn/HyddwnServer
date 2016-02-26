@@ -323,14 +323,18 @@ namespace Aura.Channel
 				Log.Info("{0} switched to maintenance.", this.Conf.Channel.ChannelName);
 			}
 
-			Send.Internal_Broadcast(String.Format(Localization.Get("The server will be brought down for maintenance in {0} seconds. Please log out safely before then."), time));
-
+			Send.Internal_Broadcast(string.Format(Localization.Get("The server will be brought down for maintenance in {0} seconds. Please log out safely before then."), time));
 			Send.RequestClientDisconnect(time);
+
+			// Add a few seconds, as `time` is the moment when all clients
+			// send their DC request, because of RequestClientDisconnect.
+			// The channel should shutdown *after* that's done. 10 seconds
+			// should be plenty.
+			time += 10;
 
 			Log.Info("Shutting down in {0} seconds...", time);
 
 			this.Timer.Change(time * 1000, Timeout.Infinite);
-
 		}
 
 		private void ShutdownTimerDone(object timer)
