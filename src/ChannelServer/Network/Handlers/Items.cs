@@ -157,7 +157,6 @@ namespace Aura.Channel.Network.Handlers
 			Send.ItemDropR(creature, true);
 		}
 
-		static byte x = 0;
 		/// <summary>
 		/// Sent when clicking an item on the ground, to pick it up.
 		/// </summary>
