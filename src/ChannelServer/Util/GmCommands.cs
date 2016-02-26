@@ -98,7 +98,7 @@ namespace Aura.Channel.Util
 			Add(99, -1, "reloadscripts", "", HandleReloadScripts);
 			Add(99, -1, "reloadconf", "", HandleReloadConf);
 			Add(99, 99, "closenpc", "", HandleCloseNpc);
-			Add(99, 99, "shutdown", "[seconds]", HandleShutdown);
+			Add(99, 99, "shutdown", "<seconds>", HandleShutdown);
 			Add(99, 99, "nosave", "", HandleNoSave);
 			Add(99, 99, "dbgregion", "[scale=20] [entityIds]", HandleDebugRegion);
 
@@ -1914,21 +1914,19 @@ namespace Aura.Channel.Util
 
 		private CommandResult HandleShutdown(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
-			// Default shutdown time is 60 seconds
-			int time = 60;
-
-			if (args.Count > 2)
-				return CommandResult.InvalidArgument;
-
-			// Get time if a time argument is provided
-			if (args.Count == 2 && !int.TryParse(args[1], out time))
+			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
 			if (ChannelServer.Instance.ShuttingDown)
 			{
 				Send.MsgBox(sender, Localization.Get("Server is already being shut down."));
-				return CommandResult.Fail;
+				return CommandResult.Okay;
 			}
+
+			// Get time
+			int time;
+			if (!int.TryParse(args[1], out time))
+				return CommandResult.InvalidArgument;
 
 			time = Math2.Clamp(60, 1800, time);
 

@@ -13,27 +13,25 @@ namespace Aura.Login.Util
 	{
 		public LoginConsoleCommands()
 		{
-			this.Add("shutdown", "[seconds]", "Orders all servers to shut down", HandleShutDown);
+			this.Add("shutdown", "<seconds>", "Orders all servers to shut down", HandleShutDown);
 			this.Add("auth", "<account> <level>", "Changes authority level of account", HandleAuth);
 			this.Add("passwd", "<account> <password>", "Changes password of account", HandlePasswd);
 		}
 
 		private CommandResult HandleShutDown(string command, IList<string> args)
 		{
-			// Default shutdown time is 60 seconds
-			int time = 60;
-
-			if (args.Count > 2)
+			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
 			if (LoginServer.Instance.ChannelClients.Count == 0)
 			{
 				Log.Error("There are no channel servers currently running.");
-				return CommandResult.Fail;
+				return CommandResult.Okay;
 			}
 
-			// Get time if a time argument is provided
-			if (args.Count == 2 && !int.TryParse(args[1], out time))
+			// Get time
+			int time;
+			if (!int.TryParse(args[1], out time))
 				return CommandResult.InvalidArgument;
 
 			time = Math2.Clamp(60, 1800, time);
