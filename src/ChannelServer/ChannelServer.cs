@@ -323,7 +323,13 @@ namespace Aura.Channel
 				Log.Info("{0} switched to maintenance.", this.Conf.Channel.ChannelName);
 			}
 
-			Send.Internal_Broadcast(string.Format(Localization.Get("The server will be brought down for maintenance in {0} seconds. Please log out safely before then."), time));
+			var notice = Localization.GetPlural(
+				"The server will be brought down for maintenance in {0} second. Please log out safely before then.",
+				"The server will be brought down for maintenance in {0} seconds. Please log out safely before then.",
+				time
+			);
+
+			Send.Internal_Broadcast(string.Format(notice, time));
 			Send.RequestClientDisconnect(time);
 
 			// Add a few seconds, as `time` is the moment when all clients
