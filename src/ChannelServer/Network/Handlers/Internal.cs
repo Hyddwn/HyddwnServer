@@ -26,7 +26,7 @@ namespace Aura.Channel.Network.Handlers
 
 			client.State = ClientState.LoggedIn;
 
-			Send.Internal_ChannelStatus();
+			Send.Internal_ChannelStatus(ChannelState.Normal);
 		}
 
 		/// <summary>

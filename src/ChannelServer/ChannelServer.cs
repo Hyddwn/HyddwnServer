@@ -263,7 +263,7 @@ namespace Aura.Channel
 				if (this.LoginServer == null || this.LoginServer.State != ClientState.LoggedIn || ShuttingDown)
 					return;
 
-				Send.Internal_ChannelStatus();
+				Send.Internal_ChannelStatus(ChannelState.Normal);
 			};
 		}
 
@@ -319,7 +319,7 @@ namespace Aura.Channel
 			else
 			{
 				channel.State = ChannelState.Maintenance;
-				Send.Internal_ChannelStatus_Maintenance();
+				Send.Internal_ChannelStatus(ChannelState.Maintenance);
 				Log.Info("{0} switched to maintenance.", this.Conf.Channel.ChannelName);
 			}
 
