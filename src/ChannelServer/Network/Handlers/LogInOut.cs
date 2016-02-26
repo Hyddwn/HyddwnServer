@@ -58,10 +58,7 @@ namespace Aura.Channel.Network.Handlers
 			var character = account.GetCharacterOrPetSafe(characterId);
 
 			// Free premium
-			var freeExpiration = DateTime.Parse("2999-12-31 23:59:59");
-			if (ChannelServer.Instance.Conf.Premium.FreeInventoryPlus) account.PremiumServices.InventoryPlusExpiration = freeExpiration;
-			if (ChannelServer.Instance.Conf.Premium.FreePremium) account.PremiumServices.PremiumExpiration = freeExpiration;
-			if (ChannelServer.Instance.Conf.Premium.FreeVip) account.PremiumServices.VipExpiration = freeExpiration;
+			account.PremiumServices.EvaluateFreeServices(ChannelServer.Instance.Conf.Premium);
 
 			client.Account = account;
 			client.Controlling = character;

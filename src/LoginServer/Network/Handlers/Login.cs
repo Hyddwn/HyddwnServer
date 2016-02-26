@@ -252,10 +252,7 @@ namespace Aura.Login.Network.Handlers
 			LoginServer.Instance.Database.UpdateAccount(account);
 
 			// Free premium
-			var freeExpiration = DateTime.Parse("2999-12-31 23:59:59");
-			if (LoginServer.Instance.Conf.Premium.FreeInventoryPlus) account.PremiumServices.InventoryPlusExpiration = freeExpiration;
-			if (LoginServer.Instance.Conf.Premium.FreePremium) account.PremiumServices.PremiumExpiration = freeExpiration;
-			if (LoginServer.Instance.Conf.Premium.FreeVip) account.PremiumServices.VipExpiration = freeExpiration;
+			account.PremiumServices.EvaluateFreeServices(LoginServer.Instance.Conf.Premium);
 
 			// Req. Info
 			account.CharacterCards = LoginServer.Instance.Database.GetCharacterCards(account.Name);
