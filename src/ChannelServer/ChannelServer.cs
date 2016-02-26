@@ -341,15 +341,22 @@ namespace Aura.Channel
 		{
 			((Timer)timer).Dispose();
 
+			// Kill clients
 			this.KillConnectedClients();
+
+			// Save global variables
+			this.Database.SaveVars("Aura System", 0, this.ScriptManager.GlobalVars.Perm);
 
 			CliUtil.Exit(0, false);
 		}
 
+		/// <summary>
+		/// Kills all clients currently connected to the channel.
+		/// </summary>
 		private void KillConnectedClients()
 		{
 			// Grab a copy of the list of users still currently logged in
-			var shutdownClientList = ChannelServer.Instance.Server.Clients.ToList<ChannelClient>();
+			var shutdownClientList = this.Server.Clients.ToList<ChannelClient>();
 
 			// Kill all clients still logged in
 			foreach (var user in shutdownClientList)
@@ -364,9 +371,6 @@ namespace Aura.Channel
 					Log.Exception(e, "Error killing client.");
 				}
 			}
-
-			// Save global variables
-			this.Database.SaveVars("Aura System", 0, this.ScriptManager.GlobalVars.Perm);
 		}
 	}
 }

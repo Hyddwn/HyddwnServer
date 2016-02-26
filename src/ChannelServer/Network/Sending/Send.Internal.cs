@@ -35,7 +35,7 @@ namespace Aura.Channel.Network.Sending
 			packet.PutInt(ChannelServer.Instance.Conf.Channel.ChannelPort);
 			packet.PutInt(cur);
 			packet.PutInt(max);
-			packet.PutInt((int) state);
+			packet.PutInt((int)state);
 
 			ChannelServer.Instance.LoginServer.Send(packet);
 		}
