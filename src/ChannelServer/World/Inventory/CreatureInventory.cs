@@ -645,12 +645,15 @@ namespace Aura.Channel.World.Inventory
 						}
 
 						// Try bags
-						for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax && !success; ++i)
+						if (_creature.Client.Account.PremiumServices.CanUseBags)
 						{
-							if (_pockets.ContainsKey(i))
+							for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax && !success; ++i)
 							{
-								success = _pockets[i].HasSpace(collidingItem);
-								collidingItemTarget = i;
+								if (_pockets.ContainsKey(i))
+								{
+									success = _pockets[i].HasSpace(collidingItem);
+									collidingItemTarget = i;
+								}
 							}
 						}
 
@@ -1056,15 +1059,18 @@ namespace Aura.Channel.World.Inventory
 					}
 
 					// Bags
-					for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax; ++i)
+					if (_creature.Client.Account.PremiumServices.CanUseBags)
 					{
-						if (item.Info.Amount == 0)
-							break;
-
-						if (_pockets.ContainsKey(i))
+						for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax; ++i)
 						{
-							_pockets[i].FillStacks(item, out changed);
-							this.UpdateChangedItems(changed);
+							if (item.Info.Amount == 0)
+								break;
+
+							if (_pockets.ContainsKey(i))
+							{
+								_pockets[i].FillStacks(item, out changed);
+								this.UpdateChangedItems(changed);
+							}
 						}
 					}
 				}
@@ -1135,13 +1141,16 @@ namespace Aura.Channel.World.Inventory
 				}
 
 				// Try bags
-				for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax; ++i)
+				if (_creature.Client.Account.PremiumServices.CanUseBags)
 				{
-					if (success)
-						break;
+					for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax; ++i)
+					{
+						if (success)
+							break;
 
-					if (_pockets.ContainsKey(i))
-						success = _pockets[i].Add(item);
+						if (_pockets.ContainsKey(i))
+							success = _pockets[i].Add(item);
+					}
 				}
 
 				// Try temp
