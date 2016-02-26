@@ -1304,7 +1304,7 @@ namespace Aura.Channel.Util
 			if (args.Count < 2)
 				return CommandResult.InvalidArgument;
 
-			var notice = sender.Name + ": " + message.Substring(message.IndexOf(" "));
+			var notice = target.Name + ": " + message.Substring(message.IndexOf(" "));
 
 			Send.Internal_Broadcast(notice);
 
