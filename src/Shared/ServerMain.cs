@@ -7,6 +7,7 @@ using Aura.Data;
 using Aura.Shared.Database;
 using Aura.Shared.Util.Configuration;
 using Aura.Shared.Util;
+using Aura.Mabi;
 
 namespace Aura.Shared
 {
@@ -314,6 +315,16 @@ namespace Aura.Shared
 						Log.Warning("Localization file '{0}.po' not found.", language);
 				}
 			}
+
+			ErinnTime.SetMonthNames(
+				Localization.Get("Imbolic"),
+				Localization.Get("Alban Eiler"),
+				Localization.Get("Baltane"),
+				Localization.Get("Alban Heruin"),
+				Localization.Get("Lughnasadh"),
+				Localization.Get("Alban Elved"),
+				Localization.Get("Samhain")
+			);
 		}
 	}
 

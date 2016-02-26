@@ -21,6 +21,9 @@ using Aura.Shared.Util.Configuration;
 using System;
 using System.Net.Sockets;
 using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
+using Aura.Mabi;
 
 namespace Aura.Channel
 {
@@ -78,6 +81,8 @@ namespace Aura.Channel
 		public PartyManager PartyManager { get; private set; }
 
 		public WorldManager World { get; private set; }
+		public bool ShuttingDown { get; private set; }
+		private Timer Timer { get; set; }
 
 		private ChannelServer()
 		{
@@ -98,6 +103,8 @@ namespace Aura.Channel
 			this.Events = new EventManager();
 			this.Weather = new WeatherManager();
 			this.PartyManager = new PartyManager();
+
+			this.Timer = new Timer(new TimerCallback(ShutdownTimerDone));
 		}
 
 		/// <summary>
@@ -311,10 +318,10 @@ namespace Aura.Channel
 		{
 			this.Events.MinutesTimeTick += (_) =>
 			{
-				if (this.LoginServer == null || this.LoginServer.State != ClientState.LoggedIn)
+				if (this.LoginServer == null || this.LoginServer.State != ClientState.LoggedIn || ShuttingDown)
 					return;
 
-				Send.Internal_ChannelStatus();
+				Send.Internal_ChannelStatus(ChannelState.Normal);
 			};
 		}
 
@@ -350,6 +357,83 @@ namespace Aura.Channel
 			{
 				Log.Warning("InitDatabase: Found items with temp entity ids.");
 				// TODO: clean up dbs
+			}
+		}
+
+		/// <summary>
+		/// Shutdown procedure for the current channel.
+		/// </summary>
+		/// <param name="time">The amount of time in seconds until shutdown.</param>
+		public void Shutdown(int time)
+		{
+			this.ShuttingDown = true;
+
+			var channel = this.ServerList.GetChannel(this.Conf.Channel.ChannelServer, this.Conf.Channel.ChannelName);
+
+			if (channel == null)
+			{
+				Log.Warning("Unregistered channel.");
+			}
+			else
+			{
+				channel.State = ChannelState.Maintenance;
+				Send.Internal_ChannelStatus(ChannelState.Maintenance);
+				Log.Info("{0} switched to maintenance.", this.Conf.Channel.ChannelName);
+			}
+
+			var notice = Localization.GetPlural(
+				"The server will be brought down for maintenance in {0} second. Please log out safely before then.",
+				"The server will be brought down for maintenance in {0} seconds. Please log out safely before then.",
+				time
+			);
+
+			Send.Internal_Broadcast(string.Format(notice, time));
+			Send.RequestClientDisconnect(time);
+
+			// Add a few seconds, as `time` is the moment when all clients
+			// send their DC request, because of RequestClientDisconnect.
+			// The channel should shutdown *after* that's done. 10 seconds
+			// should be plenty.
+			time += 10;
+
+			Log.Info("Shutting down in {0} seconds...", time);
+
+			this.Timer.Change(time * 1000, Timeout.Infinite);
+		}
+
+		private void ShutdownTimerDone(object timer)
+		{
+			((Timer)timer).Dispose();
+
+			// Kill clients
+			this.KillConnectedClients();
+
+			// Save global variables
+			this.Database.SaveVars("Aura System", 0, this.ScriptManager.GlobalVars.Perm);
+
+			CliUtil.Exit(0, false);
+		}
+
+		/// <summary>
+		/// Kills all clients currently connected to the channel.
+		/// </summary>
+		private void KillConnectedClients()
+		{
+			// Grab a copy of the list of users still currently logged in
+			var shutdownClientList = this.Server.Clients.ToList<ChannelClient>();
+
+			// Kill all clients still logged in
+			foreach (var user in shutdownClientList)
+			{
+				try
+				{
+					if (user.State == ClientState.LoggedIn)
+						user.Kill();
+				}
+				catch (Exception e)
+				{
+					Log.Exception(e, "Error killing client.");
+				}
 			}
 		}
 	}

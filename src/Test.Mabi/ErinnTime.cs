@@ -41,11 +41,15 @@ namespace Aura.Tests.Mabi
 		public void ErinnTimeToString()
 		{
 			var time1 = new ErinnTime(DateTime.Parse("2015-01-01 00:00"));
-			
+
 			Assert.Equal("550-4-01 00:00", time1.ToString());
 			Assert.Equal("0550-04-01 0:0", time1.ToString("yyyy-MM-dd H:m"));
 			Assert.Equal("00:00 AM", time1.ToString("HH:mm tt"));
-			
+
+			Assert.Equal("01 Lughnasadh 550", time1.ToString("dd MMMM yyy"));
+			ErinnTime.SetMonthNames("0", "1", "2", "3", "Foobar", "5", "6");
+			Assert.Equal("01 Foobar 550", time1.ToString("dd MMMM yyy"));
+
 			var time2 = new ErinnTime(DateTime.Parse("2015-01-01 23:59"));
 
 			Assert.Equal("23:20 PM", time2.ToString("HH:mm tt"));
