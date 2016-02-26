@@ -70,6 +70,41 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Check premium
+			// Technically it would be cheating to drop or destroy items
+			// that are inside bags, with expired service, but we'll ignore
+			// those checks for now, to reduce redundancy. You are supposed
+			// to be able to get to your items, who cares if they edit
+			// packets to make them drop?
+			if (!client.Account.PremiumServices.CanUseBags)
+			{
+				var freeBag = true;
+
+				// Check source
+				if (source.IsBag())
+				{
+					var bagItem = creature.Inventory.GetItem(a => a.OptionInfo.LinkedPocketId == source);
+					freeBag = (bagItem != null && bagItem.HasTag("/free_bag/"));
+				}
+
+				// Check target
+				if (target.IsBag() && freeBag)
+				{
+					var bagItem = creature.Inventory.GetItem(a => a.OptionInfo.LinkedPocketId == target);
+					freeBag = (bagItem != null && bagItem.HasTag("/free_bag/"));
+				}
+
+				// Stop if not a free bag
+				if (!freeBag)
+				{
+					// Unofficial, what does the client do when you have a
+					// bag open and then try to use it, after the service
+					// expired?
+					Send.MsgBox(creature, Localization.Get("Inventory Plus is required to use bags.\nPlease use the 'Unequip the Bag' command to retrieve the items in the bag."));
+					goto L_Fail;
+				}
+			}
+
 			// Stop moving when changing weapons
 			if ((target >= Pocket.RightHand1 && target <= Pocket.Magazine2) || (source >= Pocket.RightHand1 && source <= Pocket.Magazine2))
 				creature.StopMove();

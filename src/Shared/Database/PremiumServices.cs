@@ -73,6 +73,11 @@ namespace Aura.Shared.Database
 		public bool HasVipService { get { return this.VipExpiration > DateTime.Now; } }
 
 		/// <summary>
+		/// Returns true if account is allowed to use bags.
+		/// </summary>
+		public bool CanUseBags { get { return (this.HasInventoryPlusService || this.HasPremiumService || this.HasVipService); } }
+
+		/// <summary>
 		/// Enables services for free, based on the conf's settings.
 		/// </summary>
 		/// <param name="premiumConfFile"></param>
