@@ -165,8 +165,8 @@ namespace Aura.Channel.Skills.Magic
 			aAction.PropId = lProp.EntityId;
 			cap.Add(aAction);
 
-			// Get targets in Polygon
-			var targets = attacker.Region.GetCreaturesInPolygon(p1, p2, p3, p4).Where(x => attacker.CanTarget(x)).ToList();
+			// Get targets in Polygon - includes collission check
+			var targets = attacker.Region.GetCreaturesInPolygon(p1, p2, p3, p4).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(attacker.GetPosition(), x.GetPosition())).ToList();
 
 			var rnd = RandomProvider.Get();
 
@@ -235,7 +235,6 @@ namespace Aura.Channel.Skills.Magic
 						attacker.Shove(target, KnockbackDistance);
 					}
 				}
-				tAction.Creature.Stun = tAction.Stun;
 			}
 			cap.Handle();
 
