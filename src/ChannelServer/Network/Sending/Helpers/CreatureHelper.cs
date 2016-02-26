@@ -17,6 +17,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 		public static Packet AddCreatureInfo(this Packet packet, Creature creature, CreaturePacketType type)
 		{
 			var pos = creature.GetPosition();
+			var account = creature.Client.Account;
 
 			// Start
 			// --------------------------------------------------------------
@@ -602,7 +603,6 @@ namespace Aura.Channel.Network.Sending.Helpers
 			//packet.PutByte(creature.IsFlying);
 			//if (creature.IsFlying)
 			//{
-			//    var pos = creature.GetPosition();
 			//    packet.PutFloat(pos.X);
 			//    packet.PutFloat(pos.H);
 			//    packet.PutFloat(pos.Y);
@@ -974,22 +974,22 @@ namespace Aura.Channel.Network.Sending.Helpers
 				{
 					packet.PutByte(0);
 				}
-				packet.PutByte(0);                   // ? (formerly IsUsingExtraStorage)
-				packet.PutByte(1);                   // Style tab (formerly IsUsingNaosSupport)
-				packet.PutByte(0);                   // ? (formerly IsUsingAdvancedPlay)
-				packet.PutByte(0);                   // ?
-				packet.PutByte(0);                   // Bags, Account Bank, Premium Gestures
-				packet.PutByte(1);                   // ? (formerly Premium Gestures?)
-				packet.PutByte(1);                   // ? (Default 1 on NA?)
-				packet.PutByte(0);                   // Bags, Account Bank
+				packet.PutByte(false);                                           // ? (formerly IsUsingExtraStorage)
+				packet.PutByte(account.PremiumServices.HasVipService);           // Style tab (formerly IsUsingNaosSupport)
+				packet.PutByte(false);                                           // ? (formerly IsUsingAdvancedPlay)
+				packet.PutByte(false);                                           // ?
+				packet.PutByte(account.PremiumServices.HasPremiumService);       // Bags, Account Bank, Premium Gestures
+				packet.PutByte(false);                                           // ? (formerly Premium Gestures?)
+				packet.PutByte(true);                                            // ? (Default 1 on NA?)
+				packet.PutByte(account.PremiumServices.HasInventoryPlusService); // Bags, Account Bank
 				// [170402, TW170300] New premium thing
 				{
-					packet.PutByte(1);               // Bags, Account Bank, Premium Gestures, VIP tab
+					packet.PutByte(account.PremiumServices.HasVipService);       // Bags, Account Bank, Premium Gestures, VIP tab
 				}
 				// [180300, NA166 (18.09.2013)] ?
 				{
-					packet.PutByte(0);               // Bags, Account Bank, Premium Gestures, VIP tab
-					packet.PutByte(0);               // Bags, Account Bank, Premium Gestures, VIP tab
+					packet.PutByte(false);                                       // Bags, Account Bank, Premium Gestures, VIP tab
+					packet.PutByte(false);                                       // Bags, Account Bank, Premium Gestures, VIP tab
 				}
 				// [180800, NA196 (14.10.2014)] ?
 				{

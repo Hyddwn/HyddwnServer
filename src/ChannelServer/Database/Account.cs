@@ -10,6 +10,7 @@ using Aura.Channel.World.Entities;
 using Aura.Channel.Scripting;
 using Aura.Channel.World.Inventory;
 using Aura.Shared.Util;
+using Aura.Shared.Database;
 
 namespace Aura.Channel.Database
 {
@@ -82,6 +83,11 @@ namespace Aura.Channel.Database
 		private int _points;
 
 		/// <summary>
+		/// Manager for Account's premium services.
+		/// </summary>
+		public PremiumServices PremiumServices { get; private set; }
+
+		/// <summary>
 		/// Account's current Autoban score. Don't set this directly
 		/// as Autoban takes care of it.
 		/// </summary>
@@ -134,6 +140,7 @@ namespace Aura.Channel.Database
 			this.Pets = new List<Pet>();
 			this.Vars = new ScriptVariables();
 			this.Bank = new BankInventory();
+			this.PremiumServices = new PremiumServices();
 
 			this.LastLogin = DateTime.Now;
 		}

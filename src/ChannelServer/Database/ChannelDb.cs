@@ -56,6 +56,9 @@ namespace Aura.Channel.Database
 						account.LastAutobanReduction = reader.GetDateTimeSafe("lastAutobanReduction");
 						account.Bank.Gold = reader.GetInt32("bankGold");
 						account.Points = reader.GetInt32("points");
+						account.PremiumServices.InventoryPlusExpiration = reader.GetDateTimeSafe("inventoryPlusExpiration");
+						account.PremiumServices.PremiumExpiration = reader.GetDateTimeSafe("premiumExpiration");
+						account.PremiumServices.VipExpiration = reader.GetDateTimeSafe("vipExpiration");
 
 						// We don't need to decrease their score if it's already zero!
 						if (account.AutobanScore > 0 && ChannelServer.Instance.Conf.Autoban.ReductionTime.Ticks != 0)
