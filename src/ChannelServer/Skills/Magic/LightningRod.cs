@@ -101,8 +101,11 @@ namespace Aura.Channel.Skills.Magic
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			if (creature.RightHand == null)
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/staff/"))
+			{
 				Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
+				return false;
+			}
 
 			creature.StopMove();
 
