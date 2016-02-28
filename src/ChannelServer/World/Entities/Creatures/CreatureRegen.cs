@@ -37,7 +37,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <param name="stat"></param>
 		/// <param name="change"></param>
 		/// <param name="max"></param>
-		/// <param name="duration"></param>
+		/// <param name="duration">Duration in milliseconds, -1 (default) for constant.</param>
 		/// <returns></returns>
 		public StatRegen Add(Stat stat, float change, float max, int duration = -1)
 		{
@@ -65,7 +65,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <param name="stat"></param>
 		/// <param name="change"></param>
 		/// <param name="max"></param>
-		/// <param name="duration"></param>
+		/// <param name="duration">Duration in milliseconds, -1 (default) for constant.</param>
 		/// <returns></returns>
 		public StatRegen Add(string group, Stat stat, float change, float max, int duration = -1)
 		{
@@ -308,6 +308,13 @@ namespace Aura.Channel.World.Entities.Creatures
 			}
 		}
 
+		/// <summary>
+		/// Creates new regen.
+		/// </summary>
+		/// <param name="stat"></param>
+		/// <param name="change"></param>
+		/// <param name="max"></param>
+		/// <param name="duration">Duration in milliseconds, -1 (default) for constant.</param>
 		public StatRegen(Stat stat, float change, float max, int duration = -1)
 		{
 			this.Id = Interlocked.Increment(ref _id);
