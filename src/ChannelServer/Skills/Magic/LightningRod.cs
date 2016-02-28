@@ -130,9 +130,6 @@ namespace Aura.Channel.Skills.Magic
 		/// <param name="packet"></param>
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
-			// Mana degeneration
-			var degen = attacker.Regens.Add(Stat.Mana, skill.RankData.ManaActive, attacker.ManaMax, DegenTime);
-
 			// Set full charge variable
 			attacker.Temp.LightningRodFullCharge = (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3));
 
