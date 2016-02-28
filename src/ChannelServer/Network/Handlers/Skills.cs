@@ -109,11 +109,39 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			// TODO: Move mana/stm checks here?
+			// Check Mana
+			if (creature.Mana < skill.RankData.ManaCost)
+			{
+				Send.SystemMessage(creature, Localization.Get("Insufficient Mana"));
+				Send.SkillStartSilentCancel(creature, skill.Info.Id);
+				return;
+			}
+
+			// Check Stamina
+			if (creature.Stamina < skill.RankData.StaminaCost)
+			{
+				Send.SystemMessage(creature, Localization.Get("Insufficient Stamina"));
+				Send.SkillStartSilentCancel(creature, skill.Info.Id);
+				return;
+			}
 
 			try
 			{
 				handler.Start(creature, skill, packet);
+
+				// Normal Mana/Stamina reduction
+				if (skill.RankData.ManaPrepare != 0)
+					creature.Regens.Add(Stat.Mana, skill.RankData.ManaPrepare, creature.ManaMax, 1000);
+				if (skill.RankData.StaminaPrepare != 0)
+					creature.Regens.Add(Stat.Stamina, skill.RankData.StaminaPrepare, creature.StaminaMax, 1000);
+
+				// Constant Mana/Stamina reduction, for the duration
+				// of the skill. Example: Mana Shield
+				if (skill.RankData.ManaActive != 0)
+					creature.Regens.Add("SkillInUse" + skill.Info.Id, Stat.Mana, skill.RankData.ManaActive, creature.ManaMax);
+				if (skill.RankData.StaminaActive != 0)
+					creature.Regens.Add("SkillInUse" + skill.Info.Id, Stat.Stamina, skill.RankData.StaminaActive, creature.StaminaMax);
+
 				ChannelServer.Instance.Events.OnPlayerUsedSkill(creature, skill);
 			}
 			catch (NotImplementedException)
@@ -168,6 +196,8 @@ namespace Aura.Channel.Network.Handlers
 				Send.ServerMessage(creature, Localization.Get("This skill isn't implemented completely yet."));
 				Send.SkillStopSilentCancel(creature, skillId);
 			}
+
+			creature.Regens.Remove("SkillInUse" + skill.Info.Id);
 		}
 
 		/// <summary>

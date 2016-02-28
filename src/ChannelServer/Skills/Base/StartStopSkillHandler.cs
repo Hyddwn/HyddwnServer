@@ -32,20 +32,6 @@ namespace Aura.Channel.Skills.Base
 	{
 		public void Start(Creature creature, Skill skill, Packet packet)
 		{
-			// Check mana and stamina
-			if (!this.CheckMana(creature, skill))
-			{
-				Send.SystemMessage(creature, Localization.Get("Insufficient Mana"));
-				Send.SkillStartSilentCancel(creature, skill.Info.Id);
-				return;
-			}
-			if (!this.CheckStamina(creature, skill))
-			{
-				Send.SystemMessage(creature, Localization.Get("Insufficient Stamina"));
-				Send.SkillStartSilentCancel(creature, skill.Info.Id);
-				return;
-			}
-
 			// Get parameters
 			var stringParam = packet.NextIs(PacketElementType.String);
 			var dict = new MabiDictionary();
@@ -66,10 +52,6 @@ namespace Aura.Channel.Skills.Base
 			}
 
 			skill.Activate(SkillFlags.InUse);
-
-			// Use mana/stamina
-			this.UseMana(creature, skill);
-			this.UseStamina(creature, skill);
 
 			Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana, Stat.Stamina);
 
@@ -120,44 +102,6 @@ namespace Aura.Channel.Skills.Base
 		public virtual StartStopResult Stop(Creature creature, Skill skill, MabiDictionary dict)
 		{
 			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns true if creature has enough mana to use use skill.
-		/// </summary>
-		/// <returns></returns>
-		public virtual bool CheckMana(Creature creature, Skill skill)
-		{
-			return (creature.Mana >= skill.RankData.ManaCost);
-		}
-
-		/// <summary>
-		/// Reduces mana for one usage of the skill.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		public virtual void UseMana(Creature creature, Skill skill)
-		{
-			creature.Mana -= skill.RankData.ManaCost;
-		}
-
-		/// <summary>
-		/// Returns true if creature has enough stamina to use use skill.
-		/// </summary>
-		/// <returns></returns>
-		public virtual bool CheckStamina(Creature creature, Skill skill)
-		{
-			return (creature.Stamina >= skill.RankData.StaminaCost);
-		}
-
-		/// <summary>
-		/// Reduces stamina for one usage of the skill.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		public virtual void UseStamina(Creature creature, Skill skill)
-		{
-			creature.Stamina -= skill.RankData.StaminaCost;
 		}
 	}
 
