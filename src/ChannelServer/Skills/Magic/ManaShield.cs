@@ -34,8 +34,6 @@ namespace Aura.Channel.Skills.Magic
 			creature.Conditions.Activate(ConditionsA.ManaShield);
 			Send.Effect(creature, Effect.ManaShield);
 
-			creature.Regens.Add("ManaShield", Stat.Mana, -skill.RankData.Var2, creature.ManaMax);
-
 			return StartStopResult.Okay;
 		}
 
@@ -49,8 +47,6 @@ namespace Aura.Channel.Skills.Magic
 		public override StartStopResult Stop(Creature creature, Skill skill, MabiDictionary dict)
 		{
 			creature.Conditions.Deactivate(ConditionsA.ManaShield);
-
-			creature.Regens.Remove("ManaShield");
 
 			return StartStopResult.Okay;
 		}
