@@ -36,12 +36,7 @@ namespace Aura.Channel
 		/// </summary>
 		private const int LoginTryTime = 10 * 1000;
 
-		private bool _isRunning;
-
-		/// <summary>
-		/// Gets or sets whether the server is in maintenance. 
-		/// </summary>
-		public bool IsInMaintenance { get; set; }
+		private bool _running;
 
 		/// <summary>
 		/// Instance of the actual server component.
@@ -109,7 +104,7 @@ namespace Aura.Channel
 		/// </summary>
 		public void Run()
 		{
-			if (_isRunning)
+			if (_running)
 				throw new Exception("Server is already running.");
 
 			CliUtil.WriteHeader("Channel Server", ConsoleColor.DarkGreen);
@@ -153,7 +148,7 @@ namespace Aura.Channel
 			this.StartStatusUpdateTimer();
 
 			CliUtil.RunningTitle();
-			_isRunning = true;
+			_running = true;
 
 			// Commands
 			this.ConsoleCommands.Wait();
@@ -223,16 +218,6 @@ namespace Aura.Channel
 		}
 
 		/// <summary>
-		/// Sets whether the server is in maintenance with notification to the login server
-		/// </summary>
-		/// <param name="isInMaintenance"></param>
-		public void SetMaintenance(bool isInMaintenance)
-		{
-			this.IsInMaintenance = isInMaintenance;
-			Send.Internal_ChannelStatus();
-		}
-
-		/// <summary>
 		/// Calculates the state of the channel.
 		/// </summary>
 		/// <remarks>
@@ -246,25 +231,18 @@ namespace Aura.Channel
 			if (this.ShuttingDown)               
 				return ChannelState.Maintenance;
 
-			if (this.IsInMaintenance)
-				// In case we do support the booting channel state
-				return this._isRunning ? ChannelState.Maintenance : ChannelState.Booting;
-
-			double stress;
 			var current = this.World.CountPlayers();
 			var max = this.Conf.Channel.MaxUsers;
 
-			try
-			{
-				stress = (current / max) * 100;
-			}
-			catch (DivideByZeroException)
+			if (max == 0)
 			{
 				Log.Warning("Max user count was zero, falling back to Normal.");
 
 				// Fallback value
 				return ChannelState.Normal;
 			}
+
+			double stress = (current / max) * 100;
 
 			if (stress >= 40 && stress <= 70)
 				return ChannelState.Busy;
@@ -378,7 +356,7 @@ namespace Aura.Channel
 			else
 			{
 				channel.State = ChannelState.Maintenance;
-				this.SetMaintenance(true);
+				Send.Internal_ChannelStatus();
 				Log.Info("{0} switched to maintenance.", this.Conf.Channel.ChannelName);
 			}
 
