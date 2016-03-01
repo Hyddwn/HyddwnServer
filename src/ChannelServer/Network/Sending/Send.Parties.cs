@@ -306,8 +306,6 @@ namespace Aura.Channel.Network.Sending
 			party.Broadcast(packet, true);
 		}
 
-		// TODO: Consider merging all these response packets?
-
 		/// <summary>
 		/// Response to leader changing finish rule.
 		/// </summary>
@@ -382,7 +380,6 @@ namespace Aura.Channel.Network.Sending
 			creature.Client.Send(packet);
 		}
 
-		// TODO: Consolidate this with AddMember functionality.
 		/// <summary>
 		/// Sent to clients when a new creature joins.
 		/// </summary>
@@ -406,7 +403,7 @@ namespace Aura.Channel.Network.Sending
 
 			packet.PutInt((int)((creature.Life * 100) / creature.LifeMax));
 			packet.PutInt((int)100);
-			packet.PutInt(creature.Party.Leader == creature ? 3 : 1); // TODO: Check what this actually is (I've only seen the leader with a 3 so far)
+			packet.PutInt(creature.Party.Leader == creature ? 3 : 1); // I've only seen the leader with a 3 so far
 			packet.PutLong(0);
 
 			creature.Party.Broadcast(packet, true);

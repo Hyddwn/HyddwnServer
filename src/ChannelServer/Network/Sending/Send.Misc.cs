@@ -217,7 +217,6 @@ namespace Aura.Channel.Network.Sending
 			packet.PutInt(1); // count?
 			packet.PutLong(creature.EntityId);
 
-			// TODO: Send to whole party?
 			creature.Client.Send(packet);
 		}
 
