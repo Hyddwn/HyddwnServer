@@ -1,6 +1,9 @@
 // Aura
 // Database file
 // 
+// Note: To create entirely new manuals, the new ones have to be added to
+//   the client as well.
+// 
 // Values: category, id, title, manualItemId, itemId, exp, rank, maxProgress, rainBonus, materials, finishMaterials
 //---------------------------------------------------------------------------
 

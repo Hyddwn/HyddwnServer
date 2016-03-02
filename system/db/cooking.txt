@@ -1,6 +1,10 @@
 // Aura
 // Database file
 // 
+// Note: Adding new recipes here is possible without client customization,
+//   but only for existing items. Entirely new items would have to be added
+//   to the client's and server's item dbs.
+// 
 // Values: method, [name], itemId
 // Ingredient values: itemId, amount, qualityMin, qualityMax
 //---------------------------------------------------------------------------
