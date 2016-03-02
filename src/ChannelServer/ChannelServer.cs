@@ -36,7 +36,7 @@ namespace Aura.Channel
 		/// </summary>
 		private const int LoginTryTime = 10 * 1000;
 
-		private bool _running = false;
+		private bool _running;
 
 		/// <summary>
 		/// Instance of the actual server component.
@@ -217,6 +217,43 @@ namespace Aura.Channel
 			Log.WriteLine();
 		}
 
+		/// <summary>
+		/// Calculates the state of the channel.
+		/// </summary>
+		/// <remarks>
+		/// When calculating the <see cref="ChannelState"/> we take into account
+		/// whether the server is running as well as if it is in Maintenance.
+		/// </remarks>
+		/// <returns></returns>
+		public ChannelState CalculateChannelState()
+		{
+			// Just in case this gets called
+			if (this.ShuttingDown)               
+				return ChannelState.Maintenance;
+
+			var current = this.World.CountPlayers();
+			var max = this.Conf.Channel.MaxUsers;
+
+			if (max == 0)
+			{
+				Log.Warning("Max user count was zero, falling back to Normal.");
+
+				// Fallback value
+				return ChannelState.Normal;
+			}
+
+			double stress = (current / max) * 100;
+
+			if (stress >= 40 && stress <= 70)
+				return ChannelState.Busy;
+			if (stress > 70 && stress <= 95)
+				return ChannelState.Full;
+			if (stress > 95)
+				return ChannelState.Bursting;
+
+			return ChannelState.Normal;
+		}
+
 		private void OnClientDisconnected(ChannelClient client)
 		{
 			if (client == this.LoginServer)
@@ -260,10 +297,10 @@ namespace Aura.Channel
 		{
 			this.Events.MinutesTimeTick += (_) =>
 			{
-				if (this.LoginServer == null || this.LoginServer.State != ClientState.LoggedIn || ShuttingDown)
+				if (this.LoginServer == null || this.LoginServer.State != ClientState.LoggedIn || this.ShuttingDown)
 					return;
 
-				Send.Internal_ChannelStatus(ChannelState.Normal);
+				Send.Internal_ChannelStatus();
 			};
 		}
 
@@ -319,7 +356,7 @@ namespace Aura.Channel
 			else
 			{
 				channel.State = ChannelState.Maintenance;
-				Send.Internal_ChannelStatus(ChannelState.Maintenance);
+				Send.Internal_ChannelStatus();
 				Log.Info("{0} switched to maintenance.", this.Conf.Channel.ChannelName);
 			}
 

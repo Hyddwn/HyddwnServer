@@ -23,6 +23,14 @@ namespace Aura.Channel.Network.Sending
 		/// <summary>
 		/// Sends Internal.ChannelStatus to login server.
 		/// </summary>
+		public static void Internal_ChannelStatus()
+		{
+			Internal_ChannelStatus(ChannelServer.Instance.CalculateChannelState());
+		}
+
+		/// <summary>
+		/// Sends Internal.ChannelStatus to login server with specified ChannelState.
+		/// </summary>
 		public static void Internal_ChannelStatus(ChannelState state)
 		{
 			var cur = ChannelServer.Instance.World.CountPlayers();
