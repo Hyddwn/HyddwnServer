@@ -214,7 +214,7 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Proxy for Localization.Get.
+		/// Proxy for Localization.GetParticular.
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="phrase"></param>
