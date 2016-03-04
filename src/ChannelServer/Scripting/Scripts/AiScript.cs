@@ -847,6 +847,39 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Proxy for Localization.Get.
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="phrase"></param>
+		protected static string LX(string context, string phrase)
+		{
+			return Localization.GetParticular(context, phrase);
+		}
+
+		/// <summary>
+		/// Proxy for Localization.GetPlural.
+		/// </summary>
+		/// <param name="phrase"></param>
+		/// <param name="phrasePlural"></param>
+		/// <param name="count"></param>
+		protected static string LN(string phrase, string phrasePlural, int count)
+		{
+			return Localization.GetPlural(phrase, phrasePlural, count);
+		}
+
+		/// <summary>
+		/// Proxy for Localization.GetParticularPlural.
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="phrase"></param>
+		/// <param name="phrasePlural"></param>
+		/// <param name="count"></param>
+		protected static string LXN(string context, string phrase, string phrasePlural, int count)
+		{
+			return Localization.GetParticularPlural(context, phrase, phrasePlural, count);
+		}
+
+		/// <summary>
 		/// Returns true if AI creature has the skill.
 		/// </summary>
 		/// <param name="skillId"></param>
