@@ -1,10 +1,10 @@
 //--- Aura Script -----------------------------------------------------------
-// Piaras, the Inn Keeper in Tir Chonaill
+// Piaras
 //--- Description -----------------------------------------------------------
-// 
+// The Inn Keeper inside the Inn
 //---------------------------------------------------------------------------
 
-public class PiarasBaseScript : NpcScript
+public class PiarasScript : NpcScript
 {
 	public override void Load()
 	{
@@ -19,6 +19,10 @@ public class PiarasBaseScript : NpcScript
 		EquipItem(Pocket.Hair, 4004, 0x003F4959, 0x003F4959, 0x003F4959);
 		EquipItem(Pocket.Armor, 15003, 0x00355047, 0x00F6E2B1, 0x00FBFBF3);
 		EquipItem(Pocket.Shoe, 17012, 0x009C936F, 0x00724548, 0x0050685C);
+
+		AddGreeting(0, "Hello, nice to meet you.<br/>I am <npcname/>.");
+		AddGreeting(1, "Nice to meet you.");
+		//AddGreeting(2, "Good to see you, <username/>.");
 
 		AddPhrase("Ah... The weather is just right to go on a journey.");
 		AddPhrase("Do you ever wonder who lives up that mountain?");
@@ -41,8 +45,16 @@ public class PiarasBaseScript : NpcScript
 		switch (await Select())
 		{
 			case "@talk":
-				Msg("Nice to meet you.");
-				await StartConversation();
+				Greet();
+				Msg(Hide.Name, GetMoodString(), FavorExpression());
+				if (Player.Titles.SelectedTitle == 11002)
+				{
+					Msg("<username/>.<br/>I was wondering where you've been...");
+					Msg("...You must've went on a great adventure.<br/>You know I love adventure stories...");
+					Msg("...But you can tell me about it later.<br/>There's plenty of time. Haha...");
+					Msg("...How does that sound?");
+				}
+				await Conversation();
 				break;
 
 			case "@shop":
@@ -51,7 +63,7 @@ public class PiarasBaseScript : NpcScript
 				return;
 		}
 
-		End("Goodbye, Piaras. I'll see you later!");
+		End("Goodbye, <npcname/>. I'll see you later!");
 	}
 
 	protected override async Task Keywords(string keyword)
@@ -60,24 +72,31 @@ public class PiarasBaseScript : NpcScript
 		{
 			case "personal_info":
 				GiveKeyword("shop_inn");
-				Msg("I might sound too proud,<br/>but I put a lot of effort into making this place as comfortable for my guests as possible.<br/>Please visit us when you need a place to stay.<br/>");
+				Msg("I might sound too proud,<br/>but I put a lot of effort into making this place as comfortable for my guests as possible.<br/>Please visit us when you need a place to stay.");
 				ModifyRelation(Random(2), 0, Random(2));
 				break;
 
 			case "rumor":
+				GiveKeyword("square");
 				Msg("Why don't you talk to others in town? There's a good spot to meet people. The Town Square is right up this way. I suggest you try there first.");
 				ModifyRelation(Random(2), 0, Random(2));
 				break;
 
 			case "about_skill":
-				if (Player.Skills.Has(SkillId.Campfire))
+				if (Player.IsHuman)
 				{
-					RemoveKeyword("skill_campfire");
-					Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
+					if (Player.Skills.Has(SkillId.Campfire))
+					{
+						RemoveKeyword("skill_campfire");
+						Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
+					}
+					else
+					{
+						Msg("I'm sorry.<br/>I don't have the time to talk about that right now.");
+					}
 				}
 				else
 				{
-					GiveKeyword("skill_campfire");
 					Msg("Do you by chance know about the Campfire Skill?");
 					Msg("If you start a fire using the Campfire Skill,<br/>people would come by one at a time after seeing the bright fire from afar...");
 					Msg("People share what they have in their inventory<br/>and spend long summer nights sharing stories about their adventures.");
@@ -87,14 +106,15 @@ public class PiarasBaseScript : NpcScript
 
 			case "about_arbeit":
 				Msg("(Unimplemented)");
+				//Msg("Hmm... It's not a good time for this.<br/>Can you come back when it is time for part-time jobs?");
 				break;
 
 			case "shop_misc":
-				Msg("So, you are looking for Malcolm's General Shop? It's over this hill.<br/>You'll get there in no time if you follow this road.<br/>");
+				Msg("So, you are looking for Malcolm's General Shop? It's over this hill.<br/>You'll get there in no time if you follow this road.");
 				break;
 
 			case "shop_grocery":
-				Msg("Ah, I just remembered Caitin said she'd bring some food ingredients to my Inn.<br/>I keep forgetting these days.<br/>");
+				Msg("Ah, I just remembered Caitin said she'd bring some food ingredients to my Inn.<br/>I keep forgetting these days.");
 				break;
 
 			case "shop_healing":
@@ -112,22 +132,74 @@ public class PiarasBaseScript : NpcScript
 				break;
 
 			case "shop_smith":
-				Msg("The Blacksmith's Shop is literally right around the corner. You just need to cross the bridge.<br/>");
+				Msg("The Blacksmith's Shop is literally right around the corner. You just need to cross the bridge.");
+				break;
+
+			case "skill_range":
+				GiveKeyword("school");
+				Msg("Are you interested in long range attack?<br/>It would be better if you went to the School<br/>and asked Ranald the instructor.");
+				Msg("Long range attack is<br/>the act of attacking your opponent from a distance.<br/>Magic or arrows are common methods.");
+				Msg("When you use a bow and arrows,<br/>you can inflict damage and heavily injure your enemies.<br/>In contrast, magic only reduces their HP<br/>without causing any injuries.");
+				Msg("But that doesn't mean a bow is always better.<br/>You must always consider the cost of arrows.<br/>And it takes time to aim as well.");
+				Msg("Magic, on the other hand, does not have such restrictions.<br/>Well, except for Mana, of course.");
+				Msg("...<br/>I would suggest you think it over,<br/>and talk to a teacher<br/>who specializes in that particular area.");
 				break;
 
 			case "skill_instrument":
 				Msg("What a music lover you are.<br/>The romance of a traveler...<br/>Its pinnacle can be reached<br/>only through the performance of music.");
-				Msg("If you want to be good at playing an instrument,<br/>I'd suggest you buy any musical instrument you can get<br/>and keep practicing.<br/>");
+				Msg("If you want to be good at playing an instrument,<br/>I'd suggest you buy any musical instrument you can get<br/>and keep practicing.");
+				break;
+
+			case "skill_composing":
+				Msg("Do you wish to compose a tune?<br/>Hmm... the Composing skill is usually more complicated than you think<br/>and requires some effort.");
+				Msg("You can't compose with only the melody<br/>that pops into your head.<br/>The critical part is to put all your musical ideas<br/>onto a sheet of paper.");
+				Msg("I remember seeing a book<br/>explaining how to do that somewhere.");
+				Msg("Oh, right! It's Malcolm's General Shop.<br/>Go to the General Shop and find<br/>the book titled \"Introduction to Composing Tunes\" written by Baird.");
+				Msg("The book is an excellent guide<br/>on what you need to know.<br/>It would help immensely if you wish to<br/>exhibit your creativity and compose music.");
+				break;
+
+			case "skill_tailoring":
+				Msg("Excuse me? You want to make clothes?<br/>Hmm... It's not an easy task.<br/>It's somewhat of a surprise that you have such interest in it.");
+				Msg("Did you by any chance talk to<br/>Caitin from the Grocery Store?<br/>Caitin is the most skilled person in that area.<br/>Try talking to her, I think you will<br/>receive great assistance.");
+				Msg("Hahaha. If I could design clothes,<br/>I would have opened up a Clothing Shop instead of an Inn.<br/>Please, go to Caitin at once.");
+				break;
+
+			case "skill_magnum_shot":
+				GiveKeyword("school");
+				Msg("Magnum Shot skill?<br/>Well, that is just one of many archery skills.<br/>For this type of skill, it would be better to learn it at the School.<br/>I will just give you a quick overview.");
+				Msg("That is... the Magnum Shot skill maximizes the bow's elasticity.<br/>You pull the bowstring as far back as you can<br/>and shoot the arrow at that instant.");
+				Msg("You need a keen sense of elasticity in the first place,<br/>but strong arm and chest muscles are required too.<br/>I'm afraid you'll see a rough path of training<br/>before you master the skill yourself.");
+				Msg("Um... That's all I know.<br/>I'd recommend you talk to either Ranald,<br/>or Trefor standing way up there.<br/>Talking to them will help you.");
 				break;
 
 			case "skill_counter_attack":
+				GiveKeyword("school");
 				Msg("Melee Counterattack skill?<br/>Hmm... It's very difficult to explain with words.<br/>You'd better learn it at the School.");
 				Msg("Hey, don't give me that look.<br/>I really don't know that skill.");
 				Msg("How about talking to Ranald at the School<br/>or Trefor guarding this town?<br/>I'm sure they can help you better.");
 				break;
 
+			case "skill_smash":
+				GiveKeyword("school");
+				Msg("Want to know about the Smash skill?<br/>Many people ask me about that.<br/>How about going to the School and<br/>asking Ranald about it?");
+				Msg("Ah, yes.<br/>There were some guests talking about it at my Inn.<br/>I overhear this and that because of my business.<br/>I've heard it many times, so I think the story is true.");
+				Msg("By the way, for this type of skill,<br/>don't you think it's best to ask<br/>a combat instructor?");
+				break;
+
+			case "skill_gathering":
+				Msg("If you want to gather something yourself,<br/>I think you need to get tools at the Blacksmith's Shop or the General Shop.");
+				Msg("But I often see people pounding on the village property.<br/>I guess they would have no trouble cutting down<br/>the trees with their bare hands.");
+				Msg("The sheep may ask you to use tools for their sake, though...");
+				Msg("...<br/>A Gathering Knife can be bought at a very affordable price<br/>at Ferghus' Blacksmith's Shop.<br/>I'd recommend you go there if you do not have one.");
+				break;
+
 			case "square":
 				Msg("Well, Nora will be more than happy to explain to you about the Square.<br/>Frankly, I talked so much that my throat is getting sore.");
+				break;
+
+			case "pool":
+				GiveKeyword("farmland");
+				Msg("The reservoir? It's near the farmland.<br/>If you want to go to the reservoir,<br/>cross the bridge near the Windmill and go around it. Not the bridge close to the Blacksmith's Shop.<br/>You can just follow the fence.");
 				break;
 
 			case "farmland":
@@ -143,11 +215,13 @@ public class PiarasBaseScript : NpcScript
 				break;
 
 			case "brook":
+				GiveKeyword("windmill");
 				Msg("Adelia Stream?<br/>The small stream in front of my shop is the Adelia Stream.<br/>Yes, the one near the Windmill.<br/>You must have missed it. Hahaha.");
 				Msg("A lot of people missed that just like you.<br/>Perhaps I should talk with Ferghus<br/>and put a sign there.");
 				break;
 
 			case "shop_headman":
+				GiveKeyword("square");
 				Msg("Are you looking for the Chief's House?<br/>Hm, it's very close.");
 				Msg("Go up the hill with the big tree from the Square<br/>and you'll find it right there.");
 				Msg("If you happen to go there,<br/>please say hello for me and<br/>try not to do anything inappropriate.");
@@ -159,12 +233,42 @@ public class PiarasBaseScript : NpcScript
 				break;
 
 			case "school":
+				GiveKeyword("temple");
 				Msg("You are looking for the School?<br/>It's near the Church.<br/>It's not that far from here.");
 				Msg("There are teachers teaching magic and swordsmanship in the School.<br/>So you can ask them if you need anything from them.<br/>They will kindly explain to you about many things.");
 				Msg("If you can afford it,<br/>perhaps it's worthwhile to pay the tuition fee and take a class.");
 				break;
 
+			case "skill_windmill":
+				Msg("Hmm... Let me see. I think it's a skill for weaving fabric<br/>using the Windmill as a spinning wheel.");
+				Msg("Hahaha. It was a joke. Only a joke.");
+				Msg("I know it's silly, ha ha ha...<br/>I am sorry, I won't do that again.");
+				break;
+
+			case "skill_campfire":
+				if (Player.IsHuman)
+				{
+					if (Player.Skills.Has(SkillId.Campfire))
+					{
+						RemoveKeyword("skill_campfire");
+						Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
+					}
+					else
+					{
+						Msg("I'm sorry.<br/>I don't have the time to talk about that right now.");
+					}
+				}
+				break;
+
+			case "shop_restaurant":
+				GiveKeyword("shop_grocery");
+				Msg("Yes, many people eat around here, but...");
+				Msg("Are you looking for something to eat?<br/>Hmm... It just happens that I'm low on supplies.<br/>Could you go and see Caitin at the Grocery Store yourself?");
+				Msg("All the food served in the Inn<br/>is made and brought in<br/>by Caitin.");
+				break;
+
 			case "shop_armory":
+				GiveKeyword("shop_smith");
 				Msg("Weapons Shop?<br/>There isn't one in this town, but...<br/>If you are in need of some weapons,<br/>you might want to visit the Blacksmith's Shop right over there.");
 				Msg("Tell Ferghus I sent you<br/>and he'll take care of you.");
 				break;
@@ -185,6 +289,11 @@ public class PiarasBaseScript : NpcScript
 				Msg("But if you want to get some help<br/>or talk to the town elders,<br/>you'd want to pay a visit to<br/>Chief Duncan.");
 				break;
 
+			case "graveyard":
+				Msg("The graveyard is on the hill behind the Chief's House.<br/>I heard it's the resting place for the brave souls<br/>who fought against the Fomors to defend this village,<br/>the shelter of the descendants of Ulaid.");
+				Msg("Unfortunately, I have been on the road for a long time,<br/>so it's hard for me to tell you all the details.<br/>Perhaps it's best that you talk to the Chief about this.");
+				break;
+
 			case "lute":
 				Msg("Do you need a lute?<br/>I would really like to give you one,<br/>but so many people are asking these days.<br/>So, I can't make an exception... Even if it's you, hahaha.");
 				Msg("If you visit the General Shop up there,<br/>you'll be able to find a few instruments.<br/>They are decent enough to play<br/>even though you may not find the lute you're looking for.");
@@ -200,9 +309,9 @@ public class PiarasBaseScript : NpcScript
 				RndMsg(
 					"?",
 					"I don't know about that.",
+					"To be honest, I don't know.",
 					"I'd love to listen to you, but about something else.",
-					"I'm afraid this conversation isn't very interesting to me.",
-					"To be honest, I don't know."
+					"I'm afraid this conversation isn't very interesting to me."
 				);
 				ModifyRelation(0, 0, Random(2));
 				break;
@@ -214,28 +323,28 @@ public class PiarasShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Book", 1055); // The Road to Becoming a Magic Warrior
-		Add("Book", 1056); // How to Enjoy Field Hunting
-		Add("Book", 1124); // An Easy Guide to Taking Up Residence in a Home
-		Add("Book", 1037); // Experiencing the Miracle of Resurrection with 100 Gold
-		Add("Book", 1041); // A Story About Eggs
-		Add("Book", 1038); // Nora Talks about the Tailoring Skill
-		Add("Book", 1039); // Easy Part-Time Jobs
-		Add("Book", 1062); // The Greedy Snow Imp
-		Add("Book", 1048); // My Fluffy Life with Wool
-		Add("Book", 1049); // The Holy Water of Lymilark
-		Add("Book", 1057); // Introduction to Field Bosses
-		Add("Book", 1054); // Behold the Dungeon - Advice for Young Generations
-		Add("Book", 1058); // Understanding Wisps
 		Add("Book", 1015); // Seal Stone Research Almanac : Rabbie Dungeon
 		Add("Book", 1016); // Seal Stone Research Almanac : Ciar Dungeon
 		Add("Book", 1017); // Seal Stone Research Almanac : Dugald Aisle
+		Add("Book", 1037); // Experiencing the Miracle of Resurrection with 100 Gold
+		Add("Book", 1038); // Nora Talks about the Tailoring Skill
+		Add("Book", 1039); // Easy Part-Time Jobs
+		Add("Book", 1041); // A Story About Eggs
+		Add("Book", 1048); // My Fluffy Life with Wool
+		Add("Book", 1049); // The Holy Water of Lymilark
+		Add("Book", 1054); // Behold the Dungeon - Advice for Young Generations
+		Add("Book", 1055); // The Road to Becoming a Magic Warrior
+		Add("Book", 1056); // How to Enjoy Field Hunting
+		Add("Book", 1057); // Introduction to Field Bosses
+		Add("Book", 1058); // Understanding Wisps
+		Add("Book", 1062); // The Greedy Snow Imp
+		Add("Book", 1124); // An Easy Guide to Taking Up Residence in a Home
 		Add("Book", 1505); // The World of Handicrafts
 
-		Add("Gift", 52011); // Socks
-		Add("Gift", 52018); // Hammer
 		Add("Gift", 52008); // Anthology
 		Add("Gift", 52009); // Cubic Puzzle
+		Add("Gift", 52011); // Socks
 		Add("Gift", 52017); // Underwear Set
+		Add("Gift", 52018); // Hammer
 	}
 }
