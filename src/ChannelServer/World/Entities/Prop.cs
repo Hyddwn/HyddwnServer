@@ -161,8 +161,16 @@ namespace Aura.Channel.World.Entities
 		public List<RegionElementData> Parameters { get; private set; }
 
 		/// <summary>
-		/// Creates new prop with a newly generated entity id.
+		/// Creates new prop with no specific entity id.
 		/// </summary>
+		/// <remarks>
+		/// The entity id is assigned automatically when the prop is added
+		/// to a region, as the id depends on the prop's location and the
+		/// region it's eventually added to.
+		/// 
+		/// If the entity id is not supposed to be set upon adding the prop
+		/// to a region, it should be set to anything but 0.
+		/// </remarks>
 		/// <param name="id"></param>
 		/// <param name="regionId"></param>
 		/// <param name="x"></param>
