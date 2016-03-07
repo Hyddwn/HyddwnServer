@@ -1375,5 +1375,24 @@ namespace Aura.Channel.World.Entities
 				}
 			}
 		}
+
+		/// <summary>
+		/// Sets gold price and selling price based on given value.
+		/// </summary>
+		/// <param name="price"></param>
+		public void SetGoldPrice(int price)
+		{
+			this.OptionInfo.Price = price;
+			this.OptionInfo.SellingPrice = (this.Info.Id != 2000 ? (int)(price * 0.1f) : 1000);
+		}
+
+		/// <summary>
+		/// Sets gold price and selling price to data values.
+		/// </summary>
+		public void ResetGoldPrice()
+		{
+			this.OptionInfo.Price = this.Data.Price;
+			this.OptionInfo.SellingPrice = this.Data.SellingPrice;
+		}
 	}
 }
