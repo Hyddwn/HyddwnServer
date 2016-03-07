@@ -62,6 +62,11 @@ namespace Aura.Channel.World.Inventory
 		private const int GoldItemId = 2000;
 
 		/// <summary>
+		/// Item id for stars.
+		/// </summary>
+		private const int StarItemId = 2071;
+
+		/// <summary>
 		/// Max amount of gold that fit into one stack.
 		/// </summary>
 		private const int GoldStackMax = 1000;
@@ -177,13 +182,34 @@ namespace Aura.Channel.World.Inventory
 			get { return this.Count(GoldItemId); }
 			set
 			{
-				var curGold = this.Gold;
-				var newGold = Math.Max(0, value);
+				var itemId = GoldItemId;
+				var curAmount = this.Gold;
+				var newAmount = Math.Max(0, value);
 
-				if (newGold < curGold)
-					this.RemoveGold(curGold - newGold);
-				else if (newGold > curGold)
-					this.AddGold(newGold - curGold);
+				if (newAmount < curAmount)
+					this.Remove(itemId, curAmount - newAmount);
+				else if (newAmount > curAmount)
+					this.InsertStacks(itemId, newAmount - curAmount);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the amount of stars (rafting reward), by modifying
+		/// the inventory.
+		/// </summary>
+		public int Stars
+		{
+			get { return this.Count(StarItemId); }
+			set
+			{
+				var itemId = StarItemId;
+				var curAmount = this.Stars;
+				var newAmount = Math.Max(0, value);
+
+				if (newAmount < curAmount)
+					this.Remove(itemId, curAmount - newAmount);
+				else if (newAmount > curAmount)
+					this.InsertStacks(itemId, newAmount - curAmount);
 			}
 		}
 
@@ -1095,14 +1121,40 @@ namespace Aura.Channel.World.Inventory
 		/// </summary>
 		/// <param name="amount"></param>
 		/// <returns></returns>
+		[Obsolete("Use Gold property instead.")]
 		public bool AddGold(int amount)
 		{
+			return this.InsertStacks(GoldItemId, amount);
+		}
+
+		/// <summary>
+		/// Adds new stacks to the inventory until the amount was added,
+		/// using temp as fallback. Returns false if something went wrong,
+		/// and not everything could be added.
+		/// </summary>
+		/// <param name="itemId">Id of the item to add.</param>
+		/// <param name="amount">Amount to add, value affects the amount of stacks.</param>
+		/// <returns></returns>
+		/// <example>
+		/// InsertStacks(2000, 500);
+		/// Add 500g to inventory, by either adding them to existing stacks,
+		/// or creating a new one.
+		/// 
+		/// InsertStacks(2000, 10000);
+		/// Add 10,000g to inventory, by either adding them to existing stacks,
+		/// or creating up to 10 new ones.
+		/// </example>
+		public bool InsertStacks(int itemId, int amount)
+		{
+			if (amount < 0)
+				return false;
+
 			// Insert new stacks till amount is 0.
 			do
 			{
-				var stackAmount = Math.Min(GoldStackMax, amount);
+				var stackItem = new Item(itemId);
+				var stackAmount = Math.Min(stackItem.Data.StackMax, amount);
 
-				var stackItem = new Item(GoldItemId);
 				stackItem.Amount = stackAmount;
 				amount -= stackAmount;
 
@@ -1267,6 +1319,7 @@ namespace Aura.Channel.World.Inventory
 		/// </summary>
 		/// <param name="amount"></param>
 		/// <returns></returns>
+		[Obsolete("Use Gold property instead.")]
 		public bool RemoveGold(int amount)
 		{
 			return this.Remove(GoldItemId, amount);
