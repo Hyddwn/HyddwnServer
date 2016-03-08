@@ -83,20 +83,16 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (Player.IsHuman)
+				// When the beginner quests changed, he no longer removes the keyword. Instead he says "I'm sorry.<br/>I don't have the time to talk about that right now."
+				// He also checks for race, but until we get the respective quests in for other races, we'll leave it out
+				if (Player.Skills.Has(SkillId.Campfire))
 				{
-					if (Player.Skills.Has(SkillId.Campfire))
-					{
-						RemoveKeyword("skill_campfire");
-						Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
-					}
-					else
-					{
-						Msg("I'm sorry.<br/>I don't have the time to talk about that right now.");
-					}
+					RemoveKeyword("skill_campfire");
+					Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
 				}
 				else
 				{
+					GiveKeyword("skill_campfire");
 					Msg("Do you by chance know about the Campfire Skill?");
 					Msg("If you start a fire using the Campfire Skill,<br/>people would come by one at a time after seeing the bright fire from afar...");
 					Msg("People share what they have in their inventory<br/>and spend long summer nights sharing stories about their adventures.");
@@ -246,17 +242,20 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "skill_campfire":
-				if (Player.IsHuman)
+				// When the beginner quests changed, he no longer removes the keyword. Instead he says "I'm sorry.<br/>I don't have the time to talk about that right now."
+				// He also checks for race, but until we get the respective quests in for other races, we'll leave it out
+				if (Player.Skills.Has(SkillId.Campfire))
 				{
-					if (Player.Skills.Has(SkillId.Campfire))
-					{
-						RemoveKeyword("skill_campfire");
-						Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
-					}
-					else
-					{
-						Msg("I'm sorry.<br/>I don't have the time to talk about that right now.");
-					}
+					RemoveKeyword("skill_campfire");
+					Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
+				}
+				else
+				{
+					GiveKeyword("skill_campfire");
+					Msg("Do you by chance know about the Campfire Skill?");
+					Msg("If you start a fire using the Campfire Skill,<br/>people would come by one at a time after seeing the bright fire from afar...");
+					Msg("People share what they have in their inventory<br/>and spend long summer nights sharing stories about their adventures.");
+					Msg("But really, if all travelers knew the Campfire Skill,<br/>inn owners like myself would have to pack up and find a different profession.");
 				}
 				break;
 
