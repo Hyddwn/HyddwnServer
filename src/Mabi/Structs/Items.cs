@@ -157,7 +157,7 @@ namespace Aura.Mabi.Structs
 		[FieldOffset(84)]
 		public int StarPrice;
 		[FieldOffset(88)]
-		public int PonsPrice;
+		public int PointPrice;
 		[FieldOffset(92)]
 		public int __unknown3;
 

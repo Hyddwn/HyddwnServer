@@ -262,7 +262,7 @@ namespace Aura.Channel.Network.Handlers
 				paymentMethod = PaymentMethod.Stars;
 			if (item.OptionInfo.DucatPrice > 0)
 				paymentMethod = PaymentMethod.Ducats;
-			if (item.OptionInfo.PonsPrice > 0)
+			if (item.OptionInfo.PointPrice > 0)
 				paymentMethod = PaymentMethod.Points;
 
 			// Get buying price
@@ -272,7 +272,7 @@ namespace Aura.Channel.Network.Handlers
 				case PaymentMethod.Gold: price = item.OptionInfo.Price; break;
 				case PaymentMethod.Stars: price = item.OptionInfo.StarPrice; break;
 				case PaymentMethod.Ducats: price = item.OptionInfo.DucatPrice; break;
-				case PaymentMethod.Points: price = item.OptionInfo.PonsPrice; break;
+				case PaymentMethod.Points: price = item.OptionInfo.PointPrice; break;
 			}
 
 			// The client expects the price for a full stack to be sent
@@ -373,7 +373,7 @@ namespace Aura.Channel.Network.Handlers
 
 			// Check for Pon, the client doesn't let you sell items that were
 			// bought with them.
-			if (item.OptionInfo.PonsPrice != 0)
+			if (item.OptionInfo.PointPrice != 0)
 			{
 				Send.MsgBox(creature, Localization.Get("You cannot sell items bought by Pon at the shop."));
 				goto L_End;

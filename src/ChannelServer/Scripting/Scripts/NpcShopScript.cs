@@ -221,7 +221,7 @@ namespace Aura.Channel.Scripting.Scripts
 				case PaymentMethod.Gold: item.SetGoldPrice(price); break;
 				case PaymentMethod.Stars: item.OptionInfo.StarPrice = price; break;
 				case PaymentMethod.Ducats: item.OptionInfo.DucatPrice = price; break;
-				case PaymentMethod.Points: item.OptionInfo.PonsPrice = price; break;
+				case PaymentMethod.Points: item.OptionInfo.PointPrice = price; break;
 			}
 
 			tab.Add(item);
