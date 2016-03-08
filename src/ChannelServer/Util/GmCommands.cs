@@ -1905,6 +1905,9 @@ namespace Aura.Channel.Util
 			// Modificate
 			var newVal = (target.Client.Account.Points += mod);
 
+			// Client update
+			Send.PonsUpdate(target, newVal);
+
 			// Notice
 			Send.ServerMessage(sender, Localization.Get("Pon modificated: {0} -> {1}."), oldVal, target.Client.Account.Points);
 			if (sender != target)
