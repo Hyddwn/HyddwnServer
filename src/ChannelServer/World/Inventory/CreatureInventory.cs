@@ -1121,7 +1121,6 @@ namespace Aura.Channel.World.Inventory
 		/// </summary>
 		/// <param name="amount"></param>
 		/// <returns></returns>
-		[Obsolete("Use Gold property instead.")]
 		public bool AddGold(int amount)
 		{
 			return this.InsertStacks(GoldItemId, amount);
@@ -1319,7 +1318,6 @@ namespace Aura.Channel.World.Inventory
 		/// </summary>
 		/// <param name="amount"></param>
 		/// <returns></returns>
-		[Obsolete("Use Gold property instead.")]
 		public bool RemoveGold(int amount)
 		{
 			return this.Remove(GoldItemId, amount);
