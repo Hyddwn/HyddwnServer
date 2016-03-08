@@ -251,7 +251,6 @@ public class PiarasScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("skill_campfire");
 					Msg("Do you by chance know about the Campfire Skill?");
 					Msg("If you start a fire using the Campfire Skill,<br/>people would come by one at a time after seeing the bright fire from afar...");
 					Msg("People share what they have in their inventory<br/>and spend long summer nights sharing stories about their adventures.");
