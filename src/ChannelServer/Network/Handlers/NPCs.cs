@@ -371,6 +371,14 @@ namespace Aura.Channel.Network.Handlers
 			// Get item
 			var item = creature.Inventory.GetItemSafe(entityId);
 
+			// Check for Pon, the client doesn't let you sell items that were
+			// bought with them.
+			if (item.OptionInfo.PonsPrice != 0)
+			{
+				Send.MsgBox(creature, Localization.Get("You cannot sell items bought by Pon at the shop."));
+				goto L_End;
+			}
+
 			// Calculate selling price
 			var sellingPrice = item.OptionInfo.SellingPrice;
 			if (item.Data.StackType == StackType.Sac)
