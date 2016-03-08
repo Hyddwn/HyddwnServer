@@ -1,7 +1,14 @@
 // Aura
 // Script list file
 //
-// All scripts listed here will be loaded.
+// This is a list of available custom scripts, that are disabled by default.
+// To enable one, uncomment it by removing the "//".
+// All uncommented scripts listed here will be loaded.
 //---------------------------------------------------------------------------
+
+//custom/jail.cs
+//custom/telephant.cs
+//custom/oriental_town.cs
+//custom/points_shop.cs
 
 include "/user/scripts/scripts_custom.txt"
