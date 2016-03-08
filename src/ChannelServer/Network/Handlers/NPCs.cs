@@ -255,20 +255,55 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Determine which payment method to use, the same way the client
+			// does to display them. Points > Stars > Ducats > Gold.
+			var paymentMethod = PaymentMethod.Gold;
+			if (item.OptionInfo.StarPrice > 0)
+				paymentMethod = PaymentMethod.Stars;
+			if (item.OptionInfo.DucatPrice > 0)
+				paymentMethod = PaymentMethod.Ducats;
+			if (item.OptionInfo.PonsPrice > 0)
+				paymentMethod = PaymentMethod.Points;
+
+			// Get buying price
+			var price = int.MaxValue;
+			switch (paymentMethod)
+			{
+				case PaymentMethod.Gold: price = item.OptionInfo.Price; break;
+				case PaymentMethod.Stars: price = item.OptionInfo.StarPrice; break;
+				case PaymentMethod.Ducats: price = item.OptionInfo.DucatPrice; break;
+				case PaymentMethod.Points: price = item.OptionInfo.PonsPrice; break;
+			}
+
 			// The client expects the price for a full stack to be sent
 			// in the ItemOptionInfo, so we have to calculate the actual price here.
-			var price = item.OptionInfo.Price;
 			if (item.Data.StackType == StackType.Stackable)
 				price = (int)(price / (float)item.Data.StackMax * item.Amount);
 
-			// Check gold
-			if (creature.Inventory.Gold < price)
+			// Check currency
+			var canPay = false;
+			switch (paymentMethod)
 			{
-				Send.MsgBox(creature, Localization.Get("Insufficient amount of gold."));
+				case PaymentMethod.Gold: canPay = (creature.Inventory.Gold >= price); break;
+				case PaymentMethod.Stars: canPay = (creature.Inventory.Stars >= price); break;
+				case PaymentMethod.Ducats: canPay = false; break; // TODO: Implement ducats.
+				case PaymentMethod.Points: canPay = (creature.Client.Account.Points >= price); break;
+			}
+
+			if (!canPay)
+			{
+				switch (paymentMethod)
+				{
+					case PaymentMethod.Gold: Send.MsgBox(creature, Localization.Get("Insufficient amount of gold.")); break;
+					case PaymentMethod.Stars: Send.MsgBox(creature, Localization.Get("Insufficient amount of stars.")); break;
+					case PaymentMethod.Ducats: Send.MsgBox(creature, Localization.Get("Insufficient amount of ducats.")); break;
+					case PaymentMethod.Points: Send.MsgBox(creature, Localization.Get("You don't have enough Pon.\nYou will need to buy more.")); break;
+				}
+
 				goto L_Fail;
 			}
 
-			// Buy, adding item, and removing gold
+			// Buy, adding item, and removing currency
 			var success = false;
 
 			// Cursor
@@ -279,7 +314,26 @@ namespace Aura.Channel.Network.Handlers
 				success = creature.Inventory.Add(item, false);
 
 			if (success)
-				creature.Inventory.RemoveGold(price);
+			{
+				// Reset gold price if payment method wasn't gold, as various
+				// things depend on the gold price, like repair prices.
+				// If any payment method but gold was used, the gold price
+				// would be 0.
+				if (paymentMethod != PaymentMethod.Gold)
+					item.ResetGoldPrice();
+
+				// Reduce
+				switch (paymentMethod)
+				{
+					case PaymentMethod.Gold: creature.Inventory.Gold -= price; break;
+					case PaymentMethod.Stars: creature.Inventory.Stars -= price; break;
+					case PaymentMethod.Ducats: break; // TODO: Implement ducats.
+					case PaymentMethod.Points:
+						client.Account.Points -= price;
+						Send.PonsUpdate(creature, client.Account.Points);
+						break;
+				}
+			}
 
 			// Response
 			Send.NpcShopBuyItemR(creature, success);
