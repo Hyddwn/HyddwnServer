@@ -211,16 +211,33 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			var tab = this.GetOrCreateTab(tabTitle);
 
-			if (price >= 0)
+			// Use data price if none was set
+			if (price == -1)
+				price = item.Data.Price;
+
+			// Set the price we need
+			switch (tab.PaymentMethod)
 			{
-				item.OptionInfo.Price = price;
-				item.OptionInfo.SellingPrice = (item.Info.Id != 2000 ? (int)(price * 0.1f) : 1000);
+				case PaymentMethod.Gold: item.SetGoldPrice(price); break;
+				case PaymentMethod.Stars: item.OptionInfo.StarPrice = price; break;
+				case PaymentMethod.Ducats: item.OptionInfo.DucatPrice = price; break;
+				case PaymentMethod.Points: item.OptionInfo.PonsPrice = price; break;
 			}
 
 			tab.Add(item);
 		}
 
 		/// <summary>
+		/// Sets the payment method for the given tab.
+		/// </summary>
+		/// <param name="tabTitle"></param>
+		/// <param name="method"></param>
+		public void SetPaymentMethod(string tabTitle, PaymentMethod method)
+		{
+			var tab = this.GetOrCreateTab(tabTitle);
+			tab.PaymentMethod = method;
+		}
+
 		/// <summary>
 		/// Returns the given tab, after creating if necessary.
 		/// </summary>
@@ -366,6 +383,11 @@ namespace Aura.Channel.Scripting.Scripts
 		public bool RandomizeColorsEnabled { get; set; }
 
 		/// <summary>
+		/// Gets or sets what items in this tab are paid for with.
+		/// </summary>
+		public PaymentMethod PaymentMethod { get; set; }
+
+		/// <summary>
 		/// Creatures new NpcShopTab
 		/// </summary>
 		/// <param name="title">Tab title display in-game.</param>
@@ -441,5 +463,13 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 			}
 		}
+	}
+
+	public enum PaymentMethod
+	{
+		Gold,
+		Stars,
+		Ducats,
+		Points,
 	}
 }
