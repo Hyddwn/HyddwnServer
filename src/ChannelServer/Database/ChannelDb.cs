@@ -414,6 +414,7 @@ namespace Aura.Channel.Database
 							item.Info.FigureB = reader.GetByte("figureB");
 							item.OptionInfo.Price = reader.GetInt32("price");
 							item.OptionInfo.SellingPrice = reader.GetInt32("sellPrice");
+							item.OptionInfo.PonsPrice = reader.GetInt32("pointPrice");
 							item.OptionInfo.Durability = reader.GetInt32("durability");
 							item.OptionInfo.DurabilityMax = reader.GetInt32("durabilityMax");
 							item.OptionInfo.DurabilityOriginal = reader.GetInt32("durabilityOriginal");
@@ -1115,6 +1116,7 @@ namespace Aura.Channel.Database
 						cmd.Set("color3", item.Info.Color3);
 						cmd.Set("price", item.OptionInfo.Price);
 						cmd.Set("sellPrice", item.OptionInfo.SellingPrice);
+						cmd.Set("pointPrice", item.OptionInfo.PonsPrice);
 						cmd.Set("amount", item.Info.Amount);
 						cmd.Set("linkedPocket", item.OptionInfo.LinkedPocketId);
 						cmd.Set("state", item.Info.State);
