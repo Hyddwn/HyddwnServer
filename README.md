@@ -20,13 +20,13 @@ compatibility to all other versions was dropped on
 Requirements
 ------------------------------
 To *run* Aura, you need
-* .NET 4.5 (Mono 3.0+)
+* .NET 4.5 (Mono 3.2.7 or above)
 * MySQL 5 compatible database
 
 To *compile* Aura, you need
 * C# 5 compiler, such as:
   * [Visual Studio](http://www.visualstudio.com/en-us/products/visual-studio-express-vs.aspx) (2012 or later)
-  * [Monodevelop](http://monodevelop.com/) (With mono version 3 or greater)
+  * [Monodevelop](http://monodevelop.com/) (With Mono version 3.2.7 or greater)
   * [SharpDevelop](http://www.icsharpcode.net/OpenSource/SD/) (Version 4.4 or greater)
 
 Installation
