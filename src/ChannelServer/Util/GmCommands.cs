@@ -100,7 +100,7 @@ namespace Aura.Channel.Util
 			Add(99, 99, "closenpc", "", HandleCloseNpc);
 			Add(99, 99, "shutdown", "<seconds>", HandleShutdown);
 			Add(99, 99, "nosave", "", HandleNoSave);
-			Add(99, 99, "dbgregion", "[scale=20] [entityIds]", HandleDebugRegion);
+			Add(99, 99, "dbgregion", "[scale=20] [entityIds|propIds]", HandleDebugRegion);
 
 			// Aliases
 			AddAlias("item", "drop");
@@ -1990,6 +1990,8 @@ namespace Aura.Channel.Util
 			var scale = 20;
 			var padding = 60;
 			var entityIds = args.Any(a => a == "entityIds");
+			var propIds = args.Any(a => a == "propIds");
+			var showIds = (entityIds || propIds);
 
 			if (args.Count > 1)
 			{
@@ -2054,7 +2056,7 @@ namespace Aura.Channel.Util
 							gfx.DrawLine(pen, points[3].X / scale + padding, (bmp.Height - points[3].Y / scale) - padding, points[0].X / scale + padding, (bmp.Height - points[0].Y / scale) - padding);
 						}
 
-						if (entityIds && entity.Shapes.Any())
+						if (showIds && entity.Shapes.Any())
 						{
 							var x = entity.Info.X / scale + padding;
 							var y = (bmp.Height - entity.Info.Y / scale) - padding;
@@ -2068,15 +2070,17 @@ namespace Aura.Channel.Util
 
 							y += SystemFonts.DefaultFont.Height * same;
 
-							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y - 0), sf);
-							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x + 1, y - 0), sf);
-							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 0, y - 1), sf);
-							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 0, y + 1), sf);
-							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y - 1), sf);
-							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x + 1, y + 1), sf);
-							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y + 1), sf);
-							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y + 1), sf);
-							gfx.DrawString(entity.EntityId.ToString("X16"), SystemFonts.DefaultFont, Brushes.White, new PointF(x, y), sf);
+							var str = (entityIds ? entity.EntityId.ToString("X16") : entity.Info.Id.ToString());
+
+							gfx.DrawString(str, SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y - 0), sf);
+							gfx.DrawString(str, SystemFonts.DefaultFont, Brushes.Black, new PointF(x + 1, y - 0), sf);
+							gfx.DrawString(str, SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 0, y - 1), sf);
+							gfx.DrawString(str, SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 0, y + 1), sf);
+							gfx.DrawString(str, SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y - 1), sf);
+							gfx.DrawString(str, SystemFonts.DefaultFont, Brushes.Black, new PointF(x + 1, y + 1), sf);
+							gfx.DrawString(str, SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y + 1), sf);
+							gfx.DrawString(str, SystemFonts.DefaultFont, Brushes.Black, new PointF(x - 1, y + 1), sf);
+							gfx.DrawString(str, SystemFonts.DefaultFont, Brushes.White, new PointF(x, y), sf);
 						}
 					}
 
