@@ -24,7 +24,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="args"></param>
 		public static void SystemMessage(Creature creature, string format, params object[] args)
 		{
-			SystemMessage(creature, "<SYSTEM>", format, args);
+			SystemMessage(creature, Localization.Get("<SYSTEM>"), format, args);
 		}
 
 		/// <summary>
@@ -35,7 +35,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="args"></param>
 		public static void ServerMessage(Creature creature, string format, params object[] args)
 		{
-			SystemMessage(creature, "<SERVER>", format, args);
+			SystemMessage(creature, Localization.Get("<SERVER>"), format, args);
 		}
 
 		public static void System_Broadcast(string from, string format, params object[] args)
@@ -66,7 +66,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="args"></param>
 		public static void CombatMessage(Creature creature, string format, params object[] args)
 		{
-			SystemMessage(creature, "<COMBAT>", format, args);
+			SystemMessage(creature, Localization.Get("<COMBAT>"), format, args);
 		}
 
 		/// <summary>
@@ -176,8 +176,8 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet(Op.Chat, MabiId.Broadcast);
 			packet.PutByte(0);
-			packet.PutString("<PARTY>");
-			packet.PutString("[Wanted] {0}: [{1}/{2}] - {3}", party.Leader.Name, party.Name, party.DungeonLevel, party.Info);
+			packet.PutString(Localization.Get("<PARTY>"));
+			packet.PutString(Localization.Get("[Wanted] {0}: [{1}/{2}] - {3}"), party.Leader.Name, party.Name, party.DungeonLevel, party.Info);
 			packet.PutByte(1);
 			packet.PutInt(-1);
 			packet.PutInt(0);
