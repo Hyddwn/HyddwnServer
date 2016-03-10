@@ -2048,6 +2048,9 @@ namespace Aura.Channel.Util
 					{
 						var pen = Pens.Black;
 
+						if (entity.ServerSide)
+							pen = Pens.Red;
+
 						foreach (var points in entity.Shapes)
 						{
 							gfx.DrawLine(pen, points[0].X / scale + padding, (bmp.Height - points[0].Y / scale) - padding, points[1].X / scale + padding, (bmp.Height - points[1].Y / scale) - padding);
