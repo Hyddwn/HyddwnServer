@@ -1524,8 +1524,6 @@ namespace Aura.Channel.World.Entities
 		/// Returns the max distance the creature can have to attack.
 		/// </summary>
 		/// <remarks>
-		/// http://dev.mabinoger.com/forum/index.php/topic/767-attack-range/
-		/// 
 		/// This might not be the 100% accurate formula, but it should be
 		/// good enough to work with for now.
 		/// </remarks>
