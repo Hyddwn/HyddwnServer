@@ -47,6 +47,9 @@ Creating a new translation:
   "Localization.GetParticular:1c,2"
   "Localization.GetParticularPlural:1c,2,3"
   "L:1"
+  "LN:1,2"
+  "LX:1c,2"
+  "LXN:1c,2,3"
   These are the function names the program will look for to get strings.
   Localization.Get[...] is usually used inside the core, e.g. for the Eweca
   messages. The other methods are used in scripts for various things.
