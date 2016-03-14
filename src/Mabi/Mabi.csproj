@@ -62,6 +62,7 @@
     <Compile Include="Const\Rebirth.cs" />
     <Compile Include="Const\Regions.cs" />
     <Compile Include="Const\ReviveOptions.cs" />
+    <Compile Include="Const\Servers.cs" />
     <Compile Include="Const\Skills.cs" />
     <Compile Include="Const\Stats.cs" />
     <Compile Include="Const\TitleId.cs" />

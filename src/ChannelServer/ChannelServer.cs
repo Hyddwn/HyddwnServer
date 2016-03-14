@@ -24,6 +24,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using Aura.Mabi;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel
 {
@@ -228,7 +229,7 @@ namespace Aura.Channel
 		public ChannelState CalculateChannelState()
 		{
 			// Just in case this gets called
-			if (this.ShuttingDown)               
+			if (this.ShuttingDown)
 				return ChannelState.Maintenance;
 
 			var current = this.World.CountPlayers();

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Mabi.Const;
 using System;
 using System.Collections.Generic;
 
@@ -87,51 +88,5 @@ namespace Aura.Shared.Network
 
 			this.LastUpdate = DateTime.MinValue;
 		}
-	}
-
-	public enum ChannelState
-	{
-		/// <summary>
-		/// Server is offline for maint
-		/// </summary>
-		Maintenance = 0,
-		/// <summary>
-		/// Server is online and stress is [0,40) (less than 40%)
-		/// </summary>
-		Normal = 1,
-		/// <summary>
-		/// Server is online and stress is [40,70) (between 40% and 70%)
-		/// </summary>
-		Busy = 2,
-		/// <summary>
-		/// Server is online and stress is [70,95) (between 70% and 95%)
-		/// </summary>
-		Full = 3,
-		/// <summary>
-		/// Server is online and stress is [95,+∞) (greater than 95%)
-		/// 
-		/// In this state, the client won't allow you to move to the channel
-		/// </summary>
-		Bursting = 4,
-		/// <summary>
-		/// This state has never been directly observed. Maybe used internally,
-		/// or possibly if a channel crashes.
-		/// 
-		/// Shows up as [Maintenance] clientside.
-		/// </summary>
-		Booting = 5,
-		/// <summary>
-		/// Any other value is interpreted as [Error], unknown if this affects
-		/// client behavior.
-		/// </summary>
-		Error = 6		
-	}
-
-	[Flags]
-	public enum ChannelEvent
-	{
-		None = 0,
-		Event = 1,
-		PvP = 2
 	}
 }
