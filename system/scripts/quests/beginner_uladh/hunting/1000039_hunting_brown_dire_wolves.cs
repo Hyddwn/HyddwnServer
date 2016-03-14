@@ -10,13 +10,13 @@ public class BrownDireWolvesQuestScript : QuestScript
 	public override void Load()
 	{
 		SetId(1000039);
-		SetName("Hunt 5 Brown Dire Wolves");
-		SetDescription("I think it's time you fight the beasts. Have you ever seen the brown dire wolf near Ciar Dungeon? Please hunt 5 brown dire wolves. Even without any reporting, I will pay you if you complete the mission. - Ranald-");
+		SetName(L("Hunt 5 Brown Dire Wolves"));
+		SetDescription(L("I think it's time you fight the beasts. Have you ever seen the brown dire wolf near Ciar Dungeon? Please hunt 5 brown dire wolves. Even without any reporting, I will pay you if you complete the mission. - Ranald-"));
 		
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000038), ReachedTotalLevel(17)));
 
-		AddObjective("kill_wolves", "Hunt 5 Brown Dire Wolves", 1, 38800, 35066, Kill(5, "/browndirewolf/"));
+		AddObjective("kill_wolves", L("Hunt 5 Brown Dire Wolves"), 1, 38800, 35066, Kill(5, "/browndirewolf/"));
 
 		AddReward(Exp(1380));
 		AddReward(Item(40013, 1));

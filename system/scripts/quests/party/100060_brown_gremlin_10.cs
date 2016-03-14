@@ -10,11 +10,11 @@ public class BrownGremlin10PartyQuest : QuestScript
 	{
 		SetId(100060);
 		SetScrollId(70025);
-		SetName("[PQ] Hunt Down the Brown Gremlins");
-		SetDescription("Brown Gremlins are under an evil spell and are attacking travelers. Please [Hunt 10 Brown Gremlins].");
+		SetName(L("[PQ] Hunt Down the Brown Gremlins"));
+		SetDescription(L("Brown Gremlins are under an evil spell and are attacking travelers. Please [Hunt 10 Brown Gremlins]."));
 		SetType(QuestType.Collect);
 
-		AddObjective("obj", "Hunt 10 Brown Gremlins", 0, 0, 0, Kill(10, "/browngremlin/"));
+		AddObjective("obj", L("Hunt 10 Brown Gremlins"), 0, 0, 0, Kill(10, "/browngremlin/"));
 
 		AddReward(Exp(900));
 		AddReward(Gold(1098));

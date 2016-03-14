@@ -10,13 +10,13 @@ public class GolemQuestScript : QuestScript
 	public override void Load()
 	{
 		SetId(1000059);
-		SetName("Hunt 1 Golem");
-		SetDescription("The golems normally are a pile of stones but turns into monsters when somebody goes near. It's not easy to face a Golem but you look like you could face a Golem - Ranald -");
+		SetName(L("Hunt 1 Golem"));
+		SetDescription(L("The golems normally are a pile of stones but turns into monsters when somebody goes near. It's not easy to face a Golem but you look like you could face a Golem - Ranald -"));
 		
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000058));
 
-		AddObjective("kill_golem", "Hunt 1 Golem", 11, 3213, 3209, Kill(1, "/golem/"));
+		AddObjective("kill_golem", L("Hunt 1 Golem"), 11, 3213, 3209, Kill(1, "/golem/"));
 
 		AddReward(Exp(40000));
 		AddReward(Item(46001, 1));

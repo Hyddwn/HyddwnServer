@@ -10,11 +10,11 @@ public class WhiteSpider10PartyQuest : QuestScript
 	{
 		SetId(100013);
 		SetScrollId(70025);
-		SetName("[PQ] Hunt White Spiders");
-		SetDescription("The White Spiders are a threat for people trying to collect cobwebs. I will reward you for hunting [10 White Spiders].");
+		SetName(L("[PQ] Hunt White Spiders"));
+		SetDescription(L("The White Spiders are a threat for people trying to collect cobwebs. I will reward you for hunting [10 White Spiders]."));
 		SetType(QuestType.Collect);
 
-		AddObjective("obj", "Hunt 10 White Spiders", 0, 0, 0, Kill(10, "/whitespider/"));
+		AddObjective("obj", L("Hunt 10 White Spiders"), 0, 0, 0, Kill(10, "/whitespider/"));
 
 		AddReward(Exp(66));
 		AddReward(Gold(201));

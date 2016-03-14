@@ -10,12 +10,12 @@ public class AlbyIntHardPartyQuest : QuestScript
 	{
 		SetId(100072);
 		SetScrollId(70025);
-		SetName("[PQ] Defeat the Lycanthrope");
-		SetDescription("Recently a new altar has been found at the back of Alby Dungeon. Try offering [Alby Intermediate Fomor Pass], and defeat the [Lycanthrope] that can be found at the deepest part of the dungeon.");
+		SetName(L("[PQ] Defeat the Lycanthrope"));
+		SetDescription(L("Recently a new altar has been found at the back of Alby Dungeon. Try offering [Alby Intermediate Fomor Pass], and defeat the [Lycanthrope] that can be found at the deepest part of the dungeon."));
 		SetType(QuestType.Collect);
 
-		AddObjective("obj1", "Eliminate 2 Lycanthropes", 0, 0, 0, Kill(2, "/lycanthrope/lycanthropeteam7/boss/hardmode/"));
-		AddObjective("obj2", "Eliminate 5 Gorgons", 0, 0, 0, Kill(5, "/gorgon/normalgorgon/hardmode/"));
+		AddObjective("obj1", L("Eliminate 2 Lycanthropes"), 0, 0, 0, Kill(2, "/lycanthrope/lycanthropeteam7/boss/hardmode/"));
+		AddObjective("obj2", L("Eliminate 5 Gorgons"), 0, 0, 0, Kill(5, "/gorgon/normalgorgon/hardmode/"));
 
 		AddReward(Exp(22600));
 		AddReward(Gold(20000));

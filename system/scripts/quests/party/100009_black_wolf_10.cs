@@ -10,11 +10,11 @@ public class BlackWolf10PartyQuest : QuestScript
 	{
 		SetId(100009);
 		SetScrollId(70025);
-		SetName("[PQ] Hunt Black Wolves");
-		SetDescription("The wolves that started to appear recently, are natural enemies of the sheep. To protect the sheep, please hunt [10 black wolves] roaming the plains.");
+		SetName(L("[PQ] Hunt Black Wolves"));
+		SetDescription(L("The wolves that started to appear recently, are natural enemies of the sheep. To protect the sheep, please hunt [10 black wolves] roaming the plains."));
 		SetType(QuestType.Collect);
 
-		AddObjective("obj", "Hunt 10 Black Wolves", 0, 0, 0, Kill(10, "/blackwolf/"));
+		AddObjective("obj", L("Hunt 10 Black Wolves"), 0, 0, 0, Kill(10, "/blackwolf/"));
 
 		AddReward(Exp(171));
 		AddReward(Gold(327));
