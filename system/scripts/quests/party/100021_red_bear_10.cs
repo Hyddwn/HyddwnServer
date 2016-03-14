@@ -10,11 +10,11 @@ public class RedBear10PartyQuest : QuestScript
 	{
 		SetId(100021);
 		SetScrollId(70025);
-		SetName("[PQ] Hunt Down the Red Bears");
-		SetDescription("It is uncommon to see red bear roaming around the plains. Supposedly, the Red Bears have amazing power. Will you please hunt [10 red bears]?");
+		SetName(L("[PQ] Hunt Down the Red Bears"));
+		SetDescription(L("It is uncommon to see red bear roaming around the plains. Supposedly, the Red Bears have amazing power. Will you please hunt [10 red bears]?"));
 		SetType(QuestType.Collect);
 
-		AddObjective("obj", "Hunt 10 Red Bears", 0, 0, 0, Kill(10, "/redbear/"));
+		AddObjective("obj", L("Hunt 10 Red Bears"), 0, 0, 0, Kill(10, "/redbear/"));
 
 		AddReward(Exp(300));
 		AddReward(Gold(630));

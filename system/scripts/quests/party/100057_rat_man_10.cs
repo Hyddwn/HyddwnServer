@@ -10,11 +10,11 @@ public class RatMan10PartyQuest : QuestScript
 	{
 		SetId(100057);
 		SetScrollId(70025);
-		SetName("[PQ] Hunt Down the Rat Men");
-		SetDescription("Rat Men under the control of an evil power are attacking travelers. Please [hunt 10 rat men].");
+		SetName(L("[PQ] Hunt Down the Rat Men"));
+		SetDescription(L("Rat Men under the control of an evil power are attacking travelers. Please [hunt 10 rat men]."));
 		SetType(QuestType.Collect);
 
-		AddObjective("obj", "Hunt 10 Rat Men", 0, 0, 0, Kill(10, "/ratman/"));
+		AddObjective("obj", L("Hunt 10 Rat Men"), 0, 0, 0, Kill(10, "/ratman/"));
 
 		AddReward(Exp(1500));
 		AddReward(Gold(1362));

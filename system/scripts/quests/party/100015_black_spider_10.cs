@@ -10,11 +10,11 @@ public class BlackSpider10PartyQuest : QuestScript
 	{
 		SetId(100015);
 		SetScrollId(70025);
-		SetName("[PQ] Hunt Black Spiders");
-		SetDescription("The Black Spiders in dungeons are a good source of cobwebs for collectors, but they also pose a serious threat to their safety. I will reward you for hunting [10 Black Spiders].");
+		SetName(L("[PQ] Hunt Black Spiders"));
+		SetDescription(L("The Black Spiders in dungeons are a good source of cobwebs for collectors, but they also pose a serious threat to their safety. I will reward you for hunting [10 Black Spiders]."));
 		SetType(QuestType.Collect);
 
-		AddObjective("obj", "Hunt 10 Black Spiders", 0, 0, 0, Kill(10, "/blackspider/"));
+		AddObjective("obj", L("Hunt 10 Black Spiders"), 0, 0, 0, Kill(10, "/blackspider/"));
 
 		AddReward(Exp(117));
 		AddReward(Gold(360));

@@ -10,13 +10,13 @@ public class WhiteDireWolvesQuestScript : QuestScript
 	public override void Load()
 	{
 		SetId(1000041);
-		SetName("Hunt 5 White Dire Wolves");
-		SetDescription("It is not easy becoming a warrior. Try hunting 5 white dire wolves. I know it's not an easy mission but please succeed. - Ranald-");
+		SetName(L("Hunt 5 White Dire Wolves"));
+		SetDescription(L("It is not easy becoming a warrior. Try hunting 5 white dire wolves. I know it's not an easy mission but please succeed. - Ranald-"));
 		
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000040), ReachedTotalLevel(20)));
 
-		AddObjective("kill_wolves", "Hunt 5 White Dire Wolves", 16, 37864, 21727, Kill(5, "/whitedirewolf/"));
+		AddObjective("kill_wolves", L("Hunt 5 White Dire Wolves"), 16, 37864, 21727, Kill(5, "/whitedirewolf/"));
 
 		AddReward(Exp(2000));
 		AddReward(Item(63001, 2));

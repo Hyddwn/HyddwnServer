@@ -10,11 +10,11 @@ public class WoodJackal30PartyQuest : QuestScript
 	{
 		SetId(100063);
 		SetScrollId(70025);
-		SetName("[PQ] Hunt Down the Wood Jackals");
-		SetDescription("Wood Jackals are under an evil spell and are attacking travelers. Please [hunt 30 Wood Jackals].");
+		SetName(L("[PQ] Hunt Down the Wood Jackals"));
+		SetDescription(L("Wood Jackals are under an evil spell and are attacking travelers. Please [hunt 30 Wood Jackals]."));
 		SetType(QuestType.Collect);
 
-		AddObjective("obj", "Hunt 30 Wood Jackals", 0, 0, 0, Kill(30, "/woodjackal/"));
+		AddObjective("obj", L("Hunt 30 Wood Jackals"), 0, 0, 0, Kill(30, "/woodjackal/"));
 
 		AddReward(Exp(1350));
 		AddReward(Gold(2250));
