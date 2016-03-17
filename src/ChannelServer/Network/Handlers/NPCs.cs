@@ -287,7 +287,7 @@ namespace Aura.Channel.Network.Handlers
 				case PaymentMethod.Gold: canPay = (creature.Inventory.Gold >= price); break;
 				case PaymentMethod.Stars: canPay = (creature.Inventory.Stars >= price); break;
 				case PaymentMethod.Ducats: canPay = false; break; // TODO: Implement ducats.
-				case PaymentMethod.Points: canPay = (creature.Client.Account.Points >= price); break;
+				case PaymentMethod.Points: canPay = (creature.Points >= price); break;
 			}
 
 			if (!canPay)
@@ -328,10 +328,7 @@ namespace Aura.Channel.Network.Handlers
 					case PaymentMethod.Gold: creature.Inventory.Gold -= price; break;
 					case PaymentMethod.Stars: creature.Inventory.Stars -= price; break;
 					case PaymentMethod.Ducats: break; // TODO: Implement ducats.
-					case PaymentMethod.Points:
-						client.Account.Points -= price;
-						Send.PonsUpdate(creature, client.Account.Points);
-						break;
+					case PaymentMethod.Points: creature.Points -= price; break;
 				}
 			}
 

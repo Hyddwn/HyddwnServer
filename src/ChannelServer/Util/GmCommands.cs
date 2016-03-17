@@ -1884,7 +1884,7 @@ namespace Aura.Channel.Util
 
 		private CommandResult HandlePoints(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
-			var oldVal = target.Client.Account.Points;
+			var oldVal = target.Points;
 
 			// Output current points
 			if (args.Count < 2)
@@ -1903,13 +1903,10 @@ namespace Aura.Channel.Util
 				return CommandResult.InvalidArgument;
 
 			// Modificate
-			var newVal = (target.Client.Account.Points += mod);
-
-			// Client update
-			Send.PonsUpdate(target, newVal);
+			var newVal = (target.Points += mod);
 
 			// Notice
-			Send.ServerMessage(sender, Localization.Get("Pon modificated: {0} -> {1}."), oldVal, target.Client.Account.Points);
+			Send.ServerMessage(sender, Localization.Get("Pon modificated: {0} -> {1}."), oldVal, target.Points);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("Your Pon have been modificated by {2}: {0} -> {1}."), oldVal, newVal, sender.Name);
 

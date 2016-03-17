@@ -212,8 +212,8 @@ namespace Aura.Channel.Network.Handlers
 
 			// Check points
 			// Sanity check, client should prevent this.
-			if (client.Account.Points < totalPrice)
-				throw new ModerateViolation("Player tried to rebirth without being able to pay for the selected options, total price: {0}, Points: {1}", totalPrice, client.Account.Points);
+			if (creature.Points < totalPrice)
+				throw new ModerateViolation("Player tried to rebirth without being able to pay for the selected options, total price: {0}, Points: {1}", totalPrice, creature.Points);
 
 			// Reset age
 			if (resetAge)
@@ -289,10 +289,7 @@ namespace Aura.Channel.Network.Handlers
 
 			// Update points
 			if (totalPrice != 0)
-			{
-				client.Account.Points -= totalPrice;
-				Send.PonsUpdate(creature, client.Account.Points);
-			}
+				creature.Points -= totalPrice;
 
 			return;
 
@@ -317,7 +314,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			Send.EnterRebirthR(creature);
-			Send.PonsUpdate(creature, client.Account.Points);
+			Send.PonsUpdate(creature, creature.Points);
 		}
 	}
 }
