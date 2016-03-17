@@ -177,6 +177,24 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public bool IsDev { get { return (this.Titles.SelectedTitle == TitleId.devCAT); } }
 
+		/// <summary>
+		/// Gets or sets the amount of "cash" points on the creature's
+		/// account and updates the client accordingly.
+		/// </summary>
+		public int Points
+		{
+			get { return (this.Client.Account != null ? this.Client.Account.Points : 0); }
+			set
+			{
+				if (this.Client.Account == null)
+					return;
+
+				var points = Math2.Clamp(0, int.MaxValue, value);
+				this.Client.Account.Points = points;
+				Send.PonsUpdate(this, points);
+			}
+		}
+
 		// Look
 		// ------------------------------------------------------------------
 
@@ -944,9 +962,6 @@ namespace Aura.Channel.World.Entities
 		/// - The level before the level up process.
 		/// </remarks>
 		public event Action<Creature, int> LeveledUp;
-
-		// ------------------------------------------------------------------
-
 
 		// Parties
 		// ------------------------------------------------------------------
