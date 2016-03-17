@@ -43,6 +43,7 @@ namespace Aura.Channel.Skills.Life
 		private const int HalloweenPropId = 44455;
 		private const int ChristmasPropId = 44867;
 		private const int SeventhAnnvPropId = 44809;
+		private const int EighthAnnvPropId = 44960;
 
 		/// <summary>
 		/// How much Firewood is required/being removed.
@@ -223,9 +224,13 @@ namespace Aura.Channel.Skills.Life
 				{
 					return ChristmasPropId;
 				}
-				else if (item.HasTag("/anniversary_campfire_kit/"))
+				else if (item.Info.Id == 63291)
 				{
 					return SeventhAnnvPropId;
+				}
+				else if (item.Info.Id == 63343)
+				{
+					return EighthAnnvPropId;
 				}
 			}
 
