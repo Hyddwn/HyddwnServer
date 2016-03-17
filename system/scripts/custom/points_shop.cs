@@ -22,8 +22,57 @@ public class CustomPointsShopScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		Msg(L("What can I do for you?"));
-		OpenShop("CustomPointsShop");
+		Msg(L("What can I do for you?"), Button(L("Premium Shop"), "@premium"), Button(L("Item Shop"), "@items"), Button(L("End Conversation"), "@end"));
+		
+		var result = await Select();
+		if (result != "@end")
+		{
+			Msg(L("Please have a look around."));
+			switch (result)
+			{
+				case "@premium": await PremiumShop(); break;
+				case "@items": OpenShop("CustomPointsShop"); break;
+			}
+		}
+
+		Close(Hide.None, "Come back any time!");
+	}
+
+	protected virtual async Task PremiumShop()
+	{
+		var list = List("",
+			Button(L("Basic Character Card (80 Pon)"), "@basic_human"),
+			Button(L("Premium Character Card (120 Pon)"), "@premium_human")
+		);
+
+		while (true)
+		{
+			list.Text = string.Format(L("Cards - Your Pon: {0:n0}"), Player.Points);
+
+			Msg(list);
+			
+			var result = await Select();
+			if (result == "@end")
+				break;
+
+			int cardId = 0, price = 0;
+			switch (result)
+			{
+				case "@basic_human": cardId = 0; price = 80; break;
+				case "@premium_human": cardId = 1; price = 120; break;
+			}
+
+			if (Player.Points < price)
+			{
+				Msg(L("Oh, it seems like you can't afford that right now."));
+				continue;
+			}
+
+			Player.Points -= price;
+			ChannelServer.Instance.Database.AddCard(Player.Client.Account.Id, cardId, 0);
+
+			Msg(L("Thank you! Anything else?"));
+		}
 	}
 }
 
