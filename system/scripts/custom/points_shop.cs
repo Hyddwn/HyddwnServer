@@ -22,7 +22,7 @@ public class CustomPointsShopScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		Msg(L("What can I do for you?"), Button(L("Premium Shop"), "@premium"), Button(L("Item Shop"), "@items"), Button(L("End Conversation"), "@end"));
+		Msg(L("What can I do for you?"), Button(L("Character Cards"), "@characters"), Button(L("Pet Cards"), "@pets"), Button(L("Item Shop"), "@items"), Button(L("End Conversation"), "@end"));
 		
 		var result = await Select();
 		if (result != "@end")
@@ -30,7 +30,8 @@ public class CustomPointsShopScript : NpcScript
 			Msg(L("Please have a look around."));
 			switch (result)
 			{
-				case "@premium": await PremiumShop(); break;
+				case "@characters": await CharacterCardShop(); break;
+				case "@pets": await PetCardShop(); break;
 				case "@items": OpenShop("CustomPointsShop"); break;
 			}
 		}
@@ -38,7 +39,7 @@ public class CustomPointsShopScript : NpcScript
 		Close(Hide.None, "Come back any time!");
 	}
 
-	protected virtual async Task PremiumShop()
+	protected virtual async Task CharacterCardShop()
 	{
 		var list = List("",
 			Button(L("Basic Character Card (80 Pon)"), "@basic_human"),
@@ -70,6 +71,43 @@ public class CustomPointsShopScript : NpcScript
 
 			Player.Points -= price;
 			ChannelServer.Instance.Database.AddCard(Player.Client.Account.Id, cardId, 0);
+
+			Msg(L("Thank you! Anything else?"));
+		}
+	}
+
+	protected virtual async Task PetCardShop()
+	{
+		var list = List("",
+			Button(L("Yellow Jindo (290 Pon)"), "@pet200001"),
+			Button(L("Orange Pixie (290 Pon)"), "@pet201001")
+		);
+
+		while (true)
+		{
+			list.Text = string.Format(L("Pets - Your Pon: {0:n0}"), Player.Points);
+
+			Msg(list);
+			
+			var result = await Select();
+			if (result == "@end")
+				break;
+
+			int raceId = 0, price = 0;
+			switch (result)
+			{
+				case "@pet200001": raceId = 200001; price = 290; break;
+				case "@pet201001": raceId = 201001; price = 290; break;
+			}
+
+			if (Player.Points < price)
+			{
+				Msg(L("Oh, it seems like you can't afford that right now."));
+				continue;
+			}
+
+			Player.Points -= price;
+			ChannelServer.Instance.Database.AddCard(Player.Client.Account.Id, MabiId.PetCardType, raceId);
 
 			Msg(L("Thank you! Anything else?"));
 		}
