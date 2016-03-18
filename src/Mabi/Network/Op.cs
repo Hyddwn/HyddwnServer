@@ -77,7 +77,7 @@ namespace Aura.Mabi.Network
 
 		// PonsUpdate changed by +1 some time.
 
-		public const int PonsUpdate = 0x4E90;
+		public const int PointsUpdate = 0x4E90;
 
 		public const int ChannelCharacterInfoRequest = 0x5208;
 		public const int ChannelCharacterInfoRequestR = 0x5209;

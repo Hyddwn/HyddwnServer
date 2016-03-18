@@ -39,12 +39,15 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends PonsUpdate to creature's client.
+		/// Sends PointsUpdate to creature's client.
 		/// </summary>
+		/// <remarks>
+		/// Points = Pon
+		/// </remarks>
 		/// <param name="creature"></param>
-		public static void PonsUpdate(Creature creature, int ponsAmount)
+		public static void PointsUpdate(Creature creature, int ponsAmount)
 		{
-			var packet = new Packet(Op.PonsUpdate, MabiId.Channel);
+			var packet = new Packet(Op.PointsUpdate, MabiId.Channel);
 			packet.PutByte(2);
 			packet.PutInt(ponsAmount);
 

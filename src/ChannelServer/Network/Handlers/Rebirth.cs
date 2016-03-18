@@ -314,7 +314,7 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			Send.EnterRebirthR(creature);
-			Send.PonsUpdate(creature, creature.Points);
+			Send.PointsUpdate(creature, creature.Points);
 		}
 	}
 }

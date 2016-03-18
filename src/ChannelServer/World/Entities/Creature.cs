@@ -191,7 +191,7 @@ namespace Aura.Channel.World.Entities
 
 				var points = Math2.Clamp(0, int.MaxValue, value);
 				this.Client.Account.Points = points;
-				Send.PonsUpdate(this, points);
+				Send.PointsUpdate(this, points);
 			}
 		}
 
