@@ -243,6 +243,12 @@ namespace Aura.Channel.World.Entities
 		public Item Magazine { get { return this.Inventory.Magazine; } }
 		public bool HandsFree { get { return (this.RightHand == null && this.LeftHand == null && this.Magazine == null); } }
 
+		/// <summary>
+		/// Returns whether the creature is wielding main weapons on both hands.
+		/// Shields and similar items are not considered main weapons.
+		/// </summary>
+		public bool IsDualWielding { get { return this.RightHand != null && this.LeftHand != null && this.LeftHand.Data.WeaponType != 0; } }
+
 		// Movement
 		// ------------------------------------------------------------------
 
@@ -942,6 +948,17 @@ namespace Aura.Channel.World.Entities
 		/// Returns multiplicator to be used when regenerating stamina.
 		/// </summary>
 		public float StaminaRegenMultiplicator { get { return (this.Stamina < this.StaminaHunger ? 1f : 0.2f); } }
+
+		/// <summary>
+		/// Returns the rigth hand weapon stamina usage, or bare hand stamina usage if no such weapon.
+		/// </summary>
+		public float RightHandStaminaUsage { get { return RightHand != null ? RightHand.Data.StaminaUsage : Creature.BareHandStaminaUsage; } }
+
+		/// <summary>
+		/// Returns the left hand weapon stamina usage if the creature is dual wielding, 0 otherwise.
+		/// <seealso cref="Creature.IsDualWielding"/>
+		/// </summary>
+		public float LeftHandStaminaUsage { get { return IsDualWielding ? LeftHand.Data.StaminaUsage : 0; } }
 
 		// Events
 		// ------------------------------------------------------------------

@@ -48,24 +48,36 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Check range
-			if (creature.GetPosition().InRange(prop.GetPosition(), 1500))
-			{
-				creature.Stun = 1000;
-				Send.HittingProp(creature, prop.EntityId, 1000);
-
-				if (prop.Behavior != null)
-				{
-					prop.Behavior(creature, prop);
-				}
-				else
-				{
-					Log.Unimplemented("HitProp: No prop behavior for '{0:X16}'.", prop.EntityId);
-				}
-			}
-			else
+			if (!creature.GetPosition().InRange(prop.GetPosition(), 1500))
 			{
 				Send.Notice(creature, NoticeType.MiddleLower, Localization.Get("You're too far away."));
 				Log.Warning("HitProp: Player '{0}' tried to hit prop out of range.", creature.Name);
+				Send.HitPropR(creature, false);
+				return;
+			}
+
+			// Check stamina
+			var staminaUsage = creature.RightHandStaminaUsage + creature.LeftHandStaminaUsage;
+			if (creature.Stamina < staminaUsage)
+			{
+				Send.Notice(creature, Localization.Get("Attack cancelled due to insufficient stamina."));
+				Send.HitPropR(creature, false);
+				return;
+			}
+
+			// If all checks passed broadcast action and reduce stamina.
+			creature.Stamina -= staminaUsage;
+			creature.Stun = creature.IsDualWielding ? 2000 : 1000;
+			Send.HittingProp(creature, prop.EntityId, creature.Stun);
+			Send.StatUpdate(creature, StatUpdateType.Private, Stat.Stamina);
+
+			if (prop.Behavior != null)
+			{
+				prop.Behavior(creature, prop);
+			}
+			else
+			{
+				Log.Unimplemented("HitProp: No prop behavior for '{0:X16}'.", prop.EntityId);
 			}
 
 			// Response
