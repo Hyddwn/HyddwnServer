@@ -69,8 +69,7 @@ namespace Aura.Channel.Skills.Combat
 			var rightWeapon = attacker.Inventory.RightHand;
 			var leftWeapon = attacker.Inventory.LeftHand;
 			var magazine = attacker.Inventory.Magazine;
-			var dualWield = (rightWeapon != null && leftWeapon != null && leftWeapon.Data.WeaponType != 0);
-			var maxHits = (byte)(dualWield ? 2 : 1);
+			var maxHits = (byte)(attacker.IsDualWielding ? 2 : 1);
 			int prevId = 0;
 
 			for (byte i = 1; i <= maxHits; ++i)
@@ -86,13 +85,13 @@ namespace Aura.Channel.Skills.Combat
 
 				var cap = new CombatActionPack(attacker, skill.Info.Id, aAction, tAction);
 				cap.Hit = i;
-				cap.Type = (dualWield ? CombatActionPackType.TwinSwordAttack : CombatActionPackType.NormalAttack);
+				cap.Type = (attacker.IsDualWielding ? CombatActionPackType.TwinSwordAttack : CombatActionPackType.NormalAttack);
 				cap.PrevId = prevId;
 				prevId = cap.Id;
 
 				// Default attacker options
 				aAction.Set(AttackerOptions.Result);
-				if (dualWield)
+				if (attacker.IsDualWielding)
 				{
 					aAction.Set(AttackerOptions.DualWield);
 					aAction.WeaponParameterType = (byte)(i == 1 ? 2 : 1);
@@ -156,7 +155,7 @@ namespace Aura.Channel.Skills.Combat
 								//tAction.Set(tAction.Has(TargetOptions.Critical) ? TargetOptions.KnockDown : TargetOptions.KnockBack);
 								tAction.Set(TargetOptions.KnockDown);
 						}
-						else if (!dualWield && !weaponIsKnuckle)
+						else if (!attacker.IsDualWielding && !weaponIsKnuckle)
 						{
 							target.Stability = Creature.MinStability;
 							tAction.Set(TargetOptions.KnockDown);
