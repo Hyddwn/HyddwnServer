@@ -952,13 +952,13 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Returns the rigth hand weapon stamina usage, or bare hand stamina usage if no such weapon.
 		/// </summary>
-		public float RightHandStaminaUsage { get { return RightHand != null ? RightHand.Data.StaminaUsage : Creature.BareHandStaminaUsage; } }
+		public float RightHandStaminaUsage { get { return this.RightHand != null ? this.RightHand.Data.StaminaUsage : BareHandStaminaUsage; } }
 
 		/// <summary>
 		/// Returns the left hand weapon stamina usage if the creature is dual wielding, 0 otherwise.
 		/// <seealso cref="Creature.IsDualWielding"/>
 		/// </summary>
-		public float LeftHandStaminaUsage { get { return IsDualWielding ? LeftHand.Data.StaminaUsage : 0; } }
+		public float LeftHandStaminaUsage { get { return this.IsDualWielding ? this.LeftHand.Data.StaminaUsage : 0; } }
 
 		// Events
 		// ------------------------------------------------------------------
