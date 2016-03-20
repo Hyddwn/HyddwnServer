@@ -79,5 +79,21 @@ namespace Aura.Mabi
 		{
 			return (float)((boost * hungerFilled) / (hunger * 20 * age));
 		}
+
+		/// <summary>
+		/// Returns the color for the name.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public static int GetNameColor(string name)
+		{
+			var ccolor = new int[3];
+			for (var i = 0; i < name.Length; i++)
+				ccolor[i % 3] += name[i];
+			for (var i = 0; i < ccolor.Length; i++)
+				ccolor[i] = (ccolor[i] * 101) % 97 + 159;
+
+			return (ccolor[0] << 16 | ccolor[1] << 8 | ccolor[2] << 0);
+		}
 	}
 }
