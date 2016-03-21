@@ -47,6 +47,7 @@
     <Compile Include="Const\CreatureStates.cs" />
     <Compile Include="Const\Dungeons.cs" />
     <Compile Include="Const\Effects.cs" />
+    <Compile Include="Const\Entities.cs" />
     <Compile Include="Const\Items.cs" />
     <Compile Include="Const\Locks.cs" />
     <Compile Include="Const\Login.cs" />

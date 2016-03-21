@@ -1051,20 +1051,4 @@ namespace Aura.Channel.Network.Sending.Helpers
 			return packet;
 		}
 	}
-
-	public enum CreaturePacketType : byte
-	{
-		/// <summary>
-		/// (1) Used by the login server.
-		/// </summary>
-		Minimal = 1,
-		/// <summary>
-		/// (2) Used for private information (5209).
-		/// </summary>
-		Private = 2,
-		/// <summary>
-		/// (5) Used for public entity appears.
-		/// </summary>
-		Public = 5,
-	}
 }

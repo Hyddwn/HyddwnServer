@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Mabi.Const;
 using System;
 
 namespace Aura.Channel.World.Entities
@@ -85,9 +86,4 @@ namespace Aura.Channel.World.Entities
 				ev(this);
 		}
 	}
-
-	/// <summary>
-	/// Vague entity data type, used in EntityAppears.
-	/// </summary>
-	public enum DataType : short { Creature = 16, Item = 80, Prop = 160 }
 }
