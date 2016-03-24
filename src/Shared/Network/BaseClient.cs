@@ -107,13 +107,11 @@ namespace Aura.Shared.Network
 		{
 			if (this.State != ClientState.Dead)
 			{
-				try
-				{
-					this.Socket.Shutdown(SocketShutdown.Both);
-					this.Socket.Close();
-				}
-				catch
-				{ }
+				try { this.Socket.Shutdown(SocketShutdown.Both); }
+				catch { }
+
+				try { this.Socket.Close(); }
+				catch { }
 
 				// Naturally, we have to clean up after killing somebody.
 				this.CleanUp();
