@@ -1,7 +1,8 @@
 Aura
 ==============================
 
-Aura is an open-source server emulator written in C#. It's solely being
+Aura is an open-source MMORPG server software written in C#,
+for the North American client of Mabinogi. It's solely being
 developed for educational purposes, learning about programming, MMORPGs,
 maintaining huge projects, working with other people, and improving knowledge.
 It's not about playing a game or competing with any services provided by
@@ -66,8 +67,7 @@ Alternatively you can make "casual" releases on the forum, which developers migh
 as research or as a base to implement the features into the official source.
 
 #### Coding conventions
-* Base: [MS Naming Guidelines](http://msdn.microsoft.com/en-us/library/xzf533w0%28v=vs.71%29.aspx),
-        [MS C# Coding Conventions](http://msdn.microsoft.com/en-us/library/ff926074.aspx)
+* Base: [MS Naming Guidelines](http://msdn.microsoft.com/en-us/library/xzf533w0%28v=vs.71%29.aspx), [MS C# Coding Conventions](http://msdn.microsoft.com/en-us/library/ff926074.aspx)
 * Exceptions:
   * Use `_private` for private fields and `this.Foobar` for properties, public fields, and methods.
   * Use tabs, not spaces.
@@ -97,7 +97,7 @@ each other. Make sure you're running the latest version of Aura and *NA*.
 
 If you did update both and are still running into problems, an official update
 probably broke compatibility. Wait a few hours for us to update Aura
-if NA has just been happened, or create an issue on [GitHub](https://github.com/aura-project/aura/issues).
+if NA was just updated, or create an issue on [GitHub](https://github.com/aura-project/aura/issues).
 
 Links
 ------------------------------
