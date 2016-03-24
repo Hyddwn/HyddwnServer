@@ -1,9 +1,8 @@
 Aura
 ==============================
 
-Aura is an open-source MMORPG server software written in C#,
-for the North American client of Mabinogi. It's solely being
-developed for educational purposes, learning about programming, MMORPGs,
+Aura is an open-source MMORPG server software for the North American client of Mabinogi.
+It's solely being developed for educational purposes, learning about programming, MMORPGs,
 maintaining huge projects, working with other people, and improving knowledge.
 It's not about playing a game or competing with any services provided by
 Nexon or its partners, and we don't endorse such actions.
