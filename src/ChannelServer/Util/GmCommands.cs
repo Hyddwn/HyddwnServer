@@ -35,72 +35,72 @@ namespace Aura.Channel.Util
 		public GmCommandManager()
 		{
 			// Players
-			Add(00, 50, "where", "", HandleWhere);
-			Add(00, 50, "cp", "", HandleCp);
-			Add(00, 50, "distance", "", HandleDistance);
-			Add(00, 50, "partysize", "<size>", HandlePartySize);
+			Add(00, 50, "where", "", Localization.Get("Displays location."), HandleWhere);
+			Add(00, 50, "cp", "", Localization.Get("Displays combat power."), HandleCp);
+			Add(00, 50, "distance", "", Localization.Get("Calculates distance between two positions."), HandleDistance);
+			Add(00, 50, "partysize", "<size>", Localization.Get("Changes party max size."), HandlePartySize);
 
 			// VIPs
-			Add(01, 50, "go", "<location>", HandleGo);
-			Add(01, 50, "iteminfo", "<name>", HandleItemInfo);
-			Add(01, 50, "skillinfo", "<name>", HandleSkillInfo);
-			Add(01, 50, "raceinfo", "<name>", HandleRaceInfo);
-			Add(01, 50, "height", "<height>", HandleBody);
-			Add(01, 50, "weight", "<weight>", HandleBody);
-			Add(01, 50, "upper", "<upper>", HandleBody);
-			Add(01, 50, "lower", "<lower>", HandleBody);
-			Add(01, 50, "haircolor", "<hex color>", HandleHairColor);
-			Add(01, 50, "die", "", HandleDie);
-			Add(01, 50, "who", "", HandleWho);
-			Add(01, 50, "motion", "<category> <motion>", HandleMotion);
-			Add(01, 50, "gesture", "<gesture>", HandleGesture);
-			Add(01, 50, "lasttown", "", HandleLastTown);
-			Add(01, 50, "cutscene", "<name>", HandleCutscene);
-			Add(01, 50, "openshop", "<name>", HandleOpenShop);
-			Add(01, 50, "nccolor", "<id (0-32)>", HandleNameChatColor);
+			Add(01, 50, "go", "<location>", Localization.Get("Warps to pre-defined locations."), HandleGo);
+			Add(01, 50, "iteminfo", "<name>", Localization.Get("Searches for item information."), HandleItemInfo);
+			Add(01, 50, "skillinfo", "<name>", Localization.Get("Searches for skill information."), HandleSkillInfo);
+			Add(01, 50, "raceinfo", "<name>", Localization.Get("Searches for race information."), HandleRaceInfo);
+			Add(01, 50, "height", "<height>", Localization.Get("Changes character's height."), HandleBody);
+			Add(01, 50, "weight", "<weight>", Localization.Get("Changes character's weight."), HandleBody);
+			Add(01, 50, "upper", "<upper>", Localization.Get("Changes character's upper body."), HandleBody);
+			Add(01, 50, "lower", "<lower>", Localization.Get("Changes character's lower body."), HandleBody);
+			Add(01, 50, "haircolor", "<hex color>", Localization.Get("Changes character's hair color."), HandleHairColor);
+			Add(01, 50, "die", "", Localization.Get("Kills player."), HandleDie);
+			Add(01, 50, "who", "", Localization.Get("Displays players online."), HandleWho);
+			Add(01, 50, "motion", "<category> <motion>", Localization.Get("Makes character use motion."), HandleMotion);
+			Add(01, 50, "gesture", "<gesture>", Localization.Get("Makes character use gesture."), HandleGesture);
+			Add(01, 50, "lasttown", "", Localization.Get("Warps to last visited town."), HandleLastTown);
+			Add(01, 50, "cutscene", "<name>", Localization.Get("Plays cutscene."), HandleCutscene);
+			Add(01, 50, "openshop", "<name>", Localization.Get("Opens shop with given name."), HandleOpenShop);
+			Add(01, 50, "nccolor", "<id (0-32)>", Localization.Get("Changes name and chat color."), HandleNameChatColor);
 
 			// GMs
-			Add(50, 50, "warp", "<region> [x] [y]", HandleWarp);
-			Add(50, 50, "jump", "[x] [y]", HandleJump);
-			Add(50, 50, "item", "<id|name> [amount|color1 [color2 [color 3]]]", HandleItem);
-			Add(50, 50, "ego", "<item id> <ego name> <ego race> [color1 [color2 [color 3]]]", HandleEgo);
-			Add(50, 50, "skill", "<id> [rank]", HandleSkill);
-			Add(50, 50, "title", "<id>", HandleTitle);
-			Add(50, 50, "speed", "[increase]", HandleSpeed);
-			Add(50, 50, "spawn", "<race> [amount [title]]", HandleSpawn);
-			Add(50, 50, "ap", "<amount>", HandleAp);
-			Add(50, -1, "gmcp", "", HandleGmcp);
-			Add(50, 50, "card", "<id>", HandleCard);
-			Add(50, 50, "petcard", "<race>", HandleCard);
-			Add(50, 50, "heal", "", HandleHeal);
-			Add(50, 50, "clean", "", HandleClean);
-			Add(50, 50, "condition", "[a] [b] [c] [d] [e]", HandleCondition);
-			Add(50, 50, "effect", "<id> [(b|i|s:parameter)|me]", HandleEffect);
-			Add(50, 50, "prop", "<id>", HandleProp);
-			Add(50, 50, "msg", "<message>", HandleMsg);
-			Add(50, 50, "broadcast", "<message>", HandleBroadcast);
-			Add(50, 50, "allskills", "", HandleAllSkills);
-			Add(50, 50, "alltitles", "", HandleAllTitles);
-			Add(50, 50, "gold", "<amount>", HandleGold);
-			Add(50, 50, "favor", "<npc name> [amount]", HandleFavor);
-			Add(50, 50, "stress", "<npc name> [amount]", HandleStress);
-			Add(50, 50, "memory", "<npc name> [amount]", HandleMemory);
-			Add(50, 50, "weather", "[0.0~2.0|clear|rain|storm|type1~type12]", HandleWeather);
-			Add(50, 50, "telewalk", "", HandleTeleWalk);
-			Add(50, 50, "points", "<modificator>", HandlePoints);
-			Add(50, 50, "fillpotions", "", HandleFillPotions);
-			Add(50, 50, "keyword", "[-|+]<name>", HandleKeyword);
+			Add(50, 50, "warp", "<region> [x] [y]", Localization.Get("Warps to a specific region and position."), HandleWarp);
+			Add(50, 50, "jump", "[x] [y]", Localization.Get("Warps to a specific position in the current region."), HandleJump);
+			Add(50, 50, "item", "<id|name> [amount|color1 [color2 [color 3]]]", Localization.Get("Spawns item."), HandleItem);
+			Add(50, 50, "ego", "<item id> <ego name> <ego race> [color1 [color2 [color 3]]]", Localization.Get("Creates spirit weapon."), HandleEgo);
+			Add(50, 50, "skill", "<id> [rank]", Localization.Get("Adds skill or changes rank."), HandleSkill);
+			Add(50, 50, "title", "<id>", Localization.Get("Adds and enables title."), HandleTitle);
+			Add(50, 50, "speed", "[increase]", Localization.Get("Changes moving speed."), HandleSpeed);
+			Add(50, 50, "spawn", "<race> [amount [title]]", Localization.Get("Spawns creature."), HandleSpawn);
+			Add(50, 50, "ap", "<amount>", Localization.Get("Modifies Ability Points."), HandleAp);
+			Add(50, -1, "gmcp", "", Localization.Get("Opens GM Control Panel."), HandleGmcp);
+			Add(50, 50, "card", "<id>", Localization.Get("Adds character card to account."), HandleCard);
+			Add(50, 50, "petcard", "<race>", Localization.Get("Adds pet card to account."), HandleCard);
+			Add(50, 50, "heal", "", Localization.Get("Fully heals target."), HandleHeal);
+			Add(50, 50, "clean", "", Localization.Get("Removes all items on the floor."), HandleClean);
+			Add(50, 50, "condition", "[a] [b] [c] [d] [e]", Localization.Get("Applies conditions."), HandleCondition);
+			Add(50, 50, "effect", "<id> [(b|i|s:parameter)|me]", Localization.Get("Applies effect."), HandleEffect);
+			Add(50, 50, "prop", "<id>", Localization.Get("Spawns prop."), HandleProp);
+			Add(50, 50, "msg", "<message>", Localization.Get("Broadcasts a system message to all logged in players."), HandleMsg);
+			Add(50, 50, "broadcast", "<message>", Localization.Get("Broadcasts message on all channels."), HandleBroadcast);
+			Add(50, 50, "allskills", "", Localization.Get("Adds all supported skills on their max rank."), HandleAllSkills);
+			Add(50, 50, "alltitles", "", Localization.Get("Enables all titles found in title db."), HandleAllTitles);
+			Add(50, 50, "gold", "<amount>", Localization.Get("Spawns gold."), HandleGold);
+			Add(50, 50, "favor", "<npc name> [amount]", Localization.Get("Changes favor of an NPC towards the player."), HandleFavor);
+			Add(50, 50, "stress", "<npc name> [amount]", Localization.Get("Changes stress of an NPC towards the player."), HandleStress);
+			Add(50, 50, "memory", "<npc name> [amount]", Localization.Get("Changes how well an NPC remembers the player."), HandleMemory);
+			Add(50, 50, "weather", "[0.0~2.0|clear|rain|storm|type1~type12]", Localization.Get("Changes weather in player's region."), HandleWeather);
+			Add(50, 50, "telewalk", "", Localization.Get("Enables/disables teleportation in place of walking."), HandleTeleWalk);
+			Add(50, 50, "points", "<modificator>", Localization.Get("Modificates account's points (Pon)."), HandlePoints);
+			Add(50, 50, "fillpotions", "", Localization.Get("Fills all potion stacks in inventory."), HandleFillPotions);
+			Add(50, 50, "keyword", "[-|+]<name>", Localization.Get("Adds/removes keywords."), HandleKeyword);
 
 			// Admins
-			Add(99, 99, "dynamic", "[variant]", HandleDynamic);
-			Add(99, 99, "dungeon", "<dungeon name>", HandleDungeon);
-			Add(99, -1, "reloaddata", "", HandleReloadData);
-			Add(99, -1, "reloadscripts", "", HandleReloadScripts);
-			Add(99, -1, "reloadconf", "", HandleReloadConf);
-			Add(99, 99, "closenpc", "", HandleCloseNpc);
-			Add(99, 99, "shutdown", "<seconds>", HandleShutdown);
-			Add(99, 99, "nosave", "", HandleNoSave);
-			Add(99, 99, "dbgregion", "[scale=20] [entityIds|propIds]", HandleDebugRegion);
+			Add(99, 99, "dynamic", "[variant]", Localization.Get("Creates dynamic region, based on the current one."), HandleDynamic);
+			Add(99, 99, "dungeon", "<dungeon name>", Localization.Get("Creates a new dungeon instance and warps there."), HandleDungeon);
+			Add(99, -1, "reloaddata", "", Localization.Get("Reloads file data (items, skills, etc)."), HandleReloadData);
+			Add(99, -1, "reloadscripts", "", Localization.Get("Reloads scripts (NPCs, monsters, AIs, etc)."), HandleReloadScripts);
+			Add(99, -1, "reloadconf", "", Localization.Get("Reloads configuration files."), HandleReloadConf);
+			Add(99, 99, "closenpc", "", Localization.Get("Sends close NPC packet."), HandleCloseNpc);
+			Add(99, 99, "shutdown", "<seconds>", Localization.Get("Shuts down channel."), HandleShutdown);
+			Add(99, 99, "nosave", "", Localization.Get("Marks creature's controlled by the target's client to not be saved on logout."), HandleNoSave);
+			Add(99, 99, "dbgregion", "[scale=20] [entityIds|propIds]", Localization.Get("Creates an image of the current region and its and client events."), HandleDebugRegion);
 
 			// Aliases
 			AddAlias("item", "drop");
@@ -117,12 +117,13 @@ namespace Aura.Channel.Util
 		/// Adds new command.
 		/// </summary>
 		/// <param name="auth"></param>
+		/// <param name="charAuth"></param>
 		/// <param name="name"></param>
 		/// <param name="usage"></param>
 		/// <param name="func"></param>
-		public void Add(int auth, string name, string usage, GmCommandFunc func)
+		public void Add(int auth, int charAuth, string name, string usage, GmCommandFunc func)
 		{
-			this.Add(auth, 100, name, usage, func);
+			this.Add(new GmCommand(auth, charAuth, name, usage, "", func));
 		}
 
 		/// <summary>
@@ -132,10 +133,11 @@ namespace Aura.Channel.Util
 		/// <param name="charAuth"></param>
 		/// <param name="name"></param>
 		/// <param name="usage"></param>
+		/// <param name="description"></param>
 		/// <param name="func"></param>
-		public void Add(int auth, int charAuth, string name, string usage, GmCommandFunc func)
+		public void Add(int auth, int charAuth, string name, string usage, string description, GmCommandFunc func)
 		{
-			this.Add(new GmCommand(auth, charAuth, name, usage, func));
+			this.Add(new GmCommand(auth, charAuth, name, usage, description, func));
 		}
 
 		/// <summary>
@@ -2149,8 +2151,8 @@ namespace Aura.Channel.Util
 		public int Auth { get; private set; }
 		public int CharAuth { get; private set; }
 
-		public GmCommand(int auth, int charAuth, string name, string usage, GmCommandFunc func)
-			: base(name, usage, "", func)
+		public GmCommand(int auth, int charAuth, string name, string usage, string description, GmCommandFunc func)
+			: base(name, usage, description, func)
 		{
 			this.Auth = auth;
 			this.CharAuth = charAuth;
