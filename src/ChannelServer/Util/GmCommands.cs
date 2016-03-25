@@ -39,6 +39,7 @@ namespace Aura.Channel.Util
 			Add(00, 50, "cp", "", Localization.Get("Displays combat power."), HandleCp);
 			Add(00, 50, "distance", "", Localization.Get("Calculates distance between two positions."), HandleDistance);
 			Add(00, 50, "partysize", "<size>", Localization.Get("Changes party max size."), HandlePartySize);
+			Add(00, -1, "help", "[command]", Localization.Get("Displays available commands and their usage."), HandleHelp);
 
 			// VIPs
 			Add(01, 50, "go", "<location>", Localization.Get("Warps to pre-defined locations."), HandleGo);
@@ -2141,6 +2142,44 @@ namespace Aura.Channel.Util
 						Send.ServerMessage(sender, Localization.Get("{0} gave you the keyword '{1}'."), sender.Name, keyword);
 				}
 			}
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleHelp(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			var auth = target.Client.Account.Authority;
+
+			// List commands
+			if (args.Count == 1)
+			{
+				var commands = string.Join(", ", _commands.Values.Distinct().Where(a => a.Auth <= auth).Select(a => a.Name).OrderBy(a => a));
+
+				Send.ServerMessage(target, Localization.Get("Commands available to you:"));
+				Send.ServerMessage(target, commands);
+
+				return CommandResult.Okay;
+			}
+
+			// Help for a specific command
+			var commandName = args[1];
+
+			GmCommand command;
+			if (!_commands.TryGetValue(commandName, out command) || command.Auth > auth)
+			{
+				Send.ServerMessage(sender, Localization.Get("Unknown command."));
+				return CommandResult.Okay;
+			}
+
+			var description = (!string.IsNullOrWhiteSpace(command.Description) ? command.Description : "?");
+			var aliases = string.Join(", ", _commands.Where(a => a.Value == command && commandName != a.Key).Select(a => a.Key).OrderBy(a => a));
+
+			Send.ServerMessage(sender, "{0} - {1}", commandName, description);
+			if (aliases.Length != 0)
+				Send.ServerMessage(sender, Localization.Get("Aliases: ") + aliases);
+			Send.ServerMessage(sender, Localization.Get("Usage: {0} {1}"), commandName, command.Usage);
+			if (command.CharAuth <= client.Account.Authority && command.CharAuth > 0)
+				Send.ServerMessage(sender, Localization.Get("Usage: {0} <target> {1}"), commandName, command.Usage);
 
 			return CommandResult.Okay;
 		}
