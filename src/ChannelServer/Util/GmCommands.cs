@@ -98,9 +98,9 @@ namespace Aura.Channel.Util
 			Add(99, -1, "reloadscripts", "", Localization.Get("Reloads scripts (NPCs, monsters, AIs, etc)."), HandleReloadScripts);
 			Add(99, -1, "reloadconf", "", Localization.Get("Reloads configuration files."), HandleReloadConf);
 			Add(99, 99, "closenpc", "", Localization.Get("Sends close NPC packet."), HandleCloseNpc);
-			Add(99, 99, "shutdown", "<seconds>", Localization.Get("Shuts down channel."), HandleShutdown);
+			Add(99, -1, "shutdown", "<seconds>", Localization.Get("Shuts down channel."), HandleShutdown);
 			Add(99, 99, "nosave", "", Localization.Get("Marks creature's controlled by the target's client to not be saved on logout."), HandleNoSave);
-			Add(99, 99, "dbgregion", "[scale=20] [entityIds|propIds]", Localization.Get("Creates an image of the current region and its and client events."), HandleDebugRegion);
+			Add(99, -1, "dbgregion", "[scale=20] [entityIds|propIds]", Localization.Get("Creates an image of the current region and its and client events."), HandleDebugRegion);
 
 			// Aliases
 			AddAlias("item", "drop");
