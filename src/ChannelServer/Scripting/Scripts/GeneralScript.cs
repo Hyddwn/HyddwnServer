@@ -295,6 +295,20 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds GM command.
+		/// </summary>
+		/// <param name="auth"></param>
+		/// <param name="charAuth"></param>
+		/// <param name="name"></param>
+		/// <param name="usage"></param>
+		/// <param name="description"></param>
+		/// <param name="func"></param>
+		protected void AddCommand(int auth, int charAuth, string name, string usage, string description, GmCommandFunc func)
+		{
+			ChannelServer.Instance.CommandProcessor.Add(auth, charAuth, name, usage, description, func);
+		}
+
+		/// <summary>
 		/// Adds console command.
 		/// </summary>
 		/// <param name="name"></param>
