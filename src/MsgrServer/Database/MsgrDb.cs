@@ -62,6 +62,9 @@ namespace Aura.Msgr.Database
 					cmd.Set("characterEntityId", characterEntityId);
 					cmd.Set("characterName", characterName);
 					cmd.Set("server", server);
+					cmd.Set("status", (byte)user.Status);
+					cmd.Set("chatOptions", (uint)user.ChatOptions);
+					cmd.Set("nickname", "");
 
 					cmd.Execute();
 
