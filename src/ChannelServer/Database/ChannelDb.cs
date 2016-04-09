@@ -228,6 +228,19 @@ namespace Aura.Channel.Database
 					character.State = (CreatureStates)reader.GetUInt32("state");
 					character.LastTown = reader.GetStringSafe("lastTown");
 
+					var invWidth = reader.GetByte("inventoryWidth");
+					var invHeight = reader.GetByte("inventoryHeight");
+
+					if (invWidth > 0)
+					{
+						character.InventoryWidth = invWidth;
+					}
+
+					if (invHeight > 0)
+					{
+						character.InventoryHeight = invHeight;
+					}
+
 					character.CreationTime = reader.GetDateTimeSafe("creationTime");
 					character.LastRebirth = reader.GetDateTimeSafe("lastRebirth");
 					character.LastLogin = reader.GetDateTimeSafe("lastLogin");
@@ -996,6 +1009,8 @@ namespace Aura.Channel.Database
 				cmd.Set("age", creature.Age);
 				cmd.Set("rebirthCount", creature.RebirthCount);
 				cmd.Set("lastTown", creature.LastTown);
+				cmd.Set("inventoryWidth", creature.InventoryWidth);
+				cmd.Set("inventoryHeight", creature.InventoryHeight);
 
 				cmd.Set("lastAging", creature.LastAging);
 				if (creature.LastRebirth != DateTime.MinValue)

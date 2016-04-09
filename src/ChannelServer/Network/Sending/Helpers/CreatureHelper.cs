@@ -313,8 +313,8 @@ namespace Aura.Channel.Network.Sending.Helpers
 			// --------------------------------------------------------------
 			if (type == CreaturePacketType.Private)
 			{
-				packet.PutInt(creature.RaceData.InventoryWidth);
-				packet.PutInt(creature.RaceData.InventoryHeight);
+				packet.PutInt(creature.InventoryWidth);
+				packet.PutInt(creature.InventoryHeight);
 
 				var items = creature.Inventory.GetItems();
 				packet.PutInt(items.Length);

@@ -261,14 +261,14 @@ namespace Aura.Channel.World.Inventory
 			if (_creature.RaceData == null)
 				Log.Warning("Race for creature '{0}' ({1:X16}) not loaded before initializing main inventory.", _creature.Name, _creature.EntityId);
 
-			var width = (_creature.RaceData != null ? _creature.RaceData.InventoryWidth : DefaultWidth);
+			var width = (_creature.RaceData != null ? _creature.InventoryWidth : DefaultWidth);
 			if (width > MaxWidth)
 			{
 				width = MaxWidth;
 				Log.Warning("AddMainInventory: Width exceeds max, using {0} instead.", MaxWidth);
 			}
 
-			var height = (_creature.RaceData != null ? _creature.RaceData.InventoryHeight : DefaultHeight);
+			var height = (_creature.RaceData != null ? _creature.InventoryHeight : DefaultHeight);
 			if (height > MaxHeight)
 			{
 				height = MaxHeight;

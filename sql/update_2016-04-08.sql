@@ -1,0 +1,1 @@
+ALTER TABLE `creatures` ADD COLUMN `inventoryWidth` TINYINT(2) UNSIGNED NOT NULL DEFAULT '0' AFTER `age`, ADD COLUMN `inventoryHeight` TINYINT(2) UNSIGNED NOT NULL DEFAULT '0' AFTER `inventoryWidth`;
