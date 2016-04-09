@@ -71,6 +71,9 @@ namespace Aura.Channel.World.Entities
 		public CreatureDeadMenu DeadMenu { get; protected set; }
 		public AimMeter AimMeter { get; protected set; }
 
+		public int InventoryWidth { get; set; }
+		public int InventoryHeight { get; set; }
+
 		/// <summary>
 		/// Temporary and permanent variables, exclusive to this creature.
 		/// </summary>
@@ -1047,6 +1050,16 @@ namespace Aura.Channel.World.Entities
 					throw new Exception("Unable to load race data, race '" + this.RaceId.ToString() + "' not found.");
 
 				Log.Warning("Creature.LoadDefault: Race '{0}' not found, using human instead.", this.RaceId);
+			}
+
+			if (this.InventoryWidth == 0)
+			{
+				this.InventoryWidth = this.RaceData.InventoryWidth;
+			}
+
+			if (this.InventoryHeight == 0)
+			{
+				this.InventoryHeight = this.RaceData.InventoryHeight;
 			}
 
 			// Add inventory
