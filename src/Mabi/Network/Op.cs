@@ -584,14 +584,16 @@ namespace Aura.Mabi.Network
 
 		public const int AmmoRequired = 0xABBB;
 
-		public const int ChatSticker = 0xAC0A;
+		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
+		public const int ChatSticker = 0xAC0E;
 
 		// [190200, NA221 (2016-02-17)] Added
 		// DcUnk, purpose unknown, requires answer on disconnect,
 		// or the player gets stuck.
 		// [190200, NA223 (2016-03-17)] Shifted by 6, from AC1D to AC23.
-		public const int DcUnk = 0xAC23;
-		public const int DcUnkR = 0xAC24;
+		// [200100, NA226 (2016-04-14)] Shifted by 9, from AC23 to AC1A.
+		public const int DcUnk = 0xAC1A;
+		public const int DcUnkR = 0xAC1B;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
