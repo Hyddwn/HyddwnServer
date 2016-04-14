@@ -269,5 +269,93 @@ namespace Aura.Channel.Network.Sending
 
 			party.Broadcast(packet, true);
 		}
+
+		/// <summary>
+		/// Sends SpecialUnitInfoRequestR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void SpecialUnitInfoRequestR(Creature creature)
+		{
+			var packet = new Packet(Op.SpecialUnitInfoRequestR, 0);
+
+			packet.PutInt(0); // count
+			{
+				//002 [............0001] Short  : 1
+				//003 [........00000005] Int    : 5
+				//004 [............0001] Short  : 1
+			}
+
+			packet.PutInt(0); // count
+			{
+				//093 [............0001] Short  : 1
+				//094 [................] String : g20_mk_kanna
+				//095 [........00000001] Int    : 1
+				//096 [..............01] Byte   : 1
+				//097 [............0003] Short  : 3
+				//098 [............0003] Short  : 3
+				//099 [............0002] Short  : 2
+				//100 [............0001] Short  : 1
+				//101 [............0001] Short  : 1
+				//102 [............0001] Short  : 1
+				//103 [............0001] Short  : 1
+				//104 [................] String : I-I'm sorry. I would like some counseling before I begin my mission. Would that be okay?|I'm sorry, captain. I really need some counseling. I'm so exhausted.
+				//105 [........00000005] Int    : 5
+				//106 [............0001] Short  : 1
+				//107 [........0000001E] Int    : 30
+				//108 [................] String : Hee hee, all clear, sir!
+				//109 [................] String : I will report on the mission!
+				//110 [............0002] Short  : 2
+				//111 [........00000064] Int    : 100
+				//112 [................] String : Hee hee, all clear, sir! No wait, not all clear! I need your help!
+				//113 [................] String : I will report on the mission!
+				//114 [............0003] Short  : 3
+				//115 [........00000046] Int    : 70
+				//116 [................] String : Ahaha, sorry. I kind of broke something... So I'm helping them out in return. Ahaha.|Ahh, what do I do? I was practicing my sword strokes at the inn, and split the bed in two!
+				//117 [................] String : I will report on the mission!
+				//118 [............0004] Short  : 4
+				//119 [........00000064] Int    : 100
+				//120 [................] String : Ahaha, I left for my mission without bringing my wallet... So I've been sleeping rough the whole time.|Gahh... Captain, have you seen my sword? Where is it? Where did I leave it?
+				//121 [................] String : I will report on the mission!
+				//122 [............0005] Short  : 5
+				//123 [........00000064] Int    : 100
+				//124 [................] String : Hee hee hee, that's it for missions! Don't worry. I'm completely focused on my duties so I can see you that much sooner!|Heh, what do you know? Doing things your way makes everything go much smoother, captain.
+				//125 [................] String : I will report on the mission!
+			}
+
+			packet.PutInt(0); // count
+			{
+				//292 [........0009EB75] Int    : 650101
+				//293 [............0001] Short  : 1
+				//294 [............0000] Short  : 0
+				//295 [..............01] Byte   : 1
+				//296 [..............00] Byte   : 0
+				//297 [............0000] Short  : 0
+				//298 [............0000] Short  : 0
+				//299 [000000000020F580] Long   : 2160000
+				//300 [................] String : Sharp teeth from mutant animals were found near Ciar Dungeon.
+				//301 [................] String : All dungeons around Tir Chonaill were checked, but no pollutant was found.
+				//302 [............0001] Short  : 1
+				//303 [............0000] Short  : 0
+				//304 [............0000] Short  : 0
+				//305 [............0001] Short  : 1
+				//306 [............0000] Short  : 0
+				//307 [............0000] Short  : 0
+				//308 [............0000] Short  : 0
+				//309 [................] String : Check Foul Plume
+				//310 [................] String : Mutant animals appear around Ciar Dungeon time to time. Investigate to see if there are any remaining traces of mutant animals.
+				//311 [................] String : * [Reward] Basic Baltane Seal x1\n* Command EXP 5\n* Training Points 3\n
+				//312 [........00000000] Int    : 0
+			}
+
+			packet.PutLong(604800000);
+			packet.PutLong(2160000);
+			packet.PutShort(2);
+			packet.PutShort(30);
+			packet.PutInt(1);
+			packet.PutShort(1);
+			packet.PutShort(1);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

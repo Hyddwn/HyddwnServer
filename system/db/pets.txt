@@ -141,6 +141,7 @@
 { raceId: 490032, name: "Knitwear Seal", timeLimit: 92, exp: 1.8, height: 0.6, upper: 1.1, lower: 1.0, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490043, name: "Cone Hat Penguin", timeLimit: 92, exp: 1.8, height: 0.8, upper: 1.4, lower: 1.2, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
 { raceId: 490047, name: "Coach Pengu", timeLimit: 92, exp: 1.8, height: 0.8, upper: 1.4, lower: 1.2, life: 55, mana: 43, stamina: 32, str: 18, int: 34, dex: 22, will: 32, luck: 25, defense: 0, protection: 2 },
+{ raceId: 490049, name: "Recall Mage Imp", timeLimit: 112, exp: 1.7, height: 0.2, upper: 3.6, lower: 1.5, life: 72, mana: 38, stamina: 43, str: 24, int: 31, dex: 26, will: 23, luck: 29, defense: 0, protection: 2 },
 { raceId: 490057, name: "Umeboshi Blossom", timeLimit: 180, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 200, mana: 50, stamina: 150, str: 70, int: 20, dex: 40, will: 30, luck: 30, defense: 20, protection: 25 },
 { raceId: 490058, name: "Handsome Alpaca", timeLimit: 180, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 90, mana: 70, stamina: 80, str: 40, int: 50, dex: 36, will: 46, luck: 30, defense: 0, protection: 2 },
 { raceId: 490061, name: "Recall Imp", timeLimit: 112, exp: 1.7, height: 0.2, upper: 3.6, lower: 1.5, life: 72, mana: 38, stamina: 43, str: 24, int: 31, dex: 26, will: 23, luck: 29, defense: 0, protection: 2 },
@@ -178,6 +179,7 @@
 { raceId: 260015, name: "Thoroughbred", timeLimit: 92, exp: 1.3, height: 0.77, upper: 1.14, lower: 1.3, life: 60, mana: 32, stamina: 74, str: 34, int: 24, dex: 22, will: 24, luck: 12, defense: 0, protection: 2 },
 { raceId: 260016, name: "Free Thoroughbred (7-day)", timeLimit: 92, exp: 1.3, height: 0.77, upper: 1.14, lower: 1.3, life: 60, mana: 32, stamina: 74, str: 34, int: 24, dex: 22, will: 24, luck: 12, defense: 0, protection: 2 },
 { raceId: 260017, name: "Beginner's Horse", timeLimit: 92, exp: 1.3, height: 0.77, upper: 1.14, lower: 1.3, life: 60, mana: 32, stamina: 74, str: 34, int: 24, dex: 22, will: 24, luck: 12, defense: 0, protection: 2 },
+{ raceId: 260018, name: "Unicorn", timeLimit: 90, exp: 1.3, height: 0.77, upper: 1.14, lower: 1.3, life: 72, mana: 36, stamina: 72, str: 30, int: 28, dex: 24, will: 26, luck: 16, defense: 0, protection: 2 },
 { raceId: 260114, name: "Event Unicorn (Color Selected)", timeLimit: 90, exp: 1.3, height: 0.77, upper: 1.14, lower: 1.3, life: 72, mana: 36, stamina: 72, str: 30, int: 28, dex: 24, will: 26, luck: 16, defense: 0, protection: 2 },
 { raceId: 270513, name: "Sunburst Shire", timeLimit: 124, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 90, mana: 40, stamina: 62, str: 40, int: 25, dex: 36, will: 46, luck: 30, defense: 0, protection: 2 },
 { raceId: 270519, name: "Nightshade Mustang", timeLimit: 124, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 90, mana: 40, stamina: 62, str: 40, int: 25, dex: 36, will: 46, luck: 30, defense: 0, protection: 2 },
@@ -202,6 +204,10 @@
 { raceId: 490052, name: "Celestial Unicorn", timeLimit: 124, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 90, mana: 40, stamina: 62, str: 40, int: 25, dex: 36, will: 46, luck: 30, defense: 0, protection: 2 },
 { raceId: 490054, name: "Solar Stallion", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
 { raceId: 490063, name: "Cosmic Stallion", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
+{ raceId: 490067, name: "Red Horse", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
+{ raceId: 490068, name: "Crystal Rudolph", timeLimit: 92, exp: 1.8, height: 0.65, upper: 1.2, lower: 1.2, life: 70, mana: 45, stamina: 77, str: 38, int: 40, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
+{ raceId: 490070, name: "White Flamemare", timeLimit: 124, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 90, mana: 40, stamina: 62, str: 40, int: 25, dex: 36, will: 46, luck: 30, defense: 0, protection: 2 },
+{ raceId: 490072, name: "White Horse", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
 { raceId: 490075, name: "Astral Cosmic Stallion", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
 { raceId: 490083, name: "Astral Rudolf", timeLimit: 92, exp: 1.8, height: 0.65, upper: 1.2, lower: 1.2, life: 70, mana: 45, stamina: 77, str: 38, int: 40, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
 
@@ -267,6 +273,7 @@
 { raceId: 440513, name: "Cheetah", timeLimit: 39, exp: 1.5, height: 1.2, upper: 1.23, lower: 1.5, life: 155, mana: 24, stamina: 93, str: 38, int: 17, dex: 23, will: 26, luck: 17, defense: 15, protection: 8 },
 { raceId: 471008, name: "Pink Cheetah", timeLimit: 90, exp: 1.5, height: 1.2, upper: 1.23, lower: 1.5, life: 155, mana: 24, stamina: 93, str: 38, int: 17, dex: 23, will: 26, luck: 17, defense: 15, protection: 8, color1: 0x00EA7F9D, color2: 0x00646E76, color3: 0x0083329D },
 { raceId: 490051, name: "Albino Tiger", timeLimit: 83, exp: 1.5, height: 1.2, upper: 1.23, lower: 1.5, life: 82, mana: 24, stamina: 70, str: 38, int: 17, dex: 23, will: 26, luck: 17, defense: 0, protection: 2 },
+{ raceId: 490069, name: "White tiger", timeLimit: 83, exp: 1.5, height: 1.2, upper: 1.23, lower: 1.5, life: 82, mana: 24, stamina: 70, str: 38, int: 17, dex: 23, will: 26, luck: 17, defense: 0, protection: 2 },
 { raceId: 490077, name: "Astral Cheetah", timeLimit: 90, exp: 1.5, height: 1.2, upper: 1.23, lower: 1.5, life: 155, mana: 24, stamina: 93, str: 38, int: 17, dex: 23, will: 26, luck: 17, defense: 15, protection: 8 },
 
 // Dragons
@@ -293,6 +300,7 @@
 { raceId: 430523, name: "Fire Dragon", timeLimit: 95, exp: 1.65, height: 0.6, upper: 1.1, lower: 1.4, life: 70, mana: 29, stamina: 47, str: 37, int: 22, dex: 26, will: 30, luck: 19, defense: 0, protection: 2 },
 { raceId: 490053, name: "Lightning Dragon", timeLimit: 120, exp: 1.8, height: 0.7, upper: 1.15, lower: 1.24, life: 80, mana: 39, stamina: 77, str: 47, int: 32, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
 { raceId: 490065, name: "Abyss Dragon", timeLimit: 120, exp: 1.75, height: 0.6, upper: 1.1, lower: 1.3, life: 350, mana: 100, stamina: 300, str: 150, int: 100, dex: 45, will: 45, luck: 30, defense: 15, protection: 8 },
+{ raceId: 490071, name: "Thunder Dragon", timeLimit: 120, exp: 1.8, height: 0.7, upper: 1.15, lower: 1.24, life: 80, mana: 39, stamina: 77, str: 47, int: 32, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
 { raceId: 490079, name: "Astral Frost Dragon", timeLimit: 107, exp: 1.75, height: 0.6, upper: 1.1, lower: 1.3, life: 75, mana: 52, stamina: 70, str: 41, int: 50, dex: 38, will: 32, luck: 30, defense: 0, protection: 2 },
 { raceId: 490080, name: "Astral Lightning Dragon", timeLimit: 120, exp: 1.8, height: 0.7, upper: 1.15, lower: 1.24, life: 80, mana: 39, stamina: 77, str: 47, int: 32, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
 { raceId: 490082, name: "Astral Abyss Dragon", timeLimit: 120, exp: 1.75, height: 0.6, upper: 1.1, lower: 1.3, life: 350, mana: 100, stamina: 300, str: 150, int: 100, dex: 45, will: 45, luck: 30, defense: 15, protection: 8 },
@@ -307,6 +315,7 @@
 { raceId: 440519, name: "Blue Phoenix", timeLimit: 120, exp: 1.1, height: 0.8, upper: 1.2, lower: 1.4, life: 400, mana: 300, stamina: 90, str: 10, int: 100, dex: 60, will: 20, luck: 25, defense: 5, protection: 50, color1: 0x0052EAFF },
 { raceId: 440520, name: "White Phoenix", timeLimit: 120, exp: 1.1, height: 0.8, upper: 1.2, lower: 1.4, life: 400, mana: 300, stamina: 90, str: 10, int: 100, dex: 60, will: 20, luck: 25, defense: 5, protection: 50, color1: 0x00FFFFFF },
 { raceId: 490026, name: "Phoenix", timeLimit: 120, exp: 1.1, height: 0.8, upper: 1.2, lower: 1.4, life: 400, mana: 300, stamina: 90, str: 10, int: 100, dex: 60, will: 20, luck: 25, defense: 5, protection: 50 },
+{ raceId: 490048, name: "White Phoenix", timeLimit: 120, exp: 1.1, height: 0.8, upper: 1.2, lower: 1.4, life: 400, mana: 300, stamina: 90, str: 10, int: 100, dex: 60, will: 20, luck: 25, defense: 5, protection: 50, color1: 0x00FFFFFF },
 
 // Clouds
 //---------------------------------------------------------------------------
@@ -352,6 +361,11 @@
 // ?
 //---------------------------------------------------------------------------
 { raceId: 490042, name: "Spirit of Tuan", timeLimit: 90, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 150, mana: 120, stamina: 100, str: 40, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 8 },
+{ raceId: 490044, name: "Spirit of Tuan", timeLimit: 90, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 150, mana: 120, stamina: 100, str: 40, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 8 },
+
+// 54
+//---------------------------------------------------------------------------
+{ raceId: 490046, name: "Prancing Pony", timeLimit: 130, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
 
 // 55
 //---------------------------------------------------------------------------
