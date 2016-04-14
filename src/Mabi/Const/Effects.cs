@@ -245,6 +245,7 @@ namespace Aura.Mabi.Const
 		Dog = 12,
 		Cat = 13,
 		Owl = 14,
+		Cichol = 15,
 	}
 
 	public enum EnchantResult : byte
