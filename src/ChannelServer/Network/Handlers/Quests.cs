@@ -69,5 +69,20 @@ namespace Aura.Channel.Network.Handlers
 		L_Fail:
 			Send.GiveUpQuestR(creature, false);
 		}
+
+		/// <summary>
+		/// Sent upon login, request for special unit information?
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.SpecialUnitInfoRequest)]
+		public void SpecialUnitInfoRequest(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Dummy
+			Send.SpecialUnitInfoRequestR(creature);
+		}
 	}
 }

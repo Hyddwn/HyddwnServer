@@ -636,6 +636,10 @@ namespace Aura.Mabi.Network
 		public const int PetUnmountR = 0x1FBD3;
 		public const int VehicleInfo = 0x1FBD4;
 
+		// [200100, NA226 (2016-04-14)] Added
+		public const int SpecialUnitInfoRequest = 0x20F86;
+		public const int SpecialUnitInfoRequestR = 0x20F87;
+
 		public const int Run = 0x0F213303;
 		public const int Running = 0x0F44BBA3;
 		public const int CombatAttack = 0x0FCC3231;
