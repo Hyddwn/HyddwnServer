@@ -19,7 +19,7 @@
 { name: "SharpMind", enabled: true },
 
 // World-shaping Events
-{ name: "MabiLand", enabled: true },
+{ name: "MabiLand", enabled: false },
 
 // Generation 1
 { name: "G1", enabled: true, children: [
