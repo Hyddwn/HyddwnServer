@@ -47,4 +47,6 @@
 { itemId: 50901, name: "Christmas Rocking Horse", propId: 45291, giantPropId: 45292 },
 { itemId: 50902, name: "Chimney Chair", propId: 45287, giantPropId: 45288 },
 { itemId: 50903, name: "1-Person Kotatsu", propId: 45284, giantPropId: 45285 },
+{ itemId: 50905, name: "Caravan Joe Kotatsu", propId: 45422, giantPropId: 45423 },
+{ itemId: 50906, name: "Caravan Joe Tea Table", propId: 44744, giantPropId: 44745 },
 ]
