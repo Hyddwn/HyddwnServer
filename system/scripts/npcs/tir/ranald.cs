@@ -1,10 +1,10 @@
 //--- Aura Script -----------------------------------------------------------
-// Ranald, Combat Instructor
+// Ranald
 //--- Description -----------------------------------------------------------
-// 
+// The Combat Instructor located outside Tir's School
 //---------------------------------------------------------------------------
 
-public class RanaldBaseScript : NpcScript
+public class RanaldScript : NpcScript
 {
 	public override void Load()
 	{
@@ -20,6 +20,9 @@ public class RanaldBaseScript : NpcScript
 		EquipItem(Pocket.Armor, 15652, 0xAC9271, 0x4D4F48, 0x7C6144);
 		EquipItem(Pocket.Shoe, 17012, 0x9C7D6C, 0xFFC9A3, 0xF7941D);
 		EquipItem(Pocket.LeftHand1, 40012, 0xDCDCDC, 0xC08B48, 0x808080);
+
+		AddGreeting(0, "Hmm...<br/>Nice to meet you.");
+		AddGreeting(1, "My name is <npcname/>.<br/>I assume you remember my name?");
 
 		AddPhrase("I need a drink...");
 		AddPhrase("I guess I drank too much last night...");
@@ -45,9 +48,15 @@ public class RanaldBaseScript : NpcScript
 		switch (await Select())
 		{
 			case "@talk":
-				//Msg("Hmm...<br/>Nice to meet you.");
-				Msg("My name is Ranald."); // "<br/>I assume you remember my name?"
-				await StartConversation();
+				Greet();
+				Msg(Hide.Name, GetMoodString(), FavorExpression());
+				if (Player.Titles.SelectedTitle == 11002)
+				{
+					Msg("Hah... I can't believe<br/>you've become the Guardian of Erinn.<br/>I still remember you practicing your combat skills on those dummies...");
+					Msg("...I can't be more proud as your teacher.<br/>These are the moments that make teachers feel rewarded...");
+					Msg("...I'm proud of you. <username/>.");
+				}
+				await Conversation();
 				break;
 
 			case "@shop":
@@ -56,18 +65,33 @@ public class RanaldBaseScript : NpcScript
 				break;
 
 			case "@upgrade":
-				Msg("Hmm... You want me to modify your item? You got some nerve!<br/>Ha ha. Just joking. Do you need to modify an item? Count on Ranald.<br/>Pick an item to modify.<br/>Oh, before that. Types or numbers of modifications are different depending on what item you want to modify. Always remember that.");
-				Msg("(Unimplemented)");
+				Msg("Hmm... You want me to modify your item? You got some nerve!<br/>Ha ha. Just joking. Do you need to modify an item? Count on <npcname/>.<br/>Pick an item to modify.<br/>Oh, before that. Types or numbers of modifications are different depending on what item you want to modify. Always remember that.<upgrade />");
+				
+				while (true)
+				{
+					var reply = await Select();
+
+					if (!reply.StartsWith("@upgrade:"))
+						break;
+
+					var result = Upgrade(reply);
+					if (result.Success)
+						Msg("Hmm... It was easier than I thought. Good.<br/>You got anything else to modify?");
+					else
+						Msg("(Error)");
+				}
+
+				Msg("If you don't have anything to modify for now, then I'll see you next time.<upgrade hide='true'/>");
 				break;
 
 			case "@ciarpass":
 				GiveItem(63139); // Ciar Beginner Dungeon Pass
-				Notice("Recieved Ciar Beginner Dungeon Pass from Ranald.");
-				Msg("Ok, here's the pass.<br/>You can ask for it again if you need it.<br/>That doesn't mean you can fill up the iventory with a pile of passes.");
+				Notice("Recieved Ciar Beginner Dungeon Pass from <npcname/>.");
+				Msg("OK, here's the pass.<br/>You can ask for it again if you need it.<br/>That doesn't mean you can fill up the inventory with a pile of passes.");
 				break;
 		}
 
-		End("Goodbye, Ranald. I'll see you later!");
+		End("Goodbye, <npcname/>. I'll see you later!");
 	}
 
 	protected override async Task Keywords(string keyword)
@@ -77,15 +101,16 @@ public class RanaldBaseScript : NpcScript
 			case "personal_info":
 				GiveKeyword("school");
 				Msg("Hello, there. I teach combat skills at the School in Tir Chonaill.<br/>If you're interested, talk to me with the 'Classes and Training' keyword.");
-				Msg("Hey, hey... This is not free. You'll need to pay tuition for my classes...<br/>");
+				Msg("Hey, hey... This is not free. You'll need to pay tuition for my classes...");
 				ModifyRelation(Random(2), 0, Random(2));
 				break;
 
 			case "rumor":
-				GiveKeyword("complicity");
-				Msg("Hmm... Did you hear the news?<br/>Ferghus can't stop smiling these days.<br/>I heard his arrow sales have jumped up lately.");
-				Msg("It seems like Trefor received a huge gift from Ferghus.<br/>People are assuming that Trefor is helping Ferghus with something.");
-				//Msg("A dinner with Ferghus usually leads to a bit of drinking at the end.<br/>You know he loves to drink, right? As a matter of fact, I like to drink, too. Hahaha...");
+				Msg("A dinner with Ferghus usually leads to a bit of drinking at the end.<br/>You know he loves to drink, right? As a matter of fact, I like to drink, too. Hahaha...");
+				//GiveKeyword("complicity");
+				//RemoveKeyword("bow");
+				//Msg("Hmm... Did you hear the news?<br/>Ferghus can't stop smiling these days.<br/>I heard his arrow sales have jumped up lately.");
+				//Msg("It seems like Trefor received a huge gift from Ferghus.<br/>People are assuming that Trefor is helping Ferghus with something.");
 				ModifyRelation(Random(2), 0, Random(2));
 				break;
 
@@ -101,7 +126,7 @@ public class RanaldBaseScript : NpcScript
 
 			case "shop_misc":
 				GiveKeyword("shop_armory");
-				Msg("You're not going to the General Shop for weapons, are you?<br/>For weapons, you would need to go to the Blacksmith's Shop.<br/>");
+				Msg("You're not going to the General Shop for weapons, are you?<br/>For weapons, you would need to go to the Blacksmith's Shop.");
 				break;
 
 			case "shop_grocery":
@@ -125,11 +150,26 @@ public class RanaldBaseScript : NpcScript
 				Msg("The Blacksmith's Shop is on the bank of the Adelia Stream, located close to the town entrance.<br/>Tell Ferghus I sent you, and he'll take good care of you.");
 				break;
 
+			case "skill_range":
+				GiveKeyword("bow");
+				RemoveKeyword("skill_range");
+				Msg("Long range attacks?<br/>Hmm... Desire alone doesn't cut it. You'll also need to be equipped with an appropriate weapon.<br/>There are a number of long range weapons, but go get a bow first.");
+				Msg("Just use it a couple of times. You won't need any help from others in understanding the basics.");
+				Msg("If you practice a few times and get to know about the Ranged Attack skill, it means you're doing your job.<br/>Ferghus is usually the source for weapons in this town, so go see him at the Blacksmith's Shop.");
+				break;
+
 			case "skill_instrument":
 				GiveKeyword("church");
 				Msg("You want to learn the Instrument Playing skill?<br/>Hmm... Did you forget that I am a combat instructor?<br/>I can't believe you are asking me for that. I am a little disappointed");
 				Msg("Ha ha... Don't be so disheartened about what I said, though.<br/>I didn't know you would be easily affected by my words. Hahaha.<br/>You're just like Malcolm when he was a kid.");
 				Msg("OK, about the Instrument Playing skill...<br/>Go ask Priestess Endelyon at the Church about it.<br/>I'm sure she will teach you well.");
+				break;
+
+			case "skill_composing":
+				Msg("You're interested in the Composing skill?<br/>Hmm... today's a strange day.<br/>Most of the questions people are asking are about petty skills that have nothing to do with combat.<br/>Quite disappointing, indeed...");
+				Msg("You look like a prototypical warrior to me.<br/>For you to ask me about skills like that... I feel like you're straying away from the path to becoming a great warrior...");
+				Msg("But anyway, about the Composing skill...<br/>Endelyon knows a lot about it. Make sure you talk with her first.");
+				Msg("Once you get her advice, make sure to follow her instructions.<br/>Don't even think about getting something out of me without listening to her first.");
 				break;
 
 			case "skill_tailoring":
@@ -139,29 +179,28 @@ public class RanaldBaseScript : NpcScript
 				Msg("From what I've heard, most of the clothes at Malcolm's shop<br/>were either designed or tailored by her...");
 				break;
 
-			case "skill_smash":
-				Msg("Smash skill...<br/>More than anything, balancing your power is the most important thing for this skill.<br/>In that respect, Ferghus knows a lot more than I do.<br/>Go learn from him.");
+			case "skill_magnum_shot":
+				RemoveKeyword("skill_magnum_shot");
+				Msg("Oh... You already know about that?<br/>I only gave you a brief summary about the Ranged Attack,<br/>and you already picked up that much! Quite impressive!<br/>Alright! Let's move on then!");
+				Msg("Magnum Shot skill helps you to shoot a powerful blow<br/>with the power you have concentrated in the bow.<br/>Go on and work on the training.<br/>");
+				GiveSkill(SkillId.MagnumShot, SkillRank.RF); // This is removed in later updates
 				break;
 
 			case "skill_counter_attack":
 				Msg("Counterattack skill...<br/>Simply knowing the skill won't help you.<br/>It's all about timing.");
 				Msg("This skill cannot be mastered unless you practice it in a real combat situation, which means...<br/>You'll need to get hit first.");
-				Msg("I could show you a demonstration right now and teach you this skill, but... I'll probably break you in half.<br/>You should go to Trefor instead and ask him to show you the Counterattack skill.<br/>It would be a lot safer for you. Go now.<br/>");
+				Msg("I could show you a demonstration right now and teach you this skill, but... I'll probably break you in half.<br/>You should go to Trefor instead and ask him to show you the Counterattack skill.<br/>It would be a lot safer for you. Go now.");
 				break;
 
-			case "skill_range":
-				GiveKeyword("bow");
-				RemoveKeyword("skill_range");
-				Msg("Long range attacks? Hmm... Desire alone doesn't cut it.<br/>You'll also need to be equipped with an appropriate weapon.<br/>There are a number of long range weapons, but go get a bow first.");
-				Msg("Just use it a couple of times.<br/>You won't need any help from others in understanding the basics.");
-				Msg("If you practice a few times and get to know about the Ranged Attack skill,<br/>it means you're doing your job. Ferghus is usually the source for weapons in this town,<br/>so go see him at the Blacksmith's Shop.");
+			case "skill_smash":
+				Msg("Smash skill...<br/>More than anything, balancing your power is the most important thing for this skill.<br/>In that respect, Ferghus knows a lot more than I do.<br/>Go learn from him.");
 				break;
 
-			case "skill_magnum_shot":
-				Msg("Oh... You already know about that? I only gave you a brief summary about the Ranged Attack, and you already picked up that much! Quite impressive! Alright! Let's move on then!");
-				Msg("Magnum Shot skill helps you to shoot a powerful blow with the power you have concentrated in the bow.<br/>Go on and work on the training.");
-				RemoveKeyword("skill_magnum_shot");
-				GiveSkill(SkillId.MagnumShot, SkillRank.RF);
+			case "skill_gathering":
+				Msg("Paying too much attention to gathering is against the path of a warrior.<br/>But we do need skills to help us survive on barren fields.<br/>Being familiar with the Gathering skill would be useful, I guess.");
+				Msg("At least, an Axe or axe-type weapon would help you gather firewood,<br/>while also using it as a devastating weapon.");
+				Msg("Speaking of firewood,<br/>you could ask Tracy at the Ulaid Logging Camp in Dugald Aisle for something like this.");
+				Msg("There's no doubt that he's a sleazebag, but he's still a lumberjack.");
 				break;
 
 			case "square":
@@ -171,6 +210,7 @@ public class RanaldBaseScript : NpcScript
 				break;
 
 			case "pool":
+				GiveKeyword("brook");
 				Msg("The reservoir? Go up north a little bit, and that's where you'll find it.<br/>The water in the reservoir comes from the Adelia Stream.<br/>We use the Windmill to get water up from the stream to fill the reservoir.<br/>It's critical for irrigating the farmland.");
 				break;
 
@@ -187,6 +227,7 @@ public class RanaldBaseScript : NpcScript
 				break;
 
 			case "brook":
+				GiveKeyword("farmland");
 				Msg("Hmm... you want to know how to reach the Adelia Stream?<br/>It will take some time to get there...<br/>It's not easy to explain where it is...");
 				Msg("Walk outside the School and follow along the farmland.<br/>After a while, you will see a small stream and a bridge.<br/>Well, that's the Adelia Stream.");
 				break;
@@ -233,6 +274,13 @@ public class RanaldBaseScript : NpcScript
 				Msg("Perhaps it's better this way. You know that weapons and armor won't make you a real warrior, don't you?<br/>If you depend on them too much, all your training may end up in vain.");
 				break;
 
+			case "shop_cloth":
+				Msg("A Clothing Shop? You need new clothes?<br/>Personally, I think you look just fine.<br/>I didn't realize you were so self-conscious...");
+				Msg("Perhaps you should reconsider your priorities.<br/>A minute ago, you were so intent on becoming a warrior that you were ready to start training right away.<br/>And now all you talk about is clothes and style.<br/>Do you think you have what it takes to become a true warrior?");
+				Msg("If you think the clothes you're wearing now are uncomfortable or worn out,<br/>then go to Malcolm's General Shop.");
+				Msg("But if that's not the case, and you just want to look nice,<br/>then it's nothing but a waste of money.");
+				break;
+
 			case "shop_bookstore":
 				Msg("A bookstore? You won't find one in this town.<br/>If you really want to buy some books,<br/>it would be better for you to go to another town.");
 				Msg("A friend of mine who's also a combat instructor told me<br/>that Dunbarton has a bookstore.");
@@ -251,6 +299,13 @@ public class RanaldBaseScript : NpcScript
 				Msg("The graveyard? Hmm...<br/>There is one located over the hill behind the Chief's House but...");
 				Msg("If I were you,<br/>I would stay away from that place.<br/>It's not right to cause a commotion literally on top of the dead.<br/>It is simply not the right thing to do.");
 				Msg("I want you to respect the dead,<br/>and let them rest in peace.");
+				break;
+
+			case "skill_fishing":
+				Msg("Mmm? Fishing skill?");
+				Msg("Hmm... Well, I suppose you can't train for combat skills all the time.<br/>You have to relax sometimes.");
+				Msg("But I should tell you<br/>that even fishing has its own set of rules.");
+				Msg("It wouldn't be right to sit right next to someone who's already fishing<br/>and throw your line in to fish.");
 				break;
 
 			case "complicity":
@@ -286,11 +341,11 @@ public class RanaldBaseScript : NpcScript
 
 			default:
 				RndMsg(
-					"Hmm... Actually, I forgot my lines... Haha.",
-					"I am not very interested in that.",
-					"I haven't paid much attention to it, especially on a topic like that.",
+					"You know I've been busy...",
 					"Well, I don't really know...",
-					"You know I've been busy..."
+					"I am not very interested in that.",
+					"Hmm... Actually, I forgot my lines... Haha.",
+					"I haven't paid much attention to it, especially on a topic like that."
 				);
 				ModifyRelation(0, 0, Random(2));
 				break;
@@ -302,18 +357,15 @@ public class RanaldShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		// Arena
 		Add("Arena", 63019, 10);  // Alby Battle Arena Coin 10x
 		Add("Arena", 63019, 20);  // Alby Battle Arena Coin 20x
 		Add("Arena", 63019, 50);  // Alby Battle Arena Coin 50x
 		Add("Arena", 63019, 100); // Alby Battle Arena Coin 100x
 
-		// Quest
 		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Branches]
 		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Berries]
 		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Large Nails]
 
-		// Reference Book
 		Add("Reference Book", 1078); // Don't give up!
 	}
 }
