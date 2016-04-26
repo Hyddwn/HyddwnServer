@@ -4,6 +4,7 @@ Developers
 Active developers
 
 * exec - https://github.com/exectails
+* Cryptic - https://github.com/xCryptic
 
 Inactive Developers
 ==============================
@@ -20,6 +21,7 @@ Noteworthy contributors
 
 * Oversight
 * Pikachu
+* Sairii
 * T. (anonymous)
 * Tachiorz
 
