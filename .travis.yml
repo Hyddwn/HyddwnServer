@@ -4,6 +4,13 @@ solution: Aura.sln
 branches:
   only:
     - master
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/2a89565de8b44022eff4
+    on_success: change
+    on_failure: always
+    on_start: never
 install:
   - nuget restore Aura.sln
   - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
