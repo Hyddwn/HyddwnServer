@@ -105,3 +105,7 @@ Links
 * Gitter chat: https://gitter.im/aura-project/aura
 * Backlog: [https://github.com/aura-project/aura/issues](https://github.com/aura-project/aura/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abacklog)
 * Wiki: https://github.com/aura-project/aura/wiki
+
+Build Status
+------------------------------
+[![Build Status](https://travis-ci.org/aura-project/aura.png?branch=master)](https://travis-ci.org/aura-project/aura)
