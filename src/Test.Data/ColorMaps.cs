@@ -18,7 +18,7 @@ namespace Test.Data
 			var db = new ColorMapDb();
 			db.Load("../../../../system/db/colormap.dat", true);
 
-			var rnd = new Random(1039548676);
+			var rnd = new TestRandom(1039548676);
 
 			Assert.Equal((uint)0xA02522, db.GetAt(10, 0, 0));
 			Assert.Equal((uint)0xFFD800, db.GetAt(32, 1, 1));
@@ -37,18 +37,50 @@ namespace Test.Data
 
 			Assert.Equal((uint)0xFFD800, db.GetRandom(32, rnd));
 
-			Assert.Equal((uint)0x87ADB9, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0x635FCC, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0xF0DCC0, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0x089E8C, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0x70CCD6, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0x655BAA, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0xE1F2D8, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0x534E4B, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0x0BAECE, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0x36156D, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0x465078, db.GetRandom(1, rnd));
-			Assert.Equal((uint)0xEA9ABB, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0xA4657E, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0x822E00, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0xFFFFFF, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0x3CBE95, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0x8E7580, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0xD64B95, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0x805D57, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0x806C7C, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0x9DD6E7, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0xDECFB5, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0x84C15E, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0xF37333, db.GetRandom(1, rnd));
+			Assert.Equal((uint)0x707070, db.GetRandom(1, rnd));
+
+
+		}
+
+		public class TestRandom : Random
+		{
+			private int _val = 0;
+
+			public TestRandom()
+			{
+			}
+
+			public TestRandom(int seed)
+			{
+				_val = seed;
+			}
+
+			public override int Next()
+			{
+				return (_val = _val * 0x08088405 + 1);
+			}
+
+			public override int Next(int maxValue)
+			{
+				return this.Next() % maxValue;
+			}
+
+			public override int Next(int minValue, int maxValue)
+			{
+				return minValue + this.Next() % (maxValue - minValue);
+			}
 		}
 	}
 }
