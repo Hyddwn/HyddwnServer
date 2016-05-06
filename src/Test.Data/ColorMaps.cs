@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace Test.Data
+namespace Aura.Tests.Data
 {
 	public class ColorMapTests
 	{
