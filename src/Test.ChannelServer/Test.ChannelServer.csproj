@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Aura.Tests.Channel</RootNamespace>
-    <AssemblyName>ChannelServer.Tests</AssemblyName>
+    <AssemblyName>Test.ChannelServer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
