@@ -1,0 +1,14 @@
+language: csharp
+mono: 3.8.0
+solution: Aura.sln
+branches:
+  only:
+    - master
+install:
+  - nuget restore Aura.sln
+  - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release Aura.sln
+  - mono --debug ./testrunner/xunit.runners.*/tools/xunit.console.clr4.exe ./src/Test.ChannelServer/bin/Release/Test.ChannelServer.dll
+  - mono --debug ./testrunner/xunit.runners.*/tools/xunit.console.clr4.exe ./src/Test.Data/bin/Release/Test.Data.dll
+  - mono --debug ./testrunner/xunit.runners.*/tools/xunit.console.clr4.exe ./src/Test.Mabi/bin/Release/Test.Mabi.dll
