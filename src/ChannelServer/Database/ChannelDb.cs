@@ -1303,7 +1303,20 @@ namespace Aura.Channel.Database
 								}
 								catch (FormatException)
 								{
-									vars[name] = DateTime.Parse(val, CultureInfo.InstalledUICulture);
+									// In some cases parsing with the installed
+									// culture fails for some reason. If this
+									// happens, we'll set the variable to Now.
+									// The only situation where we currently
+									// use DT variables are NPC relations,
+									// which won't really be affected by this.
+									try
+									{
+										vars[name] = DateTime.Parse(val, CultureInfo.InstalledUICulture);
+									}
+									catch (FormatException)
+									{
+										vars[name] = DateTime.Now;
+									}
 								}
 								break;
 							case "o":
