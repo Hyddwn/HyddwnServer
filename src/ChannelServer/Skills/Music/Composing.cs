@@ -72,6 +72,11 @@ namespace Aura.Channel.Skills.Music
 			// Update item and send skill complete from Complete
 			creature.Skills.Callback(SkillId.Composing, () =>
 			{
+				// Skill training
+				if (skill.Info.Rank == SkillRank.Novice)
+					skill.Train(1); // Try the skill.
+
+				// Scroll information
 				item.MetaData1.SetString("TITLE", title);
 				item.MetaData1.SetString("AUTHOR", author);
 				item.MetaData1.SetString("SCORE", MabiZip.Compress(mml));
@@ -79,6 +84,7 @@ namespace Aura.Channel.Skills.Music
 				item.MetaData1.SetByte("HIDDEN", hidden);
 				item.MetaData1.SetShort("LEVEL", (short)level);
 
+				// Update
 				Send.ItemUpdate(creature, item);
 				Send.SkillCompleteEntity(creature, skill.Info.Id, item.EntityId);
 			});
