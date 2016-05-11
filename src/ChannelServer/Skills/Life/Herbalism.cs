@@ -53,7 +53,13 @@ namespace Aura.Channel.Skills.Life
 
 			var herbalism = creature.Skills.Get(SkillId.Herbalism);
 			if (herbalism == null)
+			{
+				// Allow picking of base herbs without Herbalism
+				if (collectData.Target.Contains("/baseherb"))
+					successChance = 15;
+
 				return successChance;
+			}
 
 			if (collectData.Target.Contains("/baseherb"))
 			{
