@@ -155,8 +155,37 @@ public class StewartScript : NpcScript
 				break;
 
 			case "about_skill":
-				// If none of the requirements are set for any of his quests...
-				Msg("Haha, <username/>, you seem to be a very curious person.<br/>This is not the right time, though...<br/>...I'll let you know when the time is right.");
+				// if Ice Spear quest...
+				// else if Fireball quest...
+				// else if Thunder quest
+				// else --v
+				if (!HasSkill(SkillId.Meditation, SkillRank.RF))
+				{
+					// Teach Meditation if bolts are rF, otherwise teach
+					// about Meditation.
+					if (HasSkill(SkillId.Icebolt, SkillRank.RF) && HasSkill(SkillId.Firebolt, SkillRank.RF) && HasSkill(SkillId.Lightningbolt, SkillRank.RF))
+					{
+						Msg(L("You've learned the magic involving all three of the Elements!<br/>I'm impressed that you worked so hard even though it was not a quest or a part-time job...<br/>To be honest, I'm amazed!"));
+						Msg(L("Now that you know how to deal with the three Elements,<br/>I think you understand the elemental rules governing this world.<br/>There's nothing more I can tell you about this.<br/>By the way, there is a reason why I explained about controlling the flow of Mana through meditation."));
+						Msg(L("As you use all three magic,<br/>you'll often feel there's not enough Mana.<br/>Just remember to use the Meditation skill."));
+
+						if (!HasSkill(SkillId.Meditation))
+							GiveSkill(SkillId.Meditation, SkillRank.Novice);
+						if (IsSkill(SkillId.Meditation, SkillRank.Novice))
+							TrainSkill(SkillId.Meditation, 1);
+					}
+					else
+					{
+						Msg(L("Do you know anything about the Meditation skill?<br/>This is used to control the flow of Mana through meditation.<br/>This magic is useful when you are short on Mana<br/>before the Eweca has risen."));
+						Msg(L("I'd really like to teach you how to use this magic, but without the basic understanding of Elements,<br/>it could confuse you.<br/>I'll teach you this skill when you learn the three basic Elements of magic.<br/>If you're interested, learn these other magic as well."));
+						
+						GiveSkill(SkillId.Meditation, SkillRank.Novice);
+					}
+				}
+				else
+				{
+					Msg("Haha, <username/>, you seem to be a very curious person.<br/>This is not the right time, though...<br/>...I'll let you know when the time is right.");
+				}
 				break;
 
 			case "about_arbeit":

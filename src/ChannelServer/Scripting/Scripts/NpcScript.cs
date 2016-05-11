@@ -983,6 +983,17 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Checks if player has the skill on the specified rank.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="rank"></param>
+		/// <returns></returns>
+		public bool IsSkill(SkillId skillId, SkillRank rank)
+		{
+			return this.Player.Skills.Is(skillId, rank);
+		}
+
+		/// <summary>
 		/// Gives skill to player if he doesn't have it on that rank yet.
 		/// </summary>
 		/// <param name="skillId"></param>
