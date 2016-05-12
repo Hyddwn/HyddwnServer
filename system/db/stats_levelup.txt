@@ -4749,7 +4749,7 @@
 { race: [490071], age: 14, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
 { race: [490071], age: 15, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
 
-// White Horse
+// White Stallion
 { race: [490072], age: 1, life: 1.00, mana: 0.50, stamina: 0.75, str: 0.50, int: 0.25, dex: 0.50, will: 0.75, luck: 0.50 },
 { race: [490072], age: 2, life: 0.75, mana: 0.50, stamina: 0.75, str: 0.50, int: 0.50, dex: 0.50, will: 0.75, luck: 0.75 },
 { race: [490072], age: 3, life: 0.75, mana: 0.50, stamina: 0.75, str: 0.50, int: 0.50, dex: 0.50, will: 0.75, luck: 0.50 },
@@ -4935,6 +4935,23 @@
 { race: [490084], age: 13, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
 { race: [490084], age: 14, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
 { race: [490084], age: 15, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
+
+// Scooter Imp
+{ race: [490087], age: 1, life: 1.00, mana: 0.50, stamina: 0.75, str: 0.75, int: 0.25, dex: 0.50, will: 0.75, luck: 0.50 },
+{ race: [490087], age: 2, life: 0.75, mana: 0.50, stamina: 0.75, str: 0.50, int: 0.50, dex: 0.50, will: 0.75, luck: 0.75 },
+{ race: [490087], age: 3, life: 0.75, mana: 0.50, stamina: 0.75, str: 0.75, int: 0.50, dex: 0.50, will: 0.75, luck: 0.50 },
+{ race: [490087], age: 4, life: 0.75, mana: 0.25, stamina: 0.75, str: 0.50, int: 0.50, dex: 0.50, will: 0.75, luck: 0.50 },
+{ race: [490087], age: 5, life: 0.75, mana: 0.25, stamina: 0.50, str: 0.50, int: 0.50, dex: 0.50, will: 0.50, luck: 0.25 },
+{ race: [490087], age: 6, life: 0.75, mana: 0.25, stamina: 0.50, str: 0.50, int: 0.50, dex: 0.25, will: 0.50, luck: 0.25 },
+{ race: [490087], age: 7, life: 0.50, mana: 0.50, stamina: 0.50, str: 0.25, int: 0.25, dex: 0.25, will: 0.50, luck: 0.00 },
+{ race: [490087], age: 8, life: 0.50, mana: 0.50, stamina: 0.50, str: 0.25, int: 0.25, dex: 0.00, will: 0.25, luck: 0.00 },
+{ race: [490087], age: 9, life: 0.50, mana: 0.25, stamina: 0.25, str: 0.25, int: 0.00, dex: 0.00, will: 0.25, luck: 0.00 },
+{ race: [490087], age: 10, life: 0.50, mana: 0.25, stamina: 0.25, str: 0.25, int: 0.25, dex: 0.00, will: 0.25, luck: 0.00 },
+{ race: [490087], age: 11, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
+{ race: [490087], age: 12, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
+{ race: [490087], age: 13, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
+{ race: [490087], age: 14, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
+{ race: [490087], age: 15, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
 
 // Black Mud Crab
 { race: [500001], age: 1, life: 0.75, mana: 0.50, stamina: 0.75, str: 0.50, int: 0.75, dex: 0.50, will: 0.50, luck: 0.25 },

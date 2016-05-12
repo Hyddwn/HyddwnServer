@@ -192,6 +192,7 @@
 { type: 1, id: 8126, name: "Mushroom Hair", races: "/human/male/|/elf/male/|/giant/male/", price: 0 },
 { type: 1, id: 8127, name: "Warrior Hair", races: "/human/male/|/elf/male/|/giant/male/", price: 0 },
 { type: 1, id: 8128, name: "Soft Perm", races: "/human/male/|/elf/male/|/giant/male/", price: 0 },
+{ type: 1, id: 8137, name: "Preppy Hair", races: "/human/male/|/elf/male/|/giant/male/", price: 0 },
 { type: 1, id: 8512, name: "Kirito Hair_Beard", races: "/giant/male/", price: 0 },
 { type: 1, id: 8513, name: "Kirito Hair_Mustache", races: "/giant/male/", price: 0 },
 { type: 1, id: 8514, name: "Kirito Hair_Mini Beard", races: "/giant/male/", price: 0 },
@@ -343,6 +344,7 @@
 { type: 2, id: 8134, name: "Girlish Twin Tail", races: "/human/female/|/elf/female/|/giant/female/", price: 0 },
 { type: 2, id: 8135, name: "Laighlinne Hair", races: "/human_pet/laiglinne/", price: 0 },
 { type: 2, id: 8136, name: "Meryl Hair", races: "/human_pet/laiglinne/", price: 0 },
+{ type: 2, id: 8138, name: "Wave Twin Tail", races: "/human/female/|/elf/female/|/giant/female/", price: 0 },
 { type: 2, id: 9200, name: "Shaggy Perm", races: "/human_pet/", price: 5 },
 
 // Hair colors

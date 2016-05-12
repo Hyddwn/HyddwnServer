@@ -452,3 +452,7 @@ lich/master/walk,               43.381000
 lich/master/run,               625.000000
 succubusqueen/*/run,           400.227000
 succubusqueen/*/walk,          400.227000
+starcandy/*/run,               606.000000
+starcandy/*/walk,              275.000000
+scooter/ogre/run,              845.000000
+scooter/ogre/walk,             400.000000

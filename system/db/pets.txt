@@ -207,7 +207,7 @@
 { raceId: 490067, name: "Red Horse", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
 { raceId: 490068, name: "Crystal Rudolph", timeLimit: 92, exp: 1.8, height: 0.65, upper: 1.2, lower: 1.2, life: 70, mana: 45, stamina: 77, str: 38, int: 40, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
 { raceId: 490070, name: "White Flamemare", timeLimit: 124, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 90, mana: 40, stamina: 62, str: 40, int: 25, dex: 36, will: 46, luck: 30, defense: 0, protection: 2 },
-{ raceId: 490072, name: "White Horse", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
+{ raceId: 490072, name: "White Stallion", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
 { raceId: 490075, name: "Astral Cosmic Stallion", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
 { raceId: 490083, name: "Astral Rudolf", timeLimit: 92, exp: 1.8, height: 0.65, upper: 1.2, lower: 1.2, life: 70, mana: 45, stamina: 77, str: 38, int: 40, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
 
@@ -370,6 +370,10 @@
 // 55
 //---------------------------------------------------------------------------
 { raceId: 490066, name: "Fallen Fairy", timeLimit: 120, exp: 1.75, height: 1.0, upper: 1.0, lower: 1.0, life: 350, mana: 100, stamina: 300, str: 150, int: 100, dex: 45, will: 45, luck: 30, defense: 15, protection: 8 },
+
+// 58
+//---------------------------------------------------------------------------
+{ raceId: 490087, name: "Scooter Imp", timeLimit: 100, exp: 1.5, height: 1.0, upper: 1.0, lower: 1.0, life: 400, mana: 20, stamina: 300, str: 100, int: 5, dex: 45, will: 45, luck: 30, defense: 20, protection: 20 },
 
 // Partners
 //---------------------------------------------------------------------------
