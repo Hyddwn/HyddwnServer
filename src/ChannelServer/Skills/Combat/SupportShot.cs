@@ -272,6 +272,20 @@ namespace Aura.Channel.Skills.Combat
 					skill.Train(1); // Successfully use the skill on a similarly ranked enemy.
 
 				if (powerRating == PowerRating.Strong)
+					skill.Train(2); // Successfully use the skill on a strong enemy.
+
+				if (!tAction.IsKnockBack)
+					skill.Train(3); // Successfully use Support Shot without knocking down the enemy.
+
+				if (tAction.Has(TargetOptions.Critical))
+					skill.Train(4); // Succeed in a Critical Hit with Support Shot.
+			}
+			else if (skill.Info.Rank == SkillRank.R8)
+			{
+				if (powerRating == PowerRating.Normal)
+					skill.Train(1); // Successfully use the skill on a similarly ranked enemy.
+
+				if (powerRating == PowerRating.Strong)
 				{
 					skill.Train(2); // Successfully use the skill on a Strong enemy.
 
@@ -282,17 +296,33 @@ namespace Aura.Channel.Skills.Combat
 				if (!tAction.IsKnockBack)
 					skill.Train(3); // Successfully use Support Shot without knocking down the enemy.
 			}
-			else if (skill.Info.Rank >= SkillRank.R8 && skill.Info.Rank <= SkillRank.R4)
+			else if (skill.Info.Rank >= SkillRank.R7 && skill.Info.Rank <= SkillRank.R6)
+			{
+				if (powerRating == PowerRating.Strong)
+				{
+					skill.Train(1); // Successfully use the skill on a Strong enemy.
+
+					if (tAction.Has(TargetOptions.Critical))
+						skill.Train(4); // Succeed in a Critical Hit against a Strong enemy.
+				}
+
+				if (powerRating == PowerRating.Awful)
+					skill.Train(2); // Successfully use the skill on an Awful enemy.
+
+				if (!tAction.IsKnockBack)
+					skill.Train(3); // Successfully use Support Shot without knocking down the enemy.
+			}
+			else if (skill.Info.Rank >= SkillRank.R5 && skill.Info.Rank <= SkillRank.R4)
 			{
 				if (powerRating == PowerRating.Strong)
 					skill.Train(1); // Successfully use the skill on a Strong enemy.
 
 				if (powerRating == PowerRating.Awful)
 				{
-					skill.Train(2); // Successfully use the skill on a Awful enemy.
+					skill.Train(2); // Successfully use the skill on an Awful enemy.
 
 					if (tAction.Has(TargetOptions.Critical))
-						skill.Train(4); // Succeed in a Critical Hit against a Awful enemy.
+						skill.Train(4); // Succeed in a Critical Hit against an Awful enemy.
 				}
 
 				if (!tAction.IsKnockBack)
@@ -301,14 +331,14 @@ namespace Aura.Channel.Skills.Combat
 			else if (skill.Info.Rank >= SkillRank.R3 && skill.Info.Rank <= SkillRank.R1)
 			{
 				if (powerRating == PowerRating.Awful)
-					skill.Train(1); // Successfully use the skill on a Awful enemy.
+					skill.Train(1); // Successfully use the skill on an Awful enemy.
 
 				if (powerRating == PowerRating.Boss)
 				{
-					skill.Train(2); // Successfully use the skill on a Boss enemy.
+					skill.Train(2); // Successfully use the skill on a Boss-level enemy.
 
 					if (tAction.Has(TargetOptions.Critical))
-						skill.Train(4); // Succeed in a Critical Hit against a Boss enemy.
+						skill.Train(4); // Succeed in a Critical Hit against a Boss-level enemy.
 				}
 
 				if (!tAction.IsKnockBack)
