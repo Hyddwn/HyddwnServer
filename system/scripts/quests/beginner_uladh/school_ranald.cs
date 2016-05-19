@@ -41,12 +41,7 @@ public class SchoolCombatRanaldQuestScript : GeneralScript
 		{
 			npc.Msg(L("Today's class is over.<br/>You can spend the rest of the day as you wish."));
 		}
-		else if (now.Hour < start)
-		{
-			// Unofficial
-			npc.Msg(L("This is not the time for class. Come back later."));
-		}
-		else if (now.Hour >= end)
+		else if (now.Hour < start || now.Hour >= end)
 		{
 			npc.Msg(L("This is not the time for class. Come back tomorrow morning."));
 		}

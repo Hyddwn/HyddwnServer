@@ -42,12 +42,7 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 		{
 			npc.Msg(L("Hmm... Now is not the right time to talk about it.<br/>Today's magic classes are all finished.<br/>Come back later. Shall we say... around when the shadow points north, northwest?"));
 		}
-		else if (now.Hour < start)
-		{
-			// Unofficial
-			npc.Msg(L("Class hasn't started yet.<br/>You should come back later."));
-		}
-		else if (now.Hour >= end)
+		else if (now.Hour < start || now.Hour >= end)
 		{
 			npc.Msg(L("Class has started long ago.<br/>You should come back later."));
 		}
