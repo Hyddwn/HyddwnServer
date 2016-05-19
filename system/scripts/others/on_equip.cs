@@ -38,6 +38,10 @@ public class OnEquipSkillLearnScript : GeneralScript
 		if ((item.HasTag("/tool/blacksmith/")) && !creature.Skills.Has(SkillId.Blacksmithing))
 			creature.Skills.Give(SkillId.Blacksmithing, SkillRank.Novice);
 
+		// Give Fishing when equipping a Fishing Rod
+		if ((item.HasTag("/fishingrod/")) && !creature.Skills.Has(SkillId.Fishing))
+			creature.Skills.Give(SkillId.Fishing, SkillRank.Novice);
+
 		// Give Enchant when equipping Magic Powder
 		if ((item.HasTag("/enchant/powder/")) && !creature.Skills.Has(SkillId.Enchant))
 		{
