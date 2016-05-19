@@ -24,8 +24,8 @@ public class SchoolCombatRanaldQuestScript : GeneralScript
 		var last = (string)npc.Player.Vars.Perm.Get(lastName, "never");
 		var now = ErinnTime.Now;
 		var today = now.ToString("yyyy-MM-dd");
-		var start = 9;
-		var end = 21;
+		var start = 7;
+		var end = 23;
 		var remaintime = end - now.Hour;
 		var lastState = 10;
 
