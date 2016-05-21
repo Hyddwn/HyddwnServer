@@ -169,8 +169,6 @@ namespace Aura.Channel.Skills.Magic
 			var rnd = RandomProvider.Get();
 
 			var optionSetId = 0;
-			var prefix = false;
-			var suffix = false;
 
 			creature.Temp.SkillItem1 = null;
 			creature.Temp.SkillItem2 = null;
