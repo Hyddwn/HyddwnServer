@@ -18,7 +18,7 @@ public class CollectPropTestScript : PuzzleScript
 	{
 		var propPlace = puzzle.GetPlace("PropPlace");
 
-		for (int i = 1; i <= 3; ++i)
+		for (int i = 1; i <= 4; ++i)
 		{
 			var oreDeposit = new OreDeposit(22000, "Deposit" + i);
 			propPlace.AddProp(oreDeposit, Placement.Ore);
