@@ -198,7 +198,7 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			// Create food waste if nothing halfway decent was created
-			if (success)
+			if (!success)
 			{
 				item = new Item(FoodWasteItemId);
 				Send.Notice(creature, Localization.Get("Cooking failed"));
