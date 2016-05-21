@@ -15,7 +15,7 @@ public class CiarBasicPartyQuest : QuestScript
 		SetType(QuestType.Collect);
 
 		AddObjective("obj1", L("Eliminate 1 Golem"), 0, 0, 0, Kill(1, "/golem/boss/golem2/"));
-		AddObjective("obj2", L("Eliminate 6 Metal Skeletons"), 0, 0, 0, Kill(6, "/skeleton/undead/metalskeleton/armora/"));
+		AddObjective("obj2", L("Eliminate 6 Metal Skeletons"), 0, 0, 0, Kill(6, "/skeleton/undead/metalskeleton/armorA/"));
 		AddObjective("obj3", L("Clear Ciar Basic Dungeon"), 0, 0, 0, ClearDungeon("TirCho_Ciar_Low_Dungeon"));
 
 		AddReward(Exp(3500));

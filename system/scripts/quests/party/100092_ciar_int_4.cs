@@ -15,7 +15,7 @@ public class CiarInt4PartyQuest : QuestScript
 		SetType(QuestType.Collect);
 
 		AddObjective("obj1", L("Eliminate 2 Golems"), 0, 0, 0, Kill(2, "/golem/boss/golem3/|/golem/boss/golem4/"));
-		AddObjective("obj2", L("Eliminate 6 Metal Skeletons"), 0, 0, 0, Kill(6, "/skeleton/undead/metalskeleton/armora/"));
+		AddObjective("obj2", L("Eliminate 6 Metal Skeletons"), 0, 0, 0, Kill(6, "/skeleton/undead/metalskeleton/armorA/"));
 		AddObjective("obj3", L("Clear Ciar Int. Dungeon for 4"), 0, 0, 0, ClearDungeon("TirCho_Ciar_Middle_4_Dungeon"));
 
 		AddReward(Exp(11700));
