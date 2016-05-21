@@ -96,6 +96,10 @@ namespace Aura.Channel.Skills.Magic
 				// Full damage for the first target, -10% for every subsequent one.
 				targetDamage -= (targetDamage * 0.1f) * i;
 
+				// Critical Hit
+				var critChance = attacker.GetTotalCritChance(target.Protection, true);
+				CriticalHit.Handle(attacker, critChance, ref damage, tAction);
+
 				// Reduce damage
 				Defense.Handle(aAction, tAction, ref targetDamage);
 				SkillHelper.HandleMagicDefenseProtection(target, ref targetDamage);

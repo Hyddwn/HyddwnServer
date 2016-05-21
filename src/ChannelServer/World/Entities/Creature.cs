@@ -2375,16 +2375,36 @@ namespace Aura.Channel.World.Entities
 		/// Calculates total crit chance, taking stat bonuses
 		/// and given protection and bonus into consideration.
 		/// </summary>
-		/// <param name="protection"></param>
+		/// <param name="protection">Protection to subtract from crit.</param>
 		/// <returns></returns>
 		public float GetTotalCritChance(float protection)
 		{
+			return this.GetTotalCritChance(protection, false);
+		}
+
+		/// <summary>
+		/// Calculates total crit chance, taking stat bonuses
+		/// and given protection and bonus into consideration.
+		/// </summary>
+		/// <param name="protection">Protection to subtract from crit.</param>
+		/// <param name="magic">If true, weapon crit bonuses only apply if weapon is a wand.</param>
+		/// <returns></returns>
+		public float GetTotalCritChance(float protection, bool magic)
+		{
 			var crit = 0f;
-			if (this.RightHand == null)
+
+			if (this.RightHand == null || (magic && !this.RightHand.HasTag("/weapon/wand/")))
+			{
+				// Use base crit if no weapon or no staff for magic is equipped.
 				crit = this.CriticalBase + this.CriticalBaseMod;
+			}
 			else
 			{
+				// Get base crit from weapon.
 				crit = this.RightCriticalMod;
+
+				// Get average crit from both weapons if a second one
+				// is equipped.
 				if (this.LeftHand != null)
 					crit = (crit + this.LeftCriticalMod) / 2;
 			}

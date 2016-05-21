@@ -72,6 +72,10 @@ namespace Aura.Channel.Skills.Magic
 			// Elements
 			damage *= this.GetElementalDamageMultiplier(attacker, target);
 
+			// Critical Hit
+			var critChance = attacker.GetTotalCritChance(target.Protection, true);
+			CriticalHit.Handle(attacker, critChance, ref damage, tAction);
+
 			// Reduce damage
 			SkillHelper.HandleMagicDefenseProtection(target, ref damage);
 			ManaShield.Handle(target, ref damage, tAction);
