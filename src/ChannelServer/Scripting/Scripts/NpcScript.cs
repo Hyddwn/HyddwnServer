@@ -1802,7 +1802,7 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetString("WU", manaUseWU.ToString());
 						break;
 
-					case "ChainCast":
+					case "ChainCasting":
 						// Chain Casting: +4, Magic Attack: +21
 						// EHLV:4:5;MTWR:1:1;OWNER:s:username;WU:s:30201400000015;
 						var chainCastWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
