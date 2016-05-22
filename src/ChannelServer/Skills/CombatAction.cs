@@ -146,9 +146,29 @@ namespace Aura.Channel.Skills
 				{
 					var tAction = action as TargetAction;
 
-					// Max target stun for players == 2000?
 					if (action.Creature.IsPlayer)
+					{
+						// Max target stun for players == 2000?
 						action.Stun = Math.Min((short)2000, action.Stun);
+
+						// Break eggs on knock back
+						if (tAction.IsKnockBack)
+						{
+							// Search for usable (non-broken) eggs, sparing VIP eggs.
+							var eggs = action.Creature.Inventory.GetItems(a => a.HasTag("/usable/food/cooking/solid/*egg/") && a.Info.Pocket != Pocket.VIPInventory);
+							foreach (var egg in eggs)
+							{
+								// Replace egg
+								var brokenEgg = new Item(50011);
+								brokenEgg.Amount = egg.Amount;
+
+								// Remove egg and place the broken one at the
+								// same spot.
+								if (action.Creature.Inventory.Remove(egg))
+									action.Creature.Inventory.Add(brokenEgg, egg.Info.Pocket);
+							}
+						}
+					}
 
 					// Reduce stun if pinged
 					// If the second hit of the second set of dual wield hits
