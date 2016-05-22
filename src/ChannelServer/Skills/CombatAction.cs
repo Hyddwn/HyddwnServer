@@ -152,7 +152,7 @@ namespace Aura.Channel.Skills
 						action.Stun = Math.Min((short)2000, action.Stun);
 
 						// Break eggs on knock back
-						if (tAction.IsKnockBack)
+						if (tAction.IsKnockBack && ChannelServer.Instance.Conf.World.BrokenEggs)
 						{
 							// Search for usable (non-broken) eggs, sparing VIP eggs.
 							var eggs = action.Creature.Inventory.GetItems(a => a.HasTag("/usable/food/cooking/solid/*egg/") && a.Info.Pocket != Pocket.VIPInventory);

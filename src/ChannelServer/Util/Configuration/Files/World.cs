@@ -46,6 +46,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public bool UncapProficiency { get; protected set; }
 		public bool UnlimitedDyes { get; protected set; }
 		public int DyeDifficulty { get; protected set; }
+		public bool BrokenEggs { get; protected set; }
 
 		public TimeSpan RebirthTime { get; protected set; }
 
@@ -102,6 +103,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.UncapProficiency = this.GetBool("uncap_proficiency", false);
 			this.UnlimitedDyes = this.GetBool("unlimited_dyes", false);
 			this.DyeDifficulty = Math2.Clamp(1, 5, this.GetInt("dye_difficulty", 5));
+			this.BrokenEggs = this.GetBool("broken_eggs", true);
 
 			this.RebirthTime = TimeSpan.FromDays(this.GetInt("rebirth_time", 6));
 
