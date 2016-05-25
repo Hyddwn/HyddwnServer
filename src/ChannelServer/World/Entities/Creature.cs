@@ -1699,7 +1699,7 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		/// <param name="baseBalance"></param>
 		/// <returns></returns>
-		protected int GetRndBalance(int baseBalance)
+		public int GetRndBalance(int baseBalance)
 		{
 			var rnd = RandomProvider.Get();
 			var balance = baseBalance;
