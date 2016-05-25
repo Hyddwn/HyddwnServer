@@ -1754,7 +1754,11 @@ namespace Aura.Channel.World.Entities
 		{
 			var rnd = RandomProvider.Get();
 
-			var baseDamage = rnd.Between(baseMin, baseMax);
+			// Base damage
+			float min = baseMin;
+			float max = baseMax;
+
+			// Bonus
 			var factor = rnd.Between(skill.RankData.FactorMin, skill.RankData.FactorMax);
 			var totalMagicAttack = this.MagicAttack + this.MagicAttackMod;
 
@@ -1771,9 +1775,17 @@ namespace Aura.Channel.World.Entities
 			if (skill.Info.Id == SkillId.Firebolt || skill.Info.Id == SkillId.IceSpear || skill.Info.Id == SkillId.HailStorm)
 				chargeMultiplier = skill.Stacks;
 
-			var damage = (float)(baseDamage + Math.Floor(wandBonus * (1 + chargeMultiplier)) + (factor * totalMagicAttack));
+			var bonusDamage = (float)Math.Floor(wandBonus * (1 + chargeMultiplier)) + (factor * totalMagicAttack);
+			min += bonusDamage;
+			max += bonusDamage;
 
-			return (damage * (this.GetRndMagicBalance() / 100f));
+			// Random balance multiplier
+			var multiplier = this.GetRndMagicBalance() / 100f;
+
+			if (min > max)
+				min = max;
+
+			return (min + (max - min) * multiplier);
 		}
 
 		/// <summary>
