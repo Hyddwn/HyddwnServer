@@ -516,17 +516,17 @@ namespace Aura.Channel.Skills.Magic
 
 				case EnchantResult.HugeSuccess:
 					skill.Train(2); // Get a great success.
-					return;
+					goto case EnchantResult.Success;
 
 				case EnchantResult.Fail:
-					if (skill.Info.Rank <= SkillRank.RE)
+					if (skill.Info.Rank <= SkillRank.R6)
 						skill.Train(3); // Get a failure.
 					return;
 
 				case EnchantResult.HugeFail:
-					if (skill.Info.Rank <= SkillRank.R6)
+					if (skill.Info.Rank <= SkillRank.RE)
 						skill.Train(4); // Get a horrible result.
-					return;
+					goto case EnchantResult.Fail;
 			}
 		}
 
