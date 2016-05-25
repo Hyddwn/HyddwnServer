@@ -1709,8 +1709,8 @@ namespace Aura.Channel.World.Entities
 
 			// Randomization
 			var diff = 100 - balance;
-			var min = Math.Max(0, balance - diff);
-			var max = Math.Max(100, balance + diff);
+			var min = balance - diff;
+			var max = balance + diff;
 
 			balance = rnd.Next(min, max + 1);
 
