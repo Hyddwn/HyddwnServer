@@ -27,7 +27,7 @@ namespace Aura.Channel.World.Entities
 	/// </summary>
 	public abstract class Creature : Entity, IDisposable
 	{
-		public const float BaseMagicBalance = 0.3f;
+		public const int BaseMagicBalance = 30;
 		public const float MinStability = -10, MaxStability = 100;
 
 		private const float MinWeight = 0.7f, MaxWeight = 1.5f;
@@ -1720,20 +1720,24 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Calculates random magic balance (0.0~1.0).
 		/// </summary>
+		/// <param name="baseBalance"></param>
 		/// <returns></returns>
-		public float GetRndMagicBalance(float baseBalance = BaseMagicBalance)
+		public int GetRndMagicBalance(int baseBalance = BaseMagicBalance)
 		{
 			var rnd = RandomProvider.Get();
 			var balance = baseBalance;
 
 			// Int
-			balance += (Math.Max(0, this.Int - 10) / 4) / 100f;
+			balance = (int)Math2.Clamp(0, 100, balance + ((this.Int - 10) / 4f));
 
-			// Randomization, balance+-(100-balance), eg 80 = 60~100
-			var diff = 1.0f - balance;
-			balance += ((diff - (diff * 2 * (float)rnd.NextDouble())) * (float)rnd.NextDouble());
+			// Randomization
+			var diff = 100 - balance;
+			var min = balance - diff;
+			var max = balance + diff;
 
-			return Math2.Clamp(0f, 1f, balance);
+			balance = rnd.Next(min, max + 1);
+
+			return Math2.Clamp(0, 100, balance);
 		}
 
 		/// <summary>
@@ -1769,7 +1773,7 @@ namespace Aura.Channel.World.Entities
 
 			var damage = (float)(baseDamage + Math.Floor(wandBonus * (1 + chargeMultiplier)) + (factor * totalMagicAttack));
 
-			return (damage * this.GetRndMagicBalance());
+			return (damage * (this.GetRndMagicBalance() / 100f));
 		}
 
 		/// <summary>
