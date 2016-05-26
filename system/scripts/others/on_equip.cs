@@ -51,7 +51,7 @@ public class OnEquipSkillLearnScript : GeneralScript
 		
 		// Cancel active bolt skill if equip changes
 		var skill = creature.Skills.ActiveSkill;
-		if (skill != null && (skill.Info.Id == SkillId.Icebolt || skill.Info.Id == SkillId.Firebolt || skill.Info.Id == SkillId.Lightningbolt))
+		if (skill != null && skill.Is(SkillId.Icebolt, SkillId.Firebolt, SkillId.Lightningbolt))
 			creature.Skills.CancelActiveSkill();
 	}
 }
