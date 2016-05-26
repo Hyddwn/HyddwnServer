@@ -49,12 +49,15 @@ public class OnEquipSkillLearnScript : GeneralScript
 			creature.Skills.Train(SkillId.Enchant, 1);
 		}
 
-		// Cancel active bolt skill if equip changes
+		// Cancel active bolt skill if weapon changes
 		if (ChannelServer.Instance.Conf.World.SwitchCancelBolts)
 		{
-			var skill = creature.Skills.ActiveSkill;
-			if (skill != null && skill.Is(SkillId.Icebolt, SkillId.Firebolt, SkillId.Lightningbolt))
-				creature.Skills.CancelActiveSkill();
+			if (item.Info.Pocket == creature.Inventory.RightHandPocket || item.Info.Pocket == creature.Inventory.LeftHandPocket || item.Info.Pocket == creature.Inventory.MagazinePocket)
+			{
+				var skill = creature.Skills.ActiveSkill;
+				if (skill != null && skill.Is(SkillId.Icebolt, SkillId.Firebolt, SkillId.Lightningbolt))
+					creature.Skills.CancelActiveSkill();
+			}
 		}
 	}
 }
