@@ -48,5 +48,28 @@ public class OnEquipSkillLearnScript : GeneralScript
 			creature.Skills.Give(SkillId.Enchant, SkillRank.Novice);
 			creature.Skills.Train(SkillId.Enchant, 1);
 		}
+
+		// Cancel active bolt skill if weapon changes
+		if (ChannelServer.Instance.Conf.World.SwitchCancelBolts)
+		{
+			if (item.Info.Pocket == creature.Inventory.RightHandPocket || item.Info.Pocket == creature.Inventory.LeftHandPocket || item.Info.Pocket == creature.Inventory.MagazinePocket)
+			{
+				var skill = creature.Skills.ActiveSkill;
+				if (skill != null && skill.Is(SkillId.Icebolt, SkillId.Firebolt, SkillId.Lightningbolt))
+					creature.Skills.CancelActiveSkill();
+			}
+		}
+	}
+
+	[On("PlayerUnequipsItem")]
+	public void PlayerUnequipsItem(Creature creature, Item item)
+	{
+		// Remove Mana on unequipping wand
+		// http://mabinogiworld.com/view/Mana_Evaporation
+		if (!IsEnabled("ManaBurnRemove"))
+		{
+			if (item.HasTag("/wand/|/staff/"))
+				creature.BurnMana();
+		}
 	}
 }

@@ -258,6 +258,16 @@ namespace Aura.Channel.Skills
 			// Monsters/Pets
 			return this.RankData.LoadTime;
 		}
+
+		/// <summary>
+		/// Returns true if the skill has one of the given ids.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		public bool Is(params SkillId[] skillId)
+		{
+			return skillId.Contains(this.Info.Id);
+		}
 	}
 
 	/// <summary>

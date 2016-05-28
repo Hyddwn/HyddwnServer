@@ -363,7 +363,9 @@
 	]},
 	
 	// Season 2
-	{ name: "G15S2", enabled: true, children: []},
+	{ name: "G15S2", enabled: true, children: [
+		{ name: "ManaBurnRemove", enabled: true },
+	]},
 	
 	// Season 3
 	{ name: "G15S3", enabled: true, children: []},
