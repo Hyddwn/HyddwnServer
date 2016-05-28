@@ -178,6 +178,13 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check droppability
+			if (item.HasTag("/not_dropable/"))
+			{
+				Send.ItemDropR(creature, Localization.Get("You cannot drop this item."));
+				return;
+			}
+
 			// Try to remove item
 			if (!creature.Inventory.Remove(item))
 			{
