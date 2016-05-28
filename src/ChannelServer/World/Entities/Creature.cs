@@ -3009,6 +3009,17 @@ namespace Aura.Channel.World.Entities
 				Send.ItemBlessed(this, item);
 			}
 		}
+
+		/// <summary>
+		/// Removes the given percentage of the creature's mana
+		/// and updates client.
+		/// </summary>
+		/// <param name="amount"></param>
+		public void BurnMana(float amount = 100)
+		{
+			this.Mana -= this.Mana * (amount / 100f);
+			Send.StatUpdate(this, StatUpdateType.Private, Stat.Mana);
+		}
 	}
 
 	public enum TargetableOptions

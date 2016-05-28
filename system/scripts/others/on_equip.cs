@@ -60,4 +60,16 @@ public class OnEquipSkillLearnScript : GeneralScript
 			}
 		}
 	}
+
+	[On("PlayerUnequipsItem")]
+	public void PlayerUnequipsItem(Creature creature, Item item)
+	{
+		// Remove Mana on unequipping wand
+		// http://mabinogiworld.com/view/Mana_Evaporation
+		if (!IsEnabled("ManaBurnRemove"))
+		{
+			if (item.HasTag("/wand/|/staff/"))
+				creature.BurnMana();
+		}
+	}
 }
