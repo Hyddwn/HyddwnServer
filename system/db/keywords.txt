@@ -4774,7 +4774,7 @@
 { id: 12992, name: "DungeonRenewal2016_ae_guide", engName: "?" },
 { id: 12993, name: "DungeonRenewal2016_coupon", engName: "?" },
 { id: 12994, name: "DungeonRenewal2016_advantage", engName: "?" },
-{ id: 12995, name: "samhainP1_play", engName: "?" },
+{ id: 12995, name: "samhainP1_play", engName: "samhainP1_play" },
 { id: 12996, name: "samhainP2_play", engName: "?" },
 { id: 12997, name: "DungeonRenewal2016_clear_alby", engName: "?" },
 { id: 12998, name: "DungeonRenewal2016_clear_ciar", engName: "?" },
