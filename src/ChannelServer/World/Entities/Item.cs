@@ -1394,5 +1394,38 @@ namespace Aura.Channel.World.Entities
 			this.OptionInfo.Price = this.Data.Price;
 			this.OptionInfo.SellingPrice = this.Data.SellingPrice;
 		}
+
+		/// <summary>
+		/// Returns whether the given creature can touch and use the item.
+		/// </summary>
+		/// <remarks>
+		/// Example: Sword of Elsinore can only be used while having
+		/// Rosemary Gloves equipped.
+		/// </remarks>
+		/// <example>
+		/// string error;
+		/// if (!swordOfElsinore.CanBeTouchedBy(creature))
+		///     Send.MsgBox(creature, error)
+		/// </example>
+		/// <param name="creature">The creature to check.</param>
+		/// <param name="error">The error message in case the item can't be touched.</param>
+		/// <returns></returns>
+		public bool CanBeTouchedBy(Creature creature, out string error)
+		{
+			error = null;
+
+			// Sword of Elsinore
+			if (this.HasTag("/hamlets_sword/"))
+			{
+				var glove = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
+				if (glove == null || !glove.HasTag("/ophelia_glove/"))
+				{
+					error = Localization.Get("The sword is too hot to touch.");
+					return false;
+				}
+			}
+
+			return true;
+		}
 	}
 }

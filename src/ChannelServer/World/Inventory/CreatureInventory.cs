@@ -929,6 +929,28 @@ namespace Aura.Channel.World.Inventory
 			// Make sure the creature is logged in
 			if (_creature.Region != Region.Limbo)
 				Send.UpdateWeaponSet(_creature);
+
+			// Check touchability
+			this.UnequipIfCantBeTouched(this.RightHand);
+			this.UnequipIfCantBeTouched(this.LeftHand);
+			this.UnequipIfCantBeTouched(this.Magazine);
+		}
+
+		/// <summary>
+		/// Moves item to inventory if it can't be touched.
+		/// </summary>
+		/// <param name="item"></param>
+		private void UnequipIfCantBeTouched(Item item)
+		{
+			if (item == null || !item.Info.Pocket.IsEquip())
+				return;
+
+			string error;
+			if (!item.CanBeTouchedBy(_creature, out error))
+			{
+				this.Remove(item);
+				this.Add(item, true);
+			}
 		}
 
 		// Adding

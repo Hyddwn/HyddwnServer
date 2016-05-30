@@ -54,6 +54,17 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Check touchability
+			if (target.IsEquip())
+			{
+				string error;
+				if (!item.CanBeTouchedBy(creature, out error))
+				{
+					Send.MsgBox(creature, error);
+					goto L_Fail;
+				}
+			}
+
 			// Check bag
 			if (item.IsBag && target.IsBag() && !ChannelServer.Instance.Conf.World.Bagception)
 			{
@@ -252,6 +263,15 @@ namespace Aura.Channel.Network.Handlers
 					Send.ItemPickUpR(creature, ItemPickUpResult.NotYours, entityId);
 					return;
 				}
+			}
+
+			// Check touchability
+			string error;
+			if (!item.CanBeTouchedBy(creature, out error))
+			{
+				Send.MsgBox(creature, error);
+				Send.ItemPickUpR(creature, ItemPickUpResult.Fail, entityId);
+				return;
 			}
 
 			// Add bag
