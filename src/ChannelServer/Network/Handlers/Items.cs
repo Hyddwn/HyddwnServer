@@ -270,7 +270,7 @@ namespace Aura.Channel.Network.Handlers
 			if (!item.CanBeTouchedBy(creature, out error))
 			{
 				Send.MsgBox(creature, error);
-				Send.ItemPickUpR(creature, ItemPickUpResult.Fail, entityId);
+				Send.ItemPickUpR(creature, ItemPickUpResult.FailNoMessage, entityId);
 				return;
 			}
 

@@ -512,6 +512,7 @@ namespace Aura.Channel.Network.Sending
 	{
 		Fail = 0,
 		NotFound = 1,
+		FailNoMessage = 2,
 		NoSpace = 3,
 		CannotAddToInventory = 4,
 		NotYours = 4,
