@@ -318,7 +318,7 @@ namespace Aura.Channel.Network.Handlers
 			// Check if item is destroyable
 			if (!item.HasTag("/destroyable/"))
 			{
-				Log.Warning("ItemDestroy: Creature '{0:X16}' tried to destroy a non-destroyable item.");
+				Log.Warning("ItemDestroy: Creature '{0:X16}' tried to destroy a non-destroyable item.", creature.EntityId);
 				Send.ItemDestroyR(creature, false);
 				return;
 			}
