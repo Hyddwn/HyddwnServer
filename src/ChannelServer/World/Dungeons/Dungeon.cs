@@ -118,9 +118,10 @@ namespace Aura.Channel.World.Dungeons
 		public List<DungeonRegion> Regions { get; private set; }
 
 		/// <summary>
-		/// The party that created this dungeon.
+		/// The entity ids of the creatures that initially created
+		/// this dungeon.
 		/// </summary>
-		public List<Creature> Party { get; private set; }
+		public List<long> Creators { get; private set; }
 
 		/// <summary>
 		/// The leader of the party that created this dungeon.
@@ -162,11 +163,11 @@ namespace Aura.Channel.World.Dungeons
 			this.FloorPlan = floorPlan;
 			this.Options = XElement.Parse("<option />");
 
-			this.Party = new List<Creature>();
+			this.Creators = new List<long>();
 			this.PartyLeader = creature;
 
 			// Only creatures who actually ENTER the dungeon at creation are considered "dungeon founders".
-			this.Party.AddRange(creature.Party.GetCreaturesOnAltar(creature.RegionId));
+			this.Creators.AddRange(creature.Party.GetCreaturesOnAltar(creature.RegionId).Select(a => a.EntityId));
 
 			// Get script
 			this.Script = ChannelServer.Instance.ScriptManager.DungeonScripts.Get(this.Name);
@@ -755,18 +756,20 @@ namespace Aura.Channel.World.Dungeons
 		/// <param name="creature"></param>
 		public void OnPlayerEntersLobby(Creature creature)
 		{
+			var isCreator = this.Creators.Contains(creature.EntityId);
+
 			// Save location
 			// This happens whenever you enter the lobby.
 			creature.DungeonSaveLocation = creature.GetLocation();
 			Send.Notice(creature, Localization.Get("You have memorized this location."));
 
 			// Notify player if dungeon was created by another party.
-			if (!this.Party.Contains(creature))
+			if (!isCreator)
 				Send.MsgBox(creature, Localization.Get("This dungeon has been created by another player."));
 
 			// Scroll message
 			var msg = "";
-			if (this.Party.Contains(creature))
+			if (isCreator)
 				msg = Localization.Get("This dungeon has been created by you or your party.\t") + msg;
 			else
 				msg = Localization.Get("This dungeon has been created by another player.") + msg;
@@ -777,7 +780,7 @@ namespace Aura.Channel.World.Dungeons
 			this.Script.OnPlayerEntered(this, creature);
 			lock (_partyEnterSyncLock)
 			{
-				if (!_partyEnterEventFired && this.CountPlayers() == this.Party.Count)
+				if (!_partyEnterEventFired && this.CountPlayers() == this.Creators.Count)
 				{
 					_partyEnterEventFired = true;
 					this.Script.OnPartyEntered(this, creature);
@@ -871,6 +874,53 @@ namespace Aura.Channel.World.Dungeons
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Returns creators inside the dungeon.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetCreators()
+		{
+			var result = new List<Creature>();
+
+			foreach (var entityId in this.Creators)
+			{
+				var creature = this.GetCreature(entityId);
+				if (creature != null)
+					result.Add(creature);
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns true if a creature with the given id is inside
+		/// this dungeon.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		public bool IsInside(long entityId)
+		{
+			return this.Regions.Any(a => a.CreatureExists(entityId));
+		}
+
+		/// <summary>
+		/// Returns the creature with the given entity id if it could be
+		/// found in the dungeon's regions, otherwise it returns null.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		public Creature GetCreature(long entityId)
+		{
+			foreach (var region in this.Regions)
+			{
+				var creature = region.GetCreature(entityId);
+				if (creature != null)
+					return creature;
+			}
+
+			return null;
 		}
 	}
 }
