@@ -103,10 +103,13 @@ namespace Aura.Data.Database
 				if (entryItem == null)
 					continue;
 
-				entryItem.AssertNotMissing("itemId", "chance");
+				entryItem.AssertNotMissing("chance");
+				if (entryItem["itemId"] == null && entryItem["questId"] == null)
+					throw new MandatoryValueException(null, "itemId' or 'questId", entryItem);
 
 				var item = new DropData();
 				item.ItemId = entryItem.ReadInt("itemId");
+				item.QuestId = entryItem.ReadInt("questId");
 				item.Chance = entryItem.ReadFloat("chance");
 
 				if (entryItem.ContainsKey("color1")) item.Color1 = entryItem.ReadUInt("color1");

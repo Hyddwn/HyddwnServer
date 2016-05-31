@@ -111,6 +111,7 @@ namespace Aura.Data.Database
 	public class DropData
 	{
 		public int ItemId { get; set; }
+		public int QuestId { get; set; }
 		public float Chance { get; set; }
 		public int AmountMin { get; set; }
 		public int AmountMax { get; set; }
@@ -151,6 +152,7 @@ namespace Aura.Data.Database
 			var result = new DropData();
 
 			result.ItemId = this.ItemId;
+			result.QuestId = this.QuestId;
 			result.Chance = this.Chance;
 			result.AmountMin = this.AmountMin;
 			result.AmountMax = this.AmountMax;
