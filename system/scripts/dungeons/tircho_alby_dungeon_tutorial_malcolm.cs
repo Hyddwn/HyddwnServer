@@ -23,10 +23,11 @@ public class AlbyTutorialMalcolmDungeonScript : DungeonScript
 	public override void OnCleared(Dungeon dungeon)
 	{
 		var rnd = RandomProvider.Get();
+		var creators = dungeon.GetCreators();
 
-		for (int i = 0; i < dungeon.Party.Count; ++i)
+		for (int i = 0; i < creators.Count; ++i)
 		{
-			var member = dungeon.Party[i];
+			var member = creators[i];
 			var treasureChest = new TreasureChest();
 
 			treasureChest.AddGold(rnd.Next(153, 768)); // Gold
