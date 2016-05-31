@@ -34,14 +34,14 @@ public class AlbyTutorialDungeonScript : DungeonScript
 
 	public override void OnCleared(Dungeon dungeon)
 	{
-		foreach (var member in dungeon.Party)
+		var rnd = RandomProvider.Get();
+		var creators = dungeon.GetCreators();
+
+		for (int i = 0; i < creators.Count; ++i)
+		{
+			var member = creators[i];
 			member.TalkToNpc("_dungeonlostresident", "Lost Resident");
 
-		var rnd = RandomProvider.Get();
-
-		for (int i = 0; i < dungeon.Party.Count; ++i)
-		{
-			var member = dungeon.Party[i];
 			var treasureChest = new TreasureChest();
 
 			// Enchant
