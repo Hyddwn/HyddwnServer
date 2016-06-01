@@ -1142,6 +1142,10 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			var pos = this.Creature.GetPosition();
 
+			// Limit AI to walking if Defense is active (hot-fix)
+			if (this.Creature.Skills.IsActive(SkillId.Defense))
+				walk = true;
+
 			// Check for collision
 			Position intersection;
 			if (this.Creature.Region.Collisions.Find(pos, destination, out intersection))
