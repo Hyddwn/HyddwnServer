@@ -174,9 +174,6 @@ namespace Aura.Channel.Skills.Combat
 				// Subtract target def/prot
 				SkillHelper.HandleDefenseProtection(target, ref damage);
 
-				// Defense
-				Defense.Handle(aAction, tAction, ref damage);
-
 				// Mana Shield
 				ManaShield.Handle(target, ref damage, tAction);
 
