@@ -90,17 +90,29 @@ namespace Aura.Channel.Skills.Life
 
 		protected override void UpdateTool(Creature creature, ProductionData productData)
 		{
-			if (productData.Tool == null)
-				return;
-
 			Item item;
 
 			if (productData.Category == ProductionCategory.Weaving)
 			{
 				item = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
+
+				// Skip if no glove found and no tool required.
+				if (item == null && productData.Tool == null)
+					return;
+
+				// Skip if found glove is not a production tool.
+				if (item != null && !item.HasTag("/cloth_production_tool/|/silk_production_tool/"))
+					return;
+
+				// Continue to the null check below, in case a tool is
+				// required, but we didn't find a glove.
 			}
 			else if (productData.Category == ProductionCategory.Spinning)
 			{
+				// Skip if no tool is required.
+				if (productData.Tool == null)
+					return;
+
 				item = creature.RightHand;
 			}
 			else
