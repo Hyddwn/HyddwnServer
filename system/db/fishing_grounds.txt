@@ -87,14 +87,14 @@
 		{ questId: 71011, chance: 1.4 },
 		{ questId: 71013, chance: 1.4 },
 		{ questId: 71037, chance: 1.4 },
-		// { questId: 1005, chance: 0.2 },
-		// { questId: 1006, chance: 0.2 },
-		// { questId: 1007, chance: 0.2 },
-		// { questId: 1008, chance: 0.2 },
-		// { questId: 1009, chance: 0.2 },
-		// { questId: 1010, chance: 0.2 },
-		// { questId: 1011, chance: 0.2 },
-		// { questId: 1012, chance: 0.2 },
+		{ questId: 1005, chance: 0.2 },
+		{ questId: 1006, chance: 0.2 },
+		{ questId: 1007, chance: 0.2 },
+		{ questId: 1008, chance: 0.2 },
+		{ questId: 1009, chance: 0.2 },
+		{ questId: 1010, chance: 0.2 },
+		{ questId: 1011, chance: 0.2 },
+		{ questId: 1012, chance: 0.2 },
 	]
 },
 { 
@@ -178,7 +178,7 @@
 		{ questId: 71017, chance: 2.0 },
 		{ questId: 71018, chance: 1.5 },
 		{ questId: 71019, chance: 1.5 },
-		// { questId: 74, chance: 2.0 },
+		// { questId: 74, chance: 2.0, feature: "G4S1" },
 	]
 },
 { 
@@ -332,10 +332,10 @@
 		{ questId: 71017, chance: 3.0 },
 		{ questId: 71018, chance: 1.0 },
 		{ questId: 71019, chance: 1.0 },
-		// { questId: 73, chance: 2.5 },
-		// { questId: 75, chance: 2.5 },
-		// { questId: 76, chance: 2.5 },
-		// { questId: 77, chance: 2.5 },
+		// { questId: 73, chance: 2.5, feature: "G4S1" },
+		// { questId: 75, chance: 2.5, feature: "G4S1" },
+		// { questId: 76, chance: 2.5, feature: "G4S1" },
+		// { questId: 77, chance: 2.5, feature: "G4S1" },
 	]
 },
 { 

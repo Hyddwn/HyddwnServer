@@ -341,6 +341,26 @@ public class NoraShop : NpcShopScript
 		Add("Sewing Patterns", 60044, "FORMID:4:180;", 73000);  // Sewing Pattern - Riding Suit
 		Add("Sewing Patterns", 60044, "FORMID:4:185;", 121000); // Sewing Pattern - Spark Leather Armor
 
+		Add("Gift", 52014); // Teddy Bear
+		Add("Gift", 52015); // Pearl Necklace
+		Add("Gift", 52016); // Bunny Doll
+		Add("Gift", 52025); // Gift Ring
+
+		AddQuest("Quest", 1001, 0);   // Collecting Quest [5 Small Gems]
+		AddQuest("Quest", 1002, 1);   // Collecting Quest [5 Small Green Gems (1 Small Blue Gem reward)]
+		AddQuest("Quest", 1003, 5);   // Collecting Quest [5 Small Blue Gems (1 Small Red Gem reward)]
+		AddQuest("Quest", 1004, 25);  // Collecting Quest [5 Small Red Gems (1 Small Silver Gem reward)]
+		AddQuest("Quest", 1005, 25);  // Collecting Quest [5 Small Red Gems (Gold reward)]
+		AddQuest("Quest", 1006, 5);   // Collecting Quest [5 Small Blue Gems (Gold reward)]
+		AddQuest("Quest", 1007, 1);   // Collecting Quest [5 Small Green Gems (Gold reward)]
+		AddQuest("Quest", 1009, 100); // Collecting Quest [5 Small Silver Gems]
+
+		Add("Cooking Appliances", 40042); // Cooking Knife
+		Add("Cooking Appliances", 40043); // Rolling Pin
+		Add("Cooking Appliances", 40044); // Ladle
+		Add("Cooking Appliances", 46004); // Cooking Pot
+		Add("Cooking Appliances", 46005); // Cooking Table
+
 		Add("Skill Book", (c, o) => o.GetFavor(c) >= 50); // Allow access with >= 50 favor
 		Add("Skill Book", 1082); // Resting Guide
 	}
