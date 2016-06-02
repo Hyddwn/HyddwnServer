@@ -79,6 +79,7 @@ namespace Aura.Data.Database
 		public int BaseSize { get; set; }
 
 		public ItemDataTaste Taste { get; set; }
+		public ItemDataProductionBonus ProductionBonus { get; set; }
 
 		public string OnUse { get; set; }
 		public string OnEquip { get; set; }
@@ -104,6 +105,19 @@ namespace Aura.Data.Database
 		public int Maniac { get; set; }
 		public int Anime { get; set; }
 		public int Sexy { get; set; }
+	}
+
+	[Serializable]
+	public class ItemDataProductionBonus
+	{
+		public SkillId SkillId { get; set; }
+		public int ItemId { get; set; }
+		public float Rate { get; set; }
+
+		public bool Matches(SkillId skillId, int itemId)
+		{
+			return (skillId == this.SkillId && itemId == this.ItemId);
+		}
 	}
 
 	/// <summary>
@@ -216,6 +230,18 @@ namespace Aura.Data.Database
 				info.Taste.Maniac = taste.ReadInt("maniac");
 				info.Taste.Anime = taste.ReadInt("anime");
 				info.Taste.Sexy = taste.ReadInt("sexy");
+			}
+
+			info.ProductionBonus = new ItemDataProductionBonus();
+			if (entry.ContainsKey("productionBonus"))
+			{
+				var productionBonus = entry["productionBonus"] as JObject;
+
+				productionBonus.AssertNotMissing("skill", "item", "rate");
+
+				info.ProductionBonus.SkillId = (SkillId)productionBonus.ReadInt("skill");
+				info.ProductionBonus.ItemId = productionBonus.ReadInt("item");
+				info.ProductionBonus.Rate = productionBonus.ReadInt("rate");
 			}
 
 			info.OnUse = entry.ReadString("onUse");

@@ -263,16 +263,37 @@ namespace Aura.Channel.Skills.Base
 				goto L_Fail;
 			}
 
-			// Check success
+			// Adjust success rates
+			// Some weaving gloves increase the chance for a certain item
+			// to be product.
 			var rank = skill.Info.Rank <= SkillRank.R1 ? skill.Info.Rank : SkillRank.R1;
-			var baseChance = potentialProducts.Sum(a => a.SuccessRates[rank]);
+			var successRates = new int[potentialProducts.Length];
+			var successRatesTotal = 0;
+			var gloves = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
+			for (int i = 0; i < potentialProducts.Length; ++i)
+			{
+				var multiplier = 1f;
+				if (gloves != null && gloves.Data.ProductionBonus.Matches(skill.Info.Id, potentialProducts[i].ItemId))
+					multiplier = gloves.Data.ProductionBonus.Rate;
+
+				// The official formula is unknown, I'm gonna assume the rate
+				// is a multiplier, since a bonus of 5% wouldn't mean much.
+				// 500% *might* seem excessive, but half of that, 250%, would
+				// only put the beneficiary at about the same rate as cheap
+				// and common.
+				var rate = potentialProducts[i].SuccessRates[rank];
+				successRates[i] = (int)(rate * multiplier);
+				successRatesTotal += successRates[i];
+			}
+
+			// Check success
 			var rainBonus = productData.RainBonus;
-			var chance = creature.GetProductionSuccessChance(skill, category, baseChance, rainBonus);
+			var chance = creature.GetProductionSuccessChance(skill, category, successRatesTotal, rainBonus);
 			var rnd = RandomProvider.Get();
 			var success = (rnd.Next(100) < chance);
 
 			// Debug
-			if (creature.Titles.SelectedTitle == TitleId.devCAT)
+			if (creature.IsDev)
 				Send.ServerMessage(creature, "Debug: Chance {0}%", chance);
 
 			// Select random product
@@ -281,15 +302,16 @@ namespace Aura.Channel.Skills.Base
 			if (potentialProducts.Length > 1)
 			{
 				var itemId = 0;
-				var num = rnd.NextDouble() * baseChance;
+				var num = rnd.NextDouble() * successRatesTotal;
 				var n = 0.0;
-				foreach (var potentialProduct in potentialProducts)
+
+				for (int i = 0; i < potentialProducts.Length; ++i)
 				{
-					n += potentialProduct.SuccessRates[rank];
+					n += successRates[i];
 					if (num <= n)
 					{
-						itemId = potentialProduct.ItemId;
-						productData = potentialProduct;
+						itemId = potentialProducts[i].ItemId;
+						productData = potentialProducts[i];
 						break;
 					}
 				}
