@@ -443,7 +443,7 @@ namespace Aura.Channel.Skills.Life
 				{
 					if (item.HasTag("/fish/"))
 						skill.Train(1); // Catch a fish.
-					else if (item.Info.Id == 70031)
+					else if (item.QuestId != 0)
 						skill.Train(2); // Catch a quest scroll.
 					else
 						skill.Train(3); // Catch an item.
