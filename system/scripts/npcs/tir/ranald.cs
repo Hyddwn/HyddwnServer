@@ -66,7 +66,7 @@ public class RanaldScript : NpcScript
 
 			case "@upgrade":
 				Msg("Hmm... You want me to modify your item? You got some nerve!<br/>Ha ha. Just joking. Do you need to modify an item? Count on <npcname/>.<br/>Pick an item to modify.<br/>Oh, before that. Types or numbers of modifications are different depending on what item you want to modify. Always remember that.<upgrade />");
-				
+
 				while (true)
 				{
 					var reply = await Select();
@@ -362,9 +362,9 @@ public class RanaldShop : NpcShopScript
 		Add("Arena", 63019, 50);  // Alby Battle Arena Coin 50x
 		Add("Arena", 63019, 100); // Alby Battle Arena Coin 100x
 
-		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Branches]
-		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Berries]
-		//AddQuest("Quest", InsertQuestId, 0); // [collect 10 Large Nails]
+		AddQuest("Quest", 1010, 0); // [Collect 10 Branches]
+		AddQuest("Quest", 1011, 0); // [Collect 10 Berries]
+		AddQuest("Quest", 1012, 0); // [Collect 10 Large Nails]
 
 		Add("Reference Book", 1078); // Don't give up!
 	}
