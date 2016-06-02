@@ -415,14 +415,14 @@ public class CaitinShop : NpcShopScript
 		Add("Gift", 52022); // Wine
 		Add("Gift", 52023); // Wild Ginseng
 
-		//AddQuest("Quest", InsertQuestId, 0);   // Collecting Quest [5 Small Gems]
-		//AddQuest("Quest", InsertQuestId, 1);   // Collecting Quest [5 Small Green Gems (1 Small Blue Gem reward)]
-		//AddQuest("Quest", InsertQuestId, 1);   // Collecting Quest [5 Small Green Gems (20g reward)]
-		//AddQuest("Quest", InsertQuestId, 5);   // Collecting Quest [5 Small Blue Gems (1 Small Red Gem reward)]
-		//AddQuest("Quest", InsertQuestId, 5);   // Collecting Quest [5 Small Blue Gems (50g reward)]
-		//AddQuest("Quest", InsertQuestId, 25);  // Collecting Quest [5 Small Red Gems (1 Small Silver Gem reward)]
-		//AddQuest("Quest", InsertQuestId, 25);  // Collecting Quest [5 Small Red Gems](200g reward)]
-		//AddQuest("Quest", InsertQuestId, 100); // Collecting Quest [5 Small Silver Gems]
+		AddQuest("Quest", 1001, 0);   // Collecting Quest [5 Small Gems]
+		AddQuest("Quest", 1002, 1);   // Collecting Quest [5 Small Green Gems (1 Small Blue Gem reward)]
+		AddQuest("Quest", 1003, 5);   // Collecting Quest [5 Small Blue Gems (1 Small Red Gem reward)]
+		AddQuest("Quest", 1004, 25);  // Collecting Quest [5 Small Red Gems (1 Small Silver Gem reward)]
+		AddQuest("Quest", 1005, 25);  // Collecting Quest [5 Small Red Gems (Gold reward)]
+		AddQuest("Quest", 1006, 5);   // Collecting Quest [5 Small Blue Gems (Gold reward)]
+		AddQuest("Quest", 1007, 1);   // Collecting Quest [5 Small Green Gems (Gold reward)]
+		AddQuest("Quest", 1009, 100); // Collecting Quest [5 Small Silver Gems]
 
 		Add("Event"); // Empty
 	}
