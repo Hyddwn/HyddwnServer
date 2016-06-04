@@ -264,7 +264,7 @@ namespace Aura.Channel.World.Quests
 
 		public QuestRewardExp(int amount)
 		{
-			this.Amount = amount;
+			this.Amount = (int)(amount * ChannelServer.Instance.Conf.World.QuestExpRate);
 		}
 
 		public override string ToString()
