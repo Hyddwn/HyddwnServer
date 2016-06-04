@@ -63,6 +63,8 @@ namespace Aura.Channel.Util.Configuration.Files
 		public int PartyMaxSize { get; protected set; }
 		public int PartyQuestMinSize { get; protected set; }
 
+		public float GoldQuestRewardRate { get; protected set; }
+
 		public void Load()
 		{
 			this.Require("system/conf/world.conf");
@@ -120,6 +122,8 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.PartyExpBonus = this.GetFloat("party_exp_bonus", 0);
 			this.PartyMaxSize = Math2.Clamp(1, 99, this.GetInt("party_max_size", 8));
 			this.PartyQuestMinSize = Math2.Clamp(1, this.PartyMaxSize, this.GetInt("party_quest_min_size", 2));
+
+			this.GoldQuestRewardRate = this.GetFloat("gold_quest_reward_rate", 100) / 100.0f;
 		}
 	}
 }
