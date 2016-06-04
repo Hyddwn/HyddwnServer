@@ -73,7 +73,28 @@ namespace Aura.Shared.Util
 
 		/// <summary>
 		/// Multiplies initial value with multiplicator, returns either the
-		/// result or int.MaxValue if the multiplication caused an overflow.
+		/// result or Min/MaxValue if the multiplication caused an overflow.
+		/// </summary>
+		/// <param name="initialValue"></param>
+		/// <param name="multiplicator"></param>
+		/// <returns></returns>
+		public static short MultiplyChecked(short initialValue, double multiplicator)
+		{
+			try
+			{
+				checked { return (short)(initialValue * multiplicator); }
+			}
+			catch
+			{
+				if (initialValue >= 0)
+					return short.MaxValue;
+				else
+					return short.MinValue;
+			}
+		}
+		/// <summary>
+		/// Multiplies initial value with multiplicator, returns either the
+		/// result or Min/MaxValue if the multiplication caused an overflow.
 		/// </summary>
 		/// <param name="initialValue"></param>
 		/// <param name="multiplicator"></param>
@@ -95,7 +116,7 @@ namespace Aura.Shared.Util
 
 		/// <summary>
 		/// Multiplies initial value with multiplicator, returns either the
-		/// result or int.MaxValue if the multiplication caused an overflow.
+		/// result or Min/MaxValue if the multiplication caused an overflow.
 		/// </summary>
 		/// <param name="initialValue"></param>
 		/// <param name="multiplicator"></param>

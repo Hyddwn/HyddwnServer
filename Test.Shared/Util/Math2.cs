@@ -9,6 +9,18 @@ namespace Aura.Tests.Shared
 	public class Math2Tests
 	{
 		[Fact]
+		public void MultiplyCheckedShort()
+		{
+			// Positive
+			Assert.Equal(10000, Math2.MultiplyChecked((short)5000, 2));
+			Assert.Equal(short.MaxValue, Math2.MultiplyChecked((short)20000, 2));
+
+			// Negative
+			Assert.Equal(-10000, Math2.MultiplyChecked((short)-5000, 2));
+			Assert.Equal(short.MinValue, Math2.MultiplyChecked((short)-20000, 2));
+		}
+
+		[Fact]
 		public void MultiplyCheckedInt()
 		{
 			// Positive
