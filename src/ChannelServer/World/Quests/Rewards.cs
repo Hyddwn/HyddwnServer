@@ -238,7 +238,7 @@ namespace Aura.Channel.World.Quests
 
 		public QuestRewardGold(int amount)
 		{
-			this.Amount = (int)Math.Min(int.MaxValue, amount * ChannelServer.Instance.Conf.World.GoldQuestRewardRate);
+			this.Amount = amount;
 		}
 
 		public override string ToString()
@@ -264,7 +264,7 @@ namespace Aura.Channel.World.Quests
 
 		public QuestRewardExp(int amount)
 		{
-			this.Amount = (int)(amount * ChannelServer.Instance.Conf.World.QuestExpRate);
+			this.Amount = amount;
 		}
 
 		public override string ToString()
@@ -322,7 +322,7 @@ namespace Aura.Channel.World.Quests
 
 		public QuestRewardAp(short amount)
 		{
-			this.Amount = (short)Math2.Clamp(0, short.MaxValue, amount * ChannelServer.Instance.Conf.World.QuestApRate);
+			this.Amount = amount;
 		}
 
 		public override string ToString()
