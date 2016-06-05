@@ -282,10 +282,15 @@ namespace Aura.Channel.Network.Handlers
 				}
 
 				// Normal Mana/Stamina reduction
-				if (skill.RankData.ManaPrepare != 0)
-					creature.Regens.Add(Stat.Mana, skill.RankData.ManaPrepare, creature.ManaMax, 1000);
-				if (skill.RankData.StaminaPrepare != 0)
-					creature.Regens.Add(Stat.Stamina, skill.RankData.StaminaPrepare, creature.StaminaMax, 1000);
+				// It seems as if some skills, like Playing Instrument,
+				// actually don't use 
+				if (!(handler is INoPrepareCostSkill))
+				{
+					if (skill.RankData.ManaPrepare != 0)
+						creature.Regens.Add(Stat.Mana, skill.RankData.ManaPrepare, creature.ManaMax, 1000);
+					if (skill.RankData.StaminaPrepare != 0)
+						creature.Regens.Add(Stat.Stamina, skill.RankData.StaminaPrepare, creature.StaminaMax, 1000);
+				}
 
 				// Set active skill
 				creature.Skills.ActiveSkill = skill;

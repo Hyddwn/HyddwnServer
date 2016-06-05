@@ -24,7 +24,7 @@ namespace Aura.Channel.Skills.Music
 	/// Prepare starts the playing, complete is sent once it's over.
 	/// </remarks>
 	[Skill(SkillId.PlayingInstrument)]
-	public class PlayingInstrument : IPreparable, ICompletable, ICancelable, IInitiableSkillHandler
+	public class PlayingInstrument : IPreparable, ICompletable, ICancelable, IInitiableSkillHandler, INoPrepareCostSkill
 	{
 		/// <summary>
 		/// Minimum random score id.

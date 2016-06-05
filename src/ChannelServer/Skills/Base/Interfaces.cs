@@ -93,4 +93,16 @@ namespace Aura.Channel.Skills.Base
 	{
 		void CustomHitCancel(Creature creature, TargetAction tAction);
 	}
+
+	/// <summary>
+	/// Marks the skill as not costing any resources, like Stamina,
+	/// on Prepare.
+	/// </summary>
+	/// <remarks>
+	/// Added for now to handle Playing Instrument not using Stamina
+	/// on Prepare.
+	/// </remarks>
+	public interface INoPrepareCostSkill
+	{
+	}
 }
