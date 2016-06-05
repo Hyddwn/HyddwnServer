@@ -296,7 +296,20 @@ namespace Aura.Channel.Network.Handlers
 							Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana);
 						}
 						else
-							creature.Regens.Add(Stat.Mana, skill.RankData.ManaPrepare, creature.ManaMax, castTime);
+						{
+							// "Hack"? Our regens tick once per second,
+							// but while the cost values are per second,
+							// the load times aren't always full seconds.
+							// The client must either be adjusting those
+							// values itself for per second, or it ticks
+							// in 100th of ms.
+							// This adjusts them for per second, for client
+							// and server.
+							var perSecond = (float)(skill.RankData.ManaPrepare / Math.Ceiling(castTime / 1000f) * (skill.RankData.NewLoadTime / 1000f));
+							var seconds = (int)(Math.Ceiling(castTime / 1000f) * 1000);
+
+							creature.Regens.Add(Stat.Mana, perSecond, creature.ManaMax, seconds);
+						}
 					}
 
 					if (skill.RankData.StaminaPrepare != 0)
@@ -307,7 +320,12 @@ namespace Aura.Channel.Network.Handlers
 							Send.StatUpdate(creature, StatUpdateType.Private, Stat.Stamina);
 						}
 						else
-							creature.Regens.Add(Stat.Stamina, skill.RankData.StaminaPrepare, creature.StaminaMax, castTime);
+						{
+							var perSecond = (float)(skill.RankData.StaminaPrepare / Math.Ceiling(castTime / 1000f) * (skill.RankData.NewLoadTime / 1000f));
+							var seconds = (int)(Math.Ceiling(castTime / 1000f) * 1000);
+
+							creature.Regens.Add(Stat.Stamina, perSecond, creature.StaminaMax, seconds);
+						}
 					}
 				}
 
