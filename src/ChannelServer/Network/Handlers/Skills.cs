@@ -292,7 +292,7 @@ namespace Aura.Channel.Network.Handlers
 					{
 						if (castTime == 0)
 						{
-							creature.Mana -= skill.RankData.ManaPrepare;
+							creature.Mana += skill.RankData.ManaPrepare;
 							Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana);
 						}
 						else
@@ -316,7 +316,7 @@ namespace Aura.Channel.Network.Handlers
 					{
 						if (castTime == 0)
 						{
-							creature.Stamina -= skill.RankData.StaminaPrepare;
+							creature.Stamina += skill.RankData.StaminaPrepare;
 							Send.StatUpdate(creature, StatUpdateType.Private, Stat.Stamina);
 						}
 						else
