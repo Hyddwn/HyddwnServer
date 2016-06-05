@@ -286,10 +286,29 @@ namespace Aura.Channel.Network.Handlers
 				// actually don't use 
 				if (!(handler is INoPrepareCostSkill))
 				{
+					var castTime = skill.GetCastTime();
+
 					if (skill.RankData.ManaPrepare != 0)
-						creature.Regens.Add(Stat.Mana, skill.RankData.ManaPrepare, creature.ManaMax, 1000);
+					{
+						if (castTime == 0)
+						{
+							creature.Mana -= skill.RankData.ManaPrepare;
+							Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana);
+						}
+						else
+							creature.Regens.Add(Stat.Mana, skill.RankData.ManaPrepare, creature.ManaMax, castTime);
+					}
+
 					if (skill.RankData.StaminaPrepare != 0)
-						creature.Regens.Add(Stat.Stamina, skill.RankData.StaminaPrepare, creature.StaminaMax, 1000);
+					{
+						if (castTime == 0)
+						{
+							creature.Stamina -= skill.RankData.StaminaPrepare;
+							Send.StatUpdate(creature, StatUpdateType.Private, Stat.Stamina);
+						}
+						else
+							creature.Regens.Add(Stat.Stamina, skill.RankData.StaminaPrepare, creature.StaminaMax, castTime);
+					}
 				}
 
 				// Set active skill
