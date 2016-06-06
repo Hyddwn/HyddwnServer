@@ -8,5 +8,6 @@ others/sealstones.cs
 others/moongates.cs
 others/on_equip.cs
 others/fences.cs
+others/titles.cs
 
 include "/user/scripts/scripts_others.txt"

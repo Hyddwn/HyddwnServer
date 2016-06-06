@@ -245,6 +245,9 @@ namespace Aura.Channel.Skills.Life
 			// Handle training
 			this.Training(creature, skill, success, item);
 
+			// Fishing event
+			ChannelServer.Instance.Events.OnCreatureFished(creature, item);
+
 			// Cancel
 			if (cancel)
 			{
