@@ -55,6 +55,5 @@ public class TitleRewardingScript : GeneralScript
 		}
 
 		creature.Vars.Temp["ButterfingerFailCounter"] = count;
-		Log.Debug(count);
 	}
 }

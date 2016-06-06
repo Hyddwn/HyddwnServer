@@ -233,7 +233,7 @@ namespace Aura.Channel.World
 		/// Raised when a creature tried to produce or create something.
 		/// </summary>
 		public event Action<Creature, bool> CreatureFinishedProductionOrCollection;
-		public void OnCreatureFinishedProductionOrCollection(Creature creture, bool success) { CreatureFinishedProductionOrCollection.Raise(creture, success); }
+		public void OnCreatureFinishedProductionOrCollection(Creature creature, bool success) { CreatureFinishedProductionOrCollection.Raise(creature, success); }
 
 		/// <summary>
 		/// Raised when a creature fished pulled hook out of the water,
