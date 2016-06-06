@@ -2206,23 +2206,12 @@ namespace Aura.Channel.Scripting.Scripts
 	/// </summary>
 	public class WUUpgrades
 	{
-		private ushort _ccSkillId;
 		private byte _ccLevel;
 
 		/// <summary>
 		/// Chain Cast upgrade, affected skill id
 		/// </summary>
-		public ushort ChainCastSkillId
-		{
-			get { return _ccSkillId; }
-			set
-			{
-				if (value < 10000)
-					throw new ArgumentOutOfRangeException("Value too low");
-
-				_ccSkillId = value;
-			}
-		}
+		public ushort ChainCastSkillId { get; set; }
 
 		/// <summary>
 		/// Chain Cast upgrade, chain level
@@ -2280,8 +2269,12 @@ namespace Aura.Channel.Scripting.Scripts
 				return;
 
 			// Check length
-			if (val.Length != 14)
-				throw new ArgumentException("Value must have 14 characters");
+			if (val.Length > 14)
+				throw new ArgumentException("Value must have <= 14 characters");
+
+			// Fix length for old values, from before ToString was fixed.
+			if (val.Length < 14)
+				val = val.PadLeft(14, '0');
 
 			this.ParseValue(val);
 		}
@@ -2300,7 +2293,7 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			var result = new StringBuilder();
 
-			result.Append(this.ChainCastSkillId);
+			result.Append(this.ChainCastSkillId.ToString("00000"));
 			result.Append(this.ChainCastLevel.ToString().Substring(0, 1));
 			result.Append(this.ManaUse.ToString("x2"));
 			result.Append(this.Unknown.ToString("x2"));
