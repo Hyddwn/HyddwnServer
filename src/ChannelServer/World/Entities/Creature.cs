@@ -1897,13 +1897,14 @@ namespace Aura.Channel.World.Entities
 
 				if (amount > 0)
 				{
+					var finish = LuckyFinish.None;
+
 					// Lucky Finish
 					var luckyChance = rnd.NextDouble();
 					if (luckyChance < ChannelServer.Instance.Conf.World.HugeLuckyFinishChance)
 					{
 						amount *= 100;
-
-						if (amount >= 2000) killer.Titles.Enable(23); // the Lucky
+						finish = LuckyFinish.Lucky;
 
 						Send.CombatMessage(killer, Localization.Get("Huge Lucky Finish!!"));
 						Send.Notice(killer, Localization.Get("Huge Lucky Finish!!"));
@@ -1911,8 +1912,7 @@ namespace Aura.Channel.World.Entities
 					else if (luckyChance < ChannelServer.Instance.Conf.World.BigLuckyFinishChance)
 					{
 						amount *= 5;
-
-						if (amount >= 2000) killer.Titles.Enable(23); // the Lucky
+						finish = LuckyFinish.BigLucky;
 
 						Send.CombatMessage(killer, Localization.Get("Big Lucky Finish!!"));
 						Send.Notice(killer, Localization.Get("Big Lucky Finish!!"));
@@ -1920,12 +1920,15 @@ namespace Aura.Channel.World.Entities
 					else if (luckyChance < ChannelServer.Instance.Conf.World.LuckyFinishChance)
 					{
 						amount *= 2;
-
-						if (amount >= 2000) killer.Titles.Enable(23); // the Lucky
+						finish = LuckyFinish.HugeLucky;
 
 						Send.CombatMessage(killer, Localization.Get("Lucky Finish!!"));
 						Send.Notice(killer, Localization.Get("Lucky Finish!!"));
 					}
+
+					// Event
+					if (finish != LuckyFinish.None)
+						ChannelServer.Instance.Events.OnCreatureGotLuckyFinish(killer, finish, amount);
 
 					// Drop rate muliplicator
 					amount = Math.Min(21000, (int)(amount * ChannelServer.Instance.Conf.World.GoldDropRate));

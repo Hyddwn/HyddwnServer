@@ -56,4 +56,17 @@ public class TitleRewardingScript : GeneralScript
 
 		creature.Vars.Temp["ButterfingerFailCounter"] = count;
 	}
+
+	[On("CreatureGotLuckyFinish")]
+	public void CreatureGotLuckyFinish(Creature creature, LuckyFinish finish, int amount)
+	{
+		// the Lucky
+		// Enable on lucky finish over 2k gold.
+		// ------------------------------------------------------------------
+		if (creature.Titles.IsUsable(23) || finish == LuckyFinish.None)
+			return;
+
+		if (amount >= 2000)
+			creature.Titles.Enable(23);
+	}
 }

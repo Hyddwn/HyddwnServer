@@ -241,6 +241,13 @@ namespace Aura.Channel.World
 		/// </summary>
 		public event Action<Creature, Item> CreatureFished;
 		public void OnCreatureFished(Creature creature, Item item) { CreatureFished.Raise(creature, item); }
+
+		/// <summary>
+		/// Raised when a creature fished pulled hook out of the water,
+		/// regardless of success. On fail, Item is null.
+		/// </summary>
+		public event Action<Creature, LuckyFinish, int> CreatureGotLuckyFinish;
+		public void OnCreatureGotLuckyFinish(Creature creature, LuckyFinish finish, int amount) { CreatureGotLuckyFinish.Raise(creature, finish, amount); }
 	}
 
 	public static class EventHandlerExtensions
