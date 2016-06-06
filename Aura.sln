@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Mabi", "src\Test.Mabi\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Data", "src\Test.Data\Test.Data.csproj", "{BFC78C5C-C933-45DB-BFA7-83971C9B7EBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Shared", "Test.Shared\Test.Shared.csproj", "{B6928799-51EA-4D4C-909A-58D66A818088}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Shared", "src\Test.Shared\Test.Shared.csproj", "{B6928799-51EA-4D4C-909A-58D66A818088}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
