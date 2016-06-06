@@ -230,6 +230,12 @@ namespace Aura.Channel.World
 		public void OnCreatureCookedMeal(CookingEventArgs args) { CreatureCookedMeal.Raise(args); }
 
 		/// <summary>
+		/// Raised when a creature tried to produce or create something.
+		/// </summary>
+		public event Action<Creature, bool> CreatureFinishedProductionOrCollection;
+		public void OnCreatureFinishedProductionOrCollection(Creature creture, bool success) { CreatureFinishedProductionOrCollection.Raise(creture, success); }
+
+		/// <summary>
 		/// Raised when a creature fished pulled hook out of the water,
 		/// regardless of success. On fail, Item is null.
 		/// </summary>

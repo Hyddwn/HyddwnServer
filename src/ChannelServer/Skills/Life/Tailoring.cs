@@ -340,6 +340,9 @@ namespace Aura.Channel.Skills.Life
 
 				this.OnProgress(creature, skill, result);
 				Send.Notice(creature, msg);
+
+				// Event
+				ChannelServer.Instance.Events.OnCreatureFinishedProductionOrCollection(creature, success);
 			}
 			else
 			{

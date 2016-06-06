@@ -331,6 +331,9 @@ namespace Aura.Channel.Skills.Base
 			// Skill training
 			this.SkillTraining(creature, skill, productData, success);
 
+			// Event
+			ChannelServer.Instance.Events.OnCreatureFinishedProductionOrCollection(creature, success);
+
 			// Reduce mats
 			foreach (var material in toReduce)
 			{
