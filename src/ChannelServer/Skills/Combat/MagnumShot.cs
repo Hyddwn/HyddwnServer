@@ -67,7 +67,8 @@ namespace Aura.Channel.Skills.Combat
 			Send.SkillFlashEffect(creature);
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
-			creature.Lock(Locks.Run);
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/crossbow/"))
+				creature.Lock(Locks.Run);
 
 			return true;
 		}
@@ -87,7 +88,8 @@ namespace Aura.Channel.Skills.Combat
 
 			Send.SkillReady(creature, skill.Info.Id);
 
-			creature.Lock(Locks.Run);
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/crossbow/"))
+				creature.Lock(Locks.Run);
 
 			return true;
 		}
