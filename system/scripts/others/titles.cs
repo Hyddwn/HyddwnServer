@@ -114,8 +114,20 @@ public class TitleRewardingScript : GeneralScript
 		{
 			var trackRecord = creature.Quests.GetPtjTrackRecord(type);
 			if (trackRecord.Done >= 100)
+			{
 				creature.Titles.Enable(33);
+				creature.Titles.Show(35);
+			}
 		}
+
+		// the Super Diligent 
+		// Enable if creature completed a PTJ 10,000 times.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.IsUsable(35))
+		{
+			var trackRecord = creature.Quests.GetPtjTrackRecord(type);
+			if (trackRecord.Done >= 10000)
+				creature.Titles.Enable(35);
 		}
 	}
 }
