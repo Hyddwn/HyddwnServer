@@ -154,4 +154,23 @@ public class TitleRewardingScript : GeneralScript
 
 		return HookResult.Continue;
 	}
+
+	[On("CreatureAttack")]
+	public void OnCreatureAttacked(TargetAction tAction)
+	{
+		// who experienced Death
+		// Show when knocked out by a 500+ dmg attack, enable when
+		// surviving a 500+ dmg attack.
+		// ------------------------------------------------------------------
+		if (tAction.Damage < 500 || tAction.Creature.Titles.IsUsable(37))
+			return;
+
+		if (tAction.Creature.IsDead)
+		{
+			if (!tAction.Creature.Titles.Knows(37))
+				tAction.Creature.Titles.Show(37);
+		}
+		else
+			tAction.Creature.Titles.Enable(37);
+	}
 }
