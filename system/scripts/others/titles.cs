@@ -162,15 +162,36 @@ public class TitleRewardingScript : GeneralScript
 		// Show when knocked out by a 500+ dmg attack, enable when
 		// surviving a 500+ dmg attack.
 		// ------------------------------------------------------------------
-		if (tAction.Damage < 500 || tAction.Creature.Titles.IsUsable(37))
+		if (tAction.Damage < 500)
 			return;
 
-		if (tAction.Creature.IsDead)
+		if (!tAction.Creature.Titles.IsUsable(37))
 		{
-			if (!tAction.Creature.Titles.Knows(37))
-				tAction.Creature.Titles.Show(37);
+			if (tAction.Creature.IsDead)
+			{
+				if (!tAction.Creature.Titles.Knows(37))
+					tAction.Creature.Titles.Show(37);
+			}
+			else
+				tAction.Creature.Titles.Enable(37);
 		}
-		else
-			tAction.Creature.Titles.Enable(37);
+
+		// who transcended Death
+		// Show when knocked out by a 1000+ dmg attack, enable when
+		// surviving a 1000+ dmg attack.
+		// ------------------------------------------------------------------
+		if (tAction.Damage < 1000)
+			return;
+
+		if (!tAction.Creature.Titles.IsUsable(38))
+		{
+			if (tAction.Creature.IsDead)
+			{
+				if (!tAction.Creature.Titles.Knows(38))
+					tAction.Creature.Titles.Show(38);
+			}
+			else
+				tAction.Creature.Titles.Enable(38);
+		}
 	}
 }
