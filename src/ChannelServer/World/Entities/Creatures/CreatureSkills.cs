@@ -164,6 +164,8 @@ namespace Aura.Channel.World.Entities.Creatures
 				Send.SkillInfo(_creature, skill);
 				if (_creature.Region != Region.Limbo)
 					Send.RankUp(_creature);
+
+				ChannelServer.Instance.Events.OnSkillRankChanged(_creature, skill);
 			}
 			else
 			{
@@ -176,8 +178,6 @@ namespace Aura.Channel.World.Entities.Creatures
 
 				this.AddBonuses(skill);
 			}
-
-			ChannelServer.Instance.Events.OnSkillRankChanged(_creature, skill);
 
 			Send.StatUpdate(_creature, StatUpdateType.Private,
 				Stat.Str, Stat.Int, Stat.Dex, Stat.Will, Stat.Luck,

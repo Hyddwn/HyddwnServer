@@ -44,12 +44,12 @@ public class TitleRewardingScript : GeneralScript
 		var count = (int)creature.Vars.Temp["ButterfingerFailCounter"];
 		count++;
 
-		if(count >= 10)
+		if (count >= 10)
 		{
 			creature.Titles.Enable(20);
 			count = 0;
 		}
-		else if(count >= 5)
+		else if (count >= 5)
 		{
 			creature.Titles.Show(20);
 		}
@@ -68,5 +68,29 @@ public class TitleRewardingScript : GeneralScript
 
 		if (amount >= 2000)
 			creature.Titles.Enable(23);
+	}
+
+	[On("SkillRankChanged")]
+	public void OnSkillRankChanged(Creature creature, Skill skill)
+	{
+		// the Elemental Apprentice
+		// Enable if creature has all basic bolts.
+		// ------------------------------------------------------------------
+		if (creature.Titles.IsUsable(28) || !skill.Is(SkillId.Icebolt, SkillId.Firebolt, SkillId.Lightningbolt))
+			return;
+
+		if (creature.Skills.Has(SkillId.Icebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Firebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Lightningbolt, SkillRank.RF))
+			creature.Titles.Enable(28);
+	}
+
+	[On("PlayerLoggedIn")]
+	public void OnPlayerLoggedIn(Creature creature)
+	{
+		// the Elemental Apprentice
+		// Enable if creature has all basic bolts. Fallback for players
+		// who already have all bolts. TODO: Remove.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.IsUsable(28) && creature.Skills.Has(SkillId.Icebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Firebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Lightningbolt, SkillRank.RF))
+			creature.Titles.Enable(28);
 	}
 }
