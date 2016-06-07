@@ -282,9 +282,13 @@ namespace Aura.Channel.Network.Handlers
 				}
 
 				// Normal Mana/Stamina reduction
-				// It seems as if some skills, like Playing Instrument,
-				// actually don't use 
-				if (!(handler is INoPrepareCostSkill))
+				// Usage skill's custom usage handler if it has one.
+				var usageHandler = handler as ICustomPrepareUsageSkill;
+				if (usageHandler != null)
+				{
+					usageHandler.CustomPrepareUsage(creature, skill);
+				}
+				else
 				{
 					var castTime = skill.GetCastTime();
 

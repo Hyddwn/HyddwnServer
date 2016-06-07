@@ -19,6 +19,7 @@ using Aura.Channel.Skills.Life;
 using System.Collections.Generic;
 using Aura.Channel.Skills;
 using System.Threading;
+using Aura.Channel.Scripting.Scripts;
 
 namespace Aura.Channel.World.Entities
 {
@@ -3019,6 +3020,26 @@ namespace Aura.Channel.World.Entities
 		{
 			this.Mana -= this.Mana * (amount / 100f);
 			Send.StatUpdate(this, StatUpdateType.Private, Stat.Mana);
+		}
+
+		/// <summary>
+		/// Returns the chain cast level the creature can use for the
+		/// given skill.
+		/// </summary>
+		/// <remarks>
+		/// Checks passive monster skill and upgrades of equipped weapons.
+		/// </remarks>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		public int GetChainCastLevel(SkillId skillId)
+		{
+			if (this.Skills.Has(SkillId.ChainCasting))
+				return 5;
+
+			if (this.RightHand == null)
+				return 0;
+
+			return this.Inventory.GetChainCastLevel(skillId);
 		}
 	}
 

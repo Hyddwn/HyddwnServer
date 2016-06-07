@@ -16,6 +16,7 @@ using Aura.Mabi.Structs;
 using Aura.Mabi;
 using Aura.Channel.Skills;
 using Aura.Channel.World.Quests;
+using Aura.Channel.Scripting.Scripts;
 
 namespace Aura.Channel.World.Inventory
 {
@@ -73,6 +74,8 @@ namespace Aura.Channel.World.Inventory
 
 		private Creature _creature;
 		private Dictionary<Pocket, InventoryPocket> _pockets;
+
+		private Dictionary<long, WUUpgrades> _wuUpgrades;
 
 		private object _upgradeEffectSyncLock = new object();
 		private Dictionary<UpgradeCheckType, int> _upgradeCheckTypeCache = new Dictionary<UpgradeCheckType, int>();
@@ -222,6 +225,7 @@ namespace Aura.Channel.World.Inventory
 			_creature = creature;
 
 			_pockets = new Dictionary<Pocket, InventoryPocket>();
+			_wuUpgrades = new Dictionary<long, WUUpgrades>();
 
 			// Cursor, Temp, Quests
 			this.Add(new InventoryPocketStack(Pocket.Temporary));
@@ -1496,6 +1500,17 @@ namespace Aura.Channel.World.Inventory
 				this.ApplyDefenseBonuses(item);
 				this.ApplyUpgradeEffects(item);
 			}
+
+			// Cache WUUpgrades
+			// There's probably a better way to save these bonuses,
+			// but I can't think of it right now.
+			var wustr = item.MetaData1.GetString("WU");
+			if (wustr != null)
+			{
+				var wu = new WUUpgrades(wustr);
+				lock (_wuUpgrades)
+					_wuUpgrades[item.EntityId] = wu;
+			}
 		}
 
 		/// <summary>
@@ -1535,6 +1550,10 @@ namespace Aura.Channel.World.Inventory
 			}
 
 			_creature.StatMods.Remove(StatModSource.Equipment, item.EntityId);
+
+			// Remove WUUpgrades for this item
+			lock (_wuUpgrades)
+				_wuUpgrades.Remove(item.EntityId);
 		}
 
 		/// <summary>
@@ -1999,6 +2018,27 @@ namespace Aura.Channel.World.Inventory
 			item.Proficiency += amount;
 
 			Send.ItemExpUpdate(_creature, item);
+		}
+
+		/// <summary>
+		/// Returns the chain cast level for the given skill from the
+		/// equipped WUUpgrades. Returns 0 if no Chain Cast upgrade
+		/// could be found.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		public int GetChainCastLevel(SkillId skillId)
+		{
+			lock (_wuUpgrades)
+			{
+				foreach (var wu in _wuUpgrades.Values)
+				{
+					if (wu.ChainCastSkillId == (int)skillId)
+						return wu.ChainCastLevel;
+				}
+
+				return 0;
+			}
 		}
 	}
 }
