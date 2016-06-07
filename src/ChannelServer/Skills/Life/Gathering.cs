@@ -352,6 +352,8 @@ namespace Aura.Channel.Skills.Life
 				Send.SkillComplete(creature, SkillId.Gathering, entityId, collectId);
 			else
 				Send.SkillCompleteUnk(creature, SkillId.Gathering, entityId, collectId, failCode);
+
+			ChannelServer.Instance.Events.OnCreatureFinishedProductionOrCollection(creature, success);
 		}
 
 		/// <summary>

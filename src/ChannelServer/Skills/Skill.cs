@@ -146,6 +146,8 @@ namespace Aura.Channel.Skills
 			this.Info.Experience = 0;
 			this.Info.Flag &= ~SkillFlags.Rankable;
 			this.LoadRankData();
+
+			ChannelServer.Instance.Events.OnSkillRankChanged(_creature, this);
 		}
 
 		/// <summary>

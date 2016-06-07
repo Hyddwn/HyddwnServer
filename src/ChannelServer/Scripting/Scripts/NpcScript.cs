@@ -1189,6 +1189,8 @@ namespace Aura.Channel.Scripting.Scripts
 				// Do quests given out by NPCs *always* go into the
 				// quest pocket?
 				this.Player.Inventory.Add(scroll, Pocket.Quests);
+
+				ChannelServer.Instance.Events.OnCreatureStartedPtj(this.Player, quest.Data.PtjType);
 			}
 			catch (Exception ex)
 			{
@@ -1231,6 +1233,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 			// Complete
 			this.Player.Quests.Complete(quest, rewardGroup, false);
+
+			ChannelServer.Instance.Events.OnCreatureCompletedPtj(this.Player, quest.Data.PtjType);
 		}
 
 		/// <summary>
