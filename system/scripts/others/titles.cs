@@ -147,11 +147,51 @@ public class TitleRewardingScript : GeneralScript
 			var keyword = args[0] as string;
 			if (keyword == "rumor" && npc.Player.Titles.SelectedTitle == 20000) // the Neighboring Part-timer
 			{
-				Msg(L("I thought you were doing a part-time job.<br/>What brings you here?<br/>If you slack on your work, people won't approve...<br/>So be responsible."));
+				npc.Msg(L("I thought you were doing a part-time job.<br/>What brings you here?<br/>If you slack on your work, people won't approve...<br/>So be responsible."));
 				npc.Player.Titles.Enable(34);
 			}
 		}
 
 		return HookResult.Continue;
+	}
+
+	[On("CreatureAttack")]
+	public void OnCreatureAttacked(TargetAction tAction)
+	{
+		// who experienced Death
+		// Show when knocked out by a 500+ dmg attack, enable when
+		// surviving a 500+ dmg attack.
+		// ------------------------------------------------------------------
+		if (tAction.Damage < 500)
+			return;
+
+		if (!tAction.Creature.Titles.IsUsable(37))
+		{
+			if (tAction.Creature.IsDead)
+			{
+				if (!tAction.Creature.Titles.Knows(37))
+					tAction.Creature.Titles.Show(37);
+			}
+			else
+				tAction.Creature.Titles.Enable(37);
+		}
+
+		// who transcended Death
+		// Show when knocked out by a 1000+ dmg attack, enable when
+		// surviving a 1000+ dmg attack.
+		// ------------------------------------------------------------------
+		if (tAction.Damage < 1000)
+			return;
+
+		if (!tAction.Creature.Titles.IsUsable(38))
+		{
+			if (tAction.Creature.IsDead)
+			{
+				if (!tAction.Creature.Titles.Knows(38))
+					tAction.Creature.Titles.Show(38);
+			}
+			else
+				tAction.Creature.Titles.Enable(38);
+		}
 	}
 }
