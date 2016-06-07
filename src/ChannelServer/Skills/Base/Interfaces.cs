@@ -105,4 +105,13 @@ namespace Aura.Channel.Skills.Base
 	public interface INoPrepareCostSkill
 	{
 	}
+
+	/// <summary>
+	/// Gives control over the resources used on Prepare to the implementing
+	/// skill handler.
+	/// </summary>
+	public interface ICustomPrepareUsageSkill
+	{
+		void CustomPrepareUsage(Creature creature, Skill skill);
+	}
 }

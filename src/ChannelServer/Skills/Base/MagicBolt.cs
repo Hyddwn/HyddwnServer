@@ -21,7 +21,7 @@ namespace Aura.Channel.Skills.Base
 	/// <summary>
 	/// Base for the 3 magic bolts.
 	/// </summary>
-	public abstract class MagicBolt : IPreparable, IReadyable, ICombatSkill, ICompletable, ICancelable, IInitiableSkillHandler, ICustomHitCanceler
+	public abstract class MagicBolt : IPreparable, IReadyable, ICombatSkill, ICompletable, ICancelable, IInitiableSkillHandler, ICustomHitCanceler, ICustomPrepareUsageSkill
 	{
 		/// <summary>
 		/// Minimum stability required to not get knocked down.
@@ -100,7 +100,7 @@ namespace Aura.Channel.Skills.Base
 			// Note: The client only prevents casting if stacks = max, if you go above the limit
 			//   it lets you keep casting.
 
-			var addStacks = (!creature.Skills.Has(SkillId.ChainCasting) ? skill.RankData.Stack : skill.RankData.StackMax);
+			var addStacks = skill.RankData.Stack + creature.GetChainCastLevel(skill.Info.Id);
 			skill.Stacks = Math.Min(skill.RankData.StackMax, skill.Stacks + addStacks);
 
 			Send.Effect(creature, Effect.StackUpdate, EffectSkillName, (byte)skill.Stacks, (byte)0);
@@ -488,6 +488,36 @@ namespace Aura.Channel.Skills.Base
 
 			skill.Stacks -= 2;
 			Send.Effect(creature, Effect.StackUpdate, EffectSkillName, (byte)skill.Stacks, (byte)0);
+		}
+
+		/// <summary>
+		/// Custom usage of resources on Prepare, to account for chain
+		/// casting.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		public void CustomPrepareUsage(Creature creature, Skill skill)
+		{
+			var cost = skill.RankData.ManaPrepare;
+			if (cost == 0)
+				return;
+
+			var addedStacks = Math.Min(skill.RankData.StackMax - skill.Stacks, skill.RankData.Stack + creature.GetChainCastLevel(skill.Info.Id));
+			cost *= addedStacks;
+
+			var castTime = skill.GetCastTime();
+			if (castTime == 0)
+			{
+				creature.Mana += cost;
+				Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana);
+			}
+			else
+			{
+				var perSecond = (float)(cost / Math.Ceiling(castTime / 1000f) * (skill.RankData.NewLoadTime / 1000f));
+				var seconds = (int)(Math.Ceiling(castTime / 1000f) * 1000);
+
+				creature.Regens.Add(Stat.Mana, perSecond, creature.ManaMax, seconds);
+			}
 		}
 	}
 }
