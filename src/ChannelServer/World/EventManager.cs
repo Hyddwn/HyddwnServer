@@ -12,6 +12,7 @@ using Aura.Channel.Skills;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Channel.World.Dungeons;
+using Aura.Channel.World.Quests;
 
 namespace Aura.Channel.World
 {
@@ -248,6 +249,18 @@ namespace Aura.Channel.World
 		/// </summary>
 		public event Action<Creature, LuckyFinish, int> CreatureGotLuckyFinish;
 		public void OnCreatureGotLuckyFinish(Creature creature, LuckyFinish finish, int amount) { CreatureGotLuckyFinish.Raise(creature, finish, amount); }
+
+		/// <summary>
+		/// Raised when a creature started a PTJ.
+		/// </summary>
+		public event Action<Creature, PtjType> CreatureStartedPtj;
+		public void OnCreatureStartedPtj(Creature creature, PtjType type) { CreatureStartedPtj.Raise(creature, type); }
+
+		/// <summary>
+		/// Raised when a creature completed a PTJ.
+		/// </summary>
+		public event Action<Creature, PtjType> CreatureCompletedPtj;
+		public void OnCreatureCompletedPtj(Creature creature, PtjType type) { CreatureCompletedPtj.Raise(creature, type); }
 	}
 
 	public static class EventHandlerExtensions

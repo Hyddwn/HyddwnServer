@@ -93,4 +93,29 @@ public class TitleRewardingScript : GeneralScript
 		if (!creature.Titles.IsUsable(28) && creature.Skills.Has(SkillId.Icebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Firebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Lightningbolt, SkillRank.RF))
 			creature.Titles.Enable(28);
 	}
+
+	[On("CreatureStartedPtj")]
+	public void OnCreatureStartedPtj(Creature creature, PtjType type)
+	{
+		// the Diligent
+		// Show if creature starts any PTJ.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.Knows(33))
+			creature.Titles.Show(33);
+	}
+
+	[On("CreatureCompletedPtj")]
+	public void OnCreatureCompletedPtj(Creature creature, PtjType type)
+	{
+		// the Diligent
+		// Enable if creature completed a PTJ 100 times.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.IsUsable(33))
+		{
+			var trackRecord = creature.Quests.GetPtjTrackRecord(type);
+			if (trackRecord.Done >= 100)
+				creature.Titles.Enable(33);
+		}
+		}
+	}
 }
