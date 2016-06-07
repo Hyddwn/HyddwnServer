@@ -6,6 +6,11 @@
 
 public class TitleRewardingScript : GeneralScript
 {
+	public override void Load()
+	{
+		AddHook("_duncan", "before_keywords", DuncanBeforeKeywords);
+	}
+
 	[On("CreatureFished")]
 	public void OnCreatureFished(Creature creature, Item item)
 	{
@@ -129,5 +134,24 @@ public class TitleRewardingScript : GeneralScript
 			if (trackRecord.Done >= 10000)
 				creature.Titles.Enable(35);
 		}
+	}
+
+	public async Task<HookResult> DuncanBeforeKeywords(NpcScript npc, params object[] args)
+	{
+		// the Lazy 
+		// Enable if talking to Duncan about rumors while having the title
+		// "the Neighboring Part-timer".
+		// ------------------------------------------------------------------
+		if (!npc.Player.Titles.IsUsable(34))
+		{
+			var keyword = args[0] as string;
+			if (keyword == "rumor" && npc.Player.Titles.SelectedTitle == 20000) // the Neighboring Part-timer
+			{
+				Msg(L("I thought you were doing a part-time job.<br/>What brings you here?<br/>If you slack on your work, people won't approve...<br/>So be responsible."));
+				npc.Player.Titles.Enable(34);
+			}
+		}
+
+		return HookResult.Continue;
 	}
 }
