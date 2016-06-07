@@ -95,18 +95,6 @@ namespace Aura.Channel.Skills.Base
 	}
 
 	/// <summary>
-	/// Marks the skill as not costing any resources, like Stamina,
-	/// on Prepare.
-	/// </summary>
-	/// <remarks>
-	/// Added for now to handle Playing Instrument not using Stamina
-	/// on Prepare.
-	/// </remarks>
-	public interface INoPrepareCostSkill
-	{
-	}
-
-	/// <summary>
 	/// Gives control over the resources used on Prepare to the implementing
 	/// skill handler.
 	/// </summary>

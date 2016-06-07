@@ -282,57 +282,53 @@ namespace Aura.Channel.Network.Handlers
 				}
 
 				// Normal Mana/Stamina reduction
-				// It seems as if some skills, like Playing Instrument,
-				// actually don't use 
-				if (!(handler is INoPrepareCostSkill))
+				// Usage skill's custom usage handler if it has one.
+				var usageHandler = handler as ICustomPrepareUsageSkill;
+				if (usageHandler != null)
 				{
-					var usageHandler = handler as ICustomPrepareUsageSkill;
-					if (usageHandler != null)
-					{
-						usageHandler.CustomPrepareUsage(creature, skill);
-					}
-					else
-					{
-						var castTime = skill.GetCastTime();
+					usageHandler.CustomPrepareUsage(creature, skill);
+				}
+				else
+				{
+					var castTime = skill.GetCastTime();
 
-						if (skill.RankData.ManaPrepare != 0)
+					if (skill.RankData.ManaPrepare != 0)
+					{
+						if (castTime == 0)
 						{
-							if (castTime == 0)
-							{
-								creature.Mana += skill.RankData.ManaPrepare;
-								Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana);
-							}
-							else
-							{
-								// "Hack"? Our regens tick once per second,
-								// but while the cost values are per second,
-								// the load times aren't always full seconds.
-								// The client must either be adjusting those
-								// values itself for per second, or it ticks
-								// in 100th of ms.
-								// This adjusts them for per second, for client
-								// and server.
-								var perSecond = (float)(skill.RankData.ManaPrepare / Math.Ceiling(castTime / 1000f) * (skill.RankData.NewLoadTime / 1000f));
-								var seconds = (int)(Math.Ceiling(castTime / 1000f) * 1000);
-
-								creature.Regens.Add(Stat.Mana, perSecond, creature.ManaMax, seconds);
-							}
+							creature.Mana += skill.RankData.ManaPrepare;
+							Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana);
 						}
-
-						if (skill.RankData.StaminaPrepare != 0)
+						else
 						{
-							if (castTime == 0)
-							{
-								creature.Stamina += skill.RankData.StaminaPrepare;
-								Send.StatUpdate(creature, StatUpdateType.Private, Stat.Stamina);
-							}
-							else
-							{
-								var perSecond = (float)(skill.RankData.StaminaPrepare / Math.Ceiling(castTime / 1000f) * (skill.RankData.NewLoadTime / 1000f));
-								var seconds = (int)(Math.Ceiling(castTime / 1000f) * 1000);
+							// "Hack"? Our regens tick once per second,
+							// but while the cost values are per second,
+							// the load times aren't always full seconds.
+							// The client must either be adjusting those
+							// values itself for per second, or it ticks
+							// in 100th of ms.
+							// This adjusts them for per second, for client
+							// and server.
+							var perSecond = (float)(skill.RankData.ManaPrepare / Math.Ceiling(castTime / 1000f) * (skill.RankData.NewLoadTime / 1000f));
+							var seconds = (int)(Math.Ceiling(castTime / 1000f) * 1000);
 
-								creature.Regens.Add(Stat.Stamina, perSecond, creature.StaminaMax, seconds);
-							}
+							creature.Regens.Add(Stat.Mana, perSecond, creature.ManaMax, seconds);
+						}
+					}
+
+					if (skill.RankData.StaminaPrepare != 0)
+					{
+						if (castTime == 0)
+						{
+							creature.Stamina += skill.RankData.StaminaPrepare;
+							Send.StatUpdate(creature, StatUpdateType.Private, Stat.Stamina);
+						}
+						else
+						{
+							var perSecond = (float)(skill.RankData.StaminaPrepare / Math.Ceiling(castTime / 1000f) * (skill.RankData.NewLoadTime / 1000f));
+							var seconds = (int)(Math.Ceiling(castTime / 1000f) * 1000);
+
+							creature.Regens.Add(Stat.Stamina, perSecond, creature.StaminaMax, seconds);
 						}
 					}
 				}
