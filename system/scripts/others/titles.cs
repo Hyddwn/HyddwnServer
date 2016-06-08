@@ -323,6 +323,14 @@ public class TitleRewardingScript : GeneralScript
 				}
 			}
 		}
+
+		// who was Defeated by a Fox at Age 17
+		// Enable when killed by a fox at Age 17+.
+		if (!deadCreature.Titles.IsUsable(77) && deadCreature.Age >= 17)
+		{
+			if (killer.HasTag("/fox/"))
+				deadCreature.Titles.Enable(77);
+		}
 	}
 
 	public async Task<HookResult> SimonBeforeKeywords(NpcScript npc, params object[] args)
