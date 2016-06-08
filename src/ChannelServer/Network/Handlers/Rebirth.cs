@@ -281,7 +281,7 @@ namespace Aura.Channel.Network.Handlers
 				case RebirthLocation.Iria: creature.SetLocation(3001, 164533, 161862); break;
 			}
 
-			// Just rebirthed switch (usage?)
+			// Just rebirthed switch
 			creature.Activate(CreatureStates.JustRebirthed);
 
 			// Success

@@ -958,6 +958,10 @@ namespace Aura.Channel.Database
 			{
 				var characterLocation = creature.GetPosition();
 
+				// Unset JustRebirthed, as we won't be "just rebirthed"
+				// on the next login anymore.
+				creature.State &= ~CreatureStates.JustRebirthed;
+
 				cmd.AddParameter("@creatureId", creature.CreatureId);
 				cmd.Set("race", creature.RaceId);
 				cmd.Set("skinColor", creature.SkinColor);
