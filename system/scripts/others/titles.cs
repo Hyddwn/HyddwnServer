@@ -348,15 +348,29 @@ public class TitleRewardingScript : GeneralScript
 
 			// the Bear Slayer with Bare Hands
 			// Enable when killing a bear without weapons.
+			//
+			// the Bear Slayer with a Single Blow
+			// Show when killing a bear without weapons.
 			// ------------------------------------------------------------------
 			if (!killer.Titles.IsUsable(79) && killer.RightHand == null)
+			{
 				killer.Titles.Enable(79);
+
+				if (!killer.Titles.Knows(81))
+					killer.Titles.Show(81);
+			}
 
 			// who slew a bear at age 10
 			// Enable when killing a bear at age 10 mostly alone.
 			// ------------------------------------------------------------------
 			if (!killer.Titles.IsUsable(80) && killer.Age == 10 && deadCreature.GetTopDamageDealer().Attacker == killer)
 				killer.Titles.Enable(80);
+
+			// the Bear Slayer with a Single Blow
+			// Enable when killing... it's right in the title...!
+			// ------------------------------------------------------------------
+			if (!killer.Titles.IsUsable(81) && deadCreature.GetTotalHits() == 1)
+				killer.Titles.Enable(81);
 		}
 	}
 
