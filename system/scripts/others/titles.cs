@@ -384,6 +384,12 @@ public class TitleRewardingScript : GeneralScript
 				else if (!killer.Titles.Knows(82))
 					killer.Titles.Show(82);
 			}
+
+			// the Golem Slayer
+			// Enable when killing a golem.
+			// ------------------------------------------------------------------
+			if (!killer.Titles.IsUsable(83))
+				killer.Titles.Enable(83);
 		}
 	}
 
