@@ -351,6 +351,12 @@ public class TitleRewardingScript : GeneralScript
 			// ------------------------------------------------------------------
 			if (!killer.Titles.IsUsable(79) && killer.RightHand == null)
 				killer.Titles.Enable(79);
+
+			// who slew a bear at age 10
+			// Enable when killing a bear at age 10 mostly alone.
+			// ------------------------------------------------------------------
+			if (!killer.Titles.IsUsable(80) && killer.Age == 10 && deadCreature.GetTopDamageDealer().Attacker == killer)
+				killer.Titles.Enable(80);
 		}
 	}
 
