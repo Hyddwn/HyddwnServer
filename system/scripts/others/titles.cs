@@ -280,4 +280,19 @@ public class TitleRewardingScript : GeneralScript
 				creature.Titles.Show(54);
 		}
 	}
+
+	[On("PlayerClearedDungeon")]
+	public void OnPlayerClearedDungeon(Creature creature, Dungeon dungeon)
+	{
+		// the Experienced
+		// Enable if Rabbie Basic is cleared while having unbroken eggs in
+		// inventory.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.IsUsable(55) && dungeon.Name == "dunbarton_rabbie_low_dungeon")
+		{
+			var eggs = creature.Inventory.GetItems(a => a.HasTag("/usable/food/cooking/solid/*egg/") && a.Info.Pocket != Pocket.VIPInventory);
+			if (eggs.Count != 0)
+				creature.Titles.Enable(55);
+		}
+	}
 }
