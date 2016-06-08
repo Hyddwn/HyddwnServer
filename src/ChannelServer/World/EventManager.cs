@@ -261,6 +261,12 @@ namespace Aura.Channel.World
 		/// </summary>
 		public event Action<Creature, PtjType> CreatureCompletedPtj;
 		public void OnCreatureCompletedPtj(Creature creature, PtjType type) { CreatureCompletedPtj.Raise(creature, type); }
+
+		/// <summary>
+		/// Raised when a creature aged.
+		/// </summary>
+		public event Action<Creature, int> CreatureAged;
+		public void OnCreatureAged(Creature creature, int prevAge) { CreatureAged.Raise(creature, prevAge); }
 	}
 
 	public static class EventHandlerExtensions

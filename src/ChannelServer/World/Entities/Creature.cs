@@ -451,6 +451,7 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public bool CanRunWithRanged { get { return (this.IsElf || (this.RightHand != null && this.RightHand.HasTag("/crossbow/"))); } }
 
+		public long _hitTrackerIds;
 		public Dictionary<long, HitTracker> _hitTrackers;
 		public int _totalHits;
 
@@ -1844,7 +1845,10 @@ namespace Aura.Channel.World.Entities
 				{
 					// Create new tracker if there is none yet
 					if (!_hitTrackers.TryGetValue(from.EntityId, out tracker))
-						_hitTrackers[from.EntityId] = (tracker = new HitTracker(this, from));
+					{
+						var newId = Interlocked.Increment(ref _hitTrackerIds);
+						_hitTrackers[from.EntityId] = (tracker = new HitTracker(newId, this, from));
+					}
 				}
 				tracker.RegisterHit(damage);
 				_totalHits = Interlocked.Increment(ref _totalHits);
@@ -2085,6 +2089,7 @@ namespace Aura.Channel.World.Entities
 			float life = 0, mana = 0, stamina = 0, str = 0, dex = 0, int_ = 0, will = 0, luck = 0;
 			var ap = 0;
 
+			var oldAge = this.Age;
 			var newAge = this.Age + years;
 			while (this.Age < newAge)
 			{
@@ -2154,6 +2159,8 @@ namespace Aura.Channel.World.Entities
 
 			// XXX: Replace with effect and notice to allow something to happen past age 25?
 			Send.AgeUpEffect(this, this.Age);
+
+			ChannelServer.Instance.Events.OnCreatureAged(this, oldAge);
 		}
 
 		/// <summary>
@@ -2864,6 +2871,21 @@ namespace Aura.Channel.World.Entities
 					}
 				}
 			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns the tracker for the creature with the given id, or null
+		/// if it doesn't exist.
+		/// </summary>
+		/// <returns></returns>
+		public HitTracker GetHitTracker(long entityId)
+		{
+			HitTracker result = null;
+
+			lock (_hitTrackers)
+				_hitTrackers.TryGetValue(entityId, out result);
 
 			return result;
 		}

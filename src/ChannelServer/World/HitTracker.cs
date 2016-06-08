@@ -11,6 +11,11 @@ namespace Aura.Channel.World
 	public class HitTracker
 	{
 		/// <summary>
+		/// Id of this tracker, unique to one creature.
+		/// </summary>
+		public long Id { get; private set; }
+
+		/// <summary>
 		/// The creature using this tracker.
 		/// </summary>
 		public Creature Target { get; private set; }
@@ -35,8 +40,9 @@ namespace Aura.Channel.World
 		/// </summary>
 		/// <param name="target"></param>
 		/// <param name="attacker"></param>
-		public HitTracker(Creature target, Creature attacker)
+		public HitTracker(long id, Creature target, Creature attacker)
 		{
+			this.Id = id;
 			this.Target = target;
 			this.Attacker = attacker;
 		}

@@ -35,8 +35,10 @@ public class TinScript : NpcScript
 			"as it slips off little by little."
 		);
 
-		if (!Player.Has(CreatureStates.JustRebirthed))
+		if (Player.Vars.Perm["TinFirstMet"] == null)
 		{
+			Player.Vars.Perm["TinFirstMet"] = true;
+
 			Msg("Hey, who are you?");
 			Msg("You don't look like you're from this world. Am I right?<br/>Did you make your way down here from Soul Stream?<br/>Ahhh, so Nao sent you here!");
 			Msg("She's way too obedient to the Goddess' wishes.<br/>Anyway, she's a good girl, so be nice to her.");
