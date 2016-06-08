@@ -9,6 +9,7 @@ public class TitleRewardingScript : GeneralScript
 	public override void Load()
 	{
 		AddHook("_duncan", "before_keywords", DuncanBeforeKeywords);
+		AddHook("_simon", "before_keywords", SimonBeforeKeywords);
 	}
 
 	[On("CreatureFished")]
@@ -323,5 +324,30 @@ public class TitleRewardingScript : GeneralScript
 				}
 			}
 		}
+	}
+
+	public async Task<HookResult> SimonBeforeKeywords(NpcScript npc, params object[] args)
+	{
+		// the Luxurious 
+		// Enable if talking to Simon while wearing clothes worth over
+		// 500,000 gold.
+		// ------------------------------------------------------------------
+		if (!npc.Player.Titles.IsUsable(58))
+		{
+			var keyword = args[0] as string;
+			if (keyword == "personal_info")
+			{
+				var equip = npc.Player.Inventory.GetEquipment(a => a.Info.Pocket < Pocket.RightHand1);
+				var total = equip.Sum(a => a.OptionInfo.Price);
+
+				if (total >= 500000)
+				{
+					npc.Msg("(Missing dialog: Simon talking about expensive clothes.)");
+					npc.Player.Titles.Enable(58);
+				}
+			}
+		}
+
+		return HookResult.Continue;
 	}
 }
