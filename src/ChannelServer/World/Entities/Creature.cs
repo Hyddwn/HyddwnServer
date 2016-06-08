@@ -2084,6 +2084,7 @@ namespace Aura.Channel.World.Entities
 			float life = 0, mana = 0, stamina = 0, str = 0, dex = 0, int_ = 0, will = 0, luck = 0;
 			var ap = 0;
 
+			var oldAge = this.Age;
 			var newAge = this.Age + years;
 			while (this.Age < newAge)
 			{
@@ -2153,6 +2154,8 @@ namespace Aura.Channel.World.Entities
 
 			// XXX: Replace with effect and notice to allow something to happen past age 25?
 			Send.AgeUpEffect(this, this.Age);
+
+			ChannelServer.Instance.Events.OnCreatureAged(this, oldAge);
 		}
 
 		/// <summary>

@@ -97,6 +97,22 @@ public class TitleRewardingScript : GeneralScript
 		// ------------------------------------------------------------------
 		if (!creature.Titles.IsUsable(28) && creature.Skills.Has(SkillId.Icebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Firebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Lightningbolt, SkillRank.RF))
 			creature.Titles.Enable(28);
+
+		// the Reborn 
+		// Enable if creature rebirthed.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.IsUsable(39) && creature.Has(CreatureStates.JustRebirthed))
+			creature.Titles.Enable(39);
+	}
+
+	[On("CreatureAged")]
+	public void OnCreatureAged(Creature creature, int prevAge)
+	{
+		// the Reborn
+		// Show if creature reaches age 25.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.Knows(39) && creature.Age >= 25)
+			creature.Titles.Show(39);
 	}
 
 	[On("CreatureStartedPtj")]
