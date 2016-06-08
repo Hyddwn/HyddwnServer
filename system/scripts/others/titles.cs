@@ -108,6 +108,12 @@ public class TitleRewardingScript : GeneralScript
 	[On("CreatureAged")]
 	public void OnCreatureAged(Creature creature, int prevAge)
 	{
+		// the Adult
+		// Enable if creature reaches age 18.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.IsUsable(44) && creature.Age >= 18)
+			creature.Titles.Enable(44);
+
 		// the Reborn
 		// Show if creature reaches age 25.
 		// ------------------------------------------------------------------
