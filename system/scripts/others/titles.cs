@@ -267,6 +267,17 @@ public class TitleRewardingScript : GeneralScript
 			else
 				creature.Titles.Show(53);
 		}
+
+		// the Skillful
+		// Shown on level up with more than 80 Dex, enabled with more than
+		// 200 Dex.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.Knows(54) && creature.DexBaseTotal >= 80)
+		{
+			if (creature.DexBaseTotal >= 200)
+				creature.Titles.Enable(54);
+			else
+				creature.Titles.Show(54);
 		}
 	}
 }
