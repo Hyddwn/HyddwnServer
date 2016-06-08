@@ -326,10 +326,25 @@ public class TitleRewardingScript : GeneralScript
 
 		// who was Defeated by a Fox at Age 17
 		// Enable when killed by a fox at Age 17+.
+		// ------------------------------------------------------------------
 		if (!deadCreature.Titles.IsUsable(77) && deadCreature.Age >= 17)
 		{
 			if (killer.HasTag("/fox/"))
 				deadCreature.Titles.Enable(77);
+		}
+
+		if (deadCreature.HasTag("/bear/"))
+		{
+			// who Almost Slew a Bear at 10
+			// Show when killing a bear at age 12+, enable on age 11.
+			// ------------------------------------------------------------------
+			if (killer.Age >= 11 && !killer.Titles.IsUsable(78))
+			{
+				if (killer.Age >= 12)
+					killer.Titles.Show(78);
+				else
+					killer.Titles.Enable(78);
+			}
 		}
 	}
 
