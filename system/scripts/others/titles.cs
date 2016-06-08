@@ -250,59 +250,34 @@ public class TitleRewardingScript : GeneralScript
 		// Shown on level up with more than 80 Int, enabled with more than
 		// 200 Int.
 		// ------------------------------------------------------------------
-		if (creature.IntBaseTotal >= 80)
-		{
-			if (creature.Titles.Knows(52))
-			{
-				if (creature.IntBaseTotal >= 200)
-					creature.Titles.Enable(52);
-			}
-			else
-				creature.Titles.Show(52);
-		}
+		CheckStatTitle(creature, creature.IntBaseTotal, 80, 200, 52);
 
 		// the Strong
 		// Shown on level up with more than 80 Str, enabled with more than
 		// 200 Str.
 		// ------------------------------------------------------------------
-		if (creature.StrBaseTotal >= 80)
-		{
-			if (creature.Titles.Knows(53))
-			{
-				if (creature.StrBaseTotal >= 200)
-					creature.Titles.Enable(53);
-			}
-			else
-				creature.Titles.Show(53);
-		}
+		CheckStatTitle(creature, creature.StrBaseTotal, 80, 200, 53);
 
 		// the Skillful
 		// Shown on level up with more than 80 Dex, enabled with more than
 		// 200 Dex.
 		// ------------------------------------------------------------------
-		if (creature.DexBaseTotal >= 80)
-		{
-			if (creature.Titles.Knows(54))
-			{
-				if (creature.DexBaseTotal >= 200)
-					creature.Titles.Enable(54);
-			}
-			else
-				creature.Titles.Show(54);
-		}
+		CheckStatTitle(creature, creature.DexBaseTotal, 80, 200, 54);
 
 		// who reached Lv 50 at Age 10
 		// Show on level 45 at age 10, enable on level 50.
 		// ------------------------------------------------------------------
-		if (creature.Level >= 45)
+		CheckStatTitle(creature, creature.Level, 45, 50, 76);
+	}
+
+	private void CheckStatTitle(Creature creature, float statVal, float knowVal, float enableVal, ushort titleId)
+	{
+		if (statVal >= knowVal && !creature.Titles.IsUsable(titleId))
 		{
-			if (creature.Titles.Knows(76))
-			{
-				if (creature.Level >= 50)
-					creature.Titles.Enable(76);
-			}
-			else
-				creature.Titles.Show(76);
+			if (statVal >= enableVal)
+				creature.Titles.Enable(titleId);
+			else if (!creature.Titles.Knows(titleId))
+				creature.Titles.Show(titleId);
 		}
 	}
 
