@@ -295,4 +295,33 @@ public class TitleRewardingScript : GeneralScript
 				creature.Titles.Enable(55);
 		}
 	}
+
+	[On("CreatureKilled")]
+	public void OnCreatureKilled(Creature deadCreature, Creature killer)
+	{
+		// the Tank
+		// Enable if a creature dies for a party member.
+		// Exact functionality unknown, we're gonna assume if a party member
+		// hit the monster first, and you then die by that monster's paw,
+		// you died for your teammate.
+		// ------------------------------------------------------------------
+		if (deadCreature.IsPlayer && !deadCreature.Titles.IsUsable(57) && deadCreature.Party.MemberCount > 1)
+		{
+			// Get tracker of dead creature to compare the id to the member's.
+			var deadTracker = killer.GetHitTracker(deadCreature.EntityId);
+			if (deadTracker != null)
+			{
+				// Go through living party members
+				var members = deadCreature.Party.GetMembers();
+				foreach (var member in members.Where(a => !a.IsDead))
+				{
+					// If the member's tracker has a lower id than that of the
+					// dead creature, the member attacked first.
+					var memberTracker = killer.GetHitTracker(member.EntityId);
+					if (memberTracker.Id < deadTracker.Id)
+						deadCreature.Titles.Enable(57);
+				}
+			}
+		}
+	}
 }

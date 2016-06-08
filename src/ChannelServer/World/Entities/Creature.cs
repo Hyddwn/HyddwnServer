@@ -450,6 +450,7 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public bool CanRunWithRanged { get { return (this.IsElf || (this.RightHand != null && this.RightHand.HasTag("/crossbow/"))); } }
 
+		public long _hitTrackerIds;
 		public Dictionary<long, HitTracker> _hitTrackers;
 		public int _totalHits;
 
@@ -1843,7 +1844,10 @@ namespace Aura.Channel.World.Entities
 				{
 					// Create new tracker if there is none yet
 					if (!_hitTrackers.TryGetValue(from.EntityId, out tracker))
-						_hitTrackers[from.EntityId] = (tracker = new HitTracker(this, from));
+					{
+						var newId = Interlocked.Increment(ref _hitTrackerIds);
+						_hitTrackers[from.EntityId] = (tracker = new HitTracker(newId, this, from));
+					}
 				}
 				tracker.RegisterHit(damage);
 				_totalHits = Interlocked.Increment(ref _totalHits);
@@ -2866,6 +2870,21 @@ namespace Aura.Channel.World.Entities
 					}
 				}
 			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns the tracker for the creature with the given id, or null
+		/// if it doesn't exist.
+		/// </summary>
+		/// <returns></returns>
+		public HitTracker GetHitTracker(long entityId)
+		{
+			HitTracker result = null;
+
+			lock (_hitTrackers)
+				_hitTrackers.TryGetValue(entityId, out result);
 
 			return result;
 		}
