@@ -281,6 +281,20 @@ public class TitleRewardingScript : GeneralScript
 			else
 				creature.Titles.Show(54);
 		}
+
+		// who reached Lv 50 at Age 10
+		// Show on level 45 at age 10, enable on level 50.
+		// ------------------------------------------------------------------
+		if (creature.Level >= 45)
+		{
+			if (creature.Titles.Knows(76))
+			{
+				if (creature.Level >= 50)
+					creature.Titles.Enable(76);
+			}
+			else
+				creature.Titles.Show(76);
+		}
 	}
 
 	[On("PlayerClearedDungeon")]
