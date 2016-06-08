@@ -372,6 +372,19 @@ public class TitleRewardingScript : GeneralScript
 			if (!killer.Titles.IsUsable(81) && deadCreature.GetTotalHits() == 1)
 				killer.Titles.Enable(81);
 		}
+		else if (deadCreature.HasTag("/golem/"))
+		{
+			// the Golem Slayer with a Single Blow
+			// Enable when killing a golem with one hit.
+			// ------------------------------------------------------------------
+			if (!killer.Titles.IsUsable(82))
+			{
+				if (deadCreature.GetTotalHits() == 1)
+					killer.Titles.Enable(82);
+				else if (!killer.Titles.Knows(82))
+					killer.Titles.Show(82);
+			}
+		}
 	}
 
 	public async Task<HookResult> SimonBeforeKeywords(NpcScript npc, params object[] args)
