@@ -10,6 +10,7 @@ public class TitleRewardingScript : GeneralScript
 	{
 		AddHook("_duncan", "before_keywords", DuncanBeforeKeywords);
 		AddHook("_simon", "before_keywords", SimonBeforeKeywords);
+		AddHook("_glenis", "before_keywords", GlenisBeforeKeywords);
 	}
 
 	[On("CreatureFished")]
@@ -331,19 +332,70 @@ public class TitleRewardingScript : GeneralScript
 		// the Luxurious 
 		// Enable if talking to Simon while wearing clothes worth over
 		// 500,000 gold.
+		// 
+		// the Hungry
+		// Enable if talking to Simon while wearing only broken beginner
+		// clothes with 50% hunger.
 		// ------------------------------------------------------------------
-		if (!npc.Player.Titles.IsUsable(58))
+		var usable58 = npc.Player.Titles.IsUsable(58);
+		var usable59 = npc.Player.Titles.IsUsable(59);
+
+		if ((!usable58 || !usable59) && (args[0] as string) == "personal_info")
 		{
-			var keyword = args[0] as string;
-			if (keyword == "personal_info")
+			if (!usable58)
 			{
 				var equip = npc.Player.Inventory.GetEquipment(a => a.Info.Pocket < Pocket.RightHand1);
 				var total = equip.Sum(a => a.OptionInfo.Price);
-
 				if (total >= 500000)
 				{
 					npc.Msg("(Missing dialog: Simon talking about expensive clothes.)");
 					npc.Player.Titles.Enable(58);
+				}
+			}
+
+			if (!usable59)
+			{
+				var equip = npc.Player.Inventory.GetEquipment();
+				if (equip.Length == 1)
+				{
+					var id = equip[0].Info.Id;
+					if (id == 15001 || id == 15002 || id == 15169 || id == 15168 || id == 15228 || id == 15208)
+					{
+						if (equip[0].Durability == 0 && npc.Player.Hunger >= npc.Player.StaminaMax / 2)
+						{
+							npc.Msg("(Missing dialog: Simon talking about cheap clothes?)");
+							npc.Player.Titles.Enable(59);
+
+							equip[0].Durability = equip[0].OptionInfo.DurabilityMax;
+							Send.ItemDurabilityUpdate(npc.Player, equip[0]);
+						}
+					}
+				}
+			}
+		}
+
+		return HookResult.Continue;
+	}
+
+	public async Task<HookResult> GlenisBeforeKeywords(NpcScript npc, params object[] args)
+	{
+		// the Hungry
+		// Show if talking to Glenis while wearing only broken beginner
+		// clothes with 50% hunger.
+		// ------------------------------------------------------------------
+		if (!npc.Player.Titles.Knows(59) && (args[0] as string) == "personal_info")
+		{
+			var equip = npc.Player.Inventory.GetEquipment();
+			if (equip.Length == 1)
+			{
+				var id = equip[0].Info.Id;
+				if (id == 15001 || id == 15002 || id == 15169 || id == 15168 || id == 15228 || id == 15208)
+				{
+					if (equip[0].Durability == 0 && npc.Player.Hunger >= npc.Player.StaminaMax / 2)
+					{
+						npc.Msg("(Missing dialog: Glenis advising you to talk to Simon?)");
+						npc.Player.Titles.Show(59);
+					}
 				}
 			}
 		}
