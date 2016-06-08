@@ -391,6 +391,14 @@ public class TitleRewardingScript : GeneralScript
 			if (!killer.Titles.IsUsable(83))
 				killer.Titles.Enable(83);
 		}
+		else if (deadCreature.HasTag("/succubus/"))
+		{
+			// the Succubus Slayer
+			// Enable when killing a succubus.
+			// ------------------------------------------------------------------
+			if (!killer.Titles.IsUsable(84))
+				killer.Titles.Enable(84);
+		}
 	}
 
 	public async Task<HookResult> SimonBeforeKeywords(NpcScript npc, params object[] args)
