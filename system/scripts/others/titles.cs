@@ -345,6 +345,12 @@ public class TitleRewardingScript : GeneralScript
 				else
 					killer.Titles.Enable(78);
 			}
+
+			// the Bear Slayer with Bare Hands
+			// Enable when killing a bear without weapons.
+			// ------------------------------------------------------------------
+			if (!killer.Titles.IsUsable(79) && killer.RightHand == null)
+				killer.Titles.Enable(79);
 		}
 	}
 
