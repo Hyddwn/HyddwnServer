@@ -399,6 +399,14 @@ public class TitleRewardingScript : GeneralScript
 			if (!killer.Titles.IsUsable(84))
 				killer.Titles.Enable(84);
 		}
+		else if (deadCreature.HasTag("/ogre/"))
+		{
+			// the Ogre Slayer
+			// Enable when killing an ogre.
+			// ------------------------------------------------------------------
+			if (!killer.Titles.IsUsable(85))
+				killer.Titles.Enable(85);
+		}
 	}
 
 	public async Task<HookResult> SimonBeforeKeywords(NpcScript npc, params object[] args)
