@@ -131,6 +131,18 @@ public class TitleRewardingScript : GeneralScript
 		// ------------------------------------------------------------------
 		if (!creature.Titles.IsUsable(45) && creature.Age >= 30)
 			creature.Titles.Enable(45);
+
+		// the Old
+		// Show if creature reaches age 35.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.Knows(46) && creature.Age >= 35)
+			creature.Titles.Show(46);
+
+		// the Old
+		// Enable if creature reaches age 40.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.IsUsable(46) && creature.Age >= 40)
+			creature.Titles.Enable(46);
 	}
 
 	[On("CreatureStartedPtj")]
