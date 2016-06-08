@@ -240,4 +240,17 @@ public class TitleRewardingScript : GeneralScript
 				tAction.Creature.Titles.Enable(38);
 		}
 	}
+
+	[On("CreatureLevelUp")]
+	public void OnCreatureLevelUp(Creature creature)
+	{
+		// the Wise
+		// Shown on level up with more than 80 Int, enabled with more than
+		// 200 Int.
+		// ------------------------------------------------------------------
+		{
+			if (creature.IntBaseTotal >= 200)
+			else if (creature.IntBaseTotal >= 80)
+		}
+	}
 }
