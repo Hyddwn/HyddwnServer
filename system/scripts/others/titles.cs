@@ -250,10 +250,13 @@ public class TitleRewardingScript : GeneralScript
 		// Shown on level up with more than 80 Int, enabled with more than
 		// 200 Int.
 		// ------------------------------------------------------------------
-		if (!creature.Titles.Knows(52) && creature.IntBaseTotal >= 80)
+		if (creature.IntBaseTotal >= 80)
 		{
-			if (creature.IntBaseTotal >= 200)
-				creature.Titles.Enable(52);
+			if (creature.Titles.Knows(52))
+			{
+				if (creature.IntBaseTotal >= 200)
+					creature.Titles.Enable(52);
+			}
 			else
 				creature.Titles.Show(52);
 		}
@@ -262,10 +265,13 @@ public class TitleRewardingScript : GeneralScript
 		// Shown on level up with more than 80 Str, enabled with more than
 		// 200 Str.
 		// ------------------------------------------------------------------
-		if (!creature.Titles.Knows(53) && creature.StrBaseTotal >= 80)
+		if (creature.StrBaseTotal >= 80)
 		{
-			if (creature.StrBaseTotal >= 200)
-				creature.Titles.Enable(53);
+			if (creature.Titles.Knows(53))
+			{
+				if (creature.StrBaseTotal >= 200)
+					creature.Titles.Enable(53);
+			}
 			else
 				creature.Titles.Show(53);
 		}
@@ -274,10 +280,13 @@ public class TitleRewardingScript : GeneralScript
 		// Shown on level up with more than 80 Dex, enabled with more than
 		// 200 Dex.
 		// ------------------------------------------------------------------
-		if (!creature.Titles.Knows(54) && creature.DexBaseTotal >= 80)
+		if (creature.DexBaseTotal >= 80)
 		{
-			if (creature.DexBaseTotal >= 200)
-				creature.Titles.Enable(54);
+			if (creature.Titles.Knows(54))
+			{
+				if (creature.DexBaseTotal >= 200)
+					creature.Titles.Enable(54);
+			}
 			else
 				creature.Titles.Show(54);
 		}
