@@ -236,5 +236,19 @@ namespace Aura.Channel.Skills.Life
 
 			return PropId;
 		}
+
+		/// <summary>
+		/// Returns a campfire in range of creature, or null if there is none.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <returns></returns>
+		public static Prop GetNearbyCampfire(Creature creature, int range)
+		{
+			var campfires = creature.Region.GetProps(a => a.Info.Id == 203 && a.GetPosition().InRange(creature.GetPosition(), 500));
+			if (campfires.Count == 0)
+				return null;
+
+			return campfires[0];
+		}
 	}
 }

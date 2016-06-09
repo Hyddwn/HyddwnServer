@@ -182,6 +182,26 @@ public class TitleRewardingScript : GeneralScript
 			if (trackRecord.Done >= 10000)
 				creature.Titles.Enable(35);
 		}
+
+		// the Busy 
+		// Enable if creature completed 3 Part-time Jobs in one Erinn day.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.IsUsable(10154))
+		{
+			var now = ErinnTime.Now;
+			var count = 0;
+
+			var trackRecords = creature.Quests.GetPtjTrackRecords();
+			foreach (var record in trackRecords)
+			{
+				var change = new ErinnTime(record.LastChange);
+				if (now.Day == change.Day && now.Month == change.Month && now.Year == change.Year)
+					count++;
+			}
+
+			if (count >= 3)
+				creature.Titles.Enable(10154);
+		}
 	}
 
 	public async Task<HookResult> DuncanBeforeKeywords(NpcScript npc, params object[] args)
@@ -406,6 +426,18 @@ public class TitleRewardingScript : GeneralScript
 			// ------------------------------------------------------------------
 			if (!killer.Titles.IsUsable(85))
 				killer.Titles.Enable(85);
+		}
+
+		// the Fire Arrow
+		// Enabled when killing an enemy with a fire arrow.
+		// ------------------------------------------------------------------
+		if (!killer.Titles.IsUsable(88))
+		{
+			// Maybe the temp variable FireArrow could be used for this,
+			// but this is safer, no risk of the variable being reset,
+			// or still being set when it shouldn't be.
+			if (killer.RightHand != null && killer.RightHand.HasTag("/bow/") && Campfire.GetNearbyCampfire(killer, 500) != null)
+				killer.Titles.Enable(88);
 		}
 	}
 

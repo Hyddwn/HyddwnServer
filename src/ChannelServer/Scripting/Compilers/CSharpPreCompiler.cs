@@ -34,6 +34,7 @@ namespace Aura.Channel.Scripting.Compilers
 			add.Append("using Aura.Channel.Scripting.Scripts;");
 			add.Append("using Aura.Channel.Scripting;");
 			add.Append("using Aura.Channel.Skills;");
+			add.Append("using Aura.Channel.Skills.Life;");
 			add.Append("using Aura.Channel.Util;");
 			add.Append("using Aura.Channel.World.Dungeons;");
 			add.Append("using Aura.Channel.World.Dungeons.Props;");

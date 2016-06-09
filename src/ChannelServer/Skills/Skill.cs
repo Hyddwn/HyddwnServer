@@ -193,6 +193,23 @@ namespace Aura.Channel.Skills
 			var exp = this.UpdateExperience();
 			if (exp > 0)
 				Send.SkillTrainingUp(_creature, this, exp, bonus);
+
+			this.CheckMaster();
+		}
+
+		public void CheckMaster()
+		{
+			// Skip if not R1 or already has the master title.
+			if (this.Info.Rank != SkillRank.R1 || _creature.Titles.IsUsable(this.Data.MasterTitle))
+				return;
+
+			// Give master title if all conditions were met. (met == 0)
+			if (
+				this.Info.ConditionCount1 + this.Info.ConditionCount2 + this.Info.ConditionCount3 +
+				this.Info.ConditionCount4 + this.Info.ConditionCount5 + this.Info.ConditionCount6 +
+				this.Info.ConditionCount7 + this.Info.ConditionCount8 + this.Info.ConditionCount9 == 0
+			)
+				_creature.Titles.Enable(this.Data.MasterTitle);
 		}
 
 		/// <summary>

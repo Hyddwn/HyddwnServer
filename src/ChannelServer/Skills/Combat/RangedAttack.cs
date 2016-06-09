@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
+using Aura.Channel.Skills.Life;
 using Aura.Channel.Skills.Magic;
 using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
@@ -93,7 +94,7 @@ namespace Aura.Channel.Skills.Combat
 		{
 			// Light arrows (!) on fire if there's a campfire nearby
 			if (creature.RightHand != null && creature.RightHand.HasTag("/bow/"))
-				creature.Temp.FireArrow = creature.Region.GetProps(a => a.Info.Id == 203 && a.GetPosition().InRange(creature.GetPosition(), 500)).Count > 0;
+				creature.Temp.FireArrow = Campfire.GetNearbyCampfire(creature, 500) != null;
 
 			// Add fire arrow effect to arrow
 			if (creature.Temp.FireArrow)
