@@ -407,6 +407,18 @@ public class TitleRewardingScript : GeneralScript
 			if (!killer.Titles.IsUsable(85))
 				killer.Titles.Enable(85);
 		}
+
+		// the Fire Arrow
+		// Enabled when killing an enemy with a fire arrow.
+		// ------------------------------------------------------------------
+		if (!killer.Titles.IsUsable(88))
+		{
+			// Maybe the temp variable FireArrow could be used for this,
+			// but this is safer, no risk of the variable being reset,
+			// or still being set when it shouldn't be.
+			if (killer.RightHand != null && killer.RightHand.HasTag("/bow/") && Campfire.GetNearbyCampfire(killer, 500) != null)
+				killer.Titles.Enable(88);
+		}
 	}
 
 	public async Task<HookResult> SimonBeforeKeywords(NpcScript npc, params object[] args)
