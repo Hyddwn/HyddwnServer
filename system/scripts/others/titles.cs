@@ -182,6 +182,26 @@ public class TitleRewardingScript : GeneralScript
 			if (trackRecord.Done >= 10000)
 				creature.Titles.Enable(35);
 		}
+
+		// the Busy 
+		// Enable if creature completed 3 Part-time Jobs in one Erinn day.
+		// ------------------------------------------------------------------
+		if (!creature.Titles.IsUsable(10154))
+		{
+			var now = ErinnTime.Now;
+			var count = 0;
+
+			var trackRecords = creature.Quests.GetPtjTrackRecords();
+			foreach (var record in trackRecords)
+			{
+				var change = new ErinnTime(record.LastChange);
+				if (now.Day == change.Day && now.Month == change.Month && now.Year == change.Year)
+					count++;
+			}
+
+			if (count >= 3)
+				creature.Titles.Enable(10154);
+		}
 	}
 
 	public async Task<HookResult> DuncanBeforeKeywords(NpcScript npc, params object[] args)
