@@ -1483,6 +1483,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Displays system message in player's chat log.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public void SystemMsg(string format, params object[] args)
+		{
+			Send.SystemMessage(this.Player, format, args);
+		}
+
+		/// <summary>
 		/// Redeems code if found.
 		/// </summary>
 		/// <param name="code"></param>
