@@ -254,7 +254,7 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			var statModSource = StatModSource.Food;
 			var statModIdent = item.EntityId;
-			var regenGroup = "Food_" + statModIdent;
+			var regenGroup = "TmpFoodRegen";
 
 			// Prepare quality value for the calculations
 			// Bonus Formula: floor(dbValue / 200 * (quality + 100))
@@ -305,20 +305,19 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 			}
 
-			if (!creature.Regens.Has(regenGroup))
-			{
-				if (lifeRecovery != 0)
-					creature.Regens.Add(regenGroup, Stat.Life, (float)Math.Floor(lifeRecovery / 200f * quality), creature.LifeInjured, timeout);
+			creature.Regens.Remove(regenGroup);
 
-				if (manaRecovery != 0)
-					creature.Regens.Add(regenGroup, Stat.Mana, (float)Math.Floor(manaRecovery / 200f * quality), creature.ManaMax, timeout);
+			if (lifeRecovery != 0)
+				creature.Regens.Add(regenGroup, Stat.Life, (float)Math.Floor(lifeRecovery / 200f * quality), creature.LifeInjured, timeout);
 
-				if (staminaRecovery != 0)
-					creature.Regens.Add(regenGroup, Stat.Stamina, (float)Math.Floor(staminaRecovery / 200f * quality), creature.StaminaMax, timeout);
+			if (manaRecovery != 0)
+				creature.Regens.Add(regenGroup, Stat.Mana, (float)Math.Floor(manaRecovery / 200f * quality), creature.ManaMax, timeout);
 
-				if (injuryRecovery != 0)
-					creature.Regens.Add(regenGroup, Stat.LifeInjured, (float)Math.Floor(injuryRecovery / 200f * quality), creature.LifeMax, timeout);
-			}
+			if (staminaRecovery != 0)
+				creature.Regens.Add(regenGroup, Stat.Stamina, (float)Math.Floor(staminaRecovery / 200f * quality), creature.StaminaMax, timeout);
+
+			if (injuryRecovery != 0)
+				creature.Regens.Add(regenGroup, Stat.LifeInjured, (float)Math.Floor(injuryRecovery / 200f * quality), creature.LifeMax, timeout);
 
 			Send.StatUpdate(creature, StatUpdateType.Private,
 				Stat.StrMod, Stat.IntMod, Stat.DexMod, Stat.WillMod, Stat.LuckMod,
