@@ -252,8 +252,8 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="protection"></param>
 		protected void Buff(Creature creature, Item item, int timeout, double str = 0, double int_ = 0, double dex = 0, double will = 0, double luck = 0, double life = 0, double mana = 0, double stamina = 0, double lifeRecovery = 0, double manaRecovery = 0, double staminaRecovery = 0, double injuryRecovery = 0, int defense = 0, int protection = 0)
 		{
-			var statModSource = StatModSource.Food;
-			var statModIdent = item.EntityId;
+			var statModSource = StatModSource.TmpFood;
+			var statModIdent = 0;
 			var regenGroup = "TmpFoodRegen";
 
 			// Prepare quality value for the calculations
@@ -263,50 +263,51 @@ namespace Aura.Channel.Scripting.Scripts
 				quality = item.MetaData1.GetInt("QUAL");
 			quality += 100;
 
-			if (!creature.StatMods.Has(statModSource, statModIdent))
-			{
-				if (str != 0)
-					creature.StatMods.Add(Stat.StrMod, (float)Math.Floor(str / 200f * quality), statModSource, statModIdent, timeout);
-
-				if (int_ != 0)
-					creature.StatMods.Add(Stat.IntMod, (float)Math.Floor(int_ / 200f * quality), statModSource, statModIdent, timeout);
-
-				if (dex != 0)
-					creature.StatMods.Add(Stat.DexMod, (float)Math.Floor(dex / 200f * quality), statModSource, statModIdent, timeout);
-
-				if (will != 0)
-					creature.StatMods.Add(Stat.WillMod, (float)Math.Floor(will / 200f * quality), statModSource, statModIdent, timeout);
-
-				if (luck != 0)
-					creature.StatMods.Add(Stat.LuckMod, (float)Math.Floor(luck / 200f * quality), statModSource, statModIdent, timeout);
-
-				if (defense != 0)
-					creature.StatMods.Add(Stat.DefenseMod, (float)Math.Floor(defense / 200f * quality), statModSource, statModIdent, timeout);
-
-				if (protection != 0)
-					creature.StatMods.Add(Stat.ProtectionMod, (float)Math.Floor(protection / 200f * quality), statModSource, statModIdent, timeout);
-
-				if (life != 0)
-				{
-					creature.StatMods.Add(Stat.LifeMaxMod, (float)Math.Floor(life / 200f * quality), statModSource, statModIdent, timeout);
-					creature.Life = creature.Life; // Cap in case max was reduced
-				}
-
-				if (mana != 0)
-				{
-					creature.StatMods.Add(Stat.ManaMaxMod, (float)Math.Floor(mana / 200f * quality), statModSource, statModIdent, timeout);
-					creature.Mana = creature.Mana; // Cap in case max was reduced
-				}
-
-				if (stamina != 0)
-				{
-					creature.StatMods.Add(Stat.StaminaMaxMod, (float)Math.Floor(stamina / 200f * quality), statModSource, statModIdent, timeout);
-					creature.Stamina = creature.Stamina; // Cap in case max was reduced
-				}
-			}
-
+			// Remove previous buffs
+			creature.StatMods.Remove(statModSource, statModIdent);
 			creature.Regens.Remove(regenGroup);
 
+			// Add stat buffs
+			if (str != 0)
+				creature.StatMods.Add(Stat.StrMod, (float)Math.Floor(str / 200f * quality), statModSource, statModIdent, timeout);
+
+			if (int_ != 0)
+				creature.StatMods.Add(Stat.IntMod, (float)Math.Floor(int_ / 200f * quality), statModSource, statModIdent, timeout);
+
+			if (dex != 0)
+				creature.StatMods.Add(Stat.DexMod, (float)Math.Floor(dex / 200f * quality), statModSource, statModIdent, timeout);
+
+			if (will != 0)
+				creature.StatMods.Add(Stat.WillMod, (float)Math.Floor(will / 200f * quality), statModSource, statModIdent, timeout);
+
+			if (luck != 0)
+				creature.StatMods.Add(Stat.LuckMod, (float)Math.Floor(luck / 200f * quality), statModSource, statModIdent, timeout);
+
+			if (defense != 0)
+				creature.StatMods.Add(Stat.DefenseMod, (float)Math.Floor(defense / 200f * quality), statModSource, statModIdent, timeout);
+
+			if (protection != 0)
+				creature.StatMods.Add(Stat.ProtectionMod, (float)Math.Floor(protection / 200f * quality), statModSource, statModIdent, timeout);
+
+			if (life != 0)
+			{
+				creature.StatMods.Add(Stat.LifeMaxMod, (float)Math.Floor(life / 200f * quality), statModSource, statModIdent, timeout);
+				creature.Life = creature.Life; // Cap in case max was reduced
+			}
+
+			if (mana != 0)
+			{
+				creature.StatMods.Add(Stat.ManaMaxMod, (float)Math.Floor(mana / 200f * quality), statModSource, statModIdent, timeout);
+				creature.Mana = creature.Mana; // Cap in case max was reduced
+			}
+
+			if (stamina != 0)
+			{
+				creature.StatMods.Add(Stat.StaminaMaxMod, (float)Math.Floor(stamina / 200f * quality), statModSource, statModIdent, timeout);
+				creature.Stamina = creature.Stamina; // Cap in case max was reduced
+			}
+
+			// Add regens
 			if (lifeRecovery != 0)
 				creature.Regens.Add(regenGroup, Stat.Life, (float)Math.Floor(lifeRecovery / 200f * quality), creature.LifeInjured, timeout);
 
@@ -319,6 +320,7 @@ namespace Aura.Channel.Scripting.Scripts
 			if (injuryRecovery != 0)
 				creature.Regens.Add(regenGroup, Stat.LifeInjured, (float)Math.Floor(injuryRecovery / 200f * quality), creature.LifeMax, timeout);
 
+			// Update client
 			Send.StatUpdate(creature, StatUpdateType.Private,
 				Stat.StrMod, Stat.IntMod, Stat.DexMod, Stat.WillMod, Stat.LuckMod,
 				Stat.Life, Stat.LifeInjured, Stat.LifeMaxMod, Stat.LifeMax,

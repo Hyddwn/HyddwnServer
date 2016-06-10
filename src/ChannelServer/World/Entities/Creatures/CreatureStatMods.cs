@@ -205,6 +205,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		SkillRank,
 		Title,
 		Equipment,
-		Food,
+		TmpFood,
 	}
 }
