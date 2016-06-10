@@ -309,6 +309,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds alias for a GM command.
+		/// </summary>
+		/// <param name="original"></param>
+		/// <param name="alias"></param>
+		protected void AddAlias(string original, string alias)
+		{
+			ChannelServer.Instance.CommandProcessor.AddAlias(original, alias);
+		}
+
+		/// <summary>
 		/// Adds console command.
 		/// </summary>
 		/// <param name="name"></param>
