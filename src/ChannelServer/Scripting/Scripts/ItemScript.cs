@@ -252,9 +252,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="protection"></param>
 		protected void Buff(Creature creature, Item item, int timeout, double str = 0, double int_ = 0, double dex = 0, double will = 0, double luck = 0, double life = 0, double mana = 0, double stamina = 0, double lifeRecovery = 0, double manaRecovery = 0, double staminaRecovery = 0, double injuryRecovery = 0, int defense = 0, int protection = 0)
 		{
-			var source = StatModSource.Food;
-			var ident = item.EntityId;
-			var group = "Food_" + ident;
+			var statModSource = StatModSource.Food;
+			var statModIdent = item.EntityId;
+			var regenGroup = "Food_" + statModIdent;
 
 			// Prepare quality value for the calculations
 			// Bonus Formula: floor(dbValue / 200 * (quality + 100))
@@ -263,65 +263,61 @@ namespace Aura.Channel.Scripting.Scripts
 				quality = item.MetaData1.GetInt("QUAL");
 			quality += 100;
 
-			// Before applying the mods/regens, we have to make sure they
-			// aren't set yet, to prevent stacking. This would be a job for
-			// a cooldown system, which we don't have yet =< TODO.
-
-			if (!creature.StatMods.Has(source, ident))
+			if (!creature.StatMods.Has(statModSource, statModIdent))
 			{
 				if (str != 0)
-					creature.StatMods.Add(Stat.StrMod, (float)Math.Floor(str / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.StrMod, (float)Math.Floor(str / 200f * quality), statModSource, statModIdent, timeout);
 
 				if (int_ != 0)
-					creature.StatMods.Add(Stat.IntMod, (float)Math.Floor(int_ / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.IntMod, (float)Math.Floor(int_ / 200f * quality), statModSource, statModIdent, timeout);
 
 				if (dex != 0)
-					creature.StatMods.Add(Stat.DexMod, (float)Math.Floor(dex / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.DexMod, (float)Math.Floor(dex / 200f * quality), statModSource, statModIdent, timeout);
 
 				if (will != 0)
-					creature.StatMods.Add(Stat.WillMod, (float)Math.Floor(will / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.WillMod, (float)Math.Floor(will / 200f * quality), statModSource, statModIdent, timeout);
 
 				if (luck != 0)
-					creature.StatMods.Add(Stat.LuckMod, (float)Math.Floor(luck / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.LuckMod, (float)Math.Floor(luck / 200f * quality), statModSource, statModIdent, timeout);
 
 				if (defense != 0)
-					creature.StatMods.Add(Stat.DefenseMod, (float)Math.Floor(defense / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.DefenseMod, (float)Math.Floor(defense / 200f * quality), statModSource, statModIdent, timeout);
 
 				if (protection != 0)
-					creature.StatMods.Add(Stat.ProtectionMod, (float)Math.Floor(protection / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.ProtectionMod, (float)Math.Floor(protection / 200f * quality), statModSource, statModIdent, timeout);
 
 				if (life != 0)
 				{
-					creature.StatMods.Add(Stat.LifeMaxMod, (float)Math.Floor(life / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.LifeMaxMod, (float)Math.Floor(life / 200f * quality), statModSource, statModIdent, timeout);
 					creature.Life = creature.Life; // Cap in case max was reduced
 				}
 
 				if (mana != 0)
 				{
-					creature.StatMods.Add(Stat.ManaMaxMod, (float)Math.Floor(mana / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.ManaMaxMod, (float)Math.Floor(mana / 200f * quality), statModSource, statModIdent, timeout);
 					creature.Mana = creature.Mana; // Cap in case max was reduced
 				}
 
 				if (stamina != 0)
 				{
-					creature.StatMods.Add(Stat.StaminaMaxMod, (float)Math.Floor(stamina / 200f * quality), source, ident, timeout);
+					creature.StatMods.Add(Stat.StaminaMaxMod, (float)Math.Floor(stamina / 200f * quality), statModSource, statModIdent, timeout);
 					creature.Stamina = creature.Stamina; // Cap in case max was reduced
 				}
 			}
 
-			if (!creature.Regens.Has(group))
+			if (!creature.Regens.Has(regenGroup))
 			{
 				if (lifeRecovery != 0)
-					creature.Regens.Add(group, Stat.Life, (float)Math.Floor(lifeRecovery / 200f * quality), creature.LifeInjured, timeout);
+					creature.Regens.Add(regenGroup, Stat.Life, (float)Math.Floor(lifeRecovery / 200f * quality), creature.LifeInjured, timeout);
 
 				if (manaRecovery != 0)
-					creature.Regens.Add(group, Stat.Mana, (float)Math.Floor(manaRecovery / 200f * quality), creature.ManaMax, timeout);
+					creature.Regens.Add(regenGroup, Stat.Mana, (float)Math.Floor(manaRecovery / 200f * quality), creature.ManaMax, timeout);
 
 				if (staminaRecovery != 0)
-					creature.Regens.Add(group, Stat.Stamina, (float)Math.Floor(staminaRecovery / 200f * quality), creature.StaminaMax, timeout);
+					creature.Regens.Add(regenGroup, Stat.Stamina, (float)Math.Floor(staminaRecovery / 200f * quality), creature.StaminaMax, timeout);
 
 				if (injuryRecovery != 0)
-					creature.Regens.Add(group, Stat.LifeInjured, (float)Math.Floor(injuryRecovery / 200f * quality), creature.LifeMax, timeout);
+					creature.Regens.Add(regenGroup, Stat.LifeInjured, (float)Math.Floor(injuryRecovery / 200f * quality), creature.LifeMax, timeout);
 			}
 
 			Send.StatUpdate(creature, StatUpdateType.Private,
