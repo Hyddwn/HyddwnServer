@@ -308,7 +308,7 @@ namespace Aura.Channel.Skills.Magic
 				intBonus = 1f + ((creature.Int - 35f) / 350f);
 
 			// Thursday bonus
-			if (ErinnTime.Now.Day == 4)
+			if (ErinnTime.Now.Month == 4)
 				thursdayBonus = Math.Max(0, (15 - rank) / 2f);
 
 			// Result
