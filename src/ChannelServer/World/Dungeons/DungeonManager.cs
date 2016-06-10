@@ -126,7 +126,7 @@ namespace Aura.Channel.World.Dungeons
 				if (existing == null || ChannelServer.Instance.Conf.World.PrivateDungeons)
 				{
 					// Random floor plan on Tuesday
-					var day = ErinnTime.Now.Day;
+					var day = ErinnTime.Now.Month;
 					var floorPlan = (day == 2 || ChannelServer.Instance.Conf.World.RandomFloors ? rnd.Next() : day);
 
 					instanceId = this.GetInstanceId();
