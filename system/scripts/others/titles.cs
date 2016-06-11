@@ -497,7 +497,7 @@ public class TitleRewardingScript : GeneralScript
 		// Show if talking to Glenis while wearing only broken beginner
 		// clothes with 50% hunger.
 		// ------------------------------------------------------------------
-		if (!npc.Player.Titles.Knows(59) && (args[0] as string) == "personal_info")
+		if (!npc.Player.Titles.Knows(59) && (args[0] as string) == "shop_cloth")
 		{
 			var equip = npc.Player.Inventory.GetEquipment();
 			if (equip.Length == 1)
