@@ -110,6 +110,7 @@ namespace Aura.Channel.Util
 			AddAlias("raceinfo", "ri");
 			AddAlias("msg", "m");
 			AddAlias("broadcast", "bc");
+			AddAlias("reloadscripts", "rs");
 		}
 
 		// ------------------------------------------------------------------
