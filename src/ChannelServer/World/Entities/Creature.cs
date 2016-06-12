@@ -2451,7 +2451,14 @@ namespace Aura.Channel.World.Entities
 			baseCritical += ((this.Will - 10) / 10f);
 			baseCritical += ((this.Luck - 10) / 5f);
 
-			return Math.Max(0, baseCritical - protection);
+			// Sunday: Increase in critical hit rate.
+			// +5%, bonus is unofficial.
+			if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
+				baseCritical += 5;
+
+			baseCritical -= protection;
+
+			return Math.Max(0, baseCritical);
 		}
 
 		/// <summary>

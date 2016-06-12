@@ -200,4 +200,42 @@ namespace Aura.Mabi
 			_months[6] = samhain;
 		}
 	}
+
+	public static class ErinnMonth
+	{
+		/// <summary>
+		/// Sunday
+		/// </summary>
+		public const int Imbolic = 0;
+
+		/// <summary>
+		/// Monday
+		/// </summary>
+		public const int AlbanEiler = 1;
+
+		/// <summary>
+		/// Tuesday
+		/// </summary>
+		public const int Baltane = 2;
+
+		/// <summary>
+		/// Wednesday
+		/// </summary>
+		public const int AlbanHeruin = 3;
+
+		/// <summary>
+		/// Thursday
+		/// </summary>
+		public const int Lughnasadh = 4;
+
+		/// <summary>
+		/// Friday
+		/// </summary>
+		public const int AlbanElved = 5;
+
+		/// <summary>
+		/// Saturday
+		/// </summary>
+		public const int Samhain = 6;
+	}
 }
