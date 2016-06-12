@@ -1992,8 +1992,9 @@ namespace Aura.Channel.World.Entities
 				var month = ErinnTime.Now.Month;
 
 				// Tuesday: Increase in dungeon item drop rate.
+				// Wednesday: Increase in item drop rate from animals and nature.
 				// +5%, bonus is unofficial.
-				if (month == ErinnMonth.Baltane && this.Region.IsDungeon)
+				if ((month == ErinnMonth.Baltane && this.Region.IsDungeon) || (month == ErinnMonth.AlbanHeruin && !this.Region.IsDungeon))
 					dropRate += 5;
 
 				if (dropChance < dropRate)
