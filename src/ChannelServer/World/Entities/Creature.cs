@@ -1906,6 +1906,12 @@ namespace Aura.Channel.World.Entities
 
 					// Lucky Finish
 					var luckyChance = rnd.NextDouble();
+
+					// Sunday: Increase in lucky finish.
+					// +5%, bonus is unofficial.
+					if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
+						luckyChance += 0.05;
+
 					if (luckyChance < ChannelServer.Instance.Conf.World.HugeLuckyFinishChance)
 					{
 						amount *= 100;
