@@ -68,6 +68,20 @@ namespace Aura.Channel.Skills
 		public bool IsRankable { get { return (this.Info.Experience >= 100000 && this.Info.Rank < this.Info.MaxRank); } }
 
 		/// <summary>
+		/// Returns true if all training conditions were cleared.
+		/// </summary>
+		public bool IsFullyTrained
+		{
+			get
+			{
+				return (
+					this.Info.ConditionCount1 + this.Info.ConditionCount2 + this.Info.ConditionCount3 +
+					this.Info.ConditionCount4 + this.Info.ConditionCount5 + this.Info.ConditionCount6 +
+					this.Info.ConditionCount7 + this.Info.ConditionCount8 + this.Info.ConditionCount9 == 0);
+			}
+		}
+
+		/// <summary>
 		/// New Skill.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -197,18 +211,17 @@ namespace Aura.Channel.Skills
 			this.CheckMaster();
 		}
 
-		public void CheckMaster()
+		/// <summary>
+		/// Enables master title if skill is on r1 and fully trained.
+		/// </summary>
+		private void CheckMaster()
 		{
 			// Skip if not R1 or already has the master title.
 			if (this.Info.Rank != SkillRank.R1 || _creature.Titles.IsUsable(this.Data.MasterTitle))
 				return;
 
 			// Give master title if all conditions were met. (met == 0)
-			if (
-				this.Info.ConditionCount1 + this.Info.ConditionCount2 + this.Info.ConditionCount3 +
-				this.Info.ConditionCount4 + this.Info.ConditionCount5 + this.Info.ConditionCount6 +
-				this.Info.ConditionCount7 + this.Info.ConditionCount8 + this.Info.ConditionCount9 == 0
-			)
+			if (this.IsFullyTrained)
 				_creature.Titles.Enable(this.Data.MasterTitle);
 		}
 
