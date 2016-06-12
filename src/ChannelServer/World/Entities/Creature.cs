@@ -2278,6 +2278,13 @@ namespace Aura.Channel.World.Entities
 			var expPenalty = this.DeadMenu.GetExpPenalty(this.Level, option);
 			var minExp = AuraData.ExpDb.GetTotalForNextLevel(this.Level - 2);
 
+			// Friday: Decrease in penalties if knocked unconscious.
+			// -5%, bonus is unofficial.
+			// TODO: Does the client subtract the bonus on its side?
+			//   Check on Friday.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
+				expPenalty = (int)(expPenalty * 0.95f);
+
 			if (this.Exp - expPenalty < minExp)
 			{
 				// Unofficial
