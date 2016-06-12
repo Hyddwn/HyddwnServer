@@ -335,7 +335,15 @@ namespace Aura.Channel.Skills
 
 			// Perfect bonus
 			if (this.IsFullyTrained)
-				result *= 1.5f;
+			{
+				var bonus = 1.5f;
+
+				// Wednesday: Increase in rank-up bonus for complete mastery of a skill.
+				if (month == ErinnMonth.AlbanHeruin)
+					bonus = 2f;
+
+				result *= bonus;
+			}
 
 			// Monday: Increase in rank up bonus for life skills (110%).
 			if (month == ErinnMonth.AlbanEiler && this.Data.Category == SkillCategory.Life)
