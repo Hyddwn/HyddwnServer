@@ -300,6 +300,43 @@ namespace Aura.Channel.Skills
 		{
 			return skillId.Contains(this.Info.Id);
 		}
+
+		/// <summary>
+		/// Returns exp that the creature would get for a rank up of this
+		/// skill in its current state.
+		/// </summary>
+		/// <remarks>
+		/// The formula is entirely custom and is based on a very small
+		/// amout of test values, which it doesn't match 100% either.
+		/// However, the results seem reasonable, they appear to be close
+		/// to officials, and going by the lack of research, nobody ever
+		/// bothered to take a closer look at this feature anyway.
+		/// </remarks>
+		/// <returns></returns>
+		public int GetExpBonus()
+		{
+			var result = 0f;
+
+			// Use current training experience as base.
+			result += ((this.RankData.Conditions[0].Count - this.Info.ConditionCount1) * this.RankData.Conditions[0].Exp);
+			result += ((this.RankData.Conditions[1].Count - this.Info.ConditionCount2) * this.RankData.Conditions[1].Exp);
+			result += ((this.RankData.Conditions[2].Count - this.Info.ConditionCount3) * this.RankData.Conditions[2].Exp);
+			result += ((this.RankData.Conditions[3].Count - this.Info.ConditionCount4) * this.RankData.Conditions[3].Exp);
+			result += ((this.RankData.Conditions[4].Count - this.Info.ConditionCount5) * this.RankData.Conditions[4].Exp);
+			result += ((this.RankData.Conditions[5].Count - this.Info.ConditionCount6) * this.RankData.Conditions[5].Exp);
+			result += ((this.RankData.Conditions[6].Count - this.Info.ConditionCount7) * this.RankData.Conditions[6].Exp);
+			result += ((this.RankData.Conditions[7].Count - this.Info.ConditionCount8) * this.RankData.Conditions[7].Exp);
+			result += ((this.RankData.Conditions[8].Count - this.Info.ConditionCount9) * this.RankData.Conditions[8].Exp);
+
+			// Multiply for more exp on higher ranks.
+			result *= (int)this.Info.Rank * 0.6f;
+
+			// Perfect bonus
+			if (this.IsFullyTrained)
+				result *= 1.5f;
+
+			return (int)result;
+		}
 	}
 
 	/// <summary>

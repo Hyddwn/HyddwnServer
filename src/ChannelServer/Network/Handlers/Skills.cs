@@ -57,6 +57,11 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Exp bonus
+			var exp = skill.GetExpBonus();
+			creature.GiveExp(exp);
+			Send.AcquireInfo(creature, "exp", exp);
+
 			// Advance
 			creature.GiveAp(-ap);
 			creature.Skills.Give(skill.Info.Id, nextRank);
