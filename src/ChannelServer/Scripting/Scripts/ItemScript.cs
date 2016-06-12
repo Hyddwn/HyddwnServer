@@ -89,6 +89,15 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="stamina"></param>
 		protected void Heal(Creature creature, double life, double mana, double stamina)
 		{
+			// Friday: All potions become more potent. (Potion effect x 1.5 including toxicity).
+			// +50%? Seems a lot, but that's what the Wiki says.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
+			{
+				life *= 1.5;
+				mana *= 1.5;
+				stamina *= 1.5;
+			}
+
 			creature.Life += (float)life;
 			creature.Mana += (float)mana;
 			creature.Stamina += (float)stamina * creature.StaminaRegenMultiplicator;
@@ -129,6 +138,11 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="foodPoison"></param>
 		protected void Poison(Creature creature, double foodPoison)
 		{
+			// Friday: All potions become more potent. (Potion effect x 1.5 including toxicity).
+			// +50%? Seems a lot, but that's what the Wiki says.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
+				foodPoison *= 1.5;
+
 			//creature.X += (float)foodPoison;
 		}
 
