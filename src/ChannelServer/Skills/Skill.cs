@@ -14,6 +14,7 @@ using Aura.Mabi.Structs;
 using Aura.Shared.Util;
 using Aura.Channel.Util.Configuration.Files;
 using System.Globalization;
+using Aura.Mabi;
 
 namespace Aura.Channel.Skills
 {
@@ -316,6 +317,7 @@ namespace Aura.Channel.Skills
 		public int GetExpBonus()
 		{
 			var result = 0f;
+			var month = ErinnTime.Now.Month;
 
 			// Use current training experience as base.
 			result += ((this.RankData.Conditions[0].Count - this.Info.ConditionCount1) * this.RankData.Conditions[0].Exp);
@@ -334,6 +336,10 @@ namespace Aura.Channel.Skills
 			// Perfect bonus
 			if (this.IsFullyTrained)
 				result *= 1.5f;
+
+			// Monday: Increase in rank up bonus for life skills (110%).
+			if (month == ErinnMonth.AlbanEiler && this.Data.Category == SkillCategory.Life)
+				result *= 1.10f;
 
 			return (int)result;
 		}
