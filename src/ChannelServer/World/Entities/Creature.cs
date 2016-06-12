@@ -2823,6 +2823,11 @@ namespace Aura.Channel.World.Entities
 			// Party bonus
 			result += this.GetProductionPartyBonus(skill);
 
+			// Monday: Increase in success rate for production skills.
+			// +10%, bonus is unofficial.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanEiler)
+				result += 5;
+
 			return Math2.Clamp(0, 99, result);
 		}
 
