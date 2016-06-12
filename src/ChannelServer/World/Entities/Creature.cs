@@ -1950,7 +1950,7 @@ namespace Aura.Channel.World.Entities
 					}
 
 					// Drop rate muliplicator
-					amount = Math.Min(21000, (int)(amount * ChannelServer.Instance.Conf.World.GoldDropRate));
+					amount = Math.Min(21000, Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.GoldDropRate));
 
 					// Drop stack for stack
 					var i = 0;
