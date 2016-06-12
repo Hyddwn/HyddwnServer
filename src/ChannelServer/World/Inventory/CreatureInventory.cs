@@ -2015,6 +2015,11 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="amount"></param>
 		public void AddProficiency(Item item, int amount)
 		{
+			// Thursday: Increase of proficiency gaining rate.
+			// +5%, bonus is unofficial.
+			if (ErinnTime.Now.Month == ErinnMonth.Lughnasadh)
+				amount = (int)(amount * 1.05f);
+
 			item.Proficiency += amount;
 
 			Send.ItemExpUpdate(_creature, item);

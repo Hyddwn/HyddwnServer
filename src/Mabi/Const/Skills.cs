@@ -609,6 +609,26 @@ namespace Aura.Mabi.Const
 		Passive = 10,
 	}
 
+	public enum SkillCategory
+	{
+		Unknown,
+		Life,
+		Combat,
+		Magic,
+		Alchemy,
+		Fighter,
+		Music,
+		Puppet,
+		Guns,
+		Ninja,
+		Transformation,
+		Demi,
+		DivineKnights,
+		Actions,
+		Personas,
+		Hybrid,
+	}
+
 	/// <summary>
 	/// Method for catching something while fishing.
 	/// </summary>

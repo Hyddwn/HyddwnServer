@@ -14,6 +14,7 @@ using Aura.Mabi.Structs;
 using Aura.Shared.Util;
 using Aura.Channel.Util.Configuration.Files;
 using System.Globalization;
+using Aura.Mabi;
 
 namespace Aura.Channel.Skills
 {
@@ -66,6 +67,20 @@ namespace Aura.Channel.Skills
 		/// Returns true if skill has enough experience and is below max rank.
 		/// </summary>
 		public bool IsRankable { get { return (this.Info.Experience >= 100000 && this.Info.Rank < this.Info.MaxRank); } }
+
+		/// <summary>
+		/// Returns true if all training conditions were cleared.
+		/// </summary>
+		public bool IsFullyTrained
+		{
+			get
+			{
+				return (
+					this.Info.ConditionCount1 + this.Info.ConditionCount2 + this.Info.ConditionCount3 +
+					this.Info.ConditionCount4 + this.Info.ConditionCount5 + this.Info.ConditionCount6 +
+					this.Info.ConditionCount7 + this.Info.ConditionCount8 + this.Info.ConditionCount9 == 0);
+			}
+		}
 
 		/// <summary>
 		/// New Skill.
@@ -197,18 +212,17 @@ namespace Aura.Channel.Skills
 			this.CheckMaster();
 		}
 
-		public void CheckMaster()
+		/// <summary>
+		/// Enables master title if skill is on r1 and fully trained.
+		/// </summary>
+		private void CheckMaster()
 		{
 			// Skip if not R1 or already has the master title.
 			if (this.Info.Rank != SkillRank.R1 || _creature.Titles.IsUsable(this.Data.MasterTitle))
 				return;
 
 			// Give master title if all conditions were met. (met == 0)
-			if (
-				this.Info.ConditionCount1 + this.Info.ConditionCount2 + this.Info.ConditionCount3 +
-				this.Info.ConditionCount4 + this.Info.ConditionCount5 + this.Info.ConditionCount6 +
-				this.Info.ConditionCount7 + this.Info.ConditionCount8 + this.Info.ConditionCount9 == 0
-			)
+			if (this.IsFullyTrained)
 				_creature.Titles.Enable(this.Data.MasterTitle);
 		}
 
@@ -286,6 +300,62 @@ namespace Aura.Channel.Skills
 		public bool Is(params SkillId[] skillId)
 		{
 			return skillId.Contains(this.Info.Id);
+		}
+
+		/// <summary>
+		/// Returns exp that the creature would get for a rank up of this
+		/// skill in its current state.
+		/// </summary>
+		/// <remarks>
+		/// The formula is entirely custom and is based on a very small
+		/// amout of test values, which it doesn't match 100% either.
+		/// However, the results seem reasonable, they appear to be close
+		/// to officials, and going by the lack of research, nobody ever
+		/// bothered to take a closer look at this feature anyway.
+		/// </remarks>
+		/// <returns></returns>
+		public int GetExpBonus()
+		{
+			var result = 0f;
+			var month = ErinnTime.Now.Month;
+
+			// Use current training experience as base.
+			result += ((this.RankData.Conditions[0].Count - this.Info.ConditionCount1) * this.RankData.Conditions[0].Exp);
+			result += ((this.RankData.Conditions[1].Count - this.Info.ConditionCount2) * this.RankData.Conditions[1].Exp);
+			result += ((this.RankData.Conditions[2].Count - this.Info.ConditionCount3) * this.RankData.Conditions[2].Exp);
+			result += ((this.RankData.Conditions[3].Count - this.Info.ConditionCount4) * this.RankData.Conditions[3].Exp);
+			result += ((this.RankData.Conditions[4].Count - this.Info.ConditionCount5) * this.RankData.Conditions[4].Exp);
+			result += ((this.RankData.Conditions[5].Count - this.Info.ConditionCount6) * this.RankData.Conditions[5].Exp);
+			result += ((this.RankData.Conditions[6].Count - this.Info.ConditionCount7) * this.RankData.Conditions[6].Exp);
+			result += ((this.RankData.Conditions[7].Count - this.Info.ConditionCount8) * this.RankData.Conditions[7].Exp);
+			result += ((this.RankData.Conditions[8].Count - this.Info.ConditionCount9) * this.RankData.Conditions[8].Exp);
+
+			// Multiply for more exp on higher ranks.
+			result *= (int)this.Info.Rank * 0.6f;
+
+			// Perfect bonus
+			if (this.IsFullyTrained)
+			{
+				var bonus = 1.5f;
+
+				// Wednesday: Increase in rank-up bonus for complete mastery of a skill.
+				if (month == ErinnMonth.AlbanHeruin)
+					bonus = 2f;
+
+				result *= bonus;
+			}
+
+			// Monday: Increase in rank up bonus for life skills (110%).
+			if (month == ErinnMonth.AlbanEiler && this.Data.Category == SkillCategory.Life)
+				result *= 1.10f;
+			// Tuesday: Increase in rank-up bonus for Combat skills.
+			else if (month == ErinnMonth.Baltane && this.Data.Category == SkillCategory.Combat)
+				result *= 1.10f;
+			// Thursday: Increase in rank-up bonus for Magic skills.
+			else if (month == ErinnMonth.Lughnasadh && this.Data.Category == SkillCategory.Magic)
+				result *= 1.10f;
+
+			return (int)result;
 		}
 	}
 

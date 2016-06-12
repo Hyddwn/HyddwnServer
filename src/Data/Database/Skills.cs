@@ -17,6 +17,7 @@ namespace Aura.Data.Database
 		public ushort MasterTitle { get; set; }
 		public SkillRank MaxRank { get; set; }
 		public SkillType Type { get; set; }
+		public SkillCategory Category { get; set; }
 
 		public Locks PrepareLock { get; set; }
 		public Locks PrepareUnlock { get; set; }
@@ -160,13 +161,14 @@ namespace Aura.Data.Database
 
 		protected override void ReadEntry(JObject entry)
 		{
-			entry.AssertNotMissing("id", "name", "masterTitle", "ranks");
+			entry.AssertNotMissing("id", "name", "masterTitle", "ranks", "category");
 
 			var skillInfo = new SkillData();
 			skillInfo.Id = entry.ReadUShort("id");
 			skillInfo.Name = entry.ReadString("name");
 			skillInfo.MasterTitle = entry.ReadUShort("masterTitle");
 			skillInfo.Type = (SkillType)entry.ReadInt("type", -1);
+			skillInfo.Category = (SkillCategory)entry.ReadInt("category", 0);
 
 			// Locks
 			skillInfo.PrepareLock = this.ReadLocks(entry, "prepare", "lock");

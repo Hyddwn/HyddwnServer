@@ -1874,6 +1874,7 @@ namespace Aura.Channel.World.Entities
 		/// <param name="killer"></param>
 		public virtual void Kill(Creature killer)
 		{
+			// Conditions
 			if (this.Conditions.Has(ConditionsA.Deadly))
 				this.Conditions.Deactivate(ConditionsA.Deadly);
 			this.Activate(CreatureStates.Dead);
@@ -1883,87 +1884,127 @@ namespace Aura.Channel.World.Entities
 			Send.IsNowDead(this);
 			Send.SetFinisher(this, 0);
 
+			// Events
 			ChannelServer.Instance.Events.OnCreatureKilled(this, killer);
 			if (killer != null && killer.IsPlayer)
 				ChannelServer.Instance.Events.OnCreatureKilledByPlayer(this, killer);
 			this.Death.Raise(this, killer);
 
+			// Cancel active skill
 			if (this.Skills.ActiveSkill != null)
 				this.Skills.CancelActiveSkill();
 
+			// Drops
 			var rnd = RandomProvider.Get();
 			var pos = this.GetPosition();
 
-			// Gold
-			if (rnd.NextDouble() < ChannelServer.Instance.Conf.World.GoldDropChance)
+			this.DropGold(killer, rnd, pos);
+			this.DropItems(killer, rnd, pos);
+
+			// DeadMenu
+			this.DeadMenu.Update();
+		}
+
+		/// <summary>
+		/// Drops creature's gold.
+		/// </summary>
+		/// <param name="killer"></param>
+		/// <param name="rnd"></param>
+		/// <param name="pos"></param>
+		private void DropGold(Creature killer, Random rnd, Position pos)
+		{
+			if (rnd.NextDouble() >= ChannelServer.Instance.Conf.World.GoldDropChance)
+				return;
+
+			// Random base amount
+			var amount = rnd.Next(this.Drops.GoldMin, this.Drops.GoldMax + 1);
+
+			if (amount > 0)
 			{
-				// Random base amount
-				var amount = rnd.Next(this.Drops.GoldMin, this.Drops.GoldMax + 1);
+				var finish = LuckyFinish.None;
 
-				if (amount > 0)
+				// Lucky Finish
+				var luckyChance = rnd.NextDouble();
+
+				// Sunday: Increase in lucky finish.
+				// +5%, bonus is unofficial.
+				if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
+					luckyChance += 0.05;
+
+				if (luckyChance < ChannelServer.Instance.Conf.World.HugeLuckyFinishChance)
 				{
-					var finish = LuckyFinish.None;
+					amount *= 100;
+					finish = LuckyFinish.Lucky;
 
-					// Lucky Finish
-					var luckyChance = rnd.NextDouble();
-					if (luckyChance < ChannelServer.Instance.Conf.World.HugeLuckyFinishChance)
-					{
-						amount *= 100;
-						finish = LuckyFinish.Lucky;
-
-						Send.CombatMessage(killer, Localization.Get("Huge Lucky Finish!!"));
-						Send.Notice(killer, Localization.Get("Huge Lucky Finish!!"));
-					}
-					else if (luckyChance < ChannelServer.Instance.Conf.World.BigLuckyFinishChance)
-					{
-						amount *= 5;
-						finish = LuckyFinish.BigLucky;
-
-						Send.CombatMessage(killer, Localization.Get("Big Lucky Finish!!"));
-						Send.Notice(killer, Localization.Get("Big Lucky Finish!!"));
-					}
-					else if (luckyChance < ChannelServer.Instance.Conf.World.LuckyFinishChance)
-					{
-						amount *= 2;
-						finish = LuckyFinish.HugeLucky;
-
-						Send.CombatMessage(killer, Localization.Get("Lucky Finish!!"));
-						Send.Notice(killer, Localization.Get("Lucky Finish!!"));
-					}
-
-					// Event
-					if (finish != LuckyFinish.None)
-						ChannelServer.Instance.Events.OnCreatureGotLuckyFinish(killer, finish, amount);
-
-					// Drop rate muliplicator
-					amount = Math.Min(21000, (int)(amount * ChannelServer.Instance.Conf.World.GoldDropRate));
-
-					// Drop stack for stack
-					var i = 0;
-					var pattern = (amount == 21000);
-					do
-					{
-						Position dropPos;
-						if (!pattern)
-						{
-							dropPos = pos.GetRandomInRange(Item.DropRadius, rnd);
-						}
-						else
-						{
-							dropPos = new Position(pos.X + CreatureDrops.MaxGoldPattern[i, 0], pos.Y + CreatureDrops.MaxGoldPattern[i, 1]);
-							i++;
-						}
-
-						var gold = Item.CreateGold(Math.Min(1000, amount));
-						gold.Drop(this.Region, dropPos, 0, killer, false);
-
-						amount -= gold.Info.Amount;
-					}
-					while (amount > 0);
+					Send.CombatMessage(killer, Localization.Get("Huge Lucky Finish!!"));
+					Send.Notice(killer, Localization.Get("Huge Lucky Finish!!"));
 				}
-			}
+				else if (luckyChance < ChannelServer.Instance.Conf.World.BigLuckyFinishChance)
+				{
+					amount *= 5;
+					finish = LuckyFinish.BigLucky;
 
-			// Drops
+					Send.CombatMessage(killer, Localization.Get("Big Lucky Finish!!"));
+					Send.Notice(killer, Localization.Get("Big Lucky Finish!!"));
+				}
+				else if (luckyChance < ChannelServer.Instance.Conf.World.LuckyFinishChance)
+				{
+					amount *= 2;
+					finish = LuckyFinish.HugeLucky;
+
+					Send.CombatMessage(killer, Localization.Get("Lucky Finish!!"));
+					Send.Notice(killer, Localization.Get("Lucky Finish!!"));
+				}
+
+				// If lucky finish
+				if (finish != LuckyFinish.None)
+				{
+					// Event
+					ChannelServer.Instance.Events.OnCreatureGotLuckyFinish(killer, finish, amount);
+
+					// Sunday: Increase in lucky bonus.
+					// +5%, bonus is unofficial.
+					if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
+						amount = (int)(amount * 1.05f);
+				}
+
+				// Drop rate muliplicator
+				amount = Math.Min(21000, Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.GoldDropRate));
+
+				// Drop stack for stack
+				var i = 0;
+				var pattern = (amount == 21000);
+				do
+				{
+					Position dropPos;
+					if (!pattern)
+					{
+						dropPos = pos.GetRandomInRange(Item.DropRadius, rnd);
+					}
+					else
+					{
+						dropPos = new Position(pos.X + CreatureDrops.MaxGoldPattern[i, 0], pos.Y + CreatureDrops.MaxGoldPattern[i, 1]);
+						i++;
+					}
+
+					var gold = Item.CreateGold(Math.Min(1000, amount));
+					gold.Drop(this.Region, dropPos, 0, killer, false);
+
+					amount -= gold.Info.Amount;
+				}
+				while (amount > 0);
+			}
+		}
+
+		/// <summary>
+		/// Drops creature's drop items.
+		/// </summary>
+		/// <param name="killer"></param>
+		/// <param name="rnd"></param>
+		/// <param name="pos"></param>
+		private void DropItems(Creature killer, Random rnd, Position pos)
+		{
+			// Normal
 			var dropped = new HashSet<int>();
 			foreach (var dropData in this.Drops.Drops)
 			{
@@ -1973,7 +2014,17 @@ namespace Aura.Channel.World.Entities
 					continue;
 				}
 
-				if (rnd.NextDouble() * 100 < dropData.Chance * ChannelServer.Instance.Conf.World.DropRate)
+				var dropRate = dropData.Chance * ChannelServer.Instance.Conf.World.DropRate;
+				var dropChance = rnd.NextDouble() * 100;
+				var month = ErinnTime.Now.Month;
+
+				// Tuesday: Increase in dungeon item drop rate.
+				// Wednesday: Increase in item drop rate from animals and nature.
+				// +5%, bonus is unofficial.
+				if ((month == ErinnMonth.Baltane && this.Region.IsDungeon) || (month == ErinnMonth.AlbanHeruin && !this.Region.IsDungeon))
+					dropRate += 5;
+
+				if (dropChance < dropRate)
 				{
 					// Only drop any item once
 					if (dropped.Contains(dropData.ItemId))
@@ -1986,12 +2037,11 @@ namespace Aura.Channel.World.Entities
 				}
 			}
 
+			// Static
 			foreach (var item in this.Drops.StaticDrops)
 				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
 
 			this.Drops.ClearStaticDrops();
-
-			this.DeadMenu.Update();
 		}
 
 		/// <summary>
@@ -2228,6 +2278,13 @@ namespace Aura.Channel.World.Entities
 			var expPenalty = this.DeadMenu.GetExpPenalty(this.Level, option);
 			var minExp = AuraData.ExpDb.GetTotalForNextLevel(this.Level - 2);
 
+			// Friday: Decrease in penalties if knocked unconscious.
+			// -5%, bonus is unofficial.
+			// TODO: Does the client subtract the bonus on its side?
+			//   Check on Friday.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
+				expPenalty = (int)(expPenalty * 0.95f);
+
 			if (this.Exp - expPenalty < minExp)
 			{
 				// Unofficial
@@ -2451,7 +2508,14 @@ namespace Aura.Channel.World.Entities
 			baseCritical += ((this.Will - 10) / 10f);
 			baseCritical += ((this.Luck - 10) / 5f);
 
-			return Math.Max(0, baseCritical - protection);
+			// Sunday: Increase in critical hit rate.
+			// +5%, bonus is unofficial.
+			if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
+				baseCritical += 5;
+
+			baseCritical -= protection;
+
+			return Math.Max(0, baseCritical);
 		}
 
 		/// <summary>
@@ -2801,6 +2865,11 @@ namespace Aura.Channel.World.Entities
 
 			// Party bonus
 			result += this.GetProductionPartyBonus(skill);
+
+			// Monday: Increase in success rate for production skills.
+			// +10%, bonus is unofficial.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanEiler)
+				result += 5;
 
 			return Math2.Clamp(0, 99, result);
 		}
