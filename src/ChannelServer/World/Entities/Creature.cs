@@ -1937,9 +1937,17 @@ namespace Aura.Channel.World.Entities
 						Send.Notice(killer, Localization.Get("Lucky Finish!!"));
 					}
 
-					// Event
+					// If lucky finish
 					if (finish != LuckyFinish.None)
+					{
+						// Event
 						ChannelServer.Instance.Events.OnCreatureGotLuckyFinish(killer, finish, amount);
+
+						// Sunday: Increase in lucky bonus.
+						// +5%, bonus is unofficial.
+						if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
+							amount = (int)(amount * 1.05f);
+					}
 
 					// Drop rate muliplicator
 					amount = Math.Min(21000, (int)(amount * ChannelServer.Instance.Conf.World.GoldDropRate));
