@@ -1987,7 +1987,16 @@ namespace Aura.Channel.World.Entities
 					continue;
 				}
 
-				if (rnd.NextDouble() * 100 < dropData.Chance * ChannelServer.Instance.Conf.World.DropRate)
+				var dropRate = dropData.Chance * ChannelServer.Instance.Conf.World.DropRate;
+				var dropChance = rnd.NextDouble() * 100;
+				var month = ErinnTime.Now.Month;
+
+				// Tuesday: Increase in dungeon item drop rate.
+				// +5%, bonus is unofficial.
+				if (month == ErinnMonth.Baltane && this.Region.IsDungeon)
+					dropRate += 5;
+
+				if (dropChance < dropRate)
 				{
 					// Only drop any item once
 					if (dropped.Contains(dropData.ItemId))
