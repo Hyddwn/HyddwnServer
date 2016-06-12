@@ -14,6 +14,7 @@ using Aura.Mabi.Const;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
 using Aura.Mabi.Network;
+using Aura.Mabi;
 
 namespace Aura.Channel.Skills.Music
 {
@@ -79,6 +80,11 @@ namespace Aura.Channel.Skills.Music
 			// Quality seems to go from 0 (worst) to 3 (best).
 			// TODO: Base quality on skills and score ranks.
 			var quality = (PlayingQuality)rnd.Next((int)PlayingQuality.VeryBad, (int)PlayingQuality.VeryGood + 1);
+
+			// Sunday: Increase in success rate for instrument playing.
+			// Another attempt if quality was bad, unofficial.
+			if (quality < PlayingQuality.Good && ErinnTime.Now.Month == ErinnMonth.Imbolic)
+				quality = (PlayingQuality)rnd.Next((int)PlayingQuality.VeryBad, (int)PlayingQuality.VeryGood + 1);
 
 			// Up quality by chance, based on Musical Knowledge
 			var musicalKnowledgeSkill = creature.Skills.Get(SkillId.MusicalKnowledge);
