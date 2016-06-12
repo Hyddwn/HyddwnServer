@@ -340,6 +340,9 @@ namespace Aura.Channel.Skills
 			// Monday: Increase in rank up bonus for life skills (110%).
 			if (month == ErinnMonth.AlbanEiler && this.Data.Category == SkillCategory.Life)
 				result *= 1.10f;
+			// Tuesday: Increase in rank-up bonus for Combat skills.
+			else if (month == ErinnMonth.Baltane && this.Data.Category == SkillCategory.Combat)
+				result *= 1.10f;
 
 			return (int)result;
 		}
