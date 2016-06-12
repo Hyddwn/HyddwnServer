@@ -156,6 +156,16 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </remarks>
 		protected void Feed(Creature creature, double hunger, double weight = 0, double upper = 0, double lower = 0, double str = 0, double int_ = 0, double dex = 0, double will = 0, double luck = 0, double life = 0, double mana = 0, double stm = 0)
 		{
+			// Saturday: Food effects are increased. (2x weight, hunger; effects are long term)
+			// +100%? Seems a lot, but that's what the Wiki says.
+			if (ErinnTime.Now.Month == ErinnMonth.Samhain)
+			{
+				hunger *= 2;
+				weight *= 2;
+				upper *= 2;
+				lower *= 2;
+			}
+
 			// Hunger
 			var diff = creature.Hunger;
 			creature.Hunger -= (float)hunger;
