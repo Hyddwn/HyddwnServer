@@ -88,9 +88,7 @@ namespace Aura.Channel.Skills
 					else
 						prof = 72;
 
-					weapon.Proficiency += prof;
-
-					Send.ItemExpUpdate(attacker, weapon);
+					attacker.Inventory.AddProficiency(weapon, prof);
 				}
 			}
 		}
