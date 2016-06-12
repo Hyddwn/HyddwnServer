@@ -343,6 +343,9 @@ namespace Aura.Channel.Skills
 			// Tuesday: Increase in rank-up bonus for Combat skills.
 			else if (month == ErinnMonth.Baltane && this.Data.Category == SkillCategory.Combat)
 				result *= 1.10f;
+			// Thursday: Increase in rank-up bonus for Magic skills.
+			else if (month == ErinnMonth.Lughnasadh && this.Data.Category == SkillCategory.Magic)
+				result *= 1.10f;
 
 			return (int)result;
 		}
