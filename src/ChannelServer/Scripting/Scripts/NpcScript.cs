@@ -1859,8 +1859,13 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetInt("CTBONUS", collectionBonusBuff + effect.Value[0]);
 						break;
 
+					case "CollectionSpeed":
+						// CTSPEED:2:40;CTSPEED:4:750;MTWR:1:1;
+						var collectionSpeedBuff = result.Item.MetaData1.GetInt("CTSPEED");
+						result.Item.MetaData1.SetInt("CTSPEED", collectionSpeedBuff + effect.Value[0]);
+						break;
+
 					// TODO:
-					// - CollectionSpeed
 					// - SplashRadius
 					// - ManaBurn
 					// - LancePiercing
