@@ -1853,9 +1853,14 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetInt("MBD", musicBuffDur + effect.Value[0]);
 						break;
 
+					case "CollectionBonus":
+						// CTBONUS:2:40;CTSPEED:4:750;MTWR:1:1;
+						var collectionBonusBuff = result.Item.MetaData1.GetInt("CTBONUS");
+						result.Item.MetaData1.SetInt("CTBONUS", collectionBonusBuff + effect.Value[0]);
+						break;
+
 					// TODO:
 					// - CollectionSpeed
-					// - CollectionBonus
 					// - SplashRadius
 					// - ManaBurn
 					// - LancePiercing
