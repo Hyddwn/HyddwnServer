@@ -1844,25 +1844,25 @@ namespace Aura.Channel.Scripting.Scripts
 					case "MusicBuffBonus":
 						// MBB:4:8;MBD:4:10;MTWR:1:2;OTU:1:1;SPTEC:1:1;
 						var musicBuff = result.Item.MetaData1.GetInt("MBB");
-						result.Item.MetaData1.SetInt("MBB", musicBuff + effect.Value[0]);
+						result.Item.MetaData1.SetInt("MBB", musicBuff + (int)effect.Value[0]);
 						break;
 
 					case "MusicBuffDuration":
 						// MBB:4:8;MBD:4:10;MTWR:1:2;OTU:1:1;SPTEC:1:1;
 						var musicBuffDur = result.Item.MetaData1.GetInt("MBD");
-						result.Item.MetaData1.SetInt("MBD", musicBuffDur + effect.Value[0]);
+						result.Item.MetaData1.SetInt("MBD", musicBuffDur + (int)effect.Value[0]);
 						break;
 
 					case "CollectionBonus":
 						// CTBONUS:2:40;CTSPEED:4:750;MTWR:1:1;
 						var collectionBonusBuff = result.Item.MetaData1.GetInt("CTBONUS");
-						result.Item.MetaData1.SetInt("CTBONUS", collectionBonusBuff + effect.Value[0]);
+						result.Item.MetaData1.SetInt("CTBONUS", collectionBonusBuff + (int)effect.Value[0]);
 						break;
 
 					case "CollectionSpeed":
 						// CTSPEED:2:40;CTSPEED:4:750;MTWR:1:1;
 						var collectionSpeedBuff = result.Item.MetaData1.GetInt("CTSPEED");
-						result.Item.MetaData1.SetInt("CTSPEED", collectionSpeedBuff + effect.Value[0]);
+						result.Item.MetaData1.SetInt("CTSPEED", collectionSpeedBuff + (int)effect.Value[0]);
 						break;
 
 					case "LancePiercing":
