@@ -1874,8 +1874,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 					case "SplashRadius":
 						// SP_DMG:f:0.250000;SP_RAD:4:70;
-						var splashRadiusBuff = result.Item.MetaData1.GetFloat("SP_RAD");
-						result.Item.MetaData1.SetFloat("SP_RAD", splashRadiusBuff + effect.Value[0]);
+						var splashRadiusBuff = result.Item.MetaData1.GetInt("SP_RAD");
+						result.Item.MetaData1.SetInt("SP_RAD", splashRadiusBuff + (int)effect.Value[0]);
 						break;
 
 					case "SplashDamage":
