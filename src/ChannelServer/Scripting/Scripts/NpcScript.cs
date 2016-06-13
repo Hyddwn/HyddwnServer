@@ -1872,8 +1872,13 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetByte("LP", (byte)(lancePiercingBuff + effect.Value[0]));
 						break;
 
+					case "SplashRadius":
+						// SP_DMG:f:0.250000;SP_RAD:4:70;
+						var splashRadiusBuff = result.Item.MetaData1.GetFloat("SP_RAD");
+						result.Item.MetaData1.SetFloat("SP_RAD", splashRadiusBuff + effect.Value[0]);
+						break;
+
 					// TODO:
-					// - SplashRadius
 					// - ManaBurn
 					// - MaxBullets
 					// - Artisan
