@@ -1878,6 +1878,12 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetFloat("SP_RAD", splashRadiusBuff + effect.Value[0]);
 						break;
 
+					case "SplashDamage":
+						// SP_DMG:f:0.250000;SP_RAD:4:70;
+						var splashDamageBuff = result.Item.MetaData1.GetFloat("SP_DMG");
+						result.Item.MetaData1.SetFloat("SP_DMG", splashDamageBuff + effect.Value[0]);
+						break;
+
 					// TODO:
 					// - ManaBurn
 					// - MaxBullets
