@@ -1865,10 +1865,16 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetInt("CTSPEED", collectionSpeedBuff + effect.Value[0]);
 						break;
 
+					case "LancePiercing":
+						// EHLV:4:5;LKUP:8:262244;LP:1:4;LP_E:1:0;OWNER:s:character;SPTRP:1:1;   << Piercing Level 4
+						// LP:1:1;QUAL:4:70;   << Piercing Level 1
+						var lancePiercingBuff = result.Item.MetaData1.GetByte("LP");
+						result.Item.MetaData1.SetByte("LP", (byte)(lancePiercingBuff + effect.Value[0]));
+						break;
+
 					// TODO:
 					// - SplashRadius
 					// - ManaBurn
-					// - LancePiercing
 					// - MaxBullets
 					// - Artisan
 
