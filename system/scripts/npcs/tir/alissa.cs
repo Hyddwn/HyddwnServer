@@ -62,8 +62,29 @@ public class AlissaBaseScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				var playerVar = Player.Vars.Perm["alissa_title_gift"];
+				var today = ErinnTime.Now.ToString("yyyyMMdd");
+
+				if (playerVar != today || playerVar == null)
+				{
+					switch (Title)
+					{
+						case 10060: // is a friend of Deian
+						case 10062: // is a friend of Nora
+							Msg(L("Yay! Welcome back, <username/>.<br/>I was expecting you."));
+							Player.Vars.Perm["alissa_title_gift"] = today;
+							GiveItem(71021); // Berry
+							Notice(L("Received Berry from Alissa."));
+							SystemMsg(L("Received Berry from Alissa."));
+							Msg(L("I wanted to give you this..."));
+							break;
+					}
+				}
+
+				if (Title == 11002)
 					Msg("Huh? <username/>...<br/>You're the Guardian of Erinn?<br/>When did this happen...?<br/>Even I can see that there's something different about you.");
+
 				await Conversation();
 				break;
 

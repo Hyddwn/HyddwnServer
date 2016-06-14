@@ -49,8 +49,37 @@ public class DilysScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
+
+				var playerVar = Player.Vars.Perm["dilys_title_gift"];
+				var today = ErinnTime.Now.ToString("yyyyMMdd");
+				string npc = null;
+
+				if (playerVar != today || playerVar == null)
+				{
+					switch (Title)
+					{
+						case 10061: // is a friend of Malcolm
+							npc = L("Malcolm");
+							break;
+
+						case 10062: // is a friend of Nora
+							npc = L("Nora");
+							break;
+					}
+				}
+
+				if (npc != null)
+				{
+					Player.Vars.Perm["dilys_title_gift"] = today;
+					GiveItem(51011, 3); // Stamina 10 Potion x3
+					Notice(L("Received HP 10 Potion from Dilys."));
+					SystemMsg(L("Received HP 10 Potion from Dilys."));
+					Msg(L("Hello, <username/>, a Friend of " + npc + ".<br/>I'm giving you this because I think you will find it useful."));
+				}
+
 				if (Title == 11002)
 					Msg("Sigh...<br/>As if Trefore weren't enough...<br/>Do we really need more dummies in this town?");
+
 				await Conversation();
 				break;
 

@@ -55,33 +55,49 @@ public class DuncanBaseScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				switch (Title)
+
+				var playerVar = Player.Vars.Perm["duncan_title_gift"];
+				var today = ErinnTime.Now.ToString("yyyyMMdd");
+				string npc = null;
+
+				if (playerVar != today || playerVar == null)
 				{
-					case 11002: // the Savior of Erinn
-						Msg("Oh. <username/>! You finally did it...<br/>I can't believe you became the Knight of Light and saved Erinn...<br/>Nao would be so proud.");
-						Msg("I'm starting to understand Goddess Morrighan and Nao's will<br/>for sending people like you to this world.");
-						break;
+					switch (Title)
+					{
+						case 10059: // is a friend of Trefor
+							npc = L("Trefor");
+							break;
 
-					case 10059: // is a friend of Trefor
-						Msg("That's great, <username/>.<br/>Seeing you and Trefor are such good friends<br/>makes me feel great as the chief of this town.");
-						Msg("I hope you can continue to help us and care for the town, haha...");
-						break;
+						case 10060: // is a friend of Deian
+							npc = L("Deian");
+							break;
 
-					case 10060: // is a friend of Deian
-						Msg("That's great, <username/>.<br/>Seeing you and Deian are such good friends<br/>makes me feel great as the chief of this town.");
-						Msg("I hope you can continue to help us and care for the town, haha...");
-						break;
+						case 10061: // is a friend of Malcolm
+							npc = L("Malcolm");
+							break;
 
-					case 10061: // is a friend of Malcolm
-						Msg("That's great, <username/>.<br/>Seeing you and Malcolm are such good friends<br/>makes me feel great as the chief of this town.");
-						Msg("I hope you can continue to help us and care for the town, haha...");
-						break;
+						case 10062: // is a friend of Nora
+							npc = L("Nora");
+							break;
+					}
 
-					case 10062: // is a friend of Nora
-						Msg("That's great, <username/>.<br/>Seeing you and Nora are such good friends<br/>makes me feel great as the chief of this town.");
-						Msg("I hope you can continue to help us and care for the town, haha...");
-						break;
+					if (npc != null)
+					{
+						Msg(L("That's great, <username/>.<br/>Seeing you and " + npc + " are such good friends<br/>makes me feel great as the chief of this town."));
+						Player.Vars.Perm["duncan_title_gift"] = today;
+						GiveItem(63000, 3); // Phoenix Feather x3
+						Notice(L("Received Phoenix Feather from Duncan."));
+						SystemMsg(L("Received Phoenix Feather from Duncan."));
+						Msg(L("I hope you can continue to help us and care for the town, haha..."));
+					}
 				}
+
+				if (Title == 11002)
+				{
+					Msg("Oh. <username/>! You finally did it...<br/>I can't believe you became the Knight of Light and saved Erinn...<br/>Nao would be so proud.");
+					Msg("I'm starting to understand Goddess Morrighan and Nao's will<br/>for sending people like you to this world.");
+				}
+
 				await Conversation();
 				break;
 
