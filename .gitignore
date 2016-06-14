@@ -23,13 +23,6 @@
 /user/localization/*
 !/user/localization/readme.txt
 
-#############
-## NuGet
-#############
-*.nupkg
-**/packages/*
-!**/packages/build/
-
 #################
 ## Visual Studio
 #################
