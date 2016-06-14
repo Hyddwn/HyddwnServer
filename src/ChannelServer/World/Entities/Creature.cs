@@ -3135,6 +3135,24 @@ namespace Aura.Channel.World.Entities
 
 			return this.Inventory.GetChainCastLevel(skillId);
 		}
+
+		/// <summary>
+		/// Returns given Mana cost adjusted for this creature, factoring in
+		/// bonuses and modifications.
+		/// </summary>
+		/// <param name="baseVal"></param>
+		/// <returns></returns>
+		public float GetAdjustedManaCost(float baseVal)
+		{
+			var cost = baseVal;
+			var mod = this.Inventory.GetManaUseModificator();
+
+			// Positive values mean you use less Mana.
+			if (mod != 0)
+				cost *= (100 - mod) / 100f;
+
+			return cost;
+		}
 	}
 
 	public enum TargetableOptions

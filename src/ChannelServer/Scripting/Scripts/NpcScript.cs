@@ -1816,6 +1816,25 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetString("WU", manaUseWU.ToString());
 						break;
 
+					case "ManaBurn":
+						var manaBurnWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
+
+						// Prior to G15S2 players lost all their Mana when
+						// they unequipped a wand. This was removed via
+						// feature, but before that this upgrade allowed
+						// one to reduce the amount of Mana lost.
+						// Afterwards the ManaBurn upgrade was turned into
+						// a ManaUse automatically, but the bonus was halfed,
+						// meaning if a ManaBurn upgrade gave -4% burn,
+						// it gave -2% use after this update.
+						if (!this.IsEnabled("ManaBurnRemove"))
+							manaBurnWU.ManaBurn += (sbyte)effect.Value[0];
+						else
+							manaBurnWU.ManaUse += (sbyte)(effect.Value[0] / 2);
+
+						result.Item.MetaData1.SetString("WU", manaBurnWU.ToString());
+						break;
+
 					case "ChainCasting":
 						// Chain Casting: +4, Magic Attack: +21
 						// EHLV:4:5;MTWR:1:1;OWNER:s:username;WU:s:30201400000015;
@@ -1844,21 +1863,65 @@ namespace Aura.Channel.Scripting.Scripts
 					case "MusicBuffBonus":
 						// MBB:4:8;MBD:4:10;MTWR:1:2;OTU:1:1;SPTEC:1:1;
 						var musicBuff = result.Item.MetaData1.GetInt("MBB");
-						result.Item.MetaData1.SetInt("MBB", musicBuff + effect.Value[0]);
+						result.Item.MetaData1.SetInt("MBB", musicBuff + (int)effect.Value[0]);
 						break;
 
 					case "MusicBuffDuration":
 						// MBB:4:8;MBD:4:10;MTWR:1:2;OTU:1:1;SPTEC:1:1;
 						var musicBuffDur = result.Item.MetaData1.GetInt("MBD");
-						result.Item.MetaData1.SetInt("MBD", musicBuffDur + effect.Value[0]);
+						result.Item.MetaData1.SetInt("MBD", musicBuffDur + (int)effect.Value[0]);
+						break;
+
+					case "CollectionBonus":
+						// CTBONUS:2:40;CTSPEED:4:750;MTWR:1:1;
+						var collectionBonusBuff = result.Item.MetaData1.GetInt("CTBONUS");
+						result.Item.MetaData1.SetInt("CTBONUS", collectionBonusBuff + (int)effect.Value[0]);
+						break;
+
+					case "CollectionSpeed":
+						// CTSPEED:2:40;CTSPEED:4:750;MTWR:1:1;
+						var collectionSpeedBuff = result.Item.MetaData1.GetInt("CTSPEED");
+						result.Item.MetaData1.SetInt("CTSPEED", collectionSpeedBuff + (int)effect.Value[0]);
+						break;
+
+					case "LancePiercing":
+						// EHLV:4:5;LKUP:8:262244;LP:1:4;LP_E:1:0;OWNER:s:character;SPTRP:1:1;   << Piercing Level 4
+						// LP:1:1;QUAL:4:70;   << Piercing Level 1
+						var lancePiercingBuff = result.Item.MetaData1.GetByte("LP");
+						result.Item.MetaData1.SetByte("LP", (byte)(lancePiercingBuff + effect.Value[0]));
+						break;
+
+					case "SplashRadius":
+						// SP_DMG:f:0.250000;SP_RAD:4:70;
+						var splashRadiusBuff = result.Item.MetaData1.GetInt("SP_RAD");
+						result.Item.MetaData1.SetInt("SP_RAD", splashRadiusBuff + (int)effect.Value[0]);
+						break;
+
+					case "SplashDamage":
+						// SP_DMG:f:0.250000;SP_RAD:4:70;
+						var splashDamageBuff = result.Item.MetaData1.GetFloat("SP_DMG");
+						result.Item.MetaData1.SetFloat("SP_DMG", splashDamageBuff + effect.Value[0]);
+						break;
+
+					case "ImmuneMelee":
+						// IM_MGC:f:0.050000;IM_MLE:f:0.050000;IM_RNG:f:0.050000;MDEF:f:2.000000;MPROT:f:3.000000;OTU:1:1;
+						var immuneMeleeBuff = result.Item.MetaData1.GetFloat("IM_MLE");
+						result.Item.MetaData1.SetFloat("IM_MLE", immuneMeleeBuff + effect.Value[0]);
+						break;
+
+					case "ImmuneRanged":
+						// IM_MGC:f:0.050000;IM_MLE:f:0.050000;IM_RNG:f:0.050000;MDEF:f:2.000000;MPROT:f:3.000000;OTU:1:1;
+						var immuneRangedBuff = result.Item.MetaData1.GetFloat("IM_RNG");
+						result.Item.MetaData1.SetFloat("IM_RNG", immuneRangedBuff + effect.Value[0]);
+						break;
+
+					case "ImmuneMagic":
+						// IM_MGC:f:0.050000;IM_MLE:f:0.050000;IM_RNG:f:0.050000;MDEF:f:2.000000;MPROT:f:3.000000;OTU:1:1;
+						var immuneMagicBuff = result.Item.MetaData1.GetFloat("IM_MGC");
+						result.Item.MetaData1.SetFloat("IM_MGC", immuneMagicBuff + effect.Value[0]);
 						break;
 
 					// TODO:
-					// - CollectionSpeed
-					// - CollectionBonus
-					// - SplashRadius
-					// - ManaBurn
-					// - LancePiercing
 					// - MaxBullets
 					// - Artisan
 
@@ -2248,9 +2311,9 @@ namespace Aura.Channel.Scripting.Scripts
 		public sbyte ManaUse { get; set; }
 
 		/// <summary>
-		/// ?
+		/// Evaporated Mana upgrade
 		/// </summary>
-		public sbyte Unknown { get; set; }
+		public sbyte ManaBurn { get; set; }
 
 		/// <summary>
 		/// Charging Speed upgrade
@@ -2298,7 +2361,7 @@ namespace Aura.Channel.Scripting.Scripts
 			this.ChainCastSkillId = Convert.ToUInt16(val.Substring(0, 5));
 			this.ChainCastLevel = Convert.ToByte(val.Substring(5, 1), 16);
 			this.ManaUse = Convert.ToSByte(val.Substring(6, 2), 16);
-			this.Unknown = Convert.ToSByte(val.Substring(8, 2), 16);
+			this.ManaBurn = Convert.ToSByte(val.Substring(8, 2), 16);
 			this.CastingSpeed = Convert.ToSByte(val.Substring(10, 2), 16);
 			this.MagicDamage = Convert.ToSByte(val.Substring(12, 2), 16);
 		}
@@ -2310,7 +2373,7 @@ namespace Aura.Channel.Scripting.Scripts
 			result.Append(this.ChainCastSkillId.ToString("00000"));
 			result.Append(this.ChainCastLevel.ToString().Substring(0, 1));
 			result.Append(this.ManaUse.ToString("x2"));
-			result.Append(this.Unknown.ToString("x2"));
+			result.Append(this.ManaBurn.ToString("x2"));
 			result.Append(this.CastingSpeed.ToString("x2"));
 			result.Append(this.MagicDamage.ToString("x2"));
 
