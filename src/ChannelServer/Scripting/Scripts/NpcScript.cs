@@ -1817,9 +1817,21 @@ namespace Aura.Channel.Scripting.Scripts
 						break;
 
 					case "ManaBurn":
-						// WU:s:00000003000000
 						var manaBurnWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
-						manaBurnWU.ManaBurn += (sbyte)effect.Value[0];
+
+						// Prior to G15S2 players lost all their Mana when
+						// they unequipped a wand. This was removed via
+						// feature, but before that this upgrade allowed
+						// one to reduce the amount of Mana lost.
+						// Afterwards the ManaBurn upgrade was turned into
+						// a ManaUse automatically, but the bonus was halfed,
+						// meaning if a ManaBurn upgrade gave -4% burn,
+						// it gave -2% use after this update.
+						if (!this.IsEnabled("ManaBurnRemove"))
+							manaBurnWU.ManaBurn += (sbyte)effect.Value[0];
+						else
+							manaBurnWU.ManaUse += (sbyte)(effect.Value[0] / 2);
+
 						result.Item.MetaData1.SetString("WU", manaBurnWU.ToString());
 						break;
 
