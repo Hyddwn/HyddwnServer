@@ -1816,6 +1816,13 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetString("WU", manaUseWU.ToString());
 						break;
 
+					case "ManaBurn":
+						// WU:s:00000003000000
+						var manaBurnWU = new WUUpgrades(result.Item.MetaData1.GetString("WU"));
+						manaBurnWU.ManaBurn += (sbyte)effect.Value[0];
+						result.Item.MetaData1.SetString("WU", manaBurnWU.ToString());
+						break;
+
 					case "ChainCasting":
 						// Chain Casting: +4, Magic Attack: +21
 						// EHLV:4:5;MTWR:1:1;OWNER:s:username;WU:s:30201400000015;
@@ -1903,7 +1910,6 @@ namespace Aura.Channel.Scripting.Scripts
 						break;
 
 					// TODO:
-					// - ManaBurn
 					// - MaxBullets
 					// - Artisan
 
