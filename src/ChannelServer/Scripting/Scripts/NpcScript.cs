@@ -2295,7 +2295,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Evaporated Mana upgrade
 		/// </summary>
-		public sbyte ManBurn { get; set; }
+		public sbyte ManaBurn { get; set; }
 
 		/// <summary>
 		/// Charging Speed upgrade
@@ -2343,7 +2343,7 @@ namespace Aura.Channel.Scripting.Scripts
 			this.ChainCastSkillId = Convert.ToUInt16(val.Substring(0, 5));
 			this.ChainCastLevel = Convert.ToByte(val.Substring(5, 1), 16);
 			this.ManaUse = Convert.ToSByte(val.Substring(6, 2), 16);
-			this.ManBurn = Convert.ToSByte(val.Substring(8, 2), 16);
+			this.ManaBurn = Convert.ToSByte(val.Substring(8, 2), 16);
 			this.CastingSpeed = Convert.ToSByte(val.Substring(10, 2), 16);
 			this.MagicDamage = Convert.ToSByte(val.Substring(12, 2), 16);
 		}
@@ -2355,7 +2355,7 @@ namespace Aura.Channel.Scripting.Scripts
 			result.Append(this.ChainCastSkillId.ToString("00000"));
 			result.Append(this.ChainCastLevel.ToString().Substring(0, 1));
 			result.Append(this.ManaUse.ToString("x2"));
-			result.Append(this.ManBurn.ToString("x2"));
+			result.Append(this.ManaBurn.ToString("x2"));
 			result.Append(this.CastingSpeed.ToString("x2"));
 			result.Append(this.MagicDamage.ToString("x2"));
 
