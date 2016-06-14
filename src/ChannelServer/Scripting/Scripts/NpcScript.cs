@@ -1896,11 +1896,16 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetFloat("IM_RNG", immuneRangedBuff + effect.Value[0]);
 						break;
 
+					case "ImmuneMagic":
+						// IM_MGC:f:0.050000;IM_MLE:f:0.050000;IM_RNG:f:0.050000;MDEF:f:2.000000;MPROT:f:3.000000;OTU:1:1;
+						var immuneMagicBuff = result.Item.MetaData1.GetFloat("IM_MGC");
+						result.Item.MetaData1.SetFloat("IM_MGC", immuneMagicBuff + effect.Value[0]);
+						break;
+
 					// TODO:
 					// - ManaBurn
 					// - MaxBullets
 					// - Artisan
-					// - ImmuneMagic
 
 					default:
 						Log.Unimplemented("Item upgrade '{0}'", effect.Key);
