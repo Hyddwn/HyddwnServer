@@ -48,21 +48,22 @@ public class PiarasScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				var playerVar = Player.Vars.Perm["piaras_title_gift"];
-				var today = ErinnTime.Now.ToString("yyyyMMdd");
-
 				if (Title == 10062) // is a friend of Nora
 				{
-					if (playerVar != today || playerVar == null)
+					var today = ErinnTime.Now.ToString("yyyyMMdd");
+					if (today != Player.Vars.Perm["piaras_title_gift"])
 					{
 						Player.Vars.Perm["piaras_title_gift"] = today;
+
 						GiveItem(63002, 5); // Firewood x5
 						Notice(L("Received Firewood from Piaras."));
 						SystemMsg(L("Received Firewood from Piaras."));
+
 						Msg(L("If you are a friend of Nora, you are my friend as well.<br/>Would you like to take some?"));
 					}
 				}
-				else if (Title == 11002)
+
+				if (Title == 11002)
 				{
 					Msg("<username/>.<br/>I was wondering where you've been...");
 					Msg("...You must've went on a great adventure.<br/>You know I love adventure stories...");

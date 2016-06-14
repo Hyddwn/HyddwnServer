@@ -40,7 +40,7 @@ public class AlissaBaseScript : NpcScript
 		AddPhrase("There's a guard at the wheat field, and I'm watching the Windmill.");
 		AddPhrase("When is Caitin going to teach me how to bake bread?");
 		AddPhrase("You can gather wheat at the wheat field.");
-		
+
 		DeactivateWindmill();
 	}
 
@@ -63,20 +63,21 @@ public class AlissaBaseScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				var playerVar = Player.Vars.Perm["alissa_title_gift"];
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
-
-				if (playerVar != today || playerVar == null)
+				if (today != Player.Vars.Perm["alissa_title_gift"])
 				{
 					switch (Title)
 					{
 						case 10060: // is a friend of Deian
 						case 10062: // is a friend of Nora
 							Msg(L("Yay! Welcome back, <username/>.<br/>I was expecting you."));
+
 							Player.Vars.Perm["alissa_title_gift"] = today;
+
 							GiveItem(71021); // Berry
 							Notice(L("Received Berry from Alissa."));
 							SystemMsg(L("Received Berry from Alissa."));
+
 							Msg(L("I wanted to give you this..."));
 							break;
 					}

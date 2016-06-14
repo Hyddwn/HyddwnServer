@@ -56,38 +56,40 @@ public class DuncanBaseScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				var playerVar = Player.Vars.Perm["duncan_title_gift"];
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
-				string npc = null;
-
-				if (playerVar != today || playerVar == null)
+				if (today != Player.Vars.Perm["duncan_title_gift"])
 				{
+					string message = null;
+
 					switch (Title)
 					{
 						case 10059: // is a friend of Trefor
-							npc = L("Trefor");
+							message = L("That's great, <username/>.<br/>Seeing you and Trefor are such good friends<br/>makes me feel great as the chief of this town.");
 							break;
 
 						case 10060: // is a friend of Deian
-							npc = L("Deian");
+							message = L("That's great, <username/>.<br/>Seeing you and Deian are such good friends<br/>makes me feel great as the chief of this town.");
 							break;
 
 						case 10061: // is a friend of Malcolm
-							npc = L("Malcolm");
+							message = L("That's great, <username/>.<br/>Seeing you and Malcolm are such good friends<br/>makes me feel great as the chief of this town.");
 							break;
 
 						case 10062: // is a friend of Nora
-							npc = L("Nora");
+							message = L("That's great, <username/>.<br/>Seeing you and Nora are such good friends<br/>makes me feel great as the chief of this town.");
 							break;
 					}
 
-					if (npc != null)
+					if (message != null)
 					{
-						Msg(L("That's great, <username/>.<br/>Seeing you and " + npc + " are such good friends<br/>makes me feel great as the chief of this town."));
+						Msg(message);
+
 						Player.Vars.Perm["duncan_title_gift"] = today;
+
 						GiveItem(63000, 3); // Phoenix Feather x3
 						Notice(L("Received Phoenix Feather from Duncan."));
 						SystemMsg(L("Received Phoenix Feather from Duncan."));
+
 						Msg(L("I hope you can continue to help us and care for the town, haha..."));
 					}
 				}

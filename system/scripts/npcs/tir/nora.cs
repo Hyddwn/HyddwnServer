@@ -57,19 +57,20 @@ public class NoraBaseScript : NpcScript
 
 				if (Title == 10062) // is a friend of Nora
 				{
-					var playerVar = Player.Vars.Perm["nora_title_gift"];
 					var today = ErinnTime.Now.ToString("yyyyMMdd");
-
-					if (playerVar != today || playerVar == null)
+					if (today != Player.Vars.Perm["nora_title_gift"])
 					{
 						Player.Vars.Perm["nora_title_gift"] = today;
+
 						GiveItem(60005, 5); // Bandage x5
 						Notice(L("Received Bandage from Nora."));
 						SystemMsg(L("Received Bandage from Nora."));
+
 						Msg(L("Welcome, my dear friend.<br/>Don't you think Uncle Piaras has noticed<br/>how much time you and I spend talking to each other?"));
 					}
 				}
-				else if (Title == 11002)
+
+				if (Title == 11002)
 				{
 					Msg("<username/>, the Guardian of Erinn?<br/>Perfect timing.<br/>Rats keep appearing around town...<br/>Can you kill them for us?");
 					Msg("Malcom at the General Shop<br/>is so scared that he won't even step outside...");

@@ -57,19 +57,19 @@ public class DeianScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				var playerVar = Player.Vars.Perm["deian_title_gift"];
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
-
-				if (playerVar != today || playerVar == null)
+				if (today != Player.Vars.Perm["deian_title_gift"])
 				{
 					switch (Title)
 					{
 						case 10059: // is a friend of Trefor
 						case 10060: // is a friend of Deian
 							Player.Vars.Perm["deian_title_gift"] = today;
+
 							GiveItem(71021); // Brown Fox Fomor Scroll
 							Notice(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
 							SystemMsg(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
+
 							Msg(L("Perfect timing. <username/>.<br/>I've been meaning to give you this."));
 							break;
 					}

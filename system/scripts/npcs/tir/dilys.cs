@@ -50,31 +50,32 @@ public class DilysScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				var playerVar = Player.Vars.Perm["dilys_title_gift"];
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
-				string npc = null;
-
-				if (playerVar != today || playerVar == null)
+				if (today != Player.Vars.Perm["dilys_title_gift"])
 				{
+					string message = null;
+
 					switch (Title)
 					{
 						case 10061: // is a friend of Malcolm
-							npc = L("Malcolm");
+							message = L("Hello, <username/>, a Friend of Malcolm.<br/>I'm giving you this because I think you will find it useful.");
 							break;
 
 						case 10062: // is a friend of Nora
-							npc = L("Nora");
+							message = L("Hello, <username/>, a Friend of Nora.<br/>I'm giving you this because I think you will find it useful.");
 							break;
 					}
-				}
 
-				if (npc != null)
-				{
-					Player.Vars.Perm["dilys_title_gift"] = today;
-					GiveItem(51011, 3); // Stamina 10 Potion x3
-					Notice(L("Received HP 10 Potion from Dilys."));
-					SystemMsg(L("Received HP 10 Potion from Dilys."));
-					Msg(L("Hello, <username/>, a Friend of " + npc + ".<br/>I'm giving you this because I think you will find it useful."));
+					if (message != null)
+					{
+						Player.Vars.Perm["dilys_title_gift"] = today;
+
+						GiveItem(51011, 3); // Stamina 10 Potion x3
+						Notice(L("Received HP 10 Potion from Dilys."));
+						SystemMsg(L("Received HP 10 Potion from Dilys."));
+
+						Msg(message);
+					}
 				}
 
 				if (Title == 11002)

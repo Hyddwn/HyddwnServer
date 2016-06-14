@@ -47,12 +47,11 @@ public class EndelyonScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				var playerVar = Player.Vars.Perm["endelyon_title_gift"];
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
-				string message = null;
-
-				if (playerVar != today || playerVar == null)
+				if (today != Player.Vars.Perm["endelyon_title_gift"])
 				{
+					string message = null;
+
 					switch (Title)
 					{
 						case 10060: // is a friend of Deian
@@ -63,15 +62,17 @@ public class EndelyonScript : NpcScript
 							message = L("I prepared some boiled eggs.<br/>Would you like to try one?");
 							break;
 					}
-				}
 
-				if (message != null)
-				{
-					Player.Vars.Perm["endelyon_title_gift"] = today;
-					GiveItem(50126); // Hard-Boiled Egg
-					Notice(L("Received Hard-Boiled Egg from Endelyon."));
-					SystemMsg(L("Received Hard-Boiled Egg from Endelyon."));
-					Msg(message);
+					if (message != null)
+					{
+						Player.Vars.Perm["endelyon_title_gift"] = today;
+
+						GiveItem(50126); // Hard-Boiled Egg
+						Notice(L("Received Hard-Boiled Egg from Endelyon."));
+						SystemMsg(L("Received Hard-Boiled Egg from Endelyon."));
+
+						Msg(message);
+					}
 				}
 
 				if (Title == 11002)

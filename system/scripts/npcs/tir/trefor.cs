@@ -61,12 +61,11 @@ public class TreforScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				var playerVar = Player.Vars.Perm["trefor_title_gift"];
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
-				string message = null;
-
-				if (playerVar != today || playerVar == null)
+				if (today != Player.Vars.Perm["trefor_title_gift"])
 				{
+					string message = null;
+
 					switch (Title)
 					{
 						case 10059: // is a friend of Trefor
@@ -81,10 +80,13 @@ public class TreforScript : NpcScript
 					if (message != null)
 					{
 						Msg(message);
+
 						Player.Vars.Perm["trefor_title_gift"] = today;
+
 						GiveItem(71017); // White Spider Fomor Scroll
 						Notice(L("Received White Spider Fomor Scroll from Trefor."));
 						SystemMsg(L("Received White Spider Fomor Scroll from Trefor."));
+
 						Msg(L("You might be a little puzzled about the Fomor Scroll I have here.<br/>But you get to experience all sorts of things<br/>if you work as a guard here."));
 					}
 				}
@@ -107,7 +109,7 @@ public class TreforScript : NpcScript
 
 			case "@upgrade":
 				Msg("Do you want to modify an item?<br/>You don't need to go too far; I'll do it for you. Select an item that you'd like me to modify.<br/>I'm sure you know that the number of times it can be modified, as well as the types of modifications available depend on the item, right? <upgrade />");
-				
+
 				while (true)
 				{
 					var reply = await Select();
