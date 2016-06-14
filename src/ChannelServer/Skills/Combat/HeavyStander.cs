@@ -138,6 +138,9 @@ namespace Aura.Channel.Skills.Combat
 				{
 					var activationChance = equipment[i].Data.AutoDefenseMelee;
 
+					// Add upgrades
+					activationChance += equipment[i].MetaData1.GetFloat("IM_MLE") * 100;
+
 					if (activationChance > 0 && rnd.Next(100) < activationChance)
 					{
 						pinged = true;
