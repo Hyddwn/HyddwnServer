@@ -2045,5 +2045,15 @@ namespace Aura.Channel.World.Inventory
 				return 0;
 			}
 		}
+
+		/// <summary>
+		/// Returns the ManaBurn bonus from all equipped WUUpgrades.
+		/// </summary>
+		/// <returns></returns>
+		public float GetManaBurnBonus()
+		{
+			lock (_wuUpgrades)
+				return _wuUpgrades.Values.Sum(a => a.ManaBurn);
+		}
 	}
 }
