@@ -2055,5 +2055,15 @@ namespace Aura.Channel.World.Inventory
 			lock (_wuUpgrades)
 				return _wuUpgrades.Values.Sum(a => a.ManaBurn);
 		}
+
+		/// <summary>
+		/// Returns the ManaUse modificator from all equipped WUUpgrades.
+		/// </summary>
+		/// <returns></returns>
+		public float GetManaUseModificator()
+		{
+			lock (_wuUpgrades)
+				return _wuUpgrades.Values.Sum(a => a.ManaUse);
+		}
 	}
 }
