@@ -49,8 +49,26 @@ public class CaitinBaseScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 10061) // is a friend of Malcolm
+				{
+					var playerVar = Player.Vars.Perm["caitin_title_gift"];
+					var today = ErinnTime.Now.ToString("yyyyMMdd");
+
+					if (playerVar != today || playerVar == null)
+					{
+						Msg(L("Nice to meet you, <username/>. I heard many things about you from Malcolm."));
+						Player.Vars.Perm["caitin_title_gift"] = today;
+						GiveItem(50134); // Sliced Bread
+						Notice(L("Received Sliced Bread from Caitin."));
+						SystemMsg(L("Received Sliced Bread from Caitin."));
+						Msg(L("Would you like to have a taste of this?<br/>It's nothing special...but I made it myself."));
+					}
+				}
+				else if (Player.Titles.SelectedTitle == 11002)
+				{
 					Msg("Wow. You're the Guardian of Erinn? My, what an honor!<br/>I still remember the first day you came here...<br/>Feels just like yesterday!<br/>People will remember your name years to come...");
+				}
 				await Conversation();
 				break;
 

@@ -60,13 +60,43 @@ public class TreforScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				var playerVar = Player.Vars.Perm["trefor_title_gift"];
+				var today = ErinnTime.Now.ToString("yyyyMMdd");
+				string message = null;
+
+				if (playerVar != today || playerVar == null)
+				{
+					switch (Title)
+					{
+						case 10059: // is a friend of Trefor
+							message = L("Ha ha, welcome back, <username/>.<br/>How are things going for you?");
+							break;
+
+						case 10061: // is a friend of Malcolm
+							message = L("Malcolm is a little stingy fellow but he is a good friend of mine.<br/>If you're a friend of Malcolm, then you're a friend of mine as well.");
+							break;
+					}
+
+					if (message != null)
+					{
+						Msg(message);
+						Player.Vars.Perm["trefor_title_gift"] = today;
+						GiveItem(71017); // White Spider Fomor Scroll
+						Notice(L("Received White Spider Fomor Scroll from Trefor."));
+						SystemMsg(L("Received White Spider Fomor Scroll from Trefor."));
+						Msg(L("You might be a little puzzled about the Fomor Scroll I have here.<br/>But you get to experience all sorts of things<br/>if you work as a guard here."));
+					}
+				}
+
+				if (Title == 11002)
 				{
 					Msg("Wha...? You're the Guardian of Erinn...?<br/>You, <username/>...?");
 					Msg("......");
 					Msg("...Wow... I'm speechless...<br/>I guess I should<br/>congratulate you for now.");
 					Msg("...And now you've<br/>become my rival...");
 				}
+
 				await Conversation();
 				break;
 

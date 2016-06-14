@@ -51,11 +51,47 @@ public class MalcolmScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				var playerVar = Player.Vars.Perm["malcolm_title_gift"];
+				var today = ErinnTime.Now.ToString("yyyyMMdd");
+
+				if (playerVar != today || playerVar == null)
+				{
+					switch (Title)
+					{
+						case 10059: // is a friend of Trefor
+							Player.Vars.Perm["malcolm_title_gift"] = today;
+							GiveItem(61001); // Score Scroll
+							Notice(L("Received Score Scroll from Malcolm."));
+							SystemMsg(L("Received Score Scroll from Malcolm."));
+							Msg(L("I am an old friend of Trefor.<br/>So please receive my small token of appreciation."));
+							break;
+
+						case 10061: // is a friend of Malcolm
+							Player.Vars.Perm["malcolm_title_gift"] = today;
+							GiveItem(61001); // Score Scroll
+							Notice(L("Received Score Scroll from Malcolm."));
+							SystemMsg(L("Received Score Scroll from Malcolm."));
+							Msg(L("Welcome, <username/>!<br/>How could I forget my old pal?<br/>You are always my VIP, <username/>."));
+							break;
+
+						case 10062: // is a friend of Nora
+							Msg("Oh, you are friends with Nora. You know what?<br/>A friend of Nora is a friend of mine.");
+							Player.Vars.Perm["malcolm_title_gift"] = today;
+							GiveItem(61001); // Score Scroll
+							Notice(L("Received Score Scroll from Malcolm."));
+							SystemMsg(L("Received Score Scroll from Malcolm."));
+							Msg(L("This is my small token of appreciation<br/>for your kindness to Nora."));
+							break;
+					}
+				}
+
+				if (Title == 11002)
 				{
 					Msg("You're the... Guardian of Erinn?<br/>I don't know what you do exactly,<br/>but you seem to leave<br/>a really good impression on people.");
 					Msg("...I'm a bit jealous...");
 				}
+
 				await Conversation();
 				break;
 
