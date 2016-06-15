@@ -1874,8 +1874,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 					case "CollectionBonus":
 						// CTBONUS:2:40;CTSPEED:4:750;MTWR:1:1;
-						var collectionBonusBuff = result.Item.MetaData1.GetInt("CTBONUS");
-						result.Item.MetaData1.SetInt("CTBONUS", collectionBonusBuff + (int)effect.Value[0]);
+						var collectionBonusBuff = result.Item.MetaData1.GetShort("CTBONUS");
+						result.Item.MetaData1.SetShort("CTBONUS", (short)(collectionBonusBuff + effect.Value[0]));
 						break;
 
 					case "CollectionSpeed":
