@@ -240,6 +240,14 @@ namespace Aura.Channel.Skills.Life
 							pos = creaturePosition.GetRandomInRange(DropRange, rnd);
 
 						item.Drop(creature.Region, pos, 0, creature, false);
+
+						// Collection Bonus Upgrade
+						if (creature.RightHand != null)
+						{
+							var doubleChance = creature.RightHand.MetaData1.GetShort("CTBONUS");
+							if (rnd.Next(100) < doubleChance)
+								new Item(item).Drop(creature.Region, creaturePosition, DropRange, creature, false);
+						}
 					}
 					else
 					{
