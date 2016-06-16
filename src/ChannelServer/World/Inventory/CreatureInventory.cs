@@ -1498,6 +1498,7 @@ namespace Aura.Channel.World.Inventory
 			if (item.Info.Pocket.IsMainEquip(this.WeaponSet))
 			{
 				this.ApplyDefenseBonuses(item);
+				this.ApplyUpgrades(item);
 				this.ApplyUpgradeEffects(item);
 			}
 
@@ -1641,6 +1642,16 @@ namespace Aura.Channel.World.Inventory
 				_creature.StatMods.Add(Stat.DefenseBaseMod, item.OptionInfo.Defense, StatModSource.Equipment, item.EntityId);
 			if (item.OptionInfo.Protection != 0)
 				_creature.StatMods.Add(Stat.ProtectionBaseMod, item.OptionInfo.Protection, StatModSource.Equipment, item.EntityId);
+		}
+
+		/// <summary>
+		/// Applies upgrade bonuses from the item.
+		/// </summary>
+		/// <param name="item"></param>
+		private void ApplyUpgrades(Item item)
+		{
+			var magicDefenseMod = item.MetaData1.GetFloat("MDEF");
+			if (magicDefenseMod != 0) _creature.StatMods.Add(Stat.MagicDefenseMod, magicDefenseMod, StatModSource.Equipment, item.EntityId);
 		}
 
 		/// <summary>
