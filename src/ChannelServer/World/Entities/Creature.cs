@@ -3112,7 +3112,28 @@ namespace Aura.Channel.World.Entities
 		/// <param name="amount"></param>
 		public void BurnMana(float amount = 100)
 		{
-			this.Mana -= this.Mana * (amount / 100f);
+			var toBurn = this.Mana * (amount / 100f);
+
+			// Mana preservation stones
+			// http://wiki.mabinogiworld.com/view/Category:Mana_Preservation_Stones
+			if (!AuraData.FeaturesDb.IsEnabled("ManaBurnRemove"))
+			{
+				var stones = this.Inventory.GetItems(a => a.Data.ManaPreservation != 0, StartAt.BottomRight);
+				if (stones.Count != 0)
+				{
+					var stone = stones[0];
+					var preserve = stone.Data.ManaPreservation;
+					toBurn = Math.Max(0, toBurn - preserve);
+
+					this.Inventory.Decrement(stone);
+				}
+			}
+
+			if (toBurn == 0)
+				return;
+
+			this.Mana -= toBurn;
+
 			Send.StatUpdate(this, StatUpdateType.Private, Stat.Mana);
 		}
 
