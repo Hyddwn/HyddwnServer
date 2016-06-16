@@ -537,8 +537,11 @@ namespace Aura.Mabi.Network
 		public const int StabilityMeterInit = 0xAA22;
 		public const int StabilityMeterUpdate = 0xAA23;
 
-		public const int HomesteadInfoRequest = 0xAA58;
-		public const int HomesteadInfoRequestR = 0xAA59;
+		// [200100, NA209 (2016-06-16)]
+		// 4 new ops somewhere here, that shifted the Homestead ops by 4.
+
+		public const int HomesteadInfoRequest = 0xAA5C;
+		public const int HomesteadInfoRequestR = 0xAA5D;
 
 		// [180300, NA166 (18.09.2013)] 2 new ops somewhere here, possibly the two below
 
