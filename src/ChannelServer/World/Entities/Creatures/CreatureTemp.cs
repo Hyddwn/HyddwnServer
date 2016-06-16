@@ -7,6 +7,7 @@ using Aura.Data.Database;
 using Aura.Mabi.Structs;
 using System.Collections.Generic;
 using Aura.Channel.Skills.Life;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -53,6 +54,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public Prop FishingProp;
 		public bool FishingActionRequested;
 		public DropData FishingDrop;
+		public CatchSize CatchSize;
 
 		public bool FireArrow;
 
