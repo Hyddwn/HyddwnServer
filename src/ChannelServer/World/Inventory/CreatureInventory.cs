@@ -1502,7 +1502,15 @@ namespace Aura.Channel.World.Inventory
 				this.ApplyUpgradeEffects(item);
 			}
 
-			// Cache WUUpgrades
+			this.HandleWUUpgrades(item);
+		}
+
+		/// <summary>
+		/// Caches and applies WU upgrades for item.
+		/// </summary>
+		/// <param name="item"></param>
+		private void HandleWUUpgrades(Item item)
+		{
 			// There's probably a better way to save these bonuses,
 			// but I can't think of it right now.
 			var wustr = item.MetaData1.GetString("WU");
@@ -1511,6 +1519,9 @@ namespace Aura.Channel.World.Inventory
 				var wu = new WUUpgrades(wustr);
 				lock (_wuUpgrades)
 					_wuUpgrades[item.EntityId] = wu;
+
+				if (wu.MagicDamage != 0)
+					_creature.StatMods.Add(Stat.MagicAttackMod, wu.MagicDamage, StatModSource.Equipment, item.EntityId);
 			}
 		}
 
