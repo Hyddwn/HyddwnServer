@@ -1498,10 +1498,19 @@ namespace Aura.Channel.World.Inventory
 			if (item.Info.Pocket.IsMainEquip(this.WeaponSet))
 			{
 				this.ApplyDefenseBonuses(item);
+				this.ApplyUpgrades(item);
 				this.ApplyUpgradeEffects(item);
 			}
 
-			// Cache WUUpgrades
+			this.HandleWUUpgrades(item);
+		}
+
+		/// <summary>
+		/// Caches and applies WU upgrades for item.
+		/// </summary>
+		/// <param name="item"></param>
+		private void HandleWUUpgrades(Item item)
+		{
 			// There's probably a better way to save these bonuses,
 			// but I can't think of it right now.
 			var wustr = item.MetaData1.GetString("WU");
@@ -1510,6 +1519,9 @@ namespace Aura.Channel.World.Inventory
 				var wu = new WUUpgrades(wustr);
 				lock (_wuUpgrades)
 					_wuUpgrades[item.EntityId] = wu;
+
+				if (wu.MagicDamage != 0)
+					_creature.StatMods.Add(Stat.MagicAttackMod, wu.MagicDamage, StatModSource.Equipment, item.EntityId);
 			}
 		}
 
@@ -1641,6 +1653,19 @@ namespace Aura.Channel.World.Inventory
 				_creature.StatMods.Add(Stat.DefenseBaseMod, item.OptionInfo.Defense, StatModSource.Equipment, item.EntityId);
 			if (item.OptionInfo.Protection != 0)
 				_creature.StatMods.Add(Stat.ProtectionBaseMod, item.OptionInfo.Protection, StatModSource.Equipment, item.EntityId);
+		}
+
+		/// <summary>
+		/// Applies upgrade bonuses from the item.
+		/// </summary>
+		/// <param name="item"></param>
+		private void ApplyUpgrades(Item item)
+		{
+			var magicDefenseMod = item.MetaData1.GetFloat("MDEF");
+			var magicProtectionMod = item.MetaData1.GetFloat("MPROT");
+
+			if (magicDefenseMod != 0) _creature.StatMods.Add(Stat.MagicDefenseMod, magicDefenseMod, StatModSource.Equipment, item.EntityId);
+			if (magicProtectionMod != 0) _creature.StatMods.Add(Stat.MagicProtectionMod, magicProtectionMod, StatModSource.Equipment, item.EntityId);
 		}
 
 		/// <summary>
