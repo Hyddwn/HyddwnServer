@@ -1651,7 +1651,10 @@ namespace Aura.Channel.World.Inventory
 		private void ApplyUpgrades(Item item)
 		{
 			var magicDefenseMod = item.MetaData1.GetFloat("MDEF");
+			var magicProtectionMod = item.MetaData1.GetFloat("MPROT");
+
 			if (magicDefenseMod != 0) _creature.StatMods.Add(Stat.MagicDefenseMod, magicDefenseMod, StatModSource.Equipment, item.EntityId);
+			if (magicProtectionMod != 0) _creature.StatMods.Add(Stat.MagicProtectionMod, magicProtectionMod, StatModSource.Equipment, item.EntityId);
 		}
 
 		/// <summary>
