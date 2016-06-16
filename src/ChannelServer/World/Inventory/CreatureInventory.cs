@@ -2065,5 +2065,22 @@ namespace Aura.Channel.World.Inventory
 			lock (_wuUpgrades)
 				return _wuUpgrades.Values.Sum(a => a.ManaUse);
 		}
+
+		/// <summary>
+		/// Returns casting speed modificator, based onthe WU upgrades for
+		/// the given item entity id.
+		/// </summary>
+		/// <returns></returns>
+		public int GetCastingSpeedMod(long entityId)
+		{
+			lock (_wuUpgrades)
+			{
+				WUUpgrades wu;
+				if (!_wuUpgrades.TryGetValue(entityId, out wu))
+					return 0;
+
+				return wu.CastingSpeed;
+			}
+		}
 	}
 }
