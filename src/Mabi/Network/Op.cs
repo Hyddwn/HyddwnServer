@@ -538,15 +538,15 @@ namespace Aura.Mabi.Network
 		public const int StabilityMeterUpdate = 0xAA23;
 
 		// [200100, NA209 (2016-06-16)]
-		// 4 new ops somewhere here, that shifted the Homestead ops by 4.
+		// 4 new ops somewhere here, that shifted the Homestead ChannelLoginUnk ops by 4.
 
 		public const int HomesteadInfoRequest = 0xAA5C;
 		public const int HomesteadInfoRequestR = 0xAA5D;
 
 		// [180300, NA166 (18.09.2013)] 2 new ops somewhere here, possibly the two below
 
-		public const int ChannelLoginUnk = 0xAA87;
-		public const int ChannelLoginUnkR = 0xAA88;
+		public const int ChannelLoginUnk = 0xAA8B;
+		public const int ChannelLoginUnkR = 0xAA8C;
 
 		public const int CollectionRequest = 0xAA8B;
 		public const int CollectionRequestR = 0xAA8C;
