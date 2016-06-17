@@ -35,7 +35,7 @@ public class CustomBgmScript : GeneralScript
 	private Dictionary<long, string> _playerStorage = new Dictionary<long, string>();
 	private static Dictionary<int, Track> _regions = new Dictionary<int, Track>();
 
-	private static void Add(int regionId, string fileName, BgmRepeat repeat = BgmRepeat.Indefinitely)
+	protected static void Add(int regionId, string fileName, BgmRepeat repeat = BgmRepeat.Indefinitely)
 	{
 		_regions[regionId] = new Track(fileName, repeat);
 	}
