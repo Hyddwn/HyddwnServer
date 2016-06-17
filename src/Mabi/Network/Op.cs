@@ -557,28 +557,35 @@ namespace Aura.Mabi.Network
 		public const int CollectionRequest = 0xAA8B;
 		public const int CollectionRequestR = 0xAA8C;
 
-		public const int UnkEsc = 0xAAF3;
-		public const int GoBeautyShop = 0xAAF8;
-		public const int GoBeautyShopR = 0xAAF9;
-		public const int LeaveBeautyShop = 0xAAFA;
-		public const int LeaveBeautyShopR = 0xAAFB;
-		public const int OpenBeautyShop = 0xAAFC;
+		// [200100, NA209 (2016-06-16)]
+		// 4 new ops somewhere here, that shifted the UnkEsc~? ops by 4.
+
+		public const int UnkEsc = 0xAAF7;
+
+		//public const int GoBeautyShop = 0xAAF8;
+		//public const int GoBeautyShopR = 0xAAF9;
+		//public const int LeaveBeautyShop = 0xAAFA;
+		//public const int LeaveBeautyShopR = 0xAAFB;
+		//public const int OpenBeautyShop = 0xAAFC;
 		//public const int ? = 0xAAFD;	// Buy looks?
 		//public const int ? = 0xAAFE;	// Buy looks R?
-		public const int CancelBeautyShop = 0xAAFF;
-		public const int CancelBeautyShopR = 0xAB00;
+		//public const int CancelBeautyShop = 0xAAFF;
+		//public const int CancelBeautyShopR = 0xAB00;
 
-		public const int TalentInfoUpdate = 0xAB17;
-		public const int TalentTitleChange = 0xAB18;
-		public const int TalentTitleUpdate = 0xAB19;
+		//public const int TalentInfoUpdate = 0xAB17;
+		//public const int TalentTitleChange = 0xAB18;
+		//public const int TalentTitleUpdate = 0xAB19;
 
-		public const int ShamalaTransformationUpdate = 0xAB1B;
-		public const int ShamalaTransformationUse = 0xAB1C;
-		public const int ShamalaTransformation = 0xAB1D;
-		public const int ShamalaTransformationEnd = 0xAB1E;
-		public const int ShamalaTransformationEndR = 0xAB1F;
+		//public const int ShamalaTransformationUpdate = 0xAB1B;
+		//public const int ShamalaTransformationUse = 0xAB1C;
+		//public const int ShamalaTransformation = 0xAB1D;
+		//public const int ShamalaTransformationEnd = 0xAB1E;
+		//public const int ShamalaTransformationEndR = 0xAB1F;
 
-		public const int BeginnerWarpBook = 0xABA3; // Added to Aura after ItemMagnet, original op unknown, if different.
+		// [200100, NA209 (2016-06-16)]
+		// 5 new ops somewhere here, that shifted BeginnerWarpBook by +5, to ABA8.
+
+		public const int BeginnerWarpBook = 0xABA8; // Added to Aura after ItemMagnet, original op unknown, if different.
 
 		// ItemMagnet got increased by one, some time between NA200 and NA204.
 		// [200100, NA229 (2016-06-16)] ItemMagnet~AmmoRequired shifted by +4.
