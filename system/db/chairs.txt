@@ -49,4 +49,9 @@
 { itemId: 50903, name: "1-Person Kotatsu", propId: 45284, giantPropId: 45285 },
 { itemId: 50905, name: "Caravan Joe Kotatsu", propId: 45422, giantPropId: 45423 },
 { itemId: 50906, name: "Caravan Joe Tea Table", propId: 44744, giantPropId: 44745 },
+{ itemId: 50907, name: "Melodious Music Box", propId: 45408, giantPropId: 0 },
+{ itemId: 50908, name: "Gold Podium", propId: 44603, giantPropId: 44603 },
+{ itemId: 50909, name: "Silver Podium", propId: 44604, giantPropId: 44604 },
+{ itemId: 50910, name: "Bronze Podium", propId: 44605, giantPropId: 44605 },
+{ itemId: 50911, name: "The 4th grade Podium", propId: 44608, giantPropId: 44608 },
 ]
