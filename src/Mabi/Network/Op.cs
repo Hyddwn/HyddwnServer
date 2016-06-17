@@ -581,20 +581,24 @@ namespace Aura.Mabi.Network
 		public const int BeginnerWarpBook = 0xABA3; // Added to Aura after ItemMagnet, original op unknown, if different.
 
 		// ItemMagnet got increased by one, some time between NA200 and NA204.
+		// [200100, NA229 (2016-06-16)] ItemMagnet~AmmoRequired shifted by +4.
 
 		// [190100, NA200 (2015-01-15)] Added
 		// [190200, NA221 (2016-02-17)] Increased by one, ABAC->ABAD
-		public const int ItemMagnet = 0xABAD;
+		public const int ItemMagnet = 0xABB1;
 
 		// [190200, NA221 (2016-02-17)] Added
-		public const int DestroyExpiredItems = 0xABAE;
-		public const int DestroyExpiredItemsConfirm = 0xABAF;
-		public const int DestroyExpiredItemsR = 0xABB0;
+		// [200100, NA229 (2016-06-16)] DestroyExpired* increased by four, ABAE->ABB2, ABAF->ABB3, ABB0->ABB4
+		public const int DestroyExpiredItems = 0xABB2;
+		public const int DestroyExpiredItemsConfirm = 0xABB3;
+		public const int DestroyExpiredItemsR = 0xABB4;
 
+		// [200100, NA226 (2016-04-14)] Shifted by +8, from ABBB to ABC3.
 		public const int AmmoRequired = 0xABBB;
 
 		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
-		public const int ChatSticker = 0xAC0E;
+		// [200100, NA226 (2016-04-14)] Shifted by +8, from AC0E to AC16.
+		public const int ChatSticker = 0xAC16;
 
 		// [190200, NA221 (2016-02-17)] Added
 		// DcUnk, purpose unknown, requires answer on disconnect,
