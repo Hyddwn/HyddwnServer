@@ -422,5 +422,30 @@ namespace Aura.Channel.Network.Sending
 			packet.PutByte(0);
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends RequestNpcNamesR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="npcs"></param>
+		public static void RequestNpcNamesR(Creature creature, ICollection<NPC> npcs)
+		{
+			var packet = new Packet(Op.RequestNpcNamesR, creature.EntityId);
+			packet.PutInt(npcs.Count);
+			foreach (var npc in npcs)
+			{
+				var pos = npc.GetPosition();
+
+				packet.PutInt(npc.RegionId);
+				packet.PutInt(pos.X);
+				packet.PutInt(pos.Y);
+				packet.PutString(npc.Name);
+				packet.PutString(""); // ?
+				packet.PutString(""); // ?
+				packet.PutByte(0); // ?
+			}
+
+			creature.Client.Send(packet);
+		}
 	}
 }

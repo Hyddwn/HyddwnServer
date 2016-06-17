@@ -212,6 +212,11 @@ namespace Aura.Mabi.Network
 
 		public const int UnkCutsceneEnd = 0x65DC; // Relatively new? (NA204)
 
+		// [200100, NA229 (2016-06-16)]
+		public const int RequestNpcNames = 0x65EE;
+		public const int RequestNpcNamesR = 0x65EF;
+		public const int SearchNpcName = 0x65F0;
+
 		public const int SkillInfo = 0x6979;
 		public const int SkillTrainingUp = 0x697C;
 		public const int SkillAdvance = 0x697E;
@@ -516,29 +521,35 @@ namespace Aura.Mabi.Network
 		public const int UmbrellaJump = 0xA8E0;
 		public const int UmbrellaJumpR = 0xA8E1;
 		public const int UmbrellaLand = 0xA8E2;
-		public const int SetBgm = 0xA910;
-		public const int UnsetBgm = 0xA911;
-		public const int EnterDynamicRegionExtended = 0xA97E; // Creates multiple dynamic regions and warps to one
-		public const int EnableRoyalAlchemist = 0xA9A3;
-		public const int SpinColorWheel = 0xA9A5;
-		public const int SpinColorWheelR = 0xA9A6;
-		public const int ChangeNameColor = 0xA9A7;
-		public const int SosButtonRequest = 0xA9A9;
-		public const int SosButtonRequestR = 0xA9AA;
-		public const int SkillTeleport = 0xA9F0;
-		public const int SetCamera = 0xA9F4;
-		public const int EnterRebirth = 0xA9F9;
-		public const int EnterRebirthR = 0xA9FA;
+
+		// [200100, NA229 (2016-06-16)]
+		// Presumably 4 ops were added, which shifted SetBgm~SkillTeleport.
+		// The PetAi ops were unchanged, but others in this area might've
+		// changed as well.
+
+		public const int SetBgm = 0xA912;
+		public const int UnsetBgm = 0xA913;
+		public const int EnterDynamicRegionExtended = 0xA982; // Creates multiple dynamic regions and warps to one
+		public const int EnableRoyalAlchemist = 0xA9A7;
+		public const int SpinColorWheel = 0xA9A9;
+		public const int SpinColorWheelR = 0xA9AA;
+		public const int ChangeNameColor = 0xA9AB;
+		public const int SosButtonRequest = 0xA9AD;
+		public const int SosButtonRequestR = 0xA9AE;
+		public const int SkillTeleport = 0xA9F4;
+		public const int SetCamera = 0xA9F8;
+		public const int EnterRebirth = 0xA9FD;
+		public const int EnterRebirthR = 0xA9FE;
 
 		// [150000~180000] Something was added? Next two ops changed.
 		// [180800, NA196] Something was added? Ops 0xAAXX - 0xABXX increased by 4.
 
-		public const int SubsribeStabilityMeter = 0xAA21;
-		public const int StabilityMeterInit = 0xAA22;
-		public const int StabilityMeterUpdate = 0xAA23;
-
 		// [200100, NA209 (2016-06-16)]
-		// 4 new ops somewhere here, that shifted the Homestead ChannelLoginUnk ops by 4.
+		// 4 new ops somewhere here, that shifted the SubsribeStabilityMeter~ChannelLoginUnkR ops by 4.
+
+		public const int SubsribeStabilityMeter = 0xAA25;
+		public const int StabilityMeterInit = 0xAA26;
+		public const int StabilityMeterUpdate = 0xAA27;
 
 		public const int HomesteadInfoRequest = 0xAA5C;
 		public const int HomesteadInfoRequestR = 0xAA5D;
@@ -551,44 +562,55 @@ namespace Aura.Mabi.Network
 		public const int CollectionRequest = 0xAA8B;
 		public const int CollectionRequestR = 0xAA8C;
 
-		public const int UnkEsc = 0xAAF3;
-		public const int GoBeautyShop = 0xAAF8;
-		public const int GoBeautyShopR = 0xAAF9;
-		public const int LeaveBeautyShop = 0xAAFA;
-		public const int LeaveBeautyShopR = 0xAAFB;
-		public const int OpenBeautyShop = 0xAAFC;
+		// [200100, NA209 (2016-06-16)]
+		// 4 new ops somewhere here, that shifted the UnkEsc~? ops by 4.
+
+		public const int UnkEsc = 0xAAF7;
+
+		//public const int GoBeautyShop = 0xAAF8;
+		//public const int GoBeautyShopR = 0xAAF9;
+		//public const int LeaveBeautyShop = 0xAAFA;
+		//public const int LeaveBeautyShopR = 0xAAFB;
+		//public const int OpenBeautyShop = 0xAAFC;
 		//public const int ? = 0xAAFD;	// Buy looks?
 		//public const int ? = 0xAAFE;	// Buy looks R?
-		public const int CancelBeautyShop = 0xAAFF;
-		public const int CancelBeautyShopR = 0xAB00;
+		//public const int CancelBeautyShop = 0xAAFF;
+		//public const int CancelBeautyShopR = 0xAB00;
 
-		public const int TalentInfoUpdate = 0xAB17;
-		public const int TalentTitleChange = 0xAB18;
-		public const int TalentTitleUpdate = 0xAB19;
+		//public const int TalentInfoUpdate = 0xAB17;
+		//public const int TalentTitleChange = 0xAB18;
+		//public const int TalentTitleUpdate = 0xAB19;
 
-		public const int ShamalaTransformationUpdate = 0xAB1B;
-		public const int ShamalaTransformationUse = 0xAB1C;
-		public const int ShamalaTransformation = 0xAB1D;
-		public const int ShamalaTransformationEnd = 0xAB1E;
-		public const int ShamalaTransformationEndR = 0xAB1F;
+		//public const int ShamalaTransformationUpdate = 0xAB1B;
+		//public const int ShamalaTransformationUse = 0xAB1C;
+		//public const int ShamalaTransformation = 0xAB1D;
+		//public const int ShamalaTransformationEnd = 0xAB1E;
+		//public const int ShamalaTransformationEndR = 0xAB1F;
 
-		public const int BeginnerWarpBook = 0xABA3; // Added to Aura after ItemMagnet, original op unknown, if different.
+		// [200100, NA209 (2016-06-16)]
+		// 5 new ops somewhere here, that shifted BeginnerWarpBook by +5, to ABA8.
+
+		public const int BeginnerWarpBook = 0xABA8; // Added to Aura after ItemMagnet, original op unknown, if different.
 
 		// ItemMagnet got increased by one, some time between NA200 and NA204.
+		// [200100, NA229 (2016-06-16)] ItemMagnet~AmmoRequired shifted by +4.
 
 		// [190100, NA200 (2015-01-15)] Added
 		// [190200, NA221 (2016-02-17)] Increased by one, ABAC->ABAD
-		public const int ItemMagnet = 0xABAD;
+		public const int ItemMagnet = 0xABB1;
 
 		// [190200, NA221 (2016-02-17)] Added
-		public const int DestroyExpiredItems = 0xABAE;
-		public const int DestroyExpiredItemsConfirm = 0xABAF;
-		public const int DestroyExpiredItemsR = 0xABB0;
+		// [200100, NA229 (2016-06-16)] DestroyExpired* increased by four, ABAE->ABB2, ABAF->ABB3, ABB0->ABB4
+		public const int DestroyExpiredItems = 0xABB2;
+		public const int DestroyExpiredItemsConfirm = 0xABB3;
+		public const int DestroyExpiredItemsR = 0xABB4;
 
+		// [200100, NA226 (2016-04-14)] Shifted by +8, from ABBB to ABC3.
 		public const int AmmoRequired = 0xABBB;
 
 		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
-		public const int ChatSticker = 0xAC0E;
+		// [200100, NA226 (2016-04-14)] Shifted by +8, from AC0E to AC16.
+		public const int ChatSticker = 0xAC16;
 
 		// [190200, NA221 (2016-02-17)] Added
 		// DcUnk, purpose unknown, requires answer on disconnect,
