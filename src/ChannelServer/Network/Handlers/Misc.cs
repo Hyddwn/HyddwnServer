@@ -299,7 +299,8 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.SpinColorWheel)]
 		public void SpinColorWheel(ChannelClient client, Packet packet)
 		{
-			var strength = packet.GetShort();
+			// [200100, NA229 (2016-06-16)] Removed
+			//var strength = packet.GetShort();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
