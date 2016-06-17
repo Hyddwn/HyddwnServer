@@ -12,6 +12,7 @@ using Aura.Mabi.Const;
 using Aura.Data;
 using Aura.Mabi.Network;
 using Aura.Mabi;
+using Aura.Channel.World.Entities;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -458,6 +459,35 @@ namespace Aura.Channel.Network.Handlers
 			var payload = packet.GetBin();
 
 			// Ignore, client doesn't require an answer.
+		}
+
+		/// <summary>
+		/// Sent when entering a region, to get the names of the NPCs in it.
+		/// </summary>
+		[PacketHandler(Op.RequestNpcNames)]
+		public void RequestNpcNames(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var npcs = creature.Region.GetNpcs(a => a.Has(CreatureStates.NamedNpc));
+
+			Send.RequestNpcNamesR(creature, npcs);
+		}
+
+		/// <summary>
+		/// Sent when clicking search in the NPC search window.
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : duncan
+		/// </example>
+		[PacketHandler(Op.SearchNpcName)]
+		public void SearchNpcName(ChannelClient client, Packet packet)
+		{
+			var searchString = packet.GetString();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// TODO: Log.
+			Send.MsgBox(creature, Localization.Get("Not supported yet."));
 		}
 	}
 }

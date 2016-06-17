@@ -212,6 +212,11 @@ namespace Aura.Mabi.Network
 
 		public const int UnkCutsceneEnd = 0x65DC; // Relatively new? (NA204)
 
+		// [200100, NA229 (2016-06-16)]
+		public const int RequestNpcNames = 0x65EE;
+		public const int RequestNpcNamesR = 0x65EF;
+		public const int SearchNpcName = 0x65F0;
+
 		public const int SkillInfo = 0x6979;
 		public const int SkillTrainingUp = 0x697C;
 		public const int SkillAdvance = 0x697E;
