@@ -539,12 +539,12 @@ namespace Aura.Mabi.Network
 		// [150000~180000] Something was added? Next two ops changed.
 		// [180800, NA196] Something was added? Ops 0xAAXX - 0xABXX increased by 4.
 
-		public const int SubsribeStabilityMeter = 0xAA21;
-		public const int StabilityMeterInit = 0xAA22;
-		public const int StabilityMeterUpdate = 0xAA23;
-
 		// [200100, NA209 (2016-06-16)]
-		// 4 new ops somewhere here, that shifted the Homestead and ChannelLoginUnk ops by 4.
+		// 4 new ops somewhere here, that shifted the SubsribeStabilityMeter~ChannelLoginUnkR ops by 4.
+
+		public const int SubsribeStabilityMeter = 0xAA25;
+		public const int StabilityMeterInit = 0xAA26;
+		public const int StabilityMeterUpdate = 0xAA27;
 
 		public const int HomesteadInfoRequest = 0xAA5C;
 		public const int HomesteadInfoRequestR = 0xAA5D;
