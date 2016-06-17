@@ -516,19 +516,25 @@ namespace Aura.Mabi.Network
 		public const int UmbrellaJump = 0xA8E0;
 		public const int UmbrellaJumpR = 0xA8E1;
 		public const int UmbrellaLand = 0xA8E2;
-		public const int SetBgm = 0xA910;
-		public const int UnsetBgm = 0xA911;
-		public const int EnterDynamicRegionExtended = 0xA97E; // Creates multiple dynamic regions and warps to one
-		public const int EnableRoyalAlchemist = 0xA9A3;
-		public const int SpinColorWheel = 0xA9A5;
-		public const int SpinColorWheelR = 0xA9A6;
-		public const int ChangeNameColor = 0xA9A7;
-		public const int SosButtonRequest = 0xA9A9;
-		public const int SosButtonRequestR = 0xA9AA;
-		public const int SkillTeleport = 0xA9F0;
-		public const int SetCamera = 0xA9F4;
-		public const int EnterRebirth = 0xA9F9;
-		public const int EnterRebirthR = 0xA9FA;
+
+		// [200100, NA229 (2016-06-16)]
+		// Presumably 4 ops were added, which shifted SetBgm~SkillTeleport.
+		// The PetAi ops were unchanged, but others in this area might've
+		// changed as well.
+
+		public const int SetBgm = 0xA912;
+		public const int UnsetBgm = 0xA913;
+		public const int EnterDynamicRegionExtended = 0xA982; // Creates multiple dynamic regions and warps to one
+		public const int EnableRoyalAlchemist = 0xA9A7;
+		public const int SpinColorWheel = 0xA9A9;
+		public const int SpinColorWheelR = 0xA9AA;
+		public const int ChangeNameColor = 0xA9AB;
+		public const int SosButtonRequest = 0xA9AD;
+		public const int SosButtonRequestR = 0xA9AE;
+		public const int SkillTeleport = 0xA9F4;
+		public const int SetCamera = 0xA9F8;
+		public const int EnterRebirth = 0xA9FD;
+		public const int EnterRebirthR = 0xA9FE;
 
 		// [150000~180000] Something was added? Next two ops changed.
 		// [180800, NA196] Something was added? Ops 0xAAXX - 0xABXX increased by 4.
@@ -538,7 +544,7 @@ namespace Aura.Mabi.Network
 		public const int StabilityMeterUpdate = 0xAA23;
 
 		// [200100, NA209 (2016-06-16)]
-		// 4 new ops somewhere here, that shifted the Homestead ChannelLoginUnk ops by 4.
+		// 4 new ops somewhere here, that shifted the Homestead and ChannelLoginUnk ops by 4.
 
 		public const int HomesteadInfoRequest = 0xAA5C;
 		public const int HomesteadInfoRequestR = 0xAA5D;
