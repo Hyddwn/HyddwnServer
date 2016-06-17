@@ -12,6 +12,9 @@ public class SheepShearingQuestScript : QuestScript
 		SetName("Sheep-shearing");
 		SetDescription("Oh... this is really boring. Whoever sees this, please come up here and hang out with me. I'm a handsome, lonely shepherd boy killing time with these disgusting sheep in the grassland. I need to shear some wool, but it's really boring. Desperately in need of someone to do this for me! Oh... remember to bring something you can shear with. If you try plucking the sheep with bare hands, that'll be the end for all of us. - Deian the Shepherd Boy -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202033)); // Gathering Berries
 

@@ -14,6 +14,10 @@ public class RedSkeletons30PartyQuest : QuestScript
 		SetDescription(L("Have you ever seen a Red Skeleton? The Red Skeletons living in Rabbie Dungeon are controlled by a more powerful evil force than regular Skeletons. Please hunt [30 Red Skeletons]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 30 Red Skeletons"), 0, 0, 0, Kill(30, "/redskeleton/"));
 
 		AddReward(Exp(882));

@@ -14,6 +14,10 @@ public class Laghodessas30PartyQuest : QuestScript
 		SetDescription(L("Laghodessas under the control of an evil power are attacking travelers. Please do us a favor and [hunt 30 Laghodessass]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 30 Laghodessas"), 0, 0, 0, Kill(30, "/laghodessa/"));
 
 		AddReward(Exp(1200));

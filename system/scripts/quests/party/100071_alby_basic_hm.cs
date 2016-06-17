@@ -14,6 +14,10 @@ public class AlbyBasicHardPartyQuest : QuestScript
 		SetDescription(L("Recently a new altar has been found at the back of Alby Dungeon. Try offering [Alby Basic Fomor Pass], and defeat the [Giant Red Spider] that can be found at the deepest part of the dungeon."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj1", L("Eliminate 1 Giant Red Spider"), 0, 0, 0, Kill(1, "/spider/boss/redgiantspider/hardmode/"));
 		AddObjective("obj2", L("Eliminate 6 Dark Blue Spiders"), 0, 0, 0, Kill(6, "/spider/darkbluespider/hardmode/"));
 

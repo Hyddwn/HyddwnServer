@@ -15,6 +15,10 @@ public class GatheringWoolMalcolmScript : QuestScript
 		SetDescription("I'm Malcolm from the General Shop. I have a backlog of fabric orders, but I'm all out of thread. I need wool so I can make more. Think you can grab me [5 Bundles of Wool]?");
 		SetAdditionalInfo("How to Gather Wool\n1. Press <hotkey name='InventoryView'/> to open your Inventory.\n2. Equip a [Gathering Knife]. If you don't have one, you may buy one from Deian at the Pasture in the northeast part of town.\n3. With the [Gathering Knife] equipped, click on a Sheep to shear its wool.\n4. If the Sheep moves, the shearing will fail.");
 
+		SetIcon(QuestIcon.Tailoring);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Skill);
+
 		AddObjective("equip_knife", "Equip Gathering Knife", 0, 0, 0, Equip("/Gathering_Knife/"));
 		AddObjective("shear", "Sheared 5 Sheep", 1, 27574, 40958, Gather(60009, 5)); // Wool
 		AddObjective("talk_malcolm", "Delivered 5 Bundles of Wool to Malcolm", 1, 13150, 36392, Talk("malcolm"));

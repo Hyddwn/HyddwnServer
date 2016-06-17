@@ -13,6 +13,10 @@ public class ElensRequestQuestScript : QuestScript
 		SetName("Elen's Request");
 		SetDescription("I need iron ore to refine iron ingots. Go inside Barri Dungeon and get me 5 Lumps of Iron Ore and I'll give you information regarding the Refining Skill. What do you say? -Elen-");
 
+		SetIcon(QuestIcon.Smithing);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Skill);
+
 		AddObjective("talk_elen", "Deliver 5 Lumps of Iron Ore to Elen", 0, 0, 0, Talk("elen"));
 
 		AddReward(Exp(20));

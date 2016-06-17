@@ -361,6 +361,9 @@ public class BasicCombat1MissionQuestScript : QuestScript
 		SetName(L("Basic Combat 1 Mission"));
 		SetDescription(L("Today's assignment is to remove [Large Nails] from objects so people don't get pricked. Just hit an object a few times and [Large Nails] will drop from them. Get me [10 Large Nails] and then you're done for the day. - Ranald -"));
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		AddObjective("obj1", L("Deliver 10 Nails to Ranald"), 1, 4651, 32166, Talk("ranald"));
 
 		AddReward(Exp(100));
@@ -396,6 +399,9 @@ public class BasicCombat2MissionQuestScript : QuestScript
 		SetName(L("Basic Combat 2 Mission"));
 		SetDescription(L("Today's assignment is to hunt monsters. Remember the importance of defense, then go to Alby Dungeon and knock down [5 White Spiders]. - Ranald -"));
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		AddObjective("obj1", L("Hunt 5 White Spiders"), 0, 0, 0, Kill(5, "/whitespider/"));
 		AddObjective("obj2", L("Talk to Ranald"), 1, 4651, 32166, Talk("ranald"));
 
@@ -427,6 +433,9 @@ public class BasicCombat3MissionQuestScript : QuestScript
 		SetId(200028);
 		SetName(L("Basic Combat 3 Mission"));
 		SetDescription(L("Today's assignment is to hunt dungeon monsters. Drop an item on Alby Dungeon alter and defeat the boss. You can go alone or with friends. - Ranald -"));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
 
 		AddObjective("obj1", L("Clear Alby Dungeon"), 13, 3190, 3200, ClearDungeon("tircho_alby_dungeon"));
 		AddObjective("obj2", L("Talk to Ranald"), 1, 4651, 32166, Talk("ranald"));

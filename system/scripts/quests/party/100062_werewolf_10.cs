@@ -14,6 +14,10 @@ public class Werewolf10PartyQuest : QuestScript
 		SetDescription(L("Werewolves are under an evil spell and are attacking travelers. Please [Hunt 10 Werewolves]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 10 Werewolves"), 0, 0, 0, Kill(10, "/werewolf/"));
 
 		AddReward(Exp(2250));

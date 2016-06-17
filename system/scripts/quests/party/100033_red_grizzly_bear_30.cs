@@ -14,6 +14,10 @@ public class RedGrizzlyBear30PartyQuest : QuestScript
 		SetDescription(L("The Grizzly Bears roaming in the plains are under a mighty evil spell which can be seen in their eyes. Please [Hunt 30 Red Grizzly Bears]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj1", L("Hunt 10 Red Grizzly Bears"), 0, 0, 0, Kill(10, "/redgrizzlybear/"));
 		AddObjective("obj2", L("Hunt 20 Red Grizzly Bear Cubs"), 0, 0, 0, Kill(20, "/red/grizzlybearkid/"));
 

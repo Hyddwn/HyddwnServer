@@ -12,7 +12,10 @@ public class GolemQuestScript : QuestScript
 		SetId(1000059);
 		SetName(L("Hunt 1 Golem"));
 		SetDescription(L("The golems normally are a pile of stones but turns into monsters when somebody goes near. It's not easy to face a Golem but you look like you could face a Golem - Ranald -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000058));
 

@@ -12,6 +12,9 @@ public class GatherEggsQuestScript : QuestScript
 		SetName("Gather Eggs");
 		SetDescription("This is Glenis from the Restaurant. I'm short on ingredients for dough, so can you get me 5 eggs?");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202043)); // Talk with Stewart
 

@@ -14,6 +14,10 @@ public class RedBearScrollQuest : QuestScript
 		SetDescription(L("The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Red Bear Fomor Scrolls]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Collect);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("collect", L("Collect 10 Red Bear Fomor Scrolls"), 0, 0, 0, Collect(71026, 10));
 
 		AddReward(Gold(11800));

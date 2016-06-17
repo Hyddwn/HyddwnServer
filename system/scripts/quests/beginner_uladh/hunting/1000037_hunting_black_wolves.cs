@@ -12,7 +12,10 @@ public class BlackWolvesQuestScript : QuestScript
 		SetId(1000037);
 		SetName(L("Hunt 5 Black Wolves"));
 		SetDescription(L("Looks like every day is so peaceful but...... I'm nervous... These days I am a little concerned that the black wolves near Ciar Dungeon may harm the travelers. If it's okay with you, will you please hunt 5 black wolves? You don't have to come back and report. When you're done, just get your payment. - Duncan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000036), ReachedTotalLevel(15)));
 

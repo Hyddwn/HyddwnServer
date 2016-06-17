@@ -12,7 +12,10 @@ public class HellhoundQuestScript : QuestScript
 		SetId(1000057);
 		SetName(L("Hunt 1 Hellhound"));
 		SetDescription(L("The hellhound of Math Dungeon is not easy to fight. They are strong creatures that don't allow you to make any mistakes. But don't you think that's why it's worth challenging yourself? - Aranwen -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000056));
 

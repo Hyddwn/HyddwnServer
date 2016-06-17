@@ -14,6 +14,10 @@ public class Skeletons30PartyQuest : QuestScript
 		SetDescription(L("Have you ever seen a Skeleton? The Skeletons living in Rabbie Dungeon do not have their own will or consciousness. They do not belong in this world. Please hunt [30 Skeletons]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 30 Skeletons"), 0, 0, 0, Kill(30, "/normalskeleton/"));
 
 		AddReward(Exp(882));

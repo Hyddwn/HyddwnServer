@@ -12,7 +12,10 @@ public class KoboldBanditsQuestScript : QuestScript
 		SetId(1000044);
 		SetName(L("Hunt 5 Kobold Bandits"));
 		SetDescription(L("I am Comgan, serving as a priest at Bangor. Evil creatures near Bangor are threatening town residents. Can you please hunt 5 kobold bandits? - Comgan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000043));
 

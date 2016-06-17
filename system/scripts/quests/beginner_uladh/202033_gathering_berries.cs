@@ -12,6 +12,9 @@ public class GatheringBerriesQuestScript : QuestScript
 		SetName("Gathering Berries");
 		SetDescription("I heard berries are good for losing weight. Can you bring me 1 berry? - Dilys -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202030)); // Let's gather Green Gem
 

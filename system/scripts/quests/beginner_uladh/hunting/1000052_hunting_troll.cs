@@ -12,7 +12,10 @@ public class TrollQuestScript : QuestScript
 		SetId(1000052);
 		SetName(L("Hunt 1 Troll"));
 		SetDescription(L("I know how ferocious the troll is by the stories adventures tell during their visit to the town office. Great courage is needed to face the troll. Dunbarton Town will reward you for hunting the troll that threatens the adventurers. - Eavan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000051), ReachedTotalLevel(50)));
 		

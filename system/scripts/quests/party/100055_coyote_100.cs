@@ -14,6 +14,10 @@ public class Coyote100PartyQuest : QuestScript
 		SetDescription(L("Coyotes have fallen under an evil spell and are attacking travelers. Please [Hunt 100 Coyotes]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 100 Coyotes"), 0, 0, 0, Kill(100, "/coyote/"));
 
 		AddReward(Exp(2100));

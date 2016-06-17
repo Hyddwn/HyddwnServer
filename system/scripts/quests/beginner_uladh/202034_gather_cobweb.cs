@@ -12,6 +12,9 @@ public class GatherCobwebQuestScript : QuestScript
 		SetName("Gather Cobweb");
 		SetDescription("Hello. This is Malcolm in the General Shop of Tir Chonaill. I need some Cobwebs to work with. Anyone willing to get some for me? Just take 5 pieces of Cobweb from the Graveyard, please. Do not forget to use the ALT key in picking them up. - Malcolm -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202035)); // Sheep-shearing
 

@@ -12,7 +12,10 @@ public class OgreQuestScript : QuestScript
 		SetId(1000053);
 		SetName(L("Hunt 1 Ogre"));
 		SetDescription(L("The Ogre that has destructive power flowing out of its large figure, is the boss of the Fomors. It's not easy to face an ogre but please hunt the ogre. - Eavan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000052), ReachedTotalLevel(60)));
 		

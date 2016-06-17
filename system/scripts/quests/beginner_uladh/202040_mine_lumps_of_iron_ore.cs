@@ -12,6 +12,9 @@ public class ElenIronOreMiningQuestScript : QuestScript
 		SetName("Mine Lumps of Iron Ore");
 		SetDescription("Hello, I am Elen from the Bangor Blacksmith Shop. I'm low on blacksmith material because no one wants to mine iron ore these days. Perhaps you could mine 10 Lumps of Iron Ore for me? - Elen -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202045)); // Visiting Bangor
 

@@ -12,7 +12,10 @@ public class RescueResidentQuestScript : QuestScript
 		SetId(202002);
 		SetName("Rescue Resident");
 		SetDescription("I'm Trefor, serving as a guard in the north part of the town, past the Healer's House. One of the residents of this town went to Alby Dungeon and has not come back yet. I'm worried about it, so I need you to help me search for the lost resident. - Trefor -");
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202001));
 

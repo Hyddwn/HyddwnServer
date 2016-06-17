@@ -12,7 +12,10 @@ public class WhiteDireWolvesQuestScript : QuestScript
 		SetId(1000041);
 		SetName(L("Hunt 5 White Dire Wolves"));
 		SetDescription(L("It is not easy becoming a warrior. Try hunting 5 white dire wolves. I know it's not an easy mission but please succeed. - Ranald-"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000040), ReachedTotalLevel(20)));
 

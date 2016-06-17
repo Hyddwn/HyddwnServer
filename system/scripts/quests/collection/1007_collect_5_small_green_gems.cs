@@ -14,6 +14,10 @@ public class Collect5SmallGreenGems2QuestScript : QuestScript
 		SetDescription(L("Please [collect 5 Small Green Gems]. The Imps have hidden them all over town. You'll find these gems if you [check suspicious items] around town, but you can also trade other gems to get Green Gems."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Collect);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("collect1", L("Collect 5 Green Gems"), 0, 0, 0, Collect(52004, 5));
 
 		AddReward(Exp(10));

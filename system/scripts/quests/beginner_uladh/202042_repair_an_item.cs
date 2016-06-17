@@ -12,6 +12,9 @@ public class RepairingAnItemQuestScript : QuestScript
 		SetName("Repairing an Item");
 		SetDescription("This is Ferghus of the Blacksmith Shop in Tir Chonaill. I have just bought a new Blacksmith Hammer, so to celebrate this new buy, why don't you bring an item that you'll want to repair? The new hammer needs to be broken in, but I don't have a lot of takers for this repair offer. I'll give you some EXP, too, so drop by if you can. - Ferghus -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202034)); // Gather Cobweb
 

@@ -14,6 +14,10 @@ public class YoungGrizzlyBears30_2PartyQuest : QuestScript
 		SetDescription(L("Grizzly cubs are small but they are still a threat to humans. Please [Hunt 15 Red Grizzly Bear Cubs, and Brown Grizzly Bear Cubs.]"));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj1", L("Hunt 15 Red Grizzly Bear Cubs"), 0, 0, 0, Kill(15, "/red/grizzlybearkid/"));
 		AddObjective("obj2", L("Hunt 15 Brown Grizzly Bear Cubs"), 0, 0, 0, Kill(15, "/brown/grizzlybearkid/"));
 

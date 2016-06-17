@@ -12,7 +12,10 @@ public class BrownGrizzlyCubQuestScript : QuestScript
 		SetId(1000047);
 		SetName(L("Hunt 1 Brown Grizzly Cub"));
 		SetDescription(L("I'm Eavan from the Dunbarton Town Office. The Brown Grizzly Cubs from around Dunbarton is threatening the residents. It's not like the mother bear but you can't help the aggression by evil spirits of Fomor. The town of Dunbarton will reward yu for hunting the Brown Grizzly Cub. - Eavan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000046));
 
