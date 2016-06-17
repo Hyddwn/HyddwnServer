@@ -337,6 +337,35 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Sets quest's category, which is used to determin the tab it
+		/// appears in.
+		/// </summary>
+		/// <param name="category"></param>
+		protected void SetCategory(QuestCategory category)
+		{
+			this.Category = category;
+		}
+
+		/// <summary>
+		/// Sets quest's class, which is displayed in squred brackets in
+		/// front of its name.
+		/// </summary>
+		/// <param name="class_"></param>
+		protected void SetClass(QuestClass class_)
+		{
+			this.Class = class_;
+		}
+
+		/// <summary>
+		/// Sets quest's icon.
+		/// </summary>
+		/// <param name="class_"></param>
+		protected void SetIcon(QuestIcon icon)
+		{
+			this.Icon = icon;
+		}
+
+		/// <summary>
 		/// Adds prerequisite that has to be met before auto receiving the quest.
 		/// </summary>
 		/// <param name="prerequisite"></param>
