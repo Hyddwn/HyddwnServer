@@ -210,7 +210,7 @@ namespace Aura.Channel.Network.Sending
 
 						case Stat.CombatPower: packet.PutFloat(creature.CombatPower); break;
 						case Stat.Level: packet.PutShort(creature.Level); break;
-						case Stat.AbilityPoints: packet.PutShort(creature.AbilityPoints); break;
+						case Stat.AbilityPoints: packet.PutInt(creature.AbilityPoints); break; // [200100, NA229 (2016-06-16)] Changed from short to int
 						case Stat.Experience: packet.PutLong(AuraData.ExpDb.CalculateRemaining(creature.Level, creature.Exp) * 1000); break;
 
 						case Stat.Life: packet.PutFloat(creature.Life); break;

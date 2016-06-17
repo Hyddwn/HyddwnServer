@@ -537,13 +537,16 @@ namespace Aura.Mabi.Network
 		public const int StabilityMeterInit = 0xAA22;
 		public const int StabilityMeterUpdate = 0xAA23;
 
-		public const int HomesteadInfoRequest = 0xAA58;
-		public const int HomesteadInfoRequestR = 0xAA59;
+		// [200100, NA209 (2016-06-16)]
+		// 4 new ops somewhere here, that shifted the Homestead ChannelLoginUnk ops by 4.
+
+		public const int HomesteadInfoRequest = 0xAA5C;
+		public const int HomesteadInfoRequestR = 0xAA5D;
 
 		// [180300, NA166 (18.09.2013)] 2 new ops somewhere here, possibly the two below
 
-		public const int ChannelLoginUnk = 0xAA87;
-		public const int ChannelLoginUnkR = 0xAA88;
+		public const int ChannelLoginUnk = 0xAA8B;
+		public const int ChannelLoginUnkR = 0xAA8C;
 
 		public const int CollectionRequest = 0xAA8B;
 		public const int CollectionRequestR = 0xAA8C;
@@ -592,8 +595,9 @@ namespace Aura.Mabi.Network
 		// or the player gets stuck.
 		// [190200, NA223 (2016-03-17)] Shifted by 6, from AC1D to AC23.
 		// [200100, NA226 (2016-04-14)] Shifted by 9, from AC23 to AC1A.
-		public const int DcUnk = 0xAC1A;
-		public const int DcUnkR = 0xAC1B;
+		// [200100, NA229 (2016-04-16)] Shifted by 5, from AC1A to AC1F.
+		public const int DcUnk = 0xAC1F;
+		public const int DcUnkR = 0xAC20;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;

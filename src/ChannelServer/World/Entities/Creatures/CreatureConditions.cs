@@ -42,6 +42,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public ConditionsD D { get; private set; }
 		public ConditionsE E { get; private set; }
 		public ConditionsF F { get; private set; }
+		public ConditionsG G { get; private set; }
 
 		/// <summary>
 		/// Raised when any conditions change.
@@ -60,6 +61,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public bool Has(ConditionsD condition) { return ((this.D & condition) != 0); }
 		public bool Has(ConditionsE condition) { return ((this.E & condition) != 0); }
 		public bool Has(ConditionsF condition) { return ((this.F & condition) != 0); }
+		public bool Has(ConditionsG condition) { return ((this.G & condition) != 0); }
 
 		public bool Has(int condition)
 		{
@@ -77,6 +79,8 @@ namespace Aura.Channel.World.Entities.Creatures
 				return this.Has((ConditionsE)c);
 			else if (condition < 64 * 6)
 				return this.Has((ConditionsF)c);
+			else if (condition < 64 * 7)
+				return this.Has((ConditionsG)c);
 
 			throw new ArgumentException("Condition " + condition + " is outside of the known ones.");
 		}
@@ -87,6 +91,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public void Activate(ConditionsD condition, MabiDictionary extra = null) { this.D |= condition; if (extra != null) this.SetExtra((double)condition, 3, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
 		public void Activate(ConditionsE condition, MabiDictionary extra = null) { this.E |= condition; if (extra != null) this.SetExtra((double)condition, 4, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
 		public void Activate(ConditionsF condition, MabiDictionary extra = null) { this.F |= condition; if (extra != null) this.SetExtra((double)condition, 5, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Activate(ConditionsG condition, MabiDictionary extra = null) { this.G |= condition; if (extra != null) this.SetExtra((double)condition, 6, extra); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
 
 		public void Deactivate(ConditionsA condition) { this.A &= ~condition; this.RemoveExtra((double)condition, 0); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
 		public void Deactivate(ConditionsB condition) { this.B &= ~condition; this.RemoveExtra((double)condition, 1); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
@@ -94,6 +99,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public void Deactivate(ConditionsD condition) { this.D &= ~condition; this.RemoveExtra((double)condition, 3); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
 		public void Deactivate(ConditionsE condition) { this.E &= ~condition; this.RemoveExtra((double)condition, 4); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
 		public void Deactivate(ConditionsF condition) { this.F &= ~condition; this.RemoveExtra((double)condition, 5); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
+		public void Deactivate(ConditionsG condition) { this.G &= ~condition; this.RemoveExtra((double)condition, 6); Send.ConditionUpdate(_creature); this.Changed.Raise(_creature); }
 
 		private void SetExtra(double condition, int offset, MabiDictionary extra)
 		{
@@ -127,6 +133,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			this.D = 0;
 			this.E = 0;
 			this.F = 0;
+			this.G = 0;
 			lock (_extra)
 				_extra.Clear();
 			_extraCache = null;
@@ -164,7 +171,7 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		public override string ToString()
 		{
-			return ("(" + this.A + " ; " + this.B + " ; " + this.C + " ; " + this.D + " ; " + this.E + " ; " + this.F + ")");
+			return ("(" + this.A + " ; " + this.B + " ; " + this.C + " ; " + this.D + " ; " + this.E + " ; " + this.F + " ; " + this.G + ")");
 		}
 	}
 }

@@ -103,7 +103,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutFloat(creature.IntFoodMod);
 				packet.PutFloat(creature.WillFoodMod);
 				packet.PutFloat(creature.LuckFoodMod);
-				packet.PutShort(creature.AbilityPoints);
+				packet.PutInt(creature.AbilityPoints); // [200100, NA229 (2016-06-16)] Changed from short to int
 				packet.PutShort((short)creature.AttackMinBase);
 				packet.PutShort((short)creature.AttackMinMod);
 				packet.PutShort((short)creature.AttackMaxBase);
@@ -1046,6 +1046,12 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 				packet.PutInt((int)stickerId);
 				packet.PutLong(end);
+			}
+
+			// [200100, NA229 (2016-06-16)] ?
+			{
+				packet.PutByte(0);
+				packet.PutInt(0);
 			}
 
 			return packet;
