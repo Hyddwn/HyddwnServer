@@ -330,6 +330,8 @@
 		{ name: "TutorialRenewal2010", enabled: true, children: [
 			{ name: "NoRebirthPresent", enabled: true },
 		]},
+		// Enables quest tabs.
+		{ name: "QuestViewRenewal", enabled: true },
 	]},
 	
 	// Season 2
