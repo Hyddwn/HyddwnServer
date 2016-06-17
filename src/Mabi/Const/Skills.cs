@@ -214,6 +214,8 @@ namespace Aura.Mabi.Const
 		Pummel = 24302,
 		Respite = 25000,
 		Tumble = 25001,
+		RageImpact = 20018,
+		EmergencyEscape = 57003,
 
 		// Magic
 		Meditation = 30003,
@@ -267,6 +269,7 @@ namespace Aura.Mabi.Const
 		Spellwalk = 30480,
 		SnapCast = 30481,
 		Inspiration = 30482,
+		MeteorStrike = 30205,
 
 		// Alchemy
 		ManaCrystallization = 35001,
