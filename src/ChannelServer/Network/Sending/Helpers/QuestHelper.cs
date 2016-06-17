@@ -90,6 +90,14 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutByte(0);
 			}
 
+			// [200100, NA229 (2016-06-16)] ?
+			{
+				packet.PutByte(0);
+				packet.PutInt(3); // tab, 0=tutorial, 1=event, 2=repeat, 3=basic, 4=skill, 5=the divine knights, 6=saga, 7=shakespeare, 8=alchemist, 9=iria, 10=advent of the goddess, 11=squires, 12=field, 13=midsummer mission
+				packet.PutInt(0); // [category], 0=none, 1=adventure, 2=close combat, 3=magic, 4=archery, 5=mercantile, 6=battle alchemy, 7=martial arts, 8=music, 9=puppetry, 10=lance, 11=holy arts, 12=transmutation, 13=cooking, 14=smithing, 15=tailoring, 16=medicine, 17=caprentry, 18=gunslinger, 19=ninja, 20=merlin, 21=starlet, 22=professor j, 23=culinary artist, 24=treasure hunter, 25=event, 26=guide, 27=normal, 28=life, 29=common, 30=action, 31=paladin, 32=hidden talent, 33=contents, 34=exploration, 35=partner, 36=guild, 37=daily, 38=party, 39=tutorial, 40=part-time job, 41=return incentive, 42=daily, 43=weekly, 44=monthly
+				packet.PutInt(0); // icon, 0=normal, 1=blue, 2=money, 3=theater mission, 4=movie, 5=blue party, 6=exp, 7=seal, 8=pink book, 9=yellow party, 10=chest, 11=romeo and juliet, 12=the divine knights, 13=gold pouch, 14=scroll, 15=shakespeare side quest, 16=blue board, 17=normal, 18=mainstream book, 19=Merchant of Venice, 20=sword, 21=exploration, 22=chapter3, 23=macbeth, 24=bow, 25=exploration cap, 26=shadow mission, 27=light blue party, 28=hexagram, 29=beginner, 30=hamlet, ...
+			}
+
 			packet.PutString(""); // data\gfx\image\gui_temporary_quest.dds
 			packet.PutInt(0);     // 4, x y ?
 			packet.PutInt(0);
