@@ -14,6 +14,10 @@ public class RatMan10PartyQuest : QuestScript
 		SetDescription(L("Rat Men under the control of an evil power are attacking travelers. Please [hunt 10 rat men]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 10 Rat Men"), 0, 0, 0, Kill(10, "/ratman/"));
 
 		AddReward(Exp(1500));

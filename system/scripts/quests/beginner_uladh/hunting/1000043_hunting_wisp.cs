@@ -12,7 +12,10 @@ public class WispQuestScript : QuestScript
 		SetId(1000043);
 		SetName(L("Hunt 1 Wisp"));
 		SetDescription(L("It's one thing to be short on hands, it's another to have a wisp appear around here and cause trouble. - Tracy -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000042), ReachedTotalLevel(27)));
 

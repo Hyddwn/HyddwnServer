@@ -14,6 +14,10 @@ public class GrayWolf10PartyQuest : QuestScript
 		SetDescription(L("The wolves that started to appear recently, are natural enemies of the sheep. To protect the sheep, please hunt [10 gray wolves] roaming the plains."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 10 Gray Wolves"), 0, 0, 0, Kill(10, "/graywolf/"));
 
 		AddReward(Exp(126));

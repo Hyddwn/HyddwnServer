@@ -12,6 +12,9 @@ public class HarvestPotatoQuestScript : QuestScript
 		SetName("Harvest Potato");
 		SetDescription("Hello? I am Kristell in Dunbarton Church. There's a potato patch near Dunbarton where you can dig up some potatoes. Would you mind digging some with a weeding hoe? I will tell you about Holy Water of Lymilark as well as some rewards if you give me 5 Potatoes. Also, you will be rewarded. - Kristell -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202047)); // Gather Egg
 

@@ -12,7 +12,10 @@ public class MalcolmsRingQuestScript : QuestScript
 		SetId(202004);
 		SetName("Malcolm's Ring");
 		SetDescription("I'm Malcolm. I sell a variety of stuff at the General Shop near the Square. I happened to lose a ring in Alby Dungeon, but I cannot go find it myself. Can you help me find the ring? Come visit me first, though. - Malcolm -");
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202003)); // Save my Sheep
 

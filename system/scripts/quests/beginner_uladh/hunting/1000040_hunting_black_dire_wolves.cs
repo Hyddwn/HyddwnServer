@@ -12,7 +12,10 @@ public class BlackDireWolvesQuestScript : QuestScript
 		SetId(1000040);
 		SetName(L("Hunt 5 Black Dire Wolves"));
 		SetDescription(L("Now you're turning into a warrior. Try hunting 5 black dire wolves. It is a mission you have to do far away from town and also against a tough animal, so please succeed. - Ranald-"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000039), ReachedTotalLevel(19)));
 

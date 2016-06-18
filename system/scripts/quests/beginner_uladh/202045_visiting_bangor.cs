@@ -12,6 +12,9 @@ public class VisitingBangorQuestScript : QuestScript
 		SetName("Visiting Bangor");
 		SetDescription("I'm Comgan, the priest of Bangor. Lately, it's been difficult extracting ores from the mines because of the sudden rush of Fomors occupying dungeons in Bangor. If you receive this scroll, I'd appreciate it a great deal if you can make your way to Bangor. Thank you. - Comgan -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202046)); // Talk with Eavan
 

@@ -12,7 +12,10 @@ public class GiantSpiderQuestScript : QuestScript
 		SetId(1000055);
 		SetName(L("Hunt 1 Giant Spider"));
 		SetDescription(L("I am Trefor, the guard. Have you ever heard about the Giant Spider? Why don't you drop a Common Item on the Alby dungeon altar to enter and hunt 1 Giant Spider? I think it's a good chance to test your courage. - Trefor -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(ReachedTotalLevel(21));
 

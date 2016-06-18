@@ -14,6 +14,10 @@ public class DireWolvesGrizzlyBears40PartyQuest : QuestScript
 		SetDescription(L("Recently, Dire Wolves and Grizzly Bears, which are under a powerful evil spell, are threatening travelers passing through north of Gairech. Please [Hunt 20 Brown Dire Wolves and 20 Grizzly Bears]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj1", L("Hunt 10 Brown Dire Wolves"), 0, 0, 0, Kill(10, "/browndirewolf/"));
 		AddObjective("obj2", L("Hunt 10 White Dire Wolves"), 0, 0, 0, Kill(10, "/whitedirewolf/"));
 		AddObjective("obj3", L("Hunt 10 Black Grizzly Bears"), 0, 0, 0, Kill(10, "/blackgrizzlybear/"));

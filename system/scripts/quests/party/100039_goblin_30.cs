@@ -14,6 +14,10 @@ public class Goblins30PartyQuest : QuestScript
 		SetDescription(L("Goblins are small ugly monsters with dull green skin and red eyes. These small bogeyman-like creatures are from the lower class of Fomors. Please do us a favor and [hunt 30 goblins]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 30 Goblins"), 0, 0, 0, Kill(30, "/goblin/"));
 
 		AddReward(Exp(426));

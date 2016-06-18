@@ -14,6 +14,9 @@ public class SaveMySheepQuestScript : QuestScript
 		SetName("Save my Sheep");
 		SetDescription("I am Deian, a shepherd in the Northeast pasture across the bridge. I have to take care of my sheep all day, and it leaves me no time for anything else. But I have to go somewhere today, so can you guard the sheep from the wolves for me till I come back? - Deian -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202002));
 

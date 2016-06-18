@@ -13,6 +13,9 @@ public class TracyLoggingCampQuestScript : QuestScript
 		SetName("Loggin Camp at Dugald Aisle");
 		SetDescription("Hey~ I'm Tracy, the sexiest guy in Tir Chonaill~ I'm short on hands here, so if you can, please drop by the Logging Camp of Dugald Aisle! All you need to do is cut down a liil bit of trees. Pleeeease help me~ Just head Southwest from Tir Chonaill. - Tracy -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202042)); // Repairing an Item
 

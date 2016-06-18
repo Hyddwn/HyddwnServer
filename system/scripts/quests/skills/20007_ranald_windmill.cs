@@ -12,7 +12,11 @@ public class RanaldsArmorDeliveryQuestScript : QuestScript
 		SetId(20007);
 		SetName("Ranald's Armor Delivery");
 		SetDescription("If you deliver this armor to Ferghus, I'll give you help with the [Windmill skill]. - Ranald -");
-		
+
+		SetIcon(QuestIcon.CloseCombat);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Skill);
+
 		AddObjective("talk_ferghus", "Deliver Armor to Ferghus", 1, 18075, 29960, Talk("ferghus"));
 		AddObjective("talk_ranald", "Talk to Ranald", 1, 4651, 32166, Talk("ranald"));
 

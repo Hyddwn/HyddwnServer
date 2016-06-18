@@ -14,6 +14,10 @@ public class BlueDireWolf30PartyQuest : QuestScript
 		SetDescription(L("Blue dire wolves under the control of an evil power are attacking travelers. Please [hunt 30 blue dire wolves]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 30 Blue Dire Wolves"), 0, 0, 0, Kill(30, "/bluedirewolf/"));
 
 		AddReward(Exp(1350));

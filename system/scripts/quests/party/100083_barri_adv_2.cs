@@ -14,6 +14,10 @@ public class BarriAdv2PartyQuest : QuestScript
 		SetDescription(L("Please offer [Barri Adv. Fomor Pass for 2] on the altar of Barri Dungeon, and defeat [New Gremlin] that can be found at the deepest part of the dungeon."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj1", L("Eliminate 1 New Blue Gremlin"), 0, 0, 0, Kill(1, "/boss/gremlin/armedgremlin/blue/ensemble/"));
 		AddObjective("obj2", L("Eliminate 1 New Pink Gremlin"), 0, 0, 0, Kill(1, "/boss/gremlin/armedgremlin/pink/ensemble/"));
 

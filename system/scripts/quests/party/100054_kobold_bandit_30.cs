@@ -14,6 +14,10 @@ public class KoboldBandit30PartyQuest : QuestScript
 		SetDescription(L("Kobold Bandits are a type of Kobold that steal. These thieves are stealing from the travelers passing through Gairech. Please [Hunt 30 Kobold Bandits]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 30 Kobold Bandits"), 0, 0, 0, Kill(30, "/koboldbandit/"));
 
 		AddReward(Exp(774));

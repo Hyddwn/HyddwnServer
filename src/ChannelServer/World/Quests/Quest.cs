@@ -154,6 +154,9 @@ namespace Aura.Channel.World.Quests
 			this.MetaData.SetFloat("QMAMGLD", 1);
 			this.MetaData.SetInt("QMBHDCTADD", 0);
 			this.MetaData.SetFloat("QMGNRB", 1);
+
+			// Makes client show the NPC's face as icon?
+			//this.MetaData.SetString("QRQSTR", "_caitin");
 		}
 
 		/// <summary>

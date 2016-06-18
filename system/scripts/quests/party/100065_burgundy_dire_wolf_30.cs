@@ -14,6 +14,10 @@ public class BurgundyDireWolf30PartyQuest : QuestScript
 		SetDescription(L("Burgundy dire wolves under the control of an evil power are attacking travelers. Please [hunt 30 burgundy dire wolves]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 30 Burgundy Dire Wolves"), 0, 0, 0, Kill(30, "/darkreddirewolf/"));
 
 		AddReward(Exp(1350));

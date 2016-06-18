@@ -14,6 +14,10 @@ public class CookHardBoiledEggQuestScript : QuestScript
 		SetDescription(L("Do you need a Hard-Boiled Egg? If so, then please gather up [Egg, water, salt]. The ingredients will be exchanged for some [Hard-Boiled Egg]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Collect);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("collect1", L("Gather 1 Egg"), 0, 0, 0, Collect(50009, 1));
 		AddObjective("collect2", L("Gather 1 Bottle of water"), 0, 0, 0, Collect(50118, 1));
 		AddObjective("collect3", L("Gather 1 Salt"), 0, 0, 0, Collect(50132, 1));

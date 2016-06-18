@@ -12,7 +12,10 @@ public class ReachLevl20QuestScript : QuestScript
 		SetId(200043);
 		SetName("Reach Level 20");
 		SetDescription("I am Instructor Ranald. I heard you were training devotedly. Come to me when you reach level 20 and then I will give you something to help with your training.");
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(ReachedLevel(15));
 		

@@ -12,7 +12,10 @@ public class BrownBearQuestScript : QuestScript
 		SetId(1000042);
 		SetName(L("Hunt 1 Brown Bear"));
 		SetDescription(L("You ought to have seen a brown bear at least once when you were passing near Dunbarton of Dugald Aisle. If it's okay with you, will you please hunt 1 brown bear? You don't have to come back and report. When you're done just get your payment. - Duncan-"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000041), ReachedTotalLevel(25)));
 

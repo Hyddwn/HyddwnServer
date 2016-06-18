@@ -14,6 +14,10 @@ public class CiarNormalHardPartyQuest : QuestScript
 		SetDescription(L("Recently a new altar has been found at the back of Ciar Dungeon. Try offering an item that is not a Fomor Pass, and defeat a [Golem] that can be found at the deepest part of the dungeon."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj1", L("Eliminate 1 Golem"), 0, 0, 0, Kill(1, "/golem/boss/hardmode/"));
 		AddObjective("obj2", L("Eliminate 6 Metal Skeletons"), 0, 0, 0, Kill(6, "/skeleton/undead/metalskeleton/hardmode/"));
 

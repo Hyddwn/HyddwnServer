@@ -12,7 +12,10 @@ public class SkeletonsQuestScript : QuestScript
 		SetId(1000046);
 		SetName(L("Hunt 5 Skeletons"));
 		SetDescription(L("I am Comgan, serving as a priest at Bangor. Disturbances by evil creatures near Bangor make it difficult to transport ore from the mine. Can you please hunt 5 skeletons? - Comgan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000045));
 

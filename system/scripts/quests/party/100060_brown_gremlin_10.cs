@@ -14,6 +14,10 @@ public class BrownGremlin10PartyQuest : QuestScript
 		SetDescription(L("Brown Gremlins are under an evil spell and are attacking travelers. Please [Hunt 10 Brown Gremlins]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 10 Brown Gremlins"), 0, 0, 0, Kill(10, "/browngremlin/"));
 
 		AddReward(Exp(900));

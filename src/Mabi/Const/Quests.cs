@@ -111,6 +111,11 @@ namespace Aura.Mabi.Const
 	/// </summary>
 	public enum QuestCategory
 	{
+		/// <summary>
+		/// Uses old system, based on id?
+		/// </summary>
+		ById = -1,
+
 		Tutorial = 0,
 		Event = 1,
 		Repeat = 2,
@@ -185,18 +190,18 @@ namespace Aura.Mabi.Const
 	public enum QuestIcon
 	{
 		Default = 0,
-		Delivery = 1,
-		Icon2 = 2,
+		Collect = 1,
+		GoldReward = 2,
 		Icon3 = 3,
-		Icon4 = 4,
+		Saga = 4,
 		Party = 5,
-		Icon6 = 6,
+		ExpReward = 6,
 		Theater = 7,
-		Icon8 = 8,
+		TheDivineKnights = 8,
 		PartyActive = 9,
-		Icon10 = 10,
+		ItemReward = 10,
 		RomeoAndJuliet = 11,
-		TheDivineKnights = 12,
+		Icon12 = 12,
 		Icon13 = 13,
 		Icon14 = 14,
 		Shakespeare = 15,
@@ -226,7 +231,7 @@ namespace Aura.Mabi.Const
 		Icon38 = 38,
 		Music = 39,
 		Caprentry = 40,
-		Icon41 = 41,
+		CulinaryArtist = 41,
 		HolyArts = 42,
 		Adventure = 43,
 		Icon44 = 44,

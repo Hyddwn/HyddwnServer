@@ -14,6 +14,10 @@ public class WhiteSpider10PartyQuest : QuestScript
 		SetDescription(L("The White Spiders are a threat for people trying to collect cobwebs. I will reward you for hunting [10 White Spiders]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 10 White Spiders"), 0, 0, 0, Kill(10, "/whitespider/"));
 
 		AddReward(Exp(66));

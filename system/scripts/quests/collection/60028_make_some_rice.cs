@@ -14,6 +14,10 @@ public class MakeSomeRiceQuestScript : QuestScript
 		SetDescription(L("Do you need to make rice? If so, then please gather up [rice, water]. The ingredients will be exchanged for some [Rice]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Collect);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("collect1", L("Gather 1 bag of rice"), 0, 0, 0, Collect(50135, 1));
 		AddObjective("collect2", L("Gather 1 Bottle of water"), 0, 0, 0, Collect(50118, 1));
 

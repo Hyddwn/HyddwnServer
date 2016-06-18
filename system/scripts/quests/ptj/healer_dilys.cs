@@ -223,6 +223,9 @@ public class DilysWoolBasicPtjScript : QuestScript
 		SetName("Healer's House Part-Time Job");
 		SetDescription("This task is to gather wool that is used to make bandages. I got an order for [10 bundles of wool] today. Wool can be obtained from sheep.");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
 		SetType(QuestType.Deliver);
 		SetPtjType(PtjType.HealersHouse);
 		SetLevel(QuestLevel.Basic);
@@ -268,6 +271,9 @@ public class DilysWoolIntPtjScript : QuestScript
 		SetName("Healer's House Part-Time Job");
 		SetDescription("This task is to gather wool that is used to make bandages. I got an order for [20 bundles of wool] today. Wool can be obtained from sheep.");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
 		SetType(QuestType.Deliver);
 		SetPtjType(PtjType.HealersHouse);
 		SetLevel(QuestLevel.Int);
@@ -312,6 +318,9 @@ public class DilysWoolAdvPtjScript : QuestScript
 		SetId(505161);
 		SetName("Healer's House Part-Time Job");
 		SetDescription("This task is to gather wool that is used to make bandages. I got an order for [30 bundles of wool] today. Wool can be obtained from sheep.");
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
 
 		SetType(QuestType.Deliver);
 		SetPtjType(PtjType.HealersHouse);
@@ -362,6 +371,9 @@ public abstract class DilysDeliveryPtjBaseScript : QuestScript
 		SetId(QuestId);
 		SetName("Potion Delivery");
 		SetDescription("Please help me [deliver the potions] I made today. - Dilys -");
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
 
 		SetType(QuestType.Deliver);
 		SetPtjType(PtjType.HealersHouse);
