@@ -12,7 +12,10 @@ public class BlackSuccubusQuestScript : QuestScript
 		SetId(1000058);
 		SetName(L("Hunt 1 Black Succubus"));
 		SetDescription(L("If you go to the end of Rabbie Dungeon alone the Succubus will attack. Be careful not to be fooled by the monster. It tempts humans with its tongue and its looks. - Aranwen -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000057));
 

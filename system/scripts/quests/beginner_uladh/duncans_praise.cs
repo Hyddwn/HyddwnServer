@@ -29,6 +29,9 @@ public abstract class DuncansPraiseQuestScript : QuestScript
 		SetName("Duncan's Praise");
 		SetDescription("I heard you worked hard and made a difference helping the town residents. Can you visit me for a second? I will recommend a friend to you. - Duncan -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		AddObjective("talk_duncan", "Talk with Chief Duncan", 1, 15409, 38310, Talk("duncan"));
 		AddObjective("talk_friend", "A Talk with " + FriendName, FriendRegion, FriendX, FriendY, Talk(FriendIdent));
 

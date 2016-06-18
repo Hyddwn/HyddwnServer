@@ -13,6 +13,9 @@ public class ProductionMasteryHumanQuestScript : QuestScript
 		SetName("Do you know Production Mastery skill?");
 		SetDescription("How are you doing? I'm Alissa. I help the milling in Tir Chonaill. Aren't you curious about the Production Mastery skill? If you are, meet me in front of the windmill in Tir Chonaill~");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(202036), Completed(202037), Completed(202038), Completed(2020369))); // Duncan's Praise
 

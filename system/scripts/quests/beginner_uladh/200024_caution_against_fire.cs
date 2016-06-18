@@ -13,6 +13,9 @@ public class CautionAgainstFireQuestScript : QuestScript
 		SetName("Caution against Fire");
 		SetDescription("Hello? I am Trefor. Isn't it fun to have a campfire? Don't forget to take care of fire safety. It will be a big problem if the forest gets burned while having a campfire in the deep woods. If you come to me and take my class on fire safety. I will give you a book that will raise your Campfire skill rank. - Trefor -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202003)); // Save my Sheep
 		AddPrerequisite(ReachedRank(SkillId.Campfire, SkillRank.RF));

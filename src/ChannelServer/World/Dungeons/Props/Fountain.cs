@@ -154,7 +154,7 @@ namespace Aura.Channel.World.Dungeons.Props
 
 				case 7: // Bless All
 					{
-						foreach (var item in creature.Inventory.GetEquipment())
+						foreach (var item in creature.Inventory.GetEquipment(a => a.Info.Pocket != Pocket.Magazine1 && a.Info.Pocket != Pocket.Magazine2))
 						{
 							item.OptionInfo.Flags |= ItemFlags.Blessed;
 							Send.ItemBlessed(creature, item);
@@ -165,7 +165,7 @@ namespace Aura.Channel.World.Dungeons.Props
 
 				case 8: // Bless One
 					{
-						var equip = creature.Inventory.GetEquipment(a => !a.IsBlessed);
+						var equip = creature.Inventory.GetEquipment(a => !a.IsBlessed && a.Info.Pocket != Pocket.Magazine1 && a.Info.Pocket != Pocket.Magazine2);
 						var count = equip.Count();
 
 						if (count == 0)

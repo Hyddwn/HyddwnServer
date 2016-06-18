@@ -12,6 +12,9 @@ public class CampfireQuestScript : QuestScript
 		SetName("Campfire");
 		SetDescription("Have you ever been to an Inn before? I have something to tell you that you may find helpful. Please drop by and talk to me, while checking out the place. - Piaras -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202003)); // Save my Sheep
 		AddPrerequisite(NotSkill(SkillId.Campfire));

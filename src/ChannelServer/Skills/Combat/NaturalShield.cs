@@ -134,6 +134,10 @@ namespace Aura.Channel.Skills.Combat
 				foreach (var item in equipment)
 				{
 					var chance = item.Data.AutoDefenseRanged;
+
+					// Add upgrades
+					chance += item.MetaData1.GetFloat("IM_RNG") * 100;
+
 					if (chance > 0)
 					{
 						if (used = pinged = (rnd.Next(100) < chance))

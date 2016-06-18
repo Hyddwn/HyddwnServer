@@ -12,6 +12,9 @@ public class MagicMasteryLessonQuestScript : QuestScript
 		SetName(L("Magic Mastery Lesson"));
 		SetDescription(L("I am Lassar from Tir Chonaill and I teach magic. Have you ever heard about Magic Mastery? If you are interested in understanding about magic, please visit me. I will explain magic so you can understand easily. - Lassar -"));
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202045)); // Visiting Bangor
 		AddPrerequisite(NotSkill(SkillId.MagicMastery));

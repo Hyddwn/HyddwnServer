@@ -210,10 +210,28 @@ namespace Aura.Channel.Skills.Life
 					// Random fish size, unofficial
 					if (fish.SizeMin + fish.SizeMax != 0)
 					{
-						var min = fish.SizeMin + (int)Math.Max(0, (item.Data.BaseSize - fish.SizeMin) / 100f * skill.RankData.Var4);
+						var min = fish.SizeMin;
 						var max = fish.SizeMax;
 
-						size = Math2.Clamp(fish.SizeMin, fish.SizeMax, rnd.Next(min, max + 1) + (int)skill.RankData.Var1);
+						// Var1 bonus
+						min += (int)skill.RankData.Var1;
+
+						// Var4 bonus
+						min += (int)Math.Max(0, (item.Data.BaseSize - fish.SizeMin) / 100f * skill.RankData.Var4);
+
+						// Modify min and max, so the size falls into big or
+						// small territory.
+						var mid = (max - min) / 2;
+						if (creature.Temp.CatchSize == CatchSize.BigOne)
+							min += mid;
+						else
+							max -= mid;
+
+						// Cap
+						if (max < min) max = min;
+						if (min > max) min = max;
+
+						size = Math2.Clamp(fish.SizeMin, fish.SizeMax, rnd.Next(min, max + 1));
 						var scale = (1f / item.Data.BaseSize * size);
 
 						item.MetaData1.SetFloat("SCALE", scale);
@@ -313,8 +331,13 @@ namespace Aura.Channel.Skills.Life
 			var catchSize = CatchSize.Something;
 			var fishSpeed = 1f;
 
+			var fishData = AuraData.FishDb.Find(creature.Temp.FishingDrop.ItemId);
+			if (fishData != null && fishData.SizeMin + fishData.SizeMax != 0)
+				catchSize = (rnd.NextDouble() < 0.5 ? CatchSize.SmallCatch : CatchSize.BigOne);
+
 			// Request action
 			creature.Temp.FishingActionRequested = true;
+			creature.Temp.CatchSize = catchSize;
 			Send.FishingActionRequired(creature, catchSize, time, fishSpeed);
 		}
 

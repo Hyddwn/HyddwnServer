@@ -12,6 +12,9 @@ public class TalkEavanQuestScript : QuestScript
 		SetName("Talk with Eavan");
 		SetDescription("I am Eavan. I work at the Town Office taking care of Adventures' Association business. You have turned into an excellent adventurer. I have something to tell you. Can you come see me? - Eavan -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202044)); // Harvest Potato
 

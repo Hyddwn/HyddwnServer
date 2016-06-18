@@ -12,7 +12,10 @@ public class OgreWarriorQuestScript : QuestScript
 		SetId(1000060);
 		SetName(L("Hunt 1 Ogre Warrior"));
 		SetDescription(L("I am Comgan, serving as a priest in Bangor. Evil creatures in Bangor Dungeon make it more difficult to gather minerals at the mine. Especially the ogre warrior, which is the biggest threat because it is the boss of the ogres. Can you please hunt 1 ogre warrior? - Comgan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000059));
 

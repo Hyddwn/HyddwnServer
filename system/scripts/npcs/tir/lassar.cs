@@ -55,12 +55,29 @@ public class LassarScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 10061) // is a friend of Malcolm
+				{
+					var today = ErinnTime.Now.ToString("yyyyMMdd");
+					if (today != Player.Vars.Perm["lassar_title_gift"])
+					{
+						Player.Vars.Perm["lassar_title_gift"] = today;
+
+						GiveItem(51006, 3); // MP 10 Potion x3
+						Notice(L("Received MP 10 Potion from Lassar."));
+						SystemMsg(L("Received MP 10 Potion from Lassar."));
+
+						Msg(L("Hahaha. I was wondering who you were.<br/>You must be Malcolm's friend, <username/>, right?<br/>I would like to give you this MP Potion.<br/>Will you accept it?"));
+					}
+				}
+
+				if (Title == 11002)
 				{
 					Msg("Hm? <username/>, you're the Guardian of Erinn?<br/>Are you <username/>, the one<br/>who used to train magic and combat here?");
 					Msg("...Wow... I'm amazed.<br/>I never knew a day like this would come.");
 					Msg("Congratulations. <username/>. Hehe.");
 				}
+
 				await Conversation();
 				break;
 

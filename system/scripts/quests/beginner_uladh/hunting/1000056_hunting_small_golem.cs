@@ -12,7 +12,10 @@ public class SmallGolemQuestScript : QuestScript
 		SetId(1000056);
 		SetName(L("Hunt 1 Small Golem"));
 		SetDescription(L("The golems normally are a pile of stones but turns into monsters when somebody goes near. It's not easy to face a golem but you look like you could face a small golem. Give away the Ciar Beginner Dungeon pass to the dungeon altar and then go in and hunt 1 small golem. Come back and let me know if you need another pass. - Ranald -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000055));
 

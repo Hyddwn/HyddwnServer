@@ -14,6 +14,10 @@ public class MakeMayonnaiseQuestScript : QuestScript
 		SetDescription(L("Do you need Mayo? If so, then please gather up [Eggs and Olive Oil]. The ingredients will be exchanged for some [Mayonnaise]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Collect);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("collect1", L("Gather 1 Egg"), 0, 0, 0, Collect(50009, 1));
 		AddObjective("collect2", L("Gather 1 Olive Oil"), 0, 0, 0, Collect(50145, 1));
 

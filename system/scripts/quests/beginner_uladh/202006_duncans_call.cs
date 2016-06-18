@@ -12,7 +12,10 @@ public class DuncansCallQuestScript : QuestScript
 		SetId(202006);
 		SetName("Duncan's Call");
 		SetDescription("Looks like you're living a good life. Come visit me when you have the time. - Duncan -");
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(ReachedTotalLevel(26));
 		

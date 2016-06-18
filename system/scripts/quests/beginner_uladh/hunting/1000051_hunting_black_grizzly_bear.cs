@@ -12,7 +12,10 @@ public class BlackGrizzlyBearQuestScript : QuestScript
 		SetId(1000051);
 		SetName(L("Hunt 1 Black Grizzly Bear"));
 		SetDescription(L("I'm Eavan from the Dunbarton Town Office. The Black Grizzly Bear from around Dunbarton is threatening the residents. Dunbarton Town will reward you for hunting the black grizzly bear. - Eavan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000050));
 		

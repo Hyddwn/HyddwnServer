@@ -26,6 +26,10 @@ namespace Aura.Channel.Network.Sending.Helpers
 			{
 				packet.PutULong((ulong)conditions.F);
 			}
+			// [200100, NA229 (2016-06-16)] New conditions list
+			{
+				packet.PutULong((ulong)conditions.G);
+			}
 
 			// List of additional values for the conditions
 			var extra = conditions.GetExtraList();

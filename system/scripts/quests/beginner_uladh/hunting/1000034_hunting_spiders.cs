@@ -12,7 +12,10 @@ public class WhiteSpiderQuestScript : QuestScript
 		SetId(1000034);
 		SetName(L("Hunt 5 White Spiders"));
 		SetDescription(L("You can find the white spider near the graveyard easily. The graveyard is often damaged by the white spider that have increased suddenly. Can you take the lead and banish the white spider? First hunt 5 white spiders. You don't have to come back and report. When you're done, just get your payment. - Duncan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(ReachedTotalLevel(12));
 

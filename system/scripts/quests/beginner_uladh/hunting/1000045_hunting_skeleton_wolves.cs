@@ -12,7 +12,10 @@ public class SkeletonWolvesQuestScript : QuestScript
 		SetId(1000045);
 		SetName(L("Hunt 5 Skeleton Wolves"));
 		SetDescription(L("I am Comgan, serving as a priest at Bangor. Evil creatures near Bangor make it difficult for travelers to travel. Can you please hunt 5 skeleton wolves? - Comgan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000044));
 

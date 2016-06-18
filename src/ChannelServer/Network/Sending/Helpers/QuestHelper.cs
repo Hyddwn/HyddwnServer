@@ -90,6 +90,14 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutByte(0);
 			}
 
+			// [200100, NA229 (2016-06-16)] Quest look
+			{
+				packet.PutByte(0);
+				packet.PutInt((int)quest.Data.Category);
+				packet.PutInt((int)quest.Data.Class);
+				packet.PutInt((int)quest.Data.Icon);
+			}
+
 			packet.PutString(""); // data\gfx\image\gui_temporary_quest.dds
 			packet.PutInt(0);     // 4, x y ?
 			packet.PutInt(0);

@@ -12,7 +12,10 @@ public class GrayFoxesQuestScript : QuestScript
 		SetId(1000035);
 		SetName(L("Hunt 5 Gray Foxes"));
 		SetDescription(L("How are you doing? I am a little concern that the gray foxes near the pasture will harm the sheep. If it's okay with you, will you please hunt 5 gray foxes? You don't have to come back and report. When you're done, just get your payment. - Duncan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000034), ReachedTotalLevel(13)));
 

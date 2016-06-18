@@ -14,6 +14,10 @@ public class Kobolds30PartyQuest : QuestScript
 		SetDescription(L("A Kobold's dog-like legs make them physically stronger than Goblins but their intellect is far below that of humans. Please [Hunt 30 Kobolds]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 30 Kobolds"), 0, 0, 0, Kill(30, "/kobold/"));
 
 		AddReward(Exp(726));

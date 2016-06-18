@@ -20,13 +20,13 @@ namespace Aura.Data.Database
 		public int UpgradeMax { get; set; }
 		public string Filter { get; set; }
 		public List<string> Npcs { get; set; }
-		public Dictionary<string, List<int>> Effects { get; set; }
+		public Dictionary<string, List<float>> Effects { get; set; }
 		public bool Personalize { get; set; }
 
 		public ItemUpgradeData()
 		{
 			this.Npcs = new List<string>();
-			this.Effects = new Dictionary<string, List<int>>();
+			this.Effects = new Dictionary<string, List<float>>();
 		}
 	}
 
@@ -56,16 +56,16 @@ namespace Aura.Data.Database
 			{
 				foreach (var effect in (IDictionary<string, JToken>)entry["effects"])
 				{
-					data.Effects[effect.Key] = new List<int>();
+					data.Effects[effect.Key] = new List<float>();
 
-					if (effect.Value.Type == JTokenType.Integer)
+					if (effect.Value.Type == JTokenType.Float)
 					{
-						data.Effects[effect.Key].Add((int)effect.Value);
+						data.Effects[effect.Key].Add((float)effect.Value);
 					}
 					else if (effect.Value.Type == JTokenType.Array)
 					{
 						foreach (var val in effect.Value)
-							data.Effects[effect.Key].Add((int)val);
+							data.Effects[effect.Key].Add((float)val);
 					}
 				}
 			}

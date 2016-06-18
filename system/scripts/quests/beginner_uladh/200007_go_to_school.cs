@@ -14,7 +14,10 @@ public class BeginnerUladhSchool1QuestScript : QuestScript
 		SetId(200007);
 		SetName("Go to School");
 		SetDescription("This is Ranald, a battle instructor at School. Battling is the most basic, fundamental aspect of an adventure. Even the ones that don't believe in fighting should at least learn to defend themselves. Please stop by the School when you can. - Ranald -");
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202002)); // Rescue Resident
 

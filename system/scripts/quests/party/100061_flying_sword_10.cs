@@ -14,6 +14,10 @@ public class FlyingSword10PartyQuest : QuestScript
 		SetDescription(L("Flying Swords are under an evil spell and are attacking travelers. Please [Hunt 10 Flying Swords]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 10 Flying Swords"), 0, 0, 0, Kill(10, "/flyingsword/"));
 
 		AddReward(Exp(1500));

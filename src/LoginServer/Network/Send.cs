@@ -541,6 +541,11 @@ namespace Aura.Login.Network
 			packet.PutByte(0);				// 1: 프리미엄 PC방 서비스 사용중, 16: Free Play Event
 			packet.PutByte(false);			// Free Beginner Service
 
+			// [200100, NA229 (2016-06-16)] ?
+			{
+				packet.PutByte(1);
+			}
+
 			// Characters
 			// --------------------------------------------------------------
 			packet.PutShort((short)account.Characters.Count);

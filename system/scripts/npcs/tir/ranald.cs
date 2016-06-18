@@ -50,12 +50,48 @@ public class RanaldScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				var today = ErinnTime.Now.ToString("yyyyMMdd");
+				if (today != Player.Vars.Perm["ranald_title_gift"])
+				{
+					string message = null;
+
+					switch (Title)
+					{
+						case 10059: // is a friend of Trefor
+							message = L("Here you are, <username/>.<br/>A friend of Trefor it is...");
+							break;
+
+						case 10060: // is a friend of Deian
+							message = L("Here you are, <username/>.<br/>A friend of Deian it is...");
+							break;
+
+						case 10061: // is a friend of Malcolm
+							message = L("Here you are, <username/>.<br/>A friend of Malcolm it is...");
+							break;
+					}
+
+					if (message != null)
+					{
+						Msg(message);
+
+						Player.Vars.Perm["ranald_title_gift"] = today;
+
+						GiveItem(51011, 3); // Stamina 10 Potion x3
+						Notice(L("Received Stamina 10 Potion from Ranald."));
+						SystemMsg(L("Received Stamina 10 Potion from Ranald."));
+
+						Msg(L("I think you'll need this Stamina Potion quite often<br/>for your combat training."));
+					}
+				}
+
+				if (Title == 11002)
 				{
 					Msg("Hah... I can't believe<br/>you've become the Guardian of Erinn.<br/>I still remember you practicing your combat skills on those dummies...");
 					Msg("...I can't be more proud as your teacher.<br/>These are the moments that make teachers feel rewarded...");
 					Msg("...I'm proud of you. <username/>.");
 				}
+
 				await Conversation();
 				break;
 

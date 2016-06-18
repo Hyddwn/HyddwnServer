@@ -12,7 +12,10 @@ public class WhiteWolvesQuestScript : QuestScript
 		SetId(1000038);
 		SetName(L("Hunt 5 White Wolves"));
 		SetDescription(L("I am Deian from the pasture east of Tir Chonaill. I'm fed up with the white wolves, that roams near the plains, eating up my sheep. How about hunting them down for me?"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000037), ReachedTotalLevel(16)));
 

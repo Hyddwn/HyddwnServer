@@ -12,6 +12,9 @@ public class LetsGatherGreenGemQuestScript : QuestScript
 		SetName("Let's gather Green Gem");
 		SetDescription("Hello, this is Bebhinn from the Bank in Tir Chonaill. These days I've taken a hobby of making accessories, and I was making necklaces when I realized I'm short on Small Green Gems. Can you get me 1? - Bebhinn -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(ReachedLevel(6));
 

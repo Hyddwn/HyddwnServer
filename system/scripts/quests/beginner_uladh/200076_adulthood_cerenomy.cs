@@ -12,6 +12,9 @@ public class AdulthoodCeremonyQuestScript : QuestScript
 		SetName("Adulthood Ceremony");
 		SetDescription("I'm Duncan. You are about to come of age now. I have something to give you, can you drop by sometime?");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(ReachedAge(20));
 

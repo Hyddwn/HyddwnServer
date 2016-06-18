@@ -65,6 +65,22 @@ namespace Aura.Channel.Scripting.Scripts
 		public QuestLevel Level { get; protected set; }
 
 		/// <summary>
+		/// The category/tab the quest belongs to.
+		/// </summary>
+		public QuestCategory Category { get; protected set; }
+
+		/// <summary>
+		/// The quest's category, which is displayed in square brackets
+		/// in front of the quest name.
+		/// </summary>
+		public QuestClass Class { get; protected set; }
+
+		/// <summary>
+		/// The icon used for this quest.
+		/// </summary>
+		public QuestIcon Icon { get; protected set; }
+
+		/// <summary>
 		/// The Erinn hour at which the quest can be started.
 		/// </summary>
 		public int StartHour { get; protected set; }
@@ -164,6 +180,9 @@ namespace Aura.Channel.Scripting.Scripts
 			this.MetaData = new MabiDictionary();
 
 			this.Type = QuestType.Normal;
+			this.Category = QuestCategory.Basic;
+			this.Class = QuestClass.None;
+			this.Icon = QuestIcon.Default;
 
 			this.ScrollId = 70024; // Hunting Quest
 		}
@@ -315,6 +334,35 @@ namespace Aura.Channel.Scripting.Scripts
 		protected void SetScrollId(int id)
 		{
 			this.ScrollId = id;
+		}
+
+		/// <summary>
+		/// Sets quest's category, which is used to determin the tab it
+		/// appears in.
+		/// </summary>
+		/// <param name="category"></param>
+		protected void SetCategory(QuestCategory category)
+		{
+			this.Category = category;
+		}
+
+		/// <summary>
+		/// Sets quest's class, which is displayed in squred brackets in
+		/// front of its name.
+		/// </summary>
+		/// <param name="class_"></param>
+		protected void SetClass(QuestClass class_)
+		{
+			this.Class = class_;
+		}
+
+		/// <summary>
+		/// Sets quest's icon.
+		/// </summary>
+		/// <param name="class_"></param>
+		protected void SetIcon(QuestIcon icon)
+		{
+			this.Icon = icon;
 		}
 
 		/// <summary>

@@ -12,6 +12,9 @@ public class PlayingInstrumentsQuestScript : QuestScript
 		SetName("Playing Instruments");
 		SetDescription("This is Endelyon of the Church. If you are interested in instruments, let me know. - Endelyon -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202004)); // Malcolm's Ring
 

@@ -358,4 +358,10 @@ namespace Aura.Mabi.Const
 		LightAsWool = 0x0000000000000200, // TouchMoveUp
 		All = 0xFFFFFFFFFFFFFFFF,
 	}
+
+	[Flags]
+	public enum ConditionsG : ulong
+	{
+		All = 0xFFFFFFFFFFFFFFFF,
+	}
 }

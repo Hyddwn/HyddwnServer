@@ -15,6 +15,7 @@ using Aura.Shared.Util;
 using Aura.Channel.Util.Configuration.Files;
 using System.Globalization;
 using Aura.Mabi;
+using Aura.Channel.Scripting.Scripts;
 
 namespace Aura.Channel.Skills
 {
@@ -284,12 +285,37 @@ namespace Aura.Channel.Skills
 		/// <returns></returns>
 		public int GetCastTime()
 		{
+			var result = 0;
+
 			// Characters/Dynamic
 			if (_creature.IsCharacter && AuraData.FeaturesDb.IsEnabled("CombatSystemRenewal"))
-				return this.RankData.NewLoadTime;
-
+				result = this.RankData.NewLoadTime;
 			// Monsters/Pets
-			return this.RankData.LoadTime;
+			else
+				result = this.RankData.LoadTime;
+
+			// CastingSpeed upgrade
+			var rh = _creature.RightHand;
+			if (rh != null)
+			{
+				// Check if there is a casting mod on the weapon
+				var mod = _creature.Inventory.GetCastingSpeedMod(rh.EntityId);
+				if (mod != 0)
+				{
+					// Check if the skill <> weapon combination is a valid
+					// candidate for the casting speed upgrade.
+					var valid =
+						(this.Is(SkillId.Firebolt, SkillId.Fireball) && rh.HasTag("/fire_wand/")) ||
+						(this.Is(SkillId.Lightningbolt, SkillId.Thunder) && rh.HasTag("/lightning_wand/")) ||
+						(this.Is(SkillId.Icebolt, SkillId.IceSpear) && rh.HasTag("/ice_wand/"));
+
+					// Modify if valid
+					if (valid)
+						result = (int)(result * Math.Max(0, 1f - mod / 100f));
+				}
+			}
+
+			return result;
 		}
 
 		/// <summary>

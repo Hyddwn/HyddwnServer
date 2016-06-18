@@ -12,7 +12,10 @@ public class RedGrizzlyCubQuestScript : QuestScript
 		SetId(1000048);
 		SetName(L("Hunt 1 Red Grizzly Cub"));
 		SetDescription(L("I'm Eavan from the Dunbarton Town Office. The Red Grizzly Cubs from around Dunbarton is threatening travelers. Dunbarton Town will reward you for hunting 1 Red Grizzly Cub. - Eavan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000047));
 

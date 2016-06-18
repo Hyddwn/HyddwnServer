@@ -12,7 +12,10 @@ public class RedBearQuestScript : QuestScript
 		SetId(1000049);
 		SetName(L("Hunt 1 Red Bear"));
 		SetDescription(L("I am concerned about lots of the ferocious animals influenced by evil spirits. If it's okay with you, will you please hunt 1 red bear? You don't have to come back and report. When you're done, just get your payment. - Duncan -"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000048), ReachedTotalLevel(45)));
 		

@@ -12,6 +12,9 @@ public class TalkWithStewartQuestScript : QuestScript
 		SetName("Talk with Stewart");
 		SetDescription("I am Stewart, teaching magic at Dunbarton school. Therefore... I'm a teacher. Come visit me without any pressure. I will give you something that will be helpful. - Stewart -");
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(202041)); // Loggin Camp at Dugald Aisle
 

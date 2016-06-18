@@ -14,6 +14,10 @@ public class BlackDireWolf30PartyQuest : QuestScript
 		SetDescription(L("Dire wolves are totally under the control of evil spirits, even more than ordinary wolves. Please do us a favor and [hunt 30 black dire wolves]."));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj1", L("Hunt 10 Black Dire Wolves"), 0, 0, 0, Kill(10, "/blackdirewolf/"));
 		AddObjective("obj2", L("Hunt 20 Black Dire Wolf Cubs"), 0, 0, 0, Kill(20, "/black/direwolfkid/"));
 

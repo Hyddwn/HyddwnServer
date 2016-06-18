@@ -14,6 +14,10 @@ public class RedBear10PartyQuest : QuestScript
 		SetDescription(L("It is uncommon to see red bear roaming around the plains. Supposedly, the Red Bears have amazing power. Will you please hunt [10 red bears]?"));
 		SetType(QuestType.Collect);
 
+		SetIcon(QuestIcon.Party);
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Repeat);
+
 		AddObjective("obj", L("Hunt 10 Red Bears"), 0, 0, 0, Kill(10, "/redbear/"));
 
 		AddReward(Exp(300));

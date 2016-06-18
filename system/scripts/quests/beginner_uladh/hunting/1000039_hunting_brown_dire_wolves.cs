@@ -12,7 +12,10 @@ public class BrownDireWolvesQuestScript : QuestScript
 		SetId(1000039);
 		SetName(L("Hunt 5 Brown Dire Wolves"));
 		SetDescription(L("I think it's time you fight the beasts. Have you ever seen the brown dire wolf near Ciar Dungeon? Please hunt 5 brown dire wolves. Even without any reporting, I will pay you if you complete the mission. - Ranald-"));
-		
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Basic);
+
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(Or(Completed(1000038), ReachedTotalLevel(17)));
 

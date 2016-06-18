@@ -46,8 +46,38 @@ public class EndelyonScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
+
+				var today = ErinnTime.Now.ToString("yyyyMMdd");
+				if (today != Player.Vars.Perm["endelyon_title_gift"])
+				{
+					string message = null;
+
+					switch (Title)
+					{
+						case 10060: // is a friend of Deian
+							message = L("Do you like boiled eggs?<p>I think these will help when you get hungry.");
+							break;
+
+						case 10062: // is a friend of Nora
+							message = L("I prepared some boiled eggs.<br/>Would you like to try one?");
+							break;
+					}
+
+					if (message != null)
+					{
+						Player.Vars.Perm["endelyon_title_gift"] = today;
+
+						GiveItem(50126); // Hard-Boiled Egg
+						Notice(L("Received Hard-Boiled Egg from Endelyon."));
+						SystemMsg(L("Received Hard-Boiled Egg from Endelyon."));
+
+						Msg(message);
+					}
+				}
+
 				if (Title == 11002)
 					Msg("I already heard the news! You became the Guardian of Erinn.<br/>The whole town seems to be talking about it. Hehe...<br/>Congratulations!");
+
 				await Conversation();
 				break;
 

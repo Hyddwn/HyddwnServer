@@ -740,6 +740,9 @@ public class BasicSorcery3MissionQuestScript : QuestScript
 		SetName(L("Basic Sorcery 3 Mission"));
 		SetDescription(L("Today's assignment is to clear Alby Dungeon. Drop an item on the Alby Dungeon altar, make your way to the Statue of Goddess, and then come back. You can go by yourself or with friends. - Lassar -"));
 
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Tutorial);
+
 		AddObjective("obj1", L("Clear Alby Dungeon"), 13, 3190, 3200, ClearDungeon("tircho_alby_dungeon"));
 		AddObjective("obj2", L("Talk to Lassar"), 9, 2020, 1537, Talk("lassar"));
 
