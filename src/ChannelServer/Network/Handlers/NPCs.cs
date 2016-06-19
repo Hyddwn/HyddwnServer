@@ -18,6 +18,7 @@ using Aura.Channel.World.Entities;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.World.Inventory;
 using Aura.Mabi.Network;
+using Aura.Mabi;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -279,6 +280,11 @@ namespace Aura.Channel.Network.Handlers
 			// in the ItemOptionInfo, so we have to calculate the actual price here.
 			if (item.Data.StackType == StackType.Stackable)
 				price = (int)(price / (float)item.Data.StackMax * item.Amount);
+
+			// Wednesday: Decrease in prices (5%) for items in NPC shops,
+			// including Remote Shop Coupons and money deposit for Exploration Quests.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanHeruin)
+				price = (int)(price * 0.95f);
 
 			// Check currency
 			var canPay = false;
