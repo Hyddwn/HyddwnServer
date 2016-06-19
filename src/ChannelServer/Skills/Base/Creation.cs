@@ -4,6 +4,7 @@
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
 using Aura.Data.Database;
+using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Util;
@@ -100,6 +101,11 @@ namespace Aura.Channel.Skills.Base
 				Send.ServerMessage(creature, Localization.Get("Unknown finish recipe, please report."));
 				return;
 			}
+
+			// Monday: Increase in quality of output for productions.
+			// +5, unofficial.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanEiler)
+				quality = Math.Min(100, quality + 5);
 
 			// Update item
 			item.OptionInfo.Flags &= ~ItemFlags.Incomplete;
