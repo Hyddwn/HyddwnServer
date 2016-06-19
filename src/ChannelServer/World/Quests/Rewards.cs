@@ -9,6 +9,7 @@ using System.Linq;
 using Aura.Channel.Network.Sending;
 using System.Collections.Generic;
 using Aura.Shared.Util;
+using Aura.Mabi;
 
 namespace Aura.Channel.World.Quests
 {
@@ -248,8 +249,15 @@ namespace Aura.Channel.World.Quests
 
 		public override void Reward(Creature creature, Quest quest)
 		{
-			creature.Inventory.AddGold(this.Amount);
-			Send.AcquireInfo(creature, "gold", this.Amount);
+			var amount = this.Amount;
+
+			// Friday: Increase in rewards for completing part-time jobs.
+			// (20% increase in EXP and Gold rewards)
+			if (quest.Data.Type == QuestType.Deliver && ErinnTime.Now.Month == ErinnMonth.AlbanElved)
+				amount = (int)(amount * 1.2f);
+
+			creature.Inventory.AddGold(amount);
+			Send.AcquireInfo(creature, "gold", amount);
 		}
 	}
 
@@ -274,8 +282,15 @@ namespace Aura.Channel.World.Quests
 
 		public override void Reward(Creature creature, Quest quest)
 		{
-			creature.GiveExp(this.Amount);
-			Send.AcquireInfo(creature, "exp", this.Amount);
+			var amount = this.Amount;
+
+			// Friday: Increase in rewards for completing part-time jobs.
+			// (20% increase in EXP and Gold rewards)
+			if (quest.Data.Type == QuestType.Deliver && ErinnTime.Now.Month == ErinnMonth.AlbanElved)
+				amount = (int)(amount * 1.2f);
+
+			creature.GiveExp(amount);
+			Send.AcquireInfo(creature, "exp", amount);
 		}
 	}
 
