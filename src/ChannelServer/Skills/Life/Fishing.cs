@@ -238,8 +238,10 @@ namespace Aura.Channel.Skills.Life
 					}
 				}
 
-				// Set equipment durability
-				if (item.HasTag("/equip/") && item.OptionInfo.DurabilityMax >= 1)
+				// Set equipment durability to 0, does not apply to
+				// unrepairable items, like Gargoyle Swords.
+				// http://wiki.mabinogiworld.com/view/Fishing#Details
+				if (item.HasTag("/equip/") && !item.HasTag("/not_repairable/"))
 					item.Durability = 0;
 
 				// Drop if inv add failed
