@@ -34,8 +34,8 @@ public class AlbyIntFourDungeonScript : DungeonScript
 				switch (rnd.Next(2))
 				{
 					case 0: item = Item.CreateEnchanted(40026, prefix: 20404); break; // Sacrificial Sickle
-					case 1: item = Item.CreateEnchanted(18024, prefix: 30411); break; // Magnolia Hairband
-					case 2: item = Item.CreateEnchanted(40003, prefix: 30514); break; // Hope Short Bow
+					case 1: item = Item.CreateEnchanted(18024, suffix: 30411); break; // Magnolia Hairband
+					case 2: item = Item.CreateEnchanted(40003, suffix: 30514); break; // Hope Short Bow
 				}
 				treasureChest.Add(item);
 			}
