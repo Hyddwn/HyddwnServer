@@ -2020,7 +2020,7 @@ namespace Aura.Channel.World.Entities
 
 				// Tuesday: Increase in dungeon item drop rate.
 				// Wednesday: Increase in item drop rate from animals and nature.
-				// +5%, bonus is unofficial.
+				// +50%, bonus is unofficial.
 				if ((month == ErinnMonth.Baltane && this.Region.IsDungeon) || (month == ErinnMonth.AlbanHeruin && !this.Region.IsDungeon))
 					dropRate *= 1.5f;
 
