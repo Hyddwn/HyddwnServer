@@ -2075,17 +2075,17 @@ namespace Aura.Channel.World.Entities
 
 						// Balance
 						if (num == 0)
-							item.OptionInfo.Balance -= 12;
+							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 12);
 						else if (num <= 10)
-							item.OptionInfo.Balance -= 10;
+							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 10);
 						else if (num <= 30)
-							item.OptionInfo.Balance -= 8;
+							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 8);
 						else if (num <= 50)
-							item.OptionInfo.Balance -= 6;
+							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 6);
 						else if (num <= 70)
-							item.OptionInfo.Balance -= 4;
+							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 4);
 						else if (num <= 90)
-							item.OptionInfo.Balance -= 2;
+							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 2);
 					}
 
 					item.Drop(this.Region, pos, Item.DropRadius, killer, false);
