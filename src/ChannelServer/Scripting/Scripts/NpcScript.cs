@@ -816,6 +816,12 @@ namespace Aura.Channel.Scripting.Scripts
 			item = this.NPC.Inventory.GetItemAt(Pocket.RobeStyle, 0, 0);
 			if (item != null)
 				item.Info.State = 1;
+			item = this.NPC.Inventory.GetItemAt(Pocket.Armor, 0, 0);
+			if (item != null)
+				item.Info.State = 1;
+			item = this.NPC.Inventory.GetItemAt(Pocket.ArmorStyle, 0, 0);
+			if (item != null)
+				item.Info.State = 1;
 		}
 
 		/// <summary>
