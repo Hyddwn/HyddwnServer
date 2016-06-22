@@ -338,7 +338,7 @@ public class TitleRewardingScript : GeneralScript
 					// If the member's tracker has a lower id than that of the
 					// dead creature, the member attacked first.
 					var memberTracker = killer.GetHitTracker(member.EntityId);
-					if (memberTracker.Id < deadTracker.Id)
+					if (memberTracker != null && memberTracker.Id < deadTracker.Id)
 						deadCreature.Titles.Enable(57);
 				}
 			}
