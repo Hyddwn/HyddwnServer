@@ -1722,7 +1722,7 @@ namespace Aura.Channel.World.Inventory
 					}
 				}
 				// Skill rank >, <, ==
-				else if (effect.CheckType >= UpgradeCheckType.SkillRankEqual && effect.CheckType >= UpgradeCheckType.SkillRankLowerThan)
+				else if (effect.CheckType >= UpgradeCheckType.SkillRankEqual && effect.CheckType <= UpgradeCheckType.SkillRankLowerThan)
 				{
 					var skillId = effect.CheckSkillId;
 					var skillRank = effect.CheckSkillRank;
