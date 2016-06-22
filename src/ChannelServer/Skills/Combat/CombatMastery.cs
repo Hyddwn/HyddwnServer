@@ -155,7 +155,7 @@ namespace Aura.Channel.Skills.Combat
 								//tAction.Set(tAction.Has(TargetOptions.Critical) ? TargetOptions.KnockDown : TargetOptions.KnockBack);
 								tAction.Set(TargetOptions.KnockDown);
 						}
-						else if (!attacker.IsDualWielding && !weaponIsKnuckle)
+						else if (!attacker.IsDualWielding && !weaponIsKnuckle && target.Is(RaceStands.KnockBackable))
 						{
 							target.Stability = Creature.MinStability;
 							tAction.Set(TargetOptions.KnockDown);
