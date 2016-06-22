@@ -4,6 +4,7 @@
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.World.Entities;
+using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
@@ -25,7 +26,7 @@ namespace Aura.Channel.Skills.Combat
 	/// Var3: Teleport Distance
 	/// </remarks>
 	[Skill(SkillId.FinalHit)]
-	public class FinalHit : StandardPrepareHandler, IUseable, IInitiableSkillHandler
+	public class FinalHit : StandardPrepareHandler, IUseable, IInitiableSkillHandler, ICustomHitCanceler
 	{
 		/// <summary>
 		/// Reference to the Combat Mastery handler.
@@ -426,6 +427,18 @@ namespace Aura.Channel.Skills.Combat
 					tAction.Attacker.Temp.FinalHitKillCountBoss = 0;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Custom cancelation.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="tAction"></param>
+		public void CustomHitCancel(Creature creature, TargetAction tAction)
+		{
+			// Cancelation on knock down was removed in G19.
+			if (!AuraData.FeaturesDb.IsEnabled("TalentRenovationCloseCombat"))
+				creature.Skills.CancelActiveSkill();
 		}
 	}
 }

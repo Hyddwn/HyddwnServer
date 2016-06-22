@@ -203,23 +203,27 @@ namespace Aura.Channel.Skills
 					// a Complete for it is sent by the client shortly after.
 					// That won't happen if Smash is the attacker skill,
 					// but that's official behavior.
-					if (action.Creature.Skills.ActiveSkill != null && action.Creature.Skills.ActiveSkill.Info.Id != SkillId.Defense)
+					var activeSkill = action.Creature.Skills.ActiveSkill;
+					if (activeSkill != null && activeSkill.Info.Id != SkillId.Defense)
 					{
+						var custom = ChannelServer.Instance.SkillManager.GetHandler(activeSkill.Info.Id) as ICustomHitCanceler;
+						var stackMax = activeSkill.RankData.StackMax;
+						var cancel = false;
+
 						// Cancel non stackable skills on hit, wait for a
 						// knock back for stackables
-						if (action.Creature.Skills.ActiveSkill.RankData.StackMax > 1)
-						{
-							if (action.IsKnockBack)
-							{
-								var custom = ChannelServer.Instance.SkillManager.GetHandler(action.Creature.Skills.ActiveSkill.Info.Id) as ICustomHitCanceler;
-								if (custom == null)
-									action.Creature.Skills.CancelActiveSkill();
-								else
-									custom.CustomHitCancel(action.Creature, tAction);
-							}
-						}
+						if (stackMax > 1)
+							cancel = action.IsKnockBack;
 						else
-							action.Creature.Skills.CancelActiveSkill();
+							cancel = true;
+
+						if (cancel)
+						{
+							if (custom == null)
+								action.Creature.Skills.CancelActiveSkill();
+							else
+								custom.CustomHitCancel(action.Creature, tAction);
+						}
 					}
 
 					// Cancel rest
