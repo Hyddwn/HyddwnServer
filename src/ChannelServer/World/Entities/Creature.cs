@@ -1369,11 +1369,14 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Called regularly to reduce equipments durability.
+		/// Called regularly to reduce equipments durability and give
+		/// proficiency to armors.
 		/// </summary>
 		/// <remarks>
 		/// http://wiki.mabinogiworld.com/view/Durability#Per_Tick
-		/// The loss actually doesn't seem to be fixed, I've logged
+		/// http://wiki.mabinogiworld.com/view/Proficiency
+		/// 
+		/// The dura loss actually doesn't seem to be fixed, I've logged
 		/// varying values on NA. However, *most* of the time the
 		/// values below are used.
 		/// </remarks>
@@ -1433,6 +1436,13 @@ namespace Aura.Channel.World.Entities
 
 				item.Durability -= loss;
 				update.Add(item);
+
+				// Armor prof
+				if (item.Durability != 0 && item.Info.Pocket >= Pocket.Armor && item.Info.Pocket <= Pocket.Robe)
+				{
+					var amount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Time);
+					this.Inventory.AddProficiency(item, amount);
+				}
 			}
 
 			if (update.Count != 0)
