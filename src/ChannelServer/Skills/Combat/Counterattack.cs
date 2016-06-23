@@ -216,7 +216,7 @@ namespace Aura.Channel.Skills.Combat
 			attacker.Shove(target, KnockbackDistance);
 
 			// Update both weapons
-			SkillHelper.UpdateWeapon(attacker, target, attacker.RightHand, attacker.LeftHand);
+			SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Melee, attacker.RightHand, attacker.LeftHand);
 
 			Send.SkillUseStun(attacker, skill.Info.Id, StunTime, 1);
 

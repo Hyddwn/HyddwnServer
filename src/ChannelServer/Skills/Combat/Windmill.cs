@@ -212,7 +212,7 @@ namespace Aura.Channel.Skills.Combat
 			}
 
 			// Update current weapon
-			SkillHelper.UpdateWeapon(attacker, targets.FirstOrDefault(), attacker.RightHand, attacker.LeftHand);
+			SkillHelper.UpdateWeapon(attacker, targets.FirstOrDefault(), ProficiencyGainType.Melee, attacker.RightHand, attacker.LeftHand);
 
 			// Only select a random aggro if there is no aggro yet,
 			// WM only aggroes one target at a time.

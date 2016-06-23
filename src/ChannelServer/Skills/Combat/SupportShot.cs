@@ -229,7 +229,7 @@ namespace Aura.Channel.Skills.Combat
 			}
 
 			// Update current weapon
-			SkillHelper.UpdateWeapon(attacker, target, attacker.RightHand);
+			SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Ranged, attacker.RightHand);
 
 			// Reduce arrows
 			if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows && !attacker.Magazine.HasTag("/unlimited_arrow/"))

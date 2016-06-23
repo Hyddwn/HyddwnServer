@@ -1427,5 +1427,88 @@ namespace Aura.Channel.World.Entities
 
 			return true;
 		}
+
+		/// <summary>
+		/// Returns the amount of proficiency items gain for the given
+		/// age and type.
+		/// </summary>
+		/// <param name="age"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static int GetProficiencyGain(int age, ProficiencyGainType type)
+		{
+			switch (type)
+			{
+				case ProficiencyGainType.Melee:
+					if (age >= 10 && age <= 12)
+						return 48;
+					else if (age >= 13 && age <= 19)
+						return 60;
+					else
+						return 72;
+
+				case ProficiencyGainType.Ranged:
+					if (age == 10)
+						return 60;
+					else if (age >= 11 && age <= 15)
+						return 72;
+					else if (age >= 16 && age <= 19)
+						return 84;
+					else if (age >= 20 && age <= 24)
+						return 96;
+					else
+						return 108;
+
+				case ProficiencyGainType.Gathering:
+					if (age >= 10 && age <= 15)
+						return 96;
+					else
+						return 114;
+
+				case ProficiencyGainType.Music:
+					if (age >= 10 && age <= 15)
+						return 6;
+					else
+						return 12;
+
+				case ProficiencyGainType.Damage:
+					if (age >= 10 && age <= 12)
+						return 16;
+					else if (age >= 13 && age <= 19)
+						return 20;
+					else
+						return 24;
+
+				case ProficiencyGainType.Time:
+					if (age >= 10 && age <= 12)
+						return 60;
+					else if (age >= 13 && age <= 19)
+						return 75;
+					else
+						return 90;
+
+				case ProficiencyGainType.Defend:
+					if (age >= 10 && age <= 12)
+						return 240;
+					else if (age >= 13 && age <= 19)
+						return 300;
+					else
+						return 360;
+
+				default:
+					throw new ArgumentException("Unknown type '" + type + "'.");
+			}
+		}
+	}
+
+	public enum ProficiencyGainType
+	{
+		Melee,
+		Ranged,
+		Gathering,
+		Music,
+		Damage,
+		Time,
+		Defend,
 	}
 }

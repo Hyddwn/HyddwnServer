@@ -57,7 +57,7 @@ namespace Aura.Channel.Skills
 		/// If target is null, prof will be rewarded regardless of target.
 		/// </param>
 		/// <param name="weapons">Weapons to update.</param>
-		public static void UpdateWeapon(Creature attacker, Creature target, params Item[] weapons)
+		public static void UpdateWeapon(Creature attacker, Creature target, ProficiencyGainType profGainType, params Item[] weapons)
 		{
 			if (attacker == null)
 				return;
@@ -89,16 +89,8 @@ namespace Aura.Channel.Skills
 				// Proficiency
 				if (addProf)
 				{
-					short prof = 0;
-
-					if (attacker.Age >= 10 && attacker.Age <= 12)
-						prof = 48;
-					else if (attacker.Age >= 13 && attacker.Age <= 19)
-						prof = 60;
-					else
-						prof = 72;
-
-					attacker.Inventory.AddProficiency(weapon, prof);
+					var amount = Item.GetProficiencyGain(attacker.Age, profGainType);
+					attacker.Inventory.AddProficiency(weapon, amount);
 				}
 			}
 		}

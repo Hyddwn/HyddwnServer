@@ -238,7 +238,7 @@ namespace Aura.Channel.Skills.Magic
 			}
 
 			// Update current weapon
-			SkillHelper.UpdateWeapon(attacker, targets.FirstOrDefault(), attacker.RightHand);
+			SkillHelper.UpdateWeapon(attacker, targets.FirstOrDefault(), ProficiencyGainType.Melee, attacker.RightHand);
 
 			cap.Handle();
 

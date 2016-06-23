@@ -281,7 +281,7 @@ namespace Aura.Channel.Skills.Combat
 			}
 
 			// Update current weapon
-			SkillHelper.UpdateWeapon(attacker, target, attacker.RightHand);
+			SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Ranged, attacker.RightHand);
 
 			// Skill training
 			if (skill.Info.Rank == SkillRank.RF)

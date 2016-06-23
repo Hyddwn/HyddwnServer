@@ -109,7 +109,7 @@ namespace Aura.Channel.Skills.Magic
 			skill.Stacks = 0;
 
 			// Update current weapon
-			SkillHelper.UpdateWeapon(attacker, target, attacker.RightHand);
+			SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Melee, attacker.RightHand);
 
 			cap.Handle();
 		}

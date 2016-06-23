@@ -191,7 +191,7 @@ namespace Aura.Channel.Skills.Combat
 					aAction.Stun *= 2;
 
 				// Update current weapon
-				SkillHelper.UpdateWeapon(attacker, target, weapon);
+				SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Melee, weapon);
 
 				// Consume stamina for weapon
 				var staminaUsage = (weapon != null ? weapon.Data.StaminaUsage : Creature.BareHandStaminaUsage);
