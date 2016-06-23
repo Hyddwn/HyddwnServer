@@ -244,9 +244,8 @@ namespace Aura.Channel.World.Dungeons.Props
 						if (count == 0)
 							break;
 
-						var item = equip.ElementAt(rnd.Next(count));
-						item.OptionInfo.Durability -= 1000;
-						Send.ItemDurabilityUpdate(creature, item);
+						var item = equip.Random();
+						creature.Inventory.ReduceDurability(item, 1000);
 
 						Send.Notice(creature, Localization.Get("Repaired {0}"), item.Data.Name);
 						break;

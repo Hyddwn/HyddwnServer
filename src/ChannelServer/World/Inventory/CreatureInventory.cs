@@ -2011,6 +2011,10 @@ namespace Aura.Channel.World.Inventory
 			if (!this.Has(item))
 				return;
 
+			// Half dura loss if blessed
+			if (item.IsBlessed)
+				amount = Math.Max(1, amount / 2);
+
 			item.OptionInfo.Durability = Math.Max(0, item.OptionInfo.Durability - amount);
 			Send.ItemDurabilityUpdate(_creature, item);
 		}
