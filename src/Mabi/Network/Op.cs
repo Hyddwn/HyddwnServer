@@ -605,11 +605,11 @@ namespace Aura.Mabi.Network
 		public const int DestroyExpiredItemsConfirm = 0xABB3;
 		public const int DestroyExpiredItemsR = 0xABB4;
 
-		// [200100, NA226 (2016-04-14)] Shifted by +8, from ABBB to ABC3.
-		public const int AmmoRequired = 0xABBB;
+		// [200100, NA229 (2016-04-16)] Shifted by +8, from ABBB to ABC3.
+		public const int AmmoRequired = 0xABC3;
 
 		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
-		// [200100, NA226 (2016-04-14)] Shifted by +8, from AC0E to AC16.
+		// [200100, NA229 (2016-06-16)] Shifted by +8, from AC0E to AC16.
 		public const int ChatSticker = 0xAC16;
 
 		// [190200, NA221 (2016-02-17)] Added
@@ -617,7 +617,7 @@ namespace Aura.Mabi.Network
 		// or the player gets stuck.
 		// [190200, NA223 (2016-03-17)] Shifted by 6, from AC1D to AC23.
 		// [200100, NA226 (2016-04-14)] Shifted by 9, from AC23 to AC1A.
-		// [200100, NA229 (2016-04-16)] Shifted by 5, from AC1A to AC1F.
+		// [200100, NA229 (2016-06-16)] Shifted by 5, from AC1A to AC1F.
 		public const int DcUnk = 0xAC1F;
 		public const int DcUnkR = 0xAC20;
 
