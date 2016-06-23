@@ -486,6 +486,7 @@ namespace Aura.Mabi.Network
 		public const int ConditionUpdate = 0xA028;
 		public const int CollectAnimation = 0xA415;
 		public const int CollectAnimationCancel = 0xA416;
+		public const int SkillPrepareCancellation = 0xA417;
 		public const int DyePaletteReq = 0xA418;
 		public const int DyePaletteReqR = 0xA419;
 		public const int DyePickColor = 0xA41A;

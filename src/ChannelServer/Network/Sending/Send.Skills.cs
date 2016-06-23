@@ -1006,5 +1006,20 @@ namespace Aura.Channel.Network.Sending
 			packet.PutByte(success);
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends SkillPrepareCancellation to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skillId"></param>
+		/// <param name="unkByte"></param>
+		public static void SkillPrepareCancellation(Creature creature, SkillId skillId, byte unkByte)
+		{
+			var packet = new Packet(Op.SkillPrepareCancellation, creature.EntityId);
+			packet.PutUShort((ushort)skillId);
+			packet.PutByte(unkByte);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

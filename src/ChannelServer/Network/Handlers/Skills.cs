@@ -261,7 +261,8 @@ namespace Aura.Channel.Network.Handlers
 			// have ManaUse upgrades.
 			if (creature.Mana < skill.RankData.ManaCost)
 			{
-				Send.SystemMessage(creature, Localization.Get("Insufficient Mana"));
+				Send.Notice(creature, Localization.Get("Unable to use the skill. Insufficient Mana."));
+				Send.SkillPrepareCancellation(creature, skillId, 1);
 				Send.SkillPrepareSilentCancel(creature, skillId);
 				return;
 			}
@@ -269,7 +270,11 @@ namespace Aura.Channel.Network.Handlers
 			// Check Stamina
 			if (creature.Stamina < skill.RankData.StaminaCost)
 			{
-				Send.SystemMessage(creature, Localization.Get("Insufficient Stamina"));
+				// If SkillPrepareCancellation isn't sent, some skills, like Ranged,
+				// spam Prepare until enough mana/stamina is there again.
+
+				Send.Notice(creature, Localization.Get("Unable to use the skill. Insufficient Stamina."));
+				Send.SkillPrepareCancellation(creature, skillId, 0);
 				Send.SkillPrepareSilentCancel(creature, skillId);
 				return;
 			}
