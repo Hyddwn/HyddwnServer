@@ -45,6 +45,7 @@ namespace Aura.Channel.Skills.Combat
 		/// </summary>
 		private const int AttackerStun = 800;
 		private const int AttackerStunElf = 600;
+		private const int DefenseAttackerStun = 520;
 
 		/// <summary>
 		/// Stun for the target
@@ -284,6 +285,21 @@ namespace Aura.Channel.Skills.Combat
 					// Reduce stun, based on ping
 					if (delayReduction > 0)
 						tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
+
+					// No second hit if defended
+					if (tAction.SkillId == SkillId.Defense)
+					{
+						// Set to 1 to prevent second run
+						maxHits = 1;
+
+						// Set normal type if hit didn't come from the second
+						// arrow.
+						if (cap.Hit != 2)
+							cap.Type = CombatActionPackType.NormalAttack;
+
+						// Override stun set by Defense
+						aAction.Stun = DefenseAttackerStun;
+					}
 				}
 
 				// Update current weapon
