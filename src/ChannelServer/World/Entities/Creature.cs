@@ -1864,6 +1864,15 @@ namespace Aura.Channel.World.Entities
 				_totalHits = Interlocked.Increment(ref _totalHits);
 			}
 
+			// Give armor proficiency
+			var equip = this.Inventory.GetEquipment(a => a.Info.Pocket.IsMainArmor());
+			if (equip.Length != 0)
+			{
+				var item = equip.Random();
+				var amount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Damage);
+				this.Inventory.AddProficiency(item, amount);
+			}
+
 			// Kill if life too low
 			if (this.Life < 0 && !this.ShouldSurvive(damage, from, lifeBefore))
 				this.Kill(from);

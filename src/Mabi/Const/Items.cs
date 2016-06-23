@@ -106,6 +106,7 @@ namespace Aura.Mabi.Const
 		/// Returns true if pocket is a main equipment pocket (no style, hair, face, or second weapon set).
 		/// </summary>
 		/// <param name="pocket"></param>
+		/// <param name="set"></param>
 		/// <returns></returns>
 		public static bool IsMainEquip(this Pocket pocket, WeaponSet set)
 		{
@@ -117,6 +118,16 @@ namespace Aura.Mabi.Const
 			)
 				return true;
 			return false;
+		}
+
+		/// <summary>
+		/// Returns true if pocket is a main armor pocket (no style, hair, face, or weapons).
+		/// </summary>
+		/// <param name="pocket"></param>
+		/// <returns></returns>
+		public static bool IsMainArmor(this Pocket pocket)
+		{
+			return (pocket >= Pocket.Armor && pocket <= Pocket.Robe);
 		}
 
 		/// <summary>
