@@ -77,7 +77,7 @@ namespace Aura.Channel.Skills
 
 				// Proficiency
 				// Only if the weapon isn't broken and the target is not "Weakest".
-				if (weapon.Durability != 0 && attacker != null && attacker.GetPowerRating(target) >= PowerRating.Weak)
+				if (weapon.Durability != 0 && target != null && attacker.GetPowerRating(target) >= PowerRating.Weak)
 				{
 					short prof = 0;
 
