@@ -69,6 +69,17 @@ namespace Aura.Shared.Util
 		}
 
 		/// <summary>
+		/// Returns a random item from the given list.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="list">The list.</param>
+		/// <returns></returns>
+		public static T Random<T>(this IEnumerable<T> list)
+		{
+			return list.ElementAt(RandomProvider.Get().Next(list.Count()));
+		}
+
+		/// <summary>
 		/// Returns a random number between min and max (incl).
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
