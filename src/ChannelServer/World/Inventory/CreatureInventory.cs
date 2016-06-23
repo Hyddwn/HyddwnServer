@@ -2040,10 +2040,9 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="amount"></param>
 		public void AddProficiency(Item item, int amount)
 		{
-			// Thursday: Increase of proficiency gaining rate.
-			// +5%, bonus is unofficial.
+			// Thursday: Increase of proficiency gaining rate (20%).
 			if (ErinnTime.Now.Month == ErinnMonth.Lughnasadh)
-				amount = (int)(amount * 1.05f);
+				amount = (int)(amount * 1.20f);
 
 			item.Proficiency += amount;
 
