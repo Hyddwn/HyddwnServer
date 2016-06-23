@@ -146,6 +146,9 @@ namespace Aura.Channel.Skills.Magic
 
 			skill.Stacks--;
 
+			// Update current weapon
+			SkillHelper.UpdateWeapon(attacker, target, attacker.RightHand);
+
 			cap.Handle();
 		}
 

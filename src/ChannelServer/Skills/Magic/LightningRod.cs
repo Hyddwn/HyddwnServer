@@ -236,6 +236,10 @@ namespace Aura.Channel.Skills.Magic
 					}
 				}
 			}
+
+			// Update current weapon
+			SkillHelper.UpdateWeapon(attacker, targets.FirstOrDefault(), attacker.RightHand);
+
 			cap.Handle();
 
 			Send.Effect(attacker, Effect.LightningRod, (int)LightningRodEffect.Attack, poe.X, poe.Y);

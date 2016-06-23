@@ -211,6 +211,9 @@ namespace Aura.Channel.Skills.Combat
 				cap.Add(tAction);
 			}
 
+			// Update current weapon
+			SkillHelper.UpdateWeapon(attacker, targets.FirstOrDefault(), attacker.RightHand, attacker.LeftHand);
+
 			// Only select a random aggro if there is no aggro yet,
 			// WM only aggroes one target at a time.
 			if (survived.Count != 0 && attacker.Region.CountAggro(attacker) < 1)

@@ -280,6 +280,9 @@ namespace Aura.Channel.Skills.Combat
 					tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
 			}
 
+			// Update current weapon
+			SkillHelper.UpdateWeapon(attacker, target, attacker.RightHand);
+
 			// Skill training
 			if (skill.Info.Rank == SkillRank.RF)
 				skill.Train(1); // Try attacking with Arrow Revolver.

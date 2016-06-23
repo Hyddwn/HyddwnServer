@@ -228,6 +228,9 @@ namespace Aura.Channel.Skills.Combat
 				// TODO: "Weakened" state (G12S2 gfSupportShotRenewal)
 			}
 
+			// Update current weapon
+			SkillHelper.UpdateWeapon(attacker, target, attacker.RightHand);
+
 			// Reduce arrows
 			if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows && !attacker.Magazine.HasTag("/unlimited_arrow/"))
 				attacker.Inventory.Decrement(attacker.Magazine);
