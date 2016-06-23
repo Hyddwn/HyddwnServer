@@ -116,6 +116,13 @@ namespace Aura.Channel.Skills.Music
 			if (quality == PlayingQuality.VeryGood)
 				Send.UseMotion(creature, 88, 2, true);
 
+			// Give proficiency
+			if (creature.RightHand.Durability != 0)
+			{
+				var amount = Item.GetProficiencyGain(creature.Age, ProficiencyGainType.Music);
+				creature.Inventory.AddProficiency(creature.RightHand, amount);
+			}
+
 			// Called from Complete, once the song is finished.
 			creature.Skills.Callback(skill.Info.Id, () =>
 			{
