@@ -58,7 +58,7 @@ namespace Aura.Data.Database
 				{
 					data.Effects[effect.Key] = new List<float>();
 
-					if (effect.Value.Type == JTokenType.Float)
+					if (effect.Value.Type == JTokenType.Float || effect.Value.Type == JTokenType.Integer)
 					{
 						data.Effects[effect.Key].Add((float)effect.Value);
 					}

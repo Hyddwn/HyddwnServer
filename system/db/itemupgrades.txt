@@ -2506,3 +2506,4 @@
 { id: 52013, ident: "sun_and_moon_sword_gem_repair", name: "Unknown", exp: 100000, gold: 55000, upgradeMin: 0, upgradeMax: 0, filter: "*/sun_and_moon_sword/*", npcs: [ "ranald", "nerys", "castanea", "meles", "ferghus", "edern" ], effects: { "MaxDurability": 4 } },
 { id: 52014, ident: "sun_and_moon_sword_gem_upgrade", name: "Unknown", exp: 100000, gold: 90000, upgradeMin: 0, upgradeMax: 0, filter: "*/sun_and_moon_sword/*", npcs: [ "ranald", "nerys", "castanea", "meles", "ferghus", "edern" ], effects: { "MaxAttack": 3, "Critical": 3 } },
 ]
+
