@@ -111,7 +111,9 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public static bool Handle(AttackerAction aAction, TargetAction tAction, ref float damage)
 		{
-			var activeSkill = tAction.Creature.Skills.ActiveSkill;
+			var defendingCreature = tAction.Creature;
+
+			var activeSkill = defendingCreature.Skills.ActiveSkill;
 			if (activeSkill == null || activeSkill.Info.Id != SkillId.Defense || activeSkill.State != SkillState.Ready)
 				return false;
 
@@ -126,11 +128,11 @@ namespace Aura.Channel.Skills.Combat
 			damage = Math.Max(1, damage - activeSkill.RankData.Var3);
 
 			// Proficiency
-			var shield = tAction.Creature.LeftHand;
+			var shield = defendingCreature.LeftHand;
 			if (shield != null && shield.IsShield && shield.Durability != 0)
 			{
-				var amount = Item.GetProficiencyGain(tAction.Creature.Age, ProficiencyGainType.Defend);
-				tAction.Creature.Inventory.AddProficiency(shield, amount);
+				var amount = Item.GetProficiencyGain(defendingCreature.Age, ProficiencyGainType.Defend);
+				defendingCreature.Inventory.AddProficiency(shield, amount);
 			}
 
 			// Updating unlock because of the updating lock for pre-renovation
@@ -138,9 +140,9 @@ namespace Aura.Channel.Skills.Combat
 			// I guess this isn't the case for Defense because it's never
 			// *explicitly* used.
 			if (!AuraData.FeaturesDb.IsEnabled("TalentRenovationCloseCombat"))
-				tAction.Creature.Unlock(Locks.Run, true);
+				defendingCreature.Unlock(Locks.Run, true);
 
-			Send.SkillUseStun(tAction.Creature, SkillId.Defense, DefenseTargetStun, 0);
+			Send.SkillUseStun(defendingCreature, SkillId.Defense, DefenseTargetStun, 0);
 
 			return true;
 		}
