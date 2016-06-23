@@ -119,18 +119,24 @@ namespace Aura.Channel.Skills.Life
 				return;
 			}
 
-			// Reduce tool's durability
-			if (creature.RightHand != null && collectData.DurabilityLoss > 0)
+			// Update tool
+			if (creature.RightHand != null)
 			{
-				var reduce = collectData.DurabilityLoss;
+				var tool = creature.RightHand;
 
-				// Half dura loss if blessed
-				if (creature.RightHand.IsBlessed)
-					reduce = Math.Max(1, reduce / 2);
+				// Durability
+				if (collectData.DurabilityLoss > 0)
+				{
+					var reduce = collectData.DurabilityLoss;
+					creature.Inventory.ReduceDurability(tool, reduce);
+				}
 
-				creature.RightHand.Durability -= reduce;
-				Send.ItemDurabilityUpdate(creature, creature.RightHand);
-				Send.ItemExpUpdate(creature, creature.RightHand);
+				// Prof
+				if (tool.Durability != 0)
+				{
+					var amount = Item.GetProficiencyGain(creature.Age, ProficiencyGainType.Gathering);
+					creature.Inventory.AddProficiency(tool, amount);
+				}
 			}
 
 			// Get target (either prop or creature)
