@@ -51,14 +51,21 @@ namespace Aura.Channel.Skills
 		/// Reduces weapon's durability and increases its proficiency.
 		/// Only updates weapon type items that are not null.
 		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="weapon"></param>
+		/// <param name="attacker">Creature who's weapon is updated.</param>
+		/// <param name="target">
+		/// The target of the skill, used for power rating calculations.
+		/// If target is null, prof will be rewarded regardless of target.
+		/// </param>
+		/// <param name="weapons">Weapons to update.</param>
 		public static void UpdateWeapon(Creature attacker, Creature target, params Item[] weapons)
 		{
 			if (attacker == null)
 				return;
 
 			var rnd = RandomProvider.Get();
+
+			// Add prof if no target was specified or the target is not "Weakest".
+			var addProf = (target == null || attacker.GetPowerRating(target) >= PowerRating.Weak);
 
 			foreach (var weapon in weapons.Where(a => a != null && a.IsTrainableWeapon))
 			{
@@ -75,9 +82,12 @@ namespace Aura.Channel.Skills
 					Send.ItemDurabilityUpdate(attacker, weapon);
 				}
 
+				// Don't add prof if weapon is broken.
+				if (weapon.Durability == 0)
+					addProf = false;
+
 				// Proficiency
-				// Only if the weapon isn't broken and the target is not "Weakest".
-				if (weapon.Durability != 0 && target != null && attacker.GetPowerRating(target) >= PowerRating.Weak)
+				if (addProf)
 				{
 					short prof = 0;
 

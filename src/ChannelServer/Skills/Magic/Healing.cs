@@ -131,6 +131,9 @@ namespace Aura.Channel.Skills.Magic
 			// Reduce stacks
 			skill.Stacks--;
 
+			// Update current weapon
+			SkillHelper.UpdateWeapon(creature, null, creature.RightHand);
+
 		L_End:
 			Send.Effect(creature, Effect.StackUpdate, "healing_stack", (byte)skill.Stacks, (byte)0);
 			Send.Effect(creature, Effect.UseMagic, "healing", entityId);
