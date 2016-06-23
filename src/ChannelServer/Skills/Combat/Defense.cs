@@ -125,6 +125,14 @@ namespace Aura.Channel.Skills.Combat
 			// Reduce damage
 			damage = Math.Max(1, damage - activeSkill.RankData.Var3);
 
+			// Proficiency
+			var shield = tAction.Creature.LeftHand;
+			if (shield != null && shield.IsShield && shield.Durability != 0)
+			{
+				var amount = Item.GetProficiencyGain(tAction.Creature.Age, ProficiencyGainType.Defend);
+				tAction.Creature.Inventory.AddProficiency(shield, amount);
+			}
+
 			// Updating unlock because of the updating lock for pre-renovation
 			// Other skills actually unlock automatically on the client,
 			// I guess this isn't the case for Defense because it's never
