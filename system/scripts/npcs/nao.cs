@@ -227,4 +227,374 @@ public class NaoScript : NpcScript
 		var player = (PlayerCreature)Player;
 		return (player.LastRebirth + ChannelServer.Instance.Conf.World.RebirthTime < DateTime.Now);
 	}
+
+	private async Task Birthday()
+	{
+		// Gift from Nao...
+
+		if (IsEnabled("NaoDressUp") && !HasKeyword("present_to_nao"))
+			GiveKeyword("present_to_nao");
+
+		await Conversation();
+
+		Close(Hide.None, "Until we meet again, then.<br/>I wish you the best of luck in Erinn.<br/>I'll see you around.");
+	}
+
+	protected override async Task Keywords(string keyword)
+	{
+		switch (keyword)
+		{
+			case "present_to_nao":
+				await KeywordPresentToNao();
+				break;
+
+			case "nao_cloth0":
+				Msg(L("(Missing dialog: Nao asking if she should wear Black Dress."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.BlackDress;
+					Msg(L("(Missing dialog: Nao responding to wearing Black Dress."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Black Dress."));
+				break;
+
+			case "nao_cloth1":
+				Msg(L("(Missing dialog: Nao asking if she should wear Rua's Dress."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.RuasDress;
+					Msg(L("(Missing dialog: Nao responding to wearing Rua's Dress."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Rua's Dress."));
+				break;
+
+			case "nao_cloth2":
+				Msg(L("(Missing dialog: Nao asking if she should wear Pink Coat."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.PinkCoat;
+					Msg(L("(Missing dialog: Nao responding to wearing Pink Coat."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Pink Coat."));
+				break;
+
+			case "nao_cloth3":
+				Msg(L("(Missing dialog: Nao asking if she should wear Black Coat."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.BlackCoat;
+					Msg(L("(Missing dialog: Nao responding to wearing Black Coat."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Black Coat."));
+				break;
+
+			case "nao_cloth4":
+				Msg(L("(Missing dialog: Nao asking if she should wear Yellow Spring Dress."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.YellowSpringDress;
+					Msg(L("(Missing dialog: Nao responding to wearing Yellow Spring Dress."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Yellow Spring Dress."));
+				break;
+
+			case "nao_cloth5":
+				Msg(L("(Missing dialog: Nao asking if she should wear White Spring Dress."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.WhiteSpringDress;
+					Msg(L("(Missing dialog: Nao responding to wearing White Spring Dress."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing White Spring Dress."));
+				break;
+
+			case "nao_cloth6":
+				Msg(L("(Missing dialog: Nao asking if she should wear Pink Spring Dress."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.PinkSpringDress;
+					Msg(L("(Missing dialog: Nao responding to wearing Pink Spring Dress."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Pink Spring Dress."));
+				break;
+
+			case "nao_cloth7":
+				Msg(L("(Missing dialog: Nao asking if she should wear Explorer Suit."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.PinkSpringDress;
+					Msg(L("(Missing dialog: Nao responding to wearing Explorer Suit."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Explorer Suit."));
+				break;
+
+			case "nao_cloth8":
+				Msg(L("(Missing dialog: Nao asking if she should wear Iria Casual Wear."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.PinkSpringDress;
+					Msg(L("(Missing dialog: Nao responding to wearing Iria Casual Wear."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Iria Casual Wear."));
+				break;
+
+			case "nao_yukata":
+				Msg(L("(Missing dialog: Nao asking if she should wear Yukata."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.Yukata;
+					Msg(L("(Missing dialog: Nao responding to wearing Yukata."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Yukata."));
+				break;
+
+			case "nao_cloth_santa":
+				Msg(L("(Missing dialog: Nao asking if she should wear Santa Suit."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.SantaSuit;
+					Msg(L("(Missing dialog: Nao responding to wearing Santa Suit."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Santa Suit."));
+				break;
+
+			case "nao_cloth_summer":
+				Msg(L("(Missing dialog: Nao asking if she should wear White Dress."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.WhiteDress;
+					Msg(L("(Missing dialog: Nao responding to wearing White Dress."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing White Dress."));
+				break;
+
+			case "nao_cloth_kimono":
+				Msg(L("(Missing dialog: Nao asking if she should wear Kimono."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.Kimono;
+					Msg(L("(Missing dialog: Nao responding to wearing Kimono."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Kimono."));
+				break;
+
+			case "nao_cloth_summer_2008":
+				Msg(L("(Missing dialog: Nao asking if she should wear Sky-Blue Dress."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.SkyBlueDress;
+					Msg(L("(Missing dialog: Nao responding to wearing Sky-Blue Dress."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Sky-Blue Dress."));
+				break;
+
+			case "nao_cloth_shakespeare":
+				Msg(L("(Missing dialog: Nao asking if she should wear Playwright Costume."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.PlaywrightCostume;
+					Msg(L("(Missing dialog: Nao responding to wearing Playwright Costume."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Playwright Costume."));
+				break;
+
+			case "nao_cloth_farmer":
+				Msg(L("(Missing dialog: Nao asking if she should wear Farming Outfit."), Button("Yes"), Button("No"));
+				if (await Select() == "@yes")
+				{
+					Player.NaoOutfit = NaoOutfit.FarmingOutfit;
+					Msg(L("(Missing dialog: Nao responding to wearing Farming Outfit."));
+				}
+				else
+					Msg(L("(Missing dialog: Nao responding to not wearing Farming Outfit."));
+				break;
+
+			default:
+				RndMsg(
+					L("I don't know anything about that.") // Unofficial
+				);
+				break;
+		}
+	}
+
+	protected async Task KeywordPresentToNao()
+	{
+		Msg(L("(Missing dialog: Nao awaiting present.)"), SelectItem("Present", "Select an item.", "*/nao_dress/*"));
+
+		var selection = await Select();
+		Item item = null;
+
+		// If an item was selected.
+		if (selection.StartsWith("@select:"))
+		{
+			var args = selection.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+			long itemEntityId;
+
+			if (!long.TryParse(args[1], out itemEntityId))
+			{
+				Log.Error("NaoScript: Invalid item selection response '{0}'.", selection);
+			}
+			else
+			{
+				item = Player.Inventory.GetItem(itemEntityId);
+
+				if (item == null)
+					Log.Warning("NaoScript: Player '{0:X16}' (Account: {1}) tried to gift item they don't possess.", Player.EntityId, Player.Client.Account.Id);
+
+				if (!item.HasTag("/nao_dress/"))
+				{
+					item = null;
+					Log.Warning("NaoScript: Player '{0:X16}' (Account: {1}) tried to use an invalid item, without nao_dress tag.", Player.EntityId, Player.Client.Account.Id);
+				}
+			}
+		}
+
+		// If no item selected or error.
+		if (item == null)
+		{
+			Msg(L("(Missing dialog: Nao disappointed about not getting a present?)"));
+			return;
+		}
+
+		// Nao's outfits are in the id range 80,000~80256, with the
+		// first byte corresponding with the outfit id.
+		var itemId = item.Info.Id;
+		var outfit = (NaoOutfit)(item.Info.Id - 80000);
+
+		switch (outfit)
+		{
+			case NaoOutfit.BlackDress:
+				GiveItem(80012); // White Dress
+
+				Msg(L("(Missing dialog: Nao receiving Black Dress."));
+				break;
+
+			case NaoOutfit.RuasDress:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth1");
+
+				Msg(L("(Missing dialog: Nao receiving Rua's Dress."));
+				break;
+
+			case NaoOutfit.PinkCoat:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth2");
+
+				Msg(L("(Missing dialog: Nao receiving Pink Coat."));
+				break;
+
+			case NaoOutfit.BlackCoat:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth3");
+
+				Msg(L("(Missing dialog: Nao receiving Pink Coat."));
+				break;
+
+			case NaoOutfit.YellowSpringDress:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth4");
+
+				Msg(L("(Missing dialog: Nao receiving Yellow Spring Dress."));
+				break;
+
+			case NaoOutfit.WhiteSpringDress:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth5");
+
+				Msg(L("(Missing dialog: Nao receiving White Spring Dress."));
+				break;
+
+			case NaoOutfit.PinkSpringDress:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth6");
+
+				Msg(L("(Missing dialog: Nao receiving Pink Spring Dress."));
+				break;
+
+			case NaoOutfit.ExplorerSuit:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth7");
+
+				Msg(L("(Missing dialog: Nao receiving Explorer Suit."));
+				break;
+
+			case NaoOutfit.IriaCasualWear:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth8");
+
+				Msg(L("(Missing dialog: Nao receiving Iria Casual Wear."));
+				break;
+
+			case NaoOutfit.Yukata:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_yukata");
+
+				Msg(L("(Missing dialog: Nao receiving Yukuta."));
+				break;
+
+			case NaoOutfit.SantaSuit:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth_santa");
+
+				Msg(L("(Missing dialog: Nao receiving Santa Suit."));
+				break;
+
+			case NaoOutfit.WhiteDress:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth_summer");
+
+				Msg(L("(Missing dialog: Nao receiving White Dress."));
+				break;
+
+			case NaoOutfit.Kimono:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth_kimono");
+
+				Msg(L("(Missing dialog: Nao receiving Kimono."));
+				break;
+
+			case NaoOutfit.SkyBlueDress:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth_summer_2008");
+
+				Msg(L("(Missing dialog: Nao receiving Sky-Blue Dress."));
+				break;
+
+			case NaoOutfit.PlaywrightCostume:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth_shakespeare");
+
+				Msg(L("(Missing dialog: Nao receiving Playwright Costume."));
+				break;
+
+			case NaoOutfit.FarmingOutfit:
+				GiveKeyword("nao_cloth0");
+				GiveKeyword("nao_cloth_farmer");
+
+				Msg(L("(Missing dialog: Nao receiving Farming Outfit."));
+				break;
+
+			default:
+				Msg(L("(Error: Unknown outfit."));
+				return;
+		}
+
+		Player.NaoOutfit = outfit;
+		RemoveItem(itemId);
+	}
 }

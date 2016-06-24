@@ -199,6 +199,11 @@ namespace Aura.Channel.World.Entities
 			}
 		}
 
+		/// <summary>
+		/// The outfit Nao wears when reviving the creature.
+		/// </summary>
+		public NaoOutfit NaoOutfit { get; set; }
+
 		// Look
 		// ------------------------------------------------------------------
 

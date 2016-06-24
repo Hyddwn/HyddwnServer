@@ -2234,6 +2234,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 		public DialogSetDefaultName SetDefaultName(string name) { return new DialogSetDefaultName(name); }
 
+		public DialogSelectItem SelectItem(string title, string caption, string tags) { return new DialogSelectItem(title, caption, tags); }
+
 		// ------------------------------------------------------------------
 
 		protected enum ItemState : byte { Up = 0, Down = 1 }
