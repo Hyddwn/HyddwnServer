@@ -47,9 +47,11 @@ public class NaoScript : NpcScript
 
 		var now = DateTime.Now;
 
-		// No present if today is not the player's birthday. Duh.
+		// No present if today is not the player's birthday or the character
+		// was just created.
 		var isBirthday = (Player.CreationTime.DayOfWeek == now.DayOfWeek);
-		if (!isBirthday)
+		var isBirth = (Player.CreationTime.Date == now.Date);
+		if (!isBirthday || isBirth)
 			return false;
 
 		// If no last date, we never got one before and get it now.
