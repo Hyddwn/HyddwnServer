@@ -185,7 +185,7 @@ namespace Aura.Channel.Network.Sending
 			foreach (var flag in flags)
 				packet.PutInt(flag);
 
-			packet.PutByte(0);
+			packet.PutByte((byte)creature.NaoOutfit);
 
 			creature.Region.Broadcast(packet, creature);
 		}

@@ -227,6 +227,7 @@ namespace Aura.Channel.Database
 					character.Age = reader.GetInt16("age");
 					character.State = (CreatureStates)reader.GetUInt32("state");
 					character.LastTown = reader.GetStringSafe("lastTown");
+					character.NaoOutfit = (NaoOutfit)reader.GetByte("naoOutfit");
 
 					var invWidth = reader.GetByte("inventoryWidth");
 					var invHeight = reader.GetByte("inventoryHeight");
@@ -1013,6 +1014,7 @@ namespace Aura.Channel.Database
 				cmd.Set("age", creature.Age);
 				cmd.Set("rebirthCount", creature.RebirthCount);
 				cmd.Set("lastTown", creature.LastTown);
+				cmd.Set("naoOutfit", (byte)creature.NaoOutfit);
 				cmd.Set("inventoryWidth", creature.InventoryWidth);
 				cmd.Set("inventoryHeight", creature.InventoryHeight);
 

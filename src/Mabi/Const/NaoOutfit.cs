@@ -3,7 +3,7 @@
 
 namespace Aura.Mabi.Const
 {
-	public enum NaoOutfit
+	public enum NaoOutfit : byte
 	{
 		BlackDress = 0,
 		RuasDress = 1,
