@@ -47,6 +47,7 @@
 { name: "G2", enabled: false, children: [
 	{ name: "MainStreamG2", enabled: true },
 	{ name: "EmainMacha", enabled: true },
+	{ name: "NaoDressUp", enabled: true },
 	
 	// Season 1
 	{ name: "G2S1", enabled: true, children: [
