@@ -56,6 +56,7 @@
     <Compile Include="Const\Month.cs" />
     <Compile Include="Const\Msgr.cs" />
     <Compile Include="Const\Music.cs" />
+    <Compile Include="Const\NaoOutfit.cs" />
     <Compile Include="Const\Notices.cs" />
     <Compile Include="Const\Party.cs" />
     <Compile Include="Const\Pets.cs" />
