@@ -84,8 +84,6 @@ namespace Aura.Channel.Network.Handlers
 				if (character.RegionId == 0 || Math2.Between(character.RegionId, 35000, 40000) || Math2.Between(character.RegionId, 10000, 11000))
 					character.SetLocation(1, 12800, 38100);
 
-				character.Activate(CreatureStates.EverEnteredWorld);
-
 				character.Warp(character.GetLocation());
 			}
 			// Special login to Soul Stream for new chars
