@@ -473,6 +473,7 @@ namespace Aura.Login.Database
 				cmd.Set("ap", creature.AP);
 				cmd.Set("creationTime", DateTime.Now);
 				cmd.Set("lastAging", DateTime.Now);
+				cmd.Set("lastRebirth", DateTime.Now);
 
 				cmd.Execute();
 
