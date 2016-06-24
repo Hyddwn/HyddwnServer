@@ -26,10 +26,39 @@ public class NaoScript : NpcScript
 			"With her pale skin and her distinctively sublime silhouette, she seems like she belongs in another world."
 		);
 
-		if (!Player.Has(CreatureStates.EverEnteredWorld))
+		if (HasNeverEnteredWorld())
 			await FirstTime();
+		else if (CanReceiveBirthdayPresent())
+			await Birthday();
 		else
 			await Rebirth();
+	}
+
+	private bool HasNeverEnteredWorld()
+	{
+		return !Player.Has(CreatureStates.EverEnteredWorld);
+	}
+
+	private bool CanReceiveBirthdayPresent()
+	{
+		// Only players with active premium service can receive gifts.
+		if (!Player.Client.Account.PremiumServices.HasPremiumService)
+			return false;
+
+		var now = DateTime.Now;
+
+		// No present if today is not the player's birthday. Duh.
+		var isBirthday = (Player.CreationTime.DayOfWeek == now.DayOfWeek);
+		if (!isBirthday)
+			return false;
+
+		// If no last date, we never got one before and get it now.
+		var last = Player.Vars.Perm["NaoLastPresentDate"];
+		if (last == null)
+			return true;
+
+		// Only allow present if player didn't already receive one today.
+		return (last.Date < now.Date);
 	}
 
 	private async Task FirstTime()
@@ -230,7 +259,15 @@ public class NaoScript : NpcScript
 
 	private async Task Birthday()
 	{
-		// Gift from Nao...
+		// Unofficial
+		Msg(L("Happy Birthday, <username/>! "));
+		Msg(L("I have a little something for you on this special day,<br/>please accept it."));
+
+		var potentialGifts = new int[] { 12000, 12001, 12002, 12003, 12004, 12005, 12006, 12007, 12008, 12009, 12010, 12011, 12012, 12013, 12014, 12015, 12016, 12017, 12018, 12019, 12020, 12021, 12022, 12023 };
+		var rndGift = potentialGifts.Random();
+
+		GiveItem(rndGift);
+		Player.Vars.Perm["NaoLastPresentDate"] = DateTime.Now.Date;
 
 		if (IsEnabled("NaoDressUp") && !HasKeyword("present_to_nao"))
 			GiveKeyword("present_to_nao");
