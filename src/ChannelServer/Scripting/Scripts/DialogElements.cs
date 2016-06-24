@@ -453,4 +453,26 @@ namespace Aura.Channel.Scripting.Scripts
 			sb.AppendFormat("<defaultname name='{0}' />", this.Name);
 		}
 	}
+
+	/// <summary>
+	/// Changes the name displayed for the NPC for the rest of the conversation.
+	/// </summary>
+	public class DialogSelectItem : DialogElement
+	{
+		public string Title { get; set; }
+		public string Caption { get; set; }
+		public string Tags { get; set; }
+
+		public DialogSelectItem(string title, string caption, string tags)
+		{
+			this.Title = title;
+			this.Caption = caption;
+			this.Tags = tags;
+		}
+
+		public override void Render(ref StringBuilder sb)
+		{
+			sb.AppendFormat("<selectitem title='{0}' caption='{1}' stringid='{2}' />", this.Title, this.Caption, this.Tags);
+		}
+	}
 }
