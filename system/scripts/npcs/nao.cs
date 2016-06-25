@@ -334,6 +334,9 @@ public class NaoScript : NpcScript
 	{
 		switch (keyword)
 		{
+			// Gifts and clothes
+			// --------------------------------------------------------------
+
 			case "present_to_nao":
 				await KeywordPresentToNao();
 				break;
@@ -514,9 +517,65 @@ public class NaoScript : NpcScript
 					Msg(L("(Missing dialog: Nao responding to not wearing Farming Outfit."));
 				break;
 
+			// Breast
+			// http://mabination.com/threads/85165-quot-Breast-quot-and-other-keywords.
+			// --------------------------------------------------------------
+
+			case "nao_blacksuit":
+				GiveKeyword("breast");
+
+				Msg(L("I really like these clothes.<br/>I think the skirt is sort of erotic but, despite the appearance, it's very comfortable.<br/>But...the chest is probably a bit tight."));
+				break;
+
+			case "breast":
+				RemoveKeyword("breast");
+
+				Msg(L("Uhm... <username/>, this discussion is a little..."));
+				Msg(Hide.Name, L("(Nao is blushing uncomfortably.)"));
+				Msg(L("...<p/>......<p/>A long time ago my friends would poke fun at me for that like you...<br/>It makes those friends spring to mind.<br/>In some ways it's similar to those feelings after all..."));
+				Msg(L("I don't think they had any ill intent when they said it.<br/>Honestly, because that was thought of me ever since I was a child,<br/>I had a complex about it."));
+				Msg(L("Do you think that way too, <username/>?"), Button(L("They look big to me"), "@big"), Button(L("It is not like that"), "@notlikethat"), Button(L("I think it is adorable"), "@adorable"), Button(L("They are not all that big"), "@notbig"), Button(L("Can I touch them just once?"), "@touch"));
+
+				switch (await Select())
+				{
+					case "@big":
+						NPC.ModifyFavor(Player, -3);
+						Msg(L("...<br/>You really do think that way, huh? Fuu......<br/>Even though I didn't fatten up in other places..."));
+						break;
+
+					case "@notlikethat":
+						NPC.ModifyFavor(Player, +3);
+						Msg(Hide.Name, L("(After hearing that, Nao smiled cutely while avoiding my eyes.)"));
+						Msg(L("Thank you for giving me courage. There's nothing else to really say..."));
+						break;
+
+					case "@adorable":
+						NPC.ModifyFavor(Player, +1);
+						Msg(Hide.Name, L("(Nao looked surprised after hearing that.)"));
+						Msg(L("Umm... r-really? Thank you. That made me a little more confident."));
+						break;
+
+					case "@notbig":
+						NPC.ModifyFavor(Player, -7);
+						Msg(Hide.Name, L("(After hearing that, Nao looked a little displeased and avoided my eyes.)"));
+						Msg(L("I-is that so? ...sh-shall we stop this conversation now?"));
+						break;
+
+					case "@touch":
+						NPC.ModifyFavor(Player, -10);
+						Msg(L("Whaaa!! <username/>! What do you think you're saying!? Th-that could never happen!"));
+						Msg(Hide.Name, L("(Nao looks really angry.)"));
+						Msg(L("...<p/>...Ah, I got so upset, sorry... I went overboard, huh..."));
+						break;
+				}
+				break;
+
+			// Default
+			// --------------------------------------------------------------
+
 			default:
 				RndMsg(
-					L("I don't know anything about that.") // Unofficial
+					L("Ummm...why don't we talk about something else?")
 				);
 				break;
 		}
