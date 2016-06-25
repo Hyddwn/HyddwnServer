@@ -204,6 +204,48 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public NaoOutfit NaoOutfit { get; set; }
 
+
+		/// <summary>
+		/// Returns true if creature has ever set foot in any actual region.
+		/// </summary>
+		/// <returns></returns>
+		public bool HasEverEnteredWorld
+		{
+			get { return this.Has(CreatureStates.EverEnteredWorld); }
+		}
+
+		/// <summary>
+		/// Returns true if it's the creature's birthday and it hasn't
+		/// received a birthday present yet today.
+		/// </summary>
+		/// <returns></returns>
+		public bool CanReceiveBirthdayPresent
+		{
+			get
+			{
+				// Only players with active premium service can receive gifts.
+				if (!this.Client.Account.PremiumServices.HasPremiumService)
+					return false;
+
+				var now = DateTime.Now;
+
+				// No present if today is not the player's birthday or the character
+				// was just created.
+				var isBirthday = (this.CreationTime.DayOfWeek == now.DayOfWeek);
+				var isBirth = (this.CreationTime.Date == now.Date);
+				if (!isBirthday || isBirth)
+					return false;
+
+				// If no last date, we never got one before and get it now.
+				var last = this.Vars.Perm["NaoLastPresentDate"];
+				if (last == null)
+					return true;
+
+				// Only allow present if player didn't already receive one today.
+				return (last.Date < now.Date);
+			}
+		}
+
 		// Look
 		// ------------------------------------------------------------------
 

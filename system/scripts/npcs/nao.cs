@@ -26,41 +26,12 @@ public class NaoScript : NpcScript
 			"With her pale skin and her distinctively sublime silhouette, she seems like she belongs in another world."
 		);
 
-		if (HasNeverEnteredWorld())
+		if (!Player.HasEverEnteredWorld)
 			await FirstTime();
-		else if (CanReceiveBirthdayPresent())
+		else if (Player.CanReceiveBirthdayPresent)
 			await Birthday();
 		else
 			await Rebirth();
-	}
-
-	private bool HasNeverEnteredWorld()
-	{
-		return !Player.Has(CreatureStates.EverEnteredWorld);
-	}
-
-	private bool CanReceiveBirthdayPresent()
-	{
-		// Only players with active premium service can receive gifts.
-		if (!Player.Client.Account.PremiumServices.HasPremiumService)
-			return false;
-
-		var now = DateTime.Now;
-
-		// No present if today is not the player's birthday or the character
-		// was just created.
-		var isBirthday = (Player.CreationTime.DayOfWeek == now.DayOfWeek);
-		var isBirth = (Player.CreationTime.Date == now.Date);
-		if (!isBirthday || isBirth)
-			return false;
-
-		// If no last date, we never got one before and get it now.
-		var last = Player.Vars.Perm["NaoLastPresentDate"];
-		if (last == null)
-			return true;
-
-		// Only allow present if player didn't already receive one today.
-		return (last.Date < now.Date);
 	}
 
 	private async Task FirstTime()
