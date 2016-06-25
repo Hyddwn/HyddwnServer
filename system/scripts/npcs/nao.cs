@@ -261,15 +261,95 @@ public class NaoScript : NpcScript
 
 	private async Task Birthday()
 	{
+		var potentialGifts = new int[] { 12000, 12001, 12002, 12003, 12004, 12005, 12006, 12007, 12008, 12009, 12010, 12011, 12012, 12013, 12014, 12015, 12016, 12017, 12018, 12019, 12020, 12021, 12022, 12023 };
+
+		var rndGift = potentialGifts.Random();
+		var prefix = 0;
+		var suffix = 0;
+
+		// Enchant if it's the 20th birthday.
+		if (Player.Age == 20)
+		{
+			if (Player.IsHuman)
+			{
+				switch (Random(18))
+				{
+					case 00: prefix = 20610; break; // Shiny
+					case 01: prefix = 20710; break; // Posh
+					case 02: prefix = 20810; break; // Well-groomed
+					case 03: prefix = 20910; break;	// Holy
+					case 04: prefix = 20911; break;	// Beautiful
+					case 05: prefix = 20912; break;	// Resplendent
+					case 06: suffix = 30410; break;	// Capricornus
+					case 07: suffix = 30510; break;	// Sagittarius
+					case 08: suffix = 30511; break;	// Aquarius
+					case 09: suffix = 30512; break;	// Pisces
+					case 10: suffix = 30610; break;	// Libra
+					case 11: suffix = 30611; break;	// Scorpius
+					case 12: suffix = 30710; break;	// Taurus
+					case 13: suffix = 30711; break;	// Virgo
+					case 14: suffix = 30911; break;	// Aries
+					case 15: suffix = 30912; break;	// Cancer
+					case 16: suffix = 31010; break;	// Gemini
+					case 17: suffix = 31011; break;	// Leo
+				}
+			}
+			else if (Player.IsElf)
+			{
+				switch (Random(18))
+				{
+					case 00: prefix = 20610; break; // Shiny
+					case 01: prefix = 20710; break; // Posh
+					case 02: prefix = 20810; break; // Well-groomed
+					case 03: prefix = 20910; break;	// Holy
+					case 04: prefix = 20911; break;	// Beautiful
+					case 05: prefix = 20912; break;	// Resplendent
+					case 06: suffix = 30413; break;	// Sundrop
+					case 07: suffix = 30518; break;	// Violet
+					case 08: suffix = 30519; break;	// Forget-me-not
+					case 09: suffix = 30520; break;	// Rose
+					case 10: suffix = 30621; break;	// Clover
+					case 11: suffix = 30622; break;	// Sweet Pea
+					case 12: suffix = 30721; break;	// Otter
+					case 13: suffix = 30722; break;	// Lilly
+					case 14: suffix = 31012; break;	// Cornflower
+					case 15: suffix = 31013; break;	// Cosmos
+					case 16: suffix = 30816; break;	// Marguerite
+					case 17: suffix = 30817; break;	// Hyacinth
+				}
+			}
+			else if (Player.IsGiant)
+			{
+				switch (Random(18))
+				{
+					case 00: prefix = 20610; break; // Shiny
+					case 01: prefix = 20710; break; // Posh
+					case 02: prefix = 20810; break; // Well-groomed
+					case 03: prefix = 20910; break;	// Holy
+					case 04: prefix = 20911; break;	// Beautiful
+					case 05: prefix = 20912; break;	// Resplendent
+					case 06: suffix = 31501; break;	// Freezing
+					case 07: suffix = 31502; break;	// Frost
+					case 08: suffix = 31503; break;	// Hurricane's
+					case 09: suffix = 31504; break;	// Hail
+					case 10: suffix = 31505; break;	// Sleet
+					case 11: suffix = 31506; break;	// Whirlpool
+					case 12: suffix = 31507; break;	// Earthquake's
+					case 13: suffix = 31508; break;	// Downpour
+					case 14: suffix = 31509; break;	// Blizzard's
+					case 15: suffix = 31510; break;	// Thunder
+					case 16: suffix = 31511; break;	// Tempest
+					case 17: suffix = 31512; break;	// Snowfield
+				}
+			}
+		}
+
+		Player.GiveItem(Item.CreateEnchanted(rndGift, prefix, suffix));
+		Player.Vars.Perm["NaoLastPresentDate"] = DateTime.Now.Date;
+
 		// Unofficial
 		Msg(L("Happy Birthday, <username/>! "));
 		Msg(L("I have a little something for you on this special day,<br/>please accept it."));
-
-		var potentialGifts = new int[] { 12000, 12001, 12002, 12003, 12004, 12005, 12006, 12007, 12008, 12009, 12010, 12011, 12012, 12013, 12014, 12015, 12016, 12017, 12018, 12019, 12020, 12021, 12022, 12023 };
-		var rndGift = potentialGifts.Random();
-
-		GiveItem(rndGift);
-		Player.Vars.Perm["NaoLastPresentDate"] = DateTime.Now.Date;
 
 		if (IsEnabled("NaoDressUp") && !HasKeyword("present_to_nao"))
 			GiveKeyword("present_to_nao");
