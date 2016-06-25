@@ -8,6 +8,8 @@
 
 public class NaoScript : NpcScript
 {
+	int privateStoryCount;
+
 	public override void Load()
 	{
 		SetRace(1);
@@ -568,6 +570,81 @@ public class NaoScript : NpcScript
 						Msg(L("...<p/>...Ah, I got so upset, sorry... I went overboard, huh..."));
 						break;
 				}
+				break;
+
+			// Others
+			// --------------------------------------------------------------
+
+			case "personal_info":
+				switch (privateStoryCount)
+				{
+					case 0:
+						Msg(L("My full name is 'Nao Mariota Pryderi'.<br/>I know it is not the easiest name to pronounce.<br/>Don't worry, <username/>, you can just call me Nao."));
+						break;
+
+					case 1:
+						Msg(L("If you right-click and drag your cursor during the conversation,<br/>you can view different angles. You are staring at me while we're talking,<br/>and honestly, it's a little embarrassing. Please roll down the<br/>mouse wheel to zoom out and take a few steps back."));
+						break;
+
+					case 2:
+						Msg(L("I believe everyone should cultivate his or her own unique style instead of simply following trends.<br/>I'm not just talking about hair style or fashion. I'm talking about lifestyle.<br/>It's about doing what you want to do, in a style that's uniquely yours."));
+						break;
+
+					case 3:
+						GiveKeyword("nao_owl");
+						Msg(L("I have a pet owl. He's a great friend that takes care of many things for me."));
+						break;
+
+					case 4:
+						Msg(L("I love to exchange gifts.<br/>I can tell from the gift how the other person really thinks of me.<br/>The people in Erinn are very fond of exchanging gifts."));
+						Msg(L("<username/>, what's your opinion on exchanging gifts with others?<br/>Do you like it?"), Button(L("Of course, I do!"), "@yes"), Button(L("I like receiving gifts."), "@receiving"), Button(L("If it is someone I like, then yes."), "@like"), Button(L("I think it is a waste."), "@waste"), Button(L("No, not really."), "@no"));
+
+						switch (await Select())
+						{
+							case "@yes":
+								Msg(L("Wow! I knew it! I think you and I have something in common.<br/>Personally, I feel that people from other worlds are<br/>generally not so used to the idea of exchanging gifts.<br/>I even heard it from some people that they<br/>were surprised to hear such a question."));
+								break;
+
+							case "@receiving":
+							case "@like":
+								Msg(L("That's an interesting answer. If you're currently with someone,<br/>then I definitely envy that lucky person.<br/>If not, then I sincerely hope you'll find someone soon."));
+								break;
+
+							case "@waste":
+								Msg(L("What? Really? I am sorry. I shouldn't have asked."));
+								break;
+
+							case "@no":
+								Msg(L("Oh, I see. But I'm sure you will change your mind<br/>if someone surprises you with an unexpected gift."));
+								break;
+						}
+						break;
+
+					case 5:
+						GiveKeyword("nao_friend");
+						Msg(L("A few years ago, I was locked in a dungeon by the evil Fomor.<br/>I do not ever want to go near a dungeon now...<br/>I don't even want to think about it.<br/>Fortunately, a friend of mine rescued me from there."));
+						Msg(L("Dungeons are very dark and dangerous, but some claim that they<br/>are some of the best places for training and adrenaline rush.<br/>The power of the evil Fomors can change a dungeon every time it's visited,<br/>but that is the exact reason why the daredevil adventurers who prefer constant<br/>changes are that much more attracted to dungeons."));
+						break;
+
+					case 6:
+						Msg(L("Perhaps those that aspire to quickly become the most powerful usually<br/>end up unhappy and unsatisfied as their lust for power grows.<br/>My friend was one of those that constantly pursued limitless power,<br/>and he had it at the very end. Unfortunately,<br/>that was the seed that brought his downfall in the end.<p/>....."));
+						break;
+
+					case 7:
+						GiveKeyword("nao_blacksuit");
+						Msg(L("There are some people who suspect I might be one of the Fomors because<br/>of my black dress. I mean, what I wear is none of their business,<br/>but someone even speculated that I was the messenger of death.<br/>Honestly, I felt really weird when I heard that."));
+						Msg(L("These days, I don't even know who I am anymore.<br/>Maybe I really am one of them, you know."));
+						Msg(L("...<p/>Please don't tell me you believe that..."));
+						break;
+
+					case 8:
+						Msg(L("(Missing dialog: Last response to Nao's Private Story."));
+						break;
+				}
+
+				if (privateStoryCount < 8)
+					privateStoryCount++;
+
 				break;
 
 			// Default
