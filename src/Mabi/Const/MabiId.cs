@@ -176,9 +176,9 @@ namespace Aura.Mabi.Const
 		/// Nao's unique NPC entity id.
 		/// </summary>
 		/// <remarks>
-		/// There are very NPCs (Nao and Tin are the only currently known ones)
-		/// that require a fixed entity id, since the client uses those
-		/// exact numbers when spawning them client-sided in the soul-stream.
+		/// There are very few NPCs that require a fixed entity id. The client
+		/// uses those exact numbers when spawning them client-sided in the
+		/// Soul Stream.
 		/// </remarks>
 		public const long Nao = 0x0010FFFFFFFFFFFF;
 
@@ -186,5 +186,20 @@ namespace Aura.Mabi.Const
 		/// Tin's unique NPC entity id.
 		/// </summary>
 		public const long Tin = 0x0010FFFFFFFFFFFE;
+
+		/// <summary>
+		/// Unique NPC id for Ferghus in place of Nao in Soul Stream.
+		/// </summary>
+		public const long NaoFerghus = 0x0010FFFFFFFFFFFD;
+
+		/// <summary>
+		/// Unique NPC id for Nao in mini-skirt.
+		/// </summary>
+		public const long NaoSkirt = 0x0010FFFFFFFFFFFC;
+
+		/// <summary>
+		/// Unique NPC id for Nao in kimono.
+		/// </summary>
+		public const long NaoKimono = 0x0010FFFFFFFFFFFB;
 	}
 }
