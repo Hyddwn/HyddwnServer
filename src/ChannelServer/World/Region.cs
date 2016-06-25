@@ -466,6 +466,7 @@ namespace Aura.Channel.World
 			}
 
 			creature.Region = this;
+			creature.Activate(CreatureStates.EverEnteredWorld);
 
 			// Save reference to client if it's mainly controlling this creature.
 			if (creature.Client.Controlling == creature)

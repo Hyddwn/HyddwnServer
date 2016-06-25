@@ -20,14 +20,12 @@ public class NaoScript : NpcScript
 	{
 		SetBgm("Nao_talk.mp3");
 
-		await Intro(
-			"A beautiful girl in a black dress with intricate patterns.",
-			"Her deep azure eyes remind everyone of an endless blue sea full of mystique.",
-			"With her pale skin and her distinctively sublime silhouette, she seems like she belongs in another world."
-		);
+		await Intro(L("A beautiful girl in a black dress with intricate patterns.<br/>Her deep azure eyes remind everyone of an endless blue sea full of mystique.<br/>With her pale skin and her distinctively sublime silhouette, she seems like she belongs in another world."));
 
-		if (!Player.Has(CreatureStates.EverEnteredWorld))
+		if (!Player.HasEverEnteredWorld)
 			await FirstTime();
+		else if (Player.CanReceiveBirthdayPresent)
+			await Birthday();
 		else
 			await Rebirth();
 	}
@@ -42,45 +40,49 @@ public class NaoScript : NpcScript
 
 	private async Task Introduction()
 	{
-		Msg("Hello, there... You are <username/>, right?<br/>I have been waiting for you.<br/>It's good to see a " + (Player.IsMale ? "gentleman" : "lady") + " like you here.");
-		Msg("My name is Nao.<br/>It is my duty to lead pure souls like yours to Erinn.");
+		if (Player.IsMale)
+			Msg(L("Hello, there... You are <username/>, right?<br/>I have been waiting for you.<br/>It's good to see a gentleman like you here."));
+		else
+			Msg(L("Hello, there... You are <username/>, right?<br/>I have been waiting for you.<br/>It's good to see a lady like you here."));
+
+		Msg(L("My name is Nao.<br/>It is my duty to lead pure souls like yours to Erinn."));
 	}
 
 	private async Task Questions()
 	{
-		Msg("<username/>, we have some time before I guide you to Erinn.<br/>Do you have any questions for me?", Button("No"), Button("Yes"));
+		Msg(L("<username/>, we have some time before I guide you to Erinn.<br/>Do you have any questions for me?"), Button(L("No"), "@no"), Button(L("Yes"), "@yes"));
 		if (await Select() != "@yes")
 			return;
 
 		while (true)
 		{
 			Msg(RandomPhrase(),
-				Button("End Conversation", "@endconv"),
-				List("Talk to Nao", 4, "@endconv",
-					Button("About Mabinogi", "@mabinogi"),
-					Button("About Erinn", "@erinn"),
-					Button("What to do?", "@what"),
-					Button("About Adventures", "@adventures")
+				Button(L("End Conversation"), "@endconv"),
+				List(L("Talk to Nao"), 4, "@endconv",
+					Button(L("About Mabinogi"), "@mabinogi"),
+					Button(L("About Erinn"), "@erinn"),
+					Button(L("What to do?"), "@what"),
+					Button(L("About Adventures"), "@adventures")
 				)
 			);
 
 			switch (await Select())
 			{
 				case "@mabinogi":
-					Msg("Mabinogi can be defined as the songs of bards, although in some cases, the bards themselves are referred to as Mabinogi.<br/>To the residents at Erinn, music is a big part of their lives and nothing brings joy to them quite like music and Mabinogi.<br/>Once you get there, I highly recommend joining them in composing songs and playing musical instruments.");
+					Msg(L("Mabinogi can be defined as the songs of bards, although in some cases, the bards themselves are referred to as Mabinogi.<br/>To the residents at Erinn, music is a big part of their lives and nothing brings joy to them quite like music and Mabinogi.<br/>Once you get there, I highly recommend joining them in composing songs and playing musical instruments."));
 					break;
 
 				case "@erinn":
-					Msg("Erinn is the name of the place you will be going to, <username/>.<br/>The place commonly known as the world of Mabinogi is called Erinn.<br/>It has become so lively since outsiders such as yourself began to come.");
-					Msg("Some time ago, adventurers discovered a land called Iria,<br/>and others even conquered Belvast Island, between the continents.<br/>Now, these places have become home to adventurers like yourself, <username/>.<p/>You can go to Tir Chonaill of Uladh now,<br/>but you should try catching a boat from Uladh and<br/>crossing the ocean to Iria or Belvast Island.");
+					Msg(L("Erinn is the name of the place you will be going to, <username/>.<br/>The place commonly known as the world of Mabinogi is called Erinn.<br/>It has become so lively since outsiders such as yourself began to come."));
+					Msg(L("Some time ago, adventurers discovered a land called Iria,<br/>and others even conquered Belvast Island, between the continents.<br/>Now, these places have become home to adventurers like yourself, <username/>.<p/>You can go to Tir Chonaill of Uladh now,<br/>but you should try catching a boat from Uladh and<br/>crossing the ocean to Iria or Belvast Island."));
 					break;
 
 				case "@what":
-					Msg("That purely depends on what you wish to do.<br/>You are not obligated to do anything, <username/>.<br/>You set your own goals in life, and pursue them during your adventures in Erinn.<p/>Sure, it may be nice to be recognized as one of the best, be it the most powerful, most resourceful, etc., but <br/>I don't believe your goal in life should necessarily have to be becoming 'the best' at everything.<br/>Isn't happiness a much better goal to pursue?<p/>I think you should experience what Erinn has to offer <br/>before deciding what you really want to do there.");
+					Msg(L("That purely depends on what you wish to do.<br/>You are not obligated to do anything, <username/>.<br/>You set your own goals in life, and pursue them during your adventures in Erinn.<p/>Sure, it may be nice to be recognized as one of the best, be it the most powerful, most resourceful, etc., but <br/>I don't believe your goal in life should necessarily have to be becoming 'the best' at everything.<br/>Isn't happiness a much better goal to pursue?<p/>I think you should experience what Erinn has to offer <br/>before deciding what you really want to do there."));
 					break;
 
 				case "@adventures":
-					Msg("There are so many things to do and adventures to go on in Erinn.<br/>Hunting and exploring dungeons in Uladh...<br/>Exploring the ruins of Iria...<br/>Learning the stories of the Fomors in Belvast...<p/>Explore all three regions to experience brand new adventures!<br/>Whatever you wish to do, <username/>, if you follow your heart,<br/>I know you will become a great adventurer before you know it!");
+					Msg(L("There are so many things to do and adventures to go on in Erinn.<br/>Hunting and exploring dungeons in Uladh...<br/>Exploring the ruins of Iria...<br/>Learning the stories of the Fomors in Belvast...<p/>Explore all three regions to experience brand new adventures!<br/>Whatever you wish to do, <username/>, if you follow your heart,<br/>I know you will become a great adventurer before you know it!"));
 					break;
 
 				default:
@@ -91,13 +93,13 @@ public class NaoScript : NpcScript
 
 	private async Task EndIntroduction()
 	{
-		Msg("Are you ready to take the next step?");
-		Msg("You will be headed to Erinn right now.<br/>Don't worry, once you get there, someone else is there to take care of you, my little friend by the name of Tin.<br/>After you receive some pointers from Tin, head Northeast and you will see a town.");
-		Msg("It's a small town called Tir Chonaill.<br/>I have already talked to Chef Duncan about you, so all you need to do is show him the letter of introduction I wrote right here.", Image("tir_chonaill"));
-		Msg("You can find Chief Duncan on the east side of the Square.<br/>When you get there, try to find a sign that says 'Chief's House'.", Image("npc_duncan"));
-		Msg("I will give you some bread I have personally baked, and a book with some information you may find useful.<br/>To see those items, open your inventory once you get to Erinn.");
-		Msg(Hide.Both, "(Received a Bread and a Traveler's Guide from Nao.)", Image("novice_items"));
-		Msg("I wish you the best of luck in Erinn.<br/>See you around.", Button("End Conversation"));
+		Msg(L("Are you ready to take the next step?"));
+		Msg(L("You will be headed to Erinn right now.<br/>Don't worry, once you get there, someone else is there to take care of you, my little friend by the name of Tin.<br/>After you receive some pointers from Tin, head Northeast and you will see a town."));
+		Msg(L("It's a small town called Tir Chonaill.<br/>I have already talked to Chef Duncan about you, so all you need to do is show him the letter of introduction I wrote right here."), Image("tir_chonaill"));
+		Msg(L("You can find Chief Duncan on the east side of the Square.<br/>When you get there, try to find a sign that says 'Chief's House'."), Image("npc_duncan"));
+		Msg(L("I will give you some bread I have personally baked, and a book with some information you may find useful.<br/>To see those items, open your inventory once you get to Erinn."));
+		Msg(Hide.Both, L("(Received a Bread and a Traveler's Guide from Nao.)"), Image("novice_items"));
+		Msg(L("I wish you the best of luck in Erinn.<br/>See you around."), Button(L("End Conversation")));
 		await Select();
 
 		// Move to Uladh Beginner Area
@@ -115,34 +117,34 @@ public class NaoScript : NpcScript
 		switch (Random(3))
 		{
 			default:
-			case 0: return "If there is something you'd like to know more of, please ask me now.";
-			case 1: return "Do not hesitate to ask questions. I am more than happy to answer them for you.";
-			case 2: return "If you have any questions before heading off to Erinn, please feel free to ask.";
+			case 0: return L("If there is something you'd like to know more of, please ask me now.");
+			case 1: return L("Do not hesitate to ask questions. I am more than happy to answer them for you.");
+			case 2: return L("If you have any questions before heading off to Erinn, please feel free to ask.");
 		}
 	}
 
 	private async Task Rebirth()
 	{
-		Msg("Hello, <username/>!<br/>Is life here in Erinn pleasant for you?");
+		Msg(L("Hello, <username/>!<br/>Is life here in Erinn pleasant for you?"));
 
 		if (!IsEnabled("Rebirth"))
 		{
 			// Unofficial
-			Msg("I'm afraid I can't let you rebirth just yet, the gods won't allow it.");
+			Msg(L("I'm afraid I can't let you rebirth just yet, the gods won't allow it."));
 			goto L_End;
 		}
 
 		if (!RebirthAllowed())
 		{
-			Msg("Barely any time has passed since your last rebirth.<br/>Why don't you enjoy your current life in Erinn for a bit longer?");
+			Msg(L("Barely any time has passed since your last rebirth.<br/>Why don't you enjoy your current life in Erinn for a bit longer?"));
 			goto L_End;
 		}
 
-		Msg("If you wish, you can abandon your current body and be reborn into a new one, <username/>.");
+		Msg(L("If you wish, you can abandon your current body and be reborn into a new one, <username/>."));
 
 		while (true)
 		{
-			Msg("Feel free to ask me any questions you have about rebirth.<br/>Once you've made up your mind to be reborn, press Rebirth.",
+			Msg(L("Feel free to ask me any questions you have about rebirth.<br/>Once you've made up your mind to be reborn, press Rebirth."),
 				Button("Rebirth"), Button("About Rebirths"), Button("Cancel"));
 
 			switch (await Select())
@@ -161,7 +163,7 @@ public class NaoScript : NpcScript
 							//   Msg("<username/>, you have been reborn with a new appearance.<br/>Did you enjoy having Close Combat as your active Talent?<br/>Would you like to choose a different active Talent for this life?<button title='New Talent' keyword='@yes' /><button title='Keep Old Talent' keyword='@no' />");
 							//   Msg("Then I will show you the different Talents available to you.<br/>Please select your new active Talent after you consider everything.<talent_select />")
 							//   Msg("You have selected Close Combat.<br/>May your courage and skill grow.<br/>I will be cheering you on from afar.");
-							Close(Hide.None, "May your new appearance bring you happiness!<br/>Though you'll be different when next we meet,<br/>but I'll still be able to recognize you, <username/>.<p/>We will meet again, right?<br/>Until then, take care.");
+							Close(Hide.None, L("May your new appearance bring you happiness!<br/>Though you'll be different when next we meet,<br/>but I'll still be able to recognize you, <username/>.<p/>We will meet again, right?<br/>Until then, take care."));
 							return;
 
 						default:
@@ -179,41 +181,41 @@ public class NaoScript : NpcScript
 		}
 
 	L_Cancel:
-		Msg("There are plenty more opportunities to be reborn.<br/>Perhaps another time.<rebirth hide='true'/>");
+		Msg(L("There are plenty more opportunities to be reborn.<br/>Perhaps another time.") + "<rebirth hide='true'/>");
 
 	L_End:
-		Close(Hide.None, "Until we meet again, then.<br/>I wish you the best of luck in Erinn.<br/>I'll see you around.");
+		Close(Hide.None, L("Until we meet again, then.<br/>I wish you the best of luck in Erinn.<br/>I'll see you around."));
 	}
 
 	private async Task RebirthAbout()
 	{
 		while (true)
 		{
-			Msg("When you rebirth, you will be able to have a new body.<br/>Aside from your looks, you can also change your age and starting location.<br/>Please feel free to ask me more.",
-				Button("What is Rebirth?", "@whatis"), Button("What changes after a Rebirth?", "@whatchanges"), Button("What does not change after a Rebirth?", "@whatnot"), Button("Done"));
+			Msg(L("When you rebirth, you will be able to have a new body.<br/>Aside from your looks, you can also change your age and starting location.<br/>Please feel free to ask me more."),
+				Button(L("What is Rebirth?"), "@whatis"), Button(L("What changes after a Rebirth?"), "@whatchanges"), Button(L("What does not change after a Rebirth?"), "@whatnot"), Button(L("Done")));
 
 			switch (await Select())
 			{
 				case "@whatis":
-					Msg("You can choose a new body between the age of 10 and 17.<br/>Know that you won't receive the extra 7 AP just for being 17,<br/>as you did at the beginning of your journey.<br/>You will keep the AP that you have right now.");
-					Msg("Also, your Level and Exploration Level will reset to 1.<br/>You'll get to keep all of your skills from your previous life, though.");
-					Msg("You'll have to<br/>start at a low level for the Exploration Quests,<br/>but I doubt that it will be an issue for you.");
-					Msg("If you wish, you can even just change your appearance<br/>without resetting your levels or your age.<br/>Just don't select the 'Reset Levels and Age' button<br/>to remake yourself without losing your levels.", Image("Rebirth_01_c2", true, 200, 200));
-					Msg("You can even change your gender<br/>by clicking on 'Change Gender and Look.'<br/>If you want to maintain your current look, then don't select that button.", Image("Rebirth_02_c2", true, 200, 200));
-					Msg("You can choose where you would like to rebirth.<br/>Choose between Tir Chonaill, Qilla Base Camp,<br/>or the last location you were at<br/>in your current life.", Image("Rebirth_03", true, 200, 200));
+					Msg(L("You can choose a new body between the age of 10 and 17.<br/>Know that you won't receive the extra 7 AP just for being 17,<br/>as you did at the beginning of your journey.<br/>You will keep the AP that you have right now."));
+					Msg(L("Also, your Level and Exploration Level will reset to 1.<br/>You'll get to keep all of your skills from your previous life, though."));
+					Msg(L("You'll have to<br/>start at a low level for the Exploration Quests,<br/>but I doubt that it will be an issue for you."));
+					Msg(L("If you wish, you can even just change your appearance<br/>without resetting your levels or your age.<br/>Just don't select the 'Reset Levels and Age' button<br/>to remake yourself without losing your levels."), Image("Rebirth_01_c2", true, 200, 200));
+					Msg(L("You can even change your gender<br/>by clicking on 'Change Gender and Look.'<br/>If you want to maintain your current look, then don't select that button."), Image("Rebirth_02_c2", true, 200, 200));
+					Msg(L("You can choose where you would like to rebirth.<br/>Choose between Tir Chonaill, Qilla Base Camp,<br/>or the last location you were at<br/>in your current life."), Image("Rebirth_03", true, 200, 200));
 					break;
 
 				case "@whatchanges":
-					Msg("You can choose a new body between the ages of 10 and 17.<br/>though you won't receive the extra 7 AP just for being 17<br/>as you did at the beginning of your journey.");
-					Msg("You'll keep all the AP that you have right now<br/>and your level will reset to 1.<br/>You'll keep all of your skills from your previous life, though.");
-					Msg("If you wish, you can even change your appearance without<br/>resetting your levels or your age.<br/>Just don't select the 'Reset Levels and Age' button,<br/>and you'll be able to remake yourself without losing your current levels.", Image("Rebirth_01", true));
-					Msg("You can even change your gender by selecting 'Change Gender and Look.'<br/>If you want to keep your current look, just don't select that button.", Image("Rebirth_02", true));
-					Msg("Lastly, if you would like to return to your last location,<br/>select 'Move to the Last Location'.<br/>Otherwise, you'll be relocated to the Forest of Souls<br/>near Tir Chonaill.");
+					Msg(L("You can choose a new body between the ages of 10 and 17.<br/>though you won't receive the extra 7 AP just for being 17<br/>as you did at the beginning of your journey."));
+					Msg(L("You'll keep all the AP that you have right now<br/>and your level will reset to 1.<br/>You'll keep all of your skills from your previous life, though."));
+					Msg(L("If you wish, you can even change your appearance without<br/>resetting your levels or your age.<br/>Just don't select the 'Reset Levels and Age' button,<br/>and you'll be able to remake yourself without losing your current levels."), Image("Rebirth_01", true));
+					Msg(L("You can even change your gender by selecting 'Change Gender and Look.'<br/>If you want to keep your current look, just don't select that button."), Image("Rebirth_02", true));
+					Msg(L("Lastly, if you would like to return to your last location,<br/>select 'Move to the Last Location'.<br/>Otherwise, you'll be relocated to the Forest of Souls<br/>near Tir Chonaill."));
 					break;
 
 				case "@whatnot":
-					Msg("First of all, know that you cannot change the<br/>name you chose upon entering Erinn.<br/>Your name is how others know you<br/>even when all else changes.");
-					Msg("<username/>, you can also bring all the knowledge you'd earned<br/>in this life into your next one.<br/>Skills, keywords, remaining AP, titles, and guild will all be carried over.<br/>The items you have and your banking information will also remain intact.");
+					Msg(L("First of all, know that you cannot change the<br/>name you chose upon entering Erinn.<br/>Your name is how others know you<br/>even when all else changes."));
+					Msg(L("<username/>, you can also bring all the knowledge you'd earned<br/>in this life into your next one.<br/>Skills, keywords, remaining AP, titles, and guild will all be carried over.<br/>The items you have and your banking information will also remain intact."));
 					break;
 
 				default:
@@ -230,7 +232,95 @@ public class NaoScript : NpcScript
 
 	private async Task Birthday()
 	{
-		// Gift from Nao...
+		var potentialGifts = new int[] { 12000, 12001, 12002, 12003, 12004, 12005, 12006, 12007, 12008, 12009, 12010, 12011, 12012, 12013, 12014, 12015, 12016, 12017, 12018, 12019, 12020, 12021, 12022, 12023 };
+
+		var rndGift = potentialGifts.Random();
+		var prefix = 0;
+		var suffix = 0;
+
+		// Enchant if it's the 20th birthday.
+		if (Player.Age == 20)
+		{
+			if (Player.IsHuman)
+			{
+				switch (Random(18))
+				{
+					case 00: prefix = 20610; break; // Shiny
+					case 01: prefix = 20710; break; // Posh
+					case 02: prefix = 20810; break; // Well-groomed
+					case 03: prefix = 20910; break;	// Holy
+					case 04: prefix = 20911; break;	// Beautiful
+					case 05: prefix = 20912; break;	// Resplendent
+					case 06: suffix = 30410; break;	// Capricornus
+					case 07: suffix = 30510; break;	// Sagittarius
+					case 08: suffix = 30511; break;	// Aquarius
+					case 09: suffix = 30512; break;	// Pisces
+					case 10: suffix = 30610; break;	// Libra
+					case 11: suffix = 30611; break;	// Scorpius
+					case 12: suffix = 30710; break;	// Taurus
+					case 13: suffix = 30711; break;	// Virgo
+					case 14: suffix = 30911; break;	// Aries
+					case 15: suffix = 30912; break;	// Cancer
+					case 16: suffix = 31010; break;	// Gemini
+					case 17: suffix = 31011; break;	// Leo
+				}
+			}
+			else if (Player.IsElf)
+			{
+				switch (Random(18))
+				{
+					case 00: prefix = 20610; break; // Shiny
+					case 01: prefix = 20710; break; // Posh
+					case 02: prefix = 20810; break; // Well-groomed
+					case 03: prefix = 20910; break;	// Holy
+					case 04: prefix = 20911; break;	// Beautiful
+					case 05: prefix = 20912; break;	// Resplendent
+					case 06: suffix = 30413; break;	// Sundrop
+					case 07: suffix = 30518; break;	// Violet
+					case 08: suffix = 30519; break;	// Forget-me-not
+					case 09: suffix = 30520; break;	// Rose
+					case 10: suffix = 30621; break;	// Clover
+					case 11: suffix = 30622; break;	// Sweet Pea
+					case 12: suffix = 30721; break;	// Otter
+					case 13: suffix = 30722; break;	// Lilly
+					case 14: suffix = 31012; break;	// Cornflower
+					case 15: suffix = 31013; break;	// Cosmos
+					case 16: suffix = 30816; break;	// Marguerite
+					case 17: suffix = 30817; break;	// Hyacinth
+				}
+			}
+			else if (Player.IsGiant)
+			{
+				switch (Random(18))
+				{
+					case 00: prefix = 20610; break; // Shiny
+					case 01: prefix = 20710; break; // Posh
+					case 02: prefix = 20810; break; // Well-groomed
+					case 03: prefix = 20910; break;	// Holy
+					case 04: prefix = 20911; break;	// Beautiful
+					case 05: prefix = 20912; break;	// Resplendent
+					case 06: suffix = 31501; break;	// Freezing
+					case 07: suffix = 31502; break;	// Frost
+					case 08: suffix = 31503; break;	// Hurricane's
+					case 09: suffix = 31504; break;	// Hail
+					case 10: suffix = 31505; break;	// Sleet
+					case 11: suffix = 31506; break;	// Whirlpool
+					case 12: suffix = 31507; break;	// Earthquake's
+					case 13: suffix = 31508; break;	// Downpour
+					case 14: suffix = 31509; break;	// Blizzard's
+					case 15: suffix = 31510; break;	// Thunder
+					case 16: suffix = 31511; break;	// Tempest
+					case 17: suffix = 31512; break;	// Snowfield
+				}
+			}
+		}
+
+		Player.GiveItem(Item.CreateEnchanted(rndGift, prefix, suffix));
+		Player.Vars.Perm["NaoLastPresentDate"] = DateTime.Now.Date;
+
+		// Unofficial
+		Msg(L("Happy Birthday, <username/>! "));
+		Msg(L("I have a little something for you on this special day,<br/>please accept it."));
 
 		if (IsEnabled("NaoDressUp") && !HasKeyword("present_to_nao"))
 			GiveKeyword("present_to_nao");
