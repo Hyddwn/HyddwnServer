@@ -616,6 +616,26 @@ namespace Aura.Channel.Network.Handlers
 		}
 
 		/// <summary>
+		/// Sent when accepting transfer to current bank.
+		/// </summary>
+		/// <example>
+		/// 001 [005000CA6F3EE634] Long   : 22518867586639412
+		/// 002 [..............00] Byte   : 0
+		/// </example>
+		[PacketHandler(Op.BankTransferRequest)]
+		public void BankTransferRequest(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+			var instantTransfer = packet.GetBool();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// ...
+
+			Send.BankTransferRequestR(creature, false);
+		}
+
+		/// <summary>
 		/// Sent to speak to ego weapon.
 		/// </summary>
 		/// <remarks>

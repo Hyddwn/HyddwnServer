@@ -339,6 +339,59 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends BankTransferInquiry to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="itemEntityId"></param>
+		/// <param name="bankTitle"></param>
+		/// <param name="time"></param>
+		/// <param name="price"></param>
+		public static void BankTransferInquiry(Creature creature, long itemEntityId, string bankTitle, int time, int price)
+		{
+			var packet = new Packet(Op.BankTransferInquiry, creature.EntityId);
+
+			packet.PutLong(itemEntityId);
+			packet.PutString(bankTitle);
+			packet.PutInt(time);
+			packet.PutInt(price);
+			packet.PutInt(-1);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends BankTransferRequestR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void BankTransferRequestR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.BankTransferRequestR, creature.EntityId);
+
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends BankTransferInfo to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void BankTransferInfo(Creature creature, string tabTitle, long itemEntityId, string bankId, long time, DateTime start)
+		{
+			var packet = new Packet(Op.BankTransferInfo, creature.EntityId);
+
+			packet.PutString(tabTitle);
+			packet.PutLong(itemEntityId);
+			packet.PutString(bankId);
+			packet.PutLong(time);
+			packet.PutLong(start);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends NpcTalkEgoR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

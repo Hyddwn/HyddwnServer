@@ -291,6 +291,10 @@ namespace Aura.Mabi.Network
 		public const int BankUpdateGold = 0x721F;
 		public const int BankAddItem = 0x7220;
 		public const int BankRemoveItem = 0x7221;
+		public const int BankTransferInquiry = 0x7222;
+		public const int BankTransferRequest = 0x7223;
+		public const int BankTransferRequestR = 0x7224;
+		public const int BankTransferInfo = 0x7228;
 		public const int OpenMail = 0x7242;
 		public const int CloseMail = 0x7243;
 		public const int ConfirmMailRecipent = 0x7244;
