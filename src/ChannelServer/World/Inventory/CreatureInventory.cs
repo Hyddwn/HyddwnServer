@@ -2044,9 +2044,12 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="amount"></param>
 		public void AddProficiency(Item item, int amount)
 		{
+			// Conf multiplicator
+			amount = Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.ProficiencyRate / 100f);
+
 			// Thursday: Increase of proficiency gaining rate (20%).
 			if (ErinnTime.Now.Month == ErinnMonth.Lughnasadh)
-				amount = (int)(amount * 1.20f);
+				amount = Math2.MultiplyChecked(amount, 1.20f);
 
 			item.Proficiency += amount;
 
