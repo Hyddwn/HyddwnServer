@@ -175,7 +175,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="creature"></param>
 		/// <param name="bank"></param>
 		/// <param name="race"></param>
-		public static void OpenBank(Creature creature, BankInventory bank, BankTabRace race)
+		public static void OpenBank(Creature creature, BankInventory bank, BankTabRace race, string bankId, string bankTitle)
 		{
 			var packet = new Packet(Op.OpenBank, creature.EntityId);
 
@@ -184,8 +184,8 @@ namespace Aura.Channel.Network.Sending
 			packet.PutLong(DateTime.Now);
 			packet.PutByte(0);
 			packet.PutString(creature.Client.Account.Id);
-			packet.PutString("Global"); // Current bank id
-			packet.PutString("Bank"); // Current bank title
+			packet.PutString(bankId);
+			packet.PutString(bankTitle);
 			packet.PutInt(bank.Gold);
 
 			var tabList = bank.GetTabList(race);

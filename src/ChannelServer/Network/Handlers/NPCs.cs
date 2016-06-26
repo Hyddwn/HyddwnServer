@@ -451,7 +451,7 @@ namespace Aura.Channel.Network.Handlers
 			if (race < BankTabRace.Human || race > BankTabRace.Giant)
 				race = BankTabRace.Human;
 
-			Send.OpenBank(creature, client.Account.Bank, race);
+			Send.OpenBank(creature, client.Account.Bank, race, creature.Temp.CurrentBankId, creature.Temp.CurrentBankTitle);
 		}
 
 		/// <summary>
