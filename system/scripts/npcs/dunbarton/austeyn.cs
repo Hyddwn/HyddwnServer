@@ -77,7 +77,7 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "@bank":
-				OpenBank("DunbartonBank", L("Dunbarton Bank"));
+				OpenBank("DunbartonBank");
 				return;
 
 			case "@coin":
