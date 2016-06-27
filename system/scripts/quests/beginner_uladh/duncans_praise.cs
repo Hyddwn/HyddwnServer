@@ -13,7 +13,7 @@ public abstract class DuncansPraiseQuestScript : QuestScript
 	// 202037 - Duncan's Praise (Nora)
 	// 202038 - Duncan's Praise (Deian)
 	// 202039 - Duncan's Praise (Trefor)
-	public static int[] Quests = { 202036, 202037, 202038, 2020369 };
+	public static int[] Quests = { 202036, 202037, 202038, 202039 };
 
 	protected abstract int QuestId { get; }
 	protected abstract string FriendName { get; }
