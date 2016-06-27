@@ -1,9 +1,9 @@
 // Aura
 // Database file
 // 
-// Every bank has a position on an immaginary world map. The distance
+// Every bank has a position on an imaginary world map. The distance
 // between these positions is taken into account when calculating the
-// time it takes to transfer items between them and the transfer fee.
+// time and fee it takes to transfer items between them.
 //---------------------------------------------------------------------------
 
 [
