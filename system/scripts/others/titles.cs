@@ -436,7 +436,7 @@ public class TitleRewardingScript : GeneralScript
 			// Maybe the temp variable FireArrow could be used for this,
 			// but this is safer, no risk of the variable being reset,
 			// or still being set when it shouldn't be.
-			if (killer.RightHand != null && killer.RightHand.HasTag("/bow/") && Campfire.GetNearbyCampfire(killer, 500) != null)
+			if (killer.RightHand != null && killer.RightHand.HasTag("/bow/|/bow01/") && Campfire.GetNearbyCampfire(killer, 500) != null)
 				killer.Titles.Enable(88);
 		}
 	}
