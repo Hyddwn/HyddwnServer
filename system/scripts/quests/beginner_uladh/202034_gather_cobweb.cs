@@ -34,7 +34,9 @@ public class GatherCobwebQuestScript : QuestScript
 			npc.RemoveItem(60008, 5); // Cobweb
 			npc.CompleteQuest(this.Id);
 
-			npc.Msg("(Missing dialog: Appreciation for getting the cobweb)");
+			npc.Msg(L("You brought the cobwebs! Thank you."));
+			npc.Msg(L("Cobwebs are used to make Fine Yarn.<br/>The cobwebs dropped by the spiders in TirChonaill are sturdier than usual, so they're great for making strings."));
+			npc.Msg(L("If you're interested in making thread,<br/>come and talk to me with the keyword 'Skill' after gathering Cobwebs.<br/>I'll tell you about the Weaving skill."));
 
 			return HookResult.Break;
 		}
