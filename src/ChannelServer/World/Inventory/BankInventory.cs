@@ -216,6 +216,76 @@ namespace Aura.Channel.World.Inventory
 
 			return true;
 		}
+
+		/// <summary>
+		/// Returns item with the given entity id, or null if the item
+		/// doesn't exist.
+		/// </summary>
+		/// <param name="itemEntityId"></param>
+		/// <returns></returns>
+		public Item GetItem(long itemEntityId)
+		{
+			foreach (var tab in this.Tabs.Values)
+			{
+				var item = tab.GetItem(itemEntityId);
+				if (item != null)
+					return item;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Returns name for the bank with the given id, or null if the bank
+		/// doesn't exist.
+		/// </summary>
+		/// <param name="bankId"></param>
+		/// <returns></returns>
+		public static string GetName(string bankId)
+		{
+			if (bankId == "Global")
+				return Localization.Get("Global Bank");
+
+			var data = AuraData.BankDb.Find(bankId);
+			if (data == null)
+				return null;
+
+			return data.Name;
+		}
+
+		/// <summary>
+		/// Returns the gold fee to transfer an item from one bank to the
+		/// other. The parameters are the ids.
+		/// </summary>
+		/// <remarks>
+		/// Unofficial, but works well.
+		/// </remarks>
+		/// <param name="item">Item that is to be transferred.</param>
+		/// <param name="fromBankId">The id of the bank the item is at.</param>
+		/// <param name="toBankId">The id of the bank the item is transferred to.</param>
+		/// <returns></returns>
+		public static int GetTransferFee(Item item, string fromBankId, string toBankId)
+		{
+			if (fromBankId == "Global" || toBankId == "Global")
+				return 0;
+
+			var data1 = AuraData.BankDb.Find(fromBankId);
+			var data2 = AuraData.BankDb.Find(toBankId);
+
+			if (data1 == null || data2 == null)
+			{
+				Log.Warning("BankInventory.GetFee: Unknown bank, returning 0 fee. ({0} -> {1})", fromBankId, toBankId);
+				return 0;
+			}
+
+			var pos1 = new Position(data1.X, data1.Y);
+			var pos2 = new Position(data2.X, data2.Y);
+			var distance = pos1.GetDistance(pos2);
+			var itemSize = (item.Data.Width * item.Data.Height);
+			var fee = (item.OptionInfo.Price / 2000f * itemSize * distance);
+
+			return (int)Math.Max(10, fee);
+		}
 	}
 
 	public class BankTabPocket : InventoryPocketNormal
