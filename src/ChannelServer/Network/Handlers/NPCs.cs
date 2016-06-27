@@ -578,8 +578,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Deposit item
-			// TODO: Handle different banks in different towns.
-			var success = client.Account.Bank.DepositItem(creature, itemEntityId, "Global", tabName, posX, posY);
+			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, tabName, posX, posY);
 
 			Send.BankDepositItemR(creature, success);
 		}
@@ -609,7 +608,6 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Withdraw item
-			// TODO: Handle different banks in different towns.
 			var success = client.Account.Bank.WithdrawItem(creature, tabName, itemEntityId);
 
 			Send.BankWithdrawItemR(creature, success);
@@ -629,10 +627,9 @@ namespace Aura.Channel.Network.Handlers
 			var instantTransfer = packet.GetBool();
 
 			var creature = client.GetCreatureSafe(packet.Id);
+			var success = client.Account.Bank.Transfer(creature, itemEntityId, instantTransfer);
 
-			// ...
-
-			Send.BankTransferRequestR(creature, false);
+			Send.BankTransferRequestR(creature, true);
 		}
 
 		/// <summary>

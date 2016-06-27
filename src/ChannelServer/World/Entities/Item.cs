@@ -93,6 +93,38 @@ namespace Aura.Channel.World.Entities
 		public string Bank { get; set; }
 
 		/// <summary>
+		/// Time at which the current transfer, if any, started.
+		/// </summary>
+		/// <remarks>
+		/// TODO: Make a new base class BankItem and restructure the db,
+		///   to have one item table, that other tables can reference?
+		///   (E.g. inventory, bank, mail, etc.)
+		/// </remarks>
+		public DateTime BankTransferStart { get; set; }
+
+		/// <summary>
+		/// Duration of the current transfer.
+		/// </summary>
+		public int BankTransferDuration { get; set; }
+
+		/// <summary>
+		/// Milliseconds remaining until item arrives at new bank.
+		/// </summary>
+		public int BankTransferRemaining
+		{
+			get
+			{
+				var now = DateTime.Now;
+				var end = this.BankTransferStart.AddMilliseconds(this.BankTransferDuration);
+
+				if (end > now)
+					return (int)(end - now).TotalMilliseconds;
+				else
+					return 0;
+			}
+		}
+
+		/// <summary>
 		/// Returns item's quality on a scale from 0 to 100. (Used for food.)
 		/// </summary>
 		public int Quality

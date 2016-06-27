@@ -209,9 +209,9 @@ namespace Aura.Channel.Network.Sending
 				packet.PutInt(itemList.Count);
 				foreach (var item in itemList)
 				{
-					packet.PutString("Global"); // Bank id
-					packet.PutULong(18446744017659355058);
-					packet.PutULong(0);
+					packet.PutString(item.Bank);
+					packet.PutLong(item.BankTransferRemaining);
+					packet.PutLong(item.BankTransferStart);
 					packet.AddItemInfo(item, ItemPacketType.Private);
 				}
 			}
@@ -378,15 +378,15 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
-		public static void BankTransferInfo(Creature creature, string tabTitle, long itemEntityId, string bankId, long time, DateTime start)
+		public static void BankTransferInfo(Creature creature, string tabTitle, Item item)
 		{
 			var packet = new Packet(Op.BankTransferInfo, creature.EntityId);
 
 			packet.PutString(tabTitle);
-			packet.PutLong(itemEntityId);
-			packet.PutString(bankId);
-			packet.PutLong(time);
-			packet.PutLong(start);
+			packet.PutLong(item.EntityId);
+			packet.PutString(item.Bank);
+			packet.PutLong(item.BankTransferRemaining);
+			packet.PutLong(item.BankTransferStart);
 
 			creature.Client.Send(packet);
 		}
