@@ -241,6 +241,11 @@ namespace Aura.Shared
 				{
 					this.LoadDb(AuraData.OptionSetDb, "db/optionsets.txt", reload);
 				}
+
+				if ((toLoad & DataLoad.Banks) != 0)
+				{
+					this.LoadDb(AuraData.BankDb, "db/banks.txt", reload);
+				}
 			}
 			catch (DatabaseErrorException ex)
 			{
@@ -364,6 +369,7 @@ namespace Aura.Shared
 		Portals = 0x8000000,
 		CharacterStyles = 0x10000000,
 		OptionSets = 0x20000000,
+		Banks = 0x40000000,
 
 		All = 0xFFFFFFFF,
 

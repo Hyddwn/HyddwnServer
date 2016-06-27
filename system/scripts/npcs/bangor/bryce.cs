@@ -64,7 +64,7 @@ public class BryceScript : NpcScript
 				break;
 
 			case "@bank":
-				OpenBank();
+				OpenBank("BangorBank");
 				return;
 
 			case "@coupon":

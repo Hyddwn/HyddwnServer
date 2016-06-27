@@ -3,7 +3,9 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
+using Aura.Data;
 using Aura.Mabi.Const;
+using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -201,7 +203,28 @@ namespace Aura.Channel.World.Inventory
 
 			// Check item
 			var item = tab.GetItem(itemEntityId);
-			if (item == null) return false;
+			if (item == null)
+				return false;
+
+			// Don't allow withdrawing while the item is being transferred
+			// to the current bank.
+			if (item.Bank == creature.Temp.CurrentBankId && item.BankTransferRemaining != 0)
+				return false;
+
+			// Ask about transfer if item is not in current bank.
+			if (item.Bank != creature.Temp.CurrentBankId)
+			{
+				var fromBankId = item.Bank;
+				var toBankId = creature.Temp.CurrentBankId;
+
+				var time = GetTransferTime(fromBankId, toBankId);
+				var price = GetTransferFee(item, fromBankId, toBankId);
+				var bankTitle = GetName(item.Bank);
+
+				Send.BankTransferInquiry(creature, itemEntityId, bankTitle, time, price);
+
+				return false;
+			}
 
 			// Generate a new item, makes moving and updating easier.
 			var newItem = new Item(item);
@@ -213,6 +236,175 @@ namespace Aura.Channel.World.Inventory
 			// Remove item from bank
 			tab.Remove(item);
 			Send.BankRemoveItem(creature, tabName, itemEntityId);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Returns item with the given entity id, or null if the item
+		/// doesn't exist.
+		/// </summary>
+		/// <param name="itemEntityId"></param>
+		/// <returns></returns>
+		public Item GetItem(long itemEntityId)
+		{
+			foreach (var tab in this.Tabs.Values)
+			{
+				var item = tab.GetItem(itemEntityId);
+				if (item != null)
+					return item;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Returns name for the bank with the given id, or null if the bank
+		/// doesn't exist.
+		/// </summary>
+		/// <param name="bankId"></param>
+		/// <returns></returns>
+		public static string GetName(string bankId)
+		{
+			if (bankId == "Global")
+				return Localization.Get("Global Bank");
+
+			var data = AuraData.BankDb.Find(bankId);
+			if (data == null)
+				return null;
+
+			return data.Name;
+		}
+
+		/// <summary>
+		/// Returns the gold fee to transfer an item from one bank to the
+		/// other. The parameters are the ids.
+		/// </summary>
+		/// <remarks>
+		/// Unofficial, but works well.
+		/// </remarks>
+		/// <param name="item">Item that is to be transferred.</param>
+		/// <param name="fromBankId">The id of the bank the item is at.</param>
+		/// <param name="toBankId">The id of the bank the item is transferred to.</param>
+		/// <returns></returns>
+		public static int GetTransferFee(Item item, string fromBankId, string toBankId)
+		{
+			if (fromBankId == "Global" || toBankId == "Global")
+				return 0;
+
+			var data1 = AuraData.BankDb.Find(fromBankId);
+			var data2 = AuraData.BankDb.Find(toBankId);
+
+			if (data1 == null || data2 == null)
+			{
+				Log.Warning("BankInventory.GetFee: Unknown bank, returning 0 fee. ({0} -> {1})", fromBankId, toBankId);
+				return 0;
+			}
+
+			var pos1 = new Position(data1.X, data1.Y);
+			var pos2 = new Position(data2.X, data2.Y);
+			var distance = pos1.GetDistance(pos2);
+			var itemSize = (item.Data.Width * item.Data.Height);
+			var fee = (item.OptionInfo.Price / 2000f * itemSize * distance);
+
+			return (int)Math.Max(10, fee);
+		}
+
+		/// <summary>
+		/// Returns the time it takes to transfer an item from one bank to
+		/// the other in milliseconds.
+		/// </summary>
+		/// <remarks>
+		/// Unofficial, but works well.
+		/// </remarks>
+		/// <param name="fromBankId">The id of the bank the item is at.</param>
+		/// <param name="toBankId">The id of the bank the item is transferred to.</param>
+		/// <returns></returns>
+		public static int GetTransferTime(string fromBankId, string toBankId)
+		{
+			if (fromBankId == "Global" || toBankId == "Global")
+				return 0;
+
+			var data1 = AuraData.BankDb.Find(fromBankId);
+			var data2 = AuraData.BankDb.Find(toBankId);
+
+			if (data1 == null || data2 == null)
+			{
+				Log.Warning("BankInventory.GetTransferTime: Unknown bank, returning 0 time. ({0} -> {1})", fromBankId, toBankId);
+				return 0;
+			}
+
+			var pos1 = new Position(data1.X, data1.Y);
+			var pos2 = new Position(data2.X, data2.Y);
+			var distance = pos1.GetDistance(pos2);
+
+			return distance * 5000;
+		}
+
+		/// <summary>
+		/// Attempts to start a transfer of the given item to the bank the
+		/// creature is currently using.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="itemEntityId"></param>
+		/// <param name="instantTransfer"></param>
+		/// <returns></returns>
+		public bool Transfer(Creature creature, long itemEntityId, bool instantTransfer)
+		{
+			// Check bank
+			var currentBank = creature.Temp.CurrentBankId;
+			if (string.IsNullOrWhiteSpace(currentBank))
+			{
+				Log.Warning("BankTransferRequest: Player '0x{0:X16}' (Account: '{1}') tried to transfer item while not being in a bank.", creature.EntityId, creature.Client.Account.Id);
+				return false;
+			}
+
+			// Get item and tab
+			Item item = null;
+			string tabName = null;
+			foreach (var tab in this.Tabs.Values)
+			{
+				item = tab.GetItem(itemEntityId);
+				if (item != null)
+				{
+					tabName = tab.Name;
+					break;
+				}
+			}
+
+			if (item == null)
+			{
+				Log.Warning("BankTransferRequest: Player '0x{0:X16}' (Account: '{1}') tried to transfer a non-existing or in-transit item.", creature.EntityId, creature.Client.Account.Id);
+				return false;
+			}
+
+			// Get fee and time
+			var fee = BankInventory.GetTransferFee(item, item.Bank, currentBank);
+			var time = BankInventory.GetTransferTime(item.Bank, currentBank);
+
+			// Incrase fee for instant transfer.
+			if (instantTransfer)
+			{
+				// Don't change, hardcoded in the client.
+				fee = 100 + (fee * 5);
+				time = 0;
+			}
+
+			// Check gold
+			if (this.Gold < fee)
+			{
+				Send.MsgBox(creature, Localization.Get("Unable to pay the fee, Insufficient balance."));
+				return false;
+			}
+
+			// Transfer
+			item.Bank = currentBank;
+			item.BankTransferStart = DateTime.Now;
+			item.BankTransferDuration = time;
+
+			this.RemoveGold(creature, fee);
+
+			Send.BankTransferInfo(creature, tabName, item);
 
 			return true;
 		}

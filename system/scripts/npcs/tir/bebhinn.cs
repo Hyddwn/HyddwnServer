@@ -56,7 +56,7 @@ public class BebhinnBaseScript : NpcScript
 				break;
 
 			case "@bank":
-				OpenBank();
+				OpenBank("TirChonaillBank");
 				return;
 
 			case "@redeem":

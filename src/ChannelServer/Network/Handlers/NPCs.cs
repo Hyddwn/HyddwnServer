@@ -451,7 +451,7 @@ namespace Aura.Channel.Network.Handlers
 			if (race < BankTabRace.Human || race > BankTabRace.Giant)
 				race = BankTabRace.Human;
 
-			Send.OpenBank(creature, client.Account.Bank, race);
+			Send.OpenBank(creature, client.Account.Bank, race, creature.Temp.CurrentBankId, creature.Temp.CurrentBankTitle);
 		}
 
 		/// <summary>
@@ -578,8 +578,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Deposit item
-			// TODO: Handle different banks in different towns.
-			var success = client.Account.Bank.DepositItem(creature, itemEntityId, "Global", tabName, posX, posY);
+			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, tabName, posX, posY);
 
 			Send.BankDepositItemR(creature, success);
 		}
@@ -609,10 +608,28 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Withdraw item
-			// TODO: Handle different banks in different towns.
 			var success = client.Account.Bank.WithdrawItem(creature, tabName, itemEntityId);
 
 			Send.BankWithdrawItemR(creature, success);
+		}
+
+		/// <summary>
+		/// Sent when accepting transfer to current bank.
+		/// </summary>
+		/// <example>
+		/// 001 [005000CA6F3EE634] Long   : 22518867586639412
+		/// 002 [..............00] Byte   : 0
+		/// </example>
+		[PacketHandler(Op.BankTransferRequest)]
+		public void BankTransferRequest(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+			var instantTransfer = packet.GetBool();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var success = client.Account.Bank.Transfer(creature, itemEntityId, instantTransfer);
+
+			Send.BankTransferRequestR(creature, true);
 		}
 
 		/// <summary>

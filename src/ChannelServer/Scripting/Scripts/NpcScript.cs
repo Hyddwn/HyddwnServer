@@ -1567,9 +1567,28 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Opens bank window.
 		/// </summary>
-		public void OpenBank()
+		/// <param name="bankId">The unique identifier for the bank to open.</param>
+		/// <param name="bankTitle">The title of the bank to open.</param>
+		public void OpenBank(string bankId)
 		{
-			Send.OpenBank(this.Player, this.Player.Client.Account.Bank, BankTabRace.Human);
+			// Previously we used these two for id and title, which allowed
+			// access to anything from anywhere. Make this an option?
+			//packet.PutString("Global");
+			//packet.PutString("Bank");
+
+			if (!AuraData.BankDb.Exists(bankId))
+			{
+				Log.Warning("OpenBank: Unknown bank '{0}'", bankId);
+				this.Msg(string.Format("(Error: Unknown bank '{0}')", bankId));
+				return;
+			}
+
+			var bankTitle = BankInventory.GetName(bankId);
+
+			this.Player.Temp.CurrentBankId = bankId;
+			this.Player.Temp.CurrentBankTitle = bankTitle;
+
+			Send.OpenBank(this.Player, this.Player.Client.Account.Bank, BankTabRace.Human, bankId, bankTitle);
 		}
 
 		/// <summary>

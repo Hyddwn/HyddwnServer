@@ -175,7 +175,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="creature"></param>
 		/// <param name="bank"></param>
 		/// <param name="race"></param>
-		public static void OpenBank(Creature creature, BankInventory bank, BankTabRace race)
+		public static void OpenBank(Creature creature, BankInventory bank, BankTabRace race, string bankId, string bankTitle)
 		{
 			var packet = new Packet(Op.OpenBank, creature.EntityId);
 
@@ -184,8 +184,8 @@ namespace Aura.Channel.Network.Sending
 			packet.PutLong(DateTime.Now);
 			packet.PutByte(0);
 			packet.PutString(creature.Client.Account.Id);
-			packet.PutString("Global"); // Current bank id
-			packet.PutString("Bank"); // Current bank title
+			packet.PutString(bankId);
+			packet.PutString(bankTitle);
 			packet.PutInt(bank.Gold);
 
 			var tabList = bank.GetTabList(race);
@@ -209,9 +209,9 @@ namespace Aura.Channel.Network.Sending
 				packet.PutInt(itemList.Count);
 				foreach (var item in itemList)
 				{
-					packet.PutString("Global"); // Bank id
-					packet.PutULong(18446744017659355058);
-					packet.PutULong(0);
+					packet.PutString(item.Bank);
+					packet.PutLong(item.BankTransferRemaining);
+					packet.PutLong(item.BankTransferStart);
 					packet.AddItemInfo(item, ItemPacketType.Private);
 				}
 			}
@@ -334,6 +334,59 @@ namespace Aura.Channel.Network.Sending
 
 			packet.PutString(tabName);
 			packet.PutLong(itemEntityId);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends BankTransferInquiry to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="itemEntityId"></param>
+		/// <param name="bankTitle"></param>
+		/// <param name="time"></param>
+		/// <param name="price"></param>
+		public static void BankTransferInquiry(Creature creature, long itemEntityId, string bankTitle, int time, int price)
+		{
+			var packet = new Packet(Op.BankTransferInquiry, creature.EntityId);
+
+			packet.PutLong(itemEntityId);
+			packet.PutString(bankTitle);
+			packet.PutInt(time);
+			packet.PutInt(price);
+			packet.PutInt(-1);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends BankTransferRequestR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void BankTransferRequestR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.BankTransferRequestR, creature.EntityId);
+
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends BankTransferInfo to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void BankTransferInfo(Creature creature, string tabTitle, Item item)
+		{
+			var packet = new Packet(Op.BankTransferInfo, creature.EntityId);
+
+			packet.PutString(tabTitle);
+			packet.PutLong(item.EntityId);
+			packet.PutString(item.Bank);
+			packet.PutLong(item.BankTransferRemaining);
+			packet.PutLong(item.BankTransferStart);
 
 			creature.Client.Send(packet);
 		}
