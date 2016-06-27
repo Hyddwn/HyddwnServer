@@ -31,7 +31,9 @@ public class TalkWithStewartQuestScript : QuestScript
 		if (npc.QuestActive(this.Id, "talk"))
 		{
 			npc.FinishQuest(this.Id, "talk");
-			npc.Msg("(Missing dialog: Talk with Stewart)");
+
+			npc.Msg(L("Welcome. I am Stewart.<br/>I will give you a mana potion that will help you with your magic training studies.<br/>I think you have talent in magic."));
+			npc.Msg(L("I'd be thankful if you had interest in magic."));
 
 			return HookResult.Break;
 		}
