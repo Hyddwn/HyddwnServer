@@ -261,7 +261,10 @@ public class DeianScript : NpcScript
 						GiveItem(63002, 5); // Firewood
 						GiveKeyword("deian_01");
 
-						Msg("(Missing dialog: Campfire explanation)");
+						Msg(L("Are you here for the Campfire skill?<br/>You see that over there? The burnt spot on the ground? I've been trying to learn it myself.<br/>But no matter how much I try, I just can't get it."));
+						Msg(L("It's harder than it looks... All I get is smoke and the spark won't catch.<br/>It's driving me crazy..."));
+						Msg(L("I even went to Duncan's house and secretly borrowed a book he had about campfires,<br/>but I couldn't understand a word of it!"));
+						Msg(L("I can't teach that skill even if I wanted to.<br/>What? You want to see the book? Umm....<br/>Fine, you did help me with my sheep last time.<br/>Here, take the book and the campfire material I have.<br/>I owe you anyway."));
 					}
 					else
 					{
