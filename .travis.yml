@@ -11,11 +11,13 @@ notifications:
     on_success: change
     on_failure: always
     on_start: never
+before_install:
+  - mkdir -p .nuget
+  - wget -O .nuget/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+  - mono .nuget/nuget.exe # Output NuGet's version number
 install:
-  - nuget restore Aura.sln
-  #- nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
-  - wget http://aura-project.org/xunit.runners.1.9.2.zip
-  - unzip xunit.runners.1.9.2.zip
+  - mono .nuget/nuget.exe restore Aura.sln
+  - mono .nuget/nuget.exe install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release Aura.sln
   - mono --debug ./testrunner/xunit.runners.*/tools/xunit.console.clr4.exe ./src/Test.ChannelServer/bin/Release/Test.ChannelServer.dll
