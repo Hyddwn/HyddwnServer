@@ -32,7 +32,8 @@ public class GatherEggsQuestScript : QuestScript
 		{
 			npc.FinishQuest(this.Id, "talk");
 			npc.RemoveItem(50009, 5); // Eggs
-			npc.Msg("(Missing dialog: Gather Eggs)");
+
+			npc.Msg(L("Oh, thank you. That was fast.<br/>If you get hungry later on, feel free to drop by.<br/>I've got plenty of delicious food in store for you!"));
 
 			return HookResult.Break;
 		}
