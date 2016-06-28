@@ -1,5 +1,5 @@
 language: csharp
-mono: alpha
+mono: 3.8.0
 solution: Aura.sln
 branches:
   only:
