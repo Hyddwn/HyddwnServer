@@ -58,6 +58,7 @@ namespace Aura.Tests.Channel.Scripting
 			Assert.Equal("two2", mgr["Test4"]);
 		}
 
+#if !__MonoCS__
 		[Fact]
 		public void Get()
 		{
@@ -74,6 +75,7 @@ namespace Aura.Tests.Channel.Scripting
 
 			Assert.Throws<InvalidCastException>(() => { Assert.Equal(1, mgr.Get<int>("Test1", 0)); });
 		}
+#endif
 
 		[Fact]
 		public void Assign()
