@@ -75,7 +75,6 @@ namespace Aura.Tests.Channel.Scripting
 
 			Assert.Throws<InvalidCastException>(() => { Assert.Equal(1, mgr.Get<int>("Test1", 0)); });
 		}
-#endif
 
 		[Fact]
 		public void Assign()
@@ -95,5 +94,6 @@ namespace Aura.Tests.Channel.Scripting
 
 			Assert.Throws<RuntimeBinderException>(() => { int test4 = mgr["Test4"]; });
 		}
+#endif
 	}
 }
