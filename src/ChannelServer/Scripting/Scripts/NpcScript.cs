@@ -195,12 +195,17 @@ namespace Aura.Channel.Scripting.Scripts
 				default:
 					if (this.NPC.IsMale)
 					{
-						this.Close(Hide.None, Localization.Get("(I don't think he can understand me)"));
+						this.Close(Hide.None, Localization.Get("(I don't think he can understand me.)"));
 						break;
 					}
 					else if (this.NPC.IsFemale)
 					{
-						this.Close(Hide.None, Localization.Get("(I don't think she can understand me)"));
+						this.Close(Hide.None, Localization.Get("(I don't think she can understand me.)"));
+						break;
+					}
+					else if (this.NPC.HasTag("/prop/"))
+					{
+						this.Close(Hide.None, Localization.Get("(I don't think I can talk to this.)"));
 						break;
 					}
 
@@ -210,9 +215,6 @@ namespace Aura.Channel.Scripting.Scripts
 				case 1: this.Close(Hide.None, Localization.Get("(This conversation doesn't seem to be going anywhere.)")); break;
 				case 2: this.Close(Hide.None, Localization.Get("(I don't think we'll see things eye to eye.)")); break;
 			}
-
-			// Messages for "things", like book shelves.
-			//this.Close("<title name='NONE'/>(I don't think I can talk to this.)");
 
 			await Task.Yield();
 		}
