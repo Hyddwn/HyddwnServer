@@ -69,11 +69,8 @@ namespace Aura.Channel.Skills.Combat
 			if (critSkill == null || (critSkill.Info.Rank == SkillRank.Novice && !bypassNoviceCheck))
 				return;
 
-			// Cap crit chance at 30%
-			critChance = Math2.Clamp(0, 30, critChance);
-
 			// Cancel if crit doesn't happen
-			if (RandomProvider.Get().NextDouble() * 100 >= critChance)
+			if (RandomProvider.Get().Next(100) >= critChance)
 				return;
 
 			// Add crit bonus

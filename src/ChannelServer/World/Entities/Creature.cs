@@ -2554,7 +2554,7 @@ namespace Aura.Channel.World.Entities
 
 		/// <summary>
 		/// Calculates right (or bare) hand crit chance, taking stat bonuses
-		/// and given protection into consideration.
+		/// and given protection into consideration. Capped at 0~30.
 		/// </summary>
 		/// <param name="protection"></param>
 		/// <returns></returns>
@@ -2566,7 +2566,7 @@ namespace Aura.Channel.World.Entities
 
 		/// <summary>
 		/// Calculates left hand crit chance, taking stat bonuses
-		/// and given protection into consideration.
+		/// and given protection into consideration. Capped at 0~30.
 		/// </summary>
 		/// <param name="protection"></param>
 		/// <returns></returns>
@@ -2581,6 +2581,7 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Calculates total crit chance, taking stat bonuses
 		/// and given protection and bonus into consideration.
+		///  Capped at 0~30.
 		/// </summary>
 		/// <param name="protection">Protection to subtract from crit.</param>
 		/// <returns></returns>
@@ -2592,6 +2593,7 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Calculates total crit chance, taking stat bonuses
 		/// and given protection and bonus into consideration.
+		/// Capped at 0~30.
 		/// </summary>
 		/// <param name="protection">Protection to subtract from crit.</param>
 		/// <param name="magic">If true, weapon crit bonuses only apply if weapon is a wand.</param>
@@ -2621,7 +2623,7 @@ namespace Aura.Channel.World.Entities
 
 		/// <summary>
 		/// Adds stat bonuses to base and calculates crit chance,
-		/// taking protection into consideration.
+		/// taking protection into consideration. Capped at 0~30.
 		/// </summary>
 		/// <param name="baseCritical"></param>
 		/// <param name="protection"></param>
@@ -2638,7 +2640,7 @@ namespace Aura.Channel.World.Entities
 
 			baseCritical -= protection;
 
-			return Math.Max(0, baseCritical);
+			return Math2.Clamp(0, 30, baseCritical);
 		}
 
 		/// <summary>
