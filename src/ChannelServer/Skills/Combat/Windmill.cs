@@ -136,13 +136,8 @@ namespace Aura.Channel.Skills.Combat
 
 			// Check crit
 			var crit = false;
-			var critSkill = attacker.Skills.Get(SkillId.CriticalHit);
-			if (critSkill != null && critSkill.Info.Rank > SkillRank.Novice)
-			{
-				var critChance = Math2.Clamp(0, 30, attacker.GetTotalCritChance(0));
-				if (rnd.NextDouble() * 100 < critChance)
-					crit = true;
-			}
+			if (attacker.Skills.Has(SkillId.CriticalHit, SkillRank.RF))
+				crit = (rnd.Next(100) < attacker.GetTotalCritChance(0));
 
 			// Handle all targets
 			foreach (var target in targets)
@@ -161,12 +156,7 @@ namespace Aura.Channel.Skills.Combat
 
 				// Crit bonus
 				if (crit)
-				{
-					var bonus = critSkill.RankData.Var1 / 100f;
-					damage = damage + (damage * bonus);
-
-					tAction.Set(TargetOptions.Critical);
-				}
+					CriticalHit.Handle(attacker, 100, ref damage, tAction);
 
 				// Handle skills and reductions
 				SkillHelper.HandleDefenseProtection(target, ref damage);
