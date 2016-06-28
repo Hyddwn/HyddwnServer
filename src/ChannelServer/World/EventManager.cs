@@ -71,6 +71,20 @@ namespace Aura.Channel.World
 		// ------------------------------------------------------------------
 
 		/// <summary>
+		// For sending any packets that need to be sent
+		// to each and every character on login
+		// Examples: Enabling/disabling client features
+		/// </summary>
+		public event Action<Creature> CreatureConnecting;
+		public void OnCreatureConnecting(Creature creature) { CreatureConnecting.Raise(creature); }
+
+		// For sending packets that need to be sent
+		// to specific characters on login
+		// Examples: Initial values for enabled features
+		public event Action<Creature> CreatureConnected;
+		public void OnCreatureConnected(Creature creature) { CreatureConnected.Raise(creature); }
+
+		/// <summary>
 		/// Raised a few seconds after player logged in.
 		/// </summary>
 		public event Action<Creature> PlayerLoggedIn;
