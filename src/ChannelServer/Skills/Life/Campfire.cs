@@ -103,7 +103,8 @@ namespace Aura.Channel.Skills.Life
 		}
 
 		/// <summary>
-		/// Uses skill (effectively does nothing)
+		/// Uses skill, checking if the campfire can be built at the given
+		/// position.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="skill"></param>
@@ -113,6 +114,16 @@ namespace Aura.Channel.Skills.Life
 			var positionId = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var unkInt2 = packet.GetInt();
+
+			// Check position
+			if (!IsValidPosition(creature, new Position(positionId)))
+			{
+				Send.Notice(creature, Localization.Get("It's a little cramped here to make a Campfire."));
+
+				creature.Skills.CancelActiveSkill();
+				Send.SkillUseSilentCancel(creature);
+				return;
+			}
 
 			Send.SkillUse(creature, skill.Info.Id, positionId, unkInt1, unkInt2);
 		}
@@ -130,51 +141,80 @@ namespace Aura.Channel.Skills.Life
 			var unkInt2 = packet.GetInt();
 			var propId = PropId;
 
-			// Handle items
-			if (skill.Info.Id == SkillId.Campfire)
-			{
-				// Check Firewood, the client should stop the player long before Complete.
-				if (creature.Inventory.Count(creature.Temp.FirewoodItemId) < FirewoodCost)
-					throw new ModerateViolation("Used Campfire without Firewood.");
-
-				// Remove Firewood
-				creature.Inventory.Remove(creature.Temp.FirewoodItemId, FirewoodCost);
-			}
-			else
-			{
-				// Check kit
-				var item = creature.Inventory.GetItem(creature.Temp.CampfireKitItemEntityId);
-				if (item == null)
-					throw new ModerateViolation("Used CampfireKit with invalid kit.");
-
-				propId = this.GetPropId(item); // Change the prop ID based on what campfire kit was used
-
-				// Reduce kit
-				creature.Inventory.Decrement(item);
-			}
-
-			// Set up Campfire
+			// Check position
 			var pos = new Position(positionId);
-			var effect = (skill.Info.Rank < SkillRank.RB ? "campfire_01" : "campfire_02");
-			var prop = new Prop(propId, creature.RegionId, pos.X, pos.Y, MabiMath.ByteToRadian(creature.Direction), 1); // Logs
-			prop.State = "single";
-			if (prop.Data.Id != HalloweenPropId)
-				prop.Xml.SetAttributeValue("EFFECT", effect); // Fire effect
-			prop.DisappearTime = DateTime.Now.AddMinutes(this.GetDuration(skill.Info.Rank, creature.RegionId)); // Disappear after x minutes
+			var validPosition = IsValidPosition(creature, pos);
 
-			// Temp data for Rest
-			prop.Temp.CampfireSkillRank = skill.RankData;
-			if (skill.Info.Id == SkillId.Campfire)
-				prop.Temp.CampfireFirewood = AuraData.ItemDb.Find(creature.Temp.FirewoodItemId);
+			if (validPosition)
+			{
+				// Handle items
+				if (skill.Info.Id == SkillId.Campfire)
+				{
+					// Check Firewood, the client should stop the player long before Complete.
+					if (creature.Inventory.Count(creature.Temp.FirewoodItemId) < FirewoodCost)
+						throw new ModerateViolation("Used Campfire without Firewood.");
 
-			creature.Region.AddProp(prop);
+					// Remove Firewood
+					creature.Inventory.Remove(creature.Temp.FirewoodItemId, FirewoodCost);
+				}
+				else
+				{
+					// Check kit
+					var item = creature.Inventory.GetItem(creature.Temp.CampfireKitItemEntityId);
+					if (item == null)
+						throw new ModerateViolation("Used CampfireKit with invalid kit.");
 
-			// Training
-			if (skill.Info.Id == SkillId.Campfire && skill.Info.Rank == SkillRank.Novice)
-				skill.Train(1); // Use Campfire.
+					propId = this.GetPropId(item); // Change the prop ID based on what campfire kit was used
+
+					// Reduce kit
+					creature.Inventory.Decrement(item);
+				}
+
+				// Set up Campfire
+				var effect = (skill.Info.Rank < SkillRank.RB ? "campfire_01" : "campfire_02");
+				var prop = new Prop(propId, creature.RegionId, pos.X, pos.Y, MabiMath.ByteToRadian(creature.Direction), 1); // Logs
+				prop.State = "single";
+				if (prop.Data.Id != HalloweenPropId)
+					prop.Xml.SetAttributeValue("EFFECT", effect); // Fire effect
+				prop.DisappearTime = DateTime.Now.AddMinutes(this.GetDuration(skill.Info.Rank, creature.RegionId)); // Disappear after x minutes
+
+				// Temp data for Rest
+				prop.Temp.CampfireSkillRank = skill.RankData;
+				if (skill.Info.Id == SkillId.Campfire)
+					prop.Temp.CampfireFirewood = AuraData.ItemDb.Find(creature.Temp.FirewoodItemId);
+
+				creature.Region.AddProp(prop);
+
+				// Training
+				if (skill.Info.Id == SkillId.Campfire && skill.Info.Rank == SkillRank.Novice)
+					skill.Train(1); // Use Campfire.
+			}
 
 			// Complete
 			Send.SkillComplete(creature, skill.Info.Id, positionId, unkInt1, unkInt2);
+		}
+
+		/// <summary>
+		/// Returns true if a campfire can be built at the given position.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="pos"></param>
+		/// <returns></returns>
+		public static bool IsValidPosition(Creature creature, Position pos)
+		{
+			var validPosition = true;
+
+			// Collisions betwen player and position
+			if (creature.Region.Collisions.Any(creature.GetPosition(), pos))
+				validPosition = false;
+			// Too close to a creature
+			else if (creature.Region.GetCreaturesInRange(pos, 90).Count != 0)
+				validPosition = false;
+			// Too close to a collision
+			else if (creature.Region.Collisions.AnyInRange(creature.GetPosition(), 250))
+				validPosition = false;
+
+			return validPosition;
 		}
 
 		/// <summary>

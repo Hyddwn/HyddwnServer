@@ -98,6 +98,26 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns true if any intersections are found in range of
+		/// the position.
+		/// </summary>
+		/// <remarks>
+		/// Runs 4 intersection checks to cover 8 directions around position.
+		/// </remarks>
+		/// <param name="pos"></param>
+		/// <param name="range"></param>
+		/// <returns></returns>
+		public bool AnyInRange(Position pos, int range)
+		{
+			Position intersection;
+			return
+				this.Find(new Position(pos.X - range, pos.Y), new Position(pos.X + range, pos.Y), out intersection) ||
+				this.Find(new Position(pos.X, pos.Y - range), new Position(pos.X, pos.Y + range), out intersection) ||
+				this.Find(new Position(pos.X - range, pos.Y - range), new Position(pos.X + range, pos.Y + range), out intersection) ||
+				this.Find(new Position(pos.X - range, pos.Y + range), new Position(pos.X + range, pos.Y - range), out intersection);
+		}
+
+		/// <summary>
 		/// Returns true if the path between from and to intersects with
 		/// anything and returns the intersection position via out.
 		/// </summary>
