@@ -114,9 +114,23 @@ public class EdernScript : NpcScript
 				break;
 
 			case "@upgrade":
-				Msg("Then give me the item to be modified.<br/>I ask this for your own good, but, while the weapons are not affected,<br/>armor that has been modified will be yours only. You know that, right?<br/>It won't fit anyone else.");
-				Msg("Unimplemented");
-				Msg("Then come back to me when you have something you want to modify.");
+				Msg(L("Then give me the item to be modified.<br/>I ask this for your own good, but, while the weapons are not affected,<br/>armor that has been modified will be yours only. You know that, right?<br/>It won't fit anyone else. <upgrade />"));
+
+				while (true)
+				{
+					var reply = await Select();
+
+					if (!reply.StartsWith("@upgrade:"))
+						break;
+
+					var result = Upgrade(reply);
+					if (result.Success)
+						Msg(L("It has been modified as you requested.<br/>Is there anything else you want to modify further?"));
+					else
+						Msg(L("(Error)"));
+				}
+
+				Msg(L("Then come back to me when you have something you want to modify.<br/><upgrade hide='true'/>"));
 				break;
 		}
 
