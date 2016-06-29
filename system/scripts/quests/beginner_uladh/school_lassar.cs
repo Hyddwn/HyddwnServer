@@ -216,11 +216,13 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 		switch (await npc.Select())
 		{
 			case "@reply1":
-				npc.Msg(L("(Missing dialog: Because it looks cool"));
+				npc.Msg(L("Haha. You are so funny.<br/>But magic is not for showing off."));
+				npc.Msg(L("Although, it does look cool, too."));
 				break;
 
 			case "@reply2":
-				npc.Msg(L("(Missing dialog: To help others"));
+				npc.Msg(L("That's great.<br/>You are a saint."));
+				npc.Msg(L("...<br/>But it's not good to lie."));
 				break;
 
 			case "@reply3":
@@ -229,7 +231,7 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply4":
-				npc.Msg(L("(Missing dialog: Because I have money to spend"));
+				npc.Msg(L("You do? Well, aren't you lucky? You and your extra money.Hmph."));
 				break;
 		}
 
@@ -274,11 +276,11 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply2":
-				npc.Msg(L("(Missing dialog: Male"));
+				npc.Msg(L("...<br/>Correct!<br/>We have something in common!"));
 				break;
 
 			case "@reply3":
-				npc.Msg(L("(Missing dialog: Female"));
+				npc.Msg(L("NOT!<br/>Please pay attention during class."));
 				break;
 		}
 
@@ -288,7 +290,8 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 		switch (await npc.Select())
 		{
 			case "@reply1":
-				npc.Msg(L("(Missing dialog: Red"));
+				npc.Msg(L("Haha. That's my favorite color.<br/>But red doesn't represent mana."));
+				npc.Msg(L("Red is for HP.<br/>You must have been way too nervous.<br/>Blue is the color for Mana."));
 				break;
 
 			case "@reply2":
@@ -296,7 +299,10 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply3":
-				npc.Msg(L("(Missing dialog: Yellow"));
+				npc.Msg(L("Umm... wrong.<br/>Yellow represents Stamina.<br/>You should know this..."));
+				npc.Msg(L("Are you color blind, by any chance? Yellow-blue color blind?<br/>Then my apologies. I picked the wrong question."));
+				npc.Msg(L("Mana graph is the middle one.<br/>If you learn magic with this in mind, you shouldn't have trouble learning it."));
+				npc.Msg(L("But if you are not color blind and picked this wrong answer,<br/>that is simply disappointing."));
 				break;
 		}
 
@@ -304,7 +310,8 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 		switch (await npc.Select())
 		{
 			case "@reply1":
-				npc.Msg(L("(Missing dialog: Drink MP Potion"));
+				npc.Msg(L("Hmm. I suppose I didn't mention this...<br/>You can recover Mana to a certain point<br/>by drinking MP Potion."));
+				npc.Msg(L("But you should be careful.<br/>Too much reliance on potions<br/>would eventually<br/>destroy your capability to control your body and Mana."));
 				break;
 
 			case "@reply2":
@@ -312,7 +319,7 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply3":
-				npc.Msg(L("(Missing dialog: Ask Manari"));
+				npc.Msg(L("Who is Manari?<br/>Now, that was a random answer..."));
 				break;
 		}
 
@@ -361,8 +368,8 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply2":
-				// Unofficial
-				npc.Msg(L("You should show some respect to your teacher.<br/>We are having a class after all..."));
+				npc.Msg(L("Sorry to hear that. But there is no refund.<br/>If you think it's unfair,<br/>I would recommend giving up on the magic class."));
+				npc.Msg(L("But you've already started - why don't you just give it a chance?"));
 				break;
 		}
 
@@ -410,11 +417,13 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply2":
-				npc.Msg(L("(Missing dialog: Icebolt"));
+				npc.Msg(L("Haha. You must have misunderstood me.<br/>That is what you've just learned."));
+				npc.Msg(L("All you can think about is Icebolt right now, isn't it?"));
 				break;
 
 			case "@reply3":
-				npc.Msg(L("(Missing dialog: Firebolt"));
+				npc.Msg(L("Wow! You are a fast learner!<br/>Great!"));
+				npc.Msg(L("...But don't tell me you've already learned firebolt."));
 				break;
 		}
 
@@ -422,15 +431,18 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 		switch (await npc.Select())
 		{
 			case "@reply1":
-				npc.Msg(L("(Missing dialog: Lightning"));
+				npc.Msg(L("Lightning belongs to the Elementals.<br/>If you picture a ball of lightning, it should be much easier to understand.<br/>Don't forget next time."));
+				npc.Msg(L("Lightning, Fire, and Ice belong to the elementals but Poison does not."));
 				break;
 
 			case "@reply2":
-				npc.Msg(L("(Missing dialog: Fire"));
+				npc.Msg(L("Lightning belongs to the Elementals.<br/>If you picture a ball of lightning, it should be much easier to understand.<br/>Don't forget next time."));
+				npc.Msg(L("Lightning, Fire, and Ice belong to the elementals but Poison does not."));
 				break;
 
 			case "@reply3":
-				npc.Msg(L("(Missing dialog: Ice"));
+				npc.Msg(L("Ice belongs to the elementals.<br/>If you picture ice, it should be much easier to understand.<br/>Don't forget next time."));
+				npc.Msg(L("Lightning, Fire, and Ice belong to the elementals but Poison does not."));
 				break;
 
 			case "@reply4":
@@ -465,7 +477,8 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 		switch (await npc.Select())
 		{
 			case "@reply1":
-				npc.Msg(L("(Missing dialog: The first shot"));
+				npc.Msg(L("Wrong! Wrong answer!<br/>All of the Icebolts in consecutive-casting cause the same amount of damage.<br/>If you had practiced Icebolt more, you might have gotten it right."));
+				npc.Msg(L("It seems to me that, instead of being trained in magic step by step,<br/>you are in a rush to use various spells.<br/>You'd better focus more on the training."));
 				break;
 
 			case "@reply2":
@@ -474,7 +487,8 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply3":
-				npc.Msg(L("(Missing dialog: The last shot"));
+				npc.Msg(L("Wrong.<br/>All of the icebolts in consecutive-casting cause the same amount of damage.<br/>If you had practiced icebolt more, you might have gotten it right."));
+				npc.Msg(L("It seems to me that, instead of being trained in magic step by step,<br/>you are in a rush to use various spells.<br/>You'd better focus more on the training."));
 				break;
 		}
 
@@ -554,7 +568,8 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 		switch (await npc.Select())
 		{
 			case "@reply1":
-				npc.Msg(L("(Missing dialog: 4"));
+				npc.Msg(L("Hmm. Have you even tried consecutive-casting?<br/>Five times is the limit."));
+				npc.Msg(L("That was an easy question.<br/>That's disappointing, <player name>."));
 				break;
 
 			case "@reply2":
@@ -562,11 +577,14 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply3":
-				npc.Msg(L("(Missing dialog: 6"));
+				npc.Msg(L("Wrong. Five times is the limit.<br/>You may cast magic beyond that,<br/>but it won't make any difference."));
+				npc.Msg(L("Hmm. If there is any difference,<br/>you might be taken to magic scholars<br/>to be dissected as a specimen."));
+				npc.Msg(L("Watch your back."));
 				break;
 
 			case "@reply4":
-				npc.Msg(L("(Missing dialog: 108"));
+				npc.Msg(L("What?? Wrong! Five times is the limit.<br/>Hmm. If there are any changes,<br/>you might be taken to magic scholars<br/>to be dissected as a specimen."));
+				npc.Msg(L("Watch your back."));
 				break;
 		}
 
@@ -579,15 +597,18 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply2":
-				npc.Msg(L("(Missing dialog: Sense"));
+				npc.Msg(L("Ha ha. Having some sense would be good.<br/>But I didn't mention sense<br/>during the previous class."));
+				npc.Msg(L("How can you give such an absent-minded answer<br/>in front of a beautiful lady like me?<br/>The answer is T.I.M.I.N.G! Don't forget."));
 				break;
 
 			case "@reply3":
-				npc.Msg(L("(Missing dialog: Mana"));
+				npc.Msg(L("Nope, that's incorrect.<br/>Mana is important for any magic,<br/>but it is not the most important factor<br/>in using the icebolt magic effectively..."));
+				npc.Msg(L("Timing is the most important thing<br/>in using the icebolt magic."));
 				break;
 
 			case "@reply4":
-				npc.Msg(L("(Missing dialog: Robe"));
+				npc.Msg(L("What a disappointing answer...<br/>A robe does make a wizard look cool,<br/>but it has nothing to do with the Icebolt magic.<br/>You should focus more on timing."));
+				npc.Msg(L("The strength of Icebolt<br/>which no other spell possesses<br/>is in the timing."));
 				break;
 		}
 
@@ -637,11 +658,14 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 				break;
 
 			case "@reply2":
-				npc.Msg(L("(Missing dialog: The Law of Marginal Mana Increase"));
+				npc.Msg(L("Increase. Oh, gosh.<br/>When casting ice elemental magic consecutively,<br/>the amount of mana required for each stage<br/>decreases gradually.<br/>So, not increase, but decrease is the right answer."));
+				npc.Msg(L("You probably confused it with the Law of Marginal Damage Increase."));
 				break;
 
 			case "@reply3":
-				npc.Msg(L("(Missing dialog: The Law of Marginal Mana Conservation"));
+				npc.Msg(L("Ha ha. You seem confused.<br/>Sorry, but incorrect."));
+				npc.Msg(L("When casting Ice Elemental magic consecutively,<br/>the amount of mana required for each stage<br/>decreases gradually.<br/>So, decrease is the right answer."));
+				npc.Msg(L("You probably confused it with the Law of Marginal Damage Conservation."));
 				break;
 		}
 
