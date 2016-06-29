@@ -68,9 +68,49 @@ public class EdernScript : NpcScript
 				return;
 
 			case "@repair":
-				Msg("If it's not urgent, would you mind talking to Elen?<br/>If it's something you particularly treasure, I can repair it myself.");
-				Msg("Unimplemented");
-				Msg("You can figure out a person by looking at his equipment.");
+				Msg(L("If it's not urgent, would you mind talking to Elen?<br/>If it's something you particularly treasure, I can repair it myself.<br/><repair rate='98' stringid='(*/smith_repairable/*)' />"));
+
+				while (true)
+				{
+					var repair = await Select();
+
+					if (!repair.StartsWith("@repair"))
+						break;
+
+					var result = Repair(repair, 98, "/smith_repairable/");
+					if (!result.HadGold)
+					{
+						RndMsg(
+							L("Before we start, do you have the Gold for it?"),
+							L("It's good that you cherish your equipment,<br/>but you should have at least prepared the fee!"),
+							L("The Gold you have isn't enough for the repair job.<br/>Bring more Gold.")
+						);
+					}
+					else if (result.Points == 1)
+					{
+						if (result.Fails == 0)
+							RndMsg(
+								L("I've finished repairing 1 point of Durability. It's been done well."),
+								L("There, 1 point of Durability has been repaired."),
+								L("I've repaired 1 point of Durability.")
+							);
+						else
+							Msg(L("(Missing dialog: Edern failing 1 point repair.)"));
+					}
+					else if (result.Points > 1)
+					{
+						if (result.Fails == 0)
+							RndMsg(
+								L("The repair has been perfect.<br/>There, are you satisfied?"),
+								L("I'm on a roll today!<br/>The repair has been very successful."),
+								L("There, the repair job is finished. It's perfect.")
+							);
+						else
+							Msg(string.Format(L("(Missing dialog: Edern failing multi point repair, fails: {0}, successes: {1}.)"), result.Fails, result.Successes));
+					}
+				}
+
+				Msg(L("You can figure out a person by looking at his equipment.<br/>Please do be careful with your equipment.<repair hide='true'/>"));
 				break;
 
 			case "@upgrade":
