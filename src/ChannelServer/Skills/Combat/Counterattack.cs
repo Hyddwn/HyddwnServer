@@ -10,6 +10,7 @@ using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
+using System.Collections.Generic;
 
 namespace Aura.Channel.Skills.Combat
 {
@@ -151,6 +152,23 @@ namespace Aura.Channel.Skills.Combat
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// Returns true if a target had counter active and used it.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <param name="attacker"></param>
+		/// <returns></returns>
+		public static bool Handle(ICollection<Creature> targets, Creature attacker)
+		{
+			foreach (var target in targets)
+			{
+				if (Handle(target, attacker))
+					return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>

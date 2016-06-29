@@ -2745,6 +2745,40 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns targetable creatures in cone, based on creature's
+		/// position and direction.
+		/// Optionally factors in attack range.
+		/// </summary>
+		/// <param name="radius">Cone's radius.</param>
+		/// <param name="angle">Cone's angle.</param>
+		/// <param name="options">Options to change the result.</param>
+		/// <returns></returns>
+		public ICollection<Creature> GetTargetableCreaturesInCone(float radius, float angle, TargetableOptions options = TargetableOptions.None)
+		{
+			var position = this.GetPosition();
+			var targetable = this.Region.GetCreatures(target =>
+			{
+				var targetPos = target.GetPosition();
+				if ((options & TargetableOptions.AddAttackRange) != 0)
+				{
+					// This is unofficial, the target's "hitbox" should be
+					// factored in, but the total attack range is too much.
+					// Using 50% for now until we know more.
+					radius += this.AttackRangeFor(target) / 2;
+				}
+
+				return target != this // Exclude creature
+					&& this.CanTarget(target) // Check targetability
+					&& ((!this.Has(CreatureStates.Npc) || !target.Has(CreatureStates.Npc)) || this.Target == target) // Allow NPC on NPC only if it's the creature's target
+					&& targetPos.InCone(position, MabiMath.ByteToRadian(this.Direction), (int)radius, angle) // Check position
+					&& (((options & TargetableOptions.IgnoreWalls) != 0) || !this.Region.Collisions.Any(position, targetPos)) // Check collisions between positions
+					&& !target.Conditions.Has(ConditionsA.Invisible); // Check visiblility (GM)
+			});
+
+			return targetable;
+		}
+
+		/// <summary>
 		/// Aggroes target, setting target and putting creature in battle stance.
 		/// </summary>
 		/// <param name="creature"></param>
