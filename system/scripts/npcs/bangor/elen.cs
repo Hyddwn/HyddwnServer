@@ -65,9 +65,49 @@ public class ElenScript : NpcScript
 				return;
 
 			case "@repair":
-				Msg("Is there something you want to repair?<br/>I'm far from being as good as my grandpa,<br/>but I am a blacksmith myself, so I'll do my best to live up to the title.");
-				Msg("Unimplemented");
-				Msg("If you don't trust me, talk to grandpa.<br/>He's the best blacksmith in town.");
+				Msg(L("Is there something you want to repair?<br/>I'm far from being as good as my grandpa,<br/>but I am a blacksmith myself, so I'll do my best to live up to the title.<repair rate='90' stringid='(*/smith_repairable/*)' />"));
+
+				while (true)
+				{
+					var repair = await Select();
+
+					if (!repair.StartsWith("@repair"))
+						break;
+
+					var result = Repair(repair, 90, "/smith_repairable/");
+					if (!result.HadGold)
+					{
+						RndMsg(
+							L("Do you have the Gold for it?<br/>I can't do it for free with my grandpa watching."),
+							L("I don't know...<br/>Do you have the Gold for it?"),
+							L("Do you have the repair fee?")
+						);
+					}
+					else if (result.Points == 1)
+					{
+						if (result.Fails == 0)
+							RndMsg(
+								L("Repair is finished for 1 point."),
+								L("1 point has been successfully repaired."),
+								L("1 Durability point has been repaired.")
+							);
+						else
+							Msg(L("(Missing dialog: Elen failing 1 point repair.)"));
+					}
+					else if (result.Points > 1)
+					{
+						if (result.Fails == 0)
+							RndMsg(
+								L("It's been completely repaired.<br/>Perhaps this would impress my grandpa."),
+								L("The repair is perfect."),
+								L("The repair work is completely done!")
+							);
+						else
+							Msg(string.Format(L("(Missing dialog: Elen failing multi point repair, fails: {0}, successes: {1}.)"), result.Fails, result.Successes));
+					}
+				}
+
+				Msg(L("If you don't trust me, talk to grandpa.<br/>He's the best blacksmith in town.<repair hide='true'/>"));
 				break;
 
 			case "@upgrade":

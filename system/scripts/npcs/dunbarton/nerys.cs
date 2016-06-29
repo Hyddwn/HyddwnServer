@@ -101,7 +101,7 @@ public class NerysScript : NpcScript
 								"There! Perfectly repaired!",
 								"It's as good as new.",
 								"Alright! It's been nicely repaired."
-						);
+							);
 						else
 							// TODO: Use string format once we have XML dialogues.
 							Msg("There, it's done.<br/>But I made " + result.Fails + " mistake(s), unfortunately.<br/>I could restore only " + result.Successes + " point(s).");
