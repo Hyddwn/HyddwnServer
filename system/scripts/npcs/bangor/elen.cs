@@ -111,9 +111,23 @@ public class ElenScript : NpcScript
 				break;
 
 			case "@upgrade":
-				Msg("Mmm? You are asking me for an item modification?<br/>Ha ha. If you are, <username/>,<br/>I'll do it just for you!<br/>You know that armor can't be worn by anyone else once it's modified, right?");
-				Msg("Unimplemented");
-				Msg("Then, can I get back to my other tasks?<br/>Just let me know if you have something else to modify.");
+				Msg(L("Mmm? You are asking me for an item modification?<br/>Ha ha. If you are, <username/>,<br/>I'll do it just for you!<br/>You know that armor can't be worn by anyone else once it's modified, right?<upgrade />"));
+
+				while (true)
+				{
+					var reply = await Select();
+
+					if (!reply.StartsWith("@upgrade:"))
+						break;
+
+					var result = Upgrade(reply);
+					if (result.Success)
+						Msg(L("Ta-da! The modification was successful! How about that? Are you impressed? Cool!<br/>Anything else you want to modify?"));
+					else
+						Msg(L("(Error)"));
+				}
+
+				Msg(L("Then, can I get back to my other tasks?<br/>Just let me know if you have something else to modify.<br/><upgrade hide='true'/>"));
 				break;
 		}
 
