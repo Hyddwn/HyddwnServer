@@ -4,7 +4,7 @@
 // Mill Operator
 //---------------------------------------------------------------------------
 
-public class AlissaBaseScript : NpcScript
+public class AlissaScript : NpcScript
 {
 	const string WindmillPropName = "Uladh_main/town_TirChonaill/windmill_tircho";
 
@@ -21,6 +21,7 @@ public class AlissaBaseScript : NpcScript
 		SetFace(skinColor: 19, eyeType: 10, eyeColor: 148, mouthType: 2);
 		SetStand("human/female/anim/female_natural_stand_npc_alissa");
 		SetLocation(1, 15765, 31015, 120);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 3900, 0x00596131, 0x00FFEEC6, 0x006F0017);
 		EquipItem(Pocket.Hair, 3143, 0x00D57527, 0x00D57527, 0x00D57527);
@@ -28,9 +29,11 @@ public class AlissaBaseScript : NpcScript
 		EquipItem(Pocket.Shoe, 17012, 0x00693F1E, 0x00000000, 0x00000000);
 		EquipItem(Pocket.Head, 18406, 0x00DECDB0, 0x00000000, 0x00000000);
 
-		AddGreeting(0, "Hello, we haven't met. My name is Alissa. Your name is <username/>, right?<br/>How did I know?<br/>Haha, it's written above your head. Don't tell me you don't see it?");
+		AddGreeting(0, "Hello, we haven't met. My name is <npcname/>. Your name is <username/>, right?<br/>How did I know?<br/>Haha, it's written above your head. Don't tell me you don't see it?");
 		AddGreeting(1, "Hey, you're back. Hmm...wasn't your name different last time?<br/>Maybe I saw it wrong.");
-		//AddGreeting(2, "You come here pretty often.<br/>It's 'cause you like me huh? Hehe!"); // Not sure if this is 2
+		AddGreeting(2, "I've missed you...hehe. If you have nothing to do, chat with me!");
+		AddGreeting(6, "You come here pretty often.<br/>It's 'cause you like me huh? Hehe!");
+		AddGreeting(7, "Hey. It's <username/>! Let's play. Please?");
 
 		AddPhrase("Hmm... Ferghus must have made another mistake.");
 		AddPhrase("How are you going to make flour without any wheat?");
@@ -48,12 +51,7 @@ public class AlissaBaseScript : NpcScript
 	{
 		SetBgm("NPC_Alissa.mp3");
 
-		await Intro(
-			"A young girl stands with her hands on her hips like she's a person of great importance.",
-			"She wears a worn out hat that frames her soft hair, round face, and button nose.",
-			"As she stands there, you notice that her apron is actually too big and she's discreetly trying to keep it from slipping.",
-			"In spite of all that, her cherry eyes sparkle with curiosity."
-		);
+		await Intro(L("A young girl stands with her hands on her hips like she's a person of great importance.<br/>She wears a worn out hat that frames her soft hair, round face, and button nose.<br/>As she stands there, you notice that her apron is actually too big and she's discreetly trying to keep it from slipping.<br/>In spite of all that, her cherry eyes sparkle with curiosity."));
 
 		Msg("So, what can I do for you?", Button("Start a Conversation", "@talk"), Button("Operate the Windmill", "@windmill"));
 
@@ -83,8 +81,16 @@ public class AlissaBaseScript : NpcScript
 					}
 				}
 
-				if (Title == 11002)
+				if (Title == 11001)
+				{
+					Msg("You rescued the Goddess?<br/>You?");
+					Msg("Umm... Well, I guess I'll have to take your word for it.<br/>So then, can you say that our world has become a paradise?");
+					Msg("Well, will I still need to look after my big sister in this paradise?<br/>Oh... I see... Right. Paradox. It's a paradox.");
+				}
+				else if (Title == 11002)
+				{
 					Msg("Huh? <username/>...<br/>You're the Guardian of Erinn?<br/>When did this happen...?<br/>Even I can see that there's something different about you.");
+				}
 
 				await Conversation();
 				break;
@@ -124,14 +130,14 @@ public class AlissaBaseScript : NpcScript
 		{
 			case "personal_info":
 				GiveKeyword("school");
-				Msg("My name? I am Alissa.<br/>I work here at the mill, helping around with chores.<br/>Have you seen my sister? She's at the School.<br/>If you happen to go there, go inside the left building.<br/>She'll be in the magic class.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg("My name? I am <npcname/>.<br/>I work here at the mill, helping around with chores.<br/>Have you seen my sister? She's at the School.<br/>If you happen to go there, go inside the left building.<br/>She'll be in the magic class.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				GiveKeyword("shop_smith");
 				Msg("Ferghus?<br/>I don't know if he's a good blacksmith, but he's a nice person.<br/>Usually, when you ask him a question, he kindly answers everything...<br/>Go find out for yourself.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -179,6 +185,7 @@ public class AlissaBaseScript : NpcScript
 				break;
 
 			case "skill_instrument":
+				GiveKeyword("lute");
 				Msg("You can practice if you have a lute.<br/>Were you planning to learn the skill without an instrument?");
 				break;
 
@@ -243,7 +250,7 @@ public class AlissaBaseScript : NpcScript
 				break;
 
 			case "skill_windmill":
-				Msg("You can't just operate a windmill.<br/>You need skills. Someone who really knows how. Hehe...<br/>Maybe...someone by the name of Alissa?<br/>If you see someone saying they want to learn the Windmill skill,<br/>bring them to me! I'll show them!");
+				Msg("You can't just operate a windmill.<br/>You need skills. Someone who really knows how. Hehe...<br/>Maybe...someone by the name of <npcname/>?<br/>If you see someone saying they want to learn the Windmill skill,<br/>bring them to me! I'll show them!");
 				break;
 
 			case "skill_campfire":
@@ -264,6 +271,7 @@ public class AlissaBaseScript : NpcScript
 				break;
 
 			case "shop_bookstore":
+				GiveKeyword("school");
 				Msg("The Bookstore? Ah, you're looking for a place to buy books?<br/>Well, I don't know if we have one in town.<br/>My sister sells some books at the School...<br/>But it's not exactly a bookstore...");
 				break;
 
@@ -279,6 +287,33 @@ public class AlissaBaseScript : NpcScript
 				Msg("Fishing?<br/>Umm... People around here fish at the Reservoir over there.<br/>I went up there with Deian before. He said he'd show me how to fish,<br/>but he always caught some weird things instead.<br/>...I don't know. He doesn't seem to be able to do anything right.");
 				break;
 
+			case "bow":
+				Msg("You should ask Ferghus those questions, not me.");
+				break;
+
+			case "lute":
+				Msg("I think Malcolm sells lutes!<br/>But, I've never seen him play one.<br/>He would be so popular with the girls if he did.");
+				break;
+
+			case "complicity":
+				Msg("Hmm... Do you mean the Windmill blades?<br/>Probably not, right?");
+				break;
+
+			case "tir_na_nog":
+				GiveKeyword("temple");
+				Msg("Tir Na Nog? I remember Endelyon talked to me about that place before...<br/>If I remember correctly, she said it's a place of eternal happiness and life.<br/>If you want to know more about it, you should go to Church.");
+				Msg("It's not that far from here. Just go around the farmland, and it should be right there.");
+				break;
+
+			case "mabinogi":
+				Msg("Mabi... nogi? Yes, my grandma used to tell me stories about that.<br/>I remember she used to say Mabinogi ends right here.");
+				Msg("I thought it was just an old bedtime story...<br/>Guess I was wrong.");
+				break;
+
+			case "musicsheet":
+				Msg("I heard you need it in order to compose.<br/>But I don't really know much about it. Maybe someone who has all the time in the world would...");
+				break;
+
 			default:
 				RndMsg(
 					"You're not testing me, are you?",
@@ -288,7 +323,7 @@ public class AlissaBaseScript : NpcScript
 					"Eh... It feels like you're treating me like a child.",
 					"Hmm... I think Ferghus would be able to explain it better. He's across the stream."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
