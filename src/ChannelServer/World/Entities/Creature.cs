@@ -2755,6 +2755,9 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public ICollection<Creature> GetTargetableCreaturesInCone(float radius, float angle, TargetableOptions options = TargetableOptions.None)
 		{
+			if (radius == 0 || angle == 0)
+				return new Creature[0];
+
 			var position = this.GetPosition();
 			var targetable = this.Region.GetCreatures(target =>
 			{
@@ -3332,6 +3335,69 @@ namespace Aura.Channel.World.Entities
 				cost *= (100 - mod) / 100f;
 
 			return cost;
+		}
+
+		/// <summary>
+		/// Returns creature's splash radius, based on equipment.
+		/// </summary>
+		public float GetTotalSplashRadius()
+		{
+			var result = 0f;
+
+			if (this.RightHand != null)
+			{
+				result = this.RightHand.Data.SplashRadius;
+
+				if (this.LeftHand != null && this.LeftHand.HasTag("/weapon/"))
+				{
+					result += this.LeftHand.Data.SplashRadius;
+					result /= 2;
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature's splash angle, based on equipment.
+		/// </summary>
+		public float GetTotalSplashAngle()
+		{
+			var result = 0f;
+
+			if (this.RightHand != null)
+			{
+				result = this.RightHand.Data.SplashAngle;
+
+				if (this.LeftHand != null && this.LeftHand.HasTag("/weapon/"))
+				{
+					result += this.LeftHand.Data.SplashAngle;
+					result /= 2;
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature's splash damage, based on equipment.
+		/// </summary>
+		public float GetTotalSplashDamage()
+		{
+			var result = 0f;
+
+			if (this.RightHand != null)
+			{
+				result = this.RightHand.Data.SplashDamage;
+
+				if (this.LeftHand != null && this.LeftHand.HasTag("/weapon/"))
+				{
+					result += this.LeftHand.Data.SplashDamage;
+					result /= 2;
+				}
+			}
+
+			return result;
 		}
 	}
 

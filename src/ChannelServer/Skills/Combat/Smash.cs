@@ -121,7 +121,7 @@ namespace Aura.Channel.Skills.Combat
 			// which is the splash damage and first != 0 on r5.
 			var targets = new HashSet<Creature>() { mainTarget };
 			if (skill.RankData.Var3 != 0)
-				targets.UnionWith(attacker.GetTargetableCreaturesInCone(250, 60));
+				targets.UnionWith(attacker.GetTargetableCreaturesInCone(attacker.GetTotalSplashRadius(), attacker.GetTotalSplashAngle()));
 
 			// Counter
 			if (Counterattack.Handle(targets, attacker))
