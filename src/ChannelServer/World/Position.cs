@@ -222,10 +222,10 @@ namespace Aura.Channel.World
 		/// </summary>
 		/// <param name="otherPos"></param>
 		/// <returns></returns>
-		public double GetDirection(Position otherPos)
+		public float GetDirection(Position otherPos)
 		{
 			var direction = Math.Atan2(otherPos.Y - Y, otherPos.X - X);
-			return direction;
+			return (float)direction;
 		}
 
 		public static bool operator ==(Position pos1, Position pos2)

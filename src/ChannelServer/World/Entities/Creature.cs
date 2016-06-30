@@ -2745,23 +2745,56 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
-		/// Returns targetable creatures in cone, based on creature's
-		/// position and direction.
-		/// Optionally factors in attack range.
+		/// Returns targetable creatures in cone, based on the
+		/// given parameters, with direction of cone being based on the
+		/// creature's and the target's position.
 		/// </summary>
+		/// <param name="position">Pointy end of the cone.</param>
+		/// <param name="targetPosition">Target's position, used as reference for the direction of the cone.</param>
 		/// <param name="radius">Cone's radius.</param>
 		/// <param name="angle">Cone's angle in degree.</param>
 		/// <param name="options">Options to change the result.</param>
 		/// <returns></returns>
 		public ICollection<Creature> GetTargetableCreaturesInCone(Position targetPosition, float radius, float angle, TargetableOptions options = TargetableOptions.None)
 		{
+			var position = this.GetPosition();
+			var direction = position.GetDirection(targetPosition);
+			return this.GetTargetableCreaturesInCone(position, direction, radius, angle, options);
+		}
+
+		/// <summary>
+		/// Returns targetable creatures in cone, based on the
+		/// given parameters, with direction of cone being based on the
+		/// given positions.
+		/// </summary>
+		/// <param name="position">Pointy end of the cone.</param>
+		/// <param name="targetPosition">Target's position, used as reference for the direction of the cone.</param>
+		/// <param name="radius">Cone's radius.</param>
+		/// <param name="angle">Cone's angle in degree.</param>
+		/// <param name="options">Options to change the result.</param>
+		/// <returns></returns>
+		public ICollection<Creature> GetTargetableCreaturesInCone(Position position, Position targetPosition, float radius, float angle, TargetableOptions options = TargetableOptions.None)
+		{
+			var direction = position.GetDirection(targetPosition);
+			return this.GetTargetableCreaturesInCone(position, direction, radius, angle, options);
+		}
+
+		/// <summary>
+		/// Returns targetable creatures in cone, based on the
+		/// given parameters.
+		/// </summary>
+		/// <param name="position">Pointy end of the cone.</param>
+		/// <param name="direction">Cone's direction as radian.</param>
+		/// <param name="radius">Cone's radius.</param>
+		/// <param name="angle">Cone's angle in degree.</param>
+		/// <param name="options">Options to change the result.</param>
+		/// <returns></returns>
+		public ICollection<Creature> GetTargetableCreaturesInCone(Position position, float direction, float radius, float angle, TargetableOptions options = TargetableOptions.None)
+		{
 			if (radius == 0 || angle == 0)
 				return new Creature[0];
 
 			angle = MabiMath.DegreeToRadian((int)angle);
-
-			var position = this.GetPosition();
-			var direction = position.GetDirection(targetPosition);
 
 			var targetable = this.Region.GetCreatures(target =>
 			{
