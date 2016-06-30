@@ -4,7 +4,7 @@
 // Grocer - manages the Tir Chonaill grocery shop
 //---------------------------------------------------------------------------
 
-public class CaitinBaseScript : NpcScript
+public class CaitinScript : NpcScript
 {
 	public override void Load()
 	{
@@ -14,6 +14,7 @@ public class CaitinBaseScript : NpcScript
 		SetFace(skinColor: 15, eyeType: 82, eyeColor: 27, mouthType: 43);
 		SetStand("human/female/anim/female_natural_stand_npc_Caitin_new");
 		SetLocation(5, 1831, 1801, 59);
+		SetGiftWeights(beauty: 0, individuality: 0, luxury: 1, toughness: -1, utility: 0, rarity: 2, meaning: 1, adult: 0, maniac: 2, anime: 0, sexy: 0);
 
 		EquipItem(Pocket.Face, 3900, 0x00F3B14E, 0x00FBB8AC, 0x00BF921E);
 		EquipItem(Pocket.Hair, 3142, 0x00723A2B, 0x00723A2B, 0x00723A2B);
@@ -22,7 +23,9 @@ public class CaitinBaseScript : NpcScript
 
 		AddGreeting(0, "I think this is the first time we've met. Nice to meet you!");
 		AddGreeting(1, "We've met before, right? Nice to meet you.");
-		//AddGreeting(2, "Good to see you again, <username/>."); // Not 100% sure
+		AddGreeting(2, "It's nice to meet you, <username/>.");
+		AddGreeting(6, "Good to see you again, <username/>.");
+		AddGreeting(7, "We've been seeing each other a lot lately, haven't we, <username/>?");
 
 		AddPhrase("*Yawn*");
 		AddPhrase("Hmm... Sales are low today... That isn't good.");
@@ -36,11 +39,7 @@ public class CaitinBaseScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		await Intro(
-			"A young lady pouring flour into a bowl smiles at you as you enter.",
-			"Her round face is adorably plump and her eyes shine brightly.",
-			"As she wipes her hands and walks toward you, you detect the faint scent of cookie dough and flowers."
-		);
+		await Intro(L("A young lady pouring flour into a bowl smiles at you as you enter.<br/>Her round face is adorably plump and her eyes shine brightly.<br/>As she wipes her hands and walks toward you, you detect the faint scent of cookie dough and flowers."));
 
 		Msg("What can I do for you?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 
@@ -66,8 +65,11 @@ public class CaitinBaseScript : NpcScript
 						Msg(L("Would you like to have a taste of this?<br/>It's nothing special...but I made it myself."));
 					}
 				}
-
-				if (Title == 11002)
+				else if (Title == 11001)
+				{
+					Msg("Poor you...<br/>How many old tales did you have to read to make something like that up?<br/>You know I'll give you a part-time job if I can.<br/>Why don't you put on the part-timer title instead?<br/>It actually pays pretty well!");
+				}
+				else if (Title == 11002)
 				{
 					Msg("Wow. You're the Guardian of Erinn? My, what an honor!<br/>I still remember the first day you came here...<br/>Feels just like yesterday!<br/>People will remember your name years to come...");
 				}
@@ -93,13 +95,13 @@ public class CaitinBaseScript : NpcScript
 				Msg("My grandmother named me.<br/>I work here at the Grocery Store, so I know one important thing.<br/>You have to eat to survive!<br/>Food helps you regain your Stamina.");
 				Msg("That doesn't mean you can eat just anything.<br/>You shouldn't have too much greasy food<br/>because you could gain a lot of weight.");
 				Msg("Huh? You have food with you but don't know how to eat it?<br/>Okay, open the Inventory and right-click on the food.<br/>Then, click \"Use\" to eat.<br/>If you have bread in your Inventory, and your Stamina is low,<br/>try eating it now.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				GiveKeyword("brook");
 				Msg("Do you know anything about the Adelia Stream?<br/>The river near the Windmill is the Adelia Stream.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -163,6 +165,7 @@ public class CaitinBaseScript : NpcScript
 				break;
 
 			case "skill_instrument":
+				GiveKeyword("temple");
 				Msg("Playing an instrument?<br/>I saw Priestess Endelyon play an organ at the Church before.<br/>Why don't you go and talk to her?");
 				break;
 
@@ -266,8 +269,27 @@ public class CaitinBaseScript : NpcScript
 				Msg("Oh, fishing?<br/>The fish you catch can be sold in stores.<br/>Even it doesn't go well,<br/>you ought to be able to earn enough to pay for the bait at least.");
 				break;
 
+			case "bow":
+				GiveKeyword("shop_smith");
+				Msg("I saw Ferghus making bows at his Blacksmith's Shop<br/>I think he's selling them...<br/>Bows make me nervous because I don't like the thought<br/>of someone pointing one at me...");
+				break;
+
 			case "lute":
+				GiveKeyword("shop_misc");
 				Msg("Lute...? Do you mean that small stringed instrument?<br/>I saw Malcolm selling them at the General Shop.<br/>If you plan to buy one, the General Shop is the place to go.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Hmm...my grandma once told me a story when I was a little kid.<br/>She said there is a world where the gods live,<br/>a paradise ordinary people like you and I cannot enter.<br/>That place is called Tir Na Nog...<br/>I don't know much about it though, since I've never been, obviously.");
+				break;
+
+			case "mabinogi":
+				Msg("My grandmother used to tell me<br/>many stories when I was young.<br/>Later I found out that these stories<br/>are also known as Mabinogi.");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("A Music Score?<br/>You can find Music Scores at Malcolm's General Shop.<br/>Have you ever been there?");
 				break;
 
 			default:
@@ -278,7 +300,7 @@ public class CaitinBaseScript : NpcScript
 					"Well, I really don't know.",
 					"Did you ask everyone else the same question?"
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
