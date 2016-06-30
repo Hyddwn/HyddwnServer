@@ -3385,7 +3385,7 @@ namespace Aura.Channel.World.Entities
 			{
 				result = this.RightHand.Data.SplashRadius;
 
-				if (this.LeftHand != null && this.LeftHand.HasTag("/weapon/"))
+				if (this.LeftHand != null && !this.LeftHand.IsShieldLike)
 				{
 					result += this.LeftHand.Data.SplashRadius;
 					result /= 2;
@@ -3406,7 +3406,7 @@ namespace Aura.Channel.World.Entities
 			{
 				result = this.RightHand.Data.SplashAngle;
 
-				if (this.LeftHand != null && this.LeftHand.HasTag("/weapon/"))
+				if (this.LeftHand != null && !this.LeftHand.IsShieldLike)
 				{
 					result += this.LeftHand.Data.SplashAngle;
 					result /= 2;
@@ -3427,7 +3427,7 @@ namespace Aura.Channel.World.Entities
 			{
 				result = this.RightHand.Data.SplashDamage;
 
-				if (this.LeftHand != null && this.LeftHand.HasTag("/weapon/"))
+				if (this.LeftHand != null && !this.LeftHand.IsShieldLike)
 				{
 					result += this.LeftHand.Data.SplashDamage;
 					result /= 2;
@@ -3444,7 +3444,7 @@ namespace Aura.Channel.World.Entities
 		{
 			var result = 0f;
 
-			if (item != null && item.HasTag("/weapon/"))
+			if (item != null)
 				result = item.Data.SplashRadius;
 
 			return result;
@@ -3457,7 +3457,7 @@ namespace Aura.Channel.World.Entities
 		{
 			var result = 0f;
 
-			if (item != null && item.HasTag("/weapon/"))
+			if (item != null)
 				result = item.Data.SplashAngle;
 
 			return result;
@@ -3470,7 +3470,7 @@ namespace Aura.Channel.World.Entities
 		{
 			var result = 0f;
 
-			if (item != null && item.HasTag("/weapon/"))
+			if (item != null)
 				result = item.Data.SplashDamage;
 
 			return result;
