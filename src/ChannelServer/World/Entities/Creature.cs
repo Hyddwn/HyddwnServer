@@ -3436,6 +3436,45 @@ namespace Aura.Channel.World.Entities
 
 			return result;
 		}
+
+		/// <summary>
+		/// Returns creature's splash radius, based on given weapon.
+		/// </summary>
+		public float GetSplashRadius(Item item)
+		{
+			var result = 0f;
+
+			if (item != null && item.HasTag("/weapon/"))
+				result = item.Data.SplashRadius;
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature's splash angle, based on given weapon.
+		/// </summary>
+		public float GetSplashAngle(Item item)
+		{
+			var result = 0f;
+
+			if (item != null && item.HasTag("/weapon/"))
+				result = item.Data.SplashAngle;
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature's splash damage, based on given weapon.
+		/// </summary>
+		public float GetSplashDamage(Item item)
+		{
+			var result = 0f;
+
+			if (item != null && item.HasTag("/weapon/"))
+				result = item.Data.SplashDamage;
+
+			return result;
+		}
 	}
 
 	public enum TargetableOptions
