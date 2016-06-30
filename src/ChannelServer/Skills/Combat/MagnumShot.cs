@@ -8,6 +8,7 @@ using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Util;
+using System.Collections.Generic;
 
 namespace Aura.Channel.Skills.Combat
 {
@@ -17,8 +18,8 @@ namespace Aura.Channel.Skills.Combat
 	/// <remarks>
 	/// Var1: Damage
 	/// Var4: Splash Damage
-	/// Var5: Splash Distance
-	/// Var6: ?
+	/// Var5: Splash Distance (Radius?)
+	/// Var6: Splash Angle?
 	/// </remarks>
 	[Skill(SkillId.MagnumShot)]
 	public class MagnumShot : ISkillHandler, IPreparable, IReadyable, ICompletable, ICancelable, ICombatSkill,
@@ -130,8 +131,8 @@ namespace Aura.Channel.Skills.Combat
 		public CombatSkillResult Use(Creature attacker, Skill skill, long targetEntityId)
 		{
 			// Get target
-			var target = attacker.Region.GetCreature(targetEntityId);
-			if (target == null)
+			var mainTarget = attacker.Region.GetCreature(targetEntityId);
+			if (mainTarget == null)
 				return CombatSkillResult.InvalidTarget;
 
 			// Actions
@@ -143,70 +144,89 @@ namespace Aura.Channel.Skills.Combat
 			cap.Add(aAction);
 
 			// Hit by chance
-			var chance = attacker.AimMeter.GetAimChance(target);
+			var chance = attacker.AimMeter.GetAimChance(mainTarget);
 			var rnd = RandomProvider.Get();
 			if (rnd.NextDouble() * 100 < chance)
 			{
-				target.StopMove();
-
 				aAction.Set(AttackerOptions.KnockBackHit2);
 
-				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-				tAction.Set(TargetOptions.Result | TargetOptions.CleanHit);
-				tAction.Stun = TargetStun;
-				cap.Add(tAction);
-
-				// TODO: Splash damage
+				// Get targets, incl. splash.
+				// Splash happens from r5 onwards, but we'll base it on Var4,
+				// which is the splash damage and first != 0 on r5.
+				var targets = new HashSet<Creature>() { mainTarget };
+				if (skill.RankData.Var4 != 0)
+				{
+					var targetPosition = mainTarget.GetPosition();
+					var direction = attacker.GetPosition().GetDirection(targetPosition);
+					targets.UnionWith(attacker.GetTargetableCreaturesInCone(targetPosition, direction, skill.RankData.Var5, skill.RankData.Var6));
+				}
 
 				// Damage
-				var damage = this.GetDamage(attacker, skill);
+				var mainDamage = this.GetDamage(attacker, skill);
 
-				// Elementals
-				damage *= attacker.CalculateElementalDamageMultiplier(target);
-
-				// More damage with fire arrow
-				// XXX: Does this affect the element?
-				if (attacker.Temp.FireArrow)
-					damage *= FireBonus;
-
-				// Critical Hit
-				var critChance = attacker.GetRightCritChance(target.Protection);
-				CriticalHit.Handle(attacker, critChance, ref damage, tAction);
-
-				// Subtract target def/prot
-				SkillHelper.HandleDefenseProtection(target, ref damage);
-
-				// Mana Shield
-				ManaShield.Handle(target, ref damage, tAction);
-
-				// Natural Shield
-				// Ignore delay reduction, as knock downs shouldn't be shortened
-				NaturalShield.Handle(attacker, target, ref damage, tAction);
-
-				// Deal with it!
-				if (damage > 0)
+				foreach (var target in targets)
 				{
-					target.TakeDamage(tAction.Damage = damage, attacker);
-					SkillHelper.HandleInjury(attacker, target, damage);
-				}
+					var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
+					tAction.Set(TargetOptions.Result | TargetOptions.CleanHit);
+					tAction.Stun = TargetStun;
+					cap.Add(tAction);
 
-				// Knock down
-				// If target is using a shield and defense, don't KD.
-				var targetLeftHand = target.LeftHand;
-				if (tAction.SkillId != SkillId.Defense || targetLeftHand == null || !targetLeftHand.IsShield)
-				{
-					// TODO: We have to calculate knockback distance right
-					attacker.Shove(target, KnockBackDistance);
-					tAction.Set(TargetOptions.KnockDownFinish);
-				}
+					// Damage
+					var damage = mainDamage;
 
-				// Aggro
-				target.Aggro(attacker);
+					// Elementals
+					damage *= attacker.CalculateElementalDamageMultiplier(target);
 
-				if (target.IsDead)
-				{
-					aAction.Set(AttackerOptions.KnockBackHit1);
-					tAction.Set(TargetOptions.Finished);
+					// More damage with fire arrow
+					// XXX: Does this affect the element?
+					if (attacker.Temp.FireArrow)
+						damage *= FireBonus;
+
+					// Splash modifier
+					if (target != mainTarget)
+						damage *= (skill.RankData.Var4 / 100f);
+
+					// Critical Hit
+					var critChance = attacker.GetRightCritChance(target.Protection);
+					CriticalHit.Handle(attacker, critChance, ref damage, tAction);
+
+					// Subtract target def/prot
+					SkillHelper.HandleDefenseProtection(target, ref damage);
+
+					// Mana Shield
+					ManaShield.Handle(target, ref damage, tAction);
+
+					// Natural Shield
+					// Ignore delay reduction, as knock downs shouldn't be shortened
+					NaturalShield.Handle(attacker, target, ref damage, tAction);
+
+					// Deal with it!
+					if (damage > 0)
+					{
+						target.TakeDamage(tAction.Damage = damage, attacker);
+						SkillHelper.HandleInjury(attacker, target, damage);
+					}
+
+					// Knock down
+					// If target is using a shield and defense, don't KD.
+					var targetLeftHand = target.LeftHand;
+					if (tAction.SkillId != SkillId.Defense || targetLeftHand == null || !targetLeftHand.IsShield)
+					{
+						// TODO: We have to calculate knockback distance right
+						attacker.Shove(target, KnockBackDistance);
+						tAction.Set(TargetOptions.KnockDownFinish);
+					}
+
+					// Aggro
+					if (target == mainTarget)
+						target.Aggro(attacker);
+
+					if (target.IsDead)
+					{
+						tAction.Set(TargetOptions.Finished);
+						if (target == mainTarget)
+							aAction.Set(AttackerOptions.KnockBackHit1);
+					}
 				}
 			}
 			else
@@ -215,7 +235,7 @@ namespace Aura.Channel.Skills.Combat
 			}
 
 			// Update current weapon
-			SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Ranged, attacker.RightHand);
+			SkillHelper.UpdateWeapon(attacker, mainTarget, ProficiencyGainType.Ranged, attacker.RightHand);
 
 			// Reduce arrows
 			if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows && !attacker.Magazine.HasTag("/unlimited_arrow/"))

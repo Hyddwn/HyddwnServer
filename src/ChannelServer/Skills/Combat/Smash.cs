@@ -19,6 +19,15 @@ using System.Threading.Tasks;
 
 namespace Aura.Channel.Skills.Combat
 {
+	/// <summary>
+	/// Smash skill handler.
+	/// </summary>
+	/// <remarks>
+	/// Var1: Damage
+	/// Var2: ? (0, not used?)
+	/// Var3: Critical Success (0, not used?)
+	/// Var4: Splash Damage
+	/// </remarks>
 	[Skill(SkillId.Smash)]
 	public class Smash : CombatSkillHandler, IInitiableSkillHandler
 	{
@@ -94,77 +103,99 @@ namespace Aura.Channel.Skills.Combat
 		public override CombatSkillResult Use(Creature attacker, Skill skill, long targetEntityId)
 		{
 			// Check target
-			var target = attacker.Region.GetCreature(targetEntityId);
-			if (target == null)
+			var mainTarget = attacker.Region.GetCreature(targetEntityId);
+			if (mainTarget == null)
 				return CombatSkillResult.InvalidTarget;
 
 			// Check range
-			var targetPosition = target.GetPosition();
-			if (!attacker.GetPosition().InRange(targetPosition, attacker.AttackRangeFor(target)))
+			var targetPosition = mainTarget.GetPosition();
+			if (!attacker.GetPosition().InRange(targetPosition, attacker.AttackRangeFor(mainTarget)))
 				return CombatSkillResult.OutOfRange;
 
 			// Stop movement
 			attacker.StopMove();
-			target.StopMove();
+
+			// Get targets, incl. splash.
+			// Splash happens from r5 onwards, but we'll base it on Var4,
+			// which is the splash damage and first != 0 on r5.
+			var targets = new HashSet<Creature>() { mainTarget };
+			if (skill.RankData.Var4 != 0)
+				targets.UnionWith(attacker.GetTargetableCreaturesInCone(mainTarget.GetPosition(), attacker.GetTotalSplashRadius(), attacker.GetTotalSplashAngle()));
 
 			// Counter
-			if (Counterattack.Handle(target, attacker))
+			if (Counterattack.Handle(targets, attacker))
 				return CombatSkillResult.Okay;
 
 			// Prepare combat actions
 			var aAction = new AttackerAction(CombatActionType.HardHit, attacker, targetEntityId);
 			aAction.Set(AttackerOptions.Result | AttackerOptions.KnockBackHit2);
+			aAction.Stun = StunTime;
 
-			var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-			tAction.Set(TargetOptions.Result | TargetOptions.Smash);
-
-			var cap = new CombatActionPack(attacker, skill.Info.Id, aAction, tAction);
+			var cap = new CombatActionPack(attacker, skill.Info.Id, aAction);
 
 			// Calculate damage
-			var damage = this.GetDamage(attacker, skill);
+			var mainDamage = this.GetDamage(attacker, skill);
 
-			// Elementals
-			damage *= attacker.CalculateElementalDamageMultiplier(target);
-
-			// Critical Hit
-			var critChance = this.GetCritChance(attacker, target, skill);
-			CriticalHit.Handle(attacker, critChance, ref damage, tAction);
-
-			// Subtract target def/prot
-			SkillHelper.HandleDefenseProtection(target, ref damage);
-
-			// Mana Shield
-			ManaShield.Handle(target, ref damage, tAction);
-
-			// Heavy Stander
-			HeavyStander.Handle(attacker, target, ref damage, tAction);
-
-			// Apply damage
-			if (damage > 0)
+			foreach (var target in targets)
 			{
-				target.TakeDamage(tAction.Damage = damage, attacker);
-				SkillHelper.HandleInjury(attacker, target, damage);
+				// Stop movement
+				target.StopMove();
+
+				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
+				tAction.Set(TargetOptions.Result | TargetOptions.Smash);
+
+				cap.Add(tAction);
+
+				// Damage
+				var damage = mainDamage;
+
+				// Elementals
+				damage *= attacker.CalculateElementalDamageMultiplier(target);
+
+				// Splash modifier
+				if (target != mainTarget)
+					damage *= (skill.RankData.Var4 / 100f);
+
+				// Critical Hit
+				var critChance = this.GetCritChance(attacker, target, skill);
+				CriticalHit.Handle(attacker, critChance, ref damage, tAction);
+
+				// Subtract target def/prot
+				SkillHelper.HandleDefenseProtection(target, ref damage);
+
+				// Mana Shield
+				ManaShield.Handle(target, ref damage, tAction);
+
+				// Heavy Stander
+				HeavyStander.Handle(attacker, target, ref damage, tAction);
+
+				// Apply damage
+				if (damage > 0)
+				{
+					target.TakeDamage(tAction.Damage = damage, attacker);
+					SkillHelper.HandleInjury(attacker, target, damage);
+				}
+
+				// Aggro
+				if (target == mainTarget)
+					target.Aggro(attacker);
+
+				if (target.IsDead)
+					tAction.Set(TargetOptions.FinishingHit | TargetOptions.Finished);
+
+				// Set Stun/Knockback
+				target.Stun = tAction.Stun = StunTime;
+				target.Stability = Creature.MinStability;
+
+				// Set knockbacked position
+				attacker.Shove(target, KnockbackDistance);
 			}
-
-			// Aggro
-			target.Aggro(attacker);
-
-			if (target.IsDead)
-				tAction.Set(TargetOptions.FinishingHit | TargetOptions.Finished);
-
-			// Set Stun/Knockback
-			attacker.Stun = aAction.Stun = StunTime;
-			target.Stun = tAction.Stun = StunTime;
-			target.Stability = Creature.MinStability;
-
-			// Set knockbacked position
-			attacker.Shove(target, KnockbackDistance);
 
 			// Response
 			Send.SkillUseStun(attacker, skill.Info.Id, AfterUseStun, 1);
 
 			// Update both weapons
-			SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Melee, attacker.RightHand, attacker.LeftHand);
+			SkillHelper.UpdateWeapon(attacker, mainTarget, ProficiencyGainType.Melee, attacker.RightHand, attacker.LeftHand);
 
 			// Action!
 			cap.Handle();

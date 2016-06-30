@@ -2745,6 +2745,80 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns targetable creatures in cone, based on the
+		/// given parameters, with direction of cone being based on the
+		/// creature's and the target's position.
+		/// </summary>
+		/// <param name="position">Pointy end of the cone.</param>
+		/// <param name="targetPosition">Target's position, used as reference for the direction of the cone.</param>
+		/// <param name="radius">Cone's radius.</param>
+		/// <param name="angle">Cone's angle in degree.</param>
+		/// <param name="options">Options to change the result.</param>
+		/// <returns></returns>
+		public ICollection<Creature> GetTargetableCreaturesInCone(Position targetPosition, float radius, float angle, TargetableOptions options = TargetableOptions.None)
+		{
+			var position = this.GetPosition();
+			var direction = position.GetDirection(targetPosition);
+			return this.GetTargetableCreaturesInCone(position, direction, radius, angle, options);
+		}
+
+		/// <summary>
+		/// Returns targetable creatures in cone, based on the
+		/// given parameters, with direction of cone being based on the
+		/// given positions.
+		/// </summary>
+		/// <param name="position">Pointy end of the cone.</param>
+		/// <param name="targetPosition">Target's position, used as reference for the direction of the cone.</param>
+		/// <param name="radius">Cone's radius.</param>
+		/// <param name="angle">Cone's angle in degree.</param>
+		/// <param name="options">Options to change the result.</param>
+		/// <returns></returns>
+		public ICollection<Creature> GetTargetableCreaturesInCone(Position position, Position targetPosition, float radius, float angle, TargetableOptions options = TargetableOptions.None)
+		{
+			var direction = position.GetDirection(targetPosition);
+			return this.GetTargetableCreaturesInCone(position, direction, radius, angle, options);
+		}
+
+		/// <summary>
+		/// Returns targetable creatures in cone, based on the
+		/// given parameters.
+		/// </summary>
+		/// <param name="position">Pointy end of the cone.</param>
+		/// <param name="direction">Cone's direction as radian.</param>
+		/// <param name="radius">Cone's radius.</param>
+		/// <param name="angle">Cone's angle in degree.</param>
+		/// <param name="options">Options to change the result.</param>
+		/// <returns></returns>
+		public ICollection<Creature> GetTargetableCreaturesInCone(Position position, float direction, float radius, float angle, TargetableOptions options = TargetableOptions.None)
+		{
+			if (radius == 0 || angle == 0)
+				return new Creature[0];
+
+			angle = MabiMath.DegreeToRadian((int)angle);
+
+			var targetable = this.Region.GetCreatures(target =>
+			{
+				var targetPos = target.GetPosition();
+				if ((options & TargetableOptions.AddAttackRange) != 0)
+				{
+					// This is unofficial, the target's "hitbox" should be
+					// factored in, but the total attack range is too much.
+					// Using 50% for now until we know more.
+					radius += this.AttackRangeFor(target) / 2;
+				}
+
+				return target != this // Exclude creature
+					&& this.CanTarget(target) // Check targetability
+					&& ((!this.Has(CreatureStates.Npc) || !target.Has(CreatureStates.Npc)) || this.Target == target) // Allow NPC on NPC only if it's the creature's target
+					&& targetPos.InCone(position, direction, (int)radius, angle) // Check position
+					&& (((options & TargetableOptions.IgnoreWalls) != 0) || !this.Region.Collisions.Any(position, targetPos)) // Check collisions between positions
+					&& !target.Conditions.Has(ConditionsA.Invisible); // Check visiblility (GM)
+			});
+
+			return targetable;
+		}
+
+		/// <summary>
 		/// Aggroes target, setting target and putting creature in battle stance.
 		/// </summary>
 		/// <param name="creature"></param>
@@ -3298,6 +3372,108 @@ namespace Aura.Channel.World.Entities
 				cost *= (100 - mod) / 100f;
 
 			return cost;
+		}
+
+		/// <summary>
+		/// Returns creature's splash radius, based on equipment.
+		/// </summary>
+		public float GetTotalSplashRadius()
+		{
+			var result = 0f;
+
+			if (this.RightHand != null)
+			{
+				result = this.RightHand.Data.SplashRadius;
+
+				if (this.LeftHand != null && this.LeftHand.HasTag("/weapon/"))
+				{
+					result += this.LeftHand.Data.SplashRadius;
+					result /= 2;
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature's splash angle, based on equipment.
+		/// </summary>
+		public float GetTotalSplashAngle()
+		{
+			var result = 0f;
+
+			if (this.RightHand != null)
+			{
+				result = this.RightHand.Data.SplashAngle;
+
+				if (this.LeftHand != null && this.LeftHand.HasTag("/weapon/"))
+				{
+					result += this.LeftHand.Data.SplashAngle;
+					result /= 2;
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature's splash damage, based on equipment.
+		/// </summary>
+		public float GetTotalSplashDamage()
+		{
+			var result = 0f;
+
+			if (this.RightHand != null)
+			{
+				result = this.RightHand.Data.SplashDamage;
+
+				if (this.LeftHand != null && this.LeftHand.HasTag("/weapon/"))
+				{
+					result += this.LeftHand.Data.SplashDamage;
+					result /= 2;
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature's splash radius, based on given weapon.
+		/// </summary>
+		public float GetSplashRadius(Item item)
+		{
+			var result = 0f;
+
+			if (item != null && item.HasTag("/weapon/"))
+				result = item.Data.SplashRadius;
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature's splash angle, based on given weapon.
+		/// </summary>
+		public float GetSplashAngle(Item item)
+		{
+			var result = 0f;
+
+			if (item != null && item.HasTag("/weapon/"))
+				result = item.Data.SplashAngle;
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature's splash damage, based on given weapon.
+		/// </summary>
+		public float GetSplashDamage(Item item)
+		{
+			var result = 0f;
+
+			if (item != null && item.HasTag("/weapon/"))
+				result = item.Data.SplashDamage;
+
+			return result;
 		}
 	}
 

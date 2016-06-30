@@ -52,18 +52,21 @@ namespace Aura.Channel.Skills.Combat
 			if (attacker.IsStunned)
 				return CombatSkillResult.Okay;
 
-			var target = attacker.Region.GetCreature(targetEntityId);
-			if (target == null)
+			var mainTarget = attacker.Region.GetCreature(targetEntityId);
+			if (mainTarget == null)
 				return CombatSkillResult.Okay;
 
-			if (!attacker.GetPosition().InRange(target.GetPosition(), attacker.AttackRangeFor(target)))
+			if (!attacker.GetPosition().InRange(mainTarget.GetPosition(), attacker.AttackRangeFor(mainTarget)))
 				return CombatSkillResult.OutOfRange;
 
 			attacker.StopMove();
-			var targetPosition = target.StopMove();
+
+			// Get targets, incl. splash.
+			var targets = new HashSet<Creature>() { mainTarget };
+			targets.UnionWith(attacker.GetTargetableCreaturesInCone(mainTarget.GetPosition(), attacker.GetTotalSplashRadius(), attacker.GetTotalSplashAngle()));
 
 			// Counter
-			if (Counterattack.Handle(target, attacker))
+			if (Counterattack.Handle(targets, attacker))
 				return CombatSkillResult.Okay;
 
 			var rightWeapon = attacker.Inventory.RightHand;
@@ -80,136 +83,152 @@ namespace Aura.Channel.Skills.Combat
 				var aAction = new AttackerAction(CombatActionType.Attacker, attacker, targetEntityId);
 				aAction.Set(AttackerOptions.Result);
 
-				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-				tAction.Set(TargetOptions.Result);
-
-				var cap = new CombatActionPack(attacker, skill.Info.Id, aAction, tAction);
-				cap.Hit = i;
-				cap.Type = (attacker.IsDualWielding ? CombatActionPackType.TwinSwordAttack : CombatActionPackType.NormalAttack);
-				cap.PrevId = prevId;
-				prevId = cap.Id;
-
-				// Default attacker options
-				aAction.Set(AttackerOptions.Result);
 				if (attacker.IsDualWielding)
 				{
 					aAction.Set(AttackerOptions.DualWield);
 					aAction.WeaponParameterType = (byte)(i == 1 ? 2 : 1);
 				}
 
-				// Base damage
-				var damage = (i == 1 ? attacker.GetRndRightHandDamage() : attacker.GetRndLeftHandDamage());
+				var cap = new CombatActionPack(attacker, skill.Info.Id, aAction);
+				cap.Hit = i;
+				cap.Type = (attacker.IsDualWielding ? CombatActionPackType.TwinSwordAttack : CombatActionPackType.NormalAttack);
+				cap.PrevId = prevId;
+				prevId = cap.Id;
 
-				// Elementals
-				damage *= attacker.CalculateElementalDamageMultiplier(target);
+				var mainDamage = (i == 1 ? attacker.GetRndRightHandDamage() : attacker.GetRndLeftHandDamage());
 
-				// Critical Hit
-				var critChance = (i == 1 ? attacker.GetRightCritChance(target.Protection) : attacker.GetLeftCritChance(target.Protection));
-				CriticalHit.Handle(attacker, critChance, ref damage, tAction);
-
-				// Subtract target def/prot
-				SkillHelper.HandleDefenseProtection(target, ref damage);
-
-				// Defense
-				Defense.Handle(aAction, tAction, ref damage);
-
-				// Mana Shield
-				ManaShield.Handle(target, ref damage, tAction);
-
-				// Heavy Stander
-				// Can only happen on the first hit
-				var pinged = (cap.Hit == 1 && HeavyStander.Handle(attacker, target, ref damage, tAction));
-
-				// Deal with it!
-				if (damage > 0)
+				foreach (var target in targets)
 				{
-					target.TakeDamage(tAction.Damage = damage, attacker);
-					SkillHelper.HandleInjury(attacker, target, damage);
-				}
+					target.StopMove();
 
-				// Knock down on deadly
-				if (target.Conditions.Has(ConditionsA.Deadly))
-				{
-					tAction.Set(TargetOptions.KnockDown);
-					tAction.Stun = GetTargetStun(attacker, weapon, tAction.IsKnockBack);
-				}
+					var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
+					tAction.Set(TargetOptions.Result);
+					cap.Add(tAction);
 
-				// Aggro
-				target.Aggro(attacker);
+					// Base damage
+					var damage = mainDamage;
 
-				// Evaluate caused damage
-				if (!target.IsDead)
-				{
-					if (tAction.SkillId != SkillId.Defense)
+					// Elementals
+					damage *= attacker.CalculateElementalDamageMultiplier(target);
+
+					// Splash modifier
+					if (target != mainTarget)
+						damage *= attacker.GetSplashDamage(weapon);
+
+					// Critical Hit
+					var critChance = (i == 1 ? attacker.GetRightCritChance(target.Protection) : attacker.GetLeftCritChance(target.Protection));
+					CriticalHit.Handle(attacker, critChance, ref damage, tAction);
+
+					// Subtract target def/prot
+					SkillHelper.HandleDefenseProtection(target, ref damage);
+
+					// Defense
+					Defense.Handle(aAction, tAction, ref damage);
+
+					// Mana Shield
+					ManaShield.Handle(target, ref damage, tAction);
+
+					// Heavy Stander
+					// Can only happen on the first hit
+					var pinged = (cap.Hit == 1 && HeavyStander.Handle(attacker, target, ref damage, tAction));
+
+					// Deal with it!
+					if (damage > 0)
 					{
-						target.Stability -= this.GetStabilityReduction(attacker, weapon) / maxHits;
+						target.TakeDamage(tAction.Damage = damage, attacker);
+						SkillHelper.HandleInjury(attacker, target, damage);
+					}
 
-						// React normal for CombatMastery, knock down if 
-						// FH and not dual wield, don't knock at all if dual.
-						if (skill.Info.Id != SkillId.FinalHit)
+					// Knock down on deadly
+					if (target.Conditions.Has(ConditionsA.Deadly))
+					{
+						tAction.Set(TargetOptions.KnockDown);
+						tAction.Stun = GetTargetStun(attacker, weapon, tAction.IsKnockBack);
+					}
+
+					// Aggro
+					if (target == mainTarget)
+						target.Aggro(attacker);
+
+					// Evaluate caused damage
+					if (!target.IsDead)
+					{
+						if (tAction.SkillId != SkillId.Defense)
 						{
-							// Originally we thought you knock enemies back, unless it's a critical
-							// hit, but apparently you knock *down* under normal circumstances.
-							// More research to be done.
-							if (target.IsUnstable && target.Is(RaceStands.KnockBackable))
-								//tAction.Set(tAction.Has(TargetOptions.Critical) ? TargetOptions.KnockDown : TargetOptions.KnockBack);
+							target.Stability -= this.GetStabilityReduction(attacker, weapon) / maxHits;
+
+							// React normal for CombatMastery, knock down if 
+							// FH and not dual wield, don't knock at all if dual.
+							if (skill.Info.Id != SkillId.FinalHit)
+							{
+								// Originally we thought you knock enemies back, unless it's a critical
+								// hit, but apparently you knock *down* under normal circumstances.
+								// More research to be done.
+								if (target.IsUnstable && target.Is(RaceStands.KnockBackable))
+									//tAction.Set(tAction.Has(TargetOptions.Critical) ? TargetOptions.KnockDown : TargetOptions.KnockBack);
+									tAction.Set(TargetOptions.KnockDown);
+							}
+							else if (!attacker.IsDualWielding && !weaponIsKnuckle && target.Is(RaceStands.KnockBackable))
+							{
+								target.Stability = Creature.MinStability;
 								tAction.Set(TargetOptions.KnockDown);
-						}
-						else if (!attacker.IsDualWielding && !weaponIsKnuckle && target.Is(RaceStands.KnockBackable))
-						{
-							target.Stability = Creature.MinStability;
-							tAction.Set(TargetOptions.KnockDown);
+							}
 						}
 					}
-				}
-				else
-				{
-					tAction.Set(TargetOptions.FinishingKnockDown);
-				}
+					else
+					{
+						tAction.Set(TargetOptions.FinishingKnockDown);
+					}
 
-				// React to knock back
-				if (tAction.IsKnockBack)
-				{
-					attacker.Shove(target, KnockBackDistance);
-					aAction.Set(AttackerOptions.KnockBackHit2);
-				}
+					// React to knock back
+					if (tAction.IsKnockBack)
+					{
+						attacker.Shove(target, KnockBackDistance);
+						if (target == mainTarget)
+							aAction.Set(AttackerOptions.KnockBackHit2);
+					}
 
-				// Set stun time if not defended, Defense handles the stun
-				// in case the target used it.
-				if (tAction.SkillId != SkillId.Defense)
-				{
-					aAction.Stun = GetAttackerStun(attacker, weapon, tAction.IsKnockBack && skill.Info.Id != SkillId.FinalHit);
-					tAction.Stun = GetTargetStun(attacker, weapon, tAction.IsKnockBack);
-				}
+					// Set stun time if not defended, Defense handles the stun
+					// in case the target used it.
+					if (tAction.SkillId != SkillId.Defense)
+					{
+						if (target == mainTarget)
+							aAction.Stun = GetAttackerStun(attacker, weapon, tAction.IsKnockBack && skill.Info.Id != SkillId.FinalHit);
+						tAction.Stun = GetTargetStun(attacker, weapon, tAction.IsKnockBack);
+					}
 
-				// Set increased stun if target pinged
-				if (pinged)
-					aAction.Stun = GetAttackerStun(attacker, weapon, true);
+					if (target == mainTarget)
+					{
+						// Set increased stun if target pinged
+						if (pinged)
+							aAction.Stun = GetAttackerStun(attacker, weapon, true);
 
-				// Second hit doubles stun time for normal hits
-				if (cap.Hit == 2 && !tAction.IsKnockBack && !pinged)
-					aAction.Stun *= 2;
+						// Second hit doubles stun time for normal hits
+						if (cap.Hit == 2 && !tAction.IsKnockBack && !pinged)
+							aAction.Stun *= 2;
 
-				// Update current weapon
-				SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Melee, weapon);
+						// Update current weapon
+						SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Melee, weapon);
 
-				// Consume stamina for weapon
-				var staminaUsage = (weapon != null ? weapon.Data.StaminaUsage : Creature.BareHandStaminaUsage);
-				if (attacker.Stamina < staminaUsage)
-					Send.Notice(attacker, Localization.Get("Your stamina is too low to fight properly!"));
-				attacker.Stamina -= staminaUsage;
+						// Consume stamina for weapon
+						var staminaUsage = (weapon != null ? weapon.Data.StaminaUsage : Creature.BareHandStaminaUsage);
+						if (attacker.Stamina < staminaUsage)
+							Send.Notice(attacker, Localization.Get("Your stamina is too low to fight properly!"));
+						attacker.Stamina -= staminaUsage;
 
-				// No second hit if defended, pinged, or knocked back
-				if (tAction.IsKnockBack || tAction.SkillId == SkillId.Defense || pinged)
-				{
-					// Set to 1 to prevent second run
-					maxHits = 1;
+						// No second hit if defended, pinged, or knocked back
+						if (tAction.IsKnockBack || tAction.SkillId == SkillId.Defense || pinged)
+						{
+							// Set to 1 to prevent second run
+							maxHits = 1;
 
-					// Remove dual wield option if last hit doesn't come from
-					// the second weapon. If this isn't done, the client shows
-					// the second hit.
-					if (cap.Hit != 2)
-						aAction.Options &= ~AttackerOptions.DualWield;
+							// Remove dual wield option if last hit doesn't come from
+							// the second weapon. If this isn't done, the client shows
+							// the second hit.
+							if (cap.Hit != 2)
+								aAction.Options &= ~AttackerOptions.DualWield;
+						}
+					}
 				}
 
 				// Handle
