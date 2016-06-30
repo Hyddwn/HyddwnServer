@@ -242,6 +242,7 @@ namespace Aura.Channel.World.Entities
 			this.Info.Region = regionId;
 			this.Info.X = x;
 			this.Info.Y = y;
+			this.Info.Altitude = altitude;
 			this.Info.Direction = direction;
 			this.Info.Scale = scale;
 			this.LastCollect = DateTime.Now;
