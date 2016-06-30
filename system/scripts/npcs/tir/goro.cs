@@ -37,6 +37,7 @@ public class GoroScript : NpcScript
 		switch (await Select())
 		{
 			case "@talk":
+				Greet();
 				Msg("I'm so glad to see you again.<br/>I am Goro, the goblin who can speak the language of humans.");
 				await StartConversation();
 				break;
@@ -48,6 +49,32 @@ public class GoroScript : NpcScript
 		}
 
 		End("Goodbye, Goro. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome, what a smart " + (Player.IsMale ? "man" : "woman") + " you are.<br/>My name is Goro.<br/>Ah, do not be surprised. I have no intention of hurting you."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("I'm so glad to see you again.<br/>I am <npcname/>, the goblin who can speak the language of humans."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("Ah, <username/>. Thank you for coming.")); // Translated
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Have you come to test your abilities at the Arena again today?"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("Nice to see you, <username/>. I think it's worthwhile to mention that I'm hearing many stories about you from other people."));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	public override async Task Conversation()

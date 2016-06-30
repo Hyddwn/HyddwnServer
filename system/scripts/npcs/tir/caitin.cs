@@ -21,12 +21,6 @@ public class CaitinScript : NpcScript
 		EquipItem(Pocket.Armor, 15654, 0x006A9050, 0x00F4D6A9, 0x002A2A2A);
 		EquipItem(Pocket.Shoe, 17284, 0x002A2A2A, 0x00000000, 0x00000000);
 
-		AddGreeting(0, "I think this is the first time we've met. Nice to meet you!");
-		AddGreeting(1, "We've met before, right? Nice to meet you.");
-		AddGreeting(2, "It's nice to meet you, <username/>.");
-		AddGreeting(6, "Good to see you again, <username/>.");
-		AddGreeting(7, "We've been seeing each other a lot lately, haven't we, <username/>?");
-
 		AddPhrase("*Yawn*");
 		AddPhrase("Hmm... Sales are low today... That isn't good.");
 		AddPhrase("I am a little tired.");
@@ -84,6 +78,32 @@ public class CaitinScript : NpcScript
 		}
 
 		End();
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("I think this is the first time we've met. Nice to meet you!"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("We've met before, right? Nice to meet you."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("It's nice to meet you, <username/>."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Good to see you again, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("We've been seeing each other a lot lately, haven't we, <username/>?"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

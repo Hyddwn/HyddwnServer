@@ -21,9 +21,6 @@ public class RanaldScript : NpcScript
 		EquipItem(Pocket.Shoe, 17012, 0x9C7D6C, 0xFFC9A3, 0xF7941D);
 		EquipItem(Pocket.LeftHand1, 40012, 0xDCDCDC, 0xC08B48, 0x808080);
 
-		AddGreeting(0, "Hmm...<br/>Nice to meet you.");
-		AddGreeting(1, "My name is <npcname/>.<br/>I assume you remember my name?");
-
 		AddPhrase("I need a drink...");
 		AddPhrase("I guess I drank too much last night...");
 		AddPhrase("I need a nap...");
@@ -128,6 +125,32 @@ public class RanaldScript : NpcScript
 		}
 
 		End("Goodbye, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Hmm...<br/>Nice to meet you."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("My name is <npcname/>.<br/>I assume you remember my name?"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("<username/>.... Not a bad name.<br/>I'll remember that."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("<username/>?<br/>Tell me what you're here for."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("<username/>...I see you here often."));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

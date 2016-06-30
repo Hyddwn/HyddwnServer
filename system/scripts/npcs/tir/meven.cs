@@ -19,9 +19,6 @@ public class MevenScript : NpcScript
 		EquipItem(Pocket.Armor, 15006, 0x00313727, 0x00282C2B, 0x00F0DA4A);
 		EquipItem(Pocket.Shoe, 17012, 0x00313727, 0x00FFFFFF, 0x00A0927D);
 
-		AddGreeting(0, "Lymilark must have led you here.");
-		AddGreeting(1, "It's nice to see you again.");
-
 		AddPhrase("Ah, I forgot I have some plowing to do.");
 		AddPhrase("...");
 	}
@@ -53,6 +50,32 @@ public class MevenScript : NpcScript
 		}
 
 		End("Goodbye <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Lymilark must have led you here."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("It's nice to see you again."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("<username/> you are, I believe.<br/>How can I help you?"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Nice to see you, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("It seems we meet each other often these days, <username/>.<br/>Nice to see you."));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

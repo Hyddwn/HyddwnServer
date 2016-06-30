@@ -20,9 +20,6 @@ public class SimonScript : NpcScript
 		EquipItem(Pocket.Armor, 15045, 0x00D6D8DE, 0x0031208E, 0x00FF9B3B);
 		EquipItem(Pocket.Shoe, 17013, 0x009C7B6B, 0x00F79825, 0x00007335);
 
-		AddGreeting(0, "Is this your first time here?");
-		AddGreeting(1, "Haha. That's right.<br/>You have to come often to be recognized.");
-
 		AddPhrase("The fabric I ordered should be coming in any day now...");
 		AddPhrase("Time just flies today. Heh.");
 		AddPhrase("This... is too last-minute.");
@@ -128,6 +125,32 @@ public class SimonScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Is this your first time here?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Haha. That's right.<br/>You have to come often to be recognized."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)
