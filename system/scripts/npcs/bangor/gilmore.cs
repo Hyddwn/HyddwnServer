@@ -21,9 +21,6 @@ public class GilmoreScript : NpcScript
 		EquipItem(Pocket.Shoe, 17009, 0x00000000, 0x00A68DC3, 0x0001B24B);
 		EquipItem(Pocket.Head, 18028, 0x00000000, 0x00C8C6C4, 0x00DFE9A7);
 
-		AddGreeting(0, "Welcome. I haven't seen you before. I assume you have Gold?<br/>Because, you have no business with me unless you have Gold.");
-		AddGreeting(1, "You are the stingy guy from before. Are you feeling more generous today?");
-
 		AddPhrase("Business is slow nowadays. Perhaps I should raise the rent.");
 		AddPhrase("Cheap stuff means cheap quality.");
 		AddPhrase("Get lost unless you are going to buy something!");
@@ -72,6 +69,32 @@ public class GilmoreScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome. I haven't seen you before. I assume you have Gold?<br/>Because, you have no business with me unless you have Gold."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("You are the stingy guy from before. Are you feeling more generous today?"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

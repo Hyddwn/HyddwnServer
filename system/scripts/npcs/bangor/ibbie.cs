@@ -22,9 +22,6 @@ public class IbbieScript : NpcScript
 		EquipItem(Pocket.Shoe, 17007, 0x00702639, 0x009F5B0D, 0x005F6069);
 		EquipItem(Pocket.Head, 18014, 0x00FFDBC5, 0x009B7685, 0x00736A4B);
 
-		AddGreeting(0, "You must be a visitor in this town, aren't you?</p><username/>...?</p>Me... I'm Ibbie.");
-		AddGreeting(1, "Your name... Tell me your name again...? I'm not used to it yet...");
-
 		AddPhrase("*Cough* *Cough*");
 		AddPhrase("Are you... lonely, too?");
 		AddPhrase("Daddy...");
@@ -66,6 +63,32 @@ public class IbbieScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("You must be a visitor in this town, aren't you?</p><username/>...?</p>Me... I'm Ibbie."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Your name... Tell me your name again...? I'm not used to it yet..."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

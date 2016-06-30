@@ -20,9 +20,6 @@ public class JeniferScript : NpcScript
 		EquipItem(Pocket.Armor, 15020, 0x00F98C84, 0x00FBDDD7, 0x00351311);
 		EquipItem(Pocket.Shoe, 17013, 0x00000000, 0x00366961, 0x00DAD6EB);
 
-		AddGreeting(0, "Welcome to the Bangor Pub. Are you a first-time visitor?");
-		AddGreeting(0, "I think I've met you once before... You name is... <username/>, am I right?");
-
 		AddPhrase("Ah, I'm so bored...");
 		AddPhrase("Ah. What an unbelievably beautiful weather...");
 		AddPhrase("I could never keep this place clean... It always gets dirty.");
@@ -74,6 +71,32 @@ public class JeniferScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome to the Bangor Pub. Are you a first-time visitor?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("I think I've met you once before... You name is... <username/>, am I right?"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

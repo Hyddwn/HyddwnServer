@@ -22,9 +22,6 @@ public class ElenScript : NpcScript
 		EquipItem(Pocket.Head, 18024, 0x007D2224, 0x00FFFFFF, 0x000088CD);
 		EquipItem(Pocket.RightHand1, 40024, 0x00FACB5F, 0x004F3C26, 0x00FAB052);
 
-		AddGreeting(0, "Welcome! But... I've never seen you around here before.");
-		AddGreeting(0, "You must be quite interested in the blacksmith work.");
-
 		AddPhrase("Lets see... I still have some left..");
 		AddPhrase("Nothing is free!");
 		AddPhrase("Grandpa worries too much.");
@@ -132,6 +129,32 @@ public class ElenScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome! But... I've never seen you around here before."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("You must be quite interested in the blacksmith work."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)
