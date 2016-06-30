@@ -331,6 +331,35 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Updates relation between NPC and Player based on current
+		/// relation values.
+		/// </summary>
+		/// <remarks>
+		/// Handles common update of relation values, which almost all NPCs
+		/// do, after greeting the player on the start of a Conversation.
+		/// </remarks>
+		public void UpdateRelationAfterGreet()
+		{
+			if (Memory <= 0)
+			{
+				Memory = 1;
+			}
+			else if (Memory == 1)
+			{
+			}
+			else if (Memory <= 6 && Stress == 0)
+			{
+				Memory += 1;
+				Stress += 5;
+			}
+			else if (Stress == 0)
+			{
+				Memory += 1;
+				Stress += 10;
+			}
+		}
+
+		/// <summary>
 		/// Gets the mood.
 		/// </summary>
 		/// <returns></returns>
