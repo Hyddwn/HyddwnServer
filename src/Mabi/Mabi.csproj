@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Const\CharacterStyle.cs" />
     <Compile Include="Const\Combat.cs" />
     <Compile Include="Const\CombatPower.cs" />
     <Compile Include="Const\Conditions.cs" />

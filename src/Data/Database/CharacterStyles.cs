@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Mabi.Const;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
@@ -43,18 +44,5 @@ namespace Aura.Data.Database
 
 			this.Entries.Add(data);
 		}
-	}
-
-	public enum CharacterStyleType
-	{
-		MaleHairStyle = 1,
-		FemaleHairStyle,
-		HairColor,
-		SkinColor,
-		EyeColor,
-		EyeType,
-		MouthType,
-		MaleFace,
-		FemaleFace,
 	}
 }
