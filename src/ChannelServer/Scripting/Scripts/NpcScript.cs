@@ -357,6 +357,10 @@ namespace Aura.Channel.Scripting.Scripts
 				Memory += 1;
 				Stress += 10;
 			}
+
+			// Show relation values to devCATs for debugging
+			if (this.Player.Titles.SelectedTitle == TitleId.devCAT)
+				this.Msg(string.Format("-Debug-<br/>Favor: {0}<br/>Memory: {1}<br/>Stress: {2}", this.Favor, this.Memory, this.Stress));
 		}
 
 		/// <summary>
