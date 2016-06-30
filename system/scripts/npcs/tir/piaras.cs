@@ -20,10 +20,6 @@ public class PiarasScript : NpcScript
 		EquipItem(Pocket.Armor, 15003, 0x00355047, 0x00F6E2B1, 0x00FBFBF3);
 		EquipItem(Pocket.Shoe, 17012, 0x009C936F, 0x00724548, 0x0050685C);
 
-		AddGreeting(0, "Hello, nice to meet you.<br/>I am <npcname/>.");
-		AddGreeting(1, "Nice to meet you.");
-		//AddGreeting(2, "Good to see you, <username/>.");
-
 		AddPhrase("Ah... The weather is just right to go on a journey.");
 		AddPhrase("Do you ever wonder who lives up that mountain?");
 		AddPhrase("Hey, you need to take your part-time job more seriously!");
@@ -81,6 +77,32 @@ public class PiarasScript : NpcScript
 		}
 
 		End("Goodbye, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Hello, nice to meet you.<br/>I am <npcname/>."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Nice to meet you."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("<username/>, right? Nice to meet you."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Good to see you, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("How's it going, <username/>? Is everything alright?"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

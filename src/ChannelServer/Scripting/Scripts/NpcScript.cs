@@ -331,53 +331,36 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Greets the player. **MODIFIES STATS**
+		/// Updates relation between NPC and Player based on current
+		/// relation values.
 		/// </summary>
-		protected virtual void Greet()
+		/// <remarks>
+		/// Handles common update of relation values, which almost all NPCs
+		/// do, after greeting the player on the start of a Conversation.
+		/// </remarks>
+		public void UpdateRelationAfterGreet()
 		{
-			// TODO: if (DoingPtj()) ...
-
-			var memory = this.Memory;
-			var stress = this.Stress;
-
-			if (memory <= 0)
+			if (Memory <= 0)
 			{
-				this.Memory = 1;
+				Memory = 1;
 			}
-			else if (memory == 1)
+			else if (Memory == 1)
 			{
-				// Do nothing. Keeps players from raising their familiarity
-				// just by talking.
 			}
-			else if (memory <= 6 && stress == 0)
+			else if (Memory <= 6 && Stress == 0)
 			{
-				this.Memory += 1;
-				this.Stress += 5;
+				Memory += 1;
+				Stress += 5;
 			}
-			else if (stress == 0)
+			else if (Stress == 0)
 			{
-				this.Memory += 1;
-				this.Stress += 10;
-			}
-
-			var msg = Localization.Get("(No greeting messages defined.)");
-
-			// Take the highest greeting without going over their memory
-			foreach (var list in this.NPC.Greetings.TakeWhile(k => k.Key <= memory))
-			{
-				var msgs = list.Value;
-				msg = msgs[Random(msgs.Count)];
+				Memory += 1;
+				Stress += 10;
 			}
 
 			// Show relation values to devCATs for debugging
 			if (this.Player.Titles.SelectedTitle == TitleId.devCAT)
-			{
-				msg += "<br/>" + "Favor: " + this.Favor;
-				msg += "<br/>" + "Memory: " + this.Memory;
-				msg += "<br/>" + "Stress: " + this.Stress;
-			}
-
-			this.Msg(Hide.None, msg, FavorExpression());
+				this.Msg(string.Format("-Debug-<br/>Favor: {0}<br/>Memory: {1}<br/>Stress: {2}", this.Favor, this.Memory, this.Stress));
 		}
 
 		/// <summary>
@@ -840,22 +823,6 @@ namespace Aura.Channel.Scripting.Scripts
 			this.NPC.AI = ChannelServer.Instance.ScriptManager.AiScripts.CreateAi(name, this.NPC);
 			if (this.NPC.AI == null)
 				Log.Error("NpcScript.SetAi: AI '{0}' not found ({1})", name, this.GetType().Name);
-		}
-
-		/// <summary>
-		/// Adds a greeting to the NPC.
-		/// </summary>
-		/// <param name="memory">Memory needed for this message to appear.</param>
-		/// <param name="greetingMessage">Message sent if the player's memory matches.</param>
-		protected void AddGreeting(int memory, string greetingMessage)
-		{
-			if (this.NPC == null)
-				throw new InvalidOperationException("NPC's race has to be set first.");
-
-			if (!this.NPC.Greetings.ContainsKey(memory))
-				this.NPC.Greetings.Add(memory, new List<string>());
-
-			this.NPC.Greetings[memory].Add(greetingMessage);
 		}
 
 		// Functions

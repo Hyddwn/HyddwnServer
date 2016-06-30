@@ -23,10 +23,6 @@ public class DeianScript : NpcScript
 		EquipItem(Pocket.Head, 18407, 0x00343F2D, 0x00000000, 0x00000000);
 		EquipItem(Pocket.RightHand1, 40001, 0x00755748, 0x005E9A49, 0x005E9A49);
 
-		AddGreeting(0, "Nice to meet you, I am Deian.<br/>You don't look that old, maybe a couple of years older than I am?<br/>Let's just say we're the same age. You don't mind do ya?");
-		AddGreeting(1, "Nice to meet you again.");
-		//AddGreeting(2, "Welcome, <username />"); // Not sure
-
 		AddPhrase("Another day... another boring day in the countryside.");
 		AddPhrase("Baa! Baa!");
 		AddPhrase("Geez, these sheep are a pain in the neck.");
@@ -111,6 +107,32 @@ public class DeianScript : NpcScript
 		}
 
 		End();
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Nice to meet you, I am Deian.<br/>You don't look that old, maybe a couple of years older than I am?<br/>Let's just say we're the same age. You don't mind do ya?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Nice to meet you again."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("<username/>, right? I remember you. How could I forget that face..."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Welcome, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("I've been seeing you a lot, <username/>.<br/>Do you like me or something?"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

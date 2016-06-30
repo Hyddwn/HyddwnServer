@@ -20,10 +20,6 @@ public class NoraBaseScript : NpcScript
 		EquipItem(Pocket.Armor, 15010, 0x34696E, 0xFDEEEA, 0xC6D8EA);
 		EquipItem(Pocket.Shoe, 17006, 0x34696E, 0x9C558F, 0x901D55);
 
-		AddGreeting(0, "Welcome!");
-		AddGreeting(1, "We've met before, right? I remember you!");
-		//AddGreeting(2, "Nice to see you, <username/>.");
-
 		AddPhrase("I hope the clothes dry quickly.");
 		AddPhrase("I would love to listen to some music, but I don't see any musicians around.");
 		AddPhrase("No way! There's no such thing as a huge spider.");
@@ -137,6 +133,32 @@ public class NoraBaseScript : NpcScript
 		}
 
 		End();
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome!"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("We've met before, right? I remember you!"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("I'm always glad to see you, <username/>!"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Nice to see you, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("Hello, <username/>!<br/>It looks like Uncle Piaras is keeping an eye on you<br/>since we talk so often. Didn't you notice?"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

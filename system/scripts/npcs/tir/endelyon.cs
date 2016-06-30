@@ -15,9 +15,6 @@ public class EndelyonScript : NpcScript
 		SetStand("human/female/anim/female_natural_stand_npc_Endelyon");
 		SetLocation(1, 5975, 36842, 0);
 
-		AddGreeting(0, "I don't think we've ever met. Nice to meet you.");
-		AddGreeting(1, "Glad to see you again.");
-
 		EquipItem(Pocket.Face, 3900, 0x00F49D31, 0x00605765, 0x0000B8C3);
 		EquipItem(Pocket.Hair, 3022, 0x005E423E, 0x005E423E, 0x005E423E);
 		EquipItem(Pocket.Armor, 15009, 0x00303133, 0x00C6D8EA, 0x00DBC741);
@@ -108,6 +105,32 @@ public class EndelyonScript : NpcScript
 		}
 
 		End();
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("I don't think we've ever met. Nice to meet you."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Glad to see you again."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("Hello.<br/><username/>, I knew you would be back."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Nice to meet you again, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("<username/>, may the blessings of Lymilark be with you."));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

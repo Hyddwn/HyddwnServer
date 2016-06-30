@@ -23,10 +23,6 @@ public class SeumasScript : NpcScript
 		EquipItem(Pocket.Head, 18024, 0x00964D25, 0x00CAA859, 0x0001A958);
 		EquipItem(Pocket.RightHand1, 40025, 0x00454545, 0x00745D2F, 0x00EEA140);
 
-		AddGreeting(0, "You must be a traveler. (gasp, gasp) Have you seen the ruins?");
-		AddGreeting(1, "I think I've seen you before.... (gasp, gasp) I forget your name...");
-		AddGreeting(2, "How are you these days? (gasp, gasp) Enjoying life?");
-
 		AddPhrase("Let's go! Let's do it!");
 		AddPhrase("This is nothing!");
 		AddPhrase("(gasp, gasp)");
@@ -70,6 +66,32 @@ public class SeumasScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("You must be a traveler. (gasp, gasp) Have you seen the ruins?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("I think I've seen you before.... (gasp, gasp) I forget your name..."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("How are you these days? (gasp, gasp) Enjoying life?"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

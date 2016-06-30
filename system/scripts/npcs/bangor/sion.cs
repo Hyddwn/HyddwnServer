@@ -29,9 +29,6 @@ public class SionScript : NpcScript
 		EquipItem(Pocket.Head, 18024, 0x00808000, 0x00FFFFFF, 0x00AA89C0);
 		EquipItem(Pocket.RightHand1, 40025, 0x00C0C6BB, 0x008E6D59, 0x00C7B0D5);
 
-		AddGreeting(0, "You're not from this town, are you? I don't think I've seen you before.");
-		AddGreeting(1, "Oh! I remember you. We talked before, remember?");
-
 		AddPhrase("Dad should be coming any minute now...");
 		AddPhrase("I want to grow up quickly and be an adult soon.");
 		AddPhrase("I wonder what's for dinner. *Gulp*");
@@ -118,6 +115,32 @@ public class SionScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("You're not from this town, are you? I don't think I've seen you before."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Oh! I remember you. We talked before, remember?"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	private void InitFurnaces()

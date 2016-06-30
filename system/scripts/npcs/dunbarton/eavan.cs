@@ -21,9 +21,6 @@ public class EavanScript : NpcScript
 		EquipItem(Pocket.Glove, 16015, 0x00FFFFFF, 0x00E6F2E2, 0x006161AC);
 		EquipItem(Pocket.Shoe, 17008, 0x00DDAACC, 0x00F79B2F, 0x00E10175);
 
-		AddGreeting(0, "Welcome to Dunbarton.<br/>My name is <npcname/>, the Town Office worker who takes care of all the business related to the Adventurers' Association.");
-		AddGreeting(1, "Hmm. I've seen someone that looks like you before.");
-
 		AddPhrase("*Sigh* Back to work.");
 		AddPhrase("Hmm. This letter is fairly well done. B+.");
 		AddPhrase("Next person please!");
@@ -101,6 +98,32 @@ public class EavanScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome to Dunbarton.<br/>My name is <npcname/>, the Town Office worker who takes care of all the business related to the Adventurers' Association."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Hmm. I've seen someone that looks like you before."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

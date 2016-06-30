@@ -21,9 +21,6 @@ public class RiocardScript : NpcScript
 		EquipItem(Pocket.Shoe, 17010, 0x00512522, 0x009E0075, 0x00B80075);
 		EquipItem(Pocket.Head, 18007, 0x00EFCE4B, 0x006CB4E4, 0x0001A890);
 
-		AddGreeting(0, "Welcome to the Bangor Pub. Did you come alone?");
-		AddGreeting(1, "You've been here before, haven't you? I recognize your face.");
-
 		AddPhrase("I could use a good story right about now.");
 		AddPhrase("I guess taking it easy every now and then isn't such a  bad idea.");
 		AddPhrase("I'm getting bored...");
@@ -60,6 +57,32 @@ public class RiocardScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome to the Bangor Pub. Did you come alone?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("You've been here before, haven't you? I recognize your face."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

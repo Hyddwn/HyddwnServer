@@ -20,9 +20,6 @@ public class GlenisScript : NpcScript
 		EquipItem(Pocket.Armor, 15010, 0x00764E63, 0x00CCD8ED, 0x00E7957A);
 		EquipItem(Pocket.Shoe, 17012, 0x00764E63, 0x00FC9C5F, 0x00D2CCE5);
 
-		AddGreeting(0, "Are you looking for the Restaurant? This is it.");
-		AddGreeting(1, "What... was your name again?<br/>Bah, my memory is not like it used to be in my old age.");
-
 		AddPhrase("Come buy your food here.");
 		AddPhrase("Flora! Are the ingredients ready?");
 		AddPhrase("Have a nice day today!");
@@ -64,6 +61,33 @@ public class GlenisScript : NpcScript
 
 		End("Thank you, <npcname/>. I'll see you later!");
 	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Are you looking for the Restaurant? This is it."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("What... was your name again?<br/>Bah, my memory is not like it used to be in my old age."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
+	}
+
 	protected override async Task Keywords(string keyword)
 	{
 		switch (keyword)

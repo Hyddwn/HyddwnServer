@@ -21,12 +21,6 @@ public class DuncanBaseScript : NpcScript
 		EquipItem(Pocket.Armor, 15004, 0x5E3E48, 0xD4975C, 0x3D3645);
 		EquipItem(Pocket.Shoe, 17021, 0xCBBBAD);
 
-		AddGreeting(0, "Welcome to Tir Chonaill.");
-		AddGreeting(1, "What did you say your name was again...?<br/>Anyway, welcome.");
-		AddGreeting(2, "<username/>, I could recognize you from afar.");
-		AddGreeting(6, "I was just thinking... <username/> should be visiting right about now.");
-		AddGreeting(7, "Hoho, I will definitely remember your face, <username/>!");
-
 		AddPhrase("Ah, that bird in the tree is still sleeping.");
 		AddPhrase("Ah, who knows how many days are left in these old bones?");
 		AddPhrase("Everything appears to be fine, but something feels off.");
@@ -116,6 +110,32 @@ public class DuncanBaseScript : NpcScript
 		}
 
 		End();
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome to Tir Chonaill."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("What did you say your name was again...?<br/>Anyway, welcome."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("<username/>, I could recognize you from afar."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("I was just thinking... <username/> should be visiting right about now."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("Hoho, I will definitely remember your face, <username/>!"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

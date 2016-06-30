@@ -22,8 +22,6 @@ public class EdernScript : NpcScript
 		EquipItem(Pocket.Shoe, 17504, 0x002B1C09, 0x00857756, 0x00321007);
 		EquipItem(Pocket.RightHand1, 40024, 0x00FACB5F, 0x004F3C26, 0x00FAB052);
 
-		AddGreeting(0, "Welcome! You look familiar.");
-
 		AddPhrase("A true blacksmith never complains.");
 		AddPhrase("Hahaha...");
 		AddPhrase("Hey! Don't just stand there and make me nervous. If you've got something to say, say it!");
@@ -135,6 +133,32 @@ public class EdernScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome! You look familiar."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

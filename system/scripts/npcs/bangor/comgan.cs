@@ -20,8 +20,6 @@ public class ComganScript : NpcScript
 		EquipItem(Pocket.Armor, 15060, 0x00400000, 0x00F0EA9D, 0x00FFFFFF);
 		EquipItem(Pocket.Shoe, 17015, 0x00000000, 0x00F4638B, 0x00F9EF64);
 
-		AddGreeting(0, "If you're free, would you like to chat? Your name was...<p/>I am sorry. My memory is failing me today. I will try to remember next time.");
-
 		AddPhrase("...");
 		AddPhrase("I guess only people like me would understand what I'm saying...");
 		AddPhrase("I need to build a Church soon...");
@@ -33,7 +31,6 @@ public class ComganScript : NpcScript
 		AddPhrase("What should I do to convert more people?");
 		AddPhrase("What should I do...");
 		AddPhrase("Why do people ignore what I say...");
-
 	}
 
 	protected override async Task Talk()
@@ -65,6 +62,32 @@ public class ComganScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("If you're free, would you like to chat? Your name was...<p/>I am sorry. My memory is failing me today. I will try to remember next time."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

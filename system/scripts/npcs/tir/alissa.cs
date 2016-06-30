@@ -29,12 +29,6 @@ public class AlissaScript : NpcScript
 		EquipItem(Pocket.Shoe, 17012, 0x00693F1E, 0x00000000, 0x00000000);
 		EquipItem(Pocket.Head, 18406, 0x00DECDB0, 0x00000000, 0x00000000);
 
-		AddGreeting(0, "Hello, we haven't met. My name is <npcname/>. Your name is <username/>, right?<br/>How did I know?<br/>Haha, it's written above your head. Don't tell me you don't see it?");
-		AddGreeting(1, "Hey, you're back. Hmm...wasn't your name different last time?<br/>Maybe I saw it wrong.");
-		AddGreeting(2, "I've missed you...hehe. If you have nothing to do, chat with me!");
-		AddGreeting(6, "You come here pretty often.<br/>It's 'cause you like me huh? Hehe!");
-		AddGreeting(7, "Hey. It's <username/>! Let's play. Please?");
-
 		AddPhrase("Hmm... Ferghus must have made another mistake.");
 		AddPhrase("How are you going to make flour without any wheat?");
 		AddPhrase("La la la la.");
@@ -122,6 +116,32 @@ public class AlissaScript : NpcScript
 		}
 
 		End();
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Hello, we haven't met. My name is <npcname/>. Your name is <username/>, right?<br/>How did I know?<br/>Haha, it's written above your head. Don't tell me you don't see it?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Hey, you're back. Hmm...wasn't your name different last time?<br/>Maybe I saw it wrong."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("I've missed you...hehe. If you have nothing to do, chat with me!"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("You come here pretty often.<br/>It's 'cause you like me huh? Hehe!"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("Hey. It's <username/>! Let's play. Please?"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)
