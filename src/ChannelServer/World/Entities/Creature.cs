@@ -2750,15 +2750,19 @@ namespace Aura.Channel.World.Entities
 		/// Optionally factors in attack range.
 		/// </summary>
 		/// <param name="radius">Cone's radius.</param>
-		/// <param name="angle">Cone's angle.</param>
+		/// <param name="angle">Cone's angle in degree.</param>
 		/// <param name="options">Options to change the result.</param>
 		/// <returns></returns>
-		public ICollection<Creature> GetTargetableCreaturesInCone(float radius, float angle, TargetableOptions options = TargetableOptions.None)
+		public ICollection<Creature> GetTargetableCreaturesInCone(Position targetPosition, float radius, float angle, TargetableOptions options = TargetableOptions.None)
 		{
 			if (radius == 0 || angle == 0)
 				return new Creature[0];
 
+			angle = MabiMath.DegreeToRadian((int)angle);
+
 			var position = this.GetPosition();
+			var direction = position.GetDirection(targetPosition);
+
 			var targetable = this.Region.GetCreatures(target =>
 			{
 				var targetPos = target.GetPosition();
@@ -2773,7 +2777,7 @@ namespace Aura.Channel.World.Entities
 				return target != this // Exclude creature
 					&& this.CanTarget(target) // Check targetability
 					&& ((!this.Has(CreatureStates.Npc) || !target.Has(CreatureStates.Npc)) || this.Target == target) // Allow NPC on NPC only if it's the creature's target
-					&& targetPos.InCone(position, MabiMath.ByteToRadian(this.Direction), (int)radius, angle) // Check position
+					&& targetPos.InCone(position, direction, (int)radius, angle) // Check position
 					&& (((options & TargetableOptions.IgnoreWalls) != 0) || !this.Region.Collisions.Any(position, targetPos)) // Check collisions between positions
 					&& !target.Conditions.Has(ConditionsA.Invisible); // Check visiblility (GM)
 			});

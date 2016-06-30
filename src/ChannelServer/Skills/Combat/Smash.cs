@@ -120,8 +120,8 @@ namespace Aura.Channel.Skills.Combat
 			// Splash happens from r5 onwards, but we'll base it on Var4,
 			// which is the splash damage and first != 0 on r5.
 			var targets = new HashSet<Creature>() { mainTarget };
-				targets.UnionWith(attacker.GetTargetableCreaturesInCone(attacker.GetTotalSplashRadius(), attacker.GetTotalSplashAngle()));
 			if (skill.RankData.Var4 != 0)
+				targets.UnionWith(attacker.GetTargetableCreaturesInCone(mainTarget.GetPosition(), attacker.GetTotalSplashRadius(), attacker.GetTotalSplashAngle()));
 
 			// Counter
 			if (Counterattack.Handle(targets, attacker))

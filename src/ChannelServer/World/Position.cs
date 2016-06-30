@@ -217,6 +217,17 @@ namespace Aura.Channel.World
 			return result;
 		}
 
+		/// <summary>
+		/// Returns direction the other position is in as radian.
+		/// </summary>
+		/// <param name="otherPos"></param>
+		/// <returns></returns>
+		public double GetDirection(Position otherPos)
+		{
+			var direction = Math.Atan2(otherPos.Y - Y, otherPos.X - X);
+			return direction;
+		}
+
 		public static bool operator ==(Position pos1, Position pos2)
 		{
 			return (pos1.X == pos2.X && pos1.Y == pos2.Y);
