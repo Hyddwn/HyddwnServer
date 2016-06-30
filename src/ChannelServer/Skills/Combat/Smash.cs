@@ -154,7 +154,7 @@ namespace Aura.Channel.Skills.Combat
 
 				// Splash modifier
 				if (target != mainTarget)
-					damage *= (skill.RankData.Var3 / 100f);
+					damage *= (skill.RankData.Var4 / 100f);
 
 				// Critical Hit
 				var critChance = this.GetCritChance(attacker, target, skill);
