@@ -114,7 +114,6 @@ namespace Aura.Channel.Skills.Combat
 
 			// Stop movement
 			attacker.StopMove();
-			mainTarget.StopMove();
 
 			// Get targets, incl. splash.
 			// Splash happens from r5 onwards, but we'll base it on Var4,
@@ -139,6 +138,9 @@ namespace Aura.Channel.Skills.Combat
 
 			foreach (var target in targets)
 			{
+				// Stop movement
+				target.StopMove();
+
 				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
 				tAction.Set(TargetOptions.Result | TargetOptions.Smash);
 
