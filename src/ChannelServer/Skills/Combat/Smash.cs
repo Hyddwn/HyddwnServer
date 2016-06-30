@@ -117,11 +117,11 @@ namespace Aura.Channel.Skills.Combat
 			mainTarget.StopMove();
 
 			// Get targets, incl. splash.
-			// Splash happens from r5 onwards, but we'll base it on Var3,
+			// Splash happens from r5 onwards, but we'll base it on Var4,
 			// which is the splash damage and first != 0 on r5.
 			var targets = new HashSet<Creature>() { mainTarget };
-			if (skill.RankData.Var3 != 0)
 				targets.UnionWith(attacker.GetTargetableCreaturesInCone(attacker.GetTotalSplashRadius(), attacker.GetTotalSplashAngle()));
+			if (skill.RankData.Var4 != 0)
 
 			// Counter
 			if (Counterattack.Handle(targets, attacker))
@@ -152,7 +152,7 @@ namespace Aura.Channel.Skills.Combat
 
 				// Splash modifier
 				if (target != mainTarget)
-					damage *= 1 + (skill.RankData.Var3 / 100f);
+					damage *= (skill.RankData.Var3 / 100f);
 
 				// Critical Hit
 				var critChance = this.GetCritChance(attacker, target, skill);
