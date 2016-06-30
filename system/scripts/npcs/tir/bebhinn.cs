@@ -20,12 +20,6 @@ public class BebhinnScript : NpcScript
 		EquipItem(Pocket.Armor, 90106, 0xFFE4BF, 0x1E649D, 0x175884);
 		EquipItem(Pocket.Shoe, 17040, 0x996633, 0x6175AD, 0x808080);
 
-		AddGreeting(0, "Is this your first time here? Nice to meet you.");
-		AddGreeting(1, "I think we've met before... nice to see you again.");
-		AddGreeting(2, "<username/>, right? Good to see you again.");
-		AddGreeting(6, "Nice to meet you again, <username/>.");
-		AddGreeting(7, "It seems we meet quite often, <username/>.");
-
 		AddPhrase("Any city would be better than here, right?");
 		AddPhrase("I prefer rainy days over clear days.");
 		AddPhrase("It's soooo boring.");
@@ -40,12 +34,12 @@ public class BebhinnScript : NpcScript
 	protected override async Task Talk()
 	{
 		SetBgm("NPC_Bebhinn.mp3");
-	
+
 		await Intro(L("A young lady is admiring her nails as you enter.<br/>When she notices you, she looks up expectantly, as if waiting for you to liven things up.<br/>Her big, blue eyes sparkle with charm and fun, and her subtle smile creates irresistable dimples."));
 
 		Msg("May I help you?", Button("Start Conversation", "@talk"), Button("Open My Account", "@bank"), Button("Redeem Coupon", "@redeem"), Button("Shop", "@shop"));
 
-		switch(await Select())
+		switch (await Select())
 		{
 			case "@talk":
 				Greet();
@@ -55,7 +49,7 @@ public class BebhinnScript : NpcScript
 					Msg("Oh? You rescued the Goddess, <username/>? How amazing!<br/>So, was she beautiful? Not prettier than me, right? Haha.<br/>Otherwise, why would you leave the Goddess of Tir Na Nog<br/>to come here and tell ME about it? Hehe!");
 				else if (Title == 11002)
 					Msg("What? <username/>, you're the Guardian of Erinn?<br/>I don't get it!<br/>I've worked so hard all my life, and you just walk in and you're already a Guardian of Erinn...<br/>It's so unfair!<p>Hey, I'm just teasing. Don't get all upset.");
-				
+
 				await Conversation();
 				break;
 
@@ -67,10 +61,10 @@ public class BebhinnScript : NpcScript
 				Msg("Are you here to redeem your coupon?<br/>Please enter the coupon number you wish to redeem.", Input("Exchange Coupon", "Enter your coupon number"));
 				var input = await Select();
 
-				if(input == "@cancel")
+				if (input == "@cancel")
 					return;
 
-				if(!RedeemCoupon(input))
+				if (!RedeemCoupon(input))
 				{
 					Msg("I checked the number at our Head Office, and they say this coupon does not exist.<br/>Please double check the coupon number.");
 				}
@@ -88,6 +82,32 @@ public class BebhinnScript : NpcScript
 		}
 
 		End();
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Is this your first time here? Nice to meet you."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("I think we've met before... nice to see you again."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("<username/>, right? Good to see you again."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Nice to meet you again, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("It seems we meet quite often, <username/>."));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)
