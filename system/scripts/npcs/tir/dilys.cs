@@ -21,10 +21,6 @@ public class DilysScript : NpcScript
 		EquipItem(Pocket.Glove, 16098, 0x0061854B, 0x00000000, 0x00000000);
 		EquipItem(Pocket.Shoe, 17285, 0x00E8E8E8, 0x00000000, 0x00000000);
 
-		AddGreeting(0, "Welcome to the Healer's House.");
-		AddGreeting(1, "Have you been here before?<br/>You look familiar.");
-		//AddGreeting(2, "You're back.<br/>Nice to see you again, <username/>."); // Not sure
-
 		AddPhrase("It's such a hassle to get all those ingrediants for just one meal.");
 		AddPhrase("Men are all the same.");
 		AddPhrase("Perhaps I should order a safe this month.");
@@ -153,6 +149,32 @@ public class DilysScript : NpcScript
 		}
 
 		End();
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome to the Healer's House."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Have you been here before?<br/>You look familiar."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("Welcome to the Healer's House, <username/>."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("You're back.<br/>Nice to see you again, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("You're back. <username/>.<br/>Are you feeling sick?"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

@@ -21,9 +21,6 @@ public class FerghusScript : NpcScript
 		EquipItem(Pocket.Shoe, 17283, 0x0077564A, 0x00F2A03A, 0x008A243D);
 		EquipItem(Pocket.RightHand1, 40024, 0x00808080, 0x00212121, 0x00808080);
 
-		AddGreeting(0, "Are you new here? Good to see you.");
-		AddGreeting(1, "Have we met? You look familiar to me.");
-
 		AddPhrase("(Spits out a loogie)");
 		AddPhrase("Beard! Oh, beard! A true man never forgets how to grow a beard, yeah!");
 		AddPhrase("How come they are so late? I've been expecting armor customers for hours now.");
@@ -132,6 +129,32 @@ public class FerghusScript : NpcScript
 		}
 
 		End("Goodbye, Ferghus. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Are you new here? Good to see you."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Have we met? You look familiar to me."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("What's up, <username/>?<br/>You are <username/>, right?"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Good to see you, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("Hey, regular! My dear good ol' customer!"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

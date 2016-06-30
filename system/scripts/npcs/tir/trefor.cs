@@ -23,9 +23,6 @@ public class TreforScript : NpcScript
 		EquipItem(Pocket.Head, 18405, 0x191919, 0x293D52);
 		EquipItem(Pocket.LeftHand2, 40005, 0xB6B6C2, 0x404332, 0x22B653);
 
-		AddGreeting(0, "Hmm? Are you a new traveler?");
-		AddGreeting(1, "Hello <username/>, nice to see you.");
-
 		AddPhrase("(Fart)...");
 		AddPhrase("(Spits out a loogie)");
 		AddPhrase("Ah-choo!");
@@ -135,6 +132,32 @@ public class TreforScript : NpcScript
 		}
 
 		End("Goodbye, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Hmm? Are you a new traveler?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Hello <username/>, nice to see you."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("Hey, <username/>.<br/>You should look out for yourself more."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Hello <username/>, nice to see you.")); // Bad localization, it should probably say "<username/>, I'm happy to see you."
+		}
+		else
+		{
+			Msg(FavorExpression(), L("Hahaha welcome back, <username/>.<br/>How are you doing these days?"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

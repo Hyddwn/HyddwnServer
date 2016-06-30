@@ -21,9 +21,6 @@ public class StewartScript : NpcScript
 		EquipItem(Pocket.Robe, 19003, 0x00993333, 0x00221111, 0x00664444);
 		SetHoodDown();
 
-		AddGreeting(0, "Mmm... How can I help you?");
-		AddGreeting(1, "Excuse me, but have we met before?");
-
 		AddPhrase("Hmm... I'll have to talk with Kristell about this.");
 		AddPhrase("Hmm... There aren't enough textbooks available.");
 		AddPhrase("I wonder if Aeira has prepared all the books.");
@@ -130,6 +127,32 @@ public class StewartScript : NpcScript
 		End("Thank you, <npcname/>. I'll see you later!");
 	}
 
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Mmm... How can I help you?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Excuse me, but have we met before?"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
+	}
+
 	protected override async Task Keywords(string keyword)
 	{
 		switch (keyword)
@@ -178,7 +201,7 @@ public class StewartScript : NpcScript
 					{
 						Msg(L("Do you know anything about the Meditation skill?<br/>This is used to control the flow of Mana through meditation.<br/>This magic is useful when you are short on Mana<br/>before the Eweca has risen."));
 						Msg(L("I'd really like to teach you how to use this magic, but without the basic understanding of Elements,<br/>it could confuse you.<br/>I'll teach you this skill when you learn the three basic Elements of magic.<br/>If you're interested, learn these other magic as well."));
-						
+
 						GiveSkill(SkillId.Meditation, SkillRank.Novice);
 					}
 				}

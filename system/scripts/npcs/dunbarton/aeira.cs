@@ -21,9 +21,6 @@ public class AeiraScript : NpcScript
 		EquipItem(Pocket.Shoe, 17024, 0x00A0505E, 0x00F8784F, 0x00006E41);
 		EquipItem(Pocket.Head, 18028, 0x00746C54, 0x00C0C0C0, 0x00007C8C);
 
-		AddGreeting(0, "I'm sorry, but your name is...?<br/>Mmm? <username/>? Nice to meet you.");
-		AddGreeting(1, "Hahaha. I... Umm... I think I've met you before...<br/>Your name was...<br/>Oh, I'm sorry, <username/>. My mind went blank for a second. Hehehe.");
-
 		AddPhrase("*cough* The books are too dusty...");
 		AddPhrase("*Whistle*");
 		AddPhrase("Hahaha.");
@@ -66,6 +63,32 @@ public class AeiraScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("I'm sorry, but your name is...?<br/>Mmm? <username/>? Nice to meet you."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Hahaha. I... Umm... I think I've met you before...<br/>Your name was...<br/>Oh, I'm sorry, <username/>. My mind went blank for a second. Hehehe."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

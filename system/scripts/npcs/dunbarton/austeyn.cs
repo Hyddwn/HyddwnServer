@@ -19,9 +19,6 @@ public class AusteynScript : NpcScript
 		EquipItem(Pocket.Armor, 15003, 0x0036485A, 0x00BDC2B1, 0x00626C76);
 		EquipItem(Pocket.Shoe, 17009, 0x0036485A, 0x00FFE1B9, 0x009A004E);
 
-		AddGreeting(0, "Welcome. It must have been a long journey for you. Your legs must be hurting.");
-		AddGreeting(1, "You seem familiar. Have we met before?");
-
 		AddPhrase("*Doze off*");
 		AddPhrase("*Yawn*");
 		AddPhrase("Ah... How boring...");
@@ -92,6 +89,32 @@ public class AusteynScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome. It must have been a long journey for you. Your legs must be hurting."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("You seem familiar. Have we met before?"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

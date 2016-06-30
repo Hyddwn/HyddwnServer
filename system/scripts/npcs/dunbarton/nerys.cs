@@ -21,9 +21,6 @@ public class NerysScript : NpcScript
 		EquipItem(Pocket.Glove, 16008, 0x00818775, 0x00117C7D, 0x0000A3DC);
 		EquipItem(Pocket.Shoe, 17001, 0x00823021, 0x0082C991, 0x00F2597B);
 
-		AddGreeting(0, "What are you looking for?");
-		AddGreeting(1, "Wait... I think I've met you once before...<br/>If not, sorry.");
-
 		AddPhrase("There are so many weapon repair requests this month.");
 		AddPhrase("That fellow... I like the look in his eyes.");
 		AddPhrase("Wait, I shouldn't be doing this right now.");
@@ -133,6 +130,32 @@ public class NerysScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("What are you looking for?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Wait... I think I've met you once before...<br/>If not, sorry."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

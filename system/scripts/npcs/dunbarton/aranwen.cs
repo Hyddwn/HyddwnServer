@@ -21,9 +21,6 @@ public class AranwenScript : NpcScript
 		EquipItem(Pocket.Shoe, 17504, 0x00C6D8EA, 0x00C6D8EA, 0x003F6577);
 		EquipItem(Pocket.RightHand1, 40012, 0x00C0C0C0, 0x008C84A4, 0x00403C47);
 
-		AddGreeting(0, "Yes? Please don't block my view.");
-		AddGreeting(1, "Hmm. <username/>, right?<br/>Of course.");
-
 		AddPhrase("...");
 		AddPhrase("A sword does not betray its own will.");
 		AddPhrase("A sword is not a stick. I don't feel any tension from you!");
@@ -87,6 +84,32 @@ public class AranwenScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Yes? Please don't block my view."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Hmm. <username/>, right?<br/>Of course."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

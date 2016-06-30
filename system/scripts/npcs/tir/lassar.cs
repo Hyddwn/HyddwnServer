@@ -22,9 +22,6 @@ public class LassarScript : NpcScript
 		EquipItem(Pocket.RightHand1, 40418, 0x00808080, 0x00000000, 0x00000000);
 		EquipItem(Pocket.LeftHand1, 46023, 0x00808080, 0x00000000, 0x00000000);
 
-		AddGreeting(0, "Umm... Are you <username/>, by any chance?<p>Hahaha! You look just like what Bebhinn described.<br/>Excuse my laughing.<br/>Good to meet you.<br/>I am <npcname/>.");
-		AddGreeting(1, "We met before, right?<br/>Yes, I am <npcname/>.");
-
 		AddPhrase("....");
 		AddPhrase("And I have to supervise an advancement test.");
 		AddPhrase("Come to think of it, I have to come up with questions for the test.");
@@ -156,6 +153,32 @@ public class LassarScript : NpcScript
 		}
 
 		End("Goodbye, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Umm... Are you <username/>, by any chance?<p>Hahaha! You look just like what Bebhinn described.<br/>Excuse my laughing.<br/>Good to meet you.<br/>I am <npcname/>."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("We met before, right?<br/>Yes, I am <npcname/>."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("<username/>, right?<br/>Good to see you again."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("We meet again, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("We run into each other frequently these days, <username/>."));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

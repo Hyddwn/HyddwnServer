@@ -20,9 +20,6 @@ public class KristellScript : NpcScript
 		EquipItem(Pocket.Armor, 15009, 0x00303133, 0x00C6D8EA, 0x00DBC741);
 		EquipItem(Pocket.Shoe, 17015, 0x00303133, 0x007BCDB7, 0x006E6565);
 
-		AddGreeting(0, "I am Priestess <npcname/>. Nice to meet you.");
-		AddGreeting(1, "Welcome to the Dunbarton church, <username/>.");
-
 		AddPhrase("...");
 		AddPhrase("I wish there was someone who could ring the bell on time...");
 		AddPhrase("In the name of Lymilark...");
@@ -63,6 +60,32 @@ public class KristellScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("I am Priestess <npcname/>. Nice to meet you."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Welcome to the Dunbarton church, <username/>."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

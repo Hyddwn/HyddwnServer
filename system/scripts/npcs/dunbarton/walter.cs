@@ -19,8 +19,6 @@ public class WalterScript : NpcScript
 		EquipItem(Pocket.Armor, 15044, 0x00665033, 0x00DDDDDD, 0x00D5DBE4);
 		EquipItem(Pocket.Shoe, 17009, 0x009D7012, 0x00D3E3F4, 0x00EEA23D);
 
-		AddGreeting(0, "...Welcome.");
-
 		AddPhrase("Ahem!");
 		AddPhrase("Ahem... Ow...my throat...");
 		AddPhrase("Hello there!");
@@ -129,6 +127,32 @@ public class WalterScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("...Welcome."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

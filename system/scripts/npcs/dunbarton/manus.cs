@@ -18,9 +18,6 @@ public class ManusScript : NpcScript
 		EquipItem(Pocket.Armor, 15030, 0x00CFD0B5, 0x00006600, 0x00006600);
 		EquipItem(Pocket.Shoe, 17035, 0x00223846, 0x00574662, 0x00808080);
 
-		AddGreeting(0, "You look familiar. Haven't we met before?");
-		AddGreeting(1, "I seem to be seeing you often.");
-
 		AddPhrase("A healthy body for a healthy mind!");
 		AddPhrase("Alright! Here we go! Woo-hoo!");
 		AddPhrase("Come! A special potion concocted by Manus for sale now!");
@@ -117,6 +114,32 @@ public class ManusScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("You look familiar. Haven't we met before?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("I seem to be seeing you often."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)
