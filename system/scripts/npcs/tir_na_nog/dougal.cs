@@ -24,12 +24,6 @@ public class DougalScript : NpcScript
 		EquipItem(Pocket.Shoe, 17281, 0x002E2E23, 0x00FFD195, 0x004EB964);
 		EquipItem(Pocket.RightHand1, 40034, 0x00746C54, 0x00CCC8AB, 0x00A99DCD);
 
-
-		AddGreeting(0, "You're quite brave to come to a place like this. I'm Dougal.<br/>I'm here... alone.");
-		AddGreeting(1, "We meet again.<br/>I didn't think you'd be brave enough to come here so often.<br/>Ahh, no harm intended though.");
-		AddGreeting(2, "You're back. I was wondering why you hadn't come back yet.<br/>");
-		AddGreeting(3, "We meet again, <username/>. How may I help you today?<br/>");
-
 		AddPhrase("I heard someone's prayer... or did I just imagine that?");
 		AddPhrase("Mm... Why does my head hurt so much...?");
 		AddPhrase("Do they even know where this is...?");
@@ -88,6 +82,32 @@ public class DougalScript : NpcScript
 		}
 
 		End("You have ended your conversation with <npcname/>.");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("You're quite brave to come to a place like this. I'm Dougal.<br/>I'm here... alone."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("We meet again.<br/>I didn't think you'd be brave enough to come here so often.<br/>Ahh, no harm intended though."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("You're back. I was wondering why you hadn't come back yet."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("We meet again, <username/>. How may I help you today?"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

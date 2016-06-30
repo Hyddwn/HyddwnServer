@@ -29,10 +29,6 @@ public class TarlachScript : NpcScript
 		EquipItem(Pocket.Robe, 19004, 0x00CA7B34, 0x00B45031, 0x00DABC87);
 		SetHoodDown();
 
-		AddGreeting(0, "(Cough, Cough)...<br/>So you have made it through the barrier and have reached this desolate place.<br/>");
-		AddGreeting(1, "...It seems like you want to ask me something...<br/>Don't be shy about it...just ask me.<br/>(Cough)...");
-		AddGreeting(2, "...You came, <username/>...mmm...<br/>I was just thinking it was about time for you to show up.");
-
 		AddPhrase("(Cough, Cough)");
 		AddPhrase("Sigh...");
 		AddPhrase("...My head...");
@@ -83,6 +79,32 @@ public class TarlachScript : NpcScript
 		}
 
 		End("You have ended your conversation with <npcname/>.");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("(Cough, Cough)...<br/>So you have made it through the barrier and have reached this desolate place."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("...It seems like you want to ask me something...<br/>Don't be shy about it...just ask me.<br/>(Cough)..."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("...You came, <username/>...mmm...<br/>I was just thinking it was about time for you to show up."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

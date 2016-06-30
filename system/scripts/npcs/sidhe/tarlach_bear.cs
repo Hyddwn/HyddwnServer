@@ -19,8 +19,6 @@ public class TarlachBearScript : NpcScript
 		else
 			SetLocation(22, 5800, 7100, 167);
 
-		AddGreeting(0, ".....");
-
 		AddPhrase("...... ");
 		AddPhrase("Grrrrr...");
 		AddPhrase("Growl... ");
@@ -60,6 +58,32 @@ public class TarlachBearScript : NpcScript
 		}
 
 		End("You have ended your conversation with <npcname/>.");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("....."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("....."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)

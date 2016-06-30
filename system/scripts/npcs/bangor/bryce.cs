@@ -20,9 +20,6 @@ public class BryceScript : NpcScript
 		EquipItem(Pocket.Armor, 15034, 0x00FAF7EB, 0x003C2D22, 0x00100C0A);
 		EquipItem(Pocket.Shoe, 17009, 0x00000000, 0x00F69A2B, 0x004B676F);
 
-		AddGreeting(0, "Welcome to the Bangor branch of the Erskin Bank.");
-		AddGreeting(1, "Hello, <username/>. I'm pretty good with names.");
-
 		AddPhrase("*Cough* There's just too much dust in here.");
 		AddPhrase("Anyway, where did Ibbie go again?");
 		AddPhrase("Have my eyes really become this bad?");
@@ -92,6 +89,32 @@ public class BryceScript : NpcScript
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Welcome to the Bangor branch of the Erskin Bank."));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Hello, <username/>. I'm pretty good with names."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("(Missing)"));
+		}
+
+		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)
