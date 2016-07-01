@@ -42,21 +42,18 @@ namespace Aura.Channel.Skills.Hidden
 
 			var item = creature.Inventory.GetItemSafe(itemEntityId);
 			var hw = creature.Inventory.GetItemSafe(hwEntityId);
-
-			var blessable = (item.HasTag("/equip/") && !item.HasTag("/not_bless/"));
 			var isHolyWater = (hw.Info.Id == 63016); // There's only one item using this skill.
 
 			// TODO: Check loading time
 
-			if (blessable && isHolyWater)
+			if (item.IsBlessable && isHolyWater)
 			{
 				creature.Inventory.Decrement(hw, 1);
-				item.OptionInfo.Flags |= ItemFlags.Blessed;
+				creature.Bless(item);
 			}
 			else
 				Log.Warning("Blessing.Complete: Invalid item or Holy Water.");
 
-			Send.ItemBlessed(creature, item);
 			Send.UseMotion(creature, 14, 0);
 			Send.SkillComplete(creature, skill.Info.Id, itemEntityId, hwEntityId);
 		}

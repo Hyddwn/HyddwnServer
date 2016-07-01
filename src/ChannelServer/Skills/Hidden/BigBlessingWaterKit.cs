@@ -47,17 +47,9 @@ namespace Aura.Channel.Skills.Hidden
 
 			// TODO: Check loading time
 
-			var items = creature.Inventory.GetEquipment();
-			foreach (var item in items)
-			{
-				var blessable = (item.HasTag("/equip/") && !item.HasTag("/not_bless/"));
-
-				if (blessable)
-					item.OptionInfo.Flags |= ItemFlags.Blessed;
-			}
-
+			var items = creature.Inventory.GetEquipment(a => a.IsBlessable);
+			creature.Bless(items);
 			creature.Inventory.Decrement(hw, 1);
-			Send.ItemBlessed(creature, items);
 
 		L_End:
 			Send.UseMotion(creature, 14, 0);

@@ -344,6 +344,19 @@ namespace Aura.Channel.World.Entities
 		public bool IsBow { get { return this.HasTag("/bow/|/bow01|/crossbow/"); } }
 
 		/// <summary>
+		/// Returns true if item can be blessed.
+		/// </summary>
+		public bool IsBlessable
+		{
+			get
+			{
+				return
+					(this.HasTag("/equip/") && !this.HasTag("/not_bless/")) &&
+					(this.Info.Pocket != Pocket.Magazine1 && this.Info.Pocket != Pocket.Magazine2);
+			}
+		}
+
+		/// <summary>
 		/// New item based on item id.
 		/// </summary>
 		/// <param name="itemId"></param>
