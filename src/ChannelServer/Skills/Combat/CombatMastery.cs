@@ -99,6 +99,9 @@ namespace Aura.Channel.Skills.Combat
 
 				foreach (var target in targets)
 				{
+					if (target.IsDead)
+						continue;
+
 					target.StopMove();
 
 					var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
