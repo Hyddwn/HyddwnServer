@@ -14,6 +14,7 @@ public class DilysScript : NpcScript
 		SetFace(skinColor: 17, eyeType: 3, eyeColor: 27, mouthType: 48);
 		SetStand("human/female/anim/female_natural_stand_npc_Dilys_retake");
 		SetLocation(6, 1107, 1050, 195);
+		SetGiftWeights(beauty: 0, individuality: 2, luxury: 1, toughness: 0, utility: 0, rarity: 0, meaning: 1, adult: 2, maniac: 0, anime: -1, sexy: -1);
 
 		EquipItem(Pocket.Face, 3908, 0x0058B49E, 0x00365C72, 0x00D6EEF5);
 		EquipItem(Pocket.Hair, 3141, 0x00633C31, 0x00633C31, 0x00633C31);
@@ -31,11 +32,7 @@ public class DilysScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		await Intro(
-			"A tall, slim lady tinkers with various ointments, herbs, and bandages.",
-			"She looks wise beyond her years, but it might just be the healer's dress",
-			"and neatly combed hair."
-		);
+		await Intro(L("A tall, slim lady tinkers with various ointments, herbs, and bandages.<br/>She looks wise beyond her years, but it might just be the healer's dress<br/>and neatly combed hair."));
 
 		Msg("Welcome to the Healer's House.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Get Treatment", "@healerscare"), Button("Heal Pet", "@petheal"));
 
@@ -74,7 +71,9 @@ public class DilysScript : NpcScript
 					}
 				}
 
-				if (Title == 11002)
+				if (Title == 11001)
+					Msg("...<username/>, Who Saved the Goddess?<br/>...<br/>Ugh, spare me.<br/>Trefor suffices as the town fool and we only need one.");
+				else if (Title == 11002)
 					Msg("Sigh...<br/>As if Trefore weren't enough...<br/>Do we really need more dummies in this town?");
 
 				await Conversation();
@@ -183,15 +182,15 @@ public class DilysScript : NpcScript
 		{
 			case "personal_info":
 				GiveKeyword("shop_healing");
-				Msg("A healer's job is to treat sick people.<br/>Don't hesitate to come to me if you ever feel sick.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "A healer's job is to treat sick people.<br/>Don't hesitate to come to me if you ever feel sick.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				GiveKeyword("graveyard");
-				Msg("It was hard for you to get here, wasn't it? I bet if I were a little closer to the Square<br/>you would've come earlier. Hehe...<br/>Truthfully, it is kind of scary being next to the graveyard.");
+				Msg(FavorExpression(), "It was hard for you to get here, wasn't it? I bet if I were a little closer to the Square<br/>you would've come earlier. Hehe...<br/>Truthfully, it is kind of scary being next to the graveyard.");
 				Msg("At first I thought about opening the Healer's House near the Square<br/>but Duncan advised me that this place would be better for business.<br/>Actually, I haven't had many patients.<br/>Only people who come to hunt spiders and...Trefor, who stores his goods here...");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 
 				/* Message from Field Boss Spawns
 				Msg("<face name='normal'/>Head to Eastern Prairie of the Meadow right away!<br/>Trefor made a fuss because of Gigantic White Wolf's attack.");
@@ -316,7 +315,7 @@ public class DilysScript : NpcScript
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				GiveKeyword("shop_inn");
 				Msg("Hmm... We don't have a shop that sells weapons here...<br/>But you could go and talk to Ferghus.<br/>His Blacksmith's Shop is past the Inn, just across the bridge.");
 				break;
 
@@ -339,6 +338,31 @@ public class DilysScript : NpcScript
 				Msg("The graveyard? Just go up the hill. <be/>But, really? Asking about the graveyard at the Healer's House?<br/>Haha, you're quite strange...");
 				break;
 
+			case "bow":
+				Msg("A bow is a dangerous weapon.<br/>You need to be very careful with them.<br/>Most of the patients who come here<br/>were wounded by weapons like that.");
+				break;
+
+			case "lute":
+				Msg("There are many instruments besides lutes.<br/>But that's the only one you'll find in this town.<br/>I'm sure that when you go to another city<br/>your mouth will hang open, staring at all the different choices... Hehe...");
+				break;
+
+			case "complicity":
+				Msg("Huh? Did something happen?<br/>Why do you bring that up?");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog?<br/>It's the legendary fantasy world.<br/>No one has ever seen the place...<br/>I sometimes wonder how that story originated.");
+				break;
+
+			case "mabinogi":
+				Msg("If you want to know more about Mabinogi,<br/>you will get more answers from the elders in this town than from me.<br/>Someone like Chief Duncan or Priest Meven...");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("Music Score? The General Shop should sell them....<br/>Haven't you been there, yet?");
+				break;
+
 			default:
 				RndMsg(
 					"Eh?",
@@ -347,7 +371,7 @@ public class DilysScript : NpcScript
 					"Did you ask others about this as well?",
 					"Did they say they didn't know about it either?<br/>Well..."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
