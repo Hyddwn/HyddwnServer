@@ -53,13 +53,16 @@ There are 4 ways **you** can help us to improve Aura:
 Do research on NPCs, quests, skills, anything really that isn't implemented yet and
 post it on our [research forum](http://aura-project.org/forum/forum/36-research/).
 The information you post will help developers to implement the features. 
+You can also keep a lookout for GitHub issues where we
+[need help](https://github.com/aura-project/aura/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
+or information.
 
 ### 2. Bug reports
 Report bugs on [GitHub](https://github.com/aura-project/aura/issues), so they can be fixed ASAP.
 
 ### 3+4. Code
 The fastest way to get code contributions into the source is a pull request, which,
-if well written, can be merged right in to *master*. To expediate this process, 
+if well written, can be merged right into *master*. To expediate this process, 
 all pull requests must comply with our coding conventions below.
 
 Alternatively you can make "casual" releases on the forum, which developers might pick up
