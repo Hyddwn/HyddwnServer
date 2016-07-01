@@ -124,6 +124,13 @@ namespace Aura.Channel.Skills.Life
 			{
 				var tool = creature.RightHand;
 
+				// No gathering with a broken tool.
+				if (tool.Durability == 0)
+				{
+					this.DoComplete(creature, entityId, collectId, false, 4);
+					return;
+				}
+
 				// Durability
 				if (collectData.DurabilityLoss > 0)
 				{
