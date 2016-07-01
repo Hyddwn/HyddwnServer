@@ -4,7 +4,7 @@
 // Chief of Tir Chonaill (outside Chief's House)
 //---------------------------------------------------------------------------
 
-public class DuncanBaseScript : NpcScript
+public class DuncanScript : NpcScript
 {
 	public override void Load()
 	{
@@ -36,11 +36,7 @@ public class DuncanBaseScript : NpcScript
 	{
 		SetBgm("NPC_Duncan.mp3");
 
-		await Intro(
-			"An elderly man gazes softly at the world around him with a calm air of confidence.",
-			"Although his face appears weather-beaten, and his hair and beard are gray, his large beaming eyes make him look youthful somehow.",
-			"As he speaks, his voice resonates with a kind of gentle authority."
-		);
+		await Intro(L("An elderly man gazes softly at the world around him with a calm air of confidence.<br/>Although his face appears weather-beaten, and his hair and beard are gray, his large beaming eyes make him look youthful somehow.<br/>As he speaks, his voice resonates with a kind of gentle authority."));
 
 		Msg("Please let me know if you need anything.", Button("Start Conversation", "@talk"), Button("Shop", "@shop"), Button("Retrive Lost Items", "@lostandfound"));
 
@@ -88,7 +84,11 @@ public class DuncanBaseScript : NpcScript
 					}
 				}
 
-				if (Title == 11002)
+				if (Title == 11001)
+				{
+					Msg("You rescued the Goddess? And defeated Glas Ghaibhleann?<br/>Well done! A great accomplishment.<br/>However, most people won't understand the gravity of what you have just done.<br/>But don't be disappointed. Erinn shall prosper for a long time, thanks to you.<br/>Accept my deepest gratitude as Chief of this town.");
+				}
+				else if (Title == 11002)
 				{
 					Msg("Oh. <username/>! You finally did it...<br/>I can't believe you became the Knight of Light and saved Erinn...<br/>Nao would be so proud.");
 					Msg("I'm starting to understand Goddess Morrighan and Nao's will<br/>for sending people like you to this world.");
@@ -143,68 +143,101 @@ public class DuncanBaseScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				if (Favor > 40)
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
 				{
-					Msg("See that bird on the tree over there? When I was young, he used to help me on the battlefield.<br/>Now he's as old as I am and sleeps all the time.<br/>Perhaps he has closed his heart in disappointment at my present appearance, so old and changed...");
+					Msg(FavorExpression(), "My name, <npcname/>, is a warrior name.<br/>My father gave it to me hoping that I would become a great warrior leader.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "See that bird on the tree over there? When I was young, he used to help me on the battlefield.<br/>Now he's as old as I am and sleeps all the time.<br/>Perhaps he has closed his heart in disappointment at my present appearance, so old and changed...");
+					ModifyRelation(Random(2), Random(2), Random(2));
 				}
 				else
 				{
-					GiveKeyword("shop_headman");
-					Msg("Once again, welcome to Tir Chonaill.");
-				}
-
-				ModifyRelation(Random(2), 0, Random(2));
-				break;
-
-			case "rumor":
-				if (Favor > 40)
-					Msg("The weather here changes unpredictably because Tir Chonaill is located high up in the mountains.<br/>There are instances where bridges collapse and roads are destroyed after a heavy rainfall,<br/>and people lose all contact with the outside world.<br/>Despite that, I think you've done quite well here.");
-				else
-					Msg("I heard a rumor that this is just a copy of the world of Erin. Trippy, huh?");
-
-
-				ModifyRelation(Random(2), 0, Random(2));
-
-				/* More data - unsure where it goes
-
-				// This message came up first
-				Msg("Talk to the good people in Tir Chonaill as much as you can, and pay close attention to what they say.<br/>Once you become friends with them, they will help you in many ways.<br/>Why don't you start off by visiting the buildings around the Square?");
-
-				// Then this message always came up afterwards, except on field boss info
-				Msg("<face name='normal'/>Have you heard of field bosses?<br/>They are very powerful monsters that appear randomly in places outside dungeons, like open fields.<br/>Field bosses are either a Fomor or an animal affected by the forces of evil and transformed into a huge, savage creature.");
-				Msg("Field bosses usually show up with several monsters with them,<br/>so they pose a big threat to travelers.<br/>If you want to face a field boss, the people in town will tell you about them<br/>if you ask about nearby rumors a few times.");
-				Msg("<title name='NONE'/>(The conversation drew a lot of interest.)"); 
-
-				// Message from Field Boss Spawns
-				Msg("<face name='normal'/>I have something to tell you.<br/>Can you feel the evil presence of Gigantic White Wolf spreading around Southern Plains of Tir Chonaill?<br/>I think something bad will happen in around 3Days late Afternoon...");
-				Msg("<title name='NONE'/>(That was a great conversation!)"); */
-				break;
-
-			case "about_skill":
-				// Duncan used to check for race, but stopped some time after G13, so a feature check should go here
-				if (HasSkill(SkillId.RangedAttack) && !HasSkill(SkillId.MagnumShot))
-				{
-					GiveKeyword("skill_magnum_shot");
-					Msg("You seem much more comfortable conversing with people using the 'Skills' keyword now.<br/>Wait. You can shoot an arrow? Congratulations!<br/>You've only been here for a short time, yet you pick up things so fast.");
-					Msg("Now, have you heard about Magnum Shot?<br/>You see, a bow is great for attacking enemies from a distance,<br/>yet it's frustrating when you miss a target.<br/>Plus, the damage from a bow isn't as strong as a melee attack.");
-					Msg("Since you were so diligent, I will teach you<br/>Magnum Shot, which I learned from Ranald.");
-					Msg("The Magnum Shot skill helps you to shoot a powerful arrow<br/>with the power you have concentrated in your bow.<br/>Go on and work on your training...");
-					// Duncan started giving the skill some time after G13, so a feature check should go here
-					// On official, he adds the skill as rNovice, then adds on 100 skill training
-					GiveSkill(SkillId.MagnumShot, SkillRank.RF);
-					break;
-				}
-				else
-				{
-					if (HasSkill(SkillId.Rest))
+					if (Title == 33)
 					{
-						Msg("You know about the Combat Mastery skill?<br/>It's one of the basic skills needed to protect yourself in combat.<br/>It may look simple, but never underestimate its efficiency.<br/>Continue training the skill diligently and you will soon reap the rewards. That's a promise.");
+						Msg(FavorExpression(), "Now that I think about it, I have something to tell you...<br/>Oh, it's not serious. But you have quite the reputation around here.<br/>Your diligence and hard work is well known to everyone in town.<br/>People say you're good-hearted and a decent human being.<br/>I trust you too, so keep up the good work.");
 					}
 					else
 					{
-						Msg("Whatever you do, skills will be an essential part of your life.<br/>There are various ways to learn skills,<br/>but the best way is to talk to people in town using the 'Skills' keyword.");
-						Msg("First, go and meet the people of Tir Chonaill, and use this keyword to ask them questions.<br/>They will teach you everything about skills they know,<br/>but that doesn't mean they will tell you everything YOU want to know.<br/>The town residents aren't experts.");
-						Msg("So my advice is to not get frustrated.<br/>Even if you don't learn a skill right away, if you follow their guidance,<br/>you'll eventually find someone who can teach you the skill.<br/>If I were you, I would listen carefully to what people say.");
+						GiveKeyword("shop_headman");
+						Msg(FavorExpression(), "Once again, welcome to Tir Chonaill.");
+					}
+					ModifyRelation(Random(2), 0, Random(3));
+				}
+				break;
+
+			case "rumor":
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					GiveKeyword("graveyard");
+					Msg(FavorExpression(), "In the graveyard lay those who sacrificed their lives<br/>to keep Tir Chonaill safe from monsters and evil creatures...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "The weather here changes unpredictably because Tir Chonaill is located high up in the mountains.<br/>There are instances where bridges collapse and roads are destroyed after a heavy rainfall,<br/>and people lose all contact with the outside world.<br/>Despite that, I think you've done quite well here.");
+					ModifyRelation(Random(2), Random(2), Random(3));
+				}
+				else
+				{
+					if (!HasKeyword("square"))
+					{
+						GiveKeyword("square");
+						Msg(FavorExpression(), "Talk to the good people in Tir Chonaill as much as you can, and pay close attention to what they say.<br/>Once you become friends with them, they will help you in many ways.<br/>Why don't you start off by visiting the buildings around the Square?");
+					}
+					else
+					{
+						Msg(FavorExpression(), "Have you heard of field bosses?<br/>They are very powerful monsters that appear randomly in places outside dungeons, like open fields.<br/>Field bosses are either a Fomor or an animal affected by the forces of evil and transformed into a huge, savage creature.");
+						Msg("Field bosses usually show up with several monsters with them,<br/>so they pose a big threat to travelers.<br/>If you want to face a field boss, the people in town will tell you about them<br/>if you ask about nearby rumors a few times.");
+					}
+					ModifyRelation(Random(2), 0, Random(3));
+				}
+
+				/* Not sure where this goes
+				Msg("I heard a rumor that this is just a copy of the world of Erin. Trippy, huh?");
+
+				// Message from Field Boss Spawns
+				Msg("<face name='normal'/>I have something to tell you.<br/>Can you feel the evil presence of Gigantic White Wolf spreading around Southern Plains of Tir Chonaill?<br/>I think something bad will happen in around 3Days late Afternoon...");
+				Msg("<title name='NONE'/>(That was a great conversation!)");
+				
+				// Message during Field Boss
+				Msg("<face name='normal'/>Why are you here?<br/>I saw people running to Eastern Prairie of the Meadow.<br/>They were running to save their friends in peril after Gigantic White Wolf showed up."); */
+				break;
+
+			case "about_skill":
+				// Duncan used to check for only humans, but stopped some time after G13, so a feature check should go here
+				if (Player.IsGiant)
+				{
+					Msg("Hehe. Sorry, but there's not much that I can teach you...");
+				}
+				else
+				{
+					if (HasSkill(SkillId.RangedAttack) && !HasSkill(SkillId.MagnumShot))
+					{
+						GiveKeyword("skill_magnum_shot");
+						Msg("You seem much more comfortable conversing with people using the 'Skills' keyword now.<br/>Wait. You can shoot an arrow? Congratulations!<br/>You've only been here for a short time, yet you pick up things so fast.");
+						Msg("Now, have you heard about Magnum Shot?<br/>You see, a bow is great for attacking enemies from a distance,<br/>yet it's frustrating when you miss a target.<br/>Plus, the damage from a bow isn't as strong as a melee attack.");
+						Msg("Since you were so diligent, I will teach you<br/>Magnum Shot, which I learned from Ranald.");
+						Msg("The Magnum Shot skill helps you to shoot a powerful arrow<br/>with the power you have concentrated in your bow.<br/>Go on and work on your training...");
+						// Duncan started giving the skill some time after G13, so a feature check should go here
+						// On official, he adds the skill as rNovice, then adds on 100 skill training
+						GiveSkill(SkillId.MagnumShot, SkillRank.RF);
+						break;
+					}
+					else
+					{
+						if (HasSkill(SkillId.Rest))
+						{
+							Msg("You know about the Combat Mastery skill?<br/>It's one of the basic skills needed to protect yourself in combat.<br/>It may look simple, but never underestimate its efficiency.<br/>Continue training the skill diligently and you will soon reap the rewards. That's a promise.");
+						}
+						else
+						{
+							Msg("Whatever you do, skills will be an essential part of your life.<br/>There are various ways to learn skills,<br/>but the best way is to talk to people in town using the 'Skills' keyword.");
+							Msg("First, go and meet the people of Tir Chonaill, and use this keyword to ask them questions.<br/>They will teach you everything about skills they know,<br/>but that doesn't mean they will tell you everything YOU want to know.<br/>The town residents aren't experts.");
+							Msg("So my advice is to not get frustrated.<br/>Even if you don't learn a skill right away, if you follow their guidance,<br/>you'll eventually find someone who can teach you the skill.<br/>If I were you, I would listen carefully to what people say.");
+						}
 					}
 				}
 				break;
@@ -242,7 +275,6 @@ public class DuncanBaseScript : NpcScript
 				Msg("Are you tired?<br/>The Inn is near the town entrance, so just go further down.<br/>Nora will be at the door to greet you.<br/>If you have time, go and talk to her.");
 				break;
 
-
 			case "shop_bank":
 				Msg("It's been a while since the Erskin Bank first opened its doors...<br/>It's that big building with a tiled roof below in the Square.<br/>There, you'll find Bebhinn, the teller.<br/>She knows a lot of gossip, so talk to her if you're curious.");
 				break;
@@ -252,6 +284,7 @@ public class DuncanBaseScript : NpcScript
 				break;
 
 			case "skill_range":
+				GiveKeyword("school");
 				Msg("Hmm. I could tell you some things about long-ranged attacks,<br/>but I think it's better for you to ask Ranald.<br/>Don't take it personally! I just think you should learn from an expert.");
 				Msg("Long-ranged attacks consist of attacking a monster at a distance with a bow or a rock.<br/>But you need to spend time training, as long-ranged attacks and melee attacks use different muscles.");
 				break;
@@ -368,6 +401,38 @@ public class DuncanBaseScript : NpcScript
 				Msg("You have a good hobby.<br/>Make sure to buy plenty of Bait Tins.<br/>Otherwise you might end up regretting it later.<br/>Hahaha.");
 				break;
 
+			case "bow":
+				Msg("Looking for a bow?<br/>Ah, Ranald told you to head to the Blacksmith's Shop and talk to Ferghus, right?<br/>But the look on your face tells me you were hoping Ranald would just give you one.<br/>Hahaha! Yes, as Chief of this town, I know everything that goes on.");
+				Msg("But listen to me. Don't bear a grudge against Ranald.<br/>He may not be the best at expressing himself, but he's a sensitive man who pays attention to details.<br/>He's been teaching many people about combat lately.<br/>Think about it. He can't give a bow to each and every one of his students, right?");
+				Msg("Besides, you need to learn how to obtain your own equipment.<br/>Now hurry to the Blacksmith's Shop and buy a bow.<br/>Remember to have enough Gold in your inventory to pay for it!");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_misc");
+				Msg("You can find lutes and other items at Malcolm's General Shop.<br/>Why don't you go take a look?");
+				break;
+
+			case "complicity":
+				Msg("I'm not encouraging that you think of the townspeople as naive, simple folk,<br/>but I hope you are not too suspicious of them, either.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog... The paradise everyone in Erinn dreams of.<br/>At Tir Na Nog, there is no death, pain, or sorrow.<br/>It's a paradise that overflows with love and vibrant life.");
+				Msg("The ancient legend says that when we understand<br/>the true will of Aton Cimeni, the creator of all things,<br/>then Tir Na Nog will descend upon us as a true paradise.<br/>It is said that no one has ever set a foot in Tir Na Nog...");
+				break;
+
+			case "mabinogi":
+				Msg("Did you know there were epic battles fought between humans and the evil Fomors many ages ago?<br/>I suppose you are too preoccupied wrestling the creatures in the dungeons<br/>to realize how horrific the Fomors were...<br/>At that time, it was terrifying.");
+				Msg("No matter how many humans fought <br>and no matter how much more advanced our weapons were,<br/>we were no match for the sheer power of the Fomors.<br/>So many people lost their lives...");
+				Msg("Despite terrible odds, we never gave up.<br/>Heroes appeared and courageously fought for us,<br/>finally defeating the Fomors with the blessings of the Gods.<br/>Humans were finally able to reclaim their land.");
+				Msg("Erinn, the world we live in now, was defended with the blood of those herioc warriors.<br/>Bards sang songs about them, and everyday folk spread their stories to other lands.<br/>That is the Mabinogi, the song and stories we treasure today.<br/>It's the song written as a tribute to our brave heroes.");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("For Music Scores, go to the General Shop and talk to Malcolm.<br/>But don't think that Malcolm composes a lot of music!<br/>He has terrible rhythm! He just sells the scrolls on behalf of the composers.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"Hm?",
@@ -378,7 +443,7 @@ public class DuncanBaseScript : NpcScript
 					"I think it'd be better for you to ask someone else."
 				);
 
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
