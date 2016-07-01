@@ -2458,7 +2458,7 @@ namespace Aura.Channel.World.Entities
 				case ReviveOptions.InCamp:
 				case ReviveOptions.StatueOfGoddess:
 					// 25% life recovery and 10% additional injuries
-					this.Injuries += this.LifeInjured * 0.10f;
+					this.Injuries = Math2.Clamp(0, this.LifeMax * 0.75f, this.Injuries + this.LifeMax * 0.10f);
 					this.Life = this.LifeMax * 0.25f;
 					break;
 
