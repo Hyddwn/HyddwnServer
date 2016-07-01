@@ -150,13 +150,13 @@ public class AlissaScript : NpcScript
 		{
 			case "personal_info":
 				GiveKeyword("school");
-				Msg("My name? I am <npcname/>.<br/>I work here at the mill, helping around with chores.<br/>Have you seen my sister? She's at the School.<br/>If you happen to go there, go inside the left building.<br/>She'll be in the magic class.");
+				Msg(FavorExpression(), "My name? I am <npcname/>.<br/>I work here at the mill, helping around with chores.<br/>Have you seen my sister? She's at the School.<br/>If you happen to go there, go inside the left building.<br/>She'll be in the magic class.");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				GiveKeyword("shop_smith");
-				Msg("Ferghus?<br/>I don't know if he's a good blacksmith, but he's a nice person.<br/>Usually, when you ask him a question, he kindly answers everything...<br/>Go find out for yourself.");
+				Msg(FavorExpression(), "Ferghus?<br/>I don't know if he's a good blacksmith, but he's a nice person.<br/>Usually, when you ask him a question, he kindly answers everything...<br/>Go find out for yourself.");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 

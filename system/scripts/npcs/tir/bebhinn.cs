@@ -118,7 +118,7 @@ public class BebhinnScript : NpcScript
 				GiveKeyword("shop_bank");
 				if (Memory == 1)
 				{
-					Msg("My name is <npcname/>. Don't forget it!");
+					Msg(FavorExpression(), "My name is <npcname/>. Don't forget it!");
 					ModifyRelation(1, 0, 0);
 				}
 				else
@@ -131,7 +131,7 @@ public class BebhinnScript : NpcScript
 
 			case "rumor":
 				GiveKeyword("farmland");
-				Msg("Oh, you know what?<br/>Some people were hitting the scarecrow at the School to practice their skills,<br/>and they wandered off and ruined the crops in the farmland.<br/>The owner got pretty upset about it.");
+				Msg(FavorExpression(), "Oh, you know what?<br/>Some people were hitting the scarecrow at the School to practice their skills,<br/>and they wandered off and ruined the crops in the farmland.<br/>The owner got pretty upset about it.");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
