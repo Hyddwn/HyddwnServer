@@ -33,7 +33,7 @@ public class PlayingInstrumentsQuestScript : QuestScript
 		{
 			npc.FinishQuest(this.Id, "talk_endelyon");
 
-			npc.Msg("Ah, you're here.<br/>May the blessings of Lymilark be with you in every step of the way. There are some people who think it to be difficult.<br/>Just hold on to the instrument, and you'll be able to play a semblance of music.<br/>Of course, it requires hours of practice if you plan on bringing tears to your special someone.<button title='End Conversatin' keyword='@end'/>");
+			npc.Msg("Ah, you're here.<br/>May the blessings of Lymilark be with you in every step of the way. There are some people who think it to be difficult.<br/>Just hold on to the instrument, and you'll be able to play a semblance of music.<br/>Of course, it requires hours of practice if you plan on bringing tears to your special someone.", npc.Button("End Conversation", "@end"));
 			await npc.Select();
 
 			npc.AcquireItem(40004); // Lute
