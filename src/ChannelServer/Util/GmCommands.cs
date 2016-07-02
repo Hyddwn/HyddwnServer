@@ -63,6 +63,7 @@ namespace Aura.Channel.Util
 			// GMs
 			Add(50, 50, "warp", "<region> [x] [y]", Localization.Get("Warps to a specific region and position."), HandleWarp);
 			Add(50, 50, "jump", "[x] [y]", Localization.Get("Warps to a specific position in the current region."), HandleJump);
+			Add(50, 50, "goto", "<target name>", Localization.Get("Warps to a specific creature."), HandleGoTo);
 			Add(50, 50, "item", "<id|name> [amount|color1 [color2 [color 3]]]", Localization.Get("Spawns item."), HandleItem);
 			Add(50, 50, "ego", "<item id> <ego name> <ego race> [color1 [color2 [color 3]]]", Localization.Get("Creates spirit weapon."), HandleEgo);
 			Add(50, 50, "skill", "<id> [rank]", Localization.Get("Adds skill or changes rank."), HandleSkill);
@@ -2181,6 +2182,30 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Usage: {0} {1}"), commandName, command.Usage);
 			if (command.CharAuth <= client.Account.Authority && command.CharAuth > 0)
 				Send.ServerMessage(sender, Localization.Get("Usage: {0} <target> {1}"), commandName, command.Usage);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleGoTo(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			var name = args[1];
+
+			var warpTarget = ChannelServer.Instance.World.GetCreature(name);
+			if (warpTarget == null)
+			{
+				Send.SystemMessage(sender, Localization.Get("Creature '{0}' couldn't be found."), name);
+				return CommandResult.Okay;
+			}
+
+			var pos = warpTarget.GetPosition();
+			target.Warp(warpTarget.RegionId, pos.X, pos.Y);
+
+			Send.ServerMessage(sender, Localization.Get("Warped to '{0}'."), name);
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("{0} warped you to '{1}'."), sender.Name, name);
 
 			return CommandResult.Okay;
 		}
