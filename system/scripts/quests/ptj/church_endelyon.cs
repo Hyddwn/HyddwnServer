@@ -72,7 +72,7 @@ public class EndelyonPtjScript : GeneralScript
 	{
 		if (npc.DoingPtjForOtherNpc())
 		{
-			npc.Msg("You have other things to do, right?<br/>If you need the Holy Water of Lymilark, can you come back after you are finished with your work?");
+			npc.Msg(L("You have other things to do, right?<br/>If you need the Holy Water of Lymilark, can you come back after you are finished with your work?"));
 			return;
 		}
 
@@ -83,17 +83,17 @@ public class EndelyonPtjScript : GeneralScript
 			if (!npc.ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
-					npc.Msg("It seems you took care of your end of the bargain.<br/>I'm a little busy right now, but come back later so I can compensate you for your work.");
+					npc.Msg(L("It seems you took care of your end of the bargain.<br/>I'm a little busy right now, but come back later so I can compensate you for your work."));
 				else
-					npc.Msg("How are you doing with the part-time job for the Church today?<br/>I have the utmost faith in you, <username/>.");
+					npc.Msg(L("How are you doing with the part-time job for the Church today?<br/>I have the utmost faith in you, <username/>."));
 				return;
 			}
 
-			npc.Msg("Did you finish the part-time job I gave you?<br/>If you are done, you can report the results to me. Do you want to do so now?<button title='Report Now' keyword='@report' /><button title='Report Later' keyword='@later' />");
+			npc.Msg(L("Did you finish the part-time job I gave you?<br/>If you are done, you can report the results to me. Do you want to do so now?"), npc.Button(L("Report Now"), "@report"), npc.Button(L("Report Later"), "@later"));
 
 			if (await npc.Select() != "@report")
 			{
-				npc.Msg("You don't want to report yet?<br/>Please make sure to come back and report before the deadline.");
+				npc.Msg(L("You don't want to report yet?<br/>Please make sure to come back and report before the deadline."));
 				return;
 			}
 
@@ -101,17 +101,17 @@ public class EndelyonPtjScript : GeneralScript
 			{
 				npc.GiveUpPtj();
 
-				npc.Msg(npc.FavorExpression(), "I'm sorry,<br/>but I cannot give you the Holy Water of Lymilark unless you complete the task I've asked you to take care of.<br/>Please work harder next time.");
+				npc.Msg(npc.FavorExpression(), L("I'm sorry,<br/>but I cannot give you the Holy Water of Lymilark unless you complete the task I've asked you to take care of.<br/>Please work harder next time."));
 				npc.ModifyRelation(0, -Random(3), 0);
 			}
 			else
 			{
-				npc.Msg("Well done, <username/>. I feel very relieved thanks to you.<br/>In appreciation of all the hard work you've put in for the Church,<br/>I prepared some things for you.<br/>I'd love to give you all these if I could, but I can't. Please pick one.<button title='Report Later' keyword='@later' />" + npc.GetPtjReportXml(result));
+				npc.Msg(L("Well done, <username/>. I feel very relieved thanks to you.<br/>In appreciation of all the hard work you've put in for the Church,<br/>I prepared some things for you.<br/>I'd love to give you all these if I could, but I can't. Please pick one.") + npc.GetPtjReportXml(result), npc.Button(L("Report Later"), "@later"));
 				var reply = await npc.Select();
 
 				if (!reply.StartsWith("@reward:"))
 				{
-					npc.Msg("You don't want to report yet?<br/>Please make sure to come back and report before the deadline.");
+					npc.Msg(L("You don't want to report yet?<br/>Please make sure to come back and report before the deadline."));
 					return;
 				}
 
@@ -120,17 +120,17 @@ public class EndelyonPtjScript : GeneralScript
 
 				if (result == QuestResult.Perfect)
 				{
-					npc.Msg(npc.FavorExpression(), "Thanks. You took care of everything I've asked for.<br/>As promised, I will give you the Holy Water of Lymilark.");
+					npc.Msg(npc.FavorExpression(), L("Thanks. You took care of everything I've asked for.<br/>As promised, I will give you the Holy Water of Lymilark."));
 					npc.ModifyRelation(0, Random(3), 0);
 				}
 				else if (result == QuestResult.Mid)
 				{
-					npc.Msg(npc.FavorExpression(), "It's a bit short of what I asked for,<br/>but I appreciate your help.<br/>I will give you the Holy Water of Lymilark in return.");
+					npc.Msg(npc.FavorExpression(), L("It's a bit short of what I asked for,<br/>but I appreciate your help.<br/>I will give you the Holy Water of Lymilark in return."));
 					npc.ModifyRelation(0, Random(1), 0);
 				}
 				else if (result == QuestResult.Low)
 				{
-					npc.Msg(npc.FavorExpression(), "Did you run out of time?<br/>You completed only a portion of what I asked for.<br/>I'm sorry, but that's not good enough for me to give you the Holy Water of Lymilark.");
+					npc.Msg(npc.FavorExpression(), L("Did you run out of time?<br/>You completed only a portion of what I asked for.<br/>I'm sorry, but that's not good enough for me to give you the Holy Water of Lymilark."));
 					npc.ModifyRelation(0, -Random(2), 0);
 				}
 			}
@@ -139,35 +139,35 @@ public class EndelyonPtjScript : GeneralScript
 
 		if (!npc.ErinnHour(Start, Deadline))
 		{
-			npc.Msg("Are you willing to help the Church?<br/>It's a bit early, though. Please come back at a later time.");
+			npc.Msg(L("Are you willing to help the Church?<br/>It's a bit early, though. Please come back at a later time."));
 			return;
 		}
 
 		if (!npc.CanDoPtj(JobType, remaining))
 		{
-			npc.Msg("Today's part-time jobs are all taken.<br/>If you need some Holy Water of Lymilark, please come back tomorrow.");
+			npc.Msg(L("Today's part-time jobs are all taken.<br/>If you need some Holy Water of Lymilark, please come back tomorrow."));
 			return;
 		}
 
 		var randomPtj = npc.RandomPtj(JobType, QuestIds);
-		var ptjXml = npc.GetPtjXml(randomPtj, "Endelyon's Church Part-Time Job", "Looking for help with delivering goods to Church.", PerDay, remaining);
+		var ptjXml = npc.GetPtjXml(randomPtj, L("Endelyon's Church Part-Time Job"), L("Looking for help with delivering goods to Church."), PerDay, remaining);
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			msg = "Our Church is looking for a kind soul to help take care of our crops.<br/>The main job is to harvest wheat or barley from the farmland located south of the Church.<br/>One thing to note: because of our tight budget, we cannot afford to pay in gold.<p/>Instead, anyone who completes the job will receive some Holy Water of Lymilark,<br/>which can be used to bless items.<br/>Blessed items do not fall to the ground<br/>when its owner is knocked unconscious.<br/>Now, what do you say?";
+			msg = L("Our Church is looking for a kind soul to help take care of our crops.<br/>The main job is to harvest wheat or barley from the farmland located south of the Church.<br/>One thing to note: because of our tight budget, we cannot afford to pay in gold.<p/>Instead, anyone who completes the job will receive some Holy Water of Lymilark,<br/>which can be used to bless items.<br/>Blessed items do not fall to the ground<br/>when its owner is knocked unconscious.<br/>Now, what do you say?");
 		else
-			msg = "Are you here for the Holy Water of Lymilark again?<br/>Please take a look at today's part-time job and tell me if you want it.";
+			msg = L("Are you here for the Holy Water of Lymilark again?<br/>Please take a look at today's part-time job and tell me if you want it.");
 
 		npc.Msg(msg + ptjXml);
 
 		if (await npc.Select() == "@accept")
 		{
-			npc.Msg("Thank you.<br/>Please take care of this on time.");
+			npc.Msg(L("Thank you.<br/>Please take care of this on time."));
 			npc.StartPtj(randomPtj);
 		}
 		else
 		{
-			npc.Msg("If you don't want to do it, then I guess that's that.");
+			npc.Msg(L("If you don't want to do it, then I guess that's that."));
 		}
 	}
 }
@@ -178,8 +178,8 @@ public class EndelyonBarleyBasicPtjScript : QuestScript
 	public override void Load()
 	{
 		SetId(502102);
-		SetName("Church Part-Time Job");
-		SetDescription("This task is to harvest grain from the farmland. Cut [10 bundles of barley] today. Barley can be harvested using a sickle on the farmlands around town.");
+		SetName(L("Church Part-Time Job"));
+		SetDescription(L("This task is to harvest grain from the farmland. Cut [10 bundles of barley] today. Barley can be harvested using a sickle on the farmlands around town."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -189,7 +189,7 @@ public class EndelyonBarleyBasicPtjScript : QuestScript
 		SetLevel(QuestLevel.Basic);
 		SetHours(start: 12, report: 16, deadline: 21);
 
-		AddObjective("ptj", "Harvest 10 Bundles of Barley", 0, 0, 0, Collect(52028, 10));
+		AddObjective("ptj", L("Harvest 10 Bundles of Barley"), 0, 0, 0, Collect(52028, 10));
 
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(200));
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 4));
@@ -206,8 +206,8 @@ public class EndelyonBarleyIntPtjScript : QuestScript
 	public override void Load()
 	{
 		SetId(502132);
-		SetName("Church Part-Time Job");
-		SetDescription("This task is to harvest grain from the farmland. Cut [15 bundles of barley] today. Barley can be harvested using a sickle on the farmlands around town.");
+		SetName(L("Church Part-Time Job"));
+		SetDescription(L("This task is to harvest grain from the farmland. Cut [15 bundles of barley] today. Barley can be harvested using a sickle on the farmlands around town."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -217,7 +217,7 @@ public class EndelyonBarleyIntPtjScript : QuestScript
 		SetLevel(QuestLevel.Int);
 		SetHours(start: 12, report: 16, deadline: 21);
 
-		AddObjective("ptj", "Harvest 15 Bundles of Barley", 0, 0, 0, Collect(52028, 15));
+		AddObjective("ptj", L("Harvest 15 Bundles of Barley"), 0, 0, 0, Collect(52028, 15));
 
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(300));
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 6));
@@ -234,8 +234,8 @@ public class EndelyonBarleyAdvPtjScript : QuestScript
 	public override void Load()
 	{
 		SetId(502162);
-		SetName("Church Part-Time Job");
-		SetDescription("This task is to harvest grain from the farmland. Cut [20 bundles of barley] today. Barley can be harvested using a sickle on the farmlands around town.");
+		SetName(L("Church Part-Time Job"));
+		SetDescription(L("This task is to harvest grain from the farmland. Cut [20 bundles of barley] today. Barley can be harvested using a sickle on the farmlands around town."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -245,7 +245,7 @@ public class EndelyonBarleyAdvPtjScript : QuestScript
 		SetLevel(QuestLevel.Adv);
 		SetHours(start: 12, report: 16, deadline: 21);
 
-		AddObjective("ptj", "Harvest 20 Bundles of Barley", 0, 0, 0, Collect(52028, 20));
+		AddObjective("ptj", L("Harvest 20 Bundles of Barley"), 0, 0, 0, Collect(52028, 20));
 
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(500));
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 10));
@@ -264,8 +264,8 @@ public class EndelyonWheatBasicPtjScript : QuestScript
 	public override void Load()
 	{
 		SetId(502103);
-		SetName("Church Part-Time Job");
-		SetDescription("This task is to harvest grain from the farmland. Cut [10 bundles of wheat] today. Use a sickle to harvest wheat from farmlands around town.");
+		SetName(L("Church Part-Time Job"));
+		SetDescription(L("This task is to harvest grain from the farmland. Cut [10 bundles of wheat] today. Use a sickle to harvest wheat from farmlands around town."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -275,7 +275,7 @@ public class EndelyonWheatBasicPtjScript : QuestScript
 		SetLevel(QuestLevel.Basic);
 		SetHours(start: 12, report: 16, deadline: 21);
 
-		AddObjective("ptj", "Harvest 10 Bundles of Wheat", 0, 0, 0, Collect(52027, 10));
+		AddObjective("ptj", L("Harvest 10 Bundles of Wheat"), 0, 0, 0, Collect(52027, 10));
 
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(200));
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 4));
@@ -292,8 +292,8 @@ public class EndelyonWheatIntPtjScript : QuestScript
 	public override void Load()
 	{
 		SetId(502133);
-		SetName("Church Part-Time Job");
-		SetDescription("This task is to harvest grain from the farmland. Cut [15 bundles of wheat] today. Use a sickle to harvest wheat from farmlands around town.");
+		SetName(L("Church Part-Time Job"));
+		SetDescription(L("This task is to harvest grain from the farmland. Cut [15 bundles of wheat] today. Use a sickle to harvest wheat from farmlands around town."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -303,7 +303,7 @@ public class EndelyonWheatIntPtjScript : QuestScript
 		SetLevel(QuestLevel.Int);
 		SetHours(start: 12, report: 16, deadline: 21);
 
-		AddObjective("ptj", "Harvest 15 Bundles of Wheat", 0, 0, 0, Collect(52027, 15));
+		AddObjective("ptj", L("Harvest 15 Bundles of Wheat"), 0, 0, 0, Collect(52027, 15));
 
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(300));
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 6));
@@ -320,8 +320,8 @@ public class EndelyonWheatAdvPtjScript : QuestScript
 	public override void Load()
 	{
 		SetId(502163);
-		SetName("Church Part-Time Job");
-		SetDescription("This task is to harvest grain from the farmland. Cut [20 bundles of wheat] today. Use a sickle to harvest wheat from farmlands around town.");
+		SetName(L("Church Part-Time Job"));
+		SetDescription(L("This task is to harvest grain from the farmland. Cut [20 bundles of wheat] today. Use a sickle to harvest wheat from farmlands around town."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -331,7 +331,7 @@ public class EndelyonWheatAdvPtjScript : QuestScript
 		SetLevel(QuestLevel.Adv);
 		SetHours(start: 12, report: 16, deadline: 21);
 
-		AddObjective("ptj", "Harvest 20 Bundles of Wheat", 0, 0, 0, Collect(52027, 20));
+		AddObjective("ptj", L("Harvest 20 Bundles of Wheat"), 0, 0, 0, Collect(52027, 20));
 
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(500));
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 10));
@@ -350,8 +350,8 @@ public class EndelyonEggsBasicPtjScript : QuestScript
 	public override void Load()
 	{
 		SetId(502105);
-		SetName("Church Part-Time Job");
-		SetDescription("This job is to gather eggs from chickens. Please bring [15 eggs] today. Gather eggs from the chickens around town.");
+		SetName(L("Church Part-Time Job"));
+		SetDescription(L("This job is to gather eggs from chickens. Please bring [15 eggs] today. Gather eggs from the chickens around town."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -361,7 +361,7 @@ public class EndelyonEggsBasicPtjScript : QuestScript
 		SetLevel(QuestLevel.Basic);
 		SetHours(start: 12, report: 16, deadline: 21);
 
-		AddObjective("ptj", "Collect 15 Eggs", 0, 0, 0, Collect(50009, 15));
+		AddObjective("ptj", L("Collect 15 Eggs"), 0, 0, 0, Collect(50009, 15));
 
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(200));
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 4));
@@ -378,8 +378,8 @@ public class EndelyonEggsIntPtjScript : QuestScript
 	public override void Load()
 	{
 		SetId(502135);
-		SetName("Church Part-Time Job");
-		SetDescription("This job is to gather eggs from chickens. Please bring [20 eggs] today. Gather eggs from the chickens around town.");
+		SetName(L("Church Part-Time Job"));
+		SetDescription(L("This job is to gather eggs from chickens. Please bring [20 eggs] today. Gather eggs from the chickens around town."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -389,7 +389,7 @@ public class EndelyonEggsIntPtjScript : QuestScript
 		SetLevel(QuestLevel.Int);
 		SetHours(start: 12, report: 16, deadline: 21);
 
-		AddObjective("ptj", "Collect 20 Eggs", 0, 0, 0, Collect(50009, 20));
+		AddObjective("ptj", L("Collect 20 Eggs"), 0, 0, 0, Collect(50009, 20));
 
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(300));
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 6));
@@ -406,8 +406,8 @@ public class EndelyonEggsAdvPtjScript : QuestScript
 	public override void Load()
 	{
 		SetId(502165);
-		SetName("Church Part-Time Job");
-		SetDescription("This job is to gather eggs from chickens. Please bring [30 eggs] today. Gather eggs from the chickens around town.");
+		SetName(L("Church Part-Time Job"));
+		SetDescription(L("This job is to gather eggs from chickens. Please bring [30 eggs] today. Gather eggs from the chickens around town."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -417,7 +417,7 @@ public class EndelyonEggsAdvPtjScript : QuestScript
 		SetLevel(QuestLevel.Adv);
 		SetHours(start: 12, report: 16, deadline: 21);
 
-		AddObjective("ptj", "Collect 30 Eggs", 0, 0, 0, Collect(50009, 30));
+		AddObjective("ptj", L("Collect 30 Eggs"), 0, 0, 0, Collect(50009, 30));
 
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(500));
 		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 10));
