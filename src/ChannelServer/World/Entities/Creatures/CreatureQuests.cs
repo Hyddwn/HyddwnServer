@@ -10,15 +10,23 @@ using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
 	public class CreatureQuests : IDisposable
 	{
+		/// <summary>
+		/// Interval in seconds on which the owl queue is checked.
+		/// </summary>
+		private const int OwlTick = 60 * 1000;
+
 		private Creature _creature;
 		private List<Quest> _quests;
 		private Dictionary<PtjType, PtjTrackRecord> _ptjRecords;
+
 		private Dictionary<int, QuestOwl> _owlQueue;
+		private Timer _owlTimer;
 
 		/// <summary>
 		/// Raised whenever a PTJ's track record changes, i.e. when the
@@ -36,8 +44,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			_quests = new List<Quest>();
 			_ptjRecords = new Dictionary<PtjType, PtjTrackRecord>();
 			_owlQueue = new Dictionary<int, QuestOwl>();
-
-			ChannelServer.Instance.Events.MabiTick += this.OnMabiTick;
+			_owlTimer = new Timer(OnOwlTick, null, OwlTick, OwlTick);
 		}
 
 		/// <summary>
@@ -45,7 +52,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// </summary>
 		public void Dispose()
 		{
-			ChannelServer.Instance.Events.MabiTick -= this.OnMabiTick;
+			_owlTimer.Change(Timeout.Infinite, Timeout.Infinite);
+			_owlTimer.Dispose();
 		}
 
 		/// <summary>
@@ -273,21 +281,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			if (delay < 0)
 				delay = 0;
 
-			// Put into queue if creature is indoor or the owl is supposed
-			// to take a detour.
-			if (_creature.Region.IsIndoor || delay != 0)
-			{
-				this.QueueOwl(questId, DateTime.Now.AddSeconds(delay));
-				return;
-			}
-
-			var item = Item.CreateQuestScroll(questId);
-
-			Send.QuestOwlNew(_creature, item.QuestId);
-
-			// Do quests that are received via owl *always* go into the
-			// quest pocket?
-			_creature.Inventory.Add(item, Pocket.Quests);
+			this.QueueOwl(questId, DateTime.Now.AddSeconds(delay));
 		}
 
 		/// <summary>
@@ -297,6 +291,22 @@ namespace Aura.Channel.World.Entities.Creatures
 		public void Start(int questId)
 		{
 			var item = Item.CreateQuestScroll(questId);
+
+			// Do quests that are received via owl *always* go into the
+			// quest pocket?
+			_creature.Inventory.Add(item, Pocket.Quests);
+		}
+
+		/// <summary>
+		/// Gives quest scroll for the given quest id to the player
+		/// and shows owl arriving.
+		/// </summary>
+		/// <param name="questId"></param>
+		private void StartByOwl(int questId)
+		{
+			var item = Item.CreateQuestScroll(questId);
+
+			Send.QuestOwlNew(_creature, item.QuestId);
 
 			// Do quests that are received via owl *always* go into the
 			// quest pocket?
@@ -583,13 +593,15 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Called every 5 minutes to check for owls to send.
+		/// Called regularly to check for owls to send.
 		/// </summary>
-		private void OnMabiTick(ErinnTime now)
+		private void OnOwlTick(object state)
 		{
 			// Do nothing if still indoor
 			if (_creature.Region == Region.Limbo || _creature.Region.IsIndoor)
 				return;
+
+			var now = DateTime.Now;
 
 			lock (_owlQueue)
 			{
@@ -599,10 +611,10 @@ namespace Aura.Channel.World.Entities.Creatures
 				// and finally send them.
 				foreach (var owl in _owlQueue.Values)
 				{
-					if (owl.Arrival <= now.DateTime)
+					if (owl.Arrival <= now)
 					{
 						arrived.Add(owl.QuestId);
-						this.SendOwl(owl.QuestId);
+						this.StartByOwl(owl.QuestId);
 					}
 				}
 
