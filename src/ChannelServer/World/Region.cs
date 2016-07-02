@@ -73,6 +73,11 @@ namespace Aura.Channel.World
 		public bool IsTemp { get { return (this.IsDynamic || this.IsDungeon); } }
 
 		/// <summary>
+		/// Returns true if region is an indoor region (e.g. houses).
+		/// </summary>
+		public bool IsIndoor { get; protected set; }
+
+		/// <summary>
 		/// Variable manager containing region's properties.
 		/// </summary>
 		public VariableManager Properties { get; private set; }
