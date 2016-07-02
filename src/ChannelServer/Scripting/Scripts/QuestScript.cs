@@ -169,6 +169,11 @@ namespace Aura.Channel.Scripting.Scripts
 		public bool IsGuildQuest { get { return Math2.Between(this.Id, 110000, 119999); } }
 
 		/// <summary>
+		/// Delay with which the quest arrives if it's sent via owl.
+		/// </summary>
+		public int Delay { get; set; }
+
+		/// <summary>
 		/// Creates a new quest script instance.
 		/// </summary>
 		public QuestScript()
@@ -334,6 +339,15 @@ namespace Aura.Channel.Scripting.Scripts
 		protected void SetScrollId(int id)
 		{
 			this.ScrollId = id;
+		}
+
+		/// <summary>
+		/// Sets delay with which the quest arrives if sent via owl.
+		/// </summary>
+		/// <param name="delay"></param>
+		protected void SetDelay(int delay)
+		{
+			this.Delay = delay;
 		}
 
 		/// <summary>
@@ -593,7 +607,7 @@ namespace Aura.Channel.Scripting.Scripts
 		private void OnPlayerLoggedIn(Creature character)
 		{
 			if (this.CheckPrerequisites(character))
-				character.Quests.SendOwl(this.Id);
+				character.Quests.SendOwl(this.Id, this.Delay);
 		}
 
 		/// <summary>
@@ -778,7 +792,7 @@ namespace Aura.Channel.Scripting.Scripts
 		private void OnSkillRankChanged(Creature creature, Skill skill)
 		{
 			if (this.CheckPrerequisites(creature))
-				creature.Quests.SendOwl(this.Id);
+				creature.Quests.SendOwl(this.Id, this.Delay);
 
 			this.CheckCurrentObjective(creature);
 		}
@@ -791,7 +805,7 @@ namespace Aura.Channel.Scripting.Scripts
 		private void OnPlayerCompletesQuest(Creature creature, int questId)
 		{
 			if (this.CheckPrerequisites(creature))
-				creature.Quests.SendOwl(this.Id);
+				creature.Quests.SendOwl(this.Id, this.Delay);
 		}
 
 		/// <summary>
@@ -801,7 +815,7 @@ namespace Aura.Channel.Scripting.Scripts
 		private void OnCreatureLevelUp(Creature creature)
 		{
 			if (this.CheckPrerequisites(creature))
-				creature.Quests.SendOwl(this.Id);
+				creature.Quests.SendOwl(this.Id, this.Delay);
 
 			this.CheckCurrentObjective(creature);
 		}

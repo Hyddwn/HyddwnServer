@@ -4,19 +4,29 @@
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Util;
 using Aura.Channel.World.Quests;
+using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
-	public class CreatureQuests
+	public class CreatureQuests : IDisposable
 	{
+		/// <summary>
+		/// Interval in seconds on which the owl queue is checked.
+		/// </summary>
+		private const int OwlTick = 60 * 1000;
+
 		private Creature _creature;
 		private List<Quest> _quests;
 		private Dictionary<PtjType, PtjTrackRecord> _ptjRecords;
+
+		private Dictionary<int, QuestOwl> _owlQueue;
+		private Timer _owlTimer;
 
 		/// <summary>
 		/// Raised whenever a PTJ's track record changes, i.e. when the
@@ -33,6 +43,17 @@ namespace Aura.Channel.World.Entities.Creatures
 			_creature = creature;
 			_quests = new List<Quest>();
 			_ptjRecords = new Dictionary<PtjType, PtjTrackRecord>();
+			_owlQueue = new Dictionary<int, QuestOwl>();
+			_owlTimer = new Timer(OnOwlTick, null, OwlTick, OwlTick);
+		}
+
+		/// <summary>
+		/// Unsubscribes from events.
+		/// </summary>
+		public void Dispose()
+		{
+			_owlTimer.Change(Timeout.Infinite, Timeout.Infinite);
+			_owlTimer.Dispose();
 		}
 
 		/// <summary>
@@ -239,19 +260,28 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Sends an owl to deliver a quest scroll fort he given quest id
+		/// Sends an owl to deliver a quest scroll for the given quest id
 		/// to the player.
 		/// </summary>
 		/// <param name="questId"></param>
 		public void SendOwl(int questId)
 		{
-			var item = Item.CreateQuestScroll(questId);
+			this.SendOwl(questId, 0);
+		}
 
-			Send.QuestOwlNew(_creature, item.QuestId);
+		/// <summary>
+		/// Sends an owl to deliver a quest scroll for the given quest id
+		/// to the player. If delay is not 0, the quest will arrive X
+		/// seconds later, on the next region change.
+		/// </summary>
+		/// <param name="questId">Id of the quest to send.</param>
+		/// <param name="delay">The delay in seconds.</param>
+		public void SendOwl(int questId, int delay)
+		{
+			if (delay < 0)
+				delay = 0;
 
-			// Do quests that are received via owl *always* go into the
-			// quest pocket?
-			_creature.Inventory.Add(item, Pocket.Quests);
+			this.QueueOwl(questId, DateTime.Now.AddSeconds(delay));
 		}
 
 		/// <summary>
@@ -261,6 +291,22 @@ namespace Aura.Channel.World.Entities.Creatures
 		public void Start(int questId)
 		{
 			var item = Item.CreateQuestScroll(questId);
+
+			// Do quests that are received via owl *always* go into the
+			// quest pocket?
+			_creature.Inventory.Add(item, Pocket.Quests);
+		}
+
+		/// <summary>
+		/// Gives quest scroll for the given quest id to the player
+		/// and shows owl arriving.
+		/// </summary>
+		/// <param name="questId"></param>
+		private void StartByOwl(int questId)
+		{
+			var item = Item.CreateQuestScroll(questId);
+
+			Send.QuestOwlNew(_creature, item.QuestId);
 
 			// Do quests that are received via owl *always* go into the
 			// quest pocket?
@@ -544,6 +590,64 @@ namespace Aura.Channel.World.Entities.Creatures
 		public Quest GetPtjQuest()
 		{
 			return this.Get(a => a.Data.Type == QuestType.Deliver && a.State != QuestState.Complete);
+		}
+
+		/// <summary>
+		/// Called regularly to check for owls to send.
+		/// </summary>
+		private void OnOwlTick(object state)
+		{
+			// Do nothing if still indoor
+			if (_creature.Region == Region.Limbo || _creature.Region.IsIndoor)
+				return;
+
+			var now = DateTime.Now;
+
+			lock (_owlQueue)
+			{
+				var arrived = new List<int>();
+
+				// Check all owl's arrival times if we're not indoor
+				// and finally send them.
+				foreach (var owl in _owlQueue.Values)
+				{
+					if (owl.Arrival <= now)
+					{
+						arrived.Add(owl.QuestId);
+						this.StartByOwl(owl.QuestId);
+					}
+				}
+
+				// Remove arrived quests from queue.
+				foreach (var questId in arrived)
+					_owlQueue.Remove(questId);
+			}
+		}
+
+
+		/// <summary>
+		/// Queues an owl to deliver the given quest after arrivel time,
+		/// when changing regions.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="arrival"></param>
+		public void QueueOwl(int questId, DateTime arrival)
+		{
+			lock (_owlQueue)
+			{
+				if (!_owlQueue.ContainsKey(questId))
+					_owlQueue[questId] = new QuestOwl(questId, arrival);
+			}
+		}
+
+		/// <summary>
+		/// Returns new list with all current quest owls.
+		/// </summary>
+		/// <returns></returns>
+		public QuestOwl[] GetQueueOwls()
+		{
+			lock (_owlQueue)
+				return _owlQueue.Values.ToArray();
 		}
 	}
 }

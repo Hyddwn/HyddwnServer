@@ -50,6 +50,10 @@ namespace Aura.Channel.World
 			if (baseRegionInfoData == null)
 				throw new Exception("DynamicRegion: No region info data found for '" + this.BaseId + "'.");
 
+			var baseRegionData = AuraData.RegionDb.Find(this.BaseId);
+			if (baseRegionData == null)
+				throw new Exception("DynamicRegion: No region data found for '" + this.BaseId + "'.");
+
 			var baseRegion = ChannelServer.Instance.World.GetRegion(baseRegionId);
 			if (baseRegion != null)
 				this.Properties.Load(baseRegion.Properties.GetList());
@@ -59,6 +63,7 @@ namespace Aura.Channel.World
 			this.Name = "DynamicRegion" + this.Id;
 			this.Variation = variationFile;
 			this.Mode = mode;
+			this.IsIndoor = baseRegionData.Indoor;
 
 			this.Data = CreateVariation(baseRegionInfoData, this.Id, variationFile);
 

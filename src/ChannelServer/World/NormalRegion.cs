@@ -19,7 +19,12 @@ namespace Aura.Channel.World
 			if (this.Data == null)
 				throw new Exception("Region.CreateNormal: No region info data found for '" + this.Id + "'.");
 
+			var regionData = AuraData.RegionDb.Find(this.Id);
+			if (regionData == null)
+				throw new Exception("DynamicRegion: No region data found for '" + this.Id + "'.");
+
 			this.Name = this.Data.Name;
+			this.IsIndoor = regionData.Indoor;
 
 			this.InitializeFromData();
 		}

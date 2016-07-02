@@ -1150,6 +1150,8 @@ namespace Aura.Channel.World.Entities
 			// Cancel any active skills
 			if (this.Skills.ActiveSkill != null)
 				this.Skills.CancelActiveSkill();
+
+			this.Quests.Dispose();
 		}
 
 		public void Activate(CreatureStates state) { this.State |= state; }
