@@ -787,6 +787,21 @@ namespace Aura.Channel.Database
 						}
 					}
 				}
+				using (var mc = new MySqlCommand("SELECT * FROM `quest_owls` WHERE `creatureId` = @creatureId", conn))
+				{
+					mc.Parameters.AddWithValue("@creatureId", character.CreatureId);
+
+					using (var reader = mc.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							var questId = reader.GetInt32("questId");
+							var arrival = reader.GetDateTimeSafe("arrival");
+
+							character.Quests.QueueOwl(questId, arrival);
+						}
+					}
+				}
 			}
 		}
 
@@ -828,6 +843,13 @@ namespace Aura.Channel.Database
 
 				// Delete progress
 				using (var mc = new MySqlCommand("DELETE FROM `quest_progress` WHERE `creatureId` = @creatureId", conn, transaction))
+				{
+					mc.Parameters.AddWithValue("@creatureId", character.CreatureId);
+					mc.ExecuteNonQuery();
+				}
+
+				// Delete owls
+				using (var mc = new MySqlCommand("DELETE FROM `quest_owls` WHERE `creatureId` = @creatureId", conn, transaction))
 				{
 					mc.Parameters.AddWithValue("@creatureId", character.CreatureId);
 					mc.ExecuteNonQuery();
@@ -894,6 +916,17 @@ namespace Aura.Channel.Database
 							cmd.Set("unlocked", objective.Unlocked);
 							cmd.Execute();
 						}
+					}
+				}
+
+				foreach (var owl in character.Quests.GetQueueOwls())
+				{
+					using (var cmd = new InsertCommand("INSERT INTO `quest_owls` {0}", conn, transaction))
+					{
+						cmd.Set("creatureId", character.CreatureId);
+						cmd.Set("questId", owl.QuestId);
+						cmd.Set("arrival", owl.Arrival);
+						cmd.Execute();
 					}
 				}
 
