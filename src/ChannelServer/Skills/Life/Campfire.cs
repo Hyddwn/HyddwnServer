@@ -116,7 +116,7 @@ namespace Aura.Channel.Skills.Life
 			var unkInt2 = packet.GetInt();
 
 			// Check location
-			var validLocation = IsValidRegion(creature.RegionId) && IsValidPosition(creature, new Position(positionId));
+			var validLocation = IsValidRegion(creature.Region) && IsValidPosition(creature, new Position(positionId));
 			if (!validLocation)
 			{
 				Send.Notice(creature, Localization.Get("It's a little cramped here to make a Campfire."));
@@ -144,7 +144,7 @@ namespace Aura.Channel.Skills.Life
 
 			// Check location
 			var pos = new Position(positionId);
-			var validLocation = IsValidRegion(creature.RegionId) && IsValidPosition(creature, pos);
+			var validLocation = IsValidRegion(creature.Region) && IsValidPosition(creature, pos);
 
 			if (validLocation)
 			{
@@ -224,10 +224,9 @@ namespace Aura.Channel.Skills.Life
 		/// <param name="creature"></param>
 		/// <param name="pos"></param>
 		/// <returns></returns>
-		public static bool IsValidRegion(int regionId)
+		public static bool IsValidRegion(Region region)
 		{
-			var data = AuraData.RegionDb.Find(regionId);
-			if (data != null && data.Indoor)
+			if (region.IsIndoor)
 				return false;
 
 			return true;
