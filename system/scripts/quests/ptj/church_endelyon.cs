@@ -106,7 +106,7 @@ public class EndelyonPtjScript : GeneralScript
 			}
 			else
 			{
-				npc.Msg(L("Well done, <username/>. I feel very relieved thanks to you.<br/>In appreciation of all the hard work you've put in for the Church,<br/>I prepared some things for you.<br/>I'd love to give you all these if I could, but I can't. Please pick one.") + npc.GetPtjReportXml(result), npc.Button(L("Report Later"), "@later"));
+				npc.Msg(L("Well done, <username/>. I feel very relieved thanks to you.<br/>In appreciation of all the hard work you've put in for the Church,<br/>I prepared some things for you.<br/>I'd love to give you all these if I could, but I can't. Please pick one."), npc.Button(L("Report Later"), "@later"), npc.PtjReport(result));
 				var reply = await npc.Select();
 
 				if (!reply.StartsWith("@reward:"))
@@ -150,7 +150,6 @@ public class EndelyonPtjScript : GeneralScript
 		}
 
 		var randomPtj = npc.RandomPtj(JobType, QuestIds);
-		var ptjXml = npc.GetPtjXml(randomPtj, L("Endelyon's Church Part-Time Job"), L("Looking for help with delivering goods to Church."), PerDay, remaining);
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
@@ -158,7 +157,7 @@ public class EndelyonPtjScript : GeneralScript
 		else
 			msg = L("Are you here for the Holy Water of Lymilark again?<br/>Please take a look at today's part-time job and tell me if you want it.");
 
-		npc.Msg(msg + ptjXml);
+		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Endelyon's Church Part-Time Job"), L("Looking for help with delivering goods to Church."), PerDay, remaining, npc.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{

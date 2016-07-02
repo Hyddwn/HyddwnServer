@@ -1,7 +1,12 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see licence.txt in the main folder
 
+using Aura.Mabi;
+using Aura.Mabi.Const;
+using Aura.Shared.Util;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -473,6 +478,77 @@ namespace Aura.Channel.Scripting.Scripts
 		public override void Render(ref StringBuilder sb)
 		{
 			sb.AppendFormat("<selectitem title='{0}' caption='{1}' stringid='{2}' />", this.Title, this.Caption, this.Tags);
+		}
+	}
+
+	/// <summary>
+	/// Displays PTJ description window.
+	/// </summary>
+	public class DialogPtjDesc : DialogElement
+	{
+		public int QuestId { get; set; }
+		public string Name { get; set; }
+		public string Title { get; set; }
+		public int MaxAvailableJobs { get; set; }
+		public int RemainingJobs { get; set; }
+		public int History { get; set; }
+
+		public DialogPtjDesc(int questId, string name, string title, int maxAvailableJobs, int remainingJobs, int history)
+		{
+			this.QuestId = questId;
+			this.Name = name;
+			this.Title = title;
+			this.MaxAvailableJobs = maxAvailableJobs;
+			this.RemainingJobs = remainingJobs;
+			this.History = history;
+		}
+
+		public override void Render(ref StringBuilder sb)
+		{
+			var quest = ChannelServer.Instance.ScriptManager.QuestScripts.Get(this.QuestId);
+			if (quest == null)
+				throw new ArgumentException("DialogPtjDesc: Unknown quest '" + this.QuestId + "'.");
+
+			var objective = quest.Objectives.First().Value;
+
+			var now = ErinnTime.Now;
+			var remainingHours = Math.Max(0, quest.DeadlineHour - now.Hour);
+			var remainingJobs = Math2.Clamp(0, this.MaxAvailableJobs, this.RemainingJobs);
+
+			sb.Append("<arbeit>");
+			sb.AppendFormat("<name>{0}</name>", this.Name);
+			sb.AppendFormat("<id>{0}</id>", this.QuestId);
+			sb.AppendFormat("<title>{0}</title>", this.Title);
+			foreach (var group in quest.RewardGroups.Values)
+			{
+				sb.AppendFormat("<rewards id=\"{0}\" type=\"{1}\">", group.Id, (int)group.Type);
+
+				foreach (var reward in group.Rewards.Where(a => a.Result == QuestResult.Perfect))
+					sb.AppendFormat("<reward>* {0}</reward>", reward.ToString());
+
+				sb.AppendFormat("</rewards>");
+			}
+			sb.AppendFormat("<desc>{0}</desc>", objective.Description);
+			sb.AppendFormat("<values maxcount=\"{0}\" remaincount=\"{1}\" remaintime=\"{2}\" history=\"{3}\"/>", this.MaxAvailableJobs, this.RemainingJobs, remainingHours, this.History);
+			sb.Append("</arbeit>");
+		}
+	}
+
+	/// <summary>
+	/// Displays PTJ report window.
+	/// </summary>
+	public class DialogPtjReport : DialogElement
+	{
+		public QuestResult Result { get; set; }
+
+		public DialogPtjReport(QuestResult result)
+		{
+			this.Result = result;
+		}
+
+		public override void Render(ref StringBuilder sb)
+		{
+			sb.AppendFormat("<arbeit_report result=\"{0}\"/>", (byte)this.Result);
 		}
 	}
 }

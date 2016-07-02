@@ -127,7 +127,7 @@ public class DilysPtjScript : GeneralScript
 			// Low~Perfect result
 			else
 			{
-				npc.Msg(L("Nice job, <username/>. You did great.<br/>For now, this is all I can give you as a token of my gratitude.<br/>Please choose one.") + npc.GetPtjReportXml(result), npc.Button(L("Report Later"), "@later"));
+				npc.Msg(L("Nice job, <username/>. You did great.<br/>For now, this is all I can give you as a token of my gratitude.<br/>Please choose one."), npc.Button(L("Report Later"), "@later"), npc.PtjReport(result));
 				var reply = await npc.Select();
 
 				// Report later
@@ -192,7 +192,6 @@ public class DilysPtjScript : GeneralScript
 
 		// Offer PTJ
 		var randomPtj = npc.RandomPtj(JobType, QuestIds);
-		var ptjXml = npc.GetPtjXml(randomPtj, L("Dilys's Healer's House Part-Time Job"), L("Looking for help with delivering goods in Healer's House."), PerDay, remaining);
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
@@ -200,7 +199,7 @@ public class DilysPtjScript : GeneralScript
 		else
 			msg = L("Ah, <username/>. Can you help me today?");
 
-		npc.Msg(msg + ptjXml);
+		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Dilys's Healer's House Part-Time Job"), L("Looking for help with delivering goods in Healer's House."), PerDay, remaining, npc.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
