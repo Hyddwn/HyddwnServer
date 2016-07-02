@@ -115,8 +115,9 @@ namespace Aura.Channel.Skills.Life
 			var unkInt1 = packet.GetInt();
 			var unkInt2 = packet.GetInt();
 
-			// Check position
-			if (!IsValidPosition(creature, new Position(positionId)))
+			// Check location
+			var validLocation = IsValidRegion(creature.RegionId) && IsValidPosition(creature, new Position(positionId));
+			if (!validLocation)
 			{
 				Send.Notice(creature, Localization.Get("It's a little cramped here to make a Campfire."));
 
@@ -141,11 +142,11 @@ namespace Aura.Channel.Skills.Life
 			var unkInt2 = packet.GetInt();
 			var propId = PropId;
 
-			// Check position
+			// Check location
 			var pos = new Position(positionId);
-			var validPosition = IsValidPosition(creature, pos);
+			var validLocation = IsValidRegion(creature.RegionId) && IsValidPosition(creature, pos);
 
-			if (validPosition)
+			if (validLocation)
 			{
 				// Handle items
 				if (skill.Info.Id == SkillId.Campfire)
@@ -215,6 +216,21 @@ namespace Aura.Channel.Skills.Life
 				validPosition = false;
 
 			return validPosition;
+		}
+
+		/// <summary>
+		/// Returns true if a campfire can be built at the given position.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="pos"></param>
+		/// <returns></returns>
+		public static bool IsValidRegion(int regionId)
+		{
+			var data = AuraData.RegionDb.Find(regionId);
+			if (data != null && data.Indoor)
+				return false;
+
+			return true;
 		}
 
 		/// <summary>
