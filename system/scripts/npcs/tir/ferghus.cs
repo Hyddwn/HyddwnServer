@@ -14,6 +14,7 @@ public class FerghusScript : NpcScript
 		SetFace(skinColor: 23, eyeType: 3, eyeColor: 112, mouthType: 4);
 		SetStand("human/male/anim/male_natural_stand_npc_Ferghus_retake");
 		SetLocation(1, 18075, 29960, 80);
+		SetGiftWeights(beauty: -1, individuality: 0, luxury: 0, toughness: 2, utility: 1, rarity: 1, meaning: 0, adult: 0, maniac: 0, anime: 0, sexy: 2);
 
 		EquipItem(Pocket.Face, 4950, 0x00C6C561, 0x00E1C210, 0x00E8A14A);
 		EquipItem(Pocket.Hair, 4153, 0x002E303F, 0x002E303F, 0x002E303F);
@@ -38,11 +39,7 @@ public class FerghusScript : NpcScript
 	{
 		SetBgm("NPC_Ferghus.mp3");
 
-		await Intro(
-			"His bronze complexion shines with the glow of vitality. His distinctive facial outline ends with a strong jaw line covered with dark beard.",
-			"The first impression clearly shows he is a seasoned blacksmith with years of experience.",
-			"The wide-shouldered man keeps humming with a deep voice while his muscular torso swings gently to the rhythm of the tune."
-		);
+		await Intro(L("His bronze complexion shines with the glow of vitality. His distinctive facial outline ends with a strong jaw line covered with dark beard.<br/>The first impression clearly shows he is a seasoned blacksmith with years of experience.<br/>The wide-shouldered man keeps humming with a deep voice while his muscular torso swings gently to the rhythm of the tune."));
 
 		Msg("Welcome to my Blacksmith's Shop.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Modify Item", "@upgrade"));
 
@@ -51,11 +48,19 @@ public class FerghusScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("...Hmm... Such a boast should be made in front of Priest Meven.<br/>If you'd like, I'll tell you one more thing.");
+					Msg("There's no need to seek out any Goddesses.<br/>Your mother is the true Goddess.");
+					Msg("...Be a good child and honor your mother.");
+				}
+				else if (Title == 11002)
 				{
 					Msg("Hm... <username/>, the Guardian of Erinn?<br/>If you want, I could guard your weapons.");
 					Msg("...If you have any weapons that<br/>have become dull, I'll take care of it...");
 				}
+
 				await Conversation();
 				break;
 
@@ -92,12 +97,16 @@ public class FerghusScript : NpcScript
 								"Finished 1 point repair."
 							);
 						else
-							Msg("Hmm... The repair didn't go well. Sorry...");
+							Msg("Hmm... The repair didn't go well. Sorry..."); // Should be 3
 					}
 					else if (result.Points > 1)
 					{
 						if (result.Fails == 0)
-							Msg("Alright! It's perfectly repaired.");
+							RndMsg(
+								"Alright! It's perfectly repaired.",
+								"Here, full repair is done.",
+								"It's repaired perfectly."
+							);
 						else
 							// TODO: Use string format once we have XML dialogues.
 							Msg("Repair is over.<br/>Unfortunately, I made " + result.Fails + " mistake(s).<br/>Only " + result.Successes + " point(s) got repaired.");
@@ -128,7 +137,7 @@ public class FerghusScript : NpcScript
 				break;
 		}
 
-		End("Goodbye, Ferghus. I'll see you later!");
+		End("Goodbye, <npcname/>. I'll see you later!");
 	}
 
 	private void Greet()
@@ -162,15 +171,16 @@ public class FerghusScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg("I'm the blacksmith of Tir Chonaill. We'll see each other often, <username/>.");
-				ModifyRelation(Random(2), 0, Random(2));
+				GiveKeyword("shop_smith");
+				Msg(FavorExpression(), "I'm the blacksmith of Tir Chonaill. We'll see each other often, <username/>.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				GiveKeyword("windmill");
-				Msg("The wind around Tir Chonaill is very strong. It even breaks the windmill blades.<br/>And I'm the one to fix them.<br/>Malcolm's got some skills,<br/>but I'm the one who deals with iron.");
+				Msg(FavorExpression(), "The wind around Tir Chonaill is very strong. It even breaks the windmill blades.<br/>And I'm the one to fix them.<br/>Malcolm's got some skills,<br/>but I'm the one who deals with iron.");
 				Msg("I made those extra blades out there just in case.<br/>When the Windmill stops working, it's really inconvenient around here.<br/>It's always better to be prepared, isn't it?");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -218,12 +228,6 @@ public class FerghusScript : NpcScript
 
 			case "skill_range":
 				Msg("I think Ranald knows better.<br/>Why don't you ask him directly?<br/>It's true I make good bows.<br/>But making it and using it is totally different, you know.");
-				break;
-
-			case "bow":
-				RemoveKeyword("bow");
-				RemoveKeyword("skill_range");
-				Msg("Ha, ha. You are looking for bows. You came to the right place.<br/>I certainly have bows. In fact, you know what?<br/>This is a great chance to get your own bow!<br/>By the way, you know that you need arrows too, right?<br/>I mean, what can we do with just a bow and a string?<br/>Play with it?");
 				break;
 
 			case "skill_instrument":
@@ -290,9 +294,16 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "shop_headman":
-				Msg("You are looking for the Chief's House?<br/>His house is near the Square.<br/>Did you come straight down here<br/>without dropping by his place?");
-				Msg("Then you didn't read the Quest Scroll?<br/>No, no. You should've read that.");
-				Msg("Someone worked hard to create that scroll.<br/>Read it and do what it says. You've got nothing to lose.<br/>haha.");
+				if (Player.IsHuman)
+				{
+					Msg("You are looking for the Chief's House?<br/>His house is near the Square.<br/>Did you come straight down here<br/>without dropping by his place?");
+					Msg("Then you didn't read the Quest Scroll?<br/>No, no. You should've read that.");
+					Msg("Someone worked hard to create that scroll.<br/>Read it and do what it says. You've got nothing to lose.<br/>haha.");
+				}
+				else
+				{
+					Msg("You're looking for the Chief's house?<br/>The Chief's house is right next to the town square...<br/>Don't come toward here from the town square,<br/>but go up the other way. Hehehe...");
+				}
 				break;
 
 			case "temple":
@@ -354,9 +365,33 @@ public class FerghusScript : NpcScript
 				Msg("Based on what I've seen, all you need<br/>is a Fishing Rod and a Bait Tin in each hand.");
 				break;
 
+			case "bow":
+				RemoveKeyword("bow");
+				RemoveKeyword("skill_range");
+				Msg("Ha, ha. You are looking for bows. You came to the right place.<br/>I certainly have bows. In fact, you know what?<br/>This is a great chance to get your own bow!<br/>By the way, you know that you need arrows too, right?<br/>I mean, what can we do with just a bow and a string?<br/>Play with it?");
+				break;
+
 			case "lute":
 				GiveKeyword("shop_misc");
 				Msg("Malcolm's General Shop sells lutes.<br/>He also sells... Um...<br/>What was that called? Ukul... something.");
+				break;
+
+			case "complicity":
+				Msg("Um... An instigator? Well...");
+				break;
+
+			case "tir_na_nog":
+				Msg("Hmm... You're interested in legends too?<br/>I'm not such a good storyteller.<br/>You can ask the Chief over there,<br/>or go to Priest Meven.");
+				break;
+
+			case "mabinogi":
+				Msg("A bard's song? Oh, good.<br/>You can enjoy music much better with drinks.<br/>What do you think?");
+				Msg("Hmm... But minors aren't supposed to drink...");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("If you are looking for Music Scores, you came too far down.<br/>Malcolm's General Shop is near the Square.<br/>Looks like someone wasted their time, haha.");
 				break;
 
 			default:
@@ -367,7 +402,7 @@ public class FerghusScript : NpcScript
 					"That's not my concern.",
 					"I don't know, man. That's just out of my league."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

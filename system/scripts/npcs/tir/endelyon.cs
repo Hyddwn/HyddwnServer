@@ -14,6 +14,7 @@ public class EndelyonScript : NpcScript
 		SetFace(skinColor: 17);
 		SetStand("human/female/anim/female_natural_stand_npc_Endelyon");
 		SetLocation(1, 5975, 36842, 0);
+		SetGiftWeights(beauty: 2, individuality: 1, luxury: 1, toughness: 0, utility: 0, rarity: 0, meaning: 2, adult: 0, maniac: 0, anime: 0, sexy: -1);
 
 		EquipItem(Pocket.Face, 3900, 0x00F49D31, 0x00605765, 0x0000B8C3);
 		EquipItem(Pocket.Hair, 3022, 0x005E423E, 0x005E423E, 0x005E423E);
@@ -30,10 +31,7 @@ public class EndelyonScript : NpcScript
 	{
 		SetBgm("NPC_Endelyon.mp3");
 
-		await Intro(
-			"An elegant young woman in the simple black dress of a",
-			"Lymilark priestess stands in front of the church."
-		);
+		await Intro(L("An elegant young woman in the simple black dress of a<br/>Lymilark priestess stands in front of the church."));
 
 		// May I help you on anything else?<button title='End Conversation' keyword='@end' />
 		Msg("May I help you?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Modify Item", "@upgrade"));
@@ -72,8 +70,15 @@ public class EndelyonScript : NpcScript
 					}
 				}
 
-				if (Title == 11002)
+				if (Title == 11001)
+				{
+					Msg("So you rescued Morrighan the goddess, <username/>?<br/>But the goddess is supposed to be at Tir Na Nog.<br/>Does that mean you've been to Tir Na Nog, <username/>?");
+					Msg("Hmm... Well, then, that must mean that I am right now talking to an extraordinary individual, aren't I? Haha.");
+				}
+				else if (Title == 11002)
+				{
 					Msg("I already heard the news! You became the Guardian of Erinn.<br/>The whole town seems to be talking about it. Hehe...<br/>Congratulations!");
+				}
 
 				await Conversation();
 				break;
@@ -139,14 +144,14 @@ public class EndelyonScript : NpcScript
 		{
 			case "personal_info":
 				GiveKeyword("temple");
-				Msg("I don't have much knowledge, but I am here if you need help.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "I don't have much knowledge, but I am here if you need help.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				GiveKeyword("shop_healing");
-				Msg("<face name='normal'/>Have you met Dilys? She's the town's Healer.<br/>Walk along the road heading northeast, and you will find the Healer's House.<br/>Make sure to meet her if you pass by there.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "Have you met Dilys? She's the town's Healer.<br/>Walk along the road heading northeast, and you will find the Healer's House.<br/>Make sure to meet her if you pass by there.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -220,7 +225,7 @@ public class EndelyonScript : NpcScript
 						RemoveKeyword("skill_composing");
 						Msg("What? Bebhinn told you to ask me about the Composing skill?<br/>I like composing music, sure, but I started not too long ago.<br/>I can't even imagine how I could actually teach someone.");
 						Msg("Hmm... Now that we're talking about composing music,<br/>would you do me a favor?");
-						Msg("<title name='NONE'/>(Received a Quest Scroll containing Endelyon's request.)");
+						Msg(Hide.Name, "(Received a Quest Scroll containing <npcname/>'s request.)");
 					}
 					else
 					{
@@ -258,7 +263,7 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("windmill");
+				GiveKeyword("farmland");
 				Msg("The reservoir is near here.<br/>The Windmill draws water out of the reservoir to irrigate the farmland.");
 				break;
 
@@ -315,6 +320,7 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "shop_bookstore":
+				GiveKeyword("shop_misc");
 				Msg("Are you looking for a bookstore?<br/>Unfortunately, there are no bookstores in this town.<br/>Books are expensive and take time to read,<br/>so they are only for people with spare time and money.");
 				Msg("People here are simply too busy trying to make ends meet.<br/>The only books you can find in this town are probably some books on spells, I guess.<br/>Sometimes, Ferghus or Ranald give books as presents<br/>but it's a stretch to call them real books.");
 				break;
@@ -328,9 +334,17 @@ public class EndelyonScript : NpcScript
 				Msg("Have you been to Duncan's house? The graveyard is right behind it.<br/>It may look a little creepy,<br/>but it's the resting place for the people who died defending Tir Chonaill.<br/>Oh, there are some big spiders roaming around the graveyard. Be careful.");
 				break;
 
+			case "bow":
+				GiveKeyword("show_smith");
+				Msg("Bows?<br/>Well, the Blacksmith's Shop might have them.<br/>Bows are usually made of wood, but arrowheads are made of iron, so...");
+				break;
+
 			case "lute":
-				GiveKeyword("shop_misc");
 				Msg("The lute is a musical instrument with a neck and musical strings attached to a deep, round soundbox.<br/>To play it, simply pluck the strings.<br/>It's an easily accessible instrument. You should try it!<br/>You can find one at Malcolm's General Shop.");
+				break;
+
+			case "complicity":
+				Msg("I have no idea why people do that, but I'm afraid anyone who does such things often<br/>may lose divine protection despite love and blessings from Lymilark.");
 				break;
 
 			case "tir_na_nog":
@@ -354,7 +368,7 @@ public class EndelyonScript : NpcScript
 					"I guess you'd better ask someone else about such things.",
 					"I don't think I can help you with that. Can we talk about something else?"
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

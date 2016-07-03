@@ -13,6 +13,7 @@ public class GoroScript : NpcScript
 		SetBody(height: 0.3f);
 		SetFace(skinColor: 32, eyeType: 3, eyeColor: 7, mouthType: 2);
 		SetLocation(28, 1283, 3485, 198);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Shoe, 17005, 0x00441A19, 0x00695C66, 0x0000BADB);
 		EquipItem(Pocket.RightHand1, 40007, 0x006A6A6A, 0x00745D2F, 0x00737270);
@@ -26,11 +27,7 @@ public class GoroScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		await Intro(
-			"With his rough skin, menacing face, and his constant hard-breathing,",
-			"he has the sure look of a Goblin.<br/>Yet, there is something different about this one.",
-			"Strangely, it appears to have a sense of noble demeanor that does not match its rugged looks."
-		);
+		await Intro(L("With his rough skin, menacing face, and his constant hard-breathing,<br/>he has the sure look of a Goblin.<br/>Yet, there is something different about this one.<br/>Strangely, it appears to have a sense of noble demeanor that does not match its rugged looks."));
 
 		Msg("How can I help you?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 
@@ -38,7 +35,18 @@ public class GoroScript : NpcScript
 		{
 			case "@talk":
 				Greet();
-				Msg("I'm so glad to see you again.<br/>I am Goro, the goblin who can speak the language of humans.");
+
+				if (Title == 11001)
+				{
+					Msg("...Did you finally succeed?<br/>That's incredible. Haha.");
+					Msg("But... Honestly, I believe all this is just the beginning.<br/>Puhahahaha...");
+				}
+				else if (Title == 11002)
+				{
+					Msg("The power of humans is truly amazing...<br/>You're already strong enough to protect Erinn...");
+					Msg("...<npcname/> is quite curious<br/>where humans<br/>get such strength...");
+				}
+
 				await StartConversation();
 				break;
 
@@ -48,7 +56,7 @@ public class GoroScript : NpcScript
 				return;
 		}
 
-		End("Goodbye, Goro. I'll see you later!");
+		End("Goodbye, <npcname/>. I'll see you later!");
 	}
 
 	private void Greet()
@@ -125,6 +133,7 @@ public class GoroScript : NpcScript
 			"Hmm...I believe I have heard about it...",
 			"I do not know anything about that kind of story."
 		);
+		ModifyRelation(0, 0, Random(3));
 	}
 }
 
