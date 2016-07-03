@@ -27,7 +27,7 @@ namespace Aura.Mabi
 		/// <summary>
 		/// Release of KR.
 		/// </summary>
-		public static readonly DateTime BeginOfTime = DateTime.Parse("2004-06-22");
+		public static readonly DateTime BeginOfTime = DateTime.Parse("2004-06-20");
 
 		/// <summary>
 		/// Erinn hour of this instance.
@@ -108,7 +108,7 @@ namespace Aura.Mabi
 			// Based on the theory that 1 year (1 week realtime) consists of
 			// 7 months (7 days) with 40 days (1440 / 36 min) each.
 			this.Year = (int)Math.Floor((this.DateTime.Ticks - BeginOfTime.Ticks) / TicksPerMinute / 60 / 24 / 280f) + 1;
-			this.Month = (int)this.DateTime.DayOfWeek;
+			this.Month = (int)this.DateTime.DayOfWeek + 1;
 			this.Day = (int)Math.Floor((this.DateTime.Hour * 60 + this.DateTime.Minute) / 36f) + 1;
 		}
 
@@ -169,7 +169,7 @@ namespace Aura.Mabi
 			format = format.Replace("dd", this.Day.ToString("00"));
 			format = format.Replace("d", this.Day.ToString());
 
-			format = format.Replace("MMMM", _months[this.Month]);
+			format = format.Replace("MMMM", _months[this.Month - 1]);
 			format = format.Replace("MM", this.Month.ToString("00"));
 			format = format.Replace("M", this.Month.ToString());
 
