@@ -101,7 +101,7 @@ namespace Aura.Mabi
 		/// <param name="dt"></param>
 		public ErinnTime(DateTime dt)
 		{
-			this.DateTime = dt;
+			this.DateTime = (dt < BeginOfTime ? BeginOfTime : dt);
 			this.Hour = (int)((this.DateTime.Ticks / TicksPerHour) % 24);
 			this.Minute = (int)((this.DateTime.Ticks / TicksPerMinute) % 60);
 

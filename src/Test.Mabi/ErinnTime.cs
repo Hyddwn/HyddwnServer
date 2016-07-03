@@ -120,5 +120,21 @@ namespace Aura.Tests.Mabi
 				}
 			}
 		}
+
+		[Fact]
+		public void BeginOfTimeCap()
+		{
+			var time1 = new ErinnTime(ErinnTime.BeginOfTime);
+			Assert.Equal("1-1-01 00:00", time1.ToString());
+
+			var time2 = new ErinnTime(DateTime.MinValue);
+			Assert.Equal("1-1-01 00:00", time2.ToString());
+
+			var time3 = new ErinnTime(new DateTime(2000, 1, 1));
+			Assert.Equal("1-1-01 00:00", time3.ToString());
+
+			var time4 = new ErinnTime(DateTime.MaxValue);
+			Assert.Equal("417187-6-40 23:59", time4.ToString());
+		}
 	}
 }
