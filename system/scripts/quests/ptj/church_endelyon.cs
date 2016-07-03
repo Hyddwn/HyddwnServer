@@ -47,7 +47,7 @@ public class EndelyonPtjScript : GeneralScript
 	}
 
 	[On("ErinnMidnightTick")]
-	private void OnErinnMidnightTick(ErinnTime time)
+	public void OnErinnMidnightTick(ErinnTime time)
 	{
 		remaining = PerDay;
 	}

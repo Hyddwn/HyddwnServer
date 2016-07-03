@@ -60,7 +60,7 @@ public class DilysPtjScript : GeneralScript
 	}
 
 	[On("ErinnMidnightTick")]
-	private void OnErinnMidnightTick(ErinnTime time)
+	public void OnErinnMidnightTick(ErinnTime time)
 	{
 		// Reset available jobs
 		remaining = PerDay;
