@@ -27,7 +27,7 @@ namespace Aura.Mabi
 		/// <summary>
 		/// Release of KR.
 		/// </summary>
-		public static readonly DateTime BeginOfTime = DateTime.Parse("2004-06-22");
+		public static readonly DateTime BeginOfTime = DateTime.Parse("2004-06-20");
 
 		/// <summary>
 		/// Erinn hour of this instance.
