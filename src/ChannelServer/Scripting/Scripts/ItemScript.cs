@@ -374,6 +374,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 			var delay = 500;
 			var rnd = RandomProvider.Get();
+			var height = rnd.Between(750, 2000);
+			var heightf = height / 100f;
 
 			var prop = new Prop(208, location.RegionId, location.X, location.Y, 0);
 			prop.DisappearTime = DateTime.Now.AddSeconds(20 + delay);
@@ -381,8 +383,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 			Task.Delay(delay).ContinueWith(__ =>
 			{
-				prop.Xml.SetAttributeValue("height", rnd.Between(750, 2500));
-				prop.Xml.SetAttributeValue("message", message);
+				prop.Xml.SetAttributeValue("height", height);
+				prop.Xml.SetAttributeValue("message", message + " (" + heightf.ToString("0.##") + "m)");
 				prop.Xml.SetAttributeValue("type", (int)type);
 				prop.Xml.SetAttributeValue("seed", Interlocked.Increment(ref _fireworkSeed));
 				Send.PropUpdate(prop);
