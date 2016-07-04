@@ -378,7 +378,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var heightf = height / 100f;
 
 			var prop = new Prop(208, location.RegionId, location.X, location.Y, 0);
-			prop.DisappearTime = DateTime.Now.AddSeconds(20 + delay);
+			prop.DisappearTime = DateTime.Now.AddMilliseconds(20000 + delay);
 			region.AddProp(prop);
 
 			Task.Delay(delay).ContinueWith(__ =>
