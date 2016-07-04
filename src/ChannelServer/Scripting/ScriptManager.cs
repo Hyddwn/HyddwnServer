@@ -161,7 +161,7 @@ namespace Aura.Channel.Scripting
 				sb.AppendFormat("public class ItemScript{0} : ItemScript {{" + Environment.NewLine, entry.Id);
 
 				if (!string.IsNullOrWhiteSpace(entry.OnUse))
-					sb.AppendFormat("	public override void OnUse(Creature cr, Item i)     {{ {0} }}" + Environment.NewLine, entry.OnUse.Trim());
+					sb.AppendFormat("	public override void OnUse(Creature cr, Item i, string param)     {{ {0} }}" + Environment.NewLine, entry.OnUse.Trim());
 				if (!string.IsNullOrWhiteSpace(entry.OnEquip))
 					sb.AppendFormat("	public override void OnEquip(Creature cr, Item i)   {{ {0} }}" + Environment.NewLine, entry.OnEquip.Trim());
 				if (!string.IsNullOrWhiteSpace(entry.OnUnequip))

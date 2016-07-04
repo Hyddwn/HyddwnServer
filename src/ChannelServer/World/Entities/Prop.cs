@@ -54,7 +54,19 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Specifies whether other entities collide with this one's shape.
 		/// </summary>
-		public bool IsCollision { get { return true; } }
+		/// <remarks>
+		/// Apparently the fireworks prop blocks movement...
+		/// TODO: Figure out why.
+		/// </remarks>
+		public bool IsCollision
+		{
+			get
+			{
+				if (this.Info.Id == 208) // Fireworks
+					return false;
+				return true;
+			}
+		}
 
 		/// <summary>
 		/// True if this prop was spawned by the server.
