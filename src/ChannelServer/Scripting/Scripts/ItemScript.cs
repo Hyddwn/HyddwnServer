@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using Aura.Channel.Network.Sending;
+using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Channel.World.Entities.Creatures;
 using Aura.Data;
@@ -12,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Aura.Channel.Scripting.Scripts
 {
@@ -25,6 +28,8 @@ namespace Aura.Channel.Scripting.Scripts
 	{
 		private const float WeightChangePlus = 0.0015f;
 		private const float WeightChangeMinus = 0.000375f;
+
+		private static int _fireworkSeed;
 
 		/// <summary>
 		/// Called when script is initialized after loading it.
@@ -353,6 +358,35 @@ namespace Aura.Channel.Scripting.Scripts
 				Stat.DefenseMod, Stat.ProtectionMod
 			);
 			Send.StatUpdate(creature, StatUpdateType.Public, Stat.Life, Stat.LifeInjured, Stat.LifeMaxMod, Stat.LifeMax);
+		}
+
+		protected void ShootFirework(Location location, FireworkType type, string message)
+		{
+			var region = ChannelServer.Instance.World.GetRegion(location.RegionId);
+			if (region == null)
+			{
+				Log.Warning(this.GetType().Name + ".ShootFirework: Unknown region.");
+				return;
+			}
+
+			if (message == null)
+				message = "";
+
+			var delay = 500;
+			var rnd = RandomProvider.Get();
+
+			var prop = new Prop(208, location.RegionId, location.X, location.Y, 0);
+			prop.DisappearTime = DateTime.Now.AddSeconds(20 + delay);
+			region.AddProp(prop);
+
+			Task.Delay(delay).ContinueWith(__ =>
+			{
+				prop.Xml.SetAttributeValue("height", rnd.Between(750, 2500));
+				prop.Xml.SetAttributeValue("message", message);
+				prop.Xml.SetAttributeValue("type", (int)type);
+				prop.Xml.SetAttributeValue("seed", Interlocked.Increment(ref _fireworkSeed));
+				Send.PropUpdate(prop);
+			});
 		}
 	}
 
