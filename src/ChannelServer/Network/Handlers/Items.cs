@@ -488,6 +488,9 @@ namespace Aura.Channel.Network.Handlers
 		public void UseItem(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
+			string parameter = "";
+			if (packet.Peek() == PacketElementType.String)
+				parameter = packet.GetString();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -548,7 +551,7 @@ namespace Aura.Channel.Network.Handlers
 				// Run script
 				try
 				{
-					script.OnUse(creature, item);
+					script.OnUse(creature, item, parameter);
 				}
 				catch (NotImplementedException)
 				{

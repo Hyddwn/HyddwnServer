@@ -50,7 +50,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="item"></param>
-		public virtual void OnUse(Creature creature, Item item)
+		public virtual void OnUse(Creature creature, Item item, string parameter)
 		{ }
 
 		/// <summary>
