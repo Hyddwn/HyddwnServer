@@ -528,7 +528,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 				sb.AppendFormat("</rewards>");
 			}
-			sb.AppendFormat("<desc>{0}</desc>", objective.Description);
+			sb.AppendFormat("<desc>{0}</desc>", quest.Description);
 			sb.AppendFormat("<values maxcount=\"{0}\" remaincount=\"{1}\" remaintime=\"{2}\" history=\"{3}\"/>", this.MaxAvailableJobs, this.RemainingJobs, remainingHours, this.History);
 			sb.Append("</arbeit>");
 		}

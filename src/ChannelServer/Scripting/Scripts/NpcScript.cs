@@ -1306,7 +1306,10 @@ namespace Aura.Channel.Scripting.Scripts
 			if (questScriptsCount == 0)
 				throw new Exception("NpcScript.RandomPtj: Unable to find any of the given quests.");
 			if (questScriptsCount != questIds.Length)
-				Log.Warning("NpcScript.RandomPtj: Some of the given quest ids are unknown.");
+			{
+				var missing = questIds.Where(a => !questScripts.Any(b => b.Id == a));
+				Log.Warning("NpcScript.RandomPtj: Some of the given quest ids are unknown (" + string.Join(", ", missing) + ").");
+			}
 
 			// Check same level quests
 			var sameLevelQuests = questScripts.Where(a => a.Level == level);
