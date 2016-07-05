@@ -92,7 +92,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="life"></param>
 		/// <param name="mana"></param>
 		/// <param name="stamina"></param>
-		protected void Heal(Creature creature, double life, double mana, double stamina)
+		protected void Heal(Creature creature, double life, double mana, double stamina, double toxicity)
 		{
 			// Friday: All potions become more potent. (Potion effect x 1.5 including toxicity).
 			// +50%? Seems a lot, but that's what the Wiki says.
@@ -101,7 +101,10 @@ namespace Aura.Channel.Scripting.Scripts
 				life *= 1.5;
 				mana *= 1.5;
 				stamina *= 1.5;
+				toxicity *= 1.5;
 			}
+
+			//creature.X += (float)foodPoison;
 
 			creature.Life += (float)life;
 			creature.Mana += (float)mana;
@@ -115,8 +118,15 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="life"></param>
 		/// <param name="mana"></param>
 		/// <param name="stamina"></param>
-		protected void HealRate(Creature creature, double life, double mana, double stamina)
+		protected void HealRate(Creature creature, double life, double mana, double stamina, double toxicity)
 		{
+			// Friday: All potions become more potent. (Potion effect x 1.5 including toxicity).
+			// +50%? Seems a lot, but that's what the Wiki says.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
+				toxicity *= 1.5;
+
+			//creature.X += (float)foodPoison;
+
 			if (life != 0)
 				creature.Life += (float)(creature.LifeMax / 100f * life);
 			if (mana != 0)
@@ -129,26 +139,12 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Heals life, mana, and stamina completely.
 		/// </summary>
 		/// <param name="creature"></param>
-		protected void HealFull(Creature creature)
+		/// <param name="toxicity"></param>
+		protected void HealFull(Creature creature, double toxicity)
 		{
 			creature.Injuries = 0;
 			creature.Hunger = 0;
-			this.HealRate(creature, 100, 100, 100);
-		}
-
-		/// <summary>
-		/// Adds to pot poisoning.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="foodPoison"></param>
-		protected void Poison(Creature creature, double foodPoison)
-		{
-			// Friday: All potions become more potent. (Potion effect x 1.5 including toxicity).
-			// +50%? Seems a lot, but that's what the Wiki says.
-			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
-				foodPoison *= 1.5;
-
-			//creature.X += (float)foodPoison;
+			this.HealRate(creature, 100, 100, 100, toxicity);
 		}
 
 		/// <summary>
@@ -198,8 +194,15 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="injuries"></param>
-		protected void Treat(Creature creature, double injuries)
+		protected void Treat(Creature creature, double injuries, double toxicity)
 		{
+			// Friday: All potions become more potent. (Potion effect x 1.5 including toxicity).
+			// +50%? Seems a lot, but that's what the Wiki says.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
+				toxicity *= 1.5;
+
+			//creature.X += (float)foodPoison;
+
 			creature.Injuries -= (float)injuries;
 		}
 
