@@ -57,8 +57,8 @@ public class CaitinPtjScript : GeneralScript
 
 	public override void Load()
 	{
-		AddHook("_dilys", "after_intro", AfterIntro);
-		AddHook("_dilys", "before_keywords", BeforeKeywords);
+		AddHook("_caitin", "after_intro", AfterIntro);
+		AddHook("_caitin", "before_keywords", BeforeKeywords);
 	}
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
