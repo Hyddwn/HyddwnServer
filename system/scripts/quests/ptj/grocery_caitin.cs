@@ -633,7 +633,7 @@ public abstract class CaitinBreadPtjBaseScript : QuestScript
 			SetCategory(QuestCategory.ById);
 
 		SetType(QuestType.Deliver);
-		SetPtjType(PtjType.HealersHouse);
+		SetPtjType(PtjType.GroceryStore);
 		SetHours(start: 12, report: 14, deadline: 21);
 
 		AddObjective("ptj", Objective, 0, 0, 0, Deliver(ItemId, NpcIdent));
