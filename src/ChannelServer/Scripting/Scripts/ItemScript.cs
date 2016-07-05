@@ -123,7 +123,12 @@ namespace Aura.Channel.Scripting.Scripts
 			// Friday: All potions become more potent. (Potion effect x 1.5 including toxicity).
 			// +50%? Seems a lot, but that's what the Wiki says.
 			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
+			{
+				life *= 1.5;
+				mana *= 1.5;
+				stamina *= 1.5;
 				toxicity *= 1.5;
+			}
 
 			//creature.X += (float)foodPoison;
 
