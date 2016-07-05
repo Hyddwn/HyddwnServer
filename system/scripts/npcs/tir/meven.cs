@@ -13,25 +13,30 @@ public class MevenScript : NpcScript
 		SetFace(skinColor: 21, eyeType: 5, eyeColor: 27);
 		SetStand("human/male/anim/male_natural_stand_npc_Meven");
 		SetLocation(4, 954, 2271, 198);
+		SetGiftWeights(beauty: 1, individuality: 0, luxury: -1, toughness: 0, utility: 2, rarity: 0, meaning: 2, adult: 1, maniac: 0, anime: 0, sexy: 0);
 
 		EquipItem(Pocket.Face, 4900, 0x00D45D8D, 0x0087178A, 0x0024AF7C);
 		EquipItem(Pocket.Hair, 4026, 0x00EBE0C0, 0x00EBE0C0, 0x00EBE0C0);
 		EquipItem(Pocket.Armor, 15006, 0x00313727, 0x00282C2B, 0x00F0DA4A);
 		EquipItem(Pocket.Shoe, 17012, 0x00313727, 0x00FFFFFF, 0x00A0927D);
 
-		AddPhrase("Ah, I forgot I have some plowing to do.");
 		AddPhrase("...");
+		AddPhrase("(Smile)");
+		AddPhrase("!");
+		AddPhrase("?");
+		AddPhrase("??");
+		AddPhrase("???");
+		AddPhrase("Oops! I forgot to iron my robes!");
+		AddPhrase("Ah, I forgot I have some plowing to do.");
+		AddPhrase("Perhaps I could take a quick rest now.");
+		AddPhrase("Hiccup! Hiccup! (Confused)");
 	}
 
 	protected override async Task Talk()
 	{
 		SetBgm("NPC_Meven.mp3");
 
-		await Intro(
-			"Dressed in a robe, this composed man of moderate build maintains a very calm posture.",
-			"Every bit of his appearance and the air surrounding him show that he is unfailingly a man of the clergy.",
-			"Silvery hair frames his friendly face, and his gentle eyes suggest a rather quaint and quiet mood with flashes of hidden humor."
-		);
+		await Intro(L("Dressed in a robe, this composed man of moderate build maintains a very calm posture.<br/>Every bit of his appearance and the air surrounding him show that he is unfailingly a man of the clergy.<br/>Silvery hair frames his friendly face, and his gentle eyes suggest a rather quaint and quiet mood with flashes of hidden humor."));
 
 		Msg("Welcome to the Church of Lymilark.", Button("Start a Conversation", "@talk"));
 
@@ -40,11 +45,19 @@ public class MevenScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("Even Tarlach had failed,<br/>but you managed to do it...<br/>I'd like to congratulate you.");
+					Msg("You saved this world from great danger.<br/>Have confidence in your thoughts and actions,<br/>and try to live up to your reputation.");
+					Msg("...Just a piece of advice for you that should be taken with a pinch of salt.");
+				}
+				else if (Title == 11002)
 				{
 					Msg("...I see...<br/>So you're the one<br/>who prevented Macha from being reborn...");
 					Msg("Good job. <username/>...<br/>The sky is the limit for you<br/>to change this world to a better place...");
 				}
+
 				await Conversation();
 				break;
 		}
@@ -84,13 +97,13 @@ public class MevenScript : NpcScript
 		{
 			case "personal_info":
 				GiveKeyword("temple");
-				Msg("I am Priest <npcname/>.<br/>It's so nice to see someone cares for an old man.<br/>Ha ha.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "I am Priest <npcname/>.<br/>It's so nice to see someone cares for an old man.<br/>Ha ha.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
-				Msg("The General Shop, Grocery Store and the Bank<br/>surround the Square of the town.<br/>A bit higher up the hill is the Chief's House.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "The General Shop, Grocery Store and the Bank<br/>surround the Square of the town.<br/>A bit higher up the hill is the Chief's House.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -260,14 +273,16 @@ public class MevenScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_smith");
 				Msg("If you need a bow, you can go to the Blacksmith's Shop.<br/>It's not made of iron,<br/>but you would need arrows too.<p/>Go and ask Ferghus.<br/>He is the expert.<p/>Could you perhaps tell him<br/>to stop drinking<br/>and come to the services..?");
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
 				Msg("Are you looking for a lute?<br/>You could get a lute<br/>at Malcolm's General Shop.<br/>Tell him I sent you. Probably you could negotiate over the price.");
 				Msg("Well, he may charge you more, as a matter fact.");
+				break;
+
+			case "complicity":
+				Msg("My Lord!<br/>Please enrich the poor souls of your children, suffering from doubts and suspicions.");
 				break;
 
 			case "tir_na_nog":
@@ -295,7 +310,7 @@ public class MevenScript : NpcScript
 					"I don't think I heard of that, I'm sorry.",
 					"How could I know about that, I'm just a priest."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
