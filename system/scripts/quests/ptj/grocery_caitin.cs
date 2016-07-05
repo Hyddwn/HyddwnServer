@@ -990,7 +990,7 @@ public abstract class CaitinExtBreadPtjBaseScript : QuestScript
 	}
 }
 
-public abstract class CaitinExtBreadBasicPtjScript : CaitinExtBreadPtjBaseScript
+public class CaitinExtBreadBasicPtjScript : CaitinExtBreadPtjBaseScript
 {
 	public override void Load()
 	{
@@ -1028,7 +1028,7 @@ public abstract class CaitinExtBreadBasicPtjScript : CaitinExtBreadPtjBaseScript
 	}
 }
 
-public abstract class CaitinExtBreadIntPtjScript : CaitinExtBreadPtjBaseScript
+public class CaitinExtBreadIntPtjScript : CaitinExtBreadPtjBaseScript
 {
 	public override void Load()
 	{
@@ -1063,7 +1063,7 @@ public abstract class CaitinExtBreadIntPtjScript : CaitinExtBreadPtjBaseScript
 	}
 }
 
-public abstract class CaitinExtBreadAdvPtjScript : CaitinExtBreadPtjBaseScript
+public class CaitinExtBreadAdvPtjScript : CaitinExtBreadPtjBaseScript
 {
 	public override void Load()
 	{
