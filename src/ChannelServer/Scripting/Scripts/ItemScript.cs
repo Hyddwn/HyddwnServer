@@ -120,24 +120,11 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="stamina"></param>
 		protected void HealRate(Creature creature, double life, double mana, double stamina, double toxicity)
 		{
-			// Friday: All potions become more potent. (Potion effect x 1.5 including toxicity).
-			// +50%? Seems a lot, but that's what the Wiki says.
-			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
-			{
-				life *= 1.5;
-				mana *= 1.5;
-				stamina *= 1.5;
-				toxicity *= 1.5;
-			}
+			life = creature.LifeMax / 100f * life;
+			mana = creature.ManaMax / 100f * mana;
+			stamina = creature.StaminaMax / 100f * stamina;
 
-			//creature.X += (float)foodPoison;
-
-			if (life != 0)
-				creature.Life += (float)(creature.LifeMax / 100f * life);
-			if (mana != 0)
-				creature.Mana += (float)(creature.ManaMax / 100f * life);
-			if (stamina != 0)
-				creature.Stamina += (float)(creature.StaminaMax / 100f * life);
+			this.Heal(creature, life, mana, stamina, toxicity);
 		}
 
 		/// <summary>
