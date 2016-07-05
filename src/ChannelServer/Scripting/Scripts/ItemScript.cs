@@ -101,7 +101,6 @@ namespace Aura.Channel.Scripting.Scripts
 				life *= 1.5;
 				mana *= 1.5;
 				stamina *= 1.5;
-				toxicity *= 1.5;
 			}
 
 			//creature.X += (float)foodPoison;
