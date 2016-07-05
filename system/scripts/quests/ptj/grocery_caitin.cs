@@ -47,6 +47,9 @@ public class CaitinPtjScript : GeneralScript
 		501405, // Basic  Deliver Bread to Lassar, Talk To Ranald, Deliver Anthology
 		501435, // Int    Deliver Bread to Lassar, Talk To Ranald, Deliver Anthology
 		501465, // Adv    Deliver Bread to Lassar, Talk To Ranald, Deliver Anthology
+
+		// These existed at some point, but were probably removed,
+		// as they don't seem to be available on NA anymore.
 		//501107, // Basic  Fish up a Brifne Carp at least 10 cm big
 		//501136, // Int    Fish up a Brifne Carp at least 30 cm big
 		//501166, // Adv    Fish up a Brifne Carp at least 60 cm big
