@@ -701,12 +701,12 @@ public class CaitinBreadMevenBasicPtjScript : CaitinBreadBasicPtjBaseScript
 {
 	protected override int QuestId { get { return 501401; } }
 	protected override string NpcIdent { get { return "_meven"; } }
-	protected override string Objective { get { return L("Deliver Bread to Meven at the Church"); } }
+	protected override string Objective { get { return L("Deliver Bread to Meven at Church"); } }
 
 	protected override async Task OnFinish(NpcScript npc)
 	{
-		npc.Msg(L("You are delivering the bread on Caitin's behalf?<br/>I can't thank you enough."));
-		npc.Msg(Hide.Name, L("(Delivered the Bread to Meven."));
+		npc.Msg(L("Oh, this Bread looks lovely.<br/>Another blessing from our God, Lymilark.<br/>Thank you."));
+		npc.Msg(Hide.None, L("(Delivered the Bread to the Priest.)"));
 	}
 }
 
@@ -788,12 +788,12 @@ public class CaitinBreadMevenIntPtjScript : CaitinBreadIntPtjBaseScript
 {
 	protected override int QuestId { get { return 501431; } }
 	protected override string NpcIdent { get { return "_meven"; } }
-	protected override string Objective { get { return L("Deliver Bread to Meven at the Church"); } }
+	protected override string Objective { get { return L("Deliver Bread to Meven at Church"); } }
 
 	protected override async Task OnFinish(NpcScript npc)
 	{
-		npc.Msg(L("You are delivering the bread on Caitin's behalf?<br/>I can't thank you enough."));
-		npc.Msg(Hide.Name, L("(Delivered the Bread to Meven."));
+		npc.Msg(L("Oh, this Bread looks lovely.<br/>Another blessing from our God, Lymilark.<br/>Thank you."));
+		npc.Msg(Hide.None, L("(Delivered the Bread to the Priest.)"));
 	}
 }
 
@@ -878,12 +878,12 @@ public class CaitinBreadMevenAdvPtjScript : CaitinBreadAdvPtjBaseScript
 {
 	protected override int QuestId { get { return 501461; } }
 	protected override string NpcIdent { get { return "_meven"; } }
-	protected override string Objective { get { return L("Deliver Bread to Meven at the Church"); } }
+	protected override string Objective { get { return L("Deliver Bread to Meven at Church"); } }
 
 	protected override async Task OnFinish(NpcScript npc)
 	{
-		npc.Msg(L("You are delivering the bread on Caitin's behalf?<br/>I can't thank you enough."));
-		npc.Msg(Hide.Name, L("(Delivered the Bread to Meven."));
+		npc.Msg(L("Oh, this Bread looks lovely.<br/>Another blessing from our God, Lymilark.<br/>Thank you."));
+		npc.Msg(Hide.None, L("(Delivered the Bread to the Priest.)"));
 	}
 }
 
