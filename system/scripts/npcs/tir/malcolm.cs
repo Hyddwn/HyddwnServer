@@ -14,6 +14,7 @@ public class MalcolmScript : NpcScript
 		SetFace(skinColor: 16, eyeType: 26, eyeColor: 162);
 		SetStand("human/male/anim/male_natural_stand_npc_malcolm_retake", "human/male/anim/male_natural_stand_npc_malcolm_talk");
 		SetLocation(8, 1238, 1655, 59);
+		SetGiftWeights(beauty: 2, individuality: -1, luxury: 0, toughness: 0, utility: 1, rarity: 2, meaning: 0, adult: 0, maniac: 0, anime: 0, sexy: 0);
 
 		EquipItem(Pocket.Face, 4900, 0x00FFB859, 0x003C6274, 0x00505968);
 		EquipItem(Pocket.Hair, 4155, 0x00ECBC58, 0x00ECBC58, 0x00ECBC58);
@@ -32,12 +33,7 @@ public class MalcolmScript : NpcScript
 	{
 		SetBgm("NPC_Malcolm.mp3");
 
-		await Intro(
-			"While his thin face makes him look weak,",
-			"and his soft and delicate hands seem much too feminine,",
-			"his cool long blonde hair gives him a suave look.",
-			"He looks like he just came out of a workshop since he's wearing a heavy leather apron."
-		);
+		await Intro(L("While his thin face makes him look weak,<br/>and his soft and delicate hands seem much too feminine,<br/>his cool long blonde hair gives him a suave look.<br/>He looks like he just came out of a workshop since he's wearing a heavy leather apron."));
 
 		Msg("What can I do for you?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"));
 
@@ -85,7 +81,13 @@ public class MalcolmScript : NpcScript
 					}
 				}
 
-				if (Title == 11002)
+				if (Title == 11001)
+				{
+					Msg("...");
+					Msg("...*Sigh*");
+					Msg("Has your life gotten any better after saving the Goddess?");
+				}
+				else if (Title == 11002)
 				{
 					Msg("You're the... Guardian of Erinn?<br/>I don't know what you do exactly,<br/>but you seem to leave<br/>a really good impression on people.");
 					Msg("...I'm a bit jealous...");
@@ -185,14 +187,14 @@ public class MalcolmScript : NpcScript
 		{
 			case "personal_info":
 				GiveKeyword("shop_misc");
-				Msg("I run this General Shop. I sell various goods.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "I run this General Shop. I sell various goods.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
-				Msg("Tir Chonaill is a peaceful town.<br/>So when something happens, everyone in the town knows it right away.<br/>I warn you, some were humiliated because of that...<br/>Nothing is as important as being responsible for your own actions.");
+				Msg(FavorExpression(), "Tir Chonaill is a peaceful town.<br/>So when something happens, everyone in the town knows it right away.<br/>I warn you, some were humiliated because of that...<br/>Nothing is as important as being responsible for your own actions.");
 				Msg("If you behave like Tracy, you'll be in big trouble.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -297,6 +299,7 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "farmland":
+				GiveKeyword("school");
 				Msg("The farmland is near the School.<br/>How come so many travelers are interested in it?<br/>There's nothing special about it.");
 				Msg("What's more, their careless strolls through the farmland<br/>are damaging the crops...");
 				break;
@@ -374,6 +377,37 @@ public class MalcolmScript : NpcScript
 				Msg("You can buy them here,<br/>so take a look if you're interested in fishing.");
 				break;
 
+			case "bow":
+				GiveKeyword("shop_smith");
+				Msg("A bow? Well... I could make and sell them...<br/>Actually, I did sell them before, but I felt bad for Ferghus<br/>so I just stopped selling them.");
+				Msg("You should just go to Ferghus' Blacksmith's Shop.<br/>After all, you need to buy arrows,<br/>and bows are useless without them.");
+				break;
+
+			case "lute":
+				Msg("A lute? You have an elegant hobby.<br/>I do sell lutes but they aren't of the highest quality...<br/>Would you like to buy one anyway?");
+				Msg("Press 'Shop', then.");
+				break;
+
+			case "complicity":
+				Msg("Um... What are you talking about?");
+				break;
+
+			case "tir_na_nog":
+				Msg("You mean, the legendary story passed down for generations of a paradise,<br/>where people stay young and live in total bliss?");
+				Msg("Ah! I read it in a book.<br/>I like books a lot.");
+				break;
+
+			case "mabinogi":
+				Msg("Mabinogi, huh?<br/>Well, I may know a lot about some things,<br/>but older people would know more about that.<br/>I'm sure of it.");
+				Msg("I suggest asking Chief Duncan<br/>or Ferghus.");
+				break;
+
+			case "musicsheet":
+				Msg("Yes, you came to the right place.<br/>I sell them.");
+				Msg("...");
+				Msg("But then, you should have pressed 'Shop',<br/>not talk with me...");
+				break;
+
 			default:
 				RndMsg(
 					"I don't know.",
@@ -383,7 +417,7 @@ public class MalcolmScript : NpcScript
 					"NPCs don't have a conversation book.<br/>So I won't remember the things you told me...",
 					"Sorry, I don't know.<br/>Hm... Maybe I should have a travel diary to write things down."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

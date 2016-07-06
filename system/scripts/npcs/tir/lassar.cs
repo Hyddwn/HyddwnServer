@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-// Lassar, the Magic Instructor in Tir Chonaill
+// Lassar
 //--- Description -----------------------------------------------------------
-// 
+// The Magic Instructor in Tir Chonaill School
 //---------------------------------------------------------------------------
 
 public class LassarScript : NpcScript
@@ -14,6 +14,7 @@ public class LassarScript : NpcScript
 		SetFace(skinColor: 15, eyeType: 153, eyeColor: 25, mouthType: 2);
 		SetStand("human/female/anim/female_natural_stand_npc_lassar02");
 		SetLocation(9, 2020, 1537, 202);
+		SetGiftWeights(beauty: 2, individuality: 0, luxury: 2, toughness: 0, utility: 0, rarity: 0, meaning: 2, adult: 1, maniac: 0, anime: 0, sexy: 2);
 
 		EquipItem(Pocket.Face, 3900, 0x0087C5EC, 0x00D5E029, 0x0001945D);
 		EquipItem(Pocket.Hair, 3144, 0x00D25D5D, 0x00D25D5D, 0x00D25D5D);
@@ -39,11 +40,7 @@ public class LassarScript : NpcScript
 	{
 		SetBgm("NPC_Lassar.mp3");
 
-		await Intro(
-			"Waves of her red hair come down to her shoulders.",
-			"Judging by her somewhat small stature, well-proportioned body, and a neat two-piece school uniform, it isn't hard to tell that she is a teacher.",
-			"The intelligent look in her eyes, the clear lip line and eyebrows present her as a charming lady."
-		);
+		await Intro(L("Waves of her red hair come down to her shoulders.<br/>Judging by her somewhat small stature, well-proportioned body, and a neat two-piece school uniform, it isn't hard to tell that she is a teacher.<br/>The intelligent look in her eyes, the clear lip line and eyebrows present her as a charming lady."));
 
 		Msg("Is there anything I can help you with?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Upgrade item", "@upgrade"));
 
@@ -67,8 +64,12 @@ public class LassarScript : NpcScript
 						Msg(L("Hahaha. I was wondering who you were.<br/>You must be Malcolm's friend, <username/>, right?<br/>I would like to give you this MP Potion.<br/>Will you accept it?"));
 					}
 				}
-
-				if (Title == 11002)
+				else if (Title == 11001)
+				{
+					Msg("Hmm... So you rescued the Goddess?<br/>And... that means you've done something the Three Missing Warriors couldn't do, right?<br/>This is a bit hard to believe. Hahaha...");
+					Msg("If you saved the Goddess, why hasn't she descend down upon Erinn as of yet?");
+				}
+				else if (Title == 11002)
 				{
 					Msg("Hm? <username/>, you're the Guardian of Erinn?<br/>Are you <username/>, the one<br/>who used to train magic and combat here?");
 					Msg("...Wow... I'm amazed.<br/>I never knew a day like this would come.");
@@ -109,14 +110,18 @@ public class LassarScript : NpcScript
 								"You have repaired 1 point."
 							);
 						else
-							Msg("There's been some mistakes.");
+							RndMsg( // Should be 3
+								"There's been some mistakes.",
+								"Repair has been finished, but I made some mistakes."
+							);
 					}
 					else if (result.Points > 1)
 					{
 						if (result.Fails == 0)
 							RndMsg(
 								"I didn't make any mistakes. Hehe",
-								"It has been repaired perfectly!"
+								"It has been repaired perfectly!",
+								"It have been repaired completely. Hehe" // 100% Official http://i.imgur.com/GQH4uOT.png
 							);
 						else
 						{
@@ -186,14 +191,16 @@ public class LassarScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg("<npcname/> means 'flame'.<br/>My mother gave birth to me after having dreamed about a wildfire burning the field.");
-				ModifyRelation(Random(2), 0, Random(2));
+				GiveKeyword("school");
+				Msg(FavorExpression(), "<npcname/> means 'flame'.<br/>My mother gave birth to me after having dreamed about a wildfire burning the field.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
-				Msg("Farmland is just to the south of the School.<br/>They mainly grow wheat or barley, and the crop yields are enough<br/>for the people in Tir Chonaill.<br/>But I think there will be a shortage if travelers stay longer.");
+				GiveKeyword("farmland");
+				Msg(FavorExpression(), "Farmland is just to the south of the School.<br/>They mainly grow wheat or barley, and the crop yields are enough<br/>for the people in Tir Chonaill.<br/>But I think there will be a shortage if travelers stay longer.");
 				Msg("That means no stealing crops for you!");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -358,9 +365,33 @@ public class LassarScript : NpcScript
 				Msg("That's why it's great fun to take turns<br/>going there and find items at night to test your guts.");
 				break;
 
+			case "bow":
+				Msg("You can buy a bow at the Blacksmith's Shop.<br/>In this town, weapons are usually sold there.");
+				Msg("Hmm. By the way, why should I inform you of something like this?<br/>Doesn't Ranald tell you things like this?<br/>... Perhaps he looks down on me 'cause I'm a woman...");
+				Msg("Oh, forget I said that. Hehehehe");
+				break;
+
 			case "lute":
 				Msg("A lute?<br/>Malcolm at the General Shop sells lutes.<br/>I guess Priestess Endelyon talked to you,<br/>but you came the wrong way.");
 				Msg("Go in the opposite direction and go toward the Square.<br/>A lute will be useful in many ways.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Hmm... When I was young, I heard town folks say<br/>that Tir Na Nog was simply an utopia.<br/>But what I learned at Emain Macha<br/>was different.");
+				Msg("Tir Na Nog is a lofty world of magic<br/>and of life where<br/>the powers of Gods and of magic are united.");
+				Msg("Of course, I am not sure<br/>whether I fully understand what it means.<br/>But then, who else would?");
+				Msg("I think it is a world<br/>well beyond my imagination...");
+				break;
+
+			case "mabinogi":
+				Msg("You seem fairly interested in Mabinogi.<br/>As far as legends about swords and magic are concerned,<br/>it is better to learn from word of mouth than from dry books.");
+				Msg("As you know, when a story moves on from people to people,<br/>it is naturally exaggerated<br/>with its original meaning distorted.");
+				Msg("One of the best ways to keep the original form of<br/>a story intact is to preserve it through music.");
+				Msg("Of course, that doesn't mean<br/>that the story is delivered in exactly the same form.<br/>But it would be helpful for you to understand Mabinogi this way.");
+				break;
+
+			case "musicsheet":
+				Msg("If you want Music Scores, you should go to Malcolm's General Shop.<br/>Of course, they aren't free. There is no such thing as a free lunch.");
 				break;
 
 			case "jewel":
@@ -375,7 +406,7 @@ public class LassarScript : NpcScript
 					"Why don't you ask other people? I am afraid I would be of little help.",
 					"I thought I knew. But it is more difficult to actually explain it than I thought."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

@@ -150,10 +150,6 @@ public class CaitinScript : NpcScript
 				}
 				break;
 
-			case "about_arbeit":
-				Msg("I'm sorry... This isn't the right time for a part-time job.<br/>Please come back later.");
-				break;
-
 			case "shop_misc":
 				Msg("The General Shop? It's the building in front of here. You must have missed the shop's sign.<br/>Hehe.... Nothing to be embarrassed about. Happens all the time.");
 				break;
