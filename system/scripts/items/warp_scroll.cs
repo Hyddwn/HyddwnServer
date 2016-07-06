@@ -14,7 +14,7 @@ public class WarpScrollItemScript : ItemScript
 	const int AvonY = 63252;
 	const int AvonCoolDown = 5;
 
-	public override void OnUse(Creature creature, Item item)
+	public override void OnUse(Creature creature, Item item, string parameter)
 	{
 		// Avon Feather
 		if (item.HasTag("/feather_of_avon/"))
