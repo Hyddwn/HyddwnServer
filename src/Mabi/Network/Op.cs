@@ -178,6 +178,7 @@ namespace Aura.Mabi.Network
 		public const int ViewEquipmentR = 0x5BE0;
 		public const int OptionSet = 0x5BE7;
 		public const int OptionSetR = 0x5BE8;
+		public const int UpdateServiceExpiration = 0x5BE9; // Used to set style tab expiration
 		public const int AddKeyword = 0x5DC1;
 		public const int RemoveKeyword = 0x5DC3;
 		public const int NpcTalkKeyword = 0x5DC4;
@@ -485,6 +486,8 @@ namespace Aura.Mabi.Network
 		public const int InquiryResponseR = 0x9666;
 		public const int ArenaRoundInfo = 0x9667;
 		public const int ArenaRoundInfoCancel = 0x9668;
+		public const int PurchaseMerchandise = 0x96D5;
+		public const int PurchaseMerchandiseR = 0x96D6;
 		public const int AgeUpEffect = 0x9858;
 
 		public const int ConditionUpdate = 0xA028;

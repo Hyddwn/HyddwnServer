@@ -506,6 +506,18 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends PurchaseMerchandiseR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void PurchaseMerchandiseR(Creature creature)
+		{
+			var packet = new Packet(Op.PurchaseMerchandiseR, creature.EntityId);
+			packet.PutByte(0);
+
+			creature.Client.Send(packet);
+		}
 	}
 
 	public enum ItemPickUpResult : byte

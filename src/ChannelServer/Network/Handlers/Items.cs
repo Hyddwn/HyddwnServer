@@ -1048,5 +1048,89 @@ namespace Aura.Channel.Network.Handlers
 			Send.MsgBox(creature, Localization.Get("Not supported yet."));
 			Send.DestroyExpiredItemsR(creature, false);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <example>
+		/// Op: 000096D5 ?, Id: 0010000000000002
+		/// 001 [........00000001] Int    : 1
+		/// 002 [........FFFFFFFF] Int    : -1
+		/// 003 [........000165E1] Int    : 91617
+		/// 004 [................] String : Style Tab (30 days)
+		/// 005 [0000000000000000] Long   : 0
+		/// </example>
+		[PacketHandler(Op.PurchaseMerchandise)]
+		public void PurchaseMerchandise(ChannelClient client, Packet packet)
+		{
+			var merchandise = new List<Merchandise>();
+
+			var count = packet.GetInt();
+			for (int i = 0; i < count; ++i)
+			{
+				var type = packet.GetInt();
+				var id = packet.GetInt();
+				var name = packet.GetString();
+				var unk1 = packet.GetLong();
+
+				merchandise.Add(new Merchandise(type, id, name));
+			}
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Disabled for now
+			Send.MsgBox(creature, Localization.Get("The Merchandise Shop doesn't work yet."));
+			goto L_End;
+
+			// Check amount
+			if (merchandise.Count == 0)
+			{
+				Log.Debug("PurchaseMerchandise: Empty list.");
+				goto L_End;
+			}
+
+			// Handle
+			var sum = 0;
+			foreach (var good in merchandise)
+			{
+				// ...
+			}
+
+			// Check points
+			if (creature.Points < sum)
+			{
+				// Unofficial
+				Send.Notice(creature, Localization.Get("You don't have enough Pon."));
+				goto L_End;
+			}
+
+			creature.Points -= sum;
+
+			// Give out
+			foreach (var good in merchandise)
+			{
+				// ...
+
+				// Not always?
+				//Send.Notice(creature, Localization.Get("You purchased {0}."), good.Name);
+			}
+
+		L_End:
+			Send.PurchaseMerchandiseR(creature);
+		}
+
+		private class Merchandise
+		{
+			public int Type { get; set; }
+			public int Id { get; set; }
+			public string Name { get; set; }
+
+			public Merchandise(int type, int id, string name)
+			{
+				this.Type = type;
+				this.Id = id;
+				this.Name = name;
+			}
+		}
 	}
 }
