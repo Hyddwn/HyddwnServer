@@ -1504,6 +1504,13 @@ namespace Aura.Channel.Scripting.Scripts
 
 			var bankTitle = BankInventory.GetName(bankId);
 
+			// Override bank if global bank is activated
+			if (ChannelServer.Instance.Conf.World.GlobalBank)
+			{
+				bankId = "Global";
+				bankTitle = L("Global Bank");
+			}
+
 			this.Player.Temp.CurrentBankId = bankId;
 			this.Player.Temp.CurrentBankTitle = bankTitle;
 
