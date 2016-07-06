@@ -126,6 +126,17 @@ namespace Aura.Mabi.Const
 		DualgunAttackMaxBaseMod, // [180300, NA166 (18.09.2013)]
 		DualgunInjuryMinBaseMod, // [180300, NA166 (18.09.2013)]
 		DualgunInjuryMaxBaseMod, // [180300, NA166 (18.09.2013)]
+
+		// [20XXXX?, NA2XX? (XX.XX.2016?)]
+		// New stats were added somewhere, which shifted the Toxic group
+		// by 4. It's unknown when they were added, what they do,
+		// and where *exactly* they go, but since it's 4, it might be a
+		// new weapon type.
+		Unknown1,
+		Unknown2,
+		Unknown3,
+		Unknown4,
+
 		PoisonBase,
 		PoisonMod,
 		PoisonImmuneBase,

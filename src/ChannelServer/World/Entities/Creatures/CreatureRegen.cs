@@ -20,6 +20,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		private Dictionary<string, List<StatRegen>> _regenGroups;
 
 		private bool _night;
+		private int _minuteCounter;
+		private float _totalToxic;
 
 		public Creature Creature { get; private set; }
 
@@ -228,6 +230,52 @@ namespace Aura.Channel.World.Entities.Creatures
 
 				_night = time.IsNight;
 			}
+
+			this.UpdateToxicity();
+		}
+
+		/// <summary>
+		/// Called once per second to update toxicity.
+		/// </summary>
+		private void UpdateToxicity()
+		{
+			var toxicStr = this.Creature.ToxicStr;
+			var toxicInt = this.Creature.ToxicInt;
+			var toxicDex = this.Creature.ToxicDex;
+			var toxicWill = this.Creature.ToxicWill;
+			var toxicLuck = this.Creature.ToxicLuck;
+			var total = toxicStr + toxicInt + toxicDex + toxicWill + toxicLuck;
+			var update = false;
+
+			if (total != 0 && !this.Creature.Conditions.Has(ConditionsA.PotionPoisoning))
+				this.Creature.Conditions.Activate(ConditionsA.PotionPoisoning);
+
+			if (_minuteCounter++ == 60)
+			{
+				var prevTotalToxic = _totalToxic;
+				_minuteCounter = 0;
+				_totalToxic = total;
+				update = prevTotalToxic != 0;
+
+				if (prevTotalToxic != 0 && _totalToxic == 0)
+					this.Creature.Conditions.Deactivate(ConditionsA.PotionPoisoning);
+			}
+
+			// Recovery:
+			// - 2 Toxic / second
+			// - 2 ToxicX / minute
+			this.Creature.Toxic = Math.Min(0, this.Creature.Toxic + 2);
+			this.Creature.ToxicStr = Math.Min(0, this.Creature.ToxicStr + 2 / 60f);
+			this.Creature.ToxicInt = Math.Min(0, this.Creature.ToxicInt + 2 / 60f);
+			this.Creature.ToxicDex = Math.Min(0, this.Creature.ToxicDex + 2 / 60f);
+			this.Creature.ToxicWill = Math.Min(0, this.Creature.ToxicWill + 2 / 60f);
+			this.Creature.ToxicLuck = Math.Min(0, this.Creature.ToxicLuck + 2 / 60f);
+
+			// Officials apparently send an update every minute while any
+			// toxic value is greater than 0. We'll limit it to the actual
+			// stats, no reason to send null values.
+			if (update)
+				Send.StatUpdate(this.Creature, StatUpdateType.Private, Stat.ToxicStr, Stat.ToxicInt, Stat.ToxicDex, Stat.ToxicWill, Stat.ToxicLuck);
 		}
 
 		/// <summary>

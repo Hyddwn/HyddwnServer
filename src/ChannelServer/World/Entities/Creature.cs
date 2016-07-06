@@ -844,6 +844,36 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public int ElementIce { get { return (this.RaceData.ElementIce + (int)this.StatMods.Get(Stat.ElementIce)); } }
 
+		/// <summary>
+		/// Creature's toxicity level.
+		/// </summary>
+		public float Toxic { get; set; }
+
+		/// <summary>
+		/// Creature's Str toxicity reduction.
+		/// </summary>
+		public float ToxicStr { get; set; }
+
+		/// <summary>
+		/// Creature's Int toxicity reduction.
+		/// </summary>
+		public float ToxicInt { get; set; }
+
+		/// <summary>
+		/// Creature's Dex toxicity reduction.
+		/// </summary>
+		public float ToxicDex { get; set; }
+
+		/// <summary>
+		/// Creature's Will toxicity reduction.
+		/// </summary>
+		public float ToxicWill { get; set; }
+
+		/// <summary>
+		/// Creature's Luck toxicity reduction.
+		/// </summary>
+		public float ToxicLuck { get; set; }
+
 		// Food Mods
 		// ------------------------------------------------------------------
 

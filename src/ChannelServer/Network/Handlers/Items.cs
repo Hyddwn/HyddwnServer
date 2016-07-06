@@ -576,7 +576,10 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Mandatory stat update
-			Send.StatUpdate(creature, StatUpdateType.Private, Stat.Life, Stat.LifeInjured, Stat.Mana, Stat.Stamina, Stat.Hunger);
+			Send.StatUpdate(creature, StatUpdateType.Private,
+				Stat.Life, Stat.LifeInjured, Stat.Mana, Stat.Stamina, Stat.Hunger,
+				Stat.ToxicStr, Stat.ToxicInt, Stat.ToxicDex, Stat.ToxicWill, Stat.ToxicLuck
+			);
 			Send.StatUpdate(creature, StatUpdateType.Public, Stat.Life, Stat.LifeInjured);
 
 			Send.UseItemR(creature, true, item.Info.Id);
