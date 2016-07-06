@@ -94,6 +94,28 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="stamina"></param>
 		protected void Heal(Creature creature, double life, double mana, double stamina, double toxicity)
 		{
+			// Potion poisoning heal mount increase
+			// http://wiki.mabinogiworld.com/view/Potion_Poisoning#Stages_of_Potion_Poisoning
+			var multiplier = 1.0;
+			var toxicityStage = GetToxicityStage(creature.Toxic);
+			if (toxicityStage != ToxicityStage.Normal)
+			{
+				var rnd = RandomProvider.Get();
+				switch (toxicityStage)
+				{
+					case ToxicityStage.Stage1: multiplier = 1.0 + rnd.NextDouble() * 0.3; break;
+					case ToxicityStage.Stage2: multiplier = 1.3; break;
+					case ToxicityStage.Stage3: multiplier = 1.3 + rnd.NextDouble() * 0.3; break;
+					case ToxicityStage.Stage4: multiplier = 1.6; break;
+					case ToxicityStage.Stage5: multiplier = 1.6 + rnd.NextDouble() * 0.4; break;
+					case ToxicityStage.Stage6: multiplier = 2.0 + rnd.NextDouble() * 1.0; break;
+				}
+
+				life *= multiplier;
+				mana *= multiplier;
+				stamina *= multiplier;
+			}
+
 			// Friday: All potions become more potent. (Potion effect x 1.5 including toxicity).
 			// +50%? Seems a lot, but that's what the Wiki says.
 			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
@@ -103,11 +125,19 @@ namespace Aura.Channel.Scripting.Scripts
 				stamina *= 1.5;
 			}
 
-			//creature.X += (float)foodPoison;
+			var beforeLife = creature.Life;
+			var beforeMana = creature.Mana;
+			var beforeStamina = creature.Stamina;
 
 			creature.Life += (float)life;
 			creature.Mana += (float)mana;
 			creature.Stamina += (float)stamina * creature.StaminaRegenMultiplicator;
+
+			var diffLife = creature.Life - beforeLife;
+			var diffMana = creature.Mana - beforeMana;
+			var diffStamina = creature.Stamina - beforeStamina;
+
+			this.Poison(creature, diffLife, diffMana, diffStamina, toxicity);
 		}
 
 		/// <summary>
@@ -136,6 +166,87 @@ namespace Aura.Channel.Scripting.Scripts
 			creature.Injuries = 0;
 			creature.Hunger = 0;
 			this.HealRate(creature, 100, 100, 100, toxicity);
+		}
+
+		/// <summary>
+		/// Handles potion poisoning.
+		/// </summary>
+		/// <remarks>
+		/// The stages and the toxicity in general are based on information
+		/// from the Wiki and in-game obsvervation.
+		/// </remarks>
+		/// <param name="life">Amount of life healed.</param>
+		/// <param name="mana">Amount of mana healed.</param>
+		/// <param name="stamina">Amount of stamina healed.</param>
+		/// <param name="toxicity">Toxicity to apply.</param>
+		private void Poison(Creature creature, double life, double mana, double stamina, double toxicity)
+		{
+			var beforeStage = GetToxicityStage(creature.Toxic);
+
+			// Increase toxicity based on healed points
+			creature.Toxic -= (float)(life * toxicity);
+			creature.Toxic -= (float)(mana * toxicity);
+			creature.Toxic -= (float)(stamina * toxicity);
+
+			var stage = GetToxicityStage(creature.Toxic);
+
+			// Stage change messages
+			// http://wiki.mabinogiworld.com/view/Potion_Poisoning#Stages_of_Potion_Poisoning
+			if (stage != beforeStage)
+			{
+				switch (stage)
+				{
+					case ToxicityStage.Stage1: Send.Notice(creature, L("It feels like the potion works better than before.")); break;
+					case ToxicityStage.Stage2: Send.Notice(creature, L("This potion is effective!")); break;
+					case ToxicityStage.Stage3: Send.Notice(creature, L("This potion is clearly effective, but it feels weird somehow.")); break;
+					case ToxicityStage.Stage4: Send.Notice(creature, L("The potion has some side effects.")); break;
+					case ToxicityStage.Stage5: Send.Notice(creature, L("The potion worked as it should, but it had some bad side-effects too.")); break;
+					case ToxicityStage.Stage6: Send.Notice(creature, L("Anymore of this potion is dangerous!")); break;
+				}
+			}
+
+			// Decrease stats if toxicity becomes too great
+			if (stage >= ToxicityStage.Stage1)
+			{
+				if (life > 0)
+				{
+					creature.ToxicInt -= 1;
+					creature.ToxicWill -= 1;
+				}
+
+				if (mana > 0)
+				{
+					creature.ToxicStr -= 1;
+				}
+
+				if (stamina > 0)
+				{
+					creature.ToxicWill -= 1;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns toxicity stage based on given toxicity.
+		/// </summary>
+		/// <param name="toxicity"></param>
+		/// <returns></returns>
+		private static ToxicityStage GetToxicityStage(double toxicity)
+		{
+			if (toxicity < -210)
+				return ToxicityStage.Stage6;
+			else if (toxicity < -175)
+				return ToxicityStage.Stage5;
+			else if (toxicity < -140)
+				return ToxicityStage.Stage4;
+			else if (toxicity < -105)
+				return ToxicityStage.Stage3;
+			else if (toxicity < -70)
+				return ToxicityStage.Stage2;
+			else if (toxicity < -35)
+				return ToxicityStage.Stage1;
+			else
+				return ToxicityStage.Normal;
 		}
 
 		/// <summary>
@@ -192,9 +303,11 @@ namespace Aura.Channel.Scripting.Scripts
 			if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
 				toxicity *= 1.5;
 
-			//creature.X += (float)foodPoison;
-
+			var beforeInjuries = creature.Injuries;
 			creature.Injuries -= (float)injuries;
+			var diffInjuries = beforeInjuries - creature.Injuries;
+
+			this.Poison(creature, diffInjuries, 0, 0, toxicity);
 		}
 
 		/// <summary>
@@ -383,6 +496,17 @@ namespace Aura.Channel.Scripting.Scripts
 				prop.Xml.SetAttributeValue("seed", Interlocked.Increment(ref _fireworkSeed));
 				Send.PropUpdate(prop);
 			});
+		}
+
+		private enum ToxicityStage
+		{
+			Normal,
+			Stage1,
+			Stage2,
+			Stage3,
+			Stage4,
+			Stage5,
+			Stage6
 		}
 	}
 
