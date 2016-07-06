@@ -1023,8 +1023,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// --------------------------------------------------------------
 				{
 					// Style
-					packet.PutLong(DateTime.Now.AddMonths(1));
-					packet.PutShort(72);
+					// This is how the style tab was enabled in the past,
+					// but now it seems to use the service bools above,
+					// this doesn't have any effect anymore.
+					//packet.PutLong(DateTime.Now.AddMonths(1));
+					//packet.PutShort(72);
 
 					// ?
 					//packet.PutLong(0);
