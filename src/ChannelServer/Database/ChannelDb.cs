@@ -276,6 +276,12 @@ namespace Aura.Channel.Database
 					character.DexBonus = reader.GetFloat("dexBonus");
 					character.WillBonus = reader.GetFloat("willBonus");
 					character.LuckBonus = reader.GetFloat("luckBonus");
+					character.Toxic = reader.GetFloat("toxic");
+					character.ToxicStr = reader.GetFloat("toxicStr");
+					character.ToxicInt = reader.GetFloat("toxicInt");
+					character.ToxicDex = reader.GetFloat("toxicDex");
+					character.ToxicWill = reader.GetFloat("toxicWill");
+					character.ToxicLuck = reader.GetFloat("toxicLuck");
 
 					title = reader.GetUInt16("title");
 					optionTitle = reader.GetUInt16("optionTitle");
@@ -1043,6 +1049,12 @@ namespace Aura.Channel.Database
 				cmd.Set("dexBonus", creature.DexBonus);
 				cmd.Set("willBonus", creature.WillBonus);
 				cmd.Set("luckBonus", creature.LuckBonus);
+				cmd.Set("toxic", creature.Toxic);
+				cmd.Set("toxicStr", creature.ToxicStr);
+				cmd.Set("toxicInt", creature.ToxicInt);
+				cmd.Set("toxicDex", creature.ToxicDex);
+				cmd.Set("toxicWill", creature.ToxicWill);
+				cmd.Set("toxicLuck", creature.ToxicLuck);
 				cmd.Set("title", creature.Titles.SelectedTitle);
 				cmd.Set("optionTitle", creature.Titles.SelectedOptionTitle);
 				cmd.Set("state", (uint)creature.State);

@@ -1,0 +1,1 @@
+ALTER TABLE `creatures` ADD `toxic` FLOAT NOT NULL DEFAULT '0' AFTER `luckBonus`, ADD `toxicStr` FLOAT NOT NULL DEFAULT '0' AFTER `toxic`, ADD `toxicInt` FLOAT NOT NULL DEFAULT '0' AFTER `toxicStr`, ADD `toxicDex` FLOAT NOT NULL DEFAULT '0' AFTER `toxicInt`, ADD `toxicWill` FLOAT NOT NULL DEFAULT '0' AFTER `toxicDex`, ADD `toxicLuck` FLOAT NOT NULL DEFAULT '0' AFTER `toxicWill`;

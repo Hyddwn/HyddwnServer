@@ -302,6 +302,12 @@ namespace Aura.Channel.Network.Sending
 						case Stat.MagicDefenseMod: packet.PutFloat(creature.MagicDefenseMod); break;
 						case Stat.MagicProtectionMod: packet.PutFloat(creature.MagicProtectionMod); break;
 
+						case Stat.ToxicStr: packet.PutFloat(creature.ToxicStr); break;
+						case Stat.ToxicInt: packet.PutFloat(creature.ToxicInt); break;
+						case Stat.ToxicDex: packet.PutFloat(creature.ToxicDex); break;
+						case Stat.ToxicWill: packet.PutFloat(creature.ToxicWill); break;
+						case Stat.ToxicLuck: packet.PutFloat(creature.ToxicLuck); break;
+
 						// Client might crash with a mismatching value, 
 						// take a chance and put an int by default.
 						default:

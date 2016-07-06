@@ -189,11 +189,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutShort(0);			         // PoisonImmuneMod
 				packet.PutFloat(0.5f);		         // PoisonDamageRatio1
 				packet.PutFloat(0);			         // PoisonDamageRatio2
-				packet.PutFloat(0);			         // toxicStr
-				packet.PutFloat(0);			         // toxicInt
-				packet.PutFloat(0);			         // toxicDex
-				packet.PutFloat(0);			         // toxicWill
-				packet.PutFloat(0);			         // toxicLuck
+				packet.PutFloat(creature.ToxicStr);
+				packet.PutFloat(creature.ToxicInt);
+				packet.PutFloat(creature.ToxicDex);
+				packet.PutFloat(creature.ToxicWill);
+				packet.PutFloat(creature.ToxicLuck);
 				packet.PutString(creature.LastTown);
 				packet.PutShort(1);					 // ExploLevel
 				packet.PutShort(0);					 // ExploMaxKeyLevel
