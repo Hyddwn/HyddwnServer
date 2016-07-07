@@ -4,7 +4,7 @@
 // Inn helper (located right outside the inn)
 //---------------------------------------------------------------------------
 
-public class NoraBaseScript : NpcScript
+public class NoraScript : NpcScript
 {
 	public override void Load()
 	{
@@ -14,6 +14,7 @@ public class NoraBaseScript : NpcScript
 		SetFace(skinColor: 17);
 		SetStand("human/female/anim/female_natural_stand_npc_nora02");
 		SetLocation(1, 15933, 33363, 186);
+		SetGiftWeights(beauty: 1, individuality: 0, luxury: 0, toughness: 0, utility: 2, rarity: 0, meaning: 1, adult: 0, maniac: 0, anime: 0, sexy: 0);
 
 		EquipItem(Pocket.Face, 3900, 0xDED7EA, 0xA2C034, 0x004A18);
 		EquipItem(Pocket.Hair, 3025, 0xD39A81, 0xD39A81, 0xD39A81);
@@ -36,12 +37,7 @@ public class NoraBaseScript : NpcScript
 
 		// I noticed the intro message is different as of r218 on 1/7/16
 		// "A girl in a neat green apron leans out to get a better look at her surroundings. Her hands work busily at this task or the other, always moving, always jingling the cross-shaped earrings in her honey-blonde hair."
-		await Intro(
-			"A girl wearing a well-ironed green apron leans forward, gazing cheerfully at her sorroundings.",
-			"Her bright eyes are azure blue and a faint smile plays on her lips.",
-			"Cross-shaped earrings dangle from her ears, dancing playfully between her honey-blonde hair.",
-			"Her hands are always busy, as she engages in some chore or another, though she often looks into the distance as if deep in thought."
-		);
+		await Intro(L("A girl wearing a well-ironed green apron leans forward, gazing cheerfully at her sorroundings.<br/>Her bright eyes are azure blue and a faint smile plays on her lips.<br/>Cross-shaped earrings dangle from her ears, dancing playfully between her honey-blonde hair.<br/>Her hands are always busy, as she engages in some chore or another, though she often looks into the distance as if deep in thought."));
 
 		Msg("How can I help you?", Button("Start Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"));
 
@@ -65,8 +61,13 @@ public class NoraBaseScript : NpcScript
 						Msg(L("Welcome, my dear friend.<br/>Don't you think Uncle Piaras has noticed<br/>how much time you and I spend talking to each other?"));
 					}
 				}
-
-				if (Title == 11002)
+				else if (Title == 11001)
+				{
+					Msg("You rescued the Goddess, <username/>?");
+					Msg("Amazing!");
+					Msg("It'd be nice if that wimp who lives up the hill<br/>could learn a thing or two from you...");
+				}
+				else if (Title == 11002)
 				{
 					Msg("<username/>, the Guardian of Erinn?<br/>Perfect timing.<br/>Rats keep appearing around town...<br/>Can you kill them for us?");
 					Msg("Malcom at the General Shop<br/>is so scared that he won't even step outside...");
@@ -168,20 +169,20 @@ public class NoraBaseScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					Msg("My name is <npcname/>. Please don't forget it.");
-					ModifyRelation(1, 0, Random(2));
+					Msg(FavorExpression(), "My name is <npcname/>. Please don't forget it.");
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					Msg(FavorExpression(), "I take care of chores at the Inn.<br/>I sometimes get tired of it, but after trying other jobs,<br/>I realized this is the job for me.<br/>It allows me to daydream.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
 				GiveKeyword("square");
-				Msg("The Square is right up the little hill next to us.<br/>It's worth a visit if you have some time.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "The Square is right up the little hill next to us.<br/>It's worth a visit if you have some time.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -320,6 +321,7 @@ public class NoraBaseScript : NpcScript
 				break;
 
 			case "shop_bookstore":
+				GiveKeyword("shop_misc");
 				Msg("Tir Chonaill doesn't have a bookstore.<br/>But if you need a book, go to the General Shop.<br/>It's beyond the hill over there.");
 				break;
 
@@ -333,6 +335,35 @@ public class NoraBaseScript : NpcScript
 				Msg("Graveyard... Graveyard...<br/>Why, I know nothing about that frightening place.<br/>Why don't you ask someone else about it?");
 				break;
 
+			case "bow":
+				GiveKeyword("shop_smith");
+				Msg("Are you looking for a bow?<br/>The General Shop usually has everything you need...<br/>Ah, wait! I think you should go to the Blacksmith's Shop.<br/>Malcolm can't make arrows, so...yeah.<br/>The Blacksmith's Shop is just across the bridge from here.");
+				break;
+
+			case "lute":
+				Msg("How was your talk with Priestess Endelyon?<br/>Huh? I should talk to Malcolm about a lute?<br/>Why are you...?");
+				Msg("Ah! You have no money to buy a lute!<br/>Well, neither do I.<br/>Maybe you should look around and find a part-time job.");
+				break;
+
+			case "complicity":
+				Msg("An instigator? I can't say it's good,<br/>but I don't care all that much.<br/>Things happen every day, all around us.");
+				Msg("How are you going to survive<br/>if you get upset at such a trivial matter?");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog. The legend, right?<br/>I've heard stories,<br/>but I think Uncle Piaras knows more.<br/>He's inside the Inn.");
+				break;
+
+			case "mabinogi":
+				Msg("Mabinogi?<br/>Congratulations! You pronounced it correctly. Tee hee.<br/>A lot of people say it wrong without knowing it.");
+				Msg("Mabinogi is an ancient story about heroes and brave warriors.<br/>The stories are usually made into songs so people can remember them easily.");
+				Msg("Ah, but Bebhinn may not remember them,<br/>considering her poor musical skills. Ha ha.");
+				break;
+
+			case "musicsheet":
+				Msg("Looking for a Music Score?<br/>Malcolm sells them at his General Shop.<br/>In fact, they are all blank scores.<br/>I guess you're supposed to write notes in them yourself.");
+				break;
+
 			default:
 				RndMsg(
 					"Huh?",
@@ -342,7 +373,7 @@ public class NoraBaseScript : NpcScript
 					"I don't know much about that.",
 					"I can't understand what you're asking."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
