@@ -636,5 +636,17 @@ namespace Aura.Login.Network
 			packet.PutInt(time);
 			LoginServer.Instance.BroadcastChannels(packet);
 		}
+
+		/// <summary>
+		/// Sends account disconnect request to all channels.
+		/// </summary>
+		/// <param name="accountName"></param>
+		public static void Internal_RequestDisconnect(string accountName)
+		{
+			var packet = new Packet(Op.Internal.RequestDisconnect, MabiId.Login);
+			packet.PutString(accountName);
+
+			LoginServer.Instance.BroadcastChannels(packet);
+		}
 	}
 }

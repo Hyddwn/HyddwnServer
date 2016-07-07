@@ -8,6 +8,7 @@ using Aura.Shared.Network;
 using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -111,7 +112,6 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.Internal.ChannelShutdown)]
 		public void ChannelShutdown(ChannelClient client, Packet packet)
 		{
-
 			int time = packet.GetInt();
 
 			if (!ChannelServer.Instance.ShuttingDown)
@@ -130,6 +130,19 @@ namespace Aura.Channel.Network.Handlers
 			{
 				Log.Error("There was an attempt to shutdown this channel while it is already shutting down.");
 			}
+		}
+
+		/// <summary>
+		/// Sent to request a certain be logged out.
+		/// </summary>
+		[PacketHandler(Op.Internal.RequestDisconnect)]
+		public void Internal_RequestDisconnect(ChannelClient client, Packet packet)
+		{
+			var accountName = packet.GetString();
+
+			var accountClient = ChannelServer.Instance.Server.Clients.FirstOrDefault(a => a.Account != null && a.Account.Id == accountName);
+			if (accountClient != null)
+				accountClient.Kill();
 		}
 	}
 }

@@ -127,6 +127,7 @@ namespace Aura.Login.Database
 				cmd.Execute();
 			}
 		}
+
 		/// <summary>
 		/// Returns all character cards present for this account.
 		/// </summary>

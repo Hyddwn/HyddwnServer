@@ -155,7 +155,10 @@ namespace Aura.Channel.Network
 
 			// Save everything after we're done cleaning up
 			if (this.Account != null)
+			{
 				ChannelServer.Instance.Database.SaveAccount(this.Account);
+				ChannelServer.Instance.Database.SetAccountLoggedIn(this.Account.Id, false);
+			}
 
 			this.Creatures.Clear();
 			this.Account = null;
