@@ -10,4 +10,7 @@ others/on_equip.cs
 others/fences.cs
 others/titles.cs
 
+others/field_bosses/base.cs
+others/field_bosses/giant_black_wolf.cs
+
 include "/user/scripts/scripts_others.txt"
