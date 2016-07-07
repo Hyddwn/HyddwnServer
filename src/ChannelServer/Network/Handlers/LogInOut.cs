@@ -425,7 +425,7 @@ namespace Aura.Channel.Network.Handlers
 		}
 
 		/// <summary>
-		/// Dummy client for DcUnk.
+		/// Dummy handler for DcUnk.
 		/// </summary>
 		/// <remarks>
 		/// Sent on logout, purpose unknown. Client waits for an answer,
