@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Trefor in Tir Chonaill
 //--- Description -----------------------------------------------------------
-// 
+// The guard located in Northern Tir, near Alby Dungeon
 //---------------------------------------------------------------------------
 
 public class TreforScript : NpcScript
@@ -14,6 +14,7 @@ public class TreforScript : NpcScript
 		SetFace(skinColor: 20, eyeColor: 27);
 		SetStand("human/male/anim/male_natural_stand_npc_trefor02", "human/male/anim/male_natural_stand_npc_trefor_talk");
 		SetLocation(1, 8692, 52637, 220);
+		SetGiftWeights(beauty: 0, individuality: 2, luxury: 0, toughness: 2, utility: 1, rarity: 0, meaning: 1, adult: 0, maniac: 0, anime: -1, sexy: 1);
 
 		EquipItem(Pocket.Face, 4909, 0x93005C);
 		EquipItem(Pocket.Hair, 4023, 0xD43F34);
@@ -43,12 +44,7 @@ public class TreforScript : NpcScript
 
 		// I noticed the intro message is different as of r226 on 5/11/16
 		// "A specimen of physical fitness stands at attention in a suit of<br/>immaculate armor. Through his lowered visor, you catch the<br/>slightest flash of his determined eyes."
-		await Intro(
-			"Quite a specimen of physical fitness appears before you wearing well-polished armor that fits closely the contours of his body.",
-			"A medium-length sword hangs delicately from the scabbard at his waist. While definitely a sight to behold,",
-			"it's difficult to see much of his face because of his lowered visor, but one cannot help but notice the flash in his eyes",
-			"occasionally catching the light between the slits on his helmet. His tightly pursed lips seem to belie his desire to not shot any emotion."
-		);
+		await Intro(L("Quite a specimen of physical fitness appears before you wearing well-polished armor that fits closely the contours of his body.<br/>A medium-length sword hangs delicately from the scabbard at his waist. While definitely a sight to behold,<br/>it's difficult to see much of his face because of his lowered visor, but one cannot help but notice the flash in his eyes<br/>occasionally catching the light between the slits on his helmet. His tightly pursed lips seem to belie his desire to not shot any emotion."));
 
 		Msg("How can I help you?", Button("Start Conversation", "@talk"), Button("Shop"), Button("Upgrade Item", "@upgrade"), Button("Get Alby Beginner Dungeon Pass", "@pass"));
 
@@ -88,7 +84,14 @@ public class TreforScript : NpcScript
 					}
 				}
 
-				if (Title == 11002)
+				if (Title == 11001)
+				{
+					Msg("...");
+					Msg("......");
+					Msg("Can you do me a favor?<br/>Please don't go to Dilys and show off your strength and skills.");
+					Msg("To be honest, I am staying in this town only because of her.<br/>I don't want Dilys comparing me to you in any way, shape or form.");
+				}
+				else if (Title == 11002)
 				{
 					Msg("Wha...? You're the Guardian of Erinn...?<br/>You, <username/>...?");
 					Msg("......");
@@ -126,7 +129,7 @@ public class TreforScript : NpcScript
 
 			case "@pass":
 				GiveItem(63140);
-				Notice("Recieved Alby Beginner Dungeon Pass from Trefor");
+				Notice("Recieved Alby Beginner Dungeon Pass from Trefor.");
 				Msg("Do you need an Alby Beginner Dungeon Pass?<br/>No problem. Here you go.<br/>Drop by anytime when you need more.<br/>I'm a generous man, ha ha.");
 				break;
 		}
@@ -165,17 +168,22 @@ public class TreforScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg("Hmm... Have something to ask me?<br/>I'm nothing but a regular fellow from this town.<br/>I am but a humble servant of Lymirark, whose duty is to protect this town.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "Hmm... Have something to ask me?<br/>I'm nothing but a regular fellow from this town.<br/>I am but a humble servant of Lymirark, whose duty is to protect this town.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
-				Msg("Recently, the people in this town have become somewhat anxious<br/>about the howling of wild animals outside.<br/>For some reason, their howling seems to be getting a little bit closer each day.");
+				Msg(FavorExpression(), "Recently, the people in this town have become somewhat anxious<br/>about the howling of wild animals outside.<br/>For some reason, their howling seems to be getting a little bit closer each day.");
 				Msg("That's why I'm standing guard like this.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
+				if (Player.IsGiant)
+				{
+					Msg("Hmm... I'm sorry, but I can't think of any skill that'd be useful to you at the moment, <username/>.");
+					return;
+				}
 				if (!HasSkill(SkillId.RangedAttack))
 				{
 					GiveKeyword("skill_range");
@@ -198,8 +206,8 @@ public class TreforScript : NpcScript
 							Msg("I'm not certain how well you followed<br/>my instructions with your eyes closed, but it's all good.<br/>I gave you an easy-to-follow guide,<br/>so you shouldn't have any difficulties using Support Shot.");
 							Msg("I pray in the name of Morrighan the Goddess<br/>that you, whose arrows fly with bravery, will always be surrounded by glory.");
 							Msg("Also, don't forget to drop by the Blacksmith's Shop when you run out of arrows.");
-
 							break;
+
 						case "@no":
 							Msg("Are you saying that you won't travel with other people?<br/>You're pretty confident.");
 							Msg("But you see <username/>,<br/>there are limits to how much you can accomplish all by yourself.<br/>I hope you don't end up regretting not taking my advice, <username/>.");
@@ -318,6 +326,7 @@ public class TreforScript : NpcScript
 				break;
 
 			case "brook":
+				GiveKeyword("shop_inn");
 				Msg("Adelia Stream runs by the Inn.<br/>It's not far from here. Just head straight down.<br/>I don't know why you'd want to go there, though.");
 				break;
 
@@ -394,6 +403,47 @@ public class TreforScript : NpcScript
 				Msg("They are not that strong, but can be pretty annoying.<br/>They will sometimes attack people nearby.<br/>Please be careful when you make your way there.");
 				break;
 
+			case "bow":
+				Msg("Ah! You are looking for a bow?<br/>Ferghus sells them at his Blacksmith's Shop.<br/>Remember, you can't do much with just a bow, so buy some arrows as well.");
+				Msg("Even if you're not buying any from Ferghus, I'll give you some pointers that'll help you decide which bow is best for you.");
+				Msg("I recommend buying either a Long Bow or Composite Bow for many reasons.<br/>Long Bows are more powerful than a regular bow,<br/>and Composite Bows are made of several materials, giving it a great elasticity compared to its size.");
+				Msg("What? You say the price is the only thing that matters?");
+				Msg("Hmm...<br/>Well, you're not entirely wrong but you are overlooking one very important aspect.");
+				Msg("You know, the more a bow is used, the more it adjusts to the owner's preferences.<br/>I can't say that using a new weapon is always a better option.");
+				Msg("Depending on the situation,<br/>sometimes a Short Bow might be your best option.");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_misc");
+				Msg("Are you looking for a lute?<br/>I noticed Malcolm at the General Shop selling some.");
+				Msg("Malcolm is terrible at playing musical instruments,<br/>but he keeps on making lutes anyway.<br/>Isn't that strange?");
+				break;
+
+			case "complicity":
+				RemoveKeyword("complicity");
+				Msg("(We previously discussed the Ranged Attack and Ferghus's story on his arrow sales.)");
+				Msg("An instigator?<br/>Haha, I have no idea what you are talking about.");
+				Msg("Hey, why are you making such a big deal out of this?<br/>We should help each other out, you know.");
+				break;
+
+			case "tir_na_nog":
+				GiveKeyword("temple");
+				Msg("I believe Priest Meven at the Church would know better on this subject.<br/>I heard it's what everyone dreams of as the perfect place,<br/>but frankly, I don't know much about it.");
+				break;
+
+			case "mabinogi":
+				Msg("Hmm... I heard some things about it, but if you want more information,<br/>you should talk to Ranald or Duncan.<br/>They know a lot more than I do.");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("Hmm... A Music Score... Are you planning to compose a song?<br/>Why don't you go see Malcolm at the General Shop then?");
+				Msg("Anyway, just letting you know, it takes quite a lot of money to do anything related to music,<br/>be it Music Scores or Instruments.<br/>I'm telling you, Malcolm makes a living on selling those items.");
+				Msg("I've known Malcolm for many years, but I still have a hard time getting close to him.<br/>I think he doesn't appreciate manly tastes such as swords and combat training.");
+				Msg("He might seem a little weird to you after what I have just told you,<br/>but it's just my personal opinion. In fact, Malcolm is a great guy.");
+				Msg("I realized, after meeting him a few times in the past,<br/>that I've never seen anyone as meticulous as Malcolm.");
+				break;
+
 			default:
 				RndMsg(
 					"Oh, is that so?",
@@ -403,7 +453,7 @@ public class TreforScript : NpcScript
 					"Do you have anything more interesting to talk about?",
 					"Never heard of it. I don't think that has anything to do with me."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

@@ -14,6 +14,7 @@ public class RanaldScript : NpcScript
 		SetFace(skinColor: 20);
 		SetStand("human/male/anim/male_natural_stand_npc_ranald02", "human/male/anim/male_natural_stand_npc_ranald_talk");
 		SetLocation(1, 4651, 32166, 195);
+		SetGiftWeights(beauty: 0, individuality: 0, luxury: -1, toughness: 2, utility: 1, rarity: 0, meaning: 0, adult: 2, maniac: 0, anime: 0, sexy: 1);
 
 		EquipItem(Pocket.Face, 4900, 0xF88B4A);
 		EquipItem(Pocket.Hair, 4154, 0x4D4B53);
@@ -34,11 +35,7 @@ public class RanaldScript : NpcScript
 	{
 		SetBgm("NPC_Ranald.mp3");
 
-		await Intro(
-			"From his appearance and posture, there is no doubt that he is well into middle age, but he is surprisingly well-built and in good shape.",
-			"Long fringes of hair cover half of his forehead and right cheek. A strong nose bridge stands high between his shining hawkish eyes.",
-			"His deep, low voice has the power to command other people's attention."
-		);
+		await Intro(L("From his appearance and posture, there is no doubt that he is well into middle age, but he is surprisingly well-built and in good shape.<br/>Long fringes of hair cover half of his forehead and right cheek. A strong nose bridge stands high between his shining hawkish eyes.<br/>His deep, low voice has the power to command other people's attention."));
 
 		Msg("How can I help you?", Button("Start Conversation", "@talk"), Button("Shop", "@shop"), Button("Modify Item", "@upgrade"), Button("Get Ciar Beginner Dungeon Pass", "@ciarpass"));
 
@@ -82,7 +79,13 @@ public class RanaldScript : NpcScript
 					}
 				}
 
-				if (Title == 11002)
+				if (Title == 11001)
+				{
+					Msg("...");
+					Msg(".......");
+					Msg("Well, I don't care much about titles.<br/>Just train! Continue to train! That's what will make you stronger!<br/>Don't slack off and focus on your training!");
+				}
+				else if (Title == 11002)
 				{
 					Msg("Hah... I can't believe<br/>you've become the Guardian of Erinn.<br/>I still remember you practicing your combat skills on those dummies...");
 					Msg("...I can't be more proud as your teacher.<br/>These are the moments that make teachers feel rewarded...");
@@ -119,7 +122,7 @@ public class RanaldScript : NpcScript
 
 			case "@ciarpass":
 				GiveItem(63139); // Ciar Beginner Dungeon Pass
-				Notice("Recieved Ciar Beginner Dungeon Pass from <npcname/>.");
+				Notice("Recieved Ciar Beginner Dungeon Pass from Ranald.");
 				Msg("OK, here's the pass.<br/>You can ask for it again if you need it.<br/>That doesn't mean you can fill up the inventory with a pile of passes.");
 				break;
 		}
@@ -159,18 +162,24 @@ public class RanaldScript : NpcScript
 		{
 			case "personal_info":
 				GiveKeyword("school");
-				Msg("Hello, there. I teach combat skills at the School in Tir Chonaill.<br/>If you're interested, talk to me with the 'Classes and Training' keyword.");
+				Msg(FavorExpression(), "Hello, there. I teach combat skills at the School in Tir Chonaill.<br/>If you're interested, talk to me with the 'Classes and Training' keyword.");
 				Msg("Hey, hey... This is not free. You'll need to pay tuition for my classes...");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
-				Msg("A dinner with Ferghus usually leads to a bit of drinking at the end.<br/>You know he loves to drink, right? As a matter of fact, I like to drink, too. Hahaha...");
-				//GiveKeyword("complicity");
-				//RemoveKeyword("bow");
-				//Msg("Hmm... Did you hear the news?<br/>Ferghus can't stop smiling these days.<br/>I heard his arrow sales have jumped up lately.");
-				//Msg("It seems like Trefor received a huge gift from Ferghus.<br/>People are assuming that Trefor is helping Ferghus with something.");
-				ModifyRelation(Random(2), 0, Random(2));
+				if (!HasSkill(SkillId.RangedAttack))
+				{
+					GiveKeyword("complicity");
+					RemoveKeyword("bow");
+					Msg(FavorExpression(), "Hmm... Did you hear the news?<br/>Ferghus can't stop smiling these days.<br/>I heard his arrow sales have jumped up lately.");
+					Msg("It seems like Trefor received a huge gift from Ferghus.<br/>People are assuming that Trefor is helping Ferghus with something.");
+				}
+				else
+				{
+					Msg("A dinner with Ferghus usually leads to a bit of drinking at the end.<br/>You know he loves to drink, right? As a matter of fact, I like to drink, too. Hahaha...");
+				}
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -212,9 +221,18 @@ public class RanaldScript : NpcScript
 			case "skill_range":
 				GiveKeyword("bow");
 				RemoveKeyword("skill_range");
-				Msg("Long range attacks?<br/>Hmm... Desire alone doesn't cut it. You'll also need to be equipped with an appropriate weapon.<br/>There are a number of long range weapons, but go get a bow first.");
-				Msg("Just use it a couple of times. You won't need any help from others in understanding the basics.");
-				Msg("If you practice a few times and get to know about the Ranged Attack skill, it means you're doing your job.<br/>Ferghus is usually the source for weapons in this town, so go see him at the Blacksmith's Shop.");
+				if (Player.IsGiant)
+				{
+					// Giants can't get this keyword anymore
+					// If anyone has a giant with this keyword, please log it
+					Msg("(Missing Dialog: Small Description)");
+				}
+				else
+				{
+					Msg("Long range attacks?<br/>Hmm... Desire alone doesn't cut it. You'll also need to be equipped with an appropriate weapon.<br/>There are a number of long range weapons, but go get a bow first.");
+					Msg("Just use it a couple of times. You won't need any help from others in understanding the basics.");
+					Msg("If you practice a few times and get to know about the Ranged Attack skill, it means you're doing your job.<br/>Ferghus is usually the source for weapons in this town, so go see him at the Blacksmith's Shop.");
+				}
 				break;
 
 			case "skill_instrument":
@@ -373,7 +391,6 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
 				Msg("Do you want to know where to buy a lute?<br/>You must have seen some people carrying them around, didn't you?");
 				Msg("You know, you could have just gone over to one of them and ask where they bought it.");
 				Msg("Go to Malcolm at the General Shop if you want one of those.<br/>lute is the cheapest instrument you can buy,<br/>so I think you can easily afford it.");
@@ -406,7 +423,7 @@ public class RanaldScript : NpcScript
 					"Hmm... Actually, I forgot my lines... Haha.",
 					"I haven't paid much attention to it, especially on a topic like that."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

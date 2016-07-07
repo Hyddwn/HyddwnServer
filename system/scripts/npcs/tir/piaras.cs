@@ -14,6 +14,7 @@ public class PiarasScript : NpcScript
 		SetFace(skinColor: 22, eyeType: 1);
 		SetStand("human/male/anim/male_natural_stand_npc_Piaras");
 		SetLocation(7, 1344, 1225, 182);
+		SetGiftWeights(beauty: 0, individuality: 2, luxury: 0, toughness: 0, utility: 2, rarity: 2, meaning: 1, adult: 0, maniac: 0, anime: 1, sexy: 1);
 
 		EquipItem(Pocket.Face, 4900, 0x00BDAF73, 0x000AB0D4, 0x00E50072);
 		EquipItem(Pocket.Hair, 4004, 0x003F4959, 0x003F4959, 0x003F4959);
@@ -30,11 +31,7 @@ public class PiarasScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		await Intro(
-			"His straight posture gives him a strong, resolute impression even though he's only slightly taller than average height.",
-			"Clean shaven, well groomed hair, spotless appearance and dark green vest make him look like a dandy.",
-			"His neat looks, dark and thick eyebrows and the strong jaw line harmonized with the deep baritone voice complete the impression of an affable gentleman."
-		);
+		await Intro(L("His straight posture gives him a strong, resolute impression even though he's only slightly taller than average height.<br/>Clean shaven, well groomed hair, spotless appearance and dark green vest make him look like a dandy.<br/>His neat looks, dark and thick eyebrows and the strong jaw line harmonized with the deep baritone voice complete the impression of an affable gentleman."));
 
 		Msg("Welcome to my Inn.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 
@@ -58,7 +55,12 @@ public class PiarasScript : NpcScript
 						Msg(L("If you are a friend of Nora, you are my friend as well.<br/>Would you like to take some?"));
 					}
 				}
-
+				else if (Title == 11001)
+				{
+					Msg("I imagine what you did is incredible.");
+					Msg("... Although I do wonder why<br/>the Goddess won't descend upon us.");
+					Msg("But, really, I believe you.<br/>Follow the will of the Goddess and do the best you can do.");
+				}
 				if (Title == 11002)
 				{
 					Msg("<username/>.<br/>I was wondering where you've been...");
@@ -111,14 +113,14 @@ public class PiarasScript : NpcScript
 		{
 			case "personal_info":
 				GiveKeyword("shop_inn");
-				Msg("I might sound too proud,<br/>but I put a lot of effort into making this place as comfortable for my guests as possible.<br/>Please visit us when you need a place to stay.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "I might sound too proud,<br/>but I put a lot of effort into making this place as comfortable for my guests as possible.<br/>Please visit us when you need a place to stay.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				GiveKeyword("square");
-				Msg("Why don't you talk to others in town? There's a good spot to meet people. The Town Square is right up this way. I suggest you try there first.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "Why don't you talk to others in town? There's a good spot to meet people. The Town Square is right up this way. I suggest you try there first.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -311,6 +313,7 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "shop_cloth":
+				GiveKeyword("shop_misc");
 				Msg("Are you looking for something to wear?<br/>Hmm... What you are wearing right now seems good enough.");
 				Msg("You must be interested in fashion.<br/>It would be quite hard to find a better outfit than what you have.<br/>Nevertheless, you can go talk to Malcolm at the General Shop.");
 				break;
@@ -331,9 +334,42 @@ public class PiarasScript : NpcScript
 				Msg("Unfortunately, I have been on the road for a long time,<br/>so it's hard for me to tell you all the details.<br/>Perhaps it's best that you talk to the Chief about this.");
 				break;
 
+			case "bow":
+				Msg("Hmm... I knew you were interested in archery.<br/>Bows are sold at the Blacksmith's Shop.<br/>Go and ask Ferghus. He will be able to help you find it.");
+				Msg("To give you some pointers,<br/>Long Bows or Composite Bows<br/>perform better than Short Bows.");
+				Msg("Oh, you already figured from the price. I see.");
+				break;
+
 			case "lute":
 				Msg("Do you need a lute?<br/>I would really like to give you one,<br/>but so many people are asking these days.<br/>So, I can't make an exception... Even if it's you, hahaha.");
 				Msg("If you visit the General Shop up there,<br/>you'll be able to find a few instruments.<br/>They are decent enough to play<br/>even though you may not find the lute you're looking for.");
+				break;
+
+			case "complicity":
+				Msg("Some people might... if their business is slow.<br/>But personally I do not feel like doing it.");
+				Msg("Hmm... Did you ask why Nora stays outside?");
+				Msg("Ha ha, I think you've misunderstood something here.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog? Ha ha...");
+				Msg("Well... I don't know if it's good to talk about it<br/>standing here like this...");
+				Msg("Because it may take a while to tell you what I know.<br/>Hahaha. Let's talk about it another time.");
+				break;
+
+			case "mabinogi":
+				Msg("Wow, you knew about this?<br/>Mabinogi...<br/>As a matter of fact, people have different ideas about it<br/>depending on where they come from.");
+				Msg("In the good old days of mine,<br/>I traveled to many different places.<br/>I was really surprised seeing how people from different regions<br/>talk differently about Mabinogi.");
+				Msg("Some of them say<br/>it is an ancient lullaby with a story in it.");
+				Msg("Others say it's a song of praise dedicated to<br/>the heroes and warriors who built<br/>Erinn of this day.");
+				Msg("And I heard from someone that<br/>any song can be Mabinogi<br/>as long as it is old<br/>and sung by bards.");
+				Msg("Oh, I am sorry. Am I talking too much?<br/>It might have been boring, but I'm just telling you what I heard.");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("Music Score?<br/>I thought the Scores were sold up at the General Shop.<br/>I can't imagine Malcolm just watching and doing nothing<br/>until he's out of supplies at the shop.");
+				Msg("If he says he's short, then you can come back to me.<br/>I bought some from Malcolm long ago.<br/>I can probably sell some<br/>at a similar price.");
 				break;
 
 			case "g3_DarkKnight":
@@ -350,7 +386,7 @@ public class PiarasScript : NpcScript
 					"I'd love to listen to you, but about something else.",
 					"I'm afraid this conversation isn't very interesting to me."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
