@@ -81,6 +81,40 @@ namespace Aura.Shared.Database
 		}
 
 		/// <summary>
+		/// Returns whether the account is marked as being logged in.
+		/// </summary>
+		/// <param name="accountId"></param>
+		/// <returns></returns>
+		public bool AccountIsLoggedIn(string accountId)
+		{
+			using (var conn = this.Connection)
+			{
+				var mc = new MySqlCommand("SELECT `accountId` FROM `accounts` WHERE `accountId` = @accountId AND `loggedIn` = true", conn);
+				mc.Parameters.AddWithValue("@accountId", accountId);
+
+				using (var reader = mc.ExecuteReader())
+					return reader.HasRows;
+			}
+		}
+
+		/// <summary>
+		/// Set's account's loggedIn field.
+		/// </summary>
+		/// <param name="accountId"></param>
+		/// <returns></returns>
+		public void SetAccountLoggedIn(string accountId, bool loggedIn)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("UPDATE `accounts` SET `loggedIn` = @loggedIn WHERE `accountId` = @accountId", conn))
+			{
+				mc.Parameters.AddWithValue("@accountId", accountId);
+				mc.Parameters.AddWithValue("@loggedIn", loggedIn);
+
+				mc.ExecuteNonQuery();
+			}
+		}
+
+		/// <summary>
 		/// Adds new account to the database.
 		/// </summary>
 		/// <param name="accountId"></param>

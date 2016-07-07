@@ -74,6 +74,7 @@ namespace Aura.Channel.Network.Handlers
 			character.Client = client;
 
 			client.State = ClientState.LoggedIn;
+			ChannelServer.Instance.Database.SetAccountLoggedIn(account.Id, true);
 
 			// Per-character specific initialization
 			NPC npcchar = character as NPC;

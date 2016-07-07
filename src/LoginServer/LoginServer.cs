@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Aura.Login
 {
@@ -235,6 +236,30 @@ namespace Aura.Login
 		private void LoadScripts()
 		{
 			this.ScriptManager.LoadScripts("system/scripts/scripts_login.txt");
+		}
+
+		/// <summary>
+		/// Sends request to kill account's connection to all channels.
+		/// </summary>
+		/// <param name="accountName"></param>
+		public void RequestDisconnect(string accountName)
+		{
+			// Check if client is connected to this login server.
+			var client = this.Server.Clients.FirstOrDefault(a => a.State != ClientState.Dead && a.Account != null && a.Account.Name == accountName);
+			if (client != null)
+				client.Kill();
+
+			// Send DC request regardless, just in case.
+			Send.Internal_RequestDisconnect(accountName);
+
+			// Give everyone a moment to react
+			Thread.Sleep(2000);
+
+			// We've DCed from login and told all channels to DC the account.
+			// However, if the account is wrongfully marked as being logged
+			// in, we still have to set it to false, because the channels
+			// and login couldn't find the account.
+			this.Database.SetAccountLoggedIn(accountName, false);
 		}
 	}
 }

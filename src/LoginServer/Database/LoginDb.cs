@@ -119,15 +119,15 @@ namespace Aura.Login.Database
 		public void UpdateAccount(Account account)
 		{
 			using (var conn = this.Connection)
-			using (var cmd = new UpdateCommand("UPDATE `accounts` SET `lastLogin` = @lastLogin, `loggedIn` = @loggedIn WHERE `accountId` = @accountId", conn))
+			using (var cmd = new UpdateCommand("UPDATE `accounts` SET `lastLogin` = @lastLogin WHERE `accountId` = @accountId", conn))
 			{
 				cmd.Set("accountId", account.Name);
 				cmd.Set("lastLogin", account.LastLogin);
-				cmd.Set("loggedIn", account.LoggedIn);
 
 				cmd.Execute();
 			}
 		}
+
 		/// <summary>
 		/// Returns all character cards present for this account.
 		/// </summary>

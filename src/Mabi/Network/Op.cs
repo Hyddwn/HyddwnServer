@@ -751,6 +751,8 @@ namespace Aura.Mabi.Network
 			public const int BroadcastNotice = 0x42420201;
 
 			public const int ChannelShutdown = 0x42420301;
+
+			public const int RequestDisconnect = 0x42420401;
 		}
 
 		/// <summary>

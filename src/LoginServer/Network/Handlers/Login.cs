@@ -13,6 +13,7 @@ using Aura.Shared.Util;
 using System.Collections.Generic;
 using Aura.Mabi.Network;
 using Aura.Data;
+using System.Threading;
 
 namespace Aura.Login.Network.Handlers
 {
@@ -102,6 +103,8 @@ namespace Aura.Login.Network.Handlers
 			{
 				// Normal login, password
 				case LoginType.Normal:
+				case LoginType.NormalWithDisconnect:
+				case LoginType.RequestDisconnect:
 				case LoginType.EU:
 				case LoginType.KR:
 				case LoginType.CmdLogin:
@@ -132,11 +135,6 @@ namespace Aura.Login.Network.Handlers
 							Log.Info("New account '{0}' was created.", accountId);
 						}
 					}
-
-					// Set login type to normal if it's not secondary,
-					// we have all information and don't care anymore.
-					if (loginType != LoginType.SecondaryPassword)
-						loginType = LoginType.Normal;
 
 					break;
 
@@ -230,8 +228,13 @@ namespace Aura.Login.Network.Handlers
 				}
 			}
 
-			// Check logged in already
-			if (account.LoggedIn)
+			// Request logout
+			// Wait till after the password, to prevent abuse.
+			if (loginType == LoginType.RequestDisconnect || loginType == LoginType.NormalWithDisconnect)
+				LoginServer.Instance.RequestDisconnect(account.Name);
+
+			// Check login status
+			if (LoginServer.Instance.Database.AccountIsLoggedIn(account.Name))
 			{
 				Send.LoginR_Fail(client, LoginResult.AlreadyLoggedIn);
 				return;
@@ -240,7 +243,7 @@ namespace Aura.Login.Network.Handlers
 			account.SessionKey = LoginServer.Instance.Database.CreateSession(account.Name);
 
 			// Second password, please!
-			if (LoginServer.Instance.Conf.Login.EnableSecondaryPassword && loginType == LoginType.Normal)
+			if (LoginServer.Instance.Conf.Login.EnableSecondaryPassword && loginType != LoginType.SecondaryPassword)
 			{
 				Send.LoginR_Secondary(client, account, account.SessionKey);
 				return;
@@ -248,8 +251,8 @@ namespace Aura.Login.Network.Handlers
 
 			// Update account
 			account.LastLogin = DateTime.Now;
-			account.LoggedIn = true;
 			LoginServer.Instance.Database.UpdateAccount(account);
+			LoginServer.Instance.Database.SetAccountLoggedIn(account.Name, true);
 
 			// Free premium
 			account.PremiumServices.EvaluateFreeServices(LoginServer.Instance.Conf.Premium);
