@@ -232,13 +232,6 @@ namespace Aura.Login.Network.Handlers
 				}
 			}
 
-			// Check logged in already
-			if (account.LoggedIn)
-			{
-				Send.LoginR_Fail(client, LoginResult.AlreadyLoggedIn);
-				return;
-			}
-
 			account.SessionKey = LoginServer.Instance.Database.CreateSession(account.Name);
 
 			// Second password, please!
@@ -250,7 +243,6 @@ namespace Aura.Login.Network.Handlers
 
 			// Update account
 			account.LastLogin = DateTime.Now;
-			account.LoggedIn = true;
 			LoginServer.Instance.Database.UpdateAccount(account);
 
 			// Free premium

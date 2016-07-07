@@ -29,8 +29,6 @@ namespace Aura.Login.Database
 		public string BannedReason { get; set; }
 		public DateTime BannedExpiration { get; set; }
 
-		public bool LoggedIn { get; set; }
-
 		public PremiumServices PremiumServices { get; private set; }
 
 		public List<Card> CharacterCards { get; set; }
