@@ -463,7 +463,7 @@ namespace Aura.Channel.Skills.Combat
 			var skill = creature.Skills.ActiveSkill;
 
 			// Cancel skill on knock down, or if only one stack is left
-			if (tAction.Has(TargetOptions.KnockDown) || tAction.Has(TargetOptions.KnockDown) || skill.Stacks <= 1)
+			if (tAction.Has(TargetOptions.KnockDown) || skill.Stacks <= 1)
 			{
 				creature.Skills.CancelActiveSkill();
 				return;

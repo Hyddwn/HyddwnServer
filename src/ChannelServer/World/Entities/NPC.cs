@@ -75,7 +75,7 @@ namespace Aura.Channel.World.Entities
 			this.Height = this.Weight = this.Upper = this.Lower = 1;
 			this.RegionId = 0;
 			this.Life = this.LifeMaxBase = 1000;
-			this.Color1 = this.Color2 = this.Color2 = 0x808080;
+			this.Color1 = this.Color2 = this.Color3 = 0x808080;
 			this.GiftWeights = new GiftWeightInfo();
 		}
 

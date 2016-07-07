@@ -219,11 +219,11 @@ namespace Aura.Channel.Skills.Base
 				msg = msg.TrimEnd(',', ' ');
 
 				// Check attack
-				if (item.OptionInfo.AttackMin > item.OptionInfo.AttackMax || item.OptionInfo.AttackMax < item.OptionInfo.AttackMin)
+				if (item.OptionInfo.AttackMin > item.OptionInfo.AttackMax)
 					item.OptionInfo.AttackMin = item.OptionInfo.AttackMax;
 
 				// Check durability
-				if (item.OptionInfo.Durability > item.OptionInfo.DurabilityMax || item.OptionInfo.DurabilityMax < item.OptionInfo.Durability)
+				if (item.OptionInfo.Durability > item.OptionInfo.DurabilityMax)
 					item.OptionInfo.Durability = item.OptionInfo.DurabilityMax;
 			}
 
@@ -360,7 +360,7 @@ namespace Aura.Channel.Skills.Base
 					bonuses[Bonus.Balance] = 1;
 
 				// Critical
-				if (quality >= 95)
+				if (quality >= 98)
 					bonuses[Bonus.Critical] = 5;
 				else if (quality >= 95)
 					bonuses[Bonus.Critical] = 4;
