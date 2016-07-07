@@ -18,6 +18,9 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Used to request disconnect when you're already logged in.
 		/// </summary>
+		/// <remarks>
+		/// Sometimes this is sent, sometimes NormalAgain.
+		/// </remarks>
 		RequestDisconnect = 1,
 
 		/// <summary>
@@ -34,6 +37,11 @@ namespace Aura.Mabi.Const
 		/// Default, hashed password
 		/// </summary>
 		Normal = 12,
+
+		/// <summary>
+		/// Default, hashed password, used for login while requesting logout.
+		/// </summary>
+		NormalWithDisconnect = 13,
 
 		/// <summary>
 		/// ? o.o

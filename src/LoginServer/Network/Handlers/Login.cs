@@ -102,6 +102,8 @@ namespace Aura.Login.Network.Handlers
 			{
 				// Normal login, password
 				case LoginType.Normal:
+				case LoginType.NormalWithDisconnect:
+				case LoginType.RequestDisconnect:
 				case LoginType.EU:
 				case LoginType.KR:
 				case LoginType.CmdLogin:
