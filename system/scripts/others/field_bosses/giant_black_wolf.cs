@@ -24,8 +24,8 @@ public class GiantBlackWolfScript : FieldBossBaseScript
 		var rnd = RandomProvider.Get();
 		var pos = new Position(12800, 38100);
 
-		SpawnBoss(20014, 1, pos.GetRandomInRange(750, rnd));
-		SpawnBoss(20014, 1, pos.GetRandomInRange(750, rnd));
+		SpawnBoss(20041, 1, pos.GetRandomInRange(750, rnd));
+		SpawnBoss(20041, 1, pos.GetRandomInRange(750, rnd));
 
 		BossNotice(1, L("Giant Black Wolf has appeared at Tir Chonaill Square!!"));
 	}
