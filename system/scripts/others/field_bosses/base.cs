@@ -42,7 +42,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 	public void OnCreatureKilled(Creature creature, Creature killer)
 	{
 		// Only drop once, from NPCs in the region
-		if (_droppedScroll || creature.RegionId != Spawn.Location.RegionId || !(creature is NPC))
+		if (_droppedScroll || creature.RegionId != Spawn.Location.RegionId || !creature.Has(CreatureStates.Npc))
 			return;
 
 		// Start dropping 100 minutes before spawn and stop 1 minute before.
