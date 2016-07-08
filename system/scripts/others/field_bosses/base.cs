@@ -32,6 +32,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 	{
 		Spawn = new SpawnInfo();
 
+		Load();
 		PrepareSpawn();
 
 		return true;
