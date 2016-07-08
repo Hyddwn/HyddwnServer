@@ -12,5 +12,6 @@ others/titles.cs
 
 others/field_bosses/base.cs
 others/field_bosses/tir_giant_wolves.cs
+others/field_bosses/fomor_command_scroll.cs
 
 include "/user/scripts/scripts_others.txt"
