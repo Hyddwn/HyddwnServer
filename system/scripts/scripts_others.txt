@@ -11,6 +11,6 @@ others/fences.cs
 others/titles.cs
 
 others/field_bosses/base.cs
-others/field_bosses/giant_black_wolf.cs
+others/field_bosses/tir_giant_wolves.cs
 
 include "/user/scripts/scripts_others.txt"
