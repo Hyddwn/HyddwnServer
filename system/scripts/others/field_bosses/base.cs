@@ -47,7 +47,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 
 		// Start dropping 100 minutes before spawn and stop when spawned.
 		var time = GetTimeUntilSpawn();
-		if (time.Minutes >= 100 || time.Ticks == 0)
+		if (time.TotalMinutes >= 100 || time.Ticks == 0)
 			return;
 
 		// Chance = (100 - remaining minutes) / 4
@@ -55,7 +55,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 		// 60 minutes = 10.0% chance
 		// 20 minutes = 20.0% chance
 		//  2 minutes = 24.5% chance
-		var chance = (100 - time.Minutes) / 4;
+		var chance = (100 - time.TotalMinutes) / 4;
 
 		// Don't lock until here, to save time
 		lock (_syncLock)

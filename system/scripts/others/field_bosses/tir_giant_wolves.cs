@@ -104,7 +104,7 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			{
 				npc.Msg(npc.FavorExpression(), string.Format(L("Why are you here?<br/>I saw people running to {1}.<br/>They were running to save their friends in peril after {0} showed up."), Spawn.BossName, Spawn.LocationName));
 			}
-			else if (spawnTime.Minutes < 100)
+			else if (spawnTime.TotalMinutes < 100)
 			{
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("I have something to tell you.<br/>Can you feel the evil presence of {0} spreading around {1}?<br/>I think something bad will happen in around {2}..."), Spawn.BossName, Spawn.LocationName, time));
@@ -124,7 +124,7 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			{
 				// ?
 			}
-			else if (spawnTime.Minutes < 100)
+			else if (spawnTime.TotalMinutes < 100)
 			{
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("A monster will show up in {1} at {2}!<br/>{0} will show up!<br/>Hey, I said I'm not lying!"), Spawn.BossName, Spawn.LocationName, time));
@@ -144,7 +144,7 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			{
 				npc.Msg(npc.FavorExpression(), string.Format(L("Head to {1} right away!<br/>Trefor made a fuss because of {0}'s attack."), Spawn.BossName, Spawn.LocationName));
 			}
-			else if (spawnTime.Minutes < 100)
+			else if (spawnTime.TotalMinutes < 100)
 			{
 				// ?
 			}
