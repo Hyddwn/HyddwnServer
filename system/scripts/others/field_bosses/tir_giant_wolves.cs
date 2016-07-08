@@ -37,8 +37,8 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			spawn.Location = new Location("Uladh_main/field_Tir_E_ba/TirChonaill_monster6");
 		}
 
-		spawn.Time = DateTime.Now.AddMinutes(Random(1, 1));
-		spawn.LifeSpan = TimeSpan.FromMinutes(1);
+		spawn.Time = DateTime.Now.AddHours(Random(3, 6));
+		spawn.LifeSpan = TimeSpan.FromMinutes(20);
 
 		return spawn;
 	}
