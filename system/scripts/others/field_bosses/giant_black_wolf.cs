@@ -9,29 +9,30 @@ using System.Threading.Tasks;
 
 public class GiantBlackWolfScript : FieldBossBaseScript
 {
-	protected override TimeSpan GetSpawnDelay()
+	protected override SpawnInfo GetNextSpawn()
 	{
-		return TimeSpan.FromMinutes(1);
-	}
+		var spawn = new SpawnInfo();
 
-	protected override TimeSpan GetLifeSpan()
-	{
-		return TimeSpan.FromMinutes(1);
+		spawn.BossName = L("Giant Black Wolf");
+		spawn.LocationName = L("Tir Chonaill Square");
+		spawn.Location = new Location(1, 12800, 38100);
+		spawn.Time = DateTime.Now.AddMinutes(Random(1, 1));
+		spawn.LifeSpan = TimeSpan.FromMinutes(1);
+
+		return spawn;
 	}
 
 	protected override void OnSpawnBosses()
 	{
-		var rnd = RandomProvider.Get();
-		var pos = new Position(12800, 38100);
+		SpawnBoss(20041, 300, -150);
+		SpawnBoss(20041, -300, -150);
+		SpawnBoss(20041, 0, 300);
 
-		SpawnBoss(20041, 1, pos.GetRandomInRange(750, rnd));
-		SpawnBoss(20041, 1, pos.GetRandomInRange(750, rnd));
-
-		BossNotice(1, L("Giant Black Wolf has appeared at Tir Chonaill Square!!"));
+		BossNotice(L("{0} has appeared at {1}!!"), Spawn.BossName, Spawn.LocationName);
 	}
 
 	protected override void OnBossDied(Creature boss, Creature killer)
 	{
-		BossNotice(1, L("{0} has defeated Giant Black Wolf that appeared at Tir Chonaill Square!"), killer.Name);
+		BossNotice(L("{0} has defeated {1} that appeared at {2}!"), killer.Name, Spawn.BossName, Spawn.LocationName);
 	}
 }
