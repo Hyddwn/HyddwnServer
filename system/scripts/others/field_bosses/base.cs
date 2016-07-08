@@ -18,8 +18,10 @@ public abstract class FieldBossBaseScript : GeneralScript
 	private List<Creature> _minions = new List<Creature>();
 	private object _syncLock = new object();
 	private bool _disposed = false;
+	private bool _droppedScroll = false;
 
 	protected bool AllBossesAreDead { get { lock (_syncLock) return _bosses.All(b => b.IsDead); } }
+	protected TimeSpan TimeUntilSpawn { get { return Spawn.Time - DateTime.Now; } }
 	protected new SpawnInfo Spawn { get; private set; }
 
 	protected override void CleanUp()
@@ -36,11 +38,40 @@ public abstract class FieldBossBaseScript : GeneralScript
 		return true;
 	}
 
+	[On("CreatureKilled")]
+	public void OnCreatureKilled(Creature creature, Creature killer)
+	{
+		// Only drop once, from NPCs in the region
+		if (_droppedScroll || creature.RegionId != Spawn.Location.RegionId || !(creature is NPC))
+			return;
+
+		// Start dropping 100 minutes before spawn and stop 1 minute before.
+		var time = TimeUntilSpawn;
+		if (time.Minutes >= 100 || time.Minutes < 1)
+			return;
+
+		// Don't lock until here, to save time
+		var chance = 100 - time.Minutes;
+		lock (_syncLock)
+		{
+			// Check again, for race conditions
+			if (_droppedScroll)
+				return;
+
+			if (Random(100) < chance)
+			{
+				creature.Drops.Add(CreateFomorCommandScroll());
+				_droppedScroll = true;
+			}
+		}
+	}
+
 	private void PrepareSpawn()
 	{
 		Spawn = GetNextSpawn();
+		_droppedScroll = false;
 
-		var delay = Spawn.Time - DateTime.Now;
+		var delay = TimeUntilSpawn;
 		Task.Delay(delay).ContinueWith(a =>
 		{
 			if (_disposed)
@@ -153,6 +184,16 @@ public abstract class FieldBossBaseScript : GeneralScript
 		}
 
 		Send.Notice(region, NoticeType.Top, 16000, format, args);
+	}
+
+	protected Item CreateFomorCommandScroll()
+	{
+		var item = new Item(63021);
+		item.MetaData1.SetString("BSGRNM", Spawn.BossName);
+		item.MetaData1.SetString("BSGRPS", Spawn.LocationName);
+		item.MetaData1.SetLong("BSGRTM", Spawn.Time);
+
+		return item;
 	}
 
 	protected abstract SpawnInfo GetNextSpawn();
