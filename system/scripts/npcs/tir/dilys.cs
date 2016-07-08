@@ -191,10 +191,6 @@ public class DilysScript : NpcScript
 				Msg(FavorExpression(), "It was hard for you to get here, wasn't it? I bet if I were a little closer to the Square<br/>you would've come earlier. Hehe...<br/>Truthfully, it is kind of scary being next to the graveyard.");
 				Msg("At first I thought about opening the Healer's House near the Square<br/>but Duncan advised me that this place would be better for business.<br/>Actually, I haven't had many patients.<br/>Only people who come to hunt spiders and...Trefor, who stores his goods here...");
 				ModifyRelation(Random(2), 0, Random(3));
-
-				/* Message from Field Boss Spawns
-				Msg("<face name='normal'/>Head to Eastern Prairie of the Meadow right away!<br/>Trefor made a fuss because of Gigantic White Wolf's attack.");
-				Msg("<title name='NONE'/>(That was a great conversation!)"); */
 				break;
 
 			case "about_skill":
