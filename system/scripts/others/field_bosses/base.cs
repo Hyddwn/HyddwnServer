@@ -21,7 +21,6 @@ public abstract class FieldBossBaseScript : GeneralScript
 	private bool _droppedScroll = false;
 
 	protected bool AllBossesAreDead { get { lock (_syncLock) return _bosses.All(b => b.IsDead); } }
-	protected TimeSpan TimeUntilSpawn { get { return Spawn.Time - DateTime.Now; } }
 	protected new SpawnInfo Spawn { get; private set; }
 
 	protected override void CleanUp()
@@ -46,7 +45,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 			return;
 
 		// Start dropping 100 minutes before spawn and stop 1 minute before.
-		var time = TimeUntilSpawn;
+		var time = GetTimeUntilSpawn();
 		if (time.Minutes >= 100 || time.Minutes < 1)
 			return;
 
@@ -71,7 +70,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 		Spawn = GetNextSpawn();
 		_droppedScroll = false;
 
-		var delay = TimeUntilSpawn;
+		var delay = GetTimeUntilSpawn();
 		Task.Delay(delay).ContinueWith(a =>
 		{
 			if (_disposed)
@@ -194,6 +193,17 @@ public abstract class FieldBossBaseScript : GeneralScript
 		item.MetaData1.SetLong("BSGRTM", Spawn.Time);
 
 		return item;
+	}
+
+	protected TimeSpan GetTimeUntilSpawn()
+	{
+		var now = DateTime.Now;
+		var spawnTime = Spawn.Time;
+
+		if (spawnTime < now)
+			return new TimeSpan();
+
+		return (spawnTime - now);
 	}
 
 	protected abstract SpawnInfo GetNextSpawn();
