@@ -45,9 +45,9 @@ public abstract class FieldBossBaseScript : GeneralScript
 		if (_droppedScroll || creature.RegionId != Spawn.Location.RegionId || !creature.Has(CreatureStates.Npc))
 			return;
 
-		// Start dropping 100 minutes before spawn and stop 1 minute before.
+		// Start dropping 100 minutes before spawn and stop when spawned.
 		var time = GetTimeUntilSpawn();
-		if (time.Minutes >= 100 || time.Minutes < 1)
+		if (time.Minutes >= 100 || time.Ticks == 0)
 			return;
 
 		// Don't lock until here, to save time
