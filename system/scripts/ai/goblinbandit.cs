@@ -163,8 +163,9 @@ public class GoblinBanditAi : AiScript
 			Do(Attack(3, 5000));
 		}
 	}
+
 	private IEnumerable OnCounterKnockDown()
 	{
-		Do(SwitchArmor(24001, 25005));
+		Do(SwitchArmor(25004, 25006));
 	}
 }
