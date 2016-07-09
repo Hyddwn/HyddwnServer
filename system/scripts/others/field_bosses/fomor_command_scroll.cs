@@ -1,14 +1,12 @@
 ﻿using Aura.Channel.Network.Sending;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.World.Entities;
-using Aura.Mabi;
-using Aura.Mabi.Const;
-using Aura.Shared.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+//--- Aura Script -----------------------------------------------------------
+// Fomor Command Scroll
+//--- Description -----------------------------------------------------------
+// Sends region-wide notice about when and where the next Field Boss
+// will appear.
+//---------------------------------------------------------------------------
 
 [ItemScript(63021)]
 public class FomorCommandScrollItemScript : ItemScript

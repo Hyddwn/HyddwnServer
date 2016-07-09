@@ -1,13 +1,8 @@
-﻿using Aura.Channel.Scripting.Scripts;
-using Aura.Channel.World;
-using Aura.Channel.World.Entities;
-using Aura.Mabi;
-using Aura.Shared.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//--- Aura Script -----------------------------------------------------------
+// Gairech Field Bosses
+//--- Description -----------------------------------------------------------
+// Handles spawning and NPC hooks for Giant Ogre and Black Wizard.
+//---------------------------------------------------------------------------
 
 public class GairechFieldBossScript : FieldBossBaseScript
 {

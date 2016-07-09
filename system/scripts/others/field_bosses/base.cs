@@ -1,16 +1,9 @@
-﻿using Aura.Channel;
-using Aura.Channel.Network.Sending;
-using Aura.Channel.Scripting.Scripts;
-using Aura.Channel.World;
-using Aura.Channel.World.Entities;
-using Aura.Mabi.Const;
-using Aura.Shared.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿//--- Aura Script -----------------------------------------------------------
+// Field Boss base class
+//--- Description -----------------------------------------------------------
+// Provides a base for Field Boss scripts, with common methods and
+// automated handling of spawning and dropping Fomor Command Scrolls.
+//---------------------------------------------------------------------------
 
 public abstract class FieldBossBaseScript : GeneralScript
 {
