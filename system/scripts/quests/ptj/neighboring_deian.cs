@@ -221,11 +221,11 @@ public class DeianWoolBasicPtjScript : QuestScript
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(50021)); // Milk
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(55));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(60005, 10)); // Bandage
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(10));
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(60005, 10)); // Bandage
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(10));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(63000)); // Phoenix Feather
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(375));
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(63000)); // Phoenix Feather
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(375));
 	}
 }
 
@@ -271,14 +271,14 @@ public class DeianWoolIntPtjScript : QuestScript
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(50021)); // Milk
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(205));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(60005, 10)); // Bandage
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(425));
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(60005, 10)); // Bandage
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(425));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(63000, 5)); // Phoenix Feather
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(125));
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(63000, 5)); // Phoenix Feather
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(125));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40022)); // Gathering Axe
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(455));
+		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Item(40022)); // Gathering Axe
+		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Gold(455));
 	}
 }
 
