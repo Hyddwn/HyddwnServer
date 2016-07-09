@@ -59,15 +59,15 @@ public class DunbartonFieldBossScript : FieldBossBaseScript
 		if (goblin)
 		{
 			// Goblin Bandits
-			SpawnMinion(10179, 0, 0);
-			SpawnMinion(10179, -250, 0);
-			SpawnMinion(10179, 250, 0);
-			SpawnMinion(10179, 0, -250);
-			SpawnMinion(10179, 0, 250);
-			SpawnMinion(10179, -150, -150);
-			SpawnMinion(10179, 150, -150);
-			SpawnMinion(10179, -150, 150);
-			SpawnMinion(10179, 150, 150);
+			SpawnBoss(10179, 0, 0);
+			SpawnBoss(10179, -250, 0);
+			SpawnBoss(10179, 250, 0);
+			SpawnBoss(10179, 0, -250);
+			SpawnBoss(10179, 0, 250);
+			SpawnBoss(10179, -150, -150);
+			SpawnBoss(10179, 150, -150);
+			SpawnBoss(10179, -150, 150);
+			SpawnBoss(10179, 150, 150);
 		}
 		else
 		{
