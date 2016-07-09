@@ -149,10 +149,6 @@ public class DeianScript : NpcScript
 				Msg(FavorExpression(), "Some people should have been born as fish.<br/>They can't pass water without diving right in.<br/>I wish they'd stop.");
 				Msg("Not long ago, someone jumped into the reservoir<br/>and made a huge mess.<br/>Guess who got stuck cleaning it up?<br/>Sooo not my job.");
 				ModifyRelation(Random(2), 0, Random(3));
-
-				/* Message from Field Boss Spawns
-				Msg("<face name='normal'/>A monster will show up in Eastern Prairie of the Meadow at 3Days later Dawn!<br/>Gigantic White Wolf will show up!<br/>Hey, I said I'm not lying!");
-				Msg("<title name='NONE'/>(That was a great conversation!)"); */
 				break;
 
 			case "about_skill":

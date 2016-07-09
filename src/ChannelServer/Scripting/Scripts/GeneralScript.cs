@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Aura.Shared.Util.Commands;
 using Aura.Shared.Scripting.Scripts;
 using Aura.Data;
+using Aura.Mabi;
 
 namespace Aura.Channel.Scripting.Scripts
 {
@@ -254,6 +255,54 @@ namespace Aura.Channel.Scripting.Scripts
 		protected bool IsEnabled(string featureName)
 		{
 			return AuraData.FeaturesDb.IsEnabled(featureName);
+		}
+
+		/// <summary>
+		/// Returns Mabi-style time span string.
+		/// </summary>
+		/// <example>
+		/// If same day: Today night
+		/// If tomorrow: Tomorrow dawn
+		/// Some day: 3 days morning
+		/// </example>
+		/// <param name="now"></param>
+		/// <param name="future"></param>
+		/// <returns></returns>
+		public string GetTimeSpanString(ErinnTime now, ErinnTime future)
+		{
+			// Calculate days
+			var m1 = (now.Year * 7 * 40 * 24 * 60) + (now.Month * 40 * 24 * 60) + (now.Day * 24 * 60) + (now.Hour * 60) + now.Minute;
+			var m2 = (future.Year * 7 * 40 * 24 * 60) + (future.Month * 40 * 24 * 60) + (future.Day * 24 * 60) + (future.Hour * 60) + future.Minute;
+			var days = (m2 - m1) / 60.0 / 24.0;
+
+			if (future.Hour * 100 + future.Minute > now.Hour * 100 + now.Minute)
+				days = Math.Floor(days);
+			else
+				days = Math.Ceiling(days);
+
+			// Get days part
+			var time = "";
+			if (future.DateTimeStamp == now.DateTimeStamp)
+				time = L("Today");
+			else if (future.DateTimeStamp == now.DateTimeStamp + 1)
+				time = L("Tomorrow");
+			else if (future.DateTimeStamp == now.DateTimeStamp + 2)
+				time = L("the day after tomorrow");
+			else
+				time = string.Format(LN("{0} day", "{0} days", (int)days), (int)days);
+
+			// Get time of day part
+			var hour = future.Hour;
+			if (hour >= 20)
+				time += L(" night");
+			else if (hour >= 12)
+				time += L(" afternoon");
+			else if (hour >= 6)
+				time += L(" morning");
+			else if (hour >= 0)
+				time += L(" dawn");
+
+			return time;
 		}
 
 		#endregion

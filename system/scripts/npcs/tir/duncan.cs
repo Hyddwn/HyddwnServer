@@ -195,15 +195,8 @@ public class DuncanScript : NpcScript
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 
-				/* Not sure where this goes
-				Msg("I heard a rumor that this is just a copy of the world of Erin. Trippy, huh?");
-
-				// Message from Field Boss Spawns
-				Msg("<face name='normal'/>I have something to tell you.<br/>Can you feel the evil presence of Gigantic White Wolf spreading around Southern Plains of Tir Chonaill?<br/>I think something bad will happen in around 3Days late Afternoon...");
-				Msg("<title name='NONE'/>(That was a great conversation!)");
-				
-				// Message during Field Boss
-				Msg("<face name='normal'/>Why are you here?<br/>I saw people running to Eastern Prairie of the Meadow.<br/>They were running to save their friends in peril after Gigantic White Wolf showed up."); */
+				// Not sure where this goes
+				// Msg("I heard a rumor that this is just a copy of the world of Erin. Trippy, huh?");
 				break;
 
 			case "about_skill":
