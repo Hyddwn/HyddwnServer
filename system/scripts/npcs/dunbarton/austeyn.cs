@@ -13,6 +13,7 @@ public class AusteynScript : NpcScript
 		SetBody(upper: 1.2f);
 		SetFace(skinColor: 16, eyeType: 8, eyeColor: 84, mouthType: 1);
 		SetLocation(20, 660, 770, 251);
+		SetGiftWeights(beauty: 1, individuality: 1, luxury: 1, toughness: 0, utility: 2, rarity: 2, meaning: -1, adult: 1, maniac: 0, anime: 0, sexy: 2);
 
 		EquipItem(Pocket.Face, 4904, 0x00784C3D, 0x00D58877, 0x00FFCB9C);
 		EquipItem(Pocket.Hair, 4027, 0x00D1D9E3, 0x00D1D9E3, 0x00D1D9E3);
@@ -31,6 +32,7 @@ public class AusteynScript : NpcScript
 		AddPhrase("Oops. The mistakes have been getting more frequent lately.");
 		AddPhrase("Perhaps I should hire a cute office assistant. Who knows? Maybe that will bring in more business.");
 		AddPhrase("That fellow looks like he might have some Gold on him...");
+		AddPhrase("By the way, why is there no news from the headquarter...");
 	}
 
 	protected override async Task Talk()
@@ -50,8 +52,20 @@ public class AusteynScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("Hmm... Welcome.<br/>Your title says you've rescued the Goddess.");
+					Msg("That's a great title, but...");
+					Msg("...");
+					Msg("Well, I hear a lot of people are forging titles these days...");
+					Msg("Ah, no, I don't mean you...");
+				}
+				else if (Title == 11002)
+				{
 					Msg("Oh wow, you're the one who saved Erinn?<br/>While you're at it,<br/>can you take care of the economic state of Dunbarton as well? Hehe...");
+				}
+
 				await Conversation();
 				break;
 
@@ -103,15 +117,15 @@ public class AusteynScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I think I've already forgotten your name...<br/>Oh! <username/>! Yes."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Good to see you again, <username/>."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>. You are a regular at our bank now. Hahaha!"));
 		}
 
 		UpdateRelationAfterGreet();
@@ -125,20 +139,23 @@ public class AusteynScript : NpcScript
 				if (Memory == 1)
 				{
 					Msg("My name is <npcname/>. Your name is?<br/><username/>, huh? Ahhh. <username/>... <username/>...");
-					ModifyRelation(1, 0, Random(2));
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					GiveKeyword("shop_bank");
-					Msg(FavorExpression(), "That's right. I am <npcname/>, the manager of this Dunbarton branch of the Erskin Bank. Nice to meet you.");
-					ModifyRelation(Random(2), 0, Random(2));
+					RndFavorMsg(
+						"That's right. I am <npcname/>, the manager of this Dunbarton branch of the Erskin Bank. Nice to meet you.",
+						"Welcome to Erskin Bank, the Dunbarton branch.<br/>I am the manager, Austeyn. Ahem."
+					);
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "Are you from the north?<br/>Then you must be from the Ulaid region.<br/>Ulaid region is where the folks at Tir Chonaill live.<br/>They are the descendants of Partholon.");
 				Msg("I hear they used to be a kingdom, even though it has since turned into a small village.<br/>If you get to go there, say hello to the young lady at the Bank for me. Her name is Bebhinn.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -151,7 +168,7 @@ public class AusteynScript : NpcScript
 				switch(await Select())
 				{
 					case "@yes":
-						StartQuest("20118"); //For the Wealthy Only
+						StartQuest("20118"); // For the Wealthy Only
 						Msg("I can sense your enthusiasm beneath<br/>your deceptively calm facade!<br/>Here, these Wings of a Goddess will take you to Tara.<br/>Find Keith at the Bank. He'll fill you in on the details.");
 						Msg("<npcportrait name='NONE'/>(<npcname/> hands you a Wings of a Goddess,<br/>an excited look in his eyes.)");
 						break;
@@ -159,7 +176,7 @@ public class AusteynScript : NpcScript
 					case "@no":
 						Msg("Really? How disappointing.<br/>Well, let me know if you change your mind.<br/>I really hope you change your mind.");
 						break;
-					}*/
+				}*/
 				break;
 
 			case "shop_misc":
@@ -168,6 +185,7 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "shop_grocery":
+				GiveKeyword("shop_restaurant");
 				Msg("A grocery store?<br/>Just go to the Restaurant and ask for food.<br/>Hahaha.");
 				break;
 
@@ -194,6 +212,7 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "skill_instrument":
+				GiveKeyword("shop_misc");
 				Msg("I thought I heard someone say that<br/>you can learn that skill once you buy an instrument.<br/>Have you tried it before?");
 				Msg("The General Shop happens to be next door.<br/>If you really want to learn it, do as I told you.");
 				break;
@@ -211,11 +230,13 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "skill_counter_attack":
+				GiveKeyword("school");
 				Msg("...<br/>Hmm... Did you get on Aranwen's bad side in class?");
 				Msg("Why else would you ask a banker for such things<br/>when there is a combat instructor in town?");
 				break;
 
 			case "skill_smash":
+				GiveKeyword("school");
 				Msg("It's probably better to ask Aranwen at school.<br/>Don't tell me you are too lazy for that.");
 				break;
 
@@ -247,6 +268,11 @@ public class AusteynScript : NpcScript
 				Msg("Also, just to be extra sure,<br/>the martial arts instructor, Aranwen, is right in front<br/>of the School, wearing silver armor.");
 				break;
 
+			case "skill_windmill":
+				GiveKeyword("school");
+				Msg("Ha ha.<br/>If you want combat skills,<br/>talking to the martial arts instructor at the School<br/>is your best bet.");
+				break;
+
 			case "shop_restaurant":
 				Msg("Oh, no! You haven't eaten yet, have you?<br/>Now, now, the food's available just around the corner, so don't get too antsy.<br/>When you get there, tell the lady that <npcname/> sent you.");
 				Msg("She'll take real good care of you.<br/>She may not look it, but she has the heart of an angel. Hahaha!");
@@ -274,18 +300,48 @@ public class AusteynScript : NpcScript
 				Msg("Ah, before you get the wrong idea,<br/>Eavan is a girl, not a boy.<br/>Don't go looking for the wrong person.");
 				break;
 
+			case "bow":
+				GiveKeyword("shop_armory");
+				Msg("A bow? What makes you think that there's a bow at a Bank?<br/>Well, there ARE some bows locked away here,<br/>but it's not like I can take them out and give them to you, you know?");
+				Msg("Of course, it's a different story if you deposited one yourself...<br/>If anything, I'd say go see Nerys to buy one.");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_misc");
+				Msg("A Lute is a simple instrument to build, but<br/>it somehow feels a bit shabby compared to a ukulele or a mandolin...<br/>You get what you pay for, I suppose.");
+				Msg("Mandolin is for men! Definitely more manly than a Lute!<br/>Hmmm... If you think you need a Lute, try the General Shop.<br/>Walter should have some at cheap prices.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog? The eternal Utopia?<br/>Hmm... I don't know what you would think of me if I say this but...");
+				Msg("It seems like some people who think that<br/>Tir Na Nog is something that old folks believe in...<br/>But Tir Na Nog really exists.");
+				Msg("In my youth, I heard some crew members<br/>of a ship talk about that place at the dock.<br/>They were not the kind to lie<br/>so I believe in it.");
+				break;
+
+			case "mabinogi":
+				Msg("Mabinogi is a song about the heroes and legends.<br/>It's recorded in a book, too,<br/>but most people seem to remember<br/>it through songs.");
+				Msg("They say it's far more romantic that way.");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("Walter at the General Shop<br/>carries Musical Scores.<br/>Buy lots from him, would you?");
+				break;
+
 			default:
 				RndFavorMsg(
 					"Hmm. I don't know.",
+					"I don't know. I really don't.",
 					"Hmm? What is it you just said?",
 					"Ha ha. Why are you asking me? I don't know.",
 					"Shame. I probably can't help you with that.",
 					"Oh, I don't think it's a topic I'm familiar with.",
 					"You can't keep talking about something like that with me. Hahaha.",
 					"Heh. Don't think that I<br/>should know everything you talk about.",
-					"Hmm... It's news to me.<br/>I'll ask someone else for you when they come by."
+					"Hmm... It's news to me.<br/>I'll ask someone else for you when they come by.",
+					"You come across things you don't know about in life,<br/>so don't be too disappointed."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
