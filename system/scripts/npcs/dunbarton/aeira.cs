@@ -14,6 +14,7 @@ public class AeiraScript : NpcScript
 		SetFace(skinColor: 16, eyeType: 2, eyeColor: 27, mouthType: 1);
 		SetStand("human/female/anim/female_natural_stand_npc_Aeira");
 		SetLocation(14, 44978, 43143, 158);
+		SetGiftWeights(beauty: 0, individuality: 0, luxury: -1, toughness: 0, utility: 1, rarity: 2, meaning: 2, adult: -1, maniac: 2, anime: 2, sexy: -1);
 
 		EquipItem(Pocket.Face, 3900, 0x0090CEF1, 0x00006B55, 0x006E6162);
 		EquipItem(Pocket.Hair, 3022, 0x00664444, 0x00664444, 0x00664444);
@@ -38,11 +39,7 @@ public class AeiraScript : NpcScript
 	{
 		SetBgm("NPC_Aeira.mp3");
 
-		await Intro(
-			"This girl seems to be in her late teens with big thick glasses resting at the tip of her nose.",
-			"Behind the glasses are two large brown eyes shining brilliantly.",
-			"Wearing a loose-fitting dress, she has a ribbon made of soft and thin material around her neck."
-		);
+		await Intro(L("This girl seems to be in her late teens with big thick glasses resting at the tip of her nose.<br/>Behind the glasses are two large brown eyes shining brilliantly.<br/>Wearing a loose-fitting dress, she has a ribbon made of soft and thin material around her neck."));
 
 		Msg("So, what can I help you with?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 
@@ -51,8 +48,20 @@ public class AeiraScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("Come to think of it... You're <username/>, right?<br/>The one who came looking for all those odd books. Haha.");
+					Msg("Thanks to you, I spent a lot of time and effort searching for those books, too.<br/>And since you really inconvenienced me in a lot of ways,<br/>I think it's only right that you return the favor.");
+					Msg("Haha.<br/>Just kidding. Look at you, all nervous, <username/>.");
+					Msg("Hmm... Well? Did the books I'd found help you at all?<br/>Congratulations on what you've accomplished.");
+					Msg("I look forward to doing more business with you.<br/>And come by the Bookstore more often!");
+				}
+				else if (Title == 11002)
+				{
 					Msg("Wow... <username/>, you really<br/>rescued Erinn?<br/>I wasn't sure before, but you really are an amazing person.<br/>Please continue to watch over my Bookstore!");
+				}
+
 				await Conversation();
 				break;
 
@@ -77,15 +86,15 @@ public class AeiraScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>, right?<br/>Hehe... I remember your name."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Oh, it's you again, <username/>. How are you these days?"));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You must enjoy reading, <username/>.<br/>You come to my Bookstore all the time."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -98,21 +107,21 @@ public class AeiraScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					Msg("My name? It's <npcname/>. We've never met before, have we?");
-					ModifyRelation(1, 0, Random(2));
+					Msg(FavorExpression(), "My name? It's <npcname/>. We've never met before, have we?");
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					GiveKeyword("shop_bookstore");
 					Msg(FavorExpression(), "Hehehe... I may not look the part, but I own this Bookstore.<br/>It's okay to be casual, but<br/>at least give me some respect as a store owner.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
 				GiveKeyword("school");
 				Msg(FavorExpression(), "If you want to properly train the stuff that's written on the book,<br/>why don't you first read the book in detail, then visit the school?<br/>Oh, and don't forget to talk to Stewart when you're there.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -148,6 +157,7 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("Do we have a blacksmith's shop in this town? I think Nerys might know.<br/>It's just that I've never seen Nerys hammering<br/>or using the bellow.");
 				Msg("You might want to go visit the Weapons Shop first.");
 				break;
@@ -205,6 +215,7 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "shop_restaurant":
+				GiveKeyword("shop_misc");
 				Msg("The Restaurant? You must be talking about Glenis' place.<br/>All you need to do is go straight to the Square.");
 				Msg("While you are on the way, make sure to<br/>visit the General Shop, too. Tee hee.");
 				break;
@@ -229,9 +240,41 @@ public class AeiraScript : NpcScript
 				Msg("Oh, nothing. It's just strange to see someone<br/>who's looking for someone who's as cold as ice. Hehe.<br/>...");
 				break;
 
+			case "bow":
+				Msg("So, you're looking for a bow?<br/>You can buy a bow at the Weapons Shop.<br/>Ask Nerys and she'll kindly tell you where it is.");
+				Msg("My father made a toy bow for me way back,<br/>but I couldn't hit the target very well with it.<br/>...<br/>...");
+				Msg("But still,<br/>Aranwen once told me that<br/>I have the potential to be a good warrior.");
+				Msg("Hehe...<br/>Bows are all good, but<br/>I wish I could learn how to shoot the arrow of love, like Cupid.");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_misc");
+				Msg("Right! The instrument my dad sold at his shop was called the Lute!<br/>You WILL go stop by his shop later, right?");
+				Msg("What, you forgot already? It's the General Shop!!. I can't believe you forgot already.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog?<br/>It's a paradise that people dream of, a world void of hatred and fighting, and full of love...");
+				Msg("A place where the three major gods of this world maintain beautiful harmony,<br/>and praise the blessings of Aton Cimeni.<br/>It's also a place where many heroes gain new life after they pass away.");
+				Msg("That's how the legend goes... But I can't trust anyone<br/>who claims to have been there and back.");
+				break;
+
+			case "mabinogi":
+				Msg("Mabinogi is a song sung by bards<br/>about the heroes and the old gods.");
+				Msg("It's a song that commemorates those who fought against<br/>the Fomors to establish the peaceful world we live in today.");
+				Msg("Occasionally, we get books that talk about such stories here.<br/>Take a look. Hehe.");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("The Music Scores?<br/>My father's shop carries them!<br/>It's over on the other side of the Square across the street from here.");
+				Msg("They may sell out, so hurry!");
+				break;
+
 			default:
 				RndFavorMsg(
 					"...?",
+					"Umm... What did you just say?",
 					"Oh... Umm... That... I don't know.",
 					"I'm not sure I know. Maybe Stewart knows.",
 					"I don't know too much about that. Sorry...",
@@ -239,9 +282,10 @@ public class AeiraScript : NpcScript
 					"Yeah, but... I don't really know anything about that.",
 					"Hahaha. Well, it's not really my area of expertise...",
 					"I don't know much about it, but let me know if you find out more.",
-					"I'm not sure exactly what that is but it seems important,<br/>seeing how so many people inquire about it..."
+					"I'm not sure exactly what that is but it seems important,<br/>seeing how so many people inquire about it...",
+					"Heh. Just because I own a bookstore doesn't mean that I've read all the books here.<br/>Please be patient with me."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

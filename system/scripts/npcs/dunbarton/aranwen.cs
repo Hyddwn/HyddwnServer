@@ -13,6 +13,7 @@ public class AranwenScript : NpcScript
 		SetBody(height: 1.15f, weight: 0.9f, upper: 1.1f, lower: 0.8f);
 		SetFace(skinColor: 15, eyeType: 3, eyeColor: 192);
 		SetLocation(14, 43378, 40048, 125);
+		SetGiftWeights(beauty: 1, individuality: 1, luxury: -1, toughness: 2, utility: 2, rarity: -1, meaning: 2, adult: 2, maniac: -1, anime: -1, sexy: 0);
 
 		EquipItem(Pocket.Face, 3900, 0x00344300, 0x0000163E, 0x008B0021);
 		EquipItem(Pocket.Hair, 3026, 0x00BDC2E5, 0x00BDC2E5, 0x00BDC2E5);
@@ -37,11 +38,7 @@ public class AranwenScript : NpcScript
 	{
 		SetBgm("NPC_Aranwen.mp3");
 
-		await Intro(
-			"A lady decked out in shining armor is confidently training students in swordsmanship in front of the school.",
-			"Unlike a typical swordswoman, her moves seem delicate and elegant.",
-			"Her long, braided silver hair falls down her back, leaving her eyes sternly fixed on me."
-		);
+		await Intro(L("A lady decked out in shining armor is confidently training students in swordsmanship in front of the school.<br/>Unlike a typical swordswoman, her moves seem delicate and elegant.<br/>Her long, braided silver hair falls down her back, leaving her eyes sternly fixed on me."));
 
 		Msg("What brings you here?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Modify Item", "@upgrade"));
 
@@ -50,11 +47,18 @@ public class AranwenScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("It's the duty of a warrior<br/>to offer help to the weak.");
+					Msg("If I were you, I wouldn't boast about such acts, as you were just doing your job.<br/>...Even if the one you ended up rescuing is a Goddess.");
+				}
+				else if (Title == 11002)
 				{
 					Msg("Guardian of Erinn...<br/>If it were anyone else,<br/>I would tell them to stop being so arrogant...");
 					Msg("But with you, <username/>, you are definitely qualified.<br/>Good job.");
 				}
+
 				await Conversation();
 				break;
 
@@ -98,15 +102,15 @@ public class AranwenScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>, it really is you. What brings you here?"));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>, what brings you here?"));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I've been seeing you quite often lately, <username/>."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -117,23 +121,23 @@ public class AranwenScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("school");
 				if (Memory == 1)
 				{
+					GiveKeyword("school");
 					Msg("Let me introduce myself.<br/>My name is <npcname/>. I teach combat skills at the Dunbarton School.");
-					ModifyRelation(1, 0, Random(2));
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					Msg(FavorExpression(), "If you are looking to learn combat arts, it's probably better<br/>to talk about classes or training rather than hold personal conversations.<br/>But then, I suppose there is lots to learn in this town other than combat skills.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
 				GiveKeyword("shop_armory");
 				Msg(FavorExpression(), "If you need a weapon for the training,<br/>why don't you go see Nerys in the south side?<br/>She runs the Weapons Shop.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -147,6 +151,7 @@ public class AranwenScript : NpcScript
 				break;
 
 			case "shop_grocery":
+				GiveKeyword("shop_restaurant");
 				Msg("If you are looking to buy cooking ingredients,<br/>the Restaurant will be your best bet.");
 				break;
 
@@ -164,14 +169,17 @@ public class AranwenScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("There is no blacksmith's shop in this town, but<br/>if you are looking for anything like weapons or armor,<br/>why don't you head south and visit the Weapons Shop?");
 				break;
 
 			case "skill_range":
+				GiveKeyword("bow");
 				Msg("I suppose I could take my time and verbally explain it to you,<br/>but you should be able to quickly get the hang of it<br/>once you equip and use a bow a few times.");
 				break;
 
 			case "skill_tailoring":
+				GiveKeyword("shop_cloth");
 				Msg("It would be most logical to get Simon's help<br/>at the Clothing Shop.");
 				break;
 
@@ -247,6 +255,27 @@ public class AranwenScript : NpcScript
 				Msg("If you're really looking for Eavan,<br/>go over to that large building to the north of the Square.");
 				break;
 
+			case "bow":
+				GiveKeyword("shop_armory");
+				Msg("Hey! You'll have to go to the Weapons Shop to buy bows.<br/>We don't give out bows at the school.<br/>We can only teach you how to fight<br/>with them.");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_misc");
+				Msg("I saw a lute at the General Shop once.<br/>I'm not too interested in it<br/>so I don't have much more to tell you.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog...<br/>It's a Utopia.");
+				Msg("But I think it's more important to be<br/>faithful to the present than to dream of such things.");
+				Msg("Life is short, and time flies too quickly to simply waste it on dreaming.");
+				break;
+
+			case "mabinogi":
+				Msg("Mabinogi is a song that bards sing to<br/>praise the heroes.");
+				Msg("If you become an outstanding warrior,<br/>bards from future generations might<br/>sing of you someday.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"Will you tell me about it when you find out more?",
@@ -256,9 +285,10 @@ public class AranwenScript : NpcScript
 					"I don't know too much about anything other than combat skills.",
 					"I don't know anything about it. I'm sorry I can't be much help.",
 					"It doesn't seem bad but... I don't think I can help you with it.",
-					"If you keep bringing up topics like this, I can't say much to you."
+					"If you keep bringing up topics like this, I can't say much to you.",
+					"Other people do ask me about something like that occasionally...<br/>Still, it is not something I should pretend to know."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
