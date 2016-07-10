@@ -281,14 +281,17 @@ public class TreforScript : NpcScript
 				break;
 
 			case "skill_counter_attack":
-				RemoveKeyword("skill_counter_attack");
 				Msg("So you're aware of the Counterattack skill.<br/>Counterattack is a skill that utilizes your enemy's power.<br/>This means the more powerful the enemy's attack is, the more damage it will deliver.");
 				Msg("The way to use Counterattack is actually very simple.<br/>All you need to do is turn on the skill and just wait. Wait until the enemy attacks you.<br/>As soon as the enemy attacks, you know you will have the last laugh!", Image("Tutorial_dungeon_skill_06", 200, 200));
 				Msg("This skill, however, requires a high level of concentration<br/>in that you'll have to accurately anticipate your enemy's next move.<br/>The main drawbacks of using this skill is that your Stamina will be continually spent,<br/>and you won't be able to move during the skill.");
 				Msg("Now let's see your stance.<br/>Oh no... What kind of a stance is that? You won't be able to react quick enough with that.<br/>Actually, you won't be able to fight a raccoon with that.");
 				Msg("The basics of the Counterattack skill involves utilizing your enemy's power.<br/>This skill does not involve utilizing YOUR strength.");
 				Msg("Your legs are all tensed up. You can't react in time like that.<br/>Loosen your left leg to make sure you can absorb your enemy's strength...<br/>Yes. That's it. Now you look like you're ready.");
-				Msg("Now all you need to do is actually pull it off in the heat of the battle!<br/>Please don't try it on other villagers, though.");
+				Msg("Now all you need to do is actually pull it off in the heat of the battle!<br/>Please don't try it on other villagers, though.", Button("Continue"));
+				await Select();
+
+				RemoveKeyword("skill_counter_attack");
+				GiveSkill(SkillId.Counterattack, SkillRank.RF);
 				break;
 
 			case "skill_smash":
