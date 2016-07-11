@@ -14,6 +14,7 @@ public class EavanScript : NpcScript
 		SetFace(skinColor: 15, eyeType: 3, eyeColor: 3);
 		SetStand("human/female/anim/female_natural_stand_npc_Eavan");
 		SetLocation(14, 40024, 41041, 192);
+		SetGiftWeights(beauty: 2, individuality: 2, luxury: 2, toughness: -1, utility: 0, rarity: 1, meaning: 0, adult: 2, maniac: -1, anime: -1, sexy: 2);
 
 		EquipItem(Pocket.Face, 3900, 0x003B9C3F, 0x000896D4, 0x0093A6D4);
 		EquipItem(Pocket.Hair, 3022, 0x00FFEEAA, 0x00FFEEAA, 0x00FFEEAA);
@@ -37,11 +38,7 @@ public class EavanScript : NpcScript
 	{
 		SetBgm("NPC_Eavan.mp3");
 
-		await Intro(
-			"Wearing a rosy pink blouse, her shoulders are gently covered by her blonde hair that seems to wave in the breeze.",
-			"An oval face, a pair of calm eyes with depth, and a slightly small nose with a rounded tip...",
-			"Beneath are the lips that shine in the same color as her blouse."
-		);
+		await Intro(L("Wearing a rosy pink blouse, her shoulders are gently covered by her blonde hair that seems to wave in the breeze.<br/>An oval face, a pair of calm eyes with depth, and a slightly small nose with a rounded tip...<br/>Beneath are the lips that shine in the same color as her blouse."));
 
 		Msg("This is the Adventurers' Association.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Retrieve Lost Items", "@lostandfound"), Button("About Daily Events", "@daily_quest") /*, Button("Daily Dungeon Quest", "@daily_dungeon_quest")*/);
 
@@ -51,8 +48,12 @@ public class EavanScript : NpcScript
 				GiveKeyword("shop_goverment_office");
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+					Msg("I imagine rescuing the Goddess was extremely difficult...<br/>It's because of you, <username/>,<br/>that Erinn is such a peaceful place now.");
+				else if (Title == 11002)
 					Msg("The Guardian of Erinn, <username/>...<br/>You are always welcomed here.");
+
 				await Conversation();
 				break;
 
@@ -104,6 +105,7 @@ public class EavanScript : NpcScript
 	{
 		if (Memory <= 0)
 		{
+			GiveKeyword("shop_goverment_office");
 			Msg(FavorExpression(), L("Welcome to Dunbarton.<br/>My name is <npcname/>, the Town Office worker who takes care of all the business related to the Adventurers' Association."));
 		}
 		else if (Memory == 1)
@@ -112,15 +114,15 @@ public class EavanScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I think your name is <username/>... Is that right?"));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Welcome again, <username/>."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>, you're back."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -133,19 +135,19 @@ public class EavanScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					Msg("You said your name was... <username/>, right? Tell me what's going on.");
-					ModifyRelation(1, 0, Random(2));
+					Msg(FavorExpression(), "You said your name was... <username/>, right? Tell me what's going on.");
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					Msg(FavorExpression(), "I've been kind of busy today.<br/>There are lots of people looking for work.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "Dunbarton is a city located near the border of the Kingdom of Aliech.<br/>It attracts a lot of travelers who are looking for adventure.<br/>If you'd like to improve your skills, how about going to the school?");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -157,6 +159,7 @@ public class EavanScript : NpcScript
 				break;
 
 			case "shop_grocery":
+				GiveKeyword("shop_restaurant");
 				Msg("A grocery store? The Restaurant carries cooking ingredients too,<br/>so why don't you just go there?<br/>It's close from here.");
 				break;
 
@@ -173,6 +176,7 @@ public class EavanScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("Hmm. We don't have a Blacksmith's Shop here.<br/>If it is weapons or armor you are looking for,<br/>why don't you check out Nerys' Weapons Shop?");
 				break;
 
@@ -244,14 +248,39 @@ public class EavanScript : NpcScript
 				Msg("Mmm? This is the Town Office.<br/>Oh... Sorry, but you are not allowed to enter.");
 				break;
 
+			case "bow":
+				Msg("I'm not so interested in weapons...");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_misc");
+				Msg("You can buy a Lute at the General Shop.");
+				break;
+
+			case "musicsheet":
+				Msg("I don't really know what to look for in something like that.");
+				break;
+
 			default:
 				RndFavorMsg(
-					"I don't know much about all that. <username/>, you do understand, don't you?",
-					"You know, something's just come up and I'm a bit busy right now.<br/>Do you mind coming back another day?",
-					"Must be that you've been exploring for so long now, right?<br/><username/>, you can certainly know a whole lot.",
-					"I'm feeling achy all over today.<br/>I think I need to get some rest now. I'm so sorry, <username/>.<br/>I feel like I've heard something like that before... Perhaps I can find some notes I've jotted down in my expedition journal?"
+					"?",
+					"??",
+					"...?",
+					"I don't really know.",
+					"What did you just say?",
+					"I can't really say anything about that.",
+					"Please understand even if I may not know much.",
+					"I don't think I could help you much with that.",
+					"I don't have anything worthwhile to contribute to that.",
+					"Would you hold on to that topic until later? I'm a bit swamped at the moment..."
 				);
-				ModifyRelation(0, 0, Random(2));
+
+				// These probably belong in a favor check, I'll have to figure them out later
+				// "I don't know much about all that. <username/>, you do understand, don't you?"
+				// "You know, something's just come up and I'm a bit busy right now.<br/>Do you mind coming back another day?"
+				// "Must be that you've been exploring for so long now, right?<br/><username/>, you can certainly know a whole lot."
+				// "I'm feeling achy all over today.<br/>I think I need to get some rest now. I'm so sorry, <username/>.<br/>I feel like I've heard something like that before... Perhaps I can find some notes I've jotted down in my expedition journal?"
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
