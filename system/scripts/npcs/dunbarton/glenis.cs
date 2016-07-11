@@ -14,6 +14,7 @@ public class GlenisScript : NpcScript
 		SetFace(skinColor: 15, eyeType: 7, eyeColor: 119, mouthType: 1);
 		SetStand("human/female/anim/female_natural_stand_npc_Glenis");
 		SetLocation(14, 37566, 41605, 129);
+		SetGiftWeights(beauty: 1, individuality: 0, luxury: 2, toughness: -1, utility: 2, rarity: -1, meaning: 2, adult: 0, maniac: -1, anime: 0, sexy: 0);
 
 		EquipItem(Pocket.Face, 3902, 0x00918B00, 0x000082C9, 0x00018CCB);
 		EquipItem(Pocket.Hair, 3020, 0x00BC756C, 0x00BC756C, 0x00BC756C);
@@ -35,11 +36,7 @@ public class GlenisScript : NpcScript
 	{
 		SetBgm("NPC_Glenis.mp3");
 
-		await Intro(
-			"With her round face and large, sparkling eyes, this middle aged woman appears to have a big heart.",
-			"Her face, devoid of makeup, is dominated by her large eyes and a playful smile.",
-			"Over her lace collar she wears an old but well-polished locket."
-		);
+		await Intro(L("With her round face and large, sparkling eyes, this middle aged woman appears to have a big heart.<br/>Her face, devoid of makeup, is dominated by her large eyes and a playful smile.<br/>Over her lace collar she wears an old but well-polished locket."));
 
 		Msg("Welcome!<br/>This is Glenis' Restaurant.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 
@@ -48,8 +45,17 @@ public class GlenisScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("Oh, look who's here! It's <username/>, the rescuer of the Goddess!<br/>So, how was Tir Na Nog...?");
+					Msg("Don't tell me you couldn't go.");
+				}
+				else if (Title == 11002)
+				{
 					Msg("Erinn's Guardian, huh...?<br/>Sounds like my husband when he was young... Hehe.<br/>If you need anything, just let me know.");
+				}
+
 				await Conversation();
 				break;
 
@@ -74,15 +80,15 @@ public class GlenisScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Ohhhh! I remember. You are <username/>.<br/>Well, good to see you again."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("It's you again, <username/>.<br/>I appreciate your stopping by often."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Ha ha. It's you again, <username/>.<br/>Flora and I were just talking about you, actually."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -96,13 +102,13 @@ public class GlenisScript : NpcScript
 				if (Memory == 1)
 				{
 					Msg("Oh, my! Don't be so formal but just call me <npcname/>!");
-					ModifyRelation(1, 0, Random(2));
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					GiveKeyword("shop_restaurant");
 					Msg(FavorExpression(), "What do I do for a living, you ask? Ha ha. I own this Restaurant, and my name is <npcname/>. I thought I told you all of this.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
@@ -110,7 +116,7 @@ public class GlenisScript : NpcScript
 				GiveKeyword("shop_healing");
 				Msg(FavorExpression(), "Rumors around here? Well...<br/>Do I look like I would be keen on other people's affairs? Ha ha.<br/>You seem pretty tired.<br/>Why don't you go to the Healer's House down there and talk to Manus.");
 				Msg("If you have the Resting skill handy, he'll give you some helpful tips.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -180,6 +186,7 @@ public class GlenisScript : NpcScript
 				break;
 
 			case "shop_grocery":
+				GiveKeyword("shop_restaurant");
 				Msg("Ah, you are looking for my Restaurant.<br/>Next time, ask for the Restaurant.<br/>A lot of people tend to get confused.");
 				break;
 
@@ -196,6 +203,7 @@ public class GlenisScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("A Blacksmith's Shop? Hahaha.<br/>I never heard that there was a Blacksmith's Shop in this town...<br/>Are you talking about the Weapons Shop, by any chance?");
 				break;
 
@@ -259,6 +267,18 @@ public class GlenisScript : NpcScript
 				Msg("The Town office? Go to the Square<br/>and find a large building to the north.");
 				break;
 
+			case "bow":
+				Msg("How would someone like me know that?");
+				break;
+
+			case "lute":
+				Msg("We do have the lute that he used to play,<br/>but I can't give that away.<br/>...<br/>How depressing...");
+				break;
+
+			case "complicity":
+				Msg("Perhaps I really should hire someone to bring in customers...<br/>Business is far too slow these days.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"You should go ask someone else.",
@@ -266,11 +286,12 @@ public class GlenisScript : NpcScript
 					"Oh, no. I don't know what to tell you about that.",
 					"Ha ha. It's no use asking me about something like that.",
 					"Oh, that... Umm... No, I don't think I know anything about it.",
+					"Flora might know more, perhaps. If she doesn't, I don't know it either. Ha ha.",
 					"Well, people do ask me about it every now and then.<br/>It must be an important topic.",
 					"That's not a topic I'm very familiar with. Perhaps Walter over there knows more about it than I do.",
 					"Asking about a topic like that to an<br/>ordinary Restaurant owner is not very proper, you know. Ha ha."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

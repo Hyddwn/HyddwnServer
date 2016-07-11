@@ -14,6 +14,7 @@ public class KristellScript : NpcScript
 		SetFace(skinColor: 15, eyeType: 3, eyeColor: 191);
 		SetStand("human/female/anim/female_natural_stand_npc_Kristell");
 		SetLocation(14, 34657, 42808, 0);
+		SetGiftWeights(beauty: 1, individuality: 1, luxury: -1, toughness: 0, utility: 2, rarity: 1, meaning: 2, adult: 2, maniac: -1, anime: -1, sexy: 0);
 
 		EquipItem(Pocket.Face, 3900, 0x00F8958F, 0x005A4862, 0x00714B4B);
 		EquipItem(Pocket.Hair, 3017, 0x00EE937E, 0x00EE937E, 0x00EE937E);
@@ -34,11 +35,7 @@ public class KristellScript : NpcScript
 	{
 		SetBgm("NPC_Kristell.mp3");
 
-		await Intro(
-			"This priestess, in her neat Lymilark priestess robe, has eyes and hair the color of red wine.",
-			"Gazing into the distance, she wears the tilted cross, a symbol of Lymilark, on her neck.",
-			"She wears dangling earrings made of the same material which emanate a gentle glow."
-		);
+		await Intro(L("This priestess, in her neat Lymilark priestess robe, has eyes and hair the color of red wine.<br/>Gazing into the distance, she wears the tilted cross, a symbol of Lymilark, on her neck.<br/>She wears dangling earrings made of the same material which emanate a gentle glow."));
 
 		Msg("Welcome to the Church of Lymilark.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 
@@ -48,8 +45,18 @@ public class KristellScript : NpcScript
 				GiveKeyword("temple");
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("...I see... You have succeeded, <username/>.");
+					Msg("Thank you for keeping your promise.");
+					Msg("I wonder... if Tarlach can<br/>finally be at peace...?");
+				}
+				else if (Title == 11002)
+				{
 					Msg("Guardian of Erinn... There's nothing wrong with someone like you<br/>being called that, <username/>.<br/>Thank you... For saving Erinn...");
+				}
+
 				await Conversation();
 				break;
 
@@ -66,6 +73,7 @@ public class KristellScript : NpcScript
 	{
 		if (Memory <= 0)
 		{
+			GiveKeyword("temple");
 			Msg(FavorExpression(), L("I am Priestess <npcname/>. Nice to meet you."));
 		}
 		else if (Memory == 1)
@@ -74,15 +82,15 @@ public class KristellScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Good to see you, <username/>."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You seem burdened, <username/>...<br/>When you are in agony, relying on God will help you."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>. You are back. You look like you are looking for help...<br/>Would you, by any chance, be interested in the teachings of Lymilark?"));
 		}
 
 		UpdateRelationAfterGreet();
@@ -96,19 +104,20 @@ public class KristellScript : NpcScript
 				if (Memory == 1)
 				{
 					Msg("Nice to meet you, <username/>.");
-					ModifyRelation(1, 0, Random(2));
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
+					GiveKeyword("temple");
 					Msg(FavorExpression(), "I am the priestess at this Church.<br/>Have you ever heard about Lord Lymilark's deep love and compassion towards humans?<br/>You probably have.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
 				GiveKeyword("shop_restaurant");
 				Msg(FavorExpression(), "You can satisfy the hunger of the soul at the Church.<br/>For the hunger of the body, you should visit the Restaurant.<br/>Glenis' Restaurant is popular around here,<br/>so you should be able to find it easily.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -122,6 +131,7 @@ public class KristellScript : NpcScript
 				break;
 
 			case "shop_grocery":
+				GiveKeyword("shop_restaurant");
 				Msg("A grocery store? We usually buy our ingredients at the Restaurant.<br/>Did you get on Glenis' bad side or something?");
 				Msg("If not,<br/>why don't you just go there for the ingredients?");
 				break;
@@ -142,6 +152,7 @@ public class KristellScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("It's the first time I've heard anyone asking about a blacksmith's shop in this town.<br/>If you are looking for weapons or armor,<br/>why don't you stop by Nerys' Weapons Shop?");
 				break;
 
@@ -157,10 +168,12 @@ public class KristellScript : NpcScript
 				break;
 
 			case "skill_composing":
+				GiveKeyword("musicsheet");
 				Msg("I have enough trouble simply reading the score and playing.<br/>Only those who are blessed can do such amazing things.");
 				break;
 
 			case "skill_tailoring":
+				GiveKeyword("shop_cloth");
 				Msg("Why don't you go ask Simon at the Clothing Shop?<br/>I have yet to see someone<br/>who is as skilled as Simon.");
 				break;
 
@@ -231,6 +244,43 @@ public class KristellScript : NpcScript
 				Msg("By the way... Eavan is the most popular girl in our town. Hehehe.");
 				break;
 
+			case "bow":
+				GiveKeyword("shop_armory");
+				Msg("You can purchase a bow at<br/>Nerys' Weapons Shop.<br/>But please don't go around shooting<br/>innocent animals or do other mean things.");
+				Msg("A while ago, Manus the healer told me that he was having a difficult time with it.<br/>Please, I beg you...");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_misc");
+				Msg("If you are looking for a lute,<br/>you will be able to buy it at the General Shop.");
+				Msg("By the way, it has been a while since Walter last attended church...");
+				Msg("And I'm worried that he may be concerned with something these days.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Many people engage in debates on the existence of<br/>Tir Na Nog, the eternal Utopia.");
+				Msg("I am but a mere human and unable to understand such things,<br/>but there is this teaching by our lord Lymilark.");
+				Msg("'Why turn your faces away from self-evident truth?<br/>Face ye the truth and follow in obedience,<br/>for it is right.'");
+				Msg("I offer this word to you. I hope you will take it to heart.");
+				break;
+
+			case "mabinogi":
+				Msg("Mabinogi is a tale of heroes, but<br/>it is also the history of bloodshed between<br/>humans and the evil Fomors as well as<br/>between humans themselves, woven into a worldly tune.");
+				Msg("If you keep listening to such songs,<br/>one day your soul will become ill and your body will suffer.");
+				Msg("Lord Lymilark once said this,");
+				Msg("'If ye hate someone,<br/>your emotions wound not the hated<br/>but your souls.");
+				Msg("Feeling and embracing a wounded soul<br/>is a time of great pain however quick it may be. '");
+				Msg("I do not deny Mabinogi, but...<br/>Please keep this in mind as you listen to it.");
+				break;
+
+			case "musicsheet":
+				Msg("There are many worldly tunes these days.<br/>Tunes that contain the grief and the passion of the composer...<br/>As I listen, such emotions are<br/>directly conveyed to my heart.");
+				Msg("Lord Lymilark once said this,");
+				Msg("'What worries carry ye in your hearts?<br/>Why passion hold ye in your hearts?<br/>Will ye to the love for your lord<br/>compare all these things?");
+				Msg("How is it that to meaningless things ye spend your strength and passion?'<br/>Yes. Everything is meaningless before the love of our lord,<br/>and yet everyone lives stained by the world.");
+				Msg("Hmm. Pardon my long speech,<br/>but you need to hear this, too.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"Well, it is news to me.",
@@ -238,11 +288,11 @@ public class KristellScript : NpcScript
 					"Hmm. I'm not sure.<br/>Why don't you ask someone else?",
 					"You are very knowledgeable. I don't know much about that.",
 					"I am sorry. I don't know much about it, so it's pointless to ask me.",
+					"Let's see... I might have heard that somewhere... But I am not so sure.",
 					"Oh... I thought it was a topic I knew about, but I suppose not. Pardon me.",
-					"I don't really know... But if you find out more, will you please let me know?",
-					"Asking about a topic like that to an<br/>ordinary Restaurant owner is not very proper, you know. Ha ha."
+					"I don't really know... But if you find out more, will you please let me know?"
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
