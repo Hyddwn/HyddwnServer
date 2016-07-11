@@ -1214,12 +1214,31 @@ namespace Aura.Channel.Scripting.Scripts
 				var deltaX = pos.X - targetPos.X;
 				var deltaY = pos.Y - targetPos.Y;
 				var angle = Math.Atan2(deltaY, deltaX) + (Math.PI / 8 * 2) * (clockwise ? -1 : 1);
+
 				var x = targetPos.X + (Math.Cos(angle) * radius);
 				var y = targetPos.Y + (Math.Sin(angle) * radius);
+				var actualMovePos = new Position((int)x, (int)y);
 
-				foreach (var action in this.MoveTo(new Position((int)x, (int)y), walk))
+				// Move a little further, so the creature doesn't stop for
+				// a tick while calculating the next position to walk to
+				var distanceMovePos = pos.GetRelative(actualMovePos, radius);
+
+				// Get time it takes to get to the actual position we want to
+				// go to, so we can wait till we're there before issuing the
+				// next WalkTo.
+				var diffX = actualMovePos.X - pos.X;
+				var diffY = actualMovePos.Y - pos.Y;
+				var moveDuration = (int)(Math.Sqrt(diffX * diffX + diffY * diffY) / this.Creature.GetSpeed() * 1000);
+
+				this.ExecuteOnce(this.MoveTo(distanceMovePos, walk));
+
+				foreach (var action in this.Wait(moveDuration))
 					yield return action;
 			}
+
+			// Stop movement after circling is done, so the creature doesn't
+			// finish walking to the more distant position.
+			this.Creature.StopMove();
 		}
 
 		/// <summary>
