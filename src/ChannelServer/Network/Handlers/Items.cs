@@ -565,7 +565,13 @@ namespace Aura.Channel.Network.Handlers
 
 			// Decrease item count
 			if (item.Data.Consumed)
+			{
 				creature.Inventory.Decrement(item);
+
+				// Replace used bottles with empty bottles.
+				if (item.HasTag("/milk/|/water/"))
+					creature.Inventory.Add(new Item(63020), true);
+			}
 
 			// Break seal after use
 			if (item.MetaData1.Has("MGCSEL"))
