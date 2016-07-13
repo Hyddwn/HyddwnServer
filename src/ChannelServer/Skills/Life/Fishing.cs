@@ -153,16 +153,9 @@ namespace Aura.Channel.Skills.Life
 			var cancel = false;
 
 			// Reduce durability
-			if (creature.RightHand != null && !ChannelServer.Instance.Conf.World.NoDurabilityLoss)
+			if (creature.RightHand != null)
 			{
-				var reduce = 15;
-
-				// Half dura loss if blessed
-				if (creature.RightHand.IsBlessed)
-					reduce = Math.Max(1, reduce / 2);
-
-				creature.RightHand.Durability -= reduce;
-				Send.ItemDurabilityUpdate(creature, creature.RightHand);
+				creature.Inventory.ReduceDurability(creature.RightHand, 15);
 
 				// Check rod durability
 				if (creature.RightHand.Durability == 0)

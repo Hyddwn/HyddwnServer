@@ -2004,11 +2004,15 @@ namespace Aura.Channel.World.Inventory
 		/// <summary>
 		/// Reduces durability and updates client.
 		/// </summary>
+		/// <remarks>
+		/// Checks NoDurabilityLoss option, meaning this method won't reduce
+		/// the durability if the option is set.
+		/// </remarks>
 		/// <param name="item"></param>
 		/// <param name="amount"></param>
 		public void ReduceDurability(Item item, int amount)
 		{
-			if (!this.Has(item))
+			if (!this.Has(item) || ChannelServer.Instance.Conf.World.NoDurabilityLoss)
 				return;
 
 			// Half dura loss if blessed

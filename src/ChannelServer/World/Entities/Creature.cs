@@ -1942,14 +1942,11 @@ namespace Aura.Channel.World.Entities
 			}
 
 			// Reduce durability of random item
-			if (!ChannelServer.Instance.Conf.World.NoDurabilityLoss)
+			if (equip.Length != 0)
 			{
-				if (equip.Length != 0)
-				{
-					var item = equip.Random();
-					var amount = RandomProvider.Get().Next(1, 30);
-					this.Inventory.ReduceDurability(item, amount);
-				}
+				var item = equip.Random();
+				var amount = RandomProvider.Get().Next(1, 30);
+				this.Inventory.ReduceDurability(item, amount);
 			}
 
 			// Kill if life too low

@@ -70,11 +70,8 @@ namespace Aura.Channel.Skills
 			foreach (var weapon in weapons.Where(a => a != null && a.IsTrainableWeapon))
 			{
 				// Durability
-				if (!ChannelServer.Instance.Conf.World.NoDurabilityLoss)
-				{
-					var reduce = rnd.Next(1, 30);
-					attacker.Inventory.ReduceDurability(weapon, reduce);
-				}
+				var reduce = rnd.Next(1, 30);
+				attacker.Inventory.ReduceDurability(weapon, reduce);
 
 				// Don't add prof if weapon is broken.
 				if (weapon.Durability == 0)
