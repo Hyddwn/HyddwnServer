@@ -386,6 +386,7 @@
 { id: 5005, name: "dg_Albantraning_stage", indoor: true },
 { id: 5006, name: "dg_Albantraing_lobby01", indoor: false },
 { id: 5007, name: "Mafia_room", indoor: true },
+{ id: 5008, name: "fta_boardgame01", indoor: false },
 { id: 5009, name: "DGC_main_field", indoor: false },
 { id: 5010, name: "Tutorial_Zone", indoor: false },
 { id: 5011, name: "Samhain_room01", indoor: true },
