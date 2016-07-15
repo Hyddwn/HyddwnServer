@@ -41,6 +41,9 @@ namespace Aura.Channel.Skills.Combat
 		/// </summary>
 		private const int TargetStun = 2000;
 
+		/// <summary>
+		/// Distance the target is knocked back
+		/// </summary>
 		private const int KnockbackDistance = 250;
 
 		/// <summary>
@@ -52,7 +55,10 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)1, (long)63604117580388, 1500);
+			var creaturePos = creature.GetPosition();
+			var creatureLocId = new Location(creature.RegionId, creaturePos).ToLocationId();
+
+			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)1, creatureLocId, 1500);
 
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
@@ -68,8 +74,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Ready(Creature creature, Skill skill, Packet packet)
 		{
-			skill.Stacks += 1;
-
+			skill.Stacks = 1;
 			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)2);
 
 			Send.SkillReady(creature, skill.Info.Id);
@@ -87,31 +92,37 @@ namespace Aura.Channel.Skills.Combat
 		public CombatSkillResult Use(Creature attacker, Skill skill, long targetEntityId)
 		{
 			// Get Target
-			var target = attacker.Region.GetCreature(targetEntityId);
+			var initTarget = attacker.Region.GetCreature(targetEntityId);
 
 			// Check Target
-			if (target == null)
+			if (initTarget == null)
 				return CombatSkillResult.InvalidTarget;
 
-			var targetPos = target.GetPosition();
+			var attackerPos = attacker.GetPosition();
+			var initTargetPos = initTarget.GetPosition();
+			var initTargetLocId = new Location(attacker.RegionId, initTargetPos).ToLocationId();
 
 			// Check for Collisions
-			if (attacker.Region.Collisions.Any(attacker.GetPosition(), targetPos))
+			if (attacker.Region.Collisions.Any(attacker.GetPosition(), initTargetPos))
 				return CombatSkillResult.InvalidTarget;
 
 			// Check Range
 			var range = (int)skill.RankData.Var2;
-			if (!attacker.GetPosition().InRange(targetPos, range))
+			if (!attacker.GetPosition().InRange(initTargetPos, range))
 			{
 				Send.Notice(attacker, Localization.Get("You are too far away."));
 				return CombatSkillResult.OutOfRange;
 			}
 
 			attacker.StopMove();
-			target.StopMove();
+			initTarget.StopMove();
 
 			// Effects
-			Send.Effect(attacker, Effect.TheFakeSpiralSword, (byte)3, (long)63604117582936, (byte)1);
+			Send.Effect(attacker, Effect.TheFakeSpiralSword, (byte)3, initTargetLocId, (byte)1);
+
+			// Skill Use
+			Send.SkillUseStun(attacker, skill.Info.Id, AttackerStun, 1);
+			skill.Stacks = 0;
 
 			// Prepare Combat Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
@@ -124,7 +135,7 @@ namespace Aura.Channel.Skills.Combat
 
 			var explosionRadius = (int)skill.RankData.Var3;
 
-			var targets = attacker.Region.GetCreaturesInRange(targetPos, explosionRadius).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(targetPos, x.GetPosition()));
+			var targets = attacker.Region.GetCreaturesInRange(initTargetPos, explosionRadius).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(initTargetPos, x.GetPosition()));
 
 			var rnd = RandomProvider.Get();
 
@@ -136,9 +147,9 @@ namespace Aura.Channel.Skills.Combat
 				crit = (rnd.Next(100) < critChance);
 			}
 
-			foreach (var explosionTarget in targets)
+			foreach (var target in targets)
 			{
-				var tAction = new TargetAction(CombatActionType.TakeHit, explosionTarget, attacker, SkillId.CombatMastery);
+				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, SkillId.CombatMastery);
 				tAction.Set(TargetOptions.Result);
 				cap.Add(tAction);
 
@@ -170,11 +181,34 @@ namespace Aura.Channel.Skills.Combat
 				// Stun Time
 				tAction.Stun = TargetStun;
 
-				// Death or Knockback
-                if (target.IsDead)
+				var targetPos = target.GetPosition();
+				var newTargetPos = new Position();
+
+				if (target == initTarget)
 				{
-					tAction.Set(TargetOptions.FinishingKnockDown);
-					attacker.Shove(target, KnockbackDistance);
+					newTargetPos = attackerPos.GetRelative(initTargetPos, KnockbackDistance);
+				}
+				else
+				{
+					newTargetPos = initTargetPos.GetRelative(targetPos, KnockbackDistance);
+				}
+
+				// Collision handling
+				if (attacker.Region.Collisions.Any(targetPos, newTargetPos))
+				{
+					Position intersection;
+					attacker.Region.Collisions.Find(targetPos, newTargetPos, out intersection);
+					newTargetPos = targetPos.GetRelative(intersection, -50);
+				}
+
+				// Death or Knockback
+				if (target.IsDead)
+				{
+					if (target.Is(RaceStands.KnockDownable))
+					{
+						tAction.Set(TargetOptions.FinishingKnockDown);
+						target.SetPosition(newTargetPos.X, newTargetPos.Y);
+					}
 				}
 				else
 				{
@@ -182,7 +216,7 @@ namespace Aura.Channel.Skills.Combat
 					if (target.Is(RaceStands.KnockBackable))
 					{
 						tAction.Set(TargetOptions.KnockBack);
-						attacker.Shove(target, KnockbackDistance);
+						target.SetPosition(newTargetPos.X, newTargetPos.Y);
 					}
 					tAction.Creature.Stun = tAction.Stun;
 				}
@@ -202,7 +236,9 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="packet"></param>
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
+			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)4);
 
+			Send.SkillComplete(creature, skill.Info.Id);
 		}
 
 		/// <summary>
@@ -213,6 +249,9 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="packet"></param>
 		public void Cancel(Creature creature, Skill skill)
 		{
+			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)6);
+
+			Send.SkillCancel(creature);
 		}
 	}
 }
