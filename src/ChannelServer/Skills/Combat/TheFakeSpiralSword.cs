@@ -58,7 +58,7 @@ namespace Aura.Channel.Skills.Combat
 			var creaturePos = creature.GetPosition();
 			var creatureLocId = new Location(creature.RegionId, creaturePos).ToLocationId();
 
-			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)1, creatureLocId, 1500);
+			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)1, creatureLocId, 1500); // What is the Entity ID? (location ID is a placeholder)
 
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
@@ -118,7 +118,7 @@ namespace Aura.Channel.Skills.Combat
 			initTarget.StopMove();
 
 			// Effects
-			Send.Effect(attacker, Effect.TheFakeSpiralSword, (byte)3, initTargetLocId, (byte)1);
+			Send.Effect(attacker, Effect.TheFakeSpiralSword, (byte)3, initTargetLocId, (byte)1); // What is the Entity ID? (location ID is a placeholder)
 
 			// Skill Use
 			Send.SkillUseStun(attacker, skill.Info.Id, AttackerStun, 1);
