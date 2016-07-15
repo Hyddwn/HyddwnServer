@@ -566,6 +566,9 @@ namespace Aura.Mabi.Const
 		CelestialSpike = 46002,
 		JudgmentBlade = 46003,
 
+		// Fate/stay Night UBW
+		TheFakeSpiralSword = 60003,
+
 		// GM
 		PickupItemGMSkill = 65001,
 		SuperWindmill = 65002,

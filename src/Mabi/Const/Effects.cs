@@ -204,6 +204,11 @@ namespace Aura.Mabi.Const
 		/// int:0|2|3 (cancel | charging effect | shooting effect [position.x, position.y])
 		/// </summary>
 		public static readonly int LightningRod = 418;
+
+		/// <summary>
+		/// Effects for The Fake Spiral Sword
+		/// </summary>
+		public static readonly int TheFakeSpiralSword = 430;
 	}
 
 	public enum SpawnEffect : byte
