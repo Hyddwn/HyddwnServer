@@ -217,6 +217,7 @@ namespace Aura.Data.Database
 			{
 				case OptionSetCategory.Prefix: type = UpgradeType.Prefix; break;
 				case OptionSetCategory.Suffix: type = UpgradeType.Suffix; break;
+				case OptionSetCategory.Unknown: type = UpgradeType.ItemAttribute; break; // ?
 				case OptionSetCategory.Elemental: type = UpgradeType.Elemental; break;
 				case OptionSetCategory.Artisan: type = UpgradeType.Artisan; break;
 				case OptionSetCategory.Alchemy: type = UpgradeType.ItemAttribute; break; // ?
@@ -256,6 +257,7 @@ namespace Aura.Data.Database
 	{
 		Prefix = 0,
 		Suffix = 1,
+		Unknown = 2, // Not seen before NA232, Fate Stay Night update
 		Elemental = 3,
 		Alchemy = 4,
 		HolyFlame = 7,
