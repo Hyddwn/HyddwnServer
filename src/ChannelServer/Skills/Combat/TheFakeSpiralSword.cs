@@ -28,8 +28,12 @@ namespace Aura.Channel.Skills.Combat
 	/// Var3: Explosion Radius ?
 	/// Var4: ?
 	/// Var5: ?
+	/// <remarks>
+	/// There isn't much data on this skill, so skill variable use
+	/// is mostly based on speculation from gameplay and packet data.
+	/// </remarks>
 	[Skill(SkillId.TheFakeSpiralSword)]
-	public class TheFakeSpiralSword : ISkillHandler, IPreparable, IReadyable, ICombatSkill, ICompletable, ICancelable
+	public class TheFakeSpiralSword : ISkillHandler, IPreparable, IReadyable, ICompletable, ICancelable, ICombatSkill
 	{
 		/// <summary>
 		/// Attacker's stun
@@ -47,6 +51,32 @@ namespace Aura.Channel.Skills.Combat
 		private const int KnockbackDistance = 250;
 
 		/// <summary>
+		/// Effect Enums
+		/// </summary>
+		private enum TheFakeSpiralSwordEffect : byte
+		{
+			/// <summary>
+			/// Preparation effect fo rthe skill
+			/// </summary>
+			Prepare = 1,
+
+			/// <summary>
+			/// Explosion effect
+			/// </summary>
+			Attack = 3,
+
+			/// <summary>
+			/// Completion effect
+			/// </summary>
+			Complete = 4,
+
+			/// <summary>
+			/// Cancels the entire effect
+			/// </summary>
+			Cancel = 6,
+		}
+
+		/// <summary>
 		/// Prepares the skill
 		/// </summary>
 		/// <param name="creature"></param>
@@ -56,9 +86,8 @@ namespace Aura.Channel.Skills.Combat
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
 			var creaturePos = creature.GetPosition();
-			var creatureLocId = new Location(creature.RegionId, creaturePos).ToLocationId();
 
-			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)1, creatureLocId, 1500); // What is the Entity ID? (location ID is a placeholder)
+			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)TheFakeSpiralSwordEffect.Prepare, (long)(DateTime.Now.Ticks / 10000), skill.RankData.LoadTime);
 
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
@@ -100,7 +129,6 @@ namespace Aura.Channel.Skills.Combat
 
 			var attackerPos = attacker.GetPosition();
 			var initTargetPos = initTarget.GetPosition();
-			var initTargetLocId = new Location(attacker.RegionId, initTargetPos).ToLocationId();
 
 			// Check for Collisions
 			if (attacker.Region.Collisions.Any(attacker.GetPosition(), initTargetPos))
@@ -118,7 +146,7 @@ namespace Aura.Channel.Skills.Combat
 			initTarget.StopMove();
 
 			// Effects
-			Send.Effect(attacker, Effect.TheFakeSpiralSword, (byte)3, initTargetLocId, (byte)1); // What is the Entity ID? (location ID is a placeholder)
+			Send.Effect(attacker, Effect.TheFakeSpiralSword, (byte)TheFakeSpiralSwordEffect.Attack, (long)(DateTime.Now.Ticks / 10000), (byte)1);
 
 			// Skill Use
 			Send.SkillUseStun(attacker, skill.Info.Id, AttackerStun, 1);
@@ -128,14 +156,15 @@ namespace Aura.Channel.Skills.Combat
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
 			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, targetEntityId);
-			aAction.Set(AttackerOptions.Result | AttackerOptions.KnockBackHit1 | AttackerOptions.KnockBackHit2);
+			aAction.Set(AttackerOptions.KnockBackHit1 | AttackerOptions.KnockBackHit2 | AttackerOptions.Result);
 			cap.Add(aAction);
 
 			aAction.Stun = AttackerStun;
 
 			var explosionRadius = (int)skill.RankData.Var3;
 
-			var targets = attacker.Region.GetCreaturesInRange(initTargetPos, explosionRadius).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(initTargetPos, x.GetPosition()));
+			// Get explosion targets
+			var targets = attacker.Region.GetCreaturesInRange(initTargetPos, explosionRadius).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(initTargetPos, x.GetPosition())).ToList();
 
 			var rnd = RandomProvider.Get();
 
@@ -151,10 +180,12 @@ namespace Aura.Channel.Skills.Combat
 			{
 				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, SkillId.CombatMastery);
 				tAction.Set(TargetOptions.Result);
+				tAction.AttackerSkillId = skill.Info.Id;
+				tAction.Delay = attackerPos.GetDistance(initTargetPos) / 2;
 				cap.Add(tAction);
 
 				// Damage
-				var damage = (attacker.GetRndRightHandDamage() * (skill.RankData.Var1 / 100f));
+				var damage = (attacker.GetRndTotalDamage() * (skill.RankData.Var1 / 100f));
 
 				// Critical Hit
 				if (crit)
@@ -176,30 +207,10 @@ namespace Aura.Channel.Skills.Combat
 				target.TakeDamage(tAction.Damage = damage, attacker);
 
 				// Aggro
-				// target.Aggro(attacker);
+				target.Aggro(attacker);
 
 				// Stun Time
 				tAction.Stun = TargetStun;
-
-				var targetPos = target.GetPosition();
-				var newTargetPos = new Position();
-
-				if (target == initTarget)
-				{
-					newTargetPos = attackerPos.GetRelative(initTargetPos, KnockbackDistance);
-				}
-				else
-				{
-					newTargetPos = initTargetPos.GetRelative(targetPos, KnockbackDistance);
-				}
-
-				// Collision handling
-				if (attacker.Region.Collisions.Any(targetPos, newTargetPos))
-				{
-					Position intersection;
-					attacker.Region.Collisions.Find(targetPos, newTargetPos, out intersection);
-					newTargetPos = targetPos.GetRelative(intersection, -50);
-				}
 
 				// Death or Knockback
 				if (target.IsDead)
@@ -207,7 +218,12 @@ namespace Aura.Channel.Skills.Combat
 					if (target.Is(RaceStands.KnockDownable))
 					{
 						tAction.Set(TargetOptions.FinishingKnockDown);
-						target.SetPosition(newTargetPos.X, newTargetPos.Y);
+
+						// Shove
+						if (target == initTarget)
+							attacker.Shove(target, KnockbackDistance);
+						else
+							initTarget.Shove(target, KnockbackDistance);
 					}
 				}
 				else
@@ -216,7 +232,12 @@ namespace Aura.Channel.Skills.Combat
 					if (target.Is(RaceStands.KnockBackable))
 					{
 						tAction.Set(TargetOptions.KnockBack);
-						target.SetPosition(newTargetPos.X, newTargetPos.Y);
+
+						// Shove
+						if (target == initTarget)
+							attacker.Shove(target, KnockbackDistance);
+						else
+							initTarget.Shove(target, KnockbackDistance);
 					}
 					tAction.Creature.Stun = tAction.Stun;
 				}
@@ -236,7 +257,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="packet"></param>
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
-			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)4);
+			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)TheFakeSpiralSwordEffect.Complete);
 
 			Send.SkillComplete(creature, skill.Info.Id);
 		}
@@ -249,7 +270,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="packet"></param>
 		public void Cancel(Creature creature, Skill skill)
 		{
-			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)6);
+			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)TheFakeSpiralSwordEffect.Cancel);
 
 			Send.SkillCancel(creature);
 		}

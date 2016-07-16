@@ -298,7 +298,7 @@ namespace Aura.Channel.World.Entities
 		/// Returns whether the creature is wielding main weapons on both hands.
 		/// Shields and similar items are not considered main weapons.
 		/// </summary>
-		public bool IsDualWielding { get { return this.RightHand != null && this.LeftHand != null && this.LeftHand.Data.WeaponType != 0; } }
+		public bool IsDualWielding { get { return (this.RightHand != null && this.LeftHand != null && this.LeftHand.Data.WeaponType != 0) || (this.RightHand != null && this.RightHand.Data.HasTag("/twin_blade/")); } }
 
 		// Movement
 		// ------------------------------------------------------------------
