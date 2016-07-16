@@ -161,14 +161,14 @@ namespace Aura.Channel.Skills.Combat
 
 			aAction.Stun = AttackerStun;
 
-			var explosionRadius = (int)skill.RankData.Var3;
+			var explosionRadius = (int)skill.RankData.Var3 / 2; // Explosion Radius of Attack
 
-			// Get explosion targets
+			// Get Explosion Targets
 			var targets = attacker.Region.GetCreaturesInRange(initTargetPos, explosionRadius).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(initTargetPos, x.GetPosition())).ToList();
 
 			var rnd = RandomProvider.Get();
 
-			// Check crit
+			// Get Critical Hit
 			var crit = false;
 			if (attacker.Skills.Has(SkillId.CriticalHit, SkillRank.RF))
 			{
@@ -228,10 +228,10 @@ namespace Aura.Channel.Skills.Combat
 				}
 				else
 				{
-					// Always knock back
-					if (target.Is(RaceStands.KnockBackable))
+					// Always Knock Down
+					if (target.Is(RaceStands.KnockDownable))
 					{
-						tAction.Set(TargetOptions.KnockBack);
+						tAction.Set(TargetOptions.KnockDown);
 
 						// Shove
 						if (target == initTarget)
