@@ -85,6 +85,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
+			creature.StopMove();
 			var creaturePos = creature.GetPosition();
 
 			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)TheFakeSpiralSwordEffect.Prepare, (long)(DateTime.Now.Ticks / 10000), skill.RankData.LoadTime);
