@@ -56,7 +56,7 @@ namespace Aura.Channel.Skills.Combat
 		private enum TheFakeSpiralSwordEffect : byte
 		{
 			/// <summary>
-			/// Preparation effect fo rthe skill
+			/// Preparation effect for the skill
 			/// </summary>
 			Prepare = 1,
 
@@ -138,10 +138,7 @@ namespace Aura.Channel.Skills.Combat
 			// Check Range
 			var range = (int)skill.RankData.Var2;
 			if (!attacker.GetPosition().InRange(initTargetPos, range))
-			{
-				Send.Notice(attacker, Localization.Get("You are too far away."));
 				return CombatSkillResult.OutOfRange;
-			}
 
 			attacker.StopMove();
 			initTarget.StopMove();
@@ -162,7 +159,8 @@ namespace Aura.Channel.Skills.Combat
 
 			aAction.Stun = AttackerStun;
 
-			var explosionRadius = (int)skill.RankData.Var3 / 2; // Explosion Radius of Attack
+			// Get Explosion Radius of Attack
+			var explosionRadius = (int)skill.RankData.Var3 / 2;
 
 			// Get Explosion Targets
 			var targets = attacker.Region.GetCreaturesInRange(initTargetPos, explosionRadius).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(initTargetPos, x.GetPosition())).ToList();
@@ -213,34 +211,19 @@ namespace Aura.Channel.Skills.Combat
 				// Stun Time
 				tAction.Stun = TargetStun;
 
-				// Death or Knockback
-				if (target.IsDead)
+				// Death and Knockback
+				if (target.Is(RaceStands.KnockDownable))
 				{
-					if (target.Is(RaceStands.KnockDownable))
-					{
+					if (target.IsDead)
 						tAction.Set(TargetOptions.FinishingKnockDown);
-
-						// Shove
-						if (target == initTarget)
-							attacker.Shove(target, KnockbackDistance);
-						else
-							initTarget.Shove(target, KnockbackDistance);
-					}
-				}
-				else
-				{
-					// Always Knock Down
-					if (target.Is(RaceStands.KnockDownable))
-					{
+					else
 						tAction.Set(TargetOptions.KnockDown);
 
-						// Shove
-						if (target == initTarget)
-							attacker.Shove(target, KnockbackDistance);
-						else
-							initTarget.Shove(target, KnockbackDistance);
-					}
-					tAction.Creature.Stun = tAction.Stun;
+					// Shove
+					if (target == initTarget)
+						attacker.Shove(target, KnockbackDistance);
+					else
+						initTarget.Shove(target, KnockbackDistance);
 				}
 			}
 
