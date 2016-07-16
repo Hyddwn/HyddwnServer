@@ -566,8 +566,15 @@ namespace Aura.Mabi.Const
 		CelestialSpike = 46002,
 		JudgmentBlade = 46003,
 
-		// Fate/stay Night UBW
+		// Fate/stay Night UBW (Combat)
+		Excalibur = 60000,
+		InvisibleAir = 60001,
+		UnlimitedBladeWorks = 60002,
 		TheFakeSpiralSword = 60003,
+		EnumaElish = 60004,
+		KingsTreasure = 60005,
+		GodHandTwelveLabors = 60006,
+		SpinningSlash = 60007,
 
 		// GM
 		PickupItemGMSkill = 65001,
