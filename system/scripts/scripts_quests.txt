@@ -70,6 +70,7 @@ quests/beginner_uladh/hunting/1000060_hunting_ogre_warrior.cs
 quests/ptj/church_endelyon.cs
 quests/ptj/grocery_caitin.cs
 quests/ptj/healer_dilys.cs
+quests/ptj/inn_piaras.cs
 quests/ptj/neighboring_deian.cs
 
 // Skills
