@@ -104,7 +104,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Ready(Creature creature, Skill skill, Packet packet)
 		{
-			skill.Stacks = 1;
+			skill.Stacks += 1;
 			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)2);
 
 			Send.SkillReady(creature, skill.Info.Id);
@@ -148,7 +148,7 @@ namespace Aura.Channel.Skills.Combat
 
 			// Skill Use
 			Send.SkillUseStun(attacker, skill.Info.Id, AttackerStun, 1);
-			skill.Stacks = 0;
+			skill.Stacks -= 1;
 
 			// Prepare Combat Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
@@ -229,6 +229,10 @@ namespace Aura.Channel.Skills.Combat
 
 			aAction.Creature.Stun = aAction.Stun;
 			cap.Handle();
+
+			// User can attack multiple times if attack isn't locked, which will cause them to freeze.
+			// This is automatically unlocked by the skill after Use is finished.
+			attacker.Lock(Locks.Attack);
 
 			return CombatSkillResult.Okay;
 		}
