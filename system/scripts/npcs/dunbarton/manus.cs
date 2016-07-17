@@ -12,6 +12,7 @@ public class ManusScript : NpcScript
 		SetName("_manus");
 		SetFace(skinColor: 27, eyeType: 12, eyeColor: 27, mouthType: 18);
 		SetLocation(19, 881, 1194, 0);
+		SetGiftWeights(beauty: 0, individuality: 1, luxury: 0, toughness: 1, utility: 2, rarity: -1, meaning: 0, adult: 0, maniac: 0, anime: 1, sexy: 1);
 
 		EquipItem(Pocket.Face, 4900, 0x003C3161, 0x00737F39, 0x00856430);
 		EquipItem(Pocket.Hair, 4096, 0x002B2822, 0x002B2822, 0x002B2822);
@@ -33,11 +34,7 @@ public class ManusScript : NpcScript
 	{
 		SetBgm("NPC_Manus.mp3");
 
-		await Intro(
-			"This man is wearing a green and white healer's dress.",
-			"His thick, dark hair is immaculately combed and reaches down to his neck,",
-			"his straight bangs accentuating a strong jaw and prominent cheekbones."
-		);
+		await Intro(L("This man is wearing a green and white healer's dress.<br/>His thick, dark hair is immaculately combed and reaches down to his neck,<br/>his straight bangs accentuating a strong jaw and prominent cheekbones."));
 
 		Msg("Ha! Tell me everything you need!", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Get Treatment", "@healerscare"), Button("Heal Pet", "@petheal"));
 
@@ -46,8 +43,19 @@ public class ManusScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("Oh. <username/>? Good to see you!");
+					Msg("By the way...<br/>There are so many titles nowadays that<br/>it's not easy to remember them all.");
+					Msg("What do you think?");
+					Msg("Hey, hey. Are you ticked off at me?<br/>I'm just joking... Hahaha. Sorry, sorry.");
+				}
+				else if (Title == 11002)
+				{
 					Msg("Wow, what a title!<br/><username/>, I feel like<br/>I need to treat you differently. Haha!");
+				}
+
 				await Conversation();
 				break;
 
@@ -120,23 +128,23 @@ public class ManusScript : NpcScript
 	{
 		if (Memory <= 0)
 		{
-			Msg(FavorExpression(), L("You look familiar. Haven't we met before?"));
+			Msg(FavorExpression(), L("You've never been here before, have you? Where does it hurt?"));
 		}
 		else if (Memory == 1)
 		{
-			Msg(FavorExpression(), L("I seem to be seeing you often."));
+			Msg(FavorExpression(), L("You look familiar. Haven't we met before?"));
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You are back, <username/>."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I seem to be seeing you often."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>, you made this your second home, didn't you? Ha ha.<br/>Try visiting other places, too."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -149,28 +157,46 @@ public class ManusScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					Msg("My name is <npcname/>.");
-					ModifyRelation(1, 0, Random(2));
+					Msg(FavorExpression(), "My name is <npcname/>.");
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					GiveKeyword("shop_healing");
 					Msg(FavorExpression(), "I am the healer in this town. I'm good at what I do,<br/>so feel free to come by if you get sick.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
 				GiveKeyword("shop_restaurant");
 				Msg(FavorExpression(), "Have you been to Glenis' Restaurant yet?<br/>Make sure you pay a visit and order something.<br/>Eating well is the most important thing in maintaining good health. Hahaha!");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
-				// If player has resting skill...
-				Msg("Oh, I see that you know the Resting skill. Do you find it handy?<br/>If you want, I could raise the skill level for you by one.");
-				Msg("Ah! Ah! Of course, it comes at a price.<br/>Hahah... Let's see...");
-				Msg("I know! I always need more help, so why don't you do some work around here?<br/>It doesn't have to be with me. You can help any healer in any town.<br/>I'll raise the skill level for you if you do some healer part-time work. Any questions?");
+				if (!HasSkill(SkillId.Rest))
+				{
+					Msg("Really tired, aren't you? And you become easily fatigued.<br/>It's because your health keeps on getting spent without getting replenished.<br/>How about learning the Resting skill?<br/>You can ask other people to find out where you can learn it.");
+				}
+				else if (IsSkill(SkillId.Rest, SkillRank.RF))
+				{
+					if (GetPtjDoneCount(PtjType.HealersHouse) < 3)
+					{
+						Msg("Oh, I see that you know the Resting skill. Do you find it handy?<br/>If you want, I could raise the skill level for you by one.");
+						Msg("Ah! Ah! Of course, it comes at a price.<br/>Hahah... Let's see...");
+						Msg("I know! I always need more help, so why don't you do some work around here?<br/>It doesn't have to be with me. You can help any healer in any town.<br/>I'll raise the skill level for you if you do some healer part-time work. Any questions?");
+					}
+					else
+					{
+						TrainSkill(SkillId.Rest, 1);
+						Msg("(Missing Dialog: Manus Trains Rest)");
+					}
+				}
+				else
+				{
+					Msg("Hmm. You know the Resting skill fairly well.<br/>I don't know if you're expecting anything more from me,<br/>but I don't know anything more advanced, either.<br/>You... Aren't you being a little too ambitious? Hahaha...");
+				}
 				break;
 
 			case "about_arbeit":
@@ -183,6 +209,7 @@ public class ManusScript : NpcScript
 				break;
 
 			case "shop_grocery":
+				GiveKeyword("shop_restaurant");
 				Msg("The Grocery Store...? You mean the Restaurant.");
 				break;
 
@@ -202,6 +229,7 @@ public class ManusScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("There is a Blacksmith's Shop in our town?<br/>Well Nerys would know.<br/>Go find her at the Weapons Shop.");
 				Msg("If she doesn't know,<br/>then I think it would be safe to assume that there isn't one here.");
 				break;
@@ -211,11 +239,13 @@ public class ManusScript : NpcScript
 				break;
 
 			case "skill_tailoring":
+				GiveKeyword("shop_cloth");
 				Msg("Simon knows clothing-related skills well.<br/>Although, knowing him, I doubt he would pass on anything.");
 				Msg("Why don't you go see him anyway?<br/>He's at the Clothing Shop.");
 				break;
 
 			case "skill_magnum_shot":
+				GiveKeyword("school");
 				Msg("That's something you should ask that<br/>tomboy teacher, Aranwen.");
 				Msg("You would probably find her at the School, eh?");
 				break;
@@ -226,6 +256,7 @@ public class ManusScript : NpcScript
 				break;
 
 			case "skill_smash":
+				GiveKeyword("school");
 				Msg("Hmm. I'd like to show off and teach it to you myself,<br/>but if you develop bad habits or anything,<br/>you would curse me for the rest of your life. Ha ha.");
 				Msg("Go talk to Aranwen.<br/>She teaches combat skills, so she should be at the School.");
 				break;
@@ -265,6 +296,7 @@ public class ManusScript : NpcScript
 				break;
 
 			case "skill_windmill":
+				GiveKeyword("school");
 				Msg("So I look like someone who would know about<br/>such a barbaric skill, do I?");
 				Msg("Go talk to Aranwen. She's at the School.");
 				break;
@@ -296,6 +328,22 @@ public class ManusScript : NpcScript
 				Msg("If you have any business there, talk to Eavan.<br/>Not only is she pretty, but she's kind, too.<br/>She'll kindly answer any of your questions.");
 				break;
 
+			case "bow":
+				GiveKeyword("shop_armory");
+				Msg("Just across from here is the Weapons Shop. Why don't you buy one there?");
+				break;
+
+			case "tir_na_nog":
+				Msg("Hmm. Tir Na Nog?<br/>I didn't think you'd be the type to be interested in the afterlife. Haha.");
+				Msg("If you're interested in the afterlife,<br/>just do a lot of good deeds.<br/>I don't really care for it... Hahaha...");
+				break;
+
+			case "mabinogi":
+				GiveKeyword("school");
+				Msg("Well, I did hear about it...<br/>I don't know exactly what it entails...<br/>Stewart would probably know about it since he's the instructor at the School.");
+				Msg("Go ask Stewart at the School.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"Well... I don't know.",
@@ -305,8 +353,10 @@ public class ManusScript : NpcScript
 					"Hmm. I don't know anything about that.",
 					"You sure like to ask about strange things...",
 					"I think that's enough. It's not even a topic I'm interested in.",
+					"Wait... Have I heard about that before? If I did, I don't really remember.",
 					"Talking about unfamiliar subjects makes us both tired. Let's talk about something else."
 				);
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

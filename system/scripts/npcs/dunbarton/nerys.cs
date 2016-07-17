@@ -14,6 +14,7 @@ public class NerysScript : NpcScript
 		SetFace(skinColor: 16, eyeType: 4, eyeColor: 31);
 		SetStand("human/female/anim/female_natural_stand_npc_Nerys");
 		SetLocation(14, 44229, 35842, 139);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: 1, toughness: 1, utility: 2, rarity: 2, meaning: 1, adult: 0, maniac: -1, anime: -1, sexy: 0);
 
 		EquipItem(Pocket.Face, 3900, 0x00EBAE4E, 0x00005A33, 0x00F36246);
 		EquipItem(Pocket.Hair, 3023, 0x00994433, 0x00994433, 0x00994433);
@@ -37,12 +38,7 @@ public class NerysScript : NpcScript
 	{
 		SetBgm("NPC_Nerys.mp3");
 
-		await Intro(
-			"This lady has a slender build and wears comfortable clothing.",
-			"The subtle softness of her short red hair is brought out by being tightly combed back.",
-			"Thick ruby earrings matching her hair dangle from her ears and",
-			"slightly waver and glitter every time she looks up."
-		);
+		await Intro(L("This lady has a slender build and wears comfortable clothing.<br/>The subtle softness of her short red hair is brought out by being tightly combed back.<br/>Thick ruby earrings matching her hair dangle from her ears and<br/>slightly waver and glitter every time she looks up."));
 
 		Msg("Tell me if you need anything.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Modify Item", "@upgrade"));
 
@@ -51,13 +47,22 @@ public class NerysScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("<username/>, I'm only telling you this for your own good.<br/>If you're the warrior who saved the Goddess...<br/>You should really put a little more care to your equipment.<br/>I mean, it's not too bad right now, but...");
+					Msg("Look. I'll give you a good price. Why don't you look around?");
+				}
+				else if (Title == 11002)
+				{
 					Msg("...Guardian of Erinn...?<br/>Well, as long as you didn't break anything, I guess that's a good thing.<br/>Anyway, good job.");
+				}
+
 				await Conversation();
 				break;
 
 			case "@shop":
-				Msg("You brought your money with you, right?<br/>");
+				Msg("You brought your money with you, right?");
 				OpenShop("NerysShop");
 				return;
 
@@ -89,7 +94,7 @@ public class NerysScript : NpcScript
 								"I finished repairing 1 point."
 							);
 						else
-							Msg("Hmm... Sorry, I think I've failed the repair job.");
+							Msg("Hmm... Sorry, I think I've failed the repair job."); // Should be 3
 					}
 					else if (result.Points > 1)
 					{
@@ -144,15 +149,15 @@ public class NerysScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You've been to my shop before, haven't you?<br/>You seem quite familiar."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Your name is... <username/>, right?<br/>...<br/>My gosh! I've met you enough to remember your name?!"));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You are in need of a lot of things, aren't you, <username/>? You come by pretty often."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -163,33 +168,42 @@ public class NerysScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("shop_armory");
 				if (Memory == 1)
 				{
-					Msg("I'm <npcname/>, the owner of this Weapons Shop. Nice to meet you.");
-					ModifyRelation(1, 0, Random(2));
+					GiveKeyword("shop_armory");
+					Msg(FavorExpression(), "I'm <npcname/>, the owner of this Weapons Shop. Nice to meet you.");
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
+					GiveKeyword("shop_armory");
 					Msg(FavorExpression(), "Aren't you here to buy weapons?<br/>Well, I guess having a chat buddy doesn't hurt.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "When going to a nearby dungeon, you must be adequately equipped with weapons.<br/>If not, you'll face a world of trouble.<br/>Try visiting Walter's General Shop or that idiot healer, Manus' place.");
 				Msg("Oh, and take your time talking to Aranwen at the School.<br/>She's rather irritable and high-flown,<br/>so she doesn't like to teach skills to those who don't have the basics down.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
-				Msg("Yeah, <username/>? You have something to ask me about skills?");
-				Msg("The only skill I know has to do with repairing items.<br/>It's not an easy skill to teach, though.<br/>But, if you're asking, <username/>, I suppose I could tell you.");
-				Msg("Okay, are you interested at all in the advanced skills that archers use?<br/>I have heard that Aranwen at the School teaches<br/>a skill that allows you to quickly load your arrows and shoot successively.<br/>If you're interested, it would probably do you good.");
-				Msg("But Aranwen tends to be a little irritable.<br/>She probably won't teach it to you simply by asking about skills.<br/>Knowing her, if you are to learn the advanced archery skills,<br/>you'll have to be fairly proficient at the basic archery skills first.");
-				Msg("And showing the appeal is a different matter altogether.<br/>Let's see... How could you do that without making it awkward?");
-				Msg("....Right. Try putting on the Fire Arrow title.");
-				Msg("It's inside information I told you,<br/>so make sure you do as I say.<br/>Fire Arrows and bow proficiency. Don't forget.");
+				if (Player.IsHuman)
+				{
+					Msg("Yeah, <username/>? You have something to ask me about skills?");
+					Msg("The only skill I know has to do with repairing items.<br/>It's not an easy skill to teach, though.<br/>But, if you're asking, <username/>, I suppose I could tell you.");
+					Msg("Okay, are you interested at all in the advanced skills that archers use?<br/>I have heard that Aranwen at the School teaches<br/>a skill that allows you to quickly load your arrows and shoot successively.<br/>If you're interested, it would probably do you good.");
+					Msg("But Aranwen tends to be a little irritable.<br/>She probably won't teach it to you simply by asking about skills.<br/>Knowing her, if you are to learn the advanced archery skills,<br/>you'll have to be fairly proficient at the basic archery skills first.");
+					Msg("And showing the appeal is a different matter altogether.<br/>Let's see... How could you do that without making it awkward?");
+					Msg("....Right. Try putting on the Fire Arrow title.");
+					Msg("It's inside information I told you,<br/>so make sure you do as I say.<br/>Fire Arrows and bow proficiency. Don't forget.");
+				}
+				else
+				{
+					Msg("Hey, <username/>, so you have something you need to ask me?");
+					Msg("...There's not that much I could talk about so...<br/>I mean, all I know are weapons...");
+				}
 				break;
 
 			case "about_arbeit":
@@ -217,10 +231,12 @@ public class NerysScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("Hmm... This town doesn't have a Blacksmith's Shop.<br/>But we do simple repairs here<br/>so you can leave your items with me.");
 				break;
 
 			case "skill_range":
+				GiveKeyword("bow");
 				Msg("There is a variety of long range attacks.<br/>You can use a bow,<br/>cast a spell,<br/>or throw spears.");
 				Msg("So, is that what you're into?<br/>Why don't you buy a bow for now?");
 				break;
@@ -238,11 +254,13 @@ public class NerysScript : NpcScript
 				break;
 
 			case "skill_magnum_shot":
+				GiveKeyword("bow");
 				Msg("Don't you think you need to use the bow a little first?");
 				break;
 
 			case "skill_counter_attack":
 			case "skill_smash":
+				GiveKeyword("school");
 				Msg("Aranwen should know skills like that.<br/>She's rather irritable, though, so I'm not sure if she'll teach you.<br/>Anyhow, go see her at the School.");
 				break;
 
@@ -283,6 +301,7 @@ public class NerysScript : NpcScript
 				break;
 
 			case "shop_cloth":
+				GiveKeyword("shop_bank");
 				Msg("It's between the Bank and the General Shop.<br/>There are some pretty decent clothes there, so stop by.");
 				break;
 
@@ -293,6 +312,14 @@ public class NerysScript : NpcScript
 			case "shop_goverment_office":
 				Msg("Hmm, the Town Office...<br/>It's the building made out of stone located at the north of the Square.<br/>You probably can't go inside the Town Office...");
 				Msg("But Eavan works at the registration.<br/>If you have any business there, she's the one to talk to.");
+				break;
+
+			case "bow":
+				Msg("We happen to carry it here.<br/>Take your time and pick something that suits you.");
+				break;
+
+			case "lute":
+				Msg("If you're looking for a lute, try the General Shop.<br/>There's probably a few that Walter made.<br/>There should be other instruments there, too.");
 				break;
 
 			default:
@@ -306,7 +333,7 @@ public class NerysScript : NpcScript
 					"Well... I think I might have heard something about that.",
 					"People ask me about that a lot...<br/>But I'm not interested in that at all."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
