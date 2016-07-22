@@ -46,19 +46,26 @@ public class FerghusScript : NpcScript
 		switch (await Select())
 		{
 			case "@talk":
-				Greet();
-				Msg(Hide.Name, GetMoodString(), FavorExpression());
-
-				if (Title == 11001)
+				if (DoingPtjForNpc())
 				{
-					Msg("...Hmm... Such a boast should be made in front of Priest Meven.<br/>If you'd like, I'll tell you one more thing.");
-					Msg("There's no need to seek out any Goddesses.<br/>Your mother is the true Goddess.");
-					Msg("...Be a good child and honor your mother.");
+					Msg(Expression("normal"), L("Hey, part-timer!<br/>You're not just lounging around, are you? Haha."));
 				}
-				else if (Title == 11002)
+				else
 				{
-					Msg("Hm... <username/>, the Guardian of Erinn?<br/>If you want, I could guard your weapons.");
-					Msg("...If you have any weapons that<br/>have become dull, I'll take care of it...");
+					Greet();
+					Msg(Hide.Name, GetMoodString(), FavorExpression());
+
+					if (Title == 11001)
+					{
+						Msg("...Hmm... Such a boast should be made in front of Priest Meven.<br/>If you'd like, I'll tell you one more thing.");
+						Msg("There's no need to seek out any Goddesses.<br/>Your mother is the true Goddess.");
+						Msg("...Be a good child and honor your mother.");
+					}
+					else if (Title == 11002)
+					{
+						Msg("Hm... <username/>, the Guardian of Erinn?<br/>If you want, I could guard your weapons.");
+						Msg("...If you have any weapons that<br/>have become dull, I'll take care of it...");
+					}
 				}
 
 				await Conversation();
@@ -192,7 +199,6 @@ public class FerghusScript : NpcScript
 
 			case "about_arbeit":
 				Msg("Unimplemented");
-				//Msg("What? Part-time job?<br/>There's nothing. You can come back later.");
 				break;
 
 			case "shop_misc":
