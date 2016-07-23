@@ -164,6 +164,9 @@ namespace Aura.Channel.Skills.Life
 			sittingProp.State = "stand";
 			creature.Region.AddProp(sittingProp);
 
+			// Update chair
+			sittingProp.Xml.SetAttributeValue("OWNER", creature.EntityId);
+
 			this.SitOnProp(creature, sittingProp, chairData);
 		}
 
@@ -184,7 +187,8 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			// Update chair
-			creature.Temp.SittingProp.Xml.SetAttributeValue("OWNER", 0);
+			if(creature.Temp.SittingProp.Xml.Attribute("OWNER") != null)
+				creature.Temp.SittingProp.Xml.SetAttributeValue("OWNER", 0);
 			creature.Temp.SittingProp.Xml.SetAttributeValue("SITCHAR", 0);
 
 			Send.PropUpdate(creature.Temp.SittingProp);
@@ -212,7 +216,6 @@ namespace Aura.Channel.Skills.Life
 			Send.AssignSittingProp(creature, prop.EntityId, 1);
 
 			// Update chair
-			prop.Xml.SetAttributeValue("OWNER", creature.EntityId);
 			prop.Xml.SetAttributeValue("SITCHAR", creature.EntityId);
 
 			Send.PropUpdate(prop);
