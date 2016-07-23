@@ -1,8 +1,6 @@
 // Useful numbers:
 /* 70002    ItemID?   Full Ring Mail to be Delivered
- * 70024    ItemID?   Full Ring Mail to be Delivered
- * 507402   QuestID   Basic  Armor Delivery (Nora)
- * 507403   QuestID   Basic  Armor Delivery (Malcolm)
+ * 70024    ?         Unknown int in NewQuest:0x08CA0 packet.
  */
 
 //--- Aura Script -----------------------------------------------------------
@@ -22,12 +20,23 @@ public class FerghusPtjScript : GeneralScript
 
 	int remaining = PerDay;
 
-	/*
+	
 	readonly int[] QuestIds = new int[]
 	{
-		// ???
+		507401, // Basic  Armor Delivery (Ranald)
+		507431, // Int    Armor Delivery (Ranald)
+		507461, // Adv    Armor Delivery (Ranald)
+		507402, // Basic  Armor Delivery (Nora)
+		507432, // Int    Armor Delivery (Nora)
+		507462, // Adv    Armor Delivery (Nora)
+		507403, // Basic  Armor Delivery (Malcolm)
+		507433, // Int    Armor Delivery (Malcolm)
+		507463, // Adv    Armor Delivery (Malcolm)
+		507404, // Basic  Armor Delivery (Trefor)
+		507434, // Int    Armor Delivery (Trefor)
+		507464, // Adv    Armor Delivery (Trefor)
 	};
-	*/
+	
 
 	public override void Load()
 	{
@@ -156,7 +165,7 @@ public class FerghusPtjScript : GeneralScript
 				}
 				else if (result == QuestResult.Low)
 				{
-					npc.Msg(npc.FavorExpression(), L("(missing): 1 star response"));
+					npc.Msg(npc.FavorExpression(), L("Is this all you did?<br/>It's far from enough. This is all I can give you.<br/>Remember this. It's not easy to earn money out of others' pockets."));
 					npc.ModifyRelation(0, -Random(2), 0);
 				}
 			}
@@ -186,7 +195,7 @@ public class FerghusPtjScript : GeneralScript
 		if (npc.GetPtjDoneCount(JobType) == 0)
 		{
 			npc.Msg(L("Are you looking for a job?<br/>You'd get sweaty, hot and tired working at the Blacksmith's Shop.<br/>I guess you are not really up to it.<br/>How about doing some simple part-time work?"));
-			npc.Msg(L("I'll see how much I can pay you depending on how you do."));
+			msg = L("I'll see how much I can pay you depending on how you do.");
 		}
 		else
 			msg = L("Let's see, you want to work at the Blacksmith's Shop for a day?");
@@ -206,7 +215,10 @@ public class FerghusPtjScript : GeneralScript
 		}
 		else
 		{
-			npc.Msg(L("If you don't want it, then forget it.<br/>Young people these days don't even bother to think of doing anything difficult."));
+			if (npc.GetPtjDoneCount(JobType) == 0)
+				npc.Msg(L("If you don't want it, then forget it.<br/>Young people these days don't even bother to think of doing anything difficult."));
+			else
+				npc.Msg(L("You can't really hire someone who doesn't want to work for you."));
 		}
 	}
 }
@@ -217,6 +229,11 @@ public class FerghusUnimplementedPtjScript : QuestScript
 {
 	protected override async Task OnFinish(NpcScript npc)
 	{
+		// Ranald
+		npc.Msg(L("Thank you.<br/>I completely forgot about picking up my armor."));
+		npc.Msg(Hide.Name, L("(Delivered the armor to Ranald.)"));
+		npc.Msg(L("Hmm, perfect. Ferghus is the best blacksmith in town,<br/>don't you think?<br/>Anyway, thanks again for bringing it to me."));
+
 		// Nora
 		npc.Msg(L("Wow, that was fast. I'm glad to have my armor back."));
 		npc.Msg(Hide.Name, L("(Delivered the armor to Nora.)"));
@@ -226,5 +243,18 @@ public class FerghusUnimplementedPtjScript : QuestScript
 		npc.Msg(L("Ah, my new armor has finally arrived.<br/>In fact, I was about to get it myself.<br/>Thank you for the delivery."));
 		npc.Msg(Hide.Name, L("(Delivered the armor to Malcolm.)"));
 		npc.Msg(L("You didn't put it on before coming here, did you?<br/>"));
+
+		// Trefor
+		npc.Msg(L("Is that the armor I asked to be repaired?<br/>The work is finally done?"));
+		npc.Msg(Hide.Name, L("(Delivered the armor to Trefor.)"));
+		npc.Msg(L("But I've got a slight problem.<br/>As you can see, I'm on duty right now and have no place to store it."));
+		npc.Msg(L("Could you do me a favor and leave it at the Healer's House?<br/>I'll grab it after my shift is over."));
+		npc.Msg(Hide.Name, L("(Received the armor.)"));
+
+		// Dilys <- Trefor
+		npc.Msg(L("Not again!<br/>Did Trefor ask you to leave that armor here?"));
+		npc.Msg(Hide.Name, L("(Gave the armor to Dilys.)"));
+		npc.Msg(L("That guy! Does he think this is a warehouse or something?<br/>Well, fine. I'll hold on to it for him."));
+		npc.Msg(L("As you know, being a guard is not easy."));
 	}
 }
