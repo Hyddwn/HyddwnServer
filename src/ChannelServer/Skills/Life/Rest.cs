@@ -199,6 +199,12 @@ namespace Aura.Channel.Skills.Life
 			creature.Temp.SittingProp = null;
 		}
 
+		/// <summary>
+		/// Sets owner for a prop and makes the creature sit on it.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="prop"></param>
+		/// <param name="chair">For temporary props from items.</param>
 		private void SitOnProp(Creature creature, Prop prop, ChairData chair = null)
 		{
 			// Move char
