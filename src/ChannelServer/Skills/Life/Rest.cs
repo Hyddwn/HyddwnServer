@@ -43,6 +43,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				// Find all nearby sittable props and sit on one
 				var props = creature.Region.GetProps(prop => prop.HasTag("/sittable/")
+					&& (!prop.HasXml || prop.Xml.Attribute("SITCHAR") == null || prop.Xml.Attribute("SITCHAR").Value == "0")
 					&& prop.GetPosition().GetDistance(creature.GetPosition()) < 100);
 				if (props.Count > 0)
 				{
