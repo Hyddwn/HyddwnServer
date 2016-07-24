@@ -38,6 +38,7 @@ npcs/dunbarton/glenis.cs
 npcs/dunbarton/kristell.cs
 npcs/dunbarton/manus.cs
 npcs/dunbarton/nerys.cs
+npcs/dunbarton/pero.cs
 npcs/dunbarton/simon.cs
 npcs/dunbarton/stewart.cs
 npcs/dunbarton/walter.cs
