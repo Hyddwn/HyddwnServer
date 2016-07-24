@@ -1,12 +1,22 @@
-// Useful numbers:
-/* 70002    ItemID?   Full Ring Mail to be Delivered
- * 70024    ?         Unknown int in NewQuest:0x08CA0 packet.
+// MISSINGNO prevents this script from compiling.
+// The following MISSINGNO have unknown values at the time of writing.
+// (Tip: Perform a find and replace all operation to define them.)
+/* MISSINGNO200  ItemID: Stamina 10 Potion
+ * MISSINGNO201  ItemID: HP 50 Potion
+ * MISSINGNO202  ItemID: Stamina 50 Potion
+ * MISSINGNO203  ItemID: Blacksmith Shoes
+ * MISSINGNO204  ItemID: Pickaxe
  */
 
 //--- Aura Script -----------------------------------------------------------
 // Ferghus's Blacksmith Shop Part-Time Job
 //--- Description -----------------------------------------------------------
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
+//--- Notes -----------------------------------------------------------------
+// Apparently the rewards have been increased, as the Wiki now lists
+// higher ones than in the past. We'll use the G1 rewards for now.
+// Due to limited G1 data, current rewards are downscaled to 50% gold, 33% exp.
+// Ref.: http://wiki.mabinogiworld.com/index.php?title=Ferghus&diff=prev&oldid=172331
 //---------------------------------------------------------------------------
 
 public class FerghusPtjScript : GeneralScript
@@ -223,38 +233,432 @@ public class FerghusPtjScript : GeneralScript
 	}
 }
 
-/* Unimplemented: QuestScripts */
-
-public class FerghusUnimplementedPtjScript : QuestScript
+public abstract class FerghusPtjBaseScript : QuestScript
 {
+	protected const int ArmorToDeliver = 70002; // Full Ring Mail to be Delivered
+
+	public override void Load()
+	{
+		SetName(L("Blacksmith Shop Part-Time Job"));
+		SetDescription(L("This armor has been repaired, but the owner has not shown up yet. Can you [deliver this Ring Mail] for me? - Ferghus -"));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.BlacksmithShop);
+		SetHours(start: 12, report: 13, deadline: 19);
+	}
+
+	// All deliveries seem to share common rewards...
+	protected void SetBasicLevelAndRewards()
+	{
+		SetLevel(QuestLevel.Basic);
+
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(225));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(180));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(113));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(90));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(45));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(36));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(75));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(300));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(38));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(150));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(15));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(60));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(375));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(75));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(188));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(38));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(75));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(15));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(51001, 7)); // HP 10 Potion
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(25));
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO200, 10)); // Stamina 10 Potion
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(140));
+	}
+
+	protected void SetIntLevelAndRewards()
+	{
+		SetLevel(QuestLevel.Int);
+
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(350));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(280));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(175));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(140));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(70));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(56));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(120));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(450));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(60));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(225));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(24));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(90));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(570));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(115));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(285));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(58));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(114));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(23));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO201, 10); // HP 50 Potion
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(70));
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO202, 10); // Stamina 50 Potion
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(210));
+	}
+
+	protected void SetAdvLevelAndRewards()
+	{
+		SetLevel(QuestLevel.Adv);
+
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(480));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(380));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(240));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(190));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(96));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(76));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(170));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(600));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(85));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(300));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(34));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(120));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(800));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(150));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(400));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(75));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(160));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(30));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO201, 10)); // HP 50 Potion
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(600));
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO203)); // Blacksmith Shoes
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO204)); // Pickaxe
+	}
+}
+
+public abstract class FerghusDeliveryPtjBaseScript : FerghusPtjBaseScript
+{
+	protected abstract int QuestId { get; }
+	protected abstract string NpcName { get; }
+	protected abstract string NpcIdent { get; }
+	protected abstract string Objective { get; }
+
+	public override void Load()
+	{
+		SetId(QuestId);
+
+		AddObjective("ptj", this.Objective, 0, 0, 0, Deliver(ArmorToDeliver, NpcName));
+		AddHook(NpcIdent, "after_intro", AfterIntro);
+
+		base.Load();
+	}
+
+	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
+	{
+		if (!npc.QuestActive(this.Id, "ptj"))
+			return HookResult.Continue;
+
+		if (!npc.Player.Inventory.Has(ArmorToDeliver))
+			return HookResult.Continue;
+
+		npc.Player.Inventory.Remove(ArmorToDeliver, 1);
+		npc.FinishQuest(this.Id, "ptj");
+
+		await this.OnFinish(npc);
+
+		return HookResult.Break;
+	}
+
+	protected virtual async Task OnFinish(NpcScript npc)
+	{
+		await Task.Yield();
+	}
+}
+
+public abstract class FerghusDeliveryRanaldBasicPtjScript : FerghusDeliveryPtjBaseScript
+{
+	protected override int QuestId { get { return 507401; } }
+	protected override string NpcIdent { get { return "_ranald"; } }
+	protected override string Objective { get { return L("Deliver Armor to Ranald"); } }
+
+	public override void Load()
+	{
+		SetBasicLevelAndRewards();
+
+		base.Load();
+	}
+
 	protected override async Task OnFinish(NpcScript npc)
 	{
-		// Ranald
 		npc.Msg(L("Thank you.<br/>I completely forgot about picking up my armor."));
 		npc.Msg(Hide.Name, L("(Delivered the armor to Ranald.)"));
 		npc.Msg(L("Hmm, perfect. Ferghus is the best blacksmith in town,<br/>don't you think?<br/>Anyway, thanks again for bringing it to me."));
+	}
+}
 
-		// Nora
+public abstract class FerghusDeliveryRanaldIntPtjScript : FerghusDeliveryPtjBaseScript
+{
+	protected override int QuestId { get { return 507431; } }
+	protected override string NpcIdent { get { return "_ranald"; } }
+	protected override string Objective { get { return L("Deliver Armor to Ranald"); } }
+
+	public override void Load()
+	{
+		SetIntLevelAndRewards();
+
+		base.Load();
+	}
+
+	protected override async Task OnFinish(NpcScript npc)
+	{
+		npc.Msg(L("Thank you.<br/>I completely forgot about picking up my armor."));
+		npc.Msg(Hide.Name, L("(Delivered the armor to Ranald.)"));
+		npc.Msg(L("Hmm, perfect. Ferghus is the best blacksmith in town,<br/>don't you think?<br/>Anyway, thanks again for bringing it to me."));
+	}
+}
+
+public abstract class FerghusDeliveryRanaldAdvPtjScript : FerghusDeliveryPtjBaseScript
+{
+	protected override int QuestId { get { return 507461; } }
+	protected override string NpcIdent { get { return "_ranald"; } }
+	protected override string Objective { get { return L("Deliver Armor to Ranald"); } }
+
+	public override void Load()
+	{
+		SetAdvLevelAndRewards();
+
+		base.Load();
+	}
+
+	protected override async Task OnFinish(NpcScript npc)
+	{
+		npc.Msg(L("Thank you.<br/>I completely forgot about picking up my armor."));
+		npc.Msg(Hide.Name, L("(Delivered the armor to Ranald.)"));
+		npc.Msg(L("Hmm, perfect. Ferghus is the best blacksmith in town,<br/>don't you think?<br/>Anyway, thanks again for bringing it to me."));
+	}
+}
+
+public abstract class FerghusDeliveryNoraBasicPtjScript : FerghusDeliveryPtjBaseScript
+{
+	protected override int QuestId { get { return 507402; } }
+	protected override string NpcIdent { get { return "_nora"; } }
+	protected override string Objective { get { return L("Deliver Armor to Nora"); } }
+
+	public override void Load()
+	{
+		SetBasicLevelAndRewards();
+
+		base.Load();
+	}
+
+	protected override async Task OnFinish(NpcScript npc)
+	{
 		npc.Msg(L("Wow, that was fast. I'm glad to have my armor back."));
 		npc.Msg(Hide.Name, L("(Delivered the armor to Nora.)"));
 		npc.Msg(L("Yes? You're asking if this armor is for me?<br/>Ha ha, no way. I just like how this ring mail looks."));
+	}
+}
 
-		// Malcolm
+public abstract class FerghusDeliveryNoraIntPtjScript : FerghusDeliveryPtjBaseScript
+{
+	protected override int QuestId { get { return 507432; } }
+	protected override string NpcIdent { get { return "_nora"; } }
+	protected override string Objective { get { return L("Deliver Armor to Nora"); } }
+
+	public override void Load()
+	{
+		SetIntLevelAndRewards();
+
+		base.Load();
+	}
+
+	protected override async Task OnFinish(NpcScript npc)
+	{
+		npc.Msg(L("Wow, that was fast. I'm glad to have my armor back."));
+		npc.Msg(Hide.Name, L("(Delivered the armor to Nora.)"));
+		npc.Msg(L("Yes? You're asking if this armor is for me?<br/>Ha ha, no way. I just like how this ring mail looks."));
+	}
+}
+
+public abstract class FerghusDeliveryNoraAdvPtjScript : FerghusDeliveryPtjBaseScript
+{
+	protected override int QuestId { get { return 507462; } }
+	protected override string NpcIdent { get { return "_nora"; } }
+	protected override string Objective { get { return L("Deliver Armor to Nora"); } }
+
+	public override void Load()
+	{
+		SetAdvLevelAndRewards();
+
+		base.Load();
+	}
+
+	protected override async Task OnFinish(NpcScript npc)
+	{
+		npc.Msg(L("Wow, that was fast. I'm glad to have my armor back."));
+		npc.Msg(Hide.Name, L("(Delivered the armor to Nora.)"));
+		npc.Msg(L("Yes? You're asking if this armor is for me?<br/>Ha ha, no way. I just like how this ring mail looks."));
+	}
+}
+
+public abstract class FerghusDeliveryMalcolmBasicPtjScript : FerghusDeliveryPtjBaseScript
+{
+	protected override int QuestId { get { return 507403; } }
+	protected override string NpcIdent { get { return "_malcolm"; } }
+	protected override string Objective { get { return L("Deliver Armor to Malcolm"); } }
+
+	public override void Load()
+	{
+		SetBasicLevelAndRewards();
+
+		base.Load();
+	}
+
+	protected override async Task OnFinish(NpcScript npc)
+	{
 		npc.Msg(L("Ah, my new armor has finally arrived.<br/>In fact, I was about to get it myself.<br/>Thank you for the delivery."));
 		npc.Msg(Hide.Name, L("(Delivered the armor to Malcolm.)"));
 		npc.Msg(L("You didn't put it on before coming here, did you?<br/>"));
+	}
+}
 
-		// Trefor
+public abstract class FerghusDeliveryMalcolmIntPtjScript : FerghusDeliveryPtjBaseScript
+{
+	protected override int QuestId { get { return 507433; } }
+	protected override string NpcIdent { get { return "_malcolm"; } }
+	protected override string Objective { get { return L("Deliver Armor to Malcolm"); } }
+
+	public override void Load()
+	{
+		SetIntLevelAndRewards();
+
+		base.Load();
+	}
+
+	protected override async Task OnFinish(NpcScript npc)
+	{
+		npc.Msg(L("Ah, my new armor has finally arrived.<br/>In fact, I was about to get it myself.<br/>Thank you for the delivery."));
+		npc.Msg(Hide.Name, L("(Delivered the armor to Malcolm.)"));
+		npc.Msg(L("You didn't put it on before coming here, did you?<br/>"));
+	}
+}
+
+public abstract class FerghusDeliveryMalcolmAdvPtjScript : FerghusDeliveryPtjBaseScript
+{
+	protected override int QuestId { get { return 507463; } }
+	protected override string NpcIdent { get { return "_malcolm"; } }
+	protected override string Objective { get { return L("Deliver Armor to Malcolm"); } }
+
+	public override void Load()
+	{
+		SetAdvLevelAndRewards();
+
+		base.Load();
+	}
+
+	protected override async Task OnFinish(NpcScript npc)
+	{
+		npc.Msg(L("Ah, my new armor has finally arrived.<br/>In fact, I was about to get it myself.<br/>Thank you for the delivery."));
+		npc.Msg(Hide.Name, L("(Delivered the armor to Malcolm.)"));
+		npc.Msg(L("You didn't put it on before coming here, did you?<br/>"));
+	}
+}
+
+// Extended delivery quest - Trefor
+public abstract class FerghusExtDeliveryPtjBaseScript : FerghusPtjBaseScript
+{
+	public override void Load()
+	{
+		AddObjective("ptj1", L("Deliver Armor to Trefor"), 0, 0, 0, Talk("_trefor"));
+		AddObjective("ptj2", L("Leave the Armor at the Healer's House"), 0, 0, 0, Deliver(ArmorToDeliver, "_dilys"));
+
+		AddHook("_trefor", "after_intro", TreforAfterIntro);
+		AddHook("_dilys", "after_intro", DilysAfterIntro);
+		
+		base.Load();
+	}
+
+	public async Task<HookResult> TreforAfterIntro(NpcScript npc, params object[] args)
+	{
+		if (!npc.QuestActive(this.Id, "ptj1"))
+			return HookResult.Continue;
+
+		if (!npc.Player.Inventory.Has(ArmorToDeliver))
+			return HookResult.Continue;
+
+		npc.FinishQuest(this.Id, "ptj1");
+
 		npc.Msg(L("Is that the armor I asked to be repaired?<br/>The work is finally done?"));
 		npc.Msg(Hide.Name, L("(Delivered the armor to Trefor.)"));
 		npc.Msg(L("But I've got a slight problem.<br/>As you can see, I'm on duty right now and have no place to store it."));
 		npc.Msg(L("Could you do me a favor and leave it at the Healer's House?<br/>I'll grab it after my shift is over."));
 		npc.Msg(Hide.Name, L("(Received the armor.)"));
 
-		// Dilys <- Trefor
+		return HookResult.Break;
+	}
+
+	public async Task<HookResult> DilysAfterIntro(NpcScript npc, params object[] args)
+	{
+		if (!npc.QuestActive(this.Id, "ptj2"))
+			return HookResult.Continue;
+
+		if (!npc.Player.Inventory.Has(ArmorToDeliver))
+			return HookResult.Continue;
+
+		npc.Player.Inventory.Remove(ArmorToDeliver, 1);
+		npc.FinishQuest(this.Id, "ptj2");
+
 		npc.Msg(L("Not again!<br/>Did Trefor ask you to leave that armor here?"));
 		npc.Msg(Hide.Name, L("(Gave the armor to Dilys.)"));
 		npc.Msg(L("That guy! Does he think this is a warehouse or something?<br/>Well, fine. I'll hold on to it for him."));
 		npc.Msg(L("As you know, being a guard is not easy."));
+
+		return HookResult.Break;
+	}
+}
+
+public class FerghusExtDeliveryBasicPtjScript : FerghusExtDeliveryPtjBaseScript
+{
+	public override void Load()
+	{
+		SetId(507404);
+		SetBasicLevelAndRewards();
+		
+		base.Load();
+	}
+}
+
+public class FerghusExtDeliveryIntPtjScript : FerghusExtDeliveryPtjBaseScript
+{
+	public override void Load()
+	{
+		SetId(507434);
+		SetIntLevelAndRewards();
+		
+		base.Load();
+	}
+}
+
+public class FerghusExtDeliveryAdvPtjScript : FerghusExtDeliveryPtjBaseScript
+{
+	public override void Load()
+	{
+		SetId(507464);
+		SetAdvLevelAndRewards();
+		
+		base.Load();
 	}
 }
