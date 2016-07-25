@@ -46,26 +46,19 @@ public class FerghusScript : NpcScript
 		switch (await Select())
 		{
 			case "@talk":
-				if (DoingPtjForNpc())
-				{
-					Msg(Expression("normal"), L("Hey, part-timer!<br/>You're not just lounging around, are you? Haha."));
-				}
-				else
-				{
-					Greet();
-					Msg(Hide.Name, GetMoodString(), FavorExpression());
+				Greet();
+				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-					if (Title == 11001)
-					{
-						Msg("...Hmm... Such a boast should be made in front of Priest Meven.<br/>If you'd like, I'll tell you one more thing.");
-						Msg("There's no need to seek out any Goddesses.<br/>Your mother is the true Goddess.");
-						Msg("...Be a good child and honor your mother.");
-					}
-					else if (Title == 11002)
-					{
-						Msg("Hm... <username/>, the Guardian of Erinn?<br/>If you want, I could guard your weapons.");
-						Msg("...If you have any weapons that<br/>have become dull, I'll take care of it...");
-					}
+				if (Title == 11001)
+				{
+					Msg("...Hmm... Such a boast should be made in front of Priest Meven.<br/>If you'd like, I'll tell you one more thing.");
+					Msg("There's no need to seek out any Goddesses.<br/>Your mother is the true Goddess.");
+					Msg("...Be a good child and honor your mother.");
+				}
+				else if (Title == 11002)
+				{
+					Msg("Hm... <username/>, the Guardian of Erinn?<br/>If you want, I could guard your weapons.");
+					Msg("...If you have any weapons that<br/>have become dull, I'll take care of it...");
 				}
 
 				await Conversation();
@@ -149,7 +142,11 @@ public class FerghusScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("Hey, part-timer!<br/>You're not just lounging around, are you? Haha."));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("Are you new here? Good to see you."));
 		}
