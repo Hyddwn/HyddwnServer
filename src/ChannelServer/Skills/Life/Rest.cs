@@ -41,14 +41,25 @@ namespace Aura.Channel.Skills.Life
 				this.SetUpChair(creature, chairItemEntityId);
 			else
 			{
-				// Find all nearby sittable props and sit on one
+				// Find all nearby sittable props and sit on closest one
+				var crpos = creature.GetPosition();
 				var props = creature.Region.GetProps(prop => prop.HasTag("/sittable/")
 					&& (!prop.HasXml || prop.Xml.Attribute("SITCHAR") == null || prop.Xml.Attribute("SITCHAR").Value == "0")
-					&& prop.GetPosition().GetDistance(creature.GetPosition()) < 100);
+					&& prop.GetPosition().GetDistance(crpos) < 125);
 				if (props.Count > 0)
 				{
-					// TODO: Find nearest?
-					this.SitOnProp(creature, props[0]);
+					int nearest = 0;
+					int minDist = 125;
+					for (int i = 0; i < props.Count; i++)
+					{
+						var dist = crpos.GetDistance(props[i].GetPosition());
+						if(dist < minDist)
+						{
+							nearest = i;
+							minDist = dist;
+						}
+					}
+					this.SitOnProp(creature, props[nearest]);
 				}
 			}
 
