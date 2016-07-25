@@ -1,13 +1,3 @@
-// MISSINGNO prevents this script from compiling.
-// The following MISSINGNO have unknown values at the time of writing.
-// (Tip: Perform a find and replace all operation to define them.)
-/* MISSINGNO200  ItemID: Stamina 10 Potion
- * MISSINGNO201  ItemID: HP 50 Potion
- * MISSINGNO202  ItemID: Stamina 50 Potion
- * MISSINGNO203  ItemID: Blacksmith Shoes
- * MISSINGNO204  ItemID: Pickaxe
- */
-
 //--- Aura Script -----------------------------------------------------------
 // Ferghus's Blacksmith Shop Part-Time Job
 //--- Description -----------------------------------------------------------
@@ -279,7 +269,7 @@ public abstract class FerghusPtjBaseScript : QuestScript
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(51001, 7)); // HP 10 Potion
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(25));
 
-		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO200, 10)); // Stamina 10 Potion
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(51011, 10)); // Stamina 10 Potion
 		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(140));
 	}
 
@@ -308,10 +298,10 @@ public abstract class FerghusPtjBaseScript : QuestScript
 		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(114));
 		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(23));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO201, 10); // HP 50 Potion
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(51003, 10)); // HP 50 Potion
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(70));
 
-		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO202, 10); // Stamina 50 Potion
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(51013, 10)); // Stamina 50 Potion
 		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(210));
 	}
 
@@ -340,12 +330,12 @@ public abstract class FerghusPtjBaseScript : QuestScript
 		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(160));
 		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(30));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO201, 10)); // HP 50 Potion
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(51003, 10)); // HP 50 Potion
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(600));
 
-		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO203)); // Blacksmith Shoes
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(17019)); // Blacksmith Shoes
 
-		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(MISSINGNO204)); // Pickaxe
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
 	}
 }
 
