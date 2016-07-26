@@ -227,10 +227,11 @@ namespace Aura.Channel.World.Inventory
 			_pockets = new Dictionary<Pocket, InventoryPocket>();
 			_wuUpgrades = new Dictionary<long, WUUpgrades>();
 
-			// Cursor, Temp, Quests
+			// Cursor, Temp, Quests, Trading
 			this.Add(new InventoryPocketStack(Pocket.Temporary));
 			this.Add(new InventoryPocketStack(Pocket.Quests));
 			this.Add(new InventoryPocketSingle(Pocket.Cursor));
+			this.Add(new InventoryPocketNormal(Pocket.Trade, 10, 5));
 
 			// Equipment
 			for (var i = Pocket.Face; i <= Pocket.Accessory2; ++i)

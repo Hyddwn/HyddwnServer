@@ -48,11 +48,11 @@ namespace Aura.Channel.Network.Sending
 		/// Sends TradeCancelR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="unkByte"></param>
-		public static void TradeCancelR(Creature creature, byte unkByte)
+		/// <param name="success"></param>
+		public static void TradeCancelR(Creature creature, bool success)
 		{
 			var packet = new Packet(Op.TradeCancelR, creature.EntityId);
-			packet.PutByte(unkByte);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}
