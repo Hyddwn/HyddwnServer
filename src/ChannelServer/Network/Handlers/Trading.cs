@@ -124,5 +124,22 @@ namespace Aura.Channel.Network.Handlers
 
 			trade.Accept();
 		}
+
+		/// <summary>
+		/// Request to expand trade window, sent when clicking Expand Window
+		/// in trade window.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.TradeExpandWindow)]
+		public void TradeExpandWindow(ChannelClient client, Packet packet)
+		{
+			var unkByte = packet.GetByte();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var trade = creature.Temp.ActiveTrade;
+
+			Send.MsgBox(creature, Localization.Get("Expanding the trade window is not supported yet."));
+		}
 	}
 }
