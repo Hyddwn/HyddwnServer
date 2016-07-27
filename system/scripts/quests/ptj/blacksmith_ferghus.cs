@@ -20,7 +20,7 @@ public class FerghusPtjScript : GeneralScript
 
 	int remaining = PerDay;
 
-	
+
 	readonly int[] QuestIds = new int[]
 	{
 		507401, // Basic  Armor Delivery (Ranald)
@@ -36,7 +36,7 @@ public class FerghusPtjScript : GeneralScript
 		507434, // Int    Armor Delivery (Trefor)
 		507464, // Adv    Armor Delivery (Trefor)
 	};
-	
+
 
 	public override void Load()
 	{
@@ -342,7 +342,6 @@ public abstract class FerghusPtjBaseScript : QuestScript
 public abstract class FerghusDeliveryPtjBaseScript : FerghusPtjBaseScript
 {
 	protected abstract int QuestId { get; }
-	protected abstract string NpcName { get; }
 	protected abstract string NpcIdent { get; }
 	protected abstract string Objective { get; }
 
@@ -350,7 +349,7 @@ public abstract class FerghusDeliveryPtjBaseScript : FerghusPtjBaseScript
 	{
 		SetId(QuestId);
 
-		AddObjective("ptj", this.Objective, 0, 0, 0, Deliver(ArmorToDeliver, NpcName));
+		AddObjective("ptj", this.Objective, 0, 0, 0, Deliver(ArmorToDeliver, NpcIdent));
 		AddHook(NpcIdent, "after_intro", AfterIntro);
 
 		base.Load();
@@ -378,7 +377,7 @@ public abstract class FerghusDeliveryPtjBaseScript : FerghusPtjBaseScript
 	}
 }
 
-public abstract class FerghusDeliveryRanaldBasicPtjScript : FerghusDeliveryPtjBaseScript
+public class FerghusDeliveryRanaldBasicPtjScript : FerghusDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return 507401; } }
 	protected override string NpcIdent { get { return "_ranald"; } }
@@ -399,7 +398,7 @@ public abstract class FerghusDeliveryRanaldBasicPtjScript : FerghusDeliveryPtjBa
 	}
 }
 
-public abstract class FerghusDeliveryRanaldIntPtjScript : FerghusDeliveryPtjBaseScript
+public class FerghusDeliveryRanaldIntPtjScript : FerghusDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return 507431; } }
 	protected override string NpcIdent { get { return "_ranald"; } }
@@ -420,7 +419,7 @@ public abstract class FerghusDeliveryRanaldIntPtjScript : FerghusDeliveryPtjBase
 	}
 }
 
-public abstract class FerghusDeliveryRanaldAdvPtjScript : FerghusDeliveryPtjBaseScript
+public class FerghusDeliveryRanaldAdvPtjScript : FerghusDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return 507461; } }
 	protected override string NpcIdent { get { return "_ranald"; } }
@@ -441,7 +440,7 @@ public abstract class FerghusDeliveryRanaldAdvPtjScript : FerghusDeliveryPtjBase
 	}
 }
 
-public abstract class FerghusDeliveryNoraBasicPtjScript : FerghusDeliveryPtjBaseScript
+public class FerghusDeliveryNoraBasicPtjScript : FerghusDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return 507402; } }
 	protected override string NpcIdent { get { return "_nora"; } }
@@ -462,7 +461,7 @@ public abstract class FerghusDeliveryNoraBasicPtjScript : FerghusDeliveryPtjBase
 	}
 }
 
-public abstract class FerghusDeliveryNoraIntPtjScript : FerghusDeliveryPtjBaseScript
+public class FerghusDeliveryNoraIntPtjScript : FerghusDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return 507432; } }
 	protected override string NpcIdent { get { return "_nora"; } }
@@ -483,7 +482,7 @@ public abstract class FerghusDeliveryNoraIntPtjScript : FerghusDeliveryPtjBaseSc
 	}
 }
 
-public abstract class FerghusDeliveryNoraAdvPtjScript : FerghusDeliveryPtjBaseScript
+public class FerghusDeliveryNoraAdvPtjScript : FerghusDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return 507462; } }
 	protected override string NpcIdent { get { return "_nora"; } }
@@ -504,7 +503,7 @@ public abstract class FerghusDeliveryNoraAdvPtjScript : FerghusDeliveryPtjBaseSc
 	}
 }
 
-public abstract class FerghusDeliveryMalcolmBasicPtjScript : FerghusDeliveryPtjBaseScript
+public class FerghusDeliveryMalcolmBasicPtjScript : FerghusDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return 507403; } }
 	protected override string NpcIdent { get { return "_malcolm"; } }
@@ -525,7 +524,7 @@ public abstract class FerghusDeliveryMalcolmBasicPtjScript : FerghusDeliveryPtjB
 	}
 }
 
-public abstract class FerghusDeliveryMalcolmIntPtjScript : FerghusDeliveryPtjBaseScript
+public class FerghusDeliveryMalcolmIntPtjScript : FerghusDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return 507433; } }
 	protected override string NpcIdent { get { return "_malcolm"; } }
@@ -546,7 +545,7 @@ public abstract class FerghusDeliveryMalcolmIntPtjScript : FerghusDeliveryPtjBas
 	}
 }
 
-public abstract class FerghusDeliveryMalcolmAdvPtjScript : FerghusDeliveryPtjBaseScript
+public class FerghusDeliveryMalcolmAdvPtjScript : FerghusDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return 507463; } }
 	protected override string NpcIdent { get { return "_malcolm"; } }
@@ -577,7 +576,7 @@ public abstract class FerghusExtDeliveryPtjBaseScript : FerghusPtjBaseScript
 
 		AddHook("_trefor", "after_intro", TreforAfterIntro);
 		AddHook("_dilys", "after_intro", DilysAfterIntro);
-		
+
 		base.Load();
 	}
 
@@ -626,7 +625,7 @@ public class FerghusExtDeliveryBasicPtjScript : FerghusExtDeliveryPtjBaseScript
 	{
 		SetId(507404);
 		SetBasicLevelAndRewards();
-		
+
 		base.Load();
 	}
 }
@@ -637,7 +636,7 @@ public class FerghusExtDeliveryIntPtjScript : FerghusExtDeliveryPtjBaseScript
 	{
 		SetId(507434);
 		SetIntLevelAndRewards();
-		
+
 		base.Load();
 	}
 }
@@ -648,7 +647,7 @@ public class FerghusExtDeliveryAdvPtjScript : FerghusExtDeliveryPtjBaseScript
 	{
 		SetId(507464);
 		SetAdvLevelAndRewards();
-		
+
 		base.Load();
 	}
 }
