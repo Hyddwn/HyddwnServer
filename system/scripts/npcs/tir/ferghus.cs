@@ -194,10 +194,6 @@ public class FerghusScript : NpcScript
 				Msg("From what I've seen, all you need is<br/>a Fishing Rod and a Bait Tin.");
 				break;
 
-			case "about_arbeit":
-				Msg("Unimplemented");
-				break;
-
 			case "shop_misc":
 				GiveKeyword("shop_smith");
 				Msg("This is the Blacksmith's Shop. Surprisingly, many people think they are at the General Shop.");
