@@ -212,6 +212,11 @@ public class FerghusPtjScript : GeneralScript
 			else
 				npc.Msg(L("Alright. Good idea."));
 			npc.StartPtj(randomPtj);
+
+			// Give Armor to be Delivered if recipient is Trefor.
+			// (Item normally only dispensed to player if Deliver() is first objective.)
+			if (randomPtj % 10 == 4)
+				npc.Player.Inventory.Add(new Item(70002), true);
 		}
 		else
 		{
