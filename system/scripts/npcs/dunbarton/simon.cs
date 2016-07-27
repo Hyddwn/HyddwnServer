@@ -14,6 +14,7 @@ public class SimonScript : NpcScript
 		SetFace(skinColor: 15, eyeType: 8, eyeColor: 25, mouthType: 0);
 		SetStand("human/male/anim/male_natural_stand_npc_Simon");
 		SetLocation(17, 1314, 921, 24);
+		SetGiftWeights(beauty: 2, individuality: 2, luxury: 2, toughness: -1, utility: 0, rarity: 2, meaning: 1, adult: 0, maniac: 1, anime: 0, sexy: 1);
 
 		EquipItem(Pocket.Face, 4902, 0x00F28427, 0x00844203, 0x0079C36D);
 		EquipItem(Pocket.Hair, 4024, 0x00998866, 0x00998866, 0x00998866);
@@ -27,18 +28,15 @@ public class SimonScript : NpcScript
 		AddPhrase("Let's see... Which ones do I have to finish by today?");
 		AddPhrase("Ugh! This world is so devoid of beauty.");
 		AddPhrase("Travelers... How are they so careless about their appearance?");
-		AddPhrase("Hehehe. She's got some fashion sense.");
+		AddPhrase("Heeheehee... She's got some fashion sense.");
+		AddPhrase("Oops! I was supposed to do that tomorrow, wasn't I? Heehee...");
 	}
 
 	protected override async Task Talk()
 	{
 		SetBgm("NPC_Simon.mp3");
 
-		await Intro(
-			"With a long face, narrow shoulders, and a pale complexion, this man crosses his delicate hands in front of the chest and sways left and right.",
-			"His demeanor is exaggerated and the voice nasal. He seems to have a habit of glancing sideways with those light brown eyes.",
-			"His fashionable shirt has an intricate pattern and was made with great care."
-		);
+		await Intro(L("With a long face, narrow shoulders, and a pale complexion, this man crosses his delicate hands in front of the chest and sways left and right.<br/>His demeanor is exaggerated and the voice nasal. He seems to have a habit of glancing sideways with those light brown eyes.<br/>His fashionable shirt has an intricate pattern and was made with great care."));
 
 		Msg("What do you want?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Modify Item", "@upgrade"));
 
@@ -47,8 +45,19 @@ public class SimonScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("<username/>, the one who saved the Goddess...?");
+					Msg("...Wait, if you're so great as to be saving the Goddess,<br/>shouldn't you know to be humble too?");
+					Msg("...Soon, all the rumors of your self-aggrandizing behavior will start catching up with you.");
+					Msg("Even so, I have to admit that what you did was pretty fabulous.");
+				}
+				else if (Title == 11002)
+				{
 					Msg("...Doesn't a title like that overwhelm you at all?<br/>Well... Judging by your confident look,<br/>I guess you have the skills to back it up.");
+				}
+
 				await Conversation();
 				break;
 
@@ -85,7 +94,7 @@ public class SimonScript : NpcScript
 								"Repairing 1 point is nothing."
 							);
 						else
-							Msg("Hmm... Sorry, I think I've failed the repair job.");
+							Msg("Hmm... Sorry, I think I've failed the repair job."); // Should be 2
 					}
 					else if (result.Points > 1)
 					{
@@ -121,6 +130,7 @@ public class SimonScript : NpcScript
 						Msg("(Error)");
 				}
 
+				Msg("Come see me again next time if you have something else to upgrade.<upgrade hide='true'/>");
 				break;
 		}
 
@@ -139,15 +149,15 @@ public class SimonScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Your name is... <username/>, right?"));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You are back, <username/>."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Of course, I would like for you to visit often.<br/>Take your time and look around, <username/>."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -160,14 +170,14 @@ public class SimonScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					Msg("I don't think we've met. I'm <npcname/>.");
-					ModifyRelation(1, 0, Random(2));
+					Msg(FavorExpression(), "I don't think we've met. I'm <npcname/>.");
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					GiveKeyword("shop_cloth");
 					Msg(FavorExpression(), "So, are you saying that you don't know the only<br/>Clothing Shop in Dunbarton that happens to be mine?<br/>You're denser than you look.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
@@ -175,7 +185,7 @@ public class SimonScript : NpcScript
 				GiveKeyword("shop_bookstore");
 				Msg(FavorExpression(), "I don't like to talk about people behind their backs.<br/>It's not a very good habit and you should get rid of it, too.<br/>Oh... You didn't mean that? Oh, I am so sorry.");
 				Msg("Aeira at the Bookstore seems to be very interested in music.<br/>If you happen to be interested in music, be nice to her.<br/>She'll give you something good if you become friends.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -198,6 +208,7 @@ public class SimonScript : NpcScript
 				break;
 
 			case "shop_grocery":
+				GiveKeyword("shop_restaurant");
 				Msg("Are you interested in buying cooking ingredients?<br/>Go to the Restaurant.<br/>The Restaurant carries them, too.");
 				break;
 
@@ -216,6 +227,7 @@ public class SimonScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("Mmm? You are definitely not from here, are you?<br/>The villagers here knows not to ask ME<br/>where the Blacksmith's Shop is in this town.");
 				Msg("If you must know,<br/>go talk to Nerys at the Weapons Shop.<br/>She's rather nice to outsiders.<br/>After all, she once was a traveler, too.");
 				break;
@@ -234,6 +246,7 @@ public class SimonScript : NpcScript
 				break;
 
 			case "skill_tailoring":
+				GiveKeyword("shop_misc");
 				Msg("Ha! You want to make clothes?<br/>Why don't you stop by the General Shop first?");
 				Msg("You can simply buy the cheap tailoring kit<br/>and equip it to learn the skill.<br/>Did you ask me about the Tailoring skill<br/>so you can get it from me for free?");
 				Msg("Don't be so cheap!");
@@ -297,6 +310,33 @@ public class SimonScript : NpcScript
 				Msg("Oh! You mean where that elegant lady Eavan works?<br/>The Town Office is just over there.<br/>Go left a little, then out to the edge of the Square.<br/>You'll see a large building there. That's the one.");
 				break;
 
+			case "bow":
+				Msg("We don't sell bows here.<br/>Go to the Weapons Shop for that.");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_misc");
+				Msg("A lute? Hmm...<br/>Ask Walter, the guy with that intimidating look over there.<br/>It's all right. He won't bite. Don't be so scared and go check out the General Shop.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog...<br/>It's the eternal Utopia that everyone in Tuatha de Danann<br/>dreams of.");
+				Msg("Have you ever imagined a world where there is no death?<br/>They say there's no pain there, only full of joy and happiness.");
+				Msg("Well, that's all a work of imagination.<br/>That kind of place does not exist.<br/>Don't fall for that fairy tale.");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("Music Scores? I thought Walter sold them next door.<br/>Have you checked with him?");
+				Msg("You know you can't play music without<br/>a music score, don't you?");
+				break;
+
+			case "jewel":
+				Msg("Sometimes I use various gem accessories<br/>to accentuate my outfit.");
+				Msg("If I have to choose my most favorite gem,<br/>I won't hesitate to choose the bloody red Ruby.");
+				Msg("I like looking elegant,<br/>but sometimes I want to express my burning passion<br/>through that red colored gem. Hoho.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"Go ask someone else.",
@@ -307,7 +347,7 @@ public class SimonScript : NpcScript
 					"So... what do you want me to do about that?",
 					"Don't you think you've had enough? Let's talk about something else."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
