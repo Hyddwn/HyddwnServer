@@ -144,7 +144,7 @@ public class FerghusPtjScript : GeneralScript
 				// Report later
 				if (!reply.StartsWith("@reward:"))
 				{
-					npc.Msg(npc.Expression("normal"), L("It's alright if you have other things to do.<br/>Go ahead. I'll see you later."));
+					npc.Msg(npc.FavorExpression(), L("It's alright if you have other things to do.<br/>Go ahead. I'll see you later."));
 					return;
 				}
 
