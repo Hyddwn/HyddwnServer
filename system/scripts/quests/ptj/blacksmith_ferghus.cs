@@ -212,11 +212,6 @@ public class FerghusPtjScript : GeneralScript
 			else
 				npc.Msg(L("Alright. Good idea."));
 			npc.StartPtj(randomPtj);
-
-			// Give Armor to be Delivered if recipient is Trefor.
-			// (Item normally only dispensed to player if Deliver() is first objective.)
-			if (randomPtj % 10 == 4)
-				npc.Player.Inventory.Add(new Item(70002), true);
 		}
 		else
 		{
@@ -576,7 +571,7 @@ public abstract class FerghusExtDeliveryPtjBaseScript : FerghusPtjBaseScript
 {
 	public override void Load()
 	{
-		AddObjective("ptj1", L("Deliver Armor to Trefor"), 0, 0, 0, Talk("_trefor"));
+		AddObjective("ptj1", L("Deliver Armor to Trefor"), 0, 0, 0, Deliver(ArmorToDeliver, "_trefor"));
 		AddObjective("ptj2", L("Leave the Armor at the Healer's House"), 0, 0, 0, Deliver(ArmorToDeliver, "_dilys"));
 
 		AddHook("_trefor", "after_intro", TreforAfterIntro);
