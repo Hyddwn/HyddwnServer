@@ -141,5 +141,26 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.MsgBox(creature, Localization.Get("Expanding the trade window is not supported yet."));
 		}
+
+		/// <summary>
+		/// Sent to switch from Ready to Waiting mode.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.TradeWait)]
+		public void TradeWait(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var trade = creature.Temp.ActiveTrade;
+
+			// Check trade
+			if (trade == null)
+			{
+				Log.Warning("TradeWait: User '{0}' tried to wait without being in a trade.", client.Account.Id);
+				return;
+			}
+
+			trade.Wait(creature);
+		}
 	}
 }

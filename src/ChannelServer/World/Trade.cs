@@ -35,6 +35,11 @@ namespace Aura.Channel.World
 		public bool Accepted { get; private set; }
 
 		/// <summary>
+		/// The current status of the trade.
+		/// </summary>
+		public TradeStatus Status { get; private set; }
+
+		/// <summary>
 		/// Creates a new trade session.
 		/// </summary>
 		/// <param name="creature1"></param>
@@ -139,6 +144,23 @@ namespace Aura.Channel.World
 		{
 			var partner = (creature == this.Creature1 ? this.Creature2 : this.Creature1);
 			Send.TradeItemRemoved(partner, item.EntityId);
+
+		/// <summary>
+		/// Puts creature into waiting mode.
+		/// </summary>
+		/// <param name="creature"></param>
+		public void Wait(Creature creature)
+		{
+			this.Status = TradeStatus.NotReady;
+
+			Send.TradeWait(this.Creature1, 4000);
+			Send.TradeWait(this.Creature2, 4000);
 		}
+
+	public enum TradeStatus
+	{
+		NotReady = 0,
+		OneReady = 1,
+		BothReady = 2,
 	}
 }
