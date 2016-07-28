@@ -133,6 +133,8 @@ namespace Aura.Channel.World
 		{
 			var partner = (creature == this.Creature1 ? this.Creature2 : this.Creature1);
 			Send.TradeItemAdded(partner, item);
+
+			this.Wait(creature);
 		}
 
 		/// <summary>
@@ -144,6 +146,9 @@ namespace Aura.Channel.World
 		{
 			var partner = (creature == this.Creature1 ? this.Creature2 : this.Creature1);
 			Send.TradeItemRemoved(partner, item.EntityId);
+
+			this.Wait(creature);
+		}
 
 		/// <summary>
 		/// Puts creature into waiting mode.
