@@ -132,6 +132,11 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 
 			Send.ItemMoveR(creature, true);
+
+			// Update trade window
+			if (target == Pocket.Trade) creature.Temp.ActiveTrade.AddItem(creature, item);
+			if (source == Pocket.Trade) creature.Temp.ActiveTrade.RemoveItem(creature, item);
+
 			return;
 
 		L_Fail:

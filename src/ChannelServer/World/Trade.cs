@@ -118,5 +118,27 @@ namespace Aura.Channel.World
 			Send.TradePartnerInfo(this.Creature2, this.Creature1.EntityId, this.Creature1.Name);
 			Send.TradeAcceptRequestR(this.Creature2, true);
 		}
+
+		/// <summary>
+		/// Adds item to trade partner's window.
+		/// </summary>
+		/// <param name="creature">Creature that added the item.</param>
+		/// <param name="item">Item added.</param>
+		public void AddItem(Creature creature, Item item)
+		{
+			var partner = (creature == this.Creature1 ? this.Creature2 : this.Creature1);
+			Send.TradeItemAdded(partner, item);
+		}
+
+		/// <summary>
+		/// Removes item from trade partner's window.
+		/// </summary>
+		/// <param name="creature">Creature that removed the item.</param>
+		/// <param name="item">Item removed.</param>
+		public void RemoveItem(Creature creature, Item item)
+		{
+			var partner = (creature == this.Creature1 ? this.Creature2 : this.Creature1);
+			Send.TradeItemRemoved(partner, item.EntityId);
+		}
 	}
 }
