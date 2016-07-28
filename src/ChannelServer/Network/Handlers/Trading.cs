@@ -162,5 +162,29 @@ namespace Aura.Channel.Network.Handlers
 
 			trade.Wait(creature);
 		}
+
+		/// <summary>
+		/// Sent to switch from Ready to Waiting mode.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="packet"></param>
+		[PacketHandler(Op.TradeReady)]
+		public void TradeReady(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var trade = creature.Temp.ActiveTrade;
+
+			// Check trade
+			if (trade == null)
+			{
+				Log.Warning("TradeWait: User '{0}' tried to ready without being in a trade.", client.Account.Id);
+				Send.TradeReadyR(creature, false);
+				return;
+			}
+
+			trade.Ready(creature);
+
+			Send.TradeReadyR(creature, true);
+		}
 	}
 }

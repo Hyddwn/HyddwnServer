@@ -106,6 +106,22 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Moves all items from one creature's trade window to
+		/// another's inventory.
+		/// </summary>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		private static void TradeItems(Creature from, Creature to)
+		{
+			var items = from.Inventory.GetItems(a => a.Info.Pocket == Pocket.Trade);
+			foreach (var item in items)
+			{
+				from.Inventory.Remove(item);
+				to.Inventory.Add(item, true);
+			}
+		}
+
+		/// <summary>
 		/// Accepts trade request from creature 2.
 		/// </summary>
 		public void Accept()
@@ -161,6 +177,39 @@ namespace Aura.Channel.World
 			Send.TradeWait(this.Creature1, 4000);
 			Send.TradeWait(this.Creature2, 4000);
 		}
+
+		/// <summary>
+		/// Puts creature into ready mode.
+		/// </summary>
+		/// <param name="creature"></param>
+		public void Ready(Creature creature)
+		{
+			this.Status++;
+
+			Send.TradeReadied(this.Creature1, creature.EntityId);
+			Send.TradeReadied(this.Creature2, creature.EntityId);
+
+			if (this.Status == TradeStatus.BothReady)
+				this.Complete();
+
+			Send.TradeReadyR(creature, true);
+		}
+
+		/// <summary>
+		/// Completes trade session.
+		/// </summary>
+		private void Complete()
+		{
+			this.Creature1.Temp.ActiveTrade = null;
+			this.Creature2.Temp.ActiveTrade = null;
+
+			TradeItems(this.Creature1, this.Creature2);
+			TradeItems(this.Creature2, this.Creature1);
+
+			Send.TradeComplete(this.Creature1);
+			Send.TradeComplete(this.Creature2);
+		}
+	}
 
 	public enum TradeStatus
 	{
