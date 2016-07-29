@@ -102,7 +102,7 @@ public class StewartScript : NpcScript
 							RndMsg(
 								"Thankfully, everything went well. I didn't make any mistakes.",
 								"The item is completely repaired."
-						);
+							);
 						else
 							// TODO: Use string format once we have XML dialogues.
 							Msg("The item is repaired...but<br/>I was unable to repair " + result.Fails + " point(s). I'm sorry.");

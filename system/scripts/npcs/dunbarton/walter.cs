@@ -103,7 +103,7 @@ public class WalterScript : NpcScript
 							RndMsg(
 								"Perfectly repaired as you wanted.",
 								"It's done."
-						);
+							);
 						else
 							// TODO: Use string format once we have XML dialogues.
 							Msg("There have been some mistakes, just " + result.Fails + " point(s)...<br/>Anyway, it's done.");

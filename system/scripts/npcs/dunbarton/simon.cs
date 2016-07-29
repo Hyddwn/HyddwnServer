@@ -103,7 +103,7 @@ public class SimonScript : NpcScript
 								"\"A supernatural needlework\" would describe it.",
 								"The repair was perfect, but the quality of the clothing is rather cheap.",
 								"The clothes I repair are just like brand new."
-						);
+							);
 						else
 							// TODO: Use string format once we have XML dialogues.
 							Msg("There, it's done.<br/>But I made " + result.Fails + " mistake(s), unfortunately.<br/>I could restore only " + result.Successes + " point(s).");
