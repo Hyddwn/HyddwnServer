@@ -1566,12 +1566,19 @@ namespace Aura.Channel.Util
 			// Get item id
 			int itemId;
 			if (!int.TryParse(args[1], out itemId))
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid item id."));
 				return CommandResult.InvalidArgument;
+			}
 
 			// Get ego race
 			EgoRace egoRace;
 			if (!EgoRace.TryParse(args[3], out egoRace) || (egoRace <= EgoRace.None || egoRace > EgoRace.CylinderF))
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid ego race. Available races:"));
+				Send.ServerMessage(sender, string.Join(", ", Enum.GetNames(typeof(EgoRace))));
 				return CommandResult.InvalidArgument;
+			}
 
 			// Check item data
 			var itemData = AuraData.ItemDb.Find(itemId);
