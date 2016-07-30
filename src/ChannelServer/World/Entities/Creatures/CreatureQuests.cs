@@ -560,6 +560,23 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Sets track record, changing success, done, and last change.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="done"></param>
+		/// <param name="success"></param>
+		public void SetPtjTrackRecord(PtjType type, int done, int success)
+		{
+			var record = this.GetPtjTrackRecord(type);
+
+			record.Done = done;
+			record.Success = success;
+			record.LastChange = DateTime.Now;
+
+			this.PtjTrackRecordChanged.Raise(_creature, record);
+		}
+
+		/// <summary>
 		/// Returns new list of all track records.
 		/// </summary>
 		/// <returns></returns>
