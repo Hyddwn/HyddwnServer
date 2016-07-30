@@ -8,6 +8,7 @@ namespace Aura.Mabi
 	/// <summary>
 	/// Wrapper around DateTime, to calculate the current time in Erinn.
 	/// </summary>
+	[Serializable]
 	public class ErinnTime
 	{
 		/// <summary>
