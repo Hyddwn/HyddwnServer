@@ -164,7 +164,8 @@ namespace Aura.Channel.Network.Handlers
 		}
 
 		/// <summary>
-		/// Sent to switch from Ready to Waiting mode.
+		/// Sent when clicking Complete, to indicate that player is ready
+		/// to trade.
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="packet"></param>
@@ -177,7 +178,7 @@ namespace Aura.Channel.Network.Handlers
 			// Check trade
 			if (trade == null)
 			{
-				Log.Warning("TradeWait: User '{0}' tried to ready without being in a trade.", client.Account.Id);
+				Log.Warning("TradeReady: User '{0}' tried to ready without being in a trade.", client.Account.Id);
 				Send.TradeReadyR(creature, false);
 				return;
 			}
