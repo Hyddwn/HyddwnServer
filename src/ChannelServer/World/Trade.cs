@@ -76,8 +76,7 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Cancels trade, returning all items and closing the trade window.
 		/// </summary>
-		/// <param name="requestee"></param>
-		public void Cancel(Creature requestee)
+		public void Cancel()
 		{
 			this.Creature1.Temp.ActiveTrade = null;
 			MoveAllItemsFromTradeToInv(this.Creature1);

@@ -92,7 +92,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			trade.Cancel(creature);
+			trade.Cancel();
 		}
 
 		/// <summary>
