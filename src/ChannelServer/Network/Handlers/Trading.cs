@@ -184,8 +184,6 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			trade.Ready(creature);
-
-			Send.TradeReadyR(creature, true);
 		}
 	}
 }
