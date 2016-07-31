@@ -117,7 +117,7 @@ namespace Aura.Channel.World
 			foreach (var item in items)
 			{
 				from.Inventory.Remove(item);
-				to.Inventory.Add(item, true);
+				to.Inventory.Add(new Item(item), true);
 			}
 		}
 
