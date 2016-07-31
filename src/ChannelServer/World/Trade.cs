@@ -170,7 +170,7 @@ namespace Aura.Channel.World
 		/// Puts creature into waiting mode.
 		/// </summary>
 		/// <param name="creature"></param>
-		public void Wait(Creature creature)
+		private void Wait(Creature creature)
 		{
 			this.Status = TradeStatus.NotReady;
 

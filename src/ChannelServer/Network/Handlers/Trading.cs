@@ -143,8 +143,15 @@ namespace Aura.Channel.Network.Handlers
 		}
 
 		/// <summary>
-		/// Sent to switch from Ready to Waiting mode.
+		/// ?
 		/// </summary>
+		/// <remarks>
+		/// Send by the client as response to TradeWait sent by the server
+		/// when items change. Exact purpose unknown. Originally I
+		/// thought this was a request from the client to wait,
+		/// but that resulted in an infinite loop of TradeWaits,
+		/// as one would be send by the client whenever one was received.
+		/// </remarks>
 		/// <param name="client"></param>
 		/// <param name="packet"></param>
 		[PacketHandler(Op.TradeWait)]
@@ -156,11 +163,11 @@ namespace Aura.Channel.Network.Handlers
 			// Check trade
 			if (trade == null)
 			{
-				Log.Warning("TradeWait: User '{0}' tried to wait without being in a trade.", client.Account.Id);
+				Log.Warning("TradeWait: User '{0}' tried to ? without being in a trade.", client.Account.Id);
 				return;
 			}
 
-			trade.Wait(creature);
+			//trade.Wait(creature);
 		}
 
 		/// <summary>
