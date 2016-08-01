@@ -443,6 +443,12 @@ namespace Aura.Channel.Scripting.Scripts
 				ChannelServer.Instance.Events.PlayerRemovesItem += this.OnPlayerReceivesOrRemovesItem;
 			}
 
+			if (objective.Type == ObjectiveType.Create)
+			{
+				ChannelServer.Instance.Events.CreatureCreatedItem -= this.OnCreatureCreatedItem;
+				ChannelServer.Instance.Events.CreatureCreatedItem += this.OnCreatureCreatedItem;
+			}
+
 			if (objective.Type == ObjectiveType.ReachRank)
 			{
 				ChannelServer.Instance.Events.SkillRankChanged -= this.OnSkillRankChanged;
@@ -575,6 +581,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestObjective Collect(int itemId, int amount) { return new QuestObjectiveCollect(itemId, amount); }
 		protected QuestObjective Talk(string npcName) { return new QuestObjectiveTalk(npcName); }
 		protected QuestObjective Deliver(int itemId, string npcName) { return new QuestObjectiveDeliver(itemId, 1, npcName); }
+		protected QuestObjective Create(int itemId, int amount, CreationMethod method, int quality = -1000) { return new QuestObjectiveCreate(itemId, amount, method, quality); }
 		protected QuestObjective ReachRank(SkillId skillId, SkillRank rank) { return new QuestObjectiveReachRank(skillId, rank); }
 		protected QuestObjective ReachLevel(int level) { return new QuestObjectiveReachLevel(level); }
 		protected QuestObjective GetKeyword(string keyword) { return new QuestObjectiveGetKeyword(keyword); }
@@ -949,6 +956,37 @@ namespace Aura.Channel.Scripting.Scripts
 				if (!progress.Done && dungeon.Name.ToLower() == clearDungeonObjective.DungeonName.ToLower())
 				{
 					quest.SetDone(progress.Ident);
+					UpdateQuest(creature, quest);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates Create objectives.
+		/// </summary>
+		private void OnCreatureCreatedItem(CreationEventArgs args)
+		{
+			var creature = args.Creature;
+
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
+			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
+
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null || objective.Type != ObjectiveType.Create) return;
+
+				var createObjective = (objective as QuestObjectiveCreate);
+				if (!progress.Done && args.Item.Info.Id == createObjective.ItemId && args.Method == createObjective.CreationMethod)
+				{
+					progress.Count++;
+					if (progress.Count == createObjective.Amount)
+						quest.SetDone(progress.Ident);
+
 					UpdateQuest(creature, quest);
 				}
 			}

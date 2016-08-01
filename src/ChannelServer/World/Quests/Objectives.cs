@@ -269,4 +269,27 @@ namespace Aura.Channel.World.Quests
 			this.MetaData.SetString("TGTCLS", dungeonName);
 		}
 	}
+
+	public class QuestObjectiveCreate : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Create; } }
+
+		public CreationMethod CreationMethod { get; private set; }
+		public int MinQuality { get; private set; }
+		public int ItemId { get; private set; }
+
+		public QuestObjectiveCreate(int itemId, int amount, CreationMethod method, int quality = -1000)
+			: base(amount)
+		{
+			this.CreationMethod = method;
+			this.MinQuality = quality;
+			this.ItemId = itemId;
+			this.Amount = amount;
+
+			this.MetaData.SetUShort("TGTSKL", (ushort)method);
+			this.MetaData.SetInt("TARGETQUALITY", quality);
+			this.MetaData.SetInt("TARGETITEM", itemId);
+			this.MetaData.SetInt("TARGETCOUNT", amount);
+		}
+	}
 }

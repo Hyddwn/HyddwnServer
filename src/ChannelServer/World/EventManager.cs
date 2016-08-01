@@ -386,9 +386,10 @@ namespace Aura.Channel.World
 		}
 	}
 
-	public enum CreationMethod
+	/// <remarks>Can test for equality against SkillId.</remarks>
+	public enum CreationMethod : ushort
 	{
-		Tailoring,
-		Blacksmithing,
+		Tailoring = 10001,
+		Blacksmithing = 10016,
 	}
 }
