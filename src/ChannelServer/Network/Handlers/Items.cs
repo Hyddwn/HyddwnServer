@@ -116,6 +116,13 @@ namespace Aura.Channel.Network.Handlers
 				}
 			}
 
+			// Check trade
+			if ((target == Pocket.Trade || source == Pocket.Trade) && creature.Temp.ActiveTrade == null)
+			{
+				Log.Warning("ItemMove: User '{0}' tried to move something to or from the trade window without being in a trade.", client.Account.Id);
+				goto L_Fail;
+			}
+
 			// Stop moving when changing weapons
 			if ((target >= Pocket.RightHand1 && target <= Pocket.Magazine2) || (source >= Pocket.RightHand1 && source <= Pocket.Magazine2))
 				creature.StopMove();
@@ -125,6 +132,11 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 
 			Send.ItemMoveR(creature, true);
+
+			// Update trade window
+			if (target == Pocket.Trade) creature.Temp.ActiveTrade.AddItem(creature, item);
+			if (source == Pocket.Trade) creature.Temp.ActiveTrade.RemoveItem(creature, item);
+
 			return;
 
 		L_Fail:

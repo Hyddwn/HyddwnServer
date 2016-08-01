@@ -436,6 +436,7 @@ namespace Aura.Mabi.Network
 		public const int TradeReadied = 0x8F6A;
 		public const int TradeItemAdded = 0x8F6E;
 		public const int TradeItemRemoved = 0x8F6F;
+		public const int TradeExpandWindow = 0x8F70;
 		public const int AddTitleKnowledge = 0x8FC0;
 		public const int AddTitle = 0x8FC1;
 		public const int ChangeTitle = 0x8FC4;
