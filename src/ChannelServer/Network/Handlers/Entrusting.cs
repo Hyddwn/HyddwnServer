@@ -55,5 +55,21 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.EntrustedEnchantR(creature, true, partner);
 		}
+
+		/// <summary>
+		/// Sent when closing the entrustment window.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.EntrustedEnchantCancel)]
+		public void EntrustedEnchantCancel(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// check active...
+
+			Send.EntrustedEnchantClose(creature);
+		}
 	}
 }
