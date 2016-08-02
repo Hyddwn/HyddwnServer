@@ -27,12 +27,13 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.EntrustedEnchant)]
 		public void EntrustedEnchant(ChannelClient client, Packet packet)
 		{
-			var memberEntityId = packet.GetLong();
+			var entityId = packet.GetLong();
 			var unkByte = packet.GetByte();
 			var unkLong = packet.GetLong();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check feature
 			if (!AuraData.FeaturesDb.IsEnabled("EnchantEntrust"))
 			{
 				Send.Notice(creature, Localization.Get("Requesting enchantments isn't possible yet."));
@@ -40,8 +41,19 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check partner
+			var partner = creature.Party.GetMember(entityId);
+			if (partner == null)
+			{
+				Send.MsgBox(creature, Localization.Get("Player not found in party."));
+				Send.EntrustedEnchantR(creature, false);
+				return;
+			}
+
 			// No party members: "There is no party member available to ask for an Enchantment."
 			// Member doesn't have rF+: "You cannot request the enchantment."
+
+			Send.EntrustedEnchantR(creature, true, partner);
 		}
 	}
 }
