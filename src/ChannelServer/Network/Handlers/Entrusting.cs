@@ -33,7 +33,7 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			if (!AuraData.FeaturesDb.IsEnabled("EnchantEntrust") || true)
+			if (!AuraData.FeaturesDb.IsEnabled("EnchantEntrust"))
 			{
 				Send.Notice(creature, Localization.Get("Requesting enchantments isn't possible yet."));
 				Send.EntrustedEnchantR(creature, false);
