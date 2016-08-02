@@ -445,8 +445,10 @@ namespace Aura.Channel.Scripting.Scripts
 
 			if (objective.Type == ObjectiveType.Create)
 			{
-				ChannelServer.Instance.Events.CreatureCreatedItem -= this.OnCreatureCreatedItem;
-				ChannelServer.Instance.Events.CreatureCreatedItem += this.OnCreatureCreatedItem;
+				ChannelServer.Instance.Events.CreatureCreatedItem -= this.OnCreatureCreatedOrProducedItem;
+				ChannelServer.Instance.Events.CreatureCreatedItem += this.OnCreatureCreatedOrProducedItem;
+				ChannelServer.Instance.Events.CreatureProducedItem -= this.OnCreatureCreatedOrProducedItem;
+				ChannelServer.Instance.Events.CreatureProducedItem += this.OnCreatureCreatedOrProducedItem;
 			}
 
 			if (objective.Type == ObjectiveType.ReachRank)
@@ -581,7 +583,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestObjective Collect(int itemId, int amount) { return new QuestObjectiveCollect(itemId, amount); }
 		protected QuestObjective Talk(string npcName) { return new QuestObjectiveTalk(npcName); }
 		protected QuestObjective Deliver(int itemId, string npcName) { return new QuestObjectiveDeliver(itemId, 1, npcName); }
-		protected QuestObjective Create(int itemId, int amount, CreationMethod method, int quality = -1000) { return new QuestObjectiveCreate(itemId, amount, method, quality); }
+		protected QuestObjective Create(int itemId, int amount, SkillId skillId, int quality = -1000) { return new QuestObjectiveCreate(itemId, amount, skillId, quality); }
 		protected QuestObjective ReachRank(SkillId skillId, SkillRank rank) { return new QuestObjectiveReachRank(skillId, rank); }
 		protected QuestObjective ReachLevel(int level) { return new QuestObjectiveReachLevel(level); }
 		protected QuestObjective GetKeyword(string keyword) { return new QuestObjectiveGetKeyword(keyword); }
@@ -964,9 +966,38 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Updates Create objectives.
 		/// </summary>
-		private void OnCreatureCreatedItem(CreationEventArgs args)
+		/// <remarks>
+		/// Creation and Production events share same event 
+		/// due to having the same ObjectiveType code.
+		/// </remarks>
+		/// <param name="args">An object of type CreationEventArgs or ProductionEventArgs, otherwise an exception will be issued to the logger.</param>
+		private void OnCreatureCreatedOrProducedItem(EventArgs args)
 		{
-			var creature = args.Creature;
+			Creature creature;
+			int itemId;
+			string skill; // Is there a better way to check for skill match?
+
+			CreationEventArgs crargs = args as CreationEventArgs;
+			ProductionEventArgs prargs = args as ProductionEventArgs;
+			if (crargs != null) // Try cast as CreationEventArgs
+			{
+				creature = crargs.Creature;
+				itemId = crargs.Item.Info.Id;
+				skill = crargs.Method.ToString();
+			}
+			else if (prargs != null) // Try cast as ProductionEventArgs
+			{
+				creature = prargs.Creature;
+				itemId = prargs.Item.Info.Id;
+				skill = prargs.ProductionData.Category.ToString();
+				if (skill == "Spinning")
+					skill = "Weaving"; // Shared SkillId.
+			}
+			else // Error: Cannot cast as either one.
+			{
+				Log.Exception(new InvalidCastException(String.Format("Unable to cast EventArgs as CreationEventArgs nor ProductionEventArgs (Quest Name: {0}, ID: {1})", this.Name, this.Id)));
+				return;
+			}
 
 			var quests = creature.Quests.GetAllIncomplete(this.Id);
 			foreach (var quest in quests)
@@ -981,7 +1012,7 @@ namespace Aura.Channel.Scripting.Scripts
 				if (objective == null || objective.Type != ObjectiveType.Create) return;
 
 				var createObjective = (objective as QuestObjectiveCreate);
-				if (!progress.Done && args.Item.Info.Id == createObjective.ItemId && args.Method == createObjective.CreationMethod)
+				if (!progress.Done && itemId == createObjective.ItemId && skill == createObjective.SkillId.ToString())
 				{
 					progress.Count++;
 					if (progress.Count == createObjective.Amount)
