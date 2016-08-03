@@ -7,6 +7,7 @@ using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Channel.World.Entities.Props;
 using Aura.Data;
+using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
@@ -42,6 +43,8 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Check partner
+			// Client also does a check for any party members.
+			// No party members: "There is no party member available to ask for an Enchantment."
 			var partner = creature.Party.GetMember(entityId);
 			if (partner == null)
 			{
@@ -50,8 +53,13 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			// No party members: "There is no party member available to ask for an Enchantment."
-			// Member doesn't have rF+: "You cannot request the enchantment."
+			// Check skill
+			if (!partner.Skills.Has(SkillId.Enchant, SkillRank.RF))
+			{
+				Send.Notice(creature, Localization.Get("You cannot request the enchantment."));
+				Send.EntrustedEnchantR(creature, false);
+				return;
+			}
 
 			Send.EntrustedEnchantR(creature, true, partner);
 		}
