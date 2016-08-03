@@ -232,6 +232,9 @@ namespace Aura.Channel.World.Inventory
 			this.Add(new InventoryPocketStack(Pocket.Quests));
 			this.Add(new InventoryPocketSingle(Pocket.Cursor));
 			this.Add(new InventoryPocketNormal(Pocket.Trade, 10, 5));
+			this.Add(new InventoryPocketNormal(Pocket.EntrustmentReward, 10, 5));
+			this.Add(new InventoryPocketSingle(Pocket.EntrustmentItem1));
+			this.Add(new InventoryPocketSingle(Pocket.EntrustmentItem2));
 
 			// Equipment
 			for (var i = Pocket.Face; i <= Pocket.Accessory2; ++i)
