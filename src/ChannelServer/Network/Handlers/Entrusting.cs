@@ -6,6 +6,7 @@ using Aura.Channel.Network.Sending.Helpers;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Channel.World.Entities.Props;
+using Aura.Channel.World.Inventory;
 using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
@@ -61,6 +62,19 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check magic powder
+			// Getting here is possible if you drop the powder before
+			// confirming the party member for the enchant.
+			var items = creature.Inventory.GetItems(a => a.HasTag("/enchant/powder/") && !a.HasTag("/powder05/"), StartAt.BottomRight);
+			if (items.Count == 0)
+			{
+				// Unofficial
+				Send.Notice(creature, Localization.Get("You don't have the necessary items."));
+				Send.EntrustedEnchantR(creature, false);
+				return;
+			}
+
+			// Response
 			Send.EntrustedEnchantR(creature, true, partner);
 		}
 
