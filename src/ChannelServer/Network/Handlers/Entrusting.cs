@@ -48,7 +48,7 @@ namespace Aura.Channel.Network.Handlers
 			var partner = creature.Party.GetMember(entityId);
 			if (partner == null)
 			{
-				Send.MsgBox(creature, Localization.Get("Player not found in party."));
+				Send.Notice(creature, Localization.Get("There is no party member available to ask for an Enchantment."));
 				Send.EntrustedEnchantR(creature, false);
 				return;
 			}
