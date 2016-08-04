@@ -43,6 +43,9 @@ using Aura.Mabi;
 using Aura.Mabi.Const;
 using System.Threading.Tasks;
 using Aura.Channel.Scripting.Scripts;
+using Aura.Shared.Util;
+using System;
+using Aura.Channel.World.Entities;
 
 //--- Aura Script -----------------------------------------------------------
 // Malcolm's General Store Part-Time Job
@@ -53,6 +56,8 @@ using Aura.Channel.Scripting.Scripts;
 // higher ones than in the past. We'll use the G1 rewards for now.
 // Due to limited G1 data, some current rewards are downscaled to 50% gold, 33% exp.
 // Ref: http://wiki.mabinogiworld.com/index.php?title=Malcolm&oldid=145857#Part-time_Jobs
+//
+// Also, starting materials for tailoring jobs are most likely inaccurate.
 //---------------------------------------------------------------------------
 
 public class MalcolmPtjScript : GeneralScript
@@ -71,7 +76,7 @@ public class MalcolmPtjScript : GeneralScript
 		MISSINGNO005, // Basic  Tailor 2 Wizard Hats
 		MISSINGNO006, // Basic  Tailor 2 Headbands
 		508207, // Basic  Tailor 2 Popo's Skirts (F)
-		508210, // Basic  Tailor 2 Mongo Traveler Suits (F)
+		508210, // Basic  Tailor 2 Mongo's Traveler Suits (F)
 		508212, // Basic  Tailor 2 Leather Bandanas
 		MISSINGNO003, // Basic  Garment Delivery (Dilys)
 		MISSINGNO000, // Basic  Garment Delivery (Nora) // Appears twice on mabiwiki?
@@ -84,8 +89,6 @@ public class MalcolmPtjScript : GeneralScript
 		MISSINGNO030, // Int    Garment Delivery (Bebhinn)
 		MISSINGNO032, // Int    Garment Delivery (Lassar)
 		MISSINGNO033, // Int    Garment Delivery (Caitin)
-		MISSINGNO034, // Int    Weave Thin Thread Ball
-		MISSINGNO035, // Int    Weave Thick Thread Ball
 		MISSINGNO036, // Int    Weave 2 Thin Thread Balls
 		MISSINGNO037, // Int    Weave 2 Thick Thread Balls
 		MISSINGNO038, // Int    Tailor 2 Cores Ninja Suits (M)
@@ -299,6 +302,8 @@ public class MalcolmPtjScript : GeneralScript
 
 		if (await npc.Select() == "@accept")
 		{
+			GiveStartingPtjItems(randomPtj, npc.Player);
+
 			if (npc.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Thank you.<br/>Then I'll see you when the deadline starts.<br/>Please report your work even if you couldn't finish it on time. That way, I can get on with other jobs without worry."));
 			else
@@ -312,6 +317,166 @@ public class MalcolmPtjScript : GeneralScript
 				npc.Msg(L("Oh, well.<br/>If you change your mind, let me know."));
 			else
 				npc.Msg(L("Oh, I misunderstood.<br/>I'm sorry."));
+		}
+	}
+
+	/// <summary>
+	/// Depending on the supplied <paramref name="questId"/>, will give the player the needed materials to complete their task.
+	/// </summary>
+	private void GiveStartingPtjItems(int questId, Creature player)
+	{
+		Action<int> PlayerGivePattern = (int formId) =>
+		{
+			Item pattern = new Item(60600);
+			pattern.MetaData1.SetInt("FORMID", formId);
+			player.GiveItem(pattern);
+		};
+
+		switch (questId)
+		{
+			case MISSINGNO005: // Basic  Tailor 2 Wizard Hats
+				PlayerGivePattern(?);
+				player.GiveItem(60424, 5);  // Common Leather (Part-Time Job)
+				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
+				player.GiveItem(60424, 5);  // Common Leather (Part-Time Job)
+				break;
+
+			case MISSINGNO006: // Basic  Tailor 2 Headbands
+				PlayerGivePattern(?);
+				player.GiveItem(60419, 2);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
+				player.GiveItem(60419, 2);  // Cheap Fabric (Part-Time Job)
+				break;
+
+			case 508207: // Basic  Tailor 2 Popo's Skirts (F)
+				PlayerGivePattern(10106);   // Apprentice Sewing Pattern - Popo's Skirt (F)
+				player.GiveItem(60419, 2);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
+				player.GiveItem(60419, 2);  // Cheap Fabric (Part-Time Job)
+				break;
+
+			case 508210: // Basic  Tailor 2 Mongo's Traveler Suits (F)
+				PlayerGivePattern(10107);   // Apprentice Sewing Pattern - Mongo Traveler Suit (F)
+				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				break;
+
+			case 508212: // Basic  Tailor 2 Leather Bandanas
+				PlayerGivePattern(10113);   // Apprentice Sewing Pattern - Leather Bandana
+				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60424, 3);  // Common Leather (Part-Time Job)
+				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60424, 3);  // Common Leather (Part-Time Job)
+				break;
+
+			case MISSINGNO038: // Int    Tailor 2 Cores Ninja Suits (M)
+				PlayerGivePattern(?);
+				player.GiveItem(60420, 8);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60412, 8);  // Common Silk (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
+				player.GiveItem(60420, 8);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60412, 8);  // Common Silk (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				break;
+
+			case MISSINGNO039: // Int    Tailor 2 Magic School Uniforms (M)
+				PlayerGivePattern(?);
+				player.GiveItem(60419, 10); // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60412, 10); // Common Silk (Part-Time Job)
+				player.GiveItem(60412, 5);  // Common Silk (Part-Time Job)
+				player.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
+				player.GiveItem(60428, 5);  // Common Leather Strap (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(60419, 10); // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60412, 10); // Common Silk (Part-Time Job)
+				player.GiveItem(60412, 5);  // Common Silk (Part-Time Job)
+				player.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
+				player.GiveItem(60428, 5);  // Common Leather Strap (Part-Time Job)
+				break;
+
+			case MISSINGNO040: // Int    Tailor 2 Guardian Gloves
+				PlayerGivePattern(?);
+				player.GiveItem(60424, 10); // Common Leather (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+				player.GiveItem(60424, 10); // Common Leather (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				break;
+
+			case MISSINGNO041: // Int    Tailor 2 Cores' Healer Suits
+				PlayerGivePattern(?);
+				player.GiveItem(60420, 5);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60427, 5);  // Cheap Leather Strap (Part-Time Job)
+				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+				player.GiveItem(60420, 5);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60427, 5);  // Cheap Leather Strap (Part-Time Job)
+				break;
+
+			case MISSINGNO063: // Adv    Tailor 2 Lirina's Long Skirts
+				PlayerGivePattern(?);
+				player.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
+				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
+				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+				break;
+
+			case MISSINGNO064: // Adv    Tailor 2 Mongo's Hats
+				PlayerGivePattern(?);
+				player.GiveItem(60422, 5);  // Finest Fabric (Part-Time Job)
+				player.GiveItem(60412, 5);  // Common Silk (Part-Time Job)
+				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+				player.GiveItem(60422, 5);  // Finest Fabric (Part-Time Job)
+				player.GiveItem(60412, 5);  // Common Silk (Part-Time Job)
+				break;
+
+			case MISSINGNO065: // Adv    Tailor 2 Cloth Mails
+				PlayerGivePattern(?);
+				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60404, 5);  // Braid (Part-Time Job)
+				player.GiveItem(60404, 5);  // Braid (Part-Time Job)
+				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60404, 5);  // Braid (Part-Time Job)
+				player.GiveItem(60404, 5);  // Braid (Part-Time Job)
+				break;
+
+			case MISSINGNO066: // Adv    Tailor 2 Light Leather Mails (M)
+				PlayerGivePattern(?);
+				player.GiveItem(60421, 8); // Fine Fabric (Part-Time Job)
+				player.GiveItem(60412, 8); // Common Silk (Part-Time Job)
+				player.GiveItem(60428, 8); // Common Leather Strap (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(60404, 2);  // Braid (Part-Time Job)
+				player.GiveItem(60421, 8); // Fine Fabric (Part-Time Job)
+				player.GiveItem(60412, 8); // Common Silk (Part-Time Job)
+				player.GiveItem(60428, 8); // Common Leather Strap (Part-Time Job)
+				break;
+
+			default:
+				break;
 		}
 	}
 }
@@ -329,8 +494,8 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 	public override void Load()
 	{
 		SetId(QuestId);
-		SetName("General Shop Part-Time Job");
-		SetDescription("I need to [deliver the items] that arrived today, but I can't afford to leave the shop unattended. Could you deliver the goods for me? - Malcolm -");
+		SetName(L("General Shop Part-Time Job"));
+		SetDescription(L("I need to [deliver the items] that arrived today, but I can't afford to leave the shop unattended. Could you deliver the goods for me? - Malcolm -"));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -352,7 +517,7 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 			return HookResult.Continue;
 
 		npc.Player.Inventory.Remove(Garment, 1);
-		npc.Notice("You have given Garment to be Delivered to {0}.", NpcName);
+		npc.Notice(L(string.Format("You have given Garment to be Delivered to {0}.", NpcName)));
 		npc.FinishQuest(this.Id, "ptj");
 
 		await this.OnFinish(npc);
@@ -435,7 +600,7 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(19001, 1)); // Robe
 		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Gold(410));
 
-		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(19002, 6)); // Slender Robe
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(19002, 1)); // Slender Robe
 		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(410));
 	}
 }
@@ -552,7 +717,7 @@ public class MalcolmDeliveryLassarIntPtjScript : MalcolmDeliveryPtjBaseScript
 	}
 }
 
-public class MalcolmDeliveryLassarIntPtjScript : MalcolmDeliveryPtjBaseScript
+public class MalcolmDeliveryLassarAdvPtjScript : MalcolmDeliveryPtjBaseScript
 {
 	protected override int QuestId { get { return MISSINGNO060; } }
 	protected override string NpcIdent { get { return "_lassar"; } }
@@ -584,8 +749,8 @@ public abstract class MalcolmExtDeliveryBebhinnPtjBaseScript : QuestScript
 
 	public override void Load()
 	{
-		SetName("General Shop Part-Time Job");
-		SetDescription("I need to [deliver the items] that arrived today, but I can't afford to leave the shop unattended. Could you deliver the goods for me? - Malcolm -");
+		SetName(L("General Shop Part-Time Job"));
+		SetDescription(L("I need to [deliver the items] that arrived today, but I can't afford to leave the shop unattended. Could you deliver the goods for me? - Malcolm -"));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -613,7 +778,7 @@ public abstract class MalcolmExtDeliveryBebhinnPtjBaseScript : QuestScript
 			npc.FinishQuest(this.Id, "ptj1");
 
 			npc.Player.RemoveItem(Garment, 1);
-			npc.Notice("You have given Garment to be Delivered to Bebhinn.");
+			npc.Notice(L("You have given Garment to be Delivered to Bebhinn."));
 
 			npc.Msg(L("Wow, so the clothes I ordered have finally arrived.<br/>Thank you so much! Wow, I really like this style!"));
 			npc.Msg(Hide.Name, L("(Delivered the clothes to Bebhinn.)"));
@@ -628,7 +793,7 @@ public abstract class MalcolmExtDeliveryBebhinnPtjBaseScript : QuestScript
 			npc.FinishQuest(this.Id, "ptj2");
 
 			npc.Player.GiveItem(Flowerpot, 1);
-			npc.Notice("You have received Flowerpot to be Delivered from Bebhinn.");
+			npc.Notice(L("You have received Flowerpot to be Delivered from Bebhinn."));
 
 			npc.Msg(L("Oh, give me a break! Go tell Malcolm to put it on my bill and I'll pay him later."));
 			npc.Msg(Hide.Name, L("(Keep asking Bebhinn for payment, saying you won't be able to get a reward otherwise.)"));
@@ -642,27 +807,320 @@ public abstract class MalcolmExtDeliveryBebhinnPtjBaseScript : QuestScript
 	}
 }
 
+public class MalcolmExtDeliveryBebhinnBasicPtjScript : MalcolmExtDeliveryBebhinnPtjBaseScript
+{
+	public override void Load()
+	{
+		SetId(508405);
+		SetLevel(QuestLevel.Basic);
+
+		AddReward(1, RewardGroupType.Exp, QuestResult.Perfect, Exp(200));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Perfect, Gold(175));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Mid, Exp(100));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Mid, Gold(87));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Low, Exp(40));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Low, Gold(35));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(70));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(260));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(35));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(130));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(14));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(52));
+
+		base.Load();
+	}
+}
+
+public class MalcolmExtDeliveryBebhinnIntPtjScript : MalcolmExtDeliveryBebhinnPtjBaseScript
+{
+	public override void Load()
+	{
+		SetId(MISSINGNO030);
+		SetLevel(QuestLevel.Int);
+
+		AddReward(1, RewardGroupType.Exp, QuestResult.Perfect, Exp(350));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Perfect, Gold(250));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Mid, Exp(175));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Mid, Gold(125));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Low, Exp(70));
+		AddReward(1, RewardGroupType.Exp, QuestResult.Low, Gold(50));
+
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(63020, 1)); // Empty Bottle
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Gold(100));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(50004, 1)); // Bread
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(450));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(51001, 6)); // HP 10 Potion
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(400));
+
+		base.Load();
+	}
+}
+
+public abstract class MalcolmThreadBallPtjBaseScript : QuestScript
+{
+	public const int ThickThreadBall = 60006;
+	public const int ThinThreadBall = 60007;
+
+	protected abstract int QuestId { get; }
+	protected abstract string QuestDescription { get; }
+
+	public override void Load()
+	{
+		SetId(QuestId);
+		SetName(L("General Shop Part-Time Job"));
+		SetDescription(QuestDescription);
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.GeneralShop);
+		SetHours(start: 7, report: 12, deadline: 19);
+	}
+
+	protected void SetBasicLevelAndRewards()
+	{
+		SetLevel(QuestLevel.Basic);
+
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(350));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(120));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(175));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(60));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(70));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(24));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(90));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(320));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(45));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(160));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(18));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(64));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(400));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(80));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(200));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(40));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(80));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(16));
+	}
+
+	protected void SetIntLevelAndRewards()
+	{
+		SetLevel(QuestLevel.Int);
+
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(600));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(150));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(75));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(120));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(30));
+
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(630));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(130));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(315));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(65));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(126));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(26));
+
+		AddReward(3, RewardGroupType.Gold, QuestResult.Perfect, Exp(140));
+		AddReward(3, RewardGroupType.Gold, QuestResult.Perfect, Gold(500));
+		AddReward(3, RewardGroupType.Gold, QuestResult.Mid, Exp(70));
+		AddReward(3, RewardGroupType.Gold, QuestResult.Mid, Gold(250));
+		AddReward(3, RewardGroupType.Gold, QuestResult.Low, Exp(28));
+		AddReward(3, RewardGroupType.Gold, QuestResult.Low, Gold(100));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(19002, 1)); // Slender Robe
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(125));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(18024, 1)); // Hairband
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(25));
+	}
+
+	protected void SetAdvLevelAndRewards()
+	{
+		SetLevel(QuestLevel.Adv);
+
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(700));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(240));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(350));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(120));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(140));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(48));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(180));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(640));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(90));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(320));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(36));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(128));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(800));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(160));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(400));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(90));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(160));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(32));
+	}
+}
+
+public class MalcolmThinThreadBallBasicPtjScript : MalcolmThreadBallPtjBaseScript
+{
+	protected override int QuestId { get { return 508501; } }
+	protected override string QuestDescription { get { return L("This job is to make and supply a ball of thin thread to the General Shop. Make [1 ball of thin thread] today and then submit it. Use cobwebs to spin thin thread with a spinning wheel."); } }
+
+	public override void Load()
+	{
+		SetBasicLevelAndRewards();
+
+		AddObjective("ptj1", L("Make 1 Ball of Thin Thread."), 0, 0, 0, Create(ThinThreadBall, 1, SkillId.Weaving));
+		AddObjective("ptj2", L("Collect 1 Ball of Thin Thread."), 0, 0, 0, Collect(ThinThreadBall, 1));
+
+		base.Load();
+	}
+}
+
+public class MalcolmThickThreadBallBasicPtjScript : MalcolmThreadBallPtjBaseScript
+{
+	protected override int QuestId { get { return 508502; } }
+	protected override string QuestDescription { get { return L("This job is to make and supply a ball of thick thread to the General Shop. Make [1 ball of thick thread] today and then deliver it. Use wool to spin thick thread with a spinning wheel."); } }
+
+	public override void Load()
+	{
+		SetBasicLevelAndRewards();
+
+		AddObjective("ptj1", L("Make 1 Ball of Thick Thread."), 0, 0, 0, Create(ThickThreadBall, 1, SkillId.Weaving));
+		AddObjective("ptj2", L("Collect 1 Ball of Thick Thread."), 0, 0, 0, Collect(ThickThreadBall, 1));
+
+		base.Load();
+	}
+}
+
+public class MalcolmThinThreadBallIntPtjScript : MalcolmThreadBallPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO036; } }
+	protected override string QuestDescription { get { return L("This job is to make and supply a ball of thin thread to the General Shop. Make [1 ball of thin thread] today and then submit it. Use cobwebs to spin thin thread with a spinning wheel."); } }
+
+	public override void Load()
+	{
+		SetIntLevelAndRewards();
+
+		AddObjective("ptj1", L("Make 2 Balls of Thin Thread."), 0, 0, 0, Create(ThinThreadBall, 2, SkillId.Weaving));
+		AddObjective("ptj2", L("Collect 1 Ball of Thin Thread."), 0, 0, 0, Collect(ThinThreadBall, 1));
+
+		base.Load();
+	}
+}
+
+public class MalcolmThickThreadBallIntPtjScript : MalcolmThreadBallPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO037; } }
+	protected override string QuestDescription { get { return L("This job is to make and supply a ball of thick thread to the General Shop. Make [1 ball of thick thread] today and then deliver it. Use wool to spin thick thread with a spinning wheel."); } }
+
+	public override void Load()
+	{
+		SetIntLevelAndRewards();
+
+		AddObjective("ptj1", L("Make 2 Balls of Thick Thread."), 0, 0, 0, Create(ThickThreadBall, 2, SkillId.Weaving));
+		AddObjective("ptj2", L("Collect 1 Ball of Thick Thread."), 0, 0, 0, Collect(ThickThreadBall, 1));
+
+		base.Load();
+	}
+}
+
+public class MalcolmThinThreadBallAdvPtjScript : MalcolmThreadBallPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO061; } }
+	protected override string QuestDescription { get { return L("This job is to make and supply two balls of thin thread to the General Shop. Make [2 balls of thin thread] today and then submit it. Use cobwebs to spin thin thread with a spinning wheel."); } }
+
+	public override void Load()
+	{
+		SetAdvLevelAndRewards();
+
+		AddObjective("ptj1", L("Make 2 Balls of Thin Thread."), 0, 0, 0, Create(ThinThreadBall, 2, SkillId.Weaving));
+		AddObjective("ptj2", L("Collect 2 Balls of Thin Thread."), 0, 0, 0, Collect(ThinThreadBall, 2));
+
+		base.Load();
+	}
+}
+
+public class MalcolmThickThreadBallAdvPtjScript : MalcolmThreadBallPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO062; } }
+	protected override string QuestDescription { get { return L("This job is to make and supply two balls of thick thread to the General Shop. Make [2 balls of thick thread] today and then deliver it. Use wool to spin thick thread with a spinning wheel."); } }
+
+	public override void Load()
+	{
+		SetAdvLevelAndRewards();
+
+		AddObjective("ptj1", L("Make 2 Balls of Thick Thread."), 0, 0, 0, Create(ThickThreadBall, 2, SkillId.Weaving));
+		AddObjective("ptj2", L("Collect 2 Balls of Thick Thread."), 0, 0, 0, Collect(ThickThreadBall, 2));
+
+		base.Load();
+	}
+}
+
+public abstract class MalcolmTailorPtjBaseScript : QuestScript
+{
+	protected abstract int QuestId { get; }
+	protected abstract string ItemsName { get; }
+	protected abstract int ItemId { get; }
+	protected abstract QuestLevel QuestLevel { get; }
+	protected abstract void AddRewards();
+
+	public override void Load()
+	{
+		SetId(QuestId);
+		SetName(L("General Shop Part-Time Job"));
+		SetDescription(L(string.Format("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 {0}], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then.", ItemsName)));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.GeneralShop);
+		SetLevel(QuestLevel);
+		SetHours(start: 7, report: QuestLevel == QuestLevel.Adv ? 17 : 12, deadline: 19);
+
+		AddObjective("ptj1", L(string.Format("Make 2 {0} (Part-Time Job)", ItemsName)), 0, 0, 0, Create(ItemId, 2, SkillId.Tailoring));
+		AddObjective("ptj2", L(string.Format("2 {0} (Part-Time Job)", ItemsName)), 0, 0, 0, Collect(ItemId, 2));
+
+		AddRewards();
+	}
+}
+
+public class MalcolmTailorWizardHatBasicPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO005; } }
+	protected override string ItemsName { get { return "Wizard Hats"; } }
+	protected override int ItemId { get { return 60612; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override void AddRewards()
+	{
+		?; // Also implement class for other tailored items.
+	}
+}
+
 private class MalcolmUnimplementedPtjScript : QuestScript
 {
 	private void Placeholder(NpcScript npc)
 	{
 		// 508207  Tailor 2 Popo's Skirts (F)
-		SetName("General Shop Part-Time Job");
-		SetDescription("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Popo's skirts (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then.");
-		// Objective 1: Make 2 Popo's Skirts (F) (Part-time job)
-		// Quest objective metadata: TARGETCOUNT:4:2;TARGETITEM:4:60606;TARGETQUALITY:4:-1000;TGTSKL:2:10001;
+		SetName(L("General Shop Part-Time Job"));
+		SetDescription(L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Popo's skirts (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."));
+		Create(60606, 2, SkillId.Tailoring); // Objective 1: Make 2 Popo's Skirts (F) (Part-time job)
 		{ // OnQuestStart
 			// Grant crafting materials.
 			// Should we have QuestObjectiveCraft?
-			npc.Player.GiveItem(60419, 2); // Cheap Fabric (Part-Time Job)
-			npc.Player.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
-			npc.Player.GiveItem(60419, 2); // Cheap Fabric (Part-Time Job)
 		}
 		Collect(60606, 2); // Objective 2: 2 Popo's Skirts (F) (Part-time job)
 
-		// 508210  Tailor 2 Mongo Traveler Suits (F)
-		SetName("General Shop Part-Time Job");
-		SetDescription("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Mongo traveler suits (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then.");
+		// 508210  Tailor 2 Mongo's Traveler Suits (F)
+		SetName(L("General Shop Part-Time Job"));
+		SetDescription(L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Mongo traveler suits (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."));
 		// Quest objective metadata:  TARGETCOUNT:4:2;TARGETITEM:4:60607;TARGETQUALITY:4:-1000;TGTSKL:2:10001;
 		{ // OnQuestStart
 			// Grant crafting materials. 
@@ -675,12 +1133,5 @@ private class MalcolmUnimplementedPtjScript : QuestScript
 			npc.Player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
 			npc.Player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
 		}
-
-		// 508501  Weave Thick Thread Ball
-		SetName("General Shop Part-Time Job");
-		SetDescription("This job is to make and supply a ball of thick thread to the General Shop. Make [1 ball of thick thread] today and then deliver it. Use wool to spin thick thread with a spinning wheel.");
-		// Objective 1: Make 1 Ball of Thick Thread.
-		// Quest objective metadata:  TARGETCOUNT:4:2;TARGETITEM:4:60607;TARGETQUALITY:4:-1000;TGTSKL:2:10001;
-		Collect(60006, 1); // Objective 2: Collect 1 Ball of Thick Thread.
 	}
 }
