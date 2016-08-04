@@ -99,7 +99,28 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			Send.EntrustedEnchantClose(creature);
+			creature.Temp.ActiveEntrustment.Cancel();
+		}
+
+		/// <summary>
+		/// Sent when canceling entrustment from the client that got
+		/// the request.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.EntrustedEnchantRefuse)]
+		public void EntrustedEnchantRefuse(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			if (creature.Temp.ActiveEntrustment == null)
+			{
+				Log.Warning("EntrustedEnchantCancel: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
+				return;
+			}
+
+			creature.Temp.ActiveEntrustment.Cancel();
 		}
 	}
 }

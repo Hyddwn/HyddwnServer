@@ -69,5 +69,49 @@ namespace Aura.Channel.World
 		{
 			Send.EntrustedEnchantRequest(this.Creature2, this.Creature1.EntityId, 0);
 		}
+
+		/// <summary>
+		/// Cancels entrustment and moves items back to main inv.
+		/// </summary>
+		public void Cancel()
+		{
+			// Client sends the respective cancel packet from the client that
+			// didn't invoke the cancelation when it receives Close.
+			// This is a simple way to prevent a loop of Close->Cancel->Close.
+			if (this.Status == EntrustmentStatus.Canceled)
+				return;
+			this.Status = EntrustmentStatus.Canceled;
+
+			MoveAllItemsFromEntrustmentToInv(this.Creature1);
+
+			Send.Notice(this.Creature1, Localization.Get("The entrusting for enchantment has been cancelled."));
+			Send.Notice(this.Creature2, Localization.Get("The entrusting for enchantment has been cancelled."));
+
+			Send.EntrustedEnchantClose(this.Creature1);
+			Send.EntrustedEnchantClose(this.Creature2);
+		}
+
+		/// <summary>
+		/// Moves all items creature has in the entrustment pockets to the
+		/// main inventory.
+		/// </summary>
+		/// <param name="creature"></param>
+		private static void MoveAllItemsFromEntrustmentToInv(Creature creature)
+		{
+			var items = creature.Inventory.GetItems(a => a.Info.Pocket >= Pocket.EntrustmentItem1 && a.Info.Pocket <= Pocket.EntrustmentReward);
+			foreach (var item in items)
+			{
+				creature.Inventory.Remove(item);
+				creature.Inventory.Add(item, true);
+			}
+		}
+	}
+
+	public enum EntrustmentStatus
+	{
+		NotReady = 0,
+		OneReady = 1,
+		BothReady = 2,
+		Canceled = 99,
 	}
 }
