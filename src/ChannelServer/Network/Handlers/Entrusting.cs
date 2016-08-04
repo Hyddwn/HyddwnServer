@@ -93,7 +93,11 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			// check active...
+			if (creature.Temp.ActiveEntrustment == null)
+			{
+				Log.Warning("EntrustedEnchantCancel: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
+				return;
+			}
 
 			Send.EntrustedEnchantClose(creature);
 		}
