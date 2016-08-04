@@ -1,15 +1,3 @@
-// Note: Weaving and tailoring jobs have a different report time. 
-// Reset (int) Report based on quest ID in OnErinnMidnightTick()?
-// With the way QuestIDs are set up, one could check digits with integer division and/or modulus.
-/* Report times (according to mabiwiki):
- * Advanced tailoring jobs report at 17
- * Other weaving/tailoring jobs report at 12
- * Anything else reports at 9
- */
-// Update: Could there be a race condition if multiple people of different report times speak to the NPC? This is not major, though: everyone has the same deadline, at least.
-
-// When inquiring for a PTJ, the <title> field changes depending on the job type.
-
 // MISSINGNO prevents this script from compiling.
 // The following MISSINGNO have unknown values at the time of writing.
 // (Tip: Perform a find and replace all operation to define them.)
@@ -46,6 +34,7 @@ using Aura.Channel.Scripting.Scripts;
 using Aura.Shared.Util;
 using System;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World.Quests;
 
 //--- Aura Script -----------------------------------------------------------
 // Malcolm's General Store Part-Time Job
@@ -55,6 +44,7 @@ using Aura.Channel.World.Entities;
 // Apparently the rewards have been increased, as the Wiki now lists
 // higher ones than in the past. We'll use the G1 rewards for now.
 // Due to limited G1 data, some current rewards are downscaled to 50% gold, 33% exp.
+// Tailoring jobs have remained unchanged.
 // Ref: http://wiki.mabinogiworld.com/index.php?title=Malcolm&oldid=145857#Part-time_Jobs
 //
 // Also, starting materials for tailoring jobs are most likely inaccurate.
@@ -65,7 +55,7 @@ public class MalcolmPtjScript : GeneralScript
 	const PtjType JobType = PtjType.GeneralShop;
 
 	const int Start = 7;
-	int Report = 9;
+	//int Report; // Variable - Extracted from Player's current PTJ quest data.
 	const int Deadline = 19;
 	const int PerDay = 8;
 
@@ -104,6 +94,30 @@ public class MalcolmPtjScript : GeneralScript
 		MISSINGNO066, // Adv    Tailor 2 Light Leather Mails (M)
 	};
 
+	/// <summary>
+	/// Precondition: <paramref name="player"/> is already working for Malcolm.
+	/// </summary>
+	/// <returns>
+	/// This <paramref name="player"/>'s report time for their PTJ.
+	/// <para>If unable to obtain (invalid state), a fallback of 1 AM will be returned.</para>
+	/// </returns>
+	/// <remarks>
+	/// Report time changes depending on the task Malcolm gives to the player:
+	/// Noon - Basic tailoring or weaving jobs
+	/// 5 PM - Advanced tailoring jobs
+	/// 9 AM - Everything else
+	/// </remarks>
+	private int GetPersonalReportTime(Creature player)
+	{
+		Quest quest = player.Quests.GetPtjQuest();
+		if (quest == null)
+		{ // This should not normally happen.
+			Log.Error("Player {0} does not have a PTJ report time for Malcolm. Used fallback of 1 AM.", player.Name);
+			return 1; // Fallback
+		}
+		else return quest.Data.ReportHour;
+	}
+
 	public override void Load()
 	{
 		AddHook("_malcolm", "after_intro", AfterIntro);
@@ -135,7 +149,7 @@ public class MalcolmPtjScript : GeneralScript
 		}
 
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.DoingPtjForNpc() && npc.ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -183,7 +197,7 @@ public class MalcolmPtjScript : GeneralScript
 			var result = npc.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!npc.ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
 			{
 				if (result == QuestResult.Perfect)
 				{
@@ -555,7 +569,7 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(64));
 		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(13));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(50004, 1)); // Bread
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(50004)); // Bread
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(600));
 
 		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(51001, 6)); // HP 10 Potion
@@ -576,7 +590,7 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(60));
 		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(50));
 
-		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(50004, 1)); // Bread
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(50004)); // Bread
 		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Gold(444));
 
 		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(51001, 6)); // HP 10 Potion
@@ -597,10 +611,10 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(70));
 		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(105));
 
-		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(19001, 1)); // Robe
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(19001)); // Robe
 		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Gold(410));
 
-		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(19002, 1)); // Slender Robe
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(19002)); // Slender Robe
 		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(410));
 	}
 }
@@ -846,10 +860,10 @@ public class MalcolmExtDeliveryBebhinnIntPtjScript : MalcolmExtDeliveryBebhinnPt
 		AddReward(1, RewardGroupType.Exp, QuestResult.Low, Exp(70));
 		AddReward(1, RewardGroupType.Exp, QuestResult.Low, Gold(50));
 
-		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(63020, 1)); // Empty Bottle
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(63020)); // Empty Bottle
 		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Gold(100));
 
-		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(50004, 1)); // Bread
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(50004)); // Bread
 		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(450));
 
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(51001, 6)); // HP 10 Potion
@@ -932,10 +946,10 @@ public abstract class MalcolmThreadBallPtjBaseScript : QuestScript
 		AddReward(3, RewardGroupType.Gold, QuestResult.Low, Exp(28));
 		AddReward(3, RewardGroupType.Gold, QuestResult.Low, Gold(100));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(19002, 1)); // Slender Robe
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(19002)); // Slender Robe
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(125));
 
-		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(18024, 1)); // Hairband
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(18024)); // Hairband
 		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(25));
 	}
 
@@ -1100,38 +1114,385 @@ public class MalcolmTailorWizardHatBasicPtjScript : MalcolmTailorPtjBaseScript
 
 	protected override void AddRewards()
 	{
-		?; // Also implement class for other tailored items.
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(600));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(125));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(50));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(120));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(180));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(650));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(90));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(325));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(36));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(130));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(830));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(160));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(415));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(80));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(166));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(32));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(62));
 	}
 }
 
-private class MalcolmUnimplementedPtjScript : QuestScript
+public class MalcolmTailorHeadbandHatBasicPtjScript : MalcolmTailorPtjBaseScript
 {
-	private void Placeholder(NpcScript npc)
-	{
-		// 508207  Tailor 2 Popo's Skirts (F)
-		SetName(L("General Shop Part-Time Job"));
-		SetDescription(L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Popo's skirts (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."));
-		Create(60606, 2, SkillId.Tailoring); // Objective 1: Make 2 Popo's Skirts (F) (Part-time job)
-		{ // OnQuestStart
-			// Grant crafting materials.
-			// Should we have QuestObjectiveCraft?
-		}
-		Collect(60606, 2); // Objective 2: 2 Popo's Skirts (F) (Part-time job)
+	protected override int QuestId { get { return MISSINGNO006; } }
+	protected override string ItemsName { get { return "Headbands"; } }
+	protected override int ItemId { get { return 60614; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
-		// 508210  Tailor 2 Mongo's Traveler Suits (F)
-		SetName(L("General Shop Part-Time Job"));
-		SetDescription(L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Mongo traveler suits (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."));
-		// Quest objective metadata:  TARGETCOUNT:4:2;TARGETITEM:4:60607;TARGETQUALITY:4:-1000;TGTSKL:2:10001;
-		{ // OnQuestStart
-			// Grant crafting materials. 
-			// Should we have QuestObjectiveCraft?
-			npc.Player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
-			npc.Player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-			npc.Player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-			npc.Player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
-			npc.Player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
-			npc.Player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-			npc.Player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-		}
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(600));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(125));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(50));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(120));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(180));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(650));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(90));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(325));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(36));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(130));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(830));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(160));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(415));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(80));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(166));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(32));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(62));
+	}
+}
+
+public class MalcolmTailorPoposSkirtBasicPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 508207; } }
+	protected override string ItemsName { get { return "Popo's Skirts (F)"; } }
+	protected override int ItemId { get { return 60606; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(600));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(125));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(50));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(120));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(180));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(650));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(90));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(325));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(36));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(130));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(830));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(160));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(415));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(80));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(166));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(32));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(62));
+	}
+}
+
+public class MalcolmTailorMongosTravelerSuitBasicPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 508210; } }
+	protected override string ItemsName { get { return "Mongo's Traveler Suits (F)"; } }
+	protected override int ItemId { get { return 60607; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(650));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(125));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(325));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(50));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(130));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(200));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(690));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(100));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(345));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(40));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(138));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(18024)); // Hairband
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(262));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(112));
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(18012)); // Tork's Merchant Cap
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(262));
+	}
+}
+
+public class MalcolmTailorLeatherBandanaBasicPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 508212; } }
+	protected override string ItemsName { get { return "Leather Bandanas"; } }
+	protected override int ItemId { get { return 60613; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(650));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(125));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(325));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(50));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(130));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(200));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(690));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(100));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(345));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(40));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(138));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(18024)); // Hairband
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(262));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(112));
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(18012)); // Tork's Merchant Cap
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(262));
+	}
+}
+
+public class MalcolmTailorCoresNinjaSuitMIntPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO038; } }
+	protected override string ItemsName { get { return "Cores Ninja Suits (M)"; } }
+	protected override int ItemId { get { return 60618; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(900));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(450));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(60));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(180));
+
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1200));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(230));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(600));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(115));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(240));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(46));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(41086)); // Lute
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(150));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(17025)); // Sandal
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(250));
+	}
+}
+
+public class MalcolmTailorMagicSchoolUniformMIntPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO039; } }
+	protected override string ItemsName { get { return "Magic School Uniforms (M)"; } }
+	protected override int ItemId { get { return 60602; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(900));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(450));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(60));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(180));
+
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1200));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(230));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(600));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(115));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(240));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(46));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(60034, 300)); // Bait Tin
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(250));
+	}
+}
+
+public class MalcolmTailorGuarduanGloveIntPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO040; } }
+	protected override string ItemsName { get { return "Guardian Gloves"; } }
+	protected override int ItemId { get { return 60611; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1000));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(500));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(60));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(200));
+
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1300));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(250));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(650));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(125));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(260));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(50));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(40044)); // Ladle
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(375));
+	}
+}
+
+public class MalcolmTailorCoresHealerSuitIntPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO041; } }
+	protected override string ItemsName { get { return "Cores' Healer Suits"; } }
+	protected override int ItemId { get { return 60610; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(900));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(450));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(60));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(180));
+
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1200));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(220));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(600));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(110));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(240));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(44));
+	}
+}
+
+public class MalcolmTailorLirinaLongSkirtAdvPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO063; } }
+	protected override string ItemsName { get { return "Lirina's Long Skirts"; } }
+	protected override int ItemId { get { return 60617; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1200));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(200));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(600));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(80));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(240));
+
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1600));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(300));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(800));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(150));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(320));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(60));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(40004)); // Lute
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(525));
+	}
+}
+
+public class MalcolmTailorMongoHatsAdvPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO064; } }
+	protected override string ItemsName { get { return "Mongo's Hats"; } }
+	protected override int ItemId { get { return 60605; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(200));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(650));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(80));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(260));
+
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(40004)); // Lute
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Gold(625));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(60034, 300)); // Bait Tin
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(725));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(17025)); // Sandal
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(725));
+	}
+}
+
+public class MalcolmTailorClothMailsAdvPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO065; } }
+	protected override string ItemsName { get { return "Cloth Mails"; } }
+	protected override int ItemId { get { return 60609; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1400));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(200));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(700));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(80));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(280));
+
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1800));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(350));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(900));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(175));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(360));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(70));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(18016)); // Hat
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(25));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(60034, 90)); // Bait Tin
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40045));     // Fishing Rod
+	}
+}
+
+public class MalcolmTailorLightLeatherMailMAdvPtjScript : MalcolmTailorPtjBaseScript
+{
+	protected override int QuestId { get { return MISSINGNO066; } }
+	protected override string ItemsName { get { return "Light Leather Mails (M)"; } }
+	protected override int ItemId { get { return 60620; } } // confirm?
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1500));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(200));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(750));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(80));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(300));
+
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(60034, 140)); // Bait Tin
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(40045));     // Fishing Rod
 	}
 }
