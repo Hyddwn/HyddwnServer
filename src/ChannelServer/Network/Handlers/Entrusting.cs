@@ -74,6 +74,10 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Initiate
+			var entrustment = new Entrustment(creature, partner);
+			entrustment.Initiate();
+
 			// Response
 			Send.EntrustedEnchantR(creature, true, partner);
 		}
