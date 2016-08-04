@@ -324,7 +324,7 @@ namespace Aura.Mabi.Network
 		public const int EntrustedEnchantFinalizeRequestR = 0x746F;
 		public const int EntrustedEnchantRequestFinalized = 0x7470;
 		public const int EntrustedEnchantCancel = 0x7471;
-		public const int EntrustedEnchantCancelUnk = 0x7473; // Sent from other client after cancel
+		public const int EntrustedEnchantRefuse = 0x7473;
 		public const int EntrustedEnchantClose = 0x7475;
 		public const int EntrustedEnchantAcceptRequest = 0x7477;
 		public const int EntrustedEnchantAcceptRequestR = 0x7478;
