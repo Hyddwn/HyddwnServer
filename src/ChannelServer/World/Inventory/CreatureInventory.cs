@@ -773,6 +773,24 @@ namespace Aura.Channel.World.Inventory
 				Send.EquipmentMoved(_creature, source);
 			}
 
+			// Update trade window
+			if (target == Pocket.Trade)
+			{
+				if (collidingItem != null)
+					_creature.Temp.ActiveTrade.RemoveItem(_creature, collidingItem);
+				_creature.Temp.ActiveTrade.AddItem(_creature, item);
+			}
+			if (source == Pocket.Trade) _creature.Temp.ActiveTrade.RemoveItem(_creature, item);
+
+			// Update entrustment window
+			if (target >= Pocket.EntrustmentItem1 && target <= Pocket.EntrustmentReward)
+			{
+				if (collidingItem != null)
+					_creature.Temp.ActiveEntrustment.RemoveItem(collidingItem, target);
+				_creature.Temp.ActiveEntrustment.AddItem(item, target);
+			}
+			if (source >= Pocket.EntrustmentItem1 && source <= Pocket.EntrustmentReward) _creature.Temp.ActiveEntrustment.RemoveItem(item, source);
+
 			return true;
 		}
 
