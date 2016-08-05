@@ -82,28 +82,13 @@ namespace Aura.Channel.World
 				return;
 			this.Status = EntrustmentStatus.Canceled;
 
-			MoveAllItemsFromEntrustmentToInv(this.Creature1);
+			this.Creature1.Inventory.MoveItemsToInvFrom(Pocket.EntrustmentItem1, Pocket.EntrustmentItem2, Pocket.EntrustmentReward);
 
 			Send.Notice(this.Creature1, Localization.Get("The entrusting for enchantment has been cancelled."));
 			Send.Notice(this.Creature2, Localization.Get("The entrusting for enchantment has been cancelled."));
 
 			Send.EntrustedEnchantClose(this.Creature1);
 			Send.EntrustedEnchantClose(this.Creature2);
-		}
-
-		/// <summary>
-		/// Moves all items creature has in the entrustment pockets to the
-		/// main inventory.
-		/// </summary>
-		/// <param name="creature"></param>
-		private static void MoveAllItemsFromEntrustmentToInv(Creature creature)
-		{
-			var items = creature.Inventory.GetItems(a => a.Info.Pocket >= Pocket.EntrustmentItem1 && a.Info.Pocket <= Pocket.EntrustmentReward);
-			foreach (var item in items)
-			{
-				creature.Inventory.Remove(item);
-				creature.Inventory.Add(item, true);
-			}
 		}
 	}
 

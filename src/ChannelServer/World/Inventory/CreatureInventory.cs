@@ -2124,5 +2124,20 @@ namespace Aura.Channel.World.Inventory
 				return wu.CastingSpeed;
 			}
 		}
+
+		/// <summary>
+		/// Moves all items creature has in the given pockets to the
+		/// main inventory.
+		/// </summary>
+		/// <param name="creature"></param>
+		public void MoveItemsToInvFrom(params Pocket[] pockets)
+		{
+			var items = this.GetItems(a => pockets.Contains(a.Info.Pocket));
+			foreach (var item in items)
+			{
+				this.Remove(item);
+				this.Add(item, true);
+			}
+		}
 	}
 }
