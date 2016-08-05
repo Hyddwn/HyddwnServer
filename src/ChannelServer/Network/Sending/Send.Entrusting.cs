@@ -103,6 +103,21 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends EntrustedEnchantRemoveItem to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="pocket"></param>
+		/// <param name="itemEntityId"></param>
+		public static void EntrustedEnchantRemoveItem(Creature creature, Pocket pocket, long itemEntityId)
+		{
+			var packet = new Packet(Op.EntrustedEnchantRemoveItem, creature.EntityId);
+			packet.PutByte((byte)pocket);
+			packet.PutLong(itemEntityId);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends EntrustedEnchantRequestFinalized to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

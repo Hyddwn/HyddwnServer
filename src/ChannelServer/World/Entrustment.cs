@@ -90,6 +90,24 @@ namespace Aura.Channel.World
 			Send.EntrustedEnchantClose(this.Creature1);
 			Send.EntrustedEnchantClose(this.Creature2);
 		}
+
+		/// <summary>
+		/// Adds item to creature 2's window.
+		/// </summary>
+		/// <param name="item">Item added.</param>
+		public void AddItem(Item item, Pocket pocket)
+		{
+			Send.EntrustedEnchantAddItem(this.Creature2, pocket, item);
+		}
+
+		/// <summary>
+		/// Removes item from partner's window.
+		/// </summary>
+		/// <param name="item">Item removed.</param>
+		public void RemoveItem(Item item, Pocket pocket)
+		{
+			Send.EntrustedEnchantRemoveItem(this.Creature2, pocket, item.EntityId);
+		}
 	}
 
 	public enum EntrustmentStatus

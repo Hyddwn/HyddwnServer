@@ -140,6 +140,10 @@ namespace Aura.Channel.Network.Handlers
 			if (target == Pocket.Trade) creature.Temp.ActiveTrade.AddItem(creature, item);
 			if (source == Pocket.Trade) creature.Temp.ActiveTrade.RemoveItem(creature, item);
 
+			// Update entrustment window
+			if (source >= Pocket.EntrustmentItem1 || source <= Pocket.EntrustmentReward) creature.Temp.ActiveEntrustment.RemoveItem(item, source);
+			if (target >= Pocket.EntrustmentItem1 || target <= Pocket.EntrustmentReward) creature.Temp.ActiveEntrustment.AddItem(item, target);
+
 			return;
 
 		L_Fail:
