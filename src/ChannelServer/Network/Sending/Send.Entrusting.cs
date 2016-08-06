@@ -52,11 +52,11 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="creature"></param>
 		/// <param name="chance"></param>
 		/// <param name="unkShort"></param>
-		public static void EntrustedEnchantChanceUpdate(Creature creature, float chance, short unkShort)
+		public static void EntrustedEnchantChanceUpdate(Creature creature, float chance, SkillRank skillRank)
 		{
 			var packet = new Packet(Op.EntrustedEnchantChanceUpdate, creature.EntityId);
 			packet.PutFloat(chance);
-			packet.PutShort(unkShort);
+			packet.PutShort((short)skillRank);
 
 			creature.Client.Send(packet);
 		}
