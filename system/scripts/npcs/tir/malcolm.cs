@@ -161,7 +161,7 @@ public class MalcolmScript : NpcScript
 		{
 			Msg(FavorExpression(), L("How are you doing on your work?<br/>Please keep up the good work."));
 		}
-		if (Memory <= 0)
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("Welcome to the General Shop. This must be your first visit here."));
 		}
