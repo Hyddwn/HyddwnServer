@@ -220,11 +220,28 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		private Item GetMagicPowder(Creature creature)
 		{
-			var items = creature.Inventory.GetItems(a => a.HasTag("/enchant/powder/") && !a.HasTag("/powder05/"), StartAt.BottomRight);
+			// Check right hand first
+			var rhItem = creature.RightHand;
+			if (rhItem != null && this.CheckPowder(rhItem))
+				return rhItem;
+
+			// Check all pockets afterwards
+			var items = creature.Inventory.GetItems(a => this.CheckPowder(a), StartAt.BottomRight);
 			if (items.Count == 0)
 				return null;
 
 			return items[0];
+		}
+
+		/// <summary>
+		/// Returns true if item is a valid powder to be used for entrusted
+		/// enchanting.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		private bool CheckPowder(Item item)
+		{
+			return (item.HasTag("/enchant/powder/") && !item.HasTag("/powder05/"));
 		}
 	}
 
