@@ -318,8 +318,8 @@ namespace Aura.Mabi.Network
 		public const int EntrustedEnchant = 0x7469;
 		public const int EntrustedEnchantR = 0x746A;
 		public const int EntrustedEnchantRequest = 0x746B;
-		public const int EntrustedEnchantUnk1 = 0x746C; // Equip set?
-		public const int EntrustedEnchantUnk2 = 0x746D; // Equip unset?
+		public const int EntrustedEnchantEnableRequest = 0x746C;
+		public const int EntrustedEnchantDisableRequest = 0x746D;
 		public const int EntrustedEnchantFinalizeRequest = 0x746E;
 		public const int EntrustedEnchantFinalizeRequestR = 0x746F;
 		public const int EntrustedEnchantRequestFinalized = 0x7470;

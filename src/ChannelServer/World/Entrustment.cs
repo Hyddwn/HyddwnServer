@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
+using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using System.Threading;
@@ -29,6 +30,11 @@ namespace Aura.Channel.World
 		public Creature Creature2 { get; private set; }
 
 		/// <summary>
+		/// Creature 2's enchant rank.
+		/// </summary>
+		public SkillRank EnchantRank { get; private set; }
+
+		/// <summary>
 		/// Returns true if creature 2 accepted the request.
 		/// </summary>
 		public bool Accepted { get; private set; }
@@ -51,6 +57,10 @@ namespace Aura.Channel.World
 
 			this.Creature1.Temp.ActiveEntrustment = this;
 			this.Creature2.Temp.ActiveEntrustment = this;
+
+			var skill = this.Creature2.Skills.Get(SkillId.Enchant);
+			if (skill != null)
+				this.EnchantRank = skill.Info.Rank;
 		}
 
 		/// <summary>
@@ -98,6 +108,11 @@ namespace Aura.Channel.World
 		public void AddItem(Item item, Pocket pocket)
 		{
 			Send.EntrustedEnchantAddItem(this.Creature2, pocket, item);
+
+			if (this.CheckItems(this.Creature1))
+				Send.EntrustedEnchantEnableRequest(this.Creature1);
+			else
+				Send.EntrustedEnchantDisableRequest(this.Creature1);
 		}
 
 		/// <summary>
@@ -107,6 +122,45 @@ namespace Aura.Channel.World
 		public void RemoveItem(Item item, Pocket pocket)
 		{
 			Send.EntrustedEnchantRemoveItem(this.Creature2, pocket, item.EntityId);
+
+			if (this.CheckItems(this.Creature1))
+				Send.EntrustedEnchantEnableRequest(this.Creature1);
+			else
+				Send.EntrustedEnchantDisableRequest(this.Creature1);
+		}
+
+		/// <summary>
+		/// Returns true if the items in creature's entrustment pockets
+		/// are valid.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <returns></returns>
+		private bool CheckItems(Creature creature)
+		{
+			var item1 = this.Creature1.Inventory.GetItemAt(Pocket.EntrustmentItem1, 0, 0);
+			var item2 = this.Creature1.Inventory.GetItemAt(Pocket.EntrustmentItem2, 0, 0);
+
+			if (item1 == null || item2 == null)
+				return false;
+
+			if (!item2.IsEnchant)
+				return false;
+
+			var optionsetId = item2.MetaData1.GetInt("ENSFIX");
+			if (optionsetId == 0)
+			{
+				optionsetId = item2.MetaData1.GetInt("ENPFIX");
+				if (optionsetId == 0)
+				{
+					Log.Debug("Entrustment.CheckItems: Given enchant doesn't have a prefix or a suffix.");
+					return false;
+				}
+			}
+
+			var optionset = AuraData.OptionSetDb.Find(optionsetId);
+			var optionsetAllowed = (item1.HasTag(optionset.Allow) && !item1.HasTag(optionset.Disallow));
+
+			return optionsetAllowed;
 		}
 	}
 
