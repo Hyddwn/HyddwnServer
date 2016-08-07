@@ -2,7 +2,9 @@
 // For more information, see license file in the main folder
 
 using Aura.Channel.Network.Sending;
+using Aura.Channel.Skills.Magic;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World.Inventory;
 using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
@@ -109,6 +111,12 @@ namespace Aura.Channel.World
 		{
 			Send.EntrustedEnchantAddItem(this.Creature2, pocket, item);
 
+			// Update chance
+			var chance = this.GetChance();
+			Send.EntrustedEnchantChanceUpdate(this.Creature1, chance, this.EnchantRank);
+			Send.EntrustedEnchantChanceUpdate(this.Creature2, chance, this.EnchantRank);
+
+			// Update request button
 			if (this.CheckItems(this.Creature1))
 				Send.EntrustedEnchantEnableRequest(this.Creature1);
 			else
@@ -123,10 +131,39 @@ namespace Aura.Channel.World
 		{
 			Send.EntrustedEnchantRemoveItem(this.Creature2, pocket, item.EntityId);
 
+			// Update chance
+			var chance = this.GetChance();
+			Send.EntrustedEnchantChanceUpdate(this.Creature1, chance, this.EnchantRank);
+			Send.EntrustedEnchantChanceUpdate(this.Creature2, chance, this.EnchantRank);
+
+			// Update request button
 			if (this.CheckItems(this.Creature1))
 				Send.EntrustedEnchantEnableRequest(this.Creature1);
 			else
 				Send.EntrustedEnchantDisableRequest(this.Creature1);
+		}
+
+		/// <summary>
+		/// Returns the current success chance.
+		/// </summary>
+		/// <returns></returns>
+		private float GetChance()
+		{
+			var item2 = this.Creature1.Inventory.GetItemAt(Pocket.EntrustmentItem2, 0, 0);
+			var optionSetId = this.GetOptionSetId(item2);
+			var chance = 0f;
+
+			// Get chance
+			if (optionSetId != 0)
+			{
+				var powder = this.GetMagicPowder(this.Creature1);
+				var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
+
+				if (powder != null && optionSetData != null)
+					chance = Enchant.GetChance(this.Creature2, powder, SkillId.Enchant, optionSetData);
+			}
+
+			return chance;
 		}
 
 		/// <summary>
@@ -146,21 +183,48 @@ namespace Aura.Channel.World
 			if (!item2.IsEnchant)
 				return false;
 
-			var optionsetId = item2.MetaData1.GetInt("ENSFIX");
-			if (optionsetId == 0)
+			var optionSetId = this.GetOptionSetId(item2);
+			if (optionSetId == 0)
 			{
-				optionsetId = item2.MetaData1.GetInt("ENPFIX");
-				if (optionsetId == 0)
-				{
-					Log.Debug("Entrustment.CheckItems: Given enchant doesn't have a prefix or a suffix.");
-					return false;
-				}
+				Log.Debug("Entrustment.CheckItems: Given enchant doesn't have a prefix or a suffix.");
+				return false;
 			}
 
-			var optionset = AuraData.OptionSetDb.Find(optionsetId);
+			var optionset = AuraData.OptionSetDb.Find(optionSetId);
 			var optionsetAllowed = (item1.HasTag(optionset.Allow) && !item1.HasTag(optionset.Disallow));
 
 			return optionsetAllowed;
+		}
+
+		/// <summary>
+		/// Returns option set id from the item's meta data, or 0.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		private int GetOptionSetId(Item item)
+		{
+			if (item == null)
+				return 0;
+
+			var id = item.MetaData1.GetInt("ENSFIX");
+			if (id == 0)
+				id = item.MetaData1.GetInt("ENPFIX");
+
+			return id;
+		}
+
+		/// <summary>
+		/// Returns the magic powder to use from creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <returns></returns>
+		private Item GetMagicPowder(Creature creature)
+		{
+			var items = creature.Inventory.GetItems(a => a.HasTag("/enchant/powder/") && !a.HasTag("/powder05/"), StartAt.BottomRight);
+			if (items.Count == 0)
+				return null;
+
+			return items[0];
 		}
 	}
 
