@@ -243,13 +243,21 @@ namespace Aura.Channel.World
 		{
 			return (item.HasTag("/enchant/powder/") && !item.HasTag("/powder05/"));
 		}
+
+		/// <summary>
+		/// Changes status.
+		/// </summary>
+		public void Ready()
+		{
+			this.Status = EntrustmentStatus.Ready;
+			Send.EntrustedEnchantRequestFinalized(this.Creature2);
+		}
 	}
 
 	public enum EntrustmentStatus
 	{
 		NotReady = 0,
-		OneReady = 1,
-		BothReady = 2,
+		Ready = 1,
 		Canceled = 99,
 	}
 }

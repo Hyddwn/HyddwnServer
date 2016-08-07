@@ -163,5 +163,17 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends EntrustedEnchantFinalizeRequestR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void EntrustedEnchantFinalizeRequestR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.EntrustedEnchantFinalizeRequestR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

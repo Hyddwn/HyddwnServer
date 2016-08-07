@@ -116,11 +116,36 @@ namespace Aura.Channel.Network.Handlers
 
 			if (creature.Temp.ActiveEntrustment == null)
 			{
-				Log.Warning("EntrustedEnchantCancel: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
+				Log.Warning("EntrustedEnchantRefuse: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
 				return;
 			}
 
 			creature.Temp.ActiveEntrustment.Cancel();
+		}
+
+		/// <summary>
+		/// Sent when clicking request in the entrustment window.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.EntrustedEnchantFinalizeRequest)]
+		public void EntrustedEnchantFinalizeRequest(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			if (creature.Temp.ActiveEntrustment == null)
+			{
+				Log.Warning("EntrustedEnchantFinalizeRequest: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
+				Send.EntrustedEnchantFinalizeRequestR(creature, false);
+				return;
+			}
+
+			var ready = creature.Temp.ActiveEntrustment.IsReady;
+			Send.EntrustedEnchantFinalizeRequestR(creature, ready);
+
+			if (ready)
+				creature.Temp.ActiveEntrustment.Ready();
 		}
 	}
 }
