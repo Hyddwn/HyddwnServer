@@ -339,6 +339,11 @@ namespace Aura.Channel.World.Entities
 		public bool IsEquippableBook { get { return this.HasTag("/equip/*/book/"); } }
 
 		/// <summary>
+		/// Returns true if item is an enchant.
+		/// </summary>
+		public bool IsEnchant { get { return this.HasTag("/enchantscroll/"); } }
+
+		/// <summary>
 		/// Returns true if item is a bow or crossbow.
 		/// </summary>
 		public bool IsBow { get { return this.HasTag("/bow/|/bow01|/crossbow/"); } }
