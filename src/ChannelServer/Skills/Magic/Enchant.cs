@@ -33,11 +33,11 @@ namespace Aura.Channel.Skills.Magic
 	[Skill(SkillId.Enchant, SkillId.HiddenEnchant)]
 	public class Enchant : IPreparable, ICompletable, ICancelable
 	{
-		private float[] _baseChanceB00 = { 69, 65, 60, 55, 51, 46, 32, 30, 27, 25, 20, 14, 10, 6, 4 };
-		private float[] _baseChanceB05 = { 73, 68, 63, 58, 53, 48, 34, 32, 29, 26, 21, 15, 10, 6, 4 };
-		private float[] _baseChanceB10 = { 77, 71, 66, 61, 56, 51, 35, 33, 30, 27, 22, 16, 11, 7, 5 };
-		private float[] _baseChanceB50 = { 90, 90, 90, 85, 78, 71, 50, 47, 42, 38, 31, 22, 15, 10, 7 };
-		private float[] _baseChanceB60 = { 90, 90, 90, 90, 84, 76, 53, 50, 45, 41, 33, 24, 16, 10, 7 };
+		private static float[] _baseChanceB00 = { 69, 65, 60, 55, 51, 46, 32, 30, 27, 25, 20, 14, 10, 6, 4 };
+		private static float[] _baseChanceB05 = { 73, 68, 63, 58, 53, 48, 34, 32, 29, 26, 21, 15, 10, 6, 4 };
+		private static float[] _baseChanceB10 = { 77, 71, 66, 61, 56, 51, 35, 33, 30, 27, 22, 16, 11, 7, 5 };
+		private static float[] _baseChanceB50 = { 90, 90, 90, 85, 78, 71, 50, 47, 42, 38, 31, 22, 15, 10, 7 };
+		private static float[] _baseChanceB60 = { 90, 90, 90, 90, 84, 76, 53, 50, 45, 41, 33, 24, 16, 10, 7 };
 
 		/// <summary>
 		/// Chance for a huge success/fail.
@@ -196,7 +196,7 @@ namespace Aura.Channel.Skills.Magic
 			if (!success)
 			{
 				var num = rnd.Next(100);
-				var chance = this.GetChance(creature, rightHand, skill, optionSetData);
+				var chance = GetChance(creature, rightHand, skill.Info.Id, optionSetData);
 				success = num < chance;
 			}
 
@@ -277,7 +277,7 @@ namespace Aura.Channel.Skills.Magic
 		/// <param name="skill"></param>
 		/// <param name="optionSetData"></param>
 		/// <returns></returns>
-		private float GetChance(Creature creature, Item rightHand, Skill skill, OptionSetData optionSetData)
+		public static float GetChance(Creature creature, Item rightHand, SkillId skillId, OptionSetData optionSetData)
 		{
 			// Check right hand, only use it if it's powder
 			if (rightHand != null && !rightHand.HasTag("/enchant/powder/"))
@@ -285,7 +285,7 @@ namespace Aura.Channel.Skills.Magic
 
 			// Get base chance, based on skill and powder
 			var baseChance = _baseChanceB00; // (Blessed) Magic Powder/None
-			if (skill.Info.Id == SkillId.Enchant && rightHand != null)
+			if (skillId == SkillId.Enchant && rightHand != null)
 			{
 				if (rightHand.HasTag("/powder02/")) // Elite Magic Powder
 					baseChance = _baseChanceB05;
@@ -304,7 +304,7 @@ namespace Aura.Channel.Skills.Magic
 			var thursdayBonus = 0f;
 
 			// Int bonus if using powder
-			if (skill.Info.Id == SkillId.Enchant && rightHand != null)
+			if (skillId == SkillId.Enchant && rightHand != null)
 				intBonus = 1f + ((creature.Int - 35f) / 350f);
 
 			// Thursday bonus
