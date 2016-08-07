@@ -141,5 +141,27 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends EntrustedEnchantEnableRequest to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void EntrustedEnchantEnableRequest(Creature creature)
+		{
+			var packet = new Packet(Op.EntrustedEnchantEnableRequest, creature.EntityId);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends EntrustedEnchantDisableRequest to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void EntrustedEnchantDisableRequest(Creature creature)
+		{
+			var packet = new Packet(Op.EntrustedEnchantDisableRequest, creature.EntityId);
+
+			creature.Client.Send(packet);
+		}
 	}
 }
