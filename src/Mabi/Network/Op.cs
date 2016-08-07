@@ -326,9 +326,10 @@ namespace Aura.Mabi.Network
 		public const int EntrustedEnchantCancel = 0x7471;
 		public const int EntrustedEnchantRefuse = 0x7473;
 		public const int EntrustedEnchantClose = 0x7475;
+		public const int EntrustedEnchantEnd = 0x7476;
 		public const int EntrustedEnchantAcceptRequest = 0x7477;
 		public const int EntrustedEnchantAcceptRequestR = 0x7478;
-		public const int EntrustedEnchantUnk3 = 0x7479; // Disable button?
+		public const int EntrustedEnchantFinalizing = 0x7479;
 		public const int EntrustedEnchantChanceUpdate = 0x747A;
 		public const int EntrustedEnchantAddItem = 0x747B;
 		public const int EntrustedEnchantRemoveItem = 0x747C;

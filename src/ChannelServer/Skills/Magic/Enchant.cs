@@ -53,36 +53,46 @@ namespace Aura.Channel.Skills.Magic
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			var itemEntityId = packet.GetLong();
-			long enchantEntityId = 0;
+			Item item, enchant;
 
-			if (skill.Info.Id == SkillId.HiddenEnchant)
+			if (creature.Temp.ActiveEntrustment == null)
 			{
-				enchantEntityId = packet.GetLong();
-			}
-			else if (skill.Info.Id == SkillId.Enchant)
-			{
-				var rightHand = creature.RightHand;
-				var magazine = creature.Magazine;
+				var itemEntityId = packet.GetLong();
+				long enchantEntityId = 0;
 
-				enchantEntityId = (magazine == null ? 0 : magazine.EntityId);
-
-				if (rightHand == null || !rightHand.HasTag("/enchant/powder/"))
+				if (skill.Info.Id == SkillId.HiddenEnchant)
 				{
-					Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without powder.");
-					return false;
+					enchantEntityId = packet.GetLong();
+				}
+				else if (skill.Info.Id == SkillId.Enchant)
+				{
+					var rightHand = creature.RightHand;
+					var magazine = creature.Magazine;
+
+					enchantEntityId = (magazine == null ? 0 : magazine.EntityId);
+
+					if (rightHand == null || !rightHand.HasTag("/enchant/powder/"))
+					{
+						Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without powder.");
+						return false;
+					}
+
+					if (magazine == null || !magazine.HasTag("/lefthand/enchant/"))
+					{
+						Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without enchant.");
+						return false;
+					}
 				}
 
-				if (magazine == null || !magazine.HasTag("/lefthand/enchant/"))
-				{
-					Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without enchant.");
-					return false;
-				}
+				// Get items
+				item = creature.Inventory.GetItem(itemEntityId);
+				enchant = creature.Inventory.GetItem(enchantEntityId);
 			}
-
-			// Get items
-			var item = creature.Inventory.GetItem(itemEntityId);
-			var enchant = creature.Inventory.GetItem(enchantEntityId);
+			else
+			{
+				item = creature.Temp.ActiveEntrustment.GetItem1();
+				enchant = creature.Temp.ActiveEntrustment.GetItem2();
+			}
 
 			// Check item
 			if (item == null)

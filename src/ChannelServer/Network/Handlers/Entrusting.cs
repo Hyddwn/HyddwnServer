@@ -147,5 +147,30 @@ namespace Aura.Channel.Network.Handlers
 			if (ready)
 				creature.Temp.ActiveEntrustment.Ready();
 		}
+
+		/// <summary>
+		/// Sent when entrusted creature accepts the request.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.EntrustedEnchantAcceptRequest)]
+		public void EntrustedEnchantAcceptRequest(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			if (creature.Temp.ActiveEntrustment == null)
+			{
+				Log.Warning("EntrustedEnchantFinalizeRequest: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
+				Send.EntrustedEnchantFinalizeRequestR(creature, false);
+				return;
+			}
+
+			var ready = creature.Temp.ActiveEntrustment.IsReady;
+			Send.EntrustedEnchantAcceptRequestR(creature, ready);
+
+			if (ready)
+				creature.Temp.ActiveEntrustment.Accept();
+		}
 	}
 }

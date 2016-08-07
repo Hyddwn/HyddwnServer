@@ -47,6 +47,17 @@ namespace Aura.Channel.World
 		public EntrustmentStatus Status { get; private set; }
 
 		/// <summary>
+		/// Returns true if entrustment is ready to be processed.
+		/// </summary>
+		public bool IsReady
+		{
+			get
+			{
+				return this.CheckItems(this.Creature1);
+			}
+		}
+
+		/// <summary>
 		/// Creates a new entrustment session.
 		/// </summary>
 		/// <param name="creature1"></param>
@@ -149,7 +160,7 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		private float GetChance()
 		{
-			var item2 = this.Creature1.Inventory.GetItemAt(Pocket.EntrustmentItem2, 0, 0);
+			var item2 = this.GetItem2();
 			var optionSetId = this.GetOptionSetId(item2);
 			var chance = 0f;
 
@@ -174,8 +185,8 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		private bool CheckItems(Creature creature)
 		{
-			var item1 = this.Creature1.Inventory.GetItemAt(Pocket.EntrustmentItem1, 0, 0);
-			var item2 = this.Creature1.Inventory.GetItemAt(Pocket.EntrustmentItem2, 0, 0);
+			var item1 = this.GetItem1();
+			var item2 = this.GetItem2();
 
 			if (item1 == null || item2 == null)
 				return false;
@@ -245,12 +256,65 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Changes status.
+		/// Notifies creature 2 that the request is ready.
 		/// </summary>
 		public void Ready()
 		{
 			this.Status = EntrustmentStatus.Ready;
 			Send.EntrustedEnchantRequestFinalized(this.Creature2);
+		}
+
+		/// <summary>
+		/// Accepts the request for creature 2, informing creature 1.
+		/// </summary>
+		public void Accept()
+		{
+			this.Status = EntrustmentStatus.Ready;
+			Send.EntrustedEnchantFinalizing(this.Creature1);
+		}
+
+		/// <summary>
+		/// Ends entrustment.
+		/// </summary>
+		public void End()
+		{
+			var items = this.Creature1.Inventory.GetItems(a => a.Info.Pocket == Pocket.EntrustmentReward);
+			foreach (var item in items)
+			{
+				this.Creature1.Inventory.Remove(item);
+				this.Creature2.Inventory.Add(new Item(item), true);
+			}
+
+			var item1 = this.GetItem1();
+			var item2 = this.GetItem2();
+
+			this.Creature1.Inventory.Remove(item1);
+			this.Creature1.Inventory.Remove(item2);
+			this.Creature1.Inventory.Add(item1, true);
+
+			Send.EntrustedEnchantEnd(this.Creature1);
+			Send.EntrustedEnchantEnd(this.Creature2);
+
+			this.Creature1.Temp.ActiveEntrustment = null;
+			this.Creature2.Temp.ActiveEntrustment = null;
+		}
+
+		/// <summary>
+		/// Returns the item on the upper right.
+		/// </summary>
+		/// <returns></returns>
+		public Item GetItem1()
+		{
+			return this.Creature1.Inventory.GetItemAt(Pocket.EntrustmentItem1, 0, 0);
+		}
+
+		/// <summary>
+		/// Returns the item on the upper left.
+		/// </summary>
+		/// <returns></returns>
+		public Item GetItem2()
+		{
+			return this.Creature1.Inventory.GetItemAt(Pocket.EntrustmentItem2, 0, 0);
 		}
 	}
 
@@ -258,6 +322,7 @@ namespace Aura.Channel.World
 	{
 		NotReady = 0,
 		Ready = 1,
+		Finalizing = 2,
 		Canceled = 99,
 	}
 }
