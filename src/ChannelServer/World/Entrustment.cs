@@ -292,9 +292,13 @@ namespace Aura.Channel.World
 			var item1 = this.GetItem1();
 			var item2 = this.GetItem2();
 
-			this.Creature1.Inventory.Remove(item1);
-			this.Creature1.Inventory.Remove(item2);
-			this.Creature1.Inventory.Add(item1, true);
+			if (item1 != null)
+			{
+				this.Creature1.Inventory.Remove(item1);
+				this.Creature1.Inventory.Add(item1, true);
+			}
+			if (item2 != null)
+				this.Creature1.Inventory.Remove(item2);
 
 			Send.EntrustedEnchantEnd(this.Creature1);
 			Send.EntrustedEnchantEnd(this.Creature2);
