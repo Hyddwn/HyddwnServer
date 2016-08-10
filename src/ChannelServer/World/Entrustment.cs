@@ -229,7 +229,7 @@ namespace Aura.Channel.World
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <returns></returns>
-		private Item GetMagicPowder(Creature creature)
+		public Item GetMagicPowder(Creature creature)
 		{
 			// Check right hand first
 			var rhItem = creature.RightHand;

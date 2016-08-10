@@ -178,10 +178,19 @@ namespace Aura.Channel.Skills.Magic
 			var rightHand = creature.RightHand;
 			var rnd = RandomProvider.Get();
 
+			var skillUser = creature;
+			var itemOwner = creature;
+
+			if (skillUser.Temp.ActiveEntrustment != null)
+			{
+				itemOwner = skillUser.Temp.ActiveEntrustment.Creature1;
+				rightHand = skillUser.Temp.ActiveEntrustment.GetMagicPowder(itemOwner);
+			}
+
 			var optionSetId = 0;
 
-			creature.Temp.SkillItem1 = null;
-			creature.Temp.SkillItem2 = null;
+			skillUser.Temp.SkillItem1 = null;
+			skillUser.Temp.SkillItem2 = null;
 
 			// Get option set id
 			optionSetId = this.GetOptionSetid(enchant);
@@ -206,7 +215,7 @@ namespace Aura.Channel.Skills.Magic
 			if (!success)
 			{
 				var num = rnd.Next(100);
-				var chance = GetChance(creature, rightHand, skill.Info.Id, optionSetData);
+				var chance = GetChance(skillUser, rightHand, skill.Info.Id, optionSetData);
 				success = num < chance;
 			}
 
@@ -232,9 +241,9 @@ namespace Aura.Channel.Skills.Magic
 				// Random item durability loss, based on rank.
 				var durabilityLoss = this.GetDurabilityLoss(rnd, optionSetData.Rank, result);
 				if (durabilityLoss == -1)
-					creature.Inventory.Remove(item);
+					itemOwner.Inventory.Remove(item);
 				else if (durabilityLoss != 0)
-					creature.Inventory.ReduceMaxDurability(item, durabilityLoss);
+					itemOwner.Inventory.ReduceMaxDurability(item, durabilityLoss);
 			}
 
 			if (skill.Info.Id == SkillId.Enchant)
@@ -244,25 +253,27 @@ namespace Aura.Channel.Skills.Magic
 
 				// Decrement powder
 				if (rightHand != null)
-					creature.Inventory.Decrement(rightHand);
+					itemOwner.Inventory.Decrement(rightHand);
 			}
 
 			// Destroy or decrement enchant
 			if (destroy)
-				creature.Inventory.Decrement(enchant);
+				itemOwner.Inventory.Decrement(enchant);
 			else
-				creature.Inventory.ReduceDurability(enchant, (int)skill.RankData.Var1 * 100);
+				itemOwner.Inventory.ReduceDurability(enchant, (int)skill.RankData.Var1 * 100);
 
 			// Response
-			Send.Effect(creature, Effect.Enchant, (byte)result);
+			Send.Effect(skillUser, Effect.Enchant, (byte)result);
+			if (skillUser != itemOwner)
+				Send.Effect(itemOwner, Effect.Enchant, (byte)result);
 			if (success)
 			{
-				Send.ItemUpdate(creature, item);
-				Send.AcquireEnchantedItemInfo(creature, item.EntityId, item.Info.Id, optionSetId);
+				Send.ItemUpdate(itemOwner, item);
+				Send.AcquireEnchantedItemInfo(itemOwner, item.EntityId, item.Info.Id, optionSetId);
 			}
 
 		L_End:
-			Send.Echo(creature, packet);
+			Send.Echo(skillUser, packet);
 		}
 
 		/// <summary>
