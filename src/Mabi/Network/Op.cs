@@ -333,6 +333,7 @@ namespace Aura.Mabi.Network
 		public const int EntrustedEnchantChanceUpdate = 0x747A;
 		public const int EntrustedEnchantAddItem = 0x747B;
 		public const int EntrustedEnchantRemoveItem = 0x747C;
+		public const int EntrustedEnchantSetMaterial = 0x747D;
 		public const int StatUpdatePrivate = 0x7530;
 		public const int StatUpdatePublic = 0x7532;
 		public const int CombatTargetUpdate = 0x791A; // ?

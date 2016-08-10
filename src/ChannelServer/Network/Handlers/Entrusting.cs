@@ -30,8 +30,8 @@ namespace Aura.Channel.Network.Handlers
 		public void EntrustedEnchant(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
-			var unkByte = packet.GetByte();
-			var unkLong = packet.GetLong();
+			var type = (EntrustmentType)packet.GetByte();
+			var propEntityId = packet.GetLong();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -39,6 +39,13 @@ namespace Aura.Channel.Network.Handlers
 			if (!AuraData.FeaturesDb.IsEnabled("EnchantEntrust"))
 			{
 				Send.Notice(creature, Localization.Get("Requesting enchantments isn't possible yet."));
+				Send.EntrustedEnchantR(creature, false);
+				return;
+			}
+
+			if (type != EntrustmentType.Enchant)
+			{
+				Send.Notice(creature, Localization.Get("Entrusting burns isn't supported yet."));
 				Send.EntrustedEnchantR(creature, false);
 				return;
 			}
