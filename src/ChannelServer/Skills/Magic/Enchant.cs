@@ -180,11 +180,12 @@ namespace Aura.Channel.Skills.Magic
 			var skillUser = creature;
 			var itemOwner = creature;
 			var powder = creature.RightHand;
+			var entrustment = skillUser.Temp.ActiveEntrustment;
 
-			if (skillUser.Temp.ActiveEntrustment != null)
+			if (entrustment != null)
 			{
-				itemOwner = skillUser.Temp.ActiveEntrustment.Creature1;
-				powder = skillUser.Temp.ActiveEntrustment.GetMagicPowder(itemOwner);
+				itemOwner = entrustment.Creature1;
+				powder = entrustment.GetMagicPowder(itemOwner);
 			}
 
 			var optionSetId = 0;
@@ -266,11 +267,15 @@ namespace Aura.Channel.Skills.Magic
 			Send.Effect(skillUser, Effect.Enchant, (byte)result);
 			if (skillUser != itemOwner)
 				Send.Effect(itemOwner, Effect.Enchant, (byte)result);
+
 			if (success)
 			{
 				Send.ItemUpdate(itemOwner, item);
 				Send.AcquireEnchantedItemInfo(itemOwner, item.EntityId, item.Info.Id, optionSetId);
 			}
+
+			if (entrustment != null)
+				entrustment.End();
 
 		L_End:
 			Send.Echo(skillUser, packet);
