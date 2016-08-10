@@ -271,6 +271,7 @@ namespace Aura.Channel.World
 		{
 			this.Status = EntrustmentStatus.Ready;
 			Send.EntrustedEnchantFinalizing(this.Creature1);
+			Send.Notice(this.Creature1, Localization.Get("The player has accepted the request."));
 		}
 
 		/// <summary>
