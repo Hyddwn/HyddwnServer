@@ -22,12 +22,12 @@ namespace Aura.Channel.Network.Handlers
 	public partial class ChannelServerHandlers : PacketHandlerManager<ChannelClient>
 	{
 		/// <summary>
-		/// Dummy handler for EntrustedEnchant.
+		/// Sent after selecting someone to entrust enchanting or burning to.
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="packet"></param>
-		[PacketHandler(Op.EntrustedEnchant)]
-		public void EntrustedEnchant(ChannelClient client, Packet packet)
+		[PacketHandler(Op.Entrustment)]
+		public void Entrustment(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
 			var type = (EntrustmentType)packet.GetByte();
@@ -39,14 +39,14 @@ namespace Aura.Channel.Network.Handlers
 			if (!AuraData.FeaturesDb.IsEnabled("EnchantEntrust"))
 			{
 				Send.Notice(creature, Localization.Get("Requesting enchantments isn't possible yet."));
-				Send.EntrustedEnchantR(creature, false);
+				Send.EntrustmentR(creature, false);
 				return;
 			}
 
 			if (type != EntrustmentType.Enchant)
 			{
 				Send.Notice(creature, Localization.Get("Entrusting burns isn't supported yet."));
-				Send.EntrustedEnchantR(creature, false);
+				Send.EntrustmentR(creature, false);
 				return;
 			}
 
@@ -57,7 +57,7 @@ namespace Aura.Channel.Network.Handlers
 			if (partner == null)
 			{
 				Send.Notice(creature, Localization.Get("There is no party member available to ask for an Enchantment."));
-				Send.EntrustedEnchantR(creature, false);
+				Send.EntrustmentR(creature, false);
 				return;
 			}
 
@@ -65,7 +65,7 @@ namespace Aura.Channel.Network.Handlers
 			if (!partner.Skills.Has(SkillId.Enchant, SkillRank.RF))
 			{
 				Send.Notice(creature, Localization.Get("You cannot request the enchantment."));
-				Send.EntrustedEnchantR(creature, false);
+				Send.EntrustmentR(creature, false);
 				return;
 			}
 
@@ -77,7 +77,7 @@ namespace Aura.Channel.Network.Handlers
 			{
 				// Unofficial
 				Send.Notice(creature, Localization.Get("You don't have the necessary items."));
-				Send.EntrustedEnchantR(creature, false);
+				Send.EntrustmentR(creature, false);
 				return;
 			}
 
@@ -86,7 +86,7 @@ namespace Aura.Channel.Network.Handlers
 			entrustment.Initiate();
 
 			// Response
-			Send.EntrustedEnchantR(creature, true, partner);
+			Send.EntrustmentR(creature, true, partner);
 		}
 
 		/// <summary>
@@ -95,14 +95,14 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// No parameters.
 		/// </example>
-		[PacketHandler(Op.EntrustedEnchantCancel)]
-		public void EntrustedEnchantCancel(ChannelClient client, Packet packet)
+		[PacketHandler(Op.EntrustmentCancel)]
+		public void EntrustmentCancel(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			if (creature.Temp.ActiveEntrustment == null)
 			{
-				Log.Warning("EntrustedEnchantCancel: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
+				Log.Warning("EntrustmentCancel: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
 				return;
 			}
 
@@ -116,14 +116,14 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// No parameters.
 		/// </example>
-		[PacketHandler(Op.EntrustedEnchantRefuse)]
-		public void EntrustedEnchantRefuse(ChannelClient client, Packet packet)
+		[PacketHandler(Op.EntrustmentRefuse)]
+		public void EntrustmentRefuse(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			if (creature.Temp.ActiveEntrustment == null)
 			{
-				Log.Warning("EntrustedEnchantRefuse: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
+				Log.Warning("EntrustmentRefuse: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
 				return;
 			}
 
@@ -136,20 +136,20 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// No parameters.
 		/// </example>
-		[PacketHandler(Op.EntrustedEnchantFinalizeRequest)]
-		public void EntrustedEnchantFinalizeRequest(ChannelClient client, Packet packet)
+		[PacketHandler(Op.EntrustmentFinalizeRequest)]
+		public void EntrustmentFinalizeRequest(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			if (creature.Temp.ActiveEntrustment == null)
 			{
-				Log.Warning("EntrustedEnchantFinalizeRequest: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
-				Send.EntrustedEnchantFinalizeRequestR(creature, false);
+				Log.Warning("EntrustmentFinalizeRequest: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
+				Send.EntrustmentFinalizeRequestR(creature, false);
 				return;
 			}
 
 			var ready = creature.Temp.ActiveEntrustment.IsReady;
-			Send.EntrustedEnchantFinalizeRequestR(creature, ready);
+			Send.EntrustmentFinalizeRequestR(creature, ready);
 
 			if (ready)
 				creature.Temp.ActiveEntrustment.Ready();
@@ -161,20 +161,20 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// No parameters.
 		/// </example>
-		[PacketHandler(Op.EntrustedEnchantAcceptRequest)]
-		public void EntrustedEnchantAcceptRequest(ChannelClient client, Packet packet)
+		[PacketHandler(Op.EntrustmentAcceptRequest)]
+		public void EntrustmentAcceptRequest(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			if (creature.Temp.ActiveEntrustment == null)
 			{
-				Log.Warning("EntrustedEnchantFinalizeRequest: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
-				Send.EntrustedEnchantFinalizeRequestR(creature, false);
+				Log.Warning("EntrustmentFinalizeRequest: User '{0}' tried to cancel entrustment without being in one.", client.Account.Id);
+				Send.EntrustmentFinalizeRequestR(creature, false);
 				return;
 			}
 
 			var ready = creature.Temp.ActiveEntrustment.IsReady;
-			Send.EntrustedEnchantAcceptRequestR(creature, ready);
+			Send.EntrustmentAcceptRequestR(creature, ready);
 
 			if (ready)
 				creature.Temp.ActiveEntrustment.Accept();
