@@ -173,18 +173,18 @@ namespace Aura.Channel.Skills.Magic
 		{
 			// Ignore parameters, use data saved in Prepare.
 
+			var rnd = RandomProvider.Get();
 			var item = creature.Temp.SkillItem1;
 			var enchant = creature.Temp.SkillItem2;
-			var rightHand = creature.RightHand;
-			var rnd = RandomProvider.Get();
 
 			var skillUser = creature;
 			var itemOwner = creature;
+			var powder = creature.RightHand;
 
 			if (skillUser.Temp.ActiveEntrustment != null)
 			{
 				itemOwner = skillUser.Temp.ActiveEntrustment.Creature1;
-				rightHand = skillUser.Temp.ActiveEntrustment.GetMagicPowder(itemOwner);
+				powder = skillUser.Temp.ActiveEntrustment.GetMagicPowder(itemOwner);
 			}
 
 			var optionSetId = 0;
@@ -215,7 +215,7 @@ namespace Aura.Channel.Skills.Magic
 			if (!success)
 			{
 				var num = rnd.Next(100);
-				var chance = GetChance(skillUser, rightHand, skill.Info.Id, optionSetData);
+				var chance = GetChance(skillUser, powder, skill.Info.Id, optionSetData);
 				success = num < chance;
 			}
 
@@ -252,8 +252,8 @@ namespace Aura.Channel.Skills.Magic
 				this.Training(skill, result);
 
 				// Decrement powder
-				if (rightHand != null)
-					itemOwner.Inventory.Decrement(rightHand);
+				if (powder != null)
+					itemOwner.Inventory.Decrement(powder);
 			}
 
 			// Destroy or decrement enchant
