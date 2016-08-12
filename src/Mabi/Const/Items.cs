@@ -11,7 +11,7 @@ namespace Aura.Mabi.Const
 	/// <remarks>
 	/// Every item is stored in a specific pocket.
 	/// </remarks>
-	public enum Pocket : byte
+	public enum Pocket : int
 	{
 		None = 0,
 		Cursor = 1,
