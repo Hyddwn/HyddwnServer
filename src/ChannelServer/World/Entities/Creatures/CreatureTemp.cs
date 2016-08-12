@@ -74,5 +74,6 @@ namespace Aura.Channel.World.Entities.Creatures
 		public string CurrentBankTitle;
 
 		public Trade ActiveTrade;
+		public Entrustment ActiveEntrustment;
 	}
 }

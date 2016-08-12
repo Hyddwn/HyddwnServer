@@ -129,13 +129,12 @@ namespace Aura.Channel.Network.Handlers
 
 			// Try to move item
 			if (!creature.Inventory.Move(item, target, targetX, targetY))
+			{
+				Log.Debug("ItemMove: Moving item from '{0}' to '{1}' failed.", source, target);
 				goto L_Fail;
+			}
 
 			Send.ItemMoveR(creature, true);
-
-			// Update trade window
-			if (target == Pocket.Trade) creature.Temp.ActiveTrade.AddItem(creature, item);
-			if (source == Pocket.Trade) creature.Temp.ActiveTrade.RemoveItem(creature, item);
 
 			return;
 
