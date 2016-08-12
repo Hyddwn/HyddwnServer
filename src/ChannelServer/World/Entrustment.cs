@@ -90,7 +90,7 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void Initiate()
 		{
-			Send.EntrustedEnchantRequest(this.Creature2, this.Creature1.EntityId, 0);
+			Send.EntrustmentRequest(this.Creature2, this.Creature1.EntityId, 0);
 		}
 
 		/// <summary>
@@ -110,8 +110,8 @@ namespace Aura.Channel.World
 			Send.Notice(this.Creature1, Localization.Get("The entrusting for enchantment has been cancelled."));
 			Send.Notice(this.Creature2, Localization.Get("The entrusting for enchantment has been cancelled."));
 
-			Send.EntrustedEnchantClose(this.Creature1);
-			Send.EntrustedEnchantClose(this.Creature2);
+			Send.EntrustmentClose(this.Creature1);
+			Send.EntrustmentClose(this.Creature2);
 		}
 
 		/// <summary>
@@ -120,18 +120,18 @@ namespace Aura.Channel.World
 		/// <param name="item">Item added.</param>
 		public void AddItem(Item item, Pocket pocket)
 		{
-			Send.EntrustedEnchantAddItem(this.Creature2, pocket, item);
+			Send.EntrustmentAddItem(this.Creature2, pocket, item);
 
 			// Update chance
 			var chance = this.GetChance();
-			Send.EntrustedEnchantChanceUpdate(this.Creature1, chance, this.EnchantRank);
-			Send.EntrustedEnchantChanceUpdate(this.Creature2, chance, this.EnchantRank);
+			Send.EntrustmentChanceUpdate(this.Creature1, chance, this.EnchantRank);
+			Send.EntrustmentChanceUpdate(this.Creature2, chance, this.EnchantRank);
 
 			// Update request button
 			if (this.CheckItems(this.Creature1))
-				Send.EntrustedEnchantEnableRequest(this.Creature1);
+				Send.EntrustmentEnableRequest(this.Creature1);
 			else
-				Send.EntrustedEnchantDisableRequest(this.Creature1);
+				Send.EntrustmentDisableRequest(this.Creature1);
 		}
 
 		/// <summary>
@@ -140,18 +140,18 @@ namespace Aura.Channel.World
 		/// <param name="item">Item removed.</param>
 		public void RemoveItem(Item item, Pocket pocket)
 		{
-			Send.EntrustedEnchantRemoveItem(this.Creature2, pocket, item.EntityId);
+			Send.EntrustmentRemoveItem(this.Creature2, pocket, item.EntityId);
 
 			// Update chance
 			var chance = this.GetChance();
-			Send.EntrustedEnchantChanceUpdate(this.Creature1, chance, this.EnchantRank);
-			Send.EntrustedEnchantChanceUpdate(this.Creature2, chance, this.EnchantRank);
+			Send.EntrustmentChanceUpdate(this.Creature1, chance, this.EnchantRank);
+			Send.EntrustmentChanceUpdate(this.Creature2, chance, this.EnchantRank);
 
 			// Update request button
 			if (this.CheckItems(this.Creature1))
-				Send.EntrustedEnchantEnableRequest(this.Creature1);
+				Send.EntrustmentEnableRequest(this.Creature1);
 			else
-				Send.EntrustedEnchantDisableRequest(this.Creature1);
+				Send.EntrustmentDisableRequest(this.Creature1);
 		}
 
 		/// <summary>
@@ -229,7 +229,7 @@ namespace Aura.Channel.World
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <returns></returns>
-		private Item GetMagicPowder(Creature creature)
+		public Item GetMagicPowder(Creature creature)
 		{
 			// Check right hand first
 			var rhItem = creature.RightHand;
@@ -261,7 +261,7 @@ namespace Aura.Channel.World
 		public void Ready()
 		{
 			this.Status = EntrustmentStatus.Ready;
-			Send.EntrustedEnchantRequestFinalized(this.Creature2);
+			Send.EntrustmentRequestFinalized(this.Creature2);
 		}
 
 		/// <summary>
@@ -270,7 +270,8 @@ namespace Aura.Channel.World
 		public void Accept()
 		{
 			this.Status = EntrustmentStatus.Ready;
-			Send.EntrustedEnchantFinalizing(this.Creature1);
+			Send.EntrustmentFinalizing(this.Creature1);
+			Send.Notice(this.Creature1, Localization.Get("The player has accepted the request."));
 		}
 
 		/// <summary>
@@ -283,17 +284,24 @@ namespace Aura.Channel.World
 			{
 				this.Creature1.Inventory.Remove(item);
 				this.Creature2.Inventory.Add(new Item(item), true);
+
+				Send.SystemMessage(this.Creature1, Localization.Get("<ENCHANT_ENTRUST>"), Localization.Get("Gave the item  as a reward."), Localization.Get(item.Data.Name));
+				Send.SystemMessage(this.Creature1, Localization.Get("<ENCHANT_ENTRUST>"), Localization.Get("Received the item {0} as a reward."), Localization.Get(item.Data.Name));
 			}
 
 			var item1 = this.GetItem1();
 			var item2 = this.GetItem2();
 
-			this.Creature1.Inventory.Remove(item1);
-			this.Creature1.Inventory.Remove(item2);
-			this.Creature1.Inventory.Add(item1, true);
+			if (item1 != null)
+			{
+				this.Creature1.Inventory.Remove(item1);
+				this.Creature1.Inventory.Add(item1, true);
+			}
+			if (item2 != null)
+				this.Creature1.Inventory.Remove(item2);
 
-			Send.EntrustedEnchantEnd(this.Creature1);
-			Send.EntrustedEnchantEnd(this.Creature2);
+			Send.EntrustmentEnd(this.Creature1);
+			Send.EntrustmentEnd(this.Creature2);
 
 			this.Creature1.Temp.ActiveEntrustment = null;
 			this.Creature2.Temp.ActiveEntrustment = null;

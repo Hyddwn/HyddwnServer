@@ -18,14 +18,14 @@ namespace Aura.Channel.Network.Sending
 	public static partial class Send
 	{
 		/// <summary>
-		/// Sends EntrustedEnchantR to creature's client.
+		/// Sends EntrustmentR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
 		/// <param name="partner"></param>
-		public static void EntrustedEnchantR(Creature creature, bool success, Creature partner)
+		public static void EntrustmentR(Creature creature, bool success, Creature partner)
 		{
-			var packet = new Packet(Op.EntrustedEnchantR, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentR, creature.EntityId);
 			packet.PutByte(success);
 			packet.PutLong(partner.EntityId);
 			packet.PutString(partner.Name);
@@ -34,27 +34,27 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantR to creature's client.
+		/// Sends EntrustmentR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
-		public static void EntrustedEnchantR(Creature creature, bool success)
+		public static void EntrustmentR(Creature creature, bool success)
 		{
-			var packet = new Packet(Op.EntrustedEnchantR, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentR, creature.EntityId);
 			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantChanceUpdate to creature's client.
+		/// Sends EntrustmentChanceUpdate to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="chance"></param>
 		/// <param name="unkShort"></param>
-		public static void EntrustedEnchantChanceUpdate(Creature creature, float chance, SkillRank skillRank)
+		public static void EntrustmentChanceUpdate(Creature creature, float chance, SkillRank skillRank)
 		{
-			var packet = new Packet(Op.EntrustedEnchantChanceUpdate, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentChanceUpdate, creature.EntityId);
 			packet.PutFloat(chance);
 			packet.PutShort((short)skillRank);
 
@@ -62,25 +62,25 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantClose to creature's client.
+		/// Sends EntrustmentClose to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void EntrustedEnchantClose(Creature creature)
+		public static void EntrustmentClose(Creature creature)
 		{
-			var packet = new Packet(Op.EntrustedEnchantClose, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentClose, creature.EntityId);
 
 			creature.Client.Send(packet);
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantRequest to creature's client.
+		/// Sends EntrustmentRequest to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="partnerEntityId"></param>
 		/// <param name="unkByte"></param>
-		public static void EntrustedEnchantRequest(Creature creature, long partnerEntityId, byte unkByte)
+		public static void EntrustmentRequest(Creature creature, long partnerEntityId, byte unkByte)
 		{
-			var packet = new Packet(Op.EntrustedEnchantRequest, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentRequest, creature.EntityId);
 			packet.PutLong(partnerEntityId);
 			packet.PutByte(unkByte);
 
@@ -88,14 +88,14 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantAddItem to creature's client.
+		/// Sends EntrustmentAddItem to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="pocket"></param>
 		/// <param name="item"></param>
-		public static void EntrustedEnchantAddItem(Creature creature, Pocket pocket, Item item)
+		public static void EntrustmentAddItem(Creature creature, Pocket pocket, Item item)
 		{
-			var packet = new Packet(Op.EntrustedEnchantAddItem, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentAddItem, creature.EntityId);
 			packet.PutByte((byte)pocket);
 			packet.AddItemInfo(item, ItemPacketType.Private);
 
@@ -103,14 +103,14 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantRemoveItem to creature's client.
+		/// Sends EntrustmentRemoveItem to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="pocket"></param>
 		/// <param name="itemEntityId"></param>
-		public static void EntrustedEnchantRemoveItem(Creature creature, Pocket pocket, long itemEntityId)
+		public static void EntrustmentRemoveItem(Creature creature, Pocket pocket, long itemEntityId)
 		{
-			var packet = new Packet(Op.EntrustedEnchantRemoveItem, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentRemoveItem, creature.EntityId);
 			packet.PutByte((byte)pocket);
 			packet.PutLong(itemEntityId);
 
@@ -118,46 +118,46 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantRequestFinalized to creature's client.
+		/// Sends EntrustmentRequestFinalized to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void EntrustedEnchantRequestFinalized(Creature creature)
+		public static void EntrustmentRequestFinalized(Creature creature)
 		{
-			var packet = new Packet(Op.EntrustedEnchantRequestFinalized, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentRequestFinalized, creature.EntityId);
 
 			creature.Client.Send(packet);
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantFinalizing to creature's client.
+		/// Sends EntrustmentFinalizing to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void EntrustedEnchantFinalizing(Creature creature)
+		public static void EntrustmentFinalizing(Creature creature)
 		{
-			var packet = new Packet(Op.EntrustedEnchantFinalizing, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentFinalizing, creature.EntityId);
 
 			creature.Client.Send(packet);
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantEnd to creature's client.
+		/// Sends EntrustmentEnd to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void EntrustedEnchantEnd(Creature creature)
+		public static void EntrustmentEnd(Creature creature)
 		{
-			var packet = new Packet(Op.EntrustedEnchantEnd, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentEnd, creature.EntityId);
 
 			creature.Client.Send(packet);
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantAcceptRequestR to creature's client.
+		/// Sends EntrustmentAcceptRequestR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
-		public static void EntrustedEnchantAcceptRequestR(Creature creature, bool success)
+		public static void EntrustmentAcceptRequestR(Creature creature, bool success)
 		{
-			var packet = new Packet(Op.EntrustedEnchantAcceptRequestR, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentAcceptRequestR, creature.EntityId);
 			packet.PutByte(success);
 			packet.PutByte(0);
 
@@ -165,34 +165,34 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantEnableRequest to creature's client.
+		/// Sends EntrustmentEnableRequest to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void EntrustedEnchantEnableRequest(Creature creature)
+		public static void EntrustmentEnableRequest(Creature creature)
 		{
-			var packet = new Packet(Op.EntrustedEnchantEnableRequest, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentEnableRequest, creature.EntityId);
 
 			creature.Client.Send(packet);
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantDisableRequest to creature's client.
+		/// Sends EntrustmentDisableRequest to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void EntrustedEnchantDisableRequest(Creature creature)
+		public static void EntrustmentDisableRequest(Creature creature)
 		{
-			var packet = new Packet(Op.EntrustedEnchantDisableRequest, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentDisableRequest, creature.EntityId);
 
 			creature.Client.Send(packet);
 		}
 
 		/// <summary>
-		/// Sends EntrustedEnchantFinalizeRequestR to creature's client.
+		/// Sends EntrustmentFinalizeRequestR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void EntrustedEnchantFinalizeRequestR(Creature creature, bool success)
+		public static void EntrustmentFinalizeRequestR(Creature creature, bool success)
 		{
-			var packet = new Packet(Op.EntrustedEnchantFinalizeRequestR, creature.EntityId);
+			var packet = new Packet(Op.EntrustmentFinalizeRequestR, creature.EntityId);
 			packet.PutByte(success);
 
 			creature.Client.Send(packet);
