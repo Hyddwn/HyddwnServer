@@ -70,6 +70,7 @@
 { name: "bossroom_small_golem_Ciar", actors: ["me", "#small_golem2"] },
 { name: "bossroom_SmallGolem_FlyingSword", actors: ["me", "#flying_sword", "#small_golem"] },
 { name: "bossroom_SuccubusQueen", actors: ["me", "#boss_SuccubusQueen1"] },
+{ name: "bossroom_SuccubusQueen_Easy", actors: ["me", "#boss_SuccubusQueen1"] },
 { name: "bossroom_tutorial_2010_giantgoldenspider_kid", actors: ["player0", "#giantgoldenspiderkid"] },
 { name: "bossroom_tutorial_2010_giantspiderkid", actors: ["player0", "#giant_spider_kid"] },
 { name: "bossroom_tutorial_2010_giantspiderkid2", actors: ["player0", "#giant_spider_kid", "#lostkid"] },

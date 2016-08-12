@@ -54,4 +54,8 @@
 { itemId: 50909, name: "Silver Podium", propId: 44604, giantPropId: 44604 },
 { itemId: 50910, name: "Bronze Podium", propId: 44605, giantPropId: 44605 },
 { itemId: 50911, name: "The 4th grade Podium", propId: 44608, giantPropId: 44608 },
+{ itemId: 50935, name: "Tropical Kiddie Pool", propId: 45492, giantPropId: 45492 },
+{ itemId: 50936, name: "Tropical Beach Umbrella", propId: 45519, giantPropId: 45519 },
+{ itemId: 50937, name: "Tropical Pineapple Drink Stand", propId: 45524, giantPropId: 45524 },
+{ itemId: 50938, name: "Tropical Pineapple Beach Tube", propId: 45523, giantPropId: 45523 },
 ]
