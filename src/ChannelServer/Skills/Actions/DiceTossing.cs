@@ -89,8 +89,10 @@ namespace Aura.Channel.Skills.Action
 			if (creature.Inventory.RightHand != null)
 				creature.Inventory.Decrement(creature.Inventory.RightHand);
 
+			var number = (byte)(RandomProvider.Get().Next(6));
+
 			Send.UseMotion(creature, 27, 2, false, false);
-			Send.Effect(creature, Effect.Dice, 0, "process", location, (byte)3); // [200200, NA233 (2016-08-12)] New 0 int after effect id
+			Send.Effect(creature, Effect.Dice, 0, "process", location, number); // [200200, NA233 (2016-08-12)] New 0 int after effect id
 			Send.SkillUse(creature, skill.Info.Id, location, unkInt1, unkInt2);
 
 			skill.Stacks = 0;
