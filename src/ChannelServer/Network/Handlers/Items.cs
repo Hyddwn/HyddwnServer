@@ -362,7 +362,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var itemId = packet.GetLong();
 			var amount = packet.GetUShort();
-			var unk1 = packet.GetByte();
+			var unkPocket = packet.GetInt(); // [200200, NA233 (2016-08-12)] Apparently a pocket, probably of the item?
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
