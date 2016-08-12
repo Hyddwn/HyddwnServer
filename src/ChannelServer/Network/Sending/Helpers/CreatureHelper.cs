@@ -221,6 +221,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 					packet.PutByte(0);
 				}
 
+				// [200200, NA233 (2016-08-12)] ?
+				{
+					packet.PutByte(0);
+				}
+
 				var regens = creature.Regens.GetList();
 				packet.PutInt(regens.Count);
 				foreach (var regen in regens)
