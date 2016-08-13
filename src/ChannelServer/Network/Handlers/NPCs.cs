@@ -586,6 +586,7 @@ namespace Aura.Channel.Network.Handlers
 				{
 					var afterFeeSum = (int)(amount * 0.99f);
 					Send.BankLicenseFeeInquiry(creature, item.EntityId, amount, afterFeeSum);
+					Send.BankDepositItemR(creature, false);
 					return;
 				}
 			}
@@ -599,27 +600,27 @@ namespace Aura.Channel.Network.Handlers
 		/// <summary>
 		/// Sent after accepting fees for license deposition.
 		/// </summary>
+		/// <example>
+		/// 001 [0050000000000AE8] Long   : 22517998136855272
+		/// </example>
 		[PacketHandler(Op.BankPostLicenseInquiryDeposit)]
 		public void BankPostLicenseInquiryDeposit(ChannelClient client, Packet packet)
 		{
 			var itemEntityId = packet.GetLong();
-			var tabName = packet.GetString();
-			var posX = packet.GetInt();
-			var posY = packet.GetInt();
 
 			var creature = client.GetCreatureSafe(packet.Id);
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
 
-			// Check premium
-			if (!client.Account.PremiumServices.CanUseAllBankTabs && tabName != creature.Name)
+			// Check license
+			if (!item.HasTag("/personalshoplicense/"))
 			{
-				// Unofficial
-				Send.MsgBox(creature, Localization.Get("Inventory Plus is required to access other character's bank tabs."));
-				Send.BankDepositItemR(creature, false);
+				Log.Warning("BankPostLicenseInquiryDeposit: User '{0}' tried to post-license-inquiry-deposit invalid item.", client.Account.Id);
+				Send.BankPostLicenseInquiryDepositR(creature, false);
 				return;
 			}
 
 			// Deposit item
-			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, tabName, posX, posY);
+			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, creature.Name, 0, 0);
 
 			Send.BankPostLicenseInquiryDepositR(creature, success);
 		}
