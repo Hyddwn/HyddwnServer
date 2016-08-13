@@ -92,6 +92,7 @@ namespace Aura.Channel.Network.Sending
 					actionPacket.PutUInt((uint)aAction.Options);
 					actionPacket.PutByte(aAction.UsedWeaponSet);
 					actionPacket.PutByte(aAction.WeaponParameterType); // !aAction.Has(AttackerOptions.KnockBackHit2) ? 2 : 1)); // ?
+					actionPacket.PutInt(0); // [200200, NA233 (2016-08-12)] ?
 					actionPacket.PutInt(pos.X);
 					actionPacket.PutInt(pos.Y);
 
@@ -121,6 +122,7 @@ namespace Aura.Channel.Network.Sending
 						actionPacket.PutInt(0); // attacker Options
 						actionPacket.PutByte(tAction.UsedWeaponSet);
 						actionPacket.PutByte(tAction.WeaponParameterType);
+						actionPacket.PutInt(0); // [200200, NA233 (2016-08-12)] ?
 						actionPacket.PutInt(pos.X);
 						actionPacket.PutInt(pos.Y);
 					}

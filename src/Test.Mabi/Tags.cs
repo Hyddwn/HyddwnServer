@@ -29,12 +29,14 @@ namespace Aura.Tests.Mabi
 			Assert.True(tags.Matches("/test1/&(/test2/|/test4/)"));
 			Assert.True(tags.Matches("((/*1/|/test4/)&(/test2/&/test3/))"));
 			Assert.True(tags.Matches("((/*1/&/test*/)&(/test2/&/test3/))"));
+			Assert.True(tags.Matches("/test[^5]/test[^5]/test[^2]/"));
 
 			Assert.False(tags.Matches("*/*test_*/*"));
 			Assert.False(tags.Matches("*/*fest*/*"));
 			Assert.False(tags.Matches("/test4/"));
 			Assert.False(tags.Matches("/test1/&(/test2/&/test4/)"));
 			Assert.False(tags.Matches("((/*1/&/test4/)&(/test2/&/test3/))"));
+			Assert.False(tags.Matches("/test[^5]/test[^5]/test[^3]/"));
 		}
 
 		[Fact]

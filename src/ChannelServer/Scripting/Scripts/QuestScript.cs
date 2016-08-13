@@ -721,7 +721,9 @@ namespace Aura.Channel.Scripting.Scripts
 
 					case ObjectiveType.Collect:
 						var itemId = (objective as QuestObjectiveCollect).ItemId;
-						var count = creature.Inventory.Count(itemId);
+
+						// Do not count incomplete items (e.g. tailoring, blacksmithing).
+						var count = creature.Inventory.Count((Item item) => item.Info.Id == itemId && !item.MetaData1.Has("PRGRATE"));
 
 						if (!progress.Done && count >= objective.Amount)
 							quest.SetDone(progress.Ident);

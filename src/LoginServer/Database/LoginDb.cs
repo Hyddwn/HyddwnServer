@@ -326,7 +326,7 @@ namespace Aura.Login.Database
 						var item = new Item();
 						item.Id = reader.GetInt64("entityId");
 						item.Info.Id = reader.GetInt32("itemId");
-						item.Info.Pocket = (Pocket)reader.GetByte("pocket");
+						item.Info.Pocket = (Pocket)reader.GetInt32("pocket");
 						item.Info.Color1 = reader.GetUInt32("color1");
 						item.Info.Color2 = reader.GetUInt32("color2");
 						item.Info.Color3 = reader.GetUInt32("color3");

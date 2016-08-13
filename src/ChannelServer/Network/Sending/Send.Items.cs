@@ -70,16 +70,16 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet((collidingItem == null ? Op.ItemMoveInfo : Op.ItemSwitchInfo), creature.EntityId);
 			packet.PutLong(item.EntityId);
-			packet.PutByte((byte)source);
-			packet.PutByte((byte)item.Info.Pocket);
+			packet.PutInt((int)source);
+			packet.PutInt((int)item.Info.Pocket);
 			packet.PutByte(2);
 			packet.PutByte((byte)item.Info.X);
 			packet.PutByte((byte)item.Info.Y);
 			if (collidingItem != null)
 			{
 				packet.PutLong(collidingItem.EntityId);
-				packet.PutByte((byte)item.Info.Pocket);
-				packet.PutByte((byte)collidingItem.Info.Pocket);
+				packet.PutInt((int)item.Info.Pocket);
+				packet.PutInt((int)collidingItem.Info.Pocket);
 				packet.PutByte(2);
 				packet.PutByte((byte)collidingItem.Info.X);
 				packet.PutByte((byte)collidingItem.Info.Y);
@@ -123,7 +123,7 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet(Op.ItemRemove, creature.EntityId);
 			packet.PutLong(item.EntityId);
-			packet.PutByte((byte)pocket);
+			packet.PutInt((int)pocket);
 
 			creature.Client.Send(packet);
 		}
@@ -164,10 +164,11 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
-		public static void ItemDropR(Creature creature, bool success)
+		public static void ItemDropR(Creature creature, bool success, long itemEntityId)
 		{
 			var packet = new Packet(Op.ItemDropR, creature.EntityId);
 			packet.PutByte(success);
+			packet.PutLong(itemEntityId); // [200200, NA233 (2016-08-12)]
 
 			creature.Client.Send(packet);
 		}
@@ -207,7 +208,7 @@ namespace Aura.Channel.Network.Sending
 		public static void EquipmentMoved(Creature creature, Pocket from)
 		{
 			var packet = new Packet(Op.EquipmentMoved, creature.EntityId);
-			packet.PutByte((byte)from);
+			packet.PutInt((int)from);
 			packet.PutByte(1);
 
 			creature.Region.Broadcast(packet, creature);

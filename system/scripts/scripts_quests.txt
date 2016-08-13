@@ -72,6 +72,7 @@ quests/ptj/grocery_caitin.cs
 quests/ptj/healer_dilys.cs
 quests/ptj/inn_piaras.cs
 quests/ptj/neighboring_deian.cs
+quests/ptj/blacksmith_ferghus.cs
 
 // Skills
 quests/skills/20006_elen_refine.cs

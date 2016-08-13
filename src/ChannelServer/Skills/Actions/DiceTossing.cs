@@ -38,7 +38,7 @@ namespace Aura.Channel.Skills.Action
 			creature.StopMove();
 
 			Send.UseMotion(creature, 27, 0, false, false);
-			Send.Effect(creature, Effect.Dice, "prepare");
+			Send.Effect(creature, Effect.Dice, 0, "prepare"); // [200200, NA233 (2016-08-12)] New 0 int after effect id
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
 			return true;
@@ -56,7 +56,7 @@ namespace Aura.Channel.Skills.Action
 			skill.Stacks = 1;
 
 			Send.UseMotion(creature, 27, 1, true, false);
-			Send.Effect(creature, Effect.Dice, "wait");
+			Send.Effect(creature, Effect.Dice, 0, "wait"); // [200200, NA233 (2016-08-12)] New 0 int after effect id
 			Send.SkillReady(creature, skill.Info.Id);
 
 			return true;
@@ -89,8 +89,10 @@ namespace Aura.Channel.Skills.Action
 			if (creature.Inventory.RightHand != null)
 				creature.Inventory.Decrement(creature.Inventory.RightHand);
 
+			var number = (byte)(RandomProvider.Get().Next(6));
+
 			Send.UseMotion(creature, 27, 2, false, false);
-			Send.Effect(creature, Effect.Dice, "process", location, (byte)3);
+			Send.Effect(creature, Effect.Dice, 0, "process", location, number); // [200200, NA233 (2016-08-12)] New 0 int after effect id
 			Send.SkillUse(creature, skill.Info.Id, location, unkInt1, unkInt2);
 
 			skill.Stacks = 0;
@@ -121,7 +123,7 @@ namespace Aura.Channel.Skills.Action
 			skill.Stacks = 0;
 
 			Send.MotionCancel2(creature, 1);
-			Send.Effect(creature, Effect.Dice, "cancel");
+			Send.Effect(creature, Effect.Dice, 0, "cancel"); // [200200, NA233 (2016-08-12)] New 0 int after effect id
 		}
 	}
 }

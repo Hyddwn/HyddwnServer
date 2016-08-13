@@ -39,7 +39,7 @@ namespace Aura.Login.Network
 		{
 			var packet = new Packet(Op.LoginR, MabiId.Login);
 			packet.PutByte((byte)LoginResult.Message);
-			packet.PutInt(14);
+			packet.PutInt((int)LoginResultMessage.Custom);
 			packet.PutInt(1);
 			packet.PutString(format, args);
 
@@ -58,7 +58,7 @@ namespace Aura.Login.Network
 			if (result == LoginResult.SecondaryFail)
 			{
 				packet.PutInt(12);
-				packet.PutByte(1);
+				packet.PutByte(1); // TODO: Number of fail attempts
 			}
 
 			client.Send(packet);

@@ -456,3 +456,9 @@ starcandy/*/run,               606.000000
 starcandy/*/walk,              275.000000
 scooter/ogre/run,              845.000000
 scooter/ogre/walk,             400.000000
+petmascot/*/run,               561.127000
+petmascot/*/walk,              125.000000
+petorientaldragon/*/run,       850.000000
+petorientaldragon/*/walk,      216.771000
+petkokopo/*/Run,              1243.350000
+petkokopo/*/Walk,              160.255000

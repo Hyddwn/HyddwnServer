@@ -49,6 +49,7 @@
     <Compile Include="Const\Dungeons.cs" />
     <Compile Include="Const\Effects.cs" />
     <Compile Include="Const\Entities.cs" />
+    <Compile Include="Const\Entrustment.cs" />
     <Compile Include="Const\Firework.cs" />
     <Compile Include="Const\Items.cs" />
     <Compile Include="Const\Locks.cs" />

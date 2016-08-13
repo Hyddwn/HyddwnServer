@@ -142,7 +142,11 @@ public class FerghusScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("Hey, part-timer!<br/>You're not just lounging around, are you? Haha."));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("Are you new here? Good to see you."));
 		}
@@ -188,11 +192,6 @@ public class FerghusScript : NpcScript
 				Msg("Hmm... Well, <username/>, since you ask,<br/>I might as well answer you. Let's see.<br/>Fishing. Do you know about the Fishing skill?");
 				Msg("I'm not sure about the details, but<br/>I've seen a lot of people fishing up there.<br/>I'm not sure if fishing would be considered a skill, though.");
 				Msg("From what I've seen, all you need is<br/>a Fishing Rod and a Bait Tin.");
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
-				//Msg("What? Part-time job?<br/>There's nothing. You can come back later.");
 				break;
 
 			case "shop_misc":

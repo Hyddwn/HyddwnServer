@@ -79,29 +79,14 @@ namespace Aura.Channel.World
 		public void Cancel()
 		{
 			this.Creature1.Temp.ActiveTrade = null;
-			MoveAllItemsFromTradeToInv(this.Creature1);
+			this.Creature1.Inventory.MoveItemsToInvFrom(Pocket.Trade);
 			Send.TradeRequestCanceled(this.Creature1, true);
 			Send.TradeCancelR(this.Creature1, true);
 
 			this.Creature2.Temp.ActiveTrade = null;
-			MoveAllItemsFromTradeToInv(this.Creature2);
+			this.Creature2.Inventory.MoveItemsToInvFrom(Pocket.Trade);
 			Send.TradeRequestCanceled(this.Creature2, true);
 			Send.TradeCancelR(this.Creature2, true);
-		}
-
-		/// <summary>
-		/// Moves all items creature has in the Trade pocket to the main
-		/// inventory.
-		/// </summary>
-		/// <param name="creature"></param>
-		private static void MoveAllItemsFromTradeToInv(Creature creature)
-		{
-			var items = creature.Inventory.GetItems(a => a.Info.Pocket == Pocket.Trade);
-			foreach (var item in items)
-			{
-				creature.Inventory.Remove(item);
-				creature.Inventory.Add(item, true);
-			}
 		}
 
 		/// <summary>
