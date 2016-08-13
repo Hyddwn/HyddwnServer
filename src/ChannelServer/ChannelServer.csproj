@@ -119,6 +119,7 @@
     <Compile Include="Network\Sending\Send.Dungeons.cs" />
     <Compile Include="Network\Sending\Send.GMCP.cs" />
     <Compile Include="Network\Sending\Send.Parties.cs" />
+    <Compile Include="Network\Sending\Send.PersonalShops.cs" />
     <Compile Include="Network\Sending\Send.Trading.cs" />
     <Compile Include="Network\Sending\Send.Quests.cs" />
     <Compile Include="Network\Sending\Send.Effects.cs" />
