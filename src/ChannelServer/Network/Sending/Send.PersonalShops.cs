@@ -205,19 +205,16 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends PersonalShopUpdateBrownie to creature's client.
+		/// Sends PersonalShopSetPriceForAllR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="licenseEntityId"></param>
-		/// <param name="npcEntityId"></param>
-		public static void PersonalShopUpdateBrownie(Creature creature, long licenseEntityId, long npcEntityId)
+		/// <param name="success"></param>
+		public static void PersonalShopSetPriceForAllR(Creature creature, bool success)
 		{
-			var packet = new Packet(Op.PersonalShopUpdateBrownie, creature.EntityId);
-			packet.PutLong(licenseEntityId);
-			packet.PutLong(npcEntityId);
+			var packet = new Packet(Op.PersonalShopSetPriceForAllR, creature.EntityId);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
-		}
 		}
 	}
 }
