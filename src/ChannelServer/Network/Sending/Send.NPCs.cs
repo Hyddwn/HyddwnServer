@@ -377,7 +377,8 @@ namespace Aura.Channel.Network.Sending
 		/// Sends BankTransferInfo to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="success"></param>
+		/// <param name="tabTitle"></param>
+		/// <param name="item"></param>
 		public static void BankTransferInfo(Creature creature, string tabTitle, Item item)
 		{
 			var packet = new Packet(Op.BankTransferInfo, creature.EntityId);
@@ -387,6 +388,35 @@ namespace Aura.Channel.Network.Sending
 			packet.PutString(item.Bank);
 			packet.PutLong(item.BankTransferRemaining);
 			packet.PutLong(item.BankTransferStart);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends BankLicenseFeeInquiry to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="tabTitle"></param>
+		/// <param name="item"></param>
+		public static void BankLicenseFeeInquiry(Creature creature, long itemEntityId, int sum, int afterFeeSum)
+		{
+			var packet = new Packet(Op.BankLicenseFeeInquiry, creature.EntityId);
+			packet.PutLong(itemEntityId);
+			packet.PutInt(sum);
+			packet.PutInt(afterFeeSum);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends BankPostInquiryDepositR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void BankPostLicenseInquiryDepositR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.BankPostLicenseInquiryDepositR, creature.EntityId);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}

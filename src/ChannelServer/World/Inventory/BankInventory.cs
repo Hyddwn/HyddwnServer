@@ -163,6 +163,18 @@ namespace Aura.Channel.World.Inventory
 				this.Gold += amount;
 				Send.BankUpdateGold(creature, this.Gold);
 			}
+			// Add license as gold
+			else if (item.HasTag("/personalshoplicense/"))
+			{
+				var amount = item.MetaData1.GetInt("EVALUE");
+				amount = (int)(amount * 0.99f); // Fee
+
+				if (amount > 0)
+				{
+					this.Gold += amount;
+					Send.BankUpdateGold(creature, this.Gold);
+				}
+			}
 			// Normal items
 			else
 			{

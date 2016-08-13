@@ -577,10 +577,51 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check for license
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+			if (item.HasTag("/personalshoplicense/"))
+			{
+				var amount = item.MetaData1.GetInt("EVALUE");
+				if (amount != 0)
+				{
+					var afterFeeSum = (int)(amount * 0.99f);
+					Send.BankLicenseFeeInquiry(creature, item.EntityId, amount, afterFeeSum);
+					return;
+				}
+			}
+
 			// Deposit item
 			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, tabName, posX, posY);
 
 			Send.BankDepositItemR(creature, success);
+		}
+
+		/// <summary>
+		/// Sent after accepting fees for license deposition.
+		/// </summary>
+		[PacketHandler(Op.BankPostLicenseInquiryDeposit)]
+		public void BankPostLicenseInquiryDeposit(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+			var tabName = packet.GetString();
+			var posX = packet.GetInt();
+			var posY = packet.GetInt();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check premium
+			if (!client.Account.PremiumServices.CanUseAllBankTabs && tabName != creature.Name)
+			{
+				// Unofficial
+				Send.MsgBox(creature, Localization.Get("Inventory Plus is required to access other character's bank tabs."));
+				Send.BankDepositItemR(creature, false);
+				return;
+			}
+
+			// Deposit item
+			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, tabName, posX, posY);
+
+			Send.BankPostLicenseInquiryDepositR(creature, success);
 		}
 
 		/// <summary>

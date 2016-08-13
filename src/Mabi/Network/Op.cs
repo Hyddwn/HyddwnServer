@@ -295,6 +295,9 @@ namespace Aura.Mabi.Network
 		public const int BankTransferInquiry = 0x7222;
 		public const int BankTransferRequest = 0x7223;
 		public const int BankTransferRequestR = 0x7224;
+		public const int BankLicenseFeeInquiry = 0x7225;
+		public const int BankPostLicenseInquiryDeposit = 0x7226;
+		public const int BankPostLicenseInquiryDepositR = 0x7227;
 		public const int BankTransferInfo = 0x7228;
 		public const int OpenMail = 0x7242;
 		public const int CloseMail = 0x7243;
