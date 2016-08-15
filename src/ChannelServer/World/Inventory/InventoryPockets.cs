@@ -125,9 +125,8 @@ namespace Aura.Channel.World.Inventory
 		/// Returns amount of items by item id.
 		/// </summary>
 		/// <param name="itemId"></param>
-		/// <param name="includePRGRATE">If true, include tailored or blacksmithed items that are works in progress.</param>
 		/// <returns></returns>
-		public abstract int CountItem(int itemId, bool includePRGRATE = true);
+		public abstract int CountItem(int itemId);
 
 		/// <summary>
 		/// Returns amount of items by matching tag.
@@ -462,9 +461,9 @@ namespace Aura.Channel.World.Inventory
 			return result;
 		}
 
-		public override int CountItem(int itemId, bool includePRGRATE = true)
+		public override int CountItem(int itemId)
 		{
-			return _items.Values.Where(item => (item.Info.Id == itemId && (includePRGRATE || !item.MetaData1.Has("PRGRATE"))) || item.Data.StackItemId == itemId)
+			return _items.Values.Where(item => item.Info.Id == itemId || item.Data.StackItemId == itemId)
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 
@@ -659,9 +658,9 @@ namespace Aura.Channel.World.Inventory
 			return 0;
 		}
 
-		public override int CountItem(int itemId, bool includePRGRATE = true)
+		public override int CountItem(int itemId)
 		{
-			if (_item != null && _item.Info.Id == itemId && (includePRGRATE || !_item.MetaData1.Has("PRGRATE")))
+			if (_item != null && _item.Info.Id == itemId)
 				return _item.Info.Amount;
 			return 0;
 		}
@@ -775,9 +774,9 @@ namespace Aura.Channel.World.Inventory
 			return 0;
 		}
 
-		public override int CountItem(int itemId, bool includePRGRATE = true)
+		public override int CountItem(int itemId)
 		{
-			return _items.Where(item => (item.Info.Id == itemId && (includePRGRATE || !item.MetaData1.Has("PRGRATE"))) || item.Data.StackItemId == itemId)
+			return _items.Where(item => item.Info.Id == itemId || item.Data.StackItemId == itemId)
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 

@@ -712,7 +712,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 					case ObjectiveType.Collect:
 						var itemId = (objective as QuestObjectiveCollect).ItemId;
-						var count = creature.Inventory.Count(itemId, false);
+						var count = creature.Inventory.Count(itemId);
 
 						if (!progress.Done && count >= objective.Amount)
 							quest.SetDone(progress.Ident);

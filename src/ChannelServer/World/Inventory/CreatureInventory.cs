@@ -1396,13 +1396,12 @@ namespace Aura.Channel.World.Inventory
 		/// Returns the amount of items with this id in the inventory.
 		/// </summary>
 		/// <param name="itemId"></param>
-		/// <param name="includePRGRATE">If true, include tailored or blacksmithed items that are works in progress.</param>
 		/// <returns></returns>
-		public int Count(int itemId, bool includePRGRATE = true)
+		public int Count(int itemId)
 		{
 			lock (_pockets)
 				return _pockets.Values.Where(a => !InvisiblePockets.Contains(a.Pocket))
-					.Sum(pocket => pocket.CountItem(itemId, includePRGRATE));
+					.Sum(pocket => pocket.CountItem(itemId));
 		}
 
 		/// <summary>
