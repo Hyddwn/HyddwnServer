@@ -784,6 +784,27 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Creates a tailoring pattern/blacksmith manual of the specified form ID and number of uses.
+		/// </summary>
+		/// <remarks>
+		/// It is assumed that a single use subtracts 1000 durability from the pattern. 
+		/// (i.e. <paramref name="useCount"/> is multiplied by 1000 and applied to pattern durability.)
+		/// </remarks>
+		/// <param name="itemId"></param>
+		/// <param name="formId"></param>
+		/// <param name="useCount"></param>
+		/// <returns></returns>
+		public static Item CreatePattern(int itemId, int formId, int useCount)
+		{
+			var item = new Item(itemId);
+			item.MetaData1.SetInt("FORMID", formId);
+			item.OptionInfo.DurabilityMax = useCount * 1000; // DurabilityMax overwritten to avoid clamping.
+			item.Durability = item.OptionInfo.DurabilityMax;
+
+			return item;
+		}
+
+		/// <summary>
 		/// Returns true if item has the given flags.
 		/// </summary>
 		/// <param name="flags"></param>
