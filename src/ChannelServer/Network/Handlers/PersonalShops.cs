@@ -30,15 +30,31 @@ namespace Aura.Channel.Network.Handlers
 			var licenseEntityId = packet.GetLong();
 
 			var creature = client.GetCreatureSafe(packet.Id);
-
-			// Check bag...
 			var bag = creature.Inventory.GetItemSafe(bagEntityId);
-
-			// Check license...
 			var license = creature.Inventory.GetItemSafe(licenseEntityId);
 
+			// Check bag
+			if (!bag.HasTag("/personal_shop_available/"))
+			{
+				Log.Warning("PersonalShopCheck: User '{0}' tried to use invalid item bag.", client.Account.Id);
+
+				Send.MsgBox(creature, Localization.Get("Invalid item bag."));
+				Send.PersonalShopCheckR(creature, false, 0, 0);
+				return;
+			}
+
+			// Check license
+			if (!license.HasTag("/personalshoplicense/"))
+			{
+				Log.Warning("PersonalShopCheck: User '{0}' tried to use invalid license.", client.Account.Id);
+
+				Send.MsgBox(creature, Localization.Get("Invalid license."));
+				Send.PersonalShopCheckR(creature, false, 0, 0);
+				return;
+			}
+
 			// Check location
-			if (!PersonalShop.CanPlace(creature))
+			if (!PersonalShop.CanPlace(creature, license.Data.PersonalShopLicense))
 			{
 				Send.MsgBox(creature, Localization.Get("Personal Shops are allowed only in designated areas."));
 				Send.PersonalShopCheckR(creature, false, 0, 0);
