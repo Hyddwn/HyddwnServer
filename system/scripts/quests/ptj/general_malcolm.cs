@@ -312,167 +312,158 @@ public class MalcolmPtjScript : GeneralScript
 	/// </summary>
 	private void GiveStartingPtjItems(int questId, Creature player)
 	{
-		Action<int, int> PlayerGivePattern = (int formId, int useCount) =>
-		{
-			Item pattern = new Item(60600);
-			pattern.MetaData1.SetInt("FORMID", formId);
-			pattern.Data.Durability = useCount * 1000; // Overwrites MaxDurability, else will be clamped to 5000.
-			pattern.LoadDefault();
-			player.GiveItem(pattern);
-		};
-
 		switch (questId)
 		{
 			case 508207: // Basic  Tailor 2 Popo's Skirts (F)
-				PlayerGivePattern(10106, 5);  // Apprentice Sewing Pattern - Popo's Skirt (F)
-				player.GiveItem(60419, 2);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60415, 2);    // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 2);    // Cheap Fabric (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10106, 5)); // Apprentice Sewing Pattern - Popo's Skirt (F)
+				player.GiveItem(60419, 2);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
+				player.GiveItem(60419, 2);  // Cheap Fabric (Part-Time Job)
 				break;
 
 			case 508208: // Basic  Tailor 2 Wizard Hats
-				PlayerGivePattern(10112, 10); // Apprentice Sewing Pattern - Wizard Hat
-				player.GiveItem(60424, 5);    // Common Leather (Part-Time Job)
-				player.GiveItem(60415, 2);    // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60424, 5);    // Common Leather (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10112, 10)); // Apprentice Sewing Pattern - Wizard Hat
+				player.GiveItem(60424, 5);  // Common Leather (Part-Time Job)
+				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
+				player.GiveItem(60424, 5);  // Common Leather (Part-Time Job)
 				break;
 
 			case 508209: // Basic  Tailor 2 Hairbands
-				PlayerGivePattern(10114, 5);  // Apprentice Sewing Pattern - Hairband
-				player.GiveItem(60415, 2);    // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 5);    // Cheap Fabric (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10114, 5)); // Apprentice Sewing Pattern - Hairband
+				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
+				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
 				break;
 
 			case 508210: // Basic  Tailor 2 Mongo's Traveler Suits (F)
-				PlayerGivePattern(10107, 40); // Apprentice Sewing Pattern - Mongo Traveler Suit (F)
-				player.GiveItem(60411, 10);   // Cheap Silk (Part-Time Job)
-				player.GiveItem(60407, 5);    // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60407, 5);    // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60416, 2);    // Common Finishing Thread (Part-Time Job)
-				player.GiveItem(60411, 10);   // Cheap Silk (Part-Time Job)
-				player.GiveItem(60407, 5);    // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60407, 5);    // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10107, 40)); // Apprentice Sewing Pattern - Mongo Traveler Suit (F)
+				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
 				break;
 
 			case 508211: // Basic  Tailor 2 Mongo's Traveler Suits (M)
-				PlayerGivePattern(10108, 40); // Apprentice Sewing Pattern - Mongo Traveler Suit (M)
-				player.GiveItem(60411, 10);   // Cheap Silk (Part-Time Job)
-				player.GiveItem(60407, 5);    // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60407, 5);    // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60416, 2);    // Common Finishing Thread (Part-Time Job)
-				player.GiveItem(60411, 10);   // Cheap Silk (Part-Time Job)
-				player.GiveItem(60407, 5);    // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60407, 5);    // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10108, 40)); // Apprentice Sewing Pattern - Mongo Traveler Suit (M)
+				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
 				break;
 
 			case 508212: // Basic  Tailor 2 Leather Bandanas
-				PlayerGivePattern(10113, 15); // Apprentice Sewing Pattern - Leather Bandana
-				player.GiveItem(60419, 3);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60424, 3);    // Common Leather (Part-Time Job)
-				player.GiveItem(60416, 2);    // Common Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 3);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60424, 3);    // Common Leather (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10113, 15)); // Apprentice Sewing Pattern - Leather Bandana
+				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60424, 3);  // Common Leather (Part-Time Job)
+				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60424, 3);  // Common Leather (Part-Time Job)
 				break;
 
 			case 508238: // Int    Tailor 2 Cores' Healer Dresses
-				PlayerGivePattern(10101, 30);
-				player.GiveItem(60419, 6);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60411, 6);    // Cheap Silk (Part-Time Job)
-				player.GiveItem(60416, 2);    // Common Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 6);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60411, 6);    // Cheap Silk (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10101, 30)); // Apprentice Sewing Pattern - Cores' Healer Dress
+				player.GiveItem(60419, 6);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60411, 6);  // Cheap Silk (Part-Time Job)
+				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+				player.GiveItem(60419, 6);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60411, 6);  // Cheap Silk (Part-Time Job)
 				break;
 
 			case 508239: // Int    Tailor 2 Magic School Uniforms (M)
-				PlayerGivePattern(10102, 10); // Apprentice Sewing Pattern - Magic School Uniform (M)
-				player.GiveItem(60419, 3);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60412, 3);    // Common Silk (Part-Time Job)
-				player.GiveItem(60428, 3);    // Common Leather Strap (Part-Time Job)
-				player.GiveItem(60417, 2);    // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10102, 10)); // Apprentice Sewing Pattern - Magic School Uniform (M)
+				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60412, 3);  // Common Silk (Part-Time Job)
+				player.GiveItem(60428, 3);  // Common Leather Strap (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
 				break;
 
 			case 508240: // Int    Tailor 2 Mongo's Long Skirts
-				PlayerGivePattern(10115, 25); // Apprentice Sewing Pattern - Mongo's Long Skirt
-				player.GiveItem(60419, 3);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60411, 3);    // Cheap Silk (Part-Time Job)
-				player.GiveItem(60415, 2);    // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 3);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60411, 3);    // Cheap Silk (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10115, 25)); // Apprentice Sewing Pattern - Mongo's Long Skirt
+				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60411, 3);  // Cheap Silk (Part-Time Job)
+				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
+				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60411, 3);  // Cheap Silk (Part-Time Job)
 				break;
 
 			case 508241: // Int    Tailor 2 Cores Ninja Suits (M)
-				PlayerGivePattern(10118, 25); // Apprentice Sewing Pattern - Cores Ninja Suit (M)
-				player.GiveItem(60420, 7);    // Common Fabric (Part-Time Job)
-				player.GiveItem(60412, 7);    // Common Silk (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60415, 2);    // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60420, 7);    // Common Fabric (Part-Time Job)
-				player.GiveItem(60412, 7);    // Common Silk (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 2);    // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10118, 25)); // Apprentice Sewing Pattern - Cores Ninja Suit (M)
+				player.GiveItem(60420, 7);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60412, 7);  // Common Silk (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
+				player.GiveItem(60420, 7);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60412, 7);  // Common Silk (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 2);  // Thick Thread Ball (Part-Time Job)
 				break;
 
 			case 508242: // Int    Tailor 2 Cores' Healer Gloves
-				PlayerGivePattern(10104, 20); // Apprentice Sewing Pattern - Cores' Healer Gloves
-				player.GiveItem(60420, 6);    // Common Fabric (Part-Time Job)
-				player.GiveItem(60412, 6);    // Common Silk (Part-Time Job)
-				player.GiveItem(60404, 3);    // Braid (Part-Time Job)
-				player.GiveItem(60404, 3);    // Braid (Part-Time Job)
-				player.GiveItem(60417, 2);    // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60420, 6);    // Common Fabric (Part-Time Job)
-				player.GiveItem(60412, 6);    // Common Silk (Part-Time Job)
-				player.GiveItem(60404, 3);    // Braid (Part-Time Job)
-				player.GiveItem(60404, 3);    // Braid (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10104, 20)); // Apprentice Sewing Pattern - Cores' Healer Gloves
+				player.GiveItem(60420, 6);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60412, 6);  // Common Silk (Part-Time Job)
+				player.GiveItem(60404, 3);  // Braid (Part-Time Job)
+				player.GiveItem(60404, 3);  // Braid (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(60420, 6);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60412, 6);  // Common Silk (Part-Time Job)
+				player.GiveItem(60404, 3);  // Braid (Part-Time Job)
+				player.GiveItem(60404, 3);  // Braid (Part-Time Job)
 				break;
 
 			case 508243: // Int    Tailor 2 Cores' Healer Suits
-				PlayerGivePattern(10110, 30); // Apprentice Sewing Pattern - Cores' Healer Suit
-				player.GiveItem(60420, 5);    // Common Fabric (Part-Time Job)
-				player.GiveItem(60419, 5);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60427, 5);    // Cheap Leather Strap (Part-Time Job)
-				player.GiveItem(60418, 2);    // Finest Finishing Thread (Part-Time Job)
-				player.GiveItem(60420, 5);    // Common Fabric (Part-Time Job)
-				player.GiveItem(60419, 5);    // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60427, 5);    // Cheap Leather Strap (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10110, 30)); // Apprentice Sewing Pattern - Cores' Healer Suit
+				player.GiveItem(60420, 5);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60427, 5);  // Cheap Leather Strap (Part-Time Job)
+				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+				player.GiveItem(60420, 5);  // Common Fabric (Part-Time Job)
+				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
+				player.GiveItem(60427, 5);  // Cheap Leather Strap (Part-Time Job)
 				break;
 
 			case 508244: // Int    Tailor 2 Guardian Gloves
-				PlayerGivePattern(10111, 40); // Apprentice Sewing Pattern - Guardian Gloves
-				player.GiveItem(60424, 10);   // Common Leather (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60417, 2);    // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60418, 2);    // Finest Finishing Thread (Part-Time Job)
-				player.GiveItem(60424, 10);   // Common Leather (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);    // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10111, 40)); // Apprentice Sewing Pattern - Guardian Gloves
+				player.GiveItem(60424, 10); // Common Leather (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+				player.GiveItem(60424, 10); // Common Leather (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
 				break;
 
 			case 508268: // Adv    Tailor 2 Lirina's Long Skirts
-				PlayerGivePattern(10117, 20); // Apprentice Sewing Pattern - Lirina's Long Skirt
-				player.GiveItem(60413, 5);    // Fine Silk (Part-Time Job)
-				player.GiveItem(60407, 10);   // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60417, 2);    // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60413, 5);    // Fine Silk (Part-Time Job)
-				player.GiveItem(60407, 10);   // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10117, 20)); // Apprentice Sewing Pattern - Lirina's Long Skirt
+				player.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
+				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
+				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
 				break;
 
 			case 508269: // Adv    Tailor 2 Magic School Uniforms (F)
-				PlayerGivePattern(10103, 20); // Apprentice Sewing Pattern - Magic School Uniform (F)
-				player.GiveItem(60422, 10);   // Finest Fabric (Part-Time Job)
-				player.GiveItem(60422, 6);    // Finest Fabric (Part-Time Job)
-				player.GiveItem(60412, 8);    // Common Silk (Part-Time Job)
-				player.GiveItem(60417, 2);    // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10103, 20)); // Apprentice Sewing Pattern - Magic School Uniform (F)
+				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+				player.GiveItem(60422, 6);  // Finest Fabric (Part-Time Job)
+				player.GiveItem(60412, 8);  // Common Silk (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
 				break;
 
 			case 508270: // Adv    Tailor 2 Mongo's Hats
-				PlayerGivePattern(10105, 15);   // Apprentice Sewing Pattern - Mongo's Hat
+				player.GiveItem(Item.CreatePattern(60600, 10105, 15)); // Apprentice Sewing Pattern - Mongo's Hat
 				player.GiveItem(60422, 5);  // Finest Fabric (Part-Time Job)
 				player.GiveItem(60412, 5);  // Common Silk (Part-Time Job)
 				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
@@ -481,7 +472,7 @@ public class MalcolmPtjScript : GeneralScript
 				break;
 
 			case 508271: // Adv    Tailor 2 Cloth Mails
-				PlayerGivePattern(10109, 40);   // Apprentice Sewing Pattern - Cloth Mail
+				player.GiveItem(Item.CreatePattern(60600, 10109, 40)); // Apprentice Sewing Pattern - Cloth Mail
 				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
 				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
 				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
@@ -496,27 +487,27 @@ public class MalcolmPtjScript : GeneralScript
 				break;
 
 			case 508272: // Adv    Tailor 2 Light Leather Mails (F)
-				PlayerGivePattern(10116, 30); // Apprentice Sewing Pattern - Light Leather Mail (F)
-				player.GiveItem(60425, 9);    // Fine Leather (Part-Time Job)
-				player.GiveItem(60413, 9);    // Fine Silk (Part-Time Job)
-				player.GiveItem(60428, 9);    // Common Leather Strap (Part-Time Job)
-				player.GiveItem(60417, 2);    // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60404, 2);    // Braid (Part-Time Job)
-				player.GiveItem(60425, 9);    // Fine Leather (Part-Time Job)
-				player.GiveItem(60413, 9);    // Fine Silk (Part-Time Job)
-				player.GiveItem(60428, 9);    // Common Leather Strap (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10116, 30)); // Apprentice Sewing Pattern - Light Leather Mail (F)
+				player.GiveItem(60425, 9);  // Fine Leather (Part-Time Job)
+				player.GiveItem(60413, 9);  // Fine Silk (Part-Time Job)
+				player.GiveItem(60428, 9);  // Common Leather Strap (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(60404, 2);  // Braid (Part-Time Job)
+				player.GiveItem(60425, 9);  // Fine Leather (Part-Time Job)
+				player.GiveItem(60413, 9);  // Fine Silk (Part-Time Job)
+				player.GiveItem(60428, 9);  // Common Leather Strap (Part-Time Job)
 				break;
 
 			case 508273: // Adv    Tailor 2 Light Leather Mails (M)
-				PlayerGivePattern(10120, 30); // Apprentice Sewing Pattern - Light Leather Mail (M)
-				player.GiveItem(60425, 10);   // Fine Leather (Part-Time Job)
-				player.GiveItem(60412, 10);   // Common Silk (Part-Time Job)
-				player.GiveItem(60428, 10);   // Common Leather Strap (Part-Time Job)
-				player.GiveItem(60417, 2);    // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60404, 2);    // Braid (Part-Time Job)
-				player.GiveItem(60425, 10);   // Fine Leather (Part-Time Job)
-				player.GiveItem(60412, 10);   // Common Silk (Part-Time Job)
-				player.GiveItem(60428, 10);   // Common Leather Strap (Part-Time Job)
+				player.GiveItem(Item.CreatePattern(60600, 10120, 30)); // Apprentice Sewing Pattern - Light Leather Mail (M)
+				player.GiveItem(60425, 10); // Fine Leather (Part-Time Job)
+				player.GiveItem(60412, 10); // Common Silk (Part-Time Job)
+				player.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
+				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+				player.GiveItem(60404, 2);  // Braid (Part-Time Job)
+				player.GiveItem(60425, 10); // Fine Leather (Part-Time Job)
+				player.GiveItem(60412, 10); // Common Silk (Part-Time Job)
+				player.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
 				break;
 
 			default:
@@ -561,7 +552,7 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 			return HookResult.Continue;
 
 		npc.Player.Inventory.Remove(Garment, 1);
-		npc.Notice(L(string.Format("You have given Garment to be Delivered to {0}.", NpcName)));
+		npc.Notice(string.Format(L("You have given Garment to be Delivered to {0}."), L(NpcName)));
 		npc.FinishQuest(this.Id, "ptj");
 
 		await this.OnFinish(npc);
@@ -1327,7 +1318,7 @@ public abstract class MalcolmTailorPtjBaseScript : QuestScript
 	{
 		SetId(QuestId);
 		SetName(L("General Shop Part-Time Job"));
-		SetDescription(L(string.Format("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 {0}], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then.", ItemsName)));
+		SetDescription(string.Format(L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 {0}], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."), L(ItemsName)));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -1337,8 +1328,8 @@ public abstract class MalcolmTailorPtjBaseScript : QuestScript
 		SetLevel(QuestLevel);
 		SetHours(start: 7, report: QuestLevel == QuestLevel.Adv ? 17 : 12, deadline: 19);
 
-		AddObjective("ptj1", L(string.Format("Make 2 {0} (Part-Time Job)", ItemsName)), 0, 0, 0, Create(ItemId, 2, SkillId.Tailoring));
-		AddObjective("ptj2", L(string.Format("2 {0} (Part-Time Job)", ItemsName)), 0, 0, 0, Collect(ItemId, 2));
+		AddObjective("ptj1", string.Format(L("Make 2 {0} (Part-Time Job)"), L(ItemsName)), 0, 0, 0, Create(ItemId, 2, SkillId.Tailoring));
+		AddObjective("ptj2", string.Format(L("2 {0} (Part-Time Job)"), L(ItemsName)), 0, 0, 0, Collect(ItemId, 2));
 
 		AddRewards();
 	}
