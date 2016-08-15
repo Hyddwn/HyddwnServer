@@ -229,6 +229,9 @@ namespace Aura.Channel.World.Shops
 
 			// Spawn prop
 			this.Prop = new Prop(314, location.RegionId, location.X, location.Y, MabiMath.DegreeToRadian(rnd.Next(360)));
+			this.Prop.Info.Color1 = this.Bag.Info.Color1;
+			this.Prop.Info.Color2 = this.Bag.Info.Color2;
+			this.Prop.Info.Color3 = this.Bag.Info.Color3;
 			this.Region.AddProp(this.Prop);
 
 			// Move that body
