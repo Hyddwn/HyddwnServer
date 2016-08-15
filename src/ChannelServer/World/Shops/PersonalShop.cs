@@ -195,11 +195,21 @@ namespace Aura.Channel.World.Shops
 			if (this.CustomerEntityIds.Count == 0)
 				return;
 
-			foreach (var entityId in this.CustomerEntityIds)
+			var remove = new List<long>();
+
+			lock (this.CustomerEntityIds)
 			{
-				var creature = ChannelServer.Instance.World.GetCreature(entityId);
-				if (creature != null)
-					action(creature);
+				foreach (var entityId in this.CustomerEntityIds)
+				{
+					var creature = ChannelServer.Instance.World.GetCreature(entityId);
+					if (creature != null)
+						action(creature);
+					else
+						remove.Add(entityId);
+				}
+
+				foreach (var id in remove)
+					this.CustomerEntityIds.Remove(id);
 			}
 		}
 	}
