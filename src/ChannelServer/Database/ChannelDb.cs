@@ -1446,10 +1446,18 @@ namespace Aura.Channel.Database
 						// Objects are serialized to a Base64 string,
 						// because we're storing as string for easier
 						// inter-language access.
-						using (var ms = new MemoryStream())
+						try
 						{
-							bf.Serialize(ms, var.Value);
-							val = Convert.ToBase64String(ms.ToArray());
+							using (var ms = new MemoryStream())
+							{
+								bf.Serialize(ms, var.Value);
+								val = Convert.ToBase64String(ms.ToArray());
+							}
+						}
+						catch (Exception ex)
+						{
+							Log.Warning("SaveVars: Failed to save '{0}' for account '{1}', error: {2}", var.Key, accountId, ex.Message);
+							continue;
 						}
 					}
 					else if (type == "dt")

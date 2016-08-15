@@ -111,6 +111,9 @@ public class NaoScript : NpcScript
 		GiveItem(1000, 1);  // Traveler's Guide
 		GiveItem(50004, 1); // Bread
 
+		// Add keyword, so players can't possibly get dyes without rebirth.
+		GiveKeyword("tutorial_present");
+
 		Close();
 	}
 
@@ -159,6 +162,8 @@ public class NaoScript : NpcScript
 							for (int i = 1; i < 10; ++i)
 								RemoveKeyword("Tin_ColorAmpul_" + i);
 							RemoveKeyword("tutorial_present");
+
+							Player.Vars.Perm["EverRebirthed"] = true;
 
 							// Old:
 							//   Msg("Would you like to be reborn with the currently selected features?<br/><button title='Yes' keyword='@rebirthyes' /><button title='No' keyword='@rebirthhelp' />");

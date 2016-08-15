@@ -92,6 +92,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "points", "<modificator>", Localization.Get("Modificates account's points (Pon)."), HandlePoints);
 			Add(50, 50, "fillpotions", "", Localization.Get("Fills all potion stacks in inventory."), HandleFillPotions);
 			Add(50, 50, "keyword", "[-|+]<name>", Localization.Get("Adds/removes keywords."), HandleKeyword);
+			Add(50, 50, "ptj", "<type> <level>", Localization.Get("Sets the level of a certain PTJ type."), HandlePtj);
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", Localization.Get("Creates dynamic region, based on the current one."), HandleDynamic);
@@ -1565,12 +1566,19 @@ namespace Aura.Channel.Util
 			// Get item id
 			int itemId;
 			if (!int.TryParse(args[1], out itemId))
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid item id."));
 				return CommandResult.InvalidArgument;
+			}
 
 			// Get ego race
 			EgoRace egoRace;
 			if (!EgoRace.TryParse(args[3], out egoRace) || (egoRace <= EgoRace.None || egoRace > EgoRace.CylinderF))
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid ego race. Available races:"));
+				Send.ServerMessage(sender, string.Join(", ", Enum.GetNames(typeof(EgoRace))));
 				return CommandResult.InvalidArgument;
+			}
 
 			// Check item data
 			var itemData = AuraData.ItemDb.Find(itemId);
@@ -2206,6 +2214,36 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Warped to '{0}'."), name);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("{0} warped you to '{1}'."), sender.Name, name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandlePtj(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 3)
+				return CommandResult.InvalidArgument;
+
+			PtjType type;
+			if (!Enum.TryParse<PtjType>(args[1], out type))
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid PTJ type. Available types:"));
+				Send.ServerMessage(sender, string.Join(", ", Enum.GetNames(typeof(PtjType))));
+
+				return CommandResult.Fail;
+			}
+
+			int level;
+			if (!int.TryParse(args[2], out level) || level < 0 || level > short.MaxValue)
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid level."));
+				return CommandResult.Fail;
+			}
+
+			target.Quests.SetPtjTrackRecord(type, level, level);
+
+			Send.ServerMessage(sender, Localization.Get("Changed '{0}' PTJ level to '{1}'."), type, level);
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("{2} has changed your '{0}' PTJ level to '{1}'."), type, level, sender.Name);
 
 			return CommandResult.Okay;
 		}

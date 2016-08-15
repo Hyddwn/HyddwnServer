@@ -121,6 +121,9 @@ namespace Aura.Channel.World.Inventory
 				Pocket.ShoeStyle,
 				Pocket.Temporary,
 				Pocket.Trade,
+				Pocket.EntrustmentItem1,
+				Pocket.EntrustmentItem2,
+				Pocket.EntrustmentReward,
 				Pocket.VIPInventory,
 			};
 
@@ -227,10 +230,14 @@ namespace Aura.Channel.World.Inventory
 			_pockets = new Dictionary<Pocket, InventoryPocket>();
 			_wuUpgrades = new Dictionary<long, WUUpgrades>();
 
-			// Cursor, Temp, Quests
+			// Cursor, Temp, Quests, Trading
 			this.Add(new InventoryPocketStack(Pocket.Temporary));
 			this.Add(new InventoryPocketStack(Pocket.Quests));
 			this.Add(new InventoryPocketSingle(Pocket.Cursor));
+			this.Add(new InventoryPocketNormal(Pocket.Trade, 10, 5));
+			this.Add(new InventoryPocketSingle(Pocket.EntrustmentItem1));
+			this.Add(new InventoryPocketSingle(Pocket.EntrustmentItem2));
+			this.Add(new InventoryPocketNormal(Pocket.EntrustmentReward, 10, 5));
 
 			// Equipment
 			for (var i = Pocket.Face; i <= Pocket.Accessory2; ++i)
@@ -765,6 +772,24 @@ namespace Aura.Channel.World.Inventory
 
 				Send.EquipmentMoved(_creature, source);
 			}
+
+			// Update trade window
+			if (target == Pocket.Trade)
+			{
+				if (collidingItem != null)
+					_creature.Temp.ActiveTrade.RemoveItem(_creature, collidingItem);
+				_creature.Temp.ActiveTrade.AddItem(_creature, item);
+			}
+			if (source == Pocket.Trade) _creature.Temp.ActiveTrade.RemoveItem(_creature, item);
+
+			// Update entrustment window
+			if (target >= Pocket.EntrustmentItem1 && target <= Pocket.EntrustmentReward)
+			{
+				if (collidingItem != null)
+					_creature.Temp.ActiveEntrustment.RemoveItem(collidingItem, target);
+				_creature.Temp.ActiveEntrustment.AddItem(item, target);
+			}
+			if (source >= Pocket.EntrustmentItem1 && source <= Pocket.EntrustmentReward) _creature.Temp.ActiveEntrustment.RemoveItem(item, source);
 
 			return true;
 		}
@@ -1414,6 +1439,18 @@ namespace Aura.Channel.World.Inventory
 			lock (_pockets)
 				return _pockets.Values.Where(a => !InvisiblePockets.Contains(a.Pocket))
 					.Sum(pocket => pocket.CountItem(tag));
+		}
+
+		/// <summary>
+		/// Returns the amount of items matching the conditions specified.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public int Count(Func<Item, bool> predicate)
+		{
+			lock (_pockets)
+				return _pockets.Values.Where(a => !InvisiblePockets.Contains(a.Pocket))
+					.Sum(pocket => pocket.CountItem(predicate));
 		}
 
 		/// <summary>
@@ -2115,6 +2152,21 @@ namespace Aura.Channel.World.Inventory
 					return 0;
 
 				return wu.CastingSpeed;
+			}
+		}
+
+		/// <summary>
+		/// Moves all items creature has in the given pockets to the
+		/// main inventory.
+		/// </summary>
+		/// <param name="creature"></param>
+		public void MoveItemsToInvFrom(params Pocket[] pockets)
+		{
+			var items = this.GetItems(a => pockets.Contains(a.Info.Pocket));
+			foreach (var item in items)
+			{
+				this.Remove(item);
+				this.Add(item, true);
 			}
 		}
 	}

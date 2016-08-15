@@ -141,7 +141,7 @@ public class MalcolmScript : NpcScript
 								"The repairing is complete.",
 								"Hahaha, it's perfectly repaired.",
 								"Wow! It has been repaired perfectly.<br/>Yes, I'm surprised, too."
-						);
+							);
 						else
 							// TODO: Use string format once we have XML dialogues.
 							Msg(result.Successes + " point(s) repaired.<br/>Unfortunately, I have failed in repairing " + result.Fails + " point(s).");

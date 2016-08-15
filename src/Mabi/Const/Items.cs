@@ -11,7 +11,7 @@ namespace Aura.Mabi.Const
 	/// <remarks>
 	/// Every item is stored in a specific pocket.
 	/// </remarks>
-	public enum Pocket : byte
+	public enum Pocket : int
 	{
 		None = 0,
 		Cursor = 1,
@@ -43,6 +43,9 @@ namespace Aura.Mabi.Const
 		Temporary = 20,
 		Quests = 23,
 		Trash = 24,
+		EntrustmentItem1 = 25,
+		EntrustmentItem2 = 26,
+		EntrustmentReward = 27,
 		BattleReward = 28,
 		EnchantReward = 29,
 		ManaCrystalReward = 30,

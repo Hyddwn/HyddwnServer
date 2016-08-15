@@ -394,6 +394,10 @@
 //---------------------------------------------------------------------------
 { raceId: 490087, name: "Scooter Imp", timeLimit: 100, exp: 1.5, height: 1.0, upper: 1.0, lower: 1.0, life: 400, mana: 20, stamina: 300, str: 100, int: 5, dex: 45, will: 45, luck: 30, defense: 20, protection: 20 },
 
+// 59
+//---------------------------------------------------------------------------
+{ raceId: 490115, name: "Mir Dragon", timeLimit: 150, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 80, mana: 39, stamina: 77, str: 47, int: 32, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
+
 // Partners
 //---------------------------------------------------------------------------
 { raceId: 730201, name: "Partner [Maid]", timeLimit: 180, exp: 0.05, height: 1.0, upper: 1.0, lower: 1.0, life: 100, mana: 80, stamina: 90, str: 60, int: 80, dex: 60, will: 50, luck: 40, defense: 0, protection: 2 },

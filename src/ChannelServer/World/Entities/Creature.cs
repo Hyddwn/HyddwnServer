@@ -1182,6 +1182,12 @@ namespace Aura.Channel.World.Entities
 				this.Skills.CancelActiveSkill();
 
 			this.Quests.Dispose();
+
+			if (this.Temp.ActiveTrade != null)
+				this.Temp.ActiveTrade.Cancel();
+
+			if (this.Temp.ActiveEntrustment != null)
+				this.Temp.ActiveEntrustment.Cancel();
 		}
 
 		public void Activate(CreatureStates state) { this.State |= state; }

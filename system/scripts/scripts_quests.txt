@@ -72,6 +72,7 @@ quests/ptj/grocery_caitin.cs
 quests/ptj/healer_dilys.cs
 quests/ptj/inn_piaras.cs
 quests/ptj/neighboring_deian.cs
+quests/ptj/blacksmith_ferghus.cs
 quests/ptj/general_malcolm.cs
 
 // Skills

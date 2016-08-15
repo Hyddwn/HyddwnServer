@@ -134,6 +134,13 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="tag"></param>
 		/// <returns></returns>
 		public abstract int CountItem(string tag);
+
+		/// <summary>
+		/// Returns amount of items by specified conditions.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public abstract int CountItem(Func<Item, bool> predicate);
 	}
 
 	/// <summary>
@@ -473,6 +480,12 @@ namespace Aura.Channel.World.Inventory
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 
+		public override int CountItem(Func<Item, bool> predicate)
+		{
+			return _items.Values.Where(predicate)
+				.Aggregate(0, (current, item) => current + item.Info.Amount);
+		}
+
 		public override Item GetItem(long id)
 		{
 			Item item;
@@ -672,6 +685,13 @@ namespace Aura.Channel.World.Inventory
 			return 0;
 		}
 
+		public override int CountItem(Func<Item, bool> predicate)
+		{
+			if (_item != null && predicate(_item))
+				return _item.Info.Amount;
+			return 0;
+		}
+
 		public override Item GetItem(long id)
 		{
 			if (_item != null && _item.EntityId == id)
@@ -783,6 +803,12 @@ namespace Aura.Channel.World.Inventory
 		public override int CountItem(string tag)
 		{
 			return _items.Where(item => item.HasTag(tag) || (item.Data.StackItem != null && item.Data.StackItem.HasTag(tag)))
+				.Aggregate(0, (current, item) => current + item.Info.Amount);
+		}
+
+		public override int CountItem(Func<Item, bool> predicate)
+		{
+			return _items.Where(predicate)
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 
