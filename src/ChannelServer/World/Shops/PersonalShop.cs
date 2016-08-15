@@ -333,5 +333,49 @@ namespace Aura.Channel.World.Shops
 
 			return string.Format("{0}/{1}", normalPocket.Width, normalPocket.Height);
 		}
+
+		/// <summary>
+		/// Attempts to buy the given item for buyer, returns true if
+		/// successful.
+		/// </summary>
+		/// <param name="buyer"></param>
+		/// <param name="itemEntityId"></param>
+		/// <returns></returns>
+		public bool Buy(Creature buyer, long itemEntityId)
+		{
+			var item = this.Owner.Inventory.GetItem(a => a.PersonalShopPrice != 0 && a.Info.Pocket == this.Bag.OptionInfo.LinkedPocketId && a.EntityId == itemEntityId);
+			if (item == null)
+				return false;
+
+			// Check gold
+			var price = item.PersonalShopPrice;
+			if (buyer.Inventory.Gold < price)
+			{
+				Send.MsgBox(buyer, Localization.Get("You don't have enough gold."));
+				return false;
+			}
+
+			// Remove item from shop
+			this.Owner.Inventory.Remove(item);
+			Send.PersonalShopRemoveItem(this.Owner, item.EntityId, buyer.EntityId);
+			this.ForAllCustomers(creature => Send.PersonalShopRemoveItem(creature, item.EntityId, buyer.EntityId));
+
+			// Remove gold and give item
+			buyer.Inventory.RemoveGold(price);
+			buyer.GiveItem(new Item(item));
+
+			// Notice to owner
+			var msg = string.Format(Localization.Get("[{0}] was sold to [{1}]."), Localization.Get(item.Data.Name), buyer.Name);
+			Send.Notice(this.Owner, msg);
+			Send.SystemMessage(this.Owner, "<PERSONALSHOP>", msg);
+
+			// Add gold to the license
+			var revenue = (int)(price * 0.99f);
+			var val = this.LicenseItem.MetaData1.GetInt("EVALUE") + revenue;
+			this.LicenseItem.MetaData1.SetInt("EVALUE", revenue);
+			Send.ItemUpdate(this.Owner, this.LicenseItem);
+
+			return true;
+		}
 	}
 }

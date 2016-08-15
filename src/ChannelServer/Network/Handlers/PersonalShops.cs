@@ -327,5 +327,55 @@ namespace Aura.Channel.Network.Handlers
 
 			shop.CloseFor(creature);
 		}
+
+		/// <summary>
+		/// Sent when player clicked on a shop banner.
+		/// </summary>
+		/// <example>
+		/// 001 [0050000000000AD5] Long   : 22517998136855253
+		/// 002 [..............00] Byte   : 0
+		/// 003 [..............00] Byte   : 0
+		/// 004 [0010000000000002] Long   : 4503599627370498
+		/// 005 [........00000032] Int    : 50
+		/// </example>
+		[PacketHandler(Op.PersonalShopBuy)]
+		public void PersonalShopBuy(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+			var unkByte1 = packet.GetByte();
+			var unkByte2 = packet.GetByte();
+			var ownerEntityId = packet.GetLong();
+			var price = packet.GetInt(); // Totally gonna use this.
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Close shop if anything goes wrong.
+
+			// Check owner
+			var owner = ChannelServer.Instance.World.GetCreature(ownerEntityId);
+			if (owner == null)
+			{
+				Send.MsgBox(creature, Localization.Get("Personal Shop not found."));
+				Send.PersonalShopBuyR(creature, false, 0);
+				Send.PersonalShopCloseWindow(creature);
+				return;
+			}
+
+			// Check shop
+			var shop = owner.Temp.ActivePersonalShop;
+			if (shop == null || shop.Region != creature.Region || !creature.GetPosition().InRange(shop.Prop.GetPosition(), 1000))
+			{
+				Send.MsgBox(creature, Localization.Get("Personal Shop not found."));
+				Send.PersonalShopBuyR(creature, false, 0);
+				Send.PersonalShopCloseWindow(creature);
+				return;
+			}
+
+			var success = shop.Buy(creature, itemEntityId);
+			if (success)
+				Send.PersonalShopBuyR(creature, true, itemEntityId);
+			else
+				Send.PersonalShopBuyR(creature, false, 0);
+		}
 	}
 }
