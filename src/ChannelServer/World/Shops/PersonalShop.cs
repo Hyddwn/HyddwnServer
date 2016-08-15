@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World.Entities.Props;
 using Aura.Channel.World.Inventory;
 using Aura.Mabi;
 using Aura.Mabi.Const;
@@ -51,6 +52,11 @@ namespace Aura.Channel.World.Shops
 		/// Reference to the shop's prop in the region.
 		/// </summary>
 		public Prop Prop { get; private set; }
+
+		/// <summary>
+		/// The creature that whatches over the shop besides the owner.
+		/// </summary>
+		public Creature Overseer { get; private set; }
 
 		/// <summary>
 		/// List of customers currently looking at the shop.
@@ -202,6 +208,9 @@ namespace Aura.Channel.World.Shops
 				this.Prop = null;
 			}
 
+			// Remove overseer
+			this.SetOverseer(null, 0);
+
 			// Close for everybody
 			this.ForAllCustomers(creature => Send.PersonalShopCloseWindow(creature));
 
@@ -209,6 +218,8 @@ namespace Aura.Channel.World.Shops
 			var items = this.GetPricedItems();
 			foreach (var item in items)
 				item.PersonalShopPrice = 0;
+
+			this.Owner.Temp.ActivePersonalShop = null;
 		}
 
 		/// <summary>
@@ -224,14 +235,16 @@ namespace Aura.Channel.World.Shops
 			this.Title = title;
 			this.Description = description;
 
-			var location = this.Owner.GetLocation();
 			var rnd = RandomProvider.Get();
+			var location = this.Owner.GetLocation();
+			var direction = (Math.PI * 2) * rnd.NextDouble();
 
 			// Spawn prop
-			this.Prop = new Prop(314, location.RegionId, location.X, location.Y, MabiMath.DegreeToRadian(rnd.Next(360)));
+			this.Prop = new Prop(314, location.RegionId, location.X, location.Y, (float)direction);
 			this.Prop.Info.Color1 = this.Bag.Info.Color1;
 			this.Prop.Info.Color2 = this.Bag.Info.Color2;
 			this.Prop.Info.Color3 = this.Bag.Info.Color3;
+			this.Prop.Extensions.AddSilent(new ConfirmationPropExtension("default", "이 개인상점을 여시겠습니까?", "개인상점 열기"));
 			this.Region.AddProp(this.Prop);
 
 			// Move that body
@@ -428,6 +441,32 @@ namespace Aura.Channel.World.Shops
 			var val = this.LicenseItem.MetaData1.GetInt("EVALUE") + revenue;
 			this.LicenseItem.MetaData1.SetInt("EVALUE", revenue);
 			Send.ItemUpdate(this.Owner, this.LicenseItem);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Sets the shop's overseer (brownie/pet).
+		/// </summary>
+		/// <param name="overseer">Set to null to remove overseer.</param>
+		public bool SetOverseer(Creature overseer, long itemEntityId)
+		{
+			if (overseer == null)
+			{
+				if (this.Overseer != null)
+					this.Region.RemoveCreature(this.Overseer);
+
+				Send.PersonalShopUpdateBrownie(this.Owner, 0, 0);
+			}
+			else
+			{
+				if (overseer == this.Owner || overseer.Region != this.Region)
+					return false;
+
+				Send.PersonalShopUpdateBrownie(this.Owner, itemEntityId, overseer.EntityId);
+			}
+
+			this.Overseer = overseer;
 
 			return true;
 		}
