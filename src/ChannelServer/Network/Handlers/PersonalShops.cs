@@ -258,5 +258,74 @@ namespace Aura.Channel.Network.Handlers
 			Send.MsgBox(creature, Localization.Get("This feature is not available yet."));
 			Send.PersonalShopPetProtectRequestR(creature, false);
 		}
+
+		/// <summary>
+		/// Sent when player clicked on a shop banner.
+		/// </summary>
+		/// <example>
+		/// 001 [00100000000E7560] Long   : 4503599628318048
+		/// </example>
+		[PacketHandler(Op.PersonalShopOpen)]
+		public void PersonalShopOpen(ChannelClient client, Packet packet)
+		{
+			var ownerEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check owner
+			var owner = ChannelServer.Instance.World.GetCreature(ownerEntityId);
+			if (owner == null)
+			{
+				Send.MsgBox(creature, Localization.Get("Personal Shop not found."));
+				Send.PersonalShopOpenR(creature, null);
+				return;
+			}
+
+			// Check shop
+			var shop = owner.Temp.ActivePersonalShop;
+			if (shop == null || shop.Region != creature.Region || !creature.GetPosition().InRange(shop.Prop.GetPosition(), 1000))
+			{
+				Send.MsgBox(creature, Localization.Get("Personal Shop not found."));
+				Send.PersonalShopOpenR(creature, null);
+				return;
+			}
+
+			shop.OpenFor(creature);
+		}
+
+		/// <summary>
+		/// Sent when player clicked on a shop banner.
+		/// </summary>
+		/// <example>
+		/// 001 [00100000000E7560] Long   : 4503599628318048
+		/// </example>
+		[PacketHandler(Op.PersonalShopClose)]
+		public void PersonalShopClose(ChannelClient client, Packet packet)
+		{
+			var ownerEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Try to call close on the shop, but send close window if
+			// anything goes wrong, so the player doesn't get stuck.
+
+			// Check owner
+			var owner = ChannelServer.Instance.World.GetCreature(ownerEntityId);
+			if (owner == null)
+			{
+				Send.PersonalShopCloseWindow(creature);
+				return;
+			}
+
+			// Check shop
+			var shop = owner.Temp.ActivePersonalShop;
+			if (shop == null)
+			{
+				Send.PersonalShopCloseWindow(creature);
+				return;
+			}
+
+			shop.CloseFor(creature);
+		}
 	}
 }

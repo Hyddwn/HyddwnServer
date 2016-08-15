@@ -280,6 +280,28 @@ namespace Aura.Channel.World.Shops
 		}
 
 		/// <summary>
+		/// Opens shop for given creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		public void OpenFor(Creature creature)
+		{
+			lock (this.CustomerEntityIds)
+				this.CustomerEntityIds.Add(creature.EntityId);
+			Send.PersonalShopOpenR(creature, this);
+		}
+
+		/// <summary>
+		/// Opens shop for given creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		public void CloseFor(Creature creature)
+		{
+			lock (this.CustomerEntityIds)
+				this.CustomerEntityIds.Remove(creature.EntityId);
+			Send.PersonalShopCloseWindow(creature);
+		}
+
+		/// <summary>
 		/// Returns the layout of the bag, used in the shop open packet.
 		/// </summary>
 		/// <param name="x"></param>
