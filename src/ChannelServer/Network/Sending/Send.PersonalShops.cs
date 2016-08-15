@@ -147,7 +147,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="shop">Null for negative response</param>
 		public static void PersonalShopOpenR(Creature creature, PersonalShop shop)
 		{
-			var items = shop.GetItems();
+			var items = shop.GetPricedItems();
 
 			var packet = new Packet(Op.PersonalShopOpenR, creature.EntityId);
 			packet.PutByte(shop != null);

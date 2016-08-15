@@ -195,13 +195,14 @@ namespace Aura.Channel.Network.Handlers
 		}
 
 		/// <summary>
-		/// Sent when changign the price of an item.
+		/// Sent when changing the price of one or more items
+		/// (Price vs PriceForAll).
 		/// </summary>
 		/// <example>
 		/// 001 [0050000000000AD5] Long   : 22517998136855253
 		/// 002 [........000001F4] Int    : 500
 		/// </example>
-		[PacketHandler(Op.PersonalShopSetPrice)]
+		[PacketHandler(Op.PersonalShopSetPrice, Op.PersonalShopSetPriceForAll)]
 		public void PersonalShopSetPrice(ChannelClient client, Packet packet)
 		{
 			var itemEntityId = packet.GetLong();
@@ -218,11 +219,20 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			var success = shop.SetPrice(itemEntityId, price);
+			var success = false;
+			if (packet.Op == Op.PersonalShopSetPriceForAll)
+			{
+				success = shop.SetPrices(itemEntityId, price);
+				Send.PersonalShopSetPriceForAllR(creature, success);
+			}
+			else
+			{
+				success = shop.SetPrice(itemEntityId, price);
+				Send.PersonalShopSetPriceR(creature, success);
+			}
+
 			if (!success)
 				Log.Warning("PersonalShopSetPrice: User '{0}' tried to set price for an invalid item.", client.Account.Id);
-
-			Send.PersonalShopSetPriceR(creature, success);
 		}
 
 		/// <summary>

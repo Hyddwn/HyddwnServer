@@ -64,7 +64,7 @@ namespace Aura.Channel.World.Shops
 		{
 			get
 			{
-				return (this.GetItems().Count != 0);
+				return (this.GetPricedItems().Count != 0);
 			}
 		}
 
@@ -87,12 +87,21 @@ namespace Aura.Channel.World.Shops
 		}
 
 		/// <summary>
-		/// Returns new list of all items in shop.
+		/// Returns new list of all items with prices in shop's bag.
 		/// </summary>
 		/// <returns></returns>
-		public List<Item> GetItems()
+		public List<Item> GetPricedItems()
 		{
 			return this.Owner.Inventory.GetItems(a => a.Info.Pocket == this.Bag.OptionInfo.LinkedPocketId && a.PersonalShopPrice != 0);
+		}
+
+		/// <summary>
+		/// Returns new list of all items in shop's bag.
+		/// </summary>
+		/// <returns></returns>
+		public List<Item> GetAllItems()
+		{
+			return this.Owner.Inventory.GetItems(a => a.Info.Pocket == this.Bag.OptionInfo.LinkedPocketId);
 		}
 
 		/// <summary>
@@ -196,7 +205,7 @@ namespace Aura.Channel.World.Shops
 			this.ForAllCustomers(creature => Send.PersonalShopCloseWindow(creature));
 
 			// Reset item prices
-			var items = this.GetItems();
+			var items = this.GetPricedItems();
 			foreach (var item in items)
 				item.PersonalShopPrice = 0;
 		}
@@ -244,20 +253,50 @@ namespace Aura.Channel.World.Shops
 			if (item == null || item.Info.Pocket != this.Bag.OptionInfo.LinkedPocketId)
 				return false;
 
+			this.UpdatePrice(item, price);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Sets the price for the given item, returns true on success.
+		/// </summary>
+		/// <param name="itemEntityId"></param>
+		/// <param name="price"></param>
+		/// <returns></returns>
+		public bool SetPrices(long itemEntityId, int price)
+		{
+			var refItem = this.Owner.Inventory.GetItem(itemEntityId);
+			if (refItem == null || refItem.Info.Pocket != this.Bag.OptionInfo.LinkedPocketId)
+				return false;
+
+			// Update all items with the same item id as the reference item.
+			var items = this.GetAllItems();
+			foreach (var item in items.Where(a => a.Info.Id == refItem.Info.Id))
+				this.UpdatePrice(item, price);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Updates price for given item and updates clients.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="price"></param>
+		private void UpdatePrice(Item item, int price)
+		{
 			var prev = item.PersonalShopPrice;
 
 			item.PersonalShopPrice = price;
-			Send.PersonalShopPriceUpdate(this.Owner, itemEntityId, price);
+			Send.PersonalShopPriceUpdate(this.Owner, item.EntityId, price);
 
 			// Add, remove, or update item, depending on how the price has changed.
 			if (prev == 0 && price != 0)
 				this.ForAllCustomers(creature => Send.PersonalShopAddItem(creature, item));
 			else if (prev != 0 && price == 0)
-				this.ForAllCustomers(creature => Send.PersonalShopRemoveItem(creature, itemEntityId, 0));
+				this.ForAllCustomers(creature => Send.PersonalShopRemoveItem(creature, item.EntityId, 0));
 			else
-				this.ForAllCustomers(creature => Send.PersonalShopCustomerPriceUpdate(creature, itemEntityId, price));
-
-			return true;
+				this.ForAllCustomers(creature => Send.PersonalShopCustomerPriceUpdate(creature, item.EntityId, price));
 		}
 
 		/// <summary>
