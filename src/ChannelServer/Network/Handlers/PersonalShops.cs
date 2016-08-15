@@ -224,5 +224,39 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.PersonalShopSetPriceR(creature, success);
 		}
+
+		/// <summary>
+		/// Sent when instructing an already spawned pet to protect the
+		/// personal shop.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.PersonalShopPricePetProtectRequest)]
+		public void PersonalShopPricePetProtectRequest(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var pet = creature.Pet;
+			var shop = creature.Temp.ActivePersonalShop;
+
+			// Check shop
+			if (shop == null)
+			{
+				Log.Warning("PersonalShopPricePetProtectRequest: User '{0}' tried to set protection pet a non-existent shop.", client.Account.Id);
+				Send.PersonalShopTakeDownR(creature, false);
+				return;
+			}
+
+			// Check pet
+			if (pet == null)
+			{
+				Log.Warning("PersonalShopPricePetProtectRequest: User '{0}' tried to set a non-existent pet to protect the shop.", client.Account.Id);
+				Send.PersonalShopTakeDownR(creature, false);
+				return;
+			}
+
+			Send.MsgBox(creature, Localization.Get("This feature is not available yet."));
+			Send.PersonalShopPricePetProtectRequestR(creature, false);
+		}
 	}
 }
