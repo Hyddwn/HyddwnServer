@@ -98,12 +98,12 @@ namespace Aura.Channel.Network.Sending
 		/// Sends PersonalShopUpdateBrownie to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="propEntityId"></param>
+		/// <param name="licenseEntityId"></param>
 		/// <param name="brownieNpcEntityId"></param>
-		public static void PersonalShopUpdateBrownie(Creature creature, long propEntityId, long brownieNpcEntityId)
+		public static void PersonalShopUpdateBrownie(Creature creature, long licenseEntityId, long brownieNpcEntityId)
 		{
 			var packet = new Packet(Op.PersonalShopUpdateBrownie, creature.EntityId);
-			packet.PutLong(propEntityId);
+			packet.PutLong(licenseEntityId);
 			packet.PutLong(brownieNpcEntityId);
 
 			creature.Client.Send(packet);
