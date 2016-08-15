@@ -1430,7 +1430,7 @@ namespace Aura.Channel.Util
 
 			Send.SystemMessage(sender, Localization.GetPlural("Spawned {0:n0}g.", "Spawned {0:n0}g.", amount), amount);
 			if (sender != target)
-				Send.SystemMessage(target, Localization.GetPlural("{0} gave you {1:n0}g.", "{0} gave you {1:n0}g.", amount), sender.Name, amount);
+				Send.SystemMessage(target, string.Format(Localization.GetPlural("{0} gave you {1:n0}g.", "{0} gave you {1:n0}g.", amount), sender.Name, amount));
 
 			return CommandResult.Okay;
 		}
