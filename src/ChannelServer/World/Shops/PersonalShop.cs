@@ -182,10 +182,11 @@ namespace Aura.Channel.World.Shops
 		/// <summary>
 		/// Changes shop's description.
 		/// </summary>
-		/// <param name="title"></param>
+		/// <param name="description"></param>
 		public void ChangeDescription(string description)
 		{
 			this.Description = description;
+			this.ForAllCustomers(creature => Send.PersonalShopUpdateDescription(creature, description));
 		}
 
 		/// <summary>

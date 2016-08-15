@@ -170,6 +170,19 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends PersonalShopUpdateDescription to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="description"></param>
+		public static void PersonalShopUpdateDescription(Creature creature, string description)
+		{
+			var packet = new Packet(Op.PersonalShopUpdateDescription, creature.EntityId);
+			packet.PutString(description);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends PersonalShopAddItem to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
