@@ -244,10 +244,18 @@ namespace Aura.Channel.World.Shops
 			if (item == null || item.Info.Pocket != this.Bag.OptionInfo.LinkedPocketId)
 				return false;
 
+			var prev = item.PersonalShopPrice;
+
 			item.PersonalShopPrice = price;
 			Send.PersonalShopPriceUpdate(this.Owner, itemEntityId, price);
 
-			this.ForAllCustomers(creature => Send.PersonalShopCustomerPriceUpdate(creature, itemEntityId, price));
+			// Add, remove, or update item, depending on how the price has changed.
+			if (prev == 0 && price != 0)
+				this.ForAllCustomers(creature => Send.PersonalShopAddItem(creature, item));
+			else if (prev != 0 && price == 0)
+				this.ForAllCustomers(creature => Send.PersonalShopRemoveItem(creature, itemEntityId, 0));
+			else
+				this.ForAllCustomers(creature => Send.PersonalShopCustomerPriceUpdate(creature, itemEntityId, price));
 
 			return true;
 		}
