@@ -232,8 +232,8 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// No parameters.
 		/// </example>
-		[PacketHandler(Op.PersonalShopPricePetProtectRequest)]
-		public void PersonalShopPricePetProtectRequest(ChannelClient client, Packet packet)
+		[PacketHandler(Op.PersonalShopPetProtectRequest)]
+		public void PersonalShopPetProtectRequest(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 			var pet = creature.Pet;
@@ -242,7 +242,7 @@ namespace Aura.Channel.Network.Handlers
 			// Check shop
 			if (shop == null)
 			{
-				Log.Warning("PersonalShopPricePetProtectRequest: User '{0}' tried to set protection pet a non-existent shop.", client.Account.Id);
+				Log.Warning("PersonalShopPetProtectRequest: User '{0}' tried to set protection pet a non-existent shop.", client.Account.Id);
 				Send.PersonalShopTakeDownR(creature, false);
 				return;
 			}
@@ -250,13 +250,13 @@ namespace Aura.Channel.Network.Handlers
 			// Check pet
 			if (pet == null)
 			{
-				Log.Warning("PersonalShopPricePetProtectRequest: User '{0}' tried to set a non-existent pet to protect the shop.", client.Account.Id);
+				Log.Warning("PersonalShopPetProtectRequest: User '{0}' tried to set a non-existent pet to protect the shop.", client.Account.Id);
 				Send.PersonalShopTakeDownR(creature, false);
 				return;
 			}
 
 			Send.MsgBox(creature, Localization.Get("This feature is not available yet."));
-			Send.PersonalShopPricePetProtectRequestR(creature, false);
+			Send.PersonalShopPetProtectRequestR(creature, false);
 		}
 	}
 }

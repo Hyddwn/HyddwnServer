@@ -238,9 +238,9 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
-		public static void PersonalShopPricePetProtectRequestR(Creature creature, bool success)
+		public static void PersonalShopPetProtectRequestR(Creature creature, bool success)
 		{
-			var packet = new Packet(Op.PersonalShopPricePetProtectRequestR, creature.EntityId);
+			var packet = new Packet(Op.PersonalShopPetProtectRequestR, creature.EntityId);
 			packet.PutByte(success);
 
 			creature.Client.Send(packet);

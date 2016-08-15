@@ -329,10 +329,10 @@ namespace Aura.Mabi.Network
 		public const int PersonalShopSetPrice = 0x73A9;
 		public const int PersonalShopSetPriceR = 0x73AA;
 		public const int PersonalShopPriceUpdate = 0x73AB;
-		public const int PersonalShopPricePetProtectRequest = 0x73AF;
-		public const int PersonalShopPricePetProtectRequestR = 0x73B0;
-		public const int PersonalShopPricePetProtectEndRequest = 0x73B1;
-		public const int PersonalShopPricePetProtectEndRequestR = 0x73B2;
+		public const int PersonalShopPetProtectRequest = 0x73AF;
+		public const int PersonalShopPetProtectRequestR = 0x73B0;
+		public const int PersonalShopPetProtectEndRequest = 0x73B1;
+		public const int PersonalShopPetProtectEndRequestR = 0x73B2;
 		public const int PersonalShopOpen = 0x7405;
 		public const int PersonalShopOpenR = 0x7406;
 		public const int PersonalShopClose = 0x7407;
