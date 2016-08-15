@@ -57,6 +57,17 @@ namespace Aura.Channel.World.Shops
 		public HashSet<long> CustomerEntityIds { get; private set; }
 
 		/// <summary>
+		/// Returns true if all shop is ready to be set up.
+		/// </summary>
+		public bool IsReadyForBusiness
+		{
+			get
+			{
+				return (this.GetItems().Count != 0);
+			}
+		}
+
+		/// <summary>
 		/// Creates new PersonalShop instance. Does not actually create
 		/// shop.
 		/// </summary>
@@ -145,8 +156,11 @@ namespace Aura.Channel.World.Shops
 		/// </summary>
 		/// <param name="title"></param>
 		/// <param name="description"></param>
-		public void SetUp(string title, string description)
+		public bool SetUp(string title, string description)
 		{
+			if (!this.IsReadyForBusiness)
+				return false;
+
 			this.Title = title;
 			this.Description = description;
 
@@ -164,6 +178,8 @@ namespace Aura.Channel.World.Shops
 			this.Prop.Xml.SetAttributeValue("PSPID", this.Owner.EntityId);
 			this.Prop.Xml.SetAttributeValue("PSTTL", title);
 			Send.PropUpdate(this.Prop);
+
+			return true;
 		}
 
 		/// <summary>

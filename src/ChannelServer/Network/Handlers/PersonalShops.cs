@@ -169,7 +169,11 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			shop.SetUp(title, description);
+			var success = shop.SetUp(title, description);
+
+			// Shouldn't happen on an unmodified client.
+			if (!success)
+				Send.MsgBox(creature, Localization.Get("Failed to set up shop."));
 
 			Send.PersonalShopSetUpR(creature, shop.Prop);
 		}
