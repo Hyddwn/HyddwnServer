@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World.Inventory;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
@@ -276,6 +277,39 @@ namespace Aura.Channel.World.Shops
 				foreach (var id in remove)
 					this.CustomerEntityIds.Remove(id);
 			}
+		}
+
+		/// <summary>
+		/// Returns the layout of the bag, used in the shop open packet.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		public string GetBagLayout()
+		{
+			if (this.Bag == null)
+			{
+				Log.Debug("PersonalShop.GetBagLayout: Bag not set.");
+				return null;
+			}
+
+			var linkedPocket = this.Bag.OptionInfo.LinkedPocketId;
+			var pocket = this.Owner.Inventory.GetPocket(linkedPocket);
+			if (pocket == null)
+			{
+				Log.Debug("PersonalShop.GetBagLayout: Pocket '{0}' not found.", linkedPocket);
+				return null;
+			}
+
+			var normalPocket = pocket as InventoryPocketNormal;
+			if (normalPocket == null)
+			{
+				Log.Debug("PersonalShop.GetBagLayout: Invalid pocket type '{0}'.", pocket.GetType().Name);
+				return null;
+			}
+
+			// TODO: Non-rectangular bag layouts.
+
+			return string.Format("{0}/{1}", normalPocket.Width, normalPocket.Height);
 		}
 	}
 }

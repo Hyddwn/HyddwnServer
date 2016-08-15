@@ -156,11 +156,14 @@ namespace Aura.Channel.Network.Sending
 				packet.PutLong(shop.Owner.EntityId);
 				packet.PutString(shop.Owner.Name);
 				packet.PutString(shop.Description);
-				packet.PutString("");
+				packet.PutString(shop.GetBagLayout());
 				packet.PutByte(0);
 
 				foreach (var item in items)
+				{
 					packet.AddItemInfo(item, ItemPacketType.Private);
+					packet.PutInt(item.PersonalShopPrice);
+				}
 			}
 
 			creature.Client.Send(packet);
