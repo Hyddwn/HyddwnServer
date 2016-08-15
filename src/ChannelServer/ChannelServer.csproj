@@ -95,6 +95,7 @@
     <Compile Include="Network\Handlers\Items.cs" />
     <Compile Include="Network\Handlers\GMCP.cs" />
     <Compile Include="Network\Handlers\Parties.cs" />
+    <Compile Include="Network\Handlers\PersonalShops.cs" />
     <Compile Include="Network\Handlers\Pets.cs" />
     <Compile Include="Network\Handlers\Entrusting.cs" />
     <Compile Include="Network\Handlers\Trading.cs" />
@@ -308,6 +309,7 @@
     <Compile Include="World\Region.cs" />
     <Compile Include="World\RegionCollision.cs" />
     <Compile Include="Scripting\Scripts\NpcShopScript.cs" />
+    <Compile Include="World\Shops\PersonalShop.cs" />
     <Compile Include="World\SpawnManager.cs" />
     <Compile Include="World\Entrustment.cs" />
     <Compile Include="World\Trade.cs" />

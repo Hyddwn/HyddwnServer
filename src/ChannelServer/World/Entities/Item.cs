@@ -362,6 +362,11 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Item's price in a personal shop.
+		/// </summary>
+		public int PersonalShopPrice { get; set; }
+
+		/// <summary>
 		/// New item based on item id.
 		/// </summary>
 		/// <param name="itemId"></param>

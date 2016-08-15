@@ -10,6 +10,7 @@ using Aura.Channel.World.Entities;
 using Aura.Shared.Network;
 using Aura.Channel.World;
 using Aura.Mabi.Network;
+using Aura.Channel.World.Shops;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -62,14 +63,14 @@ namespace Aura.Channel.Network.Sending
 		/// Sends positive PersonalShopSetUpR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="success"></param>
-		/// <param name="propEntityId"></param>
-		/// <param name="location"></param>
-		public static void PersonalShopSetUpR(Creature creature, long propEntityId, Location location)
+		/// <param name="shopProp"></param>
+		public static void PersonalShopSetUpR(Creature creature, Prop shopProp)
 		{
+			var location = shopProp.GetLocation();
+
 			var packet = new Packet(Op.PersonalShopSetUpR, creature.EntityId);
 			packet.PutByte(true);
-			packet.PutLong(propEntityId);
+			packet.PutLong(shopProp.EntityId);
 			packet.PutByte(1); // no location if 0?
 			packet.PutInt(location.RegionId);
 			packet.PutInt(location.X);
@@ -123,15 +124,15 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends PersonalShopCheck to creature's client.
+		/// Sends PersonalShopCheckR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
 		/// <param name="bagEntityId"></param>
 		/// <param name="licenseEntityId"></param>
-		public static void PersonalShopCheck(Creature creature, bool success, long bagEntityId, long licenseEntityId)
+		public static void PersonalShopCheckR(Creature creature, bool success, long bagEntityId, long licenseEntityId)
 		{
-			var packet = new Packet(Op.PersonalShopCheck, creature.EntityId);
+			var packet = new Packet(Op.PersonalShopCheckR, creature.EntityId);
 			packet.PutByte(success);
 			packet.PutLong(bagEntityId);
 			packet.PutLong(licenseEntityId);
@@ -152,8 +153,8 @@ namespace Aura.Channel.Network.Sending
 			packet.PutByte(shop != null);
 			if (shop != null)
 			{
-				packet.PutLong(shop.OwnerEntityId);
-				packet.PutString(shop.OwnerName);
+				packet.PutLong(shop.Owner.EntityId);
+				packet.PutString(shop.Owner.Name);
 				packet.PutString(shop.Description);
 				packet.PutString("");
 				packet.PutByte(0);
@@ -199,7 +200,7 @@ namespace Aura.Channel.Network.Sending
 		/// Sends PersonalShopCloseWindow to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void PersonalShopCloseWindow(Creature creature, bool success, long itemEntityId)
+		public static void PersonalShopCloseWindow(Creature creature)
 		{
 			var packet = new Packet(Op.PersonalShopCloseWindow, creature.EntityId);
 
