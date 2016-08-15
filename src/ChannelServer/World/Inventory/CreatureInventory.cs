@@ -1418,6 +1418,18 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
+		/// Returns the amount of items matching the conditions specified.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public int Count(Func<Item, bool> predicate)
+		{
+			lock (_pockets)
+				return _pockets.Values.Where(a => !InvisiblePockets.Contains(a.Pocket))
+					.Sum(pocket => pocket.CountItem(predicate));
+		}
+
+		/// <summary>
 		/// Returns the number of items in the given pocket.
 		/// Returns -1 if the pocket doesn't exist.
 		/// </summary>
