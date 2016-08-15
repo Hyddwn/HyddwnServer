@@ -340,6 +340,7 @@ namespace Aura.Mabi.Network
 		public const int PersonalShopBuy = 0x7409;
 		public const int PersonalShopBuyR = 0x740A;
 		public const int PersonalShopRemoveItem = 0x740C;
+		public const int PersonalShopCustomerPriceUpdate = 0x740D;
 		public const int PersonalShopCloseWindow = 0x740F;
 		public const int Entrustment = 0x7469;
 		public const int EntrustmentR = 0x746A;
