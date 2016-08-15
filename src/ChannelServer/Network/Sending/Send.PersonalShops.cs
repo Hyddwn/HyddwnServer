@@ -170,6 +170,20 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends PersonalShopAddItem to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="item"></param>
+		public static void PersonalShopAddItem(Creature creature, Item item)
+		{
+			var packet = new Packet(Op.PersonalShopAddItem, creature.EntityId);
+			packet.AddItemInfo(item, ItemPacketType.Private);
+			packet.PutInt(item.PersonalShopPrice);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends PersonalShopRemoveItem to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

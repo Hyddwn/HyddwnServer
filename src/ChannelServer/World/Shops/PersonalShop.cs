@@ -351,6 +351,9 @@ namespace Aura.Channel.World.Shops
 			var price = item.PersonalShopPrice;
 			if (buyer.Inventory.Gold < price)
 			{
+				// As soon as you click buy the item is removed on the client,
+				// it has to be readded if something goes wrong.
+				Send.PersonalShopAddItem(buyer, item);
 				Send.MsgBox(buyer, Localization.Get("You don't have enough gold."));
 				return false;
 			}
