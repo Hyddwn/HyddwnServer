@@ -267,7 +267,7 @@ namespace Aura.Channel.World.Shops
 			{
 				foreach (var entityId in this.CustomerEntityIds)
 				{
-					var creature = ChannelServer.Instance.World.GetCreature(entityId);
+					var creature = this.Region.GetCreature(entityId);
 					if (creature != null)
 						action(creature);
 					else
