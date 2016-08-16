@@ -11,6 +11,7 @@ using Aura.Channel.World.Inventory;
 using Aura.Mabi.Network;
 using System;
 using Aura.Channel.World.Shops;
+using Aura.Data;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -32,6 +33,14 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 			var bag = creature.Inventory.GetItemSafe(bagEntityId);
 			var license = creature.Inventory.GetItemSafe(licenseEntityId);
+
+			// Check feature
+			if (!AuraData.FeaturesDb.IsEnabled("PersonalShop"))
+			{
+				Send.MsgBox(creature, Localization.Get("This feature has not been enabled yet."));
+				Send.PersonalShopCheckR(creature, false, 0, 0);
+				return;
+			}
 
 			// Check bag
 			if (!bag.HasTag("/personal_shop_available/"))

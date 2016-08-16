@@ -298,9 +298,12 @@ public class BryceShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("License", 60103); // Bangor Merchant License
-		Add("License", 81010); // Purple Personal Shop Brownie Work-For-Hire Contract
-		Add("License", 81011); // Pink Personal Shop Brownie Work-For-Hire Contract
-		Add("License", 81012); // Green Personal Shop Brownie Work-For-Hire Contract
+		if (IsEnabled("PersonalShop"))
+		{
+			Add("License", 60103); // Bangor Merchant License
+			Add("License", 81010); // Purple Personal Shop Brownie Work-For-Hire Contract
+			Add("License", 81011); // Pink Personal Shop Brownie Work-For-Hire Contract
+			Add("License", 81012); // Green Personal Shop Brownie Work-For-Hire Contract
+		}
 	}
 }
