@@ -219,6 +219,18 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check limit
+			if (price < 0 || price > shop.LicenseData.Limit)
+			{
+				Send.MsgBox(creature, Localization.Get("Exceeded the price limit for permit."));
+				if (packet.Op == Op.PersonalShopSetPriceForAll)
+					Send.PersonalShopSetPriceForAllR(creature, false);
+				else
+					Send.PersonalShopSetPriceR(creature, false);
+				return;
+			}
+
+			// Set and response
 			var success = false;
 			if (packet.Op == Op.PersonalShopSetPriceForAll)
 			{

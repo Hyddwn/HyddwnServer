@@ -447,7 +447,11 @@ namespace Aura.Channel.World.Shops
 			// Add gold to the license
 			var fee = this.LicenseData.SalesFee;
 			var revenue = (int)(price - price * fee);
+
+			// Cap at limit
 			var val = this.LicenseItem.MetaData1.GetInt("EVALUE") + revenue;
+			val = Math.Min(this.LicenseData.Limit, val);
+
 			this.LicenseItem.MetaData1.SetInt("EVALUE", revenue);
 			Send.ItemUpdate(this.Owner, this.LicenseItem);
 
