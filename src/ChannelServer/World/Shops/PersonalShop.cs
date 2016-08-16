@@ -455,6 +455,7 @@ namespace Aura.Channel.World.Shops
 
 			var gold = 0;
 			var price = item.PersonalShopPrice;
+			var cost = price;
 
 			// Disable direct bank transaction if price is less than 50k
 			if (directBankTransaction && price < 50000)
@@ -464,12 +465,12 @@ namespace Aura.Channel.World.Shops
 			if (directBankTransaction)
 			{
 				gold = buyer.Client.Account.Bank.Gold;
-				price = price + (int)(price * 0.05f); // Fee
+				cost = cost + (int)(cost * 0.05f); // Fee
 			}
 			else
 				gold = buyer.Inventory.Gold;
 
-			if (gold < price)
+			if (gold < cost)
 			{
 				Send.PersonalShopAddItem(buyer, item);
 				Send.MsgBox(buyer, Localization.Get("You don't have enough gold."));
@@ -483,9 +484,9 @@ namespace Aura.Channel.World.Shops
 
 			// Remove gold and give item
 			if (directBankTransaction)
-				buyer.Client.Account.Bank.RemoveGold(buyer, price);
+				buyer.Client.Account.Bank.RemoveGold(buyer, cost);
 			else
-				buyer.Inventory.RemoveGold(price);
+				buyer.Inventory.RemoveGold(cost);
 			buyer.GiveItem(new Item(item));
 
 			// Notice to owner
