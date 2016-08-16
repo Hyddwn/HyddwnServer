@@ -5,6 +5,8 @@ using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
 using Aura.Channel.World.Entities.Props;
 using Aura.Channel.World.Inventory;
+using Aura.Data;
+using Aura.Data.Database;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
@@ -32,6 +34,11 @@ namespace Aura.Channel.World.Shops
 		/// License used for this shop.
 		/// </summary>
 		public Item LicenseItem { get; private set; }
+
+		/// <summary>
+		/// Data for the license used by this shop.
+		/// </summary>
+		public ShopLicenseData LicenseData { get; private set; }
 
 		/// <summary>
 		/// Shop's title.
@@ -81,6 +88,10 @@ namespace Aura.Channel.World.Shops
 		/// <param name="owner"></param>
 		public PersonalShop(Creature owner, Item bag, Item license)
 		{
+			this.LicenseData = AuraData.ShopLicenseDb.Find(license.Data.PersonalShopLicense);
+			if (this.LicenseData == null)
+				throw new NotSupportedException("Unknown license '" + license.Data.PersonalShopLicense + "'.");
+
 			this.CustomerEntityIds = new HashSet<long>();
 
 			this.Owner = owner;
@@ -432,7 +443,8 @@ namespace Aura.Channel.World.Shops
 			Send.SystemMessage(this.Owner, "<PERSONALSHOP>", msg);
 
 			// Add gold to the license
-			var revenue = (int)(price * 0.99f);
+			var fee = this.LicenseData.SalesFee;
+			var revenue = (int)(price - price * fee);
 			var val = this.LicenseItem.MetaData1.GetInt("EVALUE") + revenue;
 			this.LicenseItem.MetaData1.SetInt("EVALUE", revenue);
 			Send.ItemUpdate(this.Owner, this.LicenseItem);

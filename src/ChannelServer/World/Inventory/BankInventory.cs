@@ -166,8 +166,14 @@ namespace Aura.Channel.World.Inventory
 			// Add license as gold
 			else if (item.HasTag("/personalshoplicense/"))
 			{
+				var fee = 0f;
+				var license = item.Data.PersonalShopLicense;
+				var licenseData = AuraData.ShopLicenseDb.Find(license);
+				if (licenseData != null)
+					fee = licenseData.ExchangeFee;
+
 				var amount = item.MetaData1.GetInt("EVALUE");
-				amount = (int)(amount * 0.99f); // Fee
+				amount = (int)(amount - amount * fee);
 
 				if (amount > 0)
 				{
