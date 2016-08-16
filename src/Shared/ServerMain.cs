@@ -246,6 +246,11 @@ namespace Aura.Shared
 				{
 					this.LoadDb(AuraData.BankDb, "db/banks.txt", reload);
 				}
+
+				if ((toLoad & DataLoad.ShopLicenses) != 0)
+				{
+					this.LoadDb(AuraData.ShopLicenseDb, "db/shop_licenses.txt", reload);
+				}
 			}
 			catch (DatabaseErrorException ex)
 			{
@@ -370,6 +375,7 @@ namespace Aura.Shared
 		CharacterStyles = 0x10000000,
 		OptionSets = 0x20000000,
 		Banks = 0x40000000,
+		ShopLicenses = 0x80000000,
 
 		All = 0xFFFFFFFF,
 

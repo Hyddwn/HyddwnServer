@@ -7,6 +7,7 @@
 npcs/nao.cs
 npcs/tin.cs
 npcs/dungeonlostresident.cs
+npcs/brownies.cs
 
 npcs/dugald/tracy.cs
 

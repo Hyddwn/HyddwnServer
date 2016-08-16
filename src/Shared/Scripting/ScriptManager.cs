@@ -453,5 +453,17 @@ namespace Aura.Shared.Scripting
 		{
 			return path + ".compiled";
 		}
+
+		/// <summary>
+		/// Returns the type of the script with the given name.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public Type GetScriptType(string typeName)
+		{
+			Type result;
+			_scripts.TryGetValue(typeName, out result);
+			return result;
+		}
 	}
 }

@@ -2169,5 +2169,19 @@ namespace Aura.Channel.World.Inventory
 				this.Add(item, true);
 			}
 		}
+
+		/// <summary>
+		/// Returns given inventory pocket. Warning: Not for general usage,
+		/// only use this if you know what you're doing.
+		/// </summary>
+		/// <param name="linkedPocket"></param>
+		/// <returns></returns>
+		public InventoryPocket GetPocket(Pocket pocket)
+		{
+			InventoryPocket result;
+			lock (_pockets)
+				_pockets.TryGetValue(pocket, out result);
+			return result;
+		}
 	}
 }

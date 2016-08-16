@@ -1188,6 +1188,9 @@ namespace Aura.Channel.World.Entities
 
 			if (this.Temp.ActiveEntrustment != null)
 				this.Temp.ActiveEntrustment.Cancel();
+
+			if (this.Temp.ActivePersonalShop != null)
+				this.Temp.ActivePersonalShop.TakeDown();
 		}
 
 		public void Activate(CreatureStates state) { this.State |= state; }

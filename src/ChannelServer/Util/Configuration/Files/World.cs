@@ -50,6 +50,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public bool SwitchCancelBolts { get; protected set; }
 		public float ProficiencyRate { get; protected set; }
 		public bool GlobalBank { get; protected set; }
+		public bool ReusingPersonalShopLicenses { get; protected set; }
 
 		public TimeSpan RebirthTime { get; protected set; }
 
@@ -112,6 +113,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.SwitchCancelBolts = this.GetBool("switch_cancel_bolts", true);
 			this.ProficiencyRate = this.GetFloat("proficiency_rate", 100);
 			this.GlobalBank = this.GetBool("global_bank", true);
+			this.ReusingPersonalShopLicenses = this.GetBool("reusing_personal_shop_licenses", false);
 
 			this.RebirthTime = TimeSpan.FromDays(this.GetInt("rebirth_time", 6));
 

@@ -152,6 +152,9 @@ namespace Aura.Channel.World.Inventory
 		protected Item[,] _map;
 		protected int _width, _height;
 
+		public int Width { get { return _width; } }
+		public int Height { get { return _height; } }
+
 		public InventoryPocketNormal(Pocket pocket, int width, int height)
 			: base(pocket)
 		{

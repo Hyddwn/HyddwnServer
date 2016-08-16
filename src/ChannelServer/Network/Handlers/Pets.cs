@@ -26,7 +26,7 @@ namespace Aura.Channel.Network.Handlers
 		public void SummonPet(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
-			var unkByte = packet.GetByte();
+			var shopProtection = packet.GetBool();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 

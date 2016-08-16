@@ -577,10 +577,52 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check for license
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+			if (item.HasTag("/personalshoplicense/"))
+			{
+				var amount = item.MetaData1.GetInt("EVALUE");
+				if (amount != 0)
+				{
+					var afterFeeSum = (int)(amount * 0.99f);
+					Send.BankLicenseFeeInquiry(creature, item.EntityId, amount, afterFeeSum);
+					Send.BankDepositItemR(creature, false);
+					return;
+				}
+			}
+
 			// Deposit item
 			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, tabName, posX, posY);
 
 			Send.BankDepositItemR(creature, success);
+		}
+
+		/// <summary>
+		/// Sent after accepting fees for license deposition.
+		/// </summary>
+		/// <example>
+		/// 001 [0050000000000AE8] Long   : 22517998136855272
+		/// </example>
+		[PacketHandler(Op.BankPostLicenseInquiryDeposit)]
+		public void BankPostLicenseInquiryDeposit(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+
+			// Check license
+			if (!item.HasTag("/personalshoplicense/"))
+			{
+				Log.Warning("BankPostLicenseInquiryDeposit: User '{0}' tried to post-license-inquiry-deposit invalid item.", client.Account.Id);
+				Send.BankPostLicenseInquiryDepositR(creature, false);
+				return;
+			}
+
+			// Deposit item
+			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, creature.Name, 0, 0);
+
+			Send.BankPostLicenseInquiryDepositR(creature, success);
 		}
 
 		/// <summary>

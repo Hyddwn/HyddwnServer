@@ -39,6 +39,12 @@ namespace Aura.Mabi.Const
 		/// Area at which LastTown is updated. (2610)
 		/// </summary>
 		SaveTown = 2610,
+
+		/// <summary>
+		/// Street or paved area where certain actions aren't allow,
+		/// e.g. placing shops. (3000)
+		/// </summary>
+		Street = 3000,
 	}
 
 	public enum SignalType : int

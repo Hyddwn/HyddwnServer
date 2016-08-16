@@ -8,6 +8,7 @@ using Aura.Mabi.Structs;
 using System.Collections.Generic;
 using Aura.Channel.Skills.Life;
 using Aura.Mabi.Const;
+using Aura.Channel.World.Shops;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -75,5 +76,6 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		public Trade ActiveTrade;
 		public Entrustment ActiveEntrustment;
+		public PersonalShop ActivePersonalShop;
 	}
 }

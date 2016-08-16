@@ -30,6 +30,7 @@ namespace Aura.Channel.Scripting.Scripts
 		private const float WeightChangeMinus = 0.000375f;
 
 		private static int _fireworkSeed;
+		private static int _brownieCopyId;
 
 		/// <summary>
 		/// Called when script is initialized after loading it.
@@ -496,6 +497,70 @@ namespace Aura.Channel.Scripting.Scripts
 				prop.Xml.SetAttributeValue("seed", Interlocked.Increment(ref _fireworkSeed));
 				Send.PropUpdate(prop);
 			});
+		}
+
+		/// <summary>
+		/// Spawns brownie for creature's personal shop.
+		/// </summary>
+		/// <param name="creature"></param>
+		protected void SummonBrownie(Creature creature, Item item, string typeName)
+		{
+			var shop = creature.Temp.ActivePersonalShop;
+			if (shop == null)
+			{
+				Send.MsgBox(creature, Localization.Get("The Personal Shop does not exist."));
+				return;
+			}
+
+			// Get type
+			var type = ChannelServer.Instance.ScriptManager.GetScriptType(typeName);
+			if (type == null)
+			{
+				Log.Error("SpawnBrownie: Type '{0}' not found.", typeName);
+				Send.MsgBox(creature, Localization.Get("Unable to summon brownie."));
+				return;
+			}
+
+			// Check script type
+			var obj = Activator.CreateInstance(type);
+			var npcScript = obj as NpcScript;
+			if (npcScript == null)
+			{
+				Log.Error("SpawnBrownie: Type '{0}' is not an NpcScript.", typeName);
+				Send.MsgBox(creature, Localization.Get("Unable to summon brownie."));
+				return;
+			}
+
+			var loc = shop.Prop.GetLocation();
+			var angle = shop.Prop.Info.Direction + Math.PI / 2;
+			var x = loc.X + 50 * Math.Cos(angle);
+			var y = loc.Y + 50 * Math.Sin(angle);
+
+			loc.X = (int)x;
+			loc.Y = (int)y;
+
+			var direction = MabiMath.RadianToByte(shop.Prop.Info.Direction);
+
+			npcScript.Load();
+			npcScript.NPC.Name += "@" + Interlocked.Increment(ref _brownieCopyId);
+			npcScript.NPC.SetLocation(loc);
+			npcScript.NPC.Direction = direction;
+			npcScript.NPC.ScriptType = type;
+
+			shop.Region.AddCreature(npcScript.NPC);
+
+			shop.SetOverseer(npcScript.NPC, item.EntityId);
+
+			// Set expiration if it's not set yet
+			if (item.OptionInfo.ExpireTime == 0)
+			{
+				// For some reason the client shows "365 days" more than it should...
+				// reducing them for now.
+				var seconds = (int)(DateTime.Now.AddHours(24).AddDays(-365) - new DateTime(1970, 1, 1)).TotalSeconds;
+
+				item.OptionInfo.ExpireTime = seconds;
+				Send.ItemUpdate(creature, item);
+			}
 		}
 
 		private enum ToxicityStage
