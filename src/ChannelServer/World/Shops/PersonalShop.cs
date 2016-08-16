@@ -138,17 +138,23 @@ namespace Aura.Channel.World.Shops
 				return false;
 			}
 
+			var region = creature.Region;
+			var pos = creature.GetPosition();
+			var placementPos = GetPlacementPosition(pos, creature.Direction);
+
+			// Check nearby shops
+			var otherShops = region.GetProps(a => a.HasTag("/personal_shop/") && a.GetPosition().InRange(placementPos, 250));
+			if (otherShops.Count != 0)
+				return false;
+
 			// Allow anywhere? (GM license)
 			if (licenseData.AllowAnywhere)
 				return true;
-
-			var region = creature.Region;
 
 			// Only allow in specific regions
 			if (!licenseData.Regions.Contains(region.Id))
 				return false;
 
-			var pos = creature.GetPosition();
 			var isOnStreet = region.IsOnStreet(pos);
 
 			// Allow if not on street
@@ -176,6 +182,21 @@ namespace Aura.Channel.World.Shops
 			}
 
 			return isInAllowedZone;
+		}
+
+		/// <summary>
+		/// Returns position for the shop, based on given position and direction.
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <param name="direction"></param>
+		/// <returns></returns>
+		private static Position GetPlacementPosition(Position pos, byte direction)
+		{
+			var radians = MabiMath.ByteToRadian(direction);
+			var x = pos.X + 50 * Math.Cos(radians);
+			var y = pos.Y + 50 * Math.Sin(radians);
+
+			return new Position((int)x, (int)y);
 		}
 
 		/// <summary>
@@ -244,8 +265,9 @@ namespace Aura.Channel.World.Shops
 			this.Description = description;
 
 			var rnd = RandomProvider.Get();
-			var location = this.Owner.GetLocation();
-			var direction = (Math.PI * 2) * rnd.NextDouble();
+			var pos = this.Owner.GetPosition();
+			var location = new Location(this.Owner.RegionId, GetPlacementPosition(pos, this.Owner.Direction));
+			var direction = MabiMath.ByteToRadian(this.Owner.Direction);
 
 			// Spawn prop
 			this.Prop = new Prop(ShopPropId, location.RegionId, location.X, location.Y, (float)direction);
