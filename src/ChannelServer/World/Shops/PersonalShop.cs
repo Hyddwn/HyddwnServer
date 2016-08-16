@@ -118,56 +118,51 @@ namespace Aura.Channel.World.Shops
 		/// <returns></returns>
 		public static bool CanPlace(Creature creature, string license)
 		{
-			if (!IsValidRegion(license, creature.RegionId))
+			var licenseData = AuraData.ShopLicenseDb.Find(license);
+			if (licenseData == null)
+			{
+				Log.Warning("PersonalShop.CanPlace: Unknown license '{0}'.", license);
+				return false;
+			}
+
+			// Allow anywhere? (GM license)
+			if (licenseData.AllowAnywhere)
+				return true;
+
+			var region = creature.Region;
+
+			// Only allow in specific regions
+			if (!licenseData.Regions.Contains(region.Id))
 				return false;
 
-			// TODO: Check area.
+			var pos = creature.GetPosition();
+			var isOnStreet = region.IsOnStreet(pos);
 
-			return true;
-		}
-
-		/// <summary>
-		/// Returns true license is valid for the given region.
-		/// </summary>
-		/// <param name="license"></param>
-		/// <param name="regionId"></param>
-		/// <returns></returns>
-		public static bool IsValidRegion(string license, int regionId)
-		{
-			var str = license.ToLower();
-
-			if (str == "gm_all_region")
-				return true;
-			else if (str.StartsWith("tirchonaill") && regionId == 1)
-				return true;
-			else if (str.StartsWith("dunbarton") && regionId == 14)
-				return true;
-			else if (str.StartsWith("bangor") && regionId == 31)
-				return true;
-			else if (str.StartsWith("emainmacha") && regionId == 52)
-				return true;
-			else if (str.StartsWith("rano") && regionId == 3001)
-				return true;
-			else if (str.StartsWith("connous") && regionId == 3100)
-				return true;
-			else if (str.StartsWith("physis") && regionId == 3200)
-				return true;
-			else if (str.StartsWith("courcle") && regionId == 3300)
-				return true;
-			else if (str.StartsWith("zardine") && regionId == 3400)
-				return true;
-			else if (str.StartsWith("taillteann") && regionId == 300)
-				return true;
-			else if (str.StartsWith("tara") && regionId == 401)
-				return true;
-			else if (str.StartsWith("nekojima") && regionId == 600)
-				return true;
-			else if (str.StartsWith("cobh") && regionId == 23)
-				return true;
-			else if (str.StartsWith("belfast") && regionId == 4005)
+			// Allow if not on street
+			if (!isOnStreet)
 				return true;
 
-			return false;
+			// Only allow on street if inside certain allowed events
+			var isInAllowedZone = false;
+			foreach (var zone in licenseData.Zones)
+			{
+				// Get event
+				var ev = region.GetClientEvent(a => a.GlobalName == zone);
+				if (ev == null)
+				{
+					Log.Warning("PersonalShop.CanPlace: Unknown zone '{0}'.", zone);
+					continue;
+				}
+
+				// Break if allowed zone was found
+				if (ev.IsInside(pos))
+				{
+					isInAllowedZone = true;
+					break;
+				}
+			}
+
+			return isInAllowedZone;
 		}
 
 		/// <summary>
