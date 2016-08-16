@@ -42,16 +42,16 @@
 
 // Dunbarton
 //---------------------------------------------------------------------------
-{ name: "dunbarton", limit: 2250000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
+{ name: "dunbarton", limit: 2250000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
 	"Uladh_Dunbarton/_Uladh_Dunbarton/ps00"
 ]},
-{ name: "dunbarton_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
+{ name: "dunbarton_renewal", limit: 10000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
 	"Uladh_Dunbarton/_Uladh_Dunbarton/ps00"
 ]},
-{ name: "dunbarton_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
+{ name: "dunbarton_premiumplus", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
 	"Uladh_Dunbarton/_Uladh_Dunbarton/ps00"
 ]},
-{ name: "dunbarton_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
+{ name: "dunbarton_premiumvip", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
 	"Uladh_Dunbarton/_Uladh_Dunbarton/ps00"
 ]},
 
@@ -368,21 +368,21 @@
 	"Uladh_Cobh_harbor/_Uladh_Cobh_harbor_4/ps001"
 ]},
 
-// Belfast
+// Belvast
 //---------------------------------------------------------------------------
-{ name: "Belfast", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+{ name: "Belfast", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, zones: [
 	"Belfast_human/_Belfast_human_7/ps001",
 	"Belfast_human/_Belfast_human_19/ps002"
 ]},
-{ name: "Belfast_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+{ name: "Belfast_renewal", limit: 10000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, zones: [
 	"Belfast_human/_Belfast_human_7/ps001",
 	"Belfast_human/_Belfast_human_19/ps002"
 ]},
-{ name: "Belfast_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+{ name: "Belfast_premiumplus", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, zones: [
 	"Belfast_human/_Belfast_human_7/ps001",
 	"Belfast_human/_Belfast_human_19/ps002"
 ]},
-{ name: "Belfast_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+{ name: "Belfast_premiumvip", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, zones: [
 	"Belfast_human/_Belfast_human_7/ps001",
 	"Belfast_human/_Belfast_human_19/ps002"
 ]},
