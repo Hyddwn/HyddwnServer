@@ -551,8 +551,16 @@ namespace Aura.Channel.Scripting.Scripts
 
 			shop.SetOverseer(npcScript.NPC, item.EntityId);
 
-			item.OptionInfo.ExpireTime = (int)(TimeZoneInfo.ConvertTimeToUtc(DateTime.Now.AddHours(24)) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
-			Send.ItemUpdate(creature, item);
+			// Set expiration if it's not set yet
+			if (item.OptionInfo.ExpireTime == 0)
+			{
+				// For some reason the client shows "365 days" more than it should...
+				// reducing them for now.
+				var seconds = (int)(DateTime.Now.AddHours(24).AddDays(-365) - new DateTime(1970, 1, 1)).TotalSeconds;
+
+				item.OptionInfo.ExpireTime = seconds;
+				Send.ItemUpdate(creature, item);
+			}
 		}
 
 		private enum ToxicityStage
