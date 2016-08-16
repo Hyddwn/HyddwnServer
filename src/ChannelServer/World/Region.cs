@@ -255,6 +255,17 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns true if given position is on the street.
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <returns></returns>
+		public bool IsOnStreet(Position pos)
+		{
+			var events = this.GetClientEvents(a => a.Data.Type == EventType.Street && a.IsInside(pos));
+			return (events.Length != 0);
+		}
+
+		/// <summary>
 		/// Returns a list of events that start with the given path,
 		/// e.g. "Uladh_main/field_Tir_S_aa/fish_tircho_stream_", to get all
 		/// fishing events starting with that name.
