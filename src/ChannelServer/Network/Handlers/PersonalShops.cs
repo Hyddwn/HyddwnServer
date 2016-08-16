@@ -53,6 +53,14 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			if (license.MetaData1.Has("EVALUE"))
+			{
+				// Unofficial
+				Send.MsgBox(creature, Localization.Get("You can't re-use a license that has revenue on it."));
+				Send.PersonalShopCheckR(creature, false, 0, 0);
+				return;
+			}
+
 			// Check location
 			if (!PersonalShop.CanPlace(creature, license.Data.PersonalShopLicense))
 			{
