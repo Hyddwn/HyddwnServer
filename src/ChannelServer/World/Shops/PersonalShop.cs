@@ -434,19 +434,43 @@ namespace Aura.Channel.World.Shops
 		/// </summary>
 		/// <param name="buyer"></param>
 		/// <param name="itemEntityId"></param>
+		/// <param name="directBankTransaction"></param>
 		/// <returns></returns>
-		public bool Buy(Creature buyer, long itemEntityId)
+		public bool Buy(Creature buyer, long itemEntityId, bool directBankTransaction)
 		{
 			var item = this.Owner.Inventory.GetItem(a => a.PersonalShopPrice != 0 && a.Info.Pocket == this.Bag.OptionInfo.LinkedPocketId && a.EntityId == itemEntityId);
 			if (item == null)
 				return false;
 
-			// Check gold
-			var price = item.PersonalShopPrice;
-			if (buyer.Inventory.Gold < price)
+			// As soon as you click buy the item is removed on the client,
+			// it has to be readded if something goes wrong.
+
+			// Check payment method
+			if (directBankTransaction && !this.LicenseData.DirectBankAllowed)
 			{
-				// As soon as you click buy the item is removed on the client,
-				// it has to be readded if something goes wrong.
+				Send.PersonalShopAddItem(buyer, item);
+				Send.MsgBox(buyer, Localization.Get("This shop doesn't allow Direct Bank Transaction."));
+				return false;
+			}
+
+			var gold = 0;
+			var price = item.PersonalShopPrice;
+
+			// Disable direct bank transaction if price is less than 50k
+			if (directBankTransaction && price < 50000)
+				directBankTransaction = false;
+
+			// Check gold
+			if (directBankTransaction)
+			{
+				gold = buyer.Client.Account.Bank.Gold;
+				price = price + (int)(price * 0.05f); // Fee
+			}
+			else
+				gold = buyer.Inventory.Gold;
+
+			if (gold < price)
+			{
 				Send.PersonalShopAddItem(buyer, item);
 				Send.MsgBox(buyer, Localization.Get("You don't have enough gold."));
 				return false;
@@ -458,7 +482,10 @@ namespace Aura.Channel.World.Shops
 			this.ForAllCustomers(creature => Send.PersonalShopRemoveItem(creature, item.EntityId, buyer.EntityId));
 
 			// Remove gold and give item
-			buyer.Inventory.RemoveGold(price);
+			if (directBankTransaction)
+				buyer.Client.Account.Bank.RemoveGold(buyer, price);
+			else
+				buyer.Inventory.RemoveGold(price);
 			buyer.GiveItem(new Item(item));
 
 			// Notice to owner

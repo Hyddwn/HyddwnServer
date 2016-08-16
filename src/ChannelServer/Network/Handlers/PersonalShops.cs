@@ -382,7 +382,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var itemEntityId = packet.GetLong();
 			var unkByte1 = packet.GetByte();
-			var unkByte2 = packet.GetByte();
+			var directBankTransaction = packet.GetBool();
 			var ownerEntityId = packet.GetLong();
 			var price = packet.GetInt(); // Totally gonna use this.
 
@@ -410,7 +410,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			var success = shop.Buy(creature, itemEntityId);
+			var success = shop.Buy(creature, itemEntityId, directBankTransaction);
 			if (success)
 				Send.PersonalShopBuyR(creature, true, itemEntityId);
 			else
