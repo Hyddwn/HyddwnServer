@@ -20,6 +20,8 @@ namespace Aura.Channel.World.Shops
 {
 	public class PersonalShop
 	{
+		private const int ShopPropId = 314;
+
 		/// <summary>
 		/// Entity id of the shop owner.
 		/// </summary>
@@ -246,7 +248,7 @@ namespace Aura.Channel.World.Shops
 			var direction = (Math.PI * 2) * rnd.NextDouble();
 
 			// Spawn prop
-			this.Prop = new Prop(314, location.RegionId, location.X, location.Y, (float)direction);
+			this.Prop = new Prop(ShopPropId, location.RegionId, location.X, location.Y, (float)direction);
 			this.Prop.Info.Color1 = this.Bag.Info.Color1;
 			this.Prop.Info.Color2 = this.Bag.Info.Color2;
 			this.Prop.Info.Color3 = this.Bag.Info.Color3;
