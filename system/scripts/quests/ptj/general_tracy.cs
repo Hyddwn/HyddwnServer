@@ -1,15 +1,3 @@
-#region TEMP_NOTES
-// If you see this region in a pull request, 
-// **I contain undefined values and should not be merged into master!**
-
-// Class name resolver - go go gadget intellisense
-using Aura.Mabi;
-using Aura.Mabi.Const;
-using System.Threading.Tasks;
-using Aura.Channel.Scripting.Scripts;
-// Temporarily place this file under ChannelServer.csproj to resolve rest of dependencies
-#endregion
-
 //--- Aura Script -----------------------------------------------------------
 // Tracy's Firewood-Chopping (General) Part-Time Job
 //--- Description -----------------------------------------------------------
@@ -29,7 +17,9 @@ public class TracyPtjScript : GeneralScript
 
 	readonly int[] QuestIds = new int[]
 	{
-		?
+		500102, // Basic  Gather 10 Pieces of Firewood
+		500132, // Int    Gather 20 Pieces of Firewood
+		500162, // Adv    Gather 30 Pieces of Firewood
 	};
 
 	public override void Load()
@@ -210,4 +200,101 @@ public class TracyPtjScript : GeneralScript
 	}
 }
 
-Unimplemented: QuestScripts
+public abstract class TracyFirewoodPtjBaseScript : QuestScript
+{
+	protected abstract int QuestId { get; }
+	protected abstract int ItemCount { get; }
+	protected abstract QuestLevel QuestLevel { get; }
+	protected abstract void AddRewards();
+
+	public override void Load()
+	{
+		SetId(QuestId);
+		SetName(L("Firewood-Chopping PTJ"));
+		SetDescription(string.Format(L("A part-time job to chop firewood from the trees in the forest. Collect [{0} pieces of firewood]. First, you need an axe to chop firewood."), L(ItemCount.ToString())));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.General);
+		SetLevel(QuestLevel);
+		SetHours(start: 7, report: 9, deadline: 19);
+
+		AddObjective("ptj", string.Format(L("Collect {0} Pieces of Firewood"), L(ItemCount.ToString())), 0, 0, 0, Collect(63002, ItemCount));
+
+		AddRewards();
+	}
+}
+
+public class TracyFirewoodBasicPtjScript : TracyFirewoodPtjBaseScript
+{
+	protected override int QuestId { get { return 500102; } }
+	protected override int ItemCount { get { return 10; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(225));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(125));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(112));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(50));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(45));
+
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(440));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(90));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(220));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(45));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(88));
+		AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(18));
+
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(60005, 10)); // Bandage
+		AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(237));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40022)); // Gathering Axe
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(267));
+	}
+}
+
+public class TracyFirewoodIntPtjScript : TracyFirewoodPtjBaseScript
+{
+	protected override int QuestId { get { return 500132; } }
+	protected override int ItemCount { get { return 20; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(480));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(450));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(240));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(225));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(96));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(90));
+
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(50006, 1)); // Slice of Meat
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Gold(90));
+	}
+}
+
+public class TracyFirewoodAdvPtjScript : TracyFirewoodPtjBaseScript
+{
+	protected override int QuestId { get { return 500162; } }
+	protected override int ItemCount { get { return 30; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(840));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(840));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(420));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(420));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(168));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(168));
+
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(40042)); // Cooking Knife
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Gold(504));
+
+		AddReward(3, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40005)); // Collecting Quest - Big Order of Firewood
+	}
+}
