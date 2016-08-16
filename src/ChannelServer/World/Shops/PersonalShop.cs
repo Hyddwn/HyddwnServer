@@ -453,6 +453,14 @@ namespace Aura.Channel.World.Shops
 				return false;
 			}
 
+			// Check for empty cursor
+			if (buyer.Inventory.GetItemAt(Pocket.Cursor, 0, 0) != null)
+			{
+				Send.PersonalShopAddItem(buyer, item);
+				Send.MsgBox(buyer, Localization.Get("Failed to buy item."));
+				return false;
+			}
+
 			var gold = 0;
 			var price = item.PersonalShopPrice;
 			var cost = price;
@@ -487,7 +495,7 @@ namespace Aura.Channel.World.Shops
 				buyer.Client.Account.Bank.RemoveGold(buyer, cost);
 			else
 				buyer.Inventory.RemoveGold(cost);
-			buyer.GiveItem(new Item(item));
+			buyer.Inventory.Add(new Item(item), Pocket.Cursor);
 
 			// Notice to owner
 			var msg = string.Format(Localization.Get("[{0}] was sold to [{1}]."), Localization.Get(item.Data.Name), buyer.Name);
