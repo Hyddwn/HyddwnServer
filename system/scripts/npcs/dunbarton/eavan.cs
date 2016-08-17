@@ -103,7 +103,11 @@ public class EavanScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("So, how is your task coming along?<br/>Please don't forget to report before the deadline."));
+		}
+		else if (Memory <= 0)
 		{
 			GiveKeyword("shop_goverment_office");
 			Msg(FavorExpression(), L("Welcome to Dunbarton.<br/>My name is <npcname/>, the Town Office worker who takes care of all the business related to the Adventurers' Association."));
@@ -148,10 +152,6 @@ public class EavanScript : NpcScript
 			case "rumor":
 				Msg(FavorExpression(), "Dunbarton is a city located near the border of the Kingdom of Aliech.<br/>It attracts a lot of travelers who are looking for adventure.<br/>If you'd like to improve your skills, how about going to the school?");
 				ModifyRelation(Random(2), 0, Random(3));
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":
