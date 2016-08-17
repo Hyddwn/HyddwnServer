@@ -280,8 +280,17 @@ public abstract class KristellPtjBaseScript : QuestScript
 
 public abstract class KristellPotatoPtjBaseScript : KristellPtjBaseScript
 {
-	protected override string QuestDescription { get { return string.Format(L("This job is to harvest vegetables from the farmland. Today, dig up [{0} Potatoes]. Use a weeding hoe to gather potatoes from the fields around town."), L(ItemCount.ToString())); } }
-	protected override string ObjectiveDescription { get { return string.Format(L("Harvest {0} Potatoes"), L(ItemCount.ToString())); } }
+	protected override string QuestDescription
+	{
+		get
+		{
+			return string.Format(LN(
+				"This job is to harvest vegetables from the farmland. Today, dig up [{0} Potato]. Use a weeding hoe to gather potatoes from the fields around town.",
+				"This job is to harvest vegetables from the farmland. Today, dig up [{0} Potatoes]. Use a weeding hoe to gather potatoes from the fields around town.",
+				ItemCount), ItemCount);
+		}
+	}
+	protected override string ObjectiveDescription { get { return string.Format(LN("Harvest {0} Potato", "Harvest {0} Potatoes", ItemCount), ItemCount); } }
 	protected override int ItemId { get { return 50010; } }
 }
 
@@ -308,8 +317,17 @@ public class KristellPotatoAdvPtjScript : KristellPotatoPtjBaseScript
 
 public abstract class KristellApplePtjBaseScript : KristellPtjBaseScript
 {
-	protected override string QuestDescription { get { return string.Format(L("This job is to gather fruit from the outskirts of the town. Today, gather [{0} Apples]. Gather apples from apple trees on the outskirts of the town."), L(ItemCount.ToString())); } }
-	protected override string ObjectiveDescription { get { return string.Format(L("Harvest {0} Apples"), L(ItemCount.ToString())); } }
+	protected override string QuestDescription
+	{
+		get
+		{
+			return string.Format(LN(
+				"This job is to gather fruit from the outskirts of the town. Today, gather [{0} Apple]. Gather apples from apple trees on the outskirts of the town.",
+				"This job is to gather fruit from the outskirts of the town. Today, gather [{0} Apples]. Gather apples from apple trees on the outskirts of the town.",
+				ItemCount), ItemCount);
+		}
+	}
+	protected override string ObjectiveDescription { get { return string.Format(LN("Harvest {0} Apple", "Harvest {0} Apples", ItemCount), ItemCount); } }
 	protected override int ItemId { get { return 50003; } }
 }
 
