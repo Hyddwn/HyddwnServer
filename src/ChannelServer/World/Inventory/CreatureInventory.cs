@@ -1031,11 +1031,9 @@ namespace Aura.Channel.World.Inventory
 
 			if (success)
 			{
-				Send.ItemNew(_creature, item);
+				this.PrepareBags(item);
 
-				// Add bag pocket if it doesn't already exist.
-				if (item.OptionInfo.LinkedPocketId != Pocket.None && !this.Has(item.OptionInfo.LinkedPocketId))
-					this.AddBagPocket(item);
+				Send.ItemNew(_creature, item);
 
 				if (_creature.IsPlayer && pocket != Pocket.Temporary)
 				{
@@ -1076,11 +1074,8 @@ namespace Aura.Channel.World.Inventory
 			// Inform about new item
 			if (success)
 			{
+				this.PrepareBags(item);
 				Send.ItemNew(_creature, item);
-
-				// Add bag pocket if it doesn't already exist.
-				if (item.OptionInfo.LinkedPocketId != Pocket.None && !this.Has(item.OptionInfo.LinkedPocketId))
-					this.AddBagPocket(item);
 			}
 
 			return success;
@@ -1294,13 +1289,6 @@ namespace Aura.Channel.World.Inventory
 				if (_pockets.Values.Any(pocket => pocket.Remove(item)))
 				{
 					Send.ItemRemove(_creature, item);
-
-					// Remove bag pocket
-					if (item.OptionInfo.LinkedPocketId != Pocket.None)
-					{
-						this.Remove(item.OptionInfo.LinkedPocketId);
-						item.OptionInfo.LinkedPocketId = Pocket.None;
-					}
 
 					this.OnItemLeavesInventory(item);
 					ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, item.Info.Id, item.Info.Amount);
@@ -2013,6 +2001,29 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
+		/// Adds bag pocket to inventory and sets it for the item if item
+		/// is a bag. Call before ItemNew, otherwise the bag won't open
+		/// until relog.
+		/// </summary>
+		/// <param name="item"></param>
+		private void PrepareBags(Item item)
+		{
+			if (!item.IsBag)
+				return;
+
+			if (item.Data.BagWidth == 0)
+			{
+				Send.ServerMessage(_creature, Localization.Get("Beware, shaped bags aren't supported yet."));
+			}
+			else if (!this.AddBagPocket(item))
+			{
+				Log.Debug("Failed to add linked pocket for bag.");
+				// TODO: Handle somehow? Without linked pocket the bag
+				//   won't open.
+			}
+		}
+
+		/// <summary>
 		/// Handles events that need to happen when an item "leaves" the
 		/// inventory.
 		/// </summary>
@@ -2032,6 +2043,13 @@ namespace Aura.Channel.World.Inventory
 				// and the player would receive auto quests again.
 				if (quest.State != QuestState.Complete)
 					_creature.Quests.GiveUp(item.Quest);
+			}
+
+			// Remove bag pocket
+			if (item.OptionInfo.LinkedPocketId != Pocket.None)
+			{
+				this.Remove(item.OptionInfo.LinkedPocketId);
+				item.OptionInfo.LinkedPocketId = Pocket.None;
 			}
 		}
 

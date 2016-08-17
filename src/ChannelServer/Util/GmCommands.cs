@@ -548,20 +548,6 @@ namespace Aura.Channel.Util
 				item.Info.Color3 = color3;
 			}
 
-			// Create new pockets for bags
-			if (item.Data.HasTag("/pouch/bag/") && !drop)
-			{
-				if (item.Data.BagWidth == 0)
-				{
-					Send.ServerMessage(sender, Localization.Get("Beware, shaped bags aren't supported yet."));
-				}
-				else if (!target.Inventory.AddBagPocket(item))
-				{
-					// TODO: Handle somehow? Without linked pocket the bag
-					//   won't open.
-				}
-			}
-
 			// Spawn item
 			var success = true;
 			if (!drop)
