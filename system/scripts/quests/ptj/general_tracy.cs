@@ -211,7 +211,10 @@ public abstract class TracyFirewoodPtjBaseScript : QuestScript
 	{
 		SetId(QuestId);
 		SetName(L("Firewood-Chopping PTJ"));
-		SetDescription(string.Format(L("A part-time job to chop firewood from the trees in the forest. Collect [{0} pieces of firewood]. First, you need an axe to chop firewood."), L(ItemCount.ToString())));
+		SetDescription(string.Format(LN(
+			"A part-time job to chop firewood from the trees in the forest. Collect [{0} piece of firewood]. First, you need an axe to chop firewood.",
+			"A part-time job to chop firewood from the trees in the forest. Collect [{0} pieces of firewood]. First, you need an axe to chop firewood.",
+			ItemCount), ItemCount));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -221,7 +224,7 @@ public abstract class TracyFirewoodPtjBaseScript : QuestScript
 		SetLevel(QuestLevel);
 		SetHours(start: 7, report: 9, deadline: 19);
 
-		AddObjective("ptj", string.Format(L("Collect {0} Pieces of Firewood"), L(ItemCount.ToString())), 0, 0, 0, Collect(63002, ItemCount));
+		AddObjective("ptj", string.Format(LN("Collect {0} Piece of Firewood", "Collect {0} Pieces of Firewood", ItemCount), ItemCount), 0, 0, 0, Collect(63002, ItemCount));
 
 		AddRewards();
 	}
