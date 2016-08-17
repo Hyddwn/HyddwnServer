@@ -1,19 +1,15 @@
-#region TEMP_NOTES
-// If you see this region in a pull request, 
-// **I contain undefined values and should not be merged into master!**
-
-// Class name resolver - go go gadget intellisense
-using Aura.Mabi;
-using Aura.Mabi.Const;
-using System.Threading.Tasks;
-using Aura.Channel.Scripting.Scripts;
-// Temporarily place this file under ChannelServer.csproj to resolve rest of dependencies
-#endregion
-
 //--- Aura Script -----------------------------------------------------------
 // Kristell's Church Part-Time Job
 //--- Description -----------------------------------------------------------
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
+//--- Notes -----------------------------------------------------------------
+// This script depends on ./church_endelyon.cs for egg collection PTJs.
+// Please ensure this script loads afterward.
+//
+// The following dialogue is missing:
+// * first time worker PTJ inquiry
+// * first time accepting PTJ offer
+// * first time declining PTJ offer
 //---------------------------------------------------------------------------
 
 public class KristellPtjScript : GeneralScript
@@ -29,7 +25,15 @@ public class KristellPtjScript : GeneralScript
 
 	readonly int[] QuestIds = new int[]
 	{
-		?
+		502101, // Basic  10 Potatoes
+		502131, // Int    15 Potatoes
+		502161, // Adv    20 Potatoes
+		502104, // Basic   3 Apples
+		502134, // Int     6 Apples
+		502164, // Adv    10 Apples
+		502105, // Basic  15 Eggs
+		502135, // Int    20 Eggs
+		502165, // Adv    30 Eggs
 	};
 
 	public override void Load()
@@ -187,7 +191,7 @@ public class KristellPtjScript : GeneralScript
 
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Kristell's Church Part-Time Job"),
-			L("Looking for help with delivering goods to Church."),
+			L("Looking for help with delivering goods to the Church."),
 			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
@@ -209,4 +213,129 @@ public class KristellPtjScript : GeneralScript
 	}
 }
 
-Unimplemented: QuestScripts
+public abstract class KristellPtjBaseScript : QuestScript
+{
+	protected abstract int QuestId { get; }
+	protected abstract string QuestDescription { get; }
+	protected abstract QuestLevel QuestLevel { get; }
+	protected abstract string ObjectiveDescription { get; }
+	protected abstract int ItemId { get; }
+	protected abstract int ItemCount { get; }
+
+	public override void Load()
+	{
+		SetId(QuestId);
+		SetName(L("Church Part-Time Job"));
+		SetDescription(QuestDescription);
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", ObjectiveDescription, 0, 0, 0, Collect(ItemId, ItemCount));
+
+		// Rewards common among all PTJs
+		switch (QuestLevel)
+		{
+			case QuestLevel.Basic:
+				AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 4)); // Holy Water of Lymilark
+				AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(200));
+				AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 2)); // Holy Water of Lymilark
+				AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(100));
+				AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1)); // Holy Water of Lymilark
+				AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(40));
+				break;
+
+			case QuestLevel.Int:
+				AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 6)); // Holy Water of Lymilark
+				AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(300));
+				AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 3)); // Holy Water of Lymilark
+				AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(150));
+				AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1)); // Holy Water of Lymilark
+				AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(60));
+				break;
+
+			case QuestLevel.Adv:
+				AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 10)); // Holy Water of Lymilark
+				AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(500));
+				AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 5)); // Holy Water of Lymilark
+				AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(250));
+				AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 2)); // Holy Water of Lymilark
+				AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(100));
+
+				AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(40004)); // Lute
+				AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(19001)); // Robe
+				break;
+
+			default: // Fallback
+				Log.Error("Quest ID {0} has no set quest level. Fell back to basic rewards.", QuestId);
+				goto case QuestLevel.Basic;
+		}
+	}
+}
+
+public abstract class KristellPotatoPtjBaseScript : KristellPtjBaseScript
+{
+	protected override string QuestDescription { get { return string.Format(L("This job is to harvest vegetables from the farmland. Today, dig up [{0} Potatoes]. Use a weeding hoe to gather potatoes from the fields around town."), L(ItemCount.ToString())); } }
+	protected override string ObjectiveDescription { get { return string.Format(L("Harvest {0} Potatoes"), L(ItemCount.ToString())); } }
+	protected override int ItemId { get { return 50010; } }
+}
+
+public class KristellPotatoBasicPtjScript : KristellPotatoPtjBaseScript
+{
+	protected override int QuestId { get { return 502101; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+	protected override int ItemCount { get { return 10; } }
+}
+
+public class KristellPotatoIntPtjScript : KristellPotatoPtjBaseScript
+{
+	protected override int QuestId { get { return 502131; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+	protected override int ItemCount { get { return 15; } }
+}
+
+public class KristellPotatoAdvPtjScript : KristellPotatoPtjBaseScript
+{
+	protected override int QuestId { get { return 502161; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+	protected override int ItemCount { get { return 20; } }
+}
+
+public abstract class KristellApplePtjBaseScript : KristellPtjBaseScript
+{
+	protected override string QuestDescription { get { return string.Format(L("This job is to gather fruit from the outskirts of the town. Today, gather [{0} Apples]. Gather apples from apple trees on the outskirts of the town."), L(ItemCount.ToString())); } }
+	protected override string ObjectiveDescription { get { return string.Format(L("Harvest {0} Apples"), L(ItemCount.ToString())); } }
+	protected override int ItemId { get { return 50003; } }
+}
+
+public class KristellAppleBasicPtjScript : KristellApplePtjBaseScript
+{
+	protected override int QuestId { get { return 502104; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+	protected override int ItemCount { get { return 3; } }
+}
+
+public class KristellAppleIntPtjScript : KristellApplePtjBaseScript
+{
+	protected override int QuestId { get { return 502134; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+	protected override int ItemCount { get { return 6; } }
+}
+
+public class KristellAppleAdvPtjScript : KristellApplePtjBaseScript
+{
+	protected override int QuestId { get { return 502164; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+	protected override int ItemCount { get { return 10; } }
+}
+
+// The following quest IDs are already defined in ./church_endelyon.cs:
+/* 502105, // Basic  15 Eggs
+ * 502135, // Int    20 Eggs
+ * 502165, // Adv    30 Eggs
+ */
