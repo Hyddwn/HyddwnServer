@@ -65,6 +65,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "jump", "[x] [y]", Localization.Get("Warps to a specific position in the current region."), HandleJump);
 			Add(50, 50, "goto", "<target name>", Localization.Get("Warps to a specific creature."), HandleGoTo);
 			Add(50, 50, "item", "<id|name> [amount|color1 [color2 [color 3]]]", Localization.Get("Spawns item."), HandleItem);
+			Add(50, 50, "enchant", "<suffix|prefix>", Localization.Get("Spawns enchant item."), HandleEnchant);
 			Add(50, 50, "ego", "<item id> <ego name> <ego race> [color1 [color2 [color 3]]]", Localization.Get("Creates spirit weapon."), HandleEgo);
 			Add(50, 50, "skill", "<id> [rank]", Localization.Get("Adds skill or changes rank."), HandleSkill);
 			Add(50, 50, "title", "<id>", Localization.Get("Adds and enables title."), HandleTitle);
@@ -580,6 +581,33 @@ namespace Aura.Channel.Util
 				Send.ServerMessage(sender, Localization.Get("Failed to spawn item."));
 				return CommandResult.Fail;
 			}
+		}
+
+		private CommandResult HandleEnchant(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			int optionSetId;
+			if (!int.TryParse(args[1], out optionSetId))
+				return CommandResult.InvalidArgument;
+
+			try
+			{
+				var item = Item.CreateEnchant(optionSetId);
+				target.Inventory.Add(item, Pocket.Temporary);
+			}
+			catch (ArgumentException)
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid enchant id."));
+				return CommandResult.Fail;
+			}
+
+			Send.ServerMessage(sender, Localization.Get("Spawned enchant."));
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("{0} spawned an enchant in your inventory."), sender.Name);
+
+			return CommandResult.Okay;
 		}
 
 		private CommandResult HandleDynamic(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
