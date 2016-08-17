@@ -4,7 +4,7 @@
 
 Localization in Aura is done through a "gettext"-like system, which is
 commonly used for this type of work. The server reads the ".po" file
-specified specified in the configuration from the localization folder and
+specified in the configuration from the localization folder and
 uses the translated lines. If a line is not translated, it uses the original,
 English version instead.
 
