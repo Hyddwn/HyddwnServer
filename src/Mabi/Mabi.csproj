@@ -51,6 +51,7 @@
     <Compile Include="Const\Entities.cs" />
     <Compile Include="Const\Entrustment.cs" />
     <Compile Include="Const\Firework.cs" />
+    <Compile Include="Const\Guilds.cs" />
     <Compile Include="Const\Items.cs" />
     <Compile Include="Const\Locks.cs" />
     <Compile Include="Const\Login.cs" />
