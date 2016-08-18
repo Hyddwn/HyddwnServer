@@ -523,8 +523,8 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 
 	protected abstract int QuestId { get; }
 	protected abstract string NpcIdent { get; }
-	protected abstract string NpcName { get; }
 	protected abstract string Objective { get; }
+	protected abstract string LGivenNotice { get; }
 
 	public override void Load()
 	{
@@ -552,7 +552,7 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 			return HookResult.Continue;
 
 		npc.Player.Inventory.Remove(Garment, 1);
-		npc.Notice(string.Format(L("You have given Garment to be Delivered to {0}."), L(NpcName)));
+		npc.Notice(LGivenNotice);
 		npc.FinishQuest(this.Id, "ptj");
 
 		await this.OnFinish(npc);
@@ -643,8 +643,8 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 public abstract class MalcolmDeliveryCaitinPtjBaseScript : MalcolmDeliveryPtjBaseScript
 {
 	protected override string NpcIdent { get { return "_caitin"; } }
-	protected override string NpcName { get { return "Caitin"; } }
 	protected override string Objective { get { return L("Deliver Garment to Caitin at the Grocery Store"); } }
+	protected override string LGivenNotice { get { return L("You have given Garment to be Delivered to Caitin."); } }
 
 	protected override async Task OnFinish(NpcScript npc)
 	{
@@ -688,8 +688,8 @@ public class MalcolmDeliveryCaitinAdvPtjScript : MalcolmDeliveryCaitinPtjBaseScr
 public abstract class MalcolmDeliveryNoraPtjBaseScript : MalcolmDeliveryPtjBaseScript
 {
 	protected override string NpcIdent { get { return "_nora"; } }
-	protected override string NpcName { get { return "Nora"; } }
 	protected override string Objective { get { return L("Deliver Garment to Nora at the Inn"); } }
+	protected override string LGivenNotice { get { return L("You have given Garment to be Delivered to Nora."); } }
 
 	protected override async Task OnFinish(NpcScript npc)
 	{
@@ -737,8 +737,8 @@ public class MalcolmDeliveryNoraAdvPtjScript : MalcolmDeliveryNoraPtjBaseScript
 public abstract class MalcolmDeliveryLassarPtjBaseScript : MalcolmDeliveryPtjBaseScript
 {
 	protected override string NpcIdent { get { return "_lassar"; } }
-	protected override string NpcName { get { return "Lassar"; } }
 	protected override string Objective { get { return L("Deliver Clothes to Lassar at the School"); } }
+	protected override string LGivenNotice { get { return L("You have given Garment to be Delivered to Lassar."); } }
 
 	protected override async Task OnFinish(NpcScript npc)
 	{
@@ -1309,8 +1309,10 @@ public class MalcolmThickThreadBallAdvPtjScript : MalcolmThreadBallPtjBaseScript
 public abstract class MalcolmTailorPtjBaseScript : QuestScript
 {
 	protected abstract int QuestId { get; }
-	protected abstract string ItemsName { get; }
+	protected abstract string LQuestDescription { get; }
 	protected abstract int ItemId { get; }
+	protected abstract string LCreateObjectiveDescription { get; }
+	protected abstract string LCollectObjectiveDescription { get; }
 	protected abstract QuestLevel QuestLevel { get; }
 	protected abstract void AddRewards();
 
@@ -1318,7 +1320,7 @@ public abstract class MalcolmTailorPtjBaseScript : QuestScript
 	{
 		SetId(QuestId);
 		SetName(L("General Shop Part-Time Job"));
-		SetDescription(string.Format(L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 {0}], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."), L(ItemsName)));
+		SetDescription(LQuestDescription);
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -1328,8 +1330,8 @@ public abstract class MalcolmTailorPtjBaseScript : QuestScript
 		SetLevel(QuestLevel);
 		SetHours(start: 7, report: QuestLevel == QuestLevel.Adv ? 17 : 12, deadline: 19);
 
-		AddObjective("ptj1", string.Format(L("Make 2 {0} (Part-Time Job)"), L(ItemsName)), 0, 0, 0, Create(ItemId, 2, SkillId.Tailoring));
-		AddObjective("ptj2", string.Format(L("2 {0} (Part-Time Job)"), L(ItemsName)), 0, 0, 0, Collect(ItemId, 2));
+		AddObjective("ptj1", LCreateObjectiveDescription, 0, 0, 0, Create(ItemId, 2, SkillId.Tailoring));
+		AddObjective("ptj2", LCollectObjectiveDescription, 0, 0, 0, Collect(ItemId, 2));
 
 		AddRewards();
 	}
@@ -1338,8 +1340,10 @@ public abstract class MalcolmTailorPtjBaseScript : QuestScript
 public class MalcolmTailorPoposSkirtBasicPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508207; } }
-	protected override string ItemsName { get { return "Popo's Skirts (F)"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Popo's Skirts (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60606; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Popo's Skirts (F) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Popo's Skirts (F) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
 	protected override void AddRewards()
@@ -1382,8 +1386,10 @@ public class MalcolmTailorPoposSkirtBasicPtjScript : MalcolmTailorPtjBaseScript
 public class MalcolmTailorWizardHatBasicPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508208; } }
-	protected override string ItemsName { get { return "Wizard Hats"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Wizard Hats], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60612; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Wizard Hats (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Wizard Hats (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
 	protected override void AddRewards()
@@ -1426,8 +1432,10 @@ public class MalcolmTailorWizardHatBasicPtjScript : MalcolmTailorPtjBaseScript
 public class MalcolmTailorHeadbandHatBasicPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508209; } }
-	protected override string ItemsName { get { return "Hairbands"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Hairbands], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60614; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Hairbands (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Hairbands (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
 	protected override void AddRewards()
@@ -1470,8 +1478,10 @@ public class MalcolmTailorHeadbandHatBasicPtjScript : MalcolmTailorPtjBaseScript
 public class MalcolmTailorMongosTravelerSuitFBasicPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508210; } }
-	protected override string ItemsName { get { return "Mongo's Traveler Suits (F)"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Mongo's Traveler Suits (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60607; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Mongo's Traveler Suits (F) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Traveler Suits (F) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
 	protected override void AddRewards()
@@ -1514,8 +1524,10 @@ public class MalcolmTailorMongosTravelerSuitFBasicPtjScript : MalcolmTailorPtjBa
 public class MalcolmTailorMongosTravelerSuitMBasicPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508211; } }
-	protected override string ItemsName { get { return "Mongo's Traveler Suits (M)"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Mongo's Traveler Suits (M)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60608; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Mongo's Traveler Suits (M) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Traveler Suits (M) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
 	protected override void AddRewards()
@@ -1558,8 +1570,10 @@ public class MalcolmTailorMongosTravelerSuitMBasicPtjScript : MalcolmTailorPtjBa
 public class MalcolmTailorLeatherBandanaBasicPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508212; } }
-	protected override string ItemsName { get { return "Leather Bandanas"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Leather Bandanas], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60613; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Leather Bandanas (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Leather Bandanas (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
 	protected override void AddRewards()
@@ -1602,8 +1616,10 @@ public class MalcolmTailorLeatherBandanaBasicPtjScript : MalcolmTailorPtjBaseScr
 public class MalcolmTailorCoresHealerDressIntPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508238; } }
-	protected override string ItemsName { get { return "Cores' Healer Dresses"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Cores' Healer Dresses], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60601; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores' Healer Dresses (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cores' Healer Dresses (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
 	protected override void AddRewards()
@@ -1639,8 +1655,10 @@ public class MalcolmTailorCoresHealerDressIntPtjScript : MalcolmTailorPtjBaseScr
 public class MalcolmTailorMagicSchoolUniformMIntPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508239; } }
-	protected override string ItemsName { get { return "Magic School Uniforms (M)"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Magic School Uniforms (M)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60602; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Magic School Uniforms (M) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Magic School Uniforms (M) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
 	protected override void AddRewards()
@@ -1676,8 +1694,10 @@ public class MalcolmTailorMagicSchoolUniformMIntPtjScript : MalcolmTailorPtjBase
 public class MalcolmTailorMongosLongSkirtIntPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508240; } }
-	protected override string ItemsName { get { return "Mongo's Long Skirts"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Mongo's Long Skirts], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60615; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Mongo's Long Skirts (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Long Skirts (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
 	protected override void AddRewards()
@@ -1713,8 +1733,10 @@ public class MalcolmTailorMongosLongSkirtIntPtjScript : MalcolmTailorPtjBaseScri
 public class MalcolmTailorCoresNinjaSuitMIntPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508241; } }
-	protected override string ItemsName { get { return "Cores Ninja Suits (M)"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Cores Ninja Suits (M)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60618; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores Ninja Suits (M) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cores Ninja Suits (M) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
 	protected override void AddRewards()
@@ -1750,8 +1772,10 @@ public class MalcolmTailorCoresNinjaSuitMIntPtjScript : MalcolmTailorPtjBaseScri
 public class MalcolmTailorCoresHealerGlovesIntPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508242; } }
-	protected override string ItemsName { get { return "Cores' Healer Gloves"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Cores' Healer Gloves], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60604; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores' Healer Gloves (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cores' Healer Gloves (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
 	protected override void AddRewards()
@@ -1787,8 +1811,10 @@ public class MalcolmTailorCoresHealerGlovesIntPtjScript : MalcolmTailorPtjBaseSc
 public class MalcolmTailorCoresHealerSuitIntPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508243; } }
-	protected override string ItemsName { get { return "Cores' Healer Suits"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Cores' Healer Suits], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60610; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores' Healer Suits (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cores' Healer Suits (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
 	protected override void AddRewards()
@@ -1824,8 +1850,10 @@ public class MalcolmTailorCoresHealerSuitIntPtjScript : MalcolmTailorPtjBaseScri
 public class MalcolmTailorGuardianGloveIntPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508244; } }
-	protected override string ItemsName { get { return "Guardian Gloves"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Guardian Gloves], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60611; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Guardian Gloves (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Guardian Gloves (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
 	protected override void AddRewards()
@@ -1861,8 +1889,10 @@ public class MalcolmTailorGuardianGloveIntPtjScript : MalcolmTailorPtjBaseScript
 public class MalcolmTailorLirinaLongSkirtAdvPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508268; } }
-	protected override string ItemsName { get { return "Lirina's Long Skirts"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Lirina's Long Skirts], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60617; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Lirina's Long Skirts (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Lirina's Long Skirts (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
 
 	protected override void AddRewards()
@@ -1898,8 +1928,10 @@ public class MalcolmTailorLirinaLongSkirtAdvPtjScript : MalcolmTailorPtjBaseScri
 public class MalcolmTailorMagicSchoolUniformFAdvPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508269; } }
-	protected override string ItemsName { get { return "Magic School Uniforms (F)"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Magic School Uniforms (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60603; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Magic School Uniforms (F) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Magic School Uniforms (F) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
 
 	protected override void AddRewards()
@@ -1938,8 +1970,10 @@ public class MalcolmTailorMagicSchoolUniformFAdvPtjScript : MalcolmTailorPtjBase
 public class MalcolmTailorMongoHatsAdvPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508270; } }
-	protected override string ItemsName { get { return "Mongo's Hats"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Mongo's Hats], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60605; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Mongo's Hats (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Hats (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
 
 	protected override void AddRewards()
@@ -1978,8 +2012,10 @@ public class MalcolmTailorMongoHatsAdvPtjScript : MalcolmTailorPtjBaseScript
 public class MalcolmTailorClothMailsAdvPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508271; } }
-	protected override string ItemsName { get { return "Cloth Mails"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Cloth Mails], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60609; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cloth Mails (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cloth Mails (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
 
 	protected override void AddRewards()
@@ -2018,8 +2054,10 @@ public class MalcolmTailorClothMailsAdvPtjScript : MalcolmTailorPtjBaseScript
 public class MalcolmTailorLightLeatherMailFAdvPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508272; } }
-	protected override string ItemsName { get { return "Light Leather Mails (F)"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Light Leather Mails (F)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60616; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Light Leather Mails (F) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Light Leather Mails (F) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
 
 	protected override void AddRewards()
@@ -2057,8 +2095,10 @@ public class MalcolmTailorLightLeatherMailFAdvPtjScript : MalcolmTailorPtjBaseSc
 public class MalcolmTailorLightLeatherMailMAdvPtjScript : MalcolmTailorPtjBaseScript
 {
 	protected override int QuestId { get { return 508273; } }
-	protected override string ItemsName { get { return "Light Leather Mails (M)"; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the General Shop. Today's order is tailoring [2 Light Leather Mails (M)], using the materials given for this part-time job. Make sure to bring it to me no earlier than noon. Keep that in mind when delivering the goods, since I can't use them before then."); } }
 	protected override int ItemId { get { return 60620; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Light Leather Mails (M) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Light Leather Mails (M) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
 
 	protected override void AddRewards()
