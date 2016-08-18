@@ -671,6 +671,26 @@ namespace Aura.Channel.World.Inventory
 
 		public override int Remove(int itemId, int amount, ref List<Item> changed)
 		{
+			// This method only returned 0 for a while, without doing
+			// anything. This might've been for a reason, but we need to be
+			// able to remove from single item pockets, see issue #385.
+
+			if (_item != null && _item.Info.Id == itemId)
+			{
+				// Reduce amount
+				var remove = (ushort)Math.Min(amount, _item.Info.Amount);
+				_item.Info.Amount -= remove;
+
+				// Add to list of items to be updated
+				changed.Add(_item);
+
+				// Remove item from pocket if amount became 0
+				if (_item.Info.Amount == 0)
+					_item = null;
+
+				return remove;
+			}
+
 			return 0;
 		}
 
