@@ -197,18 +197,18 @@ public class KristellPtjScript : GeneralScript
 		if (await npc.Select() == "@accept")
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				msg = L("(missing): first time accepting PTJ offer");
+				npc.Msg(L("(missing): first time accepting PTJ offer"));
 			else
-				msg = L("Thank you.<br/>I hope you finish it in time.");
+				npc.Msg(L("Thank you.<br/>I hope you finish it in time."));
 
 			npc.StartPtj(randomPtj);
 		}
 		else
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				msg = L("(missing): first time declining PTJ offer");
+				npc.Msg(L("(missing): first time declining PTJ offer"));
 			else
-				msg = L("Are you busy with something else?<br/>If not today, please give me a hand later.");
+				npc.Msg(L("Are you busy with something else?<br/>If not today, please give me a hand later."));
 		}
 	}
 }
