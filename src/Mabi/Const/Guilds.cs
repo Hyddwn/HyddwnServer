@@ -44,7 +44,7 @@ namespace Aura.Mabi.Const
 	}
 
 	[Flags]
-	public enum GuildMessage : byte
+	public enum GuildMessages : byte
 	{
 		None = 0x00,
 		Accepted = 0x01,
