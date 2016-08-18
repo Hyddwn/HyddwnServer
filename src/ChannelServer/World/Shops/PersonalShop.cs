@@ -20,7 +20,7 @@ namespace Aura.Channel.World.Shops
 {
 	public class PersonalShop
 	{
-		private const int ShopPropId = 314;
+		private const int DefaultShopPropId = 314;
 
 		/// <summary>
 		/// Entity id of the shop owner.
@@ -270,7 +270,8 @@ namespace Aura.Channel.World.Shops
 			var direction = MabiMath.ByteToRadian(this.Owner.Direction);
 
 			// Spawn prop
-			this.Prop = new Prop(ShopPropId, location.RegionId, location.X, location.Y, (float)direction);
+			var propId = GetShopPropId(this.Bag);
+			this.Prop = new Prop(propId, location.RegionId, location.X, location.Y, (float)direction);
 			this.Prop.Info.Color1 = this.Bag.Info.Color1;
 			this.Prop.Info.Color2 = this.Bag.Info.Color2;
 			this.Prop.Info.Color3 = this.Bag.Info.Color3;
@@ -286,6 +287,19 @@ namespace Aura.Channel.World.Shops
 			Send.PropUpdate(this.Prop);
 
 			return true;
+		}
+
+		/// <summary>
+		/// Returns the prop id to be used for the given bag.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		private static int GetShopPropId(Item item)
+		{
+			if (item.Data.PersonalShopProp != 0)
+				return item.Data.PersonalShopProp;
+
+			return DefaultShopPropId;
 		}
 
 		/// <summary>
