@@ -184,18 +184,18 @@ public class TracyPtjScript : GeneralScript
 		if (await npc.Select() == "@accept")
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				msg = L("(missing): first time accepting PTJ offer");
+				npc.Msg(L("(missing): first time accepting PTJ offer"));
 			else
-				msg = L("Outstanding! Go on, man.");
+				npc.Msg(L("Outstanding! Go on, man."));
 
 			npc.StartPtj(randomPtj);
 		}
 		else
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				msg = L("(missing): first time declining PTJ offer");
+				npc.Msg(L("(missing): first time declining PTJ offer"));
 			else
-				msg = L("Well... if you're not interested...");
+				npc.Msg(L("Well... if you're not interested..."));
 		}
 	}
 }
