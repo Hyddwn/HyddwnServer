@@ -437,12 +437,12 @@ namespace Aura.Mabi.Network
 		public const int PartyBoardRequest = 0x8EBD;
 		public const int PartyBoardRequestR = 0x8EBE;
 		public const int GuildInfoNoGuild = 0x8EFB;
-		public const int OpenGuildPanel = 0x8EFC;
+		public const int GuildPanel = 0x8EFC;
 		public const int GuildInfo = 0x8EFD;
 		public const int GuildApply = 0x8EFF;
 		public const int GuildApplyR = 0x8F00;
 		public const int GuildMembershipChanged = 0x8F01;
-		public const int GuildstoneLocation = 0x8F02;
+		public const int GuildStoneLocation = 0x8F02;
 		public const int ConvertGp = 0x8F03;
 		public const int ConvertGpR = 0x8F04;
 		public const int ConvertGpConfirm = 0x8F05;

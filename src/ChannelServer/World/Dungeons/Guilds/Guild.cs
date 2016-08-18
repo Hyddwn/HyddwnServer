@@ -25,6 +25,8 @@ namespace Aura.Channel.World.Dungeons.Guilds
 		public GuildOptions Options { get; set; }
 		public GuildStone Stone { get; set; }
 
+		public int MemberCount { get { return 5; } }
+
 		public Guild()
 		{
 			this.Stone = new GuildStone();

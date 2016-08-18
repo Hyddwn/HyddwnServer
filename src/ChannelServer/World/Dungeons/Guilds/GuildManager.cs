@@ -73,5 +73,13 @@ namespace Aura.Channel.World.Dungeons.Guilds
 			lock (_syncLock)
 				_stones[guild.Id] = prop;
 		}
+
+		public Guild GetGuild(long guildId)
+		{
+			Guild result;
+			lock (_syncLock)
+				_guilds.TryGetValue(guildId, out result);
+			return result;
+		}
 	}
 }

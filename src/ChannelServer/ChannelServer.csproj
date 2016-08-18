@@ -123,6 +123,7 @@
     <Compile Include="Network\Sending\Send.Parties.cs" />
     <Compile Include="Network\Sending\Send.PersonalShops.cs" />
     <Compile Include="Network\Sending\Send.Entrusting.cs" />
+    <Compile Include="Network\Sending\Send.Guilds.cs" />
     <Compile Include="Network\Sending\Send.Trading.cs" />
     <Compile Include="Network\Sending\Send.Quests.cs" />
     <Compile Include="Network\Sending\Send.Effects.cs" />
