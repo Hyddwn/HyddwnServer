@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Aura.Channel.Skills;
 using System.Threading;
 using Aura.Channel.Scripting.Scripts;
+using Aura.Channel.World.Dungeons.Guilds;
 
 namespace Aura.Channel.World.Entities
 {
@@ -1080,6 +1081,13 @@ namespace Aura.Channel.World.Entities
 		/// Returns true if creature is in an actual party.
 		/// </summary>
 		public bool IsInParty { get { return this.Party.Id != 0; } }
+
+		// Guild
+		// ------------------------------------------------------------------
+
+		public long GuildId { get { return (this.Guild != null ? this.Guild.Id : 0); } }
+		public Guild Guild { get; set; }
+		public GuildMember GuildMember { get; set; }
 
 		// ------------------------------------------------------------------
 

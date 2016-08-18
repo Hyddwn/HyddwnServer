@@ -14,12 +14,14 @@ namespace Aura.Channel.World.Dungeons.Guilds
 		private object _syncLock = new object();
 
 		private Dictionary<long, Guild> _guilds;
+		private Dictionary<long, Prop> _stones;
 
 		public int Count { get { lock (_syncLock)return _guilds.Count; } }
 
 		public GuildManager()
 		{
 			_guilds = new Dictionary<long, Guild>();
+			_stones = new Dictionary<long, Prop>();
 		}
 
 		public void Initialize()
@@ -41,6 +43,35 @@ namespace Aura.Channel.World.Dungeons.Guilds
 		{
 			lock (_syncLock)
 				_guilds[guild.Id] = guild;
+			this.PlaceStone(guild);
+		}
+
+		private void PlaceStone(Guild guild)
+		{
+			lock (_syncLock)
+			{
+				if (_stones.ContainsKey(guild.Id))
+					return;
+			}
+
+			var stone = guild.Stone;
+
+			var region = ChannelServer.Instance.World.GetRegion(stone.Location.RegionId);
+			if (region == null)
+				throw new ArgumentException("Region doesn't exist.");
+
+			var prop = new Prop(stone.PropId, stone.Location.RegionId, stone.Location.X, stone.Location.Y, stone.Direction);
+			prop.Title = guild.Name;
+			prop.Xml.SetAttributeValue("guildid", guild.Id);
+			if (guild.Has(GuildOptions.Warp))
+				prop.Xml.SetAttributeValue("gh_warp", true);
+
+			prop.Behavior = GuildStone.OnTouch;
+
+			region.AddProp(prop);
+
+			lock (_syncLock)
+				_stones[guild.Id] = prop;
 		}
 	}
 }

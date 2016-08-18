@@ -29,5 +29,10 @@ namespace Aura.Channel.World.Dungeons.Guilds
 		{
 			this.Stone = new GuildStone();
 		}
+
+		public bool Has(GuildOptions options)
+		{
+			return (this.Options & options) != 0;
+		}
 	}
 }
