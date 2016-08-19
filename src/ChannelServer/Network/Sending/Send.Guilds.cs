@@ -13,6 +13,7 @@ using Aura.Mabi.Network;
 using Aura.Channel.World.Entities.Props;
 using Aura.Channel.World.Dungeons.Guilds;
 using Aura.Shared.Database;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -61,7 +62,7 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet(Op.GuildPanel, creature.EntityId);
 			packet.PutLong(guild.Id);
-			packet.PutByte(0); // isLeader (more options)
+			packet.PutByte(creature.GuildMember.Rank == GuildMemberRank.Leader);
 			packet.PutByte(0);
 			packet.PutByte(0); // 1: Go To Guild Hall,  2: Go To Guild Stone
 
