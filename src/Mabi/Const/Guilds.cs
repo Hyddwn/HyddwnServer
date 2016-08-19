@@ -54,4 +54,12 @@ namespace Aura.Mabi.Const
 		GuildHall = 0x01,
 		Warp = 0x02,
 	}
+
+	public static class GuildStone
+	{
+		public const int Normal = 211;
+		public const int Hope = 40209;
+		public const int Courage = 40210;
+		public const int GuildHall = 42091;
+	}
 }
