@@ -12,6 +12,7 @@ using Aura.Channel.Network.Sending.Helpers;
 using Aura.Mabi.Network;
 using Aura.Channel.World.Entities.Props;
 using Aura.Channel.World.Dungeons.Guilds;
+using Aura.Shared.Database;
 
 namespace Aura.Channel.Network.Sending
 {

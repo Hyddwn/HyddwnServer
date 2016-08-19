@@ -4,7 +4,7 @@
 using Aura.Mabi.Const;
 using System;
 
-namespace Aura.Channel.World.Dungeons.Guilds
+namespace Aura.Shared.Database
 {
 	public class GuildMember
 	{

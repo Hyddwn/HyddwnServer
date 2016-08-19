@@ -251,10 +251,7 @@
     <Compile Include="World\Dungeons\Generation\MazeMove.cs" />
     <Compile Include="World\Dungeons\Generation\MazeRoomInternal.cs" />
     <Compile Include="World\Dungeons\Generation\Position.cs" />
-    <Compile Include="World\Dungeons\Guilds\Guild.cs" />
     <Compile Include="World\Dungeons\Guilds\GuildManager.cs" />
-    <Compile Include="World\Dungeons\Guilds\GuildMember.cs" />
-    <Compile Include="World\Dungeons\Guilds\GuildStone.cs" />
     <Compile Include="World\Dungeons\Props\Chest.cs" />
     <Compile Include="World\Dungeons\Props\Door.cs" />
     <Compile Include="World\Dungeons\Props\DungeonProp.cs" />

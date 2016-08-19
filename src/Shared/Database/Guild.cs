@@ -3,7 +3,7 @@
 
 using Aura.Mabi.Const;
 
-namespace Aura.Channel.World.Dungeons.Guilds
+namespace Aura.Shared.Database
 {
 	public class Guild
 	{

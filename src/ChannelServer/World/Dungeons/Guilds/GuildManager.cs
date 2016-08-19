@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
+using Aura.Shared.Database;
 using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
@@ -56,22 +58,58 @@ namespace Aura.Channel.World.Dungeons.Guilds
 
 			var stone = guild.Stone;
 
-			var region = ChannelServer.Instance.World.GetRegion(stone.Location.RegionId);
+			var region = ChannelServer.Instance.World.GetRegion(stone.RegionId);
 			if (region == null)
 				throw new ArgumentException("Region doesn't exist.");
 
-			var prop = new Prop(stone.PropId, stone.Location.RegionId, stone.Location.X, stone.Location.Y, stone.Direction);
+			var prop = new Prop(stone.PropId, stone.RegionId, stone.X, stone.Y, stone.Direction);
 			prop.Title = guild.Name;
 			prop.Xml.SetAttributeValue("guildid", guild.Id);
 			if (guild.Has(GuildOptions.Warp))
 				prop.Xml.SetAttributeValue("gh_warp", true);
 
-			prop.Behavior = GuildStone.OnTouch;
+			prop.Behavior = OnStoneTouch;
 
 			region.AddProp(prop);
 
 			lock (_syncLock)
 				_stones[guild.Id] = prop;
+		}
+
+		public static void OnStoneTouch(Creature creature, Prop prop)
+		{
+			if (prop.Xml.Attribute("guildid") == null)
+			{
+				Log.Warning("GuildStone.OnTouch: Stone is missing its guildid attribute.");
+				return;
+			}
+
+			var guildId = Convert.ToInt64(prop.Xml.Attribute("guildid").Value);
+			var guild = ChannelServer.Instance.GuildManager.GetGuild(guildId);
+			if (guild == null)
+			{
+				Log.Warning("GuildStone.OnTouch: Guild '0x{0:X16}' not found.", guildId);
+				return;
+			}
+
+			Log.Debug("0x{0:X16}", guildId);
+
+			if (creature.GuildId == guildId)
+			{
+				// If member
+				if (creature.GuildMember.Rank < GuildMemberRank.Applied)
+				{
+					Send.GuildPanel(creature, guild);
+				}
+				else
+				{
+					Send.GuildInfo(creature, guild);
+				}
+			}
+			else
+			{
+				Send.GuildInfoNoGuild(creature, guild);
+			}
 		}
 
 		public Guild GetGuild(long guildId)
