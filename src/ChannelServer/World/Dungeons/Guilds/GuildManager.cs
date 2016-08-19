@@ -149,5 +149,52 @@ namespace Aura.Channel.World.Dungeons.Guilds
 
 			Send.GuildMessage(creature, guild, Localization.GetPlural("Added {0:n0} Point.", "Added {0:0n} Points.", points), points);
 		}
+
+		/// <summary>
+		/// Donates the given amount of gold from the creature to guild.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="guild"></param>d
+		/// <param name="amount"></param>d
+		public void DonateGold(Creature creature, Guild guild, int amount)
+		{
+			guild.Gold += amount;
+			creature.Inventory.RemoveGold(amount);
+
+			Send.GuildMessage(creature, guild, Localization.GetPlural("You have donated {0:n0} Gold.", "You have donated {0:n0} Gold.", amount), amount);
+		}
+
+		/// <summary>
+		/// Donates the given item from the creature to guild.
+		/// The item is converted to its worth, e.g. Gold and checks
+		/// add their actual amounts, while other items use their
+		/// sell price.
+		/// </summary>
+		/// <remarks>
+		/// While it's seemingly pointless to make a dedicated DonateItem
+		/// method, maybe we can use this for something at some point,
+		/// e.g. donating items that other members can retrieve?
+		/// </remarks>
+		/// <param name="creature"></param>
+		/// <param name="item"></param>
+		public void DonateItem(Creature creature, Guild guild, Item item)
+		{
+			var amount = 0;
+
+			// Gold (Pouch)
+			if (item.Info.Id == 2000 || item.Data.StackItemId == 2000)
+				amount = item.MetaData1.GetInt("EVALUE");
+			// Checks/Licenses/Others?
+			else if (item.MetaData1.Has("EVALUE"))
+				amount = item.MetaData1.GetInt("EVALUE");
+			// Others
+			else
+				amount = item.OptionInfo.SellingPrice;
+
+			guild.Gold += amount;
+			creature.Inventory.Remove(item);
+
+			Send.GuildMessage(creature, guild, Localization.GetPlural("You have donated {0:n0} Gold.", "You have donated {0:n0} Gold.", amount), amount);
+		}
 	}
 }

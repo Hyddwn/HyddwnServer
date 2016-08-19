@@ -57,5 +57,67 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.ConvertGpConfirmR(creature, true);
 		}
+
+		/// <summary>
+		/// Sent when clicking OK on the guild gold donation window.
+		/// </summary>
+		/// <example>
+		/// 001 [........00000159] Int    : 345
+		/// 002 [0000000000000000] Long   : 0
+		/// </example>
+		[PacketHandler(Op.GuildDonate)]
+		public void GuildDonate(ChannelClient client, Packet packet)
+		{
+			var amount = packet.GetInt();
+			var checkId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			if (creature.Guild == null)
+			{
+				Log.Warning("ConvertGpConfirm: User '{0}' is not in a guild.", client.Account.Id);
+				Send.GuildDonateR(creature, false);
+				return;
+			}
+
+			// Check
+			if (checkId != 0)
+			{
+				var check = creature.Inventory.GetItem(checkId);
+				if (check == null)
+				{
+					Log.Warning("GuildDonate: User '{0}' tried to donate non-exitent check.", client.Account.Id);
+					Send.GuildDonateR(creature, false);
+					return;
+				}
+				else if (!check.HasTag("/check/"))
+				{
+					Log.Warning("GuildDonate: User '{0}' tried to donate invalid check ({1}).", client.Account.Id, check.Info.Id);
+					Send.GuildDonateR(creature, false);
+					return;
+				}
+
+				ChannelServer.Instance.GuildManager.DonateItem(creature, creature.Guild, check);
+			}
+			// Gold
+			else
+			{
+				if (amount == 0)
+				{
+					Send.GuildDonateR(creature, false);
+					return;
+				}
+				else if (creature.Inventory.Gold < amount)
+				{
+					Send.MsgBox(creature, Localization.Get("You don't have enough gold."));
+					Send.GuildDonateR(creature, false);
+					return;
+				}
+
+				ChannelServer.Instance.GuildManager.DonateGold(creature, creature.Guild, amount);
+			}
+
+			Send.GuildDonateR(creature, true);
+		}
 	}
 }
