@@ -347,24 +347,9 @@ namespace Aura.Shared.Database
 					while (reader.Read())
 					{
 						var guild = this.ReadGuild(reader);
-						guild.Id = reader.GetInt64("guildId");
-						guild.Name = reader.GetString("name");
-						guild.LeaderName = reader.GetString("leaderName");
-						guild.Title = reader.GetString("title");
-						guild.IntroMessage = reader.GetString("introMessage");
-						guild.WelcomeMessage = reader.GetString("welcomeMessage");
-						guild.LeavingMessage = reader.GetString("leavingMessage");
-						guild.RejectionMessage = reader.GetString("rejectionMessage");
-						guild.Type = (GuildType)reader.GetInt32("type");
-						guild.Level = (GuildLevel)reader.GetInt32("level");
-						guild.Options = (GuildOptions)reader.GetInt32("options");
-						guild.Stone.PropId = reader.GetInt32("stonePropId");
-						guild.Stone.RegionId = reader.GetInt32("stoneRegionId");
-						guild.Stone.X = reader.GetInt32("stoneX");
-						guild.Stone.Y = reader.GetInt32("stoneY");
-						guild.Stone.Direction = reader.GetFloat("stoneDirection");
-						guild.Points = reader.GetInt32("points");
-						guild.Gold = reader.GetInt32("gold");
+						var members = this.GetGuildMembers(guild.Id);
+
+						guild.InitMembers(members);
 
 						result.Add(guild);
 					}
@@ -372,6 +357,98 @@ namespace Aura.Shared.Database
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Returns guild with given id from database if it exists.
+		/// </summary>
+		public Guild GetGuild(long guildId)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `guilds` WHERE `guildId` = @id", conn))
+			{
+				mc.Parameters.AddWithValue("@id", guildId);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					if (reader.Read())
+					{
+						var guild = this.ReadGuild(reader);
+						var members = this.GetGuildMembers(guild.Id);
+
+						guild.InitMembers(members);
+
+						return guild;
+					}
+					else
+					{
+						return null;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns all members in guild with given id.
+		/// </summary>
+		/// <param name="guildId"></param>
+		/// <returns></returns>
+		private List<GuildMember> GetGuildMembers(long guildId)
+		{
+			var result = new List<GuildMember>();
+
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `guild_members` WHERE `guildId` = @id", conn))
+			{
+				mc.Parameters.AddWithValue("@id", guildId);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						var member = new GuildMember();
+						member.GuildId = reader.GetInt64("guildId");
+						member.CharacterId = reader.GetInt64("characterId");
+						member.Rank = (GuildMemberRank)reader.GetInt32("rank");
+						member.JoinedDate = reader.GetDateTimeSafe("joinedDate");
+						member.Points = reader.GetInt32("points");
+						member.Application = reader.GetString("application");
+						member.Messages = (GuildMessages)reader.GetInt32("messages");
+
+						result.Add(member);
+					}
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns all guilds in database.
+		/// </summary>
+		private Guild ReadGuild(MySqlDataReader reader)
+		{
+			var guild = new Guild();
+			guild.Id = reader.GetInt64("guildId");
+			guild.Name = reader.GetString("name");
+			guild.LeaderName = reader.GetString("leaderName");
+			guild.Title = reader.GetString("title");
+			guild.IntroMessage = reader.GetString("introMessage");
+			guild.WelcomeMessage = reader.GetString("welcomeMessage");
+			guild.LeavingMessage = reader.GetString("leavingMessage");
+			guild.RejectionMessage = reader.GetString("rejectionMessage");
+			guild.Type = (GuildType)reader.GetInt32("type");
+			guild.Level = (GuildLevel)reader.GetInt32("level");
+			guild.Options = (GuildOptions)reader.GetInt32("options");
+			guild.Stone.PropId = reader.GetInt32("stonePropId");
+			guild.Stone.RegionId = reader.GetInt32("stoneRegionId");
+			guild.Stone.X = reader.GetInt32("stoneX");
+			guild.Stone.Y = reader.GetInt32("stoneY");
+			guild.Stone.Direction = reader.GetFloat("stoneDirection");
+			guild.Points = reader.GetInt32("points");
+			guild.Gold = reader.GetInt32("gold");
+
+			return guild;
 		}
 	}
 

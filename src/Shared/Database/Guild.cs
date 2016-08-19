@@ -2,11 +2,15 @@
 // For more information, see license file in the main folder
 
 using Aura.Mabi.Const;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Aura.Shared.Database
 {
 	public class Guild
 	{
+		private Dictionary<long, GuildMember> _members;
+
 		public long Id { get; set; }
 		public string Name { get; set; }
 		public string LeaderName { get; set; }
@@ -25,16 +29,42 @@ namespace Aura.Shared.Database
 		public GuildOptions Options { get; set; }
 		public GuildStone Stone { get; set; }
 
-		public int MemberCount { get { return 5; } }
+		public int MemberCount { get { lock (_members) return _members.Count; } }
 
 		public Guild()
 		{
+			_members = new Dictionary<long, GuildMember>();
 			this.Stone = new GuildStone();
 		}
 
 		public bool Has(GuildOptions options)
 		{
 			return (this.Options & options) != 0;
+		}
+
+		public void InitMembers(IEnumerable<GuildMember> members)
+		{
+			lock (_members)
+			{
+				_members.Clear();
+
+				foreach (var member in members)
+					_members[member.CharacterId] = member;
+			}
+		}
+
+		public GuildMember GetMember(long characterId)
+		{
+			GuildMember result;
+			lock (_members)
+				_members.TryGetValue(characterId, out result);
+			return result;
+		}
+
+		public List<GuildMember> GetMembers()
+		{
+			lock (_members)
+				return _members.Values.ToList();
 		}
 	}
 }
