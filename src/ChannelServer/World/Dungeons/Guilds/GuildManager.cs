@@ -18,19 +18,31 @@ namespace Aura.Channel.World.Dungeons.Guilds
 		private Dictionary<long, Guild> _guilds;
 		private Dictionary<long, Prop> _stones;
 
-		public int Count { get { lock (_syncLock)return _guilds.Count; } }
+		/// <summary>
+		/// Returns number of guilds on this server.
+		/// </summary>
+		public int Count { get { lock (_syncLock) return _guilds.Count; } }
 
+		/// <summary>
+		/// Creates new manager instance.
+		/// </summary>
 		public GuildManager()
 		{
 			_guilds = new Dictionary<long, Guild>();
 			_stones = new Dictionary<long, Prop>();
 		}
 
+		/// <summary>
+		/// Initializes manager, loading all guilds from database.
+		/// </summary>
 		public void Initialize()
 		{
 			this.LoadGuilds();
 		}
 
+		/// <summary>
+		/// Loads all guilds from database.
+		/// </summary>
 		private void LoadGuilds()
 		{
 			var guilds = ChannelServer.Instance.Database.GetGuilds();
@@ -38,6 +50,10 @@ namespace Aura.Channel.World.Dungeons.Guilds
 				this.LoadGuild(guild);
 		}
 
+		/// <summary>
+		/// Loads given guild.
+		/// </summary>
+		/// <param name="guild"></param>
 		private void LoadGuild(Guild guild)
 		{
 			lock (_syncLock)
@@ -45,6 +61,10 @@ namespace Aura.Channel.World.Dungeons.Guilds
 			this.PlaceStone(guild);
 		}
 
+		/// <summary>
+		/// Places stone for guild in world.
+		/// </summary>
+		/// <param name="guild"></param>
 		private void PlaceStone(Guild guild)
 		{
 			lock (_syncLock)
@@ -73,7 +93,12 @@ namespace Aura.Channel.World.Dungeons.Guilds
 				_stones[guild.Id] = prop;
 		}
 
-		public static void OnStoneTouch(Creature creature, Prop prop)
+		/// <summary>
+		/// Prop behavior for guild stones.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="prop"></param>
+		private static void OnStoneTouch(Creature creature, Prop prop)
 		{
 			if (prop.Xml.Attribute("guildid") == null)
 			{
@@ -107,6 +132,11 @@ namespace Aura.Channel.World.Dungeons.Guilds
 			}
 		}
 
+		/// <summary>
+		/// Returns the guild with the given id.
+		/// </summary>
+		/// <param name="guildId"></param>
+		/// <returns></returns>
 		public Guild GetGuild(long guildId)
 		{
 			Guild result;
@@ -115,6 +145,11 @@ namespace Aura.Channel.World.Dungeons.Guilds
 			return result;
 		}
 
+		/// <summary>
+		/// Sets the character's Guild and GuildMember properties
+		/// if they're in a guild.
+		/// </summary>
+		/// <param name="character"></param>
 		public void SetGuildForCharacter(Creature character)
 		{
 			var guild = this.FindGuildWithMember(character.EntityId);
@@ -125,6 +160,12 @@ namespace Aura.Channel.World.Dungeons.Guilds
 			character.GuildMember = guild.GetMember(character.EntityId);
 		}
 
+		/// <summary>
+		/// Returns the guild that has a character with the given id as
+		/// member if any.
+		/// </summary>
+		/// <param name="characterId"></param>
+		/// <returns></returns>
 		public Guild FindGuildWithMember(long characterId)
 		{
 			lock (_syncLock)
@@ -140,6 +181,11 @@ namespace Aura.Channel.World.Dungeons.Guilds
 			return null;
 		}
 
+		/// <summary>
+		/// Gives all of creature's play points to guild as guild points.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="guild"></param>
 		public void ConvertPlayPoints(Creature creature, Guild guild)
 		{
 			var points = creature.PlayPoints;
