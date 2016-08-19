@@ -126,7 +126,11 @@ public class ManusScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("I trust that the task you're working on is going well?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("You've never been here before, have you? Where does it hurt?"));
 		}
@@ -197,10 +201,6 @@ public class ManusScript : NpcScript
 				{
 					Msg("Hmm. You know the Resting skill fairly well.<br/>I don't know if you're expecting anything more from me,<br/>but I don't know anything more advanced, either.<br/>You... Aren't you being a little too ambitious? Hahaha...");
 				}
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":
