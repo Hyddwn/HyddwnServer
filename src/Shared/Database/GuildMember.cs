@@ -12,7 +12,6 @@ namespace Aura.Shared.Database
 		public long CharacterId { get; set; }
 		public GuildMemberRank Rank { get; set; }
 		public DateTime JoinedDate { get; set; }
-		public int Points { get; set; }
 		public string Application { get; set; }
 		public GuildMessages Messages { get; set; }
 		public string Name { get; set; }

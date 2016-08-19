@@ -417,7 +417,6 @@ namespace Aura.Shared.Database
 						member.CharacterId = reader.GetInt64("characterId");
 						member.Rank = (GuildMemberRank)reader.GetInt32("rank");
 						member.JoinedDate = reader.GetDateTimeSafe("joinedDate");
-						member.Points = reader.GetInt32("points");
 						member.Application = reader.GetString("application");
 						member.Messages = (GuildMessages)reader.GetInt32("messages");
 						member.Name = reader.GetString("name");

@@ -285,6 +285,8 @@ namespace Aura.Channel.Database
 					character.ToxicWill = reader.GetFloat("toxicWill");
 					character.ToxicLuck = reader.GetFloat("toxicLuck");
 
+					character.PlayPoints = reader.GetInt32("playPoints");
+
 					title = reader.GetUInt16("title");
 					optionTitle = reader.GetUInt16("optionTitle");
 
@@ -1060,6 +1062,7 @@ namespace Aura.Channel.Database
 				cmd.Set("toxicDex", creature.ToxicDex);
 				cmd.Set("toxicWill", creature.ToxicWill);
 				cmd.Set("toxicLuck", creature.ToxicLuck);
+				cmd.Set("playPoints", creature.PlayPoints);
 				cmd.Set("title", creature.Titles.SelectedTitle);
 				cmd.Set("optionTitle", creature.Titles.SelectedOptionTitle);
 				cmd.Set("state", (uint)creature.State);
