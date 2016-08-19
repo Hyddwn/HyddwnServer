@@ -98,6 +98,7 @@
     <Compile Include="Network\Handlers\PersonalShops.cs" />
     <Compile Include="Network\Handlers\Pets.cs" />
     <Compile Include="Network\Handlers\Entrusting.cs" />
+    <Compile Include="Network\Handlers\Guilds.cs" />
     <Compile Include="Network\Handlers\Trading.cs" />
     <Compile Include="Network\Handlers\Props.cs" />
     <Compile Include="Network\Handlers\Quests.cs" />

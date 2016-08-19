@@ -68,5 +68,60 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends ConvertGpR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		/// <param name="amount"></param>
+		public static void ConvertGpR(Creature creature, bool success, int amount)
+		{
+			var packet = new Packet(Op.ConvertGpR, creature.EntityId);
+			packet.PutByte(success);
+			packet.PutInt(amount);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends ConvertGpConfirmR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void ConvertGpConfirmR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.ConvertGpConfirmR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildMessage to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="guild"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public static void GuildMessage(Creature creature, Guild guild, string format, params object[] args)
+		{
+			var character = creature as PlayerCreature;
+			var entityId = creature.EntityId;
+			var guildId = guild.Id;
+			var guildName = guild.Name;
+			var serverName = (character != null ? character.Server : "?");
+
+			var packet = new Packet(Op.GuildMessage, creature.EntityId);
+			packet.PutLong(guildId);
+			packet.PutString(serverName);
+			packet.PutLong(entityId);
+			packet.PutString(guildName);
+			packet.PutString(format, args);
+			packet.PutByte(1);
+			packet.PutByte(1);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

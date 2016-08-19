@@ -139,5 +139,15 @@ namespace Aura.Channel.World.Dungeons.Guilds
 
 			return null;
 		}
+
+		public void ConvertPlayPoints(Creature creature, Guild guild)
+		{
+			var points = creature.PlayPoints;
+
+			creature.PlayPoints = 0;
+			guild.Points += points;
+
+			Send.GuildMessage(creature, guild, Localization.GetPlural("Added {0:n0} Point.", "Added {0:0n} Points.", points), points);
+		}
 	}
 }
