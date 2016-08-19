@@ -398,7 +398,13 @@ namespace Aura.Shared.Database
 			var result = new List<GuildMember>();
 
 			using (var conn = this.Connection)
-			using (var mc = new MySqlCommand("SELECT * FROM `guild_members` WHERE `guildId` = @id", conn))
+			using (var mc = new MySqlCommand(
+				"SELECT `m`.*, `cr`.name " +
+				"FROM `guild_members` AS `m` " +
+				"INNER JOIN `characters` AS `c` ON `m`.`characterId` = `c`.`entityId` " +
+				"INNER JOIN `creatures` AS `cr` ON `c`.`creatureId` = `cr`.`creatureId` " +
+				"WHERE `m`.`guildId` = @id"
+			, conn))
 			{
 				mc.Parameters.AddWithValue("@id", guildId);
 
@@ -414,6 +420,7 @@ namespace Aura.Shared.Database
 						member.Points = reader.GetInt32("points");
 						member.Application = reader.GetString("application");
 						member.Messages = (GuildMessages)reader.GetInt32("messages");
+						member.Name = reader.GetString("name");
 
 						result.Add(member);
 					}

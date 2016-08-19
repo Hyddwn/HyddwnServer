@@ -15,5 +15,6 @@ namespace Aura.Shared.Database
 		public int Points { get; set; }
 		public string Application { get; set; }
 		public GuildMessages Messages { get; set; }
+		public string Name { get; set; }
 	}
 }
