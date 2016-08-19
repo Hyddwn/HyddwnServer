@@ -28,6 +28,7 @@ namespace Aura.Shared.Database
 		public GuildLevel Level { get; set; }
 		public GuildOptions Options { get; set; }
 		public GuildStone Stone { get; set; }
+		public bool HasStone { get { return (this.Stone.RegionId != 0); } }
 
 		public int MemberCount { get { lock (_members) return _members.Count; } }
 

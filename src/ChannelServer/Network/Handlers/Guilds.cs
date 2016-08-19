@@ -119,5 +119,26 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.GuildDonateR(creature, true);
 		}
+
+		/// <summary>
+		/// Sent choosing to destroy the guild stone.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.GuildDestroyStone)]
+		public void GuildDestroyStone(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			if (creature.Guild == null)
+			{
+				Log.Warning("GuildDestroyStone: User '{0}' is not in a guild.", client.Account.Id);
+				Send.GuildDonateR(creature, false);
+				return;
+			}
+
+			ChannelServer.Instance.GuildManager.DestroyStone(creature, creature.Guild);
+		}
 	}
 }

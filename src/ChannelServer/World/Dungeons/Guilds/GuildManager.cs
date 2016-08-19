@@ -65,7 +65,7 @@ namespace Aura.Channel.World.Dungeons.Guilds
 		/// Places stone for guild in world.
 		/// </summary>
 		/// <param name="guild"></param>
-		private void PlaceStone(Guild guild)
+		public void PlaceStone(Guild guild)
 		{
 			lock (_syncLock)
 			{
@@ -74,6 +74,8 @@ namespace Aura.Channel.World.Dungeons.Guilds
 			}
 
 			var stone = guild.Stone;
+			if (stone.RegionId == 0)
+				return;
 
 			var region = ChannelServer.Instance.World.GetRegion(stone.RegionId);
 			if (region == null)
@@ -241,6 +243,30 @@ namespace Aura.Channel.World.Dungeons.Guilds
 			creature.Inventory.Remove(item);
 
 			Send.GuildMessage(creature, guild, Localization.GetPlural("You have donated {0:n0} Gold.", "You have donated {0:n0} Gold.", amount), amount);
+		}
+
+		/// <summary>
+		/// Destroy's guild's stone and gives new basic stone to creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="guild"></param>
+		public void DestroyStone(Creature creature, Guild guild)
+		{
+			Prop stone;
+			lock (_syncLock)
+			{
+				if (!_stones.TryGetValue(guild.Id, out stone))
+					return;
+
+				_stones.Remove(guild.Id);
+			}
+
+			guild.Stone.RegionId = 0;
+			guild.Stone.X = 0;
+			guild.Stone.Y = 0;
+			guild.Stone.Direction = 0;
+
+			stone.Region.RemoveProp(stone);
 		}
 	}
 }
