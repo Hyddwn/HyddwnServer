@@ -119,5 +119,30 @@ namespace Aura.Channel.World.Dungeons.Guilds
 				_guilds.TryGetValue(guildId, out result);
 			return result;
 		}
+
+		public void SetGuildForCharacter(Creature character)
+		{
+			var guild = this.FindGuildWithMember(character.EntityId);
+			if (guild == null)
+				return;
+
+			character.Guild = guild;
+			character.GuildMember = guild.GetMember(character.EntityId);
+		}
+
+		public Guild FindGuildWithMember(long characterId)
+		{
+			lock (_syncLock)
+			{
+				foreach (var guild in _guilds.Values)
+				{
+					var member = guild.GetMember(characterId);
+					if (member != null)
+						return guild;
+				}
+			}
+
+			return null;
+		}
 	}
 }

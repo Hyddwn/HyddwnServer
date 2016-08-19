@@ -330,6 +330,9 @@ namespace Aura.Channel.Database
 			// everything is set.
 			character.Inventory.ChangeWeaponSet(weaponSet);
 
+			// Guild
+			ChannelServer.Instance.GuildManager.SetGuildForCharacter(character);
+
 			return character;
 		}
 
