@@ -35,10 +35,7 @@ namespace Aura.Channel.World.Dungeons.Guilds
 		{
 			var guilds = ChannelServer.Instance.Database.GetGuilds();
 			foreach (var guild in guilds)
-			{
-				Log.Debug("0x{0:X16} - {1}", guild.Id, guild.Name);
 				this.LoadGuild(guild);
-			}
 		}
 
 		private void LoadGuild(Guild guild)
@@ -91,8 +88,6 @@ namespace Aura.Channel.World.Dungeons.Guilds
 				Log.Warning("GuildStone.OnTouch: Guild '0x{0:X16}' not found.", guildId);
 				return;
 			}
-
-			Log.Debug("0x{0:X16}", guildId);
 
 			if (creature.GuildId == guildId)
 			{
