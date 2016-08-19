@@ -36,13 +36,6 @@ namespace Aura.Mabi.Const
 		Declined = 255,
 	}
 
-	public enum GuildStoneType
-	{
-		Normal = 211,
-		Hope = 40209,
-		Courage = 40210,
-	}
-
 	[Flags]
 	public enum GuildMessages : byte
 	{
