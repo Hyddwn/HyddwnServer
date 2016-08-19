@@ -137,6 +137,12 @@ namespace Aura.Channel.Network.Handlers
 				Send.GuildDonateR(creature, false);
 				return;
 			}
+			else if (creature.GuildMember.Rank != GuildMemberRank.Leader)
+			{
+				Log.Warning("GuildDestroyStone: User '{0}' tried to destroy stone without being leader.", client.Account.Id);
+				Send.GuildDonateR(creature, false);
+				return;
+			}
 
 			ChannelServer.Instance.GuildManager.DestroyStone(creature, creature.Guild);
 		}
