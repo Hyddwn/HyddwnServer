@@ -479,7 +479,7 @@ namespace Aura.Shared.Database
 		}
 
 		/// <summary>
-		/// Writes guilds leader and its members current ranks to database.
+		/// Writes guild's leader's name and its members current ranks to database.
 		/// </summary>
 		/// <param name="guild"></param>
 		public void UpdateGuildLeader(Guild guild)
@@ -521,6 +521,23 @@ namespace Aura.Shared.Database
 			{
 				cmd.Parameters.AddWithValue("@guildId", guild.Id);
 				cmd.ExecuteNonQuery();
+			}
+		}
+
+		/// <summary>
+		/// Writes guild's points and gold to database.
+		/// </summary>
+		/// <param name="guild"></param>
+		public void UpdateGuildResources(Guild guild)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `guilds` SET {0} WHERE `guildId` = @guildId", conn))
+			{
+				cmd.AddParameter("@guildId", guild.Id);
+				cmd.Set("points", guild.Points);
+				cmd.Set("gold", guild.Gold);
+
+				cmd.Execute();
 			}
 		}
 	}

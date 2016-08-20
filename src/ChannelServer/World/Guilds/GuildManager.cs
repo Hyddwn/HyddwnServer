@@ -195,6 +195,8 @@ namespace Aura.Channel.World.Guilds
 			creature.PlayPoints = 0;
 			guild.Points += points;
 
+			ChannelServer.Instance.Database.UpdateGuildResources(guild);
+
 			Send.GuildMessage(creature, guild, Localization.GetPlural("Added {0:n0} Point.", "Added {0:0n} Points.", points), points);
 		}
 
@@ -206,7 +208,7 @@ namespace Aura.Channel.World.Guilds
 		/// <param name="amount"></param>d
 		public void DonateGold(Creature creature, Guild guild, int amount)
 		{
-			guild.Gold += amount;
+			this.AddGold(guild, amount);
 			creature.Inventory.RemoveGold(amount);
 
 			Send.GuildMessage(creature, guild, Localization.GetPlural("You have donated {0:n0} Gold.", "You have donated {0:n0} Gold.", amount), amount);
@@ -239,10 +241,21 @@ namespace Aura.Channel.World.Guilds
 			else
 				amount = item.OptionInfo.SellingPrice;
 
-			guild.Gold += amount;
+			this.AddGold(guild, amount);
 			creature.Inventory.Remove(item);
 
 			Send.GuildMessage(creature, guild, Localization.GetPlural("You have donated {0:n0} Gold.", "You have donated {0:n0} Gold.", amount), amount);
+		}
+
+		/// <summary>
+		/// Adds gold and saves guild's resources to db.
+		/// </summary>
+		/// <param name="guild"></param>
+		/// <param name="amount"></param>
+		private void AddGold(Guild guild, int amount)
+		{
+			guild.Gold += amount;
+			ChannelServer.Instance.Database.UpdateGuildResources(guild);
 		}
 
 		/// <summary>
