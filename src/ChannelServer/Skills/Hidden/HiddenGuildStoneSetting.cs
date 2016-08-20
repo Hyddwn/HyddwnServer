@@ -122,7 +122,7 @@ namespace Aura.Channel.Skills.Hidden
 			// Place stone (from complete)
 			creature.Skills.Callback(skill.Info.Id, () =>
 			{
-				guild.Stone.PropId = GuildStone.Normal;
+				guild.Stone.PropId = GuildStonePropId.Normal;
 				guild.Stone.RegionId = region.Id;
 				guild.Stone.X = pos.X;
 				guild.Stone.Y = pos.Y;

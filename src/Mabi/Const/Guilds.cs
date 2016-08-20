@@ -55,7 +55,7 @@ namespace Aura.Mabi.Const
 		Warp = 0x02,
 	}
 
-	public static class GuildStone
+	public static class GuildStonePropId
 	{
 		public const int Normal = 211;
 		public const int Hope = 40209;
