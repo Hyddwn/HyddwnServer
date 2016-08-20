@@ -560,6 +560,26 @@ namespace Aura.Shared.Database
 				cmd.Execute();
 			}
 		}
+
+		/// <summary>
+		/// Writes guild member to database.
+		/// </summary>
+		/// <param name="member"></param>
+		public void AddGuildMember(GuildMember member)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new InsertCommand("INSERT INTO `guild_members` {0}", conn))
+			{
+				cmd.Set("guildId", member.GuildId);
+				cmd.Set("characterId", member.CharacterId);
+				cmd.Set("rank", (int)member.Rank);
+				cmd.Set("joinedDate", member.JoinedDate);
+				cmd.Set("application", member.Application);
+				cmd.Set("messages", (int)member.Messages);
+
+				cmd.Execute();
+			}
+		}
 	}
 
 	/// <summary>

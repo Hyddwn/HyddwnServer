@@ -291,5 +291,30 @@ namespace Aura.Channel.World.Guilds
 			this.PlaceStone(guild);
 			ChannelServer.Instance.Database.UpdateGuildStone(guild);
 		}
+
+		/// <summary>
+		/// Adds creature to the guild as applicant.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="guild"></param>
+		public void Apply(Creature creature, Guild guild, string application)
+		{
+			if (guild.HasMember(creature.EntityId))
+				throw new ArgumentException("Character is already a member of this guild. (" + creature.Name + ", " + guild.Name + ")");
+
+			var member = new GuildMember();
+			member.GuildId = guild.Id;
+			member.CharacterId = creature.EntityId;
+			member.Rank = GuildMemberRank.Applied;
+			member.JoinedDate = DateTime.Now;
+			member.Application = application;
+
+			creature.Guild = guild;
+			creature.GuildMember = member;
+
+			guild.AddMember(member);
+
+			ChannelServer.Instance.Database.AddGuildMember(member);
+		}
 	}
 }

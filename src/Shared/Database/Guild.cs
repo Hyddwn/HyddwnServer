@@ -87,5 +87,19 @@ namespace Aura.Shared.Database
 			lock (_members)
 				return _members.Values.ToList();
 		}
+
+		public void AddMember(GuildMember member)
+		{
+			lock (_members)
+			{
+				_members[member.CharacterId] = member;
+			}
+		}
+
+		public bool HasMember(long characterId)
+		{
+			lock (_members)
+				return _members.ContainsKey(characterId);
+		}
 	}
 }

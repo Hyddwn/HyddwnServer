@@ -146,5 +146,49 @@ namespace Aura.Channel.Network.Handlers
 
 			ChannelServer.Instance.GuildManager.DestroyStone(creature, creature.Guild);
 		}
+
+		/// <summary>
+		/// Sent when applying at a guild.
+		/// </summary>
+		/// <example>
+		/// 001 [0300000000500002] Long   : 216172782119026690
+		/// 002 [................] String : aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffffgggggggggghhhhhhhhhhjjjjjjjjjjiiiiiiiiii
+		/// </example>
+		[PacketHandler(Op.GuildApply)]
+		public void GuildApply(ChannelClient client, Packet packet)
+		{
+			var guildId = packet.GetLong();
+			var application = packet.GetString();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check creature's guild
+			if (creature.Guild != null)
+			{
+				Log.Warning("GuildApply: User '{0}' is already in a guild.", client.Account.Id);
+				Send.GuildDonateR(creature, false);
+				return;
+			}
+
+			// Check guild
+			var guild = ChannelServer.Instance.GuildManager.GetGuild(guildId);
+			if (guild == null)
+			{
+				Send.MsgBox(creature, Localization.Get("Guild not found."));
+				Send.GuildApplyR(creature, false);
+				return;
+			}
+
+			// Check application
+			if (application.Length > 100)
+			{
+				Log.Warning("GuildApply: User '{0}' sent an application that was >100 characters, truncated.", client.Account.Id);
+				application = application.Substring(0, 100);
+			}
+
+			ChannelServer.Instance.GuildManager.Apply(creature, guild, application);
+
+			Send.GuildApplyR(creature, true);
+		}
 	}
 }
