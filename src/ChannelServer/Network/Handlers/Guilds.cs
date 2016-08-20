@@ -20,19 +20,19 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// No parameters.
 		/// </example>
-		[PacketHandler(Op.ConvertGp)]
-		public void ConvertGp(ChannelClient client, Packet packet)
+		[PacketHandler(Op.GuildConvertPlayPoints)]
+		public void GuildConvertPlayPoints(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			if (creature.Guild == null)
 			{
-				Log.Warning("ConvertGp: User '{0}' is not in a guild.", client.Account.Id);
-				Send.ConvertGpR(creature, false, 0);
+				Log.Warning("GuildConvertPlayPoints: User '{0}' is not in a guild.", client.Account.Id);
+				Send.GuildConvertPlayPointsR(creature, false, 0);
 				return;
 			}
 
-			Send.ConvertGpR(creature, true, creature.PlayPoints);
+			Send.GuildConvertPlayPointsR(creature, true, creature.PlayPoints);
 		}
 
 		/// <summary>
@@ -41,21 +41,21 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// No parameters.
 		/// </example>
-		[PacketHandler(Op.ConvertGpConfirm)]
-		public void ConvertGpConfirm(ChannelClient client, Packet packet)
+		[PacketHandler(Op.GuildConvertPlayPointsConfirm)]
+		public void GuildConvertPlayPointsConfirm(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			if (creature.Guild == null)
 			{
-				Log.Warning("ConvertGpConfirm: User '{0}' is not in a guild.", client.Account.Id);
-				Send.ConvertGpConfirmR(creature, false);
+				Log.Warning("GuildConvertPlayPointsConfirm: User '{0}' is not in a guild.", client.Account.Id);
+				Send.GuildConvertPlayPointsConfirmR(creature, false);
 				return;
 			}
 
 			ChannelServer.Instance.GuildManager.ConvertPlayPoints(creature, creature.Guild);
 
-			Send.ConvertGpConfirmR(creature, true);
+			Send.GuildConvertPlayPointsConfirmR(creature, true);
 		}
 
 		/// <summary>

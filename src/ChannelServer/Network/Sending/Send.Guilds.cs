@@ -87,14 +87,14 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends ConvertGpR to creature's client.
+		/// Sends GuildConvertPlayPointsR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
 		/// <param name="amount"></param>
-		public static void ConvertGpR(Creature creature, bool success, int amount)
+		public static void GuildConvertPlayPointsR(Creature creature, bool success, int amount)
 		{
-			var packet = new Packet(Op.ConvertGpR, creature.EntityId);
+			var packet = new Packet(Op.GuildConvertPlayPointsR, creature.EntityId);
 			packet.PutByte(success);
 			packet.PutInt(amount);
 
@@ -102,13 +102,13 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends ConvertGpConfirmR to creature's client.
+		/// Sends GuildConvertPlayPointsConfirm to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="success"></param>
-		public static void ConvertGpConfirmR(Creature creature, bool success)
+		public static void GuildConvertPlayPointsConfirmR(Creature creature, bool success)
 		{
-			var packet = new Packet(Op.ConvertGpConfirmR, creature.EntityId);
+			var packet = new Packet(Op.GuildConvertPlayPointsConfirmR, creature.EntityId);
 			packet.PutByte(success);
 
 			creature.Client.Send(packet);

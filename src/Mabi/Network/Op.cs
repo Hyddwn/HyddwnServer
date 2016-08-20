@@ -444,10 +444,10 @@ namespace Aura.Mabi.Network
 		public const int GuildApplyR = 0x8F00;
 		public const int GuildMembershipChanged = 0x8F01;
 		public const int GuildStoneLocation = 0x8F02;
-		public const int ConvertGp = 0x8F03;
-		public const int ConvertGpR = 0x8F04;
-		public const int ConvertGpConfirm = 0x8F05;
-		public const int ConvertGpConfirmR = 0x8F06;
+		public const int GuildConvertPlayPoints = 0x8F03;
+		public const int GuildConvertPlayPointsR = 0x8F04;
+		public const int GuildConvertPlayPointsConfirm = 0x8F05;
+		public const int GuildConvertPlayPointsConfirmR = 0x8F06;
 		public const int GuildDonate = 0x8F07;
 		public const int GuildDonateR = 0x8F08;
 		public const int GuildMessage = 0x8F0F;
