@@ -9,7 +9,7 @@ using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
 
-namespace Aura.Channel.World.Dungeons.Guilds
+namespace Aura.Channel.World.Guilds
 {
 	public class GuildManager
 	{

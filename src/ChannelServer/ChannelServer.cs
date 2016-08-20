@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Aura.Mabi;
 using Aura.Mabi.Const;
-using Aura.Channel.World.Dungeons.Guilds;
+using Aura.Channel.World.Guilds;
 
 namespace Aura.Channel
 {

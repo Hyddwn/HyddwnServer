@@ -19,7 +19,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Globalization;
-using Aura.Channel.World.Dungeons.Guilds;
 using Aura.Channel.World;
 
 namespace Aura.Channel.Database

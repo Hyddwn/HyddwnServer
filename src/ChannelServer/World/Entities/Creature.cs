@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using Aura.Channel.Skills;
 using System.Threading;
 using Aura.Channel.Scripting.Scripts;
-using Aura.Channel.World.Dungeons.Guilds;
 using Aura.Shared.Database;
 
 namespace Aura.Channel.World.Entities
