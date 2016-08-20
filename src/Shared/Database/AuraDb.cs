@@ -458,6 +458,71 @@ namespace Aura.Shared.Database
 
 			return guild;
 		}
+
+		/// <summary>
+		/// Writes guild's messages to database.
+		/// </summary>
+		/// <param name="guild"></param>
+		public bool UpdateGuildMessages(Guild guild)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `guilds` SET {0} WHERE `guildId` = @guildId", conn))
+			{
+				cmd.AddParameter("@guildId", guild.Id);
+				cmd.Set("introMessage", guild.IntroMessage);
+				cmd.Set("welcomeMessage", guild.WelcomeMessage);
+				cmd.Set("leavingMessage", guild.LeavingMessage);
+				cmd.Set("rejectionMessage", guild.RejectionMessage);
+
+				return (cmd.Execute() > 0);
+			}
+		}
+
+		/// <summary>
+		/// Writes guilds leader and its members current ranks to database.
+		/// </summary>
+		/// <param name="guild"></param>
+		public void UpdateGuildLeader(Guild guild)
+		{
+			using (var conn = this.Connection)
+			using (var transaction = conn.BeginTransaction())
+			{
+				using (var cmd = new UpdateCommand("UPDATE `guilds` SET {0} WHERE `guildId` = @guildId", conn, transaction))
+				{
+					cmd.AddParameter("@guildId", guild.Id);
+					cmd.Set("leaderName", guild.LeaderName);
+
+					cmd.Execute();
+				}
+
+				foreach (var member in guild.GetMembers())
+				{
+					using (var cmd = new UpdateCommand("UPDATE `guild_members` SET {0} WHERE `characterId` = @characterId", conn, transaction))
+					{
+						cmd.AddParameter("@characterId", member.CharacterId);
+						cmd.Set("rank", (int)member.Rank);
+
+						cmd.Execute();
+					}
+				}
+
+				transaction.Commit();
+			}
+		}
+
+		/// <summary>
+		/// Removes guild and its members from database.
+		/// </summary>
+		/// <param name="guild"></param>
+		public void DisbandGuild(Guild guild)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new MySqlCommand("DELETE FROM `guilds` WHERE `guildId` = @guildId", conn))
+			{
+				cmd.Parameters.AddWithValue("@guildId", guild.Id);
+				cmd.ExecuteNonQuery();
+			}
+		}
 	}
 
 	/// <summary>

@@ -33,7 +33,16 @@
 				setTimeout(function() {
 					$('.notification.disappear').fadeOut();
 				}, 4000);
+				
+				{{#if disbanded}}
+					setTimeout(closeWindow, 5000);
+				{{/if}}
 			});
+			
+			function closeWindow() {
+				window.open('', '_self', '');
+				window.close();
+			}
 		</script>
 	</head>
 	<body>
@@ -46,13 +55,16 @@
 					<noscript><div class="notification error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span>This page requires JavaScript being enabled.</span></div></noscript>
 				</div>
 				<div id="menu">
-					<ul>
-						<li><a href="#" data-page="home" class="current"><i class="fa fa-home" aria-hidden="true"></i><span>Home</span></a></li>
-						<li><a href="#" data-page="members"><i class="fa fa-users" aria-hidden="true"></i><span>Members</span></a></li>
-						{{#if member.IsLeaderOrOfficer}}
-							<li><a href="#" data-page="settings"><i class="fa fa-cogs" aria-hidden="true"></i><span>Settings</span></a></li>
-						{{/if}}
-					</ul>
+					{{#if disbanded}}
+					{{#else}}
+						<ul>
+							<li><a href="#" data-page="home" class="current"><i class="fa fa-home" aria-hidden="true"></i><span>Home</span></a></li>
+							<li><a href="#" data-page="members"><i class="fa fa-users" aria-hidden="true"></i><span>Members</span></a></li>
+							{{#if member.IsLeaderOrOfficer}}
+								<li><a href="#" data-page="settings"><i class="fa fa-cogs" aria-hidden="true"></i><span>Settings</span></a></li>
+							{{/if}}
+						</ul>
+					{{/if}}
 				</div>
 				<div id="home" class="page current">
 					<table>

@@ -83,12 +83,79 @@ namespace Aura.Web.Controllers
 
 			string success = null;
 			string error = null;
+			bool disbanded = false;
+
+			// Leader actions
+			if (guildMember.IsLeader)
+			{
+				// Settings: Change messages
+				if (req.Parameters.Has("intro"))
+					this.ChangeMessages(req, guild, ref success, ref error);
+				// Settings: Change leader
+				else if (req.Parameters.Has("leader"))
+					this.ChangeLeader(req, guild, ref success, ref error);
+				// Settings: Disband
+				else if (req.Parameters.Has("disband"))
+				{
+					this.Disband(req, guild, ref success, ref error);
+					disbanded = true;
+				}
+			}
 
 			// Get non-declined members, ordered by their rank and name, putting applicants after the leaders.
 			var members = guild.GetMembers().Where(a => a.Rank != GuildMemberRank.Declined).OrderBy(a => a.Rank == GuildMemberRank.Applied ? 25 : (int)a.Rank * 10).ThenBy(a => a.Name);
 			var url = string.Format("/guild?guildid={0}&userid={1}&userserver={2}&userchar={3}&key={4}", guildIdStr, accountName, server, characterIdStr, sessionKeyStr);
 
-			res.Render("system/web/guild.htm", new { url = url, guild = guild, members = members, member = guildMember, success = success, error = error });
+			res.Render("system/web/guild.htm", new { url = url, guild = guild, members = members, member = guildMember, success = success, error = error, disbanded = disbanded });
+		}
+
+		private void ChangeMessages(Request req, Guild guild, ref string success, ref string error)
+		{
+			guild.IntroMessage = req.Parameters.Get("intro", "");
+			guild.WelcomeMessage = req.Parameters.Get("welcome", "");
+			guild.LeavingMessage = req.Parameters.Get("leaving", "");
+			guild.RejectionMessage = req.Parameters.Get("rejection", "");
+
+			WebServer.Instance.Database.UpdateGuildMessages(guild);
+
+			success = "The messages were updated.";
+		}
+
+		private void ChangeLeader(Request req, Guild guild, ref string success, ref string error)
+		{
+			var leaderName = req.Parameters.Get("leader", "");
+
+			// Do nothing if no change
+			if (leaderName == guild.LeaderName)
+				return;
+
+			// Check characters
+			var members = guild.GetMembers();
+			var currentLeader = members.FirstOrDefault(a => a.Rank == GuildMemberRank.Leader && a.Name == guild.LeaderName);
+			var member = members.FirstOrDefault(a => a.Rank < GuildMemberRank.Applied && a.Name == leaderName);
+			if (member == null || currentLeader == null)
+			{
+				error = "Character not found.";
+				return;
+			}
+
+			// Remove current leader
+			currentLeader.Rank = GuildMemberRank.Member;
+
+			// Set new leader
+			member.Rank = GuildMemberRank.Leader;
+			guild.LeaderName = leaderName;
+
+			WebServer.Instance.Database.UpdateGuildLeader(guild);
+
+			success = "The guild leader was changed.";
+		}
+
+		private void Disband(Request req, Guild guild, ref string success, ref string error)
+		{
+			WebServer.Instance.Database.DisbandGuild(guild);
+
+			success = "The guild has been disbanded.";
 		}
 	}
 }
