@@ -86,7 +86,6 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutLong(item.QuestId);
 
 				if (isGuildRobe)
-					// EBCL1:4:-16351525;EBCL2:4:-875718;EBLM1:1:46;EBLM2:1:11;EBLM3:1:4; (GLDNAM:s:European;)
 					packet.PutString(item.MetaData1.GetString("GLDNAM"));
 
 				// [190100, NA200 (2015-01-15)] ?
