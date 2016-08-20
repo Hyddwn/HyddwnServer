@@ -197,7 +197,7 @@ namespace Aura.Channel.World.Guilds
 
 			ChannelServer.Instance.Database.UpdateGuildResources(guild);
 
-			Send.GuildMessage(creature, guild, Localization.GetPlural("Added {0:n0} Point.", "Added {0:0n} Points.", points), points);
+			Send.GuildMessage(creature, guild, Localization.GetPlural("Added {0:n0} Point.", "Added {0:n0} Points.", points), points);
 		}
 
 		/// <summary>
