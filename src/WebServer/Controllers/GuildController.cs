@@ -24,6 +24,8 @@ namespace Aura.Web.Controllers
 	/// </remarks>
 	public class GuildController : IController
 	{
+		private const int MessageMaxLength = 1000;
+
 		private Regex _number = new Regex(@"^\d+$", RegexOptions.Compiled);
 
 		public void Index(Request req, Response res)
@@ -111,14 +113,22 @@ namespace Aura.Web.Controllers
 
 		private void ChangeMessages(Request req, Guild guild, ref string success, ref string error)
 		{
-			guild.IntroMessage = req.Parameters.Get("intro", "");
-			guild.WelcomeMessage = req.Parameters.Get("welcome", "");
-			guild.LeavingMessage = req.Parameters.Get("leaving", "");
-			guild.RejectionMessage = req.Parameters.Get("rejection", "");
+			guild.IntroMessage = ClampString(req.Parameters.Get("intro", ""), 1000);
+			guild.WelcomeMessage = ClampString(req.Parameters.Get("welcome", ""), 1000);
+			guild.LeavingMessage = ClampString(req.Parameters.Get("leaving", ""), 1000);
+			guild.RejectionMessage = ClampString(req.Parameters.Get("rejection", ""), 1000);
 
 			WebServer.Instance.Database.UpdateGuildMessages(guild);
 
 			success = "The messages were updated.";
+		}
+
+		private string ClampString(string str, int length)
+		{
+			if (str.Length > length)
+				str = str.Substring(0, length);
+
+			return str;
 		}
 
 		private void ChangeLeader(Request req, Guild guild, ref string success, ref string error)
