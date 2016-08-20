@@ -11,6 +11,44 @@ h1 {
 	color: #4c4843;
 }
 
+textarea {
+	resize: none;
+}
+
+textarea,
+input[type=text] {
+	border: 1px solid #808080;
+	padding: 2px;
+}
+
+input[type=submit] {
+    outline:none;
+	padding: 2px 6px;
+	border: 1px solid #9b9b9b;
+	
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f6f6f6+0,dedede+100 */
+	background: #f6f6f6; /* Old browsers */
+	background: -moz-linear-gradient(top,  #f6f6f6 0%, #dedede 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  #f6f6f6 0%,#dedede 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  #f6f6f6 0%,#dedede 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f6f6', endColorstr='#dedede',GradientType=0 ); /* IE6-9 */
+}
+
+input[type=submit]:active {
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#dedede+0,f6f6f6+100 */
+	background: #dedede; /* Old browsers */
+	background: -moz-linear-gradient(top,  #dedede 0%, #f6f6f6 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  #dedede 0%,#f6f6f6 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  #dedede 0%,#f6f6f6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dedede', endColorstr='#f6f6f6',GradientType=0 ); /* IE6-9 */
+}
+
+textarea:focus,
+input[type=text]:focus {
+	border-color: blue;
+	outline: none;
+}
+
 #main {
 	width: 560px;
 	height: 640px;
