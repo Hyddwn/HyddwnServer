@@ -53,6 +53,24 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends GuildInfoApplied to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="guild"></param>
+		public static void GuildInfoApplied(Creature creature, Guild guild)
+		{
+			// The fields of this packet were guessed, something might be missing.
+
+			var packet = new Packet(Op.GuildInfoApplied, creature.EntityId);
+			packet.PutLong(guild.Id);
+			packet.PutString(guild.Server);
+			packet.PutLong(creature.EntityId);
+			packet.PutString(guild.Name);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends GuildPanel to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

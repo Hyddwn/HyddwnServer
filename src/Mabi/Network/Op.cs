@@ -439,6 +439,7 @@ namespace Aura.Mabi.Network
 		public const int GuildInfoNoGuild = 0x8EFB;
 		public const int GuildPanel = 0x8EFC;
 		public const int GuildInfo = 0x8EFD;
+		public const int GuildInfoApplied = 0x8EFE;
 		public const int GuildApply = 0x8EFF;
 		public const int GuildApplyR = 0x8F00;
 		public const int GuildMembershipChanged = 0x8F01;
