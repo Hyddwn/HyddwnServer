@@ -259,11 +259,10 @@ namespace Aura.Channel.World.Guilds
 		}
 
 		/// <summary>
-		/// Destroy's guild's stone and gives new basic stone to creature.
+		/// Destroy's guild's stone.
 		/// </summary>
-		/// <param name="creature"></param>
 		/// <param name="guild"></param>
-		public void DestroyStone(Creature creature, Guild guild)
+		public void DestroyStone(Guild guild)
 		{
 			Prop stone;
 			lock (_syncLock)

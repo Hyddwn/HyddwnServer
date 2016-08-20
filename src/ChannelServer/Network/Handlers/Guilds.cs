@@ -144,7 +144,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			ChannelServer.Instance.GuildManager.DestroyStone(creature, creature.Guild);
+			ChannelServer.Instance.GuildManager.DestroyStone(creature.Guild);
 		}
 
 		/// <summary>
