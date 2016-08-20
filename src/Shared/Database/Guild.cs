@@ -34,6 +34,22 @@ namespace Aura.Shared.Database
 		public GuildStone Stone { get; set; }
 		public bool HasStone { get { return (this.Stone.RegionId != 0); } }
 
+		public int MaxMembers
+		{
+			get
+			{
+				switch (this.Level)
+				{
+					default:
+					case GuildLevel.Beginner: return 5;
+					case GuildLevel.Basic: return 10;
+					case GuildLevel.Advanced: return 20;
+					case GuildLevel.Great: return 50;
+					case GuildLevel.Grand: return 250;
+				}
+			}
+		}
+
 		public int MemberCount { get { lock (_members) return _members.Count; } }
 
 		public Guild()
