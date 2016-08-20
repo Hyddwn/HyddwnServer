@@ -281,5 +281,15 @@ namespace Aura.Channel.World.Guilds
 
 			stone.Region.RemoveProp(stone);
 		}
+
+		/// <summary>
+		/// Places stone and saves its location to database.
+		/// </summary>
+		/// <param name="guild"></param>
+		public void SetStone(Guild guild)
+		{
+			this.PlaceStone(guild);
+			ChannelServer.Instance.Database.UpdateGuildStone(guild);
+		}
 	}
 }

@@ -128,7 +128,7 @@ namespace Aura.Channel.Skills.Hidden
 				guild.Stone.Y = pos.Y;
 				guild.Stone.Direction = MabiMath.ByteToRadian(creature.Direction);
 
-				ChannelServer.Instance.GuildManager.PlaceStone(guild);
+				ChannelServer.Instance.GuildManager.SetStone(guild);
 
 				Send.Notice(NoticeType.Top, 20000, Localization.Get("{0} Guild has been formed. Guild Leader : {1}"), guild.Name, guild.LeaderName);
 

@@ -540,6 +540,26 @@ namespace Aura.Shared.Database
 				cmd.Execute();
 			}
 		}
+
+		/// <summary>
+		/// Writes guild's points and gold to database.
+		/// </summary>
+		/// <param name="guild"></param>
+		public void UpdateGuildStone(Guild guild)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `guilds` SET {0} WHERE `guildId` = @guildId", conn))
+			{
+				cmd.AddParameter("@guildId", guild.Id);
+				cmd.Set("stonePropId", guild.Stone.PropId);
+				cmd.Set("stoneRegionId", guild.Stone.RegionId);
+				cmd.Set("stoneX", guild.Stone.X);
+				cmd.Set("stoneY", guild.Stone.Y);
+				cmd.Set("stoneDirection", guild.Stone.Direction);
+
+				cmd.Execute();
+			}
+		}
 	}
 
 	/// <summary>
