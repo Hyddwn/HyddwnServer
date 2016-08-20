@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using Aura.Mabi.Const;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,6 +16,9 @@ namespace Aura.Shared.Database
 		public string Name { get; set; }
 		public string LeaderName { get; set; }
 		public string Title { get; set; }
+
+		public DateTime EstablishedDate { get; set; }
+		public string Server { get; set; }
 
 		public int Points { get; set; }
 		public int Gold { get; set; }

@@ -439,6 +439,8 @@ namespace Aura.Shared.Database
 			guild.Name = reader.GetString("name");
 			guild.LeaderName = reader.GetString("leaderName");
 			guild.Title = reader.GetString("title");
+			guild.EstablishedDate = reader.GetDateTimeSafe("establishedDate");
+			guild.Server = reader.GetString("server");
 			guild.IntroMessage = reader.GetString("introMessage");
 			guild.WelcomeMessage = reader.GetString("welcomeMessage");
 			guild.LeavingMessage = reader.GetString("leavingMessage");
