@@ -51,7 +51,7 @@ namespace Aura.Shared.Database
 			}
 		}
 
-		public int WithdrawMaxAmount { get { return 1000000; } }
+		public int WithdrawMaxAmount { get { return this.Gold; } }
 		public DateTime WithdrawDeadline { get { return DateTime.Now.AddYears(10); } }
 
 		public int MemberCount { get { lock (_members) return _members.Count; } }
