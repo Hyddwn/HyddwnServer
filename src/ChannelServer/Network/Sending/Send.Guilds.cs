@@ -166,5 +166,26 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Broadcasts GuildUpdateMember in range of creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="guild"></param>
+		/// <param name="member"></param>
+		public static void GuildUpdateMember(Creature creature, Guild guild, GuildMember member)
+		{
+			var packet = new Packet(Op.GuildUpdateMember, creature.EntityId);
+			packet.PutInt(guild == null ? 0 : 1);
+			if (guild != null)
+			{
+				packet.PutString(guild.Name);
+				packet.PutLong(guild.Id);
+				packet.PutInt((int)member.Rank);
+				packet.PutByte(0); // messages?
+			}
+
+			creature.Region.Broadcast(packet, creature);
+		}
 	}
 }
