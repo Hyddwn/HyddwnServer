@@ -124,7 +124,7 @@ namespace Aura.Web.Controllers
 						this.DeclineApplication(req, guild, member, ref success, ref error);
 				}
 				// Members: Remove member
-				else if (req.Parameters.Has("remove"))
+				else if (req.Parameters.Has("removeMember"))
 				{
 					var memberId = Convert.ToInt64(req.Parameters.Get("removeMember"));
 					var member = guild.GetMember(memberId);
