@@ -19,6 +19,7 @@ namespace Aura.Shared.Database
 
 		public DateTime EstablishedDate { get; set; }
 		public string Server { get; set; }
+		public bool Disbanded { get; set; }
 
 		public int Points { get; set; }
 		public int Gold { get; set; }

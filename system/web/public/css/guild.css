@@ -111,6 +111,11 @@ input[type=text]:focus {
 	margin-left: 10px;
 }
 
+.notification.info {
+	background: #f0f0f0;
+	border: 1px solid #ccc;
+}
+
 .notification.success {
 	background: #e1ff8f;
 	border: 1px solid #b3cb72;

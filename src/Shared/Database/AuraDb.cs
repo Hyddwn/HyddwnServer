@@ -455,6 +455,7 @@ namespace Aura.Shared.Database
 			guild.Stone.Direction = reader.GetFloat("stoneDirection");
 			guild.Points = reader.GetInt32("points");
 			guild.Gold = reader.GetInt32("gold");
+			guild.Disbanded = reader.GetBoolean("disbanded");
 
 			return guild;
 		}
@@ -514,13 +515,15 @@ namespace Aura.Shared.Database
 		/// Removes guild and its members from database.
 		/// </summary>
 		/// <param name="guild"></param>
-		public void DisbandGuild(Guild guild)
+		public void UpdateDisbandGuild(Guild guild)
 		{
 			using (var conn = this.Connection)
-			using (var cmd = new MySqlCommand("DELETE FROM `guilds` WHERE `guildId` = @guildId", conn))
+			using (var cmd = new UpdateCommand("UPDATE `guilds` SET {0} WHERE `guildId` = @guildId", conn))
 			{
-				cmd.Parameters.AddWithValue("@guildId", guild.Id);
-				cmd.ExecuteNonQuery();
+				cmd.AddParameter("@guildId", guild.Id);
+				cmd.Set("disbanded", guild.Disbanded);
+
+				cmd.Execute();
 			}
 		}
 

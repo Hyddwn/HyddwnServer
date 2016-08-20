@@ -85,7 +85,6 @@ namespace Aura.Web.Controllers
 
 			string success = null;
 			string error = null;
-			bool disbanded = false;
 
 			// Leader actions
 			if (guildMember.IsLeader)
@@ -98,10 +97,7 @@ namespace Aura.Web.Controllers
 					this.ChangeLeader(req, guild, ref success, ref error);
 				// Settings: Disband
 				else if (req.Parameters.Has("disband"))
-				{
 					this.Disband(req, guild, ref success, ref error);
-					disbanded = true;
-				}
 			}
 
 			// Leader/Officer actions
@@ -159,7 +155,6 @@ namespace Aura.Web.Controllers
 				member = guildMember,
 				success = success,
 				error = error,
-				disbanded = disbanded,
 				messageMaxLength = MessageMaxLength
 			});
 		}
@@ -216,9 +211,10 @@ namespace Aura.Web.Controllers
 
 		private void Disband(Request req, Guild guild, ref string success, ref string error)
 		{
-			WebServer.Instance.Database.DisbandGuild(guild);
+			guild.Disbanded = true;
+			WebServer.Instance.Database.UpdateDisbandGuild(guild);
 
-			success = "The guild has been disbanded.";
+			success = "The guild has been marked to be disbanded.";
 		}
 
 		private void CancelApplication(Request req, Guild guild, GuildMember member, ref string success, ref string error)
