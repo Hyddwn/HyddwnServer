@@ -79,7 +79,13 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet(Op.GuildPanel, creature.EntityId);
 			packet.PutLong(guild.Id);
-			packet.PutByte(creature.GuildMember.Rank == GuildMemberRank.Leader);
+			packet.PutByte(creature.GuildMember.IsLeader);
+			if (creature.GuildMember.IsLeader)
+			{
+				packet.PutInt(guild.WithdrawMaxAmount);
+				packet.PutLong(guild.WithdrawDeadline);
+				packet.PutInt(guild.MaxMembers);
+			}
 			packet.PutByte(0);
 			packet.PutByte(0); // 1: Go To Guild Hall,  2: Go To Guild Stone
 
