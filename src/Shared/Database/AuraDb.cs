@@ -333,9 +333,9 @@ namespace Aura.Shared.Database
 		/// <summary>
 		/// Returns all guilds in database.
 		/// </summary>
-		public List<Guild> GetGuilds()
+		public Dictionary<long, Guild> GetGuilds()
 		{
-			var result = new List<Guild>();
+			var result = new Dictionary<long, Guild>();
 
 			using (var conn = this.Connection)
 			using (var mc = new MySqlCommand("SELECT * FROM `guilds` WHERE `guildId` > @minId", conn))
@@ -351,7 +351,7 @@ namespace Aura.Shared.Database
 
 						guild.InitMembers(members);
 
-						result.Add(guild);
+						result.Add(guild.Id, guild);
 					}
 				}
 			}

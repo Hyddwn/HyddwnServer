@@ -46,7 +46,7 @@ namespace Aura.Channel.World.Guilds
 		private void LoadGuilds()
 		{
 			var guilds = ChannelServer.Instance.Database.GetGuilds();
-			foreach (var guild in guilds)
+			foreach (var guild in guilds.Values)
 				this.LoadGuild(guild);
 		}
 
