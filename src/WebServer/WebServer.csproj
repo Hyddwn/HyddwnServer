@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AvatarUploadController.cs" />
+    <Compile Include="Controllers\GuildController.cs" />
     <Compile Include="Controllers\UiStorageController.cs" />
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Controllers\VisualChatController.cs" />
@@ -60,6 +61,10 @@
     <Compile Include="WebServer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Mabi\Mabi.csproj">
+      <Project>{68361442-6ad0-4334-816c-c719652f1909}</Project>
+      <Name>Mabi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.csproj">
       <Project>{49B4C28D-3E7D-4F57-8549-B0E13354DE5D}</Project>
       <Name>Shared</Name>

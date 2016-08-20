@@ -15,5 +15,10 @@ namespace Aura.Shared.Database
 		public string Application { get; set; }
 		public GuildMessages Messages { get; set; }
 		public string Name { get; set; }
+
+		public bool IsLeader { get { return (this.Rank == GuildMemberRank.Leader); } }
+		public bool IsOfficer { get { return (this.Rank == GuildMemberRank.Officer); } }
+		public bool IsLeaderOrOfficer { get { return (this.IsLeader || this.IsOfficer); } }
+		public bool HasApplied { get { return (this.Rank == GuildMemberRank.Applied); } }
 	}
 }

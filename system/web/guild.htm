@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<title>Guild Home</title>
+		
+		<link rel="stylesheet" href="/system/web/public/lib/normalize.min.css" />
+		<link rel="stylesheet" href="/system/web/public/lib/font-awesome/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="/system/web/public/css/guild.css" />
+		<!--[if lte IE7]>
+			<link rel="stylesheet" href="/system/web/public/css/guild.ie7.css" />
+			<link rel="stylesheet" href="/system/web/public/css/font-awesome-ie7.min.css" />
+		<![endif]-->
+		
+		<script src="/system/web/public/lib/jquery.min.js"></script>
+		<script>
+			$().ready(function() {
+				$('#menu a').click(function(e) {
+					e.preventDefault();
+					
+					var page = $(this).attr('data-page');
+					
+					$('#menu a').removeClass('current');
+					$('.page').removeClass('current').hide();
+					
+					$(this).addClass('current');
+					$('#' + page).addClass('current').show();
+				});
+				
+				setTimeout(function() {
+					$('.notification.disappear').fadeOut();
+				}, 4000);
+			});
+		</script>
+	</head>
+	<body>
+		<div id="main">
+			<div class="inner">
+				<div class="title"><a href="{{url}}">AuraProject</a></div>
+				<div class="notifications">
+					{{#if success}}<div class="notification success disappear"><i class="fa fa-check-circle" aria-hidden="true"></i><span>{{success}}</span></div>{{/if}}
+					{{#if error}}<div class="notification error disappear"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span>{{error}}</span></div>{{/if}}
+					<noscript><div class="notification error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span>This page requires JavaScript being enabled.</span></div></noscript>
+				</div>
+				<div id="menu">
+					<ul>
+						<li><a href="#" data-page="home" class="current"><i class="fa fa-home" aria-hidden="true"></i><span>Home</span></a></li>
+						<li><a href="#" data-page="members"><i class="fa fa-users" aria-hidden="true"></i><span>Members</span></a></li>
+						{{#if member.IsLeaderOrOfficer}}
+							<li><a href="#" data-page="settings"><i class="fa fa-cogs" aria-hidden="true"></i><span>Settings</span></a></li>
+						{{/if}}
+					</ul>
+				</div>
+				<div id="home" class="page current">
+					<table>
+						<tr>
+							<th>Established</th>
+							<td>{{guild.EstablishedDate:yyyy-MM-dd}}</td>
+						</tr>
+						<tr>
+							<th>Server</th>
+							<td>{{guild.Server}}</td>
+						</tr>
+						<tr>
+							<th>Type</th>
+							<td>{{guild.Type}}</td>
+						</tr>
+						<tr>
+							<th>Level</th>
+							<td>{{guild.Level}}</td>
+						</tr>
+						<tr>
+							<th>Leader</th>
+							<td>{{guild.LeaderName}}</td>
+						</tr>
+						<tr>
+							<th>Members</th>
+							<td>{{guild.MemberCount}}/{{guild.MaxMembers}}</td>
+						</tr>
+						<tr>
+							<th>Guild Points</th>
+							<td>{{guild.Points:n0}}</td>
+						</tr>
+						<tr>
+							<th>Gold</th>
+							<td>{{guild.Gold:n0}}</td>
+						</tr>
+					</table>
+				</div>
+				<div id="members" class="page">
+					<table>
+						{{#each members}}
+							<tr>
+								{{#if this.IsLeader}}
+									<td class="name"><img src="/system/web/public/images/crown1.png" /> {{this.Name}}</td>
+									<td class="options"></td>
+								{{#elif this.IsOfficer}}
+									<td class="name"><img src="/system/web/public/images/crown2.png" /> {{this.Name}}</td>
+									{{#if member.IsLeader}}
+										<td class="options"><a title="Remove from guild" href="{{url}}&remove={{this.CharacterId}}"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Remove</span></a></td>
+									{{#else}}
+										<td class="options"></td>
+									{{/if}}
+								{{#elif this.HasApplied}}
+									<td class="name"><span title="{{this.Application}}"><img src="/system/web/public/images/waiting.png" /> {{this.Name}}</span></td>
+									{{#if member.IsLeaderOrOfficer}}
+										<td class="options">
+											<a title="Accept application" href="{{url}}&accept={{this.CharacterId}}"><i class="fa fa-check" aria-hidden="true"></i><span>Accept</span></a>
+											<a title="Decline application" href="{{url}}&decline={{this.CharacterId}}"><i class="fa fa-times" aria-hidden="true"></i><span>Decline</span></a>
+										</td>
+									{{#else}}
+										<td class="options"></td>
+									{{/if}}
+								{{#else}}
+									<td class="name">{{this.Name}}</td>
+									{{#if member.IsLeaderOrOfficer}}
+										<td class="options"><a title="Remove from guild" href="{{url}}&remove={{this.CharacterId}}"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Remove</span></a></td>
+									{{#else}}
+										<td class="options"></td>
+									{{/if}}
+								{{/if}}
+							</tr>
+						{{/each}}
+					</table>
+				</div>
+				{{#if member.IsLeaderOrOfficer}}
+					<div id="settings" class="page">
+						<h1>Messages</h1>
+						<form action="" method="post">
+							<table class="messages">
+								<tr>
+									<td>
+										<b>Intro</b><br/>
+										<textarea name="intro">{{guild.IntroMessage}}</textarea><br/>
+									</td>
+									<td>
+										<b>Welcome</b><br/>
+										<textarea name="welcome">{{guild.WelcomeMessage}}</textarea><br/>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<b>Leaving</b><br/>
+										<textarea name="leaving">{{guild.LeavingMessage}}</textarea><br/>
+									</td>
+									<td>
+										<b>Rejection</b><br/>
+										<textarea name="rejection">{{guild.RejectionMessage}}</textarea><br/>
+									</td>
+								</tr>
+							</table>
+							<input type="submit" value="Save" />
+						</form>
+						
+						<h1>Leader</h1>
+						<form action="" method="post">
+							<input type="text" name="leader" value="{{guild.LeaderName}}" /> <input type="submit" value="Save" />
+						</form>
+						
+						<h1>Functions</h1>
+						<form action="" method="post">
+							<input type="submit" name="disband" value="Disband guild" />
+						</form>
+					</div>
+				{{/if}}
+			</div>
+		</div>
+	</body>
+</html>
