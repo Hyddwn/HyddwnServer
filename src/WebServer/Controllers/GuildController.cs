@@ -104,6 +104,41 @@ namespace Aura.Web.Controllers
 				}
 			}
 
+			// Leader/Officer actions
+			if (guildMember.IsLeaderOrOfficer)
+			{
+				// Members: Accept application
+				if (req.Parameters.Has("acceptApplication"))
+				{
+					var id = Convert.ToInt64(req.Parameters.Get("acceptApplication"));
+					var member = guild.GetMember(id);
+					if (member == null)
+						error = "Applicant not found.";
+					else
+						this.AcceptApplication(req, guild, member, ref success, ref error);
+				}
+				// Members: Decline application
+				else if (req.Parameters.Has("declineApplication"))
+				{
+					var id = Convert.ToInt64(req.Parameters.Get("declineApplication"));
+					var member = guild.GetMember(id);
+					if (member == null)
+						error = "Applicant not found.";
+					else
+						this.DeclineApplication(req, guild, member, ref success, ref error);
+				}
+				// Members: Remove member
+				else if (req.Parameters.Has("remove"))
+				{
+					var memberId = Convert.ToInt64(req.Parameters.Get("removeMember"));
+					var member = guild.GetMember(memberId);
+					if (member == null)
+						error = "Character not found.";
+					else
+						this.RemoveMember(req, guild, member, ref success, ref error);
+				}
+			}
+
 			// Applicant actions
 			if (guildMember.IsApplicant)
 			{
@@ -192,6 +227,30 @@ namespace Aura.Web.Controllers
 			WebServer.Instance.Database.UpdateGuildMemberRank(member);
 
 			success = "Your application will be canceled shortly.";
+		}
+
+		private void AcceptApplication(Request req, Guild guild, GuildMember member, ref string success, ref string error)
+		{
+			member.Rank = GuildMemberRank.Member;
+			WebServer.Instance.Database.UpdateGuildMemberRank(member);
+
+			success = string.Format("{0}'s application has been accepted.", member.Name);
+		}
+
+		private void DeclineApplication(Request req, Guild guild, GuildMember member, ref string success, ref string error)
+		{
+			member.Rank = GuildMemberRank.Declined;
+			WebServer.Instance.Database.UpdateGuildMemberRank(member);
+
+			success = string.Format("{0}'s application has been declined.", member.Name);
+		}
+
+		private void RemoveMember(Request req, Guild guild, GuildMember member, ref string success, ref string error)
+		{
+			member.Rank = GuildMemberRank.Declined;
+			WebServer.Instance.Database.UpdateGuildMemberRank(member);
+
+			success = string.Format("{0} has been removed from the guild.", member.Name);
 		}
 	}
 }
