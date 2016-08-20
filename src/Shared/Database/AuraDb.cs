@@ -580,6 +580,23 @@ namespace Aura.Shared.Database
 				cmd.Execute();
 			}
 		}
+
+		/// <summary>
+		/// Updates guild member's rank in the database.
+		/// </summary>
+		/// <param name="member"></param>
+		public void UpdateGuildMemberRank(GuildMember member)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `guild_members` SET {0} WHERE `guildId` = @guildId AND `characterId` = @characterId", conn))
+			{
+				cmd.AddParameter("@guildId", member.GuildId);
+				cmd.AddParameter("@characterId", member.CharacterId);
+				cmd.Set("rank", (int)member.Rank);
+
+				cmd.Execute();
+			}
+		}
 	}
 
 	/// <summary>

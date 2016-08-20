@@ -104,6 +104,14 @@ namespace Aura.Web.Controllers
 				}
 			}
 
+			// Applicant actions
+			if (guildMember.IsApplicant)
+			{
+				// Settings: Change messages
+				if (req.Parameters.Has("cancelApplication"))
+					this.CancelApplication(req, guild, guildMember, ref success, ref error);
+			}
+
 			// Get non-declined members, ordered by their rank and name, putting applicants after the leaders.
 			var members = guild.GetMembers().Where(a => a.Rank != GuildMemberRank.Declined).OrderBy(a => a.Rank == GuildMemberRank.Applied ? 25 : (int)a.Rank * 10).ThenBy(a => a.Name);
 			var url = string.Format("/guild?guildid={0}&userid={1}&userserver={2}&userchar={3}&key={4}", guildIdStr, accountName, server, characterIdStr, sessionKeyStr);
@@ -176,6 +184,14 @@ namespace Aura.Web.Controllers
 			WebServer.Instance.Database.DisbandGuild(guild);
 
 			success = "The guild has been disbanded.";
+		}
+
+		private void CancelApplication(Request req, Guild guild, GuildMember member, ref string success, ref string error)
+		{
+			member.Rank = GuildMemberRank.Declined;
+			WebServer.Instance.Database.UpdateGuildMemberRank(member);
+
+			success = "Your application will be canceled shortly.";
 		}
 	}
 }

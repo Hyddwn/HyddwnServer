@@ -21,9 +21,11 @@
 			
 			$().ready(function() {
 				$('#menu a').click(function(e) {
-					e.preventDefault();
-					
 					var page = $(this).attr('data-page');
+					if (!page)
+						return;
+					
+					e.preventDefault();
 					
 					$('#menu a').removeClass('current');
 					$('.page').removeClass('current').hide();
@@ -75,9 +77,13 @@
 					{{#else}}
 						<ul>
 							<li><a href="#" data-page="home" class="current"><i class="fa fa-home" aria-hidden="true"></i><span>Home</span></a></li>
-							<li><a href="#" data-page="members"><i class="fa fa-users" aria-hidden="true"></i><span>Members</span></a></li>
-							{{#if member.IsLeaderOrOfficer}}
-								<li><a href="#" data-page="settings"><i class="fa fa-cogs" aria-hidden="true"></i><span>Settings</span></a></li>
+							{{#if member.IsMember}}
+								<li><a href="#" data-page="members"><i class="fa fa-users" aria-hidden="true"></i><span>Members</span></a></li>
+								{{#if member.IsLeaderOrOfficer}}
+									<li><a href="#" data-page="settings"><i class="fa fa-cogs" aria-hidden="true"></i><span>Settings</span></a></li>
+								{{/if}}
+							{{#elif member.IsApplicant}}
+								<li><a title="Cancel application" href="{{url}}&cancelApplication=1"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Cancel application</span></a></li>
 							{{/if}}
 						</ul>
 					{{/if}}
@@ -108,14 +114,16 @@
 							<th>Members</th>
 							<td>{{guild.MemberCount}}/{{guild.MaxMembers}}</td>
 						</tr>
-						<tr>
-							<th>Guild Points</th>
-							<td>{{guild.Points:n0}}</td>
-						</tr>
-						<tr>
-							<th>Gold</th>
-							<td>{{guild.Gold:n0}}</td>
-						</tr>
+						{{#if member.IsMember}}
+							<tr>
+								<th>Guild Points</th>
+								<td>{{guild.Points:n0}}</td>
+							</tr>
+							<tr>
+								<th>Gold</th>
+								<td>{{guild.Gold:n0}}</td>
+							</tr>
+						{{/if}}
 					</table>
 				</div>
 				<div id="members" class="page">
@@ -132,7 +140,7 @@
 									{{#else}}
 										<td class="options"></td>
 									{{/if}}
-								{{#elif this.HasApplied}}
+								{{#elif this.IsApplicant}}
 									<td class="name"><span title="{{this.Application}}"><img src="/system/web/public/images/waiting.png" /> {{this.Name}}</span></td>
 									{{#if member.IsLeaderOrOfficer}}
 										<td class="options">
