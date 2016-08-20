@@ -452,6 +452,8 @@ namespace Aura.Mabi.Network
 		public const int GuildDonateR = 0x8F08;
 		public const int GuildMessage = 0x8F0F;
 		public const int GuildDestroyStone = 0x8F15;
+		public const int GuildWithdrawGold = 0x8F17;
+		public const int GuildWithdrawGoldR = 0x8F18;
 		public const int TradeStart = 0x8F5C;
 		public const int TradeInfo = 0x8F5D;
 		public const int TradeStartR = 0x8F5E;

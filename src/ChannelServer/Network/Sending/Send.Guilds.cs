@@ -193,5 +193,18 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Region.Broadcast(packet, creature);
 		}
+
+		/// <summary>
+		/// Sends GuildWithdrawGoldR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void GuildWithdrawGoldR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.GuildWithdrawGoldR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

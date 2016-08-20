@@ -8,6 +8,7 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
+using System;
 using System.Linq;
 
 namespace Aura.Channel.Network.Handlers
@@ -254,6 +255,99 @@ namespace Aura.Channel.Network.Handlers
 
 			ChannelServer.Instance.Database.UpdateGuildResources(guild);
 			ChannelServer.Instance.GuildManager.ChangeStone(creature.Guild, stoneType);
+		}
+
+		/// <summary>
+		/// Sent choosing to change the look of the guild stone.
+		/// </summary>
+		/// <example>
+		/// 001 [..............01] Byte   : 1
+		/// 002 [........000C3500] Int    : 800000
+		/// </example>
+		[PacketHandler(Op.GuildWithdrawGold)]
+		public void GuildWithdrawGold(ChannelClient client, Packet packet)
+		{
+			var getCheck = packet.GetBool();
+			var amount = packet.GetInt();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check guild
+			var guild = creature.Guild;
+			if (guild == null)
+			{
+				Log.Warning("GuildWithdrawGold: User '{0}' is not in a guild.", client.Account.Id);
+				Send.GuildWithdrawGoldR(creature, false);
+				return;
+			}
+
+			// Check rank
+			if (!creature.GuildMember.IsLeader)
+			{
+				Log.Warning("GuildWithdrawGold: User '{0}' is not the guild's leader.", client.Account.Id);
+				Send.GuildWithdrawGoldR(creature, false);
+				return;
+			}
+
+			// Check availablility
+			if (guild.WithdrawMaxAmount == 0)
+			{
+				Send.MsgBox(creature, Localization.Get("A total agreememt from the Guild is required to withdraw the Gold from the guild safe. Please set up a poll in the guild homepage."));
+				Send.GuildWithdrawGoldR(creature, false);
+				return;
+			}
+
+			// Check date
+			if (DateTime.Now > guild.WithdrawDeadline)
+			{
+				Send.MsgBox(creature, Localization.Get("Withdrawal period expired. Guild funds may only be withdrawn for up to one week after winning the majority vote."));
+				Send.GuildWithdrawGoldR(creature, false);
+				return;
+			}
+
+			// Check requested amount
+			var maxAmount = guild.WithdrawMaxAmount;
+			if (maxAmount < amount)
+			{
+				Log.Warning("GuildWithdrawGold: User '{0}' requested more than they should be able to.", client.Account.Id);
+				Send.GuildWithdrawGoldR(creature, false);
+				return;
+			}
+
+			// Check needed amount
+			var needed = amount;
+			if (getCheck)
+			{
+				var fee = (int)Math.Max(500, amount * 0.05f);
+				needed = fee;
+			}
+
+			if (maxAmount < needed)
+			{
+				Send.MsgBox(creature, Localization.Get("Unable to pay the transaction fee due to lack of budget."));
+				Send.GuildWithdrawGoldR(creature, false);
+				return;
+			}
+
+			// Withdraw
+			guild.Gold -= needed;
+			ChannelServer.Instance.Database.UpdateGuildResources(guild);
+
+			if (getCheck)
+			{
+				var check = Item.CreateCheck(amount);
+				creature.Inventory.Add(check, true);
+			}
+			else
+			{
+				creature.Inventory.AddGold(amount);
+			}
+
+			Send.GuildWithdrawGoldR(creature, true);
+
+			// Sending panel again to reset variables, unofficial,
+			// we're missing a log for withdrawing.
+			Send.GuildPanel(creature, guild);
 		}
 	}
 }
