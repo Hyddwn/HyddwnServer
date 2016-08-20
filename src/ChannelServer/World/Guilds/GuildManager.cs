@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
+using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Shared.Database;
 using Aura.Shared.Util;
@@ -282,6 +283,19 @@ namespace Aura.Channel.World.Guilds
 		}
 
 		/// <summary>
+		/// Returns stone prop of the given guild.
+		/// </summary>
+		/// <param name="guildId"></param>
+		/// <returns></returns>
+		private Prop GetStone(long guildId)
+		{
+			Prop stone;
+			lock (_syncLock)
+				_stones.TryGetValue(guildId, out stone);
+			return stone;
+		}
+
+		/// <summary>
 		/// Places stone and saves its location to database.
 		/// </summary>
 		/// <param name="guild"></param>
@@ -314,6 +328,38 @@ namespace Aura.Channel.World.Guilds
 			guild.AddMember(member);
 
 			ChannelServer.Instance.Database.AddGuildMember(member);
+		}
+
+		/// <summary>
+		/// Changes the look of the guild's stone.
+		/// </summary>
+		/// <param name="guild"></param>
+		/// <param name="stoneType"></param>
+		public void ChangeStone(Guild guild, GuildStoneType stoneType)
+		{
+			var stone = this.GetStone(guild.Id);
+
+			var regionId = guild.Stone.RegionId;
+			var x = guild.Stone.X;
+			var y = guild.Stone.Y;
+			var direction = guild.Stone.Direction;
+
+			this.DestroyStone(guild);
+
+			switch (stoneType)
+			{
+				default:
+				case GuildStoneType.Normal: guild.Stone.PropId = GuildStonePropId.Normal; break;
+				case GuildStoneType.Hope: guild.Stone.PropId = GuildStonePropId.Hope; break;
+				case GuildStoneType.Courage: guild.Stone.PropId = GuildStonePropId.Courage; break;
+			}
+
+			guild.Stone.RegionId = regionId;
+			guild.Stone.X = x;
+			guild.Stone.Y = y;
+			guild.Stone.Direction = direction;
+
+			this.PlaceStone(guild);
 		}
 	}
 }

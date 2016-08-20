@@ -190,5 +190,70 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.GuildApplyR(creature, true);
 		}
+
+		/// <summary>
+		/// Sent choosing to change the look of the guild stone.
+		/// </summary>
+		/// <example>
+		/// 001 [........00000001] Int    : 1
+		/// </example>
+		[PacketHandler(Op.GuildChangeStone)]
+		public void GuildChangeStone(ChannelClient client, Packet packet)
+		{
+			var stoneType = (GuildStoneType)packet.GetInt();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check guild
+			var guild = creature.Guild;
+			if (guild == null)
+			{
+				Log.Warning("GuildChangeStone: User '{0}' is not in a guild.", client.Account.Id);
+				return;
+			}
+
+			// Check rank
+			if (!creature.GuildMember.IsLeader)
+			{
+				Log.Warning("GuildChangeStone: User '{0}' is not the guild's leader.", client.Account.Id);
+				return;
+			}
+
+			// Check guild level
+			var level = GuildLevel.Beginner;
+			switch (stoneType)
+			{
+				case GuildStoneType.Hope: level = GuildLevel.Advanced; break;
+				case GuildStoneType.Courage: level = GuildLevel.Grand; break;
+			}
+
+			if (guild.Level < level)
+			{
+				Log.Warning("GuildChangeStone: User '{0}' tried to change stone without having the necessary guild level.", client.Account.Id);
+				return;
+			}
+
+			// Check resources
+			var points = 0;
+			var gold = 0;
+			switch (stoneType)
+			{
+				case GuildStoneType.Hope: points = 10000; gold = 100000; break;
+				case GuildStoneType.Courage: points = 100000; gold = 1000000; break;
+			}
+
+			if (guild.Points < points || guild.Gold < gold)
+			{
+				Send.MsgBox(creature, Localization.Get("You need {0:n0} Guild Points and {1:n0} Gold to change the guild stone."), points, gold);
+				return;
+			}
+
+			// Update
+			guild.Points -= points;
+			guild.Gold -= gold;
+
+			ChannelServer.Instance.Database.UpdateGuildResources(guild);
+			ChannelServer.Instance.GuildManager.ChangeStone(creature.Guild, stoneType);
+		}
 	}
 }

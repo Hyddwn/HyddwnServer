@@ -559,6 +559,7 @@ namespace Aura.Mabi.Network
 		public const int SetPetAi = 0xA8A1;
 		public const int GetPetAi = 0xA8A2;
 		public const int GetPetAiR = 0xA8A3;
+		public const int GuildChangeStone = 0xA8AC;
 		public const int WarpUnk3 = 0xA8AF;
 		public const int SetQuestTimer = 0xA8CF; // Was 0xA8D0 on RE (G13)
 		public const int RemoveQuestTimer = 0xA8D0; // ?

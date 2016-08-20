@@ -62,4 +62,11 @@ namespace Aura.Mabi.Const
 		public const int Courage = 40210;
 		public const int GuildHall = 42091;
 	}
+
+	public enum GuildStoneType
+	{
+		Normal = 1,
+		Hope = 2,
+		Courage = 3,
+	}
 }
