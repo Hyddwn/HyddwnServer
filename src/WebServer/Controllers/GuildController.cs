@@ -108,7 +108,17 @@ namespace Aura.Web.Controllers
 			var members = guild.GetMembers().Where(a => a.Rank != GuildMemberRank.Declined).OrderBy(a => a.Rank == GuildMemberRank.Applied ? 25 : (int)a.Rank * 10).ThenBy(a => a.Name);
 			var url = string.Format("/guild?guildid={0}&userid={1}&userserver={2}&userchar={3}&key={4}", guildIdStr, accountName, server, characterIdStr, sessionKeyStr);
 
-			res.Render("system/web/guild.htm", new { url = url, guild = guild, members = members, member = guildMember, success = success, error = error, disbanded = disbanded });
+			res.Render("system/web/guild.htm", new
+			{
+				url = url,
+				guild = guild,
+				members = members,
+				member = guildMember,
+				success = success,
+				error = error,
+				disbanded = disbanded,
+				messageMaxLength = MessageMaxLength
+			});
 		}
 
 		private void ChangeMessages(Request req, Guild guild, ref string success, ref string error)
