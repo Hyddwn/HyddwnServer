@@ -379,6 +379,21 @@ namespace Aura.Shared.Database
 		}
 
 		/// <summary>
+		/// Returns whether the given guild name already exists.
+		/// </summary>
+		public bool GuildNameExists(string name)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `guilds` WHERE `name` = @name", conn))
+			{
+				mc.Parameters.AddWithValue("@name", name);
+
+				using (var reader = mc.ExecuteReader())
+					return reader.HasRows;
+			}
+		}
+
+		/// <summary>
 		/// Returns guild with given id from database if it exists.
 		/// </summary>
 		public Guild GetGuild(long guildId)
@@ -675,6 +690,32 @@ namespace Aura.Shared.Database
 				cmd.Set("rank", (int)member.Rank);
 
 				cmd.Execute();
+			}
+		}
+
+		/// <summary>
+		/// Adds guild to db and sets its id.
+		/// </summary>
+		/// <param name="guild"></param>
+		public void AddGuild(Guild guild)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new InsertCommand("INSERT INTO `guilds` {0}", conn))
+			{
+				cmd.Set("name", guild.Name);
+				cmd.Set("leaderName", guild.LeaderName);
+				cmd.Set("title", guild.Title);
+				cmd.Set("establishedDate", guild.EstablishedDate);
+				cmd.Set("server", guild.Server);
+				cmd.Set("introMessage", guild.IntroMessage);
+				cmd.Set("welcomeMessage", guild.WelcomeMessage);
+				cmd.Set("leavingMessage", guild.LeavingMessage);
+				cmd.Set("rejectionMessage", guild.RejectionMessage);
+				cmd.Set("type", (int)guild.Type);
+
+				cmd.Execute();
+
+				guild.Id = cmd.LastId;
 			}
 		}
 	}

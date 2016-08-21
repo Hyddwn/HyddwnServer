@@ -11,6 +11,7 @@ using Aura.Shared.Network;
 using Aura.Shared.Util;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -418,6 +419,236 @@ namespace Aura.Channel.Network.Handlers
 			// Send info as an invite? We're actually lacking a log of what's
 			// supposed to happen here, but this works.
 			Send.GuildInfoNoGuild(other, guild);
+		}
+
+		/// <summary>
+		/// Sent when using guild creation permit.
+		/// </summary>
+		/// <remarks>
+		/// This packet is presumably only to check the item, after a
+		/// successful response the client checks if the party has
+		/// 5 members itself, so non-fiver guilds aren't possible this way.
+		/// The "Nothing" result can be used to send custom error msgs,
+		/// as nothing will be displayed, but the client will accept the
+		/// response.
+		/// </remarks>
+		/// <example>
+		/// 001 [005000CC9DBC40C3] Long   : 22518876956541123
+		/// </example>
+		[PacketHandler(Op.GuildPermitCheck)]
+		public void GuildPermitCheck(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+
+			// Check feature
+			if (!AuraData.FeaturesDb.IsEnabled("SystemGuild"))
+			{
+				Send.MsgBox(creature, Localization.Get("This feature hasn't been enabled yet."));
+				Send.GuildPermitCheckR(creature, GuildPermitCheckResult.Nothing, itemEntityId);
+				return;
+			}
+
+			// Check item
+			if (item.Info.Id != 63040) // Guild Formation Permit
+			{
+				Log.Warning("GuildPermitCheck: User '{0}' tried to use invalid item.", client.Account.Id);
+				Send.GuildPermitCheckR(creature, GuildPermitCheckResult.Nothing, itemEntityId);
+				return;
+			}
+
+			// Check guild
+			if (creature.GuildId != 0)
+			{
+				Send.MsgBox(creature, Localization.Get("You are already a member of a guild."));
+				Send.GuildPermitCheckR(creature, GuildPermitCheckResult.Nothing, itemEntityId);
+				return;
+			}
+
+			Send.GuildPermitCheckR(creature, GuildPermitCheckResult.Success, itemEntityId);
+		}
+
+		/// <summary>
+		/// Sent to check if guild name is valid and available.
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : Name
+		/// </example>
+		[PacketHandler(Op.GuildCheckName)]
+		public void GuildCheckName(ChannelClient client, Packet packet)
+		{
+			var name = packet.GetString();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check name
+			if (!Regex.IsMatch(name, @"^[\w]{4,12}$") || ChannelServer.Instance.Database.GuildNameExists(name))
+			{
+				Send.GuildCheckNameR(creature, false);
+				return;
+			}
+
+			Send.GuildCheckNameR(creature, true);
+		}
+
+		/// <summary>
+		/// Sent when attempting to create a guild.
+		/// </summary>
+		/// <example>
+		/// 001 [005000CC9DBC40C3] Long   : 22518876956541123
+		/// 002 [................] String : Researcher
+		/// 003 [........00000001] Int    : 1
+		/// 004 [........00000001] Int    : 1
+		/// </example>
+		[PacketHandler(Op.GuildCreateRequest)]
+		public void GuildCreateRequest(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+			var name = packet.GetString();
+			var type = (GuildType)packet.GetInt();
+			var visibility = (GuildVisibility)packet.GetInt();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+
+			// Check item
+			if (item.Info.Id != 63040) // Guild Formation Permit
+			{
+				Log.Warning("GuildCreateRequest: User '{0}' tried to use invalid item.", client.Account.Id);
+				Send.GuildCreateRequestR(creature, false);
+				return;
+			}
+
+			// Check types
+			if (!Enum.IsDefined(typeof(GuildType), type) || !Enum.IsDefined(typeof(GuildVisibility), visibility))
+			{
+				Log.Warning("GuildCreateRequest: User '{0}' sent invalid type or visibility ({1}, {2}).", client.Account.Id, type, visibility);
+				Send.GuildCreateRequestR(creature, false);
+				return;
+			}
+
+			// Check name
+			if (!Regex.IsMatch(name, @"^[\w]{4,12}$") || ChannelServer.Instance.Database.GuildNameExists(name))
+			{
+				Send.MsgBox(creature, Localization.Get("That name is not valid or is already in use."));
+				Send.GuildCreateRequestR(creature, false);
+				return;
+			}
+
+			// Check guild
+			if (creature.GuildId != 0)
+			{
+				Send.MsgBox(creature, Localization.Get("You are already a member of a guild."));
+				Send.GuildCreateRequestR(creature, false);
+				return;
+			}
+
+			// Check party
+			var party = creature.Party;
+			var size = 5;
+			if (!creature.IsInParty || party.MemberCount != size || party.GetMembers().Any(a => a.GuildId != 0) || party.Leader != creature)
+			{
+				Send.MsgBox(creature, Localization.GetPlural("You must be the leader of a party of {0} to form a guild.", "You must be the leader of a party of {0} to form a guild.", size), size);
+				Send.GuildCreateRequestR(creature, false);
+				return;
+			}
+
+			Send.GuildCreateRequestR(creature, true);
+
+			party.GuildNameToBe = name;
+			party.GuildTypeToBe = type;
+			party.GuildVisibilityToBe = visibility;
+			party.GuildNameVoteRequested = true;
+			party.GuildNameVoteCount = 1;
+			party.GuildNameVotes = 1;
+
+			// Send vote requests
+			var partyMembers = party.GetMembers();
+			foreach (var member in partyMembers.Where(a => a != party.Leader))
+				Send.GuildNameAgreeRequest(member, creature.EntityId, name);
+		}
+
+		/// <summary>
+		/// Sent when voting for guild name.
+		/// </summary>
+		/// <example>
+		/// 001 [001000000019AD26] Long   : 4503599629053222
+		/// 002 [..............01] Byte   : 1
+		/// </example>
+		[PacketHandler(Op.GuildNameVote)]
+		public void GuildNameVote(ChannelClient client, Packet packet)
+		{
+			var leaderEntityId = packet.GetLong();
+			var vote = packet.GetBool();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
+
+			// Check Party
+			if (!party.GuildNameVoteRequested)
+			{
+				Log.Warning("GuildNameVote: User '{0}' sent vote without request.", client.Account.Id);
+				Send.GuildCreateRequestR(creature, false);
+				return;
+			}
+			else if (party.Leader.EntityId != leaderEntityId)
+			{
+				Log.Warning("GuildNameVote: User '{0}' sent invalid leader id.", client.Account.Id);
+				Send.GuildCreateRequestR(creature, false);
+				return;
+			}
+
+			// Send votes
+			var partyMembers = party.GetMembers();
+			foreach (var member in partyMembers)
+				Send.GuildNameVote(member, creature.Name, vote);
+
+			// Update
+			creature.Party.GuildNameVoteCount++;
+			if (vote) creature.Party.GuildNameVotes++;
+
+			// Inform leader about result
+			if (creature.Party.GuildNameVoteCount == party.MemberCount)
+			{
+				if (creature.Party.GuildNameVotes == party.MemberCount)
+					Send.GuildCreationConfirmRequest(party.Leader);
+			}
+		}
+
+		/// <summary>
+		/// Sent when confirming the guild creation.
+		/// </summary>
+		/// <example>
+		/// No parameters.
+		/// </example>
+		[PacketHandler(Op.GuildCreationConfirmation)]
+		public void GuildCreationConfirmation(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+			var party = creature.Party;
+
+			// Check guild
+			if (creature.GuildId != 0)
+			{
+				Send.MsgBox(creature, Localization.Get("You are already a member of a guild."));
+				return;
+			}
+
+			// Check party
+			var size = 5;
+			if (!creature.IsInParty || party.MemberCount != size || party.GetMembers().Any(a => a.GuildId != 0) || party.Leader != creature || party.GuildNameVoteCount != party.MemberCount)
+			{
+				Send.MsgBox(creature, Localization.GetPlural("You must be the leader of a party of {0} to form a guild.", "You must be the leader of a party of {0} to form a guild.", size), size);
+				return;
+			}
+
+			var name = party.GuildNameToBe;
+			var type = party.GuildTypeToBe;
+			var visibility = party.GuildVisibilityToBe;
+
+			ChannelServer.Instance.GuildManager.CreateGuild(party, name, type, visibility);
 		}
 	}
 }

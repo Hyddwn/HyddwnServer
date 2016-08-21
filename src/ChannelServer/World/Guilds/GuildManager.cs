@@ -539,5 +539,59 @@ namespace Aura.Channel.World.Guilds
 
 			this.PlaceStone(guild);
 		}
+
+		/// <summary>
+		/// Creates new guild with the members from the party.
+		/// </summary>
+		/// <param name="party"></param>
+		/// <exception cref="ArgumentException">
+		/// Thrown if one of the party members already is in a guild.
+		/// </exception>
+		public void CreateGuild(Party party, string name, GuildType type, GuildVisibility visibility)
+		{
+			var partyMembers = party.GetMembers();
+			if (partyMembers.Any(a => a.GuildId != 0))
+				throw new ArgumentException("One of the party members is in a guild already.");
+
+			var leader = party.Leader;
+
+			lock (_syncLock)
+			{
+				// Add guild
+				var guild = new Guild();
+				guild.Name = name;
+				guild.LeaderName = leader.Name;
+				guild.Title = "";
+				guild.EstablishedDate = DateTime.Now;
+				guild.Server = ChannelServer.Instance.Conf.Channel.ChannelServer;
+				guild.Type = type;
+				guild.IntroMessage = string.Format(Localization.Get("Guild stone for the {0} guild."), guild.Name);
+				guild.WelcomeMessage = string.Format(Localization.Get("Welcome to the {0} guild!"), guild.Name);
+				guild.LeavingMessage = string.Format(Localization.Get("You have left the {0} guild."), guild.Name);
+				guild.RejectionMessage = string.Format(Localization.Get("You have been denied admission to the {0} guild."), guild.Name);
+
+				ChannelServer.Instance.Database.AddGuild(guild);
+				_guilds.Add(guild.Id, guild);
+
+				// Add members
+				foreach (var creature in partyMembers)
+				{
+					var guildMember = new GuildMember();
+					guildMember.GuildId = guild.Id;
+					guildMember.CharacterId = creature.EntityId;
+					guildMember.JoinedDate = DateTime.Now;
+					guildMember.Application = "";
+					if (creature != leader)
+						guildMember.Rank = GuildMemberRank.Member;
+
+					ChannelServer.Instance.Database.AddGuildMember(guildMember);
+					guild.AddMember(guildMember);
+
+					creature.Guild = guild;
+					creature.GuildMember = guildMember;
+					Send.GuildUpdateMember(creature, guild, guildMember);
+				}
+			}
+		}
 	}
 }

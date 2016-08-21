@@ -100,6 +100,41 @@ namespace Aura.Channel.World
 		public Quest Quest { get; private set; }
 
 		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public bool GuildCreationInProgress { get; set; }
+
+		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public string GuildNameToBe { get; set; }
+
+		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public GuildType GuildTypeToBe { get; set; }
+
+		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public GuildVisibility GuildVisibilityToBe { get; set; }
+
+		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public bool GuildNameVoteRequested { get; set; }
+
+		/// <summary>
+		/// Used in guild creation to keep track of name votes.
+		/// </summary>
+		public int GuildNameVoteCount { get; set; }
+
+		/// <summary>
+		/// Used in guild creation to keep track of name votes.
+		/// </summary>
+		public int GuildNameVotes { get; set; }
+
+		/// <summary>
 		/// Initializes party.
 		/// </summary>
 		private Party()

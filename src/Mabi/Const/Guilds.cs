@@ -24,6 +24,12 @@ namespace Aura.Mabi.Const
 		Other = 5,
 	}
 
+	public enum GuildVisibility : byte
+	{
+		Public = 0,
+		Private = 1,
+	}
+
 	public enum GuildMemberRank
 	{
 		Leader = 0,
@@ -68,5 +74,23 @@ namespace Aura.Mabi.Const
 		Normal = 1,
 		Hope = 2,
 		Courage = 3,
+	}
+
+	public enum GuildPermitCheckResult
+	{
+		/// <summary>
+		/// Some korean message.
+		/// </summary>
+		Korean = 0,
+
+		/// <summary>
+		/// Success, continue to client-side checks.
+		/// </summary>
+		Success = 1,
+
+		/// <summary>
+		/// Nothing happens.
+		/// </summary>
+		Nothing = 2,
 	}
 }
