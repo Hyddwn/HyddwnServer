@@ -155,6 +155,7 @@ namespace Aura.Channel.World.Guilds
 									creature.Guild = null;
 									creature.GuildMember = null;
 									Send.GuildUpdateMember(creature, null, null);
+									Send.GuildStoneLocation(creature, null);
 								}
 							}
 							else
