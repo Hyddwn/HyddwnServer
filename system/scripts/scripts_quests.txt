@@ -67,6 +67,7 @@ quests/beginner_uladh/hunting/1000059_hunting_golem.cs
 quests/beginner_uladh/hunting/1000060_hunting_ogre_warrior.cs
 
 // Part-Time Jobs
+quests/ptj/adventurerassn_eavan.cs
 quests/ptj/church_endelyon.cs
 quests/ptj/church_kristell.cs
 quests/ptj/grocery_caitin.cs
