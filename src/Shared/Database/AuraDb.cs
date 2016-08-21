@@ -338,20 +338,39 @@ namespace Aura.Shared.Database
 			var result = new Dictionary<long, Guild>();
 
 			using (var conn = this.Connection)
-			using (var mc = new MySqlCommand("SELECT * FROM `guilds` WHERE `guildId` > @minId", conn))
 			{
-				mc.Parameters.AddWithValue("@minId", MabiId.Guilds);
-
-				using (var reader = mc.ExecuteReader())
+				// Read guilds
+				using (var mc = new MySqlCommand("SELECT * FROM `guilds` WHERE `guildId` > @minId", conn))
 				{
-					while (reader.Read())
+					mc.Parameters.AddWithValue("@minId", MabiId.Guilds);
+
+					using (var reader = mc.ExecuteReader())
 					{
-						var guild = this.ReadGuild(reader);
-						var members = this.GetGuildMembers(guild.Id);
+						while (reader.Read())
+						{
+							var guild = this.ReadGuild(reader);
+							result.Add(guild.Id, guild);
+						}
+					}
+				}
 
-						guild.InitMembers(members);
+				var memberLists = new Dictionary<long, List<GuildMember>>();
 
-						result.Add(guild.Id, guild);
+				// Read members
+				using (var mc = new MySqlCommand(
+					"SELECT `m`.*, `cr`.name " +
+					"FROM `guild_members` AS `m` " +
+					"INNER JOIN `characters` AS `c` ON `m`.`characterId` = `c`.`entityId` " +
+					"INNER JOIN `creatures` AS `cr` ON `c`.`creatureId` = `cr`.`creatureId` "
+				, conn))
+				{
+					using (var reader = mc.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							var member = this.ReadGuildMember(reader);
+							result[member.GuildId].AddMember(member);
+						}
 					}
 				}
 			}
@@ -412,21 +431,32 @@ namespace Aura.Shared.Database
 				{
 					while (reader.Read())
 					{
-						var member = new GuildMember();
-						member.GuildId = reader.GetInt64("guildId");
-						member.CharacterId = reader.GetInt64("characterId");
-						member.Rank = (GuildMemberRank)reader.GetInt32("rank");
-						member.JoinedDate = reader.GetDateTimeSafe("joinedDate");
-						member.Application = reader.GetString("application");
-						member.Messages = (GuildMessages)reader.GetInt32("messages");
-						member.Name = reader.GetString("name");
-
+						var member = this.ReadGuildMember(reader);
 						result.Add(member);
 					}
 				}
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Reads GuildMember from reader and returns it.
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <returns></returns>
+		private GuildMember ReadGuildMember(MySqlDataReader reader)
+		{
+			var member = new GuildMember();
+			member.GuildId = reader.GetInt64("guildId");
+			member.CharacterId = reader.GetInt64("characterId");
+			member.Rank = (GuildMemberRank)reader.GetInt32("rank");
+			member.JoinedDate = reader.GetDateTimeSafe("joinedDate");
+			member.Application = reader.GetString("application");
+			member.Messages = (GuildMessages)reader.GetInt32("messages");
+			member.Name = reader.GetString("name");
+
+			return member;
 		}
 
 		/// <summary>
