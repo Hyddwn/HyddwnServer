@@ -3,10 +3,6 @@
 //--- Description -----------------------------------------------------------
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
 //--- Notes -----------------------------------------------------------------
-// The following dialogue is missing:
-// * 1-star PTJ turn in response
-// * 3-star PTJ turn in response
-//
 // Definitions for the following base scripts have been improvised,
 // update with official script whenever possible:
 // * AeiraExtDeliveryNerysStewartPtjBaseScript
@@ -154,15 +150,10 @@ public class AeiraPtjScript : GeneralScript
 					npc.Msg(npc.FavorExpression(), L("Wow, thank you!<br/>Can you help me out again tomorrow?"));
 					npc.ModifyRelation(0, Random(3), 0);
 				}
-				else if (result == QuestResult.Mid)
+				else
 				{
-					npc.Msg(npc.FavorExpression(), L("(missing): 3 star response"));
-					npc.ModifyRelation(0, Random(1), 0);
-				}
-				else if (result == QuestResult.Low)
-				{
-					npc.Msg(npc.FavorExpression(), L("(missing): 1 star response"));
-					npc.ModifyRelation(0, -Random(2), 0);
+					// Aeira doesn't have any PTJ quests that could yield
+					// mid/low results.
 				}
 			}
 			return;
