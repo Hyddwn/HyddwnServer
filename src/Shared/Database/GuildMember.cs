@@ -20,6 +20,7 @@ namespace Aura.Shared.Database
 		public bool IsOfficer { get { return (this.Rank == GuildMemberRank.Officer); } }
 		public bool IsLeaderOrOfficer { get { return (this.IsLeader || this.IsOfficer); } }
 		public bool IsApplicant { get { return (this.Rank == GuildMemberRank.Applied); } }
+		public bool IsDeclined { get { return (this.Rank == GuildMemberRank.Declined); } }
 		public bool IsMember { get { return (this.Rank < GuildMemberRank.Applied); } }
 	}
 }

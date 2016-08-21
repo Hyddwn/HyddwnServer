@@ -67,17 +67,20 @@
 					{{#if success}}<div class="notification success disappear"><i class="fa fa-check-circle" aria-hidden="true"></i><span>{{success}}</span></div>{{/if}}
 					{{#if error}}<div class="notification error disappear"><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span>{{error}}</span></div>{{/if}}
 					{{#if guild.Disbanded}}<div class="notification info"><i class="fa fa-exclamation" aria-hidden="true"></i><span>The guild has been disbanded and will get removed shortly.</span></div>{{/if}}
+					{{#if member.IsDeclined}}<div class="notification info"><i class="fa fa-exclamation" aria-hidden="true"></i><span>You will be removed from the guild shortly.</span></div>{{/if}}
 					<noscript><div class="notification info"><i class="fa fa-exclamation" aria-hidden="true"></i><span>This page requires JavaScript being enabled.</span></div></noscript>
 				</div>
 				<div id="menu">
 					{{#if guild.Disbanded}}
 					{{#else}}
 						<ul>
-							<li><a href="#" data-page="home" class="current"><i class="fa fa-home" aria-hidden="true"></i><span>Home</span></a></li>
+							<li><a title="Home" href="#" data-page="home" class="current"><i class="fa fa-home" aria-hidden="true"></i><span>Home</span></a></li>
 							{{#if member.IsMember}}
-								<li><a href="#" data-page="members"><i class="fa fa-users" aria-hidden="true"></i><span>Members</span></a></li>
+								<li><a title="Members" href="#" data-page="members"><i class="fa fa-users" aria-hidden="true"></i><span>Members</span></a></li>
 								{{#if member.IsLeader}}
-									<li><a href="#" data-page="settings"><i class="fa fa-cogs" aria-hidden="true"></i><span>Settings</span></a></li>
+									<li><a title="Settings" href="#" data-page="settings"><i class="fa fa-cogs" aria-hidden="true"></i><span>Settings</span></a></li>
+								{{#else}}
+									<li><a title="Leave guild" href="{{url}}&leaveGuild=1"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Leave guild</span></a></li>
 								{{/if}}
 							{{#elif member.IsApplicant}}
 								<li><a title="Cancel application" href="{{url}}&cancelApplication=1"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Cancel application</span></a></li>
