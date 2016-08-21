@@ -206,5 +206,24 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends GuildStoneLocation to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="stone">Removes marker if null.</param>
+		public static void GuildStoneLocation(Creature creature, GuildStone stone)
+		{
+			var packet = new Packet(Op.GuildStoneLocation, creature.EntityId);
+			packet.PutByte(stone != null);
+			if (stone != null)
+			{
+				packet.PutInt(stone.RegionId);
+				packet.PutInt(stone.X);
+				packet.PutInt(stone.Y);
+			}
+
+			creature.Client.Send(packet);
+		}
 	}
 }

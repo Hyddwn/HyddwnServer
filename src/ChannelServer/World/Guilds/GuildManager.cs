@@ -42,6 +42,21 @@ namespace Aura.Channel.World.Guilds
 		{
 			this.LoadGuilds();
 			ChannelServer.Instance.Events.MabiTick += this.OnMabiTick;
+			ChannelServer.Instance.Events.CreatureConnected += this.OnCreatureConnected;
+		}
+
+		/// <summary>
+		/// Called when a creature connected to the channel.
+		/// </summary>
+		/// <param name="obj"></param>
+		private void OnCreatureConnected(Creature creature)
+		{
+			var guild = creature.Guild;
+
+			if (guild == null || !guild.HasStone)
+				return;
+
+			Send.GuildStoneLocation(creature, guild.Stone);
 		}
 
 		/// <summary>
@@ -216,6 +231,40 @@ namespace Aura.Channel.World.Guilds
 
 			lock (_syncLock)
 				_stones[guild.Id] = prop;
+
+			this.UpdateStoneLocation(guild);
+		}
+
+		/// <summary>
+		/// Executes the given action for all members of guild that are online.
+		/// </summary>
+		/// <param name="guild"></param>
+		/// <param name="action"></param>
+		private static void ForOnlineMembers(Guild guild, Action<Creature> action)
+		{
+			var members = guild.GetMembers();
+			foreach (var member in members)
+			{
+				var creature = ChannelServer.Instance.World.GetCreature(member.CharacterId);
+				if (creature == null)
+					continue;
+
+				action(creature);
+			}
+		}
+
+		/// <summary>
+		/// Updates the guild stone's location for all members.
+		/// </summary>
+		/// <param name="guild"></param>
+		private void UpdateStoneLocation(Guild guild)
+		{
+			var stone = guild.Stone;
+
+			if (stone.RegionId != 0)
+				ForOnlineMembers(guild, creature => Send.GuildStoneLocation(creature, stone));
+			else
+				ForOnlineMembers(guild, creature => Send.GuildStoneLocation(creature, null));
 		}
 
 		/// <summary>
@@ -406,6 +455,8 @@ namespace Aura.Channel.World.Guilds
 			guild.Stone.Direction = 0;
 
 			stone.Region.RemoveProp(stone);
+
+			this.UpdateStoneLocation(guild);
 		}
 
 		/// <summary>
