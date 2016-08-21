@@ -604,6 +604,24 @@ namespace Aura.Shared.Database
 		}
 
 		/// <summary>
+		/// Writes guild's level, points, and gold to database.
+		/// </summary>
+		/// <param name="guild"></param>
+		public void UpdateGuildLevelAndResources(Guild guild)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `guilds` SET {0} WHERE `guildId` = @guildId", conn))
+			{
+				cmd.AddParameter("@guildId", guild.Id);
+				cmd.Set("points", guild.Points);
+				cmd.Set("gold", guild.Gold);
+				cmd.Set("level", (int)guild.Level);
+
+				cmd.Execute();
+			}
+		}
+
+		/// <summary>
 		/// Writes guild's points and gold to database.
 		/// </summary>
 		/// <param name="guild"></param>

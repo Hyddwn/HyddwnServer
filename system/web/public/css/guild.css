@@ -43,6 +43,11 @@ input[type=submit]:active {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dedede', endColorstr='#f6f6f6',GradientType=0 ); /* IE6-9 */
 }
 
+input[type=submit][disabled] {
+	background: #dedede;
+	color: #777;
+}
+
 textarea:focus,
 input[type=text]:focus {
 	border-color: #036564;

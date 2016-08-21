@@ -83,6 +83,18 @@ namespace Aura.Web.Controllers
 				return;
 			}
 
+			// Determine ability to level up
+			var levelUpDisabled = true;
+			var levelUpRequirements = "";
+			if (guild.Level < GuildLevel.Grand)
+			{
+				int points, gold;
+				if (guild.GetLevelUpRequirements(out points, out gold) && points < guild.Points && gold < guild.Gold)
+					levelUpDisabled = false;
+
+				levelUpRequirements = string.Format("Guild Points: {0:n0}, Gold: {1:n0}", points, gold);
+			}
+
 			string success = null;
 			string error = null;
 
@@ -98,6 +110,9 @@ namespace Aura.Web.Controllers
 				// Settings: Disband
 				else if (req.Parameters.Has("disband"))
 					this.Disband(req, guild, ref success, ref error);
+				// Settings: Level up
+				else if (!levelUpDisabled && req.Parameters.Has("levelUp"))
+					this.LevelUp(req, guild, ref success, ref error);
 			}
 
 			// Leader/Officer actions
@@ -155,6 +170,7 @@ namespace Aura.Web.Controllers
 			var members = guild.GetMembers().Where(a => a.Rank != GuildMemberRank.Declined).OrderBy(a => a.Rank == GuildMemberRank.Applied ? 25 : (int)a.Rank * 10).ThenBy(a => a.Name);
 			var url = string.Format("/guild?guildid={0}&userid={1}&userserver={2}&userchar={3}&key={4}", guildIdStr, accountName, server, characterIdStr, sessionKeyStr);
 
+			// Render
 			res.Render("system/web/guild.htm", new
 			{
 				url = url,
@@ -163,8 +179,26 @@ namespace Aura.Web.Controllers
 				member = guildMember,
 				success = success,
 				error = error,
-				messageMaxLength = MessageMaxLength
+				messageMaxLength = MessageMaxLength,
+				levelUpDisabled = levelUpDisabled,
+				levelUpRequirements = levelUpRequirements,
 			});
+		}
+
+		private void LevelUp(Request req, Guild guild, ref string success, ref string error)
+		{
+			int points, gold;
+			guild.GetLevelUpRequirements(out points, out gold);
+
+			guild.Points -= points;
+			guild.Gold -= gold;
+
+			if (++guild.Level > GuildLevel.Grand)
+				guild.Level = GuildLevel.Grand;
+
+			WebServer.Instance.Database.UpdateGuildLevelAndResources(guild);
+
+			success = string.Format("The guild has reached level {0}.", guild.Level);
 		}
 
 		private void ChangeMessages(Request req, Guild guild, ref string success, ref string error)

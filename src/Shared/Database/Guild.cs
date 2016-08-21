@@ -113,5 +113,24 @@ namespace Aura.Shared.Database
 			lock (_members)
 				return _members.ContainsKey(characterId);
 		}
+
+		public bool GetLevelUpRequirements(out int points, out int gold)
+		{
+			points = 0;
+			gold = 0;
+
+			if (this.Level >= GuildLevel.Grand)
+				return false;
+
+			switch (this.Level)
+			{
+				case GuildLevel.Beginner: points = 100; gold = 2000; break;
+				case GuildLevel.Basic: points = 2000; gold = 4000; break;
+				case GuildLevel.Advanced: points = 7000; gold = 50000; break;
+				case GuildLevel.Great: points = 20000; gold = 100000; break;
+			}
+
+			return true;
+		}
 	}
 }
