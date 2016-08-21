@@ -138,7 +138,7 @@ namespace Aura.Web.Controllers
 			// Applicant actions
 			if (guildMember.IsApplicant)
 			{
-				// Settings: Change messages
+				// Menu: Cancel application
 				if (req.Parameters.Has("cancelApplication"))
 					this.CancelApplication(req, guild, guildMember, ref success, ref error);
 			}
@@ -246,7 +246,7 @@ namespace Aura.Web.Controllers
 			member.Rank = GuildMemberRank.Declined;
 			WebServer.Instance.Database.UpdateGuildMemberRank(member);
 
-			success = string.Format("{0} has been removed from the guild.", member.Name);
+			success = string.Format("{0} will get removed from the guild shortly.", member.Name);
 		}
 	}
 }
