@@ -83,6 +83,7 @@ quests/skills/204003_malcolm_weaving_g7.cs
 // Scroll Hunting
 quests/scrolls/*
 quests/party/*
+quests/guild/*
 
 // Collection
 quests/collection/1001_collect_5_small_gems.cs

@@ -341,9 +341,9 @@ public class EavanShop : NpcShopScript
 
 			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Demi Lich
 			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate Banshee
-			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Goblin Bandits
-			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Giant Ogre
-			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Giant Bear
+			AddQuest("Guild Quest", 110006, 1200); // [Guild] Eliminate the Goblin Bandits
+			AddQuest("Guild Quest", 110007, 1200); // [Guild] Eliminate the Giant Ogre
+			AddQuest("Guild Quest", 110008, 1200); // [Guild] Eliminate the Giant Bear
 
 			//Add("Guild Robe", 19047); // [Guild Name] Guild Robe
 		}
