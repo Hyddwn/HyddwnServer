@@ -41,6 +41,10 @@
 				setTimeout(function() {
 					$('.notification.disappear').fadeOut();
 				}, 4000);
+				
+				$('input[type=submit][data-confirm]').click(function() {
+					return confirm($(this).attr('data-confirm'));
+				});
 			});
 			
 			function closeWindow() {
@@ -195,8 +199,8 @@
 						
 						<h1>Functions</h1>
 						<form action="" method="post">
-							<input type="submit" name="disband" value="Disband guild" />
-							<input type="submit" name="levelUp" title="{{levelUpRequirements}}" {{#if levelUpDisabled}}disabled="disabled"{{/if}} value="Level up" />
+							<input type="submit" name="disband" value="Disband guild" data-confirm="Do you want to disband the guild?" />
+							<input type="submit" name="levelUp" title="{{levelUpRequirements}}" {{#if levelUpDisabled}}disabled="disabled"{{/if}} value="Level up" data-confirm="Do you want level up the guild?" />
 						</form>
 					</div>
 				{{/if}}
