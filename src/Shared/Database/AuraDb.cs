@@ -491,6 +491,7 @@ namespace Aura.Shared.Database
 			guild.LeavingMessage = reader.GetString("leavingMessage");
 			guild.RejectionMessage = reader.GetString("rejectionMessage");
 			guild.Type = (GuildType)reader.GetInt32("type");
+			guild.Visibility = (GuildVisibility)reader.GetInt32("visibility");
 			guild.Level = (GuildLevel)reader.GetInt32("level");
 			guild.Options = (GuildOptions)reader.GetInt32("options");
 			guild.Stone.PropId = reader.GetInt32("stonePropId");
@@ -712,6 +713,7 @@ namespace Aura.Shared.Database
 				cmd.Set("leavingMessage", guild.LeavingMessage);
 				cmd.Set("rejectionMessage", guild.RejectionMessage);
 				cmd.Set("type", (int)guild.Type);
+				cmd.Set("visibility", (int)guild.Visibility);
 
 				cmd.Execute();
 

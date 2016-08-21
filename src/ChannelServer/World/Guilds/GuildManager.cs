@@ -565,6 +565,7 @@ namespace Aura.Channel.World.Guilds
 				guild.EstablishedDate = DateTime.Now;
 				guild.Server = ChannelServer.Instance.Conf.Channel.ChannelServer;
 				guild.Type = type;
+				guild.Visibility = visibility;
 				guild.IntroMessage = string.Format(Localization.Get("Guild stone for the {0} guild."), guild.Name);
 				guild.WelcomeMessage = string.Format(Localization.Get("Welcome to the {0} guild!"), guild.Name);
 				guild.LeavingMessage = string.Format(Localization.Get("You have left the {0} guild."), guild.Name);

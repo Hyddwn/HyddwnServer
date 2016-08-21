@@ -30,6 +30,7 @@ namespace Aura.Shared.Database
 		public string RejectionMessage { get; set; }
 
 		public GuildType Type { get; set; }
+		public GuildVisibility Visibility { get; set; }
 		public GuildLevel Level { get; set; }
 		public GuildOptions Options { get; set; }
 		public GuildStone Stone { get; set; }

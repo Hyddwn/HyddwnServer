@@ -24,7 +24,7 @@ namespace Aura.Mabi.Const
 		Other = 5,
 	}
 
-	public enum GuildVisibility : byte
+	public enum GuildVisibility
 	{
 		Public = 0,
 		Private = 1,
