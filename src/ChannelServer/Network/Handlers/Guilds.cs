@@ -189,6 +189,7 @@ namespace Aura.Channel.Network.Handlers
 
 			ChannelServer.Instance.GuildManager.Apply(creature, guild, application);
 
+			Send.GuildMessage(creature, guild, Localization.Get("Your application has been accepted.\nPlease wait for the Guild Leader to make the final confirmation."));
 			Send.GuildApplyR(creature, true);
 		}
 
