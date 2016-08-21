@@ -76,7 +76,7 @@
 							<li><a href="#" data-page="home" class="current"><i class="fa fa-home" aria-hidden="true"></i><span>Home</span></a></li>
 							{{#if member.IsMember}}
 								<li><a href="#" data-page="members"><i class="fa fa-users" aria-hidden="true"></i><span>Members</span></a></li>
-								{{#if member.IsLeaderOrOfficer}}
+								{{#if member.IsLeader}}
 									<li><a href="#" data-page="settings"><i class="fa fa-cogs" aria-hidden="true"></i><span>Settings</span></a></li>
 								{{/if}}
 							{{#elif member.IsApplicant}}
