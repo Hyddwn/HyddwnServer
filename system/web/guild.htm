@@ -127,18 +127,10 @@
 					<table>
 						{{#each members}}
 							<tr>
+								<td class="name rank{{this.Rank}}">{{this.Name}}</td>
 								{{#if this.IsLeader}}
-									<td class="name"><img src="/system/web/public/images/crown1.png" /> {{this.Name}}</td>
 									<td class="options"></td>
-								{{#elif this.IsOfficer}}
-									<td class="name"><img src="/system/web/public/images/crown2.png" /> {{this.Name}}</td>
-									{{#if member.IsLeader}}
-										<td class="options"><a title="Remove from guild" href="{{url}}&removeMember={{this.CharacterId}}"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Remove</span></a></td>
-									{{#else}}
-										<td class="options"></td>
-									{{/if}}
 								{{#elif this.IsApplicant}}
-									<td class="name"><span title="{{this.Application}}"><img src="/system/web/public/images/clock.png" /> {{this.Name}}</span></td>
 									{{#if member.IsLeaderOrOfficer}}
 										<td class="options">
 											<a title="Accept application" href="{{url}}&acceptApplication={{this.CharacterId}}"><i class="fa fa-check" aria-hidden="true"></i><span>Accept</span></a>
@@ -147,8 +139,13 @@
 									{{#else}}
 										<td class="options"></td>
 									{{/if}}
+								{{#elif this.IsOfficer}}
+									{{#if member.IsLeader}}
+										<td class="options"><a title="Remove from guild" href="{{url}}&removeMember={{this.CharacterId}}"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Remove</span></a></td>
+									{{#else}}
+										<td class="options"></td>
+									{{/if}}
 								{{#else}}
-									<td class="name">{{this.Name}}</td>
 									{{#if member.IsLeaderOrOfficer}}
 										<td class="options"><a title="Remove from guild" href="{{url}}&removeMember={{this.CharacterId}}"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Remove</span></a></td>
 									{{#else}}
