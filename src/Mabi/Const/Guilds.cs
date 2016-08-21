@@ -28,7 +28,7 @@ namespace Aura.Mabi.Const
 	{
 		Leader = 0,
 		Officer = 1,
-		BronzeCrown = 2,
+		BronzeMedal = 2,
 		SeniorMember = 3,
 		UnkMember = 4,
 		Member = 5,
