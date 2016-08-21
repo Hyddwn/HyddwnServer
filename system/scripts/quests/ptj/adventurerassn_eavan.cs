@@ -14,7 +14,7 @@ public class EavanPtjScript : GeneralScript
 {
 	const PtjType JobType = PtjType.AdventurersAssociation;
 
-	const int Start = 12;
+	const int Start = 7;
 	//int Report, Deadline; // Variable - Extracted from today's PTJ quest data.
 	const int PerDay = 10;
 
