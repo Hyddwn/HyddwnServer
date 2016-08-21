@@ -100,6 +100,14 @@ namespace Aura.Shared.Database
 			}
 		}
 
+		public void RemoveMember(GuildMember member)
+		{
+			lock (_members)
+			{
+				_members.Remove(member.CharacterId);
+			}
+		}
+
 		public bool HasMember(long characterId)
 		{
 			lock (_members)

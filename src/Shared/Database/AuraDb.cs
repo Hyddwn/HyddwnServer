@@ -512,7 +512,7 @@ namespace Aura.Shared.Database
 		}
 
 		/// <summary>
-		/// Removes guild and its members from database.
+		/// Updates guild's disbanded field in database.
 		/// </summary>
 		/// <param name="guild"></param>
 		public void UpdateDisbandGuild(Guild guild)
@@ -524,6 +524,35 @@ namespace Aura.Shared.Database
 				cmd.Set("disbanded", guild.Disbanded);
 
 				cmd.Execute();
+			}
+		}
+
+		/// <summary>
+		/// Removes guild and its members from database.
+		/// </summary>
+		/// <param name="guild"></param>
+		public void RemoveGuild(Guild guild)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new MySqlCommand("DELETE FROM `guilds` WHERE `guildId` = @guildId", conn))
+			{
+				cmd.Parameters.AddWithValue("@guildId", guild.Id);
+				cmd.ExecuteNonQuery();
+			}
+		}
+
+		/// <summary>
+		/// Removes guild and its members from database.
+		/// </summary>
+		/// <param name="member"></param>
+		public void RemoveGuildMember(GuildMember member)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new MySqlCommand("DELETE FROM `guild_members` WHERE `guildId` = @guildId && `characterId` = @characterId", conn))
+			{
+				cmd.Parameters.AddWithValue("@guildId", member.GuildId);
+				cmd.Parameters.AddWithValue("@characterId", member.CharacterId);
+				cmd.ExecuteNonQuery();
 			}
 		}
 

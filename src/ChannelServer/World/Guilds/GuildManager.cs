@@ -9,6 +9,8 @@ using Aura.Shared.Database;
 using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aura.Channel.World.Guilds
 {
@@ -39,6 +41,126 @@ namespace Aura.Channel.World.Guilds
 		public void Initialize()
 		{
 			this.LoadGuilds();
+			ChannelServer.Instance.Events.MabiTick += this.OnMabiTick;
+		}
+
+		/// <summary>
+		/// Called every 5 minutes to synchronize guild information.
+		/// </summary>
+		/// <param name="now"></param>
+		private void OnMabiTick(ErinnTime now)
+		{
+			// Synchronizing the guilds can take a few milliseconds if there
+			// are many in the db. Run it in a thread so we don't block
+			// the world thread.
+			// Should this be the default for all time events...?
+			Task.Factory.StartNew(SynchronizeGuilds);
+		}
+
+		/// <summary>
+		/// Synchronizes loaded guilds with current information
+		/// from the database.
+		/// </summary>
+		private void SynchronizeGuilds()
+		{
+			lock (_syncLock)
+			{
+				var dbGuilds = ChannelServer.Instance.Database.GetGuilds();
+				var removedGuilds = new List<Guild>();
+
+				foreach (var guild in _guilds.Values)
+				{
+					// Check for removed or disbanded guilds
+					Guild dbGuild;
+					if (!dbGuilds.TryGetValue(guild.Id, out dbGuild) || dbGuild.Disbanded == true)
+					{
+						removedGuilds.Add(guild);
+					}
+
+					// Update guild
+					guild.IntroMessage = dbGuild.IntroMessage;
+					guild.WelcomeMessage = dbGuild.WelcomeMessage;
+					guild.LeavingMessage = dbGuild.LeavingMessage;
+					guild.RejectionMessage = dbGuild.RejectionMessage;
+					guild.Type = dbGuild.Type;
+					guild.Level = dbGuild.Level;
+					guild.Options = dbGuild.Options;
+
+					// Update members
+					var members = guild.GetMembers();
+					foreach (var member in members)
+					{
+						var creature = ChannelServer.Instance.World.GetCreature(member.CharacterId);
+						var update = false;
+						var remove = false;
+
+						// Check for whether the member was removed, set to
+						// declined, or the guild was disbanded.
+						var dbMember = dbGuild.GetMember(member.CharacterId);
+						if (dbMember == null || (member.Rank < GuildMemberRank.Applied && dbMember.Rank == GuildMemberRank.Declined) || dbGuild.Disbanded)
+						{
+							if (creature != null)
+								Send.GuildMessage(creature, guild, guild.LeavingMessage, guild.Name);
+
+							update = true;
+							remove = true;
+						}
+						// Check for accepted members
+						else if (member.Rank == GuildMemberRank.Applied && dbMember.Rank < GuildMemberRank.Applied)
+						{
+							if (creature != null)
+								Send.GuildMessage(creature, guild, guild.WelcomeMessage, guild.Name);
+
+							update = true;
+						}
+						// Check for declined members
+						else if (member.Rank == GuildMemberRank.Applied && dbMember.Rank == GuildMemberRank.Declined)
+						{
+							if (creature != null)
+								Send.GuildMessage(creature, guild, guild.RejectionMessage, guild.Name);
+
+							update = true;
+							remove = true;
+						}
+
+						// Check for rank update
+						if (!update)
+							update = (member.Rank != dbMember.Rank);
+
+						// Update creature
+						if (update)
+						{
+							if (remove)
+							{
+								guild.RemoveMember(member);
+								ChannelServer.Instance.Database.RemoveGuildMember(member);
+
+								if (creature != null)
+								{
+									creature.Guild = null;
+									creature.GuildMember = null;
+									Send.GuildUpdateMember(creature, null, null);
+								}
+							}
+							else
+							{
+								member.Rank = dbMember.Rank;
+
+								if (creature != null)
+									Send.GuildUpdateMember(creature, guild, member);
+							}
+						}
+					}
+				}
+
+				// Remove guilds
+				foreach (var guild in removedGuilds)
+				{
+					_guilds.Remove(guild.Id);
+					this.DestroyStone(guild);
+					ChannelServer.Instance.Database.RemoveGuild(guild);
+				}
+			}
 		}
 
 		/// <summary>
