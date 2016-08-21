@@ -6,11 +6,6 @@
 // This script depends on ./healer_dilys.cs for wool collection PTJs.
 // Please ensure this script loads afterward.
 //
-// The following dialogue is missing:
-// * first time worker PTJ inquiry
-// * first time accepting PTJ offer
-// * first time declining PTJ offer
-//
 // As of G16S2(?), Manus began providing PTJs that reward holy water.
 // For now, said PTJs will remain undefined and out of circulation.
 //---------------------------------------------------------------------------
@@ -183,7 +178,7 @@ public class ManusPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			msg = L("(missing): first time worker PTJ inquiry");
+			msg = L("Looking for some work, are you?<br/>I happen to be in need of extra hands here,<br/>so help me out here and I'll pay you adequately.<br/>It's not much, though...<p/>So, are you interested?");
 		else
 			msg = L("So, you're here to help out again.");
 
@@ -195,7 +190,7 @@ public class ManusPtjScript : GeneralScript
 		if (await npc.Select() == "@accept")
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time accepting PTJ offer"));
+				npc.Msg(L("Great. Good choice.<br/>Remember to report back to me before the deadline.<br/>"));
 			else
 				npc.Msg(L("I look forward to your job well done."));
 
@@ -204,7 +199,7 @@ public class ManusPtjScript : GeneralScript
 		else
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time declining PTJ offer"));
+				npc.Msg(L("If you don't want to report, though, I won't force you."));
 			else
 				npc.Msg(L("You must be feeling off today."));
 		}
