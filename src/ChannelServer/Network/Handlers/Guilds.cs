@@ -187,6 +187,14 @@ namespace Aura.Channel.Network.Handlers
 				application = application.Substring(0, 100);
 			}
 
+			// Check members
+			if (guild.MemberCount >= guild.MaxMembers)
+			{
+				Send.MsgBox(creature, Localization.Get("The guild's maximum amount of members has been reached."));
+				Send.GuildApplyR(creature, false);
+				return;
+			}
+
 			ChannelServer.Instance.GuildManager.Apply(creature, guild, application);
 
 			Send.GuildMessage(creature, guild, Localization.Get("Your application has been accepted.\nPlease wait for the Guild Leader to make the final confirmation."));
