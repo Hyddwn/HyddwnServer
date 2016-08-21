@@ -225,5 +225,99 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends GuildPermitCheckR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		/// <param name="itemEntityId"></param>
+		public static void GuildPermitCheckR(Creature creature, GuildPermitCheckResult result, long itemEntityId)
+		{
+			var packet = new Packet(Op.GuildPermitCheckR, creature.EntityId);
+			packet.PutInt((int)result);
+			packet.PutLong(itemEntityId);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildCheckNameR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void GuildCheckNameR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.GuildCheckNameR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildCreateRequestR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void GuildCreateRequestR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.GuildCreateRequestR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildNameAgreeRequest to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="requesteeEntityId"></param>
+		/// <param name="name"></param>
+		public static void GuildNameAgreeRequest(Creature creature, long requesteeEntityId, string name)
+		{
+			var packet = new Packet(Op.GuildNameAgreeRequest, creature.EntityId);
+			packet.PutLong(requesteeEntityId);
+			packet.PutString(name);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildNameVote to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="vote"></param>
+		public static void GuildNameVote(Creature creature, string voterName, bool vote)
+		{
+			var packet = new Packet(Op.GuildNameVote, creature.EntityId);
+			packet.PutString(voterName);
+			packet.PutByte(vote);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildCreationConfirmRequest to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void GuildCreationConfirmRequest(Creature creature)
+		{
+			var packet = new Packet(Op.GuildCreationConfirmRequest, creature.EntityId);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildGoldUpdate to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="amount"></param>
+		public static void GuildGoldUpdate(Creature creature, int amount)
+		{
+			var packet = new Packet(Op.GuildGoldUpdate, creature.EntityId);
+			packet.PutInt(amount);
+
+			creature.Client.Send(packet);
+		}
 	}
 }
