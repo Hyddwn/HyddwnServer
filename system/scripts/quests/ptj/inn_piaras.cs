@@ -21,9 +21,9 @@ public class PiarasPtjScript : GeneralScript
 
 	readonly int[] QuestIds = new int[]
 	{
-		500102, // Basic  Gather 10 Pieces of Firewood
-		500132, // Int    Gather 20 Pieces of Firewood
-		500162, // Adv    Gather 30 Pieces of Firewood
+		513103, // Basic  Gather 10 Pieces of Firewood
+		513133, // Int    Gather 20 Pieces of Firewood
+		513163, // Adv    Gather 30 Pieces of Firewood
 	};
 
 	[On("ErinnMidnightTick")]
@@ -183,7 +183,7 @@ public class PiarasFirewoodBasicPtjScript : QuestScript
 {
 	public override void Load()
 	{
-		SetId(500102);
+		SetId(513103);
 		SetName(L("Inn Part-time Job"));
 		SetDescription(L("There is a shortage of firewood at the Inn. Please collect [10 pieces of firewood]. First of all, an axe is required to chop firewood."));
 
@@ -227,7 +227,7 @@ public class PiarasFirewoodIntPtjScript : QuestScript
 {
 	public override void Load()
 	{
-		SetId(500132);
+		SetId(513133);
 		SetName(L("Inn Part-time Job"));
 		SetDescription(L("There is a shortage of firewood at the Inn. Please collect [20 pieces of firewood]. First of all, an axe is required to chop firewood."));
 
@@ -271,7 +271,7 @@ public class PiarasFirewoodAdvPtjScript : QuestScript
 {
 	public override void Load()
 	{
-		SetId(500162);
+		SetId(513163);
 		SetName(L("Inn Part-time Job"));
 		SetDescription(L("There is a shortage of firewood at the Inn. Please collect [30 pieces of firewood]. First of all, an axe is required to chop firewood."));
 
