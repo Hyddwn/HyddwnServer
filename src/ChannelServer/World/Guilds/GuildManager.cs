@@ -129,6 +129,10 @@ namespace Aura.Channel.World.Guilds
 					Send.GuildInfoApplied(creature, guild);
 				}
 			}
+			else if (creature.GuildId != 0)
+			{
+				Send.GuildInfoApplied(creature, guild);
+			}
 			else
 			{
 				Send.GuildInfoNoGuild(creature, guild);
