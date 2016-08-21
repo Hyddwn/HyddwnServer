@@ -3,13 +3,6 @@
 //--- Description -----------------------------------------------------------
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
 //--- Notes -----------------------------------------------------------------
-// The following dialogue is missing:
-// * first time worker PTJ inquiry
-// * first time accepting PTJ offer
-// * first time declining PTJ offer
-// * 1-star PTJ turn in response
-// * 3-star PTJ turn in response
-//
 // Definitions for the following base scripts have been improvised,
 // update with official script whenever possible:
 // * EavanExtDeliveryManusAusteynPtjBaseScript
@@ -188,15 +181,10 @@ public class EavanPtjScript : GeneralScript
 					npc.Msg(npc.FavorExpression(), L("Good. Just as I asked you to do.<br/>Thank you very much."));
 					npc.ModifyRelation(0, Random(3), 0);
 				}
-				else if (result == QuestResult.Mid)
+				else
 				{
-					npc.Msg(npc.FavorExpression(), L("(missing): 3 star response"));
-					npc.ModifyRelation(0, Random(1), 0);
-				}
-				else if (result == QuestResult.Low)
-				{
-					npc.Msg(npc.FavorExpression(), L("(missing): 1 star response"));
-					npc.ModifyRelation(0, -Random(2), 0);
+					// Eeavan doesn't have any PTJ quests that could yield
+					// mid/low results.
 				}
 			}
 			return;
@@ -222,7 +210,7 @@ public class EavanPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			msg = L("(missing): first time worker PTJ inquiry");
+			msg = L("Do you need some work to do?<br/>If you want, you can help me here.<br/>The pay is not that great, but I will definitely pay you for your work.<br/>The pay will be adjusted depending on how long you've worked for me.<p/>Would you like to try?");
 		else
 			msg = L("Ah, <username/>. Can you help me today?");
 
@@ -234,7 +222,7 @@ public class EavanPtjScript : GeneralScript
 		if (await npc.Select() == "@accept")
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time accepting PTJ offer"));
+				npc.Msg(L("Thank you. I know you will be of great help to me.<br/>I want to make one thing clear before we start, though.<br/>You must report to me before the deadline whether or not your job is complete."));
 			else
 				npc.Msg(L("Thank you for your help in advance."));
 
@@ -243,7 +231,7 @@ public class EavanPtjScript : GeneralScript
 		else
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time declining PTJ offer"));
+				npc.Msg(L("Do you have something else to do?<br/>Then, I will find someone else."));
 			else
 				npc.Msg(L("You seem busy today."));
 		}
