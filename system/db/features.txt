@@ -305,7 +305,9 @@
 // Generation 11
 { name: "G11", enabled: false, children: [
 	// Season 1
-	{ name: "G11S1", enabled: true, children: []},
+	{ name: "G11S1", enabled: true, children: [
+		{ name: "InviteGuild", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G11S2", enabled: true, children: [

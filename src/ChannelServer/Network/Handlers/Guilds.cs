@@ -4,6 +4,7 @@
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
+using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
@@ -357,6 +358,66 @@ namespace Aura.Channel.Network.Handlers
 			// Sending panel again to reset variables, unofficial,
 			// we're missing a log for withdrawing.
 			Send.GuildPanel(creature, guild);
+		}
+
+		/// <summary>
+		/// Sent clicking "Invite to join guild" in character right-click menu.
+		/// </summary>
+		/// <example>
+		/// 001 [0010000000000021] Long   : 4503599627370529
+		/// </example>
+		[PacketHandler(Op.GuildInvite)]
+		public void GuildInvite(ChannelClient client, Packet packet)
+		{
+			var entityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check feature
+			if (!AuraData.FeaturesDb.IsEnabled("InviteGuild"))
+			{
+				Send.MsgBox(creature, Localization.Get("This feature hasn't been enabled yet."));
+				return;
+			}
+
+			// Check guild
+			var guild = creature.Guild;
+			if (guild == null)
+			{
+				Log.Warning("GuildInvite: User '{0}' is not in a guild.", client.Account.Id);
+				return;
+			}
+
+			// Check rank
+			if (!creature.GuildMember.IsMember)
+			{
+				Log.Warning("GuildInvite: User '{0}' is not a full member.", client.Account.Id);
+				return;
+			}
+
+			// Check availablility
+			if (guild.MemberCount >= guild.MaxMembers)
+			{
+				Send.MsgBox(creature, Localization.Get("The guild's maximum amount of members has been reached."));
+				return;
+			}
+
+			// Check character
+			var other = creature.Region.GetCreature(entityId);
+			if (other == null || !other.GetPosition().InRange(creature.GetPosition(), Region.VisibleRange))
+			{
+				Send.MsgBox(creature, Localization.Get("Character not found."));
+				return;
+			}
+			else if (other.Guild != null)
+			{
+				Send.MsgBox(creature, Localization.Get("{0} is already a member of a guild."), other.Name);
+				return;
+			}
+
+			// Send info as an invite? We're actually lacking a log of what's
+			// supposed to happen here, but this works.
+			Send.GuildInfoNoGuild(other, guild);
 		}
 	}
 }
