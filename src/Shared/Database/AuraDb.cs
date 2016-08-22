@@ -720,6 +720,132 @@ namespace Aura.Shared.Database
 				guild.Id = cmd.LastId;
 			}
 		}
+
+		/// <summary>
+		/// Returns a list of guilds from the database, based on the given
+		/// search parameters.
+		/// </summary>
+		/// <param name="serverName"></param>
+		/// <param name="page"></param>
+		/// <param name="perPage"></param>
+		/// <param name="sortBy"></param>
+		/// <param name="sortType"></param>
+		/// <param name="guildLevel"></param>
+		/// <param name="memberAmount"></param>
+		/// <param name="guildType"></param>
+		/// <param name="searchText"></param>
+		/// <returns></returns>
+		public List<GuildSearchResult> GetGuildList(string serverName, GuildSortBy sortBy, GuildSortType sortType, GuildSearchLevel guildLevel, GuildSearchMembers memberAmount, GuildType guildType, string searchText)
+		{
+			var result = new List<GuildSearchResult>();
+
+			serverName = MySqlHelper.EscapeString(serverName);
+			searchText = MySqlHelper.EscapeString(searchText);
+
+			// Build query
+			var query = string.Format(
+				"SELECT `g`.*, COUNT(`m`.`characterId`) AS `memberCount`" +
+				" FROM `guilds` AS `g`" +
+				" LEFT JOIN `guild_members` AS `m` ON `g`.`guildId` = `m`.`guildId`" +
+				" WHERE `g`.`server` = '{0}' AND `g`.`name` LIKE '%{1}%' AND `g`.`guildId` > {2}", serverName, searchText, MabiId.Guilds);
+
+			// Search for level
+			if (guildLevel != GuildSearchLevel.All)
+			{
+				GuildLevel level;
+				switch (guildLevel)
+				{
+					default:
+					case GuildSearchLevel.Beginner: level = GuildLevel.Beginner; break;
+					case GuildSearchLevel.Basic: level = GuildLevel.Basic; break;
+					case GuildSearchLevel.Advanced: level = GuildLevel.Advanced; break;
+					case GuildSearchLevel.Great: level = GuildLevel.Great; break;
+					case GuildSearchLevel.Grand: level = GuildLevel.Grand; break;
+				}
+
+				query += string.Format(" AND `g`.`level` = {0}", (int)level);
+			}
+
+			// Search for guild type
+			if (guildType != GuildType.All)
+				query += string.Format(" AND `g`.`type` = {0}", (int)guildType);
+
+			// For the join
+			query += " GROUP BY `g`.`guildId`";
+
+			// Search for member amount range
+			if (memberAmount != GuildSearchMembers.All)
+			{
+				int min, max;
+				switch (memberAmount)
+				{
+					default:
+					case GuildSearchMembers.Lv1_5: min = 1; max = 5; break;
+					case GuildSearchMembers.Lv6_10: min = 6; max = 10; break;
+					case GuildSearchMembers.Lv11_20: min = 11; max = 20; break;
+					case GuildSearchMembers.Lv21_50: min = 21; max = 50; break;
+					case GuildSearchMembers.Lv51_X: min = 21; max = 999999; break;
+				}
+
+				query += string.Format(" HAVING `memberCount` >= {0} AND `memberCount` <= {1}", min, max);
+			}
+
+			// Sort
+			if (sortBy != GuildSortBy.None)
+			{
+				string by;
+				string type = sortType.ToString().ToUpper();
+				switch (sortBy)
+				{
+					default:
+					case GuildSortBy.Level: by = "`g`.`level`"; break;
+					case GuildSortBy.Members: by = "`memberCount`"; break;
+					case GuildSortBy.Type: by = "`g`.`type`"; break;
+					case GuildSortBy.Name: by = "`g`.`name`"; break;
+				}
+				query += string.Format(" ORDER BY {0} {1}", by, type);
+			}
+
+			// Query
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand(query, conn))
+			using (var reader = mc.ExecuteReader())
+			{
+				while (reader.Read())
+				{
+					var guild = new GuildSearchResult();
+					guild.Id = reader.GetInt64("guildId");
+					guild.MemberCount = reader.GetInt32("memberCount");
+					guild.Name = reader.GetString("name");
+					guild.Type = (GuildType)reader.GetInt32("type");
+					guild.LeaderName = reader.GetString("leaderName");
+
+					switch ((GuildLevel)reader.GetInt32("level"))
+					{
+						default:
+						case GuildLevel.Beginner: guild.LevelIndex = 5; break;
+						case GuildLevel.Basic: guild.LevelIndex = 10; break;
+						case GuildLevel.Advanced: guild.LevelIndex = 20; break;
+						case GuildLevel.Great: guild.LevelIndex = 50; break;
+						case GuildLevel.Grand: guild.LevelIndex = 250; break;
+					}
+
+					result.Add(guild);
+				}
+			}
+
+			return result;
+		}
+	}
+
+	public class GuildSearchResult
+	{
+		public long Id { get; set; }
+		public int LevelIndex { get; set; }
+		public int MemberCount { get; set; }
+		public string Name { get; set; }
+		public GuildType Type { get; set; }
+		public string LeaderName { get; set; }
 	}
 
 	/// <summary>
