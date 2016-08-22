@@ -9,6 +9,7 @@ namespace Aura.Msgr.Database
 	{
 		public int Id { get; set; }
 		public string AccountId { get; set; }
+		public long CharacterId { get; set; }
 		public string Name { get; set; }
 		public string Server { get; set; }
 		public ContactStatus Status { get; set; }

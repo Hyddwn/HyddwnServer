@@ -27,6 +27,7 @@ namespace Aura.Msgr.Database
 			{
 				var user = new User();
 				user.AccountId = accountId;
+				user.CharacterId = characterEntityId;
 				user.Name = characterName;
 				user.Server = server;
 				user.ChannelName = channelName;
