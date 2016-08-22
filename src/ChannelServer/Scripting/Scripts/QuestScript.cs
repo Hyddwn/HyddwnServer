@@ -1016,11 +1016,19 @@ namespace Aura.Channel.Scripting.Scripts
 				var createObjective = (objective as QuestObjectiveCreate);
 				if (!progress.Done && itemId == createObjective.ItemId && skill == createObjective.SkillId.ToString())
 				{
-					progress.Count++;
-					if (progress.Count == createObjective.Amount)
+					var done = (++progress.Count == createObjective.Amount);
+					if (done)
 						quest.SetDone(progress.Ident);
 
 					UpdateQuest(creature, quest);
+
+					// Hot-fix for #390, after a creation objective might
+					// come a collect objective for the finished items,
+					// the new active objective has to be checked.
+					// This should happen generally, but some refactoring is
+					// in order, to not make such a mess out of it.
+					if (done)
+						this.CheckCurrentObjective(creature);
 				}
 			}
 		}
