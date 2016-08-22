@@ -22,6 +22,7 @@ namespace Aura.Mabi.Const
 		Commerce = 3,
 		Social = 4,
 		Misc = 5,
+		All = 9,
 	}
 
 	public enum GuildVisibility
