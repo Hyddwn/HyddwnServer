@@ -931,5 +931,19 @@ namespace Aura.Msgr.Network
 
 			Send.FriendInviteR(client, FriendInviteResult.Success, friend);
 		}
+
+		/// <summary>
+		/// Dummy.
+		/// </summary>
+		/// <example>
+		/// 001 [0000000000000000] Long   : 0
+		/// </example>
+		[PacketHandler(Op.Msgr.GuildMemberList)]
+		public void GuildMemberList(MsgrClient client, Packet packet)
+		{
+			var unkLong = packet.GetLong();
+
+			Send.GuildMemberListR(client);
+		}
 	}
 }
