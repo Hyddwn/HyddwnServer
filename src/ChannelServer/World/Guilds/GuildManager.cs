@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.Entities;
+using Aura.Data;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Shared.Database;
@@ -56,7 +57,8 @@ namespace Aura.Channel.World.Guilds
 			if (guild == null || !guild.HasStone)
 				return;
 
-			Send.GuildStoneLocation(creature, guild.Stone);
+			if (AuraData.FeaturesDb.IsEnabled("MarkerMyGuildStone"))
+				Send.GuildStoneLocation(creature, guild.Stone);
 		}
 
 		/// <summary>
@@ -155,7 +157,8 @@ namespace Aura.Channel.World.Guilds
 									creature.Guild = null;
 									creature.GuildMember = null;
 									Send.GuildUpdateMember(creature, null, null);
-									Send.GuildStoneLocation(creature, null);
+									if (AuraData.FeaturesDb.IsEnabled("MarkerMyGuildStone"))
+										Send.GuildStoneLocation(creature, null);
 								}
 							}
 							else
@@ -260,6 +263,9 @@ namespace Aura.Channel.World.Guilds
 		/// <param name="guild"></param>
 		private void UpdateStoneLocation(Guild guild)
 		{
+			if (!AuraData.FeaturesDb.IsEnabled("MarkerMyGuildStone"))
+				return;
+
 			var stone = guild.Stone;
 
 			if (stone.RegionId != 0)

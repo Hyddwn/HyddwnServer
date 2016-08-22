@@ -650,5 +650,52 @@ namespace Aura.Channel.Network.Handlers
 
 			ChannelServer.Instance.GuildManager.CreateGuild(party, name, type, visibility);
 		}
+
+		/// <summary>
+		/// Sent when clicking request join on guild list.
+		/// </summary>
+		/// <example>
+		/// 001 [0300000000500423] Long   : 216172782119027747
+		/// </example>
+		[PacketHandler(Op.GuildListJoinRequest)]
+		public void GuildListJoinRequest(ChannelClient client, Packet packet)
+		{
+			var guildId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check feature
+			if (!AuraData.FeaturesDb.IsEnabled("GuildListBoard"))
+			{
+				Send.MsgBox(creature, Localization.Get("This feature hasn't been enabled yet."));
+				return;
+			}
+
+			// Check guilds
+			if (creature.GuildId != 0)
+			{
+				Send.MsgBox(creature, Localization.Get("You are already member of a guild."));
+				return;
+			}
+
+			// Check guild
+			var guild = ChannelServer.Instance.GuildManager.GetGuild(guildId);
+			if (guild == null)
+			{
+				Send.MsgBox(creature, Localization.Get("Guild not found."));
+				return;
+			}
+
+			// Check availablility
+			if (guild.MemberCount >= guild.MaxMembers)
+			{
+				Send.MsgBox(creature, Localization.Get("The guild's maximum amount of members has been reached."));
+				return;
+			}
+
+			// Send info as an invite? We're actually lacking a log of what's
+			// supposed to happen here, but this works.
+			Send.GuildInfoNoGuild(creature, guild);
+		}
 	}
 }

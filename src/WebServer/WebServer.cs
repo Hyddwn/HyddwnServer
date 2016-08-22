@@ -68,6 +68,9 @@ namespace Aura.Web
 			// Database
 			this.InitDatabase(this.Database = new AuraDb(), this.Conf);
 
+			// Data
+			this.LoadData(DataLoad.Features, false);
+
 			// Localization
 			this.LoadLocalization(this.Conf);
 
@@ -108,6 +111,7 @@ namespace Aura.Web
 			this.App.Post("/visual-chat", new VisualChatController());
 			this.App.Post("/avatar-upload", new AvatarUploadController());
 			this.App.All("/guild", new GuildController());
+			this.App.All("/guildlist", new GuildListController());
 
 			try
 			{
