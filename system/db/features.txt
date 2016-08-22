@@ -120,6 +120,7 @@
 		{ name: "Mailbox", enabled: true },
 		{ name: "PartyBoard", enabled: true },
 		{ name: "GuildRobe", enabled: true },
+		{ name: "GuildMessenger", enabled: true },
 		{ name: "MarkerMyGuildStone", enabled: true },
 		{ name: "PortCeann", enabled: true },
 	]},
@@ -307,6 +308,7 @@
 	// Season 1
 	{ name: "G11S1", enabled: true, children: [
 		{ name: "InviteGuild", enabled: true },
+		{ name: "GuildListBoard", enabled: true },
 	]},
 	
 	// Season 2

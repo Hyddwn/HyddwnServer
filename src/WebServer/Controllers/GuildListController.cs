@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Shared.Database;
 using Aura.Shared.Util;
@@ -33,6 +34,27 @@ namespace Aura.Web.Controllers
 	{
 		public void Index(Request req, Response res)
 		{
+			// Check feature
+			if (!AuraData.FeaturesDb.IsEnabled("GuildListBoard"))
+			{
+				var sbe = new StringBuilder();
+				using (var sw = new StringWriter(sbe))
+				using (var writer = new XmlTextWriter(sw))
+				{
+					writer.Formatting = Formatting.Indented;
+
+					writer.WriteStartDocument();
+					writer.WriteStartElement("Guildlist");
+					writer.WriteAttributeString("RowCount", "0");
+					writer.WriteAttributeString("NowPage", "1");
+					writer.WriteEndElement();
+					writer.WriteEndDocument();
+				}
+
+				res.Send(sbe.ToString());
+				return;
+			}
+
 			//var characterIdStr = req.Parameter("CharacterId");
 			var serverName = req.Parameter("Name_Server");
 			var pageStr = req.Parameter("Page");

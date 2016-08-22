@@ -664,6 +664,13 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			// Check feature
+			if (!AuraData.FeaturesDb.IsEnabled("GuildListBoard"))
+			{
+				Send.MsgBox(creature, Localization.Get("This feature hasn't been enabled yet."));
+				return;
+			}
+
 			// Check guilds
 			if (creature.GuildId != 0)
 			{
