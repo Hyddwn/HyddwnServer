@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Aura.Channel.Skills;
 using System.Threading;
 using Aura.Channel.Scripting.Scripts;
+using Aura.Shared.Database;
 
 namespace Aura.Channel.World.Entities
 {
@@ -1081,6 +1082,15 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public bool IsInParty { get { return this.Party.Id != 0; } }
 
+		// Guild
+		// ------------------------------------------------------------------
+
+		public long GuildId { get { return (this.Guild != null ? this.Guild.Id : 0); } }
+		public Guild Guild { get; set; }
+		public GuildMember GuildMember { get; set; }
+
+		public int PlayPoints { get; set; }
+
 		// ------------------------------------------------------------------
 
 		protected Creature()
@@ -1156,6 +1166,9 @@ namespace Aura.Channel.World.Entities
 			// Subscribe to time events
 			ChannelServer.Instance.Events.SecondsTimeTick += this.OnSecondsTimeTick;
 			ChannelServer.Instance.Events.MabiTick += this.OnMabiTick;
+
+			if (this.IsPlayer)
+				ChannelServer.Instance.Events.PlayTimeTick += this.OnPlayTimeTick;
 		}
 
 		/// <summary>
@@ -1166,6 +1179,7 @@ namespace Aura.Channel.World.Entities
 		{
 			ChannelServer.Instance.Events.SecondsTimeTick -= this.OnSecondsTimeTick;
 			ChannelServer.Instance.Events.MabiTick -= this.OnMabiTick;
+			ChannelServer.Instance.Events.PlayTimeTick -= this.OnPlayTimeTick;
 
 			// Stop rest, so character doesn't appear sitting anymore
 			// and chair props are removed.
@@ -1442,6 +1456,15 @@ namespace Aura.Channel.World.Entities
 		{
 			this.UpdateBody();
 			this.EquipmentDecay();
+		}
+
+		/// <summary>
+		/// Called every 9 minutes, increases play points.
+		/// </summary>
+		/// <param name="now"></param>
+		private void OnPlayTimeTick(ErinnTime now)
+		{
+			this.PlayPoints++;
 		}
 
 		/// <summary>
@@ -2258,6 +2281,8 @@ namespace Aura.Channel.World.Entities
 				this.DexBase += levelStats.Dex;
 				this.WillBase += levelStats.Will;
 				this.LuckBase += levelStats.Luck;
+
+				this.PlayPoints += 5;
 			}
 
 			// Only notify on level up

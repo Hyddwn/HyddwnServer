@@ -1,0 +1,29 @@
+#menu {
+	right: 14px;
+}
+
+#menu ul li {
+	display: inline;
+	float: left;
+}
+
+#menu ul li a i {
+	display: none;
+}
+
+#menu ul li a {
+	width: auto;
+	padding: 0 6px;
+}
+
+#menu ul li span {
+	display: inline;
+}
+
+#members table td.options a i {
+	display: none;
+}
+
+#members table td.options a span {
+	display: inline;
+}

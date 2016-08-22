@@ -76,7 +76,7 @@ namespace Aura.Channel.World
 		private Timer _heartbeatTimer;
 		private DateTime _lastHeartbeat;
 		private double _secondsTime, _minutesTime, _hoursTime, _erinnTime;
-		private int _mabiTickCount;
+		private int _mabiTickCount, _playTimeTick;
 
 		/// <summary>
 		/// Initializes heartbeat timer.
@@ -127,6 +127,13 @@ namespace Aura.Channel.World
 				{
 					ChannelServer.Instance.Events.OnMabiTick(now);
 					_mabiTickCount = 0;
+				}
+
+				// Play time tick event
+				if (++_playTimeTick >= 9)
+				{
+					ChannelServer.Instance.Events.OnPlayTimeTick(now);
+					_playTimeTick = 0;
 				}
 			}
 

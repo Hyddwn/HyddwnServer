@@ -11,9 +11,16 @@ namespace Aura.Channel.Network.Sending.Helpers
 	{
 		public static Packet AddItemInfo(this Packet packet, Item item, ItemPacketType type)
 		{
+			var isEgoWeapon = item.HasTag("/ego_weapon/");
+			var isGuildRobe = item.HasTag("/guild_robe/");
+
 			packet.PutLong(item.EntityId);
 			packet.PutByte((byte)type);
 			packet.PutBin(item.Info);
+
+			if (isGuildRobe)
+				// EBCL1:4:-16351525;EBCL2:4:-875718;EBLM1:1:46;EBLM2:1:11;EBLM3:1:4; (GLDNAM:s:European;)
+				packet.PutString(item.MetaData1.ToString());
 
 			if (type == ItemPacketType.Public)
 			{
@@ -33,7 +40,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutBin(item.OptionInfo);
 
 				// Ego data
-				if (item.Data.HasTag("/ego_weapon/"))
+				if (isEgoWeapon)
 				{
 					packet.PutString(item.EgoInfo.Name);
 					packet.PutByte((byte)item.EgoInfo.Race);
@@ -77,6 +84,9 @@ namespace Aura.Channel.Network.Sending.Helpers
 				//0613 [........00000004] Int    : 4
 
 				packet.PutLong(item.QuestId);
+
+				if (isGuildRobe)
+					packet.PutString(item.MetaData1.GetString("GLDNAM"));
 
 				// [190100, NA200 (2015-01-15)] ?
 				{

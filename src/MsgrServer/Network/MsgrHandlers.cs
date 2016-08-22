@@ -295,7 +295,7 @@ namespace Aura.Msgr.Network
 			// Check options
 			if (!Enum.IsDefined(typeof(ChatOptions), chatOptions))
 			{
-				Log.Warning("User '{0}' tried to use a invalid or unknown options ({1}).", user.AccountId, status);
+				Log.Warning("User '{0}' tried to use a invalid or unknown options ({1}).", user.AccountId, chatOptions);
 				Send.ChangeOptionsR(client, false);
 				return;
 			}
@@ -930,6 +930,20 @@ namespace Aura.Msgr.Network
 			MsgrServer.Instance.Database.Blacklist(client.User.Id, friend.Id);
 
 			Send.FriendInviteR(client, FriendInviteResult.Success, friend);
+		}
+
+		/// <summary>
+		/// Dummy.
+		/// </summary>
+		/// <example>
+		/// 001 [0000000000000000] Long   : 0
+		/// </example>
+		[PacketHandler(Op.Msgr.GuildMemberList)]
+		public void GuildMemberList(MsgrClient client, Packet packet)
+		{
+			var unkLong = packet.GetLong();
+
+			Send.GuildMemberListR(client);
 		}
 	}
 }

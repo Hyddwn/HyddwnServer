@@ -27,11 +27,13 @@ namespace Aura.Msgr.Database
 			{
 				var user = new User();
 				user.AccountId = accountId;
+				user.CharacterId = characterEntityId;
 				user.Name = characterName;
 				user.Server = server;
 				user.ChannelName = channelName;
 				user.Status = ContactStatus.Online;
 				user.ChatOptions = ChatOptions.NotifyOnFriendLogIn;
+				user.LastLogin = DateTime.Now;
 
 				// Try to get contact from db
 				using (var mc = new MySqlCommand("SELECT * FROM `contacts` WHERE `characterEntityId` = @characterEntityId", conn))
@@ -46,9 +48,12 @@ namespace Aura.Msgr.Database
 							user.Status = (ContactStatus)reader.GetByte("status");
 							user.ChatOptions = (ChatOptions)reader.GetUInt32("chatOptions");
 							user.Nickname = reader.GetStringSafe("nickname") ?? "";
+							user.LastLogin = reader.GetDateTimeSafe("lastLogin");
 
 							if (!Enum.IsDefined(typeof(ContactStatus), user.Status) || user.Status == ContactStatus.None)
 								user.Status = ContactStatus.Online;
+
+							this.UpdateLastLogin(user);
 
 							return user;
 						}
@@ -65,6 +70,7 @@ namespace Aura.Msgr.Database
 					cmd.Set("status", (byte)user.Status);
 					cmd.Set("chatOptions", (uint)user.ChatOptions);
 					cmd.Set("nickname", "");
+					cmd.Set("lastLogin", user.LastLogin);
 
 					cmd.Execute();
 
@@ -72,6 +78,22 @@ namespace Aura.Msgr.Database
 
 					return user;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Updates contact's last login time.
+		/// </summary>
+		/// <param name="contact"></param>
+		private void UpdateLastLogin(Contact contact)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `contacts` SET {0} WHERE `contactId` = @contactId", conn))
+			{
+				cmd.AddParameter("@contactId", contact.Id);
+				cmd.Set("lastLogin", contact.LastLogin);
+
+				cmd.Execute();
 			}
 		}
 
