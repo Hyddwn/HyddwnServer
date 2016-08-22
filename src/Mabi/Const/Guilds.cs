@@ -16,12 +16,12 @@ namespace Aura.Mabi.Const
 
 	public enum GuildType : byte
 	{
-		Battle = 0,
+		Combat = 0,
 		Adventure = 1,
-		Manufacturing = 2,
+		Production = 2,
 		Commerce = 3,
 		Social = 4,
-		Other = 5,
+		Misc = 5,
 	}
 
 	public enum GuildVisibility
@@ -92,5 +92,57 @@ namespace Aura.Mabi.Const
 		/// Nothing happens.
 		/// </summary>
 		Nothing = 2,
+	}
+
+	/// <summary>
+	/// Guild level to search for.
+	/// </summary>
+	/// <remarks>
+	/// These are actually the max number of members, but that's what the
+	/// client sends and if we want to support other max member numbers
+	/// we can't use the numbers for the search.
+	/// </remarks>
+	public enum GuildSearchLevel
+	{
+		All = 0,
+		Beginner = 5,
+		Basic = 10,
+		Advanced = 20,
+		Great = 50,
+		Grand = 250,
+	}
+
+	/// <summary>
+	/// Member number ranges in guild search.
+	/// </summary>
+	public enum GuildSearchMembers
+	{
+		All = 0,
+		Lv1_5 = 1,
+		Lv6_10 = 2,
+		Lv11_20 = 3,
+		Lv21_50 = 4,
+		Lv51_X = 5,
+	}
+
+	/// <summary>
+	/// Member number ranges in guild search.
+	/// </summary>
+	public enum GuildSortBy
+	{
+		None = 0,
+		Level = 1,
+		Members = 2,
+		Type = 3,
+		Name = 4,
+	}
+
+	/// <summary>
+	/// Member number ranges in guild search.
+	/// </summary>
+	public enum GuildSortType
+	{
+		Asc = 0,
+		Desc = 1,
 	}
 }
