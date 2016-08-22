@@ -34,6 +34,7 @@ namespace Aura.Mabi.Const
 	[Flags]
 	public enum ChatOptions : uint
 	{
+		None = 0,
 		NotifyOnFriendLogIn = 0x80000000,
 	}
 }

@@ -295,7 +295,7 @@ namespace Aura.Msgr.Network
 			// Check options
 			if (!Enum.IsDefined(typeof(ChatOptions), chatOptions))
 			{
-				Log.Warning("User '{0}' tried to use a invalid or unknown options ({1}).", user.AccountId, status);
+				Log.Warning("User '{0}' tried to use a invalid or unknown options ({1}).", user.AccountId, chatOptions);
 				Send.ChangeOptionsR(client, false);
 				return;
 			}
