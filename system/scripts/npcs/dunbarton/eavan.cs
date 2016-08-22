@@ -40,7 +40,11 @@ public class EavanScript : NpcScript
 
 		await Intro(L("Wearing a rosy pink blouse, her shoulders are gently covered by her blonde hair that seems to wave in the breeze.<br/>An oval face, a pair of calm eyes with depth, and a slightly small nose with a rounded tip...<br/>Beneath are the lips that shine in the same color as her blouse."));
 
-		Msg("This is the Adventurers' Association.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Retrieve Lost Items", "@lostandfound"), Button("About Daily Events", "@daily_quest") /*, Button("Daily Dungeon Quest", "@daily_dungeon_quest")*/);
+		Msg("This is the Adventurers' Association.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Retrieve Lost Items", "@lostandfound"), Button("About Daily Events", "@daily_quest"));
+		// <button title='About Daily Events' keyword='@daily_quest' />
+		// <button title='Daily Dungeon Quest' keyword='@daily_dungeon_quest' />
+		// <button title='Make a Guild Robe' keyword='@make_guildrobe' />
+		// <button title='Join Guild Battle' keyword='@guildswar' />
 
 		switch (await Select())
 		{
