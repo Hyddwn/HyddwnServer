@@ -272,7 +272,7 @@ public class CaitinBerryIntPtjScript : QuestScript
 	{
 		SetId(501131);
 		SetName(L("Grocery Store Part-Time Job"));
-		SetDescription(L("This task is to gather food ingredients. Today's ingredients are [5 berries]. Hit or shake trees to get berries."));
+		SetDescription(L("This task is to gather food ingredients. Today's ingredients are [7 berries]. Hit or shake trees to get berries."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
@@ -319,7 +319,7 @@ public class CaitinBerryAdvPtjScript : QuestScript
 	{
 		SetId(501161);
 		SetName(L("Grocery Store Part-Time Job"));
-		SetDescription(L("This task is to gather food ingredients. Today's ingredients are [5 berries]. Hit or shake trees to get berries."));
+		SetDescription(L("This task is to gather food ingredients. Today's ingredients are [10 berries]. Hit or shake trees to get berries."));
 
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.ById);
