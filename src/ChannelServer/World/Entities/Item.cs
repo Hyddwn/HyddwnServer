@@ -349,6 +349,11 @@ namespace Aura.Channel.World.Entities
 		public bool IsBow { get { return this.HasTag("/bow/|/bow01|/crossbow/"); } }
 
 		/// <summary>
+		/// Returns true if item is generally able to lose durability.
+		/// </summary>
+		public bool IsBreakable { get { return (this.OptionInfo.DurabilityOriginal != 0); } }
+
+		/// <summary>
 		/// Returns true if item can be blessed.
 		/// </summary>
 		public bool IsBlessable
