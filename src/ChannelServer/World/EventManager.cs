@@ -68,6 +68,12 @@ namespace Aura.Channel.World
 		public event Action<ErinnTime> MabiTick;
 		public void OnMabiTick(ErinnTime now) { MabiTick.Raise(now); }
 
+		/// <summary>
+		/// Raised every 9 minutes in real time.
+		/// </summary>
+		public event Action<ErinnTime> PlayTimeTick;
+		public void OnPlayTimeTick(ErinnTime now) { PlayTimeTick.Raise(now); }
+
 		// ------------------------------------------------------------------
 
 		/// <summary>

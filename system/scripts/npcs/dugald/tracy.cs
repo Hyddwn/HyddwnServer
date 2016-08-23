@@ -92,7 +92,17 @@ public class TracyScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForOtherNpc())
+		{
+			Msg(L("You... A part-timer?"));
+			Msg(L("You're kidding right?"));
+			Msg(L("You like part-time jobs? Are they fun? Well?<br/>Are they fun? I can't believe this!"));
+		}
+		else if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("Hey, what happened to my logs?<br/>Remember, no firewood, no reward. OK?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("Hey... I'm <npcname/>, the lumberjack.<br/>When I say hi, I say it right!"));
 			Msg(L("What, you have something to say?"));
@@ -153,13 +163,6 @@ public class TracyScript : NpcScript
 				{
 					Msg("Why do you continue to pester me about that?<br/>I have nothing more to tell you.");
 				}
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
-				//Msg("You want a logging job?<br/>This is not the right time. Come back later.<br/>When the shadow's in the northwest... I think 7 o'clock in the morning will do.");
-				//Msg("Good. You want a logging job?<br/>I was actually a little bored working alone.<br/>I can use some help. If you're good enough, I can pay you more.");
-				//Msg("Want to give it a try?");
 				break;
 
 			case "shop_misc":

@@ -157,7 +157,11 @@ public class MalcolmScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("How are you doing on your work?<br/>Please keep up the good work."));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("Welcome to the General Shop. This must be your first visit here."));
 		}
@@ -203,12 +207,6 @@ public class MalcolmScript : NpcScript
 				Msg("There is a Bookstore in Dunbarton.<br/>So if you're looking for books on music, go there.");
 				//Msg("Have you heard of the Weaving skill?<br/>It is a skill of spinning yarn from natural materials and making fabric.<p/>Do you want to learn the Weaving skill?<br/>Actually, I'm out of thick yarn and can't meet all the orders for fabric...<br/>If you get me some wool, I'll teach you the Weaving skill in return.<br/>An owl will deliver you a note on how to find wool if you wait outside.");
 				//Event Flag for quest "Gathering Wool" is activated after weaving msg
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
-				//Msg("Sorry, but it is not time for part-time jobs.<br/>Would you come later?");
-				//Msg("Our town may be small, but running the General Shop<br/>can really get hectic since I'm running this all by myself.<br/>Fortunately, many people are helping me out, so it's a lot easier for me to handle.<br/>Are you also interested in working here, <username/>?<p/>I'll pay you if you can help me.");
 				break;
 
 			case "shop_misc":

@@ -405,6 +405,21 @@ namespace Aura.Msgr.Network
 			foreach (var friendUser in friends)
 				friendUser.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends GuildMemberListR to client (Dummy).
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="guild"></param>
+		public static void GuildMemberListR(MsgrClient client)
+		{
+			var packet = new Packet(Op.Msgr.GuildMemberListR, 0);
+			packet.PutByte(true); // isInGuild
+			packet.PutLong(0); // guild id
+			packet.PutInt(0); // member count
+
+			client.Send(packet);
+		}
 	}
 
 	public enum LoginResult

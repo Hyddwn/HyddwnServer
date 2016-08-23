@@ -35,7 +35,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -51,6 +50,7 @@
     <Compile Include="Const\Entities.cs" />
     <Compile Include="Const\Entrustment.cs" />
     <Compile Include="Const\Firework.cs" />
+    <Compile Include="Const\Guilds.cs" />
     <Compile Include="Const\Items.cs" />
     <Compile Include="Const\Locks.cs" />
     <Compile Include="Const\Login.cs" />

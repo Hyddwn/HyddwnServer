@@ -40,7 +40,11 @@ public class EavanScript : NpcScript
 
 		await Intro(L("Wearing a rosy pink blouse, her shoulders are gently covered by her blonde hair that seems to wave in the breeze.<br/>An oval face, a pair of calm eyes with depth, and a slightly small nose with a rounded tip...<br/>Beneath are the lips that shine in the same color as her blouse."));
 
-		Msg("This is the Adventurers' Association.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Retrieve Lost Items", "@lostandfound"), Button("About Daily Events", "@daily_quest") /*, Button("Daily Dungeon Quest", "@daily_dungeon_quest")*/);
+		Msg("This is the Adventurers' Association.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Retrieve Lost Items", "@lostandfound"), Button("About Daily Events", "@daily_quest"));
+		// <button title='About Daily Events' keyword='@daily_quest' />
+		// <button title='Daily Dungeon Quest' keyword='@daily_dungeon_quest' />
+		// <button title='Make a Guild Robe' keyword='@make_guildrobe' />
+		// <button title='Join Guild Battle' keyword='@guildswar' />
 
 		switch (await Select())
 		{
@@ -103,7 +107,11 @@ public class EavanScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("So, how is your task coming along?<br/>Please don't forget to report before the deadline."));
+		}
+		else if (Memory <= 0)
 		{
 			GiveKeyword("shop_goverment_office");
 			Msg(FavorExpression(), L("Welcome to Dunbarton.<br/>My name is <npcname/>, the Town Office worker who takes care of all the business related to the Adventurers' Association."));
@@ -148,10 +156,6 @@ public class EavanScript : NpcScript
 			case "rumor":
 				Msg(FavorExpression(), "Dunbarton is a city located near the border of the Kingdom of Aliech.<br/>It attracts a lot of travelers who are looking for adventure.<br/>If you'd like to improve your skills, how about going to the school?");
 				ModifyRelation(Random(2), 0, Random(3));
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":
@@ -341,9 +345,9 @@ public class EavanShop : NpcShopScript
 
 			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Demi Lich
 			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate Banshee
-			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Goblin Bandits
-			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Giant Ogre
-			//AddQuest("Guild Quest", InsertQuestId, 1200); // [Guild] Eliminate the Giant Bear
+			AddQuest("Guild Quest", 110006, 1200); // [Guild] Eliminate the Goblin Bandits
+			AddQuest("Guild Quest", 110007, 1200); // [Guild] Eliminate the Giant Ogre
+			AddQuest("Guild Quest", 110008, 1200); // [Guild] Eliminate the Giant Bear
 
 			//Add("Guild Robe", 19047); // [Guild Name] Guild Robe
 		}

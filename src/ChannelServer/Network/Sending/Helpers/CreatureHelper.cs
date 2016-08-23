@@ -437,22 +437,22 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			// Guild
 			// --------------------------------------------------------------
-			//if (creature.Guild != null)
-			//{
-			//    packet.PutLong(creature.Guild.Id);
-			//    packet.PutString(creature.Guild.Name);
-			//    packet.PutInt((uint)creature.GuildMember.MemberRank);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutInt(0);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutString(creature.Guild.Title);
-			//}
-			//else
+			if (creature.Guild != null)
+			{
+				packet.PutLong(creature.Guild.Id);
+				packet.PutString(creature.Guild.Name);
+				packet.PutInt((int)creature.GuildMember.Rank);
+				packet.PutByte(0);
+				packet.PutByte(0);
+				packet.PutByte(0);
+				packet.PutInt(0);
+				packet.PutByte(0);
+				packet.PutByte(0);
+				packet.PutByte(0);
+				packet.PutByte(0);
+				packet.PutString(creature.Guild.Title);
+			}
+			else
 			{
 				packet.PutLong(0);
 				packet.PutString("");

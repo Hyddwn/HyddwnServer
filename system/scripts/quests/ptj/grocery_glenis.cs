@@ -117,14 +117,9 @@ public class GlenisPtjScript : GeneralScript
 			if (!npc.ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
-				{
-					npc.Msg(L("My, someone's in a hurry.<br/>It's not the deadline yet, so why don't you come back later?"));
-					npc.Msg(L("Now, I'll see you back here by the deadline."));
-				}
+					npc.Msg(L("My, someone's in a hurry.<br/>It's not the deadline yet, so why don't you come back later?<p/>Now, I'll see you back here by the deadline."));
 				else
-				{
 					npc.Msg(L("How's the work going?"));
-				}
 				return;
 			}
 

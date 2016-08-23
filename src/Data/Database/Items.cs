@@ -81,6 +81,7 @@ namespace Aura.Data.Database
 		public int ManaPreservation { get; set; }
 
 		public string PersonalShopLicense { get; set; }
+		public int PersonalShopProp { get; set; }
 
 		public ItemDataTaste Taste { get; set; }
 		public ItemDataProductionBonus ProductionBonus { get; set; }
@@ -219,6 +220,7 @@ namespace Aura.Data.Database
 			info.BaseSize = entry.ReadInt("baseSize");
 			info.ManaPreservation = entry.ReadInt("manaPreservation");
 			info.PersonalShopLicense = entry.ReadString("personalShopLicense");
+			info.PersonalShopProp = entry.ReadInt("personalShopProp");
 
 			info.Taste = new ItemDataTaste();
 			if (entry.ContainsKeys("taste"))
