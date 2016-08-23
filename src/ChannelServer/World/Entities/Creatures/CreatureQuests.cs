@@ -105,6 +105,12 @@ namespace Aura.Channel.World.Entities.Creatures
 
 				_creature.Inventory.Add(item, true);
 			}
+
+			// Receive event
+			// XXX: Could be used for the deliver objectives above as well?
+			//   It would make more sense to always give delvier items
+			//   automatically though, not only on start.
+			quest.Data.OnReceive(_creature);
 		}
 
 		/// <summary>

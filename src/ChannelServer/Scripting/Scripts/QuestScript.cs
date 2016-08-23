@@ -606,6 +606,13 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestReward AP(short amount) { return new QuestRewardAp(Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.QuestApRate)); }
 		protected QuestReward StatBonus(Stat stat, int amount) { return new QuestRewardStatBonus(stat, amount); }
 
+		// Events
+		// ------------------------------------------------------------------
+
+		public virtual void OnReceive(Creature creature)
+		{
+		}
+
 		// Where the magic happens~
 		// ------------------------------------------------------------------
 
