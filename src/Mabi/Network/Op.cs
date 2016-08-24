@@ -615,6 +615,8 @@ namespace Aura.Mabi.Network
 
 		public const int HomesteadInfoRequest = 0xAA5C;
 		public const int HomesteadInfoRequestR = 0xAA5D;
+		public const int HomesteadEnterRequest = 0xAA5E;
+		public const int HomesteadEnterRequestR = 0xAA5F;
 
 		// [180300, NA166 (18.09.2013)] 2 new ops somewhere here, possibly the two below
 
