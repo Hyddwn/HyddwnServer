@@ -6,11 +6,6 @@
 // This script depends on ./grocery_caitin.cs for berry collection PTJs.
 // Please ensure this script loads afterward.
 //
-// The following dialogue is missing:
-// * first time worker PTJ inquiry
-// * first time accepting PTJ offer
-// * first time declining PTJ offer
-//
 // Apparently some rewards have been increased, as the Wiki now lists
 // higher ones than in the past. We'll use the G1 rewards for now.
 // http://wiki.mabinogiworld.com/index.php?title=Glenis&oldid=272001#Part-time_Jobs
@@ -202,7 +197,7 @@ public class GlenisPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			msg = L("(missing): first time worker PTJ inquiry");
+			msg = L("Are you looking for work?<br/>You don't seem to have any experience in this line of work. Are you sure you can handle it?<br/>Well, why don't you get started on this now?<br/>Any type of work is difficult at first, but you get used to it as you gain more experience, you see.<p/>Well, how about it?");
 		else
 			msg = L("Are you looking for work?");//<br/>You can get a seed for your Homestead.");
 
@@ -213,10 +208,8 @@ public class GlenisPtjScript : GeneralScript
 
 		if (await npc.Select() == "@accept")
 		{
-			GiveStartingPtjItems(randomPtj, npc.Player);
-
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time accepting PTJ offer"));
+				npc.Msg(L("Yes, yes. Good idea.<br/>Now, I'll see you by the deadline.<br/>Even if you don't finish everything, at least come file a report."));
 			else
 				npc.Msg(L("I'll be waiting for you."));
 
@@ -225,34 +218,9 @@ public class GlenisPtjScript : GeneralScript
 		else
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time declining PTJ offer"));
+				npc.Msg(L("Ha ha. You don't have to get so intimidated.<br/>All right. Come by next time."));
 			else
 				npc.Msg(L("If today's not a good day, I'm sure we'll do this some other time."));
-		}
-	}
-
-	/// <summary>
-	/// Depending on the supplied <paramref name="questId"/>, will give <param name="player"/> the needed materials to complete their task.
-	/// </summary>
-	private void GiveStartingPtjItems(int questId, Creature player)
-	{
-		const int EmptyBottle_PTJ = 63022;
-
-		switch (questId)
-		{
-			case 501102: // Basic  Gather  5 Milk Bottles
-				player.Inventory.InsertStacks(EmptyBottle_PTJ, 5);
-				break;
-			case 501132: // Int    Gather  7 Milk Bottles
-				player.Inventory.InsertStacks(EmptyBottle_PTJ, 7);
-				break;
-			case 501162: // Adv    Gather 10 Milk Bottles
-				player.Inventory.InsertStacks(EmptyBottle_PTJ, 10);
-				break;
-			case 501440: // Int    Item delivery (Aranwen -> Stewart)
-			case 501470: // Adv    Item delivery (Aranwen -> Stewart)
-				player.GiveItem(70027); // Give player an extra bread to deliver.
-				break;
 		}
 	}
 }
@@ -270,6 +238,11 @@ public abstract class GlenisMilkPtjBaseScript : QuestScript
 	protected abstract QuestLevel QuestLevel { get; }
 
 	protected abstract void AddRewards();
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.Inventory.InsertStacks(63022, ItemCount);
+	}
 
 	public override void Load()
 	{
@@ -816,6 +789,13 @@ public abstract class GlenisExtDeliveryAranwenStewartPtjBaseScript : GlenisDeliv
 	protected override string NpcIdent { get { return "_aranwen"; } }
 
 	protected override string LItemNotice { get { return L("You have given Fresh-baked Bread to be Delivered to Aranwen."); } }
+
+	public override void OnReceive(Creature creature)
+	{
+		// Give player an extra bread to deliver
+		// in addition to the one given by the first Deliver objective.
+		creature.GiveItem(70027);
+	}
 
 	protected override void AfterIntroDialogue(NpcScript npc)
 	{
