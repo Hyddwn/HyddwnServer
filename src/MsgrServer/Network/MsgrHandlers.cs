@@ -952,5 +952,31 @@ namespace Aura.Msgr.Network
 
 			Send.GuildMemberListR(client, guild);
 		}
+
+		/// <summary>
+		/// Sent when the client gets notified that the character has now
+		/// joined/left a guild.
+		/// </summary>
+		/// <remarks>
+		/// The id is either the id of the guild the character joined or
+		/// 0 if they were removed from it. This packet is presumably used
+		/// for getting access to the guild member list and the chat
+		/// immedately.
+		/// 
+		/// For now I'll let the guild manager handle that automatically
+		/// on its tick, instead of adding new members or guilds from here.
+		/// That's much simpler and not too much of an inconvenience.
+		/// If we wanted 1:1 synchronization we should make the channels
+		/// and the msgr server talk to each other, adding real-time
+		/// synchronization.
+		/// </remarks>
+		/// <example>
+		/// 001 [0000000000000000] Long   : 0
+		/// </example>
+		[PacketHandler(Op.Msgr.GuildJoin)]
+		public void GuildJoin(MsgrClient client, Packet packet)
+		{
+			var guildId = packet.GetLong();
+		}
 	}
 }

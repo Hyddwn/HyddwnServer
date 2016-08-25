@@ -786,6 +786,7 @@ namespace Aura.Mabi.Network
 			public const int YouGotNote = 0xC385;
 			public const int ReadNote = 0xC386;
 			public const int ReadNoteR = 0xC387;
+			public const int GuildJoin = 0xC388;
 			public const int ChangeChannel = 0xC389;
 			public const int FriendChannelChanged = 0xC38A;
 			public const int GuildMemberList = 0xC38B;
