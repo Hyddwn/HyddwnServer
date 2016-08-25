@@ -15,33 +15,27 @@ using System.Threading.Tasks;
 
 namespace Aura.Channel.World.Guilds
 {
-	public class GuildManager
+	public class GuildManager : AbstractGuildManager
 	{
-		private object _syncLock = new object();
-
-		private Dictionary<long, Guild> _guilds;
 		private Dictionary<long, Prop> _stones;
 
-		/// <summary>
-		/// Returns number of guilds on this server.
-		/// </summary>
-		public int Count { get { lock (_syncLock) return _guilds.Count; } }
+		protected override AuraDb Database { get { return ChannelServer.Instance.Database; } }
 
 		/// <summary>
 		/// Creates new manager instance.
 		/// </summary>
 		public GuildManager()
 		{
-			_guilds = new Dictionary<long, Guild>();
 			_stones = new Dictionary<long, Prop>();
 		}
 
 		/// <summary>
-		/// Initializes manager, loading all guilds from database.
+		/// Initializes manager, loading all guilds from database and
+		/// subscribing to relevant events.
 		/// </summary>
-		public void Initialize()
+		public override void Initialize()
 		{
-			this.LoadGuilds();
+			base.Initialize();
 			ChannelServer.Instance.Events.MabiTick += this.OnMabiTick;
 			ChannelServer.Instance.Events.CreatureConnected += this.OnCreatureConnected;
 		}
@@ -74,130 +68,156 @@ namespace Aura.Channel.World.Guilds
 		}
 
 		/// <summary>
-		/// Synchronizes loaded guilds with current information
-		/// from the database.
+		/// Called when a guild is added during synchronization.
 		/// </summary>
-		private void SynchronizeGuilds()
+		/// <remarks>
+		/// As long as guilds are only created by players at run-time this
+		/// should generally never do anything, because all members that
+		/// need to be updated will be on the channel where the guild
+		/// was created.
+		/// </remarks>
+		/// <param name="guild"></param>
+		protected override void OnSyncGuildAdded(Guild guild)
 		{
-			lock (_syncLock)
+			var members = guild.GetMembers();
+			foreach (var member in members)
+				this.OnSyncGuildMemberAdded(guild, member);
+		}
+
+		/// <summary>
+		/// Called when a guild is removed during synchronization.
+		/// </summary>
+		/// <remarks>
+		/// This will happen if a guild is disbanded from this or
+		/// another channel.
+		/// </remarks>
+		/// <param name="guild"></param>
+		protected override void OnSyncGuildRemoved(Guild guild)
+		{
+			var members = guild.GetMembers();
+			foreach (var member in members)
+				this.OnSyncGuildMemberRemoved(guild, member);
+
+			this.DestroyStone(guild);
+			ChannelServer.Instance.Database.RemoveGuild(guild);
+		}
+
+		/// <summary>
+		/// Called when a guild member is added during synchronization.
+		/// </summary>
+		/// <remarks>
+		/// Shouldn't happen during normal game-play, as the member is added
+		/// to the guild when they apply.
+		/// </remarks>
+		/// <param name="guild"></param>
+		/// <param name="member"></param>
+		protected override void OnSyncGuildMemberAdded(Guild guild, GuildMember member)
+		{
+			var creature = ChannelServer.Instance.World.GetCreature(member.CharacterId);
+			if (creature != null)
 			{
-				var dbGuilds = ChannelServer.Instance.Database.GetGuilds();
-				var removedGuilds = new List<Guild>();
-
-				foreach (var guild in _guilds.Values)
-				{
-					// Check for removed or disbanded guilds
-					Guild dbGuild;
-					if (!dbGuilds.TryGetValue(guild.Id, out dbGuild) || dbGuild.Disbanded == true)
-					{
-						removedGuilds.Add(guild);
-					}
-
-					// Update guild
-					guild.IntroMessage = dbGuild.IntroMessage;
-					guild.WelcomeMessage = dbGuild.WelcomeMessage;
-					guild.LeavingMessage = dbGuild.LeavingMessage;
-					guild.RejectionMessage = dbGuild.RejectionMessage;
-					guild.Type = dbGuild.Type;
-					guild.Level = dbGuild.Level;
-					guild.Options = dbGuild.Options;
-
-					// Update members
-					var members = guild.GetMembers();
-					foreach (var member in members)
-					{
-						var creature = ChannelServer.Instance.World.GetCreature(member.CharacterId);
-						var update = false;
-						var remove = false;
-
-						// Check for whether the member was removed, set to
-						// declined, or the guild was disbanded.
-						var dbMember = dbGuild.GetMember(member.CharacterId);
-						if (dbMember == null || (member.Rank < GuildMemberRank.Applied && dbMember.Rank == GuildMemberRank.Declined) || dbGuild.Disbanded)
-						{
-							if (creature != null)
-								Send.GuildMessage(creature, guild, guild.LeavingMessage, guild.Name);
-
-							update = true;
-							remove = true;
-						}
-						// Check for accepted members
-						else if (member.Rank == GuildMemberRank.Applied && dbMember.Rank < GuildMemberRank.Applied)
-						{
-							if (creature != null)
-								Send.GuildMessage(creature, guild, guild.WelcomeMessage, guild.Name);
-
-							update = true;
-						}
-						// Check for declined members
-						else if (member.Rank == GuildMemberRank.Applied && dbMember.Rank == GuildMemberRank.Declined)
-						{
-							if (creature != null)
-								Send.GuildMessage(creature, guild, guild.RejectionMessage, guild.Name);
-
-							update = true;
-							remove = true;
-						}
-
-						// Check for rank update
-						if (!update)
-							update = (member.Rank != dbMember.Rank);
-
-						// Update creature
-						if (update)
-						{
-							if (remove)
-							{
-								guild.RemoveMember(member);
-								ChannelServer.Instance.Database.RemoveGuildMember(member);
-
-								if (creature != null)
-								{
-									creature.Guild = null;
-									creature.GuildMember = null;
-									Send.GuildUpdateMember(creature, null, null);
-								}
-							}
-							else
-							{
-								member.Rank = dbMember.Rank;
-
-								if (creature != null)
-									Send.GuildUpdateMember(creature, guild, member);
-							}
-						}
-					}
-				}
-
-				// Remove guilds
-				foreach (var guild in removedGuilds)
-				{
-					_guilds.Remove(guild.Id);
-					this.DestroyStone(guild);
-					ChannelServer.Instance.Database.RemoveGuild(guild);
-				}
+				creature.Guild = guild;
+				creature.GuildMember = member;
+				Send.GuildUpdateMember(creature, guild, member);
+				Send.GuildMessage(creature, guild, guild.WelcomeMessage, guild.Name);
 			}
 		}
 
 		/// <summary>
-		/// Loads all guilds from database.
+		/// Called when a guild member is removed during synchronization.
 		/// </summary>
-		private void LoadGuilds()
+		/// <remarks>
+		/// Happens when a member leaves, is kicked, or is removed from
+		/// the db on another channel.
+		/// </remarks>
+		/// <param name="guild"></param>
+		/// <param name="member"></param>
+		protected override void OnSyncGuildMemberRemoved(Guild guild, GuildMember member)
 		{
-			var guilds = ChannelServer.Instance.Database.GetGuilds();
-			foreach (var guild in guilds.Values)
-				this.LoadGuild(guild);
+			ChannelServer.Instance.Database.RemoveGuildMember(member);
+
+			var creature = ChannelServer.Instance.World.GetCreature(member.CharacterId);
+			if (creature != null)
+			{
+				creature.Guild = null;
+				creature.GuildMember = null;
+				Send.GuildUpdateMember(creature, null, null);
+				Send.GuildMessage(creature, guild, guild.LeavingMessage, guild.Name);
+			}
+		}
+
+		/// <summary>
+		/// Called when a member's rank changes from Applied to !Declined
+		/// during synchronization.
+		/// </summary>
+		/// <param name="guild"></param>
+		/// <param name="member"></param>
+		protected override void OnSyncGuildMemberAccepted(Guild guild, GuildMember member)
+		{
+			this.OnSyncGuildMemberAdded(guild, member);
+		}
+
+		/// <summary>
+		/// Called when a member's rank changes from Applied to Declined
+		/// during synchronization.
+		/// </summary>
+		/// <param name="guild"></param>
+		/// <param name="member"></param>
+		protected override void OnSyncGuildMemberDeclined(Guild guild, GuildMember member)
+		{
+			ChannelServer.Instance.Database.RemoveGuildMember(member);
+
+			var creature = ChannelServer.Instance.World.GetCreature(member.CharacterId);
+			if (creature != null)
+			{
+				creature.Guild = null;
+				creature.GuildMember = null;
+				Send.GuildUpdateMember(creature, null, null);
+				Send.GuildMessage(creature, guild, guild.RejectionMessage, guild.Name);
+			}
+		}
+
+		/// <summary>
+		/// Called when a member's rank changed during synchronization.
+		/// </summary>
+		/// <remarks>
+		/// For example, when the leader changed their rank.
+		/// </remarks>
+		/// <param name="guild"></param>
+		/// <param name="member"></param>
+		protected override void OnSyncGuildMemberUpdated(Guild guild, GuildMember member)
+		{
+			var creature = ChannelServer.Instance.World.GetCreature(member.CharacterId);
+			if (creature != null)
+				Send.GuildUpdateMember(creature, guild, member);
 		}
 
 		/// <summary>
 		/// Loads given guild.
 		/// </summary>
 		/// <param name="guild"></param>
-		private void LoadGuild(Guild guild)
+		protected override void LoadGuild(Guild guild)
 		{
-			lock (_syncLock)
-				_guilds[guild.Id] = guild;
+			base.LoadGuild(guild);
 			this.PlaceStone(guild);
+		}
+
+		/// <summary>
+		/// Executes the given action for all members of guild that are online.
+		/// </summary>
+		/// <param name="guild"></param>
+		/// <param name="action"></param>
+		private static void ForOnlineMembers(Guild guild, Action<Creature> action)
+		{
+			var members = guild.GetMembers();
+			foreach (var member in members)
+			{
+				var creature = ChannelServer.Instance.World.GetCreature(member.CharacterId);
+				if (creature == null)
+					continue;
+
+				action(creature);
+			}
 		}
 
 		/// <summary>
@@ -234,24 +254,6 @@ namespace Aura.Channel.World.Guilds
 				_stones[guild.Id] = prop;
 
 			this.UpdateStoneLocation(guild);
-		}
-
-		/// <summary>
-		/// Executes the given action for all members of guild that are online.
-		/// </summary>
-		/// <param name="guild"></param>
-		/// <param name="action"></param>
-		private static void ForOnlineMembers(Guild guild, Action<Creature> action)
-		{
-			var members = guild.GetMembers();
-			foreach (var member in members)
-			{
-				var creature = ChannelServer.Instance.World.GetCreature(member.CharacterId);
-				if (creature == null)
-					continue;
-
-				action(creature);
-			}
 		}
 
 		/// <summary>
@@ -316,19 +318,6 @@ namespace Aura.Channel.World.Guilds
 		}
 
 		/// <summary>
-		/// Returns the guild with the given id.
-		/// </summary>
-		/// <param name="guildId"></param>
-		/// <returns></returns>
-		public Guild GetGuild(long guildId)
-		{
-			Guild result;
-			lock (_syncLock)
-				_guilds.TryGetValue(guildId, out result);
-			return result;
-		}
-
-		/// <summary>
 		/// Sets the character's Guild and GuildMember properties
 		/// if they're in a guild.
 		/// </summary>
@@ -341,27 +330,6 @@ namespace Aura.Channel.World.Guilds
 
 			character.Guild = guild;
 			character.GuildMember = guild.GetMember(character.EntityId);
-		}
-
-		/// <summary>
-		/// Returns the guild that has a character with the given id as
-		/// member if any.
-		/// </summary>
-		/// <param name="characterId"></param>
-		/// <returns></returns>
-		public Guild FindGuildWithMember(long characterId)
-		{
-			lock (_syncLock)
-			{
-				foreach (var guild in _guilds.Values)
-				{
-					var member = guild.GetMember(characterId);
-					if (member != null)
-						return guild;
-				}
-			}
-
-			return null;
 		}
 
 		/// <summary>
@@ -576,7 +544,7 @@ namespace Aura.Channel.World.Guilds
 				guild.RejectionMessage = string.Format(Localization.Get("You have been denied admission to the {0} guild."), guild.Name);
 
 				ChannelServer.Instance.Database.AddGuild(guild);
-				_guilds.Add(guild.Id, guild);
+				this.LoadGuild(guild);
 
 				// Add members
 				foreach (var creature in partyMembers)

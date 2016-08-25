@@ -18,7 +18,7 @@ namespace Aura.Shared.Database
 	/// </summary>
 	public abstract class AbstractGuildManager
 	{
-		private object _syncLock = new object();
+		protected object _syncLock = new object();
 		private Dictionary<long, Guild> _guilds = new Dictionary<long, Guild>();
 
 		/// <summary>
@@ -46,10 +46,17 @@ namespace Aura.Shared.Database
 		{
 			var guilds = this.Database.GetGuilds();
 			foreach (var guild in guilds.Values)
-			{
-				lock (_syncLock)
-					_guilds[guild.Id] = guild;
-			}
+				this.LoadGuild(guild);
+		}
+
+		/// <summary>
+		/// Loads given guild, adding it to the manager.
+		/// </summary>
+		/// <param name="guild"></param>
+		protected virtual void LoadGuild(Guild guild)
+		{
+			lock (_syncLock)
+				_guilds[guild.Id] = guild;
 		}
 
 		/// <summary>
