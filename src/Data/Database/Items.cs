@@ -86,6 +86,8 @@ namespace Aura.Data.Database
 		public ItemDataTaste Taste { get; set; }
 		public ItemDataProductionBonus ProductionBonus { get; set; }
 
+		public int ReplaceItemId { get; set; }
+
 		public string OnUse { get; set; }
 		public string OnEquip { get; set; }
 		public string OnUnequip { get; set; }
@@ -251,6 +253,8 @@ namespace Aura.Data.Database
 				info.ProductionBonus.ItemId = productionBonus.ReadInt("item");
 				info.ProductionBonus.Rate = productionBonus.ReadInt("rate");
 			}
+
+			info.ReplaceItemId = entry.ReadInt("replaceOnUse");
 
 			info.OnUse = entry.ReadString("onUse");
 			info.OnEquip = entry.ReadString("onEquip");

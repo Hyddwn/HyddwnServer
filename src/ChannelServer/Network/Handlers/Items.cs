@@ -569,9 +569,10 @@ namespace Aura.Channel.Network.Handlers
 			{
 				creature.Inventory.Decrement(item);
 
-				// Replace used bottles with empty bottles.
-				if (item.HasTag("/milk/|/water/"))
-					creature.Inventory.Add(new Item(63020), true);
+				// Replace consumed items with something else,
+				// e.g milk bottles with empty bottles.
+				if (item.Data.ReplaceItemId != 0)
+					creature.Inventory.Add(new Item(item.Data.ReplaceItemId), true);
 			}
 
 			// Break seal after use
