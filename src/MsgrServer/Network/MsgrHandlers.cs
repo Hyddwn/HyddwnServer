@@ -32,7 +32,7 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			//Log.Debug(packet);
+			Log.Debug(packet);
 
 			base.Handle(client, packet);
 		}
@@ -685,13 +685,16 @@ namespace Aura.Msgr.Network
 		public void ChatBegin(MsgrClient client, Packet packet)
 		{
 			var contactId = packet.GetInt();
-			var unkByte = packet.GetByte();
+			var list = packet.GetByte(); // 0=friends, 1=guild
 
-			// Check friend and relation
-			var friend = client.User.GetFriend(contactId);
-			if (friend == null || friend.FriendshipStatus != FriendshipStatus.Normal)
+			// Disable guild msgr for now. For some reason the contact can't
+			// properly accept the chat, which causes weird behavior.
+			// Since the guild msgr is technically a G4 feature we can
+			// technically get away with that, but we should figure it out
+			// some time.
+			if (list == 1)
 			{
-				Log.Warning("ChatBegin: User '{0}' tried to start chat without being friends.", client.User.AccountId);
+				Send.GuildChatMsg(client.User, Localization.Get("<SERVER>"), Localization.Get("This feature hasn't been implemented yet."));
 				return;
 			}
 
@@ -703,10 +706,33 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
+			//if (list == 0)
+			{
+				// Check friend and relation
+				var friend = client.User.GetFriend(contactId);
+				if (friend == null || friend.FriendshipStatus != FriendshipStatus.Normal)
+				{
+					Log.Warning("ChatBegin: User '{0}' tried to start chat without being friends.", client.User.AccountId);
+					return;
+				}
+			}
+			//else
+			//{
+			//	// Check guild
+			//	var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(client.User.CharacterId);
+			//	var userGuild = MsgrServer.Instance.GuildManager.FindGuildWithMember(user.CharacterId);
+
+			//	if (guild == null || guild != userGuild)
+			//	{
+			//		Log.Warning("ChatBegin: User '{0}' tried to start chat without being in the same guild.", client.User.AccountId);
+			//		return;
+			//	}
+			//}
+
 			ChatSession session;
 
 			// Get or create session
-			session = MsgrServer.Instance.ChatSessionManager.Find(client.User.Id, friend.Id);
+			session = MsgrServer.Instance.ChatSessionManager.Find(client.User.Id, user.Id);
 			if (session == null)
 				session = new ChatSession();
 
@@ -1017,7 +1043,7 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			GuildManager.ForOnlineMembers(guild, user => Send.GuildChatMsg(user, client.User, msg));
+			GuildManager.ForOnlineMembers(guild, user => Send.GuildChatMsg(user, client.User.Name, msg));
 		}
 	}
 }

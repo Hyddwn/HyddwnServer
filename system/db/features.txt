@@ -120,6 +120,7 @@
 		{ name: "Mailbox", enabled: true },
 		{ name: "PartyBoard", enabled: true },
 		{ name: "GuildRobe", enabled: true },
+		{ name: "GuildMessenger", enabled: true },
 		{ name: "MarkerMyGuildStone", enabled: true },
 		{ name: "PortCeann", enabled: true },
 	]},

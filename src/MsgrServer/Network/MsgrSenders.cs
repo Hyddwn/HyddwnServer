@@ -493,10 +493,10 @@ namespace Aura.Msgr.Network
 		/// <param name="sender"></param>
 		/// <param name="msg"></param>
 		/// <returns></returns>
-		public static void GuildChatMsg(User user, User sender, string msg)
+		public static void GuildChatMsg(User user, string sender, string msg)
 		{
 			var packet = new Packet(Op.Msgr.GuildChatMsg, 0);
-			packet.PutString(sender.Name);
+			packet.PutString(sender);
 			packet.PutString(msg);
 
 			user.Client.Send(packet);
