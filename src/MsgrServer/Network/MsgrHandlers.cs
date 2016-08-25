@@ -978,5 +978,27 @@ namespace Aura.Msgr.Network
 		{
 			var guildId = packet.GetLong();
 		}
+
+		/// <summary>
+		/// Sent when chatting in guild tab.
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : test
+		/// </example>
+		[PacketHandler(Op.Msgr.GuildChat)]
+		public void GuildChat(MsgrClient client, Packet packet)
+		{
+			var msg = packet.GetString();
+
+			var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(client.User.CharacterId);
+			if (guild == null)
+			{
+				// Don't warn, the client will probably allow this before
+				// the msgr server caught up.
+				return;
+			}
+
+			GuildManager.ForOnlineMembers(guild, user => Send.GuildChatMsg(user, client.User, msg));
+		}
 	}
 }

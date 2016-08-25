@@ -766,7 +766,7 @@ namespace Aura.Mabi.Network
 			public const int DeleteFriend = 0xC36B;
 			public const int ChatJoin = 0xC36C;
 			public const int GuildChat = 0xC36E;
-			public const int GuildChatR = 0xC36F;
+			public const int GuildChatMsg = 0xC36F;
 
 			public const int ChangeOptions = 0xC370;
 			public const int ChangeOptionsR = 0xC371;

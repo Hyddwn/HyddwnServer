@@ -484,6 +484,22 @@ namespace Aura.Msgr.Network
 
 			client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends GuildChatMsg from sender to user's client.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="sender"></param>
+		/// <param name="msg"></param>
+		/// <returns></returns>
+		public static void GuildChatMsg(User user, User sender, string msg)
+		{
+			var packet = new Packet(Op.Msgr.GuildChatMsg, 0);
+			packet.PutString(sender.Name);
+			packet.PutString(msg);
+
+			user.Client.Send(packet);
+		}
 	}
 
 	public enum LoginResult
