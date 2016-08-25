@@ -458,12 +458,13 @@ namespace Aura.Msgr.Network
 		/// <param name="guild"></param>
 		/// <param name="member"></param>
 		/// <param name="user"></param>
-		public static void GuildMemberState(MsgrClient client, Guild guild, GuildMember member, User user)
+		/// <param name="status"></param>
+		public static void GuildMemberState(MsgrClient client, Guild guild, GuildMember member, User user, ContactStatus status)
 		{
 			var packet = new Packet(Op.Msgr.GuildMemberState, 0);
 			packet.PutByte(true);
 			packet.PutInt(user.Id);
-			packet.PutByte((byte)user.Status);
+			packet.PutByte((byte)(status == ContactStatus.Online ? ContactStatus.Online : ContactStatus.Offline));
 			packet.PutString(user.ChannelName);
 			packet.PutLong(user.LastLogin.Ticks);
 			packet.PutInt((int)member.Rank);

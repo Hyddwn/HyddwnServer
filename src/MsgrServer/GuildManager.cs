@@ -91,7 +91,7 @@ namespace Aura.Msgr
 			ForOnlineMembers(guild, memberUser =>
 			{
 				if (memberUser != user)
-					Send.GuildMemberState(memberUser.Client, guild, member, user);
+					Send.GuildMemberState(memberUser.Client, guild, member, user, user.Status);
 			});
 		}
 

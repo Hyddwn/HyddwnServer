@@ -311,6 +311,17 @@ namespace Aura.Msgr.Network
 
 			Send.ChangeOptionsR(client, true);
 
+			// Notify guild members
+			if (prevStatus != status)
+			{
+				var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(user.CharacterId);
+				if (guild != null)
+				{
+					var member = guild.GetMember(user.CharacterId);
+					GuildManager.ForOnlineMembers(guild, memberUser => Send.GuildMemberState(memberUser.Client, guild, member, user, status));
+				}
+			}
+
 			// Update friends
 			var friendUsers = MsgrServer.Instance.UserManager.Get(user.GetNormalFriendIds());
 			if (friendUsers.Count == 0)
@@ -360,6 +371,14 @@ namespace Aura.Msgr.Network
 			friendUsers = MsgrServer.Instance.UserManager.Get(user.GetFriendIds());
 			foreach (var friendUser in friendUsers.Where(a => a.GetFriendshipStatus(user.Id) == FriendshipStatus.Normal))
 				Send.FriendOnline(client.User, friendUser);
+
+			// Notify guild members
+			var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(user.CharacterId);
+			if (guild != null)
+			{
+				var member = guild.GetMember(user.CharacterId);
+				GuildManager.ForOnlineMembers(guild, memberUser => Send.GuildMemberState(memberUser.Client, guild, member, user, user.Status));
+			}
 		}
 
 		/// <summary>
