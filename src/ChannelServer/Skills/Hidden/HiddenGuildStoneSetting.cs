@@ -119,6 +119,14 @@ namespace Aura.Channel.Skills.Hidden
 				return;
 			}
 
+			// Check street
+			if (creature.Region.IsOnStreet(pos))
+			{
+				Send.Notice(creature, Localization.Get("You can't place a Guild Stone on the street."));
+				Send.SkillUseSilentCancel(creature);
+				return;
+			}
+
 			// Place stone (from complete)
 			creature.Skills.Callback(skill.Info.Id, () =>
 			{

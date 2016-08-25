@@ -61,6 +61,7 @@
     <Compile Include="Database\Group.cs" />
     <Compile Include="Database\MsgrDb.cs" />
     <Compile Include="Database\Note.cs" />
+    <Compile Include="GuildManager.cs" />
     <Compile Include="MsgrServer.cs" />
     <Compile Include="Network\MsgrHandlers.cs" />
     <Compile Include="Network\MsgrClient.cs" />

@@ -73,5 +73,26 @@ namespace Aura.Msgr
 
 			return result;
 		}
+
+		/// <summary>
+		/// Returns first user that matches the predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public User GetUser(Func<User, bool> predicate)
+		{
+			lock (_users)
+				return _users.Values.FirstOrDefault(predicate);
+		}
+
+		/// <summary>
+		/// Returns user with given character id or null if no user was found.
+		/// </summary>
+		/// <param name="characterId"></param>
+		/// <returns></returns>
+		public User GetUserByCharacterId(long characterId)
+		{
+			return this.GetUser(a => a.CharacterId == characterId);
+		}
 	}
 }

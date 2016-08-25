@@ -616,6 +616,8 @@ namespace Aura.Mabi.Network
 
 		public const int HomesteadInfoRequest = 0xAA5C;
 		public const int HomesteadInfoRequestR = 0xAA5D;
+		public const int HomesteadEnterRequest = 0xAA5E;
+		public const int HomesteadEnterRequestR = 0xAA5F;
 
 		// [180300, NA166 (18.09.2013)] 2 new ops somewhere here, possibly the two below
 
@@ -765,7 +767,7 @@ namespace Aura.Mabi.Network
 			public const int DeleteFriend = 0xC36B;
 			public const int ChatJoin = 0xC36C;
 			public const int GuildChat = 0xC36E;
-			public const int GuildChatR = 0xC36F;
+			public const int GuildChatMsg = 0xC36F;
 
 			public const int ChangeOptions = 0xC370;
 			public const int ChangeOptionsR = 0xC371;
@@ -785,11 +787,14 @@ namespace Aura.Mabi.Network
 			public const int YouGotNote = 0xC385;
 			public const int ReadNote = 0xC386;
 			public const int ReadNoteR = 0xC387;
+			public const int GuildJoin = 0xC388;
 			public const int ChangeChannel = 0xC389;
 			public const int FriendChannelChanged = 0xC38A;
 			public const int GuildMemberList = 0xC38B;
 			public const int GuildMemberListR = 0xC38C;
 			public const int GuildMemberState = 0xC38D;
+			public const int GuildMemberRemove = 0xC38E;
+			public const int GuildMemberListUpdate = 0xC38F;
 
 			public const int PlayerBlock = 0xC392;
 		}
