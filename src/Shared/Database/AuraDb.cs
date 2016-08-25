@@ -526,19 +526,13 @@ namespace Aura.Shared.Database
 		/// <param name="guild"></param>
 		public void UpdateGuildRobe(Guild guild)
 		{
-			var robe = guild.Robe;
-			if (robe == null)
-				robe = new GuildRobe();
-
 			using (var conn = this.Connection)
 			using (var cmd = new UpdateCommand("UPDATE `guilds` SET {0} WHERE `guildId` = @guildId", conn))
 			{
 				cmd.AddParameter("@guildId", guild.Id);
-				if (!guild.HasRobe)
-				{
-					cmd.Set("hasRobe", false);
-				}
-				else
+
+				cmd.Set("hasRobe", guild.HasRobe);
+				if (guild.HasRobe)
 				{
 					cmd.Set("emblemMark", guild.Robe.EmblemMark);
 					cmd.Set("emblemOutline", guild.Robe.EmblemOutline);
@@ -549,6 +543,8 @@ namespace Aura.Shared.Database
 					cmd.Set("emblemOutlineColor", guild.Robe.EmblemOutlineColor);
 					cmd.Set("stripesColor", guild.Robe.StripesColor);
 				}
+
+				cmd.Execute();
 			}
 		}
 
