@@ -105,6 +105,7 @@ namespace Aura.Channel.Util
 			Add(99, -1, "shutdown", "<seconds>", Localization.Get("Shuts down channel."), HandleShutdown);
 			Add(99, 99, "nosave", "", Localization.Get("Marks creature's controlled by the target's client to not be saved on logout."), HandleNoSave);
 			Add(99, -1, "dbgregion", "[scale=20] [entityIds|propIds]", Localization.Get("Creates an image of the current region and its and client events."), HandleDebugRegion);
+			Add(99, -1, "syncguilds", "", Localization.Get("Synchronizes guilds with database."), HandleSyncGuilds);
 
 			// Aliases
 			AddAlias("item", "drop");
@@ -2258,6 +2259,15 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Changed '{0}' PTJ level to '{1}'."), type, level);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("{2} has changed your '{0}' PTJ level to '{1}'."), type, level, sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleSyncGuilds(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			ChannelServer.Instance.GuildManager.SynchronizeGuilds();
+
+			Send.ServerMessage(sender, Localization.Get("Synchronized guilds."));
 
 			return CommandResult.Okay;
 		}

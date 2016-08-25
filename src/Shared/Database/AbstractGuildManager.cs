@@ -97,7 +97,7 @@ namespace Aura.Shared.Database
 		/// Synchronizes loaded guilds with current information
 		/// from the database.
 		/// </summary>
-		protected void SynchronizeGuilds()
+		public void SynchronizeGuilds()
 		{
 			lock (_syncLock)
 			{
