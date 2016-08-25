@@ -40,11 +40,15 @@ public class EavanScript : NpcScript
 
 		await Intro(L("Wearing a rosy pink blouse, her shoulders are gently covered by her blonde hair that seems to wave in the breeze.<br/>An oval face, a pair of calm eyes with depth, and a slightly small nose with a rounded tip...<br/>Beneath are the lips that shine in the same color as her blouse."));
 
-		Msg("This is the Adventurers' Association.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Retrieve Lost Items", "@lostandfound"), Button("About Daily Events", "@daily_quest"));
-		// <button title='About Daily Events' keyword='@daily_quest' />
-		// <button title='Daily Dungeon Quest' keyword='@daily_dungeon_quest' />
-		// <button title='Make a Guild Robe' keyword='@make_guildrobe' />
-		// <button title='Join Guild Battle' keyword='@guildswar' />
+		var buttons = Elements(Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Retrieve Lost Items", "@lostandfound"));
+
+		//buttons.Add(Button(L("About Daily Events"), "@daily_quest"));
+		//buttons.Add(Button(L("Daily Dungeon Quest"), "@daily_dungeon_quest"));
+		if (IsEnabled("GuildRobe") && Player.Guild != null && Player.Guild.LeaderName == Player.Name)
+			buttons.Add(Button(L("Make a Guild Robe"), "@make_guildrobe"));
+		//buttons.Add(Button(L("Join Guild Battle"), "@guildswar"));
+
+		Msg("This is the Adventurers' Association.", buttons);
 
 		switch (await Select())
 		{
@@ -72,34 +76,62 @@ public class EavanScript : NpcScript
 				Msg("Unimplemented");
 				break;
 
-			case "@daily_quest":
-				Msg("Did you receive today's Daily Event quest?<br/>Every day, you'll get a mission for each region.<br/>For instance, you can complete one mission each<br/>at Tara and at Taillteann.");
-				Msg("Once you have completed an event quest from one region,<br/>you will automatically receive the next region's event quest.");
-				Msg("Expired daily event quests will automatically disappear, so<br/>don't forget to do them!");
-				break;
+			//case "@daily_quest":
+			//	Msg("Did you receive today's Daily Event quest?<br/>Every day, you'll get a mission for each region.<br/>For instance, you can complete one mission each<br/>at Tara and at Taillteann.");
+			//	Msg("Once you have completed an event quest from one region,<br/>you will automatically receive the next region's event quest.");
+			//	Msg("Expired daily event quests will automatically disappear, so<br/>don't forget to do them!");
+			//	break;
 
-			/*case "@daily_dungeon_quest":
-				Msg("Would you like to take on the once-a-day challenge of clearing Uladh Dungeon?", Button("Accept", "@ok"), Button("Refuse", "@no"));
+			//case "@daily_dungeon_quest":
+			//	Msg("Would you like to take on the once-a-day challenge of clearing Uladh Dungeon?", Button("Accept", "@ok"), Button("Refuse", "@no"));
 
-				switch(await Select())
+			//	switch(await Select())
+			//	{
+			//		case "@ok":
+			//			if (!QuestActive(70079))
+			//			{
+			//				StartQuest(70079); //[Daily Quest] Uladh Dungeon
+			//				Msg("Good luck.");
+			//			}
+			//			else
+			//			{
+			//				Msg("You already received the Daily Dungeon Quest. Come back tomorrow.");
+			//			}
+			//			break;
+
+			//		case "@no":
+			//			Msg("Guess you're too busy.");
+			//			break;
+			//	}
+			//	break;
+
+			case "@make_guildrobe":
+				if (!IsEnabled("GuildRobe"))
+					break;
+
+				Msg(L("Your guild needs 1,000 GP and 50,000 Gold in order to design a Guild Robe. Would you like to make the design?"), Button(L("Yes"), "@yes"), Button(L("Not now"), "@no"));
+				if (await Select() != "@yes")
+					break;
+
+				// Check GP and Gold
+				var guild = Player.Guild;
+				var gp = 1000;
+				var gold = 50000;
+
+				if (guild.Points < gp)
 				{
-					case "@ok":
-						if (!QuestActive(70079))
-						{
-							StartQuest(70079); //[Daily Quest] Uladh Dungeon
-							Msg("Good luck.");
-						}
-						else
-						{
-							Msg("You already received the Daily Dungeon Quest. Come back tomorrow.");
-						}
-						break;
-
-					case "@no":
-						Msg("Guess you're too busy.");
-						break;
+					Msg(L("I am sorry, but your guild is short on GP. Please gather up more GP and then try again."));
+					break;
 				}
-				break;*/
+				else if (guild.Gold < gold)
+				{
+					Msg(L("I am sorry, but your guild is short on Gold. Please gather up more Gold and then try again."));
+					break;
+				}
+
+				//OpenGuildRobeCreation();
+				End("Please design the Guild Robe.");
+				break;
 		}
 
 		End("Thank you, <npcname/>. I'll see you later!");
