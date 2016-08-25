@@ -41,6 +41,11 @@ namespace Aura.Msgr
 		public UserManager UserManager { get; private set; }
 
 		/// <summary>
+		/// Manager for all guilds.
+		/// </summary>
+		public GuildManager GuildManager { get; private set; }
+
+		/// <summary>
 		/// Manager for all chat sessions.
 		/// </summary>
 		public ChatSessionManager ChatSessionManager { get; private set; }
@@ -53,6 +58,7 @@ namespace Aura.Msgr
 			this.Database = new MsgrDb();
 			this.Conf = new MsgrConf();
 			this.UserManager = new UserManager();
+			this.GuildManager = new GuildManager();
 			this.ChatSessionManager = new ChatSessionManager();
 
 			this.Server = new MsgrServerServer();
@@ -79,6 +85,9 @@ namespace Aura.Msgr
 
 			// Localization
 			this.LoadLocalization(this.Conf);
+
+			// Initialization
+			this.GuildManager.Initialize();
 
 			// Start
 			this.Server.Start(this.Conf.Msgr.Port);

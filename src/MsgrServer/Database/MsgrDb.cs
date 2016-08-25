@@ -98,6 +98,43 @@ namespace Aura.Msgr.Database
 		}
 
 		/// <summary>
+		/// Returns contact with the given character id from the database
+		/// or null if it wasn't found.
+		/// </summary>
+		/// <param name="characterEntityId"></param>
+		/// <returns></returns>
+		public User GetUserByCharacterId(long characterEntityId)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `contacts` WHERE `characterEntityId` = @characterEntityId", conn))
+			{
+				mc.Parameters.AddWithValue("@characterEntityId", characterEntityId);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					if (!reader.Read())
+						return null;
+
+					var user = new User();
+					user.Id = reader.GetInt32("contactId");
+					user.AccountId = reader.GetString("accountId");
+					user.CharacterId = characterEntityId;
+					user.Name = reader.GetString("characterName");
+					user.Server = reader.GetString("server");
+					user.Status = (ContactStatus)reader.GetByte("status");
+					user.ChatOptions = (ChatOptions)reader.GetUInt32("chatOptions");
+					user.Nickname = reader.GetStringSafe("nickname") ?? "";
+					user.LastLogin = reader.GetDateTimeSafe("lastLogin");
+
+					if (!Enum.IsDefined(typeof(ContactStatus), user.Status) || user.Status == ContactStatus.None)
+						user.Status = ContactStatus.Online;
+
+					return user;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Returns friend for invitation, or null if the user doesn't exist.
 		/// </summary>
 		/// <param name="characterName"></param>

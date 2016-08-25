@@ -85,6 +85,29 @@ namespace Aura.Channel.Network.Handlers
 		}
 
 		/// <summary>
+		/// Sent when selecting "Enter Homestead" in friend/guild list.
+		/// Dummy handler so characters don't get locked when clicking
+		/// the button.
+		/// </summary>
+		/// <example>
+		/// 001 [..............02] Byte   : 2
+		/// 002 [................] String : Aura
+		/// 003 [................] String : Zerono
+		/// </example>
+		[PacketHandler(Op.HomesteadEnterRequest)]
+		public void HomesteadEnterRequest(ChannelClient client, Packet packet)
+		{
+			var unkByte = packet.GetByte();
+			var serverName = packet.GetString();
+			var characterName = packet.GetString();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.MsgBox(creature, Localization.Get("This feature hasn't been implemented yet."));
+			Send.HomesteadEnterRequestR(creature);
+		}
+
+		/// <summary>
 		/// ?
 		/// </summary>
 		/// <remarks>

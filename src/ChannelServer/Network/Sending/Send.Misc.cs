@@ -57,6 +57,19 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends negative HomesteadEnterRequestR dummy to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void HomesteadEnterRequestR(Creature creature)
+		{
+			var packet = new Packet(Op.HomesteadEnterRequestR, creature.EntityId);
+			packet.PutByte(false);
+			packet.PutByte((byte)HomesteadEnterRequestResponse.FailedToEnter);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends Disappear to creature's client.
 		/// </summary>
 		/// <remarks>
