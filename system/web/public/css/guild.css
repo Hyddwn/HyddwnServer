@@ -221,6 +221,11 @@ input[type=text]:focus {
 	text-indent: 21px;
 }
 
+#members table td.name.rankMember {
+	background: url('/system/web/public/images/user_silhouette.png') no-repeat 5px center;
+	text-indent: 21px;
+}
+
 #members table td.name.rankApplied {
 	background: url('/system/web/public/images/clock.png') no-repeat 5px center;
 	text-indent: 21px;
