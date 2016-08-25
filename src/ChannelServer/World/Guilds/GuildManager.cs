@@ -53,11 +53,10 @@ namespace Aura.Channel.World.Guilds
 		private void OnCreatureConnected(Creature creature)
 		{
 			var guild = creature.Guild;
-
-			if (guild == null || !guild.HasStone)
+			if (guild == null)
 				return;
 
-			if (AuraData.FeaturesDb.IsEnabled("MarkerMyGuildStone"))
+			if (AuraData.FeaturesDb.IsEnabled("MarkerMyGuildStone") && guild.HasStone)
 				Send.GuildStoneLocation(creature, guild.Stone);
 		}
 
@@ -157,8 +156,6 @@ namespace Aura.Channel.World.Guilds
 									creature.Guild = null;
 									creature.GuildMember = null;
 									Send.GuildUpdateMember(creature, null, null);
-									if (AuraData.FeaturesDb.IsEnabled("MarkerMyGuildStone"))
-										Send.GuildStoneLocation(creature, null);
 								}
 							}
 							else
@@ -263,15 +260,16 @@ namespace Aura.Channel.World.Guilds
 		/// <param name="guild"></param>
 		private void UpdateStoneLocation(Guild guild)
 		{
-			if (!AuraData.FeaturesDb.IsEnabled("MarkerMyGuildStone"))
+			if (!AuraData.FeaturesDb.IsEnabled("MarkerMyGuildStone") || !guild.HasStone)
 				return;
 
-			var stone = guild.Stone;
+			// While GuildStoneLocation looks like it could remove the guild
+			// stone marker on the client's map, it glitches it instead,
+			// showing multiple markers. For now we'll only send it if there
+			// is one, and it will disappear automatically on relog.
 
-			if (stone.RegionId != 0)
-				ForOnlineMembers(guild, creature => Send.GuildStoneLocation(creature, stone));
-			else
-				ForOnlineMembers(guild, creature => Send.GuildStoneLocation(creature, null));
+			var stone = guild.Stone;
+			ForOnlineMembers(guild, creature => Send.GuildStoneLocation(creature, stone));
 		}
 
 		/// <summary>
