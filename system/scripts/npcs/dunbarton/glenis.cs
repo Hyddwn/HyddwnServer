@@ -70,7 +70,11 @@ public class GlenisScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("Ha ha. I trust that the work is going well today?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("Are you looking for the Restaurant? This is it."));
 		}
@@ -175,10 +179,6 @@ public class GlenisScript : NpcScript
 							break;
 					}
 				}
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":
