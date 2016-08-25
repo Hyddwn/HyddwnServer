@@ -381,7 +381,8 @@ public class EavanShop : NpcShopScript
 			AddQuest("Guild Quest", 110007, 1200); // [Guild] Eliminate the Giant Ogre
 			AddQuest("Guild Quest", 110008, 1200); // [Guild] Eliminate the Giant Bear
 
-			//Add("Guild Robe", 19047); // [Guild Name] Guild Robe
+			Add("Guild Robe", false, (creature, npc) => creature.Guild != null && creature.Guild.HasRobe);
+			Add("Guild Robe", 19047); // Guild Robe, color is handled automatically by the client
 		}
 
 		if (IsEnabled("RabbieArena"))
