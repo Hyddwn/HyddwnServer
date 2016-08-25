@@ -33,8 +33,12 @@ namespace Aura.Shared.Database
 		public GuildVisibility Visibility { get; set; }
 		public GuildLevel Level { get; set; }
 		public GuildOptions Options { get; set; }
+
 		public GuildStone Stone { get; set; }
 		public bool HasStone { get { return (this.Stone.RegionId != 0); } }
+
+		public GuildRobe Robe { get; set; }
+		public bool HasRobe { get { return (this.Robe != null); } }
 
 		public int MaxMembers
 		{

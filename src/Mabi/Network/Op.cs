@@ -463,6 +463,10 @@ namespace Aura.Mabi.Network
 		public const int GuildGoldUpdate = 0x8F16;
 		public const int GuildWithdrawGold = 0x8F17;
 		public const int GuildWithdrawGoldR = 0x8F18;
+		public const int GuildOpenGuildRobeCreation = 0x8F19;
+		public const int GuildCreateGuildRobe = 0x8F1A;
+		public const int GuildCreateGuildRobeR = 0x8F1B;
+		public const int GuildCreateGuildRobeUpdate = 0x8F1C;
 		public const int GuildInvite = 0x8F1E;
 		public const int GuildListJoinRequest = 0x8F20;
 		public const int GuildPermitCheck = 0x8F2A;

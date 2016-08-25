@@ -442,14 +442,28 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutLong(creature.Guild.Id);
 				packet.PutString(creature.Guild.Name);
 				packet.PutInt((int)creature.GuildMember.Rank);
-				packet.PutByte(0);
-				packet.PutByte(0);
-				packet.PutByte(0);
-				packet.PutInt(0);
-				packet.PutByte(0);
-				packet.PutByte(0);
-				packet.PutByte(0);
-				packet.PutByte(0);
+				if (creature.Guild.HasRobe)
+				{
+					packet.PutByte(creature.Guild.Robe.EmblemMark);
+					packet.PutByte(creature.Guild.Robe.EmblemOutline);
+					packet.PutByte(creature.Guild.Robe.Stripes);
+					packet.PutUInt(creature.Guild.Robe.RobeColor);
+					packet.PutByte(creature.Guild.Robe.BadgeColor);
+					packet.PutByte(creature.Guild.Robe.EmblemMarkColor);
+					packet.PutByte(creature.Guild.Robe.EmblemOutlineColor);
+					packet.PutByte(creature.Guild.Robe.StripesColor);
+				}
+				else
+				{
+					packet.PutByte(0);
+					packet.PutByte(0);
+					packet.PutByte(0);
+					packet.PutInt(0);
+					packet.PutByte(0);
+					packet.PutByte(0);
+					packet.PutByte(0);
+					packet.PutByte(0);
+				}
 				packet.PutString(creature.Guild.Title);
 			}
 			else

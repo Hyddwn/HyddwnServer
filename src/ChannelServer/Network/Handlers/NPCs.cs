@@ -19,6 +19,7 @@ using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.World.Inventory;
 using Aura.Mabi.Network;
 using Aura.Mabi;
+using Aura.Shared.Database;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -311,6 +312,21 @@ namespace Aura.Channel.Network.Handlers
 
 			// Buy, adding item, and removing currency
 			var success = false;
+
+			// Set guild data
+			if (item.HasTag("/guild_robe/") && creature.Guild != null && creature.Guild.HasRobe)
+			{
+				// EBCL1:4:-11042446;EBCL2:4:-7965756;EBLM1:1:45;EBLM2:1:24;EBLM3:1:6;GLDNAM:s:Name;
+				item.Info.Color1 = creature.Guild.Robe.RobeColor;
+				item.Info.Color2 = GuildRobe.GetColor(creature.Guild.Robe.BadgeColor);
+				item.Info.Color3 = GuildRobe.GetColor(creature.Guild.Robe.EmblemMarkColor);
+				item.MetaData1.SetInt("EBCL1", (int)GuildRobe.GetColor(creature.Guild.Robe.EmblemOutlineColor));
+				item.MetaData1.SetInt("EBCL2", (int)GuildRobe.GetColor(creature.Guild.Robe.StripesColor));
+				item.MetaData1.SetByte("EBLM1", creature.Guild.Robe.EmblemMark);
+				item.MetaData1.SetByte("EBLM2", creature.Guild.Robe.EmblemOutline);
+				item.MetaData1.SetByte("EBLM3", creature.Guild.Robe.Stripes);
+				item.MetaData1.SetString("GLDNAM", creature.Guild.Name);
+			}
 
 			// Cursor
 			if (targetPocket == 0)

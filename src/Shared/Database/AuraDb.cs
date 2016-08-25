@@ -503,7 +503,49 @@ namespace Aura.Shared.Database
 			guild.Gold = reader.GetInt32("gold");
 			guild.Disbanded = reader.GetBoolean("disbanded");
 
+			var hasRobe = reader.GetBoolean("hasRobe");
+			if (hasRobe)
+			{
+				guild.Robe = new GuildRobe();
+				guild.Robe.EmblemMark = reader.GetByte("emblemMark");
+				guild.Robe.EmblemOutline = reader.GetByte("emblemOutline");
+				guild.Robe.Stripes = reader.GetByte("stripes");
+				guild.Robe.RobeColor = reader.GetUInt32("robeColor");
+				guild.Robe.BadgeColor = reader.GetByte("badgeColor");
+				guild.Robe.EmblemMarkColor = reader.GetByte("emblemMarkColor");
+				guild.Robe.EmblemOutlineColor = reader.GetByte("emblemOutlineColor");
+				guild.Robe.StripesColor = reader.GetByte("stripesColor");
+			}
+
 			return guild;
+		}
+
+		/// <summary>
+		/// Writes guild robe information to database.
+		/// </summary>
+		/// <param name="guild"></param>
+		public void UpdateGuildRobe(Guild guild)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `guilds` SET {0} WHERE `guildId` = @guildId", conn))
+			{
+				cmd.AddParameter("@guildId", guild.Id);
+
+				cmd.Set("hasRobe", guild.HasRobe);
+				if (guild.HasRobe)
+				{
+					cmd.Set("emblemMark", guild.Robe.EmblemMark);
+					cmd.Set("emblemOutline", guild.Robe.EmblemOutline);
+					cmd.Set("stripes", guild.Robe.Stripes);
+					cmd.Set("robeColor", guild.Robe.RobeColor);
+					cmd.Set("badgeColor", guild.Robe.BadgeColor);
+					cmd.Set("emblemMarkColor", guild.Robe.EmblemMarkColor);
+					cmd.Set("emblemOutlineColor", guild.Robe.EmblemOutlineColor);
+					cmd.Set("stripesColor", guild.Robe.StripesColor);
+				}
+
+				cmd.Execute();
+			}
 		}
 
 		/// <summary>

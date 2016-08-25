@@ -22,6 +22,7 @@ using Aura.Data.Database;
 using Aura.Channel.World.Quests;
 using Aura.Mabi;
 using System.Text;
+using Aura.Mabi.Util;
 
 namespace Aura.Channel.Scripting.Scripts
 {
@@ -1902,6 +1903,27 @@ namespace Aura.Channel.Scripting.Scripts
 			return result;
 		}
 
+		/// <summary>
+		/// Opens guild robe creation interface.
+		/// </summary>
+		public void OpenGuildRobeCreation()
+		{
+			var entityId = this.Player.EntityId;
+			var guildName = "?";
+			var color = 0x000000u;
+
+			var guild = this.Player.Guild;
+			if (guild != null)
+				guildName = guild.Name;
+
+			var rnd = new MTRandom(ErinnTime.Now.DateTimeStamp);
+			color = AuraData.ColorMapDb.GetRandom(1, rnd);
+
+			this.Player.Vars.Temp["GuildRobeColor"] = color;
+
+			Send.GuildOpenGuildCreation(this.Player, entityId, guildName, color);
+		}
+
 		// Dialog
 		// ------------------------------------------------------------------
 
@@ -2130,6 +2152,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 		// Dialog factory
 		// ------------------------------------------------------------------
+
+		public DialogElement Elements(params DialogElement[] elements) { return new DialogElement(elements); }
 
 		public DialogButton Button(string text, string keyword = null, string onFrame = null) { return new DialogButton(text, keyword, onFrame); }
 
