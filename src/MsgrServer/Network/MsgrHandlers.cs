@@ -931,5 +931,26 @@ namespace Aura.Msgr.Network
 
 			Send.FriendInviteR(client, FriendInviteResult.Success, friend);
 		}
+
+		/// <summary>
+		/// Sent upon connection to request guild member list.
+		/// </summary>
+		/// <example>
+		/// 001 [0000000000000000] Long   : 0
+		/// </example>
+		[PacketHandler(Op.Msgr.GuildMemberList)]
+		public void GuildMemberList(MsgrClient client, Packet packet)
+		{
+			var unkLong = packet.GetLong();
+
+			var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(client.User.CharacterId);
+			if (guild == null)
+			{
+				Log.Warning("GuildMemberList: User '{0}' requested guild list without being in a guild.", client.User.AccountId);
+				return;
+			}
+
+			Send.GuildMemberListR(client, guild);
+		}
 	}
 }

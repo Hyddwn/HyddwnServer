@@ -791,6 +791,8 @@ namespace Aura.Mabi.Network
 			public const int GuildMemberList = 0xC38B;
 			public const int GuildMemberListR = 0xC38C;
 			public const int GuildMemberState = 0xC38D;
+			public const int GuildMemberRemove = 0xC38E;
+			public const int GuildMemberListUpdate = 0xC38F;
 
 			public const int PlayerBlock = 0xC392;
 		}
