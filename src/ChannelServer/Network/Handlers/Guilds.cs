@@ -649,6 +649,9 @@ namespace Aura.Channel.Network.Handlers
 			var visibility = party.GuildVisibilityToBe;
 
 			ChannelServer.Instance.GuildManager.CreateGuild(party, name, type, visibility);
+
+			creature.Inventory.Remove(63040); // Guild Formation Permit
+			creature.Inventory.Add(new Item(63041), true); // Guild Stone Installation Permit
 		}
 
 		/// <summary>
