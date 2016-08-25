@@ -32,7 +32,7 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
-			Log.Debug(packet);
+			//Log.Debug(packet);
 
 			base.Handle(client, packet);
 		}
