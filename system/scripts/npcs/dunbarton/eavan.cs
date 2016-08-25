@@ -129,7 +129,7 @@ public class EavanScript : NpcScript
 					break;
 				}
 
-				//OpenGuildRobeCreation();
+				OpenGuildRobeCreation();
 				End("Please design the Guild Robe.");
 				break;
 		}

@@ -319,5 +319,62 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends GuildOpenGuildRobeCreation to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="amount"></param>
+		public static void GuildOpenGuildCreation(Creature creature, long entityId, string guildName, uint color)
+		{
+			var packet = new Packet(Op.GuildOpenGuildRobeCreation, creature.EntityId);
+			packet.PutLong(entityId);
+			packet.PutString(guildName);
+			packet.PutUInt(color);
+			packet.PutByte(0);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildCreateGuildRobeUpdate to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="emblemMark"></param>
+		/// <param name="emblemOutline"></param>
+		/// <param name="stripes"></param>
+		/// <param name="robeColor"></param>
+		/// <param name="badgeColor"></param>
+		/// <param name="emblemMarkColor"></param>
+		/// <param name="emblemOutlineColor"></param>
+		/// <param name="stripesColor"></param>
+		public static void GuildCreateGuildRobeUpdate(Creature creature, byte emblemMark, byte emblemOutline, byte stripes, uint robeColor, byte badgeColor, byte emblemMarkColor, byte emblemOutlineColor, byte stripesColor, bool success)
+		{
+			var packet = new Packet(Op.GuildCreateGuildRobeUpdate, creature.EntityId);
+			packet.PutByte(emblemMark);
+			packet.PutByte(emblemOutline);
+			packet.PutByte(stripes);
+			packet.PutUInt(robeColor);
+			packet.PutByte(badgeColor);
+			packet.PutByte(emblemMarkColor);
+			packet.PutByte(emblemOutlineColor);
+			packet.PutByte(stripesColor);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildCreateGuildRobeR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void GuildCreateGuildRobeR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.GuildCreateGuildRobeR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

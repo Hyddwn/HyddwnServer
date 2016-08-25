@@ -7,6 +7,7 @@ using Aura.Channel.World.Entities;
 using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using Aura.Shared.Database;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
 using System;
@@ -699,6 +700,88 @@ namespace Aura.Channel.Network.Handlers
 			// Send info as an invite? We're actually lacking a log of what's
 			// supposed to happen here, but this works.
 			Send.GuildInfoNoGuild(creature, guild);
+		}
+
+		/// <summary>
+		/// Sent when finishing guild robe creation.
+		/// </summary>
+		/// <example>
+		/// 001 [..............2D] Byte   : 45
+		/// 002 [..............18] Byte   : 24
+		/// 003 [..............06] Byte   : 6
+		/// 004 [........006EAD5C] Int    : 7253340
+		/// 005 [..............1B] Byte   : 27
+		/// 006 [..............14] Byte   : 20
+		/// 007 [..............19] Byte   : 25
+		/// 008 [..............17] Byte   : 23
+		/// </example>
+		[PacketHandler(Op.GuildCreateGuildRobe)]
+		public void GuildCreateGuildRobe(ChannelClient client, Packet packet)
+		{
+			var emblemMark = packet.GetByte();
+			var emblemOutline = packet.GetByte();
+			var stripes = packet.GetByte();
+			var robeColor = packet.GetUInt();
+			var badgeColor = packet.GetByte();
+			var emblemMarkColor = packet.GetByte();
+			var emblemOutlineColor = packet.GetByte();
+			var stripesColor = packet.GetByte();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var guild = creature.Guild;
+			var member = creature.GuildMember;
+
+			// Check guild and rank
+			if (guild == null || member.Rank != GuildMemberRank.Leader)
+			{
+				Send.MsgBox(creature, Localization.Get("You need to be leader of a guild to create a Guild Robe."));
+				goto L_Fail;
+			}
+
+			// Check resources
+			var gp = 1000;
+			var gold = 50000;
+
+			if (guild.Points < gp)
+			{
+				Send.MsgBox(creature, Localization.Get("Your guild needs 1,000 GP and 50,000 Gold in order to design a Guild Robe."));
+				goto L_Fail;
+			}
+
+			// Check color
+			if (creature.Vars.Temp["GuildRobeColor"] == null)
+			{
+				Send.MsgBox(creature, Localization.Get("Invalid robe color."));
+				goto L_Fail;
+			}
+
+			robeColor = (uint)creature.Vars.Temp["GuildRobeColor"];
+
+			// Update resources
+			guild.Points -= gp;
+			guild.Gold -= gold;
+			ChannelServer.Instance.Database.UpdateGuildResources(guild);
+
+			// Update robe
+			guild.Robe = new GuildRobe();
+			guild.Robe.EmblemMark = emblemMark;
+			guild.Robe.EmblemOutline = emblemOutline;
+			guild.Robe.Stripes = stripes;
+			guild.Robe.RobeColor = robeColor;
+			guild.Robe.BadgeColor = badgeColor;
+			guild.Robe.EmblemMarkColor = emblemMarkColor;
+			guild.Robe.EmblemOutlineColor = emblemOutlineColor;
+			guild.Robe.StripesColor = stripesColor;
+			ChannelServer.Instance.Database.UpdateGuildRobe(guild);
+
+			// Response
+			Send.GuildCreateGuildRobeUpdate(creature, emblemMark, emblemOutline, stripes, robeColor, badgeColor, emblemMarkColor, emblemOutlineColor, stripesColor, true);
+			Send.GuildCreateGuildRobeR(creature, true);
+			return;
+
+		L_Fail:
+			Send.GuildCreateGuildRobeUpdate(creature, emblemMark, emblemOutline, stripes, robeColor, badgeColor, emblemMarkColor, emblemOutlineColor, stripesColor, false);
+			Send.GuildCreateGuildRobeR(creature, false);
 		}
 	}
 }
