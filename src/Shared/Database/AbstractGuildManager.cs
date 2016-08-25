@@ -151,12 +151,12 @@ namespace Aura.Shared.Database
 					{
 						// Check if the member was removed or set to declined.
 						var dbMember = dbGuild.GetMember(member.CharacterId);
-						if (dbMember == null || (member.Rank < GuildMemberRank.Applied && dbMember.Rank == GuildMemberRank.Declined))
+						if (dbMember == null || (member.Rank != GuildMemberRank.Applied && dbMember.Rank == GuildMemberRank.Declined))
 						{
 							removedMembers.Add(member);
 						}
 						// Check for accepted members
-						else if (member.Rank == GuildMemberRank.Applied && dbMember.Rank < GuildMemberRank.Applied)
+						else if (member.Rank == GuildMemberRank.Applied && dbMember.Rank <= GuildMemberRank.Member)
 						{
 							member.Rank = dbMember.Rank;
 							acceptedMembers.Add(member);
