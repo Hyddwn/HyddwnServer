@@ -464,6 +464,7 @@ namespace Aura.Mabi.Network
 		public const int GuildWithdrawGold = 0x8F17;
 		public const int GuildWithdrawGoldR = 0x8F18;
 		public const int GuildInvite = 0x8F1E;
+		public const int GuildListJoinRequest = 0x8F20;
 		public const int GuildPermitCheck = 0x8F2A;
 		public const int GuildPermitCheckR = 0x8F2B;
 		public const int TradeStart = 0x8F5C;

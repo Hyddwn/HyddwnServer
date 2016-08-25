@@ -308,6 +308,7 @@
 	// Season 1
 	{ name: "G11S1", enabled: true, children: [
 		{ name: "InviteGuild", enabled: true },
+		{ name: "GuildListBoard", enabled: true },
 	]},
 	
 	// Season 2
