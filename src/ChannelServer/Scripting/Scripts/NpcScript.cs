@@ -230,6 +230,8 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				var score = this.GetGiftReaction(gift);
 
+				await Hook("before_gift", gift, score);
+
 				await this.Gift(gift, score);
 			}
 			catch (OperationCanceledException)
