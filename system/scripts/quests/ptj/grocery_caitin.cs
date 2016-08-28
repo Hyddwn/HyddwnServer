@@ -981,6 +981,7 @@ public abstract class CaitinExtBreadPtjBaseScript : QuestScript
 			return HookResult.Continue;
 
 		npc.FinishQuest(this.Id, "ptj2");
+		npc.GiveItem(Anthology);
 
 		npc.Msg(L("You are working for Caitin now?<br/>Then, can you do me a favor? Please give this to her for me."));
 		npc.Msg(Hide.Name, L("(Received an Anthology.)"));
