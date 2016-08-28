@@ -996,8 +996,12 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 			else if (prargs != null) // Try cast as ProductionEventArgs
 			{
+				// Cancel if it wasn't a success
+				if (!prargs.Success)
+					return;
+
 				creature = prargs.Creature;
-				itemId = prargs.Item.Info.Id;
+				itemId = prargs.ProductionData.ItemId; // Use production data in case Item is null
 				skill = prargs.ProductionData.Category.ToString();
 				if (skill == "Spinning")
 					skill = "Weaving"; // Shared SkillId.
