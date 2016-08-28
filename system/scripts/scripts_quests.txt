@@ -118,4 +118,6 @@ quests/collection/60028_make_some_rice.cs
 
 // Mainstream
 quests/mainstream/g1/001_finding_the_lost_earring.cs
+quests/mainstream/g1/002_the_three_missing_warriors.cs
+
 include "/user/scripts/scripts_quests.txt"

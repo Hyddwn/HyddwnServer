@@ -888,6 +888,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds item to player's inventory.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public bool GiveItem(Item item)
+		{
+			return this.Player.GiveItem(item);
+		}
+
+		/// <summary>
 		/// Adds item to player's inventory and shows an acquire window.
 		/// </summary>
 		/// <param name="itemId"></param>
