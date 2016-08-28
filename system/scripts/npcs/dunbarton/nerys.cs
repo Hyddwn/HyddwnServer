@@ -139,7 +139,11 @@ public class NerysScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("Hmm? You're a part-time worker at our shop, right?<br/>Is the work going alright?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("What are you looking for?"));
 		}
