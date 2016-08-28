@@ -71,6 +71,7 @@ quests/ptj/adventurerassn_eavan.cs
 quests/ptj/bookstore_aeira.cs
 quests/ptj/church_endelyon.cs
 quests/ptj/church_kristell.cs
+quests/ptj/clothing_simon.cs
 quests/ptj/grocery_caitin.cs
 quests/ptj/grocery_glenis.cs
 quests/ptj/healer_dilys.cs

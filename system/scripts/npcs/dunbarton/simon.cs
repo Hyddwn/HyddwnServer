@@ -139,7 +139,11 @@ public class SimonScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("Hmm? A part-timer at my shop?<br/>Keep in mind that being indecisive is very unprofessional."));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("Is this your first time here?"));
 		}
