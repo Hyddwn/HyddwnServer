@@ -116,4 +116,6 @@ quests/collection/60026_make_some_flour_dough.cs
 quests/collection/60027_make_some_fry_batter.cs
 quests/collection/60028_make_some_rice.cs
 
+// Mainstream
+quests/mainstream/g1/001_finding_the_lost_earring.cs
 include "/user/scripts/scripts_quests.txt"
