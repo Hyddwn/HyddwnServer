@@ -227,7 +227,9 @@ public class AbbSealStoneScript : SealStoneScript
 		SetName("Seal Stone of Abb Neagh", "_sealstone_south_taillteann");
 		SetLocation(14, 14023, 56756, 0);
 		SetHelp("The Seal of Abb Neagh\n\nBlah, Wand, blah, Mage.");
-		SetLock(true);
+
+		if (!IsEnabled("AbbNeaghSealStone"))
+			SetLock(true);
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -257,7 +259,9 @@ public class SliabSealStoneScript : SealStoneScript
 		SetName("Seal Stone of Sliab Cuilin", "_sealstone_east_taillteann");
 		SetLocation(16, 6336, 62882, 0);
 		SetHelp("The Seal of Sliab Cuilin\n\nUtilize Tracy's Secret.");
-		SetLock(true);
+
+		if (!IsEnabled("SliabCuilinSealStone"))
+			SetLock(true);
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -281,7 +285,9 @@ public class TaraSealStoneScript : SealStoneScript
 		SetName("Seal Stone of Tara", "_sealstone_tara");
 		SetLocation(400, 56799, 33820, 2.23f);
 		SetHelp("The Seal of Tara\n\nAlchemists only!!!");
-		SetLock(true);
+
+		if (!IsEnabled("TaraSealStone"))
+			SetLock(true);
 	}
 
 	public override bool Check(Creature creature, Prop prop)

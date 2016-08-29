@@ -272,6 +272,8 @@
 		{ name: "Alchemy", enabled: true },
 		{ name: "IceMine", enabled: true },
 		{ name: "NaoCoupon", enabled: true },
+		{ name: "AbbNeaghSealStone", enabled: true },
+		{ name: "SliabCuilinSealStone", enabled: true },
 	]},
 	
 	// Season 2
