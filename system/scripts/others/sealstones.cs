@@ -5,7 +5,7 @@
 //--- Notes -----------------------------------------------------------------
 // A player can break multiple stones only if they have the devCAT title
 // selected, or if the AllowMultiple option in SealStoneScript is set to
-// true.
+// true. A relog might be needed for the additional titles to show up.
 // 
 // Some stones are "locked" until certain features have been enabled,
 // which makes them unbreakable. For example, the Emain Seal Stones can't
