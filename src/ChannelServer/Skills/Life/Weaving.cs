@@ -37,7 +37,7 @@ namespace Aura.Channel.Skills.Life
 				}
 
 				// The only production tool for weaving are gloves
-				if (productData.Tool != null)
+				if (productData.Tool != null && productData.Tool != "/barehand/")
 				{
 					var glove = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
 					if (glove == null || !glove.HasTag(productData.Tool))
@@ -97,7 +97,7 @@ namespace Aura.Channel.Skills.Life
 				item = creature.Inventory.GetItemAt(Pocket.Glove, 0, 0);
 
 				// Skip if no glove found and no tool required.
-				if (item == null && productData.Tool == null)
+				if (item == null && (productData.Tool == null || productData.Tool == "/barehand/"))
 					return;
 
 				// Skip if found glove is not a production tool.
@@ -110,7 +110,7 @@ namespace Aura.Channel.Skills.Life
 			else if (productData.Category == ProductionCategory.Spinning)
 			{
 				// Skip if no tool is required.
-				if (productData.Tool == null)
+				if (productData.Tool == null || productData.Tool == "/barehand/")
 					return;
 
 				item = creature.RightHand;
