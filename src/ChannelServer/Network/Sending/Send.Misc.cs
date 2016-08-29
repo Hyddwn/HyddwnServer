@@ -465,20 +465,29 @@ namespace Aura.Channel.Network.Sending
 		/// Sends negative DressingRoomOpenR dummy to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void DressingRoomOpenR(Creature creature)
+		public static void DressingRoomOpenR(Creature creature, bool success)
 		{
 			var packet = new Packet(Op.DressingRoomOpenR, creature.EntityId);
-			packet.PutByte(false); // success?
-			packet.PutString(creature.Client.Account.Id);
-			packet.PutInt(0);
+			packet.PutByte(success);
+			if (success)
+			{
+				packet.PutString(creature.Client.Account.Id);
+				packet.PutInt(0); // item count?
+				// for(item count)
+				// {
+				//		Item's ID
+				//		Item's private info
+				//		something more?
+				// }
 
-			packet.PutInt(0); // count
-			// for(count)
-			//{
-			//	packet.PutInt(0);
-			//	packet.PutInt(0); // increments
-			//	packet.PutByte(0);
-			//}
+				packet.PutInt(0); // index count?
+				// for(index count)
+				//{
+				//	packet.PutInt(0);
+				//	packet.PutInt(0); // increments
+				//	packet.PutByte(0);
+				//}
+			}
 
 			creature.Client.Send(packet);
 		}
