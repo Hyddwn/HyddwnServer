@@ -528,8 +528,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			Send.MsgBox(creature, Localization.Get("This feature hasn't been implemented yet."));
-			Send.DressingRoomOpenR(creature);
+			Send.DressingRoomOpenR(creature, false);
 		}
 
 		/// <summary>
@@ -543,7 +542,8 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			Send.DressingRoomCloseR(creature, true);
+			Send.DressingRoomCloseR(creature, false);
+			Send.MsgBox(creature, Localization.Get("This feature hasn't been implemented yet."));
 		}
 	}
 }
