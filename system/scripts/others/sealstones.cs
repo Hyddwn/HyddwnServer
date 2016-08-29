@@ -372,7 +372,8 @@ public abstract class SealStoneScript : GeneralScript
 			}
 
 			// You can only become breaker once officially.
-			if (IsBreaker(creature) && !AllowMultiple && creature.Titles.SelectedTitle != 60001)
+			var canMultiBreak = (AllowMultiple || creature.IsDev);
+			if (IsBreaker(creature) && !canMultiBreak)
 			{
 				Send.Notice(creature, "Unable to break the Seal.\nYou already hold the title of a Seal Breaker.");
 				return;
