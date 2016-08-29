@@ -2,11 +2,6 @@
 // Nerys's Weapon Shop Part-Time Job
 //--- Description -----------------------------------------------------------
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
-//--- Notes -----------------------------------------------------------------
-// The following dialogue is missing:
-// * first time worker PTJ inquiry
-// * first time accepting PTJ offer
-// * first time declining PTJ offer
 //---------------------------------------------------------------------------
 
 public class NerysPtjScript : GeneralScript
@@ -180,7 +175,7 @@ public class NerysPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			msg = L("(missing): first time worker PTJ inquiry");
+			msg = L("Need work, do you?<br/>Would you like to give me a hand? I'll pay you, too.<br/>Interested?");
 		else
 			msg = L("Here to help out again?");
 
@@ -192,7 +187,7 @@ public class NerysPtjScript : GeneralScript
 		if (await npc.Select() == "@accept")
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time accepting PTJ offer"));
+				npc.Msg(L("Alright. Finish the work and report back to me before the deadline."));
 			else
 				npc.Msg(L("Alright. I'll see you before the deadline."));
 
@@ -201,7 +196,7 @@ public class NerysPtjScript : GeneralScript
 		else
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time declining PTJ offer"));
+				npc.Msg(L("Mmm? Are you giving up?"));
 			else
 				npc.Msg(L("Oh well, then. Maybe next time."));
 		}
