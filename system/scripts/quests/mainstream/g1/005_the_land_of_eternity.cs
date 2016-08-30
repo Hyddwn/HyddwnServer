@@ -75,7 +75,7 @@ public class TheLandOfEternityQuest : QuestScript
 			return HookResult.Continue;
 
 		npc.CompleteQuest(this.Id);
-		npc.AcquireItem(Book);
+		npc.GiveItem(Book);
 
 		npc.RemoveKeyword("g1_06");
 		npc.RemoveKeyword("g1_07");
@@ -101,7 +101,7 @@ public class TheLandOfEternityQuest : QuestScript
 			npc.GiveKeyword("g1_10");
 
 			npc.GiveItem(BrownFomorPass);
-			npc.GiveItem(Item.CreateWarpScroll(63009, "barri_dungeon"));
+			npc.GiveWarpScroll(63009, "barri_dungeon");
 
 			npc.Msg(L("...Did you actually read the book?<br/>You still want to go...?<br/>Just as I'd thought...<br/>..."));
 			npc.Msg(L("...Honestly, I was hoping that<br/>reading the book would be enough to satisfy your curiosity and that you would forget all about it...<br/>But, you can't help that you're an adventurer..."));

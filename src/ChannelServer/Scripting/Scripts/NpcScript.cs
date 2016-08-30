@@ -898,6 +898,17 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds warp scroll to player's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="portal"></param>
+		/// <returns></returns>
+		public bool GiveWarpScroll(int itemId, string portal)
+		{
+			return this.Player.GiveItem(Item.CreateWarpScroll(itemId, portal));
+		}
+
+		/// <summary>
 		/// Adds item to player's inventory and shows an acquire window.
 		/// </summary>
 		/// <param name="itemId"></param>
