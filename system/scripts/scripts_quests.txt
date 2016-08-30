@@ -120,5 +120,6 @@ quests/collection/60028_make_some_rice.cs
 quests/mainstream/g1/001_finding_the_lost_earring.cs
 quests/mainstream/g1/002_the_three_missing_warriors.cs
 quests/mainstream/g1/003_the_third_warrior.cs
+quests/mainstream/g1/004_the_story_of_the_goddess.cs
 
 include "/user/scripts/scripts_quests.txt"
