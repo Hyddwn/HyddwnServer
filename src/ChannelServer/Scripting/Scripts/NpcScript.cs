@@ -1130,9 +1130,19 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="questId"></param>
 		public void SendOwl(int questId)
 		{
+			this.SendOwl(questId, 0);
+		}
+
+		/// <summary>
+		/// Sends quest to player via owl after the delay.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="delay">Arrival delay in seconds.</param>
+		public void SendOwl(int questId, int delay)
+		{
 			try
 			{
-				this.Player.Quests.SendOwl(questId);
+				this.Player.Quests.SendOwl(questId, delay);
 			}
 			catch (Exception ex)
 			{
