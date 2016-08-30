@@ -108,9 +108,23 @@ public class SionScript : NpcScript
 				break;
 
 			case "@upgrade":
-				Msg("The pickaxe?<br/>Well, I used to play with it quite a bit as a kid...<br/>Do you think it needs to be upgraded? Leave it up to me.");
-				Msg("Unimplemented");
-				Msg("Come see me anytime, especially if you need anything upgraded.");
+				Msg(L("The pickaxe?<br/>Well, I used to play with it quite a bit as a kid...<br/>Do you think it needs to be upgraded? Leave it up to me.<upgrade />"));
+
+				while (true)
+				{
+					var reply = await Select();
+
+					if (!reply.StartsWith("@upgrade:"))
+						break;
+
+					var result = Upgrade(reply);
+					if (result.Success)
+						Msg(L("Hm... I did the upgrade, and it turned out pretty good...<br/>Need anything else upgraded?"));
+					else
+						Msg(L("(Error)"));
+				}
+
+				Msg(L("Come see me anytime, especially if you need anything upgraded.<upgrade hide='true'/>"));
 				break;
 		}
 
