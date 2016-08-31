@@ -1,5 +1,5 @@
 //--- Aura Script -----------------------------------------------------------
-// G1 010: Book Of Evil
+// G1 010: Book Of Evil Part 1
 //--- Description -----------------------------------------------------------
 // Bringing a book to Kristell for her to translate it, waiting for the
 // translation, and then talking to Tarlach, Meven, and Lassar.

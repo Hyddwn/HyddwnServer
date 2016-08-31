@@ -128,5 +128,6 @@ quests/mainstream/g1/007_medal_of_priests.cs
 quests/mainstream/g1/008_goros_ring.cs
 quests/mainstream/g1/009_succubus.cs
 quests/mainstream/g1/010_book_of_evil_1.cs
+quests/mainstream/g1/011_book_of_evil_2.cs
 
 include "/user/scripts/scripts_quests.txt"
