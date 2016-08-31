@@ -80,6 +80,7 @@ quests/ptj/neighboring_deian.cs
 quests/ptj/blacksmith_ferghus.cs
 quests/ptj/general_malcolm.cs
 quests/ptj/general_tracy.cs
+quests/ptj/wepshop_nerys.cs
 
 // Skills
 quests/skills/20006_elen_refine.cs

@@ -512,5 +512,38 @@ namespace Aura.Channel.Network.Handlers
 			// TODO: Log.
 			Send.MsgBox(creature, Localization.Get("Not supported yet."));
 		}
+
+		/// <summary>
+		/// Sent when opening dressing room. (Dummy handler)
+		/// </summary>
+		/// <remarks>
+		/// Client sends DressingRoomClose when it receives a negative
+		/// response to this packet.
+		/// </remarks>
+		/// <example>
+		/// No parameter.
+		/// </example>
+		[PacketHandler(Op.DressingRoomOpen)]
+		public void DressingRoomOpen(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.DressingRoomOpenR(creature, false);
+		}
+
+		/// <summary>
+		/// Sent when closing dressing room. (Dummy handler)
+		/// </summary>
+		/// <example>
+		/// No parameter.
+		/// </example>
+		[PacketHandler(Op.DressingRoomClose)]
+		public void DressingRoomClose(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.DressingRoomCloseR(creature, false);
+			Send.MsgBox(creature, Localization.Get("This feature hasn't been implemented yet."));
+		}
 	}
 }

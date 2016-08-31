@@ -14,6 +14,7 @@ public class ElenScript : NpcScript
 		SetFace(skinColor: 25, eyeType: 3, eyeColor: 54, mouthType: 1);
 		SetStand("human/female/anim/female_natural_stand_npc_elen");
 		SetLocation(31, 11353, 12960, 15);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 3900, 0x0061696E, 0x00F30E67, 0x00008289);
 		EquipItem(Pocket.Hair, 3005, 0x00FFE680, 0x00FFE680, 0x00FFE680);
@@ -26,23 +27,20 @@ public class ElenScript : NpcScript
 		AddPhrase("Nothing is free!");
 		AddPhrase("Grandpa worries too much.");
 		AddPhrase("Come over here if you are interested in blacksmith work.");
-		AddPhrase("Mom always neglects me... ");
+		AddPhrase("Mom always neglects me...");
 		AddPhrase("If my beauty mesmerizes you, at least have the guts to come and tell me so.");
 		AddPhrase("The real fun is in creating, not repairing.");
 		AddPhrase("I'm not too bad at blacksmith work myself, you know.");
 		AddPhrase("How about some excitement in this town?");
 		AddPhrase("Heh. That boy over there is kind of cute. I'd get along with him really well.");
+		AddPhrase("It's rather slow today...");
 	}
 
 	protected override async Task Talk()
 	{
 		SetBgm("NPC_Elen.mp3");
 
-		await Intro(
-			"Her lovely blonde hair, pushed back with a red and white headband to keep it out of her face, comes down to her waist in a wave and covers her entire back.",
-			"Her small face with dark emerald eyes shines brightly and her full lips create an inquisitive look.",
-			"The sleeveless shirt she is wearing due to the heat of the shop exposes her soft tanned skin, showing how healthy she is."
-		);
+		await Intro(L("Her lovely blonde hair, pushed back with a red and white headband to keep it out of her face, comes down to her waist in a wave and covers her entire back.<br/>Her small face with dark emerald eyes shines brightly and her full lips create an inquisitive look.<br/>The sleeveless shirt she is wearing due to the heat of the shop exposes her soft tanned skin, showing how healthy she is."));
 
 		Msg("Mmm? Is there something you would like to say to me?", Button("Start Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Modify Item", "@upgrade"));
 
@@ -51,8 +49,17 @@ public class ElenScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("Hmm...<br/>Don't you think your equipment is kind of shabby for someone with a title like yours?");
+					Msg("You can find good merchandise in our Blacksmith's Shop, if you're interested. Why not check it out?");
+				}
+				else if (Title == 11002)
+				{
 					Msg("Oh my. You're the Guardian, right?<br/>...I'm not trying to tease you, I'm serious!");
+				}
+
 				await Conversation();
 				break;
 
@@ -143,15 +150,15 @@ public class ElenScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I think we've met, but I can't really... Well, doesn't matter. Welcome!"));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Hi, <username/>. What brings you here?"));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>? I've been waiting for you. Welcome back."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -162,14 +169,14 @@ public class ElenScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "I'm Elen. And you are... <username/>?<br/>I see. Nice to meet you.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "I'm <npcname/>. And you are... <username/>?<br/>I see. Nice to meet you.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "That man over there is my grandpa.<br/>He's the best blacksmith in town.");
 				Msg("I was told that other blacksmiths in the neighboring towns<br/>all learned their trade under my grandpa.<br/>Heh. Cool, huh?");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -225,6 +232,7 @@ public class ElenScript : NpcScript
 				break;
 
 			case "skill_magnum_shot":
+				GiveKeyword("bow");
 				Msg("Did you know?<br/>Magnum Shot is powerful,<br/>but it becomes even more powerful if you use a better bow.");
 				Msg("If you want to see for yourself, try it with a few bows.<br/>It would help our business too... What do you say?");
 				break;
@@ -240,9 +248,8 @@ public class ElenScript : NpcScript
 				break;
 
 			case "skill_gathering":
-				Msg("What else would you need at the Blacksmith's Shop?");
-				Msg("Mining Iron Ore from Barri Dungeon would<br/>help you make iron products.");
-				Msg("Hey, friend. You aren't thinking of going bare-handed, are you?<br/>Talk to Elen and at least bring a Pickaxe with you.");
+				Msg("See that building over there with the Watermill?<br/>You can go to Barri Dungeon from that entrance.");
+				Msg("I'm sure my grandpa would appreciate it<br/>if you brought him some ore from the dungeon. Tee hee.<br/>After all, grandpa values propriety... Hee hee hee.");
 				break;
 
 			case "square":
@@ -295,6 +302,7 @@ public class ElenScript : NpcScript
 				break;
 
 			case "shop_bookstore":
+				GiveKeyword("shop_misc");
 				Msg("Looking for books?<br/>I don't know... At the General Shop, perhaps?");
 				break;
 
@@ -307,16 +315,44 @@ public class ElenScript : NpcScript
 				Msg("Well, I don't know. I'm not too interested in such things...");
 				break;
 
+			case "bow":
+				Msg("We happen to sell bows here.<br/>Why don't you press the 'Shop' button and see what I have?");
+				break;
+
+			case "lute":
+				Msg("After all, you can keep rhythm with a hammer,<br/>but you can't hammer metal with a Lute.");
+				break;
+
+			case "complicity":
+				Msg("Are you... Looking at me in a...");
+				break;
+
+			case "tir_na_nog":
+				Msg("You mean the land of youth?<br/>I've heard it from Comgan before.");
+				Msg("That kid believes so firmly in such nonsense.<br/>How about you? Don't tell me you believe it too...");
+				break;
+
+			case "mabinogi":
+				Msg("My dad used to tell me the story when I was young.<br/>I don't remember it very well now, though...");
+				Msg("After all, practical stories<br/>are better than any fairy tales, you know?");
+				Msg("How to make metal stronger,<br/>how to clean up the cut edge of metal... Those kinds of things.");
+				break;
+
+			case "musicsheet":
+				Msg("Hehe... I don't really know about such things.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"I don't really know.",
 					"Why don't you ask someone else?",
+					"Hmm... Do you really have to know?",
 					"I don't know anything about that.",
 					"Hmm? Can you run that by me again?",
 					"I don't know. Never heard anything about it.",
 					"Just bringing up a topic like that out of the blue doesn't help."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
