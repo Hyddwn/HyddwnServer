@@ -138,6 +138,34 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Rewards keyword.
+	/// </summary>
+	public class QuestRewardKeyword : QuestReward
+	{
+		public override RewardType Type { get { return RewardType.Keyword; } }
+
+		public string Keyword { get; protected set; }
+
+		public QuestRewardKeyword(string keyword)
+		{
+			if (!AuraData.KeywordDb.Exists(keyword))
+				throw new ArgumentException("Keyword '" + keyword + "' not found in data.");
+
+			this.Keyword = keyword;
+		}
+
+		public override string ToString()
+		{
+			return Localization.Get("New Keyword");
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.Keywords.Give(this.Keyword);
+		}
+	}
+
+	/// <summary>
 	/// Rewards Enchant Scroll.
 	/// </summary>
 	/// <remarks>

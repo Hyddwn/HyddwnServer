@@ -27,6 +27,7 @@ namespace Aura.Mabi.Const
 		ExplExp = 4,
 		AP = 5,
 		Skill = 8, // ?
+		Keyword = 98, // TODO: Actual type?
 		QuestScroll = 99, // TODO: Actual type?
 	}
 

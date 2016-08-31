@@ -596,6 +596,7 @@ namespace Aura.Channel.Scripting.Scripts
 		// ------------------------------------------------------------------
 
 		protected QuestReward Item(int itemId, int amount = 1) { return new QuestRewardItem(itemId, amount); }
+		protected QuestReward Keyword(string keyword) { return new QuestRewardKeyword(keyword); }
 		protected QuestReward Enchant(int optionSetId) { return new QuestRewardEnchant(optionSetId); }
 		protected QuestReward QuestScroll(int questId) { return new QuestRewardQuestScroll(questId); }
 		protected QuestReward Skill(SkillId skillId, SkillRank rank) { return new QuestRewardSkill(skillId, rank, 0); }
