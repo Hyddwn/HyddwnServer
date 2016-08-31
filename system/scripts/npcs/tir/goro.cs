@@ -116,6 +116,9 @@ public class GoroScript : NpcScript
 					Msg("My father took care of me since I was young, and took me all over the world<br/>teaching me the language, culture, manners, and many other aspects of humankind.<br/>My dream is to become the greatest merchant in Erinn, just like my father.");
 					break;
 
+				case "@end":
+					return;
+
 				default:
 					await Hook("before_keywords", keyword);
 
