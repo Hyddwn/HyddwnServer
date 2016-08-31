@@ -124,5 +124,6 @@ quests/mainstream/g1/004_the_story_of_the_goddess.cs
 quests/mainstream/g1/005_the_land_of_eternity.cs
 quests/mainstream/g1/006_brown_fomor_pass.cs
 quests/mainstream/g1/007_medal_of_priests.cs
+quests/mainstream/g1/008_goros_ring.cs
 
 include "/user/scripts/scripts_quests.txt"
