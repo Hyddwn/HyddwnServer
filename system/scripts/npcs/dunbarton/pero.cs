@@ -113,6 +113,9 @@ public class PeroScript : NpcScript
 					Msg("My. Father. Teach. Me. Human. Language.<br/>Not. Good. Now. Human. I. Like. I. Learn. Human. Language.<br/>I. Still. Practice. Everyday.<br/>Pero. Try. Liking. Humans.");
 					break;
 
+				case "@end":
+					return;
+
 				default:
 					await Hook("before_keywords", keyword);
 
