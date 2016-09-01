@@ -1,35 +1,3 @@
-#region TEMP_NOTES
-// If you see this region in a pull request, 
-// **I contain undefined values and should not be merged into master!**
-
-// Class name resolver - go go gadget intellisense
-using Aura.Mabi;
-using Aura.Mabi.Const;
-using System.Threading.Tasks;
-using Aura.Channel.Scripting.Scripts;
-using Aura.Channel.World.Entities;
-using Aura.Channel.World.Quests;
-using Aura.Shared.Util;
-using System;
-// Temporarily place this file under ChannelServer.csproj to resolve rest of dependencies
-
-// PR Readiness Check: 
-/* Run following regex searches for possibly improper Localization:
-	* /LX?N?\((?!")/
-		Non-string Localization call
-	* /(?<!LX?N?\()".*?"(?!\w)/
-		Unlocalised string //warn: You will get a lot of false-positives.
-	* ".Format"
-		Check for proper string parametrisation.
-		All parts of the string must be exposed to Poedit.
-	* /LX?N?\((.*?$\n.*?LX?N?\()+/m
-		Consecutive Msg() calls?
-		Join `L("a") ... L("b")` like so: `L("a<p/>b")`
- * Ensure rewards are in counting order with non-conflicting group IDs, per PTJ Quest ID.
- * Search ".Log" and ensure displayed messages are sufficiently descriptive (particularly, do specify the source of the message).
- */
-#endregion
-
 //--- Aura Script -----------------------------------------------------------
 // Simon's Clothing Shop Part-Time Job
 //--- Description -----------------------------------------------------------
@@ -40,6 +8,8 @@ using System;
 // * SimonExtDeliveryAeiraEavanPtjBaseScript
 // * SimonExtDeliveryWalterAusteynPtjBaseScript
 //---------------------------------------------------------------------------
+
+using ItemEntity = Aura.Channel.World.Entities.Item; // Conflicts with QuestScript.Item(...)
 
 public class SimonPtjScript : GeneralScript
 {
@@ -291,6 +261,747 @@ public class SimonPtjScript : GeneralScript
 			else
 				npc.Msg(L("Oh well, then. Maybe next time."));
 		}
+	}
+}
+
+public abstract class SimonTailorPtjBaseScript : QuestScript
+{
+	protected abstract int QuestId { get; }
+	protected abstract string LQuestDescription { get; }
+	protected abstract int ItemId { get; }
+	protected abstract string LCreateObjectiveDescription { get; }
+	protected abstract string LCollectObjectiveDescription { get; }
+	protected abstract QuestLevel QuestLevel { get; }
+
+	protected abstract int RewardSetId { get; }
+
+	public override void Load()
+	{
+		SetId(QuestId);
+		SetName(L("Clothing Shop Part-Time Job"));
+		SetDescription(LQuestDescription);
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.ClothingShop);
+		SetLevel(QuestLevel);
+		SetHours(start: 7, report: QuestLevel == QuestLevel.Basic ? 12 : 17, deadline: 19);
+
+		AddObjective("ptj1", LCreateObjectiveDescription, 0, 0, 0, Create(ItemId, 2, SkillId.Tailoring));
+		AddObjective("ptj2", LCollectObjectiveDescription, 0, 0, 0, Collect(ItemId, 2));
+
+		AddRewards(QuestLevel, RewardSetId);
+	}
+
+	/// <remarks>Tailoring PTJs share reward sets to some extent.</remarks>
+	private void AddRewards(QuestLevel questLevel, int rewardSetId)
+	{
+		switch (questLevel)
+		{
+			case QuestLevel.Basic:
+				switch (rewardSetId)
+				{
+					case 1:
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(600));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(125));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(300));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(50));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(120));
+
+						AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(175));
+						AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(655));
+						AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(87));
+						AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(327));
+						AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(35));
+						AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(131));
+
+						AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(835));
+						AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(160));
+						AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(417));
+						AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(80));
+						AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(167));
+						AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(32));
+
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(15003)); // Vest and Pants Set
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(112));
+
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 10)); // Cheap Finishing Thread
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(312));
+
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 5)); // Cheap Finishing Thread
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(562));
+
+						AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 1)); // Cheap Finishing Thread
+						AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Gold(762));
+						return;
+
+					default:
+						Log.Warning("SimonTailorPtjBaseScript: Derived class {0} is using an undefined reward set. Fell back to reward set Basic1.", this.GetType().Name);
+						goto case 1;
+				}
+
+			case QuestLevel.Int:
+				switch (rewardSetId)
+				{
+					case 1:
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(900));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(150));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(450));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(60));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(180));
+
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1200));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(230));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(600));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(115));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(240));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(46));
+
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(60031)); // Regular Silk Weaving Gloves
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(150));
+
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(15003)); // Vest and Pants Set
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(450));
+
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 10)); // Cheap Finishing Thread
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(650));
+
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 5)); // Cheap Finishing Thread
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(900));
+						return;
+
+					case 2:
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1000));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(150));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(500));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(60));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(200));
+
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1300));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(250));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(650));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(125));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(260));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(50));
+
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(60031)); // Regular Silk Weaving Gloves
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(250));
+
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(15003)); // Vest and Pants Set
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(550));
+
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 10)); // Cheap Finishing Thread
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(750));
+
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 5)); // Cheap Finishing Thread
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(1000));
+						return;
+
+					default:
+						Log.Warning("SimonTailorPtjBaseScript: Derived class {0} is using an undefined reward set. Fell back to reward set Int1.", this.GetType().Name);
+						goto case 1;
+				}
+
+			case QuestLevel.Adv:
+				switch (rewardSetId)
+				{
+					case 1:
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1300));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(200));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(650));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(80));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(260));
+
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1700));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(325));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(850));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(163));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(340));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(65));
+
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(19003)); // Tricolor Robe
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(125));
+
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(60031)); // Regular Silk Weaving Gloves
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(625));
+
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(15003)); // Vest and Pants Set
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(925));
+
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 10)); // Cheap Finishing Thread
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(1125));
+						return;
+
+					case 2:
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1500));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(200));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(750));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(80));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(300));
+
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1920));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(360));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(960));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(180));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(384));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(72));
+
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(15023)); // Tork's Hunter Suit (F)
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(25));
+
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(19003)); // Tricolor Robe
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(325));
+
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(60031)); // Regular Silk Weaving Gloves
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(825));
+
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(15003)); // Vest and Pants Set
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(1125));
+
+						AddReward(7, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40022)); // Collecting Quest - Deliver 10 Leather Bandanas
+
+						AddReward(8, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40023)); // Collecting Quest - Deliver 5 Common Silk Weaving Gloves
+
+						AddReward(9, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40024)); // Collecting Quest - Deliver 2 Cores Healer Gloves
+
+						AddReward(10, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40025)); // Collecting Quest - Deliver 1 Mongo Hat
+						return;
+
+					case 3:
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1200));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(200));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(600));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(80));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(240));
+
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1600));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(300));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(800));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(150));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(320));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(60));
+
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(19003)); // Tricolor Robe
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(25));
+
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(60031)); // Regular Silk Weaving Gloves
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(525));
+
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(15003)); // Vest and Pants Set
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(825));
+
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 10)); // Cheap Finishing Thread
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(1025));
+
+						AddReward(7, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40022)); // Collecting Quest - Deliver 10 Leather Bandanas
+
+						AddReward(8, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40023)); // Collecting Quest - Deliver 5 Common Silk Weaving Gloves
+
+						AddReward(9, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40024)); // Collecting Quest - Deliver 2 Cores Healer Gloves
+
+						AddReward(10, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40025)); // Collecting Quest - Deliver 1 Mongo Hat
+
+						AddReward(11, RewardGroupType.Item, QuestResult.Perfect, Item(1501)); // Collection Book - Fashion Item - Hat
+						return;
+
+					case 4:
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1300));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(200));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(650));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(80));
+						AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(260));
+
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Exp(1700));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Perfect, Gold(325));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Exp(850));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Mid, Gold(163));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Exp(340));
+						AddReward(2, RewardGroupType.Exp, QuestResult.Low, Gold(65));
+
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Item(19003)); // Tricolor Robe
+						AddReward(3, RewardGroupType.Item, QuestResult.Perfect, Gold(125));
+
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(60031)); // Regular Silk Weaving Gloves
+						AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(625));
+
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(15003)); // Vest and Pants Set
+						AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(925));
+
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(60015, 10)); // Cheap Finishing Thread
+						AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(1125));
+
+						AddReward(7, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40022)); // Collecting Quest - Deliver 10 Leather Bandanas
+
+						AddReward(8, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40023)); // Collecting Quest - Deliver 5 Common Silk Weaving Gloves
+
+						AddReward(9, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40024)); // Collecting Quest - Deliver 2 Cores Healer Gloves
+
+						AddReward(10, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40025)); // Collecting Quest - Deliver 1 Mongo Hat
+
+						AddReward(11, RewardGroupType.Item, QuestResult.Perfect, Item(1501)); // Collection Book - Fashion Item - Hat
+						return;
+
+					default:
+						Log.Warning("SimonTailorPtjBaseScript: Derived class {0} is using an undefined reward set. Fell back to reward set Adv1.", this.GetType().Name);
+						goto case 1;
+				}
+
+			default:
+				Log.Warning("SimonTailorPtjBaseScript: Unspecified quest level for derived class {0}. Retrying as basic level.", this.GetType().Name);
+				goto case QuestLevel.Basic;
+		}
+	}
+}
+
+public class SimonTailorPoposSkirtBasicPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510207; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Popo's Skirts], using the materials given for this part-time job. Deadline kicks in at noon. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60606; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Popo's Skirts (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Popo's Skirts (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10106, 5)); // Apprentice Sewing Pattern - Popo's Skirt
+		creature.GiveItem(60419, 2); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 2); // Cheap Fabric (Part-Time Job)
+	}
+}
+
+public class SimonTailorWizardHatBasicPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510208; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Wizard Hats], using the materials given for this part-time job. Deadline kicks in at noon. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60612; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Wizard Hats (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Wizard Hats (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10112, 10)); // Apprentice Sewing Pattern - Wizard Hat
+		creature.GiveItem(60424, 5); // Common Leather (Part-Time Job)
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60424, 5); // Common Leather (Part-Time Job)
+	}
+}
+
+public class SimonTailorHairbandBasicPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510209; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Hairbands], using the materials given for this part-time job. Deadline kicks in at noon. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60614; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Hairbands (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Hairbands (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10114, 5)); // Apprentice Sewing Pattern - Hairband
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 5); // Cheap Fabric (Part-Time Job)
+	}
+}
+
+public class SimonTailorMongosTravelerSuitFBasicPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510210; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Mongo's Traveler Suits (F)], using the materials given for this part-time job. Deadline kicks in at noon. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60607; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Mongo's Traveler Suits (F) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Traveler Suits (F) (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10107, 40)); // Apprentice Sewing Pattern - Mongo Traveler Suit (F)
+		creature.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+		creature.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+	}
+}
+
+public class SimonTailorMongosTravelerSuitMBasicPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510211; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Mongo's Traveler Suits (M)], using the materials given for this part-time job. Deadline kicks in at noon. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60608; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Mongo's Traveler Suits (M) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Traveler Suits (M) (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10108, 40)); // Apprentice Sewing Pattern - Mongo Traveler Suit (M)
+		creature.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+		creature.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+	}
+}
+
+public class SimonTailorLeatherBandanaBasicPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510212; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Leather Bandanas], using the materials given for this part-time job. Deadline kicks in at noon. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60613; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Leather Bandanas (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Leather Bandanas (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10113, 15)); // Apprentice Sewing Pattern - Leather Bandana
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60424, 3); // Common Leather (Part-Time Job)
+		creature.GiveItem(60416, 2); // Common Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60424, 3); // Common Leather (Part-Time Job)
+	}
+}
+
+public class SimonTailorCoresHealerDressIntPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510238; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Cores' Healer Dresses], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60601; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores' Healer Dresses (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cores' Healer Dresses (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10101, 30)); // Apprentice Sewing Pattern - Cores' Healer Dress
+		creature.GiveItem(60419, 6); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60411, 6); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60416, 2); // Common Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 6); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60411, 6); // Cheap Silk (Part-Time Job)
+	}
+}
+
+public class SimonTailorMagicSchoolUniformMIntPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510239; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Magic School Uniforms (M)], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60602; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Magic School Uniforms (M) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Magic School Uniforms (M) (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10102, 10)); // Apprentice Sewing Pattern - Magic School Uniform (M)
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60412, 3); // Common Silk (Part-Time Job)
+		creature.GiveItem(60428, 3); // Common Leather Strap (Part-Time Job)
+		creature.GiveItem(60417, 2); // Fine Finishing Thread (Part-Time Job)
+	}
+}
+
+public class SimonTailorMongosLongSkirtIntPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510240; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Mongo's Long Skirts], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60615; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Mongo's Long Skirts (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Long Skirts (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10115, 25)); // Apprentice Sewing Pattern - Mongo's Long Skirt
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60411, 3); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60411, 3); // Cheap Silk (Part-Time Job)
+	}
+}
+
+public class SimonTailorCoresNinjaSuitMIntPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510241; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Cores Ninja Suits (M)], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60618; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores Ninja Suits (M) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cores Ninja Suits (M) (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10118, 25)); // Apprentice Sewing Pattern - Cores Ninja Suit (M)
+		creature.GiveItem(60420, 7); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60412, 7); // Common Silk (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60420, 7); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60412, 7); // Common Silk (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 2); // Thick Thread Ball (Part-Time Job)
+	}
+}
+
+public class SimonTailorCoresHealerGlovesIntPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510242; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Cores' Healer Gloves], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60604; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores' Healer Gloves (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cores' Healer Gloves (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override int RewardSetId { get { return 2; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10104, 20)); // Apprentice Sewing Pattern - Cores' Healer Gloves
+		creature.GiveItem(60420, 6); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60412, 6); // Common Silk (Part-Time Job)
+		creature.GiveItem(60404, 3); // Braid (Part-Time Job)
+		creature.GiveItem(60404, 3); // Braid (Part-Time Job)
+		creature.GiveItem(60417, 2); // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60420, 6); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60412, 6); // Common Silk (Part-Time Job)
+		creature.GiveItem(60404, 3); // Braid (Part-Time Job)
+		creature.GiveItem(60404, 3); // Braid (Part-Time Job)
+	}
+}
+
+public class SimonTailorCoresHealerSuitIntPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510243; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Cores' Healer Suits], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60610; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores' Healer Suits (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cores' Healer Suits (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override int RewardSetId { get { return 2; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10110, 30)); // Apprentice Sewing Pattern - Cores' Healer Suit
+		creature.GiveItem(60420, 5); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60419, 5); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60427, 5); // Cheap Leather Strap (Part-Time Job)
+		creature.GiveItem(60418, 2); // Finest Finishing Thread (Part-Time Job)
+		creature.GiveItem(60420, 5); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60419, 5); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60427, 5); // Cheap Leather Strap (Part-Time Job)
+	}
+}
+
+public class SimonTailorGuardianGloveIntPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510244; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Guardian Gloves], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60611; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Guardian Gloves (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Guardian Gloves (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override int RewardSetId { get { return 2; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10111, 40)); // Apprentice Sewing Pattern - Guardian Gloves
+		creature.GiveItem(60424, 10); // Common Leather (Part-Time Job)
+		creature.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+		creature.GiveItem(60424, 10); // Common Leather (Part-Time Job)
+		creature.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+	}
+}
+
+public class SimonTailorMagicSchoolUniformFAdvPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510269; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Magic School Uniforms (F)], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60603; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Magic School Uniforms (F) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Magic School Uniforms (F) (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override int RewardSetId { get { return 1; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10103, 20)); // Apprentice Sewing Pattern - Magic School Uniform (F)
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60422, 6);  // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60412, 8);  // Common Silk (Part-Time Job)
+		creature.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+	}
+}
+
+public class SimonTailorClothMailsAdvPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510271; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Cloth Mails], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60609; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cloth Mails (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Cloth Mails (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override int RewardSetId { get { return 2; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10109, 40)); // Apprentice Sewing Pattern - Cloth Mail
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60404, 5);  // Braid (Part-Time Job)
+		creature.GiveItem(60404, 5);  // Braid (Part-Time Job)
+		creature.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60404, 5);  // Braid (Part-Time Job)
+		creature.GiveItem(60404, 5);  // Braid (Part-Time Job)
+	}
+}
+
+public class SimonTailorLightLeatherMailFAdvPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510272; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Light Leather Mails (F)], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60616; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Light Leather Mails (F) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Light Leather Mails (F) (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override int RewardSetId { get { return 2; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10116, 30)); // Apprentice Sewing Pattern - Light Leather Mail (F)
+		creature.GiveItem(60425, 9);  // Fine Leather (Part-Time Job)
+		creature.GiveItem(60413, 9);  // Fine Silk (Part-Time Job)
+		creature.GiveItem(60428, 9);  // Common Leather Strap (Part-Time Job)
+		creature.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60404, 2);  // Braid (Part-Time Job)
+		creature.GiveItem(60425, 9);  // Fine Leather (Part-Time Job)
+		creature.GiveItem(60413, 9);  // Fine Silk (Part-Time Job)
+		creature.GiveItem(60428, 9);  // Common Leather Strap (Part-Time Job)
+	}
+}
+
+public class SimonTailorLightLeatherMailMAdvPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510273; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Light Leather Mails (M)], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60620; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Light Leather Mails (M) (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Light Leather Mails (M) (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override int RewardSetId { get { return 2; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10120, 30)); // Apprentice Sewing Pattern - Light Leather Mail (M)
+		creature.GiveItem(60425, 10); // Fine Leather (Part-Time Job)
+		creature.GiveItem(60412, 10); // Common Silk (Part-Time Job)
+		creature.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
+		creature.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60404, 2);  // Braid (Part-Time Job)
+		creature.GiveItem(60425, 10); // Fine Leather (Part-Time Job)
+		creature.GiveItem(60412, 10); // Common Silk (Part-Time Job)
+		creature.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
+	}
+}
+
+public class SimonTailorLirinaLongSkirtAdvPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510275; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Lirina's Long Skirts], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60617; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Lirina's Long Skirts (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Lirina's Long Skirts (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override int RewardSetId { get { return 3; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10117, 20)); // Apprentice Sewing Pattern - Lirina's Long Skirt
+		creature.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
+		creature.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
+		creature.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+	}
+}
+
+public class SimonTailorMongoHatsAdvPtjScript : SimonTailorPtjBaseScript
+{
+	protected override int QuestId { get { return 510276; } }
+	protected override string LQuestDescription { get { return L("This job is tailoring and supplying clothes to the Clothing Shop. Today's order is tailoring [2 Mongo's Hats], using the materials given for this part-time job. Deadline kicks in at 5 PM. Be careful not to deliver them before the deadline since the final work doesn't begin til then."); } }
+	protected override int ItemId { get { return 60605; } }
+	protected override string LCreateObjectiveDescription { get { return L("Make 2 Mongo's Hats (Part-Time Job)"); } }
+	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Hats (Part-Time Job)"); } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override int RewardSetId { get { return 4; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10105, 15)); // Apprentice Sewing Pattern - Mongo's Hat
+		creature.GiveItem(60422, 5); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60412, 5); // Common Silk (Part-Time Job)
+		creature.GiveItem(60418, 2); // Finest Finishing Thread (Part-Time Job)
+		creature.GiveItem(60422, 5); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60412, 5); // Common Silk (Part-Time Job)
 	}
 }
 
