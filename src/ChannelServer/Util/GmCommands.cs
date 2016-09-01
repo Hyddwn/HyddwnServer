@@ -66,6 +66,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "goto", "<target name>", Localization.Get("Warps to a specific creature."), HandleGoTo);
 			Add(50, 50, "item", "<id|name> [amount|color1 [color2 [color 3]]]", Localization.Get("Spawns item."), HandleItem);
 			Add(50, 50, "enchant", "<suffix|prefix>", Localization.Get("Spawns enchant item."), HandleEnchant);
+			Add(50, 50, "manual", "<id>", Localization.Get("Spawns a manual or pattern by id."), HandleManual);
 			Add(50, 50, "ego", "<item id> <ego name> <ego race> [color1 [color2 [color 3]]]", Localization.Get("Creates spirit weapon."), HandleEgo);
 			Add(50, 50, "skill", "<id> [rank]", Localization.Get("Adds skill or changes rank."), HandleSkill);
 			Add(50, 50, "title", "<id>", Localization.Get("Adds and enables title."), HandleTitle);
@@ -593,6 +594,36 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Spawned enchant."));
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("{0} spawned an enchant in your inventory."), sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleManual(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			int manualId;
+			if (!int.TryParse(args[1], out manualId))
+				return CommandResult.InvalidArgument;
+
+			var manual = AuraData.ManualDb.Find(ManualCategory.Tailoring, manualId);
+			if (manual == null)
+			{
+				manual = AuraData.ManualDb.Find(ManualCategory.Blacksmithing, manualId);
+				if (manual == null)
+				{
+					Send.ServerMessage(sender, Localization.Get("Invalid id."));
+					return CommandResult.Fail;
+				}
+			}
+
+			var item = Item.CreatePattern(manual.ManualItemId, manual.Id, 100);
+			target.Inventory.Add(item, Pocket.Temporary);
+
+			Send.ServerMessage(sender, Localization.Get("Spawned manual."));
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("{0} spawned a manual in your inventory."), sender.Name);
 
 			return CommandResult.Okay;
 		}
