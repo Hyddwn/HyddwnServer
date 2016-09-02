@@ -1026,12 +1026,13 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </remarks>
 		/// <param name="hookName"></param>
 		/// <param name="args"></param>
-		/// <returns></returns>
-		protected async Task Hook(string hookName, params object[] args)
+		/// <returns>Whether a hook was executed and broke execution.</returns>
+		protected async Task<bool> Hook(string hookName, params object[] args)
 		{
+			// Not hooked if no hooks found
 			var hooks = ChannelServer.Instance.ScriptManager.NpcScriptHooks.Get(this.NPC.Name, hookName);
 			if (hooks == null)
-				return;
+				return false;
 
 			foreach (var hook in hooks)
 			{
@@ -1039,11 +1040,18 @@ namespace Aura.Channel.Scripting.Scripts
 				switch (result)
 				{
 					case HookResult.Continue: continue; // Run next hook
-					case HookResult.Break: return; // Stop and go back into the NPC
-					case HookResult.End: this.Exit(); return; // Exit script
+					case HookResult.Break: return true; // Stop and go back into the NPC
+					case HookResult.End: this.Exit(); return true; // Exit script
 				}
-
 			}
+
+			// Not hooked if no break or end.
+			// XXX: Technically a script could do something and return
+			//   Continue, which would make it hooked without break,
+			//   but you really shouldn't continue on hook, it would lead
+			//   to confusing dialogues... Maybe add a second Continue type,
+			//   in case we actually need it.
+			return false;
 		}
 
 		/// <summary>
@@ -2249,7 +2257,24 @@ namespace Aura.Channel.Scripting.Scripts
 
 	public enum Hide { None, Face, Name, Both }
 	public enum ConversationState { Ongoing, Select, Ended }
-	public enum HookResult { Continue, Break, End }
+
+	public enum HookResult
+	{
+		/// <summary>
+		/// Continues to next hook.
+		/// </summary>
+		Continue,
+
+		/// <summary>
+		/// Breaks hook loop and returns to script.
+		/// </summary>
+		Break,
+
+		/// <summary>
+		/// Breaks hook loop and ends script
+		/// </summary>
+		End,
+	}
 
 	public enum NpcMood
 	{
