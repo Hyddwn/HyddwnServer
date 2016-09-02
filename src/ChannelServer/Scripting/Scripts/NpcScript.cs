@@ -512,7 +512,11 @@ namespace Aura.Channel.Scripting.Scripts
 				if (keyword == "@end")
 					break;
 
-				await Hook("before_keywords", keyword);
+				// Don't go into normal keyword handling if a hook handled
+				// the keyword.
+				var hooked = await Hook("before_keywords", keyword);
+				if (hooked)
+					continue;
 
 				await this.Keywords(keyword);
 			}
