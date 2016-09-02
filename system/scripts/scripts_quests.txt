@@ -118,18 +118,6 @@ quests/collection/60027_make_some_fry_batter.cs
 quests/collection/60028_make_some_rice.cs
 
 // Mainstream
-quests/mainstream/g1/001_finding_the_lost_earring.cs
-quests/mainstream/g1/002_the_three_missing_warriors.cs
-quests/mainstream/g1/003_the_third_warrior.cs
-quests/mainstream/g1/004_the_story_of_the_goddess.cs
-quests/mainstream/g1/005_the_land_of_eternity.cs
-quests/mainstream/g1/006_brown_fomor_pass.cs
-quests/mainstream/g1/007_medal_of_priests.cs
-quests/mainstream/g1/008_goros_ring.cs
-quests/mainstream/g1/009_succubus.cs
-quests/mainstream/g1/010_book_of_evil_1.cs
-quests/mainstream/g1/011_book_of_evil_2.cs
-quests/mainstream/g1/012_the_book_of_revenge.cs
-quests/mainstream/g1/013_mores.cs
+require "quests/mainstream/scripts_g1.txt"
 
 include "/user/scripts/scripts_quests.txt"
