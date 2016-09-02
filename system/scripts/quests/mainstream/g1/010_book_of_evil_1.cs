@@ -46,7 +46,7 @@ public class BookOfEvilPart1_1Quest : QuestScript
 		npc.Msg(L("Okay...<br/>I will translate it..."));
 		npc.Msg(L("I will contact you once the translation is completed."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 }
 
@@ -87,7 +87,7 @@ public class BookOfEvilPart1_2Quest : QuestScript
 		npc.Msg(L("...I'm sorry, but you will need to go back to where he is..."));
 		npc.Msg(L("... When Tarlach comes...<br/>...I would like to give the book to him myself.<br/>Please understand why I can't give this book to you."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> TarlachAfterIntro(NpcScript npc, params object[] args)
@@ -104,7 +104,7 @@ public class BookOfEvilPart1_2Quest : QuestScript
 		npc.Msg(L("...<p/>Could I ask you for a favor...?<br/>I left something with Priest Meven of Tir Chonail a long time ago.<br/>Would you please retrive it for me...?"));
 		npc.Msg(L("Just go and tell him what I told you<br/>...and he will know what you're talking about."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> MevenAfterIntro(NpcScript npc, params object[] args)
@@ -125,7 +125,7 @@ public class BookOfEvilPart1_2Quest : QuestScript
 		npc.Msg(L("Go see her and tell her that I sent you..."));
 		npc.Msg(L("...Anyway...Tarlach still must have not forgotten about her...<br/>if he's asking for that item back...It's a shame..."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 }
 
@@ -157,12 +157,12 @@ public class BookOfEvilPart1_3Quest : GeneralScript
 				if (await npc.Select() != "@yes" || !npc.HasItem(HolyWater))
 				{
 					npc.Msg(L("I need some Holy Water of Lymilark to grow this, please come back once you have some."));
-					return HookResult.End;
+					return HookResult.Break;
 				}
 
 				LassarFinish(npc);
 
-				return HookResult.End;
+				return HookResult.Break;
 			}
 			else if (npc.HasKeyword("g1_17_3"))
 			{
@@ -170,12 +170,12 @@ public class BookOfEvilPart1_3Quest : GeneralScript
 				if (await npc.Select() != "@yes" || !npc.HasItem(HolyWater))
 				{
 					npc.Msg(L("I need some Holy Water of Lymilark to grow this, please come back once you have some."));
-					return HookResult.End;
+					return HookResult.Break;
 				}
 
 				LassarFinish(npc);
 
-				return HookResult.End;
+				return HookResult.Break;
 			}
 		}
 

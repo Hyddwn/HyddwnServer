@@ -63,7 +63,7 @@ public class MedalOfPriestsQuest : GeneralScript
 			npc.Msg(L("Fomor... Medal? There's such a thing?<br/>Could I see it?"));
 		}
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> KristellBeforeKeywords(NpcScript npc, params object[] args)
@@ -81,7 +81,7 @@ public class MedalOfPriestsQuest : GeneralScript
 			npc.Msg(L("Oh... it's nothing.<br/>I'm quite busy, I should get going..."));
 		}
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> EndelyonBeforeKeywords(NpcScript npc, params object[] args)
@@ -92,7 +92,7 @@ public class MedalOfPriestsQuest : GeneralScript
 
 		npc.Msg(L("(Missing dialog: Information about Fomor Medal."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> MevenBeforeKeywords(NpcScript npc, params object[] args)
@@ -142,6 +142,6 @@ public class MedalOfPriestsQuest : GeneralScript
 			npc.Msg(L("Medal...? Could...I see it?"));
 		}
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 }

@@ -52,7 +52,7 @@ public class GorosRingQuest : QuestScript
 		npc.Msg(L("Thank you, I'll now read it to you..."));
 		npc.Msg(L("'Dul Brau Dairam Shanon' means 'Goddess, lend me the moonlight.'"));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> GoroBeforeKeywords(NpcScript npc, params object[] args)
@@ -84,7 +84,7 @@ public class GorosRingQuest : QuestScript
 				npc.Msg(L("Priest's Token...?"));
 			}
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 		else if (keyword == "g1_dulbrau2")
 		{
@@ -97,7 +97,7 @@ public class GorosRingQuest : QuestScript
 			npc.Msg(L("They said they were waiting to get revenge on that person if they ever ran into her...<br/>Well, I mean it's just a rumor...but still... Hehe..."));
 			npc.Msg(L("The Succubus is a Fomor also...<br/>so they might know more about the Fomor language...or that world...no?<br/>But it won't be easy to find them...ha...haha..."));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -124,7 +124,7 @@ public class GorosRingQuest : QuestScript
 				if (await npc.Select() != "@yes")
 				{
 					npc.Msg(L("I won't be able to teach you the meaning of this line without seeing the medal."));
-					return HookResult.End;
+					return HookResult.Break;
 				}
 
 				npc.RemoveItem(FomorMedal);
@@ -144,13 +144,13 @@ public class GorosRingQuest : QuestScript
 				npc.Msg(L("I can' say for sure that's it's a wrong interpretation but...<br/>it's slightly different from what I remember."));
 			}
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 		else if (keyword == "g1_dulbrau2")
 		{
 			npc.Msg(L("If you don't believe me, why don't you go ask Goro again?"));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;

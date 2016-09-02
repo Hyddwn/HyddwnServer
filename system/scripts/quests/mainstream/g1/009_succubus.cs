@@ -62,7 +62,7 @@ public class SuccubusRpQuest : GeneralScript
 				npc.Msg(L("If you go to Rabbi dungeon alone and offer the pouch on the altar of the Goddess...<br/>You will be able to trust me."));
 			}
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 		else if (keyword == "g1_succubus")
 		{
@@ -78,13 +78,13 @@ public class SuccubusRpQuest : GeneralScript
 			npc.Msg(L("...If you understand how hard it is for a woman to<br/>reveal her true intentions and her past..."));
 			npc.Msg(L("...Please do this favor for me..."));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 		else if (keyword == "g1_message_of_kristell")
 		{
 			npc.Msg(L("Tell Tarlach how I am doing<br/>...Please do this favor for me..."));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -108,7 +108,7 @@ public class SuccubusRpQuest : GeneralScript
 			npc.Msg(Hide.Name, L("(Tarlach pulls a book from his chest.)"));
 			npc.Msg(L("Could you give this to her?<br/>Tell her it's my last request to her...<br/>If she could just translate this book..."));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;

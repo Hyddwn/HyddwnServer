@@ -40,7 +40,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 			npc.Msg(L("And quite a few parents wanted to name their newborn children<br/>after him."));
 			npc.Msg(L("Come to think of it... By now, enogh time has probably passed for a<br/>child with his name to grow up and write a book on Fomors...<br/>...Hah..."));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -70,7 +70,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 			if (await npc.Select() != "@yes" || !npc.HasItem(BookOfRevenge))
 			{
 				npc.Msg(L("Don't you have it with you?"));
-				return HookResult.End;
+				return HookResult.Break;
 			}
 
 			npc.RemoveItem(BookOfRevenge);
@@ -84,7 +84,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 			npc.Msg(L("Hmm... apparently, Master was mulling over something<br/>after losign some item...<p/>I wonder what it was..."));
 			npc.Msg(L("...!<p/>Dunbarton's Town Office<br/>collects lost items and returns them to their rightful owners.<br/>You might be able to find a clue if you<br/>can find what it is that Mores had lost."));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -100,7 +100,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 			npc.Msg(L("A Priestess wouldn't have any reason to lie<br/>Is there a problem?"));
 			npc.Msg(L("Why don't you speak to her at the Temple?"));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -131,7 +131,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 			if (!npc.HasItem(Torque))
 				npc.GiveItem(Torque);
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;

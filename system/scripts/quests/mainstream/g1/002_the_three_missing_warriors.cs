@@ -35,7 +35,7 @@ public class TheThreeMissingWarriorsQuest : GeneralScript
 		npc.Msg(Hide.Name, L("(The bear is writing something in the snow.)"));
 		npc.Msg(Hide.Name, L("(Tar...)<p/>(Tar... la... ch.)<p/>(The bear writes the word 'Tarlach' and stares at you.)<p/>(Tarlach...)<p/>(It seems to be someone's name.)"));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> DuncanBeforeKeywords(NpcScript npc, params object[] args)
@@ -53,7 +53,7 @@ public class TheThreeMissingWarriorsQuest : GeneralScript
 		npc.Msg(L("Long ago, three adventurers actually went to Tir Na Nog<br/>to rescue the black-winged Goddess<br/>and bring paradise to this world.<br/>But none of them ever returned."), npc.Image("G1_Ch03_3warriors"));
 		npc.Msg(L("Hence they were known as the three missing warriors.<br/>Tarlach was one of them...<br/>It's been so long... could it really be him?<br/>Talk to Stewart at the school in Dunbarton. He knows the legend better."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> StewartBeforeKeywords(NpcScript npc, params object[] args)
@@ -83,7 +83,7 @@ public class TheThreeMissingWarriorsQuest : GeneralScript
 			npc.Msg(L("Try placing this on the altar to the goddess inside Alby Dungeon."));
 			npc.Msg(L("Drop the locket on the Alby Dungeon altar.<br/>And get two more friends to go with you."));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 		else if (npc.HasKeyword("g1_03"))
 		{
@@ -93,7 +93,7 @@ public class TheThreeMissingWarriorsQuest : GeneralScript
 
 			npc.Msg(L("Drop the locket on the Alby Dungeon altar.<br/>And get two more friends to go with you."));
 
-			return HookResult.End;
+			return HookResult.Break;
 		}
 		else
 		{

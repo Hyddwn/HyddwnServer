@@ -66,7 +66,7 @@ public class TheLandOfEternityQuest : QuestScript
 			npc.Msg(L("Hmm, how about this. I'll send you an owl when the book arrives.<br/>That would be better, right?"));
 		}
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> AeiraAfterIntro(NpcScript npc, params object[] args)
@@ -86,7 +86,7 @@ public class TheLandOfEternityQuest : QuestScript
 		npc.Msg(L("Sorry it took so long~<br/>To make it up to you, I'll give you the book for free~"));
 		npc.Msg(L("Instead, just come and visit often, okay?"));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> TarlachBeforeKeywords(NpcScript npc, params object[] args)
@@ -119,6 +119,6 @@ public class TheLandOfEternityQuest : QuestScript
 			npc.Msg(L("...The best thing to do would be to forget<br/>trying to go to Tir Na Nog.<p/>...Heed my warning..."));
 		}
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 }

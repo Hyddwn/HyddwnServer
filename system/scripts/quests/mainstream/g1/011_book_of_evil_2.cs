@@ -48,7 +48,7 @@ public class BookOfEvilPart2Quest : QuestScript
 		npc.Msg(L("Isn't it beautiful? It's a black rose.<br/>The overwhelming redness of the flower itself turned the flower pitch black...<br/>I am happy it grew so beautifully compared to other flowers..."), npc.Image("g1_ch16_blackrose"));
 		npc.Msg(L("But... what's the reason you're looking for such a rare flower?<br/>Are you... going to give it to your lover? Ha ha..."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> TarlachAfterIntro(NpcScript npc, params object[] args)
@@ -66,7 +66,7 @@ public class BookOfEvilPart2Quest : QuestScript
 		npc.Msg(L("Then... please do me one more favor...<br/>Can you... deliver this rose to Kristell of Dunbarton?"));
 		npc.Msg(L("...That would be all... thanks."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> KristellAfterIntro(NpcScript npc, params object[] args)
@@ -89,6 +89,6 @@ public class BookOfEvilPart2Quest : QuestScript
 		npc.Msg(L("There were some Fomor text writting in the back of the book which<br/>seems like it has no connection to the contents of the book...<br/>But I translated it just in case."));
 		npc.Msg(L("I hope this helps..."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 }

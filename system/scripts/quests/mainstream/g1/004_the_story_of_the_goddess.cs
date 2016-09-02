@@ -26,7 +26,7 @@ public class TheStoryOfTheGoddessQuest : GeneralScript
 
 		npc.Msg(L("You want to know of the Goddess Morrighan?<br/>If it's about the Goddess, you're better off speaking to Meven..."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> MevenBeforeKeywords(NpcScript npc, params object[] args)
@@ -47,7 +47,7 @@ public class TheStoryOfTheGoddessQuest : GeneralScript
 		npc.Msg(L("You learned about Morrighan from Tarlach's memorial item, eh?<br/>In that case...there's something you should know."));
 		npc.Msg(L("Tarlach is the only surviving member of the three warriors.<br/>I know, everyone claims he is dead...<br/>But he's actually alive. If you want to speak to him<br/>yourself, go to Sidhe Sneachta at night."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 
 	public async Task<HookResult> TarlachBeforeKeywords(NpcScript npc, params object[] args)
@@ -70,6 +70,6 @@ public class TheStoryOfTheGoddessQuest : GeneralScript
 		npc.Msg(L("If you really must know, I can recommend a book to you.<br/>'Land of Eternity, Tir Na Nog.'<br/>You can find it at the Bookstore in Dunbarton."));
 		npc.Msg(L("I hope that will sate your curiosity. I suggest you let the matter drop.<br/>And please, don't tell anyone I'm here.<br/>Please..."));
 
-		return HookResult.End;
+		return HookResult.Break;
 	}
 }
