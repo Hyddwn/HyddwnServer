@@ -32,7 +32,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 			npc.GiveKeyword("g1_mores_gwydion");
 
 			npc.Msg(L("Mores...? That's the author of the book you have?<br/>Gmm... You're right..."));
-			npc.Msg(L("Really...? The one and only hero who rescued this world...<br/>More Gwydion?<br/>...No, it can't be. They probably just have the same name."));
+			npc.Msg(L("Really...? The one and only hero who rescued this world...<br/>Mores Gwydion?<br/>...No, it can't be. They probably just have the same name."));
 			npc.Msg(L("... I know who Mores Gwydion is...<br/>I saw him a few times when I was young..."));
 			npc.Msg(L("In the Second War at Mag Tuireadh Plains,<br/>he'd infiltrated deep into the Fomors' camp<br/>and stopped the Fomors from casting their ultimate spell...<br/>...all the while sacrificing his own life."), npc.Image("g1_ch17_magicfight"));
 			npc.Msg(L("If it wasn't for him...<br/>Erinn would have turned into <br/>a wasteland by the evil Wizard<br/>Jabchiel."));
