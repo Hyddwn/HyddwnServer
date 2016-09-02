@@ -192,20 +192,6 @@ public class SimonScript : NpcScript
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
-			case "about_arbeit":
-				Msg("Unimplemented");
-				// "Do you have any experience in this line of work?<br/>The path of a designer is long and challenging.<br/>If you're feeling confident enough, though, I can entrust you with the work.<br/>
-				// <arbeit><name>Simon's Clothing Shop Part-time Job</name><id>510403</id><title>Looking for help with delivery of goods in Clothing Shop.</title><rewards id="1" type="0"><reward>* 285 Experience Point (+95)</reward><reward>* 225G (+75)</reward></rewards><rewards id="2" type="0"><reward>* 96 Experience Point (+32)</reward><reward>* 381G (+127)</reward></rewards><rewards id="6" type="2" special="true"><reward>* 6 Thick Thread Ball (+1)</reward><reward>* 432G (+144)</reward></rewards><desc>I&apos;d like to give some [clothes] to Manus at the Healer&apos;s House as a present. Can you give me a hand? - Simon -</desc><values maxcount="11" remaincount="11" remaintime="11" history="0"/></arbeit>");
-				// On return: Here to work again?
-				// Refusal: Oh well, then. Maybe next time.
-				// Refusal #2: Msg("Huh? Are you giving up that easily?<br/>");
-				// Wrong time: Msg("No, no, no. There is no work before or after the designated time.");
-				// Wrong time #2: Msg("Oh no. It's not time for a part-time job, yet.<br/>Please come back later.")
-				// @accept Msg("Alright. Finish the work and report back to me before the deadline.<br/>");
-				// @report Msg("Did you finish today's work?<br/>Then report now and let's wrap it up.<br/>I trust that the results live up to my name.<br/><button title='Report Now' keyword='@report' /><button title='Report Later' keyword='@later' />");
-				// @report Msg("You've done a good job with the task I gave you. Thanks.<br/>Well done. Now choose what you need,<br/>and I'll give it to you. <button title='Report Later' keyword='@later' /><arbeit_report result="0"/>");
-				break;
-
 			case "shop_misc":
 				Msg("It's right next door. Didn't you see it?<br/>Well, the owner does look intimidating.<br/>That look on his face drives away potential customers.");
 				Msg("But Walter is still a good man.<br/>Just try to get to know him a little.");
