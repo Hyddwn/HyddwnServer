@@ -71,6 +71,7 @@ quests/ptj/adventurerassn_eavan.cs
 quests/ptj/bookstore_aeira.cs
 quests/ptj/church_endelyon.cs
 quests/ptj/church_kristell.cs
+quests/ptj/clothing_simon.cs
 quests/ptj/grocery_caitin.cs
 quests/ptj/grocery_glenis.cs
 quests/ptj/healer_dilys.cs
@@ -108,6 +109,10 @@ quests/collection/1011_collect_berries.cs
 quests/collection/1012_collect_nails.cs
 quests/collection/40004_bigorder_milk.cs
 quests/collection/40005_bigorder_firewood.cs
+quests/collection/40022_deliver_10_leather_bandanas.cs
+quests/collection/40023_deliver_5_common_silk_weaving_gloves.cs
+quests/collection/40024_deliver_2_cores_healer_gloves.cs
+quests/collection/40025_deliver_1_mongos_hat.cs
 quests/collection/60021_make_assorted_fruits.cs
 quests/collection/60022_make_mayonnaise.cs
 quests/collection/60023_make_curry_paste.cs
