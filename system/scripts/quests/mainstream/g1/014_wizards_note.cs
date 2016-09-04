@@ -12,7 +12,7 @@
 public class WizardsNoteQuest : QuestScript
 {
 	private const int BookOfRevenge = 73062;
-	private const int BookOfRevenge2 = 73054;
+	private const int OwlDelay = 5 * 60;
 
 	public override void Load()
 	{
@@ -127,6 +127,7 @@ public class WizardsNoteQuest : QuestScript
 		if (npc.QuestActive(this.Id, "talk_aeira"))
 		{
 			npc.CompleteQuest(this.Id);
+			npc.SendOwl(210006, OwlDelay); // The Book of Revenge, Volume II
 
 			npc.RemoveKeyword("g1_23");
 			npc.GiveKeyword("g1_24");
