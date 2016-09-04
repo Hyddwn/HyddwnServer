@@ -17,3 +17,4 @@ g1/010_book_of_evil_1.cs
 g1/011_book_of_evil_2.cs
 g1/012_the_book_of_revenge.cs
 g1/013_mores.cs
+g1/014_wizards_note.cs

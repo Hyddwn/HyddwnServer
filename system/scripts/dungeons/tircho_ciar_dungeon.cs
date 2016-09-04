@@ -68,6 +68,25 @@ public class CiarDungeonScript : DungeonScript
 			}
 		}
 
+		// Wizard's Note (G1)
+		if (item.Info.Id == 73024)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_25"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.Leader != creature)
+			{
+				Send.Notice(creature, L("You need to be the party's leader."));
+				return false;
+			}
+
+			dungeonName = "g1_21_tircho_ciar_dungeon";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{
