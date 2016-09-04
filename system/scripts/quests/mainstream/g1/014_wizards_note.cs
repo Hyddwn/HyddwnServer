@@ -1,5 +1,5 @@
 //--- Aura Script -----------------------------------------------------------
-// G1 014: Wiazrd's Note
+// G1 014: Wizard's Note
 //--- Description -----------------------------------------------------------
 // Receive The Book of Revenge Vol 2 by talking to various NPCs.
 // 
@@ -25,9 +25,9 @@ public class WizardsNoteQuest : QuestScript
 			SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("get_book", L("Get the Book of Revenge back from Tarlach."), 48, 11100, 30400, Talk("tarlach"));
-		AddObjective("give_book", L("Show Duncan the Book of Revenge."), 48, 11100, 30400, Talk("duncan"));
+		AddObjective("give_book", L("Show Duncan the Book of Revenge."), 1, 15409, 38310, Talk("duncan"));
 		AddObjective("talk_kristell", L("Ask Kristell about the book that follows the Book of Revenge."), 14, 34657, 42808, Talk("kristell"));
-		AddObjective("talk_aeira", L("Meet with Aeira."), 14, 34657, 42808, Talk("aeira"));
+		AddObjective("talk_aeira", L("Meet with Aeira."), 14, 44978, 43143, Talk("aeira"));
 
 		AddReward(Exp(350));
 		AddReward(Gold(126));
