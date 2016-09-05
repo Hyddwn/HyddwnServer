@@ -210,7 +210,7 @@ public class InvestigatingBookOfRevengeVol3_3Quest : QuestScript
 			npc.Notice(L("You have received The Book of Revenge, Vol. III (Translated) from Kristell."));
 
 			npc.Msg(L("Here is the translated copy you've been waiting for.<br/>With that, I've finished translating all three volumes of the Book of Revenge."));
-			npc.Msg(L("...<br/>I must wanr you...<br/>This last volume contains some...disturbing passages."));
+			npc.Msg(L("...<br/>I must warn you...<br/>This last volume contains some...disturbing passages."));
 
 			return HookResult.Break;
 		}

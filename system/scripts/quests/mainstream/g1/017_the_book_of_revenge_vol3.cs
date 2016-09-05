@@ -51,13 +51,13 @@ public class BookOfRevengeVol3_1Quest : GeneralScript
 			npc.RemoveItem(BookOfRevenge3Translated);
 			npc.Notice(L("You have given the Book of Revenge, Vol. 3 (Translated) to Duncan."));
 
-			npc.Msg(Hide.Name, L("(Duncan receives the book and carefully starts reading."));
+			npc.Msg(Hide.Name, L("(Duncan receives the book and carefully starts reading.)"));
 			npc.Msg(L("This can't be!<br/>Things are a lot more serious than I'd though.<br/>This is a problem. What should we do?"));
 			npc.Msg(L("Glas Ghaibhleann is a legendary giant<br/>that destroyed everything within it's sight with hatred and anger.<br/>It's impossible to describe the fear this monster generates."));
 			npc.Msg(L("Once, Glas Ghaibhleann was commanded by an evil gold<br/>to rampage all across Erinn.<br/>There was simply nothing we could do about it."), npc.Image("g1_ch24_glasgavelen"));
 			npc.Msg(L("That's when our ancestor race, the Partholons, was decimated<br/>and sought refuge in this small mountainous area."));
 			npc.Msg(L("I'm sorry. I'm a bit dazed and it's hard to talk.<br/>It'd be more helpful for you to read a book written by our ancestors<br/>who fought against this monster.<br/>Let's see."));
-			npc.Msg(L("...<p/>...!!yp/>It's not here!<p/>Ah, don't give up now.<br/>I just forgot that<br/>I'd lent it to someone.<br/>He lives in Bangor and...what was his name?"));
+			npc.Msg(L("...<p/>...!!<p/>It's not here!<p/>Ah, don't give up now.<br/>I just forgot that<br/>I'd lent it to someone.<br/>He lives in Bangor and...what was his name?"));
 			npc.Msg(L("B-Bri... That's right!<br/>Bryce is the personal who borrowed it from me."));
 			npc.Msg(L("Tell Bryce about me to get the book and read it.<br/>There is so much more there than I can ever tell you<br/>that is written in that book."));
 
