@@ -2,6 +2,13 @@
 // Stewart's Library Delivery Part-Time Job
 //--- Description -----------------------------------------------------------
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
+//--- Notes -----------------------------------------------------------------
+// All receive & shelve PTJs are not fully tested.
+// At the time of writing, the library is unavailable to shelve the books in.
+//
+// Some Talk objective descriptions have been shortened
+// to account for potential textbox overflow:
+// https://files.gitter.im/aura-project/aura/4QYo/blob
 //---------------------------------------------------------------------------
 
 public class StewartPtjScript : GeneralScript
@@ -281,11 +288,8 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 		SetHours(start: 9, report: 11, deadline: 19);
 
 		// Add objectives depending on specified NpcBookPairs and whether or not to DoShelving.
-		// Receive and Deliver objectives added in separate loops in response to #230.
-		// This way, players would not need to run to and from the library in between NPCs.
 		var bookCount = NpcBookPairs.Length;
 
-		// Receive book quest objectives and hooks
 		if (DoShelving)
 		{
 			// Generates the following objectives and respective hooks:
@@ -377,9 +381,6 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 			if (!npc.QuestActive(this.Id, objectiveIdent))
 				return HookResult.Continue;
 
-			if (!npc.Player.Inventory.Has(nbp.ItemId))
-				return HookResult.Continue;
-
 			npc.Player.GiveItem(nbp.ItemId);
 			npc.Notice(GetLItemReceivedNotice(nbp));
 			npc.FinishQuest(this.Id, objectiveIdent);
@@ -390,7 +391,7 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 		};
 	}
 
-	protected override async Task OnFinish(NpcScript npc, string npcIdent)
+	protected async Task OnFinish(NpcScript npc, string npcIdent)
 	{
 		switch (npcIdent)
 		{
@@ -432,54 +433,6 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 				Log.Error("Stewart PTJ Script: No defined OnFinish dialogue when picking up book from NPC {1}", npcIdent);
 				npc.Msg("(missing): dialogue undefined");
 				break;
-		}
-	}
-
-	/// <summary>
-	/// Returns the NPC identifier of the bookcase corresponding to the specified <paramref name="bookItemId"/>.
-	/// <para>If no matching bookcase NPC identifier is found, returns fallback _bookcase05, [Specialties] section.</para>
-	/// </summary>
-	/// <param name="bookItemId"></param>
-	/// <returns></returns>
-	/// <remarks>Not all books need to be shelved.</remarks>
-	private string GetMatchingBookcaseNpcIdent(int bookItemId)
-	{
-		switch (bookItemId)
-		{
-			case 70051: // Family Meals by the Experts (3)
-			case 70053: // Crossing the Brifne Peninsula
-			case 70054: // Your Guide to Organizing Information
-			case 70057: // 10 Things You Should Do for Your Health
-				return "_bookcase01"; // [Self Improvement] section
-
-			case 70040: // Aliech Poetry Book
-			case 70042: // Wolves in the Snowfield
-			case 70066: // Braden's Big Adventure (2)
-			case 70068: // Braden's Big Adventure (4)
-				return "_bookcase02"; // [Art/Literature] section
-
-			case 70044: // Swept Away by Trends
-			case 70046: // Business Made Easy
-			case 70056: // Plants from Ulaid
-			case 70062: // Ores in Bangor
-				return "_bookcase03"; // [Literature/Philosophy] section
-
-			case 70043: // History of Clothes in Aliech (Pt. 1)
-			case 70049: // History of Lymilark: the Religion
-				return "_bookcase04"; // [History] section
-
-			case 70047: // Business Rules for Maximizing Profit
-			case 70058: // Best Wood in Devenish Forest
-			case 70060: // How to Make a String Instrument
-			case 70061: // The ABCs of Swordsmanship
-				return "_bookcase05"; // [Specialties] section
-
-			case 70063: // Latest Issue of Erinn Walker
-				return "_bookcase06"; // [Magazine] section
-
-			default:
-				Log.Warning("Stewart PTJ Script: No matching bookcase NPC identifier matched with given book item ID {0}. Fell back to _bookcase05, [Specialties] section.", bookItemId);
-				return "_bookcase05"; // [Specialties] section
 		}
 	}
 
@@ -978,9 +931,57 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 	}
 
 	/// <summary>
+	/// Returns the NPC identifier of the bookcase corresponding to the specified <paramref name="bookItemId"/>.
+	/// <para>If no matching bookcase NPC identifier is found, returns fallback _bookcase05, [Specialties] section.</para>
+	/// </summary>
+	/// <param name="bookItemId"></param>
+	/// <returns></returns>
+	/// <remarks>Not all books need to be shelved.</remarks>
+	private string GetMatchingBookcaseNpcIdent(int bookItemId)
+	{
+		switch (bookItemId)
+		{
+			case 70051: // Family Meals by the Experts (3)
+			case 70053: // Crossing the Brifne Peninsula
+			case 70054: // Your Guide to Organizing Information
+			case 70057: // 10 Things You Should Do for Your Health
+				return "_bookcase01"; // [Self Improvement] section
+
+			case 70040: // Aliech Poetry Book
+			case 70042: // Wolves in the Snowfield
+			case 70066: // Braden's Big Adventure (2)
+			case 70068: // Braden's Big Adventure (4)
+				return "_bookcase02"; // [Art/Literature] section
+
+			case 70044: // Swept Away by Trends
+			case 70046: // Business Made Easy
+			case 70056: // Plants from Ulaid
+			case 70062: // Ores in Bangor
+				return "_bookcase03"; // [Literature/Philosophy] section
+
+			case 70043: // History of Clothes in Aliech (Pt. 1)
+			case 70049: // History of Lymilark: the Religion
+				return "_bookcase04"; // [History] section
+
+			case 70047: // Business Rules for Maximizing Profit
+			case 70058: // Best Wood in Devenish Forest
+			case 70060: // How to Make a String Instrument
+			case 70061: // The ABCs of Swordsmanship
+				return "_bookcase05"; // [Specialties] section
+
+			case 70063: // Latest Issue of Erinn Walker
+				return "_bookcase06"; // [Magazine] section
+
+			default:
+				Log.Warning("Stewart PTJ Script: No matching bookcase NPC identifier matched with given book item ID {0}. Fell back to _bookcase05, [Specialties] section.", bookItemId);
+				return "_bookcase05"; // [Specialties] section
+		}
+	}
+
+	/// <summary>
 	/// Returns localised notice text in the forme of 
 	/// <para>"You have received {BookTitle} requested for delivery from {NpcName}."</para>
-	/// <para>But if there is no definition for the specified NPC and book item ID, a blank string is returned.</para>
+	/// <para>But if there is no definition for the specified NPC and book item ID, a log warning is issued and a blank string is returned.</para>
 	/// </summary>
 	/// <param name="nbp">NPC and book item ID to fetch notice text for</param>
 	/// <returns></returns>
@@ -1073,12 +1074,16 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 	/// <summary>
 	/// Returns a localised objective description in the forme of 
 	/// <para>"Receive [{BookTitle}] from {NpcName} at {Location} for return."</para>
-	/// <para>But if there is no definition for the specified NPC and book item ID,</para>
+	/// <para>But if there is no definition for the specified NPC and book item ID, issues log warning and</para>
 	/// <para>returns "Receive a book from {NpcIdent} for return."</para>
 	/// <para>Intended to be used when shelving books.</para>
 	/// </summary>
 	/// <param name="nbp">NPC and book item ID to fetch an objective description for</param>
 	/// <returns></returns>
+	/// <remarks>
+	/// Some texts have been shortened to account for textbox overflow:
+	/// https://files.gitter.im/aura-project/aura/4QYo/blob
+	/// </remarks>
 	private string GetLTalkDescription(NpcBookPair nbp)
 	{
 		switch (nbp.NpcIdent)
@@ -1095,29 +1100,34 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 				switch (nbp.ItemId)
 				{
 					case 70046: return L("Receive [Business Made Easy] from Austeyn at the bank for return.");
-					case 70047: return L("Receive [Business Rules for Maximizing Profit] from Austeyn at the bank for return.");
+					//case 70047: return L("Receive [Business Rules for Maximizing Profit] from Austeyn at the bank for return.");
+					case 70047: return L("Receive [Business Rules for Max. Profit] from Austeyn at the bank for return.");
 					case 70048: return L("Receive [Book of Statistics] from Austeyn at the bank for return.");
 				} break;
 
 			case "_eavan":
 				switch (nbp.ItemId)
 				{
-					case 70054: return L("Receive [Your Guide to Organizing Information] from Eavan at town hall for return.");
+					//case 70054: return L("Receive [Your Guide to Organizing Information] from Eavan at town hall for return.");
+					case 70054: return L("Receive [Your Guide to Organizing Info.] from Eavan at town hall for return.");
 					case 70055: return L("Receive [Devenish Love Song] from Eavan at town hall for return.");
 				} break;
 
 			case "_glenis":
 				switch (nbp.ItemId)
 				{
-					case 70051: return L("Receive [Family Meals by the Experts (3)] from Glenis at the grocery store for return.");
+					//case 70051: return L("Receive [Family Meals by the Experts (3)] from Glenis at the grocery store for return.");
+					case 70051: return L("Receive [Family Meals by Experts] from Glenis at the grocery store for return.");
 					case 70052: return L("Receive [Easy Guide to World History] from Glenis at the grocery store for return.");
-					case 70053: return L("Receive [Crossing the Brifne Peninsula] from Glenis at the grocery store for return.");
+					//case 70053: return L("Receive [Crossing the Brifne Peninsula] from Glenis at the grocery store for return.");
+					case 70053: return L("Receive [Crossing the Brifne Peninsula] from Glenis at the grocery store.");
 				} break;
 
 			case "_kristell":
 				switch (nbp.ItemId)
 				{
-					case 70049: return L("Receive [History of Lymilark: the Religion] from Kristell at the church for return.");
+					//case 70049: return L("Receive [History of Lymilark: the Religion] from Kristell at the church for return.");
+					case 70049: return L("Receive [History of Lymilark] from Kristell at the church for return.");
 					case 70050: return L("Receive [Great Poetry in Motion] from Kristell at the church for return.");
 				} break;
 
@@ -1125,7 +1135,8 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 				switch (nbp.ItemId)
 				{
 					case 70056: return L("Receive [Plants from Ulaid] from Manus at the healer's house for return.");
-					case 70057: return L("Receive [10 Things You Should Do for Your Health] from Manus at the healer's house for return.");
+					//case 70057: return L("Receive [10 Things You Should Do for Your Health] from Manus at the healer's house for return.");
+					case 70057: return L("Receive [10 Things for Your Health] from Manus at the healer's house.");
 				} break;
 
 			case "_nerys":
@@ -1139,7 +1150,8 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 			case "_simon":
 				switch (nbp.ItemId)
 				{
-					case 70043: return L("Receive [History of Clothes in Aliech (Pt. 1)] from Simon at the clothing store for return.");
+					//case 70043: return L("Receive [History of Clothes in Aliech (Pt. 1)] from Simon at the clothing store for return.");
+					case 70043: return L("Receive [History of Clothes in Aliech] from Simon at the clothing store for return.");
 					case 70044: return L("Receive [Swept Away by Trends] from Simon at the clothing store for return.");
 					case 70045: return L("Receive [Gorgeous Colors] from Simon at the clothing store for return.");
 				} break;
@@ -1155,9 +1167,11 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 			case "_walter":
 				switch (nbp.ItemId)
 				{
-					case 70058: return L("Receive [Best Wood in Devenish Forest] from Walter at the general store for return.");
+					//case 70058: return L("Receive [Best Wood in Devenish Forest] from Walter at the general store for return.");
+					case 70058: return L("Receive [Best Wood in Devenish] from Walter at the general store for return.");
 					case 70059: return L("Receive [Household Goods Everyone Can Make] from Walter at the general store for return.");
-					case 70060: return L("Receive [How to Make a String Instrument] from Walter at the general store for return.");
+					//case 70060: return L("Receive [How to Make a String Instrument] from Walter at the general store for return.");
+					case 70060: return L("Receive [Making a String Instrument] from Walter at the general store for return.");
 				} break;
 		}
 
@@ -1168,7 +1182,7 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 	/// <summary>
 	/// Returns a localised objective description in the forme of 
 	/// <para>"Talk to {NpcName} at {Location}."</para>
-	/// <para>But if there is no definition for the specified NPC identifier,</para>
+	/// <para>But if there is no definition for the specified NPC identifier, issues log warning and</para>
 	/// <para>returns "Talk to {NpcIdent}."</para>
 	/// <para>Intended to be used when not shelving books.</para>
 	/// </summary>
@@ -1220,7 +1234,7 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 	/// <summary>
 	/// Returns a localised objective description in the forme of 
 	/// <para>"Receive [{BookTitle}] for return."</para>
-	/// <para>But if there is no definition for the specified book item ID,</para>
+	/// <para>But if there is no definition for the specified book item ID, issues log warning and</para>
 	/// <para>returns "Receive the overdue [Book]."</para>
 	/// <para>Intended to be used when not shelving books.</para>
 	/// </summary>
