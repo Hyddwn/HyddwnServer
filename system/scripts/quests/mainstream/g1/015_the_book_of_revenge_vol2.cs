@@ -43,6 +43,7 @@ public class BookOfRevengeVol2Quest : QuestScript
 			npc.RemoveItem(BookOfRevenge2);
 			npc.SendOwl(this.Id, OwlDelay1);
 
+			npc.RemoveKeyword("g1_memo_of_parcelman");
 			npc.RemoveKeyword("g1_25");
 			npc.GiveKeyword("g1_26");
 
