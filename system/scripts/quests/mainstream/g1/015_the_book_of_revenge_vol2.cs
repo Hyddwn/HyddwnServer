@@ -43,6 +43,9 @@ public class BookOfRevengeVol2Quest : QuestScript
 			npc.RemoveItem(BookOfRevenge2);
 			npc.SendOwl(this.Id, OwlDelay1);
 
+			npc.RemoveKeyword("g1_25");
+			npc.GiveKeyword("g1_26");
+
 			npc.Msg(L("So there really was another volume.<br/>I'm impressed. I didn't think you'd be able to find it."));
 			npc.Msg(L("I'll translate this book, as promised.<br/>I'll let you know as soon as I'm finished."));
 
