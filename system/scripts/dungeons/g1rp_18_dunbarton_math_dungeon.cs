@@ -4,7 +4,7 @@
 // G1 RP dungeon, starring player as Mores.
 //---------------------------------------------------------------------------
 
-[DungeonScript("g1rp_15_dunbarton_rabbie_dungeon")]
+[DungeonScript("g1rp_18_dunbarton_math_dungeon")]
 public class MoresRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
