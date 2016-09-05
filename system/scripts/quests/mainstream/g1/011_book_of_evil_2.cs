@@ -41,8 +41,6 @@ public class BookOfEvilPart2Quest : QuestScript
 			return HookResult.Continue;
 
 		npc.FinishQuest(this.Id, "get_item");
-		npc.RemoveKeyword("g1_17_5");
-		npc.GiveKeyword("g1_17_18");
 
 		npc.Msg(L("Here... This is the item Priest Meven told me to give to you."));
 		npc.Msg(L("Isn't it beautiful? It's a black rose.<br/>The overwhelming redness of the flower itself turned the flower pitch black...<br/>I am happy it grew so beautifully compared to other flowers..."), npc.Image("g1_ch16_blackrose"));
@@ -57,8 +55,6 @@ public class BookOfEvilPart2Quest : QuestScript
 			return HookResult.Continue;
 
 		npc.FinishQuest(this.Id, "talk_tarlach");
-		npc.RemoveKeyword("g1_17_5");
-		npc.GiveKeyword("g1_17_18");
 
 		npc.Msg(L("...!<br/>Yes... that's it.<br/>The black rose I have been looking for..."));
 		npc.Msg(L("No... it's different. This...<br/>is a new flower..."));
@@ -76,7 +72,7 @@ public class BookOfEvilPart2Quest : QuestScript
 
 		npc.CompleteQuest(this.Id);
 		npc.RemoveKeyword("g1_17_5");
-		npc.GiveKeyword("g1_17_18");
+		npc.GiveKeyword("g1_18");
 
 		npc.Msg(L("This is!"));
 		npc.Msg(L("Tarlach......"));
