@@ -41,6 +41,9 @@ public class BookOfEvilPart1_1Quest : QuestScript
 		npc.CompleteQuest(this.Id);
 		npc.SendOwl(210004, OwlDelay); // [Book of Fomors] Translation Completed
 
+		npc.RemoveItem(BookOfFomor);
+		npc.Notice(L("You have given Book of Fomors to Kristell."));
+
 		npc.Msg(L("...Tarlach asked me...?<br/>To translate...this book for him...?"));
 		npc.Msg(L("I see... This is definitely Tarlach's book...<br/>... ...Is he still living as a Druid...with his injured body and all...?<br/>Poor guy..."));
 		npc.Msg(L("Okay...<br/>I will translate it..."));
