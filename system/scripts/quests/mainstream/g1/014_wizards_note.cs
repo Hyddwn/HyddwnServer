@@ -158,7 +158,7 @@ public class WizardsNote2Quest : QuestScript
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.AdventOfTheGoddess);
 
-		AddObjective("talk_aeira", L("Meet Aeira at the Dunbarton Bookstore."), 14, 34657, 42808, Talk("aeira"));
+		AddObjective("talk_aeira", L("Meet Aeira at the Dunbarton Bookstore."), 14, 44978, 43143, Talk("aeira"));
 
 		AddReward(Exp(151));
 		AddReward(Item(WizardsNote));

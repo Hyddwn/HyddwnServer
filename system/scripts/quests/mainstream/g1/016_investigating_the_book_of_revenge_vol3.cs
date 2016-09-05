@@ -43,7 +43,7 @@ public class InvestigatingBookOfRevengeVol3_1Quest : QuestScript
 
 			npc.Msg(L("Ah! I've been waiting!<br/>I have good news."));
 			npc.Msg(L("I found out where you can find volume 3<br/>of that Fomor book you've been looking for,<br/>Lassar, the magic instructor at the school in<br/>Tir Chonaill has it. You know her, don't you?"));
-			npc.Msg(L("She cam by looking for a particular book recently<br/>and while we were chatting, I snuck in a question<br/>about your own search. She says she has the third<br/>colume of 'The Book of Revenge!' An original copy<br/>in the Fomor language, no less!"));
+			npc.Msg(L("She came by looking for a particular book recently<br/>and while we were chatting, I snuck in a question<br/>about your own search. She says she has the third<br/>colume of 'The Book of Revenge!' An original copy<br/>in the Fomor language, no less!"));
 			npc.Msg(L("You should hurry up and see here. Good luck!"));
 
 			return HookResult.Break;
@@ -86,7 +86,7 @@ public class InvestigatingBookOfRevengeVol3_1Quest : QuestScript
 			npc.Msg(L("(He gasps for breath as he speaks.)<br/>Ah... I suppose you're the one Lassar mentioned...?<br/>You need the...book of Fomors...?"));
 			npc.Msg(L("Not too long ago...I asked Lassar...<br/>to translate it<br/>but she said she couldn't do it..."));
 			npc.Msg(L("I probably won't be able to figure it out myself anyway..."));
-			npc.Msg(L("Could you do me a little favor... before I give it to you?<br/>I can't leave here right now,<br/>Could you deliver this present to my son Sion in Bangor."));
+			npc.Msg(L("Could you do me a little favor... before I give it to you?<br/>I can't leave here right now,<br/>Please deliver this present to my son Sion in Bangor."));
 
 			return HookResult.Break;
 		}
@@ -132,7 +132,7 @@ public class InvestigatingBookOfRevengeVol3_2Quest : QuestScript
 			npc.RemoveItem(FathersGift);
 			npc.Notice(L("You have given Father's Gift to Sion."));
 
-			npc.Msg(L("A gift from my father? Thank you!"));
+			npc.Msg(L("... What's this?<br/>Eh, a present from dad?<br/>Wow, thank you!"));
 
 			return HookResult.Break;
 		}
@@ -149,7 +149,7 @@ public class InvestigatingBookOfRevengeVol3_2Quest : QuestScript
 			npc.GiveItem(BookOfRevenge3);
 			npc.Notice(L("You have received The Book of Revenge, Vol. III from Seumas."));
 
-			npc.Msg(L("Thank you...<br/>Here...is the...book...<br/>Hope it would be helpful..."));
+			npc.Msg(L("Oh, that was fast, <username/>...<br/>Did Sion like it? Hah... Thank you...<br/>Here...is the...book...<br/>Hope it would be helpful..."));
 
 			return HookResult.Break;
 		}
