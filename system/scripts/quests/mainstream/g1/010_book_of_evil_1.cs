@@ -139,7 +139,7 @@ public class BookOfEvilPart1_3Quest : GeneralScript
 
 	public override void Load()
 	{
-		AddHook("_lassar", "before_keyword", LassarBeforeKeyword);
+		AddHook("_lassar", "before_keywords", LassarBeforeKeyword);
 	}
 
 	public async Task<HookResult> LassarBeforeKeyword(NpcScript npc, params object[] args)
