@@ -267,6 +267,13 @@ namespace Aura.Channel.World.Dungeons
 				return false;
 			}
 
+			// Check arenas
+			if (dungeonScript.Name == "tircho_alby_dungeon" && item.HasTag("/alby_battle_arena/"))
+			{
+				creature.Warp(28, 1174, 795);
+				return true;
+			}
+
 			// Check route
 			if (!dungeonScript.Route(creature, item, ref dungeonName))
 			{
