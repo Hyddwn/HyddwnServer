@@ -368,9 +368,9 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 			npc.Player.RemoveItem(bookItemId);
 			npc.FinishQuest(this.Id, objectiveIdent);
 
-			npc.Msg(L("(Placed the book in the bookshelf)"));
+			npc.End(L("(Placed the book in the bookshelf)"));
 
-			return HookResult.Break;
+			return HookResult.End;
 		};
 	}
 
