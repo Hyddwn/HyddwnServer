@@ -101,7 +101,7 @@ public class SuccubusRpQuest : GeneralScript
 			npc.RemoveKeyword("g1_message_of_kristell");
 
 			npc.GiveItem(BookOfFomor);
-			npc.StartQuest(210004); // Translating the Book of Fomors
+			npc.StartQuest(210003); // Translating the Book of Fomors
 
 			npc.Msg(L("Kristell's in Dunbarton?<br/>How...troubling."));
 			npc.Msg(L("I'm sorry, but I'm in no position to reciprocate her feelings...<br/>But if it really is her, perhaps<br/>she can translate this book."));
