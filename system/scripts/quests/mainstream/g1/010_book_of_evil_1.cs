@@ -121,7 +121,7 @@ public class BookOfEvilPart1_2Quest : QuestScript
 		npc.GiveKeyword("g1_black_rose");
 
 		npc.Msg(L("Oh, it's you <username/>... Welcome."));
-		npc.Msg(Hide.Name, L("Told priest Meven about the item Tarlach left with him.)"));
+		npc.Msg(Hide.Name, L("(Told priest Meven about the item Tarlach left with him.)"));
 		npc.Msg(L("...He...wants that...back?<br/>Nonsense...!<br/>Do you know how long it's been? What, was he expecting it<br/>to be preserved by magic or something?"));
 		npc.Msg(L("... Hmm...I'm afraid that's not possible.<br/>Granted it's the magic of a Druid...<br/>but...the best thing to do will be to grow it again."));
 		npc.Msg(L("I'll let Lassar know,<br/>so would you go talk to her about it...?<br/>Lassar is quite the expert on that field."));

@@ -36,7 +36,7 @@ public class SuccubusRpQuest : GeneralScript
 				npc.GiveItem(TarlachsGlassesPouch);
 				npc.GiveWarpScroll(63009, "rabbie_dungeon");
 
-				npc.Msg(L("...How... how did you interpret...it...<br/>It means that the GOddess is sending Fomors here?<br/>Where did you hear that...?<br/>What...? The wizard...you heard from a Druid?"));
+				npc.Msg(L("...How... how did you interpret...it...<br/>It means that the Goddess is sending Fomors here?<br/>Where did you hear that...?<br/>What...? The wizard...you heard from a Druid?"));
 				npc.Msg(L("...Named Tarlach...?"));
 				npc.Msg(L("Ahh, I see...<br/>I understand... So Tarlach is still alive after all."));
 				npc.Msg(Hide.Name, L("(Kristell closes her eyes and smiles.)"));

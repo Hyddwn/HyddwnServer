@@ -38,7 +38,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 			npc.Msg(L("If it wasn't for him...<br/>Erinn would have turned into <br/>a wasteland by the evil Wizard<br/>Jabchiel."));
 			npc.Msg(L("People were devestated when his friends returned<br/>to report of this death...<br/>Many people speak very highly of him even now."));
 			npc.Msg(L("And quite a few parents wanted to name their newborn children<br/>after him."));
-			npc.Msg(L("Come to think of it... By now, enogh time has probably passed for a<br/>child with his name to grow up and write a book on Fomors...<br/>...Hah..."));
+			npc.Msg(L("Come to think of it... By now, enough time has probably passed for a<br/>child with his name to grow up and write a book on Fomors...<br/>...Hah..."));
 
 			return HookResult.Break;
 		}
