@@ -468,6 +468,7 @@
 { name: "tuto_result", actors: ["me", "#lostresident"] },
 { name: "tuto_result2", actors: ["me", "#lostkid"] },
 { name: "tuto_smash", actors: ["me", "#brownfox", "#trefor"] },
+{ name: "waterfall_drop", actors: ["player1", "player2", "player3", "player4", "player5", "player6", "player7", "player8"] },
 { name: "weaponcraft_sign", actors: ["me"] },
 { name: "weather_changer_center", actors: ["me"] },
 { name: "weather_changer_lightning", actors: ["me"] },
