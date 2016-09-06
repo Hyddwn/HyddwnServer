@@ -93,7 +93,10 @@ public class EdernScript : NpcScript
 								L("I've repaired 1 point of Durability.")
 							);
 						else
-							Msg(L("(Missing dialog: Edern failing 1 point repair.)"));
+							RndMsg(
+								L("Hmm. My apologies.<br/>The repair hasn't been successful."),
+								L("UUUGH! I'm sorry.<br/>The repair doesn't seem to have gone successfully.")
+							);
 					}
 					else if (result.Points > 1)
 					{
@@ -104,7 +107,7 @@ public class EdernScript : NpcScript
 								L("There, the repair job is finished. It's perfect.")
 							);
 						else
-							Msg(string.Format(L("(Missing dialog: Edern failing multi point repair, fails: {0}, successes: {1}.)"), result.Fails, result.Successes));
+							Msg(string.Format(L("There, the repair's done.<br/>But, unfortunately, I've made {0} mistake(s).<br/>Only {1} point(s) have been repaired, but please bear with me."), result.Fails, result.Successes));
 					}
 				}
 

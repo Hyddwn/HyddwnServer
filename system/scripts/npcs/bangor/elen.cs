@@ -96,7 +96,10 @@ public class ElenScript : NpcScript
 								L("1 Durability point has been repaired.")
 							);
 						else
-							Msg(L("(Missing dialog: Elen failing 1 point repair.)"));
+							RndMsg(
+								L("I'm sorry. I made a mistake."),
+								L("Hmm... I did everything as I was taught...<br/>I'm sorry. It's not repaired.")
+							);
 					}
 					else if (result.Points > 1)
 					{
@@ -107,7 +110,7 @@ public class ElenScript : NpcScript
 								L("The repair work is completely done!")
 							);
 						else
-							Msg(string.Format(L("(Missing dialog: Elen failing multi point repair, fails: {0}, successes: {1}.)"), result.Fails, result.Successes));
+							Msg(string.Format(L("The repair job is finished, but...<br/>I made {0} mistake(s).<br/>So I only ended up repairing {1} point(s). I'm sorry."), result.Fails, result.Successes));
 					}
 				}
 

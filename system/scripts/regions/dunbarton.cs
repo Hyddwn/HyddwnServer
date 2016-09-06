@@ -40,13 +40,9 @@ public class DunbartonRegionScript : RegionScript
 		SetPropBehavior(0x00A0001200010001, PropWarp(18,2213,2015, 71,10337,8150));
 		SetPropBehavior(0x00A0004700000003, PropWarp(71,10330,7921, 18,2180,1843));
 		
-		// Dunbarton School Altar - Dunbarton School Library
-		//SetPropBehavior(0x00B0004700000007, PropWarp(71,10319,11170, 72,10184,7420));
-		SetPropBehavior(0x00A0004800000002, PropWarp(72,10177,7324, 71,10325,11022));
-
-		// Dunbarton School Library Night - Dunbarton School Altar
-		SetPropBehavior(0x00A0004C00000002, PropWarp(76,10166,7328, 71,10325,11022));
-		//SetPropBehavior(0x00B0004700000007, PropWarp(71,10319,11170, 72,10184,7420));
+		// Dunbarton School Library
+		SetPropBehavior(0x00A0004700000002, PropWarp(71,10296,10955, 72,10200,7600));
+		SetPropBehavior(0x00A0004800000002, PropWarp(72,10200,7600, 71,10383,11058));
 
 		// Math
 		SetPropBehavior(0x00A0000E00090011, PropWarp(14,58396,59080, 25,3233,2484));

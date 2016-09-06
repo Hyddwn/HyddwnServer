@@ -221,10 +221,6 @@ public class StewartScript : NpcScript
 				}
 				break;
 
-			case "about_arbeit":
-				Msg("Unimplemented");
-				break;
-
 			case "shop_misc":
 				Msg("Hmm? The General Shop?<br/>It's a bit far from here.<br/>Did someone tell you to go this way?<br/>Why don't you go towards the Square? It's near there.");
 				Msg("When you get to the General Shop,<br/>try talking to Walter.<br/>He might be a bit blunt but he's a really nice person.");

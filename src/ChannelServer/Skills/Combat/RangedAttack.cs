@@ -93,6 +93,8 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Ready(Creature creature, Skill skill, Packet packet)
 		{
+			creature.Temp.FireArrow = false;
+
 			// Light arrows (!) on fire if there's a campfire nearby
 			if (creature.RightHand != null && creature.RightHand.HasTag("/bow/"))
 				creature.Temp.FireArrow = Campfire.GetNearbyCampfire(creature, 500) != null;
