@@ -2170,6 +2170,46 @@
 		]},	]},
 ]},
 
+// Albey Dungeon
+{ name: "g1rp_25_dunbarton_rabbie_dungeon", engName: "Albey Dungeon", style: 400000, baseSeed: 330000000, lobby: 46, exit: "Ula_DgnHall_Dunbarton_before1/_Ula_DgnHall_Dunbarton_before1/DG_DunbartonBefore1_Outer_Spawn", stairs: 25018, saveStatue: 25029, lastStatue: 25030, door: 25022, bossDoor: 25024, bossExitDoor: 25025, floors: [
+	// Floor 1
+	{ width: 8, height: 7, critPathMin: 30, critPathMax: 40, branch: 17, coverage: 80, color: [0x00FFFFFF,0x00FFFFFF,0x00FFFFFF], lightColor: [0x00FFFFFF,0x00FFFFFF,0x00FFFFFF], sections: [
+		{ min: 2, max: 4, puzzles: [
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 30101, amount: 3 }], [{ raceId: 30101, amount: 6 }], [{ raceId: 140002, amount: 4 }] ] },
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 90001, amount: 4 }], [{ raceId: 11007, amount: 5 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 30101, amount: 3 }], [{ raceId: 11007, amount: 6 }], [{ raceId: 11009, amount: 6 }] ] },
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 30102, amount: 5 }], [{ raceId: 140001, amount: 6 }], [{ raceId: 90001, amount: 3 }] ] },
+		]},
+		{ min: 2, max: 4, puzzles: [
+			{ script: "keychest_monster", groups: [ [{ raceId: 140001, amount: 3 }], [{ raceId: 140001, amount: 6 }], [{ raceId: 120003, amount: 8 }] ] },
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 90001, amount: 4 }], [{ raceId: 11007, amount: 5 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "switchdoor_switchmonster", groups: [ [{ raceId: 11007, amount: 5 }] ] },
+			{ script: "eventprop_fountain" },
+			{ script: "keychest_monster2", groups: [ [{ raceId: 120003, amount: 2 }], [{ raceId: 120003, amount: 6 }], [{ raceId: 11007, amount: 6 }] ] },
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 30102, amount: 5 }], [{ raceId: 120003, amount: 6 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "switchdoor_switchmonster", groups: [ [{ raceId: 30102, amount: 5 }] ] },
+		]},
+		{ min: 4, max: 5, puzzles: [
+			{ script: "keychest_monster", groups: [ [{ raceId: 140001, amount: 3 }], [{ raceId: 140003, amount: 6 }], [{ raceId: 120003, amount: 8 }] ] },
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 90001, amount: 4 }], [{ raceId: 11009, amount: 5 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "switchdoor_switchmonster", groups: [ [{ raceId: 140003, amount: 5 }] ] },
+			{ script: "keychest_monster", groups: [ [{ raceId: 120003, amount: 2 }], [{ raceId: 120003, amount: 6 }], [{ raceId: 11007, amount: 6 }] ] },
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 140002, amount: 5 }], [{ raceId: 120003, amount: 6 }], [{ raceId: 140003, amount: 3 }] ] },
+			{ script: "switchdoor_switchmonster", groups: [ [{ raceId: 140003, amount: 5 }] ] },
+		]},
+		{ min: 2, max: 2, puzzles: [
+			{ script: "keychest_monster", groups: [ [{ raceId: 140001, amount: 3 }], [{ raceId: 140003, amount: 6 }], [{ raceId: 120003, amount: 8 }] ] },
+			{ script: "collectprop_herb" },
+			{ script: "collectprop_herb" },
+			{ script: "collectprop_herb" },
+		]},	]},
+	// Floor 2
+	{ width: 6, height: 6, critPathMin: 3, critPathMax: 3, branch: 17, coverage: 80, hasBoss: true, color: [0x00FFFFFF,0x00FFFFFF,0x00FFFFFF], lightColor: [0x00FFFFFF,0x00FFFFFF,0x00FFFFFF], sections: [
+		{ min: 1, max: 1, puzzles: [
+			{ script: "ghostarmor_darklord" },
+		]},	]},
+]},
+
 // Math
 //---------------------------------------------------------------------------
 
