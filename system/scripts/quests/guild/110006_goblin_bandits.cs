@@ -11,7 +11,7 @@ public class GoblinBanditsGuildQuest : QuestScript
 		SetId(110006);
 		SetScrollId(70152);
 		SetName(L("Eliminate Goblin Bandits"));
-		SetDescription(L(""));
+		SetDescription(L("Defeat [Goblin Bandits] that sometimes appear near Dunbarton."));
 		SetType(QuestType.Collect);
 
 		SetIcon(QuestIcon.Party);

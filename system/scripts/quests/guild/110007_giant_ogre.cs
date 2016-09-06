@@ -11,7 +11,7 @@ public class GiantOgreGuildQuest : QuestScript
 		SetId(110007);
 		SetScrollId(70152);
 		SetName(L("Eliminate Giant Ogre"));
-		SetDescription(L(""));
+		SetDescription(L("Defeat [Giant Ogre] that sometimes appears in Gairech."));
 		SetType(QuestType.Collect);
 
 		SetIcon(QuestIcon.Party);
