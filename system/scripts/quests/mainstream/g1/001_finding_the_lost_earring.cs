@@ -53,14 +53,19 @@ public class FindingTheLostEarringQuest : QuestScript
 	[On("PlayerLoggedIn")]
 	public void PlayerLoggedIn(Creature creature)
 	{
-		if (creature.Level < 5 || creature.Keywords.Has("g1_complete") || creature.Keywords.Has("g1"))
+		// Already done or in progress?
+		if (creature.Keywords.Has("g1_complete") || creature.Keywords.Has("g1"))
 			return;
 
-		Cutscene.Play("G1_0_a_Morrighan", creature, cutscene =>
+		// If human > level 5
+		if (creature.Level >= 5 && (creature.IsHuman || IsEnabled("NonHumanChapter1")))
 		{
-			creature.Keywords.Give("g1");
-			creature.Keywords.Give("g1_01");
-			creature.Quests.SendOwl(this.Id);
-		});
+			Cutscene.Play("G1_0_a_Morrighan", creature, cutscene =>
+			{
+				creature.Keywords.Give("g1");
+				creature.Keywords.Give("g1_01");
+				creature.Quests.SendOwl(this.Id);
+			});
+		}
 	}
 }

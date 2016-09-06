@@ -396,6 +396,10 @@
 		{ name: "CombatSystemRenewal", enabled: true, children: [
 			{ name: "PassiveSharpMind", enabled: true },
 		]},
+		{ name: "MainStream2012Part1", enabled: true, children: [
+			// Enables G1~3 for elves and giants.
+			{ name: "NonHumanChapter1", enabled: true },
+		]},
 	]},
 	
 	// Season 3
