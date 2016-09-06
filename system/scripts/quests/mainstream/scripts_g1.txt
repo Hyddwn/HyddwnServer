@@ -21,3 +21,4 @@ g1/014_wizards_note.cs
 g1/015_the_book_of_revenge_vol2.cs
 g1/016_investigating_the_book_of_revenge_vol3.cs
 g1/017_the_book_of_revenge_vol3.cs
+g1/018_embodiment_of_destruction.cs
