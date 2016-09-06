@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
 using Aura.Data;
+using Aura.Shared.Util;
+using Aura.Channel.Network.Sending;
 
 namespace Aura.Channel.Scripting
 {
@@ -162,6 +164,28 @@ namespace Aura.Channel.Scripting
 					case "deletekeyword":
 						{
 							creature.Keywords.Remove(function.GetArgument<string>(0));
+							break;
+						}
+
+					// modify(x,y)
+					// Modifies given stat.
+					case "modify":
+						{
+							var stat = function.GetArgument<string>(0);
+							var modifier = function.GetArgument<int>(1);
+							switch (stat)
+							{
+								case "str": creature.StrBonus += modifier; break;
+								case "int": creature.IntBonus += modifier; break;
+								case "dex": creature.DexBonus += modifier; break;
+								case "will": creature.WillBonus += modifier; break;
+								case "luck": creature.LuckBonus += modifier; break;
+								default: Log.Warning("MagicWordsScript: Unknown modify stat '{0}'.", stat); continue;
+							}
+
+							Send.StatUpdateDefault(creature);
+							if (modifier > 0)
+								Send.AcquireInfo(creature, stat, modifier);
 							break;
 						}
 
