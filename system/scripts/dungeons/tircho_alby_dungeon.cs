@@ -104,12 +104,6 @@ public class AlbyDungeonScript : DungeonScript
 				return false;
 			}
 
-			if (creature.Party.Leader != creature)
-			{
-				Send.Notice(creature, L("You need to be the party's leader."));
-				return false;
-			}
-
 			dungeonName = "g1rp_05_tircho_alby_dungeon";
 			return true;
 		}

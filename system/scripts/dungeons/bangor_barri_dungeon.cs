@@ -31,12 +31,6 @@ public class BarriDungeonScript : DungeonScript
 				return false;
 			}
 
-			if (creature.Party.Leader != creature)
-			{
-				Send.Notice(creature, L("You need to be the party's leader."));
-				return false;
-			}
-
 			dungeonName = "g1_10_bangor_barri_dungeon";
 			return true;
 		}
