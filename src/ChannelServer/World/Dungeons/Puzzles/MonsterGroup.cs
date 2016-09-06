@@ -136,6 +136,12 @@ namespace Aura.Channel.World.Dungeons.Puzzles
 				return;
 			}
 
+			if (place.Key == null)
+			{
+				Log.Warning("MonsterGroup.AddKeyForLock: Place's key is null.");
+				return;
+			}
+
 			this.AddDrop(place.Key);
 		}
 
