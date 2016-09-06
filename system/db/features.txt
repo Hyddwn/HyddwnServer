@@ -399,6 +399,9 @@
 		{ name: "MainStream2012Part1", enabled: true, children: [
 			// Enables G1~3 for elves and giants.
 			{ name: "NonHumanChapter1", enabled: true },
+			
+			// Enables soloing RP dungeons.
+			{ name: "SoloRP", enabled: true },
 		]},
 	]},
 	

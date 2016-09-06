@@ -98,7 +98,7 @@ public class AlbyDungeonScript : DungeonScript
 				return false;
 			}
 
-			if (creature.Party.MemberCount != 3)
+			if (creature.Party.MemberCount != 3 && !IsEnabled("SoloRP"))
 			{
 				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 members."));
 				return false;
