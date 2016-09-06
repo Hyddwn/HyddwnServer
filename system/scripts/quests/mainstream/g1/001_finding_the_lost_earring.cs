@@ -53,6 +53,9 @@ public class FindingTheLostEarringQuest : QuestScript
 	[On("PlayerLoggedIn")]
 	public void PlayerLoggedIn(Creature creature)
 	{
+		if (!IsEnabled("MainStreamG1"))
+			return;
+
 		// Already done or in progress?
 		if (creature.Keywords.Has("g1_complete") || creature.Keywords.Has("g1"))
 			return;
