@@ -190,6 +190,29 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Rewards Warp Scroll.
+	/// </summary>
+	/// <remarks>
+	/// Uses Type and ToString from Item reward, but generates a warp scroll
+	/// on Reward.
+	/// </remarks>
+	public class QuestRewardWarpScroll : QuestRewardItem
+	{
+		public string Portal { get; protected set; }
+
+		public QuestRewardWarpScroll(int itemId, string portal)
+			: base(itemId, 1)
+		{
+			this.Portal = portal;
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.AcquireItem(Item.CreateWarpScroll(this.ItemId, this.Portal));
+		}
+	}
+
+	/// <summary>
 	/// Rewards quest (scroll).
 	/// </summary>
 	public class QuestRewardQuestScroll : QuestReward
