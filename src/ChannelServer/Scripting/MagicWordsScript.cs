@@ -189,6 +189,15 @@ namespace Aura.Channel.Scripting
 							break;
 						}
 
+					// domint(x)
+					// Executes given mint script on server.
+					case "domint":
+						{
+							var scriptName = function.GetArgument<string>(0);
+							Log.Unimplemented("MagicWordsScript: domint call for '{0}'.", scriptName);
+							break;
+						}
+
 					default:
 						throw new MissingMethodException("MagicWordsScript.Run: Unknown function '" + function.Name + "'.");
 				}
