@@ -175,7 +175,13 @@ namespace Aura.Channel.Skills.Combat
 		{
 			// Updating unlock because of the updating lock for pre-renovation
 			if (!AuraData.FeaturesDb.IsEnabled("TalentRenovationCloseCombat"))
+			{
 				creature.Unlock(Locks.Run, true);
+
+				// For some reason the client won't actually unlock Run,
+				// unless the unlock is sent twice.
+				creature.Unlock(Locks.Run, true);
+			}
 		}
 
 		/// <summary>
