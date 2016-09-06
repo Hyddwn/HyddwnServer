@@ -4,6 +4,7 @@
 // Located in the Dunbarton Library.
 //---------------------------------------------------------------------------
 
+// [Self Improvement] section
 public class BookCase1Script : NpcScript
 {
 	public override void Load()
@@ -22,6 +23,7 @@ public class BookCase1Script : NpcScript
 	}
 }
 
+// [Art/Literature] section
 public class BookCase2Script : BookCase1Script
 {
 	public override void Load()
@@ -33,6 +35,7 @@ public class BookCase2Script : BookCase1Script
 	}
 }
 
+// [Literature/Philosophy] section
 public class BookCase3Script : BookCase1Script
 {
 	public override void Load()
@@ -44,6 +47,7 @@ public class BookCase3Script : BookCase1Script
 	}
 }
 
+// [History] section
 public class BookCase4Script : BookCase1Script
 {
 	public override void Load()
@@ -55,6 +59,7 @@ public class BookCase4Script : BookCase1Script
 	}
 }
 
+// [Specialties] section
 public class BookCase5Script : BookCase1Script
 {
 	public override void Load()
@@ -66,6 +71,7 @@ public class BookCase5Script : BookCase1Script
 	}
 }
 
+// [Magazine] section
 public class BookCase6Script : BookCase1Script
 {
 	public override void Load()

@@ -77,6 +77,7 @@ quests/ptj/grocery_glenis.cs
 quests/ptj/healer_dilys.cs
 quests/ptj/healer_manus.cs
 quests/ptj/inn_piaras.cs
+quests/ptj/library_stewart.cs
 quests/ptj/neighboring_deian.cs
 quests/ptj/blacksmith_ferghus.cs
 quests/ptj/general_malcolm.cs
