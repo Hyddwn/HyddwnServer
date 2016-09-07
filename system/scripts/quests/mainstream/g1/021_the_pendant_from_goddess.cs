@@ -68,7 +68,13 @@ public class ThePendantFromGoddessQuest : QuestScript
 			npc.RemoveKeyword("g1_request_from_goddess");
 			npc.GiveKeyword("g1_way_to_tirnanog1");
 
-			npc.Msg(L("(Missing dialog: Duncan being worried about Glas Ghaibhleann's revival.)"));
+			npc.Msg(L("You had a dream?<br/>The Goddess... she said Glas Ghaibhleann will rise again soon?"));
+			npc.Msg(L("Mores...<br/>The revival of Glas Ghaibhleann...<br/>This is bad..."));
+			npc.Msg(L("I almost forgot...<br/>Adamantium is different from regular alloys.<br/>It's difficult to fuse it with magical creatures."));
+			npc.Msg(L("A special material is required...<br/>...that material is the soul of a brave warrior..."));
+			npc.Msg(L("The three warriors might have supplied the soul...<br/>when they went there..."));
+			npc.Msg(L("This is bad...<br/>If you don't stop it..."));
+			npc.Msg(L("Tarlach will tell you how to get to Tir Na Nog<br/>if you explain the situation to him."));
 
 			return HookResult.Break;
 		}
