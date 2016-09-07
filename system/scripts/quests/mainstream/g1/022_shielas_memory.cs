@@ -14,9 +14,12 @@
 
 public class ShielasMemoryQuest : GeneralScript
 {
+	private const int Torque = 73005;
+
 	public override void Load()
 	{
 		AddHook("_tarlach", "before_keywords", TarlachBeforeKeywords);
+		AddHook("_eavan", "before_keywords", EavanBeforeKeywords);
 	}
 
 	public async Task<HookResult> TarlachBeforeKeywords(NpcScript npc, params object[] args)
@@ -34,6 +37,23 @@ public class ShielasMemoryQuest : GeneralScript
 			npc.Msg(L("Thank you for letting me know, <username/>.<br/>I was utterly oblivious.<br/>I'm ashamed that I doubted the grace of the Goddess.<br/>even with my power as a druid."));
 
 			// Newer versions of G1 have the dream cutscene here.
+
+			return HookResult.Break;
+		}
+
+		return HookResult.Continue;
+	}
+
+	public async Task<HookResult> EavanBeforeKeywords(NpcScript npc, params object[] args)
+	{
+		var keyword = args[0] as string;
+
+		if (keyword == "g1_memorial4" && npc.HasKeyword("g1_34_1"))
+		{
+			if (!npc.HasItem(Torque))
+				npc.GiveItem(Torque);
+
+			npc.Msg(L("(Missing dialog: Eavan giving you back the lost Torque.)"));
 
 			return HookResult.Break;
 		}
