@@ -14,7 +14,7 @@ public class MoresRPDungeonScript : DungeonScript
 
 	public override void OnBoss(Dungeon dungeon)
 	{
-		dungeon.AddBoss(12001, 8); // Ghost Armor
+		dungeon.AddBoss(12001, 6); // Ghost Armor
 
 		dungeon.PlayCutscene("G1_18_b_MoresRP");
 	}
