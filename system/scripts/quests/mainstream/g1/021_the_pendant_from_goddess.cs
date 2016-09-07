@@ -68,13 +68,12 @@ public class ThePendantFromGoddessQuest : QuestScript
 			npc.RemoveKeyword("g1_request_from_goddess");
 			npc.GiveKeyword("g1_way_to_tirnanog1");
 
-			npc.Msg(L("You had a dream?<br/>The Goddess... she said Glas Ghaibhleann will rise again soon?"));
-			npc.Msg(L("Mores...<br/>The revival of Glas Ghaibhleann...<br/>This is bad..."));
-			npc.Msg(L("I almost forgot...<br/>Adamantium is different from regular alloys.<br/>It's difficult to fuse it with magical creatures."));
-			npc.Msg(L("A special material is required...<br/>...that material is the soul of a brave warrior..."));
-			npc.Msg(L("The three warriors might have supplied the soul...<br/>when they went there..."));
-			npc.Msg(L("This is bad...<br/>If you don't stop it..."));
-			npc.Msg(L("Tarlach will tell you how to get to Tir Na Nog<br/>if you explain the situation to him."));
+			npc.Msg(L("You dreamt of the Goddess again?<br/>The Goddess said that the day of Glas Ghaibhleann's resurrection is approaching?"));
+			npc.Msg(L("It's just as I'd though... Is Mores<br/>behind the resurrection of Glas Ghaibhleann?<br/>We don't even have the slighted clue what to do about it yet.<br/>This is a big problem!"));
+			npc.Msg(L("I think I forgot to tell you this,<br/>Magic doesn't work on Adamantium,<br/>so it's difficult to fuse to a magical creature."));
+			npc.Msg(L("That's why special ingredients are required.<br/>They say that the soul of a brave human is needed as on ingredient."));
+			npc.Msg(L("It's possible that they may already have the soul<br/>of one of the Tree Missing Warriors.<br/>Then this is truly a big problem.<br/>We have to stop them somehow."));
+			npc.Msg(L("Now hurry up and find out how to get there!"));
 
 			return HookResult.Break;
 		}
