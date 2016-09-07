@@ -6,6 +6,9 @@
 // Wiki:
 // - Requirement: Level 5 or higher
 // - Instruction: Find the earring.
+//--- Notes -----------------------------------------------------------------
+// This version of G1 follows the descriptions on the MW-Wiki:
+// http://wiki.mabinogiworld.com/index.php?title=Generation_1:_Advent_of_the_Goddess&oldid=61442
 //---------------------------------------------------------------------------
 
 public class FindingTheLostEarringQuest : QuestScript
