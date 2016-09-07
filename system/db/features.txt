@@ -402,6 +402,9 @@
 			
 			// Enables soloing RP dungeons.
 			{ name: "SoloRP", enabled: true },
+			
+			// Enables going to TNN on any day.
+			{ name: "AllWeekBreaker", enabled: true },
 		]},
 	]},
 	
