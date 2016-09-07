@@ -25,3 +25,4 @@ g1/018_embodiment_of_destruction.cs
 g1/019_magic_powder_of_preservation.cs
 g1/020_rabbie_dungeon.cs
 g1/021_the_pendant_from_goddess.cs
+g1/022_shielas_memory.cs
