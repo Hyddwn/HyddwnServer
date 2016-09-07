@@ -2210,6 +2210,33 @@
 		]},	]},
 ]},
 
+// Barri Dungeon
+{ name: "g1_30_bangor_barri_dungeon", engName: "Barri Dungeon", style: 300000, baseSeed: 31000000, lobby: 34, exit: "Ula_DgnHall_Bangor_before1/_Ula_DgnHall_Bangor_before1/DG_BangorBefore1_Outer_Spawn", stairs: 23032, saveStatue: 23030, lastStatue: 23036, door: 23022, bossDoor: 23024, bossExitDoor: 23025, floors: [
+	{ width: 6, height: 6, critPathMin: 20, critPathMax: 26, branch: 15, coverage: 90, hasBoss: true, color: [0x00FFFFFF,0x00FFFFFF,0x00FFFFFF], lightColor: [0x00BB9486,0x00BB9486,0x00BB9486], sections: [
+		{ min: 1, max: 1, puzzles: [
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 30002, amount: 3 }], [{ raceId: 30002, amount: 6 }], [{ raceId: 10101, amount: 4 },{ raceId: 10103, amount: 3 }] ] },
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 10601, amount: 1 }], [{ raceId: 10601, amount: 1 }], [{ raceId: 10101, amount: 4 }] ] },
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 10601, amount: 1 }], [{ raceId: 10601, amount: 1 }], [{ raceId: 10101, amount: 4 }] ] },
+		]},
+		{ min: 3, max: 5, puzzles: [
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 90003, amount: 4 }], [{ raceId: 10102, amount: 4 },{ raceId: 10103, amount: 3 }], [{ raceId: 90003, amount: 3 }] ] },
+			{ script: "switchdoor_switchmonster", groups: [ [{ raceId: 10103, amount: 4 }] ] },
+			{ script: "keychest_monster2", groups: [ [{ raceId: 10601, amount: 2 }], [{ raceId: 10601, amount: 3 }], [{ raceId: 10102, amount: 4 },{ raceId: 10103, amount: 3 }] ] },
+			{ script: "eventprop_fountain" },
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 10101, amount: 5 }], [{ raceId: 10601, amount: 3 }], [{ raceId: 90003, amount: 3 }] ] },
+			{ script: "collectprop_test" },
+			{ script: "collectprop_test" },
+		]},
+		{ min: 3, max: 5, puzzles: [
+			{ script: "keychest_monster", groups: [ [{ raceId: 30003, amount: 3 }], [{ raceId: 80003, amount: 6 }], [{ raceId: 10601, amount: 3 }] ] },
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 90003, amount: 4 }], [{ raceId: 10102, amount: 4 },{ raceId: 10103, amount: 3 }], [{ raceId: 90003, amount: 3 }] ] },
+			{ script: "keychest_monster2", groups: [ [{ raceId: 10601, amount: 2 }], [{ raceId: 10601, amount: 3 }], [{ raceId: 10102, amount: 4 },{ raceId: 10103, amount: 3 }] ] },
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 10101, amount: 5 }], [{ raceId: 10601, amount: 3 }], [{ raceId: 90003, amount: 3 }] ] },
+			{ script: "collectprop_test" },
+			{ script: "collectprop_test" },
+		]},	]},
+]},
+
 // Math Dungeon
 { name: "g1rp_31_dunbarton_math_dungeon", engName: "Math Dungeon", style: 200000, baseSeed: 21000000, lobby: 26, exit: "Ula_DgnHall_Dunbarton_before2/_Ula_DgnHall_Dunbarton_before2/DG_DunbartonBefore2_Outer_Spawn", stairs: 21043, saveStatue: 21041, lastStatue: 21022, door: 21025, bossDoor: 21027, bossExitDoor: 21028, floors: [
 	{ width: 10, height: 10, critPathMin: 50, critPathMax: 70, branch: 24, coverage: 25, hasBoss: true, color: [0x00FF944D,0x00FF944D,0x00FF944D], lightColor: [0x00FF944D,0x00FF944D,0x00FF944D], sections: [

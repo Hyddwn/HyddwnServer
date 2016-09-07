@@ -35,6 +35,19 @@ public class BarriDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Black Fomor Pass (G1)
+		if (item.Info.Id == 73012)
+		{
+			if (creature.Party.MemberCount > 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 or less members."));
+				return false;
+			}
+
+			dungeonName = "g1_30_bangor_barri_dungeon";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{
