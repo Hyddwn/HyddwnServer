@@ -16,7 +16,7 @@ public class ThePendantFromGoddessQuest : QuestScript
 	public override void Load()
 	{
 		SetId(210010);
-		SetName(L("Morrighan's Betrayal"));
+		SetName(L("Duncan's Call"));
 		SetDescription(L("Come visit me when you're free, I've found something that might be of interest to you. - Duncan -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
