@@ -98,7 +98,18 @@ namespace Aura.Channel.Network.Handlers
 					return;
 
 				case ReviveOptions.Town:
-					creature.Warp(creature.LastTown);
+					// Warp to last town or TNN, depending on where the
+					// character is.
+					if (!creature.IsInTirNaNog)
+						creature.Warp(creature.LastTown);
+					else
+						creature.Warp("Ula_Tirnanog/_Uladh_Tirnanog/Tirna_from_Cross");
+
+					creature.Revive(option);
+					return;
+
+				case ReviveOptions.BarriLobby:
+					creature.Warp("Ula_DgnHall_Bangor_before1/_Ula_DgnHall_Bangor_before1/DG_BangorBefore1_Outer_Spawn");
 					creature.Revive(option);
 					return;
 

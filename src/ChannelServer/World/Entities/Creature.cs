@@ -21,6 +21,7 @@ using Aura.Channel.Skills;
 using System.Threading;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Shared.Database;
+using Aura.Channel.World.Dungeons;
 
 namespace Aura.Channel.World.Entities
 {
@@ -244,6 +245,36 @@ namespace Aura.Channel.World.Entities
 
 				// Only allow present if player didn't already receive one today.
 				return (last.Date < now.Date);
+			}
+		}
+
+		/// <summary>
+		/// Returns true if creature is in Tir Na Nog or a dungeon there.
+		/// </summary>
+		public bool IsInTirNaNog
+		{
+			get
+			{
+				// Check non-dynamic regions
+				var regionId = this.Region.Id;
+				if (regionId >= 35 && regionId <= 46)
+					return true;
+
+				// Check dungeon regions
+				var dungeonRegion = this.Region as DungeonRegion;
+				if (dungeonRegion != null && dungeonRegion.Dungeon.Name.ToLower().Contains("tirnanog"))
+					return true;
+
+				// Check dynamic regions
+				var dynamicRegion = this.Region as DynamicRegion;
+				if (dynamicRegion != null)
+				{
+					regionId = dynamicRegion.BaseId;
+					if (regionId >= 35 && regionId <= 46)
+						return true;
+				}
+
+				return false;
 			}
 		}
 
