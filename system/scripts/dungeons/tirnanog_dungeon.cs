@@ -37,6 +37,25 @@ public class AlbeyDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Black Orb (G1)
+		if (item.Info.Id == 73033)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_36"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount > 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 or less members."));
+				return false;
+			}
+
+			dungeonName = "g1_37_black_tirnanog_dungeon";
+			return true;
+		}
+
 		// tirnanog_dungeon
 		return true;
 	}
