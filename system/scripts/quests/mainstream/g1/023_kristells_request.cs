@@ -149,7 +149,7 @@ public class KristellsRequestQuest : QuestScript
 			{
 				creature.Keywords.Remove("g1_34");
 				creature.Keywords.Remove("g1_34_2");
-				creature.Keywords.Give("g1_35");
+				creature.Keywords.Give("g1_36"); // Dunno what happened to 35.
 				creature.Keywords.Remove("g1_cichol");
 				creature.Keywords.Give("g1_tirnanog_seal_breaker");
 			});
