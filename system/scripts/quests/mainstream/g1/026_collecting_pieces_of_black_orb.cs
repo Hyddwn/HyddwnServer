@@ -26,6 +26,6 @@ public class BlackOrbCollectionQuest : QuestScript
 		AddObjective("collect3", L("Use the Small Red Gem to collect a Black Orb Fragment at Albey Dungeon."), 0, 0, 0, Collect(73031, 1));
 		AddObjective("collect4", L("Use the Small Silver Gem to collect a Black Orb Fragment at Albey Dungeon."), 0, 0, 0, Collect(73032, 1));
 
-		AddReward(Item(73033));
+		AddReward(Item(73033)); // Black Orb
 	}
 }
