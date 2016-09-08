@@ -1,69 +1,58 @@
 //--- Aura Script -----------------------------------------------------------
-// Albey Dungeon
+// Albey Red Dungeon
 //--- Description -----------------------------------------------------------
-// Albey router and script for Albey Normal.
+// Dungeon to get one of the four fragments for the Black Orb in.
 //---------------------------------------------------------------------------
 
-[DungeonScript("tirnanog_dungeon")]
-public class AlbeyDungeonScript : DungeonScript
+[DungeonScript("g1_37_red_tirnanog_dungeon")]
+public class AlbeyRedDungeonScript : DungeonScript
 {
-	public override bool Route(Creature creature, Item item, ref string dungeonName)
-	{
-		// Small Green Gem (G1)
-		if (item.Info.Id == 52004)
-		{
-			dungeonName = "g1_37_green_tirnanog_dungeon";
-			return true;
-		}
-
-		// Small Blue Gem (G1)
-		if (item.Info.Id == 52005)
-		{
-			dungeonName = "g1_37_blue_tirnanog_dungeon";
-			return true;
-		}
-
-		// Small Red Gem (G1)
-		if (item.Info.Id == 52006)
-		{
-			dungeonName = "g1_37_red_tirnanog_dungeon";
-			return true;
-		}
-
-		// Small Silver Gem (G1)
-		if (item.Info.Id == 52007)
-		{
-			dungeonName = "g1_37_silver_tirnanog_dungeon";
-			return true;
-		}
-
-		// tirnanog_dungeon
-		return true;
-	}
+	private const int OrbHits = 5;
+	private const int FragmentId = 73031;
 
 	public override void OnBoss(Dungeon dungeon)
 	{
-		dungeon.AddBoss(160002, 6); // Light Gargolye
-
-		dungeon.PlayCutscene("bossroom_LightGargoyle");
+		dungeon.AddBoss(170001, 1); // Nightmare Humanoid
 	}
 
 	public override void OnCleared(Dungeon dungeon)
 	{
 		var rnd = RandomProvider.Get();
 		var creators = dungeon.GetCreators();
+		var count = Math.Min(7, creators.Count);
 
-		for (int i = 0; i < creators.Count; ++i)
+		for (int i = 0; i < count; ++i)
 		{
 			var member = creators[i];
 			var treasureChest = new TreasureChest();
 
-			treasureChest.AddGold(rnd.Next(1440, 2560)); // Gold
+			treasureChest.AddGold(rnd.Next(320, 1280)); // Gold
 			treasureChest.Add(GetRandomTreasureItem(rnd)); // Random item
 
 			dungeon.AddChest(treasureChest);
 
 			member.GiveItemWithEffect(Item.CreateKey(70028, "chest"));
+		}
+
+		var orb = new Prop(25032, 0, 0, 0, 0);
+		orb.Behavior = OnOrbHit;
+		dungeon.AddChest(orb);
+	}
+
+	private void OnOrbHit(Creature creature, Prop prop)
+	{
+		if (prop.State == "off")
+		{
+			var hits = prop.Vars.Temp.Get("orbHit", 0) + 1;
+			prop.Vars.Temp["orbHit"] = hits;
+
+			if (hits == OrbHits)
+			{
+				Send.Notice(creature, L("You broke the seal and received the Black Orb Fragment!\nCollect all four to receive the Black Orb."));
+
+				prop.SetState("on");
+				new Item(FragmentId).Drop(prop.Region, prop.GetPosition(), 50);
+			}
 		}
 	}
 
@@ -77,7 +66,6 @@ public class AlbeyDungeonScript : DungeonScript
 			drops.Add(new DropData(itemId: 51102, chance: 20, amountMin: 1, amountMax: 2)); // Mana Herb
 			drops.Add(new DropData(itemId: 51003, chance: 20, amountMin: 1, amountMax: 2)); // HP 50 Potion
 			drops.Add(new DropData(itemId: 51008, chance: 20, amountMin: 1, amountMax: 2)); // MP 50 Potion
-			drops.Add(new DropData(itemId: 51013, chance: 20, amountMin: 1, amountMax: 2)); // Stamina 50 Potion
 		}
 
 		return Item.GetRandomDrop(rnd, drops);

@@ -31,7 +31,7 @@ namespace Aura.Channel.World.Dungeons
 	{
 		private int _bossesRemaining;
 
-		private List<TreasureChest> _treasureChests;
+		private List<Prop> _treasureChests;
 		private PlacementProvider _treasurePlacementProvider;
 
 		private Door _bossDoor;
@@ -151,7 +151,7 @@ namespace Aura.Channel.World.Dungeons
 			if (this.Data == null)
 				throw new ArgumentException("Dungeon '" + dungeonName + "' doesn't exist.");
 
-			_treasureChests = new List<TreasureChest>();
+			_treasureChests = new List<Prop>();
 			_treasurePlacementProvider = new PlacementProvider(Placement.Treasure8, 750);
 			this.Regions = new List<DungeonRegion>();
 			_clearedSections = new HashSet<int>();
@@ -621,7 +621,7 @@ namespace Aura.Channel.World.Dungeons
 		/// Adds chest to list of chests to spawn.
 		/// </summary>
 		/// <param name="chest"></param>
-		public void AddChest(TreasureChest chest)
+		public void AddChest(Prop chest)
 		{
 			_treasureChests.Add(chest);
 		}

@@ -17,6 +17,7 @@ using Aura.Channel.Network.Sending;
 using System.Drawing;
 using Aura.Mabi;
 using Aura.Channel.World.Entities.Props;
+using Aura.Channel.Scripting;
 
 namespace Aura.Channel.World.Entities
 {
@@ -45,6 +46,11 @@ namespace Aura.Channel.World.Entities
 		/// Temporary variables for this prop
 		/// </summary>
 		public PropTemp Temp { get; private set; }
+
+		/// <summary>
+		/// Scripting variables. (TODO: Remove Temp?)
+		/// </summary>
+		public ScriptVariables Vars { get; private set; }
 
 		/// <summary>
 		/// List of shapes for the prop (collision).
@@ -243,6 +249,7 @@ namespace Aura.Channel.World.Entities
 		{
 			this.Shapes = new List<Point[]>();
 			this.Temp = new PropTemp();
+			this.Vars = new ScriptVariables();
 			this.Extensions = new PropExtensionManager(this);
 
 			_resource = 100;
