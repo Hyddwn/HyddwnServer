@@ -58,10 +58,7 @@ namespace Aura.Mabi.Const
 		/// <summary>
 		/// Revive in Tir Na Nog square.
 		/// </summary>
-		/// <remarks>
-		/// Not available in current clients anymore.
-		/// </remarks>
-		//TirNaNog = 0x400,
+		TirNaNog = 0x400,
 
 		/// <summary>
 		/// Revive in Barri lobby (for Another World?).

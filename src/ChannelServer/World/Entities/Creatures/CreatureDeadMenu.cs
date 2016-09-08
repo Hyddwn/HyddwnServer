@@ -45,6 +45,8 @@ namespace Aura.Channel.World.Entities.Creatures
 				sb.Append("arena_side;");
 			if (this.Has(ReviveOptions.ArenaWaitingRoom))
 				sb.Append("arena_waiting;");
+			if (this.Has(ReviveOptions.TirNaNog))
+				sb.Append("tirnanog;");
 			if (this.Has(ReviveOptions.BarriLobby))
 				sb.Append("barri_lobby;");
 			if (this.Has(ReviveOptions.NaoStone))
@@ -98,12 +100,10 @@ namespace Aura.Channel.World.Entities.Creatures
 				// Tir Na Nog
 				else
 				{
-					// Use town if character hasn't done the bind quest yet,
-					// since the TNN revive option doesn't seem to exist
-					// in modern clients anymore.
+					// Use TNN or Barri, depending on whether the bind quest
+					// was done.
 					if (this.Creature.Keywords.Has("g1_bind"))
-						//this.Add(ReviveOptions.TirNaNog);
-						this.Add(ReviveOptions.Town);
+						this.Add(ReviveOptions.TirNaNog);
 					else
 						this.Add(ReviveOptions.BarriLobby);
 				}
