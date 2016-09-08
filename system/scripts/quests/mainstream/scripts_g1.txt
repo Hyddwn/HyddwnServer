@@ -29,3 +29,4 @@ g1/022_shielas_memory.cs
 g1/023_kristells_request.cs
 g1/024_the_seal_breaker_of_another_world.cs
 g1/025_bind_magic.cs
+g1/026_collecting_pieces_of_black_orb.cs
