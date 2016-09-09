@@ -1995,6 +1995,44 @@ namespace Aura.Channel.Scripting.Scripts
 			yield break;
 		}
 
+		/// <summary>
+		/// Sets the skin color of the creature controlled by the AI.
+		/// </summary>
+		/// <param name="skinColor"></param>
+		/// <returns></returns>
+		protected IEnumerable SetSkinColor(int skinColor)
+		{
+			this.Creature.SkinColor = (byte)skinColor;
+			//Send.CreatureFaceUpdate(this.Creature);
+
+			yield break;
+		}
+
+		/// <summary>
+		/// Gives skill to the creature controlled by the AI.
+		/// </summary>
+		/// <param name="skillIds"></param>
+		/// <returns></returns>
+		protected IEnumerable AddSkill(SkillId skillId, SkillRank rank)
+		{
+			this.Creature.Skills.Give(skillId, rank);
+
+			yield break;
+		}
+
+		/// <summary>
+		/// Removes skills from the creature controlled by the AI.
+		/// </summary>
+		/// <param name="skillIds"></param>
+		/// <returns></returns>
+		protected IEnumerable RemoveSkills(params SkillId[] skillIds)
+		{
+			foreach (var skillId in skillIds)
+				this.Creature.Skills.RemoveSilent(skillId);
+
+			yield break;
+		}
+
 		// ------------------------------------------------------------------
 
 		/// <summary>

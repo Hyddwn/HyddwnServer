@@ -101,6 +101,31 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Removes skill with given id and its bonuses, without updating
+		/// the client.
+		/// </summary>
+		/// <remarks>
+		/// If we want a non-silent version of this, we need to know the
+		/// skill removal packet.
+		/// </remarks>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		public bool RemoveSilent(SkillId skillId)
+		{
+			if (!this.Has(skillId))
+				return false;
+
+			lock (_skills)
+			{
+				var skill = _skills[skillId];
+				this.RemoveBonuses(skill);
+				_skills.Remove(skillId);
+			}
+
+			return true;
+		}
+
+		/// <summary>
 		/// Returns skill by id, or null.
 		/// </summary>
 		/// <param name="id"></param>
