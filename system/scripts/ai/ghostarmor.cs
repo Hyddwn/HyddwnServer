@@ -63,7 +63,7 @@ public class GhostArmorAi : AiScript
 	protected override IEnumerable Aggro()
 	{
 		SwitchRandom();
-		if (Case(20))
+		if (Case(25))
 		{
 			Do(StackAttack(SkillId.Lightningbolt, Rnd(1, 1, 1, 1, 1, 2, 3, 4, 5)));
 
@@ -72,7 +72,7 @@ public class GhostArmorAi : AiScript
 
 			Do(Wait(500, 2000));
 		}
-		else if (Case(20))
+		else if (Case(25))
 		{
 			SwitchRandom();
 			if (Case(70))
@@ -92,7 +92,7 @@ public class GhostArmorAi : AiScript
 
 			Do(Wait(1000, 2000));
 		}
-		else if (Case(10))
+		else if (Case(20))
 		{
 			if (Random(100) < 50)
 				Do(Wander(200, 200, false));
