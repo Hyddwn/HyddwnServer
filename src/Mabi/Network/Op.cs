@@ -84,6 +84,7 @@ namespace Aura.Mabi.Network
 		public const int EntityAppears = 0x520C;
 		public const int EntityDisappears = 0x520D;
 		public const int CreatureBodyUpdate = 0x520E;
+		public const int CreatureFaceUpdate = 0x5210;
 		public const int ItemAppears = 0x5211;
 		public const int ItemDisappears = 0x5212;
 		public const int AssignSittingProp = 0x5215;

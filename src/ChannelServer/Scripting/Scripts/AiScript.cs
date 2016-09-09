@@ -2003,7 +2003,9 @@ namespace Aura.Channel.Scripting.Scripts
 		protected IEnumerable SetSkinColor(int skinColor)
 		{
 			this.Creature.SkinColor = (byte)skinColor;
-			//Send.CreatureFaceUpdate(this.Creature);
+
+			Send.CreatureFaceUpdate(this.Creature);
+			Send.StatUpdate(this.Creature, StatUpdateType.Public, Stat.SkinColor);
 
 			yield break;
 		}
