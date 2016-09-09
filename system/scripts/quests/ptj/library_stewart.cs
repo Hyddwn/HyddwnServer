@@ -381,9 +381,9 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 			if (!npc.QuestActive(this.Id, objectiveIdent))
 				return HookResult.Continue;
 
+			npc.FinishQuest(this.Id, objectiveIdent);
 			npc.Player.GiveItem(nbp.ItemId);
 			npc.Notice(GetLItemReceivedNotice(nbp));
-			npc.FinishQuest(this.Id, objectiveIdent);
 
 			await this.OnFinish(npc, nbp.NpcIdent);
 
