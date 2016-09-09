@@ -159,6 +159,13 @@ public class StewartPtjScript : GeneralScript
 				return;
 			}
 
+			// Hotfix #414: Stewart's base PtjScript manually removes items OnQuestComplete.
+			var qs = npc.Player.Quests.GetPtjQuest().Data as StewartVarLibraryPtjBaseScript;
+			if (qs == null)
+				Log.Error("Stewart PTJ Script: Unable to call OnQuestComplete() for quest ID {0}.", qs.Id);
+			else
+				qs.OnQuestComplete(npc.Player);
+
 			// Nothing done
 			if (result == QuestResult.None)
 			{
@@ -353,6 +360,22 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 		}
 
 		AddRewards();
+	}
+
+	/// <summary>
+	/// Removes other quest items for PTJs involving more than one book.
+	/// <para>To be called manually.</para>
+	/// </summary>
+	/// <param name="player"></param>
+	/// <remarks>
+	/// Hotfix #414: Stewart's PtjScripts manually removes items OnQuestComplete.
+	/// This might be removed when "any order" quest objective completion is implemented.
+	/// </remarks>
+	public void OnQuestComplete(Creature player)
+	{
+		// Skip last book; already taken care of by CreatureQuests.Complete(Quest, int, bool) .
+		for (int i = NpcBookPairs.Length - 2; i >= 0; --i)
+			player.RemoveItem(NpcBookPairs[i].ItemId);
 	}
 
 	private NpcScriptHook GenerateBookcaseAfterIntroHook(string objectiveIdent, int bookItemId)
