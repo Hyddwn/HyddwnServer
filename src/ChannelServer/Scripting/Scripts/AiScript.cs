@@ -1601,6 +1601,15 @@ namespace Aura.Channel.Scripting.Scripts
 					skillHandler.Prepare(this.Creature, skill, null);
 					this.Creature.Skills.ActiveSkill = skill;
 					skillHandler.Complete(this.Creature, skill, null);
+					this.Creature.Skills.ActiveSkill = null;
+				}
+				else if (skillId == SkillId.DarkLord)
+				{
+					var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<DarkLordSkill>(skillId);
+					skillHandler.Prepare(this.Creature, skill, null);
+					this.Creature.Skills.ActiveSkill = skill;
+					skillHandler.Complete(this.Creature, skill, null);
+					this.Creature.Skills.ActiveSkill = null;
 				}
 				// Try to handle implicitly
 				else
