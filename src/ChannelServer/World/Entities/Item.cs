@@ -1283,11 +1283,11 @@ namespace Aura.Channel.World.Entities
 
 			if (collectionSpeed != 0)
 			{
-				if (collectionSpeed < 250)
+				if (collectionSpeed <= 250)
 					result = (int)(result * 1.7f);
-				else if (collectionSpeed < 500)
+				else if (collectionSpeed <= 500)
 					result = (int)(result * 1.7f * 1.7f);
-				else if (collectionSpeed < 750)
+				else if (collectionSpeed <= 750)
 					result = (int)(result * 1.7f * 1.7f * 1.7f);
 				else
 					result = (int)(result * 1.7f * 1.7f * 1.7f * 1.7f);
