@@ -113,8 +113,14 @@ namespace Aura.Channel.World.Dungeons
 			var rnd = RandomProvider.Get();
 			var itemData = AuraData.ItemDb.Find(itemId);
 
-			// Create new dungeon for passes (includes quest items)
-			if (itemData != null && itemData.HasTag("/dungeon_pass/"))
+			// Create new dungeon for passes (includes quest items).
+			// Since some "passes" don't have the dungeon_pass tag, but do
+			// have quest_item, and quest items are generally supposed to
+			// go to an NPC or onto an altar, we'll assume those are passes
+			// as well.
+			// If this assumption turnes out to be incorrect, we have to
+			// check for some items specifically, like the Goddess Pass in G1.
+			if (itemData != null && itemData.HasTag("/dungeon_pass/|/quest_item/"))
 			{
 				instanceId = this.GetInstanceId();
 				dungeon = new Dungeon(instanceId, dungeonName, itemId, rnd.Next(), rnd.Next(), creature);
