@@ -159,13 +159,6 @@ public class StewartPtjScript : GeneralScript
 				return;
 			}
 
-			// Hotfix #414: Stewart's base PtjScript manually removes items OnQuestComplete.
-			var qs = npc.Player.Quests.GetPtjQuest().Data as StewartVarLibraryPtjBaseScript;
-			if (qs == null)
-				Log.Error("Stewart PTJ Script: Unable to call OnQuestComplete() for quest ID {0}.", qs.Id);
-			else
-				qs.OnQuestComplete(npc.Player);
-
 			// Nothing done
 			if (result == QuestResult.None)
 			{
