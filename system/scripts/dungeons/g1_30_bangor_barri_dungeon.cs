@@ -22,18 +22,15 @@ public class BarriTnnDungeonScript : DungeonScript
 	private void SpawnGate(Dungeon dungeon)
 	{
 		var region = dungeon.Regions.Last();
-		var tileSize = Dungeon.TileSize;
-		var end = dungeon.Generator.Floors.Last().MazeGenerator.EndPos;
-		var endX = (end.X * tileSize + tileSize / 2);
-		var endY = (end.Y * tileSize + tileSize / 2) + (tileSize * 2);
+		var endLocation = dungeon.GetEndRoomCenter();
 		var direction = MabiMath.DirectionToRadian(0, -1);
 
-		var gate = new Prop(GatePropId, region.Id, endX, endY, direction);
+		var gate = new Prop(GatePropId, endLocation.RegionId, endLocation.X, endLocation.Y, direction);
 		gate.Info.Color2 = 0xffffffff;
 		gate.Behavior = OnTouchGate;
 		region.AddProp(gate);
 
-		var portal = new Prop(GatePortalPropId, region.Id, endX, endY, direction);
+		var portal = new Prop(GatePortalPropId, endLocation.RegionId, endLocation.X, endLocation.Y, direction);
 		portal.Behavior = OnTouchPortal;
 		region.AddProp(portal);
 	}
