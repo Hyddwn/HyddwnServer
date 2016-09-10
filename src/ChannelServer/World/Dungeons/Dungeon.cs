@@ -43,6 +43,8 @@ namespace Aura.Channel.World.Dungeons
 
 		private HashSet<int> _clearedSections;
 
+		private bool _manualCompletion;
+
 		/// <summary>
 		/// The size (width and height) of a dungeon tile.
 		/// </summary>
@@ -679,7 +681,7 @@ namespace Aura.Channel.World.Dungeons
 				this.Script.OnBossDeath(this, creature, killer);
 
 			// Complete dungeon when all bosses were killed
-			if (_bossesRemaining == 0)
+			if (_bossesRemaining == 0 && !_manualCompletion)
 				this.Complete();
 		}
 
@@ -969,6 +971,20 @@ namespace Aura.Channel.World.Dungeons
 			location.Y += (TileSize + TileSize / 2);
 
 			return location;
+		}
+
+		/// <summary>
+		/// Sets whether the dungeon is completed automatically once all
+		/// bosses have been killed.
+		/// </summary>
+		/// <remarks>
+		/// If set to false, the dungeon script has to handle calling
+		/// Complete, otherwise the dungeon won't be completable.
+		/// </remarks>
+		/// <param name="val"></param>
+		public void CompleteManually(bool val)
+		{
+			_manualCompletion = val;
 		}
 	}
 }
