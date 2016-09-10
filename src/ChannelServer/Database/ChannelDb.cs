@@ -774,7 +774,13 @@ namespace Aura.Channel.Database
 							if (ChannelServer.Instance.Conf.World.PtjInfiniteMemory)
 							{
 								forgetDays = 0;
-								lastChange = DateTime.Now;
+
+								// For some reason we originally set lastChange
+								// to Now, but that would cause players to not
+								// be able to do PTJs, because they had "just"
+								// done one. I don't remember why we did this
+								// in the first place. --exec
+								//lastChange = DateTime.Now;
 							}
 
 							// Make NPCs "forget", cap at 1 job done
