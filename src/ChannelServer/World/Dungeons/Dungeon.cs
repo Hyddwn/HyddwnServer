@@ -943,5 +943,32 @@ namespace Aura.Channel.World.Dungeons
 				player.Warp(this.Data.Exit);
 			}
 		}
+
+		/// <summary>
+		/// Returns the location at the center of the boss room.
+		/// </summary>
+		/// <returns></returns>
+		public Location GetBossRoomCenter()
+		{
+			var region = this.Regions.Last();
+			var endPos = this.Generator.Floors.Last().MazeGenerator.EndPos;
+			var endX = (endPos.X * TileSize + TileSize / 2);
+			var endY = (endPos.Y * TileSize + TileSize);
+
+			return new Location(region.Id, endX, endY);
+		}
+
+		/// <summary>
+		/// Returns the location at the center of the end room,
+		/// behind the boss room.
+		/// </summary>
+		/// <returns></returns>
+		public Location GetEndRoomCenter()
+		{
+			var location = this.GetBossRoomCenter();
+			location.Y += (TileSize + TileSize / 2);
+
+			return location;
+		}
 	}
 }
