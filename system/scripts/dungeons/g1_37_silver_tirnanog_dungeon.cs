@@ -10,6 +10,20 @@ public class AlbeySilverDungeonScript : DungeonScript
 	private const int OrbHits = 5;
 	private const int FragmentId = 73032;
 
+	public override void OnCreation(Dungeon dungeon)
+	{
+		var region = dungeon.Regions.Last();
+		var bossLocation = dungeon.GetBossRoomCenter();
+
+		// Gargoyles
+		region.AddProp(new Prop(29001, bossLocation.RegionId, bossLocation.X, bossLocation.Y, 0));
+		region.AddProp(new Prop(29002, bossLocation.RegionId, bossLocation.X, bossLocation.Y, 0));
+		region.AddProp(new Prop(29003, bossLocation.RegionId, bossLocation.X, bossLocation.Y, MabiMath.DegreeToRadian(90)));
+		region.AddProp(new Prop(29004, bossLocation.RegionId, bossLocation.X, bossLocation.Y, MabiMath.DegreeToRadian(90)));
+		region.AddProp(new Prop(29005, bossLocation.RegionId, bossLocation.X, bossLocation.Y, 0));
+		region.AddProp(new Prop(29006, bossLocation.RegionId, bossLocation.X, bossLocation.Y, 0));
+	}
+
 	public override void OnBoss(Dungeon dungeon)
 	{
 		dungeon.AddBoss(130002, 1); // Golem
