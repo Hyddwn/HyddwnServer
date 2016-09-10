@@ -56,6 +56,44 @@ public class AlbeyDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Pendant of the Goddess (G1 Final)
+		if (item.Info.Id == 73029)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_38"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount > 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 or less members."));
+				return false;
+			}
+
+			dungeonName = "g1_39_tirnanog_dungeon";
+			return true;
+		}
+
+		// Goddess Pass (G1 Final)
+		if (item.Info.Id == 73034)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_38"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount > 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 or less members."));
+				return false;
+			}
+
+			dungeonName = "g1_39_tirnanog_dungeon_again";
+			return true;
+		}
+
 		// tirnanog_dungeon
 		return true;
 	}
