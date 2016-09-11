@@ -419,6 +419,9 @@ namespace Aura.Channel.World.Entities.Creatures
 				}
 
 				ChannelServer.Instance.Events.OnPlayerCompletesQuest(_creature, quest.Id);
+
+				// Complete event
+				quest.Data.OnComplete(_creature);
 			}
 			return success;
 		}

@@ -613,6 +613,10 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 		}
 
+		public virtual void OnComplete(Creature creature)
+		{
+		}
+
 		// Where the magic happens~
 		// ------------------------------------------------------------------
 
