@@ -99,7 +99,17 @@ namespace Aura.Channel.Skills.Combat
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
 			var targetAreaEntityId = packet.GetLong();
+			this.Use(attacker, skill, targetAreaEntityId);
+		}
 
+		/// <summary>
+		/// Handles skill usage.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="targetAreaEntityId"></param>
+		public void Use(Creature attacker, Skill skill, long targetAreaEntityId)
+		{
 			Send.Effect(attacker, 5, (byte)1, targetAreaEntityId);
 
 			var cap = new CombatActionPack(attacker, skill.Info.Id);

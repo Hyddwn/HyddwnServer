@@ -52,6 +52,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 		protected Dictionary<AiState, Dictionary<AiEvent, Dictionary<SkillId, Func<IEnumerable>>>> _reactions;
 
+		protected Dictionary<int, int> _summons = new Dictionary<int, int>();
+
 		// Heartbeat cache
 		protected IList<Creature> _playersInRange;
 
@@ -1709,6 +1711,18 @@ namespace Aura.Channel.Scripting.Scripts
 				handler.Use(this.Creature, this.Creature.Skills.ActiveSkill, 0, 0, 0);
 				this.SharpMind(activeSkillId, SharpMindStatus.Cancelling);
 			}
+			else if (activeSkillId == SkillId.GlasGhaibhleannSkill)
+			{
+				var pos = this.Creature.GetPosition();
+				var targetPos = this.Creature.Target.GetPosition();
+				var hitPos = targetPos.GetRelative(pos, -1000);
+				var hitLocation = new Location(this.Creature.RegionId, hitPos);
+				var targetAreaEntityId = hitLocation.ToLocationId();
+
+				var handler = ChannelServer.Instance.SkillManager.GetHandler<GlasGhaibhleannSkill>(activeSkillId);
+				handler.Use(this.Creature, this.Creature.Skills.ActiveSkill, targetAreaEntityId);
+				this.SharpMind(activeSkillId, SharpMindStatus.Cancelling);
+			}
 			else
 			{
 				Log.Unimplemented("AI.UseSkill: Skill '{0}'", activeSkillId);
@@ -2033,6 +2047,85 @@ namespace Aura.Channel.Scripting.Scripts
 				this.Creature.Skills.RemoveSilent(skillId);
 
 			yield break;
+		}
+
+		/// <summary>
+		/// Summons given amount of monsters of given race.
+		/// </summary>
+		/// <remarks>
+		/// Keeps track of the summoned monsters and only summons up to the
+		/// given amount.
+		/// </remarks>
+		/// <param name="raceId"></param>
+		/// <param name="amount"></param>
+		/// <param name="minDistance"></param>
+		/// <param name="maxDistance"></param>
+		/// <returns></returns>
+		protected IEnumerable Summon(int raceId, int amount, int minDistance, int maxDistance)
+		{
+			// Max amount reached?
+			var count = this.GetSummonCount(raceId);
+			var diff = amount - count;
+			if (diff <= 0)
+				yield break;
+
+			// Summon
+			var pos = this.Creature.GetPosition();
+			var rnd = _rnd;
+			for (int i = 0; i < diff; ++i)
+			{
+				var summonPos = pos.GetRandomInRange(minDistance, maxDistance, _rnd);
+				var regionId = this.Creature.RegionId;
+				var x = summonPos.X;
+				var y = summonPos.Y;
+
+				var creature = ChannelServer.Instance.World.SpawnManager.Spawn(raceId, regionId, x, y, true, true);
+				creature.Death += (_, __) => this.ModifySummonCount(raceId, -1);
+
+				this.ModifySummonCount(raceId, +1);
+			}
+
+			yield break;
+		}
+
+		/// <summary>
+		/// Modifies amount of summons of race id.
+		/// </summary>
+		/// <param name="raceId"></param>
+		/// <param name="modifier"></param>
+		/// <returns></returns>
+		private int ModifySummonCount(int raceId, int modifier)
+		{
+			int count;
+
+			lock (_summons)
+			{
+				if (!_summons.TryGetValue(raceId, out count) || count <= 0)
+					count = 0;
+
+				count += modifier;
+				_summons[raceId] = count;
+			}
+
+			return count;
+		}
+
+		/// <summary>
+		/// Returns the amount of current summons for race id.
+		/// </summary>
+		/// <param name="raceId"></param>
+		/// <returns></returns>
+		private int GetSummonCount(int raceId)
+		{
+			int count;
+
+			lock (_summons)
+			{
+				if (!_summons.TryGetValue(raceId, out count) || count <= 0)
+					count = 0;
+			}
+
+			return count;
 		}
 
 		// ------------------------------------------------------------------
