@@ -103,14 +103,14 @@ namespace Aura.Channel.Skills
 			var max = Math.Max(min, attacker.InjuryMax);
 
 			// G1 Seal Scroll = 100% for 60s
-			if (attacker.SealScrollEnabled)
+			if (attacker.Conditions.Has(ConditionsA.Blessed))
 			{
 				min = 100;
 				max = 100;
 			}
 
 			// G1 Seal Scroll = No damage for 60s
-			if (target.SealScrollEnabled)
+			if (target.Conditions.Has(ConditionsA.Blessed))
 			{
 				damage = 1;
 			}

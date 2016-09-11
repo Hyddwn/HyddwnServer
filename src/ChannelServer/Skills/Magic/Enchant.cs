@@ -437,7 +437,7 @@ namespace Aura.Channel.Skills.Magic
 			// Seal Scroll (G1 Glas fight, drop from Gargoyles)
 			if (item.HasTag("/evilscroll/55/"))
 			{
-				creature.Temp.SealScrollBurnEffectEnd = DateTime.Now.AddSeconds(60);
+				creature.Conditions.Activate(ConditionsA.Blessed, null, 60 * 1000);
 				Send.Notice(creature, Localization.Get("I feel the blessing of the Goddess."));
 			}
 			// Other items
