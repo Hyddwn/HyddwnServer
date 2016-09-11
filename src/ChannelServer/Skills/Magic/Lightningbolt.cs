@@ -103,6 +103,7 @@ namespace Aura.Channel.Skills.Magic
 				// Reduce damage
 				Defense.Handle(aAction, tAction, ref targetDamage);
 				SkillHelper.HandleMagicDefenseProtection(target, ref targetDamage);
+				SkillHelper.HandleConditions(attacker, target, ref damage);
 				ManaShield.Handle(target, ref targetDamage, tAction);
 
 				// Mana Deflector

@@ -190,6 +190,9 @@ namespace Aura.Channel.Skills.Combat
 				// Subtract target def/prot
 				SkillHelper.HandleDefenseProtection(target, ref damage);
 
+				// Conditions
+				SkillHelper.HandleConditions(attacker, target, ref damage);
+
 				// Defense
 				Defense.Handle(aAction, tAction, ref damage);
 

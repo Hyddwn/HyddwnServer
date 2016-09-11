@@ -1973,10 +1973,6 @@ namespace Aura.Channel.World.Entities
 		/// <param name="from"></param>
 		public void TakeDamage(float damage, Creature from)
 		{
-			// G1 Seal Scroll = No damage for 60s
-			if (this.Conditions.Has(ConditionsA.Blessed))
-				damage = 1;
-
 			var lifeBefore = this.Life;
 
 			this.Life -= damage;

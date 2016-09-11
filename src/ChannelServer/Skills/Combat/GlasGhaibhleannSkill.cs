@@ -140,11 +140,10 @@ namespace Aura.Channel.Skills.Combat
 				// Var2: 300/1000, based on rank. Could be damage?
 				var damage = skill.RankData.Var2;
 
-				// Increase damage
+				// Modify damage
 				CriticalHit.Handle(attacker, attacker.GetTotalCritChance(target.Protection), ref damage, tAction);
-
-				// Reduce damage
 				SkillHelper.HandleDefenseProtection(target, ref damage);
+				SkillHelper.HandleConditions(attacker, target, ref damage);
 				ManaShield.Handle(target, ref damage, tAction);
 
 				// Apply damage
