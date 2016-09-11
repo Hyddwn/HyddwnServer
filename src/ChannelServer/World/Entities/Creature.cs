@@ -534,6 +534,11 @@ namespace Aura.Channel.World.Entities
 		public Dictionary<long, HitTracker> _hitTrackers;
 		public int _totalHits;
 
+		/// <summary>
+		/// Returns whether the seal scroll "state" is active.
+		/// </summary>
+		public bool SealScrollEnabled { get { return (DateTime.Now < this.Temp.SealScrollBurnEffectEnd); } }
+
 		// Stats
 		// ------------------------------------------------------------------
 
@@ -1972,6 +1977,10 @@ namespace Aura.Channel.World.Entities
 		/// <param name="from"></param>
 		public void TakeDamage(float damage, Creature from)
 		{
+			// G1 Seal Scroll = No damage for 60s
+			if (this.SealScrollEnabled)
+				damage = 1;
+
 			var lifeBefore = this.Life;
 
 			this.Life -= damage;

@@ -77,5 +77,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public Trade ActiveTrade;
 		public Entrustment ActiveEntrustment;
 		public PersonalShop ActivePersonalShop;
+
+		public DateTime SealScrollBurnEffectEnd;
 	}
 }

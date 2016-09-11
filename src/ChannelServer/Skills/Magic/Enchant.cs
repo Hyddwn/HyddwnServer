@@ -434,19 +434,29 @@ namespace Aura.Channel.Skills.Magic
 				Send.UseMotion(creature, 14, enchantBurnSuccess ? 0 : 3);
 			}
 
-			// Add exp based on item buying price (random+unofficial)
-			if (item.OptionInfo.Price > 0)
+			// Seal Scroll (G1 Glas fight, drop from Gargoyles)
+			if (item.HasTag("/evilscroll/55/"))
 			{
-				exp = 40 + (int)(item.OptionInfo.Price / (float)item.Data.StackMax / 100f * item.Info.Amount);
-				creature.GiveExp(exp);
+				creature.Temp.SealScrollBurnEffectEnd = DateTime.Now.AddSeconds(60);
+				Send.Notice(creature, Localization.Get("I feel the blessing of the Goddess."));
+			}
+			// Other items
+			else
+			{
+				// Add exp based on item buying price (random+unofficial)
+				if (item.OptionInfo.Price > 0)
+				{
+					exp = 40 + (int)(item.OptionInfo.Price / (float)item.Data.StackMax / 100f * item.Info.Amount);
+					creature.GiveExp(exp);
+				}
+
+				Send.Notice(creature, NoticeType.MiddleSystem, Localization.Get("Burning EXP {0}"), exp);
 			}
 
 			// Remove item from cursor
 			creature.Inventory.Remove(item);
 
-			// Effect
 			Send.Effect(MabiId.Broadcast, creature, Effect.BurnItem, campfire.EntityId, enchantBurnSuccess);
-			Send.Notice(creature, NoticeType.MiddleSystem, Localization.Get("Burning EXP {0}"), exp);
 
 			return true;
 		}

@@ -101,6 +101,20 @@ namespace Aura.Channel.Skills
 			var rnd = RandomProvider.Get();
 			var min = attacker.InjuryMin;
 			var max = Math.Max(min, attacker.InjuryMax);
+
+			// G1 Seal Scroll = 100% for 60s
+			if (attacker.SealScrollEnabled)
+			{
+				min = 100;
+				max = 100;
+			}
+
+			// G1 Seal Scroll = No damage for 60s
+			if (target.SealScrollEnabled)
+			{
+				damage = 1;
+			}
+
 			if (max == 0)
 				return;
 
