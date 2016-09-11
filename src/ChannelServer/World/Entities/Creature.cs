@@ -1188,7 +1188,7 @@ namespace Aura.Channel.World.Entities
 
 			// Add regens
 			// The wiki says it's 0.125 life, but the packets have 0.12.
-			this.Regens.Add(Stat.Life, 0.12f, this.LifeMax);
+			this.Regens.Add(Stat.Life, 0.12f * this.RaceData.LifeRecoveryRate, this.LifeMax);
 			this.Regens.Add(Stat.Mana, 0.05f, this.ManaMax);
 			this.Regens.Add(Stat.Stamina, 0.4f, this.StaminaMax);
 			if (ChannelServer.Instance.Conf.World.EnableHunger)

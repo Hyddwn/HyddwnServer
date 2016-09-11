@@ -77,6 +77,7 @@ namespace Aura.Data.Database
 		public float Life { get; set; }
 		public float Mana { get; set; }
 		public float Stamina { get; set; }
+		public float LifeRecoveryRate { get; set; }
 		public int Defense { get; set; }
 		public int Protection { get; set; }
 		public int Exp { get; set; }
@@ -380,6 +381,7 @@ namespace Aura.Data.Database
 			raceData.Life = entry.ReadFloat("life");
 			raceData.Mana = entry.ReadFloat("mana");
 			raceData.Stamina = entry.ReadFloat("stamina");
+			raceData.LifeRecoveryRate = entry.ReadFloat("lifeRecoveryRate", 1);
 			raceData.Defense = entry.ReadInt("defense");
 			raceData.Protection = (int)entry.ReadFloat("protection");
 			raceData.ElementPhysical = entry.ReadInt("elementPhysical");
