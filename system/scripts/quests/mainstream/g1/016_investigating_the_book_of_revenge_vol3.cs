@@ -60,7 +60,7 @@ public class InvestigatingBookOfRevengeVol3_1Quest : QuestScript
 			npc.Msg(L("Welcome. You must be... <username/>?"));
 			npc.Msg(L("...So it was you who was looking for the book.<br/>Aeira had asked me about the book before.<br/>Did she tell you what I told her...?"));
 			npc.Msg(L("Yes, the book isn't actually mine.<br/>It belongs to Seumas, who works at the ruins excavation site in Gairech."), npc.Image("g1_ch23_seumas"));
-			npc.Msg(L("He said he found it not too long ago while excavatin the site.<br/>But he could not read the writing<br/>and asked around and came to me to interpret it."), npc.Image("g1_ch23_seumas"));
+			npc.Msg(L("He said he found it not too long ago while excavating the site.<br/>But he could not read the writing<br/>and asked around and came to me to interpret it."), npc.Image("g1_ch23_seumas"));
 			npc.Msg(L("But... it was too difficult for me as well.<br/>Forget translating...I couldn't even read one sentence of it.<br/>I was barely able to figure out the title."));
 			npc.Msg(L("When I told Seumas, he said it was okay, and asked me to return his book, so<br/>as a matter of fact, I just gave the book back to him."));
 			npc.Msg(L("I don't know if you'll be able to read it because it's such a difficult book to read...<br/>but if you want to take a look at it, stop by the...<br/>ruins excavation site in Gairech."));

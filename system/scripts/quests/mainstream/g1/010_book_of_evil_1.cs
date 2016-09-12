@@ -99,7 +99,7 @@ public class BookOfEvilPart1_2Quest : QuestScript
 
 		npc.FinishQuest(this.Id, "talk_tarlach");
 
-		npc.Msg(Hide.Name, L("(Tarlach listens idently as I relayed Kristell's message to him."));
+		npc.Msg(Hide.Name, L("(Tarlach listens intently as I relayed Kristell's message to him."));
 		npc.Msg(L("...<br/>Is that what she said...?<br/>But... I can't leave this place."));
 		npc.Msg(L("I understand...how she feels, since<br/>she gave up her life as a Fomor...for love...<br/>but I'm not a man who deserves that kind of love..."));
 		npc.Msg(L("...although it was too late when I realized it...and ended up breaking her heart."));

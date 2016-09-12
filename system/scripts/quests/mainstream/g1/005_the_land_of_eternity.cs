@@ -106,7 +106,7 @@ public class TheLandOfEternityQuest : QuestScript
 			npc.Msg(L("...Honestly, I was hoping that<br/>reading the book would be enough to satisfy your curiosity and that you would forget all about it...<br/>But, you can't help that you're an adventurer..."));
 			npc.Msg(L("...<p/>...<br/>Tir Na Nog... is not paradise.<br/>What's in that book is actually a lie.<br/>...Tir Na Nog is a real place, but it's not anything like paradise."));
 			npc.Msg(L("...<p/>Listen carefully... Tir Na Nog is the land of the Fomors.<br/>And... the Goddess,<br/>who seems so loving, draws zealous adventurers like yourself to manipulate and use you."));
-			npc.Msg(L("...<p/>...You don't believe me, do you...? Hah...<br/>The pass I just gave you is what the Fomors use to enter dungeons...<br/>It's an item they use to avoid the barries set up by the Goddess."), npc.Image("g1_ch09_brownpass"));
+			npc.Msg(L("...<p/>...You don't believe me, do you...? Hah...<br/>The pass I just gave you is what the Fomors use to enter dungeons...<br/>It's an item they use to avoid the barriers set up by the Goddess."), npc.Image("g1_ch09_brownpass"));
 			npc.Msg(L("If you offer that to the statue of the Goddess in Barri dungeon,<br/>you will witness everything I just told you with your own eyes.<br/>Here's a Red Wing of the Goddess, so use it if you need it...<br/>You can go there alone, but taking one or two friends with you is probably a better idea."));
 			npc.Msg(L("...The best thing to do would be to forget<br/>trying to go to Tir Na Nog.<p/>...Heed my warning..."));
 		}

@@ -71,8 +71,8 @@ public class GorosRingQuest : QuestScript
 				npc.GiveKeyword("g1_13");
 				npc.StartQuest(this.Id);
 
-				npc.Msg(L("Priest's Token...? This...?<br/>This...is an amulet that belongs to a high ranking Fomor...let's see...<br/>Just what I'd though...'Dul Brau Dairam Shanon.' It surely belongs to a Fomor. Heh."), npc.Image("g1_ch11_12_fomormedal02"));
-				npc.Msg(L("It's been a while since I cam across such Fomor writings. Heheh."));
+				npc.Msg(L("Priest's Token...? This...?<br/>This...is an amulet that belongs to a high ranking Fomor...let's see...<br/>Just what I'd thought...'Dul Brau Dairam Shanon.' It surely belongs to a Fomor. Heh."), npc.Image("g1_ch11_12_fomormedal02"));
+				npc.Msg(L("It's been a while since I came across such Fomor writings. Heheh."));
 				npc.Msg(L("I learned the human language as a child<br/>so I'm a little rusty...<br/>but since Goro is smart, this is no problem."));
 				npc.Msg(L("As a sign of respect for your courage and<br/>since I'm such a nice goblin,<br/>I'll read it to you..."));
 				npc.Msg(L("If you help Goro that is. Heheh."));
@@ -116,7 +116,7 @@ public class GorosRingQuest : QuestScript
 					npc.GiveKeyword("g1_14");
 
 					npc.Msg(L("'Goddess, lend me the moonlight...'<br/>That's what Goro said it means?<br/>The line 'Dul Brau Dairam Shanon?'"));
-					npc.Msg(L("I can' say for sure that's it's a wrong interpretation but...<br/>it's slightly different from what I remember."));
+					npc.Msg(L("I can't say for sure that's it's a wrong interpretation but...<br/>it's slightly different from what I remember."));
 				}
 
 				npc.Msg(L("Could I take a look at this medal?"), npc.Button(L("Yes"), "@yes"), npc.Button(L("No"), "@no"));
@@ -140,7 +140,7 @@ public class GorosRingQuest : QuestScript
 			else
 			{
 				npc.Msg(L("'Goddess, lend me the moonlight...'<br/>That's what Goro said it means?<br/>The line 'Dul Brau Dairam Shanon?'"));
-				npc.Msg(L("I can' say for sure that's it's a wrong interpretation but...<br/>it's slightly different from what I remember."));
+				npc.Msg(L("I can't say for sure that's it's a wrong interpretation but...<br/>it's slightly different from what I remember."));
 			}
 
 			return HookResult.Break;

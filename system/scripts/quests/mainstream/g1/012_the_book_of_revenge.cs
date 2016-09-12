@@ -31,7 +31,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 			npc.RemoveKeyword("g1_mores");
 			npc.GiveKeyword("g1_mores_gwydion");
 
-			npc.Msg(L("Mores...? That's the author of the book you have?<br/>Gmm... You're right..."));
+			npc.Msg(L("Mores...? That's the author of the book you have?<br/>Hmm... You're right..."));
 			npc.Msg(L("Really...? The one and only hero who rescued this world...<br/>Mores Gwydion?<br/>...No, it can't be. They probably just have the same name."));
 			npc.Msg(L("... I know who Mores Gwydion is...<br/>I saw him a few times when I was young..."));
 			npc.Msg(L("In the Second War at Mag Tuireadh Plains,<br/>he'd infiltrated deep into the Fomors' camp<br/>and stopped the Fomors from casting their ultimate spell...<br/>...all the while sacrificing his own life."), npc.Image("g1_ch17_magicfight"));
@@ -59,7 +59,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 
 				npc.Msg(L("Mores Gwydion..."));
 				npc.Msg(L("...Yes, he's the author of that book.<br/>He's my mentor who's taught me<br/>...And also a Wizard who'd saved the world."));
-				npc.Msg(L("I had always though that he had passed away but...<br/>he's apparently alive and has sided with the Formors."));
+				npc.Msg(L("I had always thought that he had passed away but...<br/>he's apparently alive and has sided with the Fomors."));
 				npc.Msg(L("...Anyhow, give me the translated book.<br/>I would like to take a look at it."), npc.Button(L("Sure"), "@yes"), npc.Button(L("No"), "@no"));
 			}
 			else if (npc.HasKeyword("g1_20"))
@@ -81,7 +81,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 			npc.Msg(L("Just what I'd tought...<br/>Master had faked his own death<br/>for some reason and now he's helping the Fomors."));
 			npc.Msg(L("This must be what Kristell was talking about."));
 			npc.Msg(L("'...Okay, I admit it.<br/>Perhaps I didn't lose the token but<br/>I wanted to throw it away..."), npc.Image("g1_ch18_book"));
-			npc.Msg(L("Hmm... apparently, Master was mulling over something<br/>after losign some item...<p/>I wonder what it was..."));
+			npc.Msg(L("Hmm... apparently, Master was mulling over something<br/>after losing some item...<p/>I wonder what it was..."));
 			npc.Msg(L("...!<p/>Dunbarton's Town Office<br/>collects lost items and returns them to their rightful owners.<br/>You might be able to find a clue if you<br/>can find what it is that Mores had lost."));
 
 			return HookResult.Break;

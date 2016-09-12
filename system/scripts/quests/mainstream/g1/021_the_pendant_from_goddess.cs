@@ -72,10 +72,10 @@ public class ThePendantFromGoddessQuest : QuestScript
 			npc.GiveKeyword("g1_way_to_tirnanog1");
 
 			npc.Msg(L("You dreamt of the Goddess again?<br/>The Goddess said that the day of Glas Ghaibhleann's resurrection is approaching?"));
-			npc.Msg(L("It's just as I'd though... Is Mores<br/>behind the resurrection of Glas Ghaibhleann?<br/>We don't even have the slighted clue what to do about it yet.<br/>This is a big problem!"));
+			npc.Msg(L("It's just as I'd thought... Is Mores<br/>behind the resurrection of Glas Ghaibhleann?<br/>We don't even have the slightest clue what to do about it yet.<br/>This is a big problem!"));
 			npc.Msg(L("I think I forgot to tell you this,<br/>Magic doesn't work on Adamantium,<br/>so it's difficult to fuse to a magical creature."));
-			npc.Msg(L("That's why special ingredients are required.<br/>They say that the soul of a brave human is needed as on ingredient."));
-			npc.Msg(L("It's possible that they may already have the soul<br/>of one of the Tree Missing Warriors.<br/>Then this is truly a big problem.<br/>We have to stop them somehow."));
+			npc.Msg(L("That's why special ingredients are required.<br/>They say that the soul of a brave human is needed as an ingredient."));
+			npc.Msg(L("It's possible that they may already have the soul<br/>of one of the Three Missing Warriors.<br/>Then this is truly a big problem.<br/>We have to stop them somehow."));
 			npc.Msg(L("Now hurry up and find out how to get there!"));
 
 			return HookResult.Break;
@@ -93,12 +93,12 @@ public class ThePendantFromGoddessQuest : QuestScript
 			npc.RemoveKeyword("g1_30");
 			npc.GiveKeyword("g1_31");
 
-			npc.Msg(L("Now you know what I've been through.<br/>There was no sigh of Mari and Ruiairi.<br/>The master barely managed to get me out.<br/>We made another attempt to find them, but it was no good..."));
+			npc.Msg(L("Now you know what I've been through.<br/>There was no sight of Mari and Ruiairi.<br/>The master barely managed to get me out.<br/>We made another attempt to find them, but it was no good..."));
 			npc.Msg(L("Since that day, I can no longer use any advanced magic<br/>and I have to stay in bear form during the day.<br/>Isn't that a strange turn of events?"));
 			npc.Msg(L("Though I still possess all my old arcane knowledge,<br/>my life as a wizard ended that day,<br/>vanished along with my dear friends."));
 			npc.Msg(L("That's why I can never forgive the Goddess.<br/>I was so consumed by hatred that even<br/>Kristell's devotion couldn't soothe me."));
 			npc.Msg(L("It occured to me to leave one day.<br/>I've been nothing but a burden on Kristell.<br/>She betrayed her own people to learn about love...<br/>I can only give her more pain."));
-			npc.Msg(L("...<br/>So now you know why I live like this.<br/>I will remove the mask of hypocrisy from the Godess.<br/>And I will make my master pay for this betrayal."));
+			npc.Msg(L("...<br/>So now you know why I live like this.<br/>I will remove the mask of hypocrisy from the Goddess.<br/>And I will make my master pay for this betrayal."));
 
 			return HookResult.Break;
 		}
@@ -137,10 +137,10 @@ public class ThePendantFromGoddessQuest : QuestScript
 
 			npc.Msg(L("Welcome, <username/>. I'm glad you came...<br/>First, let me give you this.<br/>I found it while I was cleaning the house."));
 			npc.Msg(L("Yes... This is the reason I called you<br/>Do you remember...? How I told you I raised Mari..."));
-			npc.Msg(L("When Mari first came to me...<br/>She was delivered by a pair of white and brown deer, wrapped tightly in a blanked..."), npc.Image("g1_ch31_baby"));
-			npc.Msg(L("Inside the blanked, there was a letter from Shiela,<br/>asking me to watch over Mari, and the item I just gave you..."), npc.Image("g1_ch31_baby"));
-			npc.Msg(L("This is what the leter said...<br/>When Mari becomes and adult...<br/>give her this memento so she can find her past...<br/>and...tell her go to Math Dungeon..."), npc.Image("g1_ch31_baby"));
-			npc.Msg(L("Shiela said...when she dies<br/>she'll attack her memories to this item..."));
+			npc.Msg(L("When Mari first came to me...<br/>She was delivered by a pair of white and brown deer, wrapped tightly in a blanket..."), npc.Image("g1_ch31_baby"));
+			npc.Msg(L("Inside the blanket, there was a letter from Shiela,<br/>asking me to watch over Mari, and the item I just gave you..."), npc.Image("g1_ch31_baby"));
+			npc.Msg(L("This is what the letter said...<br/>When Mari becomes an adult...<br/>give her this memento so she can find her past...<br/>and...tell her go to Math Dungeon..."), npc.Image("g1_ch31_baby"));
+			npc.Msg(L("Shiela said...when she dies<br/>she'll attach her memories to this item..."));
 			npc.Msg(L("...<br/>But...now...since Mari...<br/>doesn't need it anymore...<br/>...I'm giving it to you."));
 			npc.Msg(L("It seems like an item related to Mores...<br/>I hope it will be helpful in some way<br/>in your search to find Tir Na Nog..."));
 			npc.Msg(L("I'm giving you a Red Wing of the Goddess as well...<br/>so hurry up and go to Math Dungeon.<br/>I wish you the best of luck."));

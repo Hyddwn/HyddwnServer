@@ -113,7 +113,7 @@ public class WizardsNoteQuest : QuestScript
 
 			npc.Msg(L("Is there another volume to this book...?<br/>I'm not sure.<br/>Based on the introduction, it seems likely..."));
 			npc.Msg(L("I've learned that this book is very popular amongst high-ranking Fomors.<br/>I only found that out while I was translating the book."));
-			npc.Msg(L("Sorry I'm not much help<br/>May Aeira knows something about this.<br/>When it comes to books, no one's more knowledgable than her."));
+			npc.Msg(L("Sorry I'm not much help<br/>Maybe Aeira knows something about this.<br/>When it comes to books, no one's more knowledgable than her."));
 
 			return HookResult.Break;
 		}
@@ -179,7 +179,7 @@ public class WizardsNote2Quest : QuestScript
 			npc.GiveWarpScroll(63009, "ciar_dungeon");
 
 			npc.Msg(L("Ah! <username/>! Welcome. Do you remember the book I gave you before, 'Land of Eternity, Tir Na Nog?'<br/>The author of that book, Leslie, called.<br/>You see, Leslie is a famous historian and an avide explorer."));
-			npc.Msg(L("She sent me this not.<br/>It says that she once 'The Book of Revenge' inside Ciar dungeon, written in Fomor language.<br/>She said if you offer this note on the Altar of Ciar Dungeon, you'll be transported to where you can find the book.<br/>...Apparently this note has some kind of magic on it or something..."), npc.Image("g1_ch21_memo"));
+			npc.Msg(L("She sent me this note.<br/>It says that she once found 'The Book of Revenge' inside Ciar dungeon, written in Fomor language.<br/>She said if you offer this note on the Altar of Ciar Dungeon, you'll be transported to where you can find the book.<br/>...Apparently this note has some kind of magic on it or something..."), npc.Image("g1_ch21_memo"));
 			npc.Msg(L("And...here, this is Aeira's special gift to you, The Red Wing of the Goddess!<br/>I will give you the note and the Red Wing of the Goddess!<br/>I wish you the best of luck."));
 
 			return HookResult.Break;

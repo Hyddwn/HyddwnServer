@@ -100,7 +100,7 @@ public class BookOfRevengeVol2Quest : QuestScript
 			npc.SendOwl(210008, OwlDelay2); // Find the Book of Revenge, Vol. III
 
 			npc.Msg(L("Since you're looking for volume 3, I'm guessing you already<br/>found volume 2? I'm afraid I haven't heard anything about volume 3 just yet."));
-			npc.Msg(L("It's turning out to tbe a lot harder to find the last volume.<br/>My distributor has been absolutely useless, and Eavan says<br/>she hasn't come across such a book. Even Leslie says she<br/>doesn't know anything. Same with Stewart."));
+			npc.Msg(L("It's turning out to be a lot harder to find the last volume.<br/>My distributor has been absolutely useless, and Eavan says<br/>she hasn't come across such a book. Even Leslie says she<br/>doesn't know anything. Same with Stewart."));
 			npc.Msg(L("I've asked everywhere, but I don't know how long it will take.<br/>I'm afraid you're going to have to be patient. But even if<br/>you're patient, I just don't have any confidence that I'll<br/>be able to find it..."));
 
 			return HookResult.Break;
