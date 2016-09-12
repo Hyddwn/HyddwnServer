@@ -36,7 +36,7 @@ public class MagicPowderOfPreservationQuest : QuestScript
 
 	public async Task<HookResult> TarlachAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "get_powder") && npc.HasItem(Powder))
+		if (npc.QuestActive(this.Id, "give_powder") && npc.HasItem(Powder))
 		{
 			npc.CompleteQuest(this.Id);
 
