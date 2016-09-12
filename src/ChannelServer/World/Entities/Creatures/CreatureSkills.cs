@@ -387,6 +387,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			this.ActiveSkill.State = SkillState.Canceled;
 			this.ActiveSkill = null;
 
+			_creature.Regens.Remove("ActiveSkillWait");
 			_creature.Unlock(Locks.All);
 		}
 
