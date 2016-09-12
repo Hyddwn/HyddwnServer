@@ -39,22 +39,26 @@ public class ThePendantFromGoddessQuest : QuestScript
 
 		if (keyword == "g1_goddess_morrighan2")
 		{
-			npc.RemoveKeyword("g1_30");
-			npc.GiveKeyword("g1_31");
+			if (npc.HasKeyword("g1_30"))
+			{
+				npc.RemoveKeyword("g1_30");
+				npc.GiveKeyword("g1_31");
 
-			npc.Msg(Hide.Name, L("(You tell Duncan about the experience Tarlach had in Tir Na Nog.)"));
-			npc.Msg(L("Is that what happened to Tarlach?<br/>That's unbelievable.<br/>But I suppose there's no choice but to believe him. Hmmm."));
-			npc.Msg(L("There is one more thing I'd like to tell you.<br/>What I'm about to tell you is a secret I've kept all my life,<br/>so promise me you won't tell anyone else, okay?"));
-			npc.Msg(L("You said Mores tried to save<br/>Tarlach and his friends at the last minute when they went to Tir Na Nog, right?"));
-			npc.Msg(L("I'm sure that wasn't because of Tarlach."));
-			npc.Msg(L("Mari. It was because of Mari.<br/>Mari was Mores's only daughter.<br/>Mores recognized that fact."), npc.Image("g1_ch27_mari"));
-			npc.Msg(L("I knew his wife Shiela before she passed away.<br/>She was killed by humans instigated by nobles,<br/>but Mari was sent to me with the help of the wolves and deer."));
-			npc.Msg(L("Mari's memory of her parents<br/>was personally erased by her mother."));
-			npc.Msg(L("It would mean death for her to<br/>remember her parents."));
-			npc.Msg(L("So I raised Mari myself."));
-			npc.Msg(L("Yes, I think I've told you enought about this story."));
-			npc.Msg(L("Hmm. Everything else fits into the story except<br/>the Goddess.<br/>You don't aactually agree with Tarlach<br/>about the Goddess, do you?"));
-			npc.Msg(L("Ask the other people.<br/>Don't tell them what you think, but just listen<br/>to see if the Goddess is someone who'd betray humankind."));
+				npc.Msg(Hide.Name, L("(You tell Duncan about the experience Tarlach had in Tir Na Nog.)"));
+				npc.Msg(L("Is that what happened to Tarlach?<br/>That's unbelievable.<br/>But I suppose there's no choice but to believe him. Hmmm."));
+				npc.Msg(L("There is one more thing I'd like to tell you.<br/>What I'm about to tell you is a secret I've kept all my life,<br/>so promise me you won't tell anyone else, okay?"));
+				npc.Msg(L("You said Mores tried to save<br/>Tarlach and his friends at the last minute when they went to Tir Na Nog, right?"));
+				npc.Msg(L("I'm sure that wasn't because of Tarlach."));
+				npc.Msg(L("Mari. It was because of Mari.<br/>Mari was Mores's only daughter.<br/>Mores recognized that fact."), npc.Image("g1_ch27_mari"));
+				npc.Msg(L("I knew his wife Shiela before she passed away.<br/>She was killed by humans instigated by nobles,<br/>but Mari was sent to me with the help of the wolves and deer."));
+				npc.Msg(L("Mari's memory of her parents<br/>was personally erased by her mother."));
+				npc.Msg(L("It would mean death for her to<br/>remember her parents."));
+				npc.Msg(L("So I raised Mari myself."));
+				npc.Msg(L("Yes, I think I've told you enought about this story."));
+				npc.Msg(L("Hmm. Everything else fits into the story except<br/>the Goddess.<br/>You don't aactually agree with Tarlach<br/>about the Goddess, do you?"));
+				npc.Msg(L("Ask the other people.<br/>Don't tell them what you think, but just listen<br/>to see if the Goddess is someone who'd betray humankind."));
+			}
+
 			npc.Msg(L("I'll remind you one more time.<br/>Please keep what I told you about Mari a secret."));
 
 			return HookResult.Break;
