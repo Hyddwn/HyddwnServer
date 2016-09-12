@@ -172,7 +172,7 @@ namespace Aura.Channel.World.Dungeons
 			this.Creators.AddRange(creature.Party.GetCreaturesOnAltar(creature.RegionId).Select(a => a.EntityId));
 
 			// Add the creator to the list if something went wrong on the altar check.
-			if (!this.Creators.Contains(creature.EntityId))
+			if (this.Creators.Count == 0)
 				this.Creators.Add(creature.EntityId);
 
 			// Get script
