@@ -14,14 +14,28 @@ namespace Aura.Data.Database
 	public class CutsceneData
 	{
 		/// <summary>
-		/// Name of the cutscene
+		/// Name of the cutscene.
 		/// </summary>
 		public string Name { get; set; }
 
 		/// <summary>
-		/// Creatures appearing in the cutscene
+		/// Creatures appearing in the cutscene.
 		/// </summary>
-		public string[] Actors { get; set; }
+		public CutsceneActorData[] Actors { get; set; }
+	}
+
+	[Serializable]
+	public class CutsceneActorData
+	{
+		/// <summary>
+		/// Name of the actor.
+		/// </summary>
+		public string Name { get; set; }
+
+		/// <summary>
+		/// Name of the actor to use as default if first one wasn't available.
+		/// </summary>
+		public string Default { get; set; }
 	}
 
 	/// <summary>
@@ -36,11 +50,28 @@ namespace Aura.Data.Database
 			var data = new CutsceneData();
 			data.Name = entry.ReadString("name");
 
-			var actors = new List<string>();
+			var actors = new List<CutsceneActorData>();
 			if (entry.ContainsKey("actors"))
 			{
 				foreach (var actor in entry["actors"])
-					actors.Add((string)actor);
+				{
+					string name = (string)actor;
+					string def = null;
+
+					var actorData = new CutsceneActorData();
+
+					var idx = name.IndexOf(" (");
+					if (idx != -1)
+					{
+						def = name.Substring(idx + 2, name.Length - idx - 3).Trim();
+						name = name.Substring(0, idx).Trim();
+					}
+
+					actorData.Name = name;
+					actorData.Default = def;
+
+					actors.Add(actorData);
+				}
 			}
 			data.Actors = actors.ToArray();
 

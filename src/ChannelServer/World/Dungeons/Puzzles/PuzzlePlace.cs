@@ -243,7 +243,7 @@ namespace Aura.Channel.World.Dungeons.Puzzles
 				if (_room.Links[dir] == LinkType.From || _room.Links[dir] == LinkType.To)
 				{
 					// Boss door supposed to be locked, skip it and let Dungeon.InitFloorRegion() create it.
-					if ((DungeonBlockType) _room.DoorType[dir] != DungeonBlockType.BossDoor)
+					if ((DungeonBlockType)_room.DoorType[dir] != DungeonBlockType.BossDoor)
 						this.AddDoor(dir, DungeonBlockType.Door);
 				}
 			}
@@ -388,6 +388,7 @@ namespace Aura.Channel.World.Dungeons.Puzzles
 		/// </summary>
 		/// <param name="mobGroupName">Name of the mob, for reference.</param>
 		/// <param name="mobToSpawn">Mob to spawn (Mob1-3), leave as null for auto select.</param>
+		/// <param name="placement"></param>
 		public void SpawnSingleMob(string mobGroupName, string mobToSpawn = null, Placement placement = Placement.Random)
 		{
 			DungeonMonsterGroupData data;
@@ -400,6 +401,24 @@ namespace Aura.Channel.World.Dungeons.Puzzles
 				throw new Exception("No monster data found.");
 
 			this.Puzzle.AllocateAndSpawnMob(this, mobGroupName, data, placement);
+		}
+
+		/// <summary>
+		/// Creates mob in puzzle, in place.
+		/// </summary>
+		/// <param name="mobGroupName">Name of the mob, for reference.</param>
+		/// <param name="raceId">Race to spawn.</param>
+		/// <param name="amount">Number of monsters to spawn.</param>
+		/// <param name="placement"></param>
+		public void SpawnSingleMob(string mobGroupName, int raceId, int amount, Placement placement = Placement.Random)
+		{
+			if (amount < 1)
+				amount = 1;
+
+			var group = new DungeonMonsterGroupData();
+			group.Add(new DungeonMonsterData() { RaceId = raceId, Amount = amount });
+
+			this.Puzzle.AllocateAndSpawnMob(this, mobGroupName, group, placement);
 		}
 	}
 }

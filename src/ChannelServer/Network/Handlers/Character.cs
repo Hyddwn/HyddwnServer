@@ -102,6 +102,16 @@ namespace Aura.Channel.Network.Handlers
 					creature.Revive(option);
 					return;
 
+				case ReviveOptions.TirNaNog:
+					creature.Warp("Ula_Tirnanog/_Uladh_Tirnanog/Tirna_from_Cross");
+					creature.Revive(option);
+					return;
+
+				case ReviveOptions.BarriLobby:
+					creature.Warp("Ula_DgnHall_Bangor_before1/_Ula_DgnHall_Bangor_before1/DG_BangorBefore1_Outer_Spawn");
+					creature.Revive(option);
+					return;
+
 				case ReviveOptions.DungeonEntrance:
 					if (dungeonRegion == null || creature.DungeonSaveLocation.RegionId == 0)
 					{

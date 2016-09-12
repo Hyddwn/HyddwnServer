@@ -20,3 +20,6 @@
 // Apple Trees
 54, 50003, 1, 80                       // Apple
 54, 52001, 1, 80                       // Branch
+
+// Snowman
+901, 73001, 1, 100                     // Lost Earring

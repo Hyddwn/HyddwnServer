@@ -89,6 +89,25 @@ public class AlbyDungeonScript : DungeonScript
 			}
 		}
 
+		// Tarlach's Locket (G1 RP)
+		if (item.Info.Id == 73002)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_03"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 3 && !IsEnabled("SoloRP"))
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 members."));
+				return false;
+			}
+
+			dungeonName = "g1rp_05_tircho_alby_dungeon";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{

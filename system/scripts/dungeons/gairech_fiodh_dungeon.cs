@@ -42,6 +42,10 @@ public class FiodhDungeonScript : DungeonScript
 					case 2: suffix = 30503; break; // White Spider
 				}
 				treasureChest.Add(Item.CreateEnchanted(18004, prefix, suffix));
+
+				// Magic Powder of Preservation (G1)
+				if (member.Keywords.Has("g1_28"))
+					treasureChest.Add(Item.Create(73061));
 			}
 
 			treasureChest.AddGold(rnd.Next(1500, 3600)); // Gold

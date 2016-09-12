@@ -16,6 +16,44 @@ public class RabbieDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Tarlach's Glasses Pouch (G1 RP)
+		if (item.Info.Id == 73022)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_15"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You need to enter this dungeon alone."));
+				return false;
+			}
+
+			dungeonName = "g1rp_15_dunbarton_rabbie_dungeon";
+			return true;
+		}
+
+		// Tarlach's Preserved Broken Glasses (G1 RP)
+		if (item.Info.Id == 73004)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_29"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 3 && !IsEnabled("SoloRP"))
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 members."));
+				return false;
+			}
+
+			dungeonName = "g1rp_25_dunbarton_rabbie_dungeon";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{

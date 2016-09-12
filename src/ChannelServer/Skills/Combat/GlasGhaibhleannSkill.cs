@@ -99,7 +99,17 @@ namespace Aura.Channel.Skills.Combat
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
 			var targetAreaEntityId = packet.GetLong();
+			this.Use(attacker, skill, targetAreaEntityId);
+		}
 
+		/// <summary>
+		/// Handles skill usage.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="targetAreaEntityId"></param>
+		public void Use(Creature attacker, Skill skill, long targetAreaEntityId)
+		{
 			Send.Effect(attacker, 5, (byte)1, targetAreaEntityId);
 
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
@@ -127,7 +137,7 @@ namespace Aura.Channel.Skills.Combat
 
 			// Attack targets
 			var targets = attacker.Region.GetCreaturesInPolygon(p1, p2, p3, p4);
-			foreach (var target in targets.Where(cr => !cr.IsDead && !cr.Has(CreatureStates.NamedNpc)))
+			foreach (var target in targets.Where(cr => !cr.IsDead && (!cr.Has(CreatureStates.Npc) || cr == attacker.Target)))
 			{
 				var targetPosition = target.GetPosition();
 
@@ -140,11 +150,10 @@ namespace Aura.Channel.Skills.Combat
 				// Var2: 300/1000, based on rank. Could be damage?
 				var damage = skill.RankData.Var2;
 
-				// Increase damage
+				// Modify damage
 				CriticalHit.Handle(attacker, attacker.GetTotalCritChance(target.Protection), ref damage, tAction);
-
-				// Reduce damage
 				SkillHelper.HandleDefenseProtection(target, ref damage);
+				SkillHelper.HandleConditions(attacker, target, ref damage);
 				ManaShield.Handle(target, ref damage, tAction);
 
 				// Apply damage

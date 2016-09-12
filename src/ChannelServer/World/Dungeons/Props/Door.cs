@@ -110,8 +110,13 @@ namespace Aura.Channel.World.Dungeons.Props
 					// Check if all rooms have been cleared
 					if (!dungeonRegion.Dungeon.CheckDoors())
 					{
-						Send.Notice(creature, Localization.Get("Unable to enter the boss room. There must be a closed door somewhere in the dungeon."));
-						return;
+						if (!creature.IsDev)
+						{
+							Send.Notice(creature, Localization.Get("Unable to enter the boss room. There must be a closed door somewhere in the dungeon."));
+							return;
+						}
+
+						Send.Notice(creature, NoticeType.MiddleSystem, Localization.Get("Bypassed dungeon door check."));
 					}
 				}
 			}

@@ -70,20 +70,21 @@ namespace Aura.Channel.World
 		public static Cutscene FromData(string name, Creature creature)
 		{
 			var result = new Cutscene(name, creature);
-
 			var partyMembers = creature.Party.GetSortedMembers();
-			var dummy = new NPC();
 
-			foreach (var actorName in result.Data.Actors)
+			foreach (var cutsceneActorData in result.Data.Actors)
 			{
 				Creature actor = null;
+
+				var actorName = cutsceneActorData.Name;
+				var defaultActorName = cutsceneActorData.Default;
 
 				// Retrieve actor
 				if (actorName.StartsWith("#"))
 				{
 					var actorData = AuraData.ActorDb.Find(actorName);
 					if (actorData == null)
-						Log.Warning("Unknown actor '{0}'.", actorName);
+						Log.Warning("Cutscene.FromData: Unknown actor '{0}'.", actorData);
 					else
 						actor = new NPC(actorData);
 				}
@@ -99,18 +100,37 @@ namespace Aura.Channel.World
 				{
 					int idx;
 					if (!int.TryParse(actorName.Substring("player".Length), out idx))
+					{
 						Log.Warning("Cutscene.FromData: Invalid party member actor name '{0}'.", actorName);
+					}
 					else if (idx > partyMembers.Length - 1)
-						Log.Warning("Cutscene.FromData: Index out of party member range '{0}/{1}'.", idx, partyMembers.Length);
+					{
+						if (!string.IsNullOrWhiteSpace(defaultActorName))
+						{
+							var actorData = AuraData.ActorDb.Find(defaultActorName);
+							if (actorData == null)
+								Log.Warning("Cutscene.FromData: Unknown default actor '{0}'.", defaultActorName);
+							else
+								actor = new NPC(actorData);
+						}
+						else
+							Log.Warning("Cutscene.FromData: Index out of party member range '{0}/{1}'.", idx, partyMembers.Length);
+					}
 					else
+					{
 						actor = partyMembers[idx];
+					}
 				}
 				else
+				{
 					Log.Warning("Cutscene.FromData: Unknown kind of actor ({0}).", actorName);
+				}
 
 				if (actor == null)
+				{
+					var dummy = new NPC();
 					actor = dummy;
-
+				}
 				result.AddActor(actorName, actor);
 			}
 

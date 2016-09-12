@@ -30,7 +30,10 @@
 	{ name: "EnchantEntrust", enabled: true },
 	{ name: "DynamicMonsterAllocation", enabled: true },
 	{ name: "FoodStatLimit", enabled: true },
-	{ name: "G1EasyOverseas", enabled: false },
+	{ name: "G1EasyOverseas", enabled: false, children: [
+		// Kill only ten zombies to revive in TNN.
+		{ name: "EasyBinding1", enabled: true },
+	]},
 	
 	// Season 1
 	{ name: "G1S1", enabled: true, children: [
@@ -395,6 +398,19 @@
 	{ name: "G16S2", enabled: true, children: [
 		{ name: "CombatSystemRenewal", enabled: true, children: [
 			{ name: "PassiveSharpMind", enabled: true },
+		]},
+		{ name: "MainStream2012Part1", enabled: true, children: [
+			// Enables G1~3 for elves and giants.
+			{ name: "NonHumanChapter1", enabled: true },
+			
+			// Enables soloing RP dungeons.
+			{ name: "SoloRP", enabled: true },
+			
+			// Enables going to TNN on any day.
+			{ name: "AllWeekBreaker", enabled: true },
+			
+			// Kill only one zombie to revive in TNN.
+			{ name: "EasyBinding2", enabled: true },
 		]},
 	]},
 	

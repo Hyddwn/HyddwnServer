@@ -17,7 +17,7 @@ namespace Aura.Channel.World.Entities.Creatures
 	public class CreatureQuests : IDisposable
 	{
 		/// <summary>
-		/// Interval in seconds on which the owl queue is checked.
+		/// Interval in milliseconds on which the owl queue is checked.
 		/// </summary>
 		private const int OwlTick = 60 * 1000;
 
@@ -278,7 +278,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <summary>
 		/// Sends an owl to deliver a quest scroll for the given quest id
 		/// to the player. If delay is not 0, the quest will arrive X
-		/// seconds later, on the next region change.
+		/// seconds later.
 		/// </summary>
 		/// <param name="questId">Id of the quest to send.</param>
 		/// <param name="delay">The delay in seconds.</param>
