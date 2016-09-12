@@ -2518,6 +2518,7 @@ namespace Aura.Channel.World.Entities
 				case ReviveOptions.TirChonaill:
 				case ReviveOptions.DungeonEntrance:
 				case ReviveOptions.BarriLobby:
+				case ReviveOptions.TirNaNog:
 					// 100% life and 50% injury recovery
 					this.Injuries -= this.Injuries * 0.50f;
 					this.Life = this.LifeMax;
