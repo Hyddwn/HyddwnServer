@@ -1,4 +1,4 @@
- // Copyright (c) Aura development team - Licensed under GNU GPL
+// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
 using Aura.Channel.Network;
