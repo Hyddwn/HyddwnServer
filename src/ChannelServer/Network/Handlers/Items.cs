@@ -203,7 +203,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Check droppability
-			if (item.HasTag("/not_dropable/"))
+			if (item.HasTag("/not_dropable/") || item.Data.Action == ItemAction.ImportantItem || item.Data.Action == ItemAction.Important2Item)
 			{
 				Send.ItemDropR(creature, Localization.Get("You cannot drop this item."));
 				return;
