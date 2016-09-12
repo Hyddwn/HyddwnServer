@@ -1509,6 +1509,7 @@ namespace Aura.Channel.World.Entities
 			this.Regens.OnSecondsTimeTick(time);
 			this.StatMods.OnSecondsTimeTick(time);
 			this.Conditions.OnSecondsTimeTick(time);
+			this.Skills.OnSecondsTimeTick(time);
 		}
 
 		/// <summary>
