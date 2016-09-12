@@ -24,8 +24,7 @@ public class TheLandOfEternityQuest : QuestScript
 		SetDescription(L("Ask Aeira in the Dunbarton Bookstore about the book."));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("get_book", L("Speak to Aeira at the Dunbarton Bookstore."), 14, 44978, 43143, Talk("aeira"));
 

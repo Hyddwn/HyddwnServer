@@ -19,8 +19,7 @@ public class BookOfEvilPart2Quest : QuestScript
 		SetDescription(L("The favor you have asked for before went well. I will give it to you when you visit. - Lassar -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("get_item", L("Receive the item from Lassar."), 9, 2020, 1537, Talk("lassar"));
 		AddObjective("talk_tarlach", L("Talk to Tarlach."), 48, 11100, 30400, Talk("tarlach"));

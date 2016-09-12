@@ -20,8 +20,7 @@ public class ThePendantFromGoddessQuest : QuestScript
 		SetDescription(L("Come visit me when you're free, I've found something that might be of interest to you. - Duncan -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("talk", L("Talk to Duncan."), 1, 15409, 38310, Talk("duncan"));
 

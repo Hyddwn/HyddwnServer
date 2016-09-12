@@ -28,8 +28,7 @@ public class GorosRingQuest : QuestScript
 		SetDescription(L("Goro lost a ring in the depths of [Ciar Basic Dungeon] and asked you to retrieve it in exchange for his help."));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("get_ring", L("Bring Goro his ring."), 28, 1283, 3485, Talk("goro"));
 

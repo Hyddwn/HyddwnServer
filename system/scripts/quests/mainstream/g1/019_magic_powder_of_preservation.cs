@@ -21,8 +21,7 @@ public class MagicPowderOfPreservationQuest : QuestScript
 		SetDescription(L("Bring me the Magic Powder of Preservation, so I can prevent the glasses from breaking further. - Tarlach -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("give_powder", L("Give Tarlach the Magic Powder of Preservation."), 48, 11100, 30400, Talk("tarlach"));
 

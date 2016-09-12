@@ -21,8 +21,7 @@ public class InvestigatingBookOfRevengeVol3_1Quest : QuestScript
 		SetDescription(L("I heard about the Book of Revenge, Vol. III. Come to the Dunbarton Bookstore immediately. - Aeira -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("talk_aeira", L("Find out what Aeira of the Dunbarton Bookstore discovered."), 14, 44978, 43143, Talk("aeira"));
 		AddObjective("talk_lassar", L("Ask Lassar in Tir Chonaill for the book."), 9, 2020, 1537, Talk("lassar"));

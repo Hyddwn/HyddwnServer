@@ -20,8 +20,7 @@ public class KristellsRequestQuest : QuestScript
 		SetDescription(L("I'm nervous. It feels like evil spirits are watching me. I saw the Field Boss Infor Scroll and I hink I am their target. Can you help so that they won't come near me? - Kristell -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("kill1", L("Hunt down the Black Dire Wolves"), 0, 0, 0, Kill(1, "/blackdirewolf/"));
 		AddObjective("kill2", L("Hunt down the Werewolves"), 0, 0, 0, Kill(1, "/werewolf/"));

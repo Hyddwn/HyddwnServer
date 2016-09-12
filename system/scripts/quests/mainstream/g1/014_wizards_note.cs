@@ -21,8 +21,7 @@ public class WizardsNoteQuest : QuestScript
 		SetDescription(L("I'll have to read the book Mores wrote. Can you get it from Tarlach for me? - Duncan -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("get_book", L("Get the Book of Revenge back from Tarlach."), 48, 11100, 30400, Talk("tarlach"));
 		AddObjective("give_book", L("Show Duncan the Book of Revenge."), 1, 15409, 38310, Talk("duncan"));

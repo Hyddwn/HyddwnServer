@@ -19,8 +19,7 @@ public class BindMagicQuest : QuestScript
 		SetDescription(L("Come see me if you're worried about returning to your world upon dying. - Dougal -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		var amount = 50;
 		if (IsEnabled("EasyBinding1"))

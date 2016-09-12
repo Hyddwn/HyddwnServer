@@ -22,8 +22,7 @@ public class BookOfEvilPart1_1Quest : QuestScript
 		SetDescription(L("I got this book a long time ago, but I haven't even read a single page because it's written in the Fomor language. Could you ask Kristell to translate the book? Please tell her it's important... -Tarlach-"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("deliver_book", L("Ask Kristell to translate the [Book of Fomors]."), 14, 34657, 42808, Talk("kristell"));
 

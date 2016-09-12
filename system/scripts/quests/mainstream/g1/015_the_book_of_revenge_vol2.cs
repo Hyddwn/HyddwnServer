@@ -21,8 +21,7 @@ public class BookOfRevengeVol2Quest : QuestScript
 		SetDescription(L("I finished the Book if Revenge, Vol. II. I'll be waiting at Dunbarton Church. - Kristell -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("get_book", L("Receive the translated copy from Kristell at the Dunbarton Church."), 14, 34657, 42808, Talk("kristell"));
 		AddObjective("give_book", L("Show Duncan the translated copy."), 1, 15409, 38310, Talk("duncan"));

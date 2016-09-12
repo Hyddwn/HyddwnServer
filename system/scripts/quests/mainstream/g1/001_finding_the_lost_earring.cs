@@ -22,8 +22,7 @@ public class FindingTheLostEarringQuest : QuestScript
 		SetDescription(L("You will find the road to Sidhe Sneachta on the way to Alby Dungeon, north of town. An earring was lost while making a snowman. Can you look for it? - Duncan -"));
 
 		SetIcon(QuestIcon.AdventOfTheGoddess);
-		if (IsEnabled("QuestViewRenewal"))
-			SetCategory(QuestCategory.AdventOfTheGoddess);
+		SetCategory(QuestCategory.AdventOfTheGoddess);
 
 		AddObjective("deliver", L("Find the earring."), 1, 15409, 38310, Talk("duncan"));
 
