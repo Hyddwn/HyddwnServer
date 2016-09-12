@@ -195,6 +195,11 @@ namespace Aura.Data.Database
 									{
 										groupEntry.AssertNotMissing("raceId", "amount");
 
+										// Check feature
+										var feature = groupEntry.ReadString("feature");
+										if (!string.IsNullOrWhiteSpace(feature) && !AuraData.FeaturesDb.IsEnabled(feature))
+											continue;
+
 										var monsterData = new DungeonMonsterData();
 										monsterData.RaceId = groupEntry.ReadInt("raceId");
 										monsterData.Amount = groupEntry.ReadInt("amount");

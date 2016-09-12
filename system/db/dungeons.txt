@@ -2314,7 +2314,7 @@
 			{ script: "switchdoor_switchmonster", groups: [ [{ raceId: 11003, amount: 3 }] ] },
 		]},
 		{ min: 1, max: 1, puzzles: [
-			{ script: "keychest_monster", groups: [ [{ raceId: 80001, amount: 4 }], [{ raceId: 30005, amount: 3 }], [{ raceId: 20201, amount: 1 }] ] },
+			{ script: "keychest_monster", groups: [ [{ raceId: 80001, amount: 4 }], [{ raceId: 30005, amount: 3 }], [{ raceId: 20201, amount: 1},{ raceId: 20201, amount: 2, feature: "!EasierEnemiesChapter1" }] ] },
 		]},	]},
 	// Floor 2
 	{ width: 8, height: 8, critPathMin: 24, critPathMax: 34, branch: 20, coverage: 60, statue: false, color: [0x00FFFFFF,0x00FFFFFF,0x00FFFFFF], lightColor: [0x00FFFFFF,0x00FFFFFF,0x00FFFFFF], sections: [
