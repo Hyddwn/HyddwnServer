@@ -51,6 +51,7 @@ public class AlbeyBlueDungeonScript : DungeonScript
 		}
 
 		var orb = new Prop(25032, 0, 0, 0, 0);
+		orb.SetState("off");
 		orb.Behavior = OnOrbHit;
 		dungeon.AddChest(orb);
 	}
