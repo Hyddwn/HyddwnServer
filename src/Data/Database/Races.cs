@@ -440,6 +440,11 @@ namespace Aura.Data.Database
 				{
 					skill.AssertNotMissing("skillId", "rank");
 
+					// Check feature
+					var feature = skill.ReadString("feature");
+					if (!string.IsNullOrWhiteSpace(feature) && !AuraData.FeaturesDb.IsEnabled(feature))
+						continue;
+
 					var skillData = new RaceSkillData();
 					skillData.SkillId = skill.ReadUShort("skillId");
 
