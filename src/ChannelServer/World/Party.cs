@@ -620,7 +620,7 @@ namespace Aura.Channel.World
 					var pos = member.GetPosition();
 					var clientEvent = member.Region.GetClientEvent(a => a.Data.IsAltar);
 
-					if (clientEvent.IsInside(pos))
+					if (clientEvent != null && clientEvent.IsInside(pos))
 						result.Add(member);
 				}
 			}

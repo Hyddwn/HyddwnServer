@@ -171,6 +171,10 @@ namespace Aura.Channel.World.Dungeons
 			// Only creatures who actually ENTER the dungeon at creation are considered "dungeon founders".
 			this.Creators.AddRange(creature.Party.GetCreaturesOnAltar(creature.RegionId).Select(a => a.EntityId));
 
+			// Add the creator to the list if something went wrong on the altar check.
+			if (!this.Creators.Contains(creature.EntityId))
+				this.Creators.Add(creature.EntityId);
+
 			// Get script
 			this.Script = ChannelServer.Instance.ScriptManager.DungeonScripts.Get(this.Name);
 			if (this.Script == null)

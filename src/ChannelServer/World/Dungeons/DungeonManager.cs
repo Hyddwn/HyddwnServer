@@ -317,6 +317,11 @@ namespace Aura.Channel.World.Dungeons
 
 					// Warp the party currently standing on the altar into the dungeon.
 					var party = creature.Party.GetCreaturesOnAltar(creature.RegionId);
+
+					// Add creature to list in case something went wrong.
+					if (party.Count == 0)
+						party.Add(creature);
+
 					foreach (var member in party)
 					{
 						var pos = member.GetPosition();
