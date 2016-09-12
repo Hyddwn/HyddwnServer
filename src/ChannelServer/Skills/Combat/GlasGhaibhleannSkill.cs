@@ -137,7 +137,7 @@ namespace Aura.Channel.Skills.Combat
 
 			// Attack targets
 			var targets = attacker.Region.GetCreaturesInPolygon(p1, p2, p3, p4);
-			foreach (var target in targets.Where(cr => !cr.IsDead && !cr.Has(CreatureStates.NamedNpc)))
+			foreach (var target in targets.Where(cr => !cr.IsDead && (!cr.Has(CreatureStates.Npc) || cr == attacker.Target)))
 			{
 				var targetPosition = target.GetPosition();
 
