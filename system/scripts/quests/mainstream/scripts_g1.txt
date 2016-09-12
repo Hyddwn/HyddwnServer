@@ -30,3 +30,5 @@ g1/023_kristells_request.cs
 g1/024_the_seal_breaker_of_another_world.cs
 g1/025_bind_magic.cs
 g1/026_collecting_pieces_of_black_orb.cs
+g1/027_black_orb_dungeon.cs
+g1/028_glas_ghaibhleann.cs

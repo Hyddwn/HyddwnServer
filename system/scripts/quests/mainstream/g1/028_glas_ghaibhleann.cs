@@ -11,7 +11,7 @@
 // - Instruction: Defeat Glas Ghaibhleann.
 //---------------------------------------------------------------------------
 
-public class BindMagicQuest : QuestScript
+public class GlasGhaibhleannQuest : GeneralScript
 {
 	private const int PendantOfTheGoddess = 73026;
 	private const int PendantOfTheGoddessBind = 73029;
@@ -21,7 +21,7 @@ public class BindMagicQuest : QuestScript
 		AddHook("_dougal", "before_keywords", DougalBeforeKeywords);
 	}
 
-	public async Task<HookResult> DougalAfterIntro(NpcScript npc, params object[] args)
+	public async Task<HookResult> DougalBeforeKeywords(NpcScript npc, params object[] args)
 	{
 		var keyword = args[0] as string;
 
