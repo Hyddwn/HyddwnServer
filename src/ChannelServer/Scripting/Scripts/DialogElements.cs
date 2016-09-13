@@ -38,6 +38,26 @@ namespace Aura.Channel.Scripting.Scripts
 			return this;
 		}
 
+		public DialogElement Insert(int index, params DialogElement[] elements)
+		{
+			index = Math2.Clamp(0, this.Children.Count, index);
+
+			this.Children.InsertRange(index, elements);
+
+			return this;
+		}
+
+		public DialogElement Replace(int index, params DialogElement[] elements)
+		{
+			index = Math2.Clamp(0, this.Children.Count, index);
+
+			if (this.Children.Count != 0)
+				this.Children.RemoveAt(index);
+			this.Children.InsertRange(index, elements);
+
+			return this;
+		}
+
 		public virtual void Render(ref StringBuilder sb)
 		{
 			foreach (var child in Children)
