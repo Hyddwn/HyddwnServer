@@ -107,6 +107,14 @@ namespace Aura.Channel.Skills.Combat
 			var rank = DefaultMsgRank;
 			var rnd = RandomProvider.Get();
 
+			// Dark Lord is immune to melee and magic damage,
+			// like a R1 passive defense, but he doesn't ping.
+			if (target.HasTag("/darklord/") && !target.HasTag("/darklord/darklord2/"))
+			{
+				damage = 1;
+				return false;
+			}
+
 			// Check skills
 			for (int i = 0; i < Skills.Length; ++i)
 			{
