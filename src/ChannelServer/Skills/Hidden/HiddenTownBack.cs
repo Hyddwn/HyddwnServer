@@ -56,7 +56,7 @@ namespace Aura.Channel.Skills.Hidden
 			{
 				// Try to warp and remove item if successful
 				if (Warp(creature, item))
-					creature.Inventory.Remove(item);
+					creature.Inventory.Decrement(item);
 			});
 
 			Send.SkillUse(creature, skill.Info.Id, itemEntityId, unkByte, "");
