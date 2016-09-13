@@ -401,7 +401,12 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.ConditionUpdate, creature.EntityId);
 			packet.AddConditions(creature.Conditions);
 
-			creature.Region.Broadcast(packet, creature);
+			// Send to region if it's not limbo, or at least to the
+			// creature if it is, to update the client.
+			if (creature.Region != Region.Limbo)
+				creature.Region.Broadcast(packet, creature);
+			else
+				creature.Client.Send(packet);
 		}
 
 		/// <summary>
