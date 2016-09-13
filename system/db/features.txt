@@ -414,6 +414,9 @@
 			
 			// Lowers the difficulty of some enemies, like Dark Lord.
 			{ name: "EasierEnemiesChapter1", enabled: true },
+			
+			// Decreases the waiting time for some quests.
+			{ name: "ShorterWaitTimesChapter1", enabled: true },
 		]},
 	]},
 	

@@ -11,7 +11,6 @@ public class ThePendantFromGoddessQuest : QuestScript
 {
 	private const int Pendant = 73026;
 	private const int Torque = 73005;
-	private const int OwlDelay = 36 * 60;
 
 	public override void Load()
 	{
@@ -64,7 +63,11 @@ public class ThePendantFromGoddessQuest : QuestScript
 		}
 		else if (keyword == "g1_request_from_goddess")
 		{
-			npc.SendOwl(this.Id, OwlDelay);
+			var owlDelay = 36 * 60; // 1 Erinn day
+			if (IsEnabled("ShorterWaitTimesChapter1"))
+				owlDelay = 4 * 60;
+
+			npc.SendOwl(this.Id, owlDelay);
 
 			npc.RemoveKeyword("g1_32");
 			npc.GiveKeyword("g1_33");
