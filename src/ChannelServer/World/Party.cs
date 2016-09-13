@@ -657,16 +657,6 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns a list of all members in the same region as the specified creature.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <returns></returns>
-		public List<Creature> GetMembersInRegion(Creature creature)
-		{
-			return this.GetMembersInRange(creature, 0);
-		}
-
-		/// <summary>
 		/// Returns a list of all members in the region specified.
 		/// </summary>
 		/// <param name="regionId"></param>
