@@ -44,7 +44,7 @@ namespace Aura.Channel.Skills
 			if (defense)
 				damage = Math.Max(1, damage - target.MagicDefense);
 			if (protection && damage > 1)
-				damage = Math.Max(1, damage - (damage * target.MagicProtection));
+				damage = Math.Max(1, damage - (damage / 100 * target.MagicProtection));
 		}
 
 		/// <summary>
