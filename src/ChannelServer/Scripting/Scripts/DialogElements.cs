@@ -305,7 +305,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 		public override void Render(ref StringBuilder sb)
 		{
-			sb.AppendFormat("<inputbox title='{0}' caption='{1}' max_len='{2}' allow_cancel='{3}' />", this.Title, this.Text, this.MaxLength, this.Cancelable);
+			sb.AppendFormat("<inputbox title='{0}' caption='{1}' max_len='{2}' allow_cancel='{3}' />", this.Title, this.Text, this.MaxLength, this.Cancelable.ToString().ToLower());
 
 			base.Render(ref sb);
 		}
@@ -369,7 +369,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 		public override void Render(ref StringBuilder sb)
 		{
-			sb.AppendFormat("<movie name='{0}' width='{1}' height='{2}' loop='{3}' />", this.File, this.Width, this.Height, this.Loop);
+			sb.AppendFormat("<movie name='{0}' width='{1}' height='{2}' loop='{3}' />", this.File, this.Width, this.Height, this.Loop.ToString().ToLower());
 		}
 	}
 
@@ -391,7 +391,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 		public override void Render(ref StringBuilder sb)
 		{
-			sb.AppendFormat("<openminimap zoom='{0}' max_size='{1}' center='{2}' />", this.Zoom, this.MaxSize, this.Center);
+			sb.AppendFormat("<openminimap zoom='{0}' max_size='{1}' center='{2}' />", this.Zoom.ToString().ToLower(), this.MaxSize.ToString().ToLower(), this.Center.ToString().ToLower());
 		}
 	}
 
