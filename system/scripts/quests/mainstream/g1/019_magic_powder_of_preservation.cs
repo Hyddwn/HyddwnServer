@@ -31,6 +31,7 @@ public class MagicPowderOfPreservationQuest : QuestScript
 		AddReward(WarpScroll(63009, "rabbie_dungeon"));
 
 		AddHook("_tarlach", "after_intro", TarlachAfterIntro);
+		AddHook("_tarlach", "before_keywords", TarlachBeforeKeywords);
 	}
 
 	public async Task<HookResult> TarlachAfterIntro(NpcScript npc, params object[] args)
@@ -49,6 +50,23 @@ public class MagicPowderOfPreservationQuest : QuestScript
 			npc.Msg(L("I will now cast a magic spell on the item with the magic powder of preservation."));
 			npc.Msg(L("...And this is the Red Wing of the Goddess<br/>which will take you to the Rabbie Dungeon...<br/>Go to Rabbie Dungeon and put these glasses on the altar."));
 			npc.Msg(L("Then... you will know about...<br/>my anger toward the Goddess and evil spirits..."));
+
+			return HookResult.Break;
+		}
+
+		return HookResult.Continue;
+	}
+
+	public async Task<HookResult> TarlachBeforeKeywords(NpcScript npc, params object[] args)
+	{
+		var keyword = args[0] as string;
+
+		if (keyword == "g1_bone_of_glasgavelen" && npc.HasKeyword("g1_29"))
+		{
+			if (!npc.HasItem(Glasses))
+				npc.GiveItem(Glasses);
+
+			npc.Msg(L("Go to Rabbie Dungeon and put the glasses on the altar.<br/>Then... you will know about...<br/>my anger toward the Goddess and evil spirits..."));
 
 			return HookResult.Break;
 		}
