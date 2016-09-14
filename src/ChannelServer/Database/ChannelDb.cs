@@ -1017,7 +1017,6 @@ namespace Aura.Channel.Database
 		private void SaveBankItems(Account account)
 		{
 			using (var conn = this.Connection)
-			using (var cmd = new UpdateCommand("UPDATE `accounts` SET {0} WHERE `accountId` = @accountId", conn))
 			{
 				// Save bank items
 				foreach (var tab in account.Bank.GetTabList())
