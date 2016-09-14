@@ -207,36 +207,36 @@ namespace Aura.Mabi
 		/// <summary>
 		/// Sunday
 		/// </summary>
-		public const int Imbolic = 0;
+		public const int Imbolic = 1;
 
 		/// <summary>
 		/// Monday
 		/// </summary>
-		public const int AlbanEiler = 1;
+		public const int AlbanEiler = 2;
 
 		/// <summary>
 		/// Tuesday
 		/// </summary>
-		public const int Baltane = 2;
+		public const int Baltane = 3;
 
 		/// <summary>
 		/// Wednesday
 		/// </summary>
-		public const int AlbanHeruin = 3;
+		public const int AlbanHeruin = 4;
 
 		/// <summary>
 		/// Thursday
 		/// </summary>
-		public const int Lughnasadh = 4;
+		public const int Lughnasadh = 5;
 
 		/// <summary>
 		/// Friday
 		/// </summary>
-		public const int AlbanElved = 5;
+		public const int AlbanElved = 6;
 
 		/// <summary>
 		/// Saturday
 		/// </summary>
-		public const int Samhain = 6;
+		public const int Samhain = 7;
 	}
 }
