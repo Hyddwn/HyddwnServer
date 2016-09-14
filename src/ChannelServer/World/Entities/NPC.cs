@@ -201,6 +201,10 @@ namespace Aura.Channel.World.Entities
 				var item = new Item(itemData.ItemId);
 				item.Info.State = (byte)itemData.State;
 
+				item.Info.Amount = (ushort)itemData.Amount;
+				if (item.Data.StackType != StackType.Sac && item.Info.Amount < 1)
+					item.Info.Amount = 1;
+
 				if (itemData.HasColors)
 				{
 					item.Info.Color1 = itemData.Color1;

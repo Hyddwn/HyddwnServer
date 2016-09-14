@@ -61,6 +61,7 @@ namespace Aura.Data.Database
 	{
 		public int ItemId { get; set; }
 		public Pocket Pocket { get; set; }
+		public int Amount { get; set; }
 		public uint Color1 { get; set; }
 		public uint Color2 { get; set; }
 		public uint Color3 { get; set; }
@@ -134,6 +135,7 @@ namespace Aura.Data.Database
 
 					itemData.ItemId = itemEntry.ReadInt("itemId");
 					itemData.Pocket = (Pocket)itemEntry.ReadInt("pocket");
+					itemData.Amount = itemEntry.ReadInt("amount");
 					itemData.HasColors = itemEntry.ContainsAnyKeys("color1", "color2", "color3");
 					if (itemData.HasColors)
 					{
