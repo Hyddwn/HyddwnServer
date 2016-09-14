@@ -412,7 +412,7 @@
 			// Kill only one zombie to revive in TNN.
 			{ name: "EasyBinding2", enabled: true },
 			
-			// Lowers the difficulty of some enemies, like Dark Lord.
+			// Lowers the difficulty of some enemies.
 			{ name: "EasierEnemiesChapter1", enabled: true },
 			
 			// Decreases the waiting time for some quests.
