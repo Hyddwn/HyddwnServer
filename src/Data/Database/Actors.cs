@@ -30,6 +30,20 @@ namespace Aura.Data.Database
 		public uint Color2 { get; set; }
 		public uint Color3 { get; set; }
 		public bool HasColors { get; set; }
+
+		public int Title { get; set; }
+		public int Age { get; set; }
+		public int Level { get; set; }
+		public int AP { get; set; }
+		public float Life { get; set; }
+		public float Mana { get; set; }
+		public float Stamina { get; set; }
+		public float Str { get; set; }
+		public float Int { get; set; }
+		public float Dex { get; set; }
+		public float Will { get; set; }
+		public float Luck { get; set; }
+
 		public List<ActorItemData> Items { get; set; }
 		public List<ActorSkillData> Skills { get; set; }
 
@@ -96,6 +110,19 @@ namespace Aura.Data.Database
 				data.Color2 = entry.ReadUInt("color2");
 				data.Color3 = entry.ReadUInt("color3");
 			}
+
+			data.Title = entry.ReadInt("title");
+			data.Age = Math.Max(1, entry.ReadInt("age"));
+			data.Level = Math.Max(1, entry.ReadInt("level"));
+			data.AP = entry.ReadInt("ap");
+			data.Life = Math.Max(1, entry.ReadFloat("life"));
+			data.Mana = Math.Max(1, entry.ReadFloat("mana"));
+			data.Stamina = Math.Max(1, entry.ReadFloat("stamina"));
+			data.Str = Math.Max(1, entry.ReadFloat("str"));
+			data.Int = Math.Max(1, entry.ReadFloat("int"));
+			data.Dex = Math.Max(1, entry.ReadFloat("dex"));
+			data.Will = Math.Max(1, entry.ReadFloat("will"));
+			data.Luck = Math.Max(1, entry.ReadFloat("luck"));
 
 			if (entry.ContainsKey("items"))
 			{
