@@ -384,6 +384,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 			// Reset on...
 			if (this.Creature.Target.IsDead																 // target dead
+			|| this.Creature.Region == Region.Limbo                                                      // invalid region (e.g. unsummoned pet)
 			|| !this.Creature.GetPosition().InRange(this.Creature.Target.GetPosition(), _aggroMaxRadius) // out of aggro range
 			|| this.Creature.Target.Warping																 // target is warping
 			|| this.Creature.Target.Client.State == ClientState.Dead									 // target disconnected
@@ -1374,6 +1375,12 @@ namespace Aura.Channel.Scripting.Scripts
 					this.ExecuteOnce(this.RunTo(targetPos));
 
 					yield return true;
+				}
+				else if (result == CombatSkillResult.InvalidTarget)
+				{
+					// Reset if target couldn't be found.
+					this.Reset();
+					yield break;
 				}
 				else
 				{
