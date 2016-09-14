@@ -31,6 +31,7 @@ namespace Aura.Data.Database
 		public uint Color3 { get; set; }
 		public bool HasColors { get; set; }
 		public List<ActorItemData> Items { get; set; }
+		public List<ActorSkillData> Skills { get; set; }
 
 		public ActorData()
 		{
@@ -38,6 +39,7 @@ namespace Aura.Data.Database
 			this.Color2 = 0x808080;
 			this.Color3 = 0x808080;
 			this.Items = new List<ActorItemData>();
+			this.Skills = new List<ActorSkillData>();
 		}
 	}
 
@@ -57,6 +59,12 @@ namespace Aura.Data.Database
 			this.Color2 = 0x808080;
 			this.Color3 = 0x808080;
 		}
+	}
+
+	public class ActorSkillData
+	{
+		public SkillId SkillId { get; set; }
+		public SkillRank Rank { get; set; }
 	}
 
 	public class ActorDb : DatabaseJsonIndexed<string, ActorData>
@@ -109,6 +117,23 @@ namespace Aura.Data.Database
 					itemData.State = itemEntry.ReadInt("state");
 
 					data.Items.Add(itemData);
+				}
+			}
+
+			if (entry.ContainsKey("skills"))
+			{
+				foreach (JObject skillEntry in entry["skills"])
+				{
+					skillEntry.AssertNotMissing("skillId", "rank");
+
+					var skillData = new ActorSkillData();
+
+					skillData.SkillId = (SkillId)skillEntry.ReadInt("skillId");
+
+					var rank = skillEntry.ReadString("rank");
+					skillData.Rank = (SkillRank)(rank == "N" ? 0 : 16 - Convert.ToInt32(rank, 16));
+
+					data.Skills.Add(skillData);
 				}
 			}
 
