@@ -998,6 +998,31 @@ namespace Aura.Channel.Database
 				this.SaveCharacter(character, account);
 			foreach (var pet in account.Pets.Where(a => a.Save))
 				this.SaveCharacter(pet, account);
+
+			// Save bank items
+			// On SaveCharacter all items of a creature, in bank or inventory,
+			// are deleted from the database. Afterwards all inventory items
+			// are added again. Once that's done we have to write all bank
+			// items to the database.
+			// TODO: Make this more elegant. Dedicated item database,
+			//   linking from inventory and bank tables, BankItem class,
+			//   dedicated loading and saving, etc.
+			this.SaveBankItems(account);
+		}
+
+		/// <summary>
+		/// Saves all items in account's bank inventory.
+		/// </summary>
+		/// <param name="account"></param>
+		private void SaveBankItems(Account account)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `accounts` SET {0} WHERE `accountId` = @accountId", conn))
+			{
+				// Save bank items
+				foreach (var tab in account.Bank.GetTabList())
+					SaveItems(tab.CreatureId, tab.GetItemList(), conn, null);
+			}
 		}
 
 		/// <summary>
@@ -1173,22 +1198,12 @@ namespace Aura.Channel.Database
 			using (var conn = this.Connection)
 			using (var transaction = conn.BeginTransaction())
 			{
-				// Delete all items belonging to the character and
-				// any items in the bank belonging to the account.
-				// When saving, we will save all items belonging to
-				// the character and all items in the bank.
-				var query = "DELETE `items` FROM `characters` JOIN `items` ON `characters`.`creatureId` = `items`.`creatureId` " +
-							"WHERE `items`.`creatureId` = @creatureId OR (`accountId` = @accountId AND `bank` != '')";
-				using (var mc = new MySqlCommand(query, conn, transaction))
+				using (var mc = new MySqlCommand("DELETE FROM `items` WHERE `creatureId` = @creatureId", conn, transaction))
 				{
 					mc.Parameters.AddWithValue("@creatureId", creature.CreatureId);
 					mc.Parameters.AddWithValue("@accountId", accountId);
 					mc.ExecuteNonQuery();
 				}
-
-				// Save bank items
-				foreach (var tab in creature.Client.Account.Bank.GetTabList())
-					SaveItems(tab.CreatureId, tab.GetItemList(), conn, transaction);
 
 				// Save inventory items
 				var items = creature.Inventory.GetItems();
