@@ -49,6 +49,7 @@ namespace Aura.Data.Database
 		public uint Color2 { get; set; }
 		public uint Color3 { get; set; }
 		public bool HasColors { get; set; }
+		public int State { get; set; }
 
 		public ActorItemData()
 		{
@@ -105,6 +106,7 @@ namespace Aura.Data.Database
 						itemData.Color2 = itemEntry.ReadUInt("color2");
 						itemData.Color3 = itemEntry.ReadUInt("color3");
 					}
+					itemData.State = itemEntry.ReadInt("state");
 
 					data.Items.Add(itemData);
 				}
