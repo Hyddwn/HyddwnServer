@@ -473,8 +473,9 @@ public class EdernShop : NpcShopScript
 
 			var item = Item.CreateEnchanted(itemId, Prefix, suffixId);
 			var price = (item.OptionInfo.Price * priceMultiplier);
+			var stock = rnd.Next(1, 4);
 
-			Add("Advanced Weapon", item, price);
+			Add("Advanced Weapon", item, price, stock);
 		}
 	}
 }

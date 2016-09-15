@@ -372,6 +372,11 @@ namespace Aura.Channel.World.Entities
 		public int PersonalShopPrice { get; set; }
 
 		/// <summary>
+		/// Amount of times the item can be bought from an NPC shop.
+		/// </summary>
+		public int Stock { get; set; }
+
+		/// <summary>
 		/// New item based on item id.
 		/// </summary>
 		/// <param name="itemId"></param>
