@@ -58,4 +58,5 @@
 { itemId: 50936, name: "Tropical Beach Umbrella", propId: 45519, giantPropId: 45519 },
 { itemId: 50937, name: "Tropical Pineapple Drink Stand", propId: 45524, giantPropId: 45524 },
 { itemId: 50938, name: "Tropical Pineapple Beach Tube", propId: 45523, giantPropId: 45523 },
+{ itemId: 50939, name: "Pink Bean Chair", propId: 45572, giantPropId: 45571 },
 ]
