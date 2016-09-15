@@ -223,7 +223,7 @@ namespace Aura.Channel.Scripting.Scripts
 				price = item.Data.Price;
 
 			// Set stock to given amount or unlimited
-			item.Stock = (stock == 0 ? -1 : stock);
+			item.Stock = (stock <= 0 ? -1 : stock);
 
 			// Set the price we need
 			switch (tab.PaymentMethod)
@@ -494,7 +494,7 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 
 				// Reduce stock
-				if (item.Stock != -1)
+				if (item.Stock > 0)
 				{
 					// Don't let it go below 0, that would mean unlimited.
 					item.Stock = Math.Max(0, item.Stock - 1);
