@@ -1181,7 +1181,7 @@ namespace Aura.Channel.Network.Handlers
 			var collected = collectionList.Count(a => a == '1');
 			if (collected >= max)
 			{
-				Send.MsgBox(creature, Localization.Get("The collection bool is complete."));
+				Send.MsgBox(creature, Localization.Get("The collection book is complete."));
 				Send.CollectionAddItemR(creature, false);
 				return;
 			}
