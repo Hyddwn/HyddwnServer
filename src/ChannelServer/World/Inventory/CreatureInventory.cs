@@ -832,6 +832,7 @@ namespace Aura.Channel.World.Inventory
 					// Left overs, update
 					if (newItem.Info.Amount > 0)
 					{
+						item.Info.Amount = newItem.Info.Amount;
 						Send.ItemAmount(_creature, item);
 					}
 					// All in, remove from cursor.
