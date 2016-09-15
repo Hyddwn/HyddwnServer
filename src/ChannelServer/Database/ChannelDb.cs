@@ -1017,10 +1017,22 @@ namespace Aura.Channel.Database
 		private void SaveBankItems(Account account)
 		{
 			using (var conn = this.Connection)
+			using (var transaction = conn.BeginTransaction())
 			{
 				// Save bank items
 				foreach (var tab in account.Bank.GetTabList())
-					SaveItems(tab.CreatureId, tab.GetItemList(), conn, null);
+				{
+					using (var mc = new MySqlCommand("DELETE FROM `items` WHERE `creatureId` = @creatureId AND `bank` != ''", conn, transaction))
+					{
+						mc.Parameters.AddWithValue("@creatureId", tab.CreatureId);
+						mc.Parameters.AddWithValue("@accountId", account.Id);
+						mc.ExecuteNonQuery();
+					}
+
+					SaveItems(tab.CreatureId, tab.GetItemList(), conn, transaction);
+				}
+
+				transaction.Commit();
 			}
 		}
 
