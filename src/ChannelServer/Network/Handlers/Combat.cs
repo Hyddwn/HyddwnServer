@@ -119,7 +119,14 @@ namespace Aura.Channel.Network.Handlers
 					Log.Info("CombatAttack: Non-empty string, please report this message to the development team. String: " + unkString);
 			}
 
-			var creature = client.GetCreatureSafe(packet.Id);
+			var creature = client.GetCreature(packet.Id);
+
+			// Despawning a pet while it's attacking can make the client
+			// send another attack packet while the creature has already
+			// been removed on the server. Using GetCreatureSafe can
+			// kick players.
+			if (creature == null)
+				return;
 
 			// Check lock
 			if (!creature.Can(Locks.Attack))
