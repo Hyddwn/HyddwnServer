@@ -1140,5 +1140,70 @@ namespace Aura.Channel.Network.Handlers
 				this.Name = name;
 			}
 		}
+
+		static int x = 0;
+
+		/// <summary>
+		/// Sent when trying to add an item to a collection book.
+		/// </summary>
+		/// <example>
+		/// 001 [0050F0000000063B] Long   : 22781880927520315
+		/// 002 [0050F0000000063C] Long   : 22781880927520316
+		/// </example>
+		[PacketHandler(Op.CollectionAddItem)]
+		public void CollectionAddItem(ChannelClient client, Packet packet)
+		{
+			var bookEntityId = packet.GetLong();
+			var itemEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var book = creature.Inventory.GetItemSafe(bookEntityId);
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+			var max = book.Data.CollectionMax;
+
+			// Check book
+			if (book.Data.CollectionMax == 0)
+			{
+				Log.Warning("CollectionAddItem: User '{0}' tried to add an item to an item that wasn't a collection book ({1}).", client.Account.Id, book.Info.Id);
+				Send.CollectionAddItemR(creature, false);
+				return;
+			}
+
+			// Check item
+			// Get collection data...
+			// Check item...
+			// Get item index...
+			Log.Debug(x);
+			var itemIndex = x++;
+			var itemBit = (ulong)(1 << itemIndex);
+
+			// Check collection
+			var collectionList = book.GetCollectionList();
+			var collected = collectionList.Count(a => a == '1');
+			if (collected >= max)
+			{
+				Send.MsgBox(creature, Localization.Get("The collection bool is complete."));
+				Send.CollectionAddItemR(creature, false);
+				return;
+			}
+
+			if (collectionList[itemIndex] == '1')
+			{
+				Send.MsgBox(creature, Localization.Get("This item has already been added to the collection book."));
+				Send.CollectionAddItemR(creature, false);
+				return;
+			}
+
+			// Add to collection
+			collectionList[itemIndex] = '1';
+
+			// Update items
+			creature.Inventory.Remove(item);
+			book.SetCollectionList(collectionList);
+			Send.ItemUpdate(creature, book);
+
+			// Response
+			Send.CollectionAddItemR(creature, true);
+		}
 	}
 }
