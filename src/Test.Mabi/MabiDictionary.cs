@@ -22,17 +22,18 @@ namespace Aura.Tests.Mabi
 			test.SetInt("an int", 3);
 			test.SetFloat("a float", 4);
 			test.SetString("a string", "five, special chars :;");
+			test.SetBin("a byte array", Encoding.ASCII.GetBytes("abc"));
 
 			var test2 = test.ToString();
 
-			Assert.Equal("a bool:b:1;a byte:1:1;a short:2:2;an int:4:3;a float:f:4;a string:s:five, special chars %C%S;", test2);
+			Assert.Equal("a bool:b:1;a byte:1:1;a short:2:2;an int:4:3;a float:f:4;a string:s:five, special chars %C%S;a byte array:B:YWJj;", test2);
 		}
 
 		[Fact]
 		public void Deserialize()
 		{
 			var test = new MabiDictionary();
-			test.Parse("a bool:b:1;a byte:1:1;a short:2:2;an int:4:3;a float:f:4;a string:s:five, special chars %C%S;");
+			test.Parse("a bool:b:1;a byte:1:1;a short:2:2;an int:4:3;a float:f:4;a string:s:five, special chars %C%S;a byte array:B:YWJj;");
 
 			Assert.Equal(true, test.GetBool("a bool"));
 			Assert.Equal(1, test.GetByte("a byte"));
@@ -40,6 +41,7 @@ namespace Aura.Tests.Mabi
 			Assert.Equal(3, test.GetInt("an int"));
 			Assert.Equal(4, test.GetFloat("a float"));
 			Assert.Equal("five, special chars :;", test.GetString("a string"));
+			Assert.Equal(Encoding.ASCII.GetBytes("abc"), test.GetBin("a byte array"));
 		}
 	}
 }
