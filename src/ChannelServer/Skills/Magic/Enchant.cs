@@ -152,6 +152,18 @@ namespace Aura.Channel.Skills.Magic
 				}
 			}
 
+			// Check expiration
+			var checkExpiration = (optionSetData.Type == UpgradeType.Prefix ? "XPRPFX" : "XPRSFX");
+			if (enchant.MetaData1.Has(checkExpiration))
+			{
+				var expiration = enchant.MetaData1.GetDateTime(checkExpiration);
+				if (DateTime.Now > expiration)
+				{
+					Send.MsgBox(creature, Localization.Get("No enchantment options available.\nThis scroll is expired."));
+					return false;
+				}
+			}
+
 			// Save items for Complete
 			creature.Temp.SkillItem1 = item;
 			creature.Temp.SkillItem2 = enchant;
