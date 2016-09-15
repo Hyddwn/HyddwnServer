@@ -1175,7 +1175,6 @@ namespace Aura.Channel.Network.Handlers
 			// Get item index...
 			Log.Debug(x);
 			var itemIndex = x++;
-			var itemBit = (ulong)(1 << itemIndex);
 
 			// Check collection
 			var collectionList = book.GetCollectionList();
