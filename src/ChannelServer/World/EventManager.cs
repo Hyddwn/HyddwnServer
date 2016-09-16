@@ -294,15 +294,6 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Raises event with thread and null-ref safety.
 		/// </summary>
-		public static void Raise<T>(this EventHandler<T> handler, object sender, T args) where T : EventArgs
-		{
-			if (handler != null)
-				handler(sender, args);
-		}
-
-		/// <summary>
-		/// Raises event with thread and null-ref safety.
-		/// </summary>
 		public static void Raise<T>(this Action<T> handler, T args)
 		{
 			if (handler != null)
