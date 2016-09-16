@@ -509,7 +509,8 @@ public abstract class SimonTailorPtjBaseScript : QuestScript
 
 						AddReward(10, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40025)); // Collecting Quest - Deliver 1 Mongo Hat
 
-						AddReward(11, RewardGroupType.Item, QuestResult.Perfect, Item(1501)); // Collection Book - Fashion Item - Hat
+						if (IsEnabled("CollectionBooks"))
+							AddReward(11, RewardGroupType.Item, QuestResult.Perfect, Item(1501)); // Collection Book - Fashion Item - Hat
 						return;
 
 					case 4:
@@ -547,7 +548,8 @@ public abstract class SimonTailorPtjBaseScript : QuestScript
 
 						AddReward(10, RewardGroupType.Scroll, QuestResult.Perfect, QuestScroll(40025)); // Collecting Quest - Deliver 1 Mongo Hat
 
-						AddReward(11, RewardGroupType.Item, QuestResult.Perfect, Item(1501)); // Collection Book - Fashion Item - Hat
+						if (IsEnabled("CollectionBooks"))
+							AddReward(11, RewardGroupType.Item, QuestResult.Perfect, Item(1501)); // Collection Book - Fashion Item - Hat
 						return;
 
 					default:
