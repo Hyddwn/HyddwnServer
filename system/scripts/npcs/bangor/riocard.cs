@@ -14,6 +14,7 @@ public class RiocardScript : NpcScript
 		SetFace(skinColor: 20, eyeType: 2, eyeColor: 60, mouthType: 1);
 		SetStand("human/male/anim/male_natural_stand_npc_riocard");
 		SetLocation(31, 15286, 8898, 136);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 4900, 0x009BD3A3, 0x00FFC43A, 0x00496C7C);
 		EquipItem(Pocket.Hair, 4001, 0x00AF7B34, 0x00AF7B34, 0x00AF7B34);
@@ -36,12 +37,7 @@ public class RiocardScript : NpcScript
 	{
 		SetBgm("NPC_Riocard.mp3");
 
-		await Intro(
-			"He wears a yellow beret backwards at a slight angle as his hair sticks out on the sides.",
-			"The yellow shirt that he seemed to have put on in a rush matches his hat.",
-			"Between the narrow shoulders, his face is still full of boyish charm.",
-			"Every time he blinks, his eyelid casts a slight shadow over his innocent, light green eyes."
-		);
+		await Intro(L("He wears a yellow beret backwards at a slight angle as his hair sticks out on the sides.<br/>The yellow shirt that he seemed to have put on in a rush matches his hat.<br/>Between the narrow shoulders, his face is still full of boyish charm.<br/>Every time he blinks, his eyelid casts a slight shadow over his innocent, light green eyes."));
 
 		Msg("Mmm? What is it?", Button("Start Conversation", "@talk"));
 
@@ -50,8 +46,19 @@ public class RiocardScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("Wow... You rescued a goddess....?<br/>Morrighan, the Goddess?<br/>You... <username/>?");
+					Msg("...Haha.  You expect me to believe this?<br/>It seems a bit far fetched don't you think?");
+					Msg("I mean, don't get me wrong.<br/>I just thought a hero has a little something, I don't know, a je ne sais quois, that others don't...");
+					Msg("...Anyway, congratulations!<br/>If ever there's a lot of people gathered around the Pub,<br/>you should share your story.");
+				}
+				if (Title == 11002)
+				{
 					Msg("Wow, <username/>, your fame reaches the heavens.<br/>But, I bet the burden on your shoulders<br/>is quite heavy as well...");
+				}
+
 				await Conversation();
 				break;
 		}
@@ -71,15 +78,15 @@ public class RiocardScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Your name was... <username/>, right? Heh... I remember you."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Hey, it's you, <username/>. I hope you have a great time today as well."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I see you often. You might be paying all of our bills here, <username/>. Haha..."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -90,15 +97,15 @@ public class RiocardScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "My name is Riocard. Rio. Card.<br/>I work here.");
+				Msg(FavorExpression(), "My name is <npcname/>. Rio. Card.<br/>I work here.");
 				Msg("If you ever need anything,<br/>please don't hesitate to call me.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "That lady over there by the bar?<br/>That's my boss, Jennifer.");
 				Msg("She's still single because<br/>her nasty personality keeps all men away. Haha...<br/>Don't tell her I said that!");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -272,6 +279,38 @@ public class RiocardScript : NpcScript
 				Msg("Hey! That's no fun!");
 				break;
 
+			case "bow":
+				Msg("You can pick bows according to your preference.<br/>If you want something that's easy to carry yet powerful, and if you don't care<br/>about its look, A Composite Bow is a good choice.");
+				Msg("If you want something that looks good, Long Bows for sure! Haha...<br/>Whether it's on your back or in your hands, they look pretty cool.");
+				Msg("If you don't have a lot money...you can just buy the bow for now...without arrows.");
+				break;
+
+			case "lute":
+				Msg("You can buy Lutes at Gilmore's<br/>General Shop over there.");
+				Msg("But honestly, the quality is not that great,<br/>but that's just about all<br/>you can get your hands on in this town.");
+				break;
+
+			case "complicity":
+				Msg("Let me guess. Jennifer told you this? *Sigh*");
+				Msg("...My goodness...");
+				break;
+
+			case "tir_na_nog":
+				Msg("It's an old story that has been passed down for generations.<br/>I heard it's a paradise land where gods live?  Or something like that.");
+				Msg("...I wish I could go there...");
+				Msg("I wonder if Jennifer would get mad at me if I suggest we go together.");
+				break;
+
+			case "mabinogi":
+				Msg("Ooh! I love stories like that!<br/>Do you know any?");
+				Msg("...<br/>What, you don't know anything?<br/>Why'd you bring it up then...?");
+				break;
+
+			case "musicsheet":
+				Msg("You don't need a score to play music, but<br/>it probably makes it a littler easier to play more complex tunes.");
+				Msg("You don't have to memorize all the songs to play them.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"Why do you keep bringing that up...?  Are you teasing me...?",
@@ -280,7 +319,7 @@ public class RiocardScript : NpcScript
 					"Did Jennifer send you to ask me these questions...? Jennifer always gives me a hard time.",
 					"Hmm. I don't really know anything about that topic. I think I could learn a lot from you."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
