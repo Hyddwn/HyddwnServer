@@ -20,6 +20,7 @@ public class SionScript : NpcScript
 		SetFace(skinColor: 17, eyeType: 2, eyeColor: 27, mouthType: 3);
 		SetStand("human/anim/tool/Rhand_A/female_tool_Rhand_A02_stand_friendly");
 		SetLocation(31, 12093, 15062, 184);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 4900, 0x00531B77, 0x007C4D8F, 0x00804A9D);
 		EquipItem(Pocket.Hair, 4008, 0x002E4830, 0x002E4830, 0x002E4830);
@@ -41,6 +42,8 @@ public class SionScript : NpcScript
 		AddPhrase("To fire up the furnace, come talk to me!");
 		AddPhrase("Why does Bryce not like me?");
 		AddPhrase("You have to pay. You have to pay to activate the switch!");
+		AddPhrase("All right... Here we go.");
+		AddPhrase("I never get tired of watching the Watermill run.");
 
 		InitFurnaces();
 	}
@@ -49,11 +52,7 @@ public class SionScript : NpcScript
 	{
 		SetBgm("NPC_Sion.mp3");
 
-		await Intro(
-			"Wearing a sturdy overall over his pale yellow shirt, this boy has soot and dust all over his face, hands, and clothes.",
-			"His short and stubby fingers are quite calloused, and he repeatedly rubs his hands on the bulging pocket of his pants.",
-			"His dark green hair is so coarse that even his hair band can't keep it neat. But between his messy hair, his brown sparkly eyes shine bright with curiosity."
-		);
+		await Intro(L("Wearing a sturdy overall over his pale yellow shirt, this boy has soot and dust all over his face, hands, and clothes.<br/>His short and stubby fingers are quite calloused, and he repeatedly rubs his hands on the bulging pocket of his pants.<br/>His dark green hair is so coarse that even his hair band can't keep it neat. But between his messy hair, his brown sparkly eyes shine bright with curiosity."));
 
 		Msg("What's up?", Button("Start Conversation", "@talk"), Button("Use a Furnace", "@watermill"), Button("Upgrade Item", "@upgrade"));
 
@@ -62,8 +61,17 @@ public class SionScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("Hey! You're back again. Hehe...<br/>Thanks for delivering daddy's gift the other time.");
+					Msg("Although...I don't think Ibbie likes it all that much...");
+				}
+				if (Title == 11002)
+				{
 					Msg("You're incredible...<br/>but, I'll be happy just being Ibbie's guardian.");
+				}
+
 				await Conversation();
 				break;
 
@@ -143,15 +151,15 @@ public class SionScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Your name is... <username/>, right? I have a pretty decent memory... Hehe."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Oh, hello again, <username/>. It's nice to see you often, but umm..."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Are you having fun handling metal ore...?  I see you here often, <username/>."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -201,9 +209,9 @@ public class SionScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "My name is Sion, hehe.<br/>I manage this awesome water mill.");
+				Msg(FavorExpression(), "My name is <npcname/>, hehe.<br/>I manage this awesome water mill.");
 				Msg("If you want to refine ore, make sure you come talk to me.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
@@ -211,7 +219,7 @@ public class SionScript : NpcScript
 				Msg("So he said the inside still looks like a dungeon.");
 				Msg("What happened was, they found metal ore there<br/>while building a dungeon.<br/>So they stopped the construction<br/>and started to develop the mine.");
 				Msg("Then, they said they kept running into water,<br/>so they built a water mill here...");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "shop_misc":
@@ -340,6 +348,32 @@ public class SionScript : NpcScript
 				Msg("That's a place where people are buried when they die, right?<br/>Hmm... I'm not really scared but<br/>it does creep me out a little bit...");
 				break;
 
+			case "bow":
+				Msg("No way! What are you talking about?<br/>A man should have a pickaxe!");
+				Msg("My dad told me that a pickaxe is much more powerful than a bow!");
+				break;
+
+			case "lute":
+				Msg("I've seen one at Gilmore's shop before.<br/>It's the wooden bowl with a stick and some strings on it, right?");
+				Msg("It amazes me that people can make<br/>music with something like that.  Sometimes people come by and perform here...");
+				break;
+
+			case "tir_na_nog":
+				Msg("Oh yeah, that.<br/>Ibbie told me about it.<br/>Ibbie wants to go there really bad...");
+				Msg("I thought Comgan would know so I asked him once,<br/>but I couldn't really understand what he was saying.");
+				break;
+
+			case "mabinogi":
+				Msg("I've heard stories about the kings of of the past.<br/>You know, like the war between the forces of evil and the heroes...");
+				Msg("But I'm not really interested in those stories...hehe.<br/>In the end, they're about someone else...");
+				break;
+
+			case "musicsheet":
+				Msg("Awesome! I'm actually interested in music, too,<br/>so I've read a music score before.");
+				Msg("But it was too complex and I couldn't really understand anything.<br/>I don't know how people read that thing and play music...");
+				Msg("Perhaps music is only for people born with talent...");
+				break;
+
 			default:
 				RndFavorMsg(
 					"Hmm... I don't really know...",
@@ -348,7 +382,7 @@ public class SionScript : NpcScript
 					"I don't really know anything about that... But please don't tell Ibbie...",
 					"I'm not sure...<br/>I feel really ignorant talking with you, <username/>..."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
