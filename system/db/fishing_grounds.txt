@@ -3,7 +3,7 @@
 // 
 // Values: name, [priority], conditions, items
 // Condition Values: [location], [event], [chance], [rod], [bait]
-// Item Values: itemId, chance, [color1], [color2], [color3]
+// Item Values: itemId, chance, [color1], [color2], [color3], [durability]
 //---------------------------------------------------------------------------
 
 [

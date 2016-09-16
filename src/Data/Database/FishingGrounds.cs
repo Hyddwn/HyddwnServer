@@ -111,6 +111,7 @@ namespace Aura.Data.Database
 				item.ItemId = entryItem.ReadInt("itemId");
 				item.QuestId = entryItem.ReadInt("questId");
 				item.Chance = entryItem.ReadFloat("chance");
+				item.Durability = entryItem.ReadInt("durability", -1);
 
 				if (entryItem.ContainsKey("color1")) item.Color1 = entryItem.ReadUInt("color1");
 				if (entryItem.ContainsKey("color2")) item.Color2 = entryItem.ReadUInt("color2");
