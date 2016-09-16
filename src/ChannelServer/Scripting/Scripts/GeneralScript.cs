@@ -711,7 +711,14 @@ namespace Aura.Channel.Scripting.Scripts
 			Timer timer = null;
 			timer = new Timer(_ =>
 			{
-				action();
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					Log.Exception(ex, "Exception during SetInterval callback in {0}.", this.GetType().Name);
+				}
 				GC.KeepAlive(timer);
 			}
 			, null, ms, Timeout.Infinite);
@@ -730,7 +737,14 @@ namespace Aura.Channel.Scripting.Scripts
 			Timer timer = null;
 			timer = new Timer(_ =>
 			{
-				action();
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					Log.Exception(ex, "Exception during SetInterval callback in {0}.", this.GetType().Name);
+				}
 				GC.KeepAlive(timer);
 			}
 			, null, ms, ms);
