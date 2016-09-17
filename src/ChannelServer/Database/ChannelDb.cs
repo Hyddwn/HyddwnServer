@@ -603,6 +603,17 @@ namespace Aura.Channel.Database
 						skill.Info.ConditionCount7 = reader.GetInt16("condition7");
 						skill.Info.ConditionCount8 = reader.GetInt16("condition8");
 						skill.Info.ConditionCount9 = reader.GetInt16("condition9");
+
+						if (skill.Info.ConditionCount1 < skill.RankData.Conditions[0].Count) skill.Info.Flag |= SkillFlags.ShowCondition1;
+						if (skill.Info.ConditionCount2 < skill.RankData.Conditions[1].Count) skill.Info.Flag |= SkillFlags.ShowCondition2;
+						if (skill.Info.ConditionCount3 < skill.RankData.Conditions[2].Count) skill.Info.Flag |= SkillFlags.ShowCondition3;
+						if (skill.Info.ConditionCount4 < skill.RankData.Conditions[3].Count) skill.Info.Flag |= SkillFlags.ShowCondition4;
+						if (skill.Info.ConditionCount5 < skill.RankData.Conditions[4].Count) skill.Info.Flag |= SkillFlags.ShowCondition5;
+						if (skill.Info.ConditionCount6 < skill.RankData.Conditions[5].Count) skill.Info.Flag |= SkillFlags.ShowCondition6;
+						if (skill.Info.ConditionCount7 < skill.RankData.Conditions[6].Count) skill.Info.Flag |= SkillFlags.ShowCondition7;
+						if (skill.Info.ConditionCount8 < skill.RankData.Conditions[7].Count) skill.Info.Flag |= SkillFlags.ShowCondition8;
+						if (skill.Info.ConditionCount9 < skill.RankData.Conditions[8].Count) skill.Info.Flag |= SkillFlags.ShowCondition9;
+
 						skill.UpdateExperience();
 
 						character.Skills.Add(skill);
