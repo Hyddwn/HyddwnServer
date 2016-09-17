@@ -1,15 +1,18 @@
 //--- Aura Script -----------------------------------------------------------
-// Dungeonwolf AI (Missing Wolf Support)
+// Dungeon Wolf AI
 //--- Description -----------------------------------------------------------
-// AI for WoodBoar,GiantJackal,WoodJackal,BlueDireWolf,Hardmode_BlueDireWolf,DarkRedDireWolf,Hardmode_DarkRedDireWolf,GiantWoodJackal
+// AI for Wild Boars, Giant Jackals, Wood Jackals, Giant Wood Jackals,
+// Blue Dire Wolves, and Burgundy Dire Wolves.
+//--- Notes -----------------------------------------------------------------
+// Missing Wolf Support.
 //---------------------------------------------------------------------------
 
-[AiScript("dungwolf")]
-public class DungeonwolfAi : AiScript
+[AiScript("dungeonwolf")]
+public class DungeonWolfAi : AiScript
 {
 	protected int WanderRadius = 500;
-	
-	public DungeonwolfAi()
+
+	public DungeonWolfAi()
 	{
 		SetVisualField(1600, 180);
 		SetAggroRadius(1600);
@@ -96,7 +99,7 @@ public class DungeonwolfAi : AiScript
 		Do(Attack());
 		Do(Wait(3000));
 	}
-	
+
 	private IEnumerable OnHit()
 	{
 		SwitchRandom();
@@ -116,15 +119,14 @@ public class DungeonwolfAi : AiScript
 	}
 }
 
-// Blue Wolf / Hardmode Blue Wolf
-[AiScript("dungwolf2")]
-public class DungeonwolfAi2 : DungeonwolfAi
+[AiScript("dungeonwolf2")]
+public class DungeonWolfAi2 : DungeonWolfAi
 {
-	public DungeonwolfAi2()
+	public DungeonWolfAi2()
 	{
 		SetVisualField(1000, 180);
 		SetAggroRadius(1000);
-		
+
 		SetAggroLimit(AggroLimit.One);
 	}
 }

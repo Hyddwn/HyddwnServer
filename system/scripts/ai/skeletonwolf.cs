@@ -1,13 +1,13 @@
 //--- Aura Script -----------------------------------------------------------
-// Skeletonwolf AI
+// Skeleton Wolf AI
 //--- Description -----------------------------------------------------------
-// AI for skeletonwolves and Beetlewolves.
+// AI for Skeleton and Beetle Wolves.
 //---------------------------------------------------------------------------
 
-[AiScript("skelwolf")]
-public class SkeletonwolfAi : AiScript
+[AiScript("skeletonwolf")]
+public class SkeletonWolfAi : AiScript
 {
-	public SkeletonwolfAi()
+	public SkeletonWolfAi()
 	{
 		SetVisualField(650, 120);
 		SetAggroRadius(400);

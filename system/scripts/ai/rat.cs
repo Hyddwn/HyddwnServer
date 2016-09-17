@@ -1,7 +1,9 @@
 //--- Aura Script -----------------------------------------------------------
 // Rat AI
 //--- Description -----------------------------------------------------------
-// AI for giantrat,browntownrat,graytownrat,countryrat,blacktownrat,littlecountryrat,BunnyRat,snowrat,DungeonRat2,Otter,ShadowRat,ShadowRat_Key,ForestRat??,CaveRat,GrayTownRat_G13,BrownTownRat_G13,StageRat
+// AI for Giant Rats, Brown Town Rats, Gray Town Rats, Country Rats,
+// Black Town Rats, Young Country Rats, Bunny Rats, Snowfield Rats,
+// Cave Rats, Otters, Royal Castle Rats, and Elsinore Rats.
 //---------------------------------------------------------------------------
 
 [AiScript("rat")]

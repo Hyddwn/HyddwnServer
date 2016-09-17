@@ -1,15 +1,13 @@
 //--- Aura Script -----------------------------------------------------------
-// Rat AI
+// Dungeon Rat AI
 //--- Description -----------------------------------------------------------
-// AI for giantforestrat
+// AI for Giant Forest Rats.
 //---------------------------------------------------------------------------
 
-[AiScript("dungrat")]
-public class DungeonratAi : AiScript
+[AiScript("dungeonrat")]
+public class DungeonRatAi : AiScript
 {
-	protected int WanderRadius = 500;
-	
-	public DungeonratAi()
+	public DungeonRatAi()
 	{
 		SetVisualField(1600, 180);
 		SetAggroRadius(1600);
@@ -26,14 +24,14 @@ public class DungeonratAi : AiScript
 		Do(Wander());
 		Do(Wait(2000, 4000));
 	}
-	
+
 	protected override IEnumerable Alert()
 	{
 		SwitchRandom();
 		if (Case(10))
 		{
 			Do(PrepareSkill(SkillId.Defense));
-			Do(Circle(WanderRadius, 500, 4000));
+			Do(Circle(500, 500, 4000));
 			Do(CancelSkill());
 		}
 		else if (Case(80))
@@ -42,7 +40,7 @@ public class DungeonratAi : AiScript
 		}
 		else if (Case(10))
 		{
-			Do(Circle(WanderRadius, 500, 1000, false));
+			Do(Circle(500, 500, 1000, false));
 		}
 	}
 
@@ -51,7 +49,7 @@ public class DungeonratAi : AiScript
 		if (Random() < 33)
 		{
 			Do(PrepareSkill(SkillId.Defense));
-			Do(Circle(WanderRadius, 500, 4000));
+			Do(Circle(500, 500, 4000));
 			Do(CancelSkill());
 		}
 		else
