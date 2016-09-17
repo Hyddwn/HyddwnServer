@@ -686,12 +686,12 @@ namespace Aura.Channel.World.Entities
 		public int LeftAttackMaxMod { get { return (this.LeftHand != null ? this.LeftHand.OptionInfo.AttackMax : 0); } }
 
 		/// <summary>
-		/// Used for title bonuses.
+		/// Used for title, enchant, and other bonuses.
 		/// </summary>
 		public int AttackMinMod { get { return (int)this.StatMods.Get(Stat.AttackMinMod); } }
 
 		/// <summary>
-		/// Used for title bonuses.
+		/// Used for title, enchant, and other bonuses.
 		/// </summary>
 		public int AttackMaxMod { get { return (int)this.StatMods.Get(Stat.AttackMaxMod); } }
 
