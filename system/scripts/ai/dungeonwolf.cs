@@ -1,22 +1,24 @@
 //--- Aura Script -----------------------------------------------------------
-// Wolf AI
+// Dungeonwolf AI (Missing Wolf Support)
 //--- Description -----------------------------------------------------------
-// AI for "normal" wolves.
+// AI for WoodBoar,GiantJackal,WoodJackal,BlueDireWolf,Hardmode_BlueDireWolf,DarkRedDireWolf,Hardmode_DarkRedDireWolf,GiantWoodJackal
 //---------------------------------------------------------------------------
 
-[AiScript("wolf")]
-public class WolfAi : AiScript
+[AiScript("dungwolf")]
+public class DungeonwolfAi : AiScript
 {
-	public WolfAi()
+	protected int WanderRadius = 500;
+	
+	public DungeonwolfAi()
 	{
-		SetVisualField(650, 120);
-		SetAggroRadius(400);
+		SetVisualField(1600, 180);
+		SetAggroRadius(1600);
 
-		Doubts("/pc/", "/pet/");
-		Doubts("/cow/");
+		Hates("/pc/", "/pet/");
 		Hates("/sheep/");
 		Hates("/dog/");
-		HatesBattleStance(3000);
+		Doubts("/cow/");
+		SetAggroLimit(AggroLimit.None);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
@@ -30,12 +32,13 @@ public class WolfAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		if (Random() < 50)
+		SwitchRandom();
+		if (Case(40))
 		{
-			if (Random() < 50)
+			if (Random() < 70)
 			{
 				Do(PrepareSkill(SkillId.Defense));
-				Do(Circle(500, 1000, 5000));
+				Do(Circle(WanderRadius, 1000, 5000));
 				Do(CancelSkill());
 			}
 			else
@@ -45,10 +48,17 @@ public class WolfAi : AiScript
 				Do(CancelSkill());
 			}
 		}
-		else
+		else if (Case(5))
 		{
-			Do(Circle(400, 1000, 5000));
-			Do(Wait(1000, 5000));
+			Do(Attack(3, 4000));
+		}
+		else if (Case(45))
+		{
+			Do(Circle(WanderRadius, 1000, 4000));
+		}
+		else if (Case(10))
+		{
+			Do(Circle(WanderRadius, 500, 1000, false));
 		}
 	}
 
@@ -57,23 +67,22 @@ public class WolfAi : AiScript
 		if (Random() < 50)
 		{
 			SwitchRandom();
-			if (Case(20))
+			if (Case(25))
 			{
 				Do(PrepareSkill(SkillId.Defense));
-				Do(Circle(500, 1000, 5000));
+				Do(Circle(WanderRadius, 1000, 5000));
 				Do(CancelSkill());
 			}
-			else if (Case(40))
-			{
-				Do(PrepareSkill(SkillId.Smash));
-				Do(Attack(1, 5000));
-				Do(Wait(3000, 8000));
-			}
-			else if (Case(40))
+			else if (Case(37))
 			{
 				Do(PrepareSkill(SkillId.Counterattack));
 				Do(Wait(5000));
 				Do(CancelSkill());
+			}
+			else if (Case(38))
+			{
+				Do(PrepareSkill(SkillId.Smash));
+				Do(Attack(1, 5000));
 			}
 		}
 		else
@@ -104,5 +113,18 @@ public class WolfAi : AiScript
 			Do(Attack(3));
 			Do(Wait(4000, 4000));
 		}
+	}
+}
+
+// Blue Wolf / Hardmode Blue Wolf
+[AiScript("dungwolf2")]
+public class DungeonwolfAi2 : DungeonwolfAi
+{
+	public DungeonwolfAi2()
+	{
+		SetVisualField(1000, 180);
+		SetAggroRadius(1000);
+		
+		SetAggroLimit(AggroLimit.One);
 	}
 }

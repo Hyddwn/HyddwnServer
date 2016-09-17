@@ -1,25 +1,25 @@
 //--- Aura Script -----------------------------------------------------------
-// Wolf AI
+// Skeletonwolf AI
 //--- Description -----------------------------------------------------------
-// AI for "normal" wolves.
+// AI for skeletonwolves and Beetlewolves.
 //---------------------------------------------------------------------------
 
-[AiScript("wolf")]
-public class WolfAi : AiScript
+[AiScript("skelwolf")]
+public class SkeletonwolfAi : AiScript
 {
-	public WolfAi()
+	public SkeletonwolfAi()
 	{
 		SetVisualField(650, 120);
 		SetAggroRadius(400);
 
 		Doubts("/pc/", "/pet/");
-		Doubts("/cow/");
 		Hates("/sheep/");
 		Hates("/dog/");
+		HatesNearby(8000);
 		HatesBattleStance(3000);
+		SetAggroLimit(AggroLimit.One);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
-		On(AiState.Aggro, AiEvent.Hit, OnHit);
 	}
 
 	protected override IEnumerable Idle()
@@ -86,23 +86,5 @@ public class WolfAi : AiScript
 	{
 		Do(Attack());
 		Do(Wait(3000));
-	}
-	
-	private IEnumerable OnHit()
-	{
-		SwitchRandom();
-		if (Case(15))
-		{
-			Do(KeepDistance(1000, true, 2000));
-		}
-		else if (Case(15))
-		{
-			Do(Timeout(2000, Wander()));
-		}
-		else if (Case(70))
-		{
-			Do(Attack(3));
-			Do(Wait(4000, 4000));
-		}
 	}
 }
