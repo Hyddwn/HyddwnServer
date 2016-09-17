@@ -283,7 +283,7 @@ namespace Aura.Channel.Network.Handlers
 			// bought with them.
 			if (item.OptionInfo.PointPrice != 0)
 			{
-				Send.MsgBox(creature, Localization.Get("You cannot sell items bought by Pon at the shop."));
+				Send.MsgBox(creature, Localization.Get("You cannot sell items bought with Pon at the shop."));
 				goto L_End;
 			}
 
