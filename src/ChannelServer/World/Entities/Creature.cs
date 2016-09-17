@@ -1939,8 +1939,8 @@ namespace Aura.Channel.World.Entities
 		public float GetRndRangedDamage()
 		{
 			// Base damage
-			float min = this.AttackMinBase;
-			float max = this.AttackMaxBase;
+			float min = this.AttackMinBase + this.AttackMinMod;
+			float max = this.AttackMaxBase + this.AttackMaxMod;
 
 			// Weapon
 			min += (this.RightHand == null ? 0 : this.RightHand.OptionInfo.AttackMin);
