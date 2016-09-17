@@ -212,8 +212,8 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// 0001 [0010F00000046344] Long   : 4767482418324292
 		/// </example>
-		[PacketHandler(Op.SubsribeStabilityMeter)]
-		public void SubsribeStabilityMeter(ChannelClient client, Packet packet)
+		[PacketHandler(Op.SubscribeStabilityMeter)]
+		public void SubscribeStabilityMeter(ChannelClient client, Packet packet)
 		{
 			// ...
 

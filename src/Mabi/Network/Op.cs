@@ -619,7 +619,7 @@ namespace Aura.Mabi.Network
 		// [200100, NA209 (2016-06-16)]
 		// 4 new ops somewhere here, that shifted the SubsribeStabilityMeter~ChannelLoginUnkR ops by 4.
 
-		public const int SubsribeStabilityMeter = 0xAA25;
+		public const int SubscribeStabilityMeter = 0xAA25;
 		public const int StabilityMeterInit = 0xAA26;
 		public const int StabilityMeterUpdate = 0xAA27;
 
