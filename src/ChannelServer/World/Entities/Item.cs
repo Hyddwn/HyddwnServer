@@ -354,6 +354,12 @@ namespace Aura.Channel.World.Entities
 		public bool IsBreakable { get { return (this.OptionInfo.DurabilityOriginal != 0); } }
 
 		/// <summary>
+		/// Returns true if item has upgrade effects, e.g. from upgrades
+		/// or enchants.
+		/// </summary>
+		public int UpgradeEffectCount { get { lock (_upgrades) return (_upgrades.Count); } }
+
+		/// <summary>
 		/// Returns true if item can be blessed.
 		/// </summary>
 		public bool IsBlessable

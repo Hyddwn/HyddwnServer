@@ -25,7 +25,10 @@ namespace Aura.Channel.Network.Sending.Helpers
 			if (type == ItemPacketType.Public)
 			{
 				packet.PutByte(1);
-				packet.PutByte(0);
+
+				// Affects color of dropped item's name (blue or green),
+				// indicating it's value.
+				packet.PutByte((byte)item.UpgradeEffectCount);
 
 				//packet.PutByte(0); // Bitmask
 				// if & 1
