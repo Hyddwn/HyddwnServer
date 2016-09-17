@@ -234,10 +234,12 @@ namespace Aura.Channel.Network.Handlers
 		public void TouchMimic(ChannelClient client, Packet packet)
 		{
 			var targetEntityId = packet.GetLong();
+
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			var target = creature.Region.GetCreature(targetEntityId);
-			target.Aggro(creature);
+			if (target != null && !target.IsDead && creature.GetPosition().InRange(target.GetPosition(), 250))
+				target.Aggro(creature);
 
 			Send.TouchMimicR(creature);
 		}
