@@ -1,18 +1,21 @@
 //--- Aura Script -----------------------------------------------------------
 // Rat AI
 //--- Description -----------------------------------------------------------
-// AI for giantrat,browntownrat,graytownrat,countryrat,blacktownrat,littlecountryrat,BunnyRat,snowrat,DungeonRat2,Otter,ShadowRat,ShadowRat_Key,ForestRat??,CaveRat,GrayTownRat_G13,BrownTownRat_G13,StageRat
+// AI for giantforestrat
 //---------------------------------------------------------------------------
 
-[AiScript("rat")]
-public class RatAi : AiScript
+[AiScript("dungrat")]
+public class DungeonratAi : AiScript
 {
-	public RatAi()
+	protected int WanderRadius = 500;
+	
+	public DungeonratAi()
 	{
-		SetVisualField(600, 90);
-		SetAggroRadius(400);
+		SetVisualField(1600, 180);
+		SetAggroRadius(1600);
 
-		Doubts("/pc/", "/pet/");
+		Hates("/pc/", "/pet/");
+		SetAggroLimit(AggroLimit.None);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);
@@ -21,13 +24,41 @@ public class RatAi : AiScript
 	protected override IEnumerable Idle()
 	{
 		Do(Wander());
-		Do(Wait(2000, 5000));
+		Do(Wait(2000, 4000));
+	}
+	
+	protected override IEnumerable Alert()
+	{
+		SwitchRandom();
+		if (Case(10))
+		{
+			Do(PrepareSkill(SkillId.Defense));
+			Do(Circle(WanderRadius, 500, 4000));
+			Do(CancelSkill());
+		}
+		else if (Case(80))
+		{
+			Do(Attack(3, 4000));
+		}
+		else if (Case(10))
+		{
+			Do(Circle(WanderRadius, 500, 1000, false));
+		}
 	}
 
 	protected override IEnumerable Aggro()
 	{
-		Do(Attack(3));
-		Do(Wait(3000));
+		if (Random() < 33)
+		{
+			Do(PrepareSkill(SkillId.Defense));
+			Do(Circle(WanderRadius, 500, 4000));
+			Do(CancelSkill());
+		}
+		else
+		{
+			Do(Attack(3));
+			Do(Wait(3000));
+		}
 	}
 
 	private IEnumerable OnDefenseHit()
