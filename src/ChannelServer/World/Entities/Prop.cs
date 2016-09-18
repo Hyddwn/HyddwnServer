@@ -85,7 +85,23 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Returns true if prop is not server sided and has a state or extra data.
 		/// </summary>
-		public bool ModifiedClientSide { get { return !this.ServerSide && (!string.IsNullOrWhiteSpace(this.State) || this.HasXml); } }
+		public bool ModifiedClientSide
+		{
+			get
+			{
+				if (this.ServerSide)
+					return false;
+
+				// Props that only have one default state appear to be "single",
+				// while others have default states like "off" or "closed".
+				// Sending everything that has *some* state made EntitiesAppear
+				// explode, so we'll limit it to meaningful states.
+				// See also: Region.GetVisibleEntities
+				var hasStates = (!string.IsNullOrWhiteSpace(this.State) && this.State != "single");
+
+				return (hasStates || this.HasXml);
+			}
+		}
 
 		/// <summary>
 		/// Called when a player interacts with the prop (touch, attack).
