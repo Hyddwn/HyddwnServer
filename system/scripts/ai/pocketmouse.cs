@@ -61,7 +61,7 @@ public class PocketMouseAi : AiScript
 			Do(Circle(600, 1000, 2000));
 			if (Random() < 10)
 			{
-				Do(Attack(Rnd(1,2,3), 4000));
+				Do(Attack(Rnd(1, 2, 3), 4000));
 			}
 		}
 
@@ -73,7 +73,7 @@ public class PocketMouseAi : AiScript
 	{
 		Do(StackAttack(SkillId.Lightningbolt));
 		Do(CancelSkill());
-		
+
 		SwitchRandom();
 		if (Case(50))
 		{
@@ -112,7 +112,7 @@ public class PocketMouseAi : AiScript
 			}
 		}
 	}
-	
+
 	private IEnumerable OnHit()
 	{
 		SwitchRandom();
@@ -125,13 +125,13 @@ public class PocketMouseAi : AiScript
 			Do(Attack(3, 4000));
 		}
 	}
-	
+
 	private IEnumerable OnMagicHit()
 	{
 		Do(Say("..."));
 		Do(SetHeight(3.0));
 	}
-	
+
 	private IEnumerable OnDefenseHit()
 	{
 		Do(Attack(3, 4000));
