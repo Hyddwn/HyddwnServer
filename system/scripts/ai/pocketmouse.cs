@@ -128,8 +128,9 @@ public class PocketMouseAi : AiScript
 
 	private IEnumerable OnMagicHit()
 	{
-		Do(Say("..."));
+		Do(Say(L("Tachy granide inchatora mana prow!")));
 		Do(SetHeight(3.0));
+		Creature.GiveExp(10000);
 	}
 
 	private IEnumerable OnDefenseHit()
