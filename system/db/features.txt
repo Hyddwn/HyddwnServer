@@ -56,6 +56,9 @@
 	// Season 1
 	{ name: "G2S1", enabled: true, children: [
 		{ name: "PeacaDungeon", enabled: true },
+		{ name: "MathDungeon", enabled: true },
+		{ name: "RundalDungeon", enabled: true },
+		{ name: "CoillDungeon", enabled: true },
 		{ name: "Fireball", enabled: true },
 		{ name: "ArrowRevolver", enabled: true },
 	]},

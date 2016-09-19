@@ -97,6 +97,9 @@ public class MathSealStoneScript : SealStoneScript
 		SetName("Seal Stone of Math Dungeon", "_sealstone_math");
 		SetLocation(14, 58409, 58185, 4.71f);
 		SetHelp("The Seal of Math Dungeon\n\nBe a good little bard.");
+
+		if (!IsEnabled("MathDungeon"))
+			SetLock(true);
 	}
 
 	public override bool Check(Creature creature, Prop prop)
