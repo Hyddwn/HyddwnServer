@@ -39,6 +39,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public bool InfiniteBait { get; protected set; }
 		public bool InfiniteArrows { get; protected set; }
 		public float SharpMindChance { get; protected set; }
+		public bool SafeEnchanting { get; protected set; }
 
 		public bool Bagception { get; protected set; }
 		public bool NoDurabilityLoss { get; protected set; }
@@ -102,6 +103,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.InfiniteBait = this.GetBool("infinite_bait", false);
 			this.InfiniteArrows = this.GetBool("infinite_arrows", false);
 			this.SharpMindChance = this.GetFloat("sharp_mind_chance", 50);
+			this.SafeEnchanting = this.GetBool("safe_enchanting", false);
 
 			this.Bagception = this.GetBool("bagception", false);
 			this.NoDurabilityLoss = this.GetBool("no_durability_loss", false);
