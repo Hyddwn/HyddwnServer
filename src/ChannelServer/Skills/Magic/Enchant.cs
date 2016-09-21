@@ -509,8 +509,8 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.R5: points = (result == EnchantResult.Fail ? rnd.Next(3, 9) : rnd.Next(3, 16)); break;
 				case SkillRank.R4: points = (result == EnchantResult.Fail ? rnd.Next(4, 10) : rnd.Next(4, 18)); break;
 				case SkillRank.R3: points = (result == EnchantResult.Fail ? rnd.Next(4, 10) : rnd.Next(4, 18)); break;
-				case SkillRank.R2: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 18)); break;
-				case SkillRank.R1: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 18)); break;
+				case SkillRank.R2: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 20)); break;
+				case SkillRank.R1: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 20)); break;
 			}
 
 			return points * 1000;
