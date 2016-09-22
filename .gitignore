@@ -17,8 +17,8 @@
 /user/resources/*
 !/user/resources/readme.txt
 
-/user/save/*
-!/user/save/readme.txt
+/user/*/save/*
+!/user/*/save/readme.txt
 
 /user/localization/*
 !/user/localization/readme.txt
