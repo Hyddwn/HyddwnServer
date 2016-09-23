@@ -6,14 +6,13 @@
 /cache/
 
 /user/conf/*
-!/user/conf/database-example.conf
-
 /user/db/*
-!/user/db/races-example.txt
-
-/user/*
+/user/debug/*
+/user/localization/*
+/user/scripts/*
+/user/web/*
 !/user/*/readme.txt
-!/user/*-example.txt
+!/user/*-example.*
 
 #################
 ## Visual Studio
