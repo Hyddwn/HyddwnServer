@@ -4,7 +4,7 @@ using Swebs.RequestHandlers.CSharp;
 using System;
 using System.Text.RegularExpressions;
 
-public class UiStoragePage : Controller
+public class UiStorageController : Controller
 {
 	/// <remarks>
 	/// Parameters:
@@ -30,8 +30,8 @@ public class UiStoragePage : Controller
 		response.ContentType = "text/plain";
 
 		// Get file
-		var file = request.Files.Get("ui");
-		if (file == null || !string.IsNullOrEmpty(file.FileName))
+		var file = request.File("ui");
+		if (file == null)
 		{
 			Log.Debug("UiStorageController: Missing file.");
 			return;
@@ -60,7 +60,7 @@ public class UiStoragePage : Controller
 		// Move file
 		try
 		{
-			file.MoveTo("user/save/ui/" + serverName + "/" + group + "/" + file.FileName);
+			file.MoveTo("user/web/save/ui/" + serverName + "/" + group + "/" + file.FileName);
 		}
 		catch (Exception ex)
 		{

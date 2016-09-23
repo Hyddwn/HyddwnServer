@@ -22,7 +22,7 @@ using System.Text.RegularExpressions;
 /// Response:
 ///   "1" for success
 /// </remarks>
-public class UploadAvatarPage : Controller
+public class UploadAvatarController : Controller
 {
 	public override void Handle(HttpRequestEventArgs args, string requestuestPath, string localPath)
 	{
@@ -38,10 +38,10 @@ public class UploadAvatarPage : Controller
 			return;
 
 		var key = charId.Substring(charId.Length - 3);
-		var folder = "user/save/avatar/" + serverName + "/" + key + "/" + charId + "/";
+		var folder = "user/web/save/avatar/" + serverName + "/" + key + "/" + charId + "/";
 
-		if (userFile.HasData) userFile.MoveTo(folder + "snapshot.jpg");
-		if (userText.HasData) userText.MoveTo(folder + "snapshot.txt");
+		userFile.MoveTo(folder + "snapshot.jpg");
+		userText.MoveTo(folder + "snapshot.txt");
 
 		response.Send("1");
 	}
