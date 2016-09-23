@@ -7,6 +7,7 @@ using Aura.Shared.Util;
 using Aura.Shared.Util.Commands;
 using Aura.Web.Scripting;
 using Aura.Web.Util;
+using Swebs;
 using System;
 using System.Net;
 
@@ -21,7 +22,7 @@ namespace Aura.Web
 		/// <summary>
 		/// Actual web server
 		/// </summary>
-		public Swebs.Server Swebs { get; private set; }
+		public HttpServer HttpServer { get; private set; }
 
 		/// <summary>
 		/// Database
@@ -92,22 +93,22 @@ namespace Aura.Web
 		{
 			Log.Info("Starting web server...");
 
-			var conf = new Swebs.Configuration();
+			var conf = new Configuration();
 			conf.Port = this.Conf.Web.Port;
 			conf.SourcePaths.Add("user/web/");
 			conf.SourcePaths.Add("system/web/");
 
-			this.Swebs = new Swebs.Server(conf);
-			this.Swebs.HttpServer.RequestReceived += (s, e) => Log.Debug("[{0}] - {1}", e.Request.HttpMethod, e.Request.Path);
-			this.Swebs.HttpServer.UnhandledException += (s, e) => Log.Exception(e.Exception);
+			this.HttpServer = new HttpServer(conf);
+			this.HttpServer.RequestReceived += (s, e) => Log.Debug("[{0}] - {1}", e.Request.HttpMethod, e.Request.Path);
+			this.HttpServer.UnhandledException += (s, e) => Log.Exception(e.Exception);
 
 			try
 			{
-				this.Swebs.Start();
+				HttpServer.Start();
 
 				Log.Status("Server ready, listening on 0.0.0.0:{0}.", this.Conf.Web.Port);
 			}
-			catch (NHttp.NHttpException)
+			catch (NHttpException)
 			{
 				Log.Error("Failed to start web server.");
 				Log.Info("Port {0} might already be in use, make sure no other application, like other web servers or Skype, are using it or set a different port in web.conf.", this.Conf.Web.Port);
