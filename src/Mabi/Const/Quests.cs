@@ -9,6 +9,7 @@ namespace Aura.Mabi.Const
 		Collect = 2,
 		Talk = 3,
 		Deliver = 4,
+		Create = 8,
 		ReachRank = 9,
 		ClearDungeon = 13,
 		ReachLevel = 15,
@@ -26,6 +27,7 @@ namespace Aura.Mabi.Const
 		ExplExp = 4,
 		AP = 5,
 		Skill = 8, // ?
+		Keyword = 98, // TODO: Actual type?
 		QuestScroll = 99, // TODO: Actual type?
 	}
 

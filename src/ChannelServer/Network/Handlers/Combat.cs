@@ -119,7 +119,14 @@ namespace Aura.Channel.Network.Handlers
 					Log.Info("CombatAttack: Non-empty string, please report this message to the development team. String: " + unkString);
 			}
 
-			var creature = client.GetCreatureSafe(packet.Id);
+			var creature = client.GetCreature(packet.Id);
+
+			// Despawning a pet while it's attacking can make the client
+			// send another attack packet while the creature has already
+			// been removed on the server. Using GetCreatureSafe can
+			// kick players.
+			if (creature == null)
+				return;
 
 			// Check lock
 			if (!creature.Can(Locks.Attack))
@@ -205,8 +212,8 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// 0001 [0010F00000046344] Long   : 4767482418324292
 		/// </example>
-		[PacketHandler(Op.SubsribeStabilityMeter)]
-		public void SubsribeStabilityMeter(ChannelClient client, Packet packet)
+		[PacketHandler(Op.SubscribeStabilityMeter)]
+		public void SubscribeStabilityMeter(ChannelClient client, Packet packet)
 		{
 			// ...
 
@@ -227,10 +234,12 @@ namespace Aura.Channel.Network.Handlers
 		public void TouchMimic(ChannelClient client, Packet packet)
 		{
 			var targetEntityId = packet.GetLong();
+
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			var target = creature.Region.GetCreature(targetEntityId);
-			target.Aggro(creature);
+			if (target != null && !target.IsDead && creature.GetPosition().InRange(target.GetPosition(), 250))
+				target.Aggro(creature);
 
 			Send.TouchMimicR(creature);
 		}

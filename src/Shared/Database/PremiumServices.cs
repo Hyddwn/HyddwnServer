@@ -81,7 +81,7 @@ namespace Aura.Shared.Database
 		/// Returns true if account is allowed to use all bank tabs,
 		/// not only its own.
 		/// </summary>
-		public bool CanUseAllBankTabs { get { return (this.HasInventoryPlusService || this.HasPremiumService || this.HasVipService); } }
+		public bool CanUseAllBankTabs { get { return this.HasInventoryPlusService || this.HasPremiumService || this.HasVipService; } }
 
 		/// <summary>
 		/// Enables services for free, based on the conf's settings.

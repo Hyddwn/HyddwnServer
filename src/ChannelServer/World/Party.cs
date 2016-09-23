@@ -100,6 +100,41 @@ namespace Aura.Channel.World
 		public Quest Quest { get; private set; }
 
 		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public bool GuildCreationInProgress { get; set; }
+
+		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public string GuildNameToBe { get; set; }
+
+		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public GuildType GuildTypeToBe { get; set; }
+
+		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public GuildVisibility GuildVisibilityToBe { get; set; }
+
+		/// <summary>
+		/// Used in guild creation.
+		/// </summary>
+		public bool GuildNameVoteRequested { get; set; }
+
+		/// <summary>
+		/// Used in guild creation to keep track of name votes.
+		/// </summary>
+		public int GuildNameVoteCount { get; set; }
+
+		/// <summary>
+		/// Used in guild creation to keep track of name votes.
+		/// </summary>
+		public int GuildNameVotes { get; set; }
+
+		/// <summary>
 		/// Initializes party.
 		/// </summary>
 		private Party()
@@ -585,7 +620,7 @@ namespace Aura.Channel.World
 					var pos = member.GetPosition();
 					var clientEvent = member.Region.GetClientEvent(a => a.Data.IsAltar);
 
-					if (clientEvent.IsInside(pos))
+					if (clientEvent != null && clientEvent.IsInside(pos))
 						result.Add(member);
 				}
 			}
@@ -619,16 +654,6 @@ namespace Aura.Channel.World
 			}
 
 			return result;
-		}
-
-		/// <summary>
-		/// Returns a list of all members in the same region as the specified creature.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <returns></returns>
-		public List<Creature> GetMembersInRegion(Creature creature)
-		{
-			return this.GetMembersInRange(creature, 0);
 		}
 
 		/// <summary>

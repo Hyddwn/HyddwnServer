@@ -14,6 +14,7 @@ public class ComganScript : NpcScript
 		SetFace(skinColor: 15, eyeType: 3, eyeColor: 55, mouthType: 1);
 		SetStand("human/male/anim/male_natural_stand_npc_Duncan");
 		SetLocation(31, 15329, 12122, 154);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 4900, 0x00F6EF20, 0x006472B6, 0x00D8CC5E);
 		EquipItem(Pocket.Hair, 4003, 0x0FFFFFFF, 0x0FFFFFFF, 0x0FFFFFFF);
@@ -37,11 +38,7 @@ public class ComganScript : NpcScript
 	{
 		SetBgm("NPC_Comgan.mp3");
 
-		await Intro(
-			"This boy is wearing a priest's robe with wide necklines showing that he has on many layers of clothing.",
-			"The color of his thick hair looks like feather clouds floating above the Bangor sky.",
-			"Blue eyes like a deep, tranquil ocean add a gentle radiance to his slightly tilted face."
-		);
+		await Intro(L("This boy is wearing a priest's robe with wide necklines showing that he has on many layers of clothing.<br/>The color of his thick hair looks like feather clouds floating above the Bangor sky.<br/>Blue eyes like a deep, tranquil ocean add a gentle radiance to his slightly tilted face."));
 
 		Msg("Do you... believe in God?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 
@@ -50,8 +47,18 @@ public class ComganScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("...you rescued the Goddess?<br/>You? <username/>...?<br/>That's just incredible...<br/>But... can I really believe what you're claiming?");
+					Msg("...It's just like how people find it so hard to believe that I'm a Priest...<br/>I can definitely relate.");
+					Msg("Anyway, this helps me to place myself in another person's shoes,<br/>so I must thank you for that.");
+				}
+				else if (Title == 11002)
+				{
 					Msg("Thank you for saving Erinn, <username/>.<br/>Please continue to watch out for us.");
+				}
+
 				await Conversation();
 				break;
 
@@ -68,23 +75,25 @@ public class ComganScript : NpcScript
 	{
 		if (Memory <= 0)
 		{
-			Msg(FavorExpression(), L("If you're free, would you like to chat? Your name was...<p/>I am sorry. My memory is failing me today. I will try to remember next time."));
+			Msg(FavorExpression(), L("I don't think we've met before... My name is <npcname/>.<br/>I'm the priest of this town. Nice to meet you."));
 		}
 		else if (Memory == 1)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("If you're free, would you like to chat? Your name was..."));
+			Msg(L("I am sorry. My memory is failing me today. I will try to remember next time."));
+
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Ah, <username/>? Welcome. Are you interested in God's teachings?"));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You're back, <username/>. I was just wondering if you would show up again."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I enjoy your frequent visits, <username/>, as well as your attentiveness to my stories."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -95,16 +104,16 @@ public class ComganScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "I told you my name a while ago, right? My name is Comgan...<br/>I'm the priest of this town.");
+				Msg(FavorExpression(), "I told you my name a while ago, right? My name is <npcname/>...<br/>I'm the priest of this town.");
 				Msg("...<br/>Everyone is rather puzzled at my young age,<br/>but I am a priest who has been officially ordained with a certificate of approval from the Pontiff's office. *Chuckle*");
 				Msg("I am not a shady character<br/>so please don't look at me so suspiciously.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "This town is rather run-down, don't you think?<br/>I used to think that when I first arrived here...");
 				Msg("Those who have been here for a long time would tell me that this place was once very prosperous.<br/>Had a church, even...");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -257,6 +266,40 @@ public class ComganScript : NpcScript
 				Msg("I suspect that it is in a dungeon,<br/>but I don't know the details.");
 				break;
 
+			case "bow":
+				Msg("You will probably be able to buy it at the Blacksmith's Shop.<br/>There are other useful items there besides that.<br/>You should certainly pay a visit, if you haven't been there.");
+				break;
+
+			case "lute":
+				Msg("I have seen it being sold at Gilmore's General Shop.<br/>I didn't buy it, though. Someone else bought it and showed it to me.");
+				Msg("He gave it to me as a gift to be used in building the Church...");
+				Msg("I did sell it back later to the General Shop<br/>to raise funds for the Church...");
+				Msg("By the way, is a Lute usually worth... 20 Golds?");
+				break;
+
+			case "complicity":
+				Msg("Someone once made a biting remark to me,<br/>that I'm nothing more than a pawn trying to recruit people into our religion...");
+				Msg("I didn't know how to accurately explain to him<br/>that is not the case.");
+				Msg("It was agonizing...");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog is a divine paradise<br/>held up by the three major gods of this world.");
+				Msg("Under the divine reign of Aton Cimeni who rules all things,<br/>and the Gods of love, peace, and freedom,<br/>people feel compelled to stay in Tir Na Nog...");
+				Msg("...I firmly believe that I myself will be there someday.");
+				break;
+
+			case "mabinogi":
+				Msg("Mabinogi is a song that tells the story<br/>of the war with the evil Fomor since the ancient days.<br/>It is a song of praise to the heroes that saved this world, as well as a song of mourning<br/>for the warriors who lost their lives for the sake of this world...");
+				Msg("Every song has a story behind it,<br/>so I think it would do you well to listen to the song when you have a chance...");
+				break;
+
+			case "musicsheet":
+				Msg("...Do you, by any chance, know some good songs?");
+				Msg("I would like to hear a few, if at all possible...");
+				Msg("It's not everyday you run into an excellent musician...");
+				break;
+
 			default:
 				RndFavorMsg(
 					"You are a curious one, aren't you?",
@@ -268,7 +311,7 @@ public class ComganScript : NpcScript
 					"It will probably frustrate you if I tell you I don't know, but I can't help what I don't know.",
 					"Don't be too disappointed because I don't know about that. Ignorance is better than failure that comes from pretensions."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

@@ -24,16 +24,18 @@ Noteworthy contributors
 * Sairii
 * T. (anonymous)
 * Tachiorz
+* valdeza
 
 Patrons
 ==============================
 
 People who have supported the development with a considerable donation
 
+* evehour
 * Hitzuki
 * Pegwald
 * Seeker
-* Trigger
+* Trigger of Ruairi
 
 Others
 ==============================

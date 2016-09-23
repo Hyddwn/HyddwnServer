@@ -389,7 +389,7 @@ namespace Aura.Channel.Skills.Base
 		/// <param name="productData"></param>
 		protected virtual void UpdateTool(Creature creature, ProductionData productData)
 		{
-			if (productData.Tool == null)
+			if (productData.Tool == null || productData.Tool == "/barehand/")
 				return;
 
 			creature.Inventory.ReduceDurability(creature.RightHand, productData.Durability);
@@ -405,21 +405,27 @@ namespace Aura.Channel.Skills.Base
 		/// <returns></returns>
 		protected virtual bool CheckTools(Creature creature, Skill skill, ProductionData productData)
 		{
-			// Check tool
-			// Sanity check, the client should be handling this.
-			if (productData.Tool != null)
+			// Sanity checks, the client should be handling this.
+
+			// If null, anything can be equipped
+			if (productData.Tool == null)
+				return true;
+
+			if (productData.Tool == "/barehand/")
 			{
-				if (creature.RightHand == null || !creature.RightHand.HasTag(productData.Tool))
+				// Fail if bare hand required but an item is equipped
+				if (creature.RightHand != null)
 				{
-					Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without the appropriate tool.", creature.EntityId);
+					Log.Warning("ProductionSkill.Complete: User '{0}' tried to produce without empty hands.", creature.Client.Account.Id);
 					return false;
 				}
 			}
 			else
 			{
-				if (creature.RightHand != null)
+				// Fail if no item or the wrong one is equipped
+				if (creature.RightHand == null || !creature.RightHand.HasTag(productData.Tool))
 				{
-					Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without empty hands.", creature.EntityId);
+					Log.Warning("ProductionSkill.Complete: Creature '{0:X16}' tried to produce without the appropriate tool.", creature.EntityId);
 					return false;
 				}
 			}

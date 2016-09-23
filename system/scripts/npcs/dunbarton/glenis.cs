@@ -70,7 +70,11 @@ public class GlenisScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("Ha ha. I trust that the work is going well today?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("Are you looking for the Restaurant? This is it."));
 		}
@@ -175,10 +179,6 @@ public class GlenisScript : NpcScript
 							break;
 					}
 				}
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":
@@ -311,15 +311,15 @@ public class GlenisShop : NpcShopScript
 		Add("Food", 50217, 10); // Basil x10
 		Add("Food", 50217, 20); // Basil x20
 		Add("Food", 50218);     // Tomato x1
-		Add("Food", 50218);     // Tomato x5
-		Add("Food", 50218);     // Tomato x10
-		Add("Food", 50218);     // Tomato x20
+		Add("Food", 50218, 5);  // Tomato x5
+		Add("Food", 50218, 10); // Tomato x10
+		Add("Food", 50218, 20); // Tomato x20
 		Add("Food", 50045);     // Pine Nut
 		Add("Food", 50047);     // Camellia Seeds
 		Add("Food", 50111);     // Carrot x1
-		Add("Food", 50111);     // Carrot x5
-		Add("Food", 50111);     // Carrot x10
-		Add("Food", 50111);     // Carrot x20
+		Add("Food", 50111, 5);  // Carrot x5
+		Add("Food", 50111, 10); // Carrot x10
+		Add("Food", 50111, 20); // Carrot x20
 		Add("Food", 50018);     // Baking Chocolate x1
 		Add("Food", 50018, 5);  // Baking Chocolate x5
 		Add("Food", 50018, 10); // Baking Chocolate x10

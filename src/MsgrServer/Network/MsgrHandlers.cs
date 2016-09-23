@@ -295,7 +295,7 @@ namespace Aura.Msgr.Network
 			// Check options
 			if (!Enum.IsDefined(typeof(ChatOptions), chatOptions))
 			{
-				Log.Warning("User '{0}' tried to use a invalid or unknown options ({1}).", user.AccountId, status);
+				Log.Warning("User '{0}' tried to use a invalid or unknown options ({1}).", user.AccountId, chatOptions);
 				Send.ChangeOptionsR(client, false);
 				return;
 			}
@@ -310,6 +310,17 @@ namespace Aura.Msgr.Network
 			MsgrServer.Instance.Database.SaveOptions(user);
 
 			Send.ChangeOptionsR(client, true);
+
+			// Notify guild members
+			if (prevStatus != status)
+			{
+				var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(user.CharacterId);
+				if (guild != null)
+				{
+					var member = guild.GetMember(user.CharacterId);
+					GuildManager.ForOnlineMembers(guild, memberUser => Send.GuildMemberState(memberUser.Client, guild, member, user, status));
+				}
+			}
 
 			// Update friends
 			var friendUsers = MsgrServer.Instance.UserManager.Get(user.GetNormalFriendIds());
@@ -360,6 +371,14 @@ namespace Aura.Msgr.Network
 			friendUsers = MsgrServer.Instance.UserManager.Get(user.GetFriendIds());
 			foreach (var friendUser in friendUsers.Where(a => a.GetFriendshipStatus(user.Id) == FriendshipStatus.Normal))
 				Send.FriendOnline(client.User, friendUser);
+
+			// Notify guild members
+			var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(user.CharacterId);
+			if (guild != null)
+			{
+				var member = guild.GetMember(user.CharacterId);
+				GuildManager.ForOnlineMembers(guild, memberUser => Send.GuildMemberState(memberUser.Client, guild, member, user, user.Status));
+			}
 		}
 
 		/// <summary>
@@ -666,13 +685,16 @@ namespace Aura.Msgr.Network
 		public void ChatBegin(MsgrClient client, Packet packet)
 		{
 			var contactId = packet.GetInt();
-			var unkByte = packet.GetByte();
+			var list = packet.GetByte(); // 0=friends, 1=guild
 
-			// Check friend and relation
-			var friend = client.User.GetFriend(contactId);
-			if (friend == null || friend.FriendshipStatus != FriendshipStatus.Normal)
+			// Disable guild msgr for now. For some reason the contact can't
+			// properly accept the chat, which causes weird behavior.
+			// Since the guild msgr is technically a G4 feature we can
+			// technically get away with that, but we should figure it out
+			// some time.
+			if (list == 1)
 			{
-				Log.Warning("ChatBegin: User '{0}' tried to start chat without being friends.", client.User.AccountId);
+				Send.GuildChatMsg(client.User, Localization.Get("<SERVER>"), Localization.Get("This feature hasn't been implemented yet."));
 				return;
 			}
 
@@ -684,10 +706,33 @@ namespace Aura.Msgr.Network
 				return;
 			}
 
+			//if (list == 0)
+			{
+				// Check friend and relation
+				var friend = client.User.GetFriend(contactId);
+				if (friend == null || friend.FriendshipStatus != FriendshipStatus.Normal)
+				{
+					Log.Warning("ChatBegin: User '{0}' tried to start chat without being friends.", client.User.AccountId);
+					return;
+				}
+			}
+			//else
+			//{
+			//	// Check guild
+			//	var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(client.User.CharacterId);
+			//	var userGuild = MsgrServer.Instance.GuildManager.FindGuildWithMember(user.CharacterId);
+
+			//	if (guild == null || guild != userGuild)
+			//	{
+			//		Log.Warning("ChatBegin: User '{0}' tried to start chat without being in the same guild.", client.User.AccountId);
+			//		return;
+			//	}
+			//}
+
 			ChatSession session;
 
 			// Get or create session
-			session = MsgrServer.Instance.ChatSessionManager.Find(client.User.Id, friend.Id);
+			session = MsgrServer.Instance.ChatSessionManager.Find(client.User.Id, user.Id);
 			if (session == null)
 				session = new ChatSession();
 
@@ -930,6 +975,75 @@ namespace Aura.Msgr.Network
 			MsgrServer.Instance.Database.Blacklist(client.User.Id, friend.Id);
 
 			Send.FriendInviteR(client, FriendInviteResult.Success, friend);
+		}
+
+		/// <summary>
+		/// Sent upon connection to request guild member list.
+		/// </summary>
+		/// <example>
+		/// 001 [0000000000000000] Long   : 0
+		/// </example>
+		[PacketHandler(Op.Msgr.GuildMemberList)]
+		public void GuildMemberList(MsgrClient client, Packet packet)
+		{
+			var unkLong = packet.GetLong();
+
+			var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(client.User.CharacterId);
+			if (guild == null)
+			{
+				Log.Warning("GuildMemberList: User '{0}' requested guild list without being in a guild.", client.User.AccountId);
+				return;
+			}
+
+			Send.GuildMemberListR(client, guild);
+		}
+
+		/// <summary>
+		/// Sent when the client gets notified that the character has now
+		/// joined/left a guild.
+		/// </summary>
+		/// <remarks>
+		/// The id is either the id of the guild the character joined or
+		/// 0 if they were removed from it. This packet is presumably used
+		/// for getting access to the guild member list and the chat
+		/// immedately.
+		/// 
+		/// For now I'll let the guild manager handle that automatically
+		/// on its tick, instead of adding new members or guilds from here.
+		/// That's much simpler and not too much of an inconvenience.
+		/// If we wanted 1:1 synchronization we should make the channels
+		/// and the msgr server talk to each other, adding real-time
+		/// synchronization.
+		/// </remarks>
+		/// <example>
+		/// 001 [0000000000000000] Long   : 0
+		/// </example>
+		[PacketHandler(Op.Msgr.GuildJoin)]
+		public void GuildJoin(MsgrClient client, Packet packet)
+		{
+			var guildId = packet.GetLong();
+		}
+
+		/// <summary>
+		/// Sent when chatting in guild tab.
+		/// </summary>
+		/// <example>
+		/// 001 [................] String : test
+		/// </example>
+		[PacketHandler(Op.Msgr.GuildChat)]
+		public void GuildChat(MsgrClient client, Packet packet)
+		{
+			var msg = packet.GetString();
+
+			var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(client.User.CharacterId);
+			if (guild == null)
+			{
+				// Don't warn, the client will probably allow this before
+				// the msgr server caught up.
+				return;
+			}
+
+			GuildManager.ForOnlineMembers(guild, user => Send.GuildChatMsg(user, client.User.Name, msg));
 		}
 	}
 }

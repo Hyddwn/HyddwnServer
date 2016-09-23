@@ -1,0 +1,393 @@
+// Aura
+// Database file
+// 
+// Locations that can be used for wings.
+// 
+// Values: name, limit, directBankAllowed, salesFee, exchangeFee, [allowAnywhere], [regions[]], [zones[]]
+//---------------------------------------------------------------------------
+
+[
+// Tir Chonaill
+//---------------------------------------------------------------------------
+{ name: "tirchonaill", limit: 2000000, directBankAllowed: false, salesFee: 0.008, exchangeFee: 0.008, regions: [ 1, 16 ], zones: [
+	"Uladh_Dun_to_Tircho/Field_DunTir_09/ps00",
+	"Uladh_Dun_to_Tircho/Field_DunTir_10/ps01",
+	"Uladh_main/town_TirChonaill/ps001",
+	"Uladh_main/town_TirChonaill/ps002"
+]},
+{ name: "tirchonaill2", limit: 50000, directBankAllowed: false, salesFee: 0, exchangeFee: 0, regions: [ 1, 16 ], zones: [
+	"Uladh_Dun_to_Tircho/Field_DunTir_09/ps00",
+	"Uladh_Dun_to_Tircho/Field_DunTir_10/ps01",
+	"Uladh_main/town_TirChonaill/ps001",
+	"Uladh_main/town_TirChonaill/ps002"
+]},
+{ name: "tirchonaill_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 1, 16 ], zones: [
+	"Uladh_Dun_to_Tircho/Field_DunTir_09/ps00",
+	"Uladh_Dun_to_Tircho/Field_DunTir_10/ps01",
+	"Uladh_main/town_TirChonaill/ps001",
+	"Uladh_main/town_TirChonaill/ps002"
+]},
+{ name: "tirchonaill_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 1, 16 ], zones: [
+	"Uladh_Dun_to_Tircho/Field_DunTir_09/ps00",
+	"Uladh_Dun_to_Tircho/Field_DunTir_10/ps01",
+	"Uladh_main/town_TirChonaill/ps001",
+	"Uladh_main/town_TirChonaill/ps002"
+]},
+{ name: "tirchonaill_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 1, 16 ], zones: [
+	"Uladh_Dun_to_Tircho/Field_DunTir_09/ps00",
+	"Uladh_Dun_to_Tircho/Field_DunTir_10/ps01",
+	"Uladh_main/town_TirChonaill/ps001",
+	"Uladh_main/town_TirChonaill/ps002"
+]},
+
+// Dunbarton
+//---------------------------------------------------------------------------
+{ name: "dunbarton", limit: 2250000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
+	"Uladh_Dunbarton/_Uladh_Dunbarton/ps00"
+]},
+{ name: "dunbarton_renewal", limit: 10000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
+	"Uladh_Dunbarton/_Uladh_Dunbarton/ps00"
+]},
+{ name: "dunbarton_premiumplus", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
+	"Uladh_Dunbarton/_Uladh_Dunbarton/ps00"
+]},
+{ name: "dunbarton_premiumvip", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, regions: [ 14, 16, 70 ], zones: [
+	"Uladh_Dunbarton/_Uladh_Dunbarton/ps00"
+]},
+
+// Bangor
+//---------------------------------------------------------------------------
+{ name: "bangor", limit: 1800000, directBankAllowed: false, salesFee: 0.005, exchangeFee: 0.005, regions: [ 30, 31 ]},
+{ name: "bangor_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 30, 31 ]},
+{ name: "bangor_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 30, 31 ]},
+{ name: "bangor_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 30, 31 ]},
+
+// Emain Macha
+//---------------------------------------------------------------------------
+{ name: "emainmacha", limit: 2600000, directBankAllowed: false, salesFee: 0.012, exchangeFee: 0.012, regions: [ 52, 53, 56 ], zones: [
+	"Ula_Emainmacha/_Ula_Emainmacha_C/ps00",
+	"Ula_Emainmacha/_Ula_Emainmacha_C/ps01"
+]},
+{ name: "emainmacha_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 52, 53, 56 ], zones: [
+	"Ula_Emainmacha/_Ula_Emainmacha_C/ps00",
+	"Ula_Emainmacha/_Ula_Emainmacha_C/ps01"
+]},
+{ name: "emainmacha_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 52, 53, 56 ], zones: [
+	"Ula_Emainmacha/_Ula_Emainmacha_C/ps00",
+	"Ula_Emainmacha/_Ula_Emainmacha_C/ps01"
+]},
+{ name: "emainmacha_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 52, 53, 56 ], zones: [
+	"Ula_Emainmacha/_Ula_Emainmacha_C/ps00",
+	"Ula_Emainmacha/_Ula_Emainmacha_C/ps01"
+]},
+
+// Rano
+//---------------------------------------------------------------------------
+{ name: "rano", limit: 1600000, directBankAllowed: false, salesFee: 0.005, exchangeFee: 0.005, zones: [
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0037/ps_iria_sw_nubes",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0111/ps_iria_sw_karu_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0110/ps_iria_sw_karu_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0110/ps_iria_sw_karu_3"
+]},
+{ name: "rano_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0037/ps_iria_sw_nubes",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0111/ps_iria_sw_karu_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0110/ps_iria_sw_karu_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0110/ps_iria_sw_karu_3"
+]},
+{ name: "rano_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0037/ps_iria_sw_nubes",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0111/ps_iria_sw_karu_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0110/ps_iria_sw_karu_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0110/ps_iria_sw_karu_3"
+]},
+{ name: "rano_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0022/ps_iria_sw_qilla_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0037/ps_iria_sw_nubes",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0087/ps_iria_sw_maiz_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0054/ps_iria_sw_kaypi_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0082/ps_iria_sw_muyu_4",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0115/ps_iria_sw_lutra_3",
+	"Iria_SW_main_field/_Iria_SW_main_field_0111/ps_iria_sw_karu_1",
+	"Iria_SW_main_field/_Iria_SW_main_field_0110/ps_iria_sw_karu_2",
+	"Iria_SW_main_field/_Iria_SW_main_field_0110/ps_iria_sw_karu_3"
+]},
+
+// Connous
+//---------------------------------------------------------------------------
+{ name: "connous", limit: 1800000, directBankAllowed: false, salesFee: 0.005, exchangeFee: 0.005, zones: [
+	"Iria_SE_main_field/_Iria_SE_main_field_0114/ps_iria_se_filia_Square",
+	"Iria_SE_main_field/_Iria_SE_main_field_0101/ps_iria_se_filia_01",
+	"Iria_SE_main_field/_Iria_SE_main_field_0101/ps_iria_se_filia_02",
+	"Iria_SE_main_field/_Iria_SE_main_field_0114/ps_iria_se_filia_03"
+]},
+{ name: "connous_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_SE_main_field/_Iria_SE_main_field_0114/ps_iria_se_filia_Square",
+	"Iria_SE_main_field/_Iria_SE_main_field_0101/ps_iria_se_filia_01",
+	"Iria_SE_main_field/_Iria_SE_main_field_0101/ps_iria_se_filia_02",
+	"Iria_SE_main_field/_Iria_SE_main_field_0114/ps_iria_se_filia_03"
+]},
+{ name: "connous_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_SE_main_field/_Iria_SE_main_field_0114/ps_iria_se_filia_Square",
+	"Iria_SE_main_field/_Iria_SE_main_field_0101/ps_iria_se_filia_01",
+	"Iria_SE_main_field/_Iria_SE_main_field_0101/ps_iria_se_filia_02",
+	"Iria_SE_main_field/_Iria_SE_main_field_0114/ps_iria_se_filia_03"
+]},
+{ name: "connous_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_SE_main_field/_Iria_SE_main_field_0114/ps_iria_se_filia_Square",
+	"Iria_SE_main_field/_Iria_SE_main_field_0101/ps_iria_se_filia_01",
+	"Iria_SE_main_field/_Iria_SE_main_field_0101/ps_iria_se_filia_02",
+	"Iria_SE_main_field/_Iria_SE_main_field_0114/ps_iria_se_filia_03"
+]},
+
+// Physis
+//---------------------------------------------------------------------------
+{ name: "physis", limit: 2100000, directBankAllowed: false, salesFee: 0.005, exchangeFee: 0.005, zones: [
+	"Iria_NW_main_field/_Iria_NW_main_field_0053/ps_iria_nw_vales_Square",
+	"Iria_NW_main_field/_Iria_NW_main_field_0046/ps_iria_nw_vales_01"
+]},
+{ name: "physis_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_NW_main_field/_Iria_NW_main_field_0053/ps_iria_nw_vales_Square",
+	"Iria_NW_main_field/_Iria_NW_main_field_0046/ps_iria_nw_vales_01"
+]},
+{ name: "physis_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_NW_main_field/_Iria_NW_main_field_0053/ps_iria_nw_vales_Square",
+	"Iria_NW_main_field/_Iria_NW_main_field_0046/ps_iria_nw_vales_01"
+]},
+{ name: "physis_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_NW_main_field/_Iria_NW_main_field_0053/ps_iria_nw_vales_Square",
+	"Iria_NW_main_field/_Iria_NW_main_field_0046/ps_iria_nw_vales_01"
+]},
+
+// Courcle
+//---------------------------------------------------------------------------
+{ name: "courcle", limit: 2100000, directBankAllowed: false, salesFee: 0.017, exchangeFee: 0.017, zones: [
+	"Iria_C_main_field/_Iria_C_main_field_0114/ps_iria_C_cor_Square",
+	"Iria_C_main_field/_Iria_C_main_field_0113/ps_iria_C_cor_01",
+	"Iria_C_main_field/_Iria_C_main_field_0113/ps_iria_C_cor_02"
+]},
+{ name: "courcle_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_C_main_field/_Iria_C_main_field_0114/ps_iria_C_cor_Square",
+	"Iria_C_main_field/_Iria_C_main_field_0113/ps_iria_C_cor_01",
+	"Iria_C_main_field/_Iria_C_main_field_0113/ps_iria_C_cor_02"
+]},
+{ name: "courcle_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_C_main_field/_Iria_C_main_field_0114/ps_iria_C_cor_Square",
+	"Iria_C_main_field/_Iria_C_main_field_0113/ps_iria_C_cor_01",
+	"Iria_C_main_field/_Iria_C_main_field_0113/ps_iria_C_cor_02"
+]},
+{ name: "courcle_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_C_main_field/_Iria_C_main_field_0114/ps_iria_C_cor_Square",
+	"Iria_C_main_field/_Iria_C_main_field_0113/ps_iria_C_cor_01",
+	"Iria_C_main_field/_Iria_C_main_field_0113/ps_iria_C_cor_02"
+]},
+
+// Zardine
+//---------------------------------------------------------------------------
+{ name: "zardine", limit: 2200000, directBankAllowed: false, salesFee: 0.015, exchangeFee: 0.015, zones: [
+	"Iria_NN_main_field/_Iria_NN_main_field_0066/ps_iria_NN_calida_01",
+	"Iria_NN_main_field/_Iria_NN_main_field_0066/ps_iria_NN_calida_02"
+]},
+{ name: "zardine_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_NN_main_field/_Iria_NN_main_field_0066/ps_iria_NN_calida_01",
+	"Iria_NN_main_field/_Iria_NN_main_field_0066/ps_iria_NN_calida_02"
+]},
+{ name: "zardine_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_NN_main_field/_Iria_NN_main_field_0066/ps_iria_NN_calida_01",
+	"Iria_NN_main_field/_Iria_NN_main_field_0066/ps_iria_NN_calida_02"
+]},
+{ name: "zardine_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Iria_NN_main_field/_Iria_NN_main_field_0066/ps_iria_NN_calida_01",
+	"Iria_NN_main_field/_Iria_NN_main_field_0066/ps_iria_NN_calida_02"
+]},
+
+// Taillteann
+//---------------------------------------------------------------------------
+{ name: "taillteann", limit: 2300000, directBankAllowed: false, salesFee: 0.009, exchangeFee: 0.009, regions: [ 300 ], zones: [
+	"taillteann_main_field/_taillteann_main_field_0031/ps_taillteann_square"
+]},
+{ name: "taillteann_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 300 ], zones: [
+	"taillteann_main_field/_taillteann_main_field_0031/ps_taillteann_square"
+]},
+{ name: "taillteann_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 300 ], zones: [
+	"taillteann_main_field/_taillteann_main_field_0031/ps_taillteann_square"
+]},
+{ name: "taillteann_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 300 ], zones: [
+	"taillteann_main_field/_taillteann_main_field_0031/ps_taillteann_square"
+]},
+
+// Tara
+//---------------------------------------------------------------------------
+{ name: "tara", limit: 3000000, directBankAllowed: false, salesFee: 0.012, exchangeFee: 0.0012, regions: [ 401 ], zones: [
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_00",
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_01",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_02",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_03",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_square_00",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_square_01",
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_square_02",
+	"Tara_main_field/_Tara_main_field_0008/ps_tara_moongate_00",
+	"Tara_main_field/_Tara_main_field_0008/ps_tara_moongate_01"
+]},
+{ name: "tara_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 401 ], zones: [
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_00",
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_01",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_02",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_03",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_square_00",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_square_01",
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_square_02",
+	"Tara_main_field/_Tara_main_field_0008/ps_tara_moongate_00",
+	"Tara_main_field/_Tara_main_field_0008/ps_tara_moongate_01"
+]},
+{ name: "tara_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 401 ], zones: [
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_00",
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_01",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_02",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_03",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_square_00",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_square_01",
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_square_02",
+	"Tara_main_field/_Tara_main_field_0008/ps_tara_moongate_00",
+	"Tara_main_field/_Tara_main_field_0008/ps_tara_moongate_01"
+]},
+{ name: "tara_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, regions: [ 401 ], zones: [
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_00",
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_01",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_02",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_03",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_square_00",
+	"Tara_main_field/_Tara_main_field_0012/ps_tara_square_01",
+	"Tara_main_field/_Tara_main_field_0017/ps_tara_square_02",
+	"Tara_main_field/_Tara_main_field_0008/ps_tara_moongate_00",
+	"Tara_main_field/_Tara_main_field_0008/ps_tara_moongate_01"
+]},
+
+// Nekojima
+//---------------------------------------------------------------------------
+{ name: "nekojima", limit: 3100000, directBankAllowed: false, salesFee: 0.017, exchangeFee: 0.017, zones: [
+	"JP_Nekojima_islet/_JP_Nekojima_islet002/ps001",
+	"JP_Nekojima_islet/_JP_Nekojima_islet002/ps002"
+]},
+{ name: "nekojima_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"JP_Nekojima_islet/_JP_Nekojima_islet002/ps001",
+	"JP_Nekojima_islet/_JP_Nekojima_islet002/ps002"
+]},
+{ name: "nekojima_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"JP_Nekojima_islet/_JP_Nekojima_islet002/ps001",
+	"JP_Nekojima_islet/_JP_Nekojima_islet002/ps002"
+]},
+{ name: "nekojima_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"JP_Nekojima_islet/_JP_Nekojima_islet002/ps001",
+	"JP_Nekojima_islet/_JP_Nekojima_islet002/ps002"
+]},
+
+// Cobh
+//---------------------------------------------------------------------------
+{ name: "cobh", limit: 10000000, directBankAllowed: false, salesFee: 0.03, exchangeFee: 0.03, zones: [
+	"Uladh_Cobh_harbor/_Uladh_Cobh_harbor_4/ps001"
+]},
+{ name: "cobh_renewal", limit: 10000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Uladh_Cobh_harbor/_Uladh_Cobh_harbor_4/ps001"
+]},
+{ name: "cobh_premiumplus", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Uladh_Cobh_harbor/_Uladh_Cobh_harbor_4/ps001"
+]},
+{ name: "cobh_premiumvip", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Uladh_Cobh_harbor/_Uladh_Cobh_harbor_4/ps001"
+]},
+
+// Belvast
+//---------------------------------------------------------------------------
+{ name: "Belfast", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Belfast_human/_Belfast_human_7/ps001",
+	"Belfast_human/_Belfast_human_19/ps002"
+]},
+{ name: "Belfast_renewal", limit: 10000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Belfast_human/_Belfast_human_7/ps001",
+	"Belfast_human/_Belfast_human_19/ps002"
+]},
+{ name: "Belfast_premiumplus", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Belfast_human/_Belfast_human_7/ps001",
+	"Belfast_human/_Belfast_human_19/ps002"
+]},
+{ name: "Belfast_premiumvip", limit: 20000000, directBankAllowed: true, salesFee: 0.01, exchangeFee: 0.01, zones: [
+	"Belfast_human/_Belfast_human_7/ps001",
+	"Belfast_human/_Belfast_human_19/ps002"
+]},
+
+// GM
+//---------------------------------------------------------------------------
+{ name: "Gm_all_region", limit: 20000000, directBankAllowed: false, salesFee: 0.01, exchangeFee: 0.01, allowAnywhere: true },
+]

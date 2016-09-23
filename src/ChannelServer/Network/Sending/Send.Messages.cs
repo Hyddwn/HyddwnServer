@@ -76,7 +76,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="from"></param>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		private static void SystemMessage(Creature creature, string from, string format, params object[] args)
+		public static void SystemMessage(Creature creature, string from, string format, params object[] args)
 		{
 			var packet = new Packet(Op.Chat, creature.EntityId);
 

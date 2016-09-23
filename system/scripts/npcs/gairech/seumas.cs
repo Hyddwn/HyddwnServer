@@ -14,6 +14,7 @@ public class SeumasScript : NpcScript
 		SetFace(skinColor: 24, eyeType: 7, eyeColor: 39, mouthType: 4);
 		SetStand("human/anim/tool/Rhand_A/female_tool_Rhand_A02_mining");
 		SetLocation(30, 38334, 48677, 238);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 4950, 0x0000A2C7, 0x00F9A547, 0x00ECD5E8);
 		EquipItem(Pocket.Hair, 4015, 0x002D2B13, 0x002D2B13, 0x002D2B13);
@@ -40,12 +41,7 @@ public class SeumasScript : NpcScript
 	{
 		SetBgm("NPC_Seumas.mp3");
 
-		await Intro(
-			"The man with dark-brown shoulder straps and a worn down shirt has a nice tan.",
-			"He digs the ground with a Pickaxe in his callused hands, occasionally wiping off sweat.",
-			"His strong chin is covered with a short dark beard, while his hair and clothes are covered in white dust.",
-			"As you approach him, he turns his face and greets you with his smiling eyes."
-		);
+		await Intro(L("The man with dark-brown shoulder straps and a worn down shirt has a nice tan.<br/>He digs the ground with a Pickaxe in his callused hands, occasionally wiping off sweat.<br/>His strong chin is covered with a short dark beard, while his hair and clothes are covered in white dust.<br/>As you approach him, he turns his face and greets you with his smiling eyes."));
 
 		Msg("Is there... something you want to say?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 
@@ -54,8 +50,18 @@ public class SeumasScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
-					Msg("Gasp... Gasp... You've done enough<br/>to be called, Gasp... Gasp...a Guardian .<br/>Either way, Gasp... Gasp... Thanks a lot.");
+
+				if (Title == 11001)
+				{
+					Msg("(gasp, gasp)");
+					Msg("So, did the book I gave you the last time help...?  (gasp, gasp)");
+					Msg("Can you go give it to Sion...? (gasp...gasp...)<br/>I think he would really like it... (gasp...gasp...)<br/>Please...could you do that...?  (gasp...gasp...)");
+				}
+				else if (Title == 11002)
+				{
+					Msg("Gasp... Gasp... You've done enough<br/>to be called, Gasp... Gasp...a Guardian.<br/>Either way, Gasp... Gasp... Thanks a lot.");
+				}
+
 				await Conversation();
 				break;
 
@@ -80,15 +86,16 @@ public class SeumasScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("How are you these days? (gasp, gasp) Enjoying life?"));
+			Msg(FavorExpression(), L("Ah, <username/>. (gasp, gasp) I'm out of breath... Good to see you."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("How are you these days? (gasp, gasp) Enjoying life?"));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("?<br/>(gasp, gasp) Why do you visit so often?"));
+			Msg(L("Gasp... Gasp... Are you trying to become my friend...?"));
 		}
 
 		UpdateRelationAfterGreet();
@@ -99,9 +106,9 @@ public class SeumasScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "My name is Seumas... *Pant*<br/>I'm the Director of this Dragon Ruin excavation site...*Pant*");
+				Msg(FavorExpression(), "My name is <npcname/>... *Pant*<br/>I'm the Director of this Dragon Ruin excavation site...*Pant*");
 				Msg("Put simply, I'm like an on-site construction manager. *Pant*");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
@@ -110,7 +117,7 @@ public class SeumasScript : NpcScript
 				Msg("Oh, boy... I can't talk and work at the same time...(gasp, gasp)<br/>Wait. Let me catch my breath.<br/>(gasp, gasp, gasp)");
 				Msg("(gasp, gasp) Let's see, it's not really safe... (gasp, gasp)<br/>around here. (gasp, gasp)");
 				Msg("Try not to use the shortcut<br/>on the left on the way to Bangor... (gasp, gasp)<br/>Especially somewhere like Reinhart... (gasp, gasp)<br/>It's full of Kobolds. (gasp, gasp) You need to be careful.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "shop_misc":
@@ -119,16 +126,16 @@ public class SeumasScript : NpcScript
 				Msg("I'm telling you from my extensive experience... (gasp, gasp)<br/>So it'll be good...(gasp, gasp)... to remember that.");
 				break;
 
-			case "shop_healing":
-				Msg("If you're looking for the Healer's House... (gasp, gasp)<br/>The closest way... (gasp, gasp) is Dunbarton.<br/>There isn't one in Bangor. (gasp, gasp)");
-				Msg("(gasp, gasp) Since there are no healers...<br/>(gasp, gasp) It's quite inconvenient.<br/>If someone opens a Healer's House... (gasp, gasp)<br/>They can make big money.");
-				Msg("Hmm... Should I open one? (gasp, gasp)");
-				break;
-
 			case "shop_grocery":
 				Msg("(gasp, gasp)Food?");
 				Msg("If you keep looking for food (gasp, gasp)you're going to get fat...<br/>If you're really hungry... (gasp, gasp) You should talk to Jennifer.<br/>She sells food at the local Pub... (gasp, gasp)");
 				Msg("Well, there are those who just drink... (gasp, gasp)<br/>With the money they should buy food....<br/>You're... (gasp, gasp)not one of them, are you?");
+				break;
+
+			case "shop_healing":
+				Msg("If you're looking for the Healer's House... (gasp, gasp)<br/>The closest way... (gasp, gasp) is Dunbarton.<br/>There isn't one in Bangor. (gasp, gasp)");
+				Msg("(gasp, gasp) Since there are no healers...<br/>(gasp, gasp) It's quite inconvenient.<br/>If someone opens a Healer's House... (gasp, gasp)<br/>They can make big money.");
+				Msg("Hmm... Should I open one? (gasp, gasp)");
 				break;
 
 			case "shop_bank":
@@ -149,7 +156,7 @@ public class SeumasScript : NpcScript
 				break;
 
 			case "skill_range":
-				Msg("A long range attack... (gasp, gasp)<br/>sounds like a skill for... (gasp, gasp)<br/>cowards. What do you think? ");
+				Msg("A long range attack... (gasp, gasp)<br/>sounds like a skill for... (gasp, gasp)<br/>cowards. What do you think?");
 				break;
 
 			case "skill_instrument":
@@ -196,14 +203,14 @@ public class SeumasScript : NpcScript
 				Msg("This is the Dragon Ruins. (gasp, gasp) It's not the Town Square...");
 				break;
 
-			case "farmland":
-				Msg("(gasp, gasp) It will be on your way to Dunbarton.<br/>(gasp, gasp) The land in Bangor is barren....<br/>(gasp, gasp) So it is difficult to farm.<br/>All the food... (gasp, gasp) is usually imported from other places.");
-				break;
-
 			case "pool":
 				Msg("A reservoir? (gasp, gasp)<br/>If there is one nearby... (gasp, gasp) Would I be like this?<br/>(gasp, gasp) I  would be the first one to jump in there.");
 				Msg("Ah... Even the thought of it... (gasp, gasp)");
 				Msg("...It's making me sweat more. (gasp, gasp)");
+				break;
+
+			case "farmland":
+				Msg("(gasp, gasp) It will be on your way to Dunbarton.<br/>(gasp, gasp) The land in Bangor is barren....<br/>(gasp, gasp) So it is difficult to farm.<br/>All the food... (gasp, gasp) is usually imported from other places.");
 				break;
 
 			case "temple":
@@ -251,6 +258,19 @@ public class SeumasScript : NpcScript
 				Msg("To tell you the truth... (gasp, gasp) I'm not so interested in those kinds of weapons.");
 				break;
 
+			case "tir_na_nog":
+				Msg("...You seem to be interested... (gasp, gasp)<br/>in such strange things. I advise you... (gasp, gasp)<br/>to focus... (gasp, gasp) on what lies in front of you.");
+				Msg("If you spend too much time on ideas that are far out there... (gasp, gasp)<br/>you'll lose sense... (gasp, gasp)<br/>of reality. (gasp, gasp)");
+				break;
+
+			case "mabinogi":
+				Msg("...Mabinogi? (gasp, gasp)<br/>They say if you like old tales... (gasp, gasp)<br/>you'll be poor...");
+				Msg("I can already imagine what your Inventory looks like. Hah...");
+				Msg("*Coughing*... (gasp, gasp)");
+				Msg("Why don't you just help me dig? Gasp...gasp...");
+
+				break;
+
 			case "musicsheet":
 				Msg("Music Score? (gasp, gasp) You want to write music?<br/>Everyone seems to be so serious... (gasp, gasp)<br/>about music.");
 				Msg("You don't have to have musical scores... (gasp, gasp)<br/>to play music. (gasp, gasp)<br/>You can just sing... (gasp, gasp)<br/>That's good enough sometimes.");
@@ -259,18 +279,13 @@ public class SeumasScript : NpcScript
 				break;
 
 			case "g1_way_to_tirnanog1":
-				Msg("(Gasp)... Bryce? (gasp, gasp)  He's<br/>talking nonsense again, isn't he?");
-				Msg("(gasp, gasp)  All the children are going crazy<br/>with curiosity, asking all sorts of questions. (gasp, gasp)");
-				Msg("You know, (gasp, gasp)  Please tell him not to tell<br/>this nonsense to the children. (gasp, gasp)");
+				Msg("(Gasp)... Bryce? (gasp, gasp) He's<br/>talking nonsense again, isn't he?");
+				Msg("(gasp, gasp) All the children are going crazy<br/>with curiosity, asking all sorts of questions. (gasp, gasp)");
+				Msg("You know, (gasp, gasp) Please tell him not to tell<br/>this nonsense to the children. (gasp, gasp)");
 				break;
 
 			case "g1_goddess_morrighan1":
 				Msg("Goddess Morrighan? (gasp, gasp)<br/>Well (gasp)... I've got nothing to say...(gasp)...but I heard she looks after Humans...(gasp, gasp)<br/>so I guess she's a good Goddess...(gasp, gasp)");
-				break;
-
-			case "tir_na_nog":
-				Msg("...You seem to be interested... (gasp, gasp)<br/>in such strange things. I advise you... (gasp, gasp)<br/>to focus... (gasp, gasp) on what lies in front of you.");
-				Msg("If you spend too much time on ideas that are far out there... (gasp, gasp)<br/>you'll lose sense... (gasp, gasp)<br/>of reality. (gasp, gasp)");
 				break;
 
 			case "g3_DarkKnight":
@@ -285,14 +300,19 @@ public class SeumasScript : NpcScript
 
 			default:
 				RndFavorMsg(
-					"Hmm... Do you expect someone like me to know something like that? (gasp, gasp)<br/>You've overestimated me. Hah...",
+					"Hah...",
+					"Maybe someone else might know. (gasp, gasp)",
+					"Hmm... I don't know anything about that either... (gasp, gasp)",
+					"I don't really know... Let's see... Who might know about that....",
+					"Hmm... I don't know. (gasp, gasp)<br/>I'll ask someone else later.",
 					"I really have no clue. (gasp, gasp)<br/>I don't know what to tell you...",
-					"Hmm... I'm sorry to tell you this... (gasp, gasp)<br/>But I don't really know anything about that.",
 					"Hmm... I really don't know. (gasp, gasp)<br/>If you find out, could you tell me, too?",
+					"Hmm... I'm sorry to tell you this... (gasp, gasp)<br/>But I don't really know anything about that.",
 					"Hey, don't look at me like that. (gasp, gasp)<br/>I'm telling you the truth... I really don't know.",
-					"Hmm... I don't know anything about that either... (gasp, gasp)"
+					"Hmm... Do you expect someone like me to know something like that? (gasp, gasp)<br/>You've overestimated me. Hah...",
+					"I really don't know anything about that... (gasp, gasp)<p>There might be someone... (gasp, gasp)<br/>In the village who knows about that. Why don't you try? (gasp, gasp)"
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

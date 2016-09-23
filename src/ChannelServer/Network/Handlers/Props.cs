@@ -48,7 +48,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Check range
-			if (!creature.GetPosition().InRange(prop.GetPosition(), 1500))
+			if (!creature.GetPosition().InRange(prop.GetPosition(), 500))
 			{
 				Send.Notice(creature, NoticeType.MiddleLower, Localization.Get("You're too far away."));
 				Log.Warning("HitProp: Player '{0}' tried to hit prop out of range.", creature.Name);

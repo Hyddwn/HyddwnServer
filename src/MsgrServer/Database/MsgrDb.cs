@@ -27,11 +27,13 @@ namespace Aura.Msgr.Database
 			{
 				var user = new User();
 				user.AccountId = accountId;
+				user.CharacterId = characterEntityId;
 				user.Name = characterName;
 				user.Server = server;
 				user.ChannelName = channelName;
 				user.Status = ContactStatus.Online;
 				user.ChatOptions = ChatOptions.NotifyOnFriendLogIn;
+				user.LastLogin = DateTime.Now;
 
 				// Try to get contact from db
 				using (var mc = new MySqlCommand("SELECT * FROM `contacts` WHERE `characterEntityId` = @characterEntityId", conn))
@@ -46,9 +48,12 @@ namespace Aura.Msgr.Database
 							user.Status = (ContactStatus)reader.GetByte("status");
 							user.ChatOptions = (ChatOptions)reader.GetUInt32("chatOptions");
 							user.Nickname = reader.GetStringSafe("nickname") ?? "";
+							user.LastLogin = reader.GetDateTimeSafe("lastLogin");
 
 							if (!Enum.IsDefined(typeof(ContactStatus), user.Status) || user.Status == ContactStatus.None)
 								user.Status = ContactStatus.Online;
+
+							this.UpdateLastLogin(user);
 
 							return user;
 						}
@@ -65,10 +70,64 @@ namespace Aura.Msgr.Database
 					cmd.Set("status", (byte)user.Status);
 					cmd.Set("chatOptions", (uint)user.ChatOptions);
 					cmd.Set("nickname", "");
+					cmd.Set("lastLogin", user.LastLogin);
 
 					cmd.Execute();
 
 					user.Id = (int)cmd.LastId;
+
+					return user;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates contact's last login time.
+		/// </summary>
+		/// <param name="contact"></param>
+		private void UpdateLastLogin(Contact contact)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `contacts` SET {0} WHERE `contactId` = @contactId", conn))
+			{
+				cmd.AddParameter("@contactId", contact.Id);
+				cmd.Set("lastLogin", contact.LastLogin);
+
+				cmd.Execute();
+			}
+		}
+
+		/// <summary>
+		/// Returns contact with the given character id from the database
+		/// or null if it wasn't found.
+		/// </summary>
+		/// <param name="characterEntityId"></param>
+		/// <returns></returns>
+		public User GetUserByCharacterId(long characterEntityId)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `contacts` WHERE `characterEntityId` = @characterEntityId", conn))
+			{
+				mc.Parameters.AddWithValue("@characterEntityId", characterEntityId);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					if (!reader.Read())
+						return null;
+
+					var user = new User();
+					user.Id = reader.GetInt32("contactId");
+					user.AccountId = reader.GetString("accountId");
+					user.CharacterId = characterEntityId;
+					user.Name = reader.GetString("characterName");
+					user.Server = reader.GetString("server");
+					user.Status = (ContactStatus)reader.GetByte("status");
+					user.ChatOptions = (ChatOptions)reader.GetUInt32("chatOptions");
+					user.Nickname = reader.GetStringSafe("nickname") ?? "";
+					user.LastLogin = reader.GetDateTimeSafe("lastLogin");
+
+					if (!Enum.IsDefined(typeof(ContactStatus), user.Status) || user.Status == ContactStatus.None)
+						user.Status = ContactStatus.Online;
 
 					return user;
 				}

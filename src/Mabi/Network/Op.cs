@@ -84,6 +84,7 @@ namespace Aura.Mabi.Network
 		public const int EntityAppears = 0x520C;
 		public const int EntityDisappears = 0x520D;
 		public const int CreatureBodyUpdate = 0x520E;
+		public const int CreatureFaceUpdate = 0x5210;
 		public const int ItemAppears = 0x5211;
 		public const int ItemDisappears = 0x5212;
 		public const int AssignSittingProp = 0x5215;
@@ -295,6 +296,9 @@ namespace Aura.Mabi.Network
 		public const int BankTransferInquiry = 0x7222;
 		public const int BankTransferRequest = 0x7223;
 		public const int BankTransferRequestR = 0x7224;
+		public const int BankLicenseFeeInquiry = 0x7225;
+		public const int BankPostLicenseInquiryDeposit = 0x7226;
+		public const int BankPostLicenseInquiryDepositR = 0x7227;
 		public const int BankTransferInfo = 0x7228;
 		public const int OpenMail = 0x7242;
 		public const int CloseMail = 0x7243;
@@ -315,23 +319,51 @@ namespace Aura.Mabi.Network
 		public const int RecallMail = 0x7252;
 		public const int RecallMailR = 0x7253;
 		public const int UnreadMailCount = 0x7255;
-		public const int EntrustedEnchant = 0x7469;
-		public const int EntrustedEnchantR = 0x746A;
-		public const int EntrustedEnchantRequest = 0x746B;
-		public const int EntrustedEnchantUnk1 = 0x746C; // Equip set?
-		public const int EntrustedEnchantUnk2 = 0x746D; // Equip unset?
-		public const int EntrustedEnchantFinalizeRequest = 0x746E;
-		public const int EntrustedEnchantFinalizeRequestR = 0x746F;
-		public const int EntrustedEnchantRequestFinalized = 0x7470;
-		public const int EntrustedEnchantCancel = 0x7471;
-		public const int EntrustedEnchantCancelUnk = 0x7473; // Sent from other client after cancel
-		public const int EntrustedEnchantClose = 0x7475;
-		public const int EntrustedEnchantAcceptRequest = 0x7477;
-		public const int EntrustedEnchantAcceptRequestR = 0x7478;
-		public const int EntrustedEnchantUnk3 = 0x7479; // Disable button?
-		public const int EntrustedEnchantChanceUpdate = 0x747A;
-		public const int EntrustedEnchantAddItem = 0x747B;
-		public const int EntrustedEnchantRemoveItem = 0x747C;
+		public const int PersonalShopCheck = 0x73A1;
+		public const int PersonalShopCheckR = 0x73A2;
+		public const int PersonalShopTakeDown = 0x73A3;
+		public const int PersonalShopTakeDownR = 0x73A4;
+		public const int PersonalShopSetUp = 0x73A5;
+		public const int PersonalShopSetUpR = 0x73A6;
+		public const int PersonalShopChangeTitle = 0x73A7;
+		public const int PersonalShopChangeDescription = 0x73A8;
+		public const int PersonalShopSetPrice = 0x73A9;
+		public const int PersonalShopSetPriceR = 0x73AA;
+		public const int PersonalShopPriceUpdate = 0x73AB;
+		public const int PersonalShopPetProtectRequest = 0x73AF;
+		public const int PersonalShopPetProtectRequestR = 0x73B0;
+		public const int PersonalShopPetProtectEndRequest = 0x73B1;
+		public const int PersonalShopPetProtectEndRequestR = 0x73B2;
+		public const int PersonalShopOpen = 0x7405;
+		public const int PersonalShopOpenR = 0x7406;
+		public const int PersonalShopClose = 0x7407;
+		public const int PersonalShopCloseR = 0x7408;
+		public const int PersonalShopBuy = 0x7409;
+		public const int PersonalShopBuyR = 0x740A;
+		public const int PersonalShopAddItem = 0x740B;
+		public const int PersonalShopRemoveItem = 0x740C;
+		public const int PersonalShopCustomerPriceUpdate = 0x740D;
+		public const int PersonalShopUpdateDescription = 0x740E;
+		public const int PersonalShopCloseWindow = 0x740F;
+		public const int Entrustment = 0x7469;
+		public const int EntrustmentR = 0x746A;
+		public const int EntrustmentRequest = 0x746B;
+		public const int EntrustmentEnableRequest = 0x746C;
+		public const int EntrustmentDisableRequest = 0x746D;
+		public const int EntrustmentFinalizeRequest = 0x746E;
+		public const int EntrustmentFinalizeRequestR = 0x746F;
+		public const int EntrustmentRequestFinalized = 0x7470;
+		public const int EntrustmentCancel = 0x7471;
+		public const int EntrustmentRefuse = 0x7473;
+		public const int EntrustmentClose = 0x7475;
+		public const int EntrustmentEnd = 0x7476;
+		public const int EntrustmentAcceptRequest = 0x7477;
+		public const int EntrustmentAcceptRequestR = 0x7478;
+		public const int EntrustmentFinalizing = 0x7479;
+		public const int EntrustmentChanceUpdate = 0x747A;
+		public const int EntrustmentAddItem = 0x747B;
+		public const int EntrustmentRemoveItem = 0x747C;
+		public const int EntrustmentSetMaterial = 0x747D;
 		public const int StatUpdatePrivate = 0x7530;
 		public const int StatUpdatePublic = 0x7532;
 		public const int CombatTargetUpdate = 0x791A; // ?
@@ -405,20 +437,41 @@ namespace Aura.Mabi.Network
 		public const int PartyExpUpdate = 0x8EBA;
 		public const int PartyBoardRequest = 0x8EBD;
 		public const int PartyBoardRequestR = 0x8EBE;
+		public const int GuildCreateRequest = 0x8EF8;
+		public const int GuildCreateRequestR = 0x8EF9;
 		public const int GuildInfoNoGuild = 0x8EFB;
-		public const int OpenGuildPanel = 0x8EFC;
+		public const int GuildPanel = 0x8EFC;
 		public const int GuildInfo = 0x8EFD;
+		public const int GuildInfoApplied = 0x8EFE;
 		public const int GuildApply = 0x8EFF;
 		public const int GuildApplyR = 0x8F00;
-		public const int GuildMembershipChanged = 0x8F01;
-		public const int GuildstoneLocation = 0x8F02;
-		public const int ConvertGp = 0x8F03;
-		public const int ConvertGpR = 0x8F04;
-		public const int ConvertGpConfirm = 0x8F05;
-		public const int ConvertGpConfirmR = 0x8F06;
+		public const int GuildUpdateMember = 0x8F01;
+		public const int GuildStoneLocation = 0x8F02;
+		public const int GuildConvertPlayPoints = 0x8F03;
+		public const int GuildConvertPlayPointsR = 0x8F04;
+		public const int GuildConvertPlayPointsConfirm = 0x8F05;
+		public const int GuildConvertPlayPointsConfirmR = 0x8F06;
 		public const int GuildDonate = 0x8F07;
 		public const int GuildDonateR = 0x8F08;
+		public const int GuildCheckName = 0x8F0B;
+		public const int GuildCheckNameR = 0x8F0C;
 		public const int GuildMessage = 0x8F0F;
+		public const int GuildNameAgreeRequest = 0x8F11;
+		public const int GuildNameVote = 0x8F12;
+		public const int GuildCreationConfirmRequest = 0x8F13;
+		public const int GuildCreationConfirmation = 0x8F14;
+		public const int GuildDestroyStone = 0x8F15;
+		public const int GuildGoldUpdate = 0x8F16;
+		public const int GuildWithdrawGold = 0x8F17;
+		public const int GuildWithdrawGoldR = 0x8F18;
+		public const int GuildOpenGuildRobeCreation = 0x8F19;
+		public const int GuildCreateGuildRobe = 0x8F1A;
+		public const int GuildCreateGuildRobeR = 0x8F1B;
+		public const int GuildCreateGuildRobeUpdate = 0x8F1C;
+		public const int GuildInvite = 0x8F1E;
+		public const int GuildListJoinRequest = 0x8F20;
+		public const int GuildPermitCheck = 0x8F2A;
+		public const int GuildPermitCheckR = 0x8F2B;
 		public const int TradeStart = 0x8F5C;
 		public const int TradeInfo = 0x8F5D;
 		public const int TradeStartR = 0x8F5E;
@@ -436,6 +489,7 @@ namespace Aura.Mabi.Network
 		public const int TradeReadied = 0x8F6A;
 		public const int TradeItemAdded = 0x8F6E;
 		public const int TradeItemRemoved = 0x8F6F;
+		public const int TradeExpandWindow = 0x8F70;
 		public const int AddTitleKnowledge = 0x8FC0;
 		public const int AddTitle = 0x8FC1;
 		public const int ChangeTitle = 0x8FC4;
@@ -446,6 +500,8 @@ namespace Aura.Mabi.Network
 		public const int PetUnregister = 0x9025;
 		public const int SummonPet = 0x902C;
 		public const int SummonPetR = 0x902D;
+		public const int PersonalShopPetProtectStart = 0x902F;
+		public const int PersonalShopPetProtectStop = 0x9030;
 		public const int UnsummonPet = 0x9031;
 		public const int UnsummonPetR = 0x9032;
 		public const int TelePet = 0x9033;
@@ -486,6 +542,10 @@ namespace Aura.Mabi.Network
 		public const int InquiryResponseR = 0x9666;
 		public const int ArenaRoundInfo = 0x9667;
 		public const int ArenaRoundInfoCancel = 0x9668;
+		public const int DressingRoomOpen = 0x96C9;
+		public const int DressingRoomOpenR = 0x96CA;
+		public const int DressingRoomClose = 0x96CB;
+		public const int DressingRoomCloseR = 0x96CC;
 		public const int PurchaseMerchandise = 0x96D5;
 		public const int PurchaseMerchandiseR = 0x96D6;
 		public const int AgeUpEffect = 0x9858;
@@ -511,6 +571,7 @@ namespace Aura.Mabi.Network
 		public const int PartyWindowUpdate = 0xA43C;
 		public const int ContinentWarpCoolDown = 0xA43D;
 		public const int ContinentWarpCoolDownR = 0xA43E;
+		public const int PersonalShopUpdateBrownie = 0xA44A;
 		public const int PartyTypeUpdate = 0xA44B;
 		public const int OpenItemShop = 0xA44D;
 		public const int OpenItemShopR = 0xA44E;
@@ -522,6 +583,7 @@ namespace Aura.Mabi.Network
 		public const int SetPetAi = 0xA8A1;
 		public const int GetPetAi = 0xA8A2;
 		public const int GetPetAiR = 0xA8A3;
+		public const int GuildChangeStone = 0xA8AC;
 		public const int WarpUnk3 = 0xA8AF;
 		public const int SetQuestTimer = 0xA8CF; // Was 0xA8D0 on RE (G13)
 		public const int RemoveQuestTimer = 0xA8D0; // ?
@@ -544,6 +606,8 @@ namespace Aura.Mabi.Network
 		public const int ChangeNameColor = 0xA9AB;
 		public const int SosButtonRequest = 0xA9AD;
 		public const int SosButtonRequestR = 0xA9AE;
+		public const int PersonalShopSetPriceForAll = 0xA9B4;
+		public const int PersonalShopSetPriceForAllR = 0xA9B5;
 		public const int SkillTeleport = 0xA9F4;
 		public const int SetCamera = 0xA9F8;
 		public const int EnterRebirth = 0xA9FD;
@@ -555,12 +619,14 @@ namespace Aura.Mabi.Network
 		// [200100, NA209 (2016-06-16)]
 		// 4 new ops somewhere here, that shifted the SubsribeStabilityMeter~ChannelLoginUnkR ops by 4.
 
-		public const int SubsribeStabilityMeter = 0xAA25;
+		public const int SubscribeStabilityMeter = 0xAA25;
 		public const int StabilityMeterInit = 0xAA26;
 		public const int StabilityMeterUpdate = 0xAA27;
 
 		public const int HomesteadInfoRequest = 0xAA5C;
 		public const int HomesteadInfoRequestR = 0xAA5D;
+		public const int HomesteadEnterRequest = 0xAA5E;
+		public const int HomesteadEnterRequestR = 0xAA5F;
 
 		// [180300, NA166 (18.09.2013)] 2 new ops somewhere here, possibly the two below
 
@@ -710,7 +776,7 @@ namespace Aura.Mabi.Network
 			public const int DeleteFriend = 0xC36B;
 			public const int ChatJoin = 0xC36C;
 			public const int GuildChat = 0xC36E;
-			public const int GuildChatR = 0xC36F;
+			public const int GuildChatMsg = 0xC36F;
 
 			public const int ChangeOptions = 0xC370;
 			public const int ChangeOptionsR = 0xC371;
@@ -730,11 +796,14 @@ namespace Aura.Mabi.Network
 			public const int YouGotNote = 0xC385;
 			public const int ReadNote = 0xC386;
 			public const int ReadNoteR = 0xC387;
+			public const int GuildJoin = 0xC388;
 			public const int ChangeChannel = 0xC389;
 			public const int FriendChannelChanged = 0xC38A;
 			public const int GuildMemberList = 0xC38B;
 			public const int GuildMemberListR = 0xC38C;
 			public const int GuildMemberState = 0xC38D;
+			public const int GuildMemberRemove = 0xC38E;
+			public const int GuildMemberListUpdate = 0xC38F;
 
 			public const int PlayerBlock = 0xC392;
 		}

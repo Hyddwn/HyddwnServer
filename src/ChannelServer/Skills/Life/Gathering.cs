@@ -119,8 +119,8 @@ namespace Aura.Channel.Skills.Life
 				return;
 			}
 
-			// Update tool
-			if (creature.RightHand != null)
+			// Update tool if it's a breakable item (i.e. it had a durability once)
+			if (creature.RightHand != null && creature.RightHand.IsBreakable)
 			{
 				var tool = creature.RightHand;
 

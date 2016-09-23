@@ -264,7 +264,7 @@
 { raceId: 490062, name: "Battle Pegasus", timeLimit: 120, exp: 1.75, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 42, stamina: 100, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 10, protection: 5 },
 { raceId: 490073, name: "Floofy Broom", timeLimit: 102, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 44, mana: 45, stamina: 43, str: 29, int: 34, dex: 32, will: 22, luck: 29, defense: 0, protection: 2 },
 { raceId: 490076, name: "Astral Pegasus", timeLimit: 120, exp: 1.75, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 42, stamina: 100, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 10, protection: 5 },
-{ raceId: 490085, name: "Cotton Candy Broom", timeLimit: 102, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 44, mana: 45, stamina: 43, str: 29, int: 34, dex: 32, will: 22, luck: 29, defense: 0, protection: 2 },
+{ raceId: 490085, name: "S.S. Cotton Candy", timeLimit: 102, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 44, mana: 45, stamina: 43, str: 29, int: 34, dex: 32, will: 22, luck: 29, defense: 0, protection: 2 },
 { raceId: 490090, name: "Combat Pegasus", timeLimit: 120, exp: 1.75, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 42, stamina: 100, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 10, protection: 5 },
 
 // Wild Cats
@@ -393,6 +393,10 @@
 // 58
 //---------------------------------------------------------------------------
 { raceId: 490087, name: "Scooter Imp", timeLimit: 100, exp: 1.5, height: 1.0, upper: 1.0, lower: 1.0, life: 400, mana: 20, stamina: 300, str: 100, int: 5, dex: 45, will: 45, luck: 30, defense: 20, protection: 20 },
+
+// 59
+//---------------------------------------------------------------------------
+{ raceId: 490115, name: "Mir Dragon", timeLimit: 150, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 80, mana: 39, stamina: 77, str: 47, int: 32, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
 
 // Partners
 //---------------------------------------------------------------------------

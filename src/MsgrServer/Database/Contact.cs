@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using Aura.Mabi.Const;
+using System;
 
 namespace Aura.Msgr.Database
 {
@@ -9,10 +10,12 @@ namespace Aura.Msgr.Database
 	{
 		public int Id { get; set; }
 		public string AccountId { get; set; }
+		public long CharacterId { get; set; }
 		public string Name { get; set; }
 		public string Server { get; set; }
 		public ContactStatus Status { get; set; }
 		public string Nickname { get; set; }
+		public DateTime LastLogin { get; set; }
 
 		public string FullName { get { return (this.Name + "@" + this.Server); } }
 

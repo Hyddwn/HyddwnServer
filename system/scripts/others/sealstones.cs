@@ -5,7 +5,7 @@
 //--- Notes -----------------------------------------------------------------
 // A player can break multiple stones only if they have the devCAT title
 // selected, or if the AllowMultiple option in SealStoneScript is set to
-// true.
+// true. A relog might be needed for the additional titles to show up.
 // 
 // Some stones are "locked" until certain features have been enabled,
 // which makes them unbreakable. For example, the Emain Seal Stones can't
@@ -97,6 +97,9 @@ public class MathSealStoneScript : SealStoneScript
 		SetName("Seal Stone of Math Dungeon", "_sealstone_math");
 		SetLocation(14, 58409, 58185, 4.71f);
 		SetHelp("The Seal of Math Dungeon\n\nBe a good little bard.");
+
+		if (!IsEnabled("MathDungeon"))
+			SetLock(true);
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -227,7 +230,9 @@ public class AbbSealStoneScript : SealStoneScript
 		SetName("Seal Stone of Abb Neagh", "_sealstone_south_taillteann");
 		SetLocation(14, 14023, 56756, 0);
 		SetHelp("The Seal of Abb Neagh\n\nBlah, Wand, blah, Mage.");
-		SetLock(true);
+
+		if (!IsEnabled("AbbNeaghSealStone"))
+			SetLock(true);
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -257,7 +262,9 @@ public class SliabSealStoneScript : SealStoneScript
 		SetName("Seal Stone of Sliab Cuilin", "_sealstone_east_taillteann");
 		SetLocation(16, 6336, 62882, 0);
 		SetHelp("The Seal of Sliab Cuilin\n\nUtilize Tracy's Secret.");
-		SetLock(true);
+
+		if (!IsEnabled("SliabCuilinSealStone"))
+			SetLock(true);
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -281,7 +288,9 @@ public class TaraSealStoneScript : SealStoneScript
 		SetName("Seal Stone of Tara", "_sealstone_tara");
 		SetLocation(400, 56799, 33820, 2.23f);
 		SetHelp("The Seal of Tara\n\nAlchemists only!!!");
-		SetLock(true);
+
+		if (!IsEnabled("TaraSealStone"))
+			SetLock(true);
 	}
 
 	public override bool Check(Creature creature, Prop prop)
@@ -366,7 +375,8 @@ public abstract class SealStoneScript : GeneralScript
 			}
 
 			// You can only become breaker once officially.
-			if (IsBreaker(creature) && !AllowMultiple && creature.Titles.SelectedTitle != 60001)
+			var canMultiBreak = (AllowMultiple || creature.IsDev);
+			if (IsBreaker(creature) && !canMultiBreak)
 			{
 				Send.Notice(creature, "Unable to break the Seal.\nYou already hold the title of a Seal Breaker.");
 				return;

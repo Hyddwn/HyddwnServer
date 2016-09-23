@@ -68,6 +68,12 @@ namespace Aura.Channel.World
 		public event Action<ErinnTime> MabiTick;
 		public void OnMabiTick(ErinnTime now) { MabiTick.Raise(now); }
 
+		/// <summary>
+		/// Raised every 9 minutes in real time.
+		/// </summary>
+		public event Action<ErinnTime> PlayTimeTick;
+		public void OnPlayTimeTick(ErinnTime now) { PlayTimeTick.Raise(now); }
+
 		// ------------------------------------------------------------------
 
 		/// <summary>
@@ -285,15 +291,6 @@ namespace Aura.Channel.World
 
 	public static class EventHandlerExtensions
 	{
-		/// <summary>
-		/// Raises event with thread and null-ref safety.
-		/// </summary>
-		public static void Raise<T>(this EventHandler<T> handler, object sender, T args) where T : EventArgs
-		{
-			if (handler != null)
-				handler(sender, args);
-		}
-
 		/// <summary>
 		/// Raises event with thread and null-ref safety.
 		/// </summary>

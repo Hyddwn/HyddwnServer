@@ -31,7 +31,7 @@ namespace Aura.Channel.World.Dungeons
 	{
 		private int _bossesRemaining;
 
-		private List<TreasureChest> _treasureChests;
+		private List<Prop> _treasureChests;
 		private PlacementProvider _treasurePlacementProvider;
 
 		private Door _bossDoor;
@@ -42,6 +42,8 @@ namespace Aura.Channel.World.Dungeons
 		private bool _partyEnterEventFired;
 
 		private HashSet<int> _clearedSections;
+
+		private bool _manualCompletion;
 
 		/// <summary>
 		/// The size (width and height) of a dungeon tile.
@@ -151,7 +153,7 @@ namespace Aura.Channel.World.Dungeons
 			if (this.Data == null)
 				throw new ArgumentException("Dungeon '" + dungeonName + "' doesn't exist.");
 
-			_treasureChests = new List<TreasureChest>();
+			_treasureChests = new List<Prop>();
 			_treasurePlacementProvider = new PlacementProvider(Placement.Treasure8, 750);
 			this.Regions = new List<DungeonRegion>();
 			_clearedSections = new HashSet<int>();
@@ -168,6 +170,10 @@ namespace Aura.Channel.World.Dungeons
 
 			// Only creatures who actually ENTER the dungeon at creation are considered "dungeon founders".
 			this.Creators.AddRange(creature.Party.GetCreaturesOnAltar(creature.RegionId).Select(a => a.EntityId));
+
+			// Add the creator to the list if something went wrong on the altar check.
+			if (this.Creators.Count == 0)
+				this.Creators.Add(creature.EntityId);
 
 			// Get script
 			this.Script = ChannelServer.Instance.ScriptManager.DungeonScripts.Get(this.Name);
@@ -621,7 +627,7 @@ namespace Aura.Channel.World.Dungeons
 		/// Adds chest to list of chests to spawn.
 		/// </summary>
 		/// <param name="chest"></param>
-		public void AddChest(TreasureChest chest)
+		public void AddChest(Prop chest)
 		{
 			_treasureChests.Add(chest);
 		}
@@ -679,7 +685,7 @@ namespace Aura.Channel.World.Dungeons
 				this.Script.OnBossDeath(this, creature, killer);
 
 			// Complete dungeon when all bosses were killed
-			if (_bossesRemaining == 0)
+			if (_bossesRemaining == 0 && !_manualCompletion)
 				this.Complete();
 		}
 
@@ -743,11 +749,20 @@ namespace Aura.Channel.World.Dungeons
 		/// <summary>
 		/// Plays cutscene for all party members.
 		/// </summary>
-		/// <param name="dungeon"></param>
 		/// <param name="cutsceneName"></param>
 		public void PlayCutscene(string cutsceneName)
 		{
 			Cutscene.Play(cutsceneName, this.PartyLeader);
+		}
+
+		/// <summary>
+		/// Plays cutscene for all party members.
+		/// </summary>
+		/// <param name="cutsceneName"></param>
+		/// <param name="onFinish"></param>
+		public void PlayCutscene(string cutsceneName, Action<Cutscene> onFinish)
+		{
+			Cutscene.Play(cutsceneName, this.PartyLeader, onFinish);
 		}
 
 		/// <summary>
@@ -921,6 +936,59 @@ namespace Aura.Channel.World.Dungeons
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Removes all players from dungeon.
+		/// </summary>
+		public void RemoveAllPlayers()
+		{
+			var players = this.Regions.SelectMany(a => a.GetCreatures(b => b.IsPlayer));
+			foreach (var player in players)
+			{
+				player.Warp(this.Data.Exit);
+			}
+		}
+
+		/// <summary>
+		/// Returns the location at the center of the boss room.
+		/// </summary>
+		/// <returns></returns>
+		public Location GetBossRoomCenter()
+		{
+			var region = this.Regions.Last();
+			var endPos = this.Generator.Floors.Last().MazeGenerator.EndPos;
+			var endX = (endPos.X * TileSize + TileSize / 2);
+			var endY = (endPos.Y * TileSize + TileSize);
+
+			return new Location(region.Id, endX, endY);
+		}
+
+		/// <summary>
+		/// Returns the location at the center of the end room,
+		/// behind the boss room.
+		/// </summary>
+		/// <returns></returns>
+		public Location GetEndRoomCenter()
+		{
+			var location = this.GetBossRoomCenter();
+			location.Y += (TileSize + TileSize / 2);
+
+			return location;
+		}
+
+		/// <summary>
+		/// Sets whether the dungeon is completed automatically once all
+		/// bosses have been killed.
+		/// </summary>
+		/// <remarks>
+		/// If set to false, the dungeon script has to handle calling
+		/// Complete, otherwise the dungeon won't be completable.
+		/// </remarks>
+		/// <param name="val"></param>
+		public void CompleteManually(bool val)
+		{
+			_manualCompletion = val;
 		}
 	}
 }

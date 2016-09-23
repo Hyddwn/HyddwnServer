@@ -1,0 +1,1 @@
+ALTER TABLE `guilds` ADD `disbanded` BOOLEAN NOT NULL DEFAULT FALSE ;

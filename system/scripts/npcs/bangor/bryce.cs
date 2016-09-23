@@ -14,6 +14,7 @@ public class BryceScript : NpcScript
 		SetFace(skinColor: 20, eyeType: 5, eyeColor: 76, mouthType: 12);
 		SetStand("human/male/anim/male_natural_stand_npc_bryce");
 		SetLocation(31, 11365, 9372, 0);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 4902, 0x00FCCE4F, 0x00D69559, 0x009DD5AA);
 		EquipItem(Pocket.Hair, 4027, 0x005B482B, 0x005B482B, 0x005B482B);
@@ -39,11 +40,7 @@ public class BryceScript : NpcScript
 	{
 		SetBgm("NPC_Bryce.mp3");
 
-		await Intro(
-			"He's dressed neatly in a high neck shirt and a brown vest.",
-			"His cleft chin is cleanly shaved and his hair has been well groomed and flawlessly brushed back.",
-			"He stares at you with shining hazelnut eyes that are deep-set in his pale face."
-		);
+		await Intro(L("He's dressed neatly in a high neck shirt and a brown vest.<br/>His cleft chin is cleanly shaved and his hair has been well groomed and flawlessly brushed back.<br/>He stares at you with shining hazelnut eyes that are deep-set in his pale face."));
 
 		Msg("What is it?", Button("Start a Conversation", "@talk"), Button("Open My Account", "@bank"), Button("Redeem Coupon", "@coupon"), Button("Shop", "@shop"));
 
@@ -52,11 +49,19 @@ public class BryceScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("Unbelievable... Did you really rescue the Goddess, <username/>?<br/>For real?");
+					Msg("...Was Glas Ghaibhleann defeated as well?");
+					Msg("This is... beyond comprehension...<br/>...What you've accomplished is extraordinary.");
+				}
+				else if (Title == 11002)
 				{
 					Msg("Guardian of Erinn...?<br/>You know, listening to over exaggerated rumors<br/>can be dangerous to you.");
 					Msg("Although, if anyone, you could<br/>probably fit that title...");
 				}
+
 				await Conversation();
 				break;
 
@@ -103,15 +108,15 @@ public class BryceScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Welcome, <username/>. How are you these days?"));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>, you come by the bank all the time. You're a regular here."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Is there something you'd like to ask me, <username/>?"));
 		}
 
 		UpdateRelationAfterGreet();
@@ -122,8 +127,8 @@ public class BryceScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "My name is Bryce.<br/>I take care of bank duties here.<br/>Is there anything I can help you with?");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg(FavorExpression(), "My name is <npcname/>.<br/>I take care of bank duties here.<br/>Is there anything I can help you with?");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
@@ -133,7 +138,7 @@ public class BryceScript : NpcScript
 				Msg("I heard this tale a long time ago.<br/>The ancient humans who lived around here used to worship a dragon.");
 				Msg("The dragon made regular appearances in this town,<br/>burning everything to the ground.<br/>Town folks built a gigantic stone statue<br/>and sacrificed virgins of the town to ease the rage of the dragon.");
 				Msg("People called that dragon Cromm Cruaich.<br/>A God of Destruction from another world.<br/>Yes, it's the dragon that took the life of the ancient king, Nuadha.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -279,6 +284,38 @@ public class BryceScript : NpcScript
 				Msg("There's no graveyard in this town.<br/>I do vaguely remember hearing that people are<br/>buried in a place located in Barri Dungeon.");
 				break;
 
+			case "bow":
+				Msg("Bows are sold at the Blacksmith's Shop.<br/>You would be better off talking to<br/>Elen and Edern about this instead of me.");
+				break;
+
+			case "lute":
+				Msg("Do you need a Lute?");
+				Msg("Mm... If you aren't in a hurry,<br/>how about getting one in another town?");
+				break;
+
+			case "complicity":
+				Msg("I know that it's one of the<br/>unethical ways to attract customers.");
+				Msg("It really makes me wonder if one really has to<br/>go that far to draw in customers.");
+				Msg("However, I do concur that<br/>if it's hard to make a living,<br/>it's something one can consider.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Ibbie asked me before<br/>what kind of place Tir Na Nog is.");
+				Msg("I gave her a rough sketch of the place and<br/>I think her heart has been captivated ever since.");
+				Msg("It'd be best if it just remained as a childhood interest of hers...");
+				Msg("If you happen to meet Ibbie,<br/>please tell her not to dwell on Tir Na Nog too much.");
+				Msg("I'm sure there's a difference between hearing this from a father<br/>and someone like you.");
+				break;
+
+			case "mabinogi":
+				Msg("Instead of asking me,<br/>it would be better to speak with customers who come by this village.<br/>They seem to know better.");
+				Msg("They usually gather at the Pub,<br/>so you can ask around there.");
+				break;
+
+			case "musicsheet":
+				Msg("There were quite a few people storing their Music Scores at the Bank.<br/>It's actually burdensome for the Bank since a lot of people don't pick it up.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"You should ask other people.",
@@ -288,7 +325,7 @@ public class BryceScript : NpcScript
 					"That's a difficult question for me to answer.",
 					"I think it might be better to talk about something else now."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
@@ -298,9 +335,12 @@ public class BryceShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("License", 60103); // Bangor Merchant License
-		Add("License", 81010); // Purple Personal Shop Brownie Work-For-Hire Contract
-		Add("License", 81011); // Pink Personal Shop Brownie Work-For-Hire Contract
-		Add("License", 81012); // Green Personal Shop Brownie Work-For-Hire Contract
+		if (IsEnabled("PersonalShop"))
+		{
+			Add("License", 60103); // Bangor Merchant License
+			Add("License", 81010); // Purple Personal Shop Brownie Work-For-Hire Contract
+			Add("License", 81011); // Pink Personal Shop Brownie Work-For-Hire Contract
+			Add("License", 81012); // Green Personal Shop Brownie Work-For-Hire Contract
+		}
 	}
 }

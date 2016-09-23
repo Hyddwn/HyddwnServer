@@ -17,6 +17,7 @@ using Aura.Channel.Network.Sending;
 using System.Drawing;
 using Aura.Mabi;
 using Aura.Channel.World.Entities.Props;
+using Aura.Channel.Scripting;
 
 namespace Aura.Channel.World.Entities
 {
@@ -45,6 +46,11 @@ namespace Aura.Channel.World.Entities
 		/// Temporary variables for this prop
 		/// </summary>
 		public PropTemp Temp { get; private set; }
+
+		/// <summary>
+		/// Scripting variables. (TODO: Remove Temp?)
+		/// </summary>
+		public ScriptVariables Vars { get; private set; }
 
 		/// <summary>
 		/// List of shapes for the prop (collision).
@@ -79,7 +85,23 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Returns true if prop is not server sided and has a state or extra data.
 		/// </summary>
-		public bool ModifiedClientSide { get { return !this.ServerSide && (!string.IsNullOrWhiteSpace(this.State) || this.HasXml); } }
+		public bool ModifiedClientSide
+		{
+			get
+			{
+				if (this.ServerSide)
+					return false;
+
+				// Props that only have one default state appear to be "single",
+				// while others have default states like "off" or "closed".
+				// Sending everything that has *some* state made EntitiesAppear
+				// explode, so we'll limit it to meaningful states.
+				// See also: Region.GetVisibleEntities
+				var hasStates = (!string.IsNullOrWhiteSpace(this.State) && this.State != "single");
+
+				return (hasStates || this.HasXml);
+			}
+		}
 
 		/// <summary>
 		/// Called when a player interacts with the prop (touch, attack).
@@ -243,6 +265,7 @@ namespace Aura.Channel.World.Entities
 		{
 			this.Shapes = new List<Point[]>();
 			this.Temp = new PropTemp();
+			this.Vars = new ScriptVariables();
 			this.Extensions = new PropExtensionManager(this);
 
 			_resource = 100;

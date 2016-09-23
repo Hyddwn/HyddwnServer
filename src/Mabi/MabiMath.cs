@@ -64,6 +64,17 @@ namespace Aura.Mabi
 		}
 
 		/// <summary>
+		/// Converts radian to byte.
+		/// </summary>
+		/// <param name="radian"></param>
+		/// <returns></returns>
+		public static byte RadianToByte(float radian)
+		{
+			var degree = (radian / Math.PI * 180f);
+			return (byte)(degree * 255 / 360f);
+		}
+
+		/// <summary>
 		/// Calculates the stat bonus for eating food.
 		/// </summary>
 		/// <remarks>

@@ -44,7 +44,22 @@ namespace Aura.Channel.Skills
 			if (defense)
 				damage = Math.Max(1, damage - target.MagicDefense);
 			if (protection && damage > 1)
-				damage = Math.Max(1, damage - (damage * target.MagicProtection));
+				damage = Math.Max(1, damage - (damage / 100 * target.MagicProtection));
+		}
+
+		/// <summary>
+		/// Modified damage based on active conditions.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="target"></param>
+		/// <param name="damage"></param>
+		public static void HandleConditions(Creature attacker, Creature target, ref float damage)
+		{
+			// G1 Seal Scroll = No damage for 60s
+			if (target.Conditions.Has(ConditionsA.Blessed))
+			{
+				damage = 1;
+			}
 		}
 
 		/// <summary>
@@ -101,6 +116,14 @@ namespace Aura.Channel.Skills
 			var rnd = RandomProvider.Get();
 			var min = attacker.InjuryMin;
 			var max = Math.Max(min, attacker.InjuryMax);
+
+			// G1 Seal Scroll = 100% for 60s
+			if (attacker.Conditions.Has(ConditionsA.Blessed))
+			{
+				min = 100;
+				max = 100;
+			}
+
 			if (max == 0)
 				return;
 

@@ -120,10 +120,6 @@ public class KristellScript : NpcScript
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
-			case "about_arbeit":
-				Msg("Unimplemented");
-				break;
-
 			case "shop_misc":
 				GiveKeyword("musicsheet");
 				Msg("Looking for the General Shop?<br/>The General Shop is down this way.<br/>Go down to the Square from here<br/>and look for Walter.");

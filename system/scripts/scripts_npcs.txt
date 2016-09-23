@@ -7,6 +7,7 @@
 npcs/nao.cs
 npcs/tin.cs
 npcs/dungeonlostresident.cs
+npcs/brownies.cs
 
 npcs/dugald/tracy.cs
 
@@ -33,11 +34,13 @@ npcs/tir_na_nog/dougal.cs
 npcs/dunbarton/aeira.cs
 npcs/dunbarton/aranwen.cs
 npcs/dunbarton/austeyn.cs
+npcs/dunbarton/bookcases.cs
 npcs/dunbarton/eavan.cs
 npcs/dunbarton/glenis.cs
 npcs/dunbarton/kristell.cs
 npcs/dunbarton/manus.cs
 npcs/dunbarton/nerys.cs
+npcs/dunbarton/pero.cs
 npcs/dunbarton/simon.cs
 npcs/dunbarton/stewart.cs
 npcs/dunbarton/walter.cs

@@ -44,6 +44,7 @@ namespace Aura.Data
 		public static RegionDb RegionDb = new RegionDb();
 		public static RegionInfoDb RegionInfoDb = new RegionInfoDb();
 		public static ShamalaDb ShamalaDb = new ShamalaDb();
+		public static ShopLicenseDb ShopLicenseDb = new ShopLicenseDb();
 		public static SkillDb SkillDb = new SkillDb();
 		//public static SpawnDb SpawnDb = new SpawnDb();
 		public static SpeedDb SpeedDb = new SpeedDb();

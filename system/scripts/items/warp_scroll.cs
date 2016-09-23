@@ -59,6 +59,6 @@ public class WarpScrollItemScript : ItemScript
 
 		// A few items prepare a skill, instead of sending use, to reduce
 		// redundancy we'll call into the skill handler.
-		HiddenTownBack.Warp(creature, item);
+		HiddenTownBack.Warp(creature, item, false);
 	}
 }

@@ -33,11 +33,11 @@ namespace Aura.Channel.Skills.Magic
 	[Skill(SkillId.Enchant, SkillId.HiddenEnchant)]
 	public class Enchant : IPreparable, ICompletable, ICancelable
 	{
-		private float[] _baseChanceB00 = { 69, 65, 60, 55, 51, 46, 32, 30, 27, 25, 20, 14, 10, 6, 4 };
-		private float[] _baseChanceB05 = { 73, 68, 63, 58, 53, 48, 34, 32, 29, 26, 21, 15, 10, 6, 4 };
-		private float[] _baseChanceB10 = { 77, 71, 66, 61, 56, 51, 35, 33, 30, 27, 22, 16, 11, 7, 5 };
-		private float[] _baseChanceB50 = { 90, 90, 90, 85, 78, 71, 50, 47, 42, 38, 31, 22, 15, 10, 7 };
-		private float[] _baseChanceB60 = { 90, 90, 90, 90, 84, 76, 53, 50, 45, 41, 33, 24, 16, 10, 7 };
+		private static float[] _baseChanceB00 = { 69, 65, 60, 55, 51, 46, 32, 30, 27, 25, 20, 14, 10, 6, 4 };
+		private static float[] _baseChanceB05 = { 73, 68, 63, 58, 53, 48, 34, 32, 29, 26, 21, 15, 10, 6, 4 };
+		private static float[] _baseChanceB10 = { 77, 71, 66, 61, 56, 51, 35, 33, 30, 27, 22, 16, 11, 7, 5 };
+		private static float[] _baseChanceB50 = { 90, 90, 90, 85, 78, 71, 50, 47, 42, 38, 31, 22, 15, 10, 7 };
+		private static float[] _baseChanceB60 = { 90, 90, 90, 90, 84, 76, 53, 50, 45, 41, 33, 24, 16, 10, 7 };
 
 		/// <summary>
 		/// Chance for a huge success/fail.
@@ -53,36 +53,46 @@ namespace Aura.Channel.Skills.Magic
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			var itemEntityId = packet.GetLong();
-			long enchantEntityId = 0;
+			Item item, enchant;
 
-			if (skill.Info.Id == SkillId.HiddenEnchant)
+			if (creature.Temp.ActiveEntrustment == null)
 			{
-				enchantEntityId = packet.GetLong();
-			}
-			else if (skill.Info.Id == SkillId.Enchant)
-			{
-				var rightHand = creature.RightHand;
-				var magazine = creature.Magazine;
+				var itemEntityId = packet.GetLong();
+				long enchantEntityId = 0;
 
-				enchantEntityId = (magazine == null ? 0 : magazine.EntityId);
-
-				if (rightHand == null || !rightHand.HasTag("/enchant/powder/"))
+				if (skill.Info.Id == SkillId.HiddenEnchant)
 				{
-					Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without powder.");
-					return false;
+					enchantEntityId = packet.GetLong();
+				}
+				else if (skill.Info.Id == SkillId.Enchant)
+				{
+					var rightHand = creature.RightHand;
+					var magazine = creature.Magazine;
+
+					enchantEntityId = (magazine == null ? 0 : magazine.EntityId);
+
+					if (rightHand == null || !rightHand.HasTag("/enchant/powder/"))
+					{
+						Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without powder.");
+						return false;
+					}
+
+					if (magazine == null || !magazine.HasTag("/lefthand/enchant/"))
+					{
+						Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without enchant.");
+						return false;
+					}
 				}
 
-				if (magazine == null || !magazine.HasTag("/lefthand/enchant/"))
-				{
-					Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to use Enchant without enchant.");
-					return false;
-				}
+				// Get items
+				item = creature.Inventory.GetItem(itemEntityId);
+				enchant = creature.Inventory.GetItem(enchantEntityId);
 			}
-
-			// Get items
-			var item = creature.Inventory.GetItem(itemEntityId);
-			var enchant = creature.Inventory.GetItem(enchantEntityId);
+			else
+			{
+				item = creature.Temp.ActiveEntrustment.GetItem1();
+				enchant = creature.Temp.ActiveEntrustment.GetItem2();
+			}
 
 			// Check item
 			if (item == null)
@@ -142,6 +152,18 @@ namespace Aura.Channel.Skills.Magic
 				}
 			}
 
+			// Check expiration
+			var checkExpiration = (optionSetData.Type == UpgradeType.Prefix ? "XPRPFX" : "XPRSFX");
+			if (enchant.MetaData1.Has(checkExpiration))
+			{
+				var expiration = enchant.MetaData1.GetDateTime(checkExpiration);
+				if (DateTime.Now > expiration)
+				{
+					Send.MsgBox(creature, Localization.Get("No enchantment options available.\nThis scroll is expired."));
+					return false;
+				}
+			}
+
 			// Save items for Complete
 			creature.Temp.SkillItem1 = item;
 			creature.Temp.SkillItem2 = enchant;
@@ -163,15 +185,25 @@ namespace Aura.Channel.Skills.Magic
 		{
 			// Ignore parameters, use data saved in Prepare.
 
+			var rnd = RandomProvider.Get();
 			var item = creature.Temp.SkillItem1;
 			var enchant = creature.Temp.SkillItem2;
-			var rightHand = creature.RightHand;
-			var rnd = RandomProvider.Get();
+
+			var skillUser = creature;
+			var itemOwner = creature;
+			var powder = creature.RightHand;
+			var entrustment = skillUser.Temp.ActiveEntrustment;
+
+			if (entrustment != null)
+			{
+				itemOwner = entrustment.Creature1;
+				powder = entrustment.GetMagicPowder(itemOwner);
+			}
 
 			var optionSetId = 0;
 
-			creature.Temp.SkillItem1 = null;
-			creature.Temp.SkillItem2 = null;
+			skillUser.Temp.SkillItem1 = null;
+			skillUser.Temp.SkillItem2 = null;
 
 			// Get option set id
 			optionSetId = this.GetOptionSetid(enchant);
@@ -196,7 +228,7 @@ namespace Aura.Channel.Skills.Magic
 			if (!success)
 			{
 				var num = rnd.Next(100);
-				var chance = this.GetChance(creature, rightHand, skill, optionSetData);
+				var chance = GetChance(skillUser, powder, skill.Info.Id, optionSetData);
 				success = num < chance;
 			}
 
@@ -222,9 +254,9 @@ namespace Aura.Channel.Skills.Magic
 				// Random item durability loss, based on rank.
 				var durabilityLoss = this.GetDurabilityLoss(rnd, optionSetData.Rank, result);
 				if (durabilityLoss == -1)
-					creature.Inventory.Remove(item);
+					itemOwner.Inventory.Remove(item);
 				else if (durabilityLoss != 0)
-					creature.Inventory.ReduceMaxDurability(item, durabilityLoss);
+					itemOwner.Inventory.ReduceMaxDurability(item, durabilityLoss);
 			}
 
 			if (skill.Info.Id == SkillId.Enchant)
@@ -233,26 +265,32 @@ namespace Aura.Channel.Skills.Magic
 				this.Training(skill, result);
 
 				// Decrement powder
-				if (rightHand != null)
-					creature.Inventory.Decrement(rightHand);
+				if (powder != null)
+					itemOwner.Inventory.Decrement(powder);
 			}
 
 			// Destroy or decrement enchant
 			if (destroy)
-				creature.Inventory.Decrement(enchant);
+				itemOwner.Inventory.Decrement(enchant);
 			else
-				creature.Inventory.ReduceDurability(enchant, (int)skill.RankData.Var1 * 100);
+				itemOwner.Inventory.ReduceDurability(enchant, (int)skill.RankData.Var1 * 100);
 
 			// Response
-			Send.Effect(creature, Effect.Enchant, (byte)result);
+			Send.Effect(skillUser, Effect.Enchant, (byte)result);
+			if (skillUser != itemOwner)
+				Send.Effect(itemOwner, Effect.Enchant, (byte)result);
+
 			if (success)
 			{
-				Send.ItemUpdate(creature, item);
-				Send.AcquireEnchantedItemInfo(creature, item.EntityId, item.Info.Id, optionSetId);
+				Send.ItemUpdate(itemOwner, item);
+				Send.AcquireEnchantedItemInfo(itemOwner, item.EntityId, item.Info.Id, optionSetId);
 			}
 
+			if (entrustment != null)
+				entrustment.End();
+
 		L_End:
-			Send.Echo(creature, packet);
+			Send.Echo(skillUser, packet);
 		}
 
 		/// <summary>
@@ -277,7 +315,7 @@ namespace Aura.Channel.Skills.Magic
 		/// <param name="skill"></param>
 		/// <param name="optionSetData"></param>
 		/// <returns></returns>
-		private float GetChance(Creature creature, Item rightHand, Skill skill, OptionSetData optionSetData)
+		public static float GetChance(Creature creature, Item rightHand, SkillId skillId, OptionSetData optionSetData)
 		{
 			// Check right hand, only use it if it's powder
 			if (rightHand != null && !rightHand.HasTag("/enchant/powder/"))
@@ -285,7 +323,7 @@ namespace Aura.Channel.Skills.Magic
 
 			// Get base chance, based on skill and powder
 			var baseChance = _baseChanceB00; // (Blessed) Magic Powder/None
-			if (skill.Info.Id == SkillId.Enchant && rightHand != null)
+			if (skillId == SkillId.Enchant && rightHand != null)
 			{
 				if (rightHand.HasTag("/powder02/")) // Elite Magic Powder
 					baseChance = _baseChanceB05;
@@ -304,7 +342,7 @@ namespace Aura.Channel.Skills.Magic
 			var thursdayBonus = 0f;
 
 			// Int bonus if using powder
-			if (skill.Info.Id == SkillId.Enchant && rightHand != null)
+			if (skillId == SkillId.Enchant && rightHand != null)
 				intBonus = 1f + ((creature.Int - 35f) / 350f);
 
 			// Thursday bonus
@@ -408,19 +446,29 @@ namespace Aura.Channel.Skills.Magic
 				Send.UseMotion(creature, 14, enchantBurnSuccess ? 0 : 3);
 			}
 
-			// Add exp based on item buying price (random+unofficial)
-			if (item.OptionInfo.Price > 0)
+			// Seal Scroll (G1 Glas fight, drop from Gargoyles)
+			if (item.HasTag("/evilscroll/55/"))
 			{
-				exp = 40 + (int)(item.OptionInfo.Price / (float)item.Data.StackMax / 100f * item.Info.Amount);
-				creature.GiveExp(exp);
+				creature.Conditions.Activate(ConditionsA.Blessed, null, 60 * 1000);
+				Send.Notice(creature, Localization.Get("I feel the blessing of the Goddess."));
+			}
+			// Other items
+			else
+			{
+				// Add exp based on item buying price (random+unofficial)
+				if (item.OptionInfo.Price > 0)
+				{
+					exp = 40 + (int)(item.OptionInfo.Price / (float)item.Data.StackMax / 100f * item.Info.Amount);
+					creature.GiveExp(exp);
+				}
+
+				Send.Notice(creature, NoticeType.MiddleSystem, Localization.Get("Burning EXP {0}"), exp);
 			}
 
 			// Remove item from cursor
 			creature.Inventory.Remove(item);
 
-			// Effect
 			Send.Effect(MabiId.Broadcast, creature, Effect.BurnItem, campfire.EntityId, enchantBurnSuccess);
-			Send.Notice(creature, NoticeType.MiddleSystem, Localization.Get("Burning EXP {0}"), exp);
 
 			return true;
 		}
@@ -439,9 +487,13 @@ namespace Aura.Channel.Skills.Magic
 		{
 			var points = 0;
 
+			// Destroy item if safe enchanting is disabled and rank is over 6.
+			if (!ChannelServer.Instance.Conf.World.SafeEnchanting && enchantRank >= SkillRank.R6)
+				return -1;
+
 			switch (enchantRank)
 			{
-				case SkillRank.Novice: return 0;
+				// A huge fail results in a bigger durability loss.
 				case SkillRank.RF: points = (result == EnchantResult.Fail ? rnd.Next(0, 1) : rnd.Next(0, 2)); break;
 				case SkillRank.RE: points = (result == EnchantResult.Fail ? rnd.Next(0, 2) : rnd.Next(0, 4)); break;
 				case SkillRank.RD: points = (result == EnchantResult.Fail ? rnd.Next(0, 2) : rnd.Next(0, 4)); break;
@@ -451,7 +503,14 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.R9: points = (result == EnchantResult.Fail ? rnd.Next(1, 6) : rnd.Next(1, 10)); break;
 				case SkillRank.R8: points = (result == EnchantResult.Fail ? rnd.Next(2, 7) : rnd.Next(2, 12)); break;
 				case SkillRank.R7: points = (result == EnchantResult.Fail ? rnd.Next(2, 8) : rnd.Next(2, 14)); break;
-				default: return -1;
+
+				// Custom durability loss for R6+, for safe enchanting option.
+				case SkillRank.R6: points = (result == EnchantResult.Fail ? rnd.Next(3, 9) : rnd.Next(3, 16)); break;
+				case SkillRank.R5: points = (result == EnchantResult.Fail ? rnd.Next(3, 9) : rnd.Next(3, 16)); break;
+				case SkillRank.R4: points = (result == EnchantResult.Fail ? rnd.Next(4, 10) : rnd.Next(4, 18)); break;
+				case SkillRank.R3: points = (result == EnchantResult.Fail ? rnd.Next(4, 10) : rnd.Next(4, 18)); break;
+				case SkillRank.R2: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 20)); break;
+				case SkillRank.R1: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 20)); break;
 			}
 
 			return points * 1000;

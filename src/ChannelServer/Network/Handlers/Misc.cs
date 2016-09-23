@@ -85,6 +85,29 @@ namespace Aura.Channel.Network.Handlers
 		}
 
 		/// <summary>
+		/// Sent when selecting "Enter Homestead" in friend/guild list.
+		/// Dummy handler so characters don't get locked when clicking
+		/// the button.
+		/// </summary>
+		/// <example>
+		/// 001 [..............02] Byte   : 2
+		/// 002 [................] String : Aura
+		/// 003 [................] String : Zerono
+		/// </example>
+		[PacketHandler(Op.HomesteadEnterRequest)]
+		public void HomesteadEnterRequest(ChannelClient client, Packet packet)
+		{
+			var unkByte = packet.GetByte();
+			var serverName = packet.GetString();
+			var characterName = packet.GetString();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.MsgBox(creature, Localization.Get("This feature hasn't been implemented yet."));
+			Send.HomesteadEnterRequestR(creature);
+		}
+
+		/// <summary>
 		/// ?
 		/// </summary>
 		/// <remarks>
@@ -488,6 +511,39 @@ namespace Aura.Channel.Network.Handlers
 
 			// TODO: Log.
 			Send.MsgBox(creature, Localization.Get("Not supported yet."));
+		}
+
+		/// <summary>
+		/// Sent when opening dressing room. (Dummy handler)
+		/// </summary>
+		/// <remarks>
+		/// Client sends DressingRoomClose when it receives a negative
+		/// response to this packet.
+		/// </remarks>
+		/// <example>
+		/// No parameter.
+		/// </example>
+		[PacketHandler(Op.DressingRoomOpen)]
+		public void DressingRoomOpen(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.DressingRoomOpenR(creature, false);
+		}
+
+		/// <summary>
+		/// Sent when closing dressing room. (Dummy handler)
+		/// </summary>
+		/// <example>
+		/// No parameter.
+		/// </example>
+		[PacketHandler(Op.DressingRoomClose)]
+		public void DressingRoomClose(ChannelClient client, Packet packet)
+		{
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.DressingRoomCloseR(creature, false);
+			Send.MsgBox(creature, Localization.Get("This feature hasn't been implemented yet."));
 		}
 	}
 }

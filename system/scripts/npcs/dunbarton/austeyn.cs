@@ -39,11 +39,7 @@ public class AusteynScript : NpcScript
 	{
 		SetBgm("NPC_Austeyn.mp3");
 
-		await Intro(
-			"His gray hair and mustache may show his age,",
-			"but his firm build and the smile on his face show a youthful presence.",
-			"It's as if he wants to prove that he can smile even with his small eyes."
-		);
+		await Intro(L("His gray hair and mustache may show his age,<br/>but his firm build and the smile on his face show a youthful presence.<br/>It's as if he wants to prove that he can smile even with his small eyes."));
 
 		Msg("So, what can I help you with?", Button("Start a Conversation", "@talk"), Button("Open My Account", "@bank"), Button("Redeem Coupon", "@coupon"), Button("Coin Event", "@coin"), Button("Trade", "@shop"));
 
@@ -351,9 +347,12 @@ public class AusteynShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("License", 60102); // Dunbarton Merchant License
-		Add("License", 81010); // Purple Personal Shop Brownie Work-For-Hire Contract
-		Add("License", 81011); // Pink Personal Shop Brownie Work-For-Hire Contract
-		Add("License", 81012); // Green Personal Shop Brownie Work-For-Hire Contract
+		if (IsEnabled("PersonalShop"))
+		{
+			Add("License", 60102); // Dunbarton Merchant License
+			Add("License", 81010); // Purple Personal Shop Brownie Work-For-Hire Contract
+			Add("License", 81011); // Pink Personal Shop Brownie Work-For-Hire Contract
+			Add("License", 81012); // Green Personal Shop Brownie Work-For-Hire Contract
+		}
 	}
 }

@@ -57,6 +57,19 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends negative HomesteadEnterRequestR dummy to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void HomesteadEnterRequestR(Creature creature)
+		{
+			var packet = new Packet(Op.HomesteadEnterRequestR, creature.EntityId);
+			packet.PutByte(false);
+			packet.PutByte((byte)HomesteadEnterRequestResponse.FailedToEnter);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends Disappear to creature's client.
 		/// </summary>
 		/// <remarks>
@@ -444,6 +457,50 @@ namespace Aura.Channel.Network.Sending
 				packet.PutString(""); // ?
 				packet.PutByte(0); // ?
 			}
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends negative DressingRoomOpenR dummy to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void DressingRoomOpenR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.DressingRoomOpenR, creature.EntityId);
+			packet.PutByte(success);
+			if (success)
+			{
+				packet.PutString(creature.Client.Account.Id);
+				packet.PutInt(0); // item count?
+				// for(item count)
+				// {
+				//		Item's ID
+				//		Item's private info
+				//		something more?
+				// }
+
+				packet.PutInt(0); // index count?
+				// for(index count)
+				//{
+				//	packet.PutInt(0);
+				//	packet.PutInt(0); // increments
+				//	packet.PutByte(0);
+				//}
+			}
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends DressingRoomCloseR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void DressingRoomCloseR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.DressingRoomCloseR, creature.EntityId);
+			packet.PutByte(success);
 
 			creature.Client.Send(packet);
 		}

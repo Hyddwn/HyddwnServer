@@ -57,7 +57,7 @@ public class ElensRequestQuestScript : QuestScript
 			await npc.Select();
 			npc.StartQuest(this.Id);
 			npc.Close();
-	}
+		}
 		else
 		{
 			npc.Msg("Did you forget what I asked you?");

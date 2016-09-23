@@ -14,6 +14,7 @@ public class IbbieScript : NpcScript
 		SetFace(skinColor: 15, eyeColor: 90);
 		SetStand("human/anim/female_natural_sit_02");
 		SetLocation(31, 10774, 15796, 197);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 3900, 0x00005046, 0x00F10370, 0x00690A6D);
 		EquipItem(Pocket.Hair, 3024, 0x00B78B68, 0x00B78B68, 0x00B78B68);
@@ -35,19 +36,13 @@ public class IbbieScript : NpcScript
 		AddPhrase("There are so many people with such mysterious items...");
 		AddPhrase("What does the afterlife look like...? I wish I had a friend...");
 		AddPhrase("Where is Sion?");
-
 	}
 
 	protected override async Task Talk()
 	{
 		SetBgm("NPC_Ibbie.mp3");
 
-		await Intro(
-			"Under the wide brim of the Mongo hat, her lovely blonde hair dances in the gentle breeze.",
-			"Her delicate neck stretches out of the lace collar of her intricately tailored rosy-pink dress.",
-			"Her big, bright jade eyes twinkle",
-			"and her round face, like porcelain, is so fair that it looks pale."
-		);
+		await Intro(L("Under the wide brim of the Mongo hat, her lovely blonde hair dances in the gentle breeze.<br/>Her delicate neck stretches out of the lace collar of her intricately tailored rosy-pink dress.<br/>Her big, bright jade eyes twinkle<br/>and her round face, like porcelain, is so fair that it looks pale."));
 
 		Msg("Do you have something to say?", Button("Start Conversation", "@talk"));
 
@@ -56,8 +51,17 @@ public class IbbieScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
-					Msg("Guardian... of Erinn...?<br/>Then will this person watch over Ibbie, too...?");
+
+				if (Title == 11001)
+				{
+					Msg("Cough, Cough!<br/>Then, can you save me, too....?");
+					Msg("I, <npcname/>....am so miserable...<br/>I'm hurting...");
+				}
+				else if (Title == 11002)
+				{
+					Msg("Guardian... of Erinn...?<br/>Then will this person watch over <npcname/>, too...?");
+				}
+
 				await Conversation();
 				break;
 		}
@@ -69,7 +73,9 @@ public class IbbieScript : NpcScript
 	{
 		if (Memory <= 0)
 		{
-			Msg(FavorExpression(), L("You must be a visitor in this town, aren't you?</p><username/>...?</p>Me... I'm Ibbie."));
+			Msg(FavorExpression(), L("You must be a visitor in this town, aren't you?"));
+			Msg(L("<username/>...?"));
+			Msg(L("Me... I'm <npcname/>."));
 		}
 		else if (Memory == 1)
 		{
@@ -77,15 +83,16 @@ public class IbbieScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I see you pretty often these days... But don't get too close..."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Your name is... <username/>, right...? ...I think I got it now..."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You like this place too?"));
+			Msg(L("This place makes me feel at peace."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -97,15 +104,15 @@ public class IbbieScript : NpcScript
 		{
 			case "personal_info":
 				Msg(FavorExpression(), "My name...?<br/>Didn't I tell you?");
-				Msg("Ibbie... Just call me Ibbie.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg("<npcname/>... Just call me <npcname/>.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "Jennifer once told me<br/>that I should eat lots to gain weight and get healthy.");
 				Msg("But...<br/>I don't really want to eat anything.");
-				Msg("Ibbie wishes she could live without eating.");
-				ModifyRelation(Random(2), 0, Random(2));
+				Msg("<npcname/> wishes she could live without eating.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -113,6 +120,7 @@ public class IbbieScript : NpcScript
 				break;
 
 			case "shop_misc":
+				GiveKeyword("shop_smith");
 				Msg("General shop?<br/>You mean Gilmore's place<br/>next to the Blacksmith's Shop?");
 				Msg("The General Shop is at the end of that building down there.<br/>I would take you there myself but...");
 				Msg("My legs hurt... I'm sorry.");
@@ -168,7 +176,7 @@ public class IbbieScript : NpcScript
 				break;
 
 			case "skill_gathering":
-				Msg("Ibbie doesn't know how to do something like that...");
+				Msg("<npcname/> doesn't know how to do something like that...");
 				break;
 
 			case "square":
@@ -233,20 +241,32 @@ public class IbbieScript : NpcScript
 
 			case "graveyard":
 				Msg("This town doesn't have one,<br/>but I heard about it.");
-				Msg("It's a place where you get buried after you die, right?<br/>");
+				Msg("It's a place where you get buried after you die, right?");
+				break;
+
+			case "bow":
+				Msg("...You must be more violent than you look...");
+				break;
+
+			case "tir_na_nog":
+				Msg("Have you heard about it, too?");
+				Msg("I heard that there is no death there.<br/>There's no sickness... Everyone is happy...<br/>*cough* *cough*");
+				Msg("If what Comgan said is true...<br/>I want to go there too...");
+				Msg("...Do you know how to get there by any chance?");
 				break;
 
 			default:
 				RndFavorMsg(
 					"I don't really like it...",
 					"Is that something you have to know?",
-					"Ibbie doesn't know too much about that.",
+					"Maybe you should go ask someone else...",
+					"<npcname/> doesn't know too much about that.",
 					"...Sorry...I just don't want to talk about it...",
 					"..I'm not really interested in things like that...",
 					"Please don't talk about stuff like that with me...",
 					"I don't think it matters whether you know it or not..."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

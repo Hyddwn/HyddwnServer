@@ -65,6 +65,8 @@ namespace Aura.Channel.Util
 			Add(50, 50, "jump", "[x] [y]", Localization.Get("Warps to a specific position in the current region."), HandleJump);
 			Add(50, 50, "goto", "<target name>", Localization.Get("Warps to a specific creature."), HandleGoTo);
 			Add(50, 50, "item", "<id|name> [amount|color1 [color2 [color 3]]]", Localization.Get("Spawns item."), HandleItem);
+			Add(50, 50, "enchant", "<suffix|prefix>", Localization.Get("Spawns enchant item."), HandleEnchant);
+			Add(50, 50, "manual", "<id>", Localization.Get("Spawns a manual or pattern by id."), HandleManual);
 			Add(50, 50, "ego", "<item id> <ego name> <ego race> [color1 [color2 [color 3]]]", Localization.Get("Creates spirit weapon."), HandleEgo);
 			Add(50, 50, "skill", "<id> [rank]", Localization.Get("Adds skill or changes rank."), HandleSkill);
 			Add(50, 50, "title", "<id>", Localization.Get("Adds and enables title."), HandleTitle);
@@ -92,6 +94,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "points", "<modificator>", Localization.Get("Modificates account's points (Pon)."), HandlePoints);
 			Add(50, 50, "fillpotions", "", Localization.Get("Fills all potion stacks in inventory."), HandleFillPotions);
 			Add(50, 50, "keyword", "[-|+]<name>", Localization.Get("Adds/removes keywords."), HandleKeyword);
+			Add(50, 50, "ptj", "<type> <level>", Localization.Get("Sets the level of a certain PTJ type."), HandlePtj);
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", Localization.Get("Creates dynamic region, based on the current one."), HandleDynamic);
@@ -103,6 +106,7 @@ namespace Aura.Channel.Util
 			Add(99, -1, "shutdown", "<seconds>", Localization.Get("Shuts down channel."), HandleShutdown);
 			Add(99, 99, "nosave", "", Localization.Get("Marks creature's controlled by the target's client to not be saved on logout."), HandleNoSave);
 			Add(99, -1, "dbgregion", "[scale=20] [entityIds|propIds]", Localization.Get("Creates an image of the current region and its and client events."), HandleDebugRegion);
+			Add(99, -1, "syncguilds", "", Localization.Get("Synchronizes guilds with database."), HandleSyncGuilds);
 
 			// Aliases
 			AddAlias("item", "drop");
@@ -546,20 +550,6 @@ namespace Aura.Channel.Util
 				item.Info.Color3 = color3;
 			}
 
-			// Create new pockets for bags
-			if (item.Data.HasTag("/pouch/bag/") && !drop)
-			{
-				if (item.Data.BagWidth == 0)
-				{
-					Send.ServerMessage(sender, Localization.Get("Beware, shaped bags aren't supported yet."));
-				}
-				else if (!target.Inventory.AddBagPocket(item))
-				{
-					// TODO: Handle somehow? Without linked pocket the bag
-					//   won't open.
-				}
-			}
-
 			// Spawn item
 			var success = true;
 			if (!drop)
@@ -579,6 +569,63 @@ namespace Aura.Channel.Util
 				Send.ServerMessage(sender, Localization.Get("Failed to spawn item."));
 				return CommandResult.Fail;
 			}
+		}
+
+		private CommandResult HandleEnchant(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			int optionSetId;
+			if (!int.TryParse(args[1], out optionSetId))
+				return CommandResult.InvalidArgument;
+
+			try
+			{
+				var item = Item.CreateEnchant(optionSetId);
+				target.Inventory.Add(item, Pocket.Temporary);
+			}
+			catch (ArgumentException)
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid enchant id."));
+				return CommandResult.Fail;
+			}
+
+			Send.ServerMessage(sender, Localization.Get("Spawned enchant."));
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("{0} spawned an enchant in your inventory."), sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleManual(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			int manualId;
+			if (!int.TryParse(args[1], out manualId))
+				return CommandResult.InvalidArgument;
+
+			var manual = AuraData.ManualDb.Find(ManualCategory.Tailoring, manualId);
+			if (manual == null)
+			{
+				manual = AuraData.ManualDb.Find(ManualCategory.Blacksmithing, manualId);
+				if (manual == null)
+				{
+					Send.ServerMessage(sender, Localization.Get("Invalid id."));
+					return CommandResult.Fail;
+				}
+			}
+
+			var item = Item.CreatePattern(manual.ManualItemId, manual.Id, 100);
+			target.Inventory.Add(item, Pocket.Temporary);
+
+			Send.ServerMessage(sender, Localization.Get("Spawned manual."));
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("{0} spawned a manual in your inventory."), sender.Name);
+
+			return CommandResult.Okay;
 		}
 
 		private CommandResult HandleDynamic(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
@@ -1429,7 +1476,7 @@ namespace Aura.Channel.Util
 
 			Send.SystemMessage(sender, Localization.GetPlural("Spawned {0:n0}g.", "Spawned {0:n0}g.", amount), amount);
 			if (sender != target)
-				Send.SystemMessage(target, Localization.GetPlural("{0} gave you {1:n0}g.", "{0} gave you {1:n0}g.", amount), sender.Name, amount);
+				Send.SystemMessage(target, string.Format(Localization.GetPlural("{0} gave you {1:n0}g.", "{0} gave you {1:n0}g.", amount), sender.Name, amount));
 
 			return CommandResult.Okay;
 		}
@@ -1565,12 +1612,19 @@ namespace Aura.Channel.Util
 			// Get item id
 			int itemId;
 			if (!int.TryParse(args[1], out itemId))
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid item id."));
 				return CommandResult.InvalidArgument;
+			}
 
 			// Get ego race
 			EgoRace egoRace;
 			if (!EgoRace.TryParse(args[3], out egoRace) || (egoRace <= EgoRace.None || egoRace > EgoRace.CylinderF))
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid ego race. Available races:"));
+				Send.ServerMessage(sender, string.Join(", ", Enum.GetNames(typeof(EgoRace))));
 				return CommandResult.InvalidArgument;
+			}
 
 			// Check item data
 			var itemData = AuraData.ItemDb.Find(itemId);
@@ -2206,6 +2260,45 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Warped to '{0}'."), name);
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("{0} warped you to '{1}'."), sender.Name, name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandlePtj(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 3)
+				return CommandResult.InvalidArgument;
+
+			PtjType type;
+			if (!Enum.TryParse<PtjType>(args[1], out type))
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid PTJ type. Available types:"));
+				Send.ServerMessage(sender, string.Join(", ", Enum.GetNames(typeof(PtjType))));
+
+				return CommandResult.Fail;
+			}
+
+			int level;
+			if (!int.TryParse(args[2], out level) || level < 0 || level > short.MaxValue)
+			{
+				Send.ServerMessage(sender, Localization.Get("Invalid level."));
+				return CommandResult.Fail;
+			}
+
+			target.Quests.SetPtjTrackRecord(type, level, level);
+
+			Send.ServerMessage(sender, Localization.Get("Changed '{0}' PTJ level to '{1}'."), type, level);
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("{2} has changed your '{0}' PTJ level to '{1}'."), type, level, sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleSyncGuilds(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			ChannelServer.Instance.GuildManager.SynchronizeGuilds();
+
+			Send.ServerMessage(sender, Localization.Get("Synchronized guilds."));
 
 			return CommandResult.Okay;
 		}

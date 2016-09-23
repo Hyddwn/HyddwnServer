@@ -14,6 +14,7 @@ public class EdernScript : NpcScript
 		SetFace(skinColor: 25, eyeType: 9, eyeColor: 38, mouthType: 2);
 		SetStand("human/male/anim/male_natural_stand_npc_edern");
 		SetLocation(31, 10972, 13373, 76);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 4904, 0x00F99D8B, 0x00F9E0EC, 0x009A1561);
 		EquipItem(Pocket.Hair, 4028, 0x00C0BC92, 0x00C0BC92, 0x00C0BC92);
@@ -41,12 +42,7 @@ public class EdernScript : NpcScript
 	{
 		SetBgm("NPC_Edern.mp3");
 
-		await Intro(
-			"Between the long strands of white hair, you can see the wrinkles on his face and neck that show his old age.",
-			"But his confidence and well-built torso with copper skin reveal that this man is anything but fragile.",
-			"His eyes encompass both the passion of youth and the wisdom of old age.",
-			"The thick brows that shoot upward with wrinkles add a fierce look, but his eyes are of soft amber tone."
-		);
+		await Intro(L("Between the long strands of white hair, you can see the wrinkles on his face and neck that show his old age.<br/>But his confidence and well-built torso with copper skin reveal that this man is anything but fragile.<br/>His eyes encompass both the passion of youth and the wisdom of old age.<br/>The thick brows that shoot upward with wrinkles add a fierce look, but his eyes are of soft amber tone."));
 
 		Msg("You must have something to say to me.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Modify Item", "@upgrade"));
 
@@ -55,8 +51,12 @@ public class EdernScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 11001)
+					Msg("A title doesn't define who the person is.<br/>If you don't strive to become someone who fits the title,<br/>the title is no more than a fancy name for yourself. Don't forget.");
+				else if (Title == 11002)
 					Msg("You got quite a name there...<br/>But you can't be satisfied with being the guardian of Erinn!<br/>It's good to think big.");
+
 				await Conversation();
 				break;
 
@@ -93,7 +93,10 @@ public class EdernScript : NpcScript
 								L("I've repaired 1 point of Durability.")
 							);
 						else
-							Msg(L("(Missing dialog: Edern failing 1 point repair.)"));
+							RndMsg(
+								L("Hmm. My apologies.<br/>The repair hasn't been successful."),
+								L("UUUGH! I'm sorry.<br/>The repair doesn't seem to have gone successfully.")
+							);
 					}
 					else if (result.Points > 1)
 					{
@@ -104,7 +107,7 @@ public class EdernScript : NpcScript
 								L("There, the repair job is finished. It's perfect.")
 							);
 						else
-							Msg(string.Format(L("(Missing dialog: Edern failing multi point repair, fails: {0}, successes: {1}.)"), result.Fails, result.Successes));
+							Msg(string.Format(L("There, the repair's done.<br/>But, unfortunately, I've made {0} mistake(s).<br/>Only {1} point(s) have been repaired, but please bear with me."), result.Fails, result.Successes));
 					}
 				}
 
@@ -128,7 +131,7 @@ public class EdernScript : NpcScript
 						Msg(L("(Error)"));
 				}
 
-				Msg(L("Then come back to me when you have something you want to modify.<br/><upgrade hide='true'/>"));
+				Msg(L("Then come back to me when you have something you want to modify.<upgrade hide='true'/>"));
 				break;
 		}
 
@@ -139,23 +142,23 @@ public class EdernScript : NpcScript
 	{
 		if (Memory <= 0)
 		{
-			Msg(FavorExpression(), L("Welcome! You look familiar."));
+			Msg(FavorExpression(), L("What is your business here?"));
 		}
 		else if (Memory == 1)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Welcome! You look familiar."));
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You seem to come by here often, <username/>."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Oh, look who's here. It's <username/>."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Hahaha, <username/>.<br/>I suspect that you're more interested in Elen than talking to me."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -166,14 +169,15 @@ public class EdernScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "My name is Edern. I am the blacksmith in this town.<br/>I own the Bangor Blacksmith's Shop.<br/>And you, who ask such obvious questions, are <username/>.");
+				GiveKeyword("shop_smith");
+				Msg(FavorExpression(), "My name is <npcname/>. I am the blacksmith in this town.<br/>I own the Bangor Blacksmith's Shop.<br/>And you, who ask such obvious questions, are <username/>.");
 				Msg("There are plenty of spaces to handle metal, so feel free to use the available space.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "Oh, that girl over there?<br/>That's Elen, my granddaughter.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -231,6 +235,7 @@ public class EdernScript : NpcScript
 				break;
 
 			case "shop_bank":
+				GiveKeyword("shop_misc");
 				Msg("Go talk to Bryce over there.<br/>You'll easily find him near the General Shop.");
 				break;
 
@@ -346,6 +351,33 @@ public class EdernScript : NpcScript
 				Msg("What are you talking about?");
 				break;
 
+			case "bow":
+				Msg("Bows are generally made with wood,<br/>but you can add other materials to create small, yet powerful bows.");
+				Msg("If you'd like, go ask Elen to show you a few.");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_misc");
+				Msg("Have you been to the General Shop?");
+				break;
+
+			case "tir_na_nog":
+				Msg("Oh, you mean that land of youth that Comgan kid always rants on about?<br/>It wouldn't be a bad thing to have a place like that.");
+				Msg("Not only that, it's nonsense...");
+				Msg("If no one aged, everyone would be peers and friends,<br/>children and adults alike.");
+				Msg("I can't take that seriously.");
+				break;
+
+			case "mabinogi":
+				Msg("Indulge yourself too much in old tales and you're bound to go hungry.");
+				Msg("Young folks should work hard.");
+				break;
+
+			case "musicsheet":
+				Msg("You like to ask strange questions.");
+				Msg("Do you even realize that you are at the Blacksmith's Shop?");
+				break;
+
 			default:
 				RndFavorMsg(
 					"And why are you asking ME?",
@@ -353,7 +385,7 @@ public class EdernScript : NpcScript
 					"What are you even talking about?",
 					"Why would you want to know about something like that?"
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
@@ -441,8 +473,9 @@ public class EdernShop : NpcShopScript
 
 			var item = Item.CreateEnchanted(itemId, Prefix, suffixId);
 			var price = (item.OptionInfo.Price * priceMultiplier);
+			var stock = rnd.Next(1, 4);
 
-			Add("Advanced Weapon", item, price);
+			Add("Advanced Weapon", item, price, stock);
 		}
 	}
 }

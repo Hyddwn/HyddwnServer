@@ -95,7 +95,10 @@
     <Compile Include="Network\Handlers\Items.cs" />
     <Compile Include="Network\Handlers\GMCP.cs" />
     <Compile Include="Network\Handlers\Parties.cs" />
+    <Compile Include="Network\Handlers\PersonalShops.cs" />
     <Compile Include="Network\Handlers\Pets.cs" />
+    <Compile Include="Network\Handlers\Entrusting.cs" />
+    <Compile Include="Network\Handlers\Guilds.cs" />
     <Compile Include="Network\Handlers\Trading.cs" />
     <Compile Include="Network\Handlers\Props.cs" />
     <Compile Include="Network\Handlers\Quests.cs" />
@@ -119,6 +122,9 @@
     <Compile Include="Network\Sending\Send.Dungeons.cs" />
     <Compile Include="Network\Sending\Send.GMCP.cs" />
     <Compile Include="Network\Sending\Send.Parties.cs" />
+    <Compile Include="Network\Sending\Send.PersonalShops.cs" />
+    <Compile Include="Network\Sending\Send.Entrusting.cs" />
+    <Compile Include="Network\Sending\Send.Guilds.cs" />
     <Compile Include="Network\Sending\Send.Trading.cs" />
     <Compile Include="Network\Sending\Send.Quests.cs" />
     <Compile Include="Network\Sending\Send.Effects.cs" />
@@ -182,12 +188,14 @@
     <Compile Include="Skills\Combat\Smash.cs" />
     <Compile Include="Skills\Combat\Stomp.cs" />
     <Compile Include="Skills\Combat\SuperWindmill.cs" />
+    <Compile Include="Skills\Combat\DarkLord.cs" />
     <Compile Include="Skills\Combat\Windmill.cs" />
     <Compile Include="Skills\Hidden\BigBlessingWaterKit.cs" />
     <Compile Include="Skills\Hidden\Blessing.cs" />
     <Compile Include="Skills\Hidden\Dye.cs" />
     <Compile Include="Skills\Combat\AdministrativePicking2.cs" />
     <Compile Include="Skills\Actions\DiceTossing.cs" />
+    <Compile Include="Skills\Hidden\HiddenGuildStoneSetting.cs" />
     <Compile Include="Skills\Magic\Enchant.cs" />
     <Compile Include="Skills\Hidden\HiddenResurrection.cs" />
     <Compile Include="Skills\Hidden\HiddenTownBack.cs" />
@@ -247,6 +255,7 @@
     <Compile Include="World\Dungeons\Generation\MazeMove.cs" />
     <Compile Include="World\Dungeons\Generation\MazeRoomInternal.cs" />
     <Compile Include="World\Dungeons\Generation\Position.cs" />
+    <Compile Include="World\Guilds\GuildManager.cs" />
     <Compile Include="World\Dungeons\Props\Chest.cs" />
     <Compile Include="World\Dungeons\Props\Door.cs" />
     <Compile Include="World\Dungeons\Props\DungeonProp.cs" />
@@ -306,7 +315,10 @@
     <Compile Include="World\Region.cs" />
     <Compile Include="World\RegionCollision.cs" />
     <Compile Include="Scripting\Scripts\NpcShopScript.cs" />
+    <Compile Include="World\Shops\PersonalShop.cs" />
     <Compile Include="World\SpawnManager.cs" />
+    <Compile Include="World\Entrustment.cs" />
+    <Compile Include="World\Trade.cs" />
     <Compile Include="World\Weather\WeatherManager.cs" />
     <Compile Include="World\Weather\WeatherProviderConstant.cs" />
     <Compile Include="World\Weather\WeatherProviderTable.cs" />

@@ -13,6 +13,7 @@ public class WalterScript : NpcScript
 		SetBody(height: 1.1f, weight: 1.2f, lower: 1.2f);
 		SetFace(skinColor: 22, eyeType: 13, eyeColor: 27);
 		SetLocation(14, 35770, 39528, 252);
+		SetGiftWeights(beauty: 0, individuality: 1, luxury: -1, toughness: 2, utility: 2, rarity: -1, meaning: 0, adult: 2, maniac: 0, anime: 0, sexy: 0);
 
 		EquipItem(Pocket.Face, 4903, 0x000D97D0, 0x000079A4, 0x00001641);
 		EquipItem(Pocket.Hair, 4027, 0x00554433, 0x00554433, 0x00554433);
@@ -36,21 +37,28 @@ public class WalterScript : NpcScript
 	{
 		SetBgm("NPC_Walter.mp3");
 
-		await Intro(
-			"A middle-aged man with a dark complexion and average height, Walter is wearing suspenders and stroking his stubby fingers.",
-			"Under his dark-brown eyes, his tightly sealed lips are covered by a thick moustache.",
-			"You can see his moustache and his Adam's apple slightly move as if he is about to say something."
-		);
+		await Intro(L("A middle-aged man with a dark complexion and average height, <npcname/> is wearing suspenders and stroking his stubby fingers.<br/>Under his dark-brown eyes, his tightly sealed lips are covered by a thick moustache.<br/>You can see his moustache and his Adam's apple slightly move as if he is about to say something."));
 
-		Msg("Um?  What do you want?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Modify Item", "@upgrade"));
+		Msg("Um? What do you want?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Modify Item", "@upgrade"));
 
 		switch (await Select())
 		{
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("...");
+					Msg("...");
+					Msg("What do you think about my daughter...?");
+					Msg("...I didn't mean to give you the book so late... I apologize.");
+				}
+				if (Title == 11002)
+				{
 					Msg("...I sense you are an amazing person.");
+				}
+
 				await Conversation();
 				break;
 
@@ -87,7 +95,7 @@ public class WalterScript : NpcScript
 								"It's done, 1 point."
 							);
 						else
-							Msg("Hmm... I've made some mistakes.");
+							Msg("Hmm... I've made some mistakes."); // Should be 2
 					}
 					else if (result.Points > 1)
 					{
@@ -95,14 +103,14 @@ public class WalterScript : NpcScript
 							RndMsg(
 								"Perfectly repaired as you wanted.",
 								"It's done."
-						);
+							);
 						else
 							// TODO: Use string format once we have XML dialogues.
 							Msg("There have been some mistakes, just " + result.Fails + " point(s)...<br/>Anyway, it's done.");
 					}
 				}
 
-				Msg("If you're not careful with it, it will break easily.<br/>So take good care of it.");
+				Msg("If you're not careful with it, it will break easily.<br/>So take good care of it.<repair hide='true'/>");
 				break;
 
 			case "@upgrade":
@@ -133,23 +141,23 @@ public class WalterScript : NpcScript
 	{
 		if (Memory <= 0)
 		{
-			Msg(FavorExpression(), L("...Welcome."));
+			Msg(FavorExpression(), L("...What do you want?"));
 		}
 		else if (Memory == 1)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("...Welcome."));
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I see you here often..."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("...<username/>, right? Anyway, welcome..."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("<username/>, how are you doing?"));
 		}
 
 		UpdateRelationAfterGreet();
@@ -162,19 +170,23 @@ public class WalterScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					Msg("You a traveler...?  I'm Walter.");
-					ModifyRelation(1, 0, Random(2));
+					Msg(FavorExpression(), "You a traveler...? I'm <npcname/>.");
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					Msg(FavorExpression(), "I'm the owner of this General Shop. Take a look around.");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
-				Msg(FavorExpression(), "There is news about a Goblin Bandits assault at North Plains of Dunbarton.");
-				ModifyRelation(Random(2), 0, Random(2));
+				GiveKeyword("shop_armory");
+				Msg(FavorExpression(), "If you need something, you're at the right place.<br/>But you'll have to go down to Nerys' Shop for weapons.<br/>The Weapons Shop.");
+				ModifyRelation(Random(2), 0, Random(3));
+
+				// Ongoing Field Boss Msg
+				// There is news about a Goblin Bandits assault at North Plains of Dunbarton.
 				break;
 
 			case "about_arbeit":
@@ -186,6 +198,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "shop_grocery":
+				GiveKeyword("shop_restaurant");
 				Msg("Are you talking about the Restaurant?");
 				break;
 
@@ -202,6 +215,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("There's no such place here.<br/>Maybe in the Weapons Shop...");
 				break;
 
@@ -226,7 +240,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "shop_headman":
-				Msg("A chief?  What chief?");
+				Msg("A chief? What chief?");
 				break;
 
 			case "temple":
@@ -250,6 +264,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "shop_armory":
+				GiveKeyword("shop_healing");
 				Msg("Go near the Healer's House.");
 				break;
 
@@ -265,6 +280,18 @@ public class WalterScript : NpcScript
 				Msg("Go straight to the opposite side.");
 				break;
 
+			case "bow":
+				Msg("Ask at the Weapons Shop.");
+				break;
+
+			case "lute":
+				Msg("I happen to have it.<br/>Do you want one?");
+				break;
+
+			case "musicsheet":
+				Msg("I have a few.<br/>Press 'Trade'.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"I'm not sure.",
@@ -273,7 +300,7 @@ public class WalterScript : NpcScript
 					"I don't really care about that.",
 					"You're really bothering me. That's quite enough. Enough already."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

@@ -221,6 +221,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 					packet.PutByte(0);
 				}
 
+				// [200200, NA233 (2016-08-12)] ?
+				{
+					packet.PutByte(0);
+				}
+
 				var regens = creature.Regens.GetList();
 				packet.PutInt(regens.Count);
 				foreach (var regen in regens)
@@ -432,22 +437,36 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			// Guild
 			// --------------------------------------------------------------
-			//if (creature.Guild != null)
-			//{
-			//    packet.PutLong(creature.Guild.Id);
-			//    packet.PutString(creature.Guild.Name);
-			//    packet.PutInt((uint)creature.GuildMember.MemberRank);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutInt(0);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutByte(0);
-			//    packet.PutString(creature.Guild.Title);
-			//}
-			//else
+			if (creature.Guild != null)
+			{
+				packet.PutLong(creature.Guild.Id);
+				packet.PutString(creature.Guild.Name);
+				packet.PutInt((int)creature.GuildMember.Rank);
+				if (creature.Guild.HasRobe)
+				{
+					packet.PutByte(creature.Guild.Robe.EmblemMark);
+					packet.PutByte(creature.Guild.Robe.EmblemOutline);
+					packet.PutByte(creature.Guild.Robe.Stripes);
+					packet.PutUInt(creature.Guild.Robe.RobeColor);
+					packet.PutByte(creature.Guild.Robe.BadgeColor);
+					packet.PutByte(creature.Guild.Robe.EmblemMarkColor);
+					packet.PutByte(creature.Guild.Robe.EmblemOutlineColor);
+					packet.PutByte(creature.Guild.Robe.StripesColor);
+				}
+				else
+				{
+					packet.PutByte(0);
+					packet.PutByte(0);
+					packet.PutByte(0);
+					packet.PutInt(0);
+					packet.PutByte(0);
+					packet.PutByte(0);
+					packet.PutByte(0);
+					packet.PutByte(0);
+				}
+				packet.PutString(creature.Guild.Title);
+			}
+			else
 			{
 				packet.PutLong(0);
 				packet.PutString("");

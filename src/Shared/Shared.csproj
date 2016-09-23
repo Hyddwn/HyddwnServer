@@ -91,6 +91,11 @@
     <Compile Include="Database\Card.cs" />
     <Compile Include="Database\Commands.cs" />
     <Compile Include="Database\AuraDb.cs" />
+    <Compile Include="Database\Guild.cs" />
+    <Compile Include="Database\AbstractGuildManager.cs" />
+    <Compile Include="Database\GuildMember.cs" />
+    <Compile Include="Database\GuildRobe.cs" />
+    <Compile Include="Database\GuildStone.cs" />
     <Compile Include="Database\PremiumServices.cs" />
     <Compile Include="Scripting\Compilers\BooCompiler.cs" />
     <Compile Include="Scripting\Compilers\Compiler.cs" />

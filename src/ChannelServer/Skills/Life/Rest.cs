@@ -39,6 +39,29 @@ namespace Aura.Channel.Skills.Life
 
 			if (chairItemEntityId != 0)
 				this.SetUpChair(creature, chairItemEntityId);
+			else
+			{
+				// Find all nearby sittable props and sit on closest one
+				var crpos = creature.GetPosition();
+				var props = creature.Region.GetProps(prop => prop.HasTag("/sittable/")
+					&& (!prop.HasXml || prop.Xml.Attribute("SITCHAR") == null || prop.Xml.Attribute("SITCHAR").Value == "0")
+					&& prop.GetPosition().GetDistance(crpos) < 125);
+				if (props.Count > 0)
+				{
+					int nearest = 0;
+					int minDist = 125;
+					for (int i = 0; i < props.Count; i++)
+					{
+						var dist = crpos.GetDistance(props[i].GetPosition());
+						if(dist < minDist)
+						{
+							nearest = i;
+							minDist = dist;
+						}
+					}
+					this.SitOnProp(creature, props[nearest]);
+				}
+			}
 
 			creature.Activate(CreatureStates.SitDown);
 			if (skill.Info.Rank >= SkillRank.R9)
@@ -152,17 +175,10 @@ namespace Aura.Channel.Skills.Life
 			sittingProp.State = "stand";
 			creature.Region.AddProp(sittingProp);
 
-			// Move char
-			Send.AssignSittingProp(creature, sittingProp.EntityId, 1);
-
 			// Update chair
 			sittingProp.Xml.SetAttributeValue("OWNER", creature.EntityId);
-			sittingProp.Xml.SetAttributeValue("SITCHAR", creature.EntityId);
 
-			Send.PropUpdate(sittingProp);
-
-			creature.Temp.CurrentChairData = chairData;
-			creature.Temp.SittingProp = sittingProp;
+			this.SitOnProp(creature, sittingProp, chairData);
 		}
 
 		/// <summary>
@@ -171,25 +187,52 @@ namespace Aura.Channel.Skills.Life
 		/// <param name="creature"></param>
 		private void RemoveChair(Creature creature)
 		{
-			if (creature.Temp.SittingProp == null || creature.Temp.CurrentChairData == null)
+			if (creature.Temp.SittingProp == null)
 				return;
 
-			// Effect
-			if (creature.Temp.CurrentChairData.Effect != 0)
-				Send.Effect(creature, creature.Temp.CurrentChairData.Effect, false);
+			if (creature.Temp.CurrentChairData != null)
+			{
+				// Effect
+				if (creature.Temp.CurrentChairData.Effect != 0)
+					Send.Effect(creature, creature.Temp.CurrentChairData.Effect, false);
+			}
 
 			// Update chair
-			creature.Temp.SittingProp.Xml.SetAttributeValue("OWNER", 0);
+			if(creature.Temp.SittingProp.Xml.Attribute("OWNER") != null)
+				creature.Temp.SittingProp.Xml.SetAttributeValue("OWNER", 0);
 			creature.Temp.SittingProp.Xml.SetAttributeValue("SITCHAR", 0);
 
 			Send.PropUpdate(creature.Temp.SittingProp);
 
 			Send.AssignSittingProp(creature, 0, 0);
 
-			// Remove chair in 1s
-			creature.Temp.SittingProp.DisappearTime = DateTime.Now.AddSeconds(1);
+			if (creature.Temp.CurrentChairData != null)
+			{
+				// Remove chair in 1s
+				creature.Temp.SittingProp.DisappearTime = DateTime.Now.AddSeconds(1);
+			}
 
 			creature.Temp.SittingProp = null;
+		}
+
+		/// <summary>
+		/// Sets owner for a prop and makes the creature sit on it.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="prop"></param>
+		/// <param name="chair">For temporary props from items.</param>
+		private void SitOnProp(Creature creature, Prop prop, ChairData chair = null)
+		{
+			// Move char
+			Send.AssignSittingProp(creature, prop.EntityId, 1);
+
+			// Update chair
+			prop.Xml.SetAttributeValue("SITCHAR", creature.EntityId);
+
+			Send.PropUpdate(prop);
+
+			creature.Temp.CurrentChairData = chair;
+			creature.Temp.SittingProp = prop;
 		}
 	}
 }

@@ -80,18 +80,8 @@ as research or as a base to implement the features into the official source.
 Common problems
 ------------------------------
 
-### Errors after updates
+### Errors after updating Aura
 Usually all errors are solveable by recompiling and deleting the cache folder.
-
-### Error message when trying to connect to channel
-If you get a Korean error or a message saying "You failed to enter the world" upon
-trying to connect to the channel, it means that the client wasn't able to reach the channel server,
-which is usually caused by configuration mistakes. Make sure you can reach
-the IP/Port you've set the channel to run on (`channel.conf`) from the affected computer.
-
-In some rare cases this can also be caused by routers, for example,
-if you try to make the server available from the internet and the router
-doesn't allow you to connect to your own public IP.
 
 ### I can't move/am naked after login
 This usually happens when the server and the client aren't compatible to
@@ -99,7 +89,7 @@ each other. Make sure you're running the latest version of Aura and *NA*.
 
 If you did update both and are still running into problems, an official update
 probably broke compatibility. Wait a few hours for us to update Aura
-if NA was just updated, or create an issue on [GitHub](https://github.com/aura-project/aura/issues).
+if NA was just updated or create an issue on [GitHub](https://github.com/aura-project/aura/issues).
 
 Links
 ------------------------------

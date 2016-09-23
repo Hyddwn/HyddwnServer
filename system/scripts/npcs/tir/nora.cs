@@ -122,7 +122,7 @@ public class NoraScript : NpcScript
 								"It's as good as new!",
 								"Perfect repair! Done!",
 								"What a surprise! It's repaired perfectly."
-						);
+							);
 						else
 							// TODO: Use string format once we have XML dialogues.
 							Msg("I hoped for a perfect repair, but there were some mistakes.<br/>The object lost " + result.Fails + " point(s). You won't be too hard on me, right?");

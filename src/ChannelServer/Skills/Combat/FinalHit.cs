@@ -68,6 +68,7 @@ namespace Aura.Channel.Skills.Combat
 			creature.Temp.FinalHitKillCountStrong = 0;
 			creature.Temp.FinalHitKillCountAwful = 0;
 			creature.Temp.FinalHitKillCountBoss = 0;
+			creature.Skills.CancleAfter(skill.Info.Id, TimeSpan.FromSeconds(skill.RankData.Var1));
 
 			Send.Effect(creature, Effect.FinalHit, (byte)1, (byte)1);
 			Send.SkillReady(creature, skill.Info.Id);

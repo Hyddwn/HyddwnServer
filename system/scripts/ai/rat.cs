@@ -1,7 +1,9 @@
 //--- Aura Script -----------------------------------------------------------
 // Rat AI
 //--- Description -----------------------------------------------------------
-// AI for rats.
+// AI for Giant Rats, Brown Town Rats, Gray Town Rats, Country Rats,
+// Black Town Rats, Young Country Rats, Bunny Rats, Snowfield Rats,
+// Cave Rats, Otters, Royal Castle Rats, and Elsinore Rats.
 //---------------------------------------------------------------------------
 
 [AiScript("rat")]
@@ -12,7 +14,7 @@ public class RatAi : AiScript
 		SetVisualField(600, 90);
 		SetAggroRadius(400);
 
-		Hates("/pc/", "/pet/");
+		Doubts("/pc/", "/pet/");
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);

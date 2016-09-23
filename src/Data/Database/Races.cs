@@ -77,6 +77,7 @@ namespace Aura.Data.Database
 		public float Life { get; set; }
 		public float Mana { get; set; }
 		public float Stamina { get; set; }
+		public float LifeRecoveryRate { get; set; }
 		public int Defense { get; set; }
 		public int Protection { get; set; }
 		public int Exp { get; set; }
@@ -125,6 +126,7 @@ namespace Aura.Data.Database
 
 		public DropData()
 		{
+			this.Durability = -1;
 		}
 
 		public DropData(int itemId, float chance, int amount = 0, int amountMin = 0, int amountMax = 0, uint? color1 = null, uint? color2 = null, uint? color3 = null, int prefix = 0, int suffix = 0, int expires = 0, int durability = -1)
@@ -380,6 +382,7 @@ namespace Aura.Data.Database
 			raceData.Life = entry.ReadFloat("life");
 			raceData.Mana = entry.ReadFloat("mana");
 			raceData.Stamina = entry.ReadFloat("stamina");
+			raceData.LifeRecoveryRate = entry.ReadFloat("lifeRecoveryRate", 1);
 			raceData.Defense = entry.ReadInt("defense");
 			raceData.Protection = (int)entry.ReadFloat("protection");
 			raceData.ElementPhysical = entry.ReadInt("elementPhysical");
@@ -437,6 +440,11 @@ namespace Aura.Data.Database
 				foreach (JObject skill in entry["skills"].Where(a => a.Type == JTokenType.Object))
 				{
 					skill.AssertNotMissing("skillId", "rank");
+
+					// Check feature
+					var feature = skill.ReadString("feature");
+					if (!string.IsNullOrWhiteSpace(feature) && !AuraData.FeaturesDb.IsEnabled(feature))
+						continue;
 
 					var skillData = new RaceSkillData();
 					skillData.SkillId = skill.ReadUShort("skillId");

@@ -5,6 +5,8 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Msgr.Chat;
 using Aura.Msgr.Database;
+using Aura.Shared.Database;
+using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
 
@@ -404,6 +406,100 @@ namespace Aura.Msgr.Network
 
 			foreach (var friendUser in friends)
 				friendUser.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildMemberListR to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="guild"></param>
+		public static void GuildMemberListR(MsgrClient client, Guild guild)
+		{
+			var packet = new Packet(Op.Msgr.GuildMemberListR, 0);
+			packet.PutByte(guild != null);
+			if (guild == null)
+			{
+				packet.PutLong(0);
+				packet.PutInt(0);
+			}
+			else
+			{
+				var members = guild.GetMembers();
+
+				packet.PutLong(guild.Id);
+				packet.PutInt(members.Count);
+				foreach (var member in members)
+				{
+					// TODO: Don't do this for every member.
+					var contact = (Contact)MsgrServer.Instance.Database.GetUserByCharacterId(member.CharacterId);
+					if (contact == null)
+						throw new Exception(string.Format("Contact not found for character id '0x{0:X16}'.", member.CharacterId));
+
+					var user = MsgrServer.Instance.UserManager.GetUserByCharacterId(member.CharacterId);
+					var status = (user == null ? ContactStatus.Offline : user.Status);
+					var channelName = (user == null ? "" : user.ChannelName);
+
+					packet.PutInt(contact.Id);
+					packet.PutByte((byte)status);
+					packet.PutInt((int)member.Rank);
+					packet.PutString(contact.FullName);
+					packet.PutString(channelName);
+					packet.PutLong(contact.LastLogin.Ticks);
+				}
+			}
+
+			client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildMemberState to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="guild"></param>
+		/// <param name="member"></param>
+		/// <param name="user"></param>
+		/// <param name="status"></param>
+		public static void GuildMemberState(MsgrClient client, Guild guild, GuildMember member, User user, ContactStatus status)
+		{
+			var packet = new Packet(Op.Msgr.GuildMemberState, 0);
+			packet.PutByte(true);
+			packet.PutInt(user.Id);
+			packet.PutByte((byte)(status == ContactStatus.Online ? ContactStatus.Online : ContactStatus.Offline));
+			packet.PutString(user.ChannelName);
+			packet.PutLong(user.LastLogin.Ticks);
+			packet.PutInt((int)member.Rank);
+			packet.PutString(user.FullName);
+
+			client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildMemberRemove to client.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="contactId"></param>
+		public static void GuildMemberRemove(MsgrClient client, int contactId)
+		{
+			var packet = new Packet(Op.Msgr.GuildMemberRemove, 0);
+			packet.PutInt(contactId);
+
+			client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GuildChatMsg from sender to user's client.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="sender"></param>
+		/// <param name="msg"></param>
+		/// <returns></returns>
+		public static void GuildChatMsg(User user, string sender, string msg)
+		{
+			var packet = new Packet(Op.Msgr.GuildChatMsg, 0);
+			packet.PutString(sender);
+			packet.PutString(msg);
+
+			user.Client.Send(packet);
 		}
 	}
 

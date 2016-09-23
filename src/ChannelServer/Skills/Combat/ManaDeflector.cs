@@ -89,8 +89,8 @@ namespace Aura.Channel.Skills.Combat
 
 		/// <summary>
 		/// Handles Mana Deflector bonuses and auto-defense, reducing damage
-		/// and setting the appropriate options on tAction. Returns whether
-		/// or not Mana Deflector pinged.
+		/// and setting the appropriate options on tAction. Returns stun
+		/// reduction modifier.
 		/// </summary>
 		/// <remarks>
 		/// All active and passive Mana Deflectors are checked in sequence,
@@ -110,6 +110,14 @@ namespace Aura.Channel.Skills.Combat
 			var delayReduction = 0f;
 			var rank = DefaultMsgRank;
 			var rnd = RandomProvider.Get();
+
+			// Dark Lord is immune to melee and magic damage,
+			// like a R1 passive defense, but he doesn't ping.
+			if (target.HasTag("/darklord/") && !target.HasTag("/darklord/darklord2/"))
+			{
+				damage = 1;
+				return delayReduction;
+			}
 
 			// Check skills
 			for (int i = 0; i < Skills.Length; ++i)

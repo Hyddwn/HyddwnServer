@@ -14,6 +14,7 @@ public class GilmoreScript : NpcScript
 		SetFace(skinColor: 17, eyeType: 7, eyeColor: 76, mouthType: 1);
 		SetStand("human/male/anim/male_natural_stand_npc_gilmore");
 		SetLocation(31, 10383, 10055, 224);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 4903, 0x00005479, 0x00442064, 0x00240059);
 		EquipItem(Pocket.Hair, 4026, 0x00896D43, 0x00896D43, 0x00896D43);
@@ -37,12 +38,7 @@ public class GilmoreScript : NpcScript
 	{
 		SetBgm("NPC_Gilmore.mp3");
 
-		await Intro(
-			"This wiry man with a slight hump has his hands folded behind his back, and light brown hair hangs over his wide, wrinkled forehead.",
-			"The reading glasses, so thick that you can't see what's behind them, rest on the wrinkles of his nose and flash every time he turns his face.",
-			"Over his firmly sealed, stubborn-looking lips, he has a light-brown mustache.",
-			"Frowning, he tilts down his head and stares at you over his reading glasses with grumpy brown eyes."
-		);
+		await Intro(L("This wiry man with a slight hump has his hands folded behind his back, and light brown hair hangs over his wide, wrinkled forehead.<br/>The reading glasses, so thick that you can't see what's behind them, rest on the wrinkles of his nose and flash every time he turns his face.<br/>Over his firmly sealed, stubborn-looking lips, he has a light-brown mustache.<br/>Frowning, he tilts down his head and stares at you over his reading glasses with grumpy brown eyes."));
 
 		Msg("What brings you here?", Button("Start Conversation", "@talk"), Button("Shop", "@shop"), Button("Modify Item", "@upgrade"));
 
@@ -51,8 +47,17 @@ public class GilmoreScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("...");
+					Msg("...You're quite a good liar.<br/>I don't know what to say to that.");
+				}
+				else if (Title == 11002)
+				{
 					Msg("...Guardian? Ha!");
+				}
+
 				await Conversation();
 				break;
 
@@ -62,9 +67,23 @@ public class GilmoreScript : NpcScript
 				return;
 
 			case "@upgrade":
-				Msg("...<br/>Is there something you need to upgrade?<br/>Sigh... Fine, let's see it.");
-				Msg("Unimplemented");
-				Msg("Is that it? Well then...");
+				Msg("...<br/>Is there something you need to upgrade?<br/>Sigh... Fine, let's see it.<upgrade />");
+
+				while (true)
+				{
+					var reply = await Select();
+
+					if (!reply.StartsWith("@upgrade:"))
+						break;
+
+					var result = Upgrade(reply);
+					if (result.Success)
+						Msg("...There. All done.<br/>...Again?");
+					else
+						Msg("(Error)");
+				}
+
+				Msg("Is that it? Well then...<upgrade hide='true'/>");
 				break;
 		}
 
@@ -83,15 +102,15 @@ public class GilmoreScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I was just trying to remember your name... <username/>..."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("It's you again. If you are here again just to browse! I don't want you here, <username/>."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Bah! It's you, <username/>... What's the use of coming so often if you rarely buy anything?"));
 		}
 
 		UpdateRelationAfterGreet();
@@ -102,9 +121,17 @@ public class GilmoreScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "...<br/>Kids these days have no manners.");
-				Msg("Don't you think you should introduce yourself first before you ask the name of your elders?!<br/>What are they teaching the kids at home these days? Hopeless...");
-				ModifyRelation(Random(2), 0, Random(2));
+				if (Title == 33)
+				{
+					Msg(FavorExpression(), "Wait, <username/> the Diligent?<br/>Hmm. Not so bad for a youngster.");
+					Msg("You got it. You have to live diligently like that to save money. Yep.<br/>Now, don't get complacent!");
+				}
+				else
+				{
+					Msg(FavorExpression(), "...<br/>Kids these days have no manners.");
+					Msg("Don't you think you should introduce yourself first before you ask the name of your elders?!<br/>What are they teaching the kids at home these days? Hopeless...");
+				}
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
@@ -113,7 +140,7 @@ public class GilmoreScript : NpcScript
 				Msg("How hopeless.<br/>A girl like Ibbie would never take interest in that poor kid.");
 				Msg("Trying to make money off of a water mill...<br/>He's not going to go anywhere in life. Bah!");
 				Msg("Like father, like son. No mystery there. Ahem!");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -254,6 +281,31 @@ public class GilmoreScript : NpcScript
 				Msg("Bah! How rude of you!");
 				break;
 
+			case "bow":
+				Msg("If it is bows you are looking for, go see Edern at his Blacksmith's Shop.");
+				Msg("What's that look on your face?<br/>In my General Shop, we don't carry such<br/>barbaric items as bows in the first place!<br/>No thanks! Denied!");
+				break;
+
+			case "lute":
+				Msg("Stop asking and start buying!");
+				Msg("What's with all these folks asking about things that are obviously for sale here?!");
+				break;
+
+			case "tir_na_nog":
+				Msg("You don't actually believe that such a place exists, do you?");
+				Msg("It's all a money-making scheme.<br/>You'd better be careful, too. Got it?");
+				break;
+
+			case "mabinogi":
+				Msg("Hmph. Take that nonsense to some other old folks who are ready to die.");
+				break;
+
+			case "musicsheet":
+				Msg("Music Scores?<br/>You haven't even clicked the 'Shop' button yet?");
+				Msg("What are you doing in a shop then?");
+				Msg("Kids these days...");
+				break;
+
 			default:
 				RndFavorMsg(
 					"How should I know about something like that?",
@@ -263,7 +315,7 @@ public class GilmoreScript : NpcScript
 					"Quit bothering me. I don't know anything about such things.",
 					"Wait a minute... You're asking me questions without even buying anything? How ridiculous!"
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

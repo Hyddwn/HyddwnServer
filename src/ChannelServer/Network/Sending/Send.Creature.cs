@@ -208,6 +208,8 @@ namespace Aura.Channel.Network.Sending
 						case Stat.Upper: packet.PutFloat(creature.Upper); break;
 						case Stat.Lower: packet.PutFloat(creature.Lower); break;
 
+						case Stat.SkinColor: packet.PutByte(creature.SkinColor); break;
+
 						case Stat.CombatPower: packet.PutFloat(creature.CombatPower); break;
 						case Stat.Level: packet.PutShort(creature.Level); break;
 						case Stat.AbilityPoints: packet.PutInt(creature.AbilityPoints); break; // [200100, NA229 (2016-06-16)] Changed from short to int
@@ -399,7 +401,12 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.ConditionUpdate, creature.EntityId);
 			packet.AddConditions(creature.Conditions);
 
-			creature.Region.Broadcast(packet, creature);
+			// Send to region if it's not limbo, or at least to the
+			// creature if it is, to update the client.
+			if (creature.Region != Region.Limbo)
+				creature.Region.Broadcast(packet, creature);
+			else
+				creature.Client.Send(packet);
 		}
 
 		/// <summary>
@@ -492,6 +499,24 @@ namespace Aura.Channel.Network.Sending
 			// if ^ 1: put region id
 			packet.PutInt(x);
 			packet.PutInt(y);
+
+			creature.Region.Broadcast(packet, creature);
+		}
+
+		/// <summary>
+		/// Broadcasts CreatureFaceUpdate in range of creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void CreatureFaceUpdate(Creature creature)
+		{
+			var packet = new Packet(Op.CreatureFaceUpdate, creature.EntityId);
+
+			packet.PutInt(0); // ?
+			packet.PutByte(creature.SkinColor);
+			packet.PutShort(creature.EyeType); // [180600, NA187 (25.06.2014)] Changed from byte to short
+			packet.PutByte(creature.EyeColor);
+			packet.PutByte(creature.MouthType);
+			packet.PutByte(0); // ?
 
 			creature.Region.Broadcast(packet, creature);
 		}

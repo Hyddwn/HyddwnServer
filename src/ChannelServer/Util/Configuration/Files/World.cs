@@ -39,6 +39,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public bool InfiniteBait { get; protected set; }
 		public bool InfiniteArrows { get; protected set; }
 		public float SharpMindChance { get; protected set; }
+		public bool SafeEnchanting { get; protected set; }
 
 		public bool Bagception { get; protected set; }
 		public bool NoDurabilityLoss { get; protected set; }
@@ -50,6 +51,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public bool SwitchCancelBolts { get; protected set; }
 		public float ProficiencyRate { get; protected set; }
 		public bool GlobalBank { get; protected set; }
+		public bool ReusingPersonalShopLicenses { get; protected set; }
 
 		public TimeSpan RebirthTime { get; protected set; }
 
@@ -101,6 +103,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.InfiniteBait = this.GetBool("infinite_bait", false);
 			this.InfiniteArrows = this.GetBool("infinite_arrows", false);
 			this.SharpMindChance = this.GetFloat("sharp_mind_chance", 50);
+			this.SafeEnchanting = this.GetBool("safe_enchanting", false);
 
 			this.Bagception = this.GetBool("bagception", false);
 			this.NoDurabilityLoss = this.GetBool("no_durability_loss", false);
@@ -112,6 +115,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.SwitchCancelBolts = this.GetBool("switch_cancel_bolts", true);
 			this.ProficiencyRate = this.GetFloat("proficiency_rate", 100);
 			this.GlobalBank = this.GetBool("global_bank", true);
+			this.ReusingPersonalShopLicenses = this.GetBool("reusing_personal_shop_licenses", false);
 
 			this.RebirthTime = TimeSpan.FromDays(this.GetInt("rebirth_time", 6));
 

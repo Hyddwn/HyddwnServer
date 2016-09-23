@@ -356,7 +356,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="entityId"></param>
 		/// <param name="unk1"></param>
 		/// <param name="unk2"></param>
-		public static void SkillUse(Creature creature, SkillId skillId, long entityId, byte unk1, string unk2)
+		public static void SkillUse(Creature creature, SkillId skillId, long entityId, bool unk1, string unk2)
 		{
 			var packet = new Packet(Op.SkillUse, creature.EntityId);
 			packet.PutUShort((ushort)skillId);
@@ -992,18 +992,6 @@ namespace Aura.Channel.Network.Sending
 			packet.PutLong(item.EntityId);
 			packet.PutInt(0);
 
-			creature.Client.Send(packet);
-		}
-
-		/// <summary>
-		/// Sends EntrustedEnchantR to creature's client.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="success"></param>
-		public static void EntrustedEnchantR(Creature creature, bool success)
-		{
-			var packet = new Packet(Op.EntrustedEnchantR, creature.EntityId);
-			packet.PutByte(success);
 			creature.Client.Send(packet);
 		}
 

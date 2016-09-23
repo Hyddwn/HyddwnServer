@@ -170,6 +170,12 @@ namespace Aura.Channel.Skills
 						}
 					}
 
+					// Put target into battle stance if it was hit.
+					// Fix for #435, Mimics not opening after being got hit
+					// by Windmill "passively", because they didn't aggro.
+					if (!action.Creature.IsInBattleStance)
+						action.Creature.IsInBattleStance = true;
+
 					// Reduce stun if pinged
 					// If the second hit of the second set of dual wield hits
 					// pings, the monster's stun on the client is longer than

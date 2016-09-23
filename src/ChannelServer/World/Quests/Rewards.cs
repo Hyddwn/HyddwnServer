@@ -138,6 +138,34 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Rewards keyword.
+	/// </summary>
+	public class QuestRewardKeyword : QuestReward
+	{
+		public override RewardType Type { get { return RewardType.Keyword; } }
+
+		public string Keyword { get; protected set; }
+
+		public QuestRewardKeyword(string keyword)
+		{
+			if (!AuraData.KeywordDb.Exists(keyword))
+				throw new ArgumentException("Keyword '" + keyword + "' not found in data.");
+
+			this.Keyword = keyword;
+		}
+
+		public override string ToString()
+		{
+			return Localization.Get("New Keyword");
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.Keywords.Give(this.Keyword);
+		}
+	}
+
+	/// <summary>
 	/// Rewards Enchant Scroll.
 	/// </summary>
 	/// <remarks>
@@ -158,6 +186,29 @@ namespace Aura.Channel.World.Quests
 		public override void Reward(Creature creature, Quest quest)
 		{
 			creature.AcquireItem(Item.CreateEnchant(OptionSetId));
+		}
+	}
+
+	/// <summary>
+	/// Rewards Warp Scroll.
+	/// </summary>
+	/// <remarks>
+	/// Uses Type and ToString from Item reward, but generates a warp scroll
+	/// on Reward.
+	/// </remarks>
+	public class QuestRewardWarpScroll : QuestRewardItem
+	{
+		public string Portal { get; protected set; }
+
+		public QuestRewardWarpScroll(int itemId, string portal)
+			: base(itemId, 1)
+		{
+			this.Portal = portal;
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.AcquireItem(Item.CreateWarpScroll(this.ItemId, this.Portal));
 		}
 	}
 

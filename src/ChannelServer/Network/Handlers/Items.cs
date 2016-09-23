@@ -34,8 +34,8 @@ namespace Aura.Channel.Network.Handlers
 		public void ItemMove(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
-			var untrustedSource = (Pocket)packet.GetByte(); // Discard this, NA does too
-			var target = (Pocket)packet.GetByte();
+			var untrustedSource = (Pocket)packet.GetInt(); // Discard this, NA does too // [200200, NA233 (2016-08-12)] Changed from byte to int
+			var target = (Pocket)packet.GetInt(); // [200200, NA233 (2016-08-12)] Changed from byte to int
 			var unk = packet.GetByte();
 			var targetX = packet.GetByte();
 			var targetY = packet.GetByte();
@@ -116,15 +116,26 @@ namespace Aura.Channel.Network.Handlers
 				}
 			}
 
+			// Check trade
+			if ((target == Pocket.Trade || source == Pocket.Trade) && creature.Temp.ActiveTrade == null)
+			{
+				Log.Warning("ItemMove: User '{0}' tried to move something to or from the trade window without being in a trade.", client.Account.Id);
+				goto L_Fail;
+			}
+
 			// Stop moving when changing weapons
 			if ((target >= Pocket.RightHand1 && target <= Pocket.Magazine2) || (source >= Pocket.RightHand1 && source <= Pocket.Magazine2))
 				creature.StopMove();
 
 			// Try to move item
 			if (!creature.Inventory.Move(item, target, targetX, targetY))
+			{
+				Log.Debug("ItemMove: Moving item from '{0}' to '{1}' failed.", source, target);
 				goto L_Fail;
+			}
 
 			Send.ItemMoveR(creature, true);
+
 			return;
 
 		L_Fail:
@@ -141,7 +152,9 @@ namespace Aura.Channel.Network.Handlers
 		public void ItemDrop(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
-			var unk = packet.GetByte();
+			var unkByte = packet.GetByte();
+			var x = packet.GetInt(); // [200200, NA233 (2016-08-12)]
+			var y = packet.GetInt(); // [200200, NA233 (2016-08-12)]
 
 			var creature = client.GetCreatureSafe(packet.Id);
 			if (creature.Region == Region.Limbo)
@@ -151,7 +164,7 @@ namespace Aura.Channel.Network.Handlers
 			if (!creature.Can(Locks.PickUpAndDrop))
 			{
 				Log.Debug("PickUpAndDrop locked for '{0}'.", creature.Name);
-				Send.ItemDropR(creature, false);
+				Send.ItemDropR(creature, false, 0);
 				return;
 			}
 
@@ -159,7 +172,7 @@ namespace Aura.Channel.Network.Handlers
 			var item = creature.Inventory.GetItem(entityId);
 			if (item == null)
 			{
-				Send.ItemDropR(creature, false);
+				Send.ItemDropR(creature, false, 0);
 				return;
 			}
 
@@ -167,7 +180,7 @@ namespace Aura.Channel.Network.Handlers
 			if (!CreatureInventory.AccessiblePockets.Contains(item.Info.Pocket))
 			{
 				Log.Warning("ItemDrop: Player '{0}' ({1:X16}) tried to drop from inaccessible pocket.", creature.Name, creature.EntityId);
-				Send.ItemDropR(creature, false);
+				Send.ItemDropR(creature, false, 0);
 				return;
 			}
 
@@ -175,7 +188,7 @@ namespace Aura.Channel.Network.Handlers
 			if (item.IsBag && item.OptionInfo.LinkedPocketId != Pocket.None && creature.Inventory.CountItemsInPocket(item.OptionInfo.LinkedPocketId) > 0)
 			{
 				Log.Warning("ItemDrop: Player '{0}' ({1:X16}) tried to drop filled item bag.", creature.Name, creature.EntityId);
-				Send.ItemDropR(creature, false);
+				Send.ItemDropR(creature, false, 0);
 				return;
 			}
 
@@ -190,7 +203,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Check droppability
-			if (item.HasTag("/not_dropable/"))
+			if (item.HasTag("/not_dropable/") || item.Data.Action == ItemAction.ImportantItem || item.Data.Action == ItemAction.Important2Item)
 			{
 				Send.ItemDropR(creature, Localization.Get("You cannot drop this item."));
 				return;
@@ -199,7 +212,7 @@ namespace Aura.Channel.Network.Handlers
 			// Try to remove item
 			if (!creature.Inventory.Remove(item))
 			{
-				Send.ItemDropR(creature, false);
+				Send.ItemDropR(creature, false, 0);
 				return;
 			}
 
@@ -207,7 +220,7 @@ namespace Aura.Channel.Network.Handlers
 			if (!ChannelServer.Instance.World.DungeonManager.CheckDrop(creature, item))
 				item.Drop(creature.Region, creature.GetPosition(), Item.DropRadius, creature, true);
 
-			Send.ItemDropR(creature, true);
+			Send.ItemDropR(creature, true, item.EntityId);
 		}
 
 		/// <summary>
@@ -220,6 +233,7 @@ namespace Aura.Channel.Network.Handlers
 		public void ItemPickUp(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
+			var unkByte = packet.GetByte(); // [200200, NA233 (2016-08-12)]
 
 			var creature = client.GetCreatureSafe(packet.Id);
 			if (creature.Region == Region.Limbo)
@@ -274,22 +288,9 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			// Add bag
-			if (item.IsBag)
-			{
-				if (item.Data.BagWidth == 0)
-					Send.ServerMessage(creature, Localization.Get("Beware, shaped bags aren't supported yet."));
-				else if (!creature.Inventory.AddBagPocket(item))
-				{
-					// TODO: Handle somehow? Without linked pocket the bag
-					//   won't open.
-				}
-			}
-
 			// Try to pick up item
 			if (!creature.Inventory.PickUp(item))
 			{
-				creature.Inventory.Remove(item.OptionInfo.LinkedPocketId);
 				Send.ItemPickUpR(creature, ItemPickUpResult.NoSpace, entityId);
 				return;
 			}
@@ -320,7 +321,7 @@ namespace Aura.Channel.Network.Handlers
 			// but in my defense, it was devCAT's idea. Instead of adding the
 			// destroyable tag to the item, the client checks for the
 			// hamlets_sword tag >_>
-			if (!item.HasTag("/destroyable/|/hamlets_sword/"))
+			if (!item.HasTag("/destroyable/|/hamlets_sword/|/guild_robe/"))
 			{
 				Log.Warning("ItemDestroy: Creature '{0:X16}' tried to destroy a non-destroyable item.", creature.EntityId);
 				Send.ItemDestroyR(creature, false);
@@ -348,7 +349,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var itemId = packet.GetLong();
 			var amount = packet.GetUShort();
-			var unk1 = packet.GetByte();
+			var unkPocket = packet.GetInt(); // [200200, NA233 (2016-08-12)] Apparently a pocket, probably of the item?
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -440,9 +441,9 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.ItemStateChange)]
 		public void ItemStateChange(ChannelClient client, Packet packet)
 		{
-			var firstTarget = (Pocket)packet.GetByte();
-			var secondTarget = (Pocket)packet.GetByte();
-			var unk = packet.GetByte();
+			var firstTarget = (Pocket)packet.GetInt();  // [200200, NA233 (2016-08-12)] Changed from byte to int
+			var secondTarget = (Pocket)packet.GetInt(); // [200200, NA233 (2016-08-12)] Changed from byte to int
+			var unkPocket = packet.GetInt(); // [200200, NA233 (2016-08-12)] Changed from byte to int (apparently it's a pocket as well?)
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -568,9 +569,10 @@ namespace Aura.Channel.Network.Handlers
 			{
 				creature.Inventory.Decrement(item);
 
-				// Replace used bottles with empty bottles.
-				if (item.HasTag("/milk/|/water/"))
-					creature.Inventory.Add(new Item(63020), true);
+				// Replace consumed items with something else,
+				// e.g milk bottles with empty bottles.
+				if (item.Data.ReplaceItemId != 0)
+					creature.Inventory.Add(new Item(item.Data.ReplaceItemId), true);
 			}
 
 			// Break seal after use

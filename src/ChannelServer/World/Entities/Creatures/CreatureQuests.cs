@@ -17,7 +17,7 @@ namespace Aura.Channel.World.Entities.Creatures
 	public class CreatureQuests : IDisposable
 	{
 		/// <summary>
-		/// Interval in seconds on which the owl queue is checked.
+		/// Interval in milliseconds on which the owl queue is checked.
 		/// </summary>
 		private const int OwlTick = 60 * 1000;
 
@@ -105,6 +105,12 @@ namespace Aura.Channel.World.Entities.Creatures
 
 				_creature.Inventory.Add(item, true);
 			}
+
+			// Receive event
+			// XXX: Could be used for the deliver objectives above as well?
+			//   It would make more sense to always give delvier items
+			//   automatically though, not only on start.
+			quest.Data.OnReceive(_creature);
 		}
 
 		/// <summary>
@@ -272,7 +278,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <summary>
 		/// Sends an owl to deliver a quest scroll for the given quest id
 		/// to the player. If delay is not 0, the quest will arrive X
-		/// seconds later, on the next region change.
+		/// seconds later.
 		/// </summary>
 		/// <param name="questId">Id of the quest to send.</param>
 		/// <param name="delay">The delay in seconds.</param>
@@ -413,6 +419,9 @@ namespace Aura.Channel.World.Entities.Creatures
 				}
 
 				ChannelServer.Instance.Events.OnPlayerCompletesQuest(_creature, quest.Id);
+
+				// Complete event
+				quest.Data.OnComplete(_creature);
 			}
 			return success;
 		}
@@ -560,6 +569,23 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Sets track record, changing success, done, and last change.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="done"></param>
+		/// <param name="success"></param>
+		public void SetPtjTrackRecord(PtjType type, int done, int success)
+		{
+			var record = this.GetPtjTrackRecord(type);
+
+			record.Done = done;
+			record.Success = success;
+			record.LastChange = DateTime.Now;
+
+			this.PtjTrackRecordChanged.Raise(_creature, record);
+		}
+
+		/// <summary>
 		/// Returns new list of all track records.
 		/// </summary>
 		/// <returns></returns>
@@ -597,30 +623,37 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// </summary>
 		private void OnOwlTick(object state)
 		{
-			// Do nothing if still indoor
-			if (_creature.Region == Region.Limbo || _creature.Region.IsIndoor)
-				return;
-
-			var now = DateTime.Now;
-
-			lock (_owlQueue)
+			try
 			{
-				var arrived = new List<int>();
+				// Do nothing if still indoor
+				if (_creature.Region == Region.Limbo || _creature.Region.IsIndoor)
+					return;
 
-				// Check all owl's arrival times if we're not indoor
-				// and finally send them.
-				foreach (var owl in _owlQueue.Values)
+				var now = DateTime.Now;
+
+				lock (_owlQueue)
 				{
-					if (owl.Arrival <= now)
-					{
-						arrived.Add(owl.QuestId);
-						this.StartByOwl(owl.QuestId);
-					}
-				}
+					var arrived = new List<int>();
 
-				// Remove arrived quests from queue.
-				foreach (var questId in arrived)
-					_owlQueue.Remove(questId);
+					// Check all owl's arrival times if we're not indoor
+					// and finally send them.
+					foreach (var owl in _owlQueue.Values)
+					{
+						if (owl.Arrival <= now)
+						{
+							arrived.Add(owl.QuestId);
+							this.StartByOwl(owl.QuestId);
+						}
+					}
+
+					// Remove arrived quests from queue.
+					foreach (var questId in arrived)
+						_owlQueue.Remove(questId);
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex, "Exception during owl tick.");
 			}
 		}
 

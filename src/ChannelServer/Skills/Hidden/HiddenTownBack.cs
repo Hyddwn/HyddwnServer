@@ -31,9 +31,9 @@ namespace Aura.Channel.Skills.Hidden
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
 			var dictStr = packet.GetString();
-			byte unkByte = 0;
+			bool warpPartyMembers = false;
 			if (packet.Peek() == PacketElementType.Byte)
-				unkByte = packet.GetByte();
+				warpPartyMembers = packet.GetBool();
 
 			// Get item entity id
 			var itemEntityId = MabiDictionary.Fetch<long>("ITEMID", dictStr);
@@ -55,11 +55,11 @@ namespace Aura.Channel.Skills.Hidden
 			creature.Skills.Callback(skill.Info.Id, () =>
 			{
 				// Try to warp and remove item if successful
-				if (Warp(creature, item))
-					creature.Inventory.Remove(item);
+				if (Warp(creature, item, warpPartyMembers))
+					creature.Inventory.Decrement(item);
 			});
 
-			Send.SkillUse(creature, skill.Info.Id, itemEntityId, unkByte, "");
+			Send.SkillUse(creature, skill.Info.Id, itemEntityId, warpPartyMembers, "");
 			skill.State = SkillState.Used;
 
 			return true;
@@ -83,8 +83,9 @@ namespace Aura.Channel.Skills.Hidden
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="item"></param>
+		/// <param name="warpPartyMembers"></param>
 		/// <returns>Whether a warp happened or not.</returns>
-		public static bool Warp(Creature creature, Item item)
+		public static bool Warp(Creature creature, Item item, bool warpPartyMembers)
 		{
 			if (creature == null)
 				throw new ArgumentNullException("creature");
@@ -156,7 +157,16 @@ namespace Aura.Channel.Skills.Hidden
 			}
 
 			// Warp
-			creature.Warp(loc);
+			if (warpPartyMembers && item.HasTag("/party_enable/") && creature.Party.Leader == creature)
+			{
+				var partyMembers = creature.Party.GetMembersInRange(creature);
+				foreach (var member in partyMembers)
+					member.Warp(loc);
+			}
+			else
+			{
+				creature.Warp(loc);
+			}
 
 			return true;
 		}

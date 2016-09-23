@@ -134,6 +134,13 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="tag"></param>
 		/// <returns></returns>
 		public abstract int CountItem(string tag);
+
+		/// <summary>
+		/// Returns amount of items by specified conditions.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public abstract int CountItem(Func<Item, bool> predicate);
 	}
 
 	/// <summary>
@@ -144,6 +151,9 @@ namespace Aura.Channel.World.Inventory
 		protected Dictionary<long, Item> _items;
 		protected Item[,] _map;
 		protected int _width, _height;
+
+		public int Width { get { return _width; } }
+		public int Height { get { return _height; } }
 
 		public InventoryPocketNormal(Pocket pocket, int width, int height)
 			: base(pocket)
@@ -473,6 +483,12 @@ namespace Aura.Channel.World.Inventory
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 
+		public override int CountItem(Func<Item, bool> predicate)
+		{
+			return _items.Values.Where(predicate)
+				.Aggregate(0, (current, item) => current + item.Info.Amount);
+		}
+
 		public override Item GetItem(long id)
 		{
 			Item item;
@@ -655,6 +671,26 @@ namespace Aura.Channel.World.Inventory
 
 		public override int Remove(int itemId, int amount, ref List<Item> changed)
 		{
+			// This method only returned 0 for a while, without doing
+			// anything. This might've been for a reason, but we need to be
+			// able to remove from single item pockets, see issue #385.
+
+			if (_item != null && _item.Info.Id == itemId)
+			{
+				// Reduce amount
+				var remove = (ushort)Math.Min(amount, _item.Info.Amount);
+				_item.Info.Amount -= remove;
+
+				// Add to list of items to be updated
+				changed.Add(_item);
+
+				// Remove item from pocket if amount became 0
+				if (_item.Info.Amount == 0)
+					_item = null;
+
+				return remove;
+			}
+
 			return 0;
 		}
 
@@ -668,6 +704,13 @@ namespace Aura.Channel.World.Inventory
 		public override int CountItem(string tag)
 		{
 			if (_item != null && _item.HasTag(tag))
+				return _item.Info.Amount;
+			return 0;
+		}
+
+		public override int CountItem(Func<Item, bool> predicate)
+		{
+			if (_item != null && predicate(_item))
 				return _item.Info.Amount;
 			return 0;
 		}
@@ -783,6 +826,12 @@ namespace Aura.Channel.World.Inventory
 		public override int CountItem(string tag)
 		{
 			return _items.Where(item => item.HasTag(tag) || (item.Data.StackItem != null && item.Data.StackItem.HasTag(tag)))
+				.Aggregate(0, (current, item) => current + item.Info.Amount);
+		}
+
+		public override int CountItem(Func<Item, bool> predicate)
+		{
+			return _items.Where(predicate)
 				.Aggregate(0, (current, item) => current + item.Info.Amount);
 		}
 

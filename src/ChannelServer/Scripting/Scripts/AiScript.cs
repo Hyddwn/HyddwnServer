@@ -52,6 +52,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 		protected Dictionary<AiState, Dictionary<AiEvent, Dictionary<SkillId, Func<IEnumerable>>>> _reactions;
 
+		protected Dictionary<int, int> _summons = new Dictionary<int, int>();
+
 		// Heartbeat cache
 		protected IList<Creature> _playersInRange;
 
@@ -382,6 +384,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 			// Reset on...
 			if (this.Creature.Target.IsDead																 // target dead
+			|| this.Creature.Region == Region.Limbo                                                      // invalid region (e.g. unsummoned pet)
 			|| !this.Creature.GetPosition().InRange(this.Creature.Target.GetPosition(), _aggroMaxRadius) // out of aggro range
 			|| this.Creature.Target.Warping																 // target is warping
 			|| this.Creature.Target.Client.State == ClientState.Dead									 // target disconnected
@@ -1373,6 +1376,12 @@ namespace Aura.Channel.Scripting.Scripts
 
 					yield return true;
 				}
+				else if (result == CombatSkillResult.InvalidTarget)
+				{
+					// Reset if target couldn't be found.
+					this.Reset();
+					yield break;
+				}
 				else
 				{
 					Log.Error("AI.Attack: Unhandled combat skill result ({0}).", result);
@@ -1601,6 +1610,15 @@ namespace Aura.Channel.Scripting.Scripts
 					skillHandler.Prepare(this.Creature, skill, null);
 					this.Creature.Skills.ActiveSkill = skill;
 					skillHandler.Complete(this.Creature, skill, null);
+					this.Creature.Skills.ActiveSkill = null;
+				}
+				else if (skillId == SkillId.DarkLord)
+				{
+					var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<DarkLordSkill>(skillId);
+					skillHandler.Prepare(this.Creature, skill, null);
+					this.Creature.Skills.ActiveSkill = skill;
+					skillHandler.Complete(this.Creature, skill, null);
+					this.Creature.Skills.ActiveSkill = null;
 				}
 				// Try to handle implicitly
 				else
@@ -1698,6 +1716,18 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				var handler = ChannelServer.Instance.SkillManager.GetHandler<Stomp>(activeSkillId);
 				handler.Use(this.Creature, this.Creature.Skills.ActiveSkill, 0, 0, 0);
+				this.SharpMind(activeSkillId, SharpMindStatus.Cancelling);
+			}
+			else if (activeSkillId == SkillId.GlasGhaibhleannSkill)
+			{
+				var pos = this.Creature.GetPosition();
+				var targetPos = this.Creature.Target.GetPosition();
+				var hitPos = targetPos.GetRelative(pos, -1000);
+				var hitLocation = new Location(this.Creature.RegionId, hitPos);
+				var targetAreaEntityId = hitLocation.ToLocationId();
+
+				var handler = ChannelServer.Instance.SkillManager.GetHandler<GlasGhaibhleannSkill>(activeSkillId);
+				handler.Use(this.Creature, this.Creature.Skills.ActiveSkill, targetAreaEntityId);
 				this.SharpMind(activeSkillId, SharpMindStatus.Cancelling);
 			}
 			else
@@ -1984,6 +2014,125 @@ namespace Aura.Channel.Scripting.Scripts
 				this.Creature.Inventory.Add(newItem, Pocket.Armor);
 
 			yield break;
+		}
+
+		/// <summary>
+		/// Sets the skin color of the creature controlled by the AI.
+		/// </summary>
+		/// <param name="skinColor"></param>
+		/// <returns></returns>
+		protected IEnumerable SetSkinColor(int skinColor)
+		{
+			this.Creature.SkinColor = (byte)skinColor;
+
+			Send.CreatureFaceUpdate(this.Creature);
+			Send.StatUpdate(this.Creature, StatUpdateType.Public, Stat.SkinColor);
+
+			yield break;
+		}
+
+		/// <summary>
+		/// Gives skill to the creature controlled by the AI.
+		/// </summary>
+		/// <param name="skillIds"></param>
+		/// <returns></returns>
+		protected IEnumerable AddSkill(SkillId skillId, SkillRank rank)
+		{
+			this.Creature.Skills.Give(skillId, rank);
+
+			yield break;
+		}
+
+		/// <summary>
+		/// Removes skills from the creature controlled by the AI.
+		/// </summary>
+		/// <param name="skillIds"></param>
+		/// <returns></returns>
+		protected IEnumerable RemoveSkills(params SkillId[] skillIds)
+		{
+			foreach (var skillId in skillIds)
+				this.Creature.Skills.RemoveSilent(skillId);
+
+			yield break;
+		}
+
+		/// <summary>
+		/// Summons given amount of monsters of given race.
+		/// </summary>
+		/// <remarks>
+		/// Keeps track of the summoned monsters and only summons up to the
+		/// given amount.
+		/// </remarks>
+		/// <param name="raceId"></param>
+		/// <param name="amount"></param>
+		/// <param name="minDistance"></param>
+		/// <param name="maxDistance"></param>
+		/// <returns></returns>
+		protected IEnumerable Summon(int raceId, int amount, int minDistance, int maxDistance)
+		{
+			// Max amount reached?
+			var count = this.GetSummonCount(raceId);
+			var diff = amount - count;
+			if (diff <= 0)
+				yield break;
+
+			// Summon
+			var pos = this.Creature.GetPosition();
+			var rnd = _rnd;
+			for (int i = 0; i < diff; ++i)
+			{
+				var summonPos = pos.GetRandomInRange(minDistance, maxDistance, _rnd);
+				var regionId = this.Creature.RegionId;
+				var x = summonPos.X;
+				var y = summonPos.Y;
+
+				var creature = ChannelServer.Instance.World.SpawnManager.Spawn(raceId, regionId, x, y, true, true);
+				creature.Death += (_, __) => this.ModifySummonCount(raceId, -1);
+
+				this.ModifySummonCount(raceId, +1);
+			}
+
+			yield break;
+		}
+
+		/// <summary>
+		/// Modifies amount of summons of race id.
+		/// </summary>
+		/// <param name="raceId"></param>
+		/// <param name="modifier"></param>
+		/// <returns></returns>
+		private int ModifySummonCount(int raceId, int modifier)
+		{
+			int count;
+
+			lock (_summons)
+			{
+				if (!_summons.TryGetValue(raceId, out count) || count <= 0)
+					count = 0;
+
+				count += modifier;
+				_summons[raceId] = count;
+			}
+
+			return count;
+		}
+
+		/// <summary>
+		/// Returns the amount of current summons for race id.
+		/// </summary>
+		/// <param name="raceId"></param>
+		/// <returns></returns>
+		private int GetSummonCount(int raceId)
+		{
+			int count;
+
+			lock (_summons)
+			{
+				if (!_summons.TryGetValue(raceId, out count) || count <= 0)
+					count = 0;
+			}
+
+			return count;
 		}
 
 		// ------------------------------------------------------------------

@@ -11,6 +11,7 @@ using Aura.Shared.Util;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Shared.Network;
+using Aura.Mabi;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -203,9 +204,17 @@ namespace Aura.Channel.World.Entities.Creatures
 		{
 			// Remove prev stat mods
 			if (option && _optionTitleData != null)
+			{
 				_creature.StatMods.Remove(StatModSource.Title, this.SelectedOptionTitle);
+				if (_optionTitleData.Effects.Any(a => a.Key == "Speed"))
+					_creature.Conditions.Deactivate(ConditionsC.Hurry);
+			}
 			else if (!option && _titleData != null)
+			{
 				_creature.StatMods.Remove(StatModSource.Title, this.SelectedTitle);
+				if (_titleData.Effects.Any(a => a.Key == "Speed"))
+					_creature.Conditions.Deactivate(ConditionsC.Hurry);
+			}
 
 			// Add new stat mods
 			if (data != null)
@@ -261,6 +270,15 @@ namespace Aura.Channel.World.Entities.Creatures
 						case "MagicAttack": _creature.StatMods.Add(Stat.MagicAttackMod, effect.Value, StatModSource.Title, data.Id); break;
 						case "MagicDefense": _creature.StatMods.Add(Stat.MagicDefenseMod, effect.Value, StatModSource.Title, data.Id); break;
 						case "MagicProtection": _creature.StatMods.Add(Stat.MagicProtectionMod, effect.Value, StatModSource.Title, data.Id); break;
+
+						case "Speed":
+							// XXX: Conditions with idents to deactive them
+							//   more easily, like stat mods and regens?
+							var extra = new MabiDictionary();
+							extra.SetShort("VAL", (short)effect.Value);
+							_creature.Conditions.Activate(ConditionsC.Hurry, extra);
+							break;
+
 						default:
 							Log.Warning("SwitchStatMods: Unknown title effect '{0}' in title {1}.", effect.Key, data.Id);
 							break;

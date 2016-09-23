@@ -121,6 +121,9 @@ namespace Aura.Channel.World.Inventory
 				Pocket.ShoeStyle,
 				Pocket.Temporary,
 				Pocket.Trade,
+				Pocket.EntrustmentItem1,
+				Pocket.EntrustmentItem2,
+				Pocket.EntrustmentReward,
 				Pocket.VIPInventory,
 			};
 
@@ -227,10 +230,14 @@ namespace Aura.Channel.World.Inventory
 			_pockets = new Dictionary<Pocket, InventoryPocket>();
 			_wuUpgrades = new Dictionary<long, WUUpgrades>();
 
-			// Cursor, Temp, Quests
+			// Cursor, Temp, Quests, Trading
 			this.Add(new InventoryPocketStack(Pocket.Temporary));
 			this.Add(new InventoryPocketStack(Pocket.Quests));
 			this.Add(new InventoryPocketSingle(Pocket.Cursor));
+			this.Add(new InventoryPocketNormal(Pocket.Trade, 10, 5));
+			this.Add(new InventoryPocketSingle(Pocket.EntrustmentItem1));
+			this.Add(new InventoryPocketSingle(Pocket.EntrustmentItem2));
+			this.Add(new InventoryPocketNormal(Pocket.EntrustmentReward, 10, 5));
 
 			// Equipment
 			for (var i = Pocket.Face; i <= Pocket.Accessory2; ++i)
@@ -766,6 +773,24 @@ namespace Aura.Channel.World.Inventory
 				Send.EquipmentMoved(_creature, source);
 			}
 
+			// Update trade window
+			if (target == Pocket.Trade)
+			{
+				if (collidingItem != null)
+					_creature.Temp.ActiveTrade.RemoveItem(_creature, collidingItem);
+				_creature.Temp.ActiveTrade.AddItem(_creature, item);
+			}
+			if (source == Pocket.Trade) _creature.Temp.ActiveTrade.RemoveItem(_creature, item);
+
+			// Update entrustment window
+			if (target >= Pocket.EntrustmentItem1 && target <= Pocket.EntrustmentReward)
+			{
+				if (collidingItem != null)
+					_creature.Temp.ActiveEntrustment.RemoveItem(collidingItem, target);
+				_creature.Temp.ActiveEntrustment.AddItem(item, target);
+			}
+			if (source >= Pocket.EntrustmentItem1 && source <= Pocket.EntrustmentReward) _creature.Temp.ActiveEntrustment.RemoveItem(item, source);
+
 			return true;
 		}
 
@@ -807,6 +832,7 @@ namespace Aura.Channel.World.Inventory
 					// Left overs, update
 					if (newItem.Info.Amount > 0)
 					{
+						item.Info.Amount = newItem.Info.Amount;
 						Send.ItemAmount(_creature, item);
 					}
 					// All in, remove from cursor.
@@ -1006,11 +1032,9 @@ namespace Aura.Channel.World.Inventory
 
 			if (success)
 			{
-				Send.ItemNew(_creature, item);
+				this.PrepareBags(item);
 
-				// Add bag pocket if it doesn't already exist.
-				if (item.OptionInfo.LinkedPocketId != Pocket.None && !this.Has(item.OptionInfo.LinkedPocketId))
-					this.AddBagPocket(item);
+				Send.ItemNew(_creature, item);
 
 				if (_creature.IsPlayer && pocket != Pocket.Temporary)
 				{
@@ -1051,11 +1075,8 @@ namespace Aura.Channel.World.Inventory
 			// Inform about new item
 			if (success)
 			{
+				this.PrepareBags(item);
 				Send.ItemNew(_creature, item);
-
-				// Add bag pocket if it doesn't already exist.
-				if (item.OptionInfo.LinkedPocketId != Pocket.None && !this.Has(item.OptionInfo.LinkedPocketId))
-					this.AddBagPocket(item);
 			}
 
 			return success;
@@ -1270,13 +1291,6 @@ namespace Aura.Channel.World.Inventory
 				{
 					Send.ItemRemove(_creature, item);
 
-					// Remove bag pocket
-					if (item.OptionInfo.LinkedPocketId != Pocket.None)
-					{
-						this.Remove(item.OptionInfo.LinkedPocketId);
-						item.OptionInfo.LinkedPocketId = Pocket.None;
-					}
-
 					this.OnItemLeavesInventory(item);
 					ChannelServer.Instance.Events.OnPlayerRemovesItem(_creature, item.Info.Id, item.Info.Amount);
 
@@ -1414,6 +1428,18 @@ namespace Aura.Channel.World.Inventory
 			lock (_pockets)
 				return _pockets.Values.Where(a => !InvisiblePockets.Contains(a.Pocket))
 					.Sum(pocket => pocket.CountItem(tag));
+		}
+
+		/// <summary>
+		/// Returns the amount of items matching the conditions specified.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public int Count(Func<Item, bool> predicate)
+		{
+			lock (_pockets)
+				return _pockets.Values.Where(a => !InvisiblePockets.Contains(a.Pocket))
+					.Sum(pocket => pocket.CountItem(predicate));
 		}
 
 		/// <summary>
@@ -1976,6 +2002,29 @@ namespace Aura.Channel.World.Inventory
 		}
 
 		/// <summary>
+		/// Adds bag pocket to inventory and sets it for the item if item
+		/// is a bag. Call before ItemNew, otherwise the bag won't open
+		/// until relog.
+		/// </summary>
+		/// <param name="item"></param>
+		private void PrepareBags(Item item)
+		{
+			if (!item.IsBag)
+				return;
+
+			if (item.Data.BagWidth == 0)
+			{
+				Send.ServerMessage(_creature, Localization.Get("Beware, shaped bags aren't supported yet."));
+			}
+			else if (!this.AddBagPocket(item))
+			{
+				Log.Debug("Failed to add linked pocket for bag.");
+				// TODO: Handle somehow? Without linked pocket the bag
+				//   won't open.
+			}
+		}
+
+		/// <summary>
 		/// Handles events that need to happen when an item "leaves" the
 		/// inventory.
 		/// </summary>
@@ -1995,6 +2044,13 @@ namespace Aura.Channel.World.Inventory
 				// and the player would receive auto quests again.
 				if (quest.State != QuestState.Complete)
 					_creature.Quests.GiveUp(item.Quest);
+			}
+
+			// Remove bag pocket
+			if (item.OptionInfo.LinkedPocketId != Pocket.None)
+			{
+				this.Remove(item.OptionInfo.LinkedPocketId);
+				item.OptionInfo.LinkedPocketId = Pocket.None;
 			}
 		}
 
@@ -2116,6 +2172,35 @@ namespace Aura.Channel.World.Inventory
 
 				return wu.CastingSpeed;
 			}
+		}
+
+		/// <summary>
+		/// Moves all items creature has in the given pockets to the
+		/// main inventory.
+		/// </summary>
+		/// <param name="creature"></param>
+		public void MoveItemsToInvFrom(params Pocket[] pockets)
+		{
+			var items = this.GetItems(a => pockets.Contains(a.Info.Pocket));
+			foreach (var item in items)
+			{
+				this.Remove(item);
+				this.Add(item, true);
+			}
+		}
+
+		/// <summary>
+		/// Returns given inventory pocket. Warning: Not for general usage,
+		/// only use this if you know what you're doing.
+		/// </summary>
+		/// <param name="linkedPocket"></param>
+		/// <returns></returns>
+		public InventoryPocket GetPocket(Pocket pocket)
+		{
+			InventoryPocket result;
+			lock (_pockets)
+				_pockets.TryGetValue(pocket, out result);
+			return result;
 		}
 	}
 }

@@ -19,6 +19,7 @@ using Aura.Shared.Util.Commands;
 using Aura.Shared.Scripting.Scripts;
 using Aura.Data;
 using Aura.Mabi;
+using System.Reflection;
 
 namespace Aura.Channel.Scripting.Scripts
 {
@@ -60,7 +61,7 @@ namespace Aura.Channel.Scripting.Scripts
 		public void AutoLoad()
 		{
 			var type = this.GetType();
-			var methods = this.GetType().GetMethods();
+			var methods = this.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 			foreach (var method in methods)
 			{
 				var attrs = method.GetCustomAttributes(typeof(OnAttribute), false);
@@ -710,7 +711,14 @@ namespace Aura.Channel.Scripting.Scripts
 			Timer timer = null;
 			timer = new Timer(_ =>
 			{
-				action();
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					Log.Exception(ex, "Exception during SetInterval callback in {0}.", this.GetType().Name);
+				}
 				GC.KeepAlive(timer);
 			}
 			, null, ms, Timeout.Infinite);
@@ -729,7 +737,14 @@ namespace Aura.Channel.Scripting.Scripts
 			Timer timer = null;
 			timer = new Timer(_ =>
 			{
-				action();
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					Log.Exception(ex, "Exception during SetInterval callback in {0}.", this.GetType().Name);
+				}
 				GC.KeepAlive(timer);
 			}
 			, null, ms, ms);

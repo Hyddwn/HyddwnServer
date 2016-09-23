@@ -8,6 +8,7 @@ using Aura.Mabi.Structs;
 using System.Collections.Generic;
 using Aura.Channel.Skills.Life;
 using Aura.Mabi.Const;
+using Aura.Channel.World.Shops;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -30,6 +31,7 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		// Last open shop
 		public NpcShopScript CurrentShop;
+		public NPC CurrentShopOwner;
 
 		// Items temporarily used by skills
 		public Item SkillItem1, SkillItem2;
@@ -72,5 +74,9 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		public string CurrentBankId;
 		public string CurrentBankTitle;
+
+		public Trade ActiveTrade;
+		public Entrustment ActiveEntrustment;
+		public PersonalShop ActivePersonalShop;
 	}
 }

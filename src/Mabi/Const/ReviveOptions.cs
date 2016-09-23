@@ -56,6 +56,11 @@ namespace Aura.Mabi.Const
 		PhoenixFeather = 0x200,
 
 		/// <summary>
+		/// Revive in Tir Na Nog square.
+		/// </summary>
+		TirNaNog = 0x400,
+
+		/// <summary>
 		/// Revive in Barri lobby (for Another World?).
 		/// </summary>
 		BarriLobby = 0x800,

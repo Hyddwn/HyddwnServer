@@ -76,7 +76,11 @@ public class AeiraScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("How is the work coming along?<br/>I hope you're doing well."));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("I'm sorry, but your name is...?<br/>Mmm? <username/>? Nice to meet you."));
 		}
@@ -126,10 +130,6 @@ public class AeiraScript : NpcScript
 
 			case "about_skill":
 				Msg("I've talked a lot with other people regarding skills, but<br/>you seem be very knowledgeable about music,<username/>.<br/>I'm impressed. Hahaha.");
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":
@@ -312,10 +312,10 @@ public class AeiraShop : NpcShopScript
 		Add("Skill Book", 1020); // Composition Lessons with Helene (1)
 		Add("Skill Book", 1123); // The Great Camping Companion: Camp Kit
 		Add("Skill Book", 1007); // Healing: The Basics of Magic
-		Add("Skill Book", 1029); // A Campfire Memory
+		Add("Skill Book", 1029, 1, 9900); // A Campfire Memory
 		Add("Skill Book", 1114); // The History of Music in Erinn (3)
 		Add("Skill Book", 1111); // The Path of Composing
-		Add("Skill Book", 1013); // Music Theory
+		Add("Skill Book", 1013, 1, 80000); // Music Theory
 
 		Add("Life Skill Book", 1055); // The Road to Becoming a Magic Warrior
 		Add("Life Skill Book", 1056); // How to Enjoy Field Hunting

@@ -168,6 +168,20 @@ namespace Aura.Channel.World.Entities
 			this.MouthType = (byte)actorData.MouthType;
 			this.SkinColor = (byte)actorData.SkinColor;
 
+			this.Titles.SelectedTitle = (ushort)actorData.Title;
+			this.Age = (short)actorData.Age;
+			this.Level = (short)actorData.Level;
+			this.AbilityPoints = (short)actorData.AP;
+			this.LifeMaxBase = actorData.Life;
+			this.ManaMaxBase = actorData.Mana;
+			this.StaminaMaxBase = actorData.Stamina;
+			this.StrBase = actorData.Str;
+			this.IntBase = actorData.Int;
+			this.DexBase = actorData.Dex;
+			this.WillBase = actorData.Will;
+			this.LuckBase = actorData.Luck;
+
+			// Hair and Face
 			if (actorData.FaceItemId != 0)
 			{
 				var face = new Item(actorData.FaceItemId);
@@ -181,9 +195,15 @@ namespace Aura.Channel.World.Entities
 				this.Inventory.Add(hair, Pocket.Hair);
 			}
 
+			// Items
 			foreach (var itemData in actorData.Items)
 			{
 				var item = new Item(itemData.ItemId);
+				item.Info.State = (byte)itemData.State;
+
+				item.Info.Amount = (ushort)itemData.Amount;
+				if (item.Data.StackType != StackType.Sac && item.Info.Amount < 1)
+					item.Info.Amount = 1;
 
 				if (itemData.HasColors)
 				{
@@ -196,6 +216,15 @@ namespace Aura.Channel.World.Entities
 				if (pocket != Pocket.None)
 					this.Inventory.Add(item, pocket);
 			}
+
+			// Skills
+			foreach (var skillData in actorData.Skills)
+				this.Skills.Add(skillData.SkillId, skillData.Rank, this.RaceId);
+
+			// Max out after skills and items were added (bonuses)
+			this.Life = this.LifeMax;
+			this.Mana = this.ManaMax;
+			this.Stamina = this.StaminaMax;
 		}
 
 		/// <summary>

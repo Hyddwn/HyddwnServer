@@ -443,6 +443,14 @@ namespace Aura.Channel.Scripting.Scripts
 				ChannelServer.Instance.Events.PlayerRemovesItem += this.OnPlayerReceivesOrRemovesItem;
 			}
 
+			if (objective.Type == ObjectiveType.Create)
+			{
+				ChannelServer.Instance.Events.CreatureCreatedItem -= this.OnCreatureCreatedOrProducedItem;
+				ChannelServer.Instance.Events.CreatureCreatedItem += this.OnCreatureCreatedOrProducedItem;
+				ChannelServer.Instance.Events.CreatureProducedItem -= this.OnCreatureCreatedOrProducedItem;
+				ChannelServer.Instance.Events.CreatureProducedItem += this.OnCreatureCreatedOrProducedItem;
+			}
+
 			if (objective.Type == ObjectiveType.ReachRank)
 			{
 				ChannelServer.Instance.Events.SkillRankChanged -= this.OnSkillRankChanged;
@@ -575,6 +583,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestObjective Collect(int itemId, int amount) { return new QuestObjectiveCollect(itemId, amount); }
 		protected QuestObjective Talk(string npcName) { return new QuestObjectiveTalk(npcName); }
 		protected QuestObjective Deliver(int itemId, string npcName) { return new QuestObjectiveDeliver(itemId, 1, npcName); }
+		protected QuestObjective Create(int itemId, int amount, SkillId skillId, int quality = -1000) { return new QuestObjectiveCreate(itemId, amount, skillId, quality); }
 		protected QuestObjective ReachRank(SkillId skillId, SkillRank rank) { return new QuestObjectiveReachRank(skillId, rank); }
 		protected QuestObjective ReachLevel(int level) { return new QuestObjectiveReachLevel(level); }
 		protected QuestObjective GetKeyword(string keyword) { return new QuestObjectiveGetKeyword(keyword); }
@@ -587,7 +596,9 @@ namespace Aura.Channel.Scripting.Scripts
 		// ------------------------------------------------------------------
 
 		protected QuestReward Item(int itemId, int amount = 1) { return new QuestRewardItem(itemId, amount); }
+		protected QuestReward Keyword(string keyword) { return new QuestRewardKeyword(keyword); }
 		protected QuestReward Enchant(int optionSetId) { return new QuestRewardEnchant(optionSetId); }
+		protected QuestReward WarpScroll(int itemId, string portal) { return new QuestRewardWarpScroll(itemId, portal); }
 		protected QuestReward QuestScroll(int questId) { return new QuestRewardQuestScroll(questId); }
 		protected QuestReward Skill(SkillId skillId, SkillRank rank) { return new QuestRewardSkill(skillId, rank, 0); }
 		protected QuestReward Skill(SkillId skillId, SkillRank rank, int training) { return new QuestRewardSkill(skillId, rank, training); }
@@ -596,6 +607,17 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestReward ExplExp(int amount) { return new QuestRewardExplExp(Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.QuestExpRate)); }
 		protected QuestReward AP(short amount) { return new QuestRewardAp(Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.QuestApRate)); }
 		protected QuestReward StatBonus(Stat stat, int amount) { return new QuestRewardStatBonus(stat, amount); }
+
+		// Events
+		// ------------------------------------------------------------------
+
+		public virtual void OnReceive(Creature creature)
+		{
+		}
+
+		public virtual void OnComplete(Creature creature)
+		{
+		}
 
 		// Where the magic happens~
 		// ------------------------------------------------------------------
@@ -712,7 +734,9 @@ namespace Aura.Channel.Scripting.Scripts
 
 					case ObjectiveType.Collect:
 						var itemId = (objective as QuestObjectiveCollect).ItemId;
-						var count = creature.Inventory.Count(itemId);
+
+						// Do not count incomplete items (e.g. tailoring, blacksmithing).
+						var count = creature.Inventory.Count((Item item) => (item.Info.Id == itemId || item.Data.StackItemId == itemId) && !item.MetaData1.Has("PRGRATE"));
 
 						if (!progress.Done && count >= objective.Amount)
 							quest.SetDone(progress.Ident);
@@ -950,6 +974,78 @@ namespace Aura.Channel.Scripting.Scripts
 				{
 					quest.SetDone(progress.Ident);
 					UpdateQuest(creature, quest);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates Create objectives.
+		/// </summary>
+		/// <remarks>
+		/// Creation and Production events share same event 
+		/// due to having the same ObjectiveType code.
+		/// </remarks>
+		/// <param name="args">An object of type CreationEventArgs or ProductionEventArgs, otherwise an exception will be issued to the logger.</param>
+		private void OnCreatureCreatedOrProducedItem(EventArgs args)
+		{
+			Creature creature;
+			int itemId;
+			string skill; // Is there a better way to check for skill match?
+
+			CreationEventArgs crargs = args as CreationEventArgs;
+			ProductionEventArgs prargs = args as ProductionEventArgs;
+			if (crargs != null) // Try cast as CreationEventArgs
+			{
+				creature = crargs.Creature;
+				itemId = crargs.Item.Info.Id;
+				skill = crargs.Method.ToString();
+			}
+			else if (prargs != null) // Try cast as ProductionEventArgs
+			{
+				// Cancel if it wasn't a success
+				if (!prargs.Success)
+					return;
+
+				creature = prargs.Creature;
+				itemId = prargs.ProductionData.ItemId; // Use production data in case Item is null
+				skill = prargs.ProductionData.Category.ToString();
+				if (skill == "Spinning")
+					skill = "Weaving"; // Shared SkillId.
+			}
+			else // Error: Cannot cast as either one.
+			{
+				Log.Exception(new InvalidCastException(String.Format("Unable to cast EventArgs as CreationEventArgs nor ProductionEventArgs (Quest Name: {0}, ID: {1})", this.Name, this.Id)));
+				return;
+			}
+
+			var quests = creature.Quests.GetAllIncomplete(this.Id);
+			foreach (var quest in quests)
+			{
+				if (!this.CanMakeProgress(creature, quest))
+					continue;
+
+				var progress = quest.CurrentObjectiveOrLast;
+				if (progress == null) return;
+
+				var objective = this.Objectives[progress.Ident];
+				if (objective == null || objective.Type != ObjectiveType.Create) return;
+
+				var createObjective = (objective as QuestObjectiveCreate);
+				if (!progress.Done && itemId == createObjective.ItemId && skill == createObjective.SkillId.ToString())
+				{
+					var done = (++progress.Count == createObjective.Amount);
+					if (done)
+						quest.SetDone(progress.Ident);
+
+					UpdateQuest(creature, quest);
+
+					// Hot-fix for #390, after a creation objective might
+					// come a collect objective for the finished items,
+					// the new active objective has to be checked.
+					// This should happen generally, but some refactoring is
+					// in order, to not make such a mess out of it.
+					if (done)
+						this.CheckCurrentObjective(creature);
 				}
 			}
 		}

@@ -19,6 +19,7 @@ using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.World.Inventory;
 using Aura.Mabi.Network;
 using Aura.Mabi;
+using Aura.Shared.Database;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -230,7 +231,7 @@ namespace Aura.Channel.Network.Handlers
 		public void NpcShopBuyItem(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
-			var targetPocket = packet.GetByte(); // 0:cursor, 1:inv
+			var moveToInventory = packet.GetBool(); // 0:cursor, 1:inv
 			var unk = packet.GetByte(); // storage gold?
 
 			var creature = client.GetCreatureSafe(packet.Id);
@@ -245,105 +246,9 @@ namespace Aura.Channel.Network.Handlers
 				throw new ModerateViolation("Tried to buy an item with a null shop.");
 			}
 
-			// Get item
-			// In theory someone could buy an item without it being visible
-			// to him, but he would need the current entity id that
-			// changes on each restart. It's unlikely to ever be a problem.
-			var item = creature.Temp.CurrentShop.GetItem(entityId);
-			if (item == null)
-			{
-				Log.Warning("NpcShopBuyItem: Item '{0:X16}' doesn't exist in shop.", entityId);
-				goto L_Fail;
-			}
+			var success = creature.Temp.CurrentShop.Buy(creature, entityId, moveToInventory);
 
-			// Determine which payment method to use, the same way the client
-			// does to display them. Points > Stars > Ducats > Gold.
-			var paymentMethod = PaymentMethod.Gold;
-			if (item.OptionInfo.StarPrice > 0)
-				paymentMethod = PaymentMethod.Stars;
-			if (item.OptionInfo.DucatPrice > 0)
-				paymentMethod = PaymentMethod.Ducats;
-			if (item.OptionInfo.PointPrice > 0)
-				paymentMethod = PaymentMethod.Points;
-
-			// Get buying price
-			var price = int.MaxValue;
-			switch (paymentMethod)
-			{
-				case PaymentMethod.Gold: price = item.OptionInfo.Price; break;
-				case PaymentMethod.Stars: price = item.OptionInfo.StarPrice; break;
-				case PaymentMethod.Ducats: price = item.OptionInfo.DucatPrice; break;
-				case PaymentMethod.Points: price = item.OptionInfo.PointPrice; break;
-			}
-
-			// The client expects the price for a full stack to be sent
-			// in the ItemOptionInfo, so we have to calculate the actual price here.
-			if (item.Data.StackType == StackType.Stackable)
-				price = (int)(price / (float)item.Data.StackMax * item.Amount);
-
-			// Wednesday: Decrease in prices (5%) for items in NPC shops,
-			// including Remote Shop Coupons and money deposit for Exploration Quests.
-			if (ErinnTime.Now.Month == ErinnMonth.AlbanHeruin)
-				price = (int)(price * 0.95f);
-
-			// Check currency
-			var canPay = false;
-			switch (paymentMethod)
-			{
-				case PaymentMethod.Gold: canPay = (creature.Inventory.Gold >= price); break;
-				case PaymentMethod.Stars: canPay = (creature.Inventory.Stars >= price); break;
-				case PaymentMethod.Ducats: canPay = false; break; // TODO: Implement ducats.
-				case PaymentMethod.Points: canPay = (creature.Points >= price); break;
-			}
-
-			if (!canPay)
-			{
-				switch (paymentMethod)
-				{
-					case PaymentMethod.Gold: Send.MsgBox(creature, Localization.Get("Insufficient amount of gold.")); break;
-					case PaymentMethod.Stars: Send.MsgBox(creature, Localization.Get("Insufficient amount of stars.")); break;
-					case PaymentMethod.Ducats: Send.MsgBox(creature, Localization.Get("Insufficient amount of ducats.")); break;
-					case PaymentMethod.Points: Send.MsgBox(creature, Localization.Get("You don't have enough Pon.\nYou will need to buy more.")); break;
-				}
-
-				goto L_Fail;
-			}
-
-			// Buy, adding item, and removing currency
-			var success = false;
-
-			// Cursor
-			if (targetPocket == 0)
-				success = creature.Inventory.Add(item, Pocket.Cursor);
-			// Inventory
-			else if (targetPocket == 1)
-				success = creature.Inventory.Add(item, false);
-
-			if (success)
-			{
-				// Reset gold price if payment method wasn't gold, as various
-				// things depend on the gold price, like repair prices.
-				// If any payment method but gold was used, the gold price
-				// would be 0.
-				if (paymentMethod != PaymentMethod.Gold)
-					item.ResetGoldPrice();
-
-				// Reduce
-				switch (paymentMethod)
-				{
-					case PaymentMethod.Gold: creature.Inventory.Gold -= price; break;
-					case PaymentMethod.Stars: creature.Inventory.Stars -= price; break;
-					case PaymentMethod.Ducats: break; // TODO: Implement ducats.
-					case PaymentMethod.Points: creature.Points -= price; break;
-				}
-			}
-
-			// Response
 			Send.NpcShopBuyItemR(creature, success);
-			return;
-
-		L_Fail:
-			Send.NpcShopBuyItemR(creature, false);
 		}
 
 		/// <summary>
@@ -378,7 +283,7 @@ namespace Aura.Channel.Network.Handlers
 			// bought with them.
 			if (item.OptionInfo.PointPrice != 0)
 			{
-				Send.MsgBox(creature, Localization.Get("You cannot sell items bought by Pon at the shop."));
+				Send.MsgBox(creature, Localization.Get("You cannot sell items bought with Pon at the shop."));
 				goto L_End;
 			}
 
@@ -577,10 +482,52 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check for license
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+			if (item.HasTag("/personalshoplicense/"))
+			{
+				var amount = item.MetaData1.GetInt("EVALUE");
+				if (amount != 0)
+				{
+					var afterFeeSum = (int)(amount * 0.99f);
+					Send.BankLicenseFeeInquiry(creature, item.EntityId, amount, afterFeeSum);
+					Send.BankDepositItemR(creature, false);
+					return;
+				}
+			}
+
 			// Deposit item
 			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, tabName, posX, posY);
 
 			Send.BankDepositItemR(creature, success);
+		}
+
+		/// <summary>
+		/// Sent after accepting fees for license deposition.
+		/// </summary>
+		/// <example>
+		/// 001 [0050000000000AE8] Long   : 22517998136855272
+		/// </example>
+		[PacketHandler(Op.BankPostLicenseInquiryDeposit)]
+		public void BankPostLicenseInquiryDeposit(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+
+			// Check license
+			if (!item.HasTag("/personalshoplicense/"))
+			{
+				Log.Warning("BankPostLicenseInquiryDeposit: User '{0}' tried to post-license-inquiry-deposit invalid item.", client.Account.Id);
+				Send.BankPostLicenseInquiryDepositR(creature, false);
+				return;
+			}
+
+			// Deposit item
+			var success = client.Account.Bank.DepositItem(creature, itemEntityId, creature.Temp.CurrentBankId, creature.Name, 0, 0);
+
+			Send.BankPostLicenseInquiryDepositR(creature, success);
 		}
 
 		/// <summary>

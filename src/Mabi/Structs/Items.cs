@@ -20,9 +20,6 @@ namespace Aura.Mabi.Structs
 	public struct ItemInfo
 	{
 		public Pocket Pocket;
-		private byte __unknown2;
-		private byte __unknown3;
-		private byte __unknown4;
 		public int Id;
 		public uint Color1;
 		public uint Color2;

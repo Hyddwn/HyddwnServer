@@ -339,9 +339,25 @@ namespace Aura.Channel.World.Entities
 		public bool IsEquippableBook { get { return this.HasTag("/equip/*/book/"); } }
 
 		/// <summary>
+		/// Returns true if item is an enchant.
+		/// </summary>
+		public bool IsEnchant { get { return this.HasTag("/enchantscroll/"); } }
+
+		/// <summary>
 		/// Returns true if item is a bow or crossbow.
 		/// </summary>
 		public bool IsBow { get { return this.HasTag("/bow/|/bow01|/crossbow/"); } }
+
+		/// <summary>
+		/// Returns true if item is generally able to lose durability.
+		/// </summary>
+		public bool IsBreakable { get { return (this.OptionInfo.DurabilityOriginal != 0); } }
+
+		/// <summary>
+		/// Returns true if item has upgrade effects, e.g. from upgrades
+		/// or enchants.
+		/// </summary>
+		public int UpgradeEffectCount { get { lock (_upgrades) return (_upgrades.Count); } }
 
 		/// <summary>
 		/// Returns true if item can be blessed.
@@ -355,6 +371,16 @@ namespace Aura.Channel.World.Entities
 					(this.Info.Pocket != Pocket.Magazine1 && this.Info.Pocket != Pocket.Magazine2);
 			}
 		}
+
+		/// <summary>
+		/// Item's price in a personal shop.
+		/// </summary>
+		public int PersonalShopPrice { get; set; }
+
+		/// <summary>
+		/// Amount of times the item can be bought from an NPC shop.
+		/// </summary>
+		public int Stock { get; set; }
 
 		/// <summary>
 		/// New item based on item id.
@@ -774,6 +800,27 @@ namespace Aura.Channel.World.Entities
 
 			item.Quest = quest;
 			quest.QuestItem = item;
+
+			return item;
+		}
+
+		/// <summary>
+		/// Creates a tailoring pattern/blacksmith manual of the specified form ID and number of uses.
+		/// </summary>
+		/// <remarks>
+		/// It is assumed that a single use subtracts 1000 durability from the pattern. 
+		/// (i.e. <paramref name="useCount"/> is multiplied by 1000 and applied to pattern durability.)
+		/// </remarks>
+		/// <param name="itemId"></param>
+		/// <param name="formId"></param>
+		/// <param name="useCount"></param>
+		/// <returns></returns>
+		public static Item CreatePattern(int itemId, int formId, int useCount)
+		{
+			var item = new Item(itemId);
+			item.MetaData1.SetInt("FORMID", formId);
+			item.OptionInfo.DurabilityMax = useCount * 1000; // DurabilityMax overwritten to avoid clamping.
+			item.Durability = item.OptionInfo.DurabilityMax;
 
 			return item;
 		}
@@ -1247,11 +1294,11 @@ namespace Aura.Channel.World.Entities
 
 			if (collectionSpeed != 0)
 			{
-				if (collectionSpeed < 250)
+				if (collectionSpeed <= 250)
 					result = (int)(result * 1.7f);
-				else if (collectionSpeed < 500)
+				else if (collectionSpeed <= 500)
 					result = (int)(result * 1.7f * 1.7f);
-				else if (collectionSpeed < 750)
+				else if (collectionSpeed <= 750)
 					result = (int)(result * 1.7f * 1.7f * 1.7f);
 				else
 					result = (int)(result * 1.7f * 1.7f * 1.7f * 1.7f);

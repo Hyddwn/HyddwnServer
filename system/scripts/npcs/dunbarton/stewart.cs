@@ -12,6 +12,7 @@ public class StewartScript : NpcScript
 		SetName("_stewart");
 		SetFace(skinColor: 16, eyeType: 3, eyeColor: 120);
 		SetLocation(18, 2671, 1771, 99);
+		SetGiftWeights(beauty: 0, individuality: 1, luxury: -1, toughness: 0, utility: 2, rarity: 2, meaning: 2, adult: 0, maniac: 0, anime: 0, sexy: 0);
 
 		EquipItem(Pocket.Face, 4900, 0x00C89568, 0x00157B42, 0x00004944);
 		EquipItem(Pocket.Hair, 4010, 0x00997744, 0x00997744, 0x00997744);
@@ -35,11 +36,7 @@ public class StewartScript : NpcScript
 	{
 		SetBgm("NPC_Stewart.mp3");
 
-		await Intro(
-			"He is a young man with nerdy spectacles and tangled hair.",
-			"Beneath his glasses, his soft eyes are somewhat appealing,",
-			"but his stained tunic and his hands which reek of herbs confirm that he is clumsy and unkempt."
-		);
+		await Intro(L("He is a young man with nerdy spectacles and tangled hair.<br/>Beneath his glasses, his soft eyes are somewhat appealing,<br/>but his stained tunic and his hands which reek of herbs confirm that he is clumsy and unkempt."));
 
 		Msg("How can I help you?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Upgrade Item", "@upgrade"));
 
@@ -48,8 +45,20 @@ public class StewartScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Player.Titles.SelectedTitle == 11002)
+
+				if (Title == 11001)
+				{
+					Msg("<username/>, you saved the Goddess?");
+					Msg("Wow!!! What an accomplishment!<br/>Does that mean you've been to Tir Na Nog too?<br/>And does that mean that the Goddess has");
+					Msg("arrived here in Erinn...?<br/>Is the Goddess here in Erinn right now?<br/>Are we in Tir Na Nog...?");
+					Msg("...");
+					Msg("...Judging by your expression,<br/>I'll take that as a no.");
+				}
+				if (Title == 11002)
+				{
 					Msg("Welcome, <username/>, Guardian of Erinn.<br/>It seems like we should already start writing about your legacy<br/>along with the legendary three warriors. Haha...");
+				}
+
 				await Conversation();
 				break;
 
@@ -85,7 +94,7 @@ public class StewartScript : NpcScript
 								"1 point has been fixed."
 							);
 						else
-							Msg("Oh no... I think I made a mistake.");
+							Msg("Oh no... I think I made a mistake."); // Should be 2
 					}
 					else if (result.Points > 1)
 					{
@@ -93,14 +102,14 @@ public class StewartScript : NpcScript
 							RndMsg(
 								"Thankfully, everything went well. I didn't make any mistakes.",
 								"The item is completely repaired."
-						);
+							);
 						else
 							// TODO: Use string format once we have XML dialogues.
 							Msg("The item is repaired...but<br/>I was unable to repair " + result.Fails + " point(s). I'm sorry.");
 					}
 				}
 
-				Msg("Please handle with care..");
+				Msg("Please handle with care..<repair hide='true'/>");
 				break;
 
 			case "@upgrade":
@@ -139,15 +148,15 @@ public class StewartScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("You are... <username/>, right?"));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("I think I've met you before, you're <username/> right?"));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("Welcome, <username/>. I've been wondering how you were doing."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -160,21 +169,22 @@ public class StewartScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					Msg("Yes, I'm Stewart. And you are?<br/>Hmm... <username/>?<br/>I teach magic to students here.<br/>That makes me a... magic teacher.");
-					ModifyRelation(1, 0, Random(2));
+					GiveKeyword("school");
+					Msg(FavorExpression(), "Yes, I'm Stewart. And you are?<br/>Hmm... <username/>?<br/>I teach magic to students here.<br/>That makes me a... magic teacher.");
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					Player.Keywords.Give("shop_misc");
 					Msg(FavorExpression(), "Mmm... many of the people in this town came from other towns.<br/>But some like me or Walter at the General Shop<br/>have been here for a long time.<br/>I'm not saying there are any particular advantages to that but...haha...");
-					ModifyRelation(Random(2), 0, Random(2));
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
 				Player.Keywords.Give("shop_bookstore");
 				Msg(FavorExpression(), "If you're looking for books on magic or enchantments,<br/>you'll find useful learning resources at the Bookstore nearby.<br/>Just say I sent you and Aeira will be pleased to help you.<br/>It'll take a long time to explain these topics, so let's talk after you've read the books.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -211,16 +221,13 @@ public class StewartScript : NpcScript
 				}
 				break;
 
-			case "about_arbeit":
-				Msg("Unimplemented");
-				break;
-
 			case "shop_misc":
 				Msg("Hmm? The General Shop?<br/>It's a bit far from here.<br/>Did someone tell you to go this way?<br/>Why don't you go towards the Square? It's near there.");
 				Msg("When you get to the General Shop,<br/>try talking to Walter.<br/>He might be a bit blunt but he's a really nice person.");
 				break;
 
 			case "shop_grocery":
+				GiveKeyword("shop_restaurant");
 				Msg("The Grocery Store? I don't know...<br/>If groceries are what you need,<br/>you might as well go to the Restaurant.<br/>They sell food ingredients as well. I think you'll find what you're looking for there.");
 				break;
 
@@ -237,6 +244,7 @@ public class StewartScript : NpcScript
 				break;
 
 			case "shop_smith":
+				GiveKeyword("shop_armory");
 				Msg("A blacksmith's shop?<br/>There isn't a blacksmith's shop in this town.<br/>But, Nerys at the Weapons Shop might know something.");
 				break;
 
@@ -254,25 +262,30 @@ public class StewartScript : NpcScript
 				break;
 
 			case "skill_composing":
+				GiveKeyword("shop_bookstore");
 				Msg("I don't think<br/>there is anyone in this town who plays music professionally.<br/>But there must be some books on it.<br/>Right! You might find something at Aeira's Bookstore!");
 				break;
 
 			case "skill_tailoring":
+				GiveKeyword("shop_cloth");
 				Msg("If you want to learn Tailoring,<br/>go and see Simon near the Square.<br/>He runs the Clothing Shop.<br/>He can be a bit awkward sometimes but<br/>generally he's okay.");
 				Msg("I'm not sure if he would teach you the skills though...");
 				break;
 
 			case "skill_magnum_shot":
+				GiveKeyword("school");
 				Msg("Mmm... I think you're talking about attacks<br/>using bows...<br/>You might want to talk to Aranwen<br/>about that.");
 				Msg("Aranwen is outside the School.<br/>She teaches combat skills but she might know something about that.");
 				break;
 
 			case "skill_counter_attack":
+				GiveKeyword("school");
 				Msg("Oh! Aranwen should know.<br/>Once I saw her defeating a man twice her size during a training session<br/>and she used the Counterattack skill.");
 				Msg("I wonder if anyone would want to get married to<br/>such a tomboy? Haha...");
 				break;
 
 			case "skill_smash":
+				GiveKeyword("school");
 				Msg("Smash skill... It's one of Aranwen's specialties.<br/>She teaches combat skills.<br/>But everyone always asks her and it seems like<br/>she's getting tired of answering questions.");
 				break;
 
@@ -282,6 +295,7 @@ public class StewartScript : NpcScript
 				break;
 
 			case "square":
+				GiveKeyword("shop_goverment_office");
 				Msg("The Town Square naturally formed<br/>as people began loading and unloading goods in front of the Town Office.<br/>As shops began setting up near the Square<br/>it has turned into what it is today.");
 				break;
 
@@ -352,6 +366,34 @@ public class StewartScript : NpcScript
 				Msg("The large stone building in the north Square is the Town Office.<br/>You can talk to Eavan there.<br/>I heard that's where the Lord and the Captain of the Royal Guards are...<br/>But I can't be sure because I've never been inside.");
 				break;
 
+			case "bow":
+				GiveKeyword("shop_armory");
+				Msg("Bows are sold at Nerys' Weapons Shop.<br/>Excuse me? They're not free, of course. Haha...");
+				break;
+
+			case "lute":
+				GiveKeyword("shop_armory");
+				Msg("If you go to the General Shop,<br/>you'll find Lutes<br/>that Walter made himself.");
+				Msg("You'll find other instruments as well,<br/>so go and have a look.");
+				break;
+
+			case "tir_na_nog":
+				Msg("Tir Na Nog refers to an ultimate paradise that<br/>the people of this world dream of.<br/>There's no death nor pain,<br/>it's just full of light and joy.");
+				Msg("Of course,<br/>it remains controversial<br/>whether such a place exists,<br/>or if it's merely a concept.");
+				Msg("What do you think?");
+				break;
+
+			case "mabinogi":
+				Msg("The songs about heroes that<br/>bards have been singing from ancient times are called Mabinogi.");
+				Msg("Why don't you go to Aeira's Bookstore and<br/>look for some books on it<br/>if you want to understand<br/>Mabinogi or Erinn's history better?");
+				break;
+
+			case "musicsheet":
+				GiveKeyword("shop_misc");
+				Msg("Go to Walter's General Shop for a Music Score.<br/>He doesn't compose himself but...");
+				Msg("Haha... I was just imagining Walter writing music<br/>with that serious look on his face.");
+				break;
+
 			default:
 				RndFavorMsg(
 					"I have no idea.",
@@ -361,7 +403,7 @@ public class StewartScript : NpcScript
 					"Many people have asked me the same thing but...",
 					"Did Aeira tell me she had books on that topic...?"
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
