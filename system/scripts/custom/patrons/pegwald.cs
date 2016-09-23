@@ -32,11 +32,7 @@ public class PegwaldPatronScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		await Intro(
-			"You can feel a presence of mystery as you approach the man dressed in black from head to toe.",
-			"His hair gives you an impression he's been far away from home quite a while.",
-			"His deep and sleepy brown eyes greet yours and he begins to speak."
-		);
+		await Intro("You can feel a presence of mystery as you approach the man dressed in black from head to toe.<br/>His hair gives you an impression he's been far away from home quite a while.<br/>His deep and sleepy brown eyes greet yours and he begins to speak.");
 
 		Msg("Hey kid, is something bothering you?");
 		Msg("Tell me what's on your mind!");
