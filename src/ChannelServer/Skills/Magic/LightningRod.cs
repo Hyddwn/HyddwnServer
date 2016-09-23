@@ -63,27 +63,6 @@ namespace Aura.Channel.Skills.Magic
 		private const int DegenTime = 1000;
 
 		/// <summary>
-		/// Effect Enums
-		/// </summary>
-		private enum LightningRodEffect : byte
-		{
-			/// <summary>
-			/// Cancels the entire effect
-			/// </summary>
-			Cancel = 0,
-
-			/// <summary>
-			/// Contains magic circle and lightning ball.
-			/// </summary>
-			Prepare = 2,
-
-			/// <summary>
-			/// Burst of lightning; the effect for the attack.
-			/// </summary>
-			Attack = 3,
-		}
-
-		/// <summary>
 		/// Subscribes handlers to events required for training.
 		/// </summary>
 		public void Init()
@@ -112,7 +91,7 @@ namespace Aura.Channel.Skills.Magic
 			skill.State = SkillState.Prepared;
 
 			Send.MotionCancel2(creature, 0);
-			Send.Effect(creature, Effect.LightningRod, (int)LightningRodEffect.Prepare, 0);
+			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Prepare, 0);
 
 			Send.SkillReady(creature, skill.Info.Id);
 			skill.State = SkillState.Ready;
@@ -245,7 +224,7 @@ namespace Aura.Channel.Skills.Magic
 
 			cap.Handle();
 
-			Send.Effect(attacker, Effect.LightningRod, (int)LightningRodEffect.Attack, poe.X, poe.Y);
+			Send.Effect(attacker, Effect.LightningRod, LightningRodEffect.Attack, poe.X, poe.Y);
 
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 			skill.Train(1); // Use the Skill
@@ -257,7 +236,7 @@ namespace Aura.Channel.Skills.Magic
 		{
 			creature.Temp.LightningRodFullCharge = false;
 
-			Send.Effect(creature, Effect.LightningRod, (int)LightningRodEffect.Cancel);
+			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
 			Send.SkillComplete(creature, skill.Info.Id);
 		}
 
@@ -265,7 +244,7 @@ namespace Aura.Channel.Skills.Magic
 		{
 			creature.Temp.LightningRodFullCharge = false;
 
-			Send.Effect(creature, Effect.LightningRod, (int)LightningRodEffect.Cancel);
+			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
 		}
 
 		/// <summary>

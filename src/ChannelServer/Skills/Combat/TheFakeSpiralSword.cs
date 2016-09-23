@@ -51,32 +51,6 @@ namespace Aura.Channel.Skills.Combat
 		private const int KnockbackDistance = 250;
 
 		/// <summary>
-		/// Effect Enums
-		/// </summary>
-		private enum TheFakeSpiralSwordEffect : byte
-		{
-			/// <summary>
-			/// Preparation effect for the skill
-			/// </summary>
-			Prepare = 1,
-
-			/// <summary>
-			/// Explosion effect
-			/// </summary>
-			Attack = 3,
-
-			/// <summary>
-			/// Completion effect
-			/// </summary>
-			Complete = 4,
-
-			/// <summary>
-			/// Cancels the entire effect
-			/// </summary>
-			Cancel = 6,
-		}
-
-		/// <summary>
 		/// Prepares the skill
 		/// </summary>
 		/// <param name="creature"></param>
@@ -88,7 +62,7 @@ namespace Aura.Channel.Skills.Combat
 			creature.StopMove();
 			var creaturePos = creature.GetPosition();
 
-			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)TheFakeSpiralSwordEffect.Prepare, (long)(DateTime.Now.Ticks / 10000), skill.RankData.LoadTime);
+			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Prepare, (DateTime.Now.Ticks / 10000), skill.RankData.LoadTime);
 
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
@@ -105,7 +79,7 @@ namespace Aura.Channel.Skills.Combat
 		public bool Ready(Creature creature, Skill skill, Packet packet)
 		{
 			skill.Stacks += 1;
-			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)2);
+			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Ready);
 
 			Send.SkillReady(creature, skill.Info.Id);
 
@@ -128,11 +102,13 @@ namespace Aura.Channel.Skills.Combat
 			if (initTarget == null)
 				return CombatSkillResult.InvalidTarget;
 
+			attacker.StopMove();
+
 			var attackerPos = attacker.GetPosition();
 			var initTargetPos = initTarget.GetPosition();
 
 			// Check for Collisions
-			if (attacker.Region.Collisions.Any(attacker.GetPosition(), initTargetPos))
+			if (attacker.Region.Collisions.Any(attackerPos, initTargetPos))
 				return CombatSkillResult.InvalidTarget;
 
 			// Check Range
@@ -140,11 +116,10 @@ namespace Aura.Channel.Skills.Combat
 			if (!attacker.GetPosition().InRange(initTargetPos, range))
 				return CombatSkillResult.OutOfRange;
 
-			attacker.StopMove();
 			initTarget.StopMove();
 
 			// Effects
-			Send.Effect(attacker, Effect.TheFakeSpiralSword, (byte)TheFakeSpiralSwordEffect.Attack, (long)(DateTime.Now.Ticks / 10000), (byte)1);
+			Send.Effect(attacker, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Attack, (DateTime.Now.Ticks / 10000), (byte)1);
 
 			// Skill Use
 			Send.SkillUseStun(attacker, skill.Info.Id, AttackerStun, 1);
@@ -163,7 +138,7 @@ namespace Aura.Channel.Skills.Combat
 			var explosionRadius = (int)skill.RankData.Var3 / 2;
 
 			// Get Explosion Targets
-			var targets = attacker.Region.GetCreaturesInRange(initTargetPos, explosionRadius).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(initTargetPos, x.GetPosition())).ToList();
+			var targets = attacker.GetTargetableCreaturesAround(initTargetPos, explosionRadius);
 
 			var rnd = RandomProvider.Get();
 
@@ -177,9 +152,8 @@ namespace Aura.Channel.Skills.Combat
 
 			foreach (var target in targets)
 			{
-				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, SkillId.CombatMastery);
+				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
 				tAction.Set(TargetOptions.Result);
-				tAction.AttackerSkillId = skill.Info.Id;
 				tAction.Delay = attackerPos.GetDistance(initTargetPos) / 2;
 				cap.Add(tAction);
 
@@ -245,7 +219,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="packet"></param>
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
-			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)TheFakeSpiralSwordEffect.Complete);
+			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Complete);
 
 			Send.SkillComplete(creature, skill.Info.Id);
 		}
@@ -258,7 +232,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="packet"></param>
 		public void Cancel(Creature creature, Skill skill)
 		{
-			Send.Effect(creature, Effect.TheFakeSpiralSword, (byte)TheFakeSpiralSwordEffect.Cancel);
+			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Cancel);
 
 			Send.SkillCancel(creature);
 		}

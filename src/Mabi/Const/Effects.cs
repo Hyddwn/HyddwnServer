@@ -260,4 +260,57 @@ namespace Aura.Mabi.Const
 		Success = 4,
 		HugeSuccess = 8,
 	}
+
+	/// <summary>
+	/// Effect parameters for Effect "LightningRod"
+	/// </summary>
+	public static class LightningRodEffect
+	{
+		/// <summary>
+		/// Cancels the entire effect
+		/// </summary>
+		public const int Cancel = 0;
+
+		/// <summary>
+		/// Contains magic circle and lightning ball.
+		/// </summary>
+		public const int Prepare = 2;
+
+		/// <summary>
+		/// Burst of lightning; the effect for the attack.
+		/// </summary>
+		public const int Attack = 3;
+	}
+
+	/// <summary>
+	/// Effect parameters for Effect "TheFakeSpiralSword"
+	/// </summary>
+	public static class TheFakeSpiralSwordEffect
+	{
+		/// <summary>
+		/// Preparation effect for the skill
+		/// </summary>
+		public const byte Prepare = 1;
+
+		/// <summary>
+		/// Unknown effect, but it is used when
+		/// readying The Fake Spiral Sword
+		/// </summary>
+		public const byte Ready = 2;
+
+		/// <summary>
+		/// Explosion effect
+		/// </summary>
+		public const byte Attack = 3;
+
+		/// <summary>
+		/// Completion effect
+		/// </summary>
+		public const byte Complete = 4;
+
+		/// <summary>
+		/// Cancels the entire effect
+		/// </summary>
+		public const byte Cancel = 6;
+	}
 }
