@@ -1,5 +1,5 @@
 using Aura.Shared.Util;
-using NHttp;
+using Swebs;
 using Swebs.RequestHandlers.CSharp;
 using System;
 using System.Text.RegularExpressions;
@@ -33,14 +33,14 @@ public class UiStoragePage : Controller
 		var file = request.Files.Get("ui");
 		if (file == null || !string.IsNullOrEmpty(file.FileName))
 		{
-			Log.Error("UiStorageController: Missing file.");
+			Log.Debug("UiStorageController: Missing file.");
 			return;
 		}
 
 		// Check file name
 		if (!Regex.IsMatch(file.FileName, @"^[0-9]{16}\.xml$"))
 		{
-			Log.Error("UiStorageController: Invalid file name '{0}'.", file.FileName);
+			Log.Debug("UiStorageController: Invalid file name '{0}'.", file.FileName);
 			return;
 		}
 
@@ -51,7 +51,7 @@ public class UiStoragePage : Controller
 		// Check parameters
 		if (!Regex.IsMatch(charId, @"^[0-9]{16}$") || !Regex.IsMatch(charId, @"^[0-9A-Za-z_ ]+$"))
 		{
-			Log.Error("UiStorageController: Invalid character id ({0}) or server name ({1}).", charId, serverName);
+			Log.Debug("UiStorageController: Invalid character id ({0}) or server name ({1}).", charId, serverName);
 			return;
 		}
 
@@ -66,8 +66,6 @@ public class UiStoragePage : Controller
 		{
 			Log.Exception(ex, "UiStorageController: Failed to move file.");
 		}
-
-		Log.Info("Character '{0}' uploaded his UI settings.", charId);
 
 		// Success
 		response.Send("1");
