@@ -7,13 +7,11 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
 	margin-top: 0;
-}
-
-h1, h2, h3, h4, h5, h6 {
 	padding-bottom: 10px;
 	border-bottom: 1px solid #ddd;
+	font-weight: normal;
 }
 
 #sidebar {
