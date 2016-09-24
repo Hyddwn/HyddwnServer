@@ -99,7 +99,11 @@ namespace Aura.Web
 			conf.SourcePaths.Add("system/web/");
 
 			this.HttpServer = new HttpServer(conf);
-			this.HttpServer.RequestReceived += (s, e) => Log.Debug("[{0}] - {1}", e.Request.HttpMethod, e.Request.Path);
+			this.HttpServer.RequestReceived += (s, e) =>
+			{
+				Log.Debug("[{0}] - {1}", e.Request.HttpMethod, e.Request.Path);
+				//Log.Debug(e.Request.UserAgent); // Client: TEST_ARI
+			};
 			this.HttpServer.UnhandledException += (s, e) => Log.Exception(e.Exception);
 
 			try
