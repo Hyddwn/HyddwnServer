@@ -49,14 +49,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #sidebar #menu ul li {
-	padding: 5px 0 5px 20px;
+	padding: 5px 0;
 	font-size: 14px;
 }
 
-#sidebar #menu ul li.title {
+#sidebar #menu ul li:first-child {
+	padding-top: 0;
+}
+
+#sidebar #menu ul li ul li:first-child {
 	font-weight: bold;
 	border-bottom: 1px solid #e7e7e7;
 }
+
+#sidebar #menu ul li { text-indent: 20px; }
+#sidebar #menu ul li ul li { text-indent: 40px; }
+#sidebar #menu ul li ul li:first-child { text-indent: 20px; }
+#sidebar #menu ul li ul li ul li { text-indent: 60px; }
+#sidebar #menu ul li ul li ul li:first-child { text-indent: 40px; }
 
 #sidebar #menu li a {
 	color: #325778;

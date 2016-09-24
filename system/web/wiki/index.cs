@@ -22,13 +22,13 @@ public class WikiController : Controller
 		var handlebars = server.GetEngine("hbs");
 		var commonmark = server.GetEngine("md");
 
-		var sidebar = handlebars.RenderFile(server.GetLocalPath("wiki/templates/sidebar.htm"));
+		var menu = commonmark.RenderFile(server.GetLocalPath("wiki/pages/_menu.md"));
 		var content = commonmark.RenderFile(server.GetLocalPath("wiki/pages/main.md"));
 
 		// Render
 		response.Send(handlebars.RenderFile(server.GetLocalPath("wiki/templates/main.htm"), new
 		{
-			sidebar,
+			menu,
 			content,
 		}));
 	}
