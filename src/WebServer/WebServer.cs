@@ -93,6 +93,10 @@ namespace Aura.Web
 		{
 			Log.Info("Starting web server...");
 
+			// Trick compiler into referencing Mabi.dll, so Swebs references
+			// it in the C# scripts as well.
+			var x = Mabi.Const.GuildMemberRank.Applied;
+
 			var conf = new Configuration();
 			conf.Port = this.Conf.Web.Port;
 			conf.SourcePaths.Add("user/web/");
