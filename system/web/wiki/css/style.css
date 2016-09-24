@@ -1,0 +1,82 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	background: #f8f8f8;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+	margin-top: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ddd;
+}
+
+#sidebar {
+	float: left;
+	width: 200px;
+}
+
+#sidebar #logo {
+	background: #fff;
+	width: 200px;
+	height: 175px;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 20px;
+}
+
+#sidebar #logo a {
+	background: url('/wiki/images/logo.png') no-repeat;
+	display: block;
+	width: 200px;
+	height: 175px;
+	text-indent: -9999px;
+}
+
+#sidebar #menu ul,
+#sidebar #menu ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#sidebar #menu > ul {
+	margin-left: 20px;
+}
+
+#sidebar #menu ul li {
+	padding: 5px 0 5px 20px;
+	font-size: 14px;
+}
+
+#sidebar #menu ul li.title {
+	font-weight: bold;
+	border-bottom: 1px solid #e7e7e7;
+}
+
+#sidebar #menu li a {
+	color: #325778;
+	text-decoration: none;
+}
+
+#sidebar #menu li a:hover {
+	text-decoration: underline;
+}
+
+#content-wrapper {
+	margin-left: 200px;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-width: 0 0 1px 1px;
+	box-shadow: 0 0 20px #ddd;
+	position: relative;
+	z-index: 999;
+}
+
+#content {
+	padding: 20px 30px;
+}
