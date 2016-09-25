@@ -84,6 +84,7 @@ h1, h2, h3, h4, h5, h6 {
 	box-shadow: 0 0 20px #ddd;
 	position: relative;
 	z-index: 999;
+	min-height: 500px;
 }
 
 #content {
