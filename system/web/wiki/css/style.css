@@ -64,6 +64,13 @@ a:hover {
 	text-decoration: underline;
 }
 
+.license-footer {
+	color: #777;
+	font-size: 13px;
+	text-align: center;
+	display: block;
+}
+
 #sidebar {
 	float: left;
 	width: 200px;
