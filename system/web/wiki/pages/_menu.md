@@ -1,8 +1,5 @@
-* [Main Page](#)
-* [Test](?Test)
-* [Foobar](#)
+* [Main Page](./)
 * 
-    * Foobars
-    * [Foobar 1](#)
-    * [Foobar 2](#)
-    * [Foobar 3](#)
+    * Quests
+    * [Beginner](?Beginner_Quests)
+    * [Generation 1](?Generation_1)
