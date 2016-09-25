@@ -39,6 +39,7 @@ table tr:nth-child(even) {
 	background-color: #f8f8f8;
 }
 
+table th,
 table td {
 	padding: 6px 13px;
 	border: 1px solid #ddd;
