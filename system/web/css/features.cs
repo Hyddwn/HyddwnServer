@@ -23,8 +23,8 @@ public class FeaturesCssController : Controller
 				var feature = entry.Value.Name;
 				var enabled = entry.Value.Enabled;
 
-				sb.AppendLine(string.Format("*[data-feature='{0}']  {{ display: {1}; }}", feature, enabled ? "block" : "none"));
-				sb.AppendLine(string.Format("*[data-feature='!{0}'] {{ display: {1}; }}", feature, !enabled ? "block" : "none"));
+				sb.AppendLine(string.Format("*[data-feature='{0}']  {{ display: {1}; }}", feature, enabled ? "inline" : "none"));
+				sb.AppendLine(string.Format("*[data-feature='!{0}'] {{ display: {1}; }}", feature, !enabled ? "inline" : "none"));
 			}
 
 			cache = sb.ToString();
