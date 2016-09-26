@@ -47,30 +47,10 @@ public class WalterPtjScript : GeneralScript
 		508565, // Adv    Weave 5 Braids
 	};
 
-	Stack<int> dbg_questTestStack = new Stack<int>(new int[]
-	{
-		508406, // Basic  Item delivery (Aeira)
-		508436, // Int    Item delivery (Aeira)
-		508466, // Adv    Item delivery (Aeira)
-		508407, // Basic  Item delivery (Manus)
-		508468, // Adv    Item delivery (Glenis -> Aeira  )
-		508469, // Adv    Item delivery (Nerys  -> Stewart)
-
-		508503, // Basic  Weave 2 Braids
-		508504, // Basic  Weave 5 Cheap Leather Straps
-		508533, // Int    Weave 5 Common Leather Straps
-		508534, // Int    Weave 5 Fine Leather Straps
-		508535, // Int    Weave 3 Braids
-		508564, // Adv    Weave 5 Finest Leather Straps
-		508565, // Adv    Weave 5 Braids
-	});
-
 	public override void Load()
 	{
 		AddHook("_walter", "after_intro", AfterIntro);
 		AddHook("_walter", "before_keywords", BeforeKeywords);
-
-		Log.Debug("Quest test stack populated with {0} IDs.", dbg_questTestStack.Count);
 	}
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
@@ -211,15 +191,8 @@ public class WalterPtjScript : GeneralScript
 			return;
 		}
 
-		if (dbg_questTestStack.Count <= 0)
-		{
-			npc.Msg("debug: Quest test stack exhausted.");
-			return;
-		}
-
 		// Offer PTJ
-		//var randomPtj = npc.RandomPtj(JobType, QuestIds);
-		var randomPtj = dbg_questTestStack.Peek();
+		var randomPtj = npc.RandomPtj(JobType, QuestIds);
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
@@ -233,7 +206,7 @@ public class WalterPtjScript : GeneralScript
 		else
 			ptjTitle = L("Looking for help with delivery of goods in General Shop.");
 
-		npc.Msg("debug: Decline PTJ to receive go to the next PTJ to test.<br/>" + msg, npc.PtjDesc(randomPtj,
+		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Walter's General Shop Part-Time Job"),
 			L(ptjTitle),
 			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
@@ -253,7 +226,6 @@ public class WalterPtjScript : GeneralScript
 				npc.Msg(L("(missing): first time declining PTJ offer"));
 			else
 				npc.Msg(L("I got it."));
-			Log.Debug("Removed quest ID {0} from test stack.", dbg_questTestStack.Pop());
 		}
 	}
 }
