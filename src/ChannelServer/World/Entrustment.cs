@@ -285,8 +285,8 @@ namespace Aura.Channel.World
 				this.Creature1.Inventory.Remove(item);
 				this.Creature2.Inventory.Add(new Item(item), true);
 
-				Send.SystemMessage(this.Creature1, Localization.Get("<ENCHANT_ENTRUST>"), Localization.Get("Gave the item  as a reward."), Localization.Get(item.Data.Name));
-				Send.SystemMessage(this.Creature1, Localization.Get("<ENCHANT_ENTRUST>"), Localization.Get("Received the item {0} as a reward."), Localization.Get(item.Data.Name));
+				Send.SystemMessageFrom(this.Creature1, Localization.Get("<ENCHANT_ENTRUST>"), Localization.Get("Gave the item  as a reward."), Localization.Get(item.Data.Name));
+				Send.SystemMessageFrom(this.Creature1, Localization.Get("<ENCHANT_ENTRUST>"), Localization.Get("Received the item {0} as a reward."), Localization.Get(item.Data.Name));
 			}
 
 			var item1 = this.GetItem1();
