@@ -30,9 +30,22 @@ public class TinScript : NpcScript
 
 		await Intro(L("A little boy with a heavy helmet is looking in my direction.<br/>The helmet is very well polished and features a dragon on the top, but prevents me from being able to see his face.<br/>He speaks in a low voice, and every once in a while places his left hand on his chin to keep his helmet on,<br/>as it slips off little by little."));
 
+		/* As of r234 (or earlier), you get this greet message on first time rebirth for 0 memory (memory over 0 is the same as normal rebirths)
+		Msg("<face name='normal'/>Welcome, <username/>.<br/>This is your first time here, yes?");
+		Msg("I'm surprised by how exactly Nao described you."); */
+
 		if (Player.Vars.Perm["EverRebirthed"] == null)
 		{
-			Greet();
+			if (Memory <= 0)
+			{
+				Msg(FavorExpression(), L("Hey, who are you?"));
+				Msg(L("You don't look like you're from this world. Am I right?<br/>Did you make your way down here from Soul Stream?<br/>Ahhh, so Nao sent you here!"));
+				Msg(L("She's way too obedient to the Goddess' wishes.<br/>Anyway, she's a good girl, so be nice to her."));
+			}
+			else
+			{
+				Msg(FavorExpression(), L("Did you take a good look around?<br/>Since you're talking to me so much, you must have a lot of free time."));
+			}
 
 			Msg("Was there something else you wanted to talk about?");
 			await StartConversation();
@@ -41,7 +54,15 @@ public class TinScript : NpcScript
 		}
 		else
 		{
-			Greet();
+			if (Memory <= 0)
+			{
+				Msg(FavorExpression(), L("Hey, <username/>. Were you reborn?<br/>Do you remember me?"));
+				Msg(L("Well... your appearance changed a little bit, but you still seem the same to me."));
+			}
+			else
+			{
+				Msg(FavorExpression(), L("Well, it's nice to see you again after so long...<br/>But this is not where your journey ends. Think about the new world waiting for you out there."));
+			}
 
 			Msg("Was there something else you wanted to talk about?");
 			await StartConversation();
@@ -113,41 +134,6 @@ public class TinScript : NpcScript
 			// "Go all the way to the right and you will find Tir Chonaill. <br/>I wish you the best of luck.<br/>Have a great journey. <br/>I'll see you around..."
 			Close(Hide.None, "I wish you the best of luck.<br/>Have a great journey.<br/>I'll see you around.");
 		}
-	}
-
-	private void Greet()
-	{
-		/* As of r234 (or earlier), you get this message on first time rebirth for 0 memory (memory over 0 is the same as normal rebirths)
-		Msg("<face name='normal'/>Welcome, <username/>.<br/>This is your first time here, yes?");
-		Msg("I'm surprised by how exactly Nao described you.");
-		*/
-		if (Player.Vars.Perm["EverRebirthed"] == null)
-		{
-			if (Memory <= 0)
-			{
-				Msg(FavorExpression(), L("Hey, who are you?"));
-				Msg(L("You don't look like you're from this world. Am I right?<br/>Did you make your way down here from Soul Stream?<br/>Ahhh, so Nao sent you here!"));
-				Msg(L("She's way too obedient to the Goddess' wishes.<br/>Anyway, she's a good girl, so be nice to her."));
-			}
-			else
-			{
-				Msg(FavorExpression(), L("Did you take a good look around?<br/>Since you're talking to me so much, you must have a lot of free time."));
-			}
-		}
-		else
-		{
-			if (Memory <= 0)
-			{
-				Msg(FavorExpression(), L("Hey, <username/>. Were you reborn?<br/>Do you remember me?"));
-				Msg(L("Well... your appearance changed a little bit, but you still seem the same to me."));
-			}
-			else
-			{
-				Msg(FavorExpression(), L("Well, it's nice to see you again after so long...<br/>But this is not where your journey ends. Think about the new world waiting for you out there."));
-			}
-		}
-
-		UpdateRelationAfterGreet();
 	}
 
 	protected override async Task Keywords(string keyword)
