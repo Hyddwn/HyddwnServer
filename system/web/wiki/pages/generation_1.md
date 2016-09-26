@@ -629,7 +629,7 @@ Glas Ghaibhleann
 
 ------------------------------------------------------------------------------
 
-<div data-feature="!MainStreamG2">
+<div data-feature="MainStreamG2">
 
 The story continues in [Generation 2](?Generation_2).
 
