@@ -1,4 +1,5 @@
 * [Main Page](./)
+* [Help](?Help)
 * 
     * Quests
     * [Beginner](?Beginner_Quests)
