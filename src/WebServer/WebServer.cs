@@ -112,7 +112,7 @@ namespace Aura.Web
 
 			try
 			{
-				HttpServer.Start();
+				this.HttpServer.Start();
 
 				Log.Status("Server ready, listening on 0.0.0.0:{0}.", this.Conf.Web.Port);
 			}
