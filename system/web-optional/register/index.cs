@@ -1,3 +1,9 @@
+//--- Aura Script -----------------------------------------------------------
+// Registration Page
+//--- Description -----------------------------------------------------------
+// Simple registration page that allows users to create new accounts.
+//---------------------------------------------------------------------------
+
 using Aura.Shared.Scripting.Scripts;
 using Aura.Shared.Util;
 using Aura.Web;

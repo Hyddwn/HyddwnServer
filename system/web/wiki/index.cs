@@ -1,3 +1,9 @@
+//--- Aura Script -----------------------------------------------------------
+// Wiki
+//--- Description -----------------------------------------------------------
+// Provides a simple wiki like page that takes it pages from Markdown files.
+//---------------------------------------------------------------------------
+
 using Aura.Mabi.Const;
 using Aura.Shared.Database;
 using Aura.Shared.Util;

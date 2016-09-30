@@ -1,19 +1,33 @@
-﻿using Aura.Shared.Util;
+﻿//--- Aura Script -----------------------------------------------------------
+// Visual Chat Upload Script
+//--- Description -----------------------------------------------------------
+// Accepts POSTs from the client, saving the images drawn by players via
+// the visual chat feature, returning the URL to said image, for the client
+// to send it to the server, which broadcasts it to other players.
+// 
+// The files are stored in "user/web/save/visual-chat/".
+//--- Instructions ----------------------------------------------------------
+// Set "UploadVisualChatPage" in client's urls.xml and enable "gfVisualChat"
+// in client's features xml and "VisualChat" in the server's features.txt.
+//--- Parameters ------------------------------------------------------------
+// Files:
+//   filename   visualchat.png   Chat image, max size 256x96
+//   
+// Post:
+//   server        string   Server name
+//   characterid   long     Character's entity id
+//   charname      string   Character's name
+//--- Response --------------------------------------------------------------
+// Fail: 
+// Success: URL to the uploaded image.
+//---------------------------------------------------------------------------
+
+using Aura.Shared.Util;
 using Swebs;
 using Swebs.RequestHandlers.CSharp;
 using System;
 using System.Text.RegularExpressions;
 
-/// <remarks>
-/// Parameters:
-///   Files:
-///     filename   visualchat.png   Chat image, max size 256x96
-///     
-///   Post:
-///     server        string  Server name
-///     characterid   long    Character's entity id
-///     charname      string  Character's name
-/// </remarks>
 public class UploadVisualChatController : Controller
 {
 	public override void Handle(HttpRequestEventArgs args, string requestuestPath, string localPath)

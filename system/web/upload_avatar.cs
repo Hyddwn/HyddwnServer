@@ -1,27 +1,35 @@
-﻿using Swebs;
+﻿//--- Aura Script -----------------------------------------------------------
+// Avatar Upload Script
+//--- Description -----------------------------------------------------------
+// Accepts POSTs from the client, saving information and screen shots of the
+// character, that the client sends on logout.
+// 
+// The files are stored in "user/web/save/avatar/".
+//--- Instructions ----------------------------------------------------------
+// Set "UploadAvatarPage" in client's urls.xml to use it.
+//--- Parameters ------------------------------------------------------------
+// Files:
+//   userfile : snapshot.jpg
+//   usertext : snapshot.txt
+//   
+// Post:
+//   user_id : admin
+//   name_char : Zerono
+//   name_server : Aura
+//   char_id : 4503599627370498
+//   gender : M
+//   age : 23
+//   key :
+//   title : 60001
+//   name_mate :
+//--- Response --------------------------------------------------------------
+// "1" for success
+//---------------------------------------------------------------------------
+
+using Swebs;
 using Swebs.RequestHandlers.CSharp;
 using System.Text.RegularExpressions;
 
-/// <remarks>
-/// Parameters:
-///   Files:
-///     userfile : snapshot.jpg
-///     usertext : snapshot.txt
-///     
-///   Post:
-///     user_id : admin
-///     name_char : Zerono
-///     name_server : Aura
-///     char_id : 4503599627370498
-///     gender : M
-///     age : 23
-///     key :
-///     title : 60001
-///     name_mate :
-/// 
-/// Response:
-///   "1" for success
-/// </remarks>
 public class UploadAvatarController : Controller
 {
 	public override void Handle(HttpRequestEventArgs args, string requestuestPath, string localPath)

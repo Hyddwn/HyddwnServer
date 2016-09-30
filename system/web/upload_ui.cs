@@ -1,3 +1,25 @@
+//--- Aura Script -----------------------------------------------------------
+// UI Settings Upload Script
+//--- Description -----------------------------------------------------------
+// Accepts POSTs from the client, saving the character's UI settings
+// that the client sends on logout, like hotkeys and window positions.
+// 
+// The client later downloads the files from the web server to restore the
+// UI, based on the previously saved XML file.
+// 
+// The files are stored in "user/web/save/ui/".
+//--- Instructions ----------------------------------------------------------
+// Set "UploadUIPage" and "DownloadUIAddress" in client's urls.xml to use it.
+//--- Parameters ------------------------------------------------------------
+// Files:
+//   ui   ^[0-9]{16}\.xml$   XML file containing the ui settings
+// 
+// Post:
+//   char_id           long     Id of the character
+//   name_server       string   Name of the server
+//   ui_load_success   bool     Whether loading was successful
+//---------------------------------------------------------------------------
+
 using Aura.Shared.Util;
 using Swebs;
 using Swebs.RequestHandlers.CSharp;
@@ -6,22 +28,6 @@ using System.Text.RegularExpressions;
 
 public class UiStorageController : Controller
 {
-	/// <remarks>
-	/// Parameters:
-	/// 
-	///   Files:
-	///     ui  ^[0-9]{16}\.xml$  XML file containing the ui settings
-	/// 
-	///   Post:
-	///     char_id          long    Id of the character
-	///     name_server      string  Name of the server
-	///     ui_load_success  bool    Whether loading was successful
-	/// 
-	/// Security:
-	///   Since the client doesn't give us anything but char id and
-	///   server name, the settings could easily be overwritten
-	///   by anybody.
-	/// </remarks>
 	public override void Handle(HttpRequestEventArgs args, string requestuestPath, string localPath)
 	{
 		var request = args.Request;

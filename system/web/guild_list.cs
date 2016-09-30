@@ -1,4 +1,25 @@
-﻿using Aura.Data;
+﻿//--- Aura Script -----------------------------------------------------------
+// Guild List XML file
+//--- Description -----------------------------------------------------------
+// Returns a list of all guilds on the server in XML format, sorted and
+// filtered by various parameters, which the client uses to display
+// the guild list.
+//--- Instructions ----------------------------------------------------------
+// Set "GuildListPage" in client's urls.xml to use it.
+//--- Parameters ------------------------------------------------------------
+// CharacterId        long     Character entity Id
+// Name_Server        string   Server name
+// Page               int      Page to return
+// SortField          int      What to sort by
+// SortType           int      How to sort (Asc/Desc)
+// GuildLevelIndex    int      Guild levels to search for
+// GuildMemberIndex   int      Number of member to search for
+// GuildType          int      Guild type to search for
+// SearchWord         string   Part of guild name to search for
+// Passport           string   Nexon password hash, totally gonna use this
+//---------------------------------------------------------------------------
+
+using Aura.Data;
 using Aura.Mabi.Const;
 using Aura.Web;
 using Swebs;
@@ -9,19 +30,6 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-/// <remarks>
-/// Parameters:
-///     CharacterId       long    Character entity Id
-///     Name_Server       string  Server name
-///     Page              int     Page to return
-///     SortField         int     What to sort by
-///     SortType          int     How to sort (Asc/Desc)
-///     GuildLevelIndex   int     Guild levels to search for
-///     GuildMemberIndex  int     Number of member to search for
-///     GuildType         int     Guild type to search for
-///     SearchWord        string  Part of guild name to search for
-///     Passport          string  Nexon password hash, totally gonna use this
-/// </remarks>
 public class GuildListController : Controller
 {
 	public override void Handle(HttpRequestEventArgs args, string requestuestPath, string localPath)

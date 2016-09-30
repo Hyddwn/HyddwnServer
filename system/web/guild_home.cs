@@ -1,4 +1,19 @@
-﻿using Aura.Mabi.Const;
+﻿//--- Aura Script -----------------------------------------------------------
+// Guild Home Page
+//--- Description -----------------------------------------------------------
+// Provides basic guild management system, for functions that are missing
+// in-game, namely guild member management and message editing.
+//--- Instructions ----------------------------------------------------------
+// Set "UserGuildHomePage" in client's urls.xml to use it.
+//--- Parameters ------------------------------------------------------------
+// guildid      long     Guild Id
+// userid       string   Account name
+// userserver   string   Server name
+// userchar     long     Character id
+// key          long     Session key
+//---------------------------------------------------------------------------
+
+using Aura.Mabi.Const;
 using Aura.Shared.Database;
 using Aura.Shared.Util;
 using Aura.Web;
@@ -11,14 +26,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-/// <remarks>
-/// Parameters:
-///     guildid       long    Guild Id
-///     userid        string  Account name
-///     userserver    string  Server name
-///     userchar      long    Character id
-///     key           long    Session key
-/// </remarks>
 public class GuildController : Controller
 {
 	private const int MessageMaxLength = 1000;
