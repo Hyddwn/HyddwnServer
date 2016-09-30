@@ -25,7 +25,7 @@ public class GuildController : Controller
 
 	private Regex _number = new Regex(@"^\d+$", RegexOptions.Compiled);
 
-	public override void Handle(HttpRequestEventArgs args, string requestuestPath, string localPath)
+	public override void Handle(HttpRequestEventArgs args, string requestedPath, string localPath)
 	{
 		var request = args.Request;
 		var response = args.Response;
