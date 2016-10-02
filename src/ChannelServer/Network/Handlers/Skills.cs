@@ -637,8 +637,6 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			creature.Regens.Remove("ActiveSkillWait");
-
 			creature.Skills.CancelActiveSkill();
 		}
 

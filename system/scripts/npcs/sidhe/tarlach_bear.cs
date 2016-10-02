@@ -98,4 +98,20 @@ public class TarlachBearScript : NpcScript
 				break;
 		}
 	}
+
+	protected override async Task Gift(Item gift, GiftReaction reaction)
+	{
+		Msg(L("....Grrr..."));
+	}
+
+	protected override GiftReaction GetGiftReaction(Item gift)
+	{
+		if (gift.Info.Id == 51102) // Mana Herb
+		{
+			this.Favor += 10;
+			return GiftReaction.Love;
+		}
+
+		return base.GetGiftReaction(gift);
+	}
 }

@@ -41,12 +41,12 @@ namespace Aura.Channel.World.Inventory
 		/// <param name="race">Race filter id (1|2|3)</param>
 		/// <param name="width">Width of the tab pocket</param>
 		/// <param name="height">Height of the tab pocket</param>
-		public void AddTab(string name, BankTabRace race, int width, int height)
+		public void AddTab(string name, long creatureId, BankTabRace race, int width, int height)
 		{
 			if (this.Tabs.ContainsKey(name))
 				throw new InvalidOperationException("Bank tab " + name + " already exists.");
 
-			this.Tabs[name] = new BankTabPocket(name, race, width, height);
+			this.Tabs[name] = new BankTabPocket(name, creatureId, race, width, height);
 		}
 
 		/// <summary>
@@ -82,6 +82,15 @@ namespace Aura.Channel.World.Inventory
 				return new List<Item>();
 
 			return this.Tabs[tabName].GetItemList();
+		}
+
+		/// <summary>
+		/// Returns all items in the bank.
+		/// </summary>
+		/// <returns></returns>
+		public IList<Item> GetAllItems()
+		{
+			return Tabs.Values.SelectMany(t => t.GetItemList()).ToList();
 		}
 
 		/// <summary>
@@ -431,14 +440,16 @@ namespace Aura.Channel.World.Inventory
 	public class BankTabPocket : InventoryPocketNormal
 	{
 		public string Name { get; private set; }
+		public long CreatureId { get; private set; }
 		public BankTabRace Race { get; private set; }
 		public int Width { get { return _width; } }
 		public int Height { get { return _height; } }
 
-		public BankTabPocket(string name, BankTabRace race, int width, int height)
+		public BankTabPocket(string name, long creatureId, BankTabRace race, int width, int height)
 			: base(Pocket.None, width, height)
 		{
 			this.Name = name;
+			this.CreatureId = creatureId;
 			this.Race = race;
 		}
 

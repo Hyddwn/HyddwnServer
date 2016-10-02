@@ -31,6 +31,7 @@ namespace Aura.Channel.World.Entities.Creatures
 
 		// Last open shop
 		public NpcShopScript CurrentShop;
+		public NPC CurrentShopOwner;
 
 		// Items temporarily used by skills
 		public Item SkillItem1, SkillItem2;

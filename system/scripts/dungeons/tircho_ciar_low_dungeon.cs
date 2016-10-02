@@ -42,6 +42,10 @@ public class CiarBasicDungeonScript : DungeonScript
 					case 2: suffix = 10704; break; // Slug
 				}
 				treasureChest.Add(Item.CreateEnchanted(40019, prefix, suffix));
+
+				// Goro's Ring (G1)
+				if (member.Keywords.Has("g1_13"))
+					treasureChest.Add(Item.Create(73060));
 			}
 
 			treasureChest.AddGold(rnd.Next(1232, 4064)); // Gold

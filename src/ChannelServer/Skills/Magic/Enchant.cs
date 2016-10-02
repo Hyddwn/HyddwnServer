@@ -152,6 +152,18 @@ namespace Aura.Channel.Skills.Magic
 				}
 			}
 
+			// Check expiration
+			var checkExpiration = (optionSetData.Type == UpgradeType.Prefix ? "XPRPFX" : "XPRSFX");
+			if (enchant.MetaData1.Has(checkExpiration))
+			{
+				var expiration = enchant.MetaData1.GetDateTime(checkExpiration);
+				if (DateTime.Now > expiration)
+				{
+					Send.MsgBox(creature, Localization.Get("No enchantment options available.\nThis scroll is expired."));
+					return false;
+				}
+			}
+
 			// Save items for Complete
 			creature.Temp.SkillItem1 = item;
 			creature.Temp.SkillItem2 = enchant;
@@ -434,19 +446,29 @@ namespace Aura.Channel.Skills.Magic
 				Send.UseMotion(creature, 14, enchantBurnSuccess ? 0 : 3);
 			}
 
-			// Add exp based on item buying price (random+unofficial)
-			if (item.OptionInfo.Price > 0)
+			// Seal Scroll (G1 Glas fight, drop from Gargoyles)
+			if (item.HasTag("/evilscroll/55/"))
 			{
-				exp = 40 + (int)(item.OptionInfo.Price / (float)item.Data.StackMax / 100f * item.Info.Amount);
-				creature.GiveExp(exp);
+				creature.Conditions.Activate(ConditionsA.Blessed, null, 60 * 1000);
+				Send.Notice(creature, Localization.Get("I feel the blessing of the Goddess."));
+			}
+			// Other items
+			else
+			{
+				// Add exp based on item buying price (random+unofficial)
+				if (item.OptionInfo.Price > 0)
+				{
+					exp = 40 + (int)(item.OptionInfo.Price / (float)item.Data.StackMax / 100f * item.Info.Amount);
+					creature.GiveExp(exp);
+				}
+
+				Send.Notice(creature, NoticeType.MiddleSystem, Localization.Get("Burning EXP {0}"), exp);
 			}
 
 			// Remove item from cursor
 			creature.Inventory.Remove(item);
 
-			// Effect
 			Send.Effect(MabiId.Broadcast, creature, Effect.BurnItem, campfire.EntityId, enchantBurnSuccess);
-			Send.Notice(creature, NoticeType.MiddleSystem, Localization.Get("Burning EXP {0}"), exp);
 
 			return true;
 		}
@@ -465,9 +487,13 @@ namespace Aura.Channel.Skills.Magic
 		{
 			var points = 0;
 
+			// Destroy item if safe enchanting is disabled and rank is over 6.
+			if (!ChannelServer.Instance.Conf.World.SafeEnchanting && enchantRank >= SkillRank.R6)
+				return -1;
+
 			switch (enchantRank)
 			{
-				case SkillRank.Novice: return 0;
+				// A huge fail results in a bigger durability loss.
 				case SkillRank.RF: points = (result == EnchantResult.Fail ? rnd.Next(0, 1) : rnd.Next(0, 2)); break;
 				case SkillRank.RE: points = (result == EnchantResult.Fail ? rnd.Next(0, 2) : rnd.Next(0, 4)); break;
 				case SkillRank.RD: points = (result == EnchantResult.Fail ? rnd.Next(0, 2) : rnd.Next(0, 4)); break;
@@ -477,7 +503,14 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.R9: points = (result == EnchantResult.Fail ? rnd.Next(1, 6) : rnd.Next(1, 10)); break;
 				case SkillRank.R8: points = (result == EnchantResult.Fail ? rnd.Next(2, 7) : rnd.Next(2, 12)); break;
 				case SkillRank.R7: points = (result == EnchantResult.Fail ? rnd.Next(2, 8) : rnd.Next(2, 14)); break;
-				default: return -1;
+
+				// Custom durability loss for R6+, for safe enchanting option.
+				case SkillRank.R6: points = (result == EnchantResult.Fail ? rnd.Next(3, 9) : rnd.Next(3, 16)); break;
+				case SkillRank.R5: points = (result == EnchantResult.Fail ? rnd.Next(3, 9) : rnd.Next(3, 16)); break;
+				case SkillRank.R4: points = (result == EnchantResult.Fail ? rnd.Next(4, 10) : rnd.Next(4, 18)); break;
+				case SkillRank.R3: points = (result == EnchantResult.Fail ? rnd.Next(4, 10) : rnd.Next(4, 18)); break;
+				case SkillRank.R2: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 20)); break;
+				case SkillRank.R1: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 20)); break;
 			}
 
 			return points * 1000;

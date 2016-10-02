@@ -30,11 +30,15 @@
 	{ name: "EnchantEntrust", enabled: true },
 	{ name: "DynamicMonsterAllocation", enabled: true },
 	{ name: "FoodStatLimit", enabled: true },
-	{ name: "G1EasyOverseas", enabled: false },
+	{ name: "G1EasyOverseas", enabled: false, children: [
+		// Kill only ten zombies to revive in TNN.
+		{ name: "EasyBinding1", enabled: true },
+	]},
 	
 	// Season 1
 	{ name: "G1S1", enabled: true, children: [
 		{ name: "CiarAdvanced", enabled: true },
+		{ name: "MathDungeon", enabled: true },
 	]},
 	
 	// Season 2
@@ -48,10 +52,13 @@
 	{ name: "MainStreamG2", enabled: true },
 	{ name: "EmainMacha", enabled: true },
 	{ name: "NaoDressUp", enabled: true },
+	{ name: "CollectionBooks", enabled: true },
 	
 	// Season 1
 	{ name: "G2S1", enabled: true, children: [
 		{ name: "PeacaDungeon", enabled: true },
+		{ name: "RundalDungeon", enabled: true },
+		{ name: "CoillDungeon", enabled: true },
 		{ name: "Fireball", enabled: true },
 		{ name: "ArrowRevolver", enabled: true },
 	]},
@@ -395,6 +402,25 @@
 	{ name: "G16S2", enabled: true, children: [
 		{ name: "CombatSystemRenewal", enabled: true, children: [
 			{ name: "PassiveSharpMind", enabled: true },
+		]},
+		{ name: "MainStream2012Part1", enabled: true, children: [
+			// Enables G1~3 for elves and giants.
+			{ name: "NonHumanChapter1", enabled: true },
+			
+			// Enables soloing RP dungeons.
+			{ name: "SoloRP", enabled: true },
+			
+			// Enables going to TNN on any day.
+			{ name: "AllWeekBreaker", enabled: true },
+			
+			// Kill only one zombie to revive in TNN.
+			{ name: "EasyBinding2", enabled: true },
+			
+			// Lowers the difficulty of some enemies.
+			{ name: "EasierEnemiesChapter1", enabled: true },
+			
+			// Decreases the waiting time for some quests.
+			{ name: "ShorterWaitTimesChapter1", enabled: true },
 		]},
 	]},
 	

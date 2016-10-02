@@ -1,4 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
+// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
 using Aura.Channel.Network;
@@ -376,7 +376,7 @@ namespace Aura.Channel.Database
 		{
 			// Add tab
 			var race = character.IsHuman ? BankTabRace.Human : character.IsElf ? BankTabRace.Elf : BankTabRace.Giant;
-			account.Bank.AddTab(character.Name, race, width, height);
+			account.Bank.AddTab(character.Name, character.CreatureId, race, width, height);
 
 			// Read bank items
 			var items = this.GetItems(character.CreatureId, true);
@@ -603,6 +603,17 @@ namespace Aura.Channel.Database
 						skill.Info.ConditionCount7 = reader.GetInt16("condition7");
 						skill.Info.ConditionCount8 = reader.GetInt16("condition8");
 						skill.Info.ConditionCount9 = reader.GetInt16("condition9");
+
+						if (skill.Info.ConditionCount1 < skill.RankData.Conditions[0].Count) skill.Info.Flag |= SkillFlags.ShowCondition1;
+						if (skill.Info.ConditionCount2 < skill.RankData.Conditions[1].Count) skill.Info.Flag |= SkillFlags.ShowCondition2;
+						if (skill.Info.ConditionCount3 < skill.RankData.Conditions[2].Count) skill.Info.Flag |= SkillFlags.ShowCondition3;
+						if (skill.Info.ConditionCount4 < skill.RankData.Conditions[3].Count) skill.Info.Flag |= SkillFlags.ShowCondition4;
+						if (skill.Info.ConditionCount5 < skill.RankData.Conditions[4].Count) skill.Info.Flag |= SkillFlags.ShowCondition5;
+						if (skill.Info.ConditionCount6 < skill.RankData.Conditions[5].Count) skill.Info.Flag |= SkillFlags.ShowCondition6;
+						if (skill.Info.ConditionCount7 < skill.RankData.Conditions[6].Count) skill.Info.Flag |= SkillFlags.ShowCondition7;
+						if (skill.Info.ConditionCount8 < skill.RankData.Conditions[7].Count) skill.Info.Flag |= SkillFlags.ShowCondition8;
+						if (skill.Info.ConditionCount9 < skill.RankData.Conditions[8].Count) skill.Info.Flag |= SkillFlags.ShowCondition9;
+
 						skill.UpdateExperience();
 
 						character.Skills.Add(skill);
@@ -774,7 +785,13 @@ namespace Aura.Channel.Database
 							if (ChannelServer.Instance.Conf.World.PtjInfiniteMemory)
 							{
 								forgetDays = 0;
-								lastChange = DateTime.Now;
+
+								// For some reason we originally set lastChange
+								// to Now, but that would cause players to not
+								// be able to do PTJs, because they had "just"
+								// done one. I don't remember why we did this
+								// in the first place. --exec
+								//lastChange = DateTime.Now;
 							}
 
 							// Make NPCs "forget", cap at 1 job done
@@ -992,6 +1009,42 @@ namespace Aura.Channel.Database
 				this.SaveCharacter(character, account);
 			foreach (var pet in account.Pets.Where(a => a.Save))
 				this.SaveCharacter(pet, account);
+
+			// Save bank items
+			// On SaveCharacter all items of a creature, in bank or inventory,
+			// are deleted from the database. Afterwards all inventory items
+			// are added again. Once that's done we have to write all bank
+			// items to the database.
+			// TODO: Make this more elegant. Dedicated item database,
+			//   linking from inventory and bank tables, BankItem class,
+			//   dedicated loading and saving, etc.
+			this.SaveBankItems(account);
+		}
+
+		/// <summary>
+		/// Saves all items in account's bank inventory.
+		/// </summary>
+		/// <param name="account"></param>
+		private void SaveBankItems(Account account)
+		{
+			using (var conn = this.Connection)
+			using (var transaction = conn.BeginTransaction())
+			{
+				// Save bank items
+				foreach (var tab in account.Bank.GetTabList())
+				{
+					using (var mc = new MySqlCommand("DELETE FROM `items` WHERE `creatureId` = @creatureId AND `bank` != ''", conn, transaction))
+					{
+						mc.Parameters.AddWithValue("@creatureId", tab.CreatureId);
+						mc.Parameters.AddWithValue("@accountId", account.Id);
+						mc.ExecuteNonQuery();
+					}
+
+					SaveItems(tab.CreatureId, tab.GetItemList(), conn, transaction);
+				}
+
+				transaction.Commit();
+			}
 		}
 
 		/// <summary>
@@ -1081,7 +1134,7 @@ namespace Aura.Channel.Database
 				cmd.Execute();
 			}
 
-			this.SaveCharacterItems(creature);
+			this.SaveCharacterItems(creature, account.Id);
 			this.SaveQuests(creature);
 			this.SaveCharacterKeywords(creature);
 			this.SaveCharacterTitles(creature);
@@ -1162,7 +1215,7 @@ namespace Aura.Channel.Database
 		/// Saves all of creature's items.
 		/// </summary>
 		/// <param name="creature"></param>
-		private void SaveCharacterItems(PlayerCreature creature)
+		private void SaveCharacterItems(PlayerCreature creature, string accountId)
 		{
 			using (var conn = this.Connection)
 			using (var transaction = conn.BeginTransaction())
@@ -1170,107 +1223,114 @@ namespace Aura.Channel.Database
 				using (var mc = new MySqlCommand("DELETE FROM `items` WHERE `creatureId` = @creatureId", conn, transaction))
 				{
 					mc.Parameters.AddWithValue("@creatureId", creature.CreatureId);
+					mc.Parameters.AddWithValue("@accountId", accountId);
 					mc.ExecuteNonQuery();
 				}
 
-				var items = creature.Inventory.GetItems().Union(creature.Client.Account.Bank.GetTabItems(creature.Name));
-				foreach (var item in items)
-				{
-					using (var cmd = new InsertCommand("INSERT INTO `items` {0}", conn, transaction))
-					{
-						cmd.Set("creatureId", creature.CreatureId);
-						if (item.EntityId < MabiId.TmpItems)
-							cmd.Set("entityId", item.EntityId);
-						cmd.Set("itemId", item.Info.Id);
-						cmd.Set("bank", item.Bank);
-						if (item.BankTransferStart == DateTime.MinValue)
-							cmd.Set("bankTransferStart", null);
-						else
-							cmd.Set("bankTransferStart", item.BankTransferStart);
-						cmd.Set("bankTransferDuration", item.BankTransferDuration);
-						cmd.Set("pocket", (byte)item.Info.Pocket);
-						cmd.Set("x", item.Info.X);
-						cmd.Set("y", item.Info.Y);
-						cmd.Set("color1", item.Info.Color1);
-						cmd.Set("color2", item.Info.Color2);
-						cmd.Set("color3", item.Info.Color3);
-						cmd.Set("price", item.OptionInfo.Price);
-						cmd.Set("sellPrice", item.OptionInfo.SellingPrice);
-						cmd.Set("pointPrice", item.OptionInfo.PointPrice);
-						cmd.Set("amount", item.Info.Amount);
-						cmd.Set("linkedPocket", item.OptionInfo.LinkedPocketId);
-						cmd.Set("state", item.Info.State);
-						cmd.Set("figureB", item.Info.FigureB);
-						cmd.Set("durability", item.OptionInfo.Durability);
-						cmd.Set("durabilityMax", item.OptionInfo.DurabilityMax);
-						cmd.Set("durabilityOriginal", item.OptionInfo.DurabilityOriginal);
-						cmd.Set("attackMin", item.OptionInfo.AttackMin);
-						cmd.Set("attackMax", item.OptionInfo.AttackMax);
-						cmd.Set("injuryMin", item.OptionInfo.InjuryMin);
-						cmd.Set("injuryMax", item.OptionInfo.InjuryMax);
-						cmd.Set("balance", item.OptionInfo.Balance);
-						cmd.Set("critical", item.OptionInfo.Critical);
-						cmd.Set("defense", item.OptionInfo.Defense);
-						cmd.Set("protection", item.OptionInfo.Protection);
-						cmd.Set("range", item.OptionInfo.EffectiveRange);
-						cmd.Set("attackSpeed", (byte)item.OptionInfo.AttackSpeed);
-						cmd.Set("experience", item.Proficiency);
-						cmd.Set("upgrades", item.OptionInfo.Upgraded);
-						cmd.Set("meta1", item.MetaData1.ToString());
-						cmd.Set("meta2", item.MetaData2.ToString());
-						cmd.Set("flags", (byte)item.OptionInfo.Flags);
-						cmd.Set("prefix", item.OptionInfo.Prefix);
-						cmd.Set("suffix", item.OptionInfo.Suffix);
-
-						// Upgrade effects are saved as a byte array of all
-						// structs, with a byte in front of it for the count,
-						// in one base64 string. This saves us from managing
-						// another table, doesn't separate the item data,
-						// and has good performance.
-						// Downside: Should the struct ever change, we have
-						// to write an update function for the db data.
-						// Alternatively we could make an upgradeEffects table,
-						// but that's tricky, seeing how the struct has unions,
-						// and we'd need one more query for every item with
-						// effects on load, and multiple queries on save.
-						cmd.Set("upgradeEffects", item.SerializeUpgradeEffects());
-
-						cmd.Execute();
-
-						if (item.EntityId >= MabiId.TmpItems)
-							item.EntityId = cmd.LastId;
-					}
-
-					// Save ego data
-					if (item.Data.HasTag("/ego_weapon/"))
-					{
-						using (var cmd = new InsertCommand("INSERT INTO `egos` {0}", conn, transaction))
-						{
-							cmd.Set("itemEntityId", item.EntityId);
-							cmd.Set("egoRace", (byte)item.EgoInfo.Race);
-							cmd.Set("name", item.EgoInfo.Name);
-							cmd.Set("strLevel", item.EgoInfo.StrLevel);
-							cmd.Set("strExp", item.EgoInfo.StrExp);
-							cmd.Set("intLevel", item.EgoInfo.IntLevel);
-							cmd.Set("intExp", item.EgoInfo.IntExp);
-							cmd.Set("dexLevel", item.EgoInfo.DexLevel);
-							cmd.Set("dexExp", item.EgoInfo.DexExp);
-							cmd.Set("willLevel", item.EgoInfo.WillLevel);
-							cmd.Set("willExp", item.EgoInfo.WillExp);
-							cmd.Set("luckLevel", item.EgoInfo.LuckLevel);
-							cmd.Set("luckExp", item.EgoInfo.LuckExp);
-							cmd.Set("socialLevel", item.EgoInfo.SocialLevel);
-							cmd.Set("socialExp", item.EgoInfo.SocialExp);
-							cmd.Set("awakeningEnergy", item.EgoInfo.AwakeningEnergy);
-							cmd.Set("awakeningExp", item.EgoInfo.AwakeningExp);
-							cmd.Set("lastFeeding", item.EgoInfo.LastFeeding);
-
-							cmd.Execute();
-						}
-					}
-				}
+				// Save inventory items
+				var items = creature.Inventory.GetItems();
+				SaveItems(creature.CreatureId, items, conn, transaction);
 
 				transaction.Commit();
+			}
+		}
+
+		private static void SaveItems(long creatureId, IList<Item> items, MySqlConnection conn, MySqlTransaction transaction)
+		{
+			foreach (var item in items)
+			{
+				using (var cmd = new InsertCommand("INSERT INTO `items` {0}", conn, transaction))
+				{
+					cmd.Set("creatureId", creatureId);
+					if (item.EntityId < MabiId.TmpItems)
+						cmd.Set("entityId", item.EntityId);
+					cmd.Set("itemId", item.Info.Id);
+					cmd.Set("bank", item.Bank);
+					if (item.BankTransferStart == DateTime.MinValue)
+						cmd.Set("bankTransferStart", null);
+					else
+						cmd.Set("bankTransferStart", item.BankTransferStart);
+					cmd.Set("bankTransferDuration", item.BankTransferDuration);
+					cmd.Set("pocket", (byte)item.Info.Pocket);
+					cmd.Set("x", item.Info.X);
+					cmd.Set("y", item.Info.Y);
+					cmd.Set("color1", item.Info.Color1);
+					cmd.Set("color2", item.Info.Color2);
+					cmd.Set("color3", item.Info.Color3);
+					cmd.Set("price", item.OptionInfo.Price);
+					cmd.Set("sellPrice", item.OptionInfo.SellingPrice);
+					cmd.Set("pointPrice", item.OptionInfo.PointPrice);
+					cmd.Set("amount", item.Info.Amount);
+					cmd.Set("linkedPocket", item.OptionInfo.LinkedPocketId);
+					cmd.Set("state", item.Info.State);
+					cmd.Set("figureB", item.Info.FigureB);
+					cmd.Set("durability", item.OptionInfo.Durability);
+					cmd.Set("durabilityMax", item.OptionInfo.DurabilityMax);
+					cmd.Set("durabilityOriginal", item.OptionInfo.DurabilityOriginal);
+					cmd.Set("attackMin", item.OptionInfo.AttackMin);
+					cmd.Set("attackMax", item.OptionInfo.AttackMax);
+					cmd.Set("injuryMin", item.OptionInfo.InjuryMin);
+					cmd.Set("injuryMax", item.OptionInfo.InjuryMax);
+					cmd.Set("balance", item.OptionInfo.Balance);
+					cmd.Set("critical", item.OptionInfo.Critical);
+					cmd.Set("defense", item.OptionInfo.Defense);
+					cmd.Set("protection", item.OptionInfo.Protection);
+					cmd.Set("range", item.OptionInfo.EffectiveRange);
+					cmd.Set("attackSpeed", (byte)item.OptionInfo.AttackSpeed);
+					cmd.Set("experience", item.Proficiency);
+					cmd.Set("upgrades", item.OptionInfo.Upgraded);
+					cmd.Set("meta1", item.MetaData1.ToString());
+					cmd.Set("meta2", item.MetaData2.ToString());
+					cmd.Set("flags", (byte)item.OptionInfo.Flags);
+					cmd.Set("prefix", item.OptionInfo.Prefix);
+					cmd.Set("suffix", item.OptionInfo.Suffix);
+
+					// Upgrade effects are saved as a byte array of all
+					// structs, with a byte in front of it for the count,
+					// in one base64 string. This saves us from managing
+					// another table, doesn't separate the item data,
+					// and has good performance.
+					// Downside: Should the struct ever change, we have
+					// to write an update function for the db data.
+					// Alternatively we could make an upgradeEffects table,
+					// but that's tricky, seeing how the struct has unions,
+					// and we'd need one more query for every item with
+					// effects on load, and multiple queries on save.
+					cmd.Set("upgradeEffects", item.SerializeUpgradeEffects());
+
+					cmd.Execute();
+
+					if (item.EntityId >= MabiId.TmpItems)
+						item.EntityId = cmd.LastId;
+				}
+
+				// Save ego data
+				if (item.Data.HasTag("/ego_weapon/"))
+				{
+					using (var cmd = new InsertCommand("INSERT INTO `egos` {0}", conn, transaction))
+					{
+						cmd.Set("itemEntityId", item.EntityId);
+						cmd.Set("egoRace", (byte)item.EgoInfo.Race);
+						cmd.Set("name", item.EgoInfo.Name);
+						cmd.Set("strLevel", item.EgoInfo.StrLevel);
+						cmd.Set("strExp", item.EgoInfo.StrExp);
+						cmd.Set("intLevel", item.EgoInfo.IntLevel);
+						cmd.Set("intExp", item.EgoInfo.IntExp);
+						cmd.Set("dexLevel", item.EgoInfo.DexLevel);
+						cmd.Set("dexExp", item.EgoInfo.DexExp);
+						cmd.Set("willLevel", item.EgoInfo.WillLevel);
+						cmd.Set("willExp", item.EgoInfo.WillExp);
+						cmd.Set("luckLevel", item.EgoInfo.LuckLevel);
+						cmd.Set("luckExp", item.EgoInfo.LuckExp);
+						cmd.Set("socialLevel", item.EgoInfo.SocialLevel);
+						cmd.Set("socialExp", item.EgoInfo.SocialExp);
+						cmd.Set("awakeningEnergy", item.EgoInfo.AwakeningEnergy);
+						cmd.Set("awakeningExp", item.EgoInfo.AwakeningExp);
+						cmd.Set("lastFeeding", item.EgoInfo.LastFeeding);
+
+						cmd.Execute();
+					}
+				}
 			}
 		}
 

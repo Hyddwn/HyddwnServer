@@ -16,6 +16,38 @@ public class BarriDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Brown Fomor Pass (G1)
+		if (item.Info.Id == 73011)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_10"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount > 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 or less members."));
+				return false;
+			}
+
+			dungeonName = "g1_10_bangor_barri_dungeon";
+			return true;
+		}
+
+		// Black Fomor Pass (G1)
+		if (item.Info.Id == 73012)
+		{
+			if (creature.Party.MemberCount > 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 or less members."));
+				return false;
+			}
+
+			dungeonName = "g1_30_bangor_barri_dungeon";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{

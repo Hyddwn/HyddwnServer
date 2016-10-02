@@ -878,7 +878,7 @@
 { id: 10732, name: "Lorna and Pan's Friend", effects: { "Life":10, "MaxAttack":5 } }, 
 { id: 10734, name: "현실의 속박", effects: { "Life":15, "Mana":15, "Will":10, "Luck":10, "MaxAttack":19, "MagicAttack":8, "Defense":1, "Protection":1 } }, 
 { id: 10735, name: "벚꽃비 내리는 날", effects: { "MaxAttack":7, "Defense":3, "prot":3 } }, 
-{ id: 10736, name: "Unknown", effects: { "MaxAttack":5, "MagicAttack":15, "MagicDefense":5, "MagicProtection":5 } }, 
+{ id: 10736, name: "McWaffles", effects: { "MaxAttack":5, "MagicAttack":15, "MagicDefense":5, "MagicProtection":5 } }, 
 { id: 10737, name: "11주년 드림마스터", effects: { "Luck":5, "MaxAttack":5, "MagicAttack":5, "Crit":5 } }, 
 { id: 10738, name: "무적의 솔로 부대", effects: { "Str":20, "Will":35, "Luck":30 } }, 
 { id: 10739, name: "Unknown", effects: { "Str":12, "Int":12, "Dex":12, "Will":12, "Luck":12, "MaxAttack":12, "MagicAttack":12 } }, 

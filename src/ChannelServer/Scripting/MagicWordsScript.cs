@@ -171,6 +171,10 @@ namespace Aura.Channel.Scripting
 					// Modifies given stat.
 					case "modify":
 						{
+							// Only allow this once per item id
+							if (creature.Vars.Perm["StatModify_" + item.Info.Id] != null)
+								break;
+
 							var stat = function.GetArgument<string>(0);
 							var modifier = function.GetArgument<int>(1);
 							switch (stat)
@@ -182,6 +186,8 @@ namespace Aura.Channel.Scripting
 								case "luck": creature.LuckBonus += modifier; break;
 								default: Log.Warning("MagicWordsScript: Unknown modify stat '{0}'.", stat); continue;
 							}
+
+							creature.Vars.Perm["StatModify_" + item.Info.Id] = true;
 
 							Send.StatUpdateDefault(creature);
 							if (modifier > 0)

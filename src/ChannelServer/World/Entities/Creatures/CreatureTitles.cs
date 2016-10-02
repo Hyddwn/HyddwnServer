@@ -206,7 +206,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			if (option && _optionTitleData != null)
 			{
 				_creature.StatMods.Remove(StatModSource.Title, this.SelectedOptionTitle);
-				if (_titleData.Effects.Any(a => a.Key == "Speed"))
+				if (_optionTitleData.Effects.Any(a => a.Key == "Speed"))
 					_creature.Conditions.Deactivate(ConditionsC.Hurry);
 			}
 			else if (!option && _titleData != null)

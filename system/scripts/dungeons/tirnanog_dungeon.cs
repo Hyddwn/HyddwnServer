@@ -9,7 +9,90 @@ public class AlbeyDungeonScript : DungeonScript
 {
 	public override bool Route(Creature creature, Item item, ref string dungeonName)
 	{
-		// Gem dungeons...
+		// Small Green Gem (G1)
+		if (item.Info.Id == 52004)
+		{
+			dungeonName = "g1_37_green_tirnanog_dungeon";
+			return true;
+		}
+
+		// Small Blue Gem (G1)
+		if (item.Info.Id == 52005)
+		{
+			dungeonName = "g1_37_blue_tirnanog_dungeon";
+			return true;
+		}
+
+		// Small Red Gem (G1)
+		if (item.Info.Id == 52006)
+		{
+			dungeonName = "g1_37_red_tirnanog_dungeon";
+			return true;
+		}
+
+		// Small Silver Gem (G1)
+		if (item.Info.Id == 52007)
+		{
+			dungeonName = "g1_37_silver_tirnanog_dungeon";
+			return true;
+		}
+
+		// Black Orb (G1)
+		if (item.Info.Id == 73033)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_36"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount > 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 or less members."));
+				return false;
+			}
+
+			dungeonName = "g1_37_black_tirnanog_dungeon";
+			return true;
+		}
+
+		// Pendant of the Goddess (G1 Final)
+		if (item.Info.Id == 73029)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_38"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount > 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 or less members."));
+				return false;
+			}
+
+			dungeonName = "g1_39_tirnanog_dungeon";
+			return true;
+		}
+
+		// Goddess Pass (G1 Final)
+		if (item.Info.Id == 73034)
+		{
+			if (!creature.Party.Leader.Keywords.Has("g1_38"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon right now."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount > 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 or less members."));
+				return false;
+			}
+
+			dungeonName = "g1_39_tirnanog_dungeon_again";
+			return true;
+		}
 
 		// tirnanog_dungeon
 		return true;

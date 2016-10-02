@@ -514,7 +514,7 @@ namespace Aura.Channel.World.Shops
 			// Notice to owner
 			var msg = string.Format(Localization.Get("[{0}] was sold to [{1}]."), Localization.Get(item.Data.Name), buyer.Name);
 			Send.Notice(this.Owner, msg);
-			Send.SystemMessage(this.Owner, "<PERSONALSHOP>", msg);
+			Send.SystemMessageFrom(this.Owner, "<PERSONALSHOP>", msg);
 
 			// Add gold to the license
 			var fee = this.LicenseData.SalesFee;

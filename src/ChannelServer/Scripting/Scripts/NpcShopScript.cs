@@ -10,6 +10,8 @@ using Aura.Shared.Util;
 using Aura.Mabi;
 using Aura.Data;
 using Aura.Shared.Scripting.Scripts;
+using Aura.Mabi.Const;
+using Aura.Shared.Database;
 
 namespace Aura.Channel.Scripting.Scripts
 {
@@ -145,12 +147,13 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="itemId"></param>
 		/// <param name="amount"></param>
 		/// <param name="price">Uses db value if lower than 0 (default).</param>
-		public void Add(string tabTitle, int itemId, int amount = 1, int price = -1)
+		/// <param name="stock">Amount of times item can be bough, unlimited if lower than 0 (default).</param>
+		public void Add(string tabTitle, int itemId, int amount = 1, int price = -1, int stock = -1)
 		{
 			var item = new Item(itemId);
 			item.Amount = amount;
 
-			this.Add(tabTitle, item, price);
+			this.Add(tabTitle, item, price, stock);
 		}
 
 		/// <summary>
@@ -160,11 +163,12 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="itemId"></param>
 		/// <param name="amount"></param>
 		/// <param name="price"></param>
-		public void AddQuest(string tabTitle, int questId, int price)
+		/// <param name="stock">Amount of times item can be bough, unlimited if lower than 0 (default).</param>
+		public void AddQuest(string tabTitle, int questId, int price, int stock = -1)
 		{
 			var item = Item.CreateQuestScroll(questId);
 
-			this.Add(tabTitle, item, price);
+			this.Add(tabTitle, item, price, stock);
 		}
 
 		/// <summary>
@@ -176,14 +180,15 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="color2"></param>
 		/// <param name="color3"></param>
 		/// <param name="price">Uses db value if lower than 0 (default).</param>
-		public void Add(string tabTitle, int itemId, uint color1, uint color2, uint color3, int price = -1)
+		/// <param name="stock">Amount of times item can be bough, unlimited if lower than 0 (default).</param>
+		public void Add(string tabTitle, int itemId, uint color1, uint color2, uint color3, int price = -1, int stock = -1)
 		{
 			var item = new Item(itemId);
 			item.Info.Color1 = color1;
 			item.Info.Color2 = color2;
 			item.Info.Color3 = color3;
 
-			this.Add(tabTitle, item, price);
+			this.Add(tabTitle, item, price, stock);
 		}
 
 		/// <summary>
@@ -193,12 +198,13 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="itemId"></param>
 		/// <param name="metaData"></param>
 		/// <param name="price">Uses db value if lower than 0 (default).</param>
-		public void Add(string tabTitle, int itemId, string metaData, int price = -1)
+		/// <param name="stock">Amount of times item can be bough, unlimited if lower than 0 (default).</param>
+		public void Add(string tabTitle, int itemId, string metaData, int price = -1, int stock = -1)
 		{
 			var item = new Item(itemId);
 			item.MetaData1.Parse(metaData);
 
-			this.Add(tabTitle, item, price);
+			this.Add(tabTitle, item, price, stock);
 		}
 
 		/// <summary>
@@ -206,14 +212,18 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		/// <param name="tabTitle"></param>
 		/// <param name="item"></param>
-		/// <param name="price">Uses db value if lower than 0 (default).</param>
-		public void Add(string tabTitle, Item item, int price = -1)
+		/// <param name="price">Uses db value if lower than 0.</param>
+		/// <param name="stock">Amount of times item can be bough, unlimited if lower than 0.</param>
+		public void Add(string tabTitle, Item item, int price, int stock)
 		{
 			var tab = this.GetOrCreateTab(tabTitle);
 
 			// Use data price if none was set
 			if (price == -1)
 				price = item.Data.Price;
+
+			// Set stock to given amount or unlimited
+			item.Stock = (stock <= 0 ? -1 : stock);
 
 			// Set the price we need
 			switch (tab.PaymentMethod)
@@ -281,12 +291,12 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Returns new item based on target item from one of the tabs by id,
+		/// Returns item from one of the tabs by id.
 		/// or null.
 		/// </summary>
 		/// <param name="entityId"></param>
 		/// <returns></returns>
-		public Item GetItem(long entityId)
+		private Item GetItem(long entityId)
 		{
 			lock (_tabs)
 			{
@@ -294,7 +304,7 @@ namespace Aura.Channel.Scripting.Scripts
 				{
 					var item = tab.Get(entityId);
 					if (item != null)
-						return new Item(item);
+						return item;
 				}
 			}
 
@@ -313,6 +323,7 @@ namespace Aura.Channel.Scripting.Scripts
 				this.Add("Empty");
 
 			creature.Temp.CurrentShop = this;
+			creature.Temp.CurrentShopOwner = owner;
 
 			Send.OpenNpcShop(creature, this.GetTabs(creature, owner));
 		}
@@ -352,6 +363,153 @@ namespace Aura.Channel.Scripting.Scripts
 				return creature == null || owner == null
 					? _tabs.Values.ToList()
 					: _tabs.Values.Where(t => t.ShouldDisplay(creature, owner)).ToList();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="itemEntityId"></param>
+		/// <param name="moveToInventory"></param>
+		/// <returns></returns>
+		public bool Buy(Creature creature, long itemEntityId, bool moveToInventory)
+		{
+			var shop = this;
+			var owner = creature.Temp.CurrentShopOwner;
+
+			// Get item
+			// In theory someone could buy an item without it being visible
+			// to him, but he would need the current entity id that
+			// changes on each restart. It's unlikely to ever be a problem.
+			var item = shop.GetItem(itemEntityId);
+			if (item == null)
+			{
+				Log.Warning("NpcShopScript.Buy: Item '{0:X16}' doesn't exist in shop.", itemEntityId);
+				return false;
+			}
+
+			// Check stock
+			if (item.Stock == 0)
+			{
+				Send.MsgBox(creature, Localization.Get("This item is not in stock anymore."));
+				return false;
+			}
+
+			// Determine which payment method to use, the same way the client
+			// does to display them. Points > Stars > Ducats > Gold.
+			var paymentMethod = PaymentMethod.Gold;
+			if (item.OptionInfo.StarPrice > 0)
+				paymentMethod = PaymentMethod.Stars;
+			if (item.OptionInfo.DucatPrice > 0)
+				paymentMethod = PaymentMethod.Ducats;
+			if (item.OptionInfo.PointPrice > 0)
+				paymentMethod = PaymentMethod.Points;
+
+			// Get buying price
+			var price = int.MaxValue;
+			switch (paymentMethod)
+			{
+				case PaymentMethod.Gold: price = item.OptionInfo.Price; break;
+				case PaymentMethod.Stars: price = item.OptionInfo.StarPrice; break;
+				case PaymentMethod.Ducats: price = item.OptionInfo.DucatPrice; break;
+				case PaymentMethod.Points: price = item.OptionInfo.PointPrice; break;
+			}
+
+			// The client expects the price for a full stack to be sent
+			// in the ItemOptionInfo, so we have to calculate the actual price here.
+			if (item.Data.StackType == StackType.Stackable)
+				price = (int)(price / (float)item.Data.StackMax * item.Amount);
+
+			// Wednesday: Decrease in prices (5%) for items in NPC shops,
+			// including Remote Shop Coupons and money deposit for Exploration Quests.
+			if (ErinnTime.Now.Month == ErinnMonth.AlbanHeruin)
+				price = (int)(price * 0.95f);
+
+			// Check currency
+			var canPay = false;
+			switch (paymentMethod)
+			{
+				case PaymentMethod.Gold: canPay = (creature.Inventory.Gold >= price); break;
+				case PaymentMethod.Stars: canPay = (creature.Inventory.Stars >= price); break;
+				case PaymentMethod.Ducats: canPay = false; break; // TODO: Implement ducats.
+				case PaymentMethod.Points: canPay = (creature.Points >= price); break;
+			}
+
+			if (!canPay)
+			{
+				switch (paymentMethod)
+				{
+					case PaymentMethod.Gold: Send.MsgBox(creature, Localization.Get("Insufficient amount of gold.")); break;
+					case PaymentMethod.Stars: Send.MsgBox(creature, Localization.Get("Insufficient amount of stars.")); break;
+					case PaymentMethod.Ducats: Send.MsgBox(creature, Localization.Get("Insufficient amount of ducats.")); break;
+					case PaymentMethod.Points: Send.MsgBox(creature, Localization.Get("You don't have enough Pon.\nYou will need to buy more.")); break;
+				}
+
+				return false;
+			}
+
+			// Buy, adding item, and removing currency
+			var success = false;
+
+			var newItem = new Item(item);
+
+			// Set guild data
+			if (newItem.HasTag("/guild_robe/") && creature.Guild != null && creature.Guild.HasRobe)
+			{
+				// EBCL1:4:-11042446;EBCL2:4:-7965756;EBLM1:1:45;EBLM2:1:24;EBLM3:1:6;GLDNAM:s:Name;
+				newItem.Info.Color1 = creature.Guild.Robe.RobeColor;
+				newItem.Info.Color2 = GuildRobe.GetColor(creature.Guild.Robe.BadgeColor);
+				newItem.Info.Color3 = GuildRobe.GetColor(creature.Guild.Robe.EmblemMarkColor);
+				newItem.MetaData1.SetInt("EBCL1", (int)GuildRobe.GetColor(creature.Guild.Robe.EmblemOutlineColor));
+				newItem.MetaData1.SetInt("EBCL2", (int)GuildRobe.GetColor(creature.Guild.Robe.StripesColor));
+				newItem.MetaData1.SetByte("EBLM1", creature.Guild.Robe.EmblemMark);
+				newItem.MetaData1.SetByte("EBLM2", creature.Guild.Robe.EmblemOutline);
+				newItem.MetaData1.SetByte("EBLM3", creature.Guild.Robe.Stripes);
+				newItem.MetaData1.SetString("GLDNAM", creature.Guild.Name);
+			}
+
+			// Cursor
+			if (!moveToInventory)
+				success = creature.Inventory.Add(newItem, Pocket.Cursor);
+			// Inventory
+			else
+				success = creature.Inventory.Add(newItem, false);
+
+			if (success)
+			{
+				// Reset gold price if payment method wasn't gold, as various
+				// things depend on the gold price, like repair prices.
+				// If any payment method but gold was used, the gold price
+				// would be 0.
+				if (paymentMethod != PaymentMethod.Gold)
+					newItem.ResetGoldPrice();
+
+				// Reduce gold/points
+				switch (paymentMethod)
+				{
+					case PaymentMethod.Gold: creature.Inventory.Gold -= price; break;
+					case PaymentMethod.Stars: creature.Inventory.Stars -= price; break;
+					case PaymentMethod.Ducats: break; // TODO: Implement ducats.
+					case PaymentMethod.Points: creature.Points -= price; break;
+				}
+
+				// Reduce stock
+				if (item.Stock > 0)
+				{
+					// Don't let it go below 0, that would mean unlimited.
+					item.Stock = Math.Max(0, item.Stock - 1);
+					if (item.Stock == 0)
+					{
+						// Refresh shop, so the item disappears.
+						Send.ClearNpcShop(creature);
+						Send.AddToNpcShop(creature, this.GetTabs(creature, owner));
+					}
+
+					Send.ServerMessage(creature, "Debug: Stock remaining: {0}", item.Stock);
+				}
+			}
+
+			return success;
 		}
 	}
 
@@ -440,7 +598,7 @@ namespace Aura.Channel.Scripting.Scripts
 		public ICollection<Item> GetItems()
 		{
 			lock (_items)
-				return _items.Values.ToList();
+				return _items.Values.Where(a => a.Stock != 0).ToList();
 		}
 
 		/// <summary>

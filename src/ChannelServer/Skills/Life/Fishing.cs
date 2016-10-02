@@ -228,6 +228,13 @@ namespace Aura.Channel.Skills.Life
 						var scale = (1f / item.Data.BaseSize * size);
 
 						item.MetaData1.SetFloat("SCALE", scale);
+
+						// Modify selling price based on scale.
+						// The default selling price is 10% of the price.
+						// If the scale is 2, double the base size (the
+						// "usual" size so to speak), it fetches twice
+						// the price. The formula is unofficial, but works.
+						item.OptionInfo.SellingPrice = (int)(item.OptionInfo.SellingPrice * scale);
 					}
 				}
 

@@ -117,7 +117,7 @@ namespace Aura.Channel.Network.Sending
 		/// Sends OpenNpcShop to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="shop"></param>
+		/// <param name="tabs"></param>
 		public static void OpenNpcShop(Creature creature, IList<NpcShopTab> tabs)
 		{
 			var packet = new Packet(Op.OpenNpcShop, creature.EntityId);
@@ -141,6 +141,47 @@ namespace Aura.Channel.Network.Sending
 					packet.AddItemInfo(item, ItemPacketType.Private);
 			}
 
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends AddToNpcShop to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="tabs"></param>
+		public static void AddToNpcShop(Creature creature, IList<NpcShopTab> tabs)
+		{
+			var packet = new Packet(Op.AddToNpcShop, creature.EntityId);
+			packet.PutString("shopname"); // e.g. TirchonaillShop_Dilys
+			packet.PutByte(0); // 1 in remote shops?
+			packet.PutByte(0);
+			packet.PutInt(0);
+			packet.PutByte((byte)tabs.Count);
+			foreach (var tab in tabs)
+			{
+				packet.PutString("[{0}]{1}", tab.Order, tab.Title);
+
+				// [160200] ?
+				{
+					packet.PutByte(0);
+				}
+
+				var items = tab.GetItems();
+				packet.PutShort((short)items.Count);
+				foreach (var item in items)
+					packet.AddItemInfo(item, ItemPacketType.Private);
+			}
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends ClearNpcShop to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void ClearNpcShop(Creature creature)
+		{
+			var packet = new Packet(Op.ClearNpcShop, creature.EntityId);
 			creature.Client.Send(packet);
 		}
 

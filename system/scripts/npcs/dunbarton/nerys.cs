@@ -351,8 +351,8 @@ public class NerysShop : NpcShopScript
 		Add("Weapon", 45001, 100); // Arrow (100)
 		Add("Weapon", 40023);      // Gathering Knife
 		Add("Weapon", 40022);      // Gathering Axe
-		Add("Weapon", 45002, 50);  // Bolt (20)
-		Add("Weapon", 45002, 100); // Bolt (100)
+		Add("Weapon", 45002, 50);  // Bolt (50)
+		Add("Weapon", 45002, 200); // Bolt (200)
 		Add("Weapon", 40027);      // Weeding Hoe
 		Add("Weapon", 40003);      // Shortbow
 		Add("Weapon", 40006);      // Dagger

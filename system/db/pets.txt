@@ -264,7 +264,7 @@
 { raceId: 490062, name: "Battle Pegasus", timeLimit: 120, exp: 1.75, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 42, stamina: 100, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 10, protection: 5 },
 { raceId: 490073, name: "Floofy Broom", timeLimit: 102, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 44, mana: 45, stamina: 43, str: 29, int: 34, dex: 32, will: 22, luck: 29, defense: 0, protection: 2 },
 { raceId: 490076, name: "Astral Pegasus", timeLimit: 120, exp: 1.75, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 42, stamina: 100, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 10, protection: 5 },
-{ raceId: 490085, name: "Cotton Candy Broom", timeLimit: 102, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 44, mana: 45, stamina: 43, str: 29, int: 34, dex: 32, will: 22, luck: 29, defense: 0, protection: 2 },
+{ raceId: 490085, name: "S.S. Cotton Candy", timeLimit: 102, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 44, mana: 45, stamina: 43, str: 29, int: 34, dex: 32, will: 22, luck: 29, defense: 0, protection: 2 },
 { raceId: 490090, name: "Combat Pegasus", timeLimit: 120, exp: 1.75, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 42, stamina: 100, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 10, protection: 5 },
 
 // Wild Cats

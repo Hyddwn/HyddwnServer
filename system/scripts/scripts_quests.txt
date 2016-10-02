@@ -124,4 +124,7 @@ quests/collection/60026_make_some_flour_dough.cs
 quests/collection/60027_make_some_fry_batter.cs
 quests/collection/60028_make_some_rice.cs
 
+// Mainstream
+require "quests/mainstream/scripts_g1.txt"
+
 include "/user/scripts/scripts_quests.txt"

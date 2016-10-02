@@ -84,6 +84,7 @@ namespace Aura.Mabi.Network
 		public const int EntityAppears = 0x520C;
 		public const int EntityDisappears = 0x520D;
 		public const int CreatureBodyUpdate = 0x520E;
+		public const int CreatureFaceUpdate = 0x5210;
 		public const int ItemAppears = 0x5211;
 		public const int ItemDisappears = 0x5212;
 		public const int AssignSittingProp = 0x5215;
@@ -618,7 +619,7 @@ namespace Aura.Mabi.Network
 		// [200100, NA209 (2016-06-16)]
 		// 4 new ops somewhere here, that shifted the SubsribeStabilityMeter~ChannelLoginUnkR ops by 4.
 
-		public const int SubsribeStabilityMeter = 0xAA25;
+		public const int SubscribeStabilityMeter = 0xAA25;
 		public const int StabilityMeterInit = 0xAA26;
 		public const int StabilityMeterUpdate = 0xAA27;
 

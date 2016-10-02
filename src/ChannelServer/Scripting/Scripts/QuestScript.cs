@@ -596,7 +596,9 @@ namespace Aura.Channel.Scripting.Scripts
 		// ------------------------------------------------------------------
 
 		protected QuestReward Item(int itemId, int amount = 1) { return new QuestRewardItem(itemId, amount); }
+		protected QuestReward Keyword(string keyword) { return new QuestRewardKeyword(keyword); }
 		protected QuestReward Enchant(int optionSetId) { return new QuestRewardEnchant(optionSetId); }
+		protected QuestReward WarpScroll(int itemId, string portal) { return new QuestRewardWarpScroll(itemId, portal); }
 		protected QuestReward QuestScroll(int questId) { return new QuestRewardQuestScroll(questId); }
 		protected QuestReward Skill(SkillId skillId, SkillRank rank) { return new QuestRewardSkill(skillId, rank, 0); }
 		protected QuestReward Skill(SkillId skillId, SkillRank rank, int training) { return new QuestRewardSkill(skillId, rank, training); }
@@ -611,6 +613,10 @@ namespace Aura.Channel.Scripting.Scripts
 		// ------------------------------------------------------------------
 
 		public virtual void OnReceive(Creature creature)
+		{
+		}
+
+		public virtual void OnComplete(Creature creature)
 		{
 		}
 
@@ -731,7 +737,7 @@ namespace Aura.Channel.Scripting.Scripts
 						var itemId = (objective as QuestObjectiveCollect).ItemId;
 
 						// Do not count incomplete items (e.g. tailoring, blacksmithing).
-						var count = creature.Inventory.Count((Item item) => item.Info.Id == itemId && !item.MetaData1.Has("PRGRATE"));
+						var count = creature.Inventory.Count((Item item) => (item.Info.Id == itemId || item.Data.StackItemId == itemId) && !item.MetaData1.Has("PRGRATE"));
 
 						if (!progress.Done && count >= objective.Amount)
 							quest.SetDone(progress.Ident);

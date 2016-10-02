@@ -4970,7 +4970,7 @@
 { race: [490084], age: 14, life: -1.00, mana: 0.00, stamina: -1.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
 { race: [490084], age: 15, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
 
-// Cotton Candy Broom
+// S.S. Cotton Candy
 { race: [490085], age: 1, life: 3.00, mana: 4.00, stamina: 3.00, str: 2.00, int: 4.00, dex: 3.00, will: 3.00, luck: 3.00 },
 { race: [490085], age: 2, life: 2.00, mana: 3.00, stamina: 3.00, str: 3.00, int: 3.00, dex: 3.00, will: 3.00, luck: 2.00 },
 { race: [490085], age: 3, life: 3.00, mana: 2.00, stamina: 3.00, str: 2.00, int: 3.00, dex: 2.00, will: 3.00, luck: 1.00 },

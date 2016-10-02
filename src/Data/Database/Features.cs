@@ -24,10 +24,20 @@ namespace Aura.Data.Database
 	{
 		public bool IsEnabled(string featureName)
 		{
+			var invert = false;
+			if (featureName.StartsWith("!"))
+			{
+				featureName = featureName.Substring(1);
+				invert = true;
+			}
+
 			var entry = this.Entries.GetValueOrDefault(featureName);
 			if (entry == null) return false;
 
-			return entry.Enabled;
+			if (!invert)
+				return entry.Enabled;
+			else
+				return !entry.Enabled;
 		}
 
 		protected override void ReadEntry(JObject entry)

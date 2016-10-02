@@ -1,7 +1,4 @@
-﻿using Aura.Channel.Network.Sending;
-using Aura.Channel.Scripting.Scripts;
-using Aura.Channel.World.Entities;
-//--- Aura Script -----------------------------------------------------------
+﻿//--- Aura Script -----------------------------------------------------------
 // Fomor Command Scroll
 //--- Description -----------------------------------------------------------
 // Sends region-wide notice about when and where the next Field Boss

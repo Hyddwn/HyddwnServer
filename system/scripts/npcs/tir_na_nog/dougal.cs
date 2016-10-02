@@ -348,6 +348,7 @@ public class DougalShop : NpcShopScript
 		Add("First Aid Kits", 63000, 10); // Phoenix Feather 10x
 		Add("First Aid Kits", 63000, 20); // Phoenix Feather 20x
 
+		AddQuest("Quest", 210021, 0); // Collect the Black Orb Fragments
 		AddQuest("Quest", 71051, 30); // Collect the Dingo's Fomor Scrolls
 	}
 }

@@ -355,6 +355,22 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 		AddRewards();
 	}
 
+	/// <summary>
+	/// Removes other quest items for PTJs involving more than one book.
+	/// </summary>
+	/// <param name="creature"></param>
+	/// <remarks>
+	/// Fix #414: Lingering books on quest completion for Stewart PTJ
+	/// This might be removed when "any order" quest objective completion is implemented.
+	/// </remarks>
+	public override void OnComplete(Creature creature)
+	{
+		// Remove all books except the last one;
+		// the last book is already taken care of automatically by CreatureQuests.Complete(Quest, int, bool) .
+		for (int i = NpcBookPairs.Length - 2; i >= 0; --i)
+			creature.RemoveItem(NpcBookPairs[i].ItemId);
+	}
+
 	private NpcScriptHook GenerateBookcaseAfterIntroHook(string objectiveIdent, int bookItemId)
 	{
 		return async (NpcScript npc, object[] args) =>
@@ -381,9 +397,9 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 			if (!npc.QuestActive(this.Id, objectiveIdent))
 				return HookResult.Continue;
 
+			npc.FinishQuest(this.Id, objectiveIdent);
 			npc.Player.GiveItem(nbp.ItemId);
 			npc.Notice(GetLItemReceivedNotice(nbp));
-			npc.FinishQuest(this.Id, objectiveIdent);
 
 			await this.OnFinish(npc, nbp.NpcIdent);
 

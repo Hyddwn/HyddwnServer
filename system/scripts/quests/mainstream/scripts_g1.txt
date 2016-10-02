@@ -1,0 +1,34 @@
+// Aura
+// Script list file
+//
+// All scripts listed here will be loaded.
+//---------------------------------------------------------------------------
+
+g1/001_finding_the_lost_earring.cs
+g1/002_the_three_missing_warriors.cs
+g1/003_the_third_warrior.cs
+g1/004_the_story_of_the_goddess.cs
+g1/005_the_land_of_eternity.cs
+g1/006_brown_fomor_pass.cs
+g1/007_medal_of_priests.cs
+g1/008_goros_ring.cs
+g1/009_succubus.cs
+g1/010_book_of_evil_1.cs
+g1/011_book_of_evil_2.cs
+g1/012_the_book_of_revenge.cs
+g1/013_mores.cs
+g1/014_wizards_note.cs
+g1/015_the_book_of_revenge_vol2.cs
+g1/016_investigating_the_book_of_revenge_vol3.cs
+g1/017_the_book_of_revenge_vol3.cs
+g1/018_embodiment_of_destruction.cs
+g1/019_magic_powder_of_preservation.cs
+g1/020_rabbie_dungeon.cs
+g1/021_the_pendant_from_goddess.cs
+g1/022_shielas_memory.cs
+g1/023_kristells_request.cs
+g1/024_the_seal_breaker_of_another_world.cs
+g1/025_bind_magic.cs
+g1/026_collecting_pieces_of_black_orb.cs
+g1/027_black_orb_dungeon.cs
+g1/028_glas_ghaibhleann.cs

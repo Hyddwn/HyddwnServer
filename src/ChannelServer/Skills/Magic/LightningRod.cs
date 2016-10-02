@@ -208,6 +208,9 @@ namespace Aura.Channel.Skills.Magic
 				// MDef and MProt
 				SkillHelper.HandleMagicDefenseProtection(target, ref damage);
 
+				// Conditions
+				SkillHelper.HandleConditions(attacker, target, ref damage);
+
 				// Mana Deflector
 				var delayReduction = ManaDeflector.Handle(attacker, target, ref damage, tAction);
 

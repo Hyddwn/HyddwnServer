@@ -12,6 +12,7 @@ using Aura.Channel.Network.Sending;
 using Aura.Shared.Util;
 using Aura.Channel.Skills.Base;
 using Aura.Data;
+using Aura.Mabi;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -20,6 +21,9 @@ namespace Aura.Channel.World.Entities.Creatures
 		private Creature _creature;
 		private Dictionary<SkillId, Skill> _skills;
 		private Dictionary<SkillId, Action> _callbacks;
+
+		private SkillId _autoCancel;
+		private DateTime _autoCancelTime;
 
 		// Skill of creature with highest combat power
 		public float HighestSkillCp { get; private set; }
@@ -98,6 +102,31 @@ namespace Aura.Channel.World.Entities.Creatures
 			}
 
 			return this.Add(new Skill(_creature, skillId, skillRank, raceId));
+		}
+
+		/// <summary>
+		/// Removes skill with given id and its bonuses, without updating
+		/// the client.
+		/// </summary>
+		/// <remarks>
+		/// If we want a non-silent version of this, we need to know the
+		/// skill removal packet.
+		/// </remarks>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		public bool RemoveSilent(SkillId skillId)
+		{
+			if (!this.Has(skillId))
+				return false;
+
+			lock (_skills)
+			{
+				var skill = _skills[skillId];
+				this.RemoveBonuses(skill);
+				_skills.Remove(skillId);
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -358,6 +387,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			this.ActiveSkill.State = SkillState.Canceled;
 			this.ActiveSkill = null;
 
+			_creature.Regens.Remove("ActiveSkillWait");
 			_creature.Unlock(Locks.All);
 		}
 
@@ -435,6 +465,39 @@ namespace Aura.Channel.World.Entities.Creatures
 		public bool IsReady(SkillId skillId)
 		{
 			return (this.IsActive(skillId) && this.ActiveSkill.State == SkillState.Ready);
+		}
+
+		/// <summary>
+		/// Cancels given skill if it's active after the given time span.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="timeSpan"></param>
+		public void CancleAfter(SkillId skillId, TimeSpan timeSpan)
+		{
+			_autoCancel = skillId;
+			_autoCancelTime = DateTime.Now.Add(timeSpan);
+		}
+
+		/// <summary>
+		/// Checks for skills to auto cancel.
+		/// </summary>
+		/// <param name="time"></param>
+		public void OnSecondsTimeTick(ErinnTime time)
+		{
+			if (_autoCancel == SkillId.None)
+				return;
+
+			if (!this.IsActive(_autoCancel))
+			{
+				_autoCancel = SkillId.None;
+				return;
+			}
+
+			if (time.DateTime < _autoCancelTime)
+				return;
+
+			_autoCancel = SkillId.None;
+			this.CancelActiveSkill();
 		}
 	}
 }

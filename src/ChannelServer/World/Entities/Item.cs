@@ -354,6 +354,12 @@ namespace Aura.Channel.World.Entities
 		public bool IsBreakable { get { return (this.OptionInfo.DurabilityOriginal != 0); } }
 
 		/// <summary>
+		/// Returns true if item has upgrade effects, e.g. from upgrades
+		/// or enchants.
+		/// </summary>
+		public int UpgradeEffectCount { get { lock (_upgrades) return (_upgrades.Count); } }
+
+		/// <summary>
 		/// Returns true if item can be blessed.
 		/// </summary>
 		public bool IsBlessable
@@ -370,6 +376,11 @@ namespace Aura.Channel.World.Entities
 		/// Item's price in a personal shop.
 		/// </summary>
 		public int PersonalShopPrice { get; set; }
+
+		/// <summary>
+		/// Amount of times the item can be bought from an NPC shop.
+		/// </summary>
+		public int Stock { get; set; }
 
 		/// <summary>
 		/// New item based on item id.
@@ -1283,11 +1294,11 @@ namespace Aura.Channel.World.Entities
 
 			if (collectionSpeed != 0)
 			{
-				if (collectionSpeed < 250)
+				if (collectionSpeed <= 250)
 					result = (int)(result * 1.7f);
-				else if (collectionSpeed < 500)
+				else if (collectionSpeed <= 500)
 					result = (int)(result * 1.7f * 1.7f);
-				else if (collectionSpeed < 750)
+				else if (collectionSpeed <= 750)
 					result = (int)(result * 1.7f * 1.7f * 1.7f);
 				else
 					result = (int)(result * 1.7f * 1.7f * 1.7f * 1.7f);

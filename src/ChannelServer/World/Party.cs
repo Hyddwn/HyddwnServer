@@ -620,7 +620,7 @@ namespace Aura.Channel.World
 					var pos = member.GetPosition();
 					var clientEvent = member.Region.GetClientEvent(a => a.Data.IsAltar);
 
-					if (clientEvent.IsInside(pos))
+					if (clientEvent != null && clientEvent.IsInside(pos))
 						result.Add(member);
 				}
 			}
@@ -654,16 +654,6 @@ namespace Aura.Channel.World
 			}
 
 			return result;
-		}
-
-		/// <summary>
-		/// Returns a list of all members in the same region as the specified creature.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <returns></returns>
-		public List<Creature> GetMembersInRegion(Creature creature)
-		{
-			return this.GetMembersInRange(creature, 0);
 		}
 
 		/// <summary>

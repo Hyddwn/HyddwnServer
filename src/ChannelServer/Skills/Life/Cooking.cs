@@ -417,6 +417,8 @@ namespace Aura.Channel.Skills.Life
 			result.HelpItem = null;
 			result.HelpAmount = 0;
 
+			var total = (float)recipe.MainIngredients.Sum(a => a.Amount);
+
 			foreach (var ingredient in ingredients)
 			{
 				// Every item *should* only appear once in main or other.
@@ -434,7 +436,7 @@ namespace Aura.Channel.Skills.Life
 				// Calculate the amount difference between the provided
 				// ingredient and the recipe.
 				var amount = ingredient.Amount;
-				var ideal = ingredientData.Amount / 100f;
+				var ideal = (1f / total * ingredientData.Amount);
 				var difference = ideal - amount;
 				var differenceAbs = Math.Abs(difference);
 

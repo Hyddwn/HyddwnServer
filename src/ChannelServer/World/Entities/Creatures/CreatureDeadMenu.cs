@@ -45,6 +45,8 @@ namespace Aura.Channel.World.Entities.Creatures
 				sb.Append("arena_side;");
 			if (this.Has(ReviveOptions.ArenaWaitingRoom))
 				sb.Append("arena_waiting;");
+			if (this.Has(ReviveOptions.TirNaNog))
+				sb.Append("tirnanog;");
 			if (this.Has(ReviveOptions.BarriLobby))
 				sb.Append("barri_lobby;");
 			if (this.Has(ReviveOptions.NaoStone))
@@ -83,16 +85,32 @@ namespace Aura.Channel.World.Entities.Creatures
 
 			if (this.Creature.IsDead)
 			{
+				var isInTirNaNog = this.Creature.IsInTirNaNog;
+
 				// Defaults
-				this.Add(ReviveOptions.Town);
 				this.Add(ReviveOptions.WaitForRescue);
 				if (this.Creature.IsPet)
 					this.Add(ReviveOptions.PhoenixFeather);
 
+				// Town
+				if (!isInTirNaNog)
+				{
+					this.Add(ReviveOptions.Town);
+				}
+				// Tir Na Nog
+				else
+				{
+					// Use TNN or Barri, depending on whether the bind quest
+					// was done.
+					if (this.Creature.Keywords.Has("g1_bind"))
+						this.Add(ReviveOptions.TirNaNog);
+					else
+						this.Add(ReviveOptions.BarriLobby);
+				}
+
 				// Nao Stone option if it's enabled, and creature is not
-				// in TNN (35: Tir, 84: Bangor).
-				// TODO: Check dungeons...? Maybe the dungeon groups?
-				if (AuraData.FeaturesDb.IsEnabled("NaoCoupon") && this.Creature.RegionId != 35 && this.Creature.RegionId != 84)
+				// in Tir Na Nog.
+				if (AuraData.FeaturesDb.IsEnabled("NaoCoupon") && !isInTirNaNog)
 					this.Add(ReviveOptions.NaoStone);
 
 				// Dungeons
@@ -108,7 +126,8 @@ namespace Aura.Channel.World.Entities.Creatures
 				// Fields
 				else
 				{
-					this.Add(ReviveOptions.Here);
+					if (!isInTirNaNog)
+						this.Add(ReviveOptions.Here);
 				}
 
 				// Special

@@ -230,6 +230,8 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				var score = this.GetGiftReaction(gift);
 
+				await Hook("before_gift", gift, score);
+
 				await this.Gift(gift, score);
 			}
 			catch (OperationCanceledException)
@@ -510,7 +512,11 @@ namespace Aura.Channel.Scripting.Scripts
 				if (keyword == "@end")
 					break;
 
-				await Hook("before_keywords", keyword);
+				// Don't go into normal keyword handling if a hook handled
+				// the keyword.
+				var hooked = await Hook("before_keywords", keyword);
+				if (hooked)
+					continue;
 
 				await this.Keywords(keyword);
 			}
@@ -886,6 +892,27 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds item to player's inventory.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public bool GiveItem(Item item)
+		{
+			return this.Player.GiveItem(item);
+		}
+
+		/// <summary>
+		/// Adds warp scroll to player's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="portal"></param>
+		/// <returns></returns>
+		public bool GiveWarpScroll(int itemId, string portal)
+		{
+			return this.Player.GiveItem(Item.CreateWarpScroll(itemId, portal));
+		}
+
+		/// <summary>
 		/// Adds item to player's inventory and shows an acquire window.
 		/// </summary>
 		/// <param name="itemId"></param>
@@ -1003,12 +1030,13 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </remarks>
 		/// <param name="hookName"></param>
 		/// <param name="args"></param>
-		/// <returns></returns>
-		protected async Task Hook(string hookName, params object[] args)
+		/// <returns>Whether a hook was executed and broke execution.</returns>
+		protected async Task<bool> Hook(string hookName, params object[] args)
 		{
+			// Not hooked if no hooks found
 			var hooks = ChannelServer.Instance.ScriptManager.NpcScriptHooks.Get(this.NPC.Name, hookName);
 			if (hooks == null)
-				return;
+				return false;
 
 			foreach (var hook in hooks)
 			{
@@ -1016,11 +1044,18 @@ namespace Aura.Channel.Scripting.Scripts
 				switch (result)
 				{
 					case HookResult.Continue: continue; // Run next hook
-					case HookResult.Break: return; // Stop and go back into the NPC
-					case HookResult.End: this.Exit(); return; // Exit script
+					case HookResult.Break: return true; // Stop and go back into the NPC
+					case HookResult.End: this.Exit(); return true; // Exit script
 				}
-
 			}
+
+			// Not hooked if no break or end.
+			// XXX: Technically a script could do something and return
+			//   Continue, which would make it hooked without break,
+			//   but you really shouldn't continue on hook, it would lead
+			//   to confusing dialogues... Maybe add a second Continue type,
+			//   in case we actually need it.
+			return false;
 		}
 
 		/// <summary>
@@ -1118,9 +1153,19 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="questId"></param>
 		public void SendOwl(int questId)
 		{
+			this.SendOwl(questId, 0);
+		}
+
+		/// <summary>
+		/// Sends quest to player via owl after the delay.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="delay">Arrival delay in seconds.</param>
+		public void SendOwl(int questId, int delay)
+		{
 			try
 			{
-				this.Player.Quests.SendOwl(questId);
+				this.Player.Quests.SendOwl(questId, delay);
 			}
 			catch (Exception ex)
 			{
@@ -2216,7 +2261,24 @@ namespace Aura.Channel.Scripting.Scripts
 
 	public enum Hide { None, Face, Name, Both }
 	public enum ConversationState { Ongoing, Select, Ended }
-	public enum HookResult { Continue, Break, End }
+
+	public enum HookResult
+	{
+		/// <summary>
+		/// Continues to next hook.
+		/// </summary>
+		Continue,
+
+		/// <summary>
+		/// Breaks hook loop and returns to script.
+		/// </summary>
+		Break,
+
+		/// <summary>
+		/// Breaks hook loop and ends script
+		/// </summary>
+		End,
+	}
 
 	public enum NpcMood
 	{

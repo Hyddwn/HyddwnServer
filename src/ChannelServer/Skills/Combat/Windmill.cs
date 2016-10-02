@@ -160,6 +160,7 @@ namespace Aura.Channel.Skills.Combat
 
 				// Handle skills and reductions
 				SkillHelper.HandleDefenseProtection(target, ref damage);
+				SkillHelper.HandleConditions(attacker, target, ref damage);
 				Defense.Handle(aAction, tAction, ref damage);
 				ManaShield.Handle(target, ref damage, tAction);
 				HeavyStander.Handle(attacker, target, ref damage, tAction);
