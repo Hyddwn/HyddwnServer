@@ -162,6 +162,49 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Rewards Blacksmithing/Tailoring Pattern.
+	/// </summary>
+	public class QuestRewardPattern : QuestReward
+	{
+		public override RewardType Type { get { return RewardType.Item; } }
+
+		public int ItemId { get; protected set; }
+		public int FormId { get; protected set; }
+		public int UseCount { get; protected set; }
+
+		public QuestRewardPattern(int itemId, int formId, int useCount)
+		{
+			this.ItemId = itemId;
+			this.FormId = formId;
+			this.UseCount = useCount;
+		}
+
+		public override string ToString()
+		{
+			var pattern = AuraData.ManualDb.Find(Aura.Data.Database.ManualCategory.Tailoring, this.FormId);
+			if (pattern == null)
+			{
+				pattern = AuraData.ManualDb.Find(Aura.Data.Database.ManualCategory.Blacksmithing, this.FormId);
+				if (pattern == null)
+				{
+					return "Unknown pattern";
+				}
+			}
+			// else pattern data found
+
+			return string.Format("{0} - {1}",
+				pattern.Category == Data.Database.ManualCategory.Blacksmithing ? "Blacksmih Manual" : "Sewing Pattern",
+				pattern.ItemData.Name
+				);
+		}
+
+		public override void Reward(Creature creature, Quest quest)
+		{
+			creature.AcquireItem(Item.CreatePattern(ItemId, FormId, UseCount));
+		}
+	}
+
+	/// <summary>
 	/// Rewards quest (scroll).
 	/// </summary>
 	public class QuestRewardQuestScroll : QuestReward
