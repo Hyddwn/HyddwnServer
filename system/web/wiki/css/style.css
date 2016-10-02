@@ -28,7 +28,7 @@ blockquote {
 }
 
 pre, code {
-    font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+	font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
 	padding: 12px;
 	overflow: auto;
 	line-height: 1.45;
@@ -41,9 +41,9 @@ code {
 }
 
 hr {
-    border: 0;
-    height: 1px;
-    background: #ddd;
+	border: 0;
+	height: 1px;
+	background: #ddd;
 }
 
 table tr:nth-child(even) {
