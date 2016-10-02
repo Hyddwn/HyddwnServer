@@ -1136,7 +1136,6 @@ public class WalterWeaveBraidAdvPtjScript : WalterWeavePtjBaseScript
 		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Item(40045)); // Fishing Rod
 		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Gold(300));
 
-		//TO BE IMPLEMENTED
-		//AddReward(8, RewardGroupType.Item, QuestResult.Perfect, Pattern(64500, 20103, 10)); // Blacksmith Manual - Round Shield
+		AddReward(8, RewardGroupType.Item, QuestResult.Perfect, Pattern(64500, 20103, 10)); // Blacksmith Manual - Round Shield
 	}
 }
