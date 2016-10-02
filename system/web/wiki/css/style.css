@@ -57,6 +57,7 @@ table td {
 }
 
 a {
+	color: #325778;
 	text-decoration: none;
 }
 
@@ -122,10 +123,6 @@ a:hover {
 #sidebar #menu ul li ul li:first-child { text-indent: 20px; }
 #sidebar #menu ul li ul li ul li { text-indent: 60px; }
 #sidebar #menu ul li ul li ul li:first-child { text-indent: 40px; }
-
-#sidebar #menu li a {
-	color: #325778;
-}
 
 #content-wrapper {
 	margin-left: 200px;
