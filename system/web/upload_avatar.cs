@@ -4,7 +4,7 @@
 // Accepts POSTs from the client, saving information and screen shots of the
 // character, that the client sends on logout.
 // 
-// The files are stored in "user/web/save/avatar/".
+// The files are stored in "user/web/upload/avatar/".
 //--- Instructions ----------------------------------------------------------
 // Set "UploadAvatarPage" in client's urls.xml to use it.
 //--- Parameters ------------------------------------------------------------
@@ -46,7 +46,7 @@ public class UploadAvatarController : Controller
 			return;
 
 		var key = charId.Substring(charId.Length - 3);
-		var folder = "user/web/save/avatar/" + serverName + "/" + key + "/" + charId + "/";
+		var folder = "user/web/upload/avatar/" + serverName + "/" + key + "/" + charId + "/";
 
 		userFile.MoveTo(folder + "snapshot.jpg");
 		userText.MoveTo(folder + "snapshot.txt");

@@ -7,7 +7,7 @@
 // The client later downloads the files from the web server to restore the
 // UI, based on the previously saved XML file.
 // 
-// The files are stored in "user/web/save/ui/".
+// The files are stored in "user/web/upload/ui/".
 //--- Instructions ----------------------------------------------------------
 // Set "UploadUIPage" and "DownloadUIAddress" in client's urls.xml to use it.
 //--- Parameters ------------------------------------------------------------
@@ -66,7 +66,7 @@ public class UiStorageController : Controller
 		// Move file
 		try
 		{
-			file.MoveTo("user/web/save/ui/" + serverName + "/" + group + "/" + file.FileName);
+			file.MoveTo("user/web/upload/ui/" + serverName + "/" + group + "/" + file.FileName);
 		}
 		catch (Exception ex)
 		{

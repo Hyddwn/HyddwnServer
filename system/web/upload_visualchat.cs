@@ -5,7 +5,7 @@
 // the visual chat feature, returning the URL to said image, for the client
 // to send it to the server, which broadcasts it to other players.
 // 
-// The files are stored in "user/web/save/visual-chat/".
+// The files are stored in "user/web/upload/visual-chat/".
 //--- Instructions ----------------------------------------------------------
 // Set "UploadVisualChatPage" in client's urls.xml and enable "gfVisualChat"
 // in client's features xml and "VisualChat" in the server's features.txt.
@@ -62,9 +62,9 @@ public class UploadVisualChatController : Controller
 
 		// Move file
 		var fileName = string.Format("chat_{0:yyyyMMdd_HHmmss}_{1}.png", DateTime.Now, characterName);
-		file.MoveTo("user/web/save/visual-chat/" + fileName);
+		file.MoveTo("user/web/upload/visual-chat/" + fileName);
 
 		// Response, URL to image
-		response.Send(string.Format("http://{0}:{1}/save/visual-chat/{2}", request.LocalEndPoint.Address, request.HttpPort, fileName));
+		response.Send(string.Format("http://{0}:{1}/upload/visual-chat/{2}", request.LocalEndPoint.Address, request.HttpPort, fileName));
 	}
 }
