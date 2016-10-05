@@ -286,7 +286,7 @@ public class DeianScript : NpcScript
 					}
 					else
 					{
-						Msg("(Missing dialog: Another Campfire explanation)");
+						Msg("(Missing dialog: Another Campfire explanation. Use the skill to finish the quest.)");
 					}
 				}
 				else
