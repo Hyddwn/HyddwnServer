@@ -49,8 +49,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SharpExpress">
-      <HintPath>..\..\lib\SharpExpress.dll</HintPath>
+    <Reference Include="Swebs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Swebs.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -84,9 +85,6 @@
     <Compile Include="Scripting\ScriptManager.cs" />
     <Compile Include="Util\LoginConf.cs" />
     <Compile Include="Util\LoginConsoleCommands.cs" />
-    <Compile Include="Web\BroadcastController.cs" />
-    <Compile Include="Web\CheckUserController.cs" />
-    <Compile Include="Web\StatusController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

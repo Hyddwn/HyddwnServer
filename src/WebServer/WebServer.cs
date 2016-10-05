@@ -5,11 +5,9 @@ using Aura.Shared;
 using Aura.Shared.Database;
 using Aura.Shared.Util;
 using Aura.Shared.Util.Commands;
-using Aura.Web.Controllers;
 using Aura.Web.Scripting;
 using Aura.Web.Util;
-using SharpExpress;
-using SharpExpress.Engines;
+using Swebs;
 using System;
 using System.Net;
 
@@ -24,7 +22,7 @@ namespace Aura.Web
 		/// <summary>
 		/// Actual web server
 		/// </summary>
-		public WebApplication App { get; private set; }
+		public HttpServer HttpServer { get; private set; }
 
 		/// <summary>
 		/// Database
@@ -95,31 +93,30 @@ namespace Aura.Web
 		{
 			Log.Info("Starting web server...");
 
-			this.App = new WebApplication();
+			// Trick compiler into referencing Mabi.dll, so Swebs references
+			// it in the C# scripts as well.
+			var x = Mabi.Const.GuildMemberRank.Applied;
 
-			this.App.Engine("htm", new HandlebarsEngine());
+			var conf = new Configuration();
+			conf.Port = this.Conf.Web.Port;
+			conf.SourcePaths.Add("user/web/");
+			conf.SourcePaths.Add("system/web/");
 
-			this.App.Get("/favicon.ico", new StaticController(this.Conf.Web.Favicon));
-
-			this.App.Static("user/save/");
-			this.App.Static("user/resources/");
-			this.App.Static("system/web/public/");
-			this.App.Static("user/web/public/");
-
-			this.App.Get("/", new MainController());
-			this.App.Post("/ui", new UiStorageController());
-			this.App.Post("/visual-chat", new VisualChatController());
-			this.App.Post("/avatar-upload", new AvatarUploadController());
-			this.App.All("/guild", new GuildController());
-			this.App.All("/guildlist", new GuildListController());
+			this.HttpServer = new HttpServer(conf);
+			this.HttpServer.RequestReceived += (s, e) =>
+			{
+				Log.Debug("[{0}] - {1}", e.Request.HttpMethod, e.Request.Path);
+				//Log.Debug(e.Request.UserAgent); // Client: TEST_ARI
+			};
+			this.HttpServer.UnhandledException += (s, e) => Log.Exception(e.Exception);
 
 			try
 			{
-				this.App.Listen(this.Conf.Web.Port);
+				this.HttpServer.Start();
 
 				Log.Status("Server ready, listening on 0.0.0.0:{0}.", this.Conf.Web.Port);
 			}
-			catch (NHttp.NHttpException)
+			catch (NHttpException)
 			{
 				Log.Error("Failed to start web server.");
 				Log.Info("Port {0} might already be in use, make sure no other application, like other web servers or Skype, are using it or set a different port in web.conf.", this.Conf.Web.Port);

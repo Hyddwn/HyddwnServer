@@ -207,27 +207,27 @@ input[type=text]:focus {
 }
 
 #members table td.name.rankLeader {
-	background: url('/system/web/public/images/crown1.png') no-repeat 5px center;
+	background: url('/images/crown1.png') no-repeat 5px center;
 	text-indent: 21px;
 }
 
 #members table td.name.rankOfficer {
-	background: url('/system/web/public/images/crown2.png') no-repeat 5px center;
+	background: url('/images/crown2.png') no-repeat 5px center;
 	text-indent: 21px;
 }
 
 #members table td.name.rankBronzeMedal {
-	background: url('/system/web/public/images/medal_bronze_1.png') no-repeat 5px center;
+	background: url('/images/medal_bronze_1.png') no-repeat 5px center;
 	text-indent: 21px;
 }
 
 #members table td.name.rankMember {
-	background: url('/system/web/public/images/user_silhouette.png') no-repeat 5px center;
+	background: url('/images/user_silhouette.png') no-repeat 5px center;
 	text-indent: 21px;
 }
 
 #members table td.name.rankApplied {
-	background: url('/system/web/public/images/clock.png') no-repeat 5px center;
+	background: url('/images/clock.png') no-repeat 5px center;
 	text-indent: 21px;
 }
 
