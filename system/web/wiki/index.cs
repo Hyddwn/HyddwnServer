@@ -57,7 +57,7 @@ public class WikiController : Controller
 		else
 			content = handlebars.RenderFile(server.GetLocalPath("wiki/templates/notfound.htm"), new { pageName });
 
-		var menu = commonmark.RenderFile(server.GetLocalPath("wiki/pages/_menu.md"));
+		var sidebar = commonmark.RenderFile(server.GetLocalPath("wiki/pages/sidebar.md"));
 
 		// Insert table of contents (TODO: Insert anchors)
 		//if (content.Contains(_tocCheck))
@@ -69,7 +69,7 @@ public class WikiController : Controller
 		// Render
 		response.Send(handlebars.RenderFile(server.GetLocalPath("wiki/templates/main.htm"), new
 		{
-			menu,
+			sidebar,
 			content,
 		}));
 	}
