@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Data;
 using Aura.Shared;
 using Aura.Shared.Database;
 using Aura.Shared.Util;
@@ -9,6 +10,7 @@ using Aura.Web.Scripting;
 using Aura.Web.Util;
 using Swebs;
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace Aura.Web
@@ -18,6 +20,7 @@ namespace Aura.Web
 		public static readonly WebServer Instance = new WebServer();
 
 		private bool _running = false;
+		private List<object> _swebsReferences = new List<object>();
 
 		/// <summary>
 		/// Actual web server
@@ -93,9 +96,10 @@ namespace Aura.Web
 		{
 			Log.Info("Starting web server...");
 
-			// Trick compiler into referencing Mabi.dll, so Swebs references
-			// it in the C# scripts as well.
-			var x = Mabi.Const.GuildMemberRank.Applied;
+			// Trick compiler into referencing Mabi.dll and Data.dll,
+			// so Swebs references it in the C# scripts as well.
+			_swebsReferences.Add(Mabi.Const.GuildMemberRank.Applied);
+			_swebsReferences.Add(AuraData.FeaturesDb);
 
 			var conf = new Configuration();
 			conf.Port = this.Conf.Web.Port;
