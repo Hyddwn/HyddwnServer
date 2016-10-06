@@ -3,11 +3,6 @@
 //--- Description -----------------------------------------------------------
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
 //--- Notes -----------------------------------------------------------------
-// The following dialogue is missing:
-// * first time worker PTJ inquiry
-// * first time accepting PTJ offer
-// * first time declining PTJ offer
-//
 // Definitions for the following base scripts have been improvised,
 // update with official script whenever possible:
 // * WalterExtDeliveryGlenisAeiraPtjBaseScript
@@ -33,8 +28,8 @@ public class WalterPtjScript : GeneralScript
 		508407, // Basic  Item delivery (Manus)
 		508437, // Int    Item delivery (Manus)
 		508467, // Adv    Item delivery (Manus)
-		508438, // Int    Item delivery (Glenis -> Aeira  )
-		508468, // Adv    Item delivery (Glenis -> Aeira  )
+		508438, // Int    Item delivery (Glenis -> Aeira)
+		508468, // Adv    Item delivery (Glenis -> Aeira)
 		508439, // Int    Item delivery (Nerys  -> Stewart)
 		508469, // Adv    Item delivery (Nerys  -> Stewart)
 
@@ -118,10 +113,7 @@ public class WalterPtjScript : GeneralScript
 			}
 
 			// Report?
-			npc.Msg(L("Have you finished your work?"),
-				npc.Button(L("Report Now"), "@report"),
-				npc.Button(L("Report Later"), "@later")
-				);
+			npc.Msg(L("Have you finished your work?"), npc.Button(L("Report Now"), "@report"), npc.Button(L("Report Later"), "@later"));
 
 			if (await npc.Select() != "@report")
 			{
@@ -196,7 +188,7 @@ public class WalterPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			msg = L("(missing): first time worker PTJ inquiry");
+			msg = L("Is this your first time? Good luck.");
 		else
 			msg = L("I'm counting on you as usual.");
 
@@ -206,15 +198,12 @@ public class WalterPtjScript : GeneralScript
 		else
 			ptjTitle = L("Looking for help with delivery of goods in General Shop.");
 
-		npc.Msg(msg, npc.PtjDesc(randomPtj,
-			L("Walter's General Shop Part-Time Job"),
-			L(ptjTitle),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Walter's General Shop Part-Time Job"), L(ptjTitle), PerDay, remaining, npc.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time accepting PTJ offer"));
+				npc.Msg(L("You have to finish your work before the deadline and come back to me.<br/>"));
 			else
 				npc.Msg(L("Well, then."));
 
@@ -222,10 +211,7 @@ public class WalterPtjScript : GeneralScript
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time declining PTJ offer"));
-			else
-				npc.Msg(L("I got it."));
+			npc.Msg(L("I got it."));
 		}
 	}
 }
