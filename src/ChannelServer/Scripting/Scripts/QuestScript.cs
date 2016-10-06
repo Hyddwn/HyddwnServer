@@ -602,6 +602,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestReward QuestScroll(int questId) { return new QuestRewardQuestScroll(questId); }
 		protected QuestReward Skill(SkillId skillId, SkillRank rank) { return new QuestRewardSkill(skillId, rank, 0); }
 		protected QuestReward Skill(SkillId skillId, SkillRank rank, int training) { return new QuestRewardSkill(skillId, rank, training); }
+		protected QuestReward Pattern(int itemId, int formId, int useCount) { return new QuestRewardPattern(itemId, formId, useCount); }
 		protected QuestReward Gold(int amount) { return new QuestRewardGold(Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.GoldQuestRewardRate)); }
 		protected QuestReward Exp(int amount) { return new QuestRewardExp(Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.QuestExpRate)); }
 		protected QuestReward ExplExp(int amount) { return new QuestRewardExplExp(Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.QuestExpRate)); }

@@ -139,7 +139,11 @@ public class WalterScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("Are you a part-timer?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("...What do you want?"));
 		}
@@ -187,10 +191,6 @@ public class WalterScript : NpcScript
 
 				// Ongoing Field Boss Msg
 				// There is news about a Goblin Bandits assault at North Plains of Dunbarton.
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":
