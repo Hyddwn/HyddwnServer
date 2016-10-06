@@ -229,6 +229,12 @@ namespace Aura.Channel.World.Entities
 				if (!this.Client.Account.PremiumServices.HasPremiumService)
 					return false;
 
+				// Dead characters should not be moved to the Soul Stream,
+				// as they will get stuck there, not being able to move
+				// or revive.
+				if (this.IsDead)
+					return false;
+
 				var now = DateTime.Now;
 
 				// No present if today is not the player's birthday or the character
