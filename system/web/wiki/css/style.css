@@ -165,3 +165,33 @@ a:hover {
 #content p:last-child {
 	margin-bottom: 0;
 }
+	
+#mobile-bar {
+	display: none;
+	background: #f8f8f8;
+	padding: 10px;
+}
+	
+#mobile-bar .fa-bars {
+	font-size: 30px;
+}
+
+@media only screen and ( max-width: 700px ) {
+    #sidebar {
+        display: none;
+		position: fixed;
+		z-index: 1000;
+		top: 0;
+		left: 0;
+		overflow: auto;
+		background: #fff;
+    }
+	
+    #content-wrapper {
+        margin-left: 0;
+    }
+	
+	#mobile-bar {
+		display: block;
+	}
+}
