@@ -91,6 +91,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 				if (isGuildRobe)
 					packet.PutString(item.MetaData1.GetString("GLDNAM"));
 
+				// Scythe that Reaps Darkness has an additional int here
+				// for some reason, maybe related to one of its tags.
+				if (item.Info.Id == 41237)
+					packet.PutInt(0);
+
 				// [190100, NA200 (2015-01-15)] ?
 				{
 					packet.PutByte(item.IsNew);
