@@ -129,11 +129,16 @@ Brown Evil Pass
 
 ### Instructions
 
-1. Drop the Brown Evil Pass on the altar of Barri Dungeon. (It is recommended to clear this dungeon with party members.)
-   - Monsters: King Mimic, Sickle Laghodessa, Brown Gremlin, Gray Gremlin, Green Gremlin, Flying Sword, Giant Worm
+1. Drop the Brown Evil Pass on the altar of Barri Dungeon. (It is recommended
+   to clear this dungeon with party members.)
+   - Monsters: King Mimic, Sickle Laghodessa, Brown Gremlin, Gray Gremlin,
+     Green Gremlin, Flying Sword, Giant Worm
 2. Enter the boss chamber and obtain the keyword "**Evil Medal**". 
    - Boss: Black Wizard and 8 Wisps
-3. Obtain a **Fomor Medal** from the reward chest. It may come out of a party mate's reward chest instead of your own, so make sure to check theirs if you did not receive it from yours (hold down the ALT key for a better view of dropped items).
+3. Obtain a **Fomor Medal** from the reward chest. It may come out of a party
+   mate's reward chest instead of your own, so make sure to check theirs if
+   you did not receive it from yours (hold down the ALT key for a better view
+   of dropped items).
 
 
 Medal of Priests
@@ -148,7 +153,8 @@ Medal of Priests
 
 ### Instructions
 
-- Note that you do not have to talk to James in Emain Macha, because that place was never released at the time Generation 1 came.
+- Note that you do not have to talk to James in Emain Macha, because that
+  place was never released at the time Generation 1 came.
 
 
 Goro's Ring
@@ -501,10 +507,14 @@ The Seal Breaker of Another World
    had dropped Black Evil Pass will acquire the title the **Seal Breaker
    of Another World** upon entering Another World.
    - Nao's Revival Service cannot be used in Another World.
-   - Since repairing of equipment is not possible, prepare well before entering Another World.
-   - Bare necessities (HP Potions, Bandages, Phoenix Feathers) are sold by the NPC Dougal.
-   - Arrows cannot be bought. However, timber wolves found around Another World drop arrows frequently enough.
-   - Another World also lacks Goddess' statues inside dungeons, so only party members are able to resuscitate unconscious players.
+   - Since repairing of equipment is not possible, prepare well before
+     entering Another World.
+   - Bare necessities (HP Potions, Bandages, Phoenix Feathers) are sold by
+     the NPC Dougal.
+   - Arrows cannot be bought. However, timber wolves found around Another
+     World drop arrows frequently enough.
+   - Another World also lacks Goddess' statues inside dungeons, so only party
+     members are able to resuscitate unconscious players.
 
 
 Bind Magic
@@ -563,8 +573,11 @@ Black Orb Dungeon
 ### Instructions
 
 1. Drop Black Orb on the altar of Albey Dungeon.
-   - If all party members are knocked unconscious, there is no choice but to obtain another Black Orb, or have another player outside the dungeon use an Advanced Feather.
-   - This dungeon consists of 2 floors, and has (many) rooms containing Light Gargoyles.
+   - If all party members are knocked unconscious, there is no choice but to
+     obtain another Black Orb, or have another player outside the dungeon use
+	 an Advanced Feather.
+   - This dungeon consists of 2 floors, and has (many) rooms containing Light
+     Gargoyles.
 2. Defeat the boss. (Ghost Armors)
    - Obtain the keyword "**Glas Ghaibhleann's Rebirth**".
 
