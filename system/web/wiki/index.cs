@@ -59,10 +59,11 @@ public class WikiController : Controller
 
 		var sidebar = commonmark.RenderFile(server.GetLocalPath("wiki/pages/sidebar.md"));
 
-		// Insert table of contents (TODO: Insert anchors)
+		// Insert table of contents
+		// (TODO: Cache, so it doesn't have to be done every time.)
 		//if (content.Contains(_tocCheck))
 		//{
-		//	var toc = this.GenerateTableOfContents(content);
+		//	var toc = this.GenerateTableOfContents(ref content);
 		//	content = content.Replace(_tocCheck, toc);
 		//}
 
@@ -112,7 +113,7 @@ public class WikiController : Controller
 		return result;
 	}
 
-	private string GenerateTableOfContents(string html)
+	private string GenerateTableOfContents(ref string html)
 	{
 		var level = 0;
 		var number = 1;
@@ -142,6 +143,7 @@ public class WikiController : Controller
 			var href = this.ToAnchorName(title);
 
 			result.AppendLine(string.Format("<li class=\"toc-level{2}\"><a href=\"#{3}\">{1}</a></li>", number, title, level, href));
+			html = html.Replace(match.Groups[0].Value, string.Format("<h{0}><span id=\"{1}\"></span>{2}</h{0}>", headerNumber, href, title));
 
 			prevHeaderNumber = headerNumber;
 		}
@@ -154,8 +156,8 @@ public class WikiController : Controller
 	private string ToAnchorName(string title)
 	{
 		title = title.Replace("'", "");
-		title = Regex.Replace(title, @"[^\w]+", "-");
+		title = Regex.Replace(title, @"[^\w]+", "_");
 
-		return title.ToLowerInvariant();
+		return title;
 	}
 }
