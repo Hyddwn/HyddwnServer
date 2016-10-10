@@ -46,6 +46,7 @@ public class TinScript : NpcScript
 			{
 				Msg(FavorExpression(), L("Did you take a good look around?<br/>Since you're talking to me so much, you must have a lot of free time."));
 			}
+			UpdateRelationAfterGreet();
 
 			Msg("Was there something else you wanted to talk about?");
 			await StartConversation();
@@ -62,6 +63,15 @@ public class TinScript : NpcScript
 			else
 			{
 				Msg(FavorExpression(), L("Well, it's nice to see you again after so long...<br/>But this is not where your journey ends. Think about the new world waiting for you out there."));
+			}
+			UpdateRelationAfterGreet();
+
+			if (Title == 11002)
+			{
+				Msg("Well done. <username/>.<br/>But you know what? This isn't the<br/>end of the Fomors.");
+				Msg("...Cichol and Dark Lord is still alive,<br/>and besides the fact that the goddess statue has been restored,<br/>much hasn't really changed...");
+				Msg("...I get the feeling that<br/>you'll soon have to lift a heavier burden to save this world...");
+				Msg("It might be a good thing<br/>or bad...");
 			}
 
 			Msg("Was there something else you wanted to talk about?");
