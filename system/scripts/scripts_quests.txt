@@ -81,9 +81,9 @@ quests/ptj/library_stewart.cs
 quests/ptj/neighboring_deian.cs
 quests/ptj/blacksmith_ferghus.cs
 quests/ptj/general_malcolm.cs
-quests/ptj/general_tracy.cs
 quests/ptj/general_walter.cs
 quests/ptj/wepshop_nerys.cs
+quests/ptj/woodcutting_tracy.cs
 
 // Skills
 quests/skills/20006_elen_refine.cs

@@ -88,7 +88,7 @@ public class MalcolmPtjScript : GeneralScript
 		Quest quest = player.Quests.GetPtjQuest();
 		if (quest == null)
 		{ // This should not normally happen.
-			Log.Error("Player {0} does not have a PTJ report time for Malcolm. Used fallback of 1 AM.", player.Name);
+			Log.Warning("MalcolmPtjScript: Player {0} does not have a PTJ report time for Malcolm. Used fallback of 1 AM.", player.Name);
 			return 1; // Fallback
 		}
 		else return quest.Data.ReportHour;
