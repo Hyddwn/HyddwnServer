@@ -875,8 +875,7 @@ public abstract class EavanExtDeliveryNerysSimonPtjBaseScript : EavanExtDelivery
 
 	protected override void ClientAfterIntroDialogue(NpcScript npc)
 	{
-		npc.Msg(L("...just pick this up himself...?"));
-		npc.Msg(L("Oh, sorry. Was just talking to myself.<br/>Here you go."));
+		npc.Msg(L("...just pick this up himself...?<p/>Oh, sorry. Was just talking to myself.<br/>Here you go."));
 		npc.Msg(L("(Received the sewing kit from Nerys.)"));
 	}
 

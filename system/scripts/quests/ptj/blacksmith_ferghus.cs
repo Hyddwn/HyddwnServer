@@ -98,14 +98,10 @@ public class FerghusPtjScript : GeneralScript
 			if (!npc.ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
-				{
 					npc.Msg(L("What? Did you finish the job?<br/>I'm busy now. Come back to me closer to the deadline."));
-				}
 				else
-				{
-					npc.Msg(L("How's it going?<br/>"));
-					npc.Msg(L("Make sure to report back to me before the deadline."));
-				}
+					npc.Msg(L("How's it going?<p/>Make sure to report back to me before the deadline."));
+
 				return;
 			}
 
@@ -127,8 +123,7 @@ public class FerghusPtjScript : GeneralScript
 				npc.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("......"));
-				npc.Msg(L("What!"));
-				npc.Msg(L("Are you joking with me?<br/>Once you take my offer, you have to do it right!<br/>If you're not interested, then don't even start!"));
+				npc.Msg(L("What!<p/>Are you joking with me?<br/>Once you take my offer, you have to do it right!<br/>If you're not interested, then don't even start!"));
 
 				npc.ModifyRelation(0, -Random(3), 0);
 			}
@@ -182,9 +177,7 @@ public class FerghusPtjScript : GeneralScript
 		// Check if not done today and if there are jobs remaining
 		if (!npc.CanDoPtj(JobType, remaining))
 		{
-			npc.Msg(L("Hey, they're all taken for the day.<br/>And don't come here tomorrow. I don't want to work with you any more."));
-			npc.Msg(L("..."));
-			npc.Msg(L("Haha. I'm joking, I'm joking.<br/>Of course you can come back tomorrow."));
+			npc.Msg(L("Hey, they're all taken for the day.<br/>And don't come here tomorrow. I don't want to work with you any more.<p/>...<p/>Haha. I'm joking, I'm joking.<br/>Of course you can come back tomorrow."));
 			return;
 		}
 
@@ -193,10 +186,7 @@ public class FerghusPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-		{
-			npc.Msg(L("Are you looking for a job?<br/>You'd get sweaty, hot and tired working at the Blacksmith's Shop.<br/>I guess you are not really up to it.<br/>How about doing some simple part-time work?"));
-			msg = L("I'll see how much I can pay you depending on how you do.");
-		}
+			msg = L("Are you looking for a job?<br/>You'd get sweaty, hot and tired working at the Blacksmith's Shop.<br/>I guess you are not really up to it.<br/>How about doing some simple part-time work?<p/>I'll see how much I can pay you depending on how you do.");
 		else
 			msg = L("Let's see, you want to work at the Blacksmith's Shop for a day?");
 
@@ -592,8 +582,7 @@ public abstract class FerghusExtDeliveryPtjBaseScript : FerghusPtjBaseScript
 
 		npc.Msg(L("Is that the armor I asked to be repaired?<br/>The work is finally done?"));
 		npc.Msg(Hide.Name, L("(Delivered the armor to Trefor.)"));
-		npc.Msg(L("But I've got a slight problem.<br/>As you can see, I'm on duty right now and have no place to store it."));
-		npc.Msg(L("Could you do me a favor and leave it at the Healer's House?<br/>I'll grab it after my shift is over."));
+		npc.Msg(L("But I've got a slight problem.<br/>As you can see, I'm on duty right now and have no place to store it.<p/>Could you do me a favor and leave it at the Healer's House?<br/>I'll grab it after my shift is over."));
 		npc.Msg(Hide.Name, L("(Received the armor.)"));
 
 		return HookResult.Break;
@@ -612,8 +601,7 @@ public abstract class FerghusExtDeliveryPtjBaseScript : FerghusPtjBaseScript
 
 		npc.Msg(L("Not again!<br/>Did Trefor ask you to leave that armor here?"));
 		npc.Msg(Hide.Name, L("(Gave the armor to Dilys.)"));
-		npc.Msg(L("That guy! Does he think this is a warehouse or something?<br/>Well, fine. I'll hold on to it for him."));
-		npc.Msg(L("As you know, being a guard is not easy."));
+		npc.Msg(L("That guy! Does he think this is a warehouse or something?<br/>Well, fine. I'll hold on to it for him.<p/>As you know, being a guard is not easy."));
 
 		return HookResult.Break;
 	}

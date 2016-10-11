@@ -173,15 +173,10 @@ public class MalcolmPtjScript : GeneralScript
 			if (!npc.ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
 			{
 				if (result == QuestResult.Perfect)
-				{
-					npc.Msg(L("Oh...<br/>Would you come after the deadline starts?"));
-					npc.Msg(L("Thanks for your help."));
-				}
+					npc.Msg(L("Oh...<br/>Would you come after the deadline starts?<p/>Thanks for your help."));
 				else
-				{
-					npc.Msg(L("How's it going?<br/>"));
-					npc.Msg(L("I'm expecting good things from you."));
-				}
+					npc.Msg(L("How's it going?<p/>I'm expecting good things from you."));
+
 				return;
 			}
 
@@ -695,8 +690,7 @@ public abstract class MalcolmDeliveryNoraPtjBaseScript : MalcolmDeliveryPtjBaseS
 	{
 		npc.Msg(L("Malcolm sent you here, right?<br/>I cannot understand this guy!"));
 		npc.Msg(Hide.Name, L("(Delivered the clothes to Nora.)"));
-		npc.Msg(L("Sorry, I'm not mad at you.<br/>The thing is, I never ordered this.<br/>I really don't understand why he keeps sending me stuff I didn't ask for."));
-		npc.Msg(L("I might be tempted to take it, but it's not really my taste anyway.<br/>I guess I will just return it to him... again."));
+		npc.Msg(L("Sorry, I'm not mad at you.<br/>The thing is, I never ordered this.<br/>I really don't understand why he keeps sending me stuff I didn't ask for.<p/>I might be tempted to take it, but it's not really my taste anyway.<br/>I guess I will just return it to him... again."));
 		npc.Msg(Hide.Name, L("(It seems pretty obvious why Malcolm is doing this.)"));
 	}
 }
@@ -744,8 +738,7 @@ public abstract class MalcolmDeliveryLassarPtjBaseScript : MalcolmDeliveryPtjBas
 	{
 		npc.Msg(L("Oh, this is for me?<br/>You're so sweet. How did you know my favorite style?"));
 		npc.Msg(Hide.Name, L("(Delivered the clothes to Lassar.)"));
-		npc.Msg(L("Oh, I see now... This is what I ordered from Malcolm.<br/>Ha ha, sorry for my mistake.<br/>I didn't mean to say that in hopes of getting free clothes. Don't worry about that."));
-		npc.Msg(L("Anyway, look at it. This is the style that I like.<br/>I thought you would like to remember it, just in case. That's all.<br/>Really."));
+		npc.Msg(L("Oh, I see now... This is what I ordered from Malcolm.<br/>Ha ha, sorry for my mistake.<br/>I didn't mean to say that in hopes of getting free clothes. Don't worry about that.<p/>Anyway, look at it. This is the style that I like.<br/>I thought you would like to remember it, just in case. That's all.<br/>Really."));
 		npc.Msg(Hide.Name, L("(The pressure becomes unbearable.)"));
 	}
 }
@@ -817,11 +810,9 @@ public abstract class MalcolmExtDeliveryTreforPtjBaseScript : QuestScript
 
 		npc.FinishQuest(this.Id, "ptj1");
 
-		npc.Msg(L("Are those the clothes I ordered from the general store?<br/>Thank you."));
-		npc.Msg(L("By the way, these clothes are not for me.<br/>They're women's clothes, after all."));
+		npc.Msg(L("Are those the clothes I ordered from the general store?<br/>Thank you.<p/>By the way, these clothes are not for me.<br/>They're women's clothes, after all."));
 		npc.Msg(Hide.Name, L("(Delivered the clothes to shy Trefor.)"));
-		npc.Msg(L("There's a slight problem, though.<br/>Malcolm, knowing I'm on duty, always sends my orders here.<br/>Normally that is fine, but..."));
-		npc.Msg(L("Could you do me a favor and leave them at the Healer's House?<br/>I'll grab it after my shift is over."));
+		npc.Msg(L("There's a slight problem, though.<br/>Malcolm, knowing I'm on duty, always sends my orders here.<br/>Normally that is fine, but...<p/>Could you do me a favor and leave them at the Healer's House?<br/>I'll grab it after my shift is over."));
 		npc.Msg(Hide.Name, L("(Received the clothes.)"));
 
 		return HookResult.Break;
@@ -840,8 +831,7 @@ public abstract class MalcolmExtDeliveryTreforPtjBaseScript : QuestScript
 
 		npc.Msg(L("Hmm? I'm guessing those are Trefor's clothes?"));
 		npc.Msg(Hide.Name, L("(Gave the clothes to Dilys.)"));
-		npc.Msg(L("That guy! Does he think this is a warehouse or something?<br/>Well, fine. I'll hold on to it for him."));
-		npc.Msg(L("As you know, being a guard is not easy."));
+		npc.Msg(L("That guy! Does he think this is a warehouse or something?<br/>Well, fine. I'll hold on to it for him.<p/>As you know, being a guard is not easy."));
 
 		return HookResult.Break;
 	}
@@ -980,8 +970,7 @@ public abstract class MalcolmExtDeliveryBebhinnPtjBaseScript : QuestScript
 
 			npc.Msg(L("Wow, so the clothes I ordered have finally arrived.<br/>Thank you so much! Wow, I really like this style!"));
 			npc.Msg(Hide.Name, L("(Delivered the clothes to Bebhinn.)"));
-			npc.Msg(L("Yes? Payment?<br/>What? 1500G???!!!!!<br/>So, Malcolm's done it again. That guy always relies on others to do his dirty work!"));
-			npc.Msg(L("Anyway, I can't pay you. I don't have it! It's the bank that has money, not the banker!<br/>Tell him to come get it himself!"));
+			npc.Msg(L("Yes? Payment?<br/>What? 1500G???!!!!!<br/>So, Malcolm's done it again. That guy always relies on others to do his dirty work!<p/>Anyway, I can't pay you. I don't have it! It's the bank that has money, not the banker!<br/>Tell him to come get it himself!"));
 			npc.Msg(Hide.Name, L("(Intimidated by Bebhinn's rant, you failed to receive any payment for the clothes.)"));
 
 			return HookResult.Break;
@@ -995,8 +984,7 @@ public abstract class MalcolmExtDeliveryBebhinnPtjBaseScript : QuestScript
 
 			npc.Msg(L("Oh, give me a break! Go tell Malcolm to put it on my bill and I'll pay him later."));
 			npc.Msg(Hide.Name, L("(Keep asking Bebhinn for payment, saying you won't be able to get a reward otherwise.)"));
-			npc.Msg(L("OK, OK, I know it's not your fault after all.<br/>Stupid Malcolm, he should have come himself."));
-			npc.Msg(L("But, I don't have the money with me now.<br/>So, can you take this to him instead and make sure to tell him this?<br/>I'll definitely pay the bill later."));
+			npc.Msg(L("OK, OK, I know it's not your fault after all.<br/>Stupid Malcolm, he should have come himself.<p/>But, I don't have the money with me now.<br/>So, can you take this to him instead and make sure to tell him this?<br/>I'll definitely pay the bill later."));
 			npc.Msg(Hide.Name, L("(Received a small Flowerpot from Bebhinn.)"));
 
 			return HookResult.Break;

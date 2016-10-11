@@ -198,7 +198,7 @@ public class WalterPtjScript : GeneralScript
 		else
 			ptjTitle = L("Looking for help with delivery of goods in General Shop.");
 
-		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Walter's General Shop Part-Time Job"), L(ptjTitle), PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Walter's General Shop Part-Time Job"), ptjTitle, PerDay, remaining, npc.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{

@@ -167,14 +167,9 @@ public class TracyPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-		{
-			npc.Msg(L("Good. You want a logging job?<br/>I was actually a little bored working alone.<br/>I can use some help. If you're good enough, I can pay you more."));
-			msg = L("Want to give it a try?");
-		}
+			msg = L("Good. You want a logging job?<br/>I was actually a little bored working alone.<br/>I can use some help. If you're good enough, I can pay you more.<p/>Want to give it a try?");
 		else
-		{
 			msg = L("Want to play lumberjack again?");
-		}
 
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Tracy's Firewood-Chopping PTJ"),
