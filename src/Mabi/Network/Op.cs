@@ -692,8 +692,9 @@ namespace Aura.Mabi.Network
 		// [190200, NA223 (2016-03-17)] Shifted by 6, from AC1D to AC23.
 		// [200100, NA226 (2016-04-14)] Shifted by 9, from AC23 to AC1A.
 		// [200100, NA229 (2016-06-16)] Shifted by 5, from AC1A to AC1F.
-		public const int DcUnk = 0xAC1F;
-		public const int DcUnkR = 0xAC20;
+		// [200200, NA229 (2016-10-13)] Shifted by 1, from AC1F to AC20.
+		public const int DcUnk = 0xAC20;
+		public const int DcUnkR = 0xAC21;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
