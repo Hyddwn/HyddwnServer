@@ -462,3 +462,5 @@ petorientaldragon/*/run,       850.000000
 petorientaldragon/*/walk,      216.771000
 petkokopo/*/Run,              1243.350000
 petkokopo/*/Walk,              160.255000
+petminighost/littleghost/Run,  510.000000
+petminighost/littleghost/Walk , 210.000000

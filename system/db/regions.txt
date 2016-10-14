@@ -347,6 +347,7 @@
 { id: 3131, name: "scene_DramaIriaS2_Nemeton_altar01", indoor: true },
 { id: 3132, name: "scene_DramaIriaS2_Nemeton_altar02", indoor: false },
 { id: 3133, name: "CookieDungeon", indoor: true },
+{ id: 3134, name: "dg_haunted_house01", indoor: true },
 { id: 3200, name: "Iria_NW_main_field", indoor: false },
 { id: 3201, name: "Iria_NW_tunnel_S", indoor: true },
 { id: 3202, name: "Iria_NW_tunnel_N", indoor: true },
