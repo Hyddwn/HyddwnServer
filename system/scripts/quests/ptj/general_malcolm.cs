@@ -13,6 +13,8 @@
 // Update with official dialogue whenever possible.
 //---------------------------------------------------------------------------
 
+using ItemEntity = Aura.Channel.World.Entities.Item; // Conflicts with QuestScript.Item(...)
+
 public class MalcolmPtjScript : GeneralScript
 {
 	const PtjType JobType = PtjType.GeneralShop;
@@ -284,8 +286,6 @@ public class MalcolmPtjScript : GeneralScript
 
 		if (await npc.Select() == "@accept")
 		{
-			GiveStartingPtjItems(randomPtj, npc.Player);
-
 			if (npc.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Thank you.<br/>Then I'll see you when the deadline starts.<br/>Please report your work even if you couldn't finish it on time. That way, I can get on with other jobs without worry."));
 			else
@@ -299,214 +299,6 @@ public class MalcolmPtjScript : GeneralScript
 				npc.Msg(L("Oh, well.<br/>If you change your mind, let me know."));
 			else
 				npc.Msg(L("Oh, I misunderstood.<br/>I'm sorry."));
-		}
-	}
-
-	/// <summary>
-	/// Depending on the supplied <paramref name="questId"/>, will give the player the needed materials to complete their task.
-	/// </summary>
-	private void GiveStartingPtjItems(int questId, Creature player)
-	{
-		switch (questId)
-		{
-			case 508207: // Basic  Tailor 2 Popo's Skirts (F)
-				player.GiveItem(Item.CreatePattern(60600, 10106, 5)); // Apprentice Sewing Pattern - Popo's Skirt (F)
-				player.GiveItem(60419, 2);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 2);  // Cheap Fabric (Part-Time Job)
-				break;
-
-			case 508208: // Basic  Tailor 2 Wizard Hats
-				player.GiveItem(Item.CreatePattern(60600, 10112, 10)); // Apprentice Sewing Pattern - Wizard Hat
-				player.GiveItem(60424, 5);  // Common Leather (Part-Time Job)
-				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60424, 5);  // Common Leather (Part-Time Job)
-				break;
-
-			case 508209: // Basic  Tailor 2 Hairbands
-				player.GiveItem(Item.CreatePattern(60600, 10114, 5)); // Apprentice Sewing Pattern - Hairband
-				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
-				break;
-
-			case 508210: // Basic  Tailor 2 Mongo's Traveler Suits (F)
-				player.GiveItem(Item.CreatePattern(60600, 10107, 40)); // Apprentice Sewing Pattern - Mongo Traveler Suit (F)
-				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
-				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
-				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
-				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-				break;
-
-			case 508211: // Basic  Tailor 2 Mongo's Traveler Suits (M)
-				player.GiveItem(Item.CreatePattern(60600, 10108, 40)); // Apprentice Sewing Pattern - Mongo Traveler Suit (M)
-				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
-				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
-				player.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
-				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
-				break;
-
-			case 508212: // Basic  Tailor 2 Leather Bandanas
-				player.GiveItem(Item.CreatePattern(60600, 10113, 15)); // Apprentice Sewing Pattern - Leather Bandana
-				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60424, 3);  // Common Leather (Part-Time Job)
-				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60424, 3);  // Common Leather (Part-Time Job)
-				break;
-
-			case 508238: // Int    Tailor 2 Cores' Healer Dresses
-				player.GiveItem(Item.CreatePattern(60600, 10101, 30)); // Apprentice Sewing Pattern - Cores' Healer Dress
-				player.GiveItem(60419, 6);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60411, 6);  // Cheap Silk (Part-Time Job)
-				player.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 6);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60411, 6);  // Cheap Silk (Part-Time Job)
-				break;
-
-			case 508239: // Int    Tailor 2 Magic School Uniforms (M)
-				player.GiveItem(Item.CreatePattern(60600, 10102, 10)); // Apprentice Sewing Pattern - Magic School Uniform (M)
-				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60412, 3);  // Common Silk (Part-Time Job)
-				player.GiveItem(60428, 3);  // Common Leather Strap (Part-Time Job)
-				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
-				break;
-
-			case 508240: // Int    Tailor 2 Mongo's Long Skirts
-				player.GiveItem(Item.CreatePattern(60600, 10115, 25)); // Apprentice Sewing Pattern - Mongo's Long Skirt
-				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60411, 3);  // Cheap Silk (Part-Time Job)
-				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60419, 3);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60411, 3);  // Cheap Silk (Part-Time Job)
-				break;
-
-			case 508241: // Int    Tailor 2 Cores Ninja Suits (M)
-				player.GiveItem(Item.CreatePattern(60600, 10118, 25)); // Apprentice Sewing Pattern - Cores Ninja Suit (M)
-				player.GiveItem(60420, 7);  // Common Fabric (Part-Time Job)
-				player.GiveItem(60412, 7);  // Common Silk (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60415, 2);  // Cheap Finishing Thread (Part-Time Job)
-				player.GiveItem(60420, 7);  // Common Fabric (Part-Time Job)
-				player.GiveItem(60412, 7);  // Common Silk (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 2);  // Thick Thread Ball (Part-Time Job)
-				break;
-
-			case 508242: // Int    Tailor 2 Cores' Healer Gloves
-				player.GiveItem(Item.CreatePattern(60600, 10104, 20)); // Apprentice Sewing Pattern - Cores' Healer Gloves
-				player.GiveItem(60420, 6);  // Common Fabric (Part-Time Job)
-				player.GiveItem(60412, 6);  // Common Silk (Part-Time Job)
-				player.GiveItem(60404, 3);  // Braid (Part-Time Job)
-				player.GiveItem(60404, 3);  // Braid (Part-Time Job)
-				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60420, 6);  // Common Fabric (Part-Time Job)
-				player.GiveItem(60412, 6);  // Common Silk (Part-Time Job)
-				player.GiveItem(60404, 3);  // Braid (Part-Time Job)
-				player.GiveItem(60404, 3);  // Braid (Part-Time Job)
-				break;
-
-			case 508243: // Int    Tailor 2 Cores' Healer Suits
-				player.GiveItem(Item.CreatePattern(60600, 10110, 30)); // Apprentice Sewing Pattern - Cores' Healer Suit
-				player.GiveItem(60420, 5);  // Common Fabric (Part-Time Job)
-				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60427, 5);  // Cheap Leather Strap (Part-Time Job)
-				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
-				player.GiveItem(60420, 5);  // Common Fabric (Part-Time Job)
-				player.GiveItem(60419, 5);  // Cheap Fabric (Part-Time Job)
-				player.GiveItem(60427, 5);  // Cheap Leather Strap (Part-Time Job)
-				break;
-
-			case 508244: // Int    Tailor 2 Guardian Gloves
-				player.GiveItem(Item.CreatePattern(60600, 10111, 40)); // Apprentice Sewing Pattern - Guardian Gloves
-				player.GiveItem(60424, 10); // Common Leather (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
-				player.GiveItem(60424, 10); // Common Leather (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				player.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
-				break;
-
-			case 508268: // Adv    Tailor 2 Lirina's Long Skirts
-				player.GiveItem(Item.CreatePattern(60600, 10117, 20)); // Apprentice Sewing Pattern - Lirina's Long Skirt
-				player.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
-				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
-				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
-				break;
-
-			case 508269: // Adv    Tailor 2 Magic School Uniforms (F)
-				player.GiveItem(Item.CreatePattern(60600, 10103, 20)); // Apprentice Sewing Pattern - Magic School Uniform (F)
-				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
-				player.GiveItem(60422, 6);  // Finest Fabric (Part-Time Job)
-				player.GiveItem(60412, 8);  // Common Silk (Part-Time Job)
-				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
-				break;
-
-			case 508270: // Adv    Tailor 2 Mongo's Hats
-				player.GiveItem(Item.CreatePattern(60600, 10105, 15)); // Apprentice Sewing Pattern - Mongo's Hat
-				player.GiveItem(60422, 5);  // Finest Fabric (Part-Time Job)
-				player.GiveItem(60412, 5);  // Common Silk (Part-Time Job)
-				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
-				player.GiveItem(60422, 5);  // Finest Fabric (Part-Time Job)
-				player.GiveItem(60412, 5);  // Common Silk (Part-Time Job)
-				break;
-
-			case 508271: // Adv    Tailor 2 Cloth Mails
-				player.GiveItem(Item.CreatePattern(60600, 10109, 40)); // Apprentice Sewing Pattern - Cloth Mail
-				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
-				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
-				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60404, 5);  // Braid (Part-Time Job)
-				player.GiveItem(60404, 5);  // Braid (Part-Time Job)
-				player.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
-				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
-				player.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
-				player.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
-				player.GiveItem(60404, 5);  // Braid (Part-Time Job)
-				player.GiveItem(60404, 5);  // Braid (Part-Time Job)
-				break;
-
-			case 508272: // Adv    Tailor 2 Light Leather Mails (F)
-				player.GiveItem(Item.CreatePattern(60600, 10116, 30)); // Apprentice Sewing Pattern - Light Leather Mail (F)
-				player.GiveItem(60425, 9);  // Fine Leather (Part-Time Job)
-				player.GiveItem(60413, 9);  // Fine Silk (Part-Time Job)
-				player.GiveItem(60428, 9);  // Common Leather Strap (Part-Time Job)
-				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60404, 2);  // Braid (Part-Time Job)
-				player.GiveItem(60425, 9);  // Fine Leather (Part-Time Job)
-				player.GiveItem(60413, 9);  // Fine Silk (Part-Time Job)
-				player.GiveItem(60428, 9);  // Common Leather Strap (Part-Time Job)
-				break;
-
-			case 508273: // Adv    Tailor 2 Light Leather Mails (M)
-				player.GiveItem(Item.CreatePattern(60600, 10120, 30)); // Apprentice Sewing Pattern - Light Leather Mail (M)
-				player.GiveItem(60425, 10); // Fine Leather (Part-Time Job)
-				player.GiveItem(60412, 10); // Common Silk (Part-Time Job)
-				player.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
-				player.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
-				player.GiveItem(60404, 2);  // Braid (Part-Time Job)
-				player.GiveItem(60425, 10); // Fine Leather (Part-Time Job)
-				player.GiveItem(60412, 10); // Common Silk (Part-Time Job)
-				player.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
-				break;
-
-			default:
-				break;
 		}
 	}
 }
@@ -1334,6 +1126,14 @@ public class MalcolmTailorPoposSkirtBasicPtjScript : MalcolmTailorPtjBaseScript
 	protected override string LCollectObjectiveDescription { get { return L("2 Popo's Skirts (F) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10106, 5)); // Apprentice Sewing Pattern - Popo's Skirt (F)
+		creature.GiveItem(60419, 2); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 2); // Cheap Fabric (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
@@ -1379,6 +1179,14 @@ public class MalcolmTailorWizardHatBasicPtjScript : MalcolmTailorPtjBaseScript
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Wizard Hats (Part-Time Job)"); } }
 	protected override string LCollectObjectiveDescription { get { return L("2 Wizard Hats (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10112, 10)); // Apprentice Sewing Pattern - Wizard Hat
+		creature.GiveItem(60424, 5); // Common Leather (Part-Time Job)
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60424, 5); // Common Leather (Part-Time Job)
+	}
 
 	protected override void AddRewards()
 	{
@@ -1426,6 +1234,13 @@ public class MalcolmTailorHeadbandHatBasicPtjScript : MalcolmTailorPtjBaseScript
 	protected override string LCollectObjectiveDescription { get { return L("2 Hairbands (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10114, 5)); // Apprentice Sewing Pattern - Hairband
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 5); // Cheap Fabric (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
@@ -1471,6 +1286,18 @@ public class MalcolmTailorMongosTravelerSuitFBasicPtjScript : MalcolmTailorPtjBa
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Mongo's Traveler Suits (F) (Part-Time Job)"); } }
 	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Traveler Suits (F) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10107, 40)); // Apprentice Sewing Pattern - Mongo Traveler Suit (F)
+		creature.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+		creature.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+	}
 
 	protected override void AddRewards()
 	{
@@ -1518,6 +1345,18 @@ public class MalcolmTailorMongosTravelerSuitMBasicPtjScript : MalcolmTailorPtjBa
 	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Traveler Suits (M) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10108, 40)); // Apprentice Sewing Pattern - Mongo Traveler Suit (M)
+		creature.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60416, 2);  // Common Finishing Thread (Part-Time Job)
+		creature.GiveItem(60411, 10); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60407, 5);  // Thin Thread Ball (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(250));
@@ -1563,6 +1402,16 @@ public class MalcolmTailorLeatherBandanaBasicPtjScript : MalcolmTailorPtjBaseScr
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Leather Bandanas (Part-Time Job)"); } }
 	protected override string LCollectObjectiveDescription { get { return L("2 Leather Bandanas (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10113, 15)); // Apprentice Sewing Pattern - Leather Bandana
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60424, 3); // Common Leather (Part-Time Job)
+		creature.GiveItem(60416, 2); // Common Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60424, 3); // Common Leather (Part-Time Job)
+	}
 
 	protected override void AddRewards()
 	{
@@ -1610,6 +1459,16 @@ public class MalcolmTailorCoresHealerDressIntPtjScript : MalcolmTailorPtjBaseScr
 	protected override string LCollectObjectiveDescription { get { return L("2 Cores' Healer Dresses (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10101, 30)); // Apprentice Sewing Pattern - Cores' Healer Dress
+		creature.GiveItem(60419, 6); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60411, 6); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60416, 2); // Common Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 6); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60411, 6); // Cheap Silk (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
@@ -1648,6 +1507,15 @@ public class MalcolmTailorMagicSchoolUniformMIntPtjScript : MalcolmTailorPtjBase
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Magic School Uniforms (M) (Part-Time Job)"); } }
 	protected override string LCollectObjectiveDescription { get { return L("2 Magic School Uniforms (M) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10102, 10)); // Apprentice Sewing Pattern - Magic School Uniform (M)
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60412, 3); // Common Silk (Part-Time Job)
+		creature.GiveItem(60428, 3); // Common Leather Strap (Part-Time Job)
+		creature.GiveItem(60417, 2); // Fine Finishing Thread (Part-Time Job)
+	}
 
 	protected override void AddRewards()
 	{
@@ -1688,6 +1556,16 @@ public class MalcolmTailorMongosLongSkirtIntPtjScript : MalcolmTailorPtjBaseScri
 	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Long Skirts (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10115, 25)); // Apprentice Sewing Pattern - Mongo's Long Skirt
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60411, 3); // Cheap Silk (Part-Time Job)
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60419, 3); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60411, 3); // Cheap Silk (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
@@ -1726,6 +1604,25 @@ public class MalcolmTailorCoresNinjaSuitMIntPtjScript : MalcolmTailorPtjBaseScri
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores Ninja Suits (M) (Part-Time Job)"); } }
 	protected override string LCollectObjectiveDescription { get { return L("2 Cores Ninja Suits (M) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10118, 25)); // Apprentice Sewing Pattern - Cores Ninja Suit (M)
+		creature.GiveItem(60420, 7); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60412, 7); // Common Silk (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60415, 2); // Cheap Finishing Thread (Part-Time Job)
+		creature.GiveItem(60420, 7); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60412, 7); // Common Silk (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5); // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 2); // Thick Thread Ball (Part-Time Job)
+	}
 
 	protected override void AddRewards()
 	{
@@ -1766,6 +1663,20 @@ public class MalcolmTailorCoresHealerGlovesIntPtjScript : MalcolmTailorPtjBaseSc
 	protected override string LCollectObjectiveDescription { get { return L("2 Cores' Healer Gloves (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10104, 20)); // Apprentice Sewing Pattern - Cores' Healer Gloves
+		creature.GiveItem(60420, 6); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60412, 6); // Common Silk (Part-Time Job)
+		creature.GiveItem(60404, 3); // Braid (Part-Time Job)
+		creature.GiveItem(60404, 3); // Braid (Part-Time Job)
+		creature.GiveItem(60417, 2); // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60420, 6); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60412, 6); // Common Silk (Part-Time Job)
+		creature.GiveItem(60404, 3); // Braid (Part-Time Job)
+		creature.GiveItem(60404, 3); // Braid (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
@@ -1804,6 +1715,18 @@ public class MalcolmTailorCoresHealerSuitIntPtjScript : MalcolmTailorPtjBaseScri
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cores' Healer Suits (Part-Time Job)"); } }
 	protected override string LCollectObjectiveDescription { get { return L("2 Cores' Healer Suits (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10110, 30)); // Apprentice Sewing Pattern - Cores' Healer Suit
+		creature.GiveItem(60420, 5); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60419, 5); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60427, 5); // Cheap Leather Strap (Part-Time Job)
+		creature.GiveItem(60418, 2); // Finest Finishing Thread (Part-Time Job)
+		creature.GiveItem(60420, 5); // Common Fabric (Part-Time Job)
+		creature.GiveItem(60419, 5); // Cheap Fabric (Part-Time Job)
+		creature.GiveItem(60427, 5); // Cheap Leather Strap (Part-Time Job)
+	}
 
 	protected override void AddRewards()
 	{
@@ -1844,6 +1767,19 @@ public class MalcolmTailorGuardianGloveIntPtjScript : MalcolmTailorPtjBaseScript
 	protected override string LCollectObjectiveDescription { get { return L("2 Guardian Gloves (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10111, 40)); // Apprentice Sewing Pattern - Guardian Gloves
+		creature.GiveItem(60424, 10); // Common Leather (Part-Time Job)
+		creature.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+		creature.GiveItem(60424, 10); // Common Leather (Part-Time Job)
+		creature.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+		creature.GiveItem(60406, 5);  // Thick Thread Ball (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
@@ -1883,6 +1819,16 @@ public class MalcolmTailorLirinaLongSkirtAdvPtjScript : MalcolmTailorPtjBaseScri
 	protected override string LCollectObjectiveDescription { get { return L("2 Lirina's Long Skirts (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10117, 20)); // Apprentice Sewing Pattern - Lirina's Long Skirt
+		creature.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
+		creature.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60413, 5);  // Fine Silk (Part-Time Job)
+		creature.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
@@ -1921,6 +1867,15 @@ public class MalcolmTailorMagicSchoolUniformFAdvPtjScript : MalcolmTailorPtjBase
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Magic School Uniforms (F) (Part-Time Job)"); } }
 	protected override string LCollectObjectiveDescription { get { return L("2 Magic School Uniforms (F) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10103, 20)); // Apprentice Sewing Pattern - Magic School Uniform (F)
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60422, 6);  // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60412, 8);  // Common Silk (Part-Time Job)
+		creature.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+	}
 
 	protected override void AddRewards()
 	{
@@ -1964,6 +1919,16 @@ public class MalcolmTailorMongoHatsAdvPtjScript : MalcolmTailorPtjBaseScript
 	protected override string LCollectObjectiveDescription { get { return L("2 Mongo's Hats (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10105, 15)); // Apprentice Sewing Pattern - Mongo's Hat
+		creature.GiveItem(60422, 5); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60412, 5); // Common Silk (Part-Time Job)
+		creature.GiveItem(60418, 2); // Finest Finishing Thread (Part-Time Job)
+		creature.GiveItem(60422, 5); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60412, 5); // Common Silk (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
@@ -2005,6 +1970,22 @@ public class MalcolmTailorClothMailsAdvPtjScript : MalcolmTailorPtjBaseScript
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Cloth Mails (Part-Time Job)"); } }
 	protected override string LCollectObjectiveDescription { get { return L("2 Cloth Mails (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10109, 40)); // Apprentice Sewing Pattern - Cloth Mail
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60404, 5);  // Braid (Part-Time Job)
+		creature.GiveItem(60404, 5);  // Braid (Part-Time Job)
+		creature.GiveItem(60418, 2);  // Finest Finishing Thread (Part-Time Job)
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60422, 10); // Finest Fabric (Part-Time Job)
+		creature.GiveItem(60407, 10); // Thin Thread Ball (Part-Time Job)
+		creature.GiveItem(60404, 5);  // Braid (Part-Time Job)
+		creature.GiveItem(60404, 5);  // Braid (Part-Time Job)
+	}
 
 	protected override void AddRewards()
 	{
@@ -2048,6 +2029,19 @@ public class MalcolmTailorLightLeatherMailFAdvPtjScript : MalcolmTailorPtjBaseSc
 	protected override string LCollectObjectiveDescription { get { return L("2 Light Leather Mails (F) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
 
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10116, 30)); // Apprentice Sewing Pattern - Light Leather Mail (F)
+		creature.GiveItem(60425, 9); // Fine Leather (Part-Time Job)
+		creature.GiveItem(60413, 9); // Fine Silk (Part-Time Job)
+		creature.GiveItem(60428, 9); // Common Leather Strap (Part-Time Job)
+		creature.GiveItem(60417, 2); // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60404, 2); // Braid (Part-Time Job)
+		creature.GiveItem(60425, 9); // Fine Leather (Part-Time Job)
+		creature.GiveItem(60413, 9); // Fine Silk (Part-Time Job)
+		creature.GiveItem(60428, 9); // Common Leather Strap (Part-Time Job)
+	}
+
 	protected override void AddRewards()
 	{
 		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(400));
@@ -2088,6 +2082,19 @@ public class MalcolmTailorLightLeatherMailMAdvPtjScript : MalcolmTailorPtjBaseSc
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Light Leather Mails (M) (Part-Time Job)"); } }
 	protected override string LCollectObjectiveDescription { get { return L("2 Light Leather Mails (M) (Part-Time Job)"); } }
 	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	public override void OnReceive(Creature creature)
+	{
+		creature.GiveItem(ItemEntity.CreatePattern(60600, 10120, 30)); // Apprentice Sewing Pattern - Light Leather Mail (M)
+		creature.GiveItem(60425, 10); // Fine Leather (Part-Time Job)
+		creature.GiveItem(60412, 10); // Common Silk (Part-Time Job)
+		creature.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
+		creature.GiveItem(60417, 2);  // Fine Finishing Thread (Part-Time Job)
+		creature.GiveItem(60404, 2);  // Braid (Part-Time Job)
+		creature.GiveItem(60425, 10); // Fine Leather (Part-Time Job)
+		creature.GiveItem(60412, 10); // Common Silk (Part-Time Job)
+		creature.GiveItem(60428, 10); // Common Leather Strap (Part-Time Job)
+	}
 
 	protected override void AddRewards()
 	{
