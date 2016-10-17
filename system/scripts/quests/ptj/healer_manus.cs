@@ -88,14 +88,10 @@ public class ManusPtjScript : GeneralScript
 			if (!npc.ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
-				{
-					npc.Msg(L("It's not the deadline yet. Come back later."));
-					npc.Msg(L("Alright. I'll see you later!"));
-				}
+					npc.Msg(L("It's not the deadline yet. Come back later.<p/>Alright. I'll see you later!"));
 				else
-				{
 					npc.Msg(L("I trust that your work is going well?"));
-				}
+
 				return;
 			}
 
