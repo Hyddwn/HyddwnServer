@@ -143,7 +143,11 @@ public class ElenScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("What is it?<br/>Are you doing the work at the shop?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("Welcome! But... I've never seen you around here before."));
 		}
@@ -185,10 +189,6 @@ public class ElenScript : NpcScript
 			case "about_skill":
 				// Learning Refining is handled in the quest script
 				Msg("How's refining coming along?<br/>There are lots of furnaces around,<br/>so go talk to Sion over there and he'll teach you how to use one.");
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":
