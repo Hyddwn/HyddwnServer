@@ -1,36 +1,3 @@
-#region TEMP_NOTES
-// If you see this region in a pull request, 
-// **I contain undefined values and should not be merged into master!**
-
-// Class name resolver - go go gadget intellisense
-using Aura.Mabi;
-using Aura.Mabi.Const;
-using System.Threading.Tasks;
-using Aura.Channel.Scripting.Scripts;
-using System;
-using Aura.Shared.Util;
-using Aura.Channel.Scripting;
-using System.Collections.Generic;
-// Temporarily place this file under ChannelServer.csproj to resolve rest of dependencies
-
-// PR Readiness Check: 
-/* Run following regex searches for possibly improper Localization:
-	* /(?<=\W)LX?N?\((?!\s*")/g
-		Non-string Localization call
-	* /(?<!(Log\.\w*|LX?N?)\(\s*)"(?!([@_]|ptj|after_intro|before_keywords|about_arbeit|ErinnMidnightTick|QuestViewRenewal|CollectionBooks))\w.*?"(?!\w)/g
-		Unlocalised string //warn: You will get a lot of false-positives.
-	* /\.Format/g
-		Check for proper string parametrisation.
-		All parts of the string must be exposed to Poedit.
-	* /LX?N?\((.*?$\n.*?LX?N?\()+/gm
-		Consecutive Msg() calls?
-		Join `L("a") ... L("b")` like so: `L("a<p/>b")`
- * Ensure rewards are in counting order with non-conflicting group IDs, per PTJ Quest ID.
- * Search "Log." and ensure displayed messages are sufficiently descriptive (particularly, do specify the source of the message).
- * Remove dbg_questTestStack and all other "debug:" text.
- */
-#endregion
-
 //--- Aura Script -----------------------------------------------------------
 // Elen's Iron Ingot-Refining Part-Time Job
 //--- Description -----------------------------------------------------------
@@ -57,20 +24,15 @@ public class ElenPtjScript : GeneralScript
 
 	readonly int[] QuestIds = new int[]
 	{
-		?
+		507701, // Basic  Refine 1 Iron Ingot
+		507731, // Int    Refine 2 Iron Ingots, Deliver 1
+		507761, // Adv    Refine 4 Iron Ingots, Deliver 1
 	};
-
-	Stack<int> dbg_questTestStack = new Stack<int>(new int[]
-	{
-
-	});
 
 	public override void Load()
 	{
 		AddHook("_elen", "after_intro", AfterIntro);
 		AddHook("_elen", "before_keywords", BeforeKeywords);
-
-		Log.Debug("Quest test stack populated with {0} IDs.", dbg_questTestStack.Count);
 	}
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
@@ -127,13 +89,10 @@ public class ElenPtjScript : GeneralScript
 			if (!npc.ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
-				{
 					npc.Msg(L("Are you done already?<br/>It's not the deadline yet. Please come back later."));
-				}
 				else
-				{
 					npc.Msg(L("You'd better be doing the work I asked you to do!<br/>Please finish it before the deadline."));
-				}
+
 				return;
 			}
 
@@ -211,15 +170,8 @@ public class ElenPtjScript : GeneralScript
 			return;
 		}
 
-		if (dbg_questTestStack.Count <= 0)
-		{
-			npc.Msg("debug: Quest test stack exhausted.");
-			return;
-		}
-
 		// Offer PTJ
-		//var randomPtj = npc.RandomPtj(JobType, QuestIds);
-		var randomPtj = dbg_questTestStack.Peek();
+		var randomPtj = npc.RandomPtj(JobType, QuestIds);
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
@@ -227,7 +179,7 @@ public class ElenPtjScript : GeneralScript
 		else
 			msg = L("Would you like to see today's work agenda?");
 
-		npc.Msg("debug: Decline PTJ to receive go to the next PTJ to test.<br/>" + msg, npc.PtjDesc(randomPtj,
+		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Elen's Iron Ingot-Refining Part-Time Job"),
 			L("Looking for refiners."),
 			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
@@ -247,9 +199,171 @@ public class ElenPtjScript : GeneralScript
 				npc.Msg(L("(missing): first time declining PTJ offer"));
 			else
 				npc.Msg(L("I see.<br/>Then I'll assign this task to someone else.."));
-			Log.Debug("Removed quest ID {0} from test stack.", dbg_questTestStack.Pop());
 		}
 	}
 }
 
-Unimplemented: QuestScripts
+public class ElenRefineBasicPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(507701);
+		SetName(L("Iron Ingot-Refining Part-Time Job"));
+		SetDescription(L("This job is to refine iron ore into iron ingots. Today, refine [1 Lump of Iron Ingot] but you don't need to bring the finished ingot. Use the furnace to refine iron ore into iron ingots."));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.BlacksmithShop);
+		SetLevel(QuestLevel.Basic);
+		SetHours(start: 12, report: 13, deadline: 19);
+
+		AddObjective("ptj", L("Refine 1 lump of iron ingot."), 0, 0, 0, Create(64001, 1, SkillId.Refining));
+
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(220));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(360));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(110));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(180));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(44));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(72));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(115));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(440));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(57));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(220));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(23));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(88));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(565));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(100));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(282));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(50));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(113));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(20));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(45002, 200)); // Bolt
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(150));
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(45002, 100)); // Bolt
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(350));
+
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(51001, 10)); // HP 10 Potion
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(50));
+
+		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Item(51011, 10)); // Stamina 10 Potion
+		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Gold(450));
+	}
+}
+
+public class ElenRefineIntPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(507731);
+		SetName(L("Iron Ingot-Refining Part-Time Job"));
+		SetDescription(L("This job is to refine iron ore into iron ingots. Today, refine [2 Lumps of Iron Ingots] and bring me one of them. Use the furnace to refine iron ore into iron ingots."));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.BlacksmithShop);
+		SetLevel(QuestLevel.Int);
+		SetHours(start: 12, report: 13, deadline: 19);
+
+		AddObjective("ptj1", L("Refine 2 lumps of iron ingots."), 0, 0, 0, Create(64001, 2, SkillId.Refining));
+		AddObjective("ptj2", L("Deliver 1 iron ingot."), 0, 0, 0, Collect(64001, 1));
+
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(900));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(450));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(60));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(180));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(265));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(925));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(132));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(462));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(53));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(185));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(1200));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(225));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(600));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(112));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(240));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(45));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(16008)); // Cores' Thief Gloves
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(250));
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(16004)); // Studded Bracelet
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(350));
+
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(400));
+
+		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Item(45002, 200)); // Bolt
+		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Gold(750));
+	}
+}
+
+public class ElenRefineAdvPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(507761);
+		SetName(L("Iron Ingot-Refining Part-Time Job"));
+		SetDescription(L("This job is to refine iron ore into iron ingots. Today, refine [4 Lumps of Iron Ingots] and bring me one of them. Use the furnace to refine iron ore into iron ingots."));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.BlacksmithShop);
+		SetLevel(QuestLevel.Adv);
+		SetHours(start: 12, report: 13, deadline: 19);
+
+		AddObjective("ptj1", L("Refine 4 lumps of iron ingots."), 0, 0, 0, Create(64001, 4, SkillId.Refining));
+		AddObjective("ptj2", L("Deliver 1 iron ingot."), 0, 0, 0, Collect(64001, 1));
+
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(500));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1800));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(250));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(900));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(100));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(360));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(550));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(1760));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(275));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(880));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(110));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(352));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(2320));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(435));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(1160));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(217));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(464));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(87));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(16008)); // Cores' Thief Gloves
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Gold(1300));
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(16004)); // Studded Bracelet
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Gold(1400));
+
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(40024)); // Blacksmith Hammer
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Gold(200));
+
+		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Item(17019)); // Blacksmith Shoes
+		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, Gold(600));
+
+		AddReward(8, RewardGroupType.Item, QuestResult.Perfect, Pattern(64500, 20102, 30)); // Blacksmith Manual - Dagger
+
+		AddReward(9, RewardGroupType.Item, QuestResult.Perfect, QuestScroll(40020)); // Big Order of Iron Ingots
+	}
+}
