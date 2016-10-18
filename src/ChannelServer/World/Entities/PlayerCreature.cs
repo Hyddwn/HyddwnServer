@@ -31,11 +31,6 @@ namespace Aura.Channel.World.Entities
 		public string Server { get; set; }
 
 		/// <summary>
-		/// Time at which the creature can be deleted.
-		/// </summary>
-		public DateTime DeletionTime { get; set; }
-
-		/// <summary>
 		/// Specifies whether to update visible creatures or not.
 		/// </summary>
 		public bool Watching { get; set; }
