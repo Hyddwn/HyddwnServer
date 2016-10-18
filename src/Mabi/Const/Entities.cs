@@ -30,4 +30,12 @@ namespace Aura.Mabi.Const
 		/// </summary>
 		Public = 5,
 	}
+
+	public enum SubordinateType : byte
+	{
+		RpCharacter = 1,
+		Pet = 2,
+		Transport = 3,
+		PartnerVehicle = 4,
+	}
 }
