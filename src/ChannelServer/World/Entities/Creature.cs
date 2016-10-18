@@ -89,15 +89,30 @@ namespace Aura.Channel.World.Entities
 		public ScriptVariables Vars { get; protected set; }
 
 		/// <summary>
-		/// Returns true if creature is a Character or Pet.
+		/// Returns true if creature is a Character, RpCharacter, or Pet.
 		/// </summary>
-		public bool IsPlayer { get { return (this.IsCharacter || this.IsPet); } }
+		/// <remarks>
+		/// This propery is frequently used to determine if a creature should
+		/// get special treatment because it's a player. Player creatures
+		/// can level up, have special events, can keep dynamic regions open,
+		/// and other things.
+		/// 
+		/// TODO: Dedicated properties might be better to determine what a
+		///   creature can do, as they would be more descriptive and easier
+		///   to maintain.
+		/// </remarks>
+		public bool IsPlayer { get { return (this.IsCharacter || this.IsPet || this.IsRpCharacter); } }
 
 		/// <summary>
 		/// Returns true if creature is a character, i.e. a player creature,
 		/// but not a pet/partner.
 		/// </summary>
 		public bool IsCharacter { get { return (this is Character); } }
+
+		/// <summary>
+		/// Returns true if creature is an role-playing character.
+		/// </summary>
+		public bool IsRpCharacter { get { return (this is RpCharacter); } }
 
 		/// <summary>
 		/// Returns true if creature is a pet.

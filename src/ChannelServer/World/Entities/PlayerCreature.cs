@@ -43,7 +43,7 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Set to true if creature is supposed to be saved.
 		/// </summary>
-		public bool Save { get; set; }
+		public virtual bool Save { get; set; }
 
 		/// <summary>
 		/// Player's CP, based on stats and skills.
