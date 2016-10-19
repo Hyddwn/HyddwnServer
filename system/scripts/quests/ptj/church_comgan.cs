@@ -1,36 +1,3 @@
-#region TEMP_NOTES
-// If you see this region in a pull request, 
-// **I contain undefined values and should not be merged into master!**
-
-// Class name resolver - go go gadget intellisense
-using Aura.Mabi;
-using Aura.Mabi.Const;
-using System.Threading.Tasks;
-using Aura.Channel.Scripting.Scripts;
-using System;
-using Aura.Shared.Util;
-using Aura.Channel.Scripting;
-using System.Collections.Generic;
-// Temporarily place this file under ChannelServer.csproj to resolve rest of dependencies
-
-// PR Readiness Check: 
-/* Run following regex searches for possibly improper Localization:
-	* /(?<=\W)LX?N?\((?!\s*")/g
-		Non-string Localization call
-	* /(?<!(Log\.\w*|LX?N?)\(\s*)"(?!([@_]|ptj|after_intro|before_keywords|about_arbeit|ErinnMidnightTick|QuestViewRenewal|CollectionBooks))\w.*?"(?!\w)/g
-		Unlocalised string //warn: You will get a lot of false-positives.
-	* /\.Format/g
-		Check for proper string parametrisation.
-		All parts of the string must be exposed to Poedit.
-	* /LX?N?\((.*?$\n.*?LX?N?\()+/gm
-		Consecutive Msg() calls?
-		Join `L("a") ... L("b")` like so: `L("a<p/>b")`
- * Ensure rewards are in counting order with non-conflicting group IDs, per PTJ Quest ID.
- * Search "Log." and ensure displayed messages are sufficiently descriptive (particularly, do specify the source of the message).
- * Remove dbg_questTestStack and all other "debug:" text.
- */
-#endregion
-
 //--- Aura Script -----------------------------------------------------------
 // Comgan's Monster-Hunting Part-Time Job
 //--- Description -----------------------------------------------------------
@@ -55,20 +22,15 @@ public class ComganPtjScript : GeneralScript
 
 	readonly int[] QuestIds = new int[]
 	{
-		?
+		502301, // Basic  Hunt 4 Goblins
+		502331, // Int    Hunt 4 Goblins, 1 Imp
+		502361, // Adv    Hunt 3 Goblins, 3 Imps
 	};
-
-	Stack<int> dbg_questTestStack = new Stack<int>(new int[]
-	{
-
-	});
 
 	public override void Load()
 	{
 		AddHook("_comgan", "after_intro", AfterIntro);
 		AddHook("_comgan", "before_keywords", BeforeKeywords);
-
-		Log.Debug("Quest test stack populated with {0} IDs.", dbg_questTestStack.Count);
 	}
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
@@ -206,15 +168,8 @@ public class ComganPtjScript : GeneralScript
 			return;
 		}
 
-		if (dbg_questTestStack.Count <= 0)
-		{
-			npc.Msg("debug: Quest test stack exhausted.");
-			return;
-		}
-
 		// Offer PTJ
-		//var randomPtj = npc.RandomPtj(JobType, QuestIds);
-		var randomPtj = dbg_questTestStack.Peek();
+		var randomPtj = npc.RandomPtj(JobType, QuestIds);
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
@@ -222,7 +177,7 @@ public class ComganPtjScript : GeneralScript
 		else
 			msg = L("Do you need holy water again today?");
 
-		npc.Msg("debug: Decline PTJ to receive go to the next PTJ to test.<br/>" + msg, npc.PtjDesc(randomPtj,
+		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Comgan's Monster-Hunting Part-Time Job"),
 			L("Looking for monster hunters in Church."),
 			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
@@ -242,9 +197,92 @@ public class ComganPtjScript : GeneralScript
 				npc.Msg(L("(missing): first time declining PTJ offer"));
 			else
 				npc.Msg(L("I am sorry, but if you won't help with the tasks,<br/>I cannot really help you, either."));
-			Log.Debug("Removed quest ID {0} from test stack.", dbg_questTestStack.Pop());
 		}
 	}
 }
 
-Unimplemented: QuestScripts
+public class ComganHuntBasicPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502301);
+		SetName(L("Monster-Hunting Part-Time Job"));
+		SetDescription(L("Evil creatures are invading our homes! If you hunt [4 goblins] I'll give you some holy water."));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Basic);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj", L("Hunt 4 Goblins"), 0, 0, 0, Kill(4, "/goblin/"));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 4)); // Holy Water of Lymilark
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(220));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 2)); // Holy Water of Lymilark
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(110));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1)); // Holy Water of Lymilark
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(44));
+	}
+}
+
+public class ComganHuntIntPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502331);
+		SetName(L("Monster-Hunting Part-Time Job"));
+		SetDescription(L("Evil creatures are invading our homes! If you hunt [4 goblins and 1 imp] I'll give you some holy water."));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Int);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj1", L("Hunt 4 Goblins"), 0, 0, 0, Kill(4, "/goblin/"));
+		AddObjective("ptj2", L("Hunt 1 Imp"), 0, 0, 0, Kill(1, "/imp/"));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 6)); // Holy Water of Lymilark
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 3)); // Holy Water of Lymilark
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 1)); // Holy Water of Lymilark
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(60));
+	}
+}
+
+public class ComganHuntAdvPtjScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(502361);
+		SetName(L("Monster-Hunting Part-Time Job"));
+		SetDescription(L("Evil creatures are invading our homes! If you hunt [3 goblins and 3 imps] I'll give you some holy water."));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Church);
+		SetLevel(QuestLevel.Adv);
+		SetHours(start: 12, report: 16, deadline: 21);
+
+		AddObjective("ptj1", L("Hunt 3 Goblins"), 0, 0, 0, Kill(4, "/goblin/"));
+		AddObjective("ptj2", L("Hunt 3 Imps"), 0, 0, 0, Kill(3, "/imp/"));
+
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Item(63016, 10)); // Holy Water of Lymilark
+		AddReward(1, RewardGroupType.Item, QuestResult.Perfect, Exp(500));
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Item(63016, 5)); // Holy Water of Lymilark
+		AddReward(1, RewardGroupType.Item, QuestResult.Mid, Exp(250));
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Item(63016, 2)); // Holy Water of Lymilark
+		AddReward(1, RewardGroupType.Item, QuestResult.Low, Exp(100));
+
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(40004)); // Lute
+		AddReward(2, RewardGroupType.Item, QuestResult.Perfect, Item(19001)); // Robe
+	}
+}
