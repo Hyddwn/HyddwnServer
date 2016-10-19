@@ -121,6 +121,7 @@
     <Compile Include="Network\Sending\Helpers\TalentHelper.cs" />
     <Compile Include="Network\Sending\Send.Dungeons.cs" />
     <Compile Include="Network\Sending\Send.GMCP.cs" />
+    <Compile Include="Network\Sending\Send.RolePlaying.cs" />
     <Compile Include="Network\Sending\Send.Parties.cs" />
     <Compile Include="Network\Sending\Send.PersonalShops.cs" />
     <Compile Include="Network\Sending\Send.Entrusting.cs" />
