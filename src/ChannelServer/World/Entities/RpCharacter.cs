@@ -59,6 +59,10 @@ namespace Aura.Channel.World.Entities
 			else
 				this.Name = this.RaceData.Name;
 
+			// State
+			this.State |= CreatureStates.InstantNpc;
+			this.State |= CreatureStates.EnableCommonPvp;
+
 			// Color
 			if (actorData.HasColors)
 			{
