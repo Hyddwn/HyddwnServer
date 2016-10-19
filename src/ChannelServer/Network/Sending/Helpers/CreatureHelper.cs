@@ -505,8 +505,15 @@ namespace Aura.Channel.Network.Sending.Helpers
 				if (creature.Master != null)
 				{
 					packet.PutLong(creature.Master.EntityId);
-					packet.PutByte(2);               // Type (1:RPCharacter, 2:Pet, 3:Transport, 4:PartnerVehicle)
+					packet.PutByte((byte)SubordinateType.Pet);
 					packet.PutByte(0);				 // SubType
+				}
+				else if (creature.IsRpCharacter)
+				{
+					var rpCharacter = creature as RpCharacter;
+					packet.PutLong(rpCharacter.Actor.EntityId);
+					packet.PutByte((byte)SubordinateType.RpCharacter);
+					packet.PutByte(0);
 				}
 				else
 				{
