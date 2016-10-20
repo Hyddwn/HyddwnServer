@@ -175,7 +175,7 @@ public class ElenPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			msg = L("(missing): first time worker PTJ inquiry");
+			npc.Msg(L("Are you interested in some part-time work at the Bangor Blacksmith's Shop?<br/>If you complete the work before<br/>the deadline, I'll pay you."));
 		else
 			msg = L("Would you like to see today's work agenda?");
 
@@ -187,7 +187,7 @@ public class ElenPtjScript : GeneralScript
 		if (await npc.Select() == "@accept")
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time accepting PTJ offer"));
+				npc.Msg(L("Even if you finish the work early,<br/>you can't report until the deadline. Don't forget."));
 			else
 				npc.Msg(L("Alright. Good luck with your work."));
 
@@ -196,7 +196,7 @@ public class ElenPtjScript : GeneralScript
 		else
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time declining PTJ offer"));
+				npc.Msg(L("Don't underestimate blacksmith work<br/>or you might come to regret it."));
 			else
 				npc.Msg(L("I see.<br/>Then I'll assign this task to someone else.."));
 		}
