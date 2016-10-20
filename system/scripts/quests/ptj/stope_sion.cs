@@ -1,36 +1,3 @@
-#region TEMP_NOTES
-// If you see this region in a pull request, 
-// **I contain undefined values and should not be merged into master!**
-
-// Class name resolver - go go gadget intellisense
-using Aura.Mabi;
-using Aura.Mabi.Const;
-using System.Threading.Tasks;
-using Aura.Channel.Scripting.Scripts;
-using System;
-using Aura.Shared.Util;
-using Aura.Channel.Scripting;
-using System.Collections.Generic;
-// Temporarily place this file under ChannelServer.csproj to resolve rest of dependencies
-
-// PR Readiness Check: 
-/* Run following regex searches for possibly improper Localization:
-	* /(?<=\W)LX?N?\((?!\s*")/g
-		Non-string Localization call
-	* /(?<!(Log\.\w*|LX?N?)\(\s*)"(?!([@_]|ptj|after_intro|before_keywords|about_arbeit|ErinnMidnightTick|QuestViewRenewal|CollectionBooks))\w.*?"(?!\w)/g
-		Unlocalised string //warn: You will get a lot of false-positives.
-	* /\.Format/g
-		Check for proper string parametrisation.
-		All parts of the string must be exposed to Poedit.
-	* /LX?N?\((.*?$\n.*?LX?N?\()+/gm
-		Consecutive Msg() calls?
-		Join `L("a") ... L("b")` like so: `L("a<p/>b")`
- * Ensure rewards are in counting order with non-conflicting group IDs, per PTJ Quest ID.
- * Search "Log." and ensure displayed messages are sufficiently descriptive (particularly, do specify the source of the message).
- * Remove dbg_questTestStack and all other "debug:" text.
- */
-#endregion
-
 //--- Aura Script -----------------------------------------------------------
 // Sion's Iron Ore-Mining Part-time Job
 //--- Description -----------------------------------------------------------
@@ -50,24 +17,40 @@ public class SionPtjScript : GeneralScript
 
 	readonly int[] QuestIds = new int[]
 	{
-		?
+		514602, // Basic  Mine  5 Iron Ore
+		514632, // Int    Mine  7 Iron Ore
+		514662, // Adv    Mine 10 Iron Ore
 	};
-
-	Stack<int> dbg_questTestStack = new Stack<int>(new int[]
-	{
-
-	});
 
 	public override void Load()
 	{
 		AddHook("_sion", "after_intro", AfterIntro);
 		AddHook("_sion", "before_keywords", BeforeKeywords);
-
-		Log.Debug("Quest test stack populated with {0} IDs.", dbg_questTestStack.Count);
 	}
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
+		// Handle delivery of Iron Ore from some of his PTJ quests
+		int id, itemCount = -1;
+		if (npc.QuestActive(id = 514602, "ptj2"))
+			itemCount = 5;
+		else if (npc.QuestActive(id = 514632, "ptj2"))
+			itemCount = 7;
+		else if (npc.QuestActive(id = 514662, "ptj2"))
+			itemCount = 10;
+
+		if (itemCount != -1)
+		{
+			if (!npc.Player.Inventory.Has(64002, itemCount)) // Iron Ore
+				return HookResult.Continue;
+
+			npc.FinishQuest(id, "ptj2");
+
+			npc.Player.Inventory.Remove(64002, itemCount);
+			npc.Notice(L("You have given Iron Ore to Sion."));
+			npc.Msg(LN("(Gave Sion {0} Iron Ore)", "(Gave Sion {0} Iron Ore)", itemCount));
+		}
+
 		// Call PTJ method after intro if it's time to report
 		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
 		{
@@ -196,15 +179,8 @@ public class SionPtjScript : GeneralScript
 			return;
 		}
 
-		if (dbg_questTestStack.Count <= 0)
-		{
-			npc.Msg("debug: Quest test stack exhausted.");
-			return;
-		}
-
 		// Offer PTJ
-		//var randomPtj = npc.RandomPtj(JobType, QuestIds);
-		var randomPtj = dbg_questTestStack.Peek();
+		var randomPtj = npc.RandomPtj(JobType, QuestIds);
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
@@ -212,7 +188,7 @@ public class SionPtjScript : GeneralScript
 		else
 			msg = L("You brought your Pickaxe, right?");
 
-		npc.Msg("debug: Decline PTJ to receive go to the next PTJ to test.<br/>" + msg, npc.PtjDesc(randomPtj,
+		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Sion's Iron Ore-Mining Part-time Job"),
 			L("Looking for miners."),
 			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
@@ -232,9 +208,155 @@ public class SionPtjScript : GeneralScript
 				npc.Msg(L("Hmm. Are you scared?"));
 			else
 				npc.Msg(L("I guess you don't feel like working today.<br/>Well, you can just help me next time then."));
-			Log.Debug("Removed quest ID {0} from test stack.", dbg_questTestStack.Pop());
 		}
 	}
 }
 
-Unimplemented: QuestScripts
+public abstract class SionMinePtjBaseScript : QuestScript
+{
+	protected abstract int QuestId { get; }
+	protected abstract int ItemCount { get; }
+	protected abstract QuestLevel QuestLevel { get; }
+
+	protected abstract void AddRewards();
+
+	public override void Load()
+	{
+		SetId(QuestId);
+		SetName(L("Iron Ore-Mining Part-time Job"));
+		SetDescription(LN(
+			"This task involves going into the mines to mine out Iron Ore. Today, the task is mining out [{0} Iron Ore]. Mining out the ore will require a Pickaxe, so make sure to bring that before heading over to the mines.",
+			"This task involves going into the mines to mine out Iron Ore. Today, the task is mining out [{0} Iron Ore]. Mining out the ore will require a Pickaxe, so make sure to bring that before heading over to the mines.",
+			ItemCount
+			));
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.ById);
+
+		SetType(QuestType.Deliver);
+		SetPtjType(PtjType.Stope);
+		SetLevel(QuestLevel);
+		SetHours(start: 10, report: 15, deadline: 23);
+
+		AddObjective("ptj1", LN("Mine {0} Iron Ore", "Mine {0} Iron Ore", ItemCount), 0, 0, 0, Gather(64002, ItemCount));
+		AddObjective("ptj2", LN("Deliver {0} Iron Ore to Sion", "Deliver {0} Iron Ore to Sion", ItemCount), 0, 0, 0, Deliver(64002, "_sion"));
+
+		// Sion's AfterIntro is handled above, as we have to deliver the ore to him
+		// before he asks us about the PTJ.
+
+		AddRewards();
+	}
+}
+
+public class SionMineBasicPtjScript : SionMinePtjBaseScript
+{
+	protected override int QuestId { get { return 514602; } }
+	protected override int ItemCount { get { return 5; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Basic; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(220));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(420));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(110));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(210));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(44));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(84));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(125));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(490));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(62));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(245));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(25));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(98));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(620));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(120));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(310));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(60));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(124));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(24));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(51011, 5)); // Stamina 10 Potion
+
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(63170)); // Pass to the Hidden Mine
+	}
+}
+
+public class SionMineIntPtjScript : SionMinePtjBaseScript
+{
+	protected override int QuestId { get { return 514632; } }
+	protected override int ItemCount { get { return 7; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Int; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(300));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(720));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(150));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(360));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(60));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(144));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(220));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(780));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(110));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(390));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(44));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(156));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(1000));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(195));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(500));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(97));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(200));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(39));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(51011, 10)); // Stamina 10 Potion
+
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(63170)); // Pass to the Hidden Mine
+	}
+}
+
+public class SionMineAdvPtjScript : SionMinePtjBaseScript
+{
+	protected override int QuestId { get { return 514662; } }
+	protected override int ItemCount { get { return 10; } }
+	protected override QuestLevel QuestLevel { get { return QuestLevel.Adv; } }
+
+	protected override void AddRewards()
+	{
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Exp(500));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Perfect, Gold(1200));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Exp(250));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Mid, Gold(600));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Exp(100));
+		AddReward(1, RewardGroupType.Gold, QuestResult.Low, Gold(240));
+
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Exp(370));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Perfect, Gold(1300));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Exp(185));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Mid, Gold(650));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Exp(74));
+		AddReward(2, RewardGroupType.Gold, QuestResult.Low, Gold(260));
+
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Exp(1680));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Perfect, Gold(315));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Exp(840));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Mid, Gold(157));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Exp(336));
+		AddReward(3, RewardGroupType.Exp, QuestResult.Low, Gold(63));
+
+		AddReward(4, RewardGroupType.Item, QuestResult.Perfect, Item(40025)); // Pickaxe
+
+		AddReward(5, RewardGroupType.Item, QuestResult.Perfect, Item(51012, 5)); // Stamina 30 Potion
+
+		AddReward(6, RewardGroupType.Item, QuestResult.Perfect, Item(63170)); // Pass to the Hidden Mine
+
+		AddReward(7, RewardGroupType.Item, QuestResult.Perfect, QuestScroll(40012)); // Big Order of Iron Ore
+	}
+}
