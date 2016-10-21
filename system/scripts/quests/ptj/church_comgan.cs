@@ -173,7 +173,7 @@ public class ComganPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			msg = L("(missing): first time worker PTJ inquiry");
+			npc.Msg(L("As you can see, I am in need of financial assistance,<br/>not in a position to help financially.<br/>But if you help with the tasks, I can at least give you some holy water."));
 		else
 			msg = L("Do you need holy water again today?");
 
@@ -185,7 +185,7 @@ public class ComganPtjScript : GeneralScript
 		if (await npc.Select() == "@accept")
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time accepting PTJ offer"));
+				npc.Msg(L("Please do come back to report before the deadline."));
 			else
 				npc.Msg(L("Please be careful not to miss the deadline."));
 
@@ -194,7 +194,7 @@ public class ComganPtjScript : GeneralScript
 		else
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("(missing): first time declining PTJ offer"));
+				npc.Msg(L("Don't like the given work, do you?<br/>"));
 			else
 				npc.Msg(L("I am sorry, but if you won't help with the tasks,<br/>I cannot really help you, either."));
 		}
