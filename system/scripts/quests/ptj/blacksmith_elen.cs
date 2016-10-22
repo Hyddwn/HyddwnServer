@@ -4,9 +4,6 @@
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
 //--- Notes -----------------------------------------------------------------
 // The following dialogue is missing:
-// * first time worker PTJ inquiry
-// * first time accepting PTJ offer
-// * first time declining PTJ offer
 // * 1-star PTJ turn in response
 // * 3-star PTJ turn in response
 //---------------------------------------------------------------------------
@@ -175,7 +172,7 @@ public class ElenPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			npc.Msg(L("Are you interested in some part-time work at the Bangor Blacksmith's Shop?<br/>If you complete the work before<br/>the deadline, I'll pay you."));
+			msg = L("Are you interested in some part-time work at the Bangor Blacksmith's Shop?<br/>If you complete the work before<br/>the deadline, I'll pay you."));
 		else
 			msg = L("Would you like to see today's work agenda?");
 

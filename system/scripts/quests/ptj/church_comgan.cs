@@ -2,11 +2,6 @@
 // Comgan's Monster-Hunting Part-Time Job
 //--- Description -----------------------------------------------------------
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
-//--- Notes -----------------------------------------------------------------
-// The following dialogue is missing:
-// * first time worker PTJ inquiry
-// * first time accepting PTJ offer
-// * first time declining PTJ offer
 //---------------------------------------------------------------------------
 
 public class ComganPtjScript : GeneralScript
@@ -173,7 +168,7 @@ public class ComganPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			npc.Msg(L("As you can see, I am in need of financial assistance,<br/>not in a position to help financially.<br/>But if you help with the tasks, I can at least give you some holy water."));
+			msg = L("As you can see, I am in need of financial assistance,<br/>not in a position to help financially.<br/>But if you help with the tasks, I can at least give you some holy water.");
 		else
 			msg = L("Do you need holy water again today?");
 
@@ -194,7 +189,7 @@ public class ComganPtjScript : GeneralScript
 		else
 		{
 			if (npc.GetPtjDoneCount(JobType) == 0)
-				npc.Msg(L("Don't like the given work, do you?<br/>"));
+				npc.Msg(L("Don't like the given work, do you?"));
 			else
 				npc.Msg(L("I am sorry, but if you won't help with the tasks,<br/>I cannot really help you, either."));
 		}
