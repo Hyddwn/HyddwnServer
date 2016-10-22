@@ -48,7 +48,7 @@ public class SionPtjScript : GeneralScript
 
 			npc.Player.Inventory.Remove(64002, itemCount);
 			npc.Notice(L("You have given Iron Ore to Sion."));
-			npc.Msg(LN("(Gave Sion {0} Iron Ore)", "(Gave Sion {0} Iron Ore)", itemCount));
+			npc.Msg(string.Format(LN("(Gave Sion {0} Iron Ore)", "(Gave Sion {0} Iron Ore)", itemCount), itemCount));
 		}
 
 		// Call PTJ method after intro if it's time to report
@@ -224,10 +224,10 @@ public abstract class SionMinePtjBaseScript : QuestScript
 	{
 		SetId(QuestId);
 		SetName(L("Iron Ore-Mining Part-time Job"));
-		SetDescription(LN(
+		SetDescription(string.Format(LN(
 			"This task involves going into the mines to mine out Iron Ore. Today, the task is mining out [{0} Iron Ore]. Mining out the ore will require a Pickaxe, so make sure to bring that before heading over to the mines.",
 			"This task involves going into the mines to mine out Iron Ore. Today, the task is mining out [{0} Iron Ore]. Mining out the ore will require a Pickaxe, so make sure to bring that before heading over to the mines.",
-			ItemCount
+			ItemCount), ItemCount
 			));
 
 		if (IsEnabled("QuestViewRenewal"))
@@ -238,8 +238,8 @@ public abstract class SionMinePtjBaseScript : QuestScript
 		SetLevel(QuestLevel);
 		SetHours(start: 10, report: 15, deadline: 23);
 
-		AddObjective("ptj1", LN("Mine {0} Iron Ore", "Mine {0} Iron Ore", ItemCount), 0, 0, 0, Gather(64002, ItemCount));
-		AddObjective("ptj2", LN("Deliver {0} Iron Ore to Sion", "Deliver {0} Iron Ore to Sion", ItemCount), 0, 0, 0, Deliver(64002, "_sion"));
+		AddObjective("ptj1", string.Format(LN("Mine {0} Iron Ore", "Mine {0} Iron Ore", ItemCount), ItemCount), 0, 0, 0, Gather(64002, ItemCount));
+		AddObjective("ptj2", string.Format(LN("Deliver {0} Iron Ore to Sion", "Deliver {0} Iron Ore to Sion", ItemCount), ItemCount), 0, 0, 0, Deliver(64002, "_sion"));
 
 		// Sion's AfterIntro is handled above, as we have to deliver the ore to him
 		// before he asks us about the PTJ.
