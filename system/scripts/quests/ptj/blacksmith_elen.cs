@@ -172,7 +172,7 @@ public class ElenPtjScript : GeneralScript
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
-			msg = L("Are you interested in some part-time work at the Bangor Blacksmith's Shop?<br/>If you complete the work before<br/>the deadline, I'll pay you."));
+			msg = L("Are you interested in some part-time work at the Bangor Blacksmith's Shop?<br/>If you complete the work before<br/>the deadline, I'll pay you.");
 		else
 			msg = L("Would you like to see today's work agenda?");
 
