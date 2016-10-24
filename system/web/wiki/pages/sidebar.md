@@ -5,7 +5,7 @@
 * [Help](?Help)
 * 
     * Quests
-    * [Beginner](?Beginner_Quests)
+    * [Beginner](?Beginner_Quests_(Uladh))
     * [Generation 1](?Generation_1)
 
 </div>
