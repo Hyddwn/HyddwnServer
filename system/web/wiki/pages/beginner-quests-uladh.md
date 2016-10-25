@@ -119,6 +119,106 @@ Caution against Fire
 
 - A Campfire Memory
 
+Malcolm's Ring
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete "Save my Sheep".
+
+### Objectives
+
+1. Talk with Malcolm at the Tir Chonaill General Shop.
+2. Defeat the Giant Spider in Alby Dungeon and get the Ring.
+3. Give the Ring to Malcolm.
+
+### Rewards
+
+- 1500 EXP
+- 1700 Gold
+- 3 AP
+- Gold Pouch
+
+Duncan's Praise
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete "Malcolm's Ring".
+
+### Objectives
+
+1. Talk with Chief Duncan.
+2. A Talk with Trefor/Deian/Malcolm/Nora.
+
+### Rewards
+
+- 300 EXP
+- 1200 Gold
+- "is a friend of ..." title
+
+### Additional Information
+
+Duncan randomly selects one of four NPCs you will befriend, which gives
+you one of four friend titles. You can't get the others.
+
+Playing Instruments
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Finish the quest "Malcolm's Ring".
+
+### Objectives
+
+1. Talk with Endelyon at the Church.
+
+### Rewards
+
+- 900 EXP
+- Lute
+
+Duncan's Call
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Reach level 26.
+
+### Objectives
+
+1. Talk with Chief Duncan
+
+### Rewards
+
+- 500 EXP
+- 1400 Gold
+
+### Additional Information
+
+You lose Eiry and get a Fluted Short Sword instead.
+
+Let's gather Green Gem
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Reach level 6.
+
+### Objectives
+
+1. Deliver 1 Small Green Gem to Bebhinn.
+
+### Rewards
+
+- 500 EXP
+- Guide Book for Quests Vol. 2
+
+### Additional Information
+
+Small Green Gem can be obtained from a variety of low level enemies around
+town, or by hitting props, like lamp posts.
+
 ------------------------------------------------------------------------------
 
 <span class="license-footer">Based on [MWW](http://wiki.mabinogiworld.com/index.php?title=Beginner_Quests_(Human_Uladh)&oldid=14665), available under [Attribution-Noncommercial-Share Alike 3.0 Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/).</span>
