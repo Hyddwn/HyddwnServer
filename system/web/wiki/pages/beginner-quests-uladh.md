@@ -219,6 +219,111 @@ Let's gather Green Gem
 Small Green Gem can be obtained from a variety of low level enemies around
 town, or by hitting props, like lamp posts.
 
+Let's Learn the Resting Skill
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Rescue Resident".
+
+### Objectives
+
+1. Acquire Resting Skill Rank F
+
+### Rewards
+
+- 700 EXP
+- Guide Book for Skill
+- Rest
+
+### Additional Information
+
+You will only get this quest if you don't have Rest yet.
+
+Gathering Berries
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Let's gather Green Gem".
+
+### Objectives
+
+1. Talk with Dilys.
+2. Deliver a Berry to Dilys.
+
+### Rewards
+
+- 800 EXP
+- Stamina 30 Potion x 5
+
+Sheep-shearing
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Gathering Berries".
+
+### Objectives
+
+1. Talk with Deian.
+2. Deliver 5 bundles of wool to Deian.
+
+### Rewards
+
+- 1500 EXP
+- 300 Gold
+- Wings of the Goddess x 1
+
+Gather Cobweb
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Sheep-shearing".
+
+### Objectives
+
+1. Convey 5 pieces of Cobweb to Malcolm.
+
+### Rewards
+
+- 1500 EXP
+- 550 Gold
+- Guide Book for Tailoring
+
+Repairing an Item
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Gather Cobweb".
+
+### Objectives
+
+1. Request a repair to Ferghus.
+
+### Rewards
+
+- 2000 EXP
+- Guide Book for Repair
+
+Do you know Production Mastery skill?
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Duncan's Praise".
+
+### Objectives
+
+1. Talk with Alissa.
+
+### Rewards
+
+- 50 EXP
+- Production Mastery skill
+
 ------------------------------------------------------------------------------
 
 <span class="license-footer">Based on [MWW](http://wiki.mabinogiworld.com/index.php?title=Beginner_Quests_(Human_Uladh)&oldid=14665), available under [Attribution-Noncommercial-Share Alike 3.0 Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/).</span>
