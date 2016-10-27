@@ -324,6 +324,91 @@ Do you know Production Mastery skill?
 - 50 EXP
 - Production Mastery skill
 
+Logging Camp at Dugald Aisle
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Repairing an Item".
+
+### Objectives
+
+1. Talk with Tracy.
+2. Deliver 6 Pieces of Firewood to Tracy.
+
+### Rewards
+
+- 3500 EXP
+- 500 Gold
+- Part-Time Jobs, Moon Gate Guidebook
+- Gathering Axe
+- Hunting quest "Collect the Brown Fox's Fomor Scrolls"
+
+Talk with Steward
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Loggin Camp at Dugald Aisle".
+
+### Objectives
+
+1. Talk with Stewart.
+
+### Rewards
+
+- 4000 EXP
+- MP 30 Potion x 5
+
+Gather Eggs
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Talk with Steward".
+
+### Objectives
+
+1. Deliver 5 eggs to Glenis.
+
+### Rewards
+
+- 4000 Experience Points
+- Stamina 50 Potion x 5
+
+Harvest Potato
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Gather Eggs".
+
+### Objectives
+
+1. Deliver 5 Potatoes to Kristell in Dunbarton Church.
+
+### Rewards
+
+- 4000 EXP
+- Guide Book for Blessing
+- Holy Water of Lymilark x 2
+
+Talk with Eavan
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Harvest Potato".
+
+### Objectives
+
+1. Talk with Eavan.
+
+### Rewards
+
+- 4000 EXP
+- HP 50 Potion x 10
+
 ------------------------------------------------------------------------------
 
 <span class="license-footer">Based on [MWW](http://wiki.mabinogiworld.com/index.php?title=Beginner_Quests_(Human_Uladh)&oldid=14665), available under [Attribution-Noncommercial-Share Alike 3.0 Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/).</span>
