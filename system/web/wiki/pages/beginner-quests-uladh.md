@@ -3,7 +3,8 @@ Beginner Quests (Uladh)
 
 The beginner quests are a collection of quests that players get when they
 start a new character. They provide some useful rewards, like certain basic
-skills, experience points (EXP), ability points (AP), and money (gold).
+skills, experience points (EXP), ability points (AP), and money (gold),
+and guide the player through Uladh.
 
 Nao's Letter of Introduction
 -----------------------------------------------------------------------------
