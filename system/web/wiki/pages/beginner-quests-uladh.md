@@ -409,6 +409,103 @@ Talk with Eavan
 - 4000 EXP
 - HP 50 Potion x 10
 
+Visiting Bangor
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Talk with Eavan".
+
+### Objectives
+
+1. Talk with Comgan of Bangor.
+
+### Rewards
+
+- 10000 Experience Points
+- Guide Book for Item Upgrade
+
+Mine Lumps of Iron Ore
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete the quest "Visiting Bangor".
+
+### Objectives
+
+1. Deliver 10 Lumps of Iron Ore to Elen.
+
+### Rewards
+
+- 8000 EXP
+- 1150 Gold
+- Blacksmith Hammer
+
+Reach Level 20
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Reach level 15.
+
+### Objectives
+
+1. Reach Level 20.
+2. Talk to Ranald.
+
+### Rewards
+
+- 5,000 EXP
+
+Reach Level 30
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Reach level 25.
+
+### Objectives
+
+1. Reach Level 30.
+2. Talk to Aranwen from the Dunbarton School.
+
+### Rewards
+
+- 10,000 EXP
+
+Reach Level 40
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Reach level 55.
+
+### Objectives
+
+1. Reach Level 40.
+2. Talk to Duncan.
+
+### Rewards
+
+- 15,000 EXP
+
+Adulthood Ceremony
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Reach age 20.
+
+### Objectives
+
+1. Talk with Chief Duncan.
+
+### Rewards
+
+- 200 EXP
+- Bouquet
+
 ------------------------------------------------------------------------------
 
 <span class="license-footer">Based on [MWW](http://wiki.mabinogiworld.com/index.php?title=Beginner_Quests_(Human_Uladh)&oldid=14665), available under [Attribution-Noncommercial-Share Alike 3.0 Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/).</span>
