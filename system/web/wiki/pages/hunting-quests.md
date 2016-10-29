@@ -11,10 +11,6 @@ Hunt 5 White Spiders
 
 - Reach level 12.
 
-### Objectives
-
-1. Hunt 5 White Spiders.
-
 ### Rewards
 
 - 330 EXP
@@ -26,10 +22,6 @@ Hunt 5 Gray Foxes
 ### How to get
 
 - Reach level 13 or complete "Hunt 5 White Spiders".
-
-### Objectives
-
-1. Hunt 5 Gray Foxes.
 
 ### Rewards
 
@@ -43,10 +35,6 @@ Hunt 5 Gray Wolves
 
 - Reach level 14 or complete "Hunt 5 Gray Foxes".
 
-### Objectives
-
-1. Hunt 5 Gray Wolves.
-
 ### Rewards
 
 - 570 EXP
@@ -58,10 +46,6 @@ Hunt 5 Black Wolves
 ### How to get
 
 - Reach level 15 or complete "Hunt 5 Gray Wolves".
-
-### Objectives
-
-1. Hunt 5 Black Wolves.
 
 ### Rewards
 
@@ -75,10 +59,6 @@ Hunt 5 White Wolves
 
 - Reach level 16 or complete "Hunt 5 Black Wolves".
 
-### Objectives
-
-1. Hunt 5 White Wolves.
-
 ### Rewards
 
 - 920 EXP
@@ -90,10 +70,6 @@ Hunt 5 Brown Dire Wolves
 ### How to get
 
 - Reach level 17 or Complete "Hunt 5 White Wolves".
-
-### Objectives
-
-1. Hunt 5 Brown Dire Wolves.
 
 ### Rewards
 
@@ -107,10 +83,6 @@ Hunt 5 Black Dire Wolves
 
 - Reach level 19 or complete "Hunt 5 Brown Dire Wolves".
 
-### Objectives
-
-1. Hunt 5 Black Dire Wolves.
-
 ### Rewards
 
 - 1670 EXP
@@ -122,10 +94,6 @@ Hunt 5 White Dire Wolves
 ### How to get
 
 - Reach level 20 or complete "Hunt 5 Black Dire Wolves".
-
-### Objectives
-
-1. Hunt 5 White Dire Wolves.
 
 ### Rewards
 
@@ -139,10 +107,6 @@ Hunt 1 Brown Bear
 
 - Reach level 25 or complete "Hunt 5 White Dire Wolves".
 
-### Objectives
-
-1. Hunt 1 Brown Bear.
-
 ### Rewards
 
 - 3200 EXP
@@ -154,10 +118,6 @@ Defeat 1 Wisp
 ### How to get
 
 - Reach level 27 or complete "Hunt 1 Brown Bear".
-
-### Objectives
-
-1. Defeat 1 Wisp.
 
 ### Rewards
 
@@ -171,10 +131,6 @@ Hunt 5 Kobold Bandits
 
 - Complete "Defeat 1 Wisp".
 
-### Objectives
-
-1. Hunt 5 Kobold Bandits.
-
 ### Rewards
 
 - 4000 EXP
@@ -186,10 +142,6 @@ Hunt 5 Skeleton Wolves
 ### How to get
 
 - Complete "Hunt 5 Kobold Bandits".
-
-### Objectives
-
-1. Hunt 5 Skeleton Wolves.
 
 ### Rewards
 
@@ -203,10 +155,6 @@ Hunt 5 Skeletons
 
 - Complete "Hunt 5 Skeleton Wolves".
 
-### Objectives
-
-1. Hunt 5 Skeletons.
-
 ### Rewards
 
 - 4500 EXP
@@ -218,10 +166,6 @@ Hunt 1 Brown Grizzly Cub
 ### How to get
 
 - Complete "Hunt 5 Skeletons".
-
-### Objectives
-
-1. Hunt 1 Brown Grizzly Cub.
 
 ### Rewards
 
@@ -235,10 +179,6 @@ Hunt 1 Red Grizzly Cub
 
 - Complete "Hunt 1 Brown Grizzly Cub".
 
-### Objectives
-
-1. Hunt 1 Red Grizzly Cub.
-
 ### Rewards
 
 - 6600 EXP
@@ -250,10 +190,6 @@ Hunt 1 Red Bear
 ### How to get
 
 - Complete "Hunt 1 Red Grizzly Cub".
-
-### Objectives
-
-1. Hunt 1 Red Bear.
 
 ### Rewards
 
@@ -267,10 +203,6 @@ Hunt 1 Brown Grizzly Bear
 
 - Complete "Hunt 1 Red Bear".
 
-### Objectives
-
-1. Hunt 1 Brown Grizzly Bear.
-
 ### Rewards
 
 - 9000 EXP
@@ -282,10 +214,6 @@ Hunt 1 Black Grizzly Bear
 ### How to get
 
 - Complete "Hunt 1 Brown Grizzly Bear".
-
-### Objectives
-
-1. Hunt 1 Black Grizzly Bear.
 
 ### Rewards
 
@@ -299,10 +227,6 @@ Hunt 1 Troll
 
 - Reach level 50 or complete "Hunt 1 Black Grizzly Bear".
 
-### Objectives
-
-1. Hunt 1 Troll.
-
 ### Rewards
 
 - 12000 EXP
@@ -314,10 +238,6 @@ Hunt 1 Ogre
 ### How to get
 
 - Reach level 60 or complete "Hunt 1 Troll".
-
-### Objectives
-
-1. Hunt 1 Ogre.
 
 ### Rewards
 
