@@ -38,7 +38,7 @@ Rescue Resident
 ### Rewards
 
 - 300 EXP
-- 1800 Gold
+- 1,800 Gold
 - 3 AP
 - Smash skill
 
@@ -76,7 +76,7 @@ Save my Sheep
 ### Rewards
 
 - 900 EXP
-- 2600 Gold
+- 2,600 Gold
 - 3 AP
 
 ### Additional Information
@@ -102,7 +102,7 @@ Campfire
 
 ### Rewards
 
-- 1300 EXP
+- 1,300 EXP
 - Campefire skill
 
 Caution against Fire
@@ -135,8 +135,8 @@ Malcolm's Ring
 
 ### Rewards
 
-- 1500 EXP
-- 1700 Gold
+- 1,500 EXP
+- 1,700 Gold
 - 3 AP
 - Gold Pouch
 
@@ -155,7 +155,7 @@ Duncan's Praise
 ### Rewards
 
 - 300 EXP
-- 1200 Gold
+- 1,200 Gold
 - "is a friend of ..." title
 
 ### Additional Information
@@ -193,7 +193,7 @@ Duncan's Call
 ### Rewards
 
 - 500 EXP
-- 1400 Gold
+- 1,400 Gold
 
 ### Additional Information
 
@@ -272,7 +272,7 @@ Sheep-shearing
 
 ### Rewards
 
-- 1500 EXP
+- 1,500 EXP
 - 300 Gold
 - Wings of the Goddess x 1
 
@@ -289,7 +289,7 @@ Gather Cobweb
 
 ### Rewards
 
-- 1500 EXP
+- 1,500 EXP
 - 550 Gold
 - Guide Book for Tailoring
 
@@ -306,7 +306,7 @@ Repairing an Item
 
 ### Rewards
 
-- 2000 EXP
+- 2,000 EXP
 - Guide Book for Repair
 
 Do you know Production Mastery skill?
@@ -339,7 +339,7 @@ Logging Camp at Dugald Aisle
 
 ### Rewards
 
-- 3500 EXP
+- 3,500 EXP
 - 500 Gold
 - Part-Time Jobs, Moon Gate Guidebook
 - Gathering Axe
@@ -358,7 +358,7 @@ Talk with Steward
 
 ### Rewards
 
-- 4000 EXP
+- 4,000 EXP
 - MP 30 Potion x 5
 
 Gather Eggs
@@ -374,7 +374,7 @@ Gather Eggs
 
 ### Rewards
 
-- 4000 Experience Points
+- 4,000 Experience Points
 - Stamina 50 Potion x 5
 
 Harvest Potato
@@ -390,7 +390,7 @@ Harvest Potato
 
 ### Rewards
 
-- 4000 EXP
+- 4,000 EXP
 - Guide Book for Blessing
 - Holy Water of Lymilark x 2
 
@@ -407,7 +407,7 @@ Talk with Eavan
 
 ### Rewards
 
-- 4000 EXP
+- 4,000 EXP
 - HP 50 Potion x 10
 
 Visiting Bangor
@@ -423,7 +423,7 @@ Visiting Bangor
 
 ### Rewards
 
-- 10000 Experience Points
+- 10,000 Experience Points
 - Guide Book for Item Upgrade
 
 Mine Lumps of Iron Ore
@@ -439,8 +439,8 @@ Mine Lumps of Iron Ore
 
 ### Rewards
 
-- 8000 EXP
-- 1150 Gold
+- 8,000 EXP
+- 1,150 Gold
 - Blacksmith Hammer
 
 Reach Level 20
@@ -508,5 +508,8 @@ Adulthood Ceremony
 - Bouquet
 
 ------------------------------------------------------------------------------
+
+See [Hunting Quests](?Hunting_Quests) for more quests geared towards
+beginners.
 
 <span class="license-footer">Based on [MWW](http://wiki.mabinogiworld.com/index.php?title=Beginner_Quests_(Human_Uladh)&oldid=14665), available under [Attribution-Noncommercial-Share Alike 3.0 Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/).</span>

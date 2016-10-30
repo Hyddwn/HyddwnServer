@@ -2,7 +2,7 @@ Hunting Quests
 =============================================================================
 
 Considered to be part of the [Beginner Quests](?Beginner_Quests_(Uladh)),
-the Hunting Quests task you with killing certain enemies throughout Uladh.
+the Hunting Quests task you with killing certain monsters throughout Uladh.
 
 Hunt 5 White Spiders
 -----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ Hunt 5 Brown Dire Wolves
 
 ### Rewards
 
-- 1380 EXP
+- 1,380 EXP
 - Long Bow
 
 Hunt 5 Black Dire Wolves
@@ -85,7 +85,7 @@ Hunt 5 Black Dire Wolves
 
 ### Rewards
 
-- 1670 EXP
+- 1,670 EXP
 - Bandage x 10
 
 Hunt 5 White Dire Wolves
@@ -97,7 +97,7 @@ Hunt 5 White Dire Wolves
 
 ### Rewards
 
-- 1670 EXP
+- 1,670 EXP
 - Bandage x 10
 
 Hunt 1 Brown Bear
@@ -109,7 +109,7 @@ Hunt 1 Brown Bear
 
 ### Rewards
 
-- 3200 EXP
+- 3,200 EXP
 - Fine Leather x 1
 
 Defeat 1 Wisp
@@ -121,8 +121,8 @@ Defeat 1 Wisp
 
 ### Rewards
 
-- 3700 EXP
-- Guardian Gloves x 1
+- 3,700 EXP
+- Guardian Gloves
 
 Hunt 5 Kobold Bandits
 -----------------------------------------------------------------------------
@@ -133,7 +133,7 @@ Hunt 5 Kobold Bandits
 
 ### Rewards
 
-- 4000 EXP
+- 4,000 EXP
 - MP 30 Potion x 3
 
 Hunt 5 Skeleton Wolves
@@ -145,8 +145,8 @@ Hunt 5 Skeleton Wolves
 
 ### Rewards
 
-- 4200 EXP
-- Tricolor Robe x 1
+- 4,200 EXP
+- Tricolor Robe
 
 Hunt 5 Skeletons
 -----------------------------------------------------------------------------
@@ -157,7 +157,7 @@ Hunt 5 Skeletons
 
 ### Rewards
 
-- 4500 EXP
+- 4,500 EXP
 - Potion Concoction Kit
 
 Hunt 1 Brown Grizzly Cub
@@ -169,7 +169,7 @@ Hunt 1 Brown Grizzly Cub
 
 ### Rewards
 
-- 6000 EXP
+- 6,000 EXP
 - HP 50 Potion x 3
 
 Hunt 1 Red Grizzly Cub
@@ -181,7 +181,7 @@ Hunt 1 Red Grizzly Cub
 
 ### Rewards
 
-- 6600 EXP
+- 6,600 EXP
 - Stamina 50 Potion x 3
 
 Hunt 1 Red Bear
@@ -193,7 +193,7 @@ Hunt 1 Red Bear
 
 ### Rewards
 
-- 8000 EXP
+- 8,000 EXP
 - Finest Leather x 1
 
 Hunt 1 Brown Grizzly Bear
@@ -205,7 +205,7 @@ Hunt 1 Brown Grizzly Bear
 
 ### Rewards
 
-- 9000 EXP
+- 9,000 EXP
 - MP 50 Potion x 3
 
 Hunt 1 Black Grizzly Bear
@@ -217,8 +217,8 @@ Hunt 1 Black Grizzly Bear
 
 ### Rewards
 
-- 10000 EXP
-- Hunter Boots x 1
+- 10,000 EXP
+- Hunter Boots
 
 Hunt 1 Troll
 -----------------------------------------------------------------------------
@@ -229,7 +229,7 @@ Hunt 1 Troll
 
 ### Rewards
 
-- 12000 EXP
+- 12,000 EXP
 - 7000 Gold
 
 Hunt 1 Ogre
@@ -241,8 +241,8 @@ Hunt 1 Ogre
 
 ### Rewards
 
-- 15000 EXP
-- Cooking Pot x 1
+- 15,000 EXP
+- Cooking Pot
 
 Hunt 1 Giant Spider
 -----------------------------------------------------------------------------
@@ -253,8 +253,8 @@ Hunt 1 Giant Spider
 
 ### Rewards
 
-- 4000 EXP
-- Swordsman Shoes x 1
+- 4,000 EXP
+- Swordsman Shoes
 
 Hunt 1 Small Golem
 -----------------------------------------------------------------------------
@@ -265,8 +265,8 @@ Hunt 1 Small Golem
 
 ### Rewards
 
-- 10000 EXP
-- Swordswoman Gloves x 1
+- 10,000 EXP
+- Swordswoman Gloves
 
 Hunt 1 Hellhound
 -----------------------------------------------------------------------------
@@ -277,8 +277,8 @@ Hunt 1 Hellhound
 
 ### Rewards
 
-- 20000 EXP
-- Bastard Sword x 1
+- 20,000 EXP
+- Bastard Sword
 
 Hunt 1 Black Succubus
 -----------------------------------------------------------------------------
@@ -289,8 +289,8 @@ Hunt 1 Black Succubus
 
 ### Rewards
 
-- 30000 EXP
-- Wing Half Helm 1
+- 30,000 EXP
+- Wing Half Helm
 
 Hunt 1 Golem
 -----------------------------------------------------------------------------
@@ -301,8 +301,8 @@ Hunt 1 Golem
 
 ### Rewards
 
-- 40000 EXP Points
-- Round Shield x 1
+- 40,000 EXP Points
+- Round Shield
 
 Hunt 1 Ogre Warrior
 -----------------------------------------------------------------------------
@@ -313,8 +313,8 @@ Hunt 1 Ogre Warrior
 
 ### Rewards
 
-- 50000 EXP Points
-- Two-handed Sword x 1
+- 50,000 EXP Points
+- Two-handed Sword
 - Holy Water of Lymilark x 8
 
 ------------------------------------------------------------------------------
