@@ -244,6 +244,79 @@ Hunt 1 Ogre
 - 15000 EXP
 - Cooking Pot x 1
 
+Hunt 1 Giant Spider
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Reach level 21.
+
+### Rewards
+
+- 4000 EXP
+- Swordsman Shoes x 1
+
+Hunt 1 Small Golem
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete "Hunt 1 Giant Spider".
+
+### Rewards
+
+- 10000 EXP
+- Swordswoman Gloves x 1
+
+Hunt 1 Hellhound
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete "Hunt 1 Small Golem".
+
+### Rewards
+
+- 20000 EXP
+- Bastard Sword x 1
+
+Hunt 1 Black Succubus
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete "Hellhound".
+
+### Rewards
+
+- 30000 EXP
+- Wing Half Helm 1
+
+Hunt 1 Golem
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete "Black Succubus".
+
+### Rewards
+
+- 40000 EXP Points
+- Round Shield x 1
+
+Hunt 1 Ogre Warrior
+-----------------------------------------------------------------------------
+
+### How to get
+
+- Complete "Golem".
+
+### Rewards
+
+- 50000 EXP Points
+- Two-handed Sword x 1
+- Holy Water of Lymilark x 8
+
 ------------------------------------------------------------------------------
 
 <span class="license-footer">Based on [MWW](http://wiki.mabinogiworld.com/index.php?title=Beginner_Quests_(Human_Uladh)&oldid=14665), available under [Attribution-Noncommercial-Share Alike 3.0 Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/).</span>
