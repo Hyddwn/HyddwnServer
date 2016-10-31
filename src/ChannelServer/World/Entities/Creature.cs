@@ -41,6 +41,8 @@ namespace Aura.Channel.World.Entities
 
 		public const int MaxElementalAffinity = 9;
 
+		public const float ZombieSpeed = 28.6525f;
+
 		private byte _inquiryId;
 		private Dictionary<byte, Action<Creature>> _inquiryCallbacks;
 
@@ -1363,6 +1365,12 @@ namespace Aura.Channel.World.Entities
 			// RaceSpeedFactor
 			if (!this.IsWalking)
 				speed *= this.RaceData.RunSpeedFactor;
+
+			// The Zombie condition reduces speed to that of a Zombie.
+			// We could query it from the speed db, but hardcoding is
+			// more efficient, and it shouldn't be changing anyway.
+			if (this.Conditions.Has(ConditionsC.Zombie))
+				speed = ZombieSpeed;
 
 			// Hurry condition
 			var hurry = this.Conditions.GetExtraVal(169);
