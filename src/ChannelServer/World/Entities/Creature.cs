@@ -3318,8 +3318,10 @@ namespace Aura.Channel.World.Entities
 			if (item.OwnerId == 0 || item.ProtectionLimit == null || item.ProtectionLimit < DateTime.Now)
 				return true;
 
-			// Return whether creature is the owner
-			return (item.OwnerId == this.EntityId);
+			// Return whether the item's owner is controlled by the
+			// creature's client, this way masters can pick up their
+			// follower's (e.g. pet's) items.
+			return this.Client.Creatures.ContainsKey(item.OwnerId);
 		}
 
 		/// <summary>
