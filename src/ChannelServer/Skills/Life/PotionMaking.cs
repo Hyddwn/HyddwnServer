@@ -177,7 +177,7 @@ namespace Aura.Channel.Skills.Life
 				return;
 			}
 
-			if (skill.Info.Rank >= SkillRank.R4 && skill.Info.Rank <= SkillRank.R5)
+			if (skill.Info.Rank >= SkillRank.R5 && skill.Info.Rank <= SkillRank.R4)
 			{
 				if (data.ItemData.HasTag("/potion/wound/"))
 					skill.Train(1); // Successful in concocting a Wound Remedy Potion.
