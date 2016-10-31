@@ -20,6 +20,7 @@ public class TarlachScript : NpcScript
 			SetLocation(48, 11100, 30400, 167);
 		else
 			SetLocation(22, 5800, 7100, 167);
+		SetGiftWeights(beauty: 2, individuality: 2, luxury: 0, toughness: -1, utility: 2, rarity: 2, meaning: 2, adult: 0, maniac: 1, anime: 2, sexy: 0);
 
 		EquipItem(Pocket.Face, 4901, 0x00724645, 0x0055695D, 0x0000A0DD);
 		EquipItem(Pocket.Hair, 4021, 0x10000023, 0x10000023, 0x10000023);
@@ -37,7 +38,9 @@ public class TarlachScript : NpcScript
 		AddPhrase("I guess not yet...");
 		AddPhrase("...It's definitely cold at night...");
 		AddPhrase("Ah...");
+		AddPhrase("Hmm...");
 		AddPhrase("...I can take it...");
+		AddPhrase("...Ah...");
 	}
 
 	[On("ErinnDaytimeTick")]
@@ -53,11 +56,7 @@ public class TarlachScript : NpcScript
 	{
 		SetBgm("NPC_Tarlach.mp3");
 
-		await Intro(
-			"A man wearing a light brown robe silently glares this way.",
-			"He has wavy blonde hair and white skin with a well defined chin that gives off a gentle impression.",
-			"Behind his thick glasses, however, are his cold emerald eyes filled with silent gloom."
-		);
+		await Intro(L("A man wearing a light brown robe silently glares this way.<br/>He has wavy blonde hair and white skin with a well defined chin that gives off a gentle impression.<br/>Behind his thick glasses, however, are his cold emerald eyes filled with silent gloom."));
 
 		Msg("...Mmm...", Button("Start a Conversation", "@talk"));
 
@@ -66,6 +65,14 @@ public class TarlachScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
+
+				if (Title == 11001)
+				{
+					Msg("...You successfully rescued the Goddess from Cichol...");
+					Msg("Even though the Goddess is guarding the passage to that world<br/>and couldn't make her descent to this world...");
+					Msg("...I think you are a true hero nonetheless.<br/>Although nothing has changed<br/>I have a newfound faith...");
+					Msg("Faith that the Goddess is protecting us...<br/>and that one day Tir Na Nog will come here in this place...");
+				}
 				if (Title == 11002)
 				{
 					Msg("...You've accomplished what<br/>Mari, Ruairi and myself could not do....<br/>...Thank you.");
@@ -74,6 +81,7 @@ public class TarlachScript : NpcScript
 					Msg("...Please. <username/>...<br/>If you hear anything about Ruairi...");
 					Msg("...Please let me know...");
 				}
+
 				await Conversation();
 				break;
 		}
@@ -89,19 +97,19 @@ public class TarlachScript : NpcScript
 		}
 		else if (Memory == 1)
 		{
-			Msg(FavorExpression(), L("...It seems like you want to ask me something...<br/>Don't be shy about it...just ask me.<br/>(Cough)..."));
+			Msg(FavorExpression(), L("(Cough, Cough)... I've seen you before.<br/>What brings you here today...?"));
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("...You came, <username/>...mmm...<br/>I was just thinking it was about time for you to show up."));
+			Msg(FavorExpression(), L("...It seems like you want to ask me something...<br/>Don't be shy about it...just ask me.<br/>(Cough)..."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("...You came, <username/>...mmm...<br/>I was just thinking it was about time for you to show up."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("...You come here pretty often, <username/>.<br/>It's not good to stay here too long though."));
 		}
 
 		UpdateRelationAfterGreet();
@@ -113,13 +121,13 @@ public class TarlachScript : NpcScript
 		{
 			case "personal_info":
 				Msg(FavorExpression(), "...Don't try to find out too much about me.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "This is Sidhe Sneachta...<br/>a land that is blocked away from the rest of the world.");
 				Msg("...I'm surprised that you got through to here.");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "shop_misc":
@@ -168,6 +176,7 @@ public class TarlachScript : NpcScript
 			case "skill_magnum_shot":
 			case "skill_counter_attack":
 			case "skill_smash":
+			case "bow":
 				Msg("...");
 				Msg("...Sorry...<br/>You just reminded me of someone I know...");
 				break;
@@ -247,24 +256,44 @@ public class TarlachScript : NpcScript
 				Msg("...The nearest Graveyard from here is in Tir Chonaill.<br/>You should go there and ask.");
 				break;
 
-			case "bow":
-				Msg("...");
-				Msg("...Sorry... You just reminded me of someone I know...");
-				break;
-
 			case "tir_na_nog":
-				Msg("...That name is special to me...<br/>But I don't want to think about it...");
-				Msg("...It's hard enough trying to shake off the memories of each day...");
+				if (HasKeyword("g3_complete"))
+				{
+					Msg("...I didn't know Erinn was Tir Na Nog...");
+					Msg("So... when Goddess Morrighan said...<br/>Tir Na Nog might be destroyed...<br/>She was really talking about Erinn.");
+					Msg("She did not lie...<br/>But she didn't tell the truth either.<br/>How are we to interpret this...");
+				}
+				else
+				{
+					Msg("...That name is special to me...<br/>But I don't want to think about it...");
+					Msg("...It's hard enough trying to shake off the memories of each day...");
+				}
 				break;
 
 			case "mabinogi":
-				Msg("True Mabinogi is passed down through word of mouth by the Druids. ");
+				Msg("...True Mabinogi is<br/>passed down through word of mouth by the Druids.");
 				break;
 
 			case "musicsheet":
 				Msg("...Are you interested in music?<br/>It would be nice to have Music Scores but, a true Druid doesn't need a score to play.");
 				Msg("...He plays everything from memory...<br/>the flow of the song, rhythm, and even the meaning of the song...");
 				break;
+
+			/*case "ego_weapon":
+				// If player has an ego...
+				Msg("I see you have a Spirit Weapon.<br/>Are you going to cancel the contract with the Spirit?<br/><button title='Cancel' keyword='@yes'/><button title='Do Not Cancel' keyword='@no'/>");
+
+				// @no
+				Msg("I hope the best for you and your Spirit...");
+				break;*/
+
+			/*case "ego_weapon_move":
+				// If player has an ego...
+				Msg("Did you come to try the Spirit Transter Magic?<button title='Yes' keyword='@yes' /><button title='No' keyword='@no' />");
+
+				// @no
+				Msg("I understand.<br/>I'll be seeing you later, then.");
+				break;*/
 
 			case "nao_friend":
 				if (HasKeyword("g3_complete"))
@@ -290,14 +319,14 @@ public class TarlachScript : NpcScript
 
 			default:
 				RndFavorMsg(
-					"...It'd be nice if I'd had the chance to find out more about it, but...<br/>It doesn't seem like that's going to happen anytime soon...",
 					"...Have you asked anyone else?",
-					"...Honestly, I don't know much about that.",
 					"Hmm...I'm not sure. I really don't know.",
+					"...Honestly, I don't know much about that.",
 					"...Is that right?  But, that's something I can't really comment on.",
-					"...It's outside of my interests, so I don't really have an answer for you."
+					"...It's outside of my interests, so I don't really have an answer for you.",
+					"...It'd be nice if I'd had the chance to find out more about it, but...<br/>It doesn't seem like that's going to happen anytime soon..."
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
