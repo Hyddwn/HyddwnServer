@@ -116,8 +116,6 @@ namespace Aura.Channel.Skills.Combat
 			if (_cm == null)
 				_cm = ChannelServer.Instance.SkillManager.GetHandler<CombatMastery>(SkillId.CombatMastery);
 
-			// TODO: Check duration
-
 			var attackResult = false;
 
 			var target = creature.Region.GetCreature(targetEntityId);
