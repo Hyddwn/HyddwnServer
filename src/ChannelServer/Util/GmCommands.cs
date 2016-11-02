@@ -1137,7 +1137,7 @@ namespace Aura.Channel.Util
 
 		private CommandResult HandleCondition(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
 		{
-			var conditions = new ulong[6];
+			var conditions = new ulong[7];
 
 			// Read arguments
 			for (int i = 1; i < args.Count; ++i)
@@ -1156,6 +1156,7 @@ namespace Aura.Channel.Util
 			target.Conditions.Deactivate(ConditionsD.All); target.Conditions.Activate((ConditionsD)conditions[3]);
 			target.Conditions.Deactivate(ConditionsE.All); target.Conditions.Activate((ConditionsE)conditions[4]);
 			target.Conditions.Deactivate(ConditionsF.All); target.Conditions.Activate((ConditionsF)conditions[5]);
+			target.Conditions.Deactivate(ConditionsG.All); target.Conditions.Activate((ConditionsG)conditions[6]);
 
 			if (args.Count > 1)
 				Send.ServerMessage(sender, Localization.Get("Applied condition."));
