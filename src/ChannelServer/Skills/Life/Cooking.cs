@@ -520,7 +520,7 @@ namespace Aura.Channel.Skills.Life
 
 			if (skill.Info.Rank == SkillRank.RC)
 			{
-				if (method == CookingMethod.Kneading)
+				if (method == CookingMethod.Boiling)
 				{
 					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously boiled.
