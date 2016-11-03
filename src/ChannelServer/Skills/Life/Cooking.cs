@@ -482,8 +482,8 @@ namespace Aura.Channel.Skills.Life
 				{
 					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously baked.
-					else
-						skill.Train(2); // Successful in baking a dish.
+
+					skill.Train(2); // Successful in baking a dish.
 				}
 				else if (method == CookingMethod.Mixing)
 					skill.Train(5); // Make any dish by mixing cooking ingredients.
@@ -497,8 +497,8 @@ namespace Aura.Channel.Skills.Life
 				{
 					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously simmered.
-					else
-						skill.Train(2); // Successful in simmering a dish.
+
+					skill.Train(2); // Successful in simmering a dish.
 				}
 				else if (method == CookingMethod.Baking)
 					skill.Train(4); // Successful in baking a dish.
@@ -524,8 +524,8 @@ namespace Aura.Channel.Skills.Life
 				{
 					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously boiled.
-					else
-						skill.Train(2); // Successful in boiling a dish.
+
+					skill.Train(2); // Successful in boiling a dish.
 				}
 				else if (method == CookingMethod.Kneading)
 					skill.Train(4); // Successful in baking a dish.
@@ -551,8 +551,8 @@ namespace Aura.Channel.Skills.Life
 				{
 					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously deep-fried.
-					else
-						skill.Train(2); // Successful in deep-frying a dish.
+
+					skill.Train(2); // Successful in deep-frying a dish.
 				}
 				else if (method == CookingMethod.NoodleMaking)
 					skill.Train(5); // Make noodles.
@@ -566,8 +566,8 @@ namespace Aura.Channel.Skills.Life
 				{
 					if (rating == DeliciousRating)
 						skill.Train(1); // Make a dish that is deliciously stir-fried.
-					else
-						skill.Train(2); // Successful in stir-frying a dish.
+
+					skill.Train(2); // Successful in stir-frying a dish.
 				}
 				else if (method == CookingMethod.DeepFrying)
 					skill.Train(4); // Successful in deep-frying a dish.
