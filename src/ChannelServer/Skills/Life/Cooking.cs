@@ -540,7 +540,7 @@ namespace Aura.Channel.Skills.Life
 				else if (method == CookingMethod.Boiling)
 					skill.Train(2); // Successful in boiling a dish.
 				else if (method == CookingMethod.Kneading)
-					skill.Train(5); // Successful in baking a dish.
+					skill.Train(5); // Successful in kneading a dish.
 
 				return;
 			}
