@@ -286,12 +286,13 @@ public class TreforScript : NpcScript
 				Msg("This skill, however, requires a high level of concentration<br/>in that you'll have to accurately anticipate your enemy's next move.<br/>The main drawbacks of using this skill is that your Stamina will be continually spent,<br/>and you won't be able to move during the skill.");
 				Msg("Now let's see your stance.<br/>Oh no... What kind of a stance is that? You won't be able to react quick enough with that.<br/>Actually, you won't be able to fight a raccoon with that.");
 				Msg("The basics of the Counterattack skill involves utilizing your enemy's power.<br/>This skill does not involve utilizing YOUR strength.");
-				Msg("Your legs are all tensed up. You can't react in time like that.<br/>Loosen your left leg to make sure you can absorb your enemy's strength...<br/>Yes. That's it. Now you look like you're ready.");
-				Msg("Now all you need to do is actually pull it off in the heat of the battle!<br/>Please don't try it on other villagers, though.", Button("Continue"));
+				Msg("Your legs are all tensed up. You can't react in time like that.<br/>Loosen your left leg to make sure you can absorb your enemy's strength...<br/>Yes. That's it. Now you look like you're ready.", Button("Continue"));
 				await Select();
 
 				RemoveKeyword("skill_counter_attack");
 				GiveSkill(SkillId.Counterattack, SkillRank.RF);
+
+				Msg("Now all you need to do is actually pull it off in the heat of the battle!<br/>Please don't try it on other villagers, though.");
 				break;
 
 			case "skill_smash":
