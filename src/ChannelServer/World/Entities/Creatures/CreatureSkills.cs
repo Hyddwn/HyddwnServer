@@ -75,12 +75,20 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <param name="skill"></param>
 		public bool Add(Skill skill)
 		{
+			// Cancel if skill exists with equal or higher rank.
 			if (this.Has(skill.Info.Id, skill.Info.Rank))
 				return false;
+
+			var oldSkill = this.Get(skill.Info.Id);
 
 			lock (_skills)
 				_skills[skill.Info.Id] = skill;
 
+			// Remove previous bonuses if skill is replaced
+			if (oldSkill != null)
+				this.RemoveBonuses(oldSkill);
+
+			// Add new bonuses
 			this.AddBonuses(skill);
 
 			return true;
