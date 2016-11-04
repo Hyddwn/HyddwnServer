@@ -468,6 +468,8 @@ namespace Aura.Channel.Skills.Life
 		/// <param name="rating"></param>
 		private void OnSuccessfulCooking(Creature creature, Skill skill, string method, Item item, Rating rating)
 		{
+			var isDelicious = (rating >= DeliciousRating);
+
 			if (skill.Info.Rank == SkillRank.Novice)
 			{
 				if (method == CookingMethod.Mixing)
@@ -480,7 +482,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Baking)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(1); // Make a dish that is deliciously baked.
 
 					skill.Train(2); // Successful in baking a dish.
@@ -495,7 +497,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Simmering)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(1); // Make a dish that is deliciously simmered.
 
 					skill.Train(2); // Successful in simmering a dish.
@@ -522,7 +524,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Boiling)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(1); // Make a dish that is deliciously boiled.
 
 					skill.Train(2); // Successful in boiling a dish.
@@ -549,7 +551,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.DeepFrying)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(1); // Make a dish that is deliciously deep-fried.
 
 					skill.Train(2); // Successful in deep-frying a dish.
@@ -564,7 +566,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.StirFrying)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(1); // Make a dish that is deliciously stir-fried.
 
 					skill.Train(2); // Successful in stir-frying a dish.
@@ -647,6 +649,7 @@ namespace Aura.Channel.Skills.Life
 
 			var quality = item.MetaData1.GetInt("QUAL");
 			var rating = this.GetRating(quality);
+			var isDelicious = (rating >= DeliciousRating);
 
 			if (skill.Info.Rank == SkillRank.RF)
 			{
@@ -654,7 +657,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a simmered dish without sharing.
 				else if (method == CookingMethod.Baking)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(4); // Eat a deliciously baked dish.
 				}
 
@@ -665,7 +668,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Simmering)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(3); // Eat a deliciously simmered dish.
 				}
 
@@ -678,7 +681,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a boiled dish without sharing.
 				else if (method == CookingMethod.Simmering)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(4); // Eat a deliciously simmered dish.
 				}
 
@@ -689,7 +692,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.Boiling)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(3); // Eat a deliciously boiled dish.
 				}
 
@@ -702,7 +705,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a deep-fried dish without sharing.
 				else if (method == CookingMethod.Boiling)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(4); // Eat a deliciously boiled dish.
 				}
 
@@ -715,7 +718,7 @@ namespace Aura.Channel.Skills.Life
 					skill.Train(3); // Eat a stir-fried dish without sharing.
 				else if (method == CookingMethod.DeepFrying)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(4); // Eat a deliciously deep-fried dish.
 				}
 
@@ -726,7 +729,7 @@ namespace Aura.Channel.Skills.Life
 			{
 				if (method == CookingMethod.StirFrying)
 				{
-					if (rating == DeliciousRating)
+					if (isDelicious)
 						skill.Train(3); // Eat a deliciously stir-fried dish.
 				}
 
@@ -774,11 +777,11 @@ namespace Aura.Channel.Skills.Life
 
 		private enum Rating
 		{
-			FiveStars,
-			FourStars,
-			ThreeStars,
-			TwoStars,
 			OneStar,
+			TwoStars,
+			ThreeStars,
+			FourStars,
+			FiveStars,
 		}
 	}
 
