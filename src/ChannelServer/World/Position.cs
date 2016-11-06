@@ -84,6 +84,10 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public bool InCone(Position tip, double direction, int radius, double angle)
 		{
+			// Cap angle at +180°, to prevent possibly unexpected inverting
+			// behavior. (The cone would go into the opposite direction.)
+			angle = Math.Min(Math.PI, Math.Abs(angle));
+
 			var halfAngle = angle / 2;
 
 			var tx1 = tip.X + (Math.Cos(-halfAngle + direction) * radius);

@@ -86,6 +86,11 @@ namespace Aura.Tests.Channel
 			Assert.Equal(true, topPos.InCone(centerPos, up, 600, MabiMath.DegreeToRadian(180)));
 			Assert.Equal(true, topPos.InCone(centerPos, up, 1000, MabiMath.DegreeToRadian(180)));
 
+			Assert.Equal(true, topPos.InCone(centerPos, up, 1000, MabiMath.DegreeToRadian(190)));
+			Assert.Equal(true, topPos.InCone(centerPos, up, 1000, MabiMath.DegreeToRadian(-190)));
+			Assert.Equal(true, topPos.InCone(centerPos, up, 1000, MabiMath.DegreeToRadian(9999)));
+			Assert.Equal(true, topPos.InCone(centerPos, up, 1000, MabiMath.DegreeToRadian(-9999)));
+
 			Assert.Equal(false, topPos.InCone(centerPos, MabiMath.DegreeToRadian(45), 2000, MabiMath.DegreeToRadian(45)));
 			Assert.Equal(true, topPos.InCone(centerPos, MabiMath.DegreeToRadian(68), 2000, MabiMath.DegreeToRadian(45)));
 		}
