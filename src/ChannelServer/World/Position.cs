@@ -198,7 +198,7 @@ namespace Aura.Channel.World
 			var newX = this.X + (distance / deltaXY) * (deltaX);
 			var newY = this.Y + (distance / deltaXY) * (deltaY);
 
-			return new Position((int)newX, (int)newY);
+			return new Position((int)Math.Round(newX), (int)Math.Round(newY));
 		}
 
 		/// <summary>
