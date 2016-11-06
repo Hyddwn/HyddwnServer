@@ -260,7 +260,7 @@ namespace Aura.Channel.Skills.Combat
 			{
 				attackerSkill.Train(2); // Successfully counter enemy's attack.
 
-				if (tAction.AttackerSkillId == SkillId.Smash)
+				if (tAction.SkillId == SkillId.Smash)
 					attackerSkill.Train(4); // Counter enemy's special attack.
 
 				if (tAction.Has(TargetOptions.Critical))
@@ -270,7 +270,7 @@ namespace Aura.Channel.Skills.Combat
 			{
 				attackerSkill.Train(1); // Successfully counter enemy's attack.
 
-				if (tAction.AttackerSkillId == SkillId.Smash)
+				if (tAction.SkillId == SkillId.Smash)
 					attackerSkill.Train(2); // Counter enemy's special attack.
 
 				if (tAction.Has(TargetOptions.Critical))
