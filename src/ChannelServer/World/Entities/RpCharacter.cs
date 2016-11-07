@@ -187,6 +187,7 @@ namespace Aura.Channel.World.Entities
 			var channelHost = ChannelServer.Instance.Conf.Channel.ChannelHost;
 			var channelPort = ChannelServer.Instance.Conf.Channel.ChannelPort;
 
+			actor.Client.Creatures.Remove(actor.EntityId);
 			actor.Client.Creatures.Add(this.EntityId, this);
 			this.Client.Controlling = this;
 
@@ -210,6 +211,7 @@ namespace Aura.Channel.World.Entities
 
 			this.Client.Controlling = actor;
 			actor.Client.Creatures.Remove(this.EntityId);
+			actor.Client.Creatures.Add(actor.EntityId, actor);
 			actor.Unlock(Locks.Default, true);
 
 			Send.PetUnregister(actor, this);
