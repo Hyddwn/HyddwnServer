@@ -3611,6 +3611,30 @@ namespace Aura.Channel.World.Entities
 
 			return result;
 		}
+
+		/// <summary>
+		/// If this creature is an RP character, it returns the player's
+		/// character behind the RP character, if not it just returns itself.
+		/// </summary>
+		/// <remarks>
+		/// Use in cases where you want to execute an action on the actual
+		/// player character, but you don't know if you're working with an
+		/// RP character or not.
+		/// 
+		/// For example, maybe you want to give a player a quest item at the
+		/// end of the dungeon, but the dungeon can be played as RP or
+		/// non-RP. Using just the creature would give it to the RP
+		/// character, with the player never getting it.
+		/// </remarks>
+		/// <returns></returns>
+		public Creature GetActualCreature()
+		{
+			if (!this.IsRpCharacter)
+				return this;
+
+			var rpCharacter = this as RpCharacter;
+			return rpCharacter.Actor;
+		}
 	}
 
 	public enum TargetableOptions
