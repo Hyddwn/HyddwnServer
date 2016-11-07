@@ -14,6 +14,8 @@ namespace Aura.Data.Database
 	public class ActorData
 	{
 		public string Name { get; set; }
+		public string LocalName { get; set; }
+
 		public int RaceId { get; set; }
 		public float Height { get; set; }
 		public float Weight { get; set; }
@@ -91,6 +93,8 @@ namespace Aura.Data.Database
 			var data = new ActorData();
 
 			data.Name = entry.ReadString("name");
+			data.LocalName = entry.ReadString("localName", null);
+
 			data.RaceId = entry.ReadInt("raceId");
 			data.Height = entry.ReadFloat("height", 1);
 			data.Weight = entry.ReadFloat("weight", 1);
