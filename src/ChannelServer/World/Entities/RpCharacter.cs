@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network;
 using Aura.Channel.Network.Sending;
+using Aura.Data;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
@@ -97,6 +98,7 @@ namespace Aura.Channel.World.Entities
 			// Stats
 			this.Age = (short)actorData.Age;
 			this.Level = (short)actorData.Level;
+			this.Exp = AuraData.ExpDb.GetTotalForNextLevel(this.Level - 1);
 			this.AbilityPoints = (short)actorData.AP;
 			this.LifeMaxBase = actorData.Life;
 			this.ManaMaxBase = actorData.Mana;
