@@ -2339,10 +2339,8 @@ namespace Aura.Channel.Util
 			}
 
 			// Create RP character
-			var name = string.Format("{0} ({1})", Localization.Get(actorData.Name), target.Name);
 			var loc = target.GetLocation();
-
-			var rpCharacter = new RpCharacter(actorData, name, target);
+			var rpCharacter = new RpCharacter(actorData, target, null);
 			rpCharacter.Start(loc);
 
 			Send.ServerMessage(sender, Localization.Get("Role-play started, use same command without actor argument to stop."));

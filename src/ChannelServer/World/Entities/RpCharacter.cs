@@ -32,14 +32,12 @@ namespace Aura.Channel.World.Entities
 		/// Creates new RP character, based on actor data.
 		/// </summary>
 		/// <param name="actorData">The data to base this character on.</param>
-		/// <param name="name">The RP character's full name.</param>
-		/// <param name="actor">
-		/// Character of the player who gets control over this RP character.
-		/// </param>
+		/// <param name="actor">Character of the player who gets control over this RP character.</param>
+		/// <param name="name">The RP character's full name, use null for default.</param>
 		/// <example>
 		/// var character = new RpCharacter(AuraData.ActorDb.Find("#tarlach"), "Tarlach (FooBar)", fooBar);
 		/// </example>
-		public RpCharacter(ActorData actorData, string name, Creature actor)
+		public RpCharacter(ActorData actorData, Creature actor, string name)
 		{
 			if (actorData == null) throw new ArgumentNullException("actorData");
 			if (actor == null) throw new ArgumentNullException("actor");
@@ -56,9 +54,17 @@ namespace Aura.Channel.World.Entities
 
 			// Name
 			if (!string.IsNullOrWhiteSpace(name))
+			{
 				this.Name = name;
+			}
 			else
-				this.Name = this.RaceData.Name;
+			{
+				// Use actor data's local name or fall back to race's name.
+				var characterName = actorData.LocalName ?? this.RaceData.Name;
+				var actorName = this.Actor.Name;
+
+				this.Name = string.Format("{0} ({1})", Localization.Get(characterName), actorName);
+			}
 
 			// State
 			this.State |= CreatureStates.InstantNpc;
