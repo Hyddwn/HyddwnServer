@@ -76,16 +76,6 @@ namespace Aura.Channel.Network.Handlers
 			client.State = ClientState.LoggedIn;
 			ChannelServer.Instance.Database.SetAccountLoggedIn(account.Id, true);
 
-			// Per-character specific initialization
-			NPC npcchar = character as NPC;
-			if (npcchar != null && npcchar.OnNPCLoggedIn != null)
-			{
-				// Seems like officials send here packet-per-packet adding equipment,
-				// skills and probably other initialization info for RP NPCs
-				// Long story short, a lot of StatUpdate, SkillRankUp, ItemNew, etc. packets
-				npcchar.OnNPCLoggedIn();
-			}
-
 			Send.ChannelLoginR(client, character.EntityId);
 
 			// Special login to Soul Stream for new chars and on birthdays
