@@ -1182,7 +1182,11 @@ namespace Aura.Channel.World
 					if (!(pos.X >= minX && pos.X <= maxX && pos.Y >= minY && pos.Y <= maxY))
 						continue;
 
-					var time = (from.GetDistance(to) / creature.GetSpeed()) * 1000;
+					var speed = creature.GetSpeed();
+					if (speed < 1)
+						speed = 1;
+
+					var time = (from.GetDistance(to) / speed) * 1000;
 
 					npc.AI.Activate(time);
 				}
