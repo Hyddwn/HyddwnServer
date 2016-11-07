@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using Aura.Channel.Network;
+using Aura.Channel.Network.Sending;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
@@ -62,6 +63,9 @@ namespace Aura.Channel.World.Entities
 			// State
 			this.State |= CreatureStates.InstantNpc;
 			this.State |= CreatureStates.EnableCommonPvp;
+
+			// Default location
+			this.SetLocation(this.Actor.GetLocation());
 
 			// Color
 			if (actorData.HasColors)
@@ -144,6 +148,58 @@ namespace Aura.Channel.World.Entities
 			this.Life = this.LifeMax;
 			this.Mana = this.ManaMax;
 			this.Stamina = this.StaminaMax;
+
+			this.Client = actor.Client;
+		}
+
+		/// <summary>
+		/// Starts RP session.
+		/// </summary>
+		public void Start(Location loc)
+		{
+			this.Start(loc.RegionId, loc.X, loc.Y);
+		}
+
+		/// <summary>
+		/// Starts RP session.
+		/// </summary>
+		public void Start(int regionId, int x, int y)
+		{
+			var actor = this.Actor;
+
+			actor.Region.RemoveCreature(actor);
+			actor.Lock(Locks.Default, true);
+
+			var channelHost = ChannelServer.Instance.Conf.Channel.ChannelHost;
+			var channelPort = ChannelServer.Instance.Conf.Channel.ChannelPort;
+
+			actor.Client.Creatures.Add(this.EntityId, this);
+			this.Client.Controlling = this;
+
+			Send.RequestSecondaryLogin(actor, this.EntityId, channelHost, channelPort);
+			Send.PetRegister(actor, this, SubordinateType.RpCharacter);
+			Send.StartRP(actor, this.EntityId);
+		}
+
+		/// <summary>
+		/// Ends RP session.
+		/// </summary>
+		public void End()
+		{
+			var actor = this.Actor;
+
+			Send.EndRP(actor, actor.RegionId);
+			this.Region.RemoveCreature(this);
+
+			var actorRegion = ChannelServer.Instance.World.GetRegion(actor.RegionId);
+			actorRegion.AddCreature(actor);
+
+			this.Client.Controlling = actor;
+			actor.Client.Creatures.Remove(this.EntityId);
+			actor.Unlock(Locks.Default, true);
+
+			Send.PetUnregister(actor, this);
+			Send.Disappear(this);
 		}
 	}
 }
