@@ -304,31 +304,34 @@ namespace Aura.Channel.World.Dungeons
 		/// </summary>
 		/// <param name="dungeonName"></param>
 		/// <param name="itemId"></param>
-		/// <param name="creature"></param>
+		/// <param name="leader"></param>
 		/// <returns></returns>
-		public bool CreateDungeonAndWarp(string dungeonName, int itemId, Creature creature)
+		public bool CreateDungeonAndWarp(string dungeonName, int itemId, Creature leader)
 		{
 			lock (_createAndCleanUpLock)
 			{
 				try
 				{
-					var dungeon = this.CreateDungeon(dungeonName, itemId, creature);
+					var dungeon = this.CreateDungeon(dungeonName, itemId, leader);
 					var regionId = dungeon.Regions.First().Id;
 
 					// Warp the party currently standing on the altar into the dungeon.
-					var party = creature.Party.GetCreaturesOnAltar(creature.RegionId);
+					var party = leader.Party;
+					var creators = party.GetCreaturesOnAltar(leader.RegionId);
 
 					// Add creature to list in case something went wrong.
-					if (party.Count == 0)
-						party.Add(creature);
+					if (creators.Count == 0)
+						creators.Add(leader);
 
-					foreach (var member in party)
+					// Warp in
+					foreach (var creator in creators)
 					{
-						var pos = member.GetPosition();
-						member.Warp(regionId, pos);
+						// Warp member to same position in the lobby region.
+						var pos = creator.GetPosition();
+						creator.Warp(regionId, pos);
 
 						// TODO: This is a bit hacky, needs to be moved to Creature.Warp, with an appropriate check.
-						Send.EntitiesDisappear(member.Client, party);
+						Send.EntitiesDisappear(creator.Client, creators);
 					}
 
 					return true;
