@@ -188,7 +188,10 @@ namespace Aura.Channel.World.Entities
 			var channelHost = ChannelServer.Instance.Conf.Channel.ChannelHost;
 			var channelPort = ChannelServer.Instance.Conf.Channel.ChannelPort;
 
-			client.Creatures.Remove(actor.EntityId);
+			// Don't remove the actor from the controlled creatures, as the
+			// client will still send packets with its id, which triggers
+			// our safety checks.
+
 			client.Creatures.Add(rpCharacter.EntityId, rpCharacter);
 			client.Controlling = rpCharacter;
 
@@ -214,7 +217,6 @@ namespace Aura.Channel.World.Entities
 
 			client.Controlling = actor;
 			client.Creatures.Remove(rpCharacter.EntityId);
-			client.Creatures.Add(actor.EntityId, actor);
 			actor.Unlock(Locks.Default, true);
 
 			Send.PetUnregister(actor, rpCharacter);

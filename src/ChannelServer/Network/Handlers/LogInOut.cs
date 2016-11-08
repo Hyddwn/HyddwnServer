@@ -178,9 +178,14 @@ namespace Aura.Channel.Network.Handlers
 			var pos = creature.GetPosition();
 			creature.Region.ActivateAis(creature, pos, pos);
 
-			// Warp pets and other creatures as well
-			foreach (var cr in client.Creatures.Values.Where(a => a.RegionId != creature.RegionId))
-				cr.Warp(creature.RegionId, pos.X, pos.Y);
+			// Warp pets and other creatures as well if creature isn't an
+			// RP character, since that would bring the actual creature back
+			// to the map, which messes things up.
+			if (!creature.IsRpCharacter)
+			{
+				foreach (var cr in client.Creatures.Values.Where(a => a.RegionId != creature.RegionId))
+					cr.Warp(creature.RegionId, pos.X, pos.Y);
+			}
 
 			// Automatically done by the world update
 			//Send.EntitiesAppear(client, region.GetEntitiesInRange(creature));
