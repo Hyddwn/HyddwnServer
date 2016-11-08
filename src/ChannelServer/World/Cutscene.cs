@@ -44,7 +44,8 @@ namespace Aura.Channel.World
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="leader"></param>
-		public Cutscene(string name, Creature leader)
+		/// <param name="viewers"></param>
+		public Cutscene(string name, Creature leader, params Creature[] viewers)
 		{
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentNullException("name");
@@ -59,20 +60,29 @@ namespace Aura.Channel.World
 			this.Leader = leader;
 
 			this.Actors = new Dictionary<string, Creature>();
+
+			// Create list of viewers, with the leader being the first one
+			// (index 0), followed by the leader's party members and then
+			// the other viewers.
+			var viewersList = new List<Creature>();
+
+			viewersList.Add(leader);
+			viewersList.AddRange(leader.Party.GetSortedMembers().Where(a => a != leader));
+
+			if (viewers != null)
+				viewersList.AddRange(viewers.Where(a => a != leader));
+
+			_viewers = viewersList.ToArray();
 		}
 
 		/// <summary>
-		/// Creates cutscene and fills actor list as specified in the data.
+		/// Loads actors from the cutscene's data.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="creature"></param>
-		/// <returns></returns>
-		public static Cutscene FromData(string name, Creature creature)
+		public void LoadActorsFromData()
 		{
-			var result = new Cutscene(name, creature);
-			var partyMembers = creature.Party.GetSortedMembers();
+			var leader = this.Leader;
 
-			foreach (var cutsceneActorData in result.Data.Actors)
+			foreach (var cutsceneActorData in this.Data.Actors)
 			{
 				Creature actor = null;
 
@@ -90,11 +100,11 @@ namespace Aura.Channel.World
 				}
 				else if (actorName == "me")
 				{
-					actor = creature;
+					actor = leader;
 				}
 				else if (actorName == "leader")
 				{
-					actor = creature.Party.Leader;
+					actor = _viewers[0];
 				}
 				else if (actorName.StartsWith("player"))
 				{
@@ -103,7 +113,7 @@ namespace Aura.Channel.World
 					{
 						Log.Warning("Cutscene.FromData: Invalid party member actor name '{0}'.", actorName);
 					}
-					else if (idx > partyMembers.Length - 1)
+					else if (idx > _viewers.Length - 1)
 					{
 						if (!string.IsNullOrWhiteSpace(defaultActorName))
 						{
@@ -114,11 +124,11 @@ namespace Aura.Channel.World
 								actor = new NPC(actorData);
 						}
 						else
-							Log.Warning("Cutscene.FromData: Index out of party member range '{0}/{1}'.", idx, partyMembers.Length);
+							Log.Warning("Cutscene.FromData: Index out of party member range '{0}/{1}'.", idx, _viewers.Length);
 					}
 					else
 					{
-						actor = partyMembers[idx];
+						actor = _viewers[idx];
 					}
 				}
 				else
@@ -131,10 +141,9 @@ namespace Aura.Channel.World
 					var dummy = new NPC();
 					actor = dummy;
 				}
-				result.AddActor(actorName, actor);
-			}
 
-			return result;
+				this.AddActor(actorName, actor);
+			}
 		}
 
 		/// <summary>
@@ -173,8 +182,6 @@ namespace Aura.Channel.World
 		/// </summary>
 		public void Play()
 		{
-			_viewers = this.Leader.Party.GetMembers();
-
 			foreach (var member in _viewers)
 			{
 				member.Temp.CurrentCutscene = this;
@@ -186,6 +193,7 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Plays cutscene for everybody.
 		/// </summary>
+		/// <param name="onFinish"></param>
 		public void Play(Action<Cutscene> onFinish)
 		{
 			this.Play();
@@ -195,18 +203,25 @@ namespace Aura.Channel.World
 		/// <summary>
 		/// Loads cutscene from data and plays it.
 		/// </summary>
-		public static void Play(string name, Creature creature)
+		/// <param name="name"></param>
+		/// <param name="leader"></param>
+		/// <param name="viewers"></param>
+		public static void Play(string name, Creature leader, params Creature[] viewers)
 		{
-			var cutscene = FromData(name, creature);
-			cutscene.Play();
+			Play(name, leader, null, viewers);
 		}
 
 		/// <summary>
 		/// Loads cutscene from data and plays it.
 		/// </summary>
-		public static void Play(string name, Creature creature, Action<Cutscene> onFinish)
+		/// <param name="name"></param>
+		/// <param name="leader"></param>
+		/// <param name="onFinish"></param>
+		/// <param name="viewers"></param>
+		public static void Play(string name, Creature leader, Action<Cutscene> onFinish, params Creature[] viewers)
 		{
-			var cutscene = FromData(name, creature);
+			var cutscene = new Cutscene(name, leader, viewers);
+			cutscene.LoadActorsFromData();
 			cutscene.Play(onFinish);
 		}
 
