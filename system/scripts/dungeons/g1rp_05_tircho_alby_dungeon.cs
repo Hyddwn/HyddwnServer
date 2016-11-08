@@ -10,9 +10,9 @@ public class TheThreeMissingWarriorsRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#tarlach");
-		//dungeon.SetRole(1, "#mari");
-		//dungeon.SetRole(2, "#ruairi");
+		dungeon.SetRole(0, "#tarlach");
+		dungeon.SetRole(1, "#mari");
+		dungeon.SetRole(2, "#ruairi");
 	}
 
 	public override void OnBoss(Dungeon dungeon)
