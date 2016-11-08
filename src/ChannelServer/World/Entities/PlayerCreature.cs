@@ -181,6 +181,35 @@ namespace Aura.Channel.World.Entities
 			}
 		}
 
+		// TODO: Start using Start- and StopLookAround everywhere,
+		//   to properly manage the visible entities. Right now we have
+		//   hack-ish appear and disappear calls all over the place.
+
+		/// <summary>
+		/// Starts auto-update of visible entities nearby, sending the first
+		/// list of visible entities right away.
+		/// </summary>
+		public void StartLookAround()
+		{
+			this.Watching = true;
+			this.LookAround();
+		}
+
+		/// <summary>
+		/// Stops auto-update of visible entities nearby,
+		/// clearing all currently visible entities.
+		/// </summary>
+		public void StopLookAround()
+		{
+			this.Watching = false;
+
+			lock (_lookAroundLock)
+			{
+				Send.EntitiesDisappear(this.Client, _visibleEntities);
+				_visibleEntities.Clear();
+			}
+		}
+
 		/// <summary>
 		/// Returns whether player can target the given creature.
 		/// </summary>

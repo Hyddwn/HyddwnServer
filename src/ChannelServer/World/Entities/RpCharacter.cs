@@ -185,8 +185,8 @@ namespace Aura.Channel.World.Entities
 			actor.Region.RemoveCreature(actor);
 			actor.Lock(Locks.Default, true);
 
-			var channelHost = ChannelServer.Instance.Conf.Channel.ChannelHost;
-			var channelPort = ChannelServer.Instance.Conf.Channel.ChannelPort;
+			var playerCreature = actor as PlayerCreature;
+			playerCreature.StopLookAround();
 
 			// Don't remove the actor from the controlled creatures, as the
 			// client will still send packets with its id, which triggers
@@ -194,6 +194,9 @@ namespace Aura.Channel.World.Entities
 
 			client.Creatures.Add(rpCharacter.EntityId, rpCharacter);
 			client.Controlling = rpCharacter;
+
+			var channelHost = ChannelServer.Instance.Conf.Channel.ChannelHost;
+			var channelPort = ChannelServer.Instance.Conf.Channel.ChannelPort;
 
 			Send.RequestSecondaryLogin(actor, rpCharacter.EntityId, channelHost, channelPort);
 			Send.PetRegister(actor, rpCharacter, SubordinateType.RpCharacter);
@@ -212,15 +215,23 @@ namespace Aura.Channel.World.Entities
 			Send.EndRP(actor, actor.RegionId);
 			rpCharacter.Region.RemoveCreature(rpCharacter);
 
-			var actorRegion = ChannelServer.Instance.World.GetRegion(actor.RegionId);
-			actorRegion.AddCreature(actor);
+			// Set Controlling before adding the actor to the region again,
+			// otherwise the client isn't added to the region's client list
+			// used for broadcasting.
 
 			client.Controlling = actor;
 			client.Creatures.Remove(rpCharacter.EntityId);
+
+			var actorRegion = ChannelServer.Instance.World.GetRegion(actor.RegionId);
+			actorRegion.AddCreature(actor);
+
 			actor.Unlock(Locks.Default, true);
 
 			Send.PetUnregister(actor, rpCharacter);
 			Send.Disappear(rpCharacter);
+
+			var playerCreature = actor as PlayerCreature;
+			playerCreature.StartLookAround();
 		}
 	}
 }
