@@ -31,6 +31,12 @@ public class RabbieDungeonScript : DungeonScript
 				return false;
 			}
 
+			if (creature.Pet != null)
+			{
+				Send.Notice(creature, L("You can't enter this dungeon with a pet."));
+				return false;
+			}
+
 			dungeonName = "g1rp_15_dunbarton_rabbie_dungeon";
 			return true;
 		}
@@ -47,6 +53,12 @@ public class RabbieDungeonScript : DungeonScript
 			if (creature.Party.MemberCount != 3 && !IsEnabled("SoloRP"))
 			{
 				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 members."));
+				return false;
+			}
+
+			if (creature.Pet != null)
+			{
+				Send.Notice(creature, L("You can't enter this dungeon with a pet."));
 				return false;
 			}
 
