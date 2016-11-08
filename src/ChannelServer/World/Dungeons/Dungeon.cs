@@ -128,6 +128,12 @@ namespace Aura.Channel.World.Dungeons
 		public List<long> Creators { get; private set; }
 
 		/// <summary>
+		/// List of RP character entity ids that were created for this
+		/// dungeon. List is empty if dungeon is not an RP dungeon.
+		/// </summary>
+		public List<long> RpCharacters { get; private set; }
+
+		/// <summary>
 		/// The leader of the party that created this dungeon.
 		/// </summary>
 		/// <remarks>
@@ -173,6 +179,7 @@ namespace Aura.Channel.World.Dungeons
 			this.Options = XElement.Parse("<option />");
 
 			this.Creators = new List<long>();
+			this.RpCharacters = new List<long>();
 			this.PartyLeader = creature;
 
 			// Only creatures who actually ENTER the dungeon at creation are considered "dungeon founders".
@@ -778,7 +785,8 @@ namespace Aura.Channel.World.Dungeons
 		/// <param name="creature"></param>
 		public void OnPlayerEntersLobby(Creature creature)
 		{
-			var isCreator = this.Creators.Contains(creature.EntityId);
+			var actualCreature = creature.GetActualCreature();
+			var isCreator = this.Creators.Contains(actualCreature.EntityId);
 
 			// Save location
 			// This happens whenever you enter the lobby.
@@ -914,6 +922,37 @@ namespace Aura.Channel.World.Dungeons
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Returns all RP characters inside the dungeon.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetRpCharacters()
+		{
+			var result = new List<Creature>();
+
+			foreach (var entityId in this.RpCharacters)
+			{
+				var creature = this.GetCreature(entityId);
+				if (creature != null)
+					result.Add(creature);
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns either all RP characters or all creators currently in
+		/// the dungeon, depending on whether this is an RP dungeon or not.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetRpCharactersOrCreators()
+		{
+			if (this.HasRoles)
+				return this.GetRpCharacters();
+			else
+				return this.GetCreators();
 		}
 
 		/// <summary>
