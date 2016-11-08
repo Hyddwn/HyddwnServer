@@ -766,7 +766,7 @@ namespace Aura.Channel.World.Dungeons
 		/// <param name="cutsceneName"></param>
 		public void PlayCutscene(string cutsceneName)
 		{
-			Cutscene.Play(cutsceneName, this.PartyLeader);
+			this.PlayCutscene(cutsceneName, null);
 		}
 
 		/// <summary>
@@ -776,7 +776,23 @@ namespace Aura.Channel.World.Dungeons
 		/// <param name="onFinish"></param>
 		public void PlayCutscene(string cutsceneName, Action<Cutscene> onFinish)
 		{
-			Cutscene.Play(cutsceneName, this.PartyLeader, onFinish);
+			// Cutscenes need work. They have to be sent to the character
+			// being played, RP or normal, but our current system is based
+			// on partys, which RP characters don't have. This can
+			// potentially cause problems, especially in case of multiple
+			// callbacks.
+
+			if (this.HasRoles)
+			{
+				var rpCharacters = this.GetRpCharacters();
+
+				foreach (var creature in rpCharacters)
+					Cutscene.Play(cutsceneName, creature, onFinish);
+			}
+			else
+			{
+				Cutscene.Play(cutsceneName, this.PartyLeader, onFinish);
+			}
 		}
 
 		/// <summary>
