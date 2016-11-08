@@ -105,6 +105,16 @@ namespace Aura.Channel.World.Entities
 				return false;
 			}
 
+			// When RP characters warp out of dungeons, their session ends.
+			// This should happen for shadow missions as well once we get them.
+			if (this.IsRpCharacter && this.Region.IsDungeon && !targetRegion.IsDungeon)
+			{
+				var rpCharacter = this as RpCharacter;
+				rpCharacter.End();
+
+				return true;
+			}
+
 			var currentRegionId = this.RegionId;
 			var loc = new Location(currentRegionId, this.GetPosition());
 
