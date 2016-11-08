@@ -129,6 +129,20 @@ namespace Aura.Channel.Scripting.Scripts
 		public virtual void OnSectionCleared(Dungeon dungeon, int floor, int section)
 		{
 		}
+
+		/// <summary>
+		/// Called after an RP character was created, but before the player
+		/// is warped into the dungeon.
+		/// </summary>
+		/// <remarks>
+		/// Allows changes to the RP character, which are created based on
+		/// actor data.
+		/// </remarks>
+		/// <param name="dungeon"></param>
+		/// <param name="rpCharacter"></param>
+		public virtual void OnRpCharacterCreated(Dungeon dungeon, RpCharacter rpCharacter)
+		{
+		}
 	}
 
 	public class DungeonScriptAttribute : Attribute

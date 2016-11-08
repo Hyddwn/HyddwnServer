@@ -362,6 +362,8 @@ namespace Aura.Channel.World.Dungeons
 								rpCharacter.SetLocation(regionId, pos.X, pos.Y);
 
 								dungeon.RpCharacters.Add(rpCharacter.EntityId);
+								dungeon.Script.OnRpCharacterCreated(dungeon, rpCharacter);
+
 								rpCharacters.Add(rpCharacter);
 							}
 							catch
