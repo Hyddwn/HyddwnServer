@@ -792,9 +792,9 @@ namespace Aura.Channel.World.Dungeons
 			// Scroll message
 			var msg = "";
 			if (isCreator)
-				msg = Localization.Get("This dungeon has been created by you or your party.\t") + msg;
+				msg = Localization.Get("This dungeon has been created by you or your party.\t");
 			else
-				msg = Localization.Get("This dungeon has been created by another player.") + msg;
+				msg = Localization.Get("This dungeon has been created by another player.");
 
 			Send.Notice(creature, NoticeType.Top, ScrollMessageDuration, msg + this.GetPlayerListScrollMessage());
 
