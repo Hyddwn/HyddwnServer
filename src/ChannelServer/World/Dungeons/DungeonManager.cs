@@ -320,6 +320,8 @@ namespace Aura.Channel.World.Dungeons
 					var creators = party.GetCreaturesOnAltar(leader.RegionId);
 
 					// Add creature to list in case something went wrong.
+					// For example, there might be no altar, because the call
+					// came from the dungeon command.
 					if (creators.Count == 0)
 						creators.Add(leader);
 
