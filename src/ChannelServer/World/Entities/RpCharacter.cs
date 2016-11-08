@@ -25,6 +25,11 @@ namespace Aura.Channel.World.Entities
 		public override bool Save { get { return false; } }
 
 		/// <summary>
+		/// Reference the actor data used to create this character.
+		/// </summary>
+		public ActorData ActorData { get; private set; }
+
+		/// <summary>
 		/// Reference to the creature playing this role.
 		/// </summary>
 		public Creature Actor { get; private set; }
@@ -54,6 +59,7 @@ namespace Aura.Channel.World.Entities
 
 			var rnd = RandomProvider.Get();
 
+			this.ActorData = actorData;
 			this.Actor = actor;
 			this.EntityId = NPC.GetNewNpcEntityId();
 			this.RaceId = actorData.RaceId;
