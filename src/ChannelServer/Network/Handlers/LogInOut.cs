@@ -45,9 +45,10 @@ namespace Aura.Channel.Network.Handlers
 			}
 			var sessionKey = packet.GetLong();
 			var characterId = packet.GetLong();
+			var secondaryLogin = (packet.Peek() == PacketElementType.Byte && packet.GetByte() == 0x0B);
 
 			// Check state
-			if (client.State != ClientState.LoggingIn)
+			if (client.State != ClientState.LoggingIn && !secondaryLogin)
 				return;
 
 			// Check account
@@ -62,51 +63,61 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			// Check character
-			var character = account.GetCharacterOrPetSafe(characterId) as Creature;
-
-			// Free premium
-			account.PremiumServices.EvaluateFreeServices(ChannelServer.Instance.Conf.Premium);
-
-			client.Account = account;
-			client.Controlling = character;
-			client.Creatures.Add(character.EntityId, character);
-			character.Client = client;
-
-			client.State = ClientState.LoggedIn;
-			ChannelServer.Instance.Database.SetAccountLoggedIn(account.Id, true);
-
-			// Per-character specific initialization
-			NPC npcchar = character as NPC;
-			if (npcchar != null && npcchar.OnNPCLoggedIn != null)
+			// Normal login if not secondary or client isn't logged
+			// in yet (fallback).
+			if (!secondaryLogin || client.State == ClientState.LoggingIn)
 			{
-				// Seems like officials send here packet-per-packet adding equipment,
-				// skills and probably other initialization info for RP NPCs
-				// Long story short, a lot of StatUpdate, SkillRankUp, ItemNew, etc. packets
-				npcchar.OnNPCLoggedIn();
+				// Check character
+				var character = account.GetCharacterOrPetSafe(characterId) as Creature;
+
+				// Free premium
+				account.PremiumServices.EvaluateFreeServices(ChannelServer.Instance.Conf.Premium);
+
+				client.Account = account;
+				client.Controlling = character;
+				client.Creatures.Add(character.EntityId, character);
+				character.Client = client;
+
+				client.State = ClientState.LoggedIn;
+				ChannelServer.Instance.Database.SetAccountLoggedIn(account.Id, true);
+
+				Send.ChannelLoginR(client, character.EntityId);
+
+				// Special login to Soul Stream for new chars and on birthdays
+				if (!character.Has(CreatureStates.Initialized) || character.CanReceiveBirthdayPresent)
+				{
+					var npcEntityId = (character.IsCharacter ? MabiId.Nao : MabiId.Tin);
+					var npc = ChannelServer.Instance.World.GetCreature(npcEntityId);
+					if (npc == null)
+						Log.Warning("ChannelLogin: Intro NPC not found ({0:X16}).", npcEntityId);
+
+					character.Temp.InSoulStream = true;
+					character.Activate(CreatureStates.Initialized);
+
+					Send.SpecialLogin(character, 1000, 3200, 3200, npcEntityId);
+				}
+				// Log into world
+				else
+				{
+					// Fallback for invalid region ids, like 0, dynamics, and dungeons.
+					if (character.RegionId == 0 || Math2.Between(character.RegionId, 35000, 40000) || Math2.Between(character.RegionId, 10000, 11000))
+						character.SetLocation(1, 12800, 38100);
+
+					character.Warp(character.GetLocation());
+				}
 			}
-
-			Send.ChannelLoginR(client, character.EntityId);
-
-			// Special login to Soul Stream for new chars and on birthdays
-			if (!character.Has(CreatureStates.Initialized) || character.CanReceiveBirthdayPresent)
-			{
-				var npcEntityId = (character.IsCharacter ? MabiId.Nao : MabiId.Tin);
-				var npc = ChannelServer.Instance.World.GetCreature(npcEntityId);
-				if (npc == null)
-					Log.Warning("ChannelLogin: Intro NPC not found ({0:X16}).", npcEntityId);
-
-				character.Temp.InSoulStream = true;
-				character.Activate(CreatureStates.Initialized);
-
-				Send.SpecialLogin(character, 1000, 3200, 3200, npcEntityId);
-			}
-			// Log into world
 			else
 			{
-				// Fallback for invalid region ids, like 0, dynamics, and dungeons.
-				if (character.RegionId == 0 || Math2.Between(character.RegionId, 35000, 40000) || Math2.Between(character.RegionId, 10000, 11000))
-					character.SetLocation(1, 12800, 38100);
+				// Try to get character from controlle creatures.
+				Creature character;
+				if (!client.Creatures.TryGetValue(characterId, out character))
+				{
+					Log.Warning("ChannelLogin: Secondary login failed, creature not found.");
+					client.Kill();
+					return;
+				}
+
+				Send.ChannelLoginR(client, character.EntityId);
 
 				character.Warp(character.GetLocation());
 			}
@@ -167,9 +178,14 @@ namespace Aura.Channel.Network.Handlers
 			var pos = creature.GetPosition();
 			creature.Region.ActivateAis(creature, pos, pos);
 
-			// Warp pets and other creatures as well
-			foreach (var cr in client.Creatures.Values.Where(a => a.RegionId != creature.RegionId))
-				cr.Warp(creature.RegionId, pos.X, pos.Y);
+			// Warp pets and other creatures as well if creature isn't an
+			// RP character, since that would bring the actual creature back
+			// to the map, which messes things up.
+			if (!creature.IsRpCharacter)
+			{
+				foreach (var cr in client.Creatures.Values.Where(a => a.RegionId != creature.RegionId))
+					cr.Warp(creature.RegionId, pos.X, pos.Y);
+			}
 
 			// Automatically done by the world update
 			//Send.EntitiesAppear(client, region.GetEntitiesInRange(creature));
@@ -181,9 +197,15 @@ namespace Aura.Channel.Network.Handlers
 			// afterwards, so the client is done with the warping process,
 			// when things like cutscenes are started from the OnEnter
 			// events in  the dungeon script.
-			var dungeonLobbyRegion = creature.Region as DungeonLobbyRegion;
-			if (dungeonLobbyRegion != null)
-				dungeonLobbyRegion.Dungeon.OnPlayerEntersLobby(creature);
+			// Needs to be delayed for RP characters, because they can't
+			// watch cutscenes before receiving ChannelCharacterInfoRequestR
+			// in reply to ChannelCharacterInfoRequest.
+			if (!creature.IsRpCharacter)
+			{
+				var dungeonLobbyRegion = creature.Region as DungeonLobbyRegion;
+				if (dungeonLobbyRegion != null)
+					dungeonLobbyRegion.Dungeon.OnPlayerEntersLobby(creature);
+			}
 		}
 
 		/// <summary>
@@ -311,6 +333,15 @@ namespace Aura.Channel.Network.Handlers
 			// Any extra ChannelInfo initialization from scripts
 			// Actual first update of features
 			ChannelServer.Instance.Events.OnCreatureConnected(creature);
+
+			// Delayed OnPlayerEntersLobby for RP characters.
+			// (See EnterRegionRequest handler.)
+			if (creature.IsRpCharacter)
+			{
+				var dungeonLobbyRegion = creature.Region as DungeonLobbyRegion;
+				if (dungeonLobbyRegion != null)
+					dungeonLobbyRegion.Dungeon.OnPlayerEntersLobby(creature);
+			}
 		}
 
 		/// <summary>

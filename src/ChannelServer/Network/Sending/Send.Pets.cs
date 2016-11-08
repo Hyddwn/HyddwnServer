@@ -9,6 +9,7 @@ using Aura.Channel.World.Entities;
 using Aura.Shared.Network;
 using Aura.Channel.World;
 using Aura.Mabi.Network;
+using Aura.Mabi.Const;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -52,11 +53,11 @@ namespace Aura.Channel.Network.Sending
 		/// </remarks>
 		/// <param name="creature"></param>
 		/// <param name="pet"></param>
-		public static void PetRegister(Creature creature, Creature pet)
+		public static void PetRegister(Creature creature, Creature pet, SubordinateType type)
 		{
 			var packet = new Packet(Op.PetRegister, creature.EntityId);
 			packet.PutLong(pet.EntityId);
-			packet.PutByte(2); // Probably the follower type, see 5209
+			packet.PutByte((byte)type);
 
 			creature.Client.Send(packet);
 		}

@@ -121,6 +121,7 @@
     <Compile Include="Network\Sending\Helpers\TalentHelper.cs" />
     <Compile Include="Network\Sending\Send.Dungeons.cs" />
     <Compile Include="Network\Sending\Send.GMCP.cs" />
+    <Compile Include="Network\Sending\Send.RolePlaying.cs" />
     <Compile Include="Network\Sending\Send.Parties.cs" />
     <Compile Include="Network\Sending\Send.PersonalShops.cs" />
     <Compile Include="Network\Sending\Send.Entrusting.cs" />
@@ -254,6 +255,7 @@
     <Compile Include="World\Dungeons\Generation\MazeMove.cs" />
     <Compile Include="World\Dungeons\Generation\MazeRoomInternal.cs" />
     <Compile Include="World\Dungeons\Generation\Position.cs" />
+    <Compile Include="World\Entities\RpCharacter.cs" />
     <Compile Include="World\Guilds\GuildManager.cs" />
     <Compile Include="World\Dungeons\Props\Chest.cs" />
     <Compile Include="World\Dungeons\Props\Door.cs" />

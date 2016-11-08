@@ -48,11 +48,6 @@ namespace Aura.Channel.World.Entities
 		public GiftWeightInfo GiftWeights { get; set; }
 
 		/// <summary>
-		/// For initializing RP NPCs on login
-		/// </summary>
-		public Action OnNPCLoggedIn { get; protected set; }
-
-		/// <summary>
 		/// Location the NPC was spawned at.
 		/// </summary>
 		public Location SpawnLocation { get; set; }
@@ -67,7 +62,7 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public NPC()
 		{
-			this.EntityId = Interlocked.Increment(ref _npcId);
+			this.EntityId = GetNewNpcEntityId();
 
 			// Some default values to prevent errors
 			this.Name = "_undefined";
@@ -225,6 +220,14 @@ namespace Aura.Channel.World.Entities
 			this.Life = this.LifeMax;
 			this.Mana = this.ManaMax;
 			this.Stamina = this.StaminaMax;
+		}
+
+		/// <summary>
+		/// Returns a new, unused entity id in the NPC range.
+		/// </summary>
+		public static long GetNewNpcEntityId()
+		{
+			return Interlocked.Increment(ref _npcId);
 		}
 
 		/// <summary>

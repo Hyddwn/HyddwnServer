@@ -54,6 +54,13 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Check ability to move equip.
+			// (For example, RP characters usually can't.)
+			if ((source.IsEquip() || target.IsEquip()) && !creature.CanMoveEquip)
+			{
+				goto L_Fail;
+			}
+
 			// Check touchability
 			if (target.IsEquip())
 			{
@@ -171,6 +178,14 @@ namespace Aura.Channel.Network.Handlers
 			// Check item
 			var item = creature.Inventory.GetItem(entityId);
 			if (item == null)
+			{
+				Send.ItemDropR(creature, false, 0);
+				return;
+			}
+
+			// Check ability to move equip.
+			// (For example, RP characters usually can't.)
+			if (item.Info.Pocket.IsEquip() && !creature.CanMoveEquip)
 			{
 				Send.ItemDropR(creature, false, 0);
 				return;

@@ -24,6 +24,12 @@ public class MathDungeonScript : DungeonScript
 				return false;
 			}
 
+			if (creature.Pet != null)
+			{
+				Send.Notice(creature, L("You can't enter this dungeon with a pet."));
+				return false;
+			}
+
 			dungeonName = "g1rp_18_dunbarton_math_dungeon";
 			return true;
 		}
@@ -40,6 +46,12 @@ public class MathDungeonScript : DungeonScript
 			if (creature.Party.MemberCount != 2 && !IsEnabled("SoloRP"))
 			{
 				Send.Notice(creature, L("To enter this dungeon, you need a party with 2 members."));
+				return false;
+			}
+
+			if (creature.Pet != null)
+			{
+				Send.Notice(creature, L("You can't enter this dungeon with a pet."));
 				return false;
 			}
 

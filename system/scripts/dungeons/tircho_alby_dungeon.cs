@@ -104,6 +104,12 @@ public class AlbyDungeonScript : DungeonScript
 				return false;
 			}
 
+			if (creature.Pet != null)
+			{
+				Send.Notice(creature, L("You can't enter this dungeon with a pet."));
+				return false;
+			}
+
 			dungeonName = "g1rp_05_tircho_alby_dungeon";
 			return true;
 		}

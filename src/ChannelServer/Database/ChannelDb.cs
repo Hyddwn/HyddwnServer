@@ -203,7 +203,6 @@ namespace Aura.Channel.Database
 					character.Name = reader.GetStringSafe("name");
 					character.Server = reader.GetStringSafe("server");
 					character.RaceId = reader.GetInt32("race");
-					character.DeletionTime = reader.GetDateTimeSafe("deletionTime");
 					character.SkinColor = reader.GetByte("skinColor");
 					character.EyeType = reader.GetInt16("eyeType");
 					character.EyeColor = reader.GetByte("eyeColor");

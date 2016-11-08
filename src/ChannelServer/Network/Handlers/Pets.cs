@@ -59,7 +59,7 @@ namespace Aura.Channel.Network.Handlers
 			client.Creatures.Add(pet.EntityId, pet);
 
 			// Register and response
-			Send.PetRegister(creature, pet);
+			Send.PetRegister(creature, pet, SubordinateType.Pet);
 			Send.SummonPetR(creature, pet);
 
 			// Make pet appear by "warping" it (sends EnterRegion)

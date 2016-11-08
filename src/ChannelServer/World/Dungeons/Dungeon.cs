@@ -45,6 +45,8 @@ namespace Aura.Channel.World.Dungeons
 
 		private bool _manualCompletion;
 
+		private Dictionary<int, string> _roles = new Dictionary<int, string>();
+
 		/// <summary>
 		/// The size (width and height) of a dungeon tile.
 		/// </summary>
@@ -126,12 +128,23 @@ namespace Aura.Channel.World.Dungeons
 		public List<long> Creators { get; private set; }
 
 		/// <summary>
+		/// List of RP character entity ids that were created for this
+		/// dungeon. List is empty if dungeon is not an RP dungeon.
+		/// </summary>
+		public List<long> RpCharacters { get; private set; }
+
+		/// <summary>
 		/// The leader of the party that created this dungeon.
 		/// </summary>
 		/// <remarks>
 		/// Temp until we have an actual Party class.
 		/// </remarks>
 		public Creature PartyLeader { get; private set; }
+
+		/// <summary>
+		/// Returns true if roles have been set for this dungeon.
+		/// </summary>
+		public bool HasRoles { get { lock (_roles) return _roles.Any(); } }
 
 		/// <summary>
 		/// Creates new dungeon.
@@ -166,6 +179,7 @@ namespace Aura.Channel.World.Dungeons
 			this.Options = XElement.Parse("<option />");
 
 			this.Creators = new List<long>();
+			this.RpCharacters = new List<long>();
 			this.PartyLeader = creature;
 
 			// Only creatures who actually ENTER the dungeon at creation are considered "dungeon founders".
@@ -752,7 +766,7 @@ namespace Aura.Channel.World.Dungeons
 		/// <param name="cutsceneName"></param>
 		public void PlayCutscene(string cutsceneName)
 		{
-			Cutscene.Play(cutsceneName, this.PartyLeader);
+			this.PlayCutscene(cutsceneName, null);
 		}
 
 		/// <summary>
@@ -762,7 +776,15 @@ namespace Aura.Channel.World.Dungeons
 		/// <param name="onFinish"></param>
 		public void PlayCutscene(string cutsceneName, Action<Cutscene> onFinish)
 		{
-			Cutscene.Play(cutsceneName, this.PartyLeader, onFinish);
+			var viewers = this.GetRpCharactersOrCreators().ToArray();
+			if (viewers.Length == 0)
+				return;
+
+			var leader = this.PartyLeader;
+			if (!this.IsInside(leader.EntityId))
+				leader = viewers.First();
+
+			Cutscene.Play(cutsceneName, leader, onFinish, viewers);
 		}
 
 		/// <summary>
@@ -771,7 +793,8 @@ namespace Aura.Channel.World.Dungeons
 		/// <param name="creature"></param>
 		public void OnPlayerEntersLobby(Creature creature)
 		{
-			var isCreator = this.Creators.Contains(creature.EntityId);
+			var actualCreature = creature.GetActualCreature();
+			var isCreator = this.Creators.Contains(actualCreature.EntityId);
 
 			// Save location
 			// This happens whenever you enter the lobby.
@@ -785,9 +808,9 @@ namespace Aura.Channel.World.Dungeons
 			// Scroll message
 			var msg = "";
 			if (isCreator)
-				msg = Localization.Get("This dungeon has been created by you or your party.\t") + msg;
+				msg = Localization.Get("This dungeon has been created by you or your party.\t");
 			else
-				msg = Localization.Get("This dungeon has been created by another player.") + msg;
+				msg = Localization.Get("This dungeon has been created by another player.");
 
 			Send.Notice(creature, NoticeType.Top, ScrollMessageDuration, msg + this.GetPlayerListScrollMessage());
 
@@ -910,6 +933,37 @@ namespace Aura.Channel.World.Dungeons
 		}
 
 		/// <summary>
+		/// Returns all RP characters inside the dungeon.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetRpCharacters()
+		{
+			var result = new List<Creature>();
+
+			foreach (var entityId in this.RpCharacters)
+			{
+				var creature = this.GetCreature(entityId);
+				if (creature != null)
+					result.Add(creature);
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns either all RP characters or all creators currently in
+		/// the dungeon, depending on whether this is an RP dungeon or not.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetRpCharactersOrCreators()
+		{
+			if (this.HasRoles)
+				return this.GetRpCharacters();
+			else
+				return this.GetCreators();
+		}
+
+		/// <summary>
 		/// Returns true if a creature with the given id is inside
 		/// this dungeon.
 		/// </summary>
@@ -989,6 +1043,35 @@ namespace Aura.Channel.World.Dungeons
 		public void CompleteManually(bool val)
 		{
 			_manualCompletion = val;
+		}
+
+		/// <summary>
+		/// Registers a role-playing character.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="actorName"></param>
+		public void SetRole(int index, string actorName)
+		{
+			lock (_roles)
+				_roles[index] = actorName;
+		}
+
+		/// <summary>
+		/// Returns dungeon's roles registered with SetRole, sorted by their
+		/// index. 0 = leader, 1 = first other party member, etc.
+		/// </summary>
+		/// <returns></returns>
+		public List<string> GetRoles()
+		{
+			var result = new List<string>();
+
+			lock (_roles)
+			{
+				foreach (var role in _roles.OrderBy(a => a.Key))
+					result.Add(role.Value);
+			}
+
+			return result;
 		}
 	}
 }
