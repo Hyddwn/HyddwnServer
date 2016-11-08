@@ -164,20 +164,7 @@ namespace Aura.Channel.World.Entities
 		/// Starts RP session, removing actor from world and adding the
 		/// RP character.
 		/// </summary>
-		/// <param name="loc">Location to spawn character at.</param>
-		public void Start(Location loc)
-		{
-			this.Start(loc.RegionId, loc.X, loc.Y);
-		}
-
-		/// <summary>
-		/// Starts RP session, removing actor from world and adding the
-		/// RP character.
-		/// </summary>
-		/// <param name="regionId">Region to spawn character in.</param>
-		/// <param name="x">Position to spawn character at.</param>
-		/// <param name="y">Position to spawn character at.</param>
-		public void Start(int regionId, int x, int y)
+		public void Start()
 		{
 			var actor = this.Actor;
 			var rpCharacter = this;
