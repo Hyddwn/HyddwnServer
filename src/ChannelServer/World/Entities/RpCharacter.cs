@@ -180,6 +180,8 @@ namespace Aura.Channel.World.Entities
 		public void Start(int regionId, int x, int y)
 		{
 			var actor = this.Actor;
+			var rpCharacter = this;
+			var client = actor.Client;
 
 			actor.Region.RemoveCreature(actor);
 			actor.Lock(Locks.Default, true);
@@ -187,13 +189,13 @@ namespace Aura.Channel.World.Entities
 			var channelHost = ChannelServer.Instance.Conf.Channel.ChannelHost;
 			var channelPort = ChannelServer.Instance.Conf.Channel.ChannelPort;
 
-			actor.Client.Creatures.Remove(actor.EntityId);
-			actor.Client.Creatures.Add(this.EntityId, this);
-			this.Client.Controlling = this;
+			client.Creatures.Remove(actor.EntityId);
+			client.Creatures.Add(rpCharacter.EntityId, rpCharacter);
+			client.Controlling = rpCharacter;
 
-			Send.RequestSecondaryLogin(actor, this.EntityId, channelHost, channelPort);
-			Send.PetRegister(actor, this, SubordinateType.RpCharacter);
-			Send.StartRP(actor, this.EntityId);
+			Send.RequestSecondaryLogin(actor, rpCharacter.EntityId, channelHost, channelPort);
+			Send.PetRegister(actor, rpCharacter, SubordinateType.RpCharacter);
+			Send.StartRP(actor, rpCharacter.EntityId);
 		}
 
 		/// <summary>
@@ -202,20 +204,22 @@ namespace Aura.Channel.World.Entities
 		public void End()
 		{
 			var actor = this.Actor;
+			var rpCharacter = this;
+			var client = rpCharacter.Client;
 
 			Send.EndRP(actor, actor.RegionId);
-			this.Region.RemoveCreature(this);
+			rpCharacter.Region.RemoveCreature(rpCharacter);
 
 			var actorRegion = ChannelServer.Instance.World.GetRegion(actor.RegionId);
 			actorRegion.AddCreature(actor);
 
-			this.Client.Controlling = actor;
-			actor.Client.Creatures.Remove(this.EntityId);
-			actor.Client.Creatures.Add(actor.EntityId, actor);
+			client.Controlling = actor;
+			client.Creatures.Remove(rpCharacter.EntityId);
+			client.Creatures.Add(actor.EntityId, actor);
 			actor.Unlock(Locks.Default, true);
 
-			Send.PetUnregister(actor, this);
-			Send.Disappear(this);
+			Send.PetUnregister(actor, rpCharacter);
+			Send.Disappear(rpCharacter);
 		}
 	}
 }
