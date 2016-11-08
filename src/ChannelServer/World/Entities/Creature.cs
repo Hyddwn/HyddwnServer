@@ -355,6 +355,12 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public bool IsDualWielding { get { return this.RightHand != null && this.LeftHand != null && this.LeftHand.Data.WeaponType != 0; } }
 
+		/// <summary>
+		/// Returns whether the creature is naturally able to equip/unequip
+		/// items, based on its class.
+		/// </summary>
+		public virtual bool CanMoveEquip { get { return true; } }
+
 		// Movement
 		// ------------------------------------------------------------------
 

@@ -30,6 +30,12 @@ namespace Aura.Channel.World.Entities
 		public Creature Actor { get; private set; }
 
 		/// <summary>
+		/// Returns false, since RP characters aren't allowed to
+		/// move equipment.
+		/// </summary>
+		public override bool CanMoveEquip { get { return false; } }
+
+		/// <summary>
 		/// Creates new RP character, based on actor data.
 		/// </summary>
 		/// <param name="actorData">The data to base this character on.</param>
