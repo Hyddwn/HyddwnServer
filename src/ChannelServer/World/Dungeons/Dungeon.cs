@@ -45,6 +45,8 @@ namespace Aura.Channel.World.Dungeons
 
 		private bool _manualCompletion;
 
+		private Dictionary<int, string> _roles = new Dictionary<int, string>();
+
 		/// <summary>
 		/// The size (width and height) of a dungeon tile.
 		/// </summary>
@@ -132,6 +134,11 @@ namespace Aura.Channel.World.Dungeons
 		/// Temp until we have an actual Party class.
 		/// </remarks>
 		public Creature PartyLeader { get; private set; }
+
+		/// <summary>
+		/// Returns true if roles have been set for this dungeon.
+		/// </summary>
+		public bool HasRoles { get { lock (_roles) return _roles.Any(); } }
 
 		/// <summary>
 		/// Creates new dungeon.
@@ -989,6 +996,35 @@ namespace Aura.Channel.World.Dungeons
 		public void CompleteManually(bool val)
 		{
 			_manualCompletion = val;
+		}
+
+		/// <summary>
+		/// Registers a role-playing character.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="actorName"></param>
+		public void SetRole(int index, string actorName)
+		{
+			lock (_roles)
+				_roles[index] = actorName;
+		}
+
+		/// <summary>
+		/// Returns dungeon's roles registered with SetRole, sorted by their
+		/// index. 0 = leader, 1 = first other party member, etc.
+		/// </summary>
+		/// <returns></returns>
+		public List<string> GetRoles()
+		{
+			var result = new List<string>();
+
+			lock (_roles)
+			{
+				foreach (var role in _roles.OrderBy(a => a.Key))
+					result.Add(role.Value);
+			}
+
+			return result;
 		}
 	}
 }
