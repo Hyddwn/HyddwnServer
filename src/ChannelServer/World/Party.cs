@@ -135,6 +135,11 @@ namespace Aura.Channel.World
 		public int GuildNameVotes { get; set; }
 
 		/// <summary>
+		/// Returns true if any of the party members has a pet spawned.
+		/// </summary>
+		public bool HasPets { get { return this.GetMembers().Any(a => a.Pet != null); } }
+
+		/// <summary>
 		/// Initializes party.
 		/// </summary>
 		private Party()

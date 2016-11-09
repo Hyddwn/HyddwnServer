@@ -24,9 +24,9 @@ public class MathDungeonScript : DungeonScript
 				return false;
 			}
 
-			if (creature.Pet != null)
+			if (creature.Party.HasPets)
 			{
-				Send.Notice(creature, L("You can't enter this dungeon with a pet."));
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
 				return false;
 			}
 
@@ -49,9 +49,9 @@ public class MathDungeonScript : DungeonScript
 				return false;
 			}
 
-			if (creature.Pet != null)
+			if (creature.Party.HasPets)
 			{
-				Send.Notice(creature, L("You can't enter this dungeon with a pet."));
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
 				return false;
 			}
 
