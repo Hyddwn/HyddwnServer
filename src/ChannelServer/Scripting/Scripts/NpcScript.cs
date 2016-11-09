@@ -1454,6 +1454,17 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Displays as notice and system message.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public void SystemNotice(string format, params object[] args)
+		{
+			this.Notice(NoticeType.MiddleSystem, format, args);
+		}
+
+		/// <summary>
 		/// Displays system message in player's chat log.
 		/// </summary>
 		/// <param name="format"></param>
