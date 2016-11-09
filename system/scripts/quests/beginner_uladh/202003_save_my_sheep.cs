@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Save my Sheep
 //--- Description -----------------------------------------------------------
-// Auomatically started after Rescue Resident, involves the player being
+// Automatically started after Rescue Resident, involves the player being
 // warped to a dynamic region, where they have to protect sheep from being
 // killed by wolves.
 //---------------------------------------------------------------------------
