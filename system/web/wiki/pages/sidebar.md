@@ -7,7 +7,7 @@
     * Quests
     * [Beginner](?Beginner_Quests_(Uladh))
     * [Hunting](?Hunting_Quests)
-    * [Generation 1](?Generation_1)
     * [Role-Playing](?Role-Playing)
+    * [Generation 1](?Generation_1)
 
 </div>
