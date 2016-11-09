@@ -166,10 +166,6 @@ public class DougalScript : NpcScript
 				Msg("How about calling for an owl?<br/>Of course, that's only if they actually fly out this far.<br/>Hahaha...");
 				break;
 
-			case "shop_smith":
-				Msg("You sure have high expectations in a place with a total population of... one.");
-				break;
-
 			case "skill_rest":
 				Msg("Not being able to rest when you're tired<br/>is quite exhausting.");
 				Msg("What does that mean?");
