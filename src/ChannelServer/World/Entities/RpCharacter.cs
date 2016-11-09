@@ -161,6 +161,9 @@ namespace Aura.Channel.World.Entities
 			// Skills
 			this.Skills.Add(SkillId.CombatMastery, SkillRank.Novice, this.RaceId);
 
+			foreach (var skillData in this.RaceData.Skills)
+				this.Skills.Add((SkillId)skillData.SkillId, (SkillRank)skillData.Rank, this.RaceId);
+
 			foreach (var skillData in actorData.Skills)
 				this.Skills.Add(skillData.SkillId, skillData.Rank, this.RaceId);
 
