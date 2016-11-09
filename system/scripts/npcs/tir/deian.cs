@@ -140,8 +140,28 @@ public class DeianScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "Yeah, yeah. I'm a mere shepherd...for now.<br/>But I will soon be a mighty warrior!<br/>");
-				ModifyRelation(Random(2), 0, Random(3));
+				// Got White, Red, and Black Spider Fomor Scrolls?
+				// Give Giant Spider Fomor Scroll for spider RP dungeon.
+				if ((HasItem(71017) && HasItem(71018) && HasItem(71019)) && !HasItem(73108) && !HasKeyword("RP_Monster_GiantSpider_complete"))
+				{
+					GiveKeyword("RP_Monster_GiantSpider_start");
+					GiveItem(73108); // Giant Spider Fomor Scroll
+					SystemNotice(L("Received Giant Spider Fomor Scroll from Shepherd Boy Deian."));
+
+					Msg(L("Do you know there is a giant spider living inside Alby Dungeon?<br/>I picked up a scroll titled 'Giant Spider's Fomor Scroll'.<br/>I think you can see something if you use this in Alby Dungeon.<br/>You can have it. I don't need it."));
+				}
+				else
+				{
+					Msg(FavorExpression(), "Yeah, yeah. I'm a mere shepherd...for now.<br/>But I will soon be a mighty warrior!<br/>");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
+				break;
+
+			case "RP_Monster_GiantSpider_Born":
+				GiveItem(Item.CreateEnchanted(40023, prefix: 20203)); // Shepherd's Gathering Knife
+				RemoveKeyword("RP_Monster_GiantSpider_Born");
+
+				Msg(L("So, the Giant Spider had a great story behind it.<br/>But, it's incredible that you could experience the world from a spider's point of view.<br/>Alright. I'll give you a present for having done that.<br/>Check your Inventory."));
 				break;
 
 			case "rumor":

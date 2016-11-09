@@ -117,6 +117,12 @@ public class AlbyDungeonScript : DungeonScript
 		// Giant Spider Fomor Scroll (RP)
 		if (item.Info.Id == 73108)
 		{
+			if (creature.Keywords.Has("RP_Monster_GiantSpider_complete"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon anymore."));
+				return false;
+			}
+
 			if (creature.Party.MemberCount != 1)
 			{
 				Send.Notice(creature, L("You must enter this dungeon alone."));
