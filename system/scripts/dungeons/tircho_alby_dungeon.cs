@@ -114,6 +114,25 @@ public class AlbyDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Giant Spider Fomor Scroll (RP)
+		if (item.Info.Id == 73108)
+		{
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You must enter this dungeon alone."));
+				return false;
+			}
+
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
+			dungeonName = "rp_monster_giantspider";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{
