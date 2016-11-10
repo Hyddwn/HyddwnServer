@@ -174,7 +174,7 @@ namespace Aura.Channel.Skills
 		public void Train(int condition, int amount = 1)
 		{
 			// Only characters can train skills.
-			if (!_creature.IsCharacter)
+			if (_creature.IsPet)
 				return;
 
 			var bonus = "";
