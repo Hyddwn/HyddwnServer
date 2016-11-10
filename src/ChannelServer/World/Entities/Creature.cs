@@ -2316,8 +2316,12 @@ namespace Aura.Channel.World.Entities
 					// Only warn when creature was a player, we'll let NPCs fall
 					// back to Human 17 silently, until we know if they
 					// have specific level up stats.
-					if (this.IsPlayer)
-						Log.Warning("Creature.GiveExp: Level up stats missing for race {0}, age {1}. Falling back to Human 17.", this.RaceId, this.Age);
+					//if (this.IsPlayer)
+					//	Log.Warning("Creature.GiveExp: Level up stats missing for race {0}, age {1}. Falling back to Human 17.", this.RaceId, this.Age);
+
+					// Don't warn anymore, as that would put out a warning for
+					// every kill as an RP monster, since only normal
+					// characters and pets have level up stats.
 				}
 			}
 
