@@ -12,9 +12,10 @@ public class GiantSpiderRPDungeonScript : DungeonScript
 		dungeon.SetRole(0, "#giantspider");
 	}
 
-	public override void OnPartyEntered(Dungeon dungeon, Creature creature)
+	public override void OnPlayerEnteredFloor(Dungeon dungeon, Creature creature, int floor)
 	{
-		dungeon.PlayCutscene("RP_Monster_GiantSpider_00_a");
+		if (floor == 1)
+			dungeon.PlayCutscene("RP_Monster_GiantSpider_00_a");
 	}
 
 	public override void OnBoss(Dungeon dungeon)
