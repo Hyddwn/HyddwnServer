@@ -2599,9 +2599,14 @@ namespace Aura.Channel.World.Entities
 					break;
 
 				case ReviveOptions.PhoenixFeather:
-					// 10% additional injuries
-					this.Injuries += this.LifeInjured * 0.10f;
-					this.Life = 1;
+					// Only set life if life is not at max, since creatures
+					// will keep their life if they leveled up while dead.
+					if (this.Life < this.LifeMax)
+					{
+						// 10% additional injuries
+						this.Injuries += this.LifeInjured * 0.10f;
+						this.Life = 1;
+					}
 					break;
 
 				case ReviveOptions.WaitForRescue:
