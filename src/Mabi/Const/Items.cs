@@ -62,6 +62,7 @@ namespace Aura.Mabi.Const
 		PersonalInventory = 49,
 		VIPInventory = 50,
 		FarmStone = 81,
+		TailStyle = 90,
 		ItemBags = 100,
 		ItemBagsMax = 199,
 	}
@@ -100,7 +101,7 @@ namespace Aura.Mabi.Const
 		/// <returns></returns>
 		public static bool IsEquip(this Pocket pocket)
 		{
-			if ((pocket >= Pocket.Face && pocket <= Pocket.Accessory2) || (pocket >= Pocket.ArmorStyle && pocket <= Pocket.RobeStyle))
+			if ((pocket >= Pocket.Face && pocket <= Pocket.Accessory2) || (pocket >= Pocket.ArmorStyle && pocket <= Pocket.RobeStyle) || pocket == Pocket.TailStyle)
 				return true;
 			return false;
 		}
