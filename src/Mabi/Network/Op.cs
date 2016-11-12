@@ -744,6 +744,9 @@ namespace Aura.Mabi.Network
 		public const int SpecialUnitInfoRequest = 0x20F86;
 		public const int SpecialUnitInfoRequestR = 0x20F87;
 
+		public const int ErinnLandAchievementsRequest = 0x211DD;
+		public const int ErinnLandAchievementsList = 0x211DE;
+
 		public const int Run = 0x0F213303;
 		public const int Running = 0x0F44BBA3;
 		public const int CombatAttack = 0x0FCC3231;
