@@ -134,6 +134,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 			var firstSpawn = (creature.Region == Region.Limbo);
+			var prevRegionId = creature.RegionId;
 			var regionId = creature.WarpLocation.RegionId;
 
 			// Check permission
@@ -150,7 +151,7 @@ namespace Aura.Channel.Network.Handlers
 			var region = ChannelServer.Instance.World.GetRegion(regionId);
 			if (region == null)
 			{
-				Log.Warning("Player '{0}' tried to enter unknown region '{1}'.", creature.Name, regionId);
+				Log.Warning("EnterRegionRequest: Player '{0}' tried to enter unknown region '{1}'.", creature.Name, regionId);
 				return;
 			}
 
@@ -206,6 +207,10 @@ namespace Aura.Channel.Network.Handlers
 				if (dungeonLobbyRegion != null)
 					dungeonLobbyRegion.Dungeon.OnPlayerEntersLobby(creature);
 			}
+
+			// Raise entered event after sending the response packets,
+			// so the client is ready to receive things like cutscenes.
+			region.OnPlayerEntered(creature, prevRegionId);
 		}
 
 		/// <summary>

@@ -93,6 +93,18 @@ namespace Aura.Channel.World
 		public event Action<Creature> PlayerLeaves;
 
 		/// <summary>
+		/// Raised when a player was added to the region.
+		/// </summary>
+		/// <remarks>
+		/// Called after all is said and done, and the player is officially
+		/// in this region, unlike PlayerEnters, which is called during the
+		/// warp process, before informing the client about the successful
+		/// warp.
+		/// </remarks>
+		public event Action<Creature, int> PlayerEntered;
+		public void OnPlayerEntered(Creature creature, int prevRegionId) { this.PlayerEntered.Raise(creature, prevRegionId); }
+
+		/// <summary>
 		/// Initializes class.
 		/// </summary>
 		/// <param name="regionId"></param>

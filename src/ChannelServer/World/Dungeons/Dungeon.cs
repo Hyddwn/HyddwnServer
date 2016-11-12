@@ -560,6 +560,9 @@ namespace Aura.Channel.World.Dungeons
 					}
 				}
 			}
+
+			// Set up entered floor event.
+			region.PlayerEntered += (creature, prevRegionId) => this.Script.OnPlayerEnteredFloor(this, creature, iRegion);
 		}
 
 		/// <summary>
