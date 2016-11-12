@@ -73,4 +73,6 @@
 { name: "psy_motion", category: 53, type: 62, loop: false },
 { name: "motionnewyearsbow", category: 53, type: 63, loop: false },
 { name: "mask_cuteness", category: 53, type: 68, loop: false },
+{ name: "cheerup", category: 53, type: 82, loop: false },
+{ name: "bughunting", category: 53, type: 83, loop: false },
 ]

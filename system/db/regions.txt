@@ -396,6 +396,7 @@
 { id: 5014, name: "Samhain_Ceann_Hobor01", indoor: false },
 { id: 5015, name: "Samhain_onboard01", indoor: false },
 { id: 5016, name: "Region_test02", indoor: false },
+{ id: 5017, name: "ErinnLand", indoor: false },
 { id: 9000, name: "Iria_NW_glacier01_DG_after", indoor: true },
 { id: 9001, name: "Iria_NW_glacier01_DG_before", indoor: true },
 { id: 60200, name: "_TestRegion99", indoor: true },
