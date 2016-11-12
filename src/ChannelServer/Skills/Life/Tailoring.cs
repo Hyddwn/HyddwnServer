@@ -308,7 +308,7 @@ namespace Aura.Channel.Skills.Life
 						addProgress *= 2f;
 						result = ProgressResult.VeryGood;
 					}
-					// 85% chance for good
+					// 75% chance for good
 					else
 					{
 						// Too easy if more than two ranks below, which counts
