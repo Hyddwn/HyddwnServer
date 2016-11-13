@@ -19,6 +19,12 @@ public class MoresRPDungeonScript : DungeonScript
 		dungeon.PlayCutscene("G1_18_b_MoresRP");
 	}
 
+	public override void OnBossDeath(Dungeon dungeon, Creature boss, Creature killer)
+	{
+		if (dungeon.RemainingBosses <= 3)
+			dungeon.Complete();
+	}
+
 	public override void OnSectionCleared(Dungeon dungeon, int floor, int section)
 	{
 		if (floor == 1 && section == 3)

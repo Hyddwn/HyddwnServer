@@ -147,6 +147,11 @@ namespace Aura.Channel.World.Dungeons
 		public bool HasRoles { get { lock (_roles) return _roles.Any(); } }
 
 		/// <summary>
+		/// Remaining bosses in boss room.
+		/// </summary>
+		public int RemainingBosses { get { return _bossesRemaining; } }
+
+		/// <summary>
 		/// Creates new dungeon.
 		/// </summary>
 		/// <param name="instanceId"></param>
