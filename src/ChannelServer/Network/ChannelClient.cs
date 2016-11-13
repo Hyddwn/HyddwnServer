@@ -143,6 +143,11 @@ namespace Aura.Channel.Network
 						dungeonRegion.Dungeon.Script.OnLeftEarly(dungeonRegion.Dungeon, creature);
 				}
 
+				// Finish running cutscenes
+				var cutscene = creature.Temp.CurrentCutscene;
+				if (cutscene != null && cutscene.Leader == creature)
+					cutscene.Finish();
+
 				// Unspawn creature
 				creature.Region.RemoveCreature(creature);
 
