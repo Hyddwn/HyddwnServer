@@ -936,6 +936,25 @@ namespace Aura.Channel.World.Dungeons
 		}
 
 		/// <summary>
+		/// Returns all ActualCreatures of all RP characters inside
+		/// the dungeon.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetRpCreators()
+		{
+			var result = new List<Creature>();
+
+			foreach (var entityId in this.RpCharacters)
+			{
+				var creature = this.GetCreature(entityId);
+				if (creature != null)
+					result.Add(creature.GetActualCreature());
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Returns all RP characters inside the dungeon.
 		/// </summary>
 		/// <returns></returns>
