@@ -1270,6 +1270,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Returns true if a PTJ quest is active and its type matches
+		/// the given one.
+		/// </summary>
+		public bool DoingPtj(PtjType type)
+		{
+			var quest = this.Player.Quests.GetPtjQuest();
+			return (quest != null && quest.Data.PtjType == type);
+		}
+
+		/// <summary>
 		/// Returns true if a PTJ quest is active.
 		/// </summary>
 		public bool DoingPtj()
