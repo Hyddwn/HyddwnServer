@@ -64,15 +64,18 @@ namespace Aura.Channel.World
 			// Create list of viewers, with the leader being the first one
 			// (index 0), followed by the leader's party members and then
 			// the other viewers.
+			// Using List and Distinct to maintain the order, while getting
+			// each viewer only once. This is never gonna be a performance
+			// problem for us, but if it were we'd need a custom type.
 			var viewersList = new List<Creature>();
 
 			viewersList.Add(leader);
-			viewersList.AddRange(leader.Party.GetSortedMembers().Where(a => a != leader));
+			viewersList.AddRange(leader.Party.GetSortedMembers());
 
 			if (viewers != null)
-				viewersList.AddRange(viewers.Where(a => a != leader));
+				viewersList.AddRange(viewers);
 
-			_viewers = viewersList.ToArray();
+			_viewers = viewersList.Distinct().ToArray();
 		}
 
 		/// <summary>
