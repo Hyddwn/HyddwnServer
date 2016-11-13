@@ -46,7 +46,7 @@ public class TheThreeMissingWarriorsRPDungeonScript : DungeonScript
 			// Switch keywords for all members
 			// Iirc officials do it only for the leader, but really,
 			// who wants to run this thrice...?
-			foreach (var member in dungeon.GetRpCreators())
+			foreach (var member in dungeon.GetCreators())
 			{
 				if (member.Keywords.Has("g1_03"))
 				{

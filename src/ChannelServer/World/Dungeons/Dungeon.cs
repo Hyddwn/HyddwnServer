@@ -923,33 +923,18 @@ namespace Aura.Channel.World.Dungeons
 		}
 
 		/// <summary>
-		/// Returns creators inside the dungeon.
+		/// Returns creators inside the dungeon. If dungeon has roles,
+		/// it gets the creators by calling GetActualCreature on the
+		/// RP characters.
 		/// </summary>
 		/// <returns></returns>
 		public List<Creature> GetCreators()
 		{
 			var result = new List<Creature>();
 
-			foreach (var entityId in this.Creators)
-			{
-				var creature = this.GetCreature(entityId);
-				if (creature != null)
-					result.Add(creature);
-			}
+			var creatures = (this.HasRoles ? this.RpCharacters : this.Creators);
 
-			return result;
-		}
-
-		/// <summary>
-		/// Returns all ActualCreatures of all RP characters inside
-		/// the dungeon.
-		/// </summary>
-		/// <returns></returns>
-		public List<Creature> GetRpCreators()
-		{
-			var result = new List<Creature>();
-
-			foreach (var entityId in this.RpCharacters)
+			foreach (var entityId in creatures)
 			{
 				var creature = this.GetCreature(entityId);
 				if (creature != null)
