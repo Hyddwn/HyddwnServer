@@ -9,7 +9,7 @@ public class MoresRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#mores");
+		dungeon.SetRole(0, "#mores");
 	}
 
 	public override void OnBoss(Dungeon dungeon)

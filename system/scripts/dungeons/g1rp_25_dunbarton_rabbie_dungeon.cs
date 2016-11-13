@@ -10,9 +10,9 @@ public class RabbieTarlachRpDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#tarlach2");
-		//dungeon.SetRole(1, "#mari2");
-		//dungeon.SetRole(2, "#ruairi2");
+		dungeon.SetRole(0, "#tarlach2");
+		dungeon.SetRole(1, "#mari2");
+		dungeon.SetRole(2, "#ruairi2");
 	}
 
 	public override void OnPartyEntered(Dungeon dungeon, Creature creature)

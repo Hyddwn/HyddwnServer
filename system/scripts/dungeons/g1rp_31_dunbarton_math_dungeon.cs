@@ -9,8 +9,8 @@ public class ShielaMoresRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#shiela");
-		//dungeon.SetRole(1, "#mores");
+		dungeon.SetRole(0, "#shiela");
+		dungeon.SetRole(1, "#mores");
 	}
 
 	public virtual void OnPartyEntered(Dungeon dungeon, Creature creature)
