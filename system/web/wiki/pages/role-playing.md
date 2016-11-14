@@ -23,3 +23,21 @@ Giant Spider" and you're warped out of the dungeon.
 
 Go back to Deian and talk to him about the new keyword, you'll receive a
 **Shepherd's Gathering Knife** as reward.
+
+### Trefor
+
+Talk to Trefor during a part-time job for Deian or Tracy to get *Trefor's
+Gauntlet* from him. Drop the item onto the Alby dungeon altar to enter the
+dungeon as Trefor, in search for travelers who might need help.
+
+There's only one room in the dungeon, where an NPC is surrounded by 6
+Goblins that you have to kill to protect the NPC. if you fail to do so,
+and the NPC is killed, the RP ends. Be careful with your attacks, since
+you're able to hit the NPC.
+
+If you fail, you can go back to Trefor to try again. You can do this as
+many times as you want, but after the third fail you don't get a reward
+anymore. The NPC gets stronger after the first fail though, making the RP
+easier on repeated tries.
+
+If you succeed, you get a **Wooden Blade** as reward.
