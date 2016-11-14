@@ -200,7 +200,9 @@ namespace Aura.Channel.Skills.Combat
 				ManaShield.Handle(target, ref damage, tAction);
 
 				// Natural Shield
-				var delayReduction = NaturalShield.Handle(attacker, target, ref damage, tAction);
+				var nsResult = NaturalShield.Handle(attacker, target, ref damage, tAction);
+				var delayReduction = nsResult.DelayReduction;
+				var pinged = nsResult.Pinged;
 
 				// Deal with it!
 				if (damage > 0)
@@ -225,7 +227,7 @@ namespace Aura.Channel.Skills.Combat
 					attacker.Shove(target, KnockBackDistance);
 
 				// Reduce stun, based on ping
-				if (delayReduction > 0)
+				if (pinged && delayReduction > 0)
 					tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
 
 				// TODO: "Weakened" state (G12S2 gfSupportShotRenewal)
