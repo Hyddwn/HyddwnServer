@@ -140,7 +140,13 @@ namespace Aura.Channel.Skills.Combat
 			// I guess this isn't the case for Defense because it's never
 			// *explicitly* used.
 			if (!AuraData.FeaturesDb.IsEnabled("TalentRenovationCloseCombat"))
+			{
 				defendingCreature.Unlock(Locks.Run, true);
+
+				// For some reason the client won't actually unlock Run,
+				// unless the unlock is sent twice.
+				defendingCreature.Unlock(Locks.Run, true);
+			}
 
 			Send.SkillUseStun(defendingCreature, SkillId.Defense, DefenseTargetStun, 0);
 
