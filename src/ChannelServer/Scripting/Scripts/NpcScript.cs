@@ -1471,7 +1471,8 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="args"></param>
 		public void SystemNotice(string format, params object[] args)
 		{
-			this.Notice(NoticeType.MiddleSystem, format, args);
+			this.Notice(format, args);
+			this.SystemMsg(format, args);
 		}
 
 		/// <summary>
