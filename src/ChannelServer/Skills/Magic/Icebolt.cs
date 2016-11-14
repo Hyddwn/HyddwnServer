@@ -80,7 +80,9 @@ namespace Aura.Channel.Skills.Magic
 			ManaShield.Handle(target, ref damage, tAction);
 
 			// Mana Deflector
-			var delayReduction = ManaDeflector.Handle(attacker, target, ref damage, tAction);
+			var mdResult = ManaDeflector.Handle(attacker, target, ref damage, tAction);
+			var delayReduction = mdResult.DelayReduction;
+			var pinged = mdResult.Pinged;
 
 			// Deal damage
 			if (damage > 0)
@@ -95,7 +97,7 @@ namespace Aura.Channel.Skills.Magic
 			}
 
 			// Reduce stun, based on ping
-			if (delayReduction > 0)
+			if (pinged && delayReduction > 0)
 				tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
 
 			// Death/Knockback
