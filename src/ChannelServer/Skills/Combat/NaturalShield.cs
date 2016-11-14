@@ -102,7 +102,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="target"></param>
 		/// <param name="damage"></param>
 		/// <param name="tAction"></param>
-		public static NaturalShieldResult Handle(Creature attacker, Creature target, ref float damage, TargetAction tAction)
+		public static PassiveDefenseResult Handle(Creature attacker, Creature target, ref float damage, TargetAction tAction)
 		{
 			var pinged = false;
 			var used = false;
@@ -170,16 +170,16 @@ namespace Aura.Channel.Skills.Combat
 			if (damageReduction > 0)
 				damage = Math.Max(1, damage - (damage / 100 * damageReduction));
 
-			return new NaturalShieldResult(pinged, delayReduction);
+			return new PassiveDefenseResult(pinged, delayReduction);
 		}
 	}
 
-	public struct NaturalShieldResult
+	public struct PassiveDefenseResult
 	{
 		public readonly bool Pinged;
 		public readonly float DelayReduction;
 
-		public NaturalShieldResult(bool pinged, float delayReduction)
+		public PassiveDefenseResult(bool pinged, float delayReduction)
 		{
 			this.Pinged = pinged;
 			this.DelayReduction = delayReduction;
