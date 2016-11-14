@@ -2572,6 +2572,16 @@
 		]},	]},
 ]},
 
+// Alby Dungeon
+{ name: "rp_monster_chicken", engName: "Alby Dungeon", style: 100000, baseSeed: 12345000, lobby: 12, exit: "Uladh_Dungeon_Beginners_Hall1/_Uladh_Dungeon_Beginners_Hall1/Dungeon_Beginners_Outer_Spawn", stairs: 10038, saveStatue: 10035, lastStatue: 10032, door: 10102, bossDoor: 10104, bossExitDoor: 10105, floors: [
+	{ width: 6, height: 6, critPathMin: 8, critPathMax: 8, branch: 3, coverage: 30, hasBoss: true, color: [0x00FFFFFF,0x00FFFFFF,0x00FFFFFF], lightColor: [0x00FFFFFF,0x00FFFFFF,0x00FFFFFF], sections: [
+		{ min: 3, max: 3, puzzles: [
+			{ script: "rp_chicken" },
+			{ script: "rp_chicken" },
+			{ script: "rp_giantspider2" },
+		]},	]},
+]},
+
 // Rabbie
 //---------------------------------------------------------------------------
 
