@@ -29,10 +29,10 @@ public class ElenIronOreMiningQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk") && npc.HasItem(64002, 5))
+		if (npc.QuestActive(this.Id, "talk") && npc.HasItem(64002, 10))
 		{
 			npc.FinishQuest(this.Id, "talk");
-			npc.RemoveItem(64002, 5); // Iron Ore
+			npc.RemoveItem(64002, 10); // Iron Ore
 			npc.Msg("(Missing dialog: Mine Lumps of Iron Ore)");
 
 			return HookResult.Break;
