@@ -18,14 +18,9 @@ Finding the Lost Earring
 
 1. You will be asked to find a **lost earring** among countless snowmen in
    the field of Sidhe Sneachta.
-2. A nearby bulletin board will provide a vital clue in distinguishing the
-   lone snowman within which the earring is to be found.
-   - Look for the snowman with 16 teeth, then hit it repeatedly until you get
-     the earring.
-   - The snowman is located almost directly south of the portal to the
-     Northern Field of Sidhe Sneachta, four snowmen down.
-   - **You** must be the one to find it; you cannot accept another
-     player's earring.
+2. Look for a snowman with a sparkling effect and hit it repeatedly until
+   you get the earring.
+3. Deliver the earring to Duncan in Tir Chonaill.
 
 
 The Three Missing Warriors
