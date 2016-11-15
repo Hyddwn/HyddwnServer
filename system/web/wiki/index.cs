@@ -52,7 +52,6 @@ public class WikiController : Controller
 
 			if (page.Contents == null || File.GetLastWriteTime(pageFilePath) > page.LastUpdate)
 			{
-				Log.Debug("recache");
 				page.Contents = GetPageContents(server, pageFilePath);
 				page.LastUpdate = DateTime.Now;
 			}
