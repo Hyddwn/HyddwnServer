@@ -6,6 +6,8 @@ start a new character. They provide some useful rewards, like certain basic
 skills, experience points (EXP), ability points (AP), and money (gold),
 and guide the player through Uladh.
 
+__TOC__
+
 Nao's Letter of Introduction
 -----------------------------------------------------------------------------
 

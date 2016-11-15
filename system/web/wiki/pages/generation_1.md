@@ -1,7 +1,10 @@
 Generation 1
 =============================================================================
 
-You have to be Level 5 or higher to begin the mainstream quest line.
+Generation 1 is the first in a series of quest-lines that tell a variety
+of stories. You have to be level 5 or higher to begin G1.
+
+__TOC__
 
 Finding the Lost Earring
 -----------------------------------------------------------------------------

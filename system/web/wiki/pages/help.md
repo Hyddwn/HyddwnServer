@@ -9,6 +9,8 @@ Custom pages should go into the [user folder](https://github.com/aura-project/au
 improvements to existing pages should be pushed to the [main repository](https://github.com/aura-project/aura),
 for the benefit of all Aura users.
 
+__TOC__
+
 URL
 ------------------------------------------------------------------------------
 
