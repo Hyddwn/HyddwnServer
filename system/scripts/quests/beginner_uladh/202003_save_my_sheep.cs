@@ -110,7 +110,7 @@ public class SaveMySheepQuestScript : QuestScript
 					return;
 				}
 
-				Send.UpdateQuestTimerCounter(creature, L("Remaining sheep: {0}"), sheepAmount);
+				Send.UpdateQuestTimer(creature, L("Remaining sheep: {0}"), sheepAmount);
 			};
 			npc.Spawn(region.Id, pos.X, pos.Y);
 		}
