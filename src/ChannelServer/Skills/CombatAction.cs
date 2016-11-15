@@ -258,7 +258,7 @@ namespace Aura.Channel.Skills
 				{
 					var aAction = action as AttackerAction;
 
-					if (action.Creature.IsPlayer && action.Is(CombatActionType.RangeHit) && !AuraData.FeaturesDb.IsEnabled("CombatSystemRenewal"))
+					if (action.Creature.IsPlayer && action.SkillId >= SkillId.RangedAttack && action.SkillId <= SkillId.UrgentShot && !AuraData.FeaturesDb.IsEnabled("CombatSystemRenewal"))
 					{
 						// Players don't seem to be stunned from ranging
 						// on old officials. While the proper stun is sent
