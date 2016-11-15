@@ -75,6 +75,11 @@ public class WikiController : Controller
 		}));
 	}
 
+	/// <summary>
+	/// Returns page name, based on query string.
+	/// </summary>
+	/// <param name="queryString"></param>
+	/// <returns></returns>
 	private string GetPageName(string queryString)
 	{
 		if (string.IsNullOrWhiteSpace(queryString))
@@ -87,6 +92,12 @@ public class WikiController : Controller
 		return result;
 	}
 
+	/// <summary>
+	/// Returns a list of pages, the key being the title of the page and the
+	/// value being the file name.
+	/// </summary>
+	/// <param name="server"></param>
+	/// <returns></returns>
 	private Dictionary<string, string> GetPages(HttpServer server)
 	{
 		var result = new Dictionary<string, string>();
@@ -113,6 +124,12 @@ public class WikiController : Controller
 		return result;
 	}
 
+	/// <summary>
+	/// Modifies given HTML code to include anchors for all headers and
+	/// returns a table of contents for them.
+	/// </summary>
+	/// <param name="html"></param>
+	/// <returns></returns>
 	private string GenerateTableOfContents(ref string html)
 	{
 		var level = 0;
@@ -153,6 +170,11 @@ public class WikiController : Controller
 		return result.ToString();
 	}
 
+	/// <summary>
+	/// Replaces non-word characters with underscores.
+	/// </summary>
+	/// <param name="title"></param>
+	/// <returns></returns>
 	private string ToAnchorName(string title)
 	{
 		title = title.Replace("'", "");
