@@ -82,7 +82,10 @@ Save my Sheep
 ### Additional Information
 
 When the player agrees to look after Deian's sheep, they will be teleported
-to an enclosed area. For five minutes, the player must protect the sheep
+to an enclosed area. For
+<span data-feature="!ShortSheepProtection">five</span>
+<span data-feature="ShortSheepProtection">three</span>
+minutes, the player must protect the sheep
 from a pack of Gray Wolves. The mission will fail if the player dies and
 teleports back to town or the number of sheep falls below 5.
 
