@@ -156,6 +156,11 @@ namespace Aura.Channel.Network
 				// original position.
 				if (newLocation.RegionId != 0)
 					creature.SetLocation(newLocation);
+
+				// Update online status
+				var playerCreature = creature as PlayerCreature;
+				if (playerCreature != null)
+					ChannelServer.Instance.Database.UpdateOnlineStatus(playerCreature.CreatureId, false);
 			}
 
 			// Save everything after we're done cleaning up
