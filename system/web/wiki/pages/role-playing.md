@@ -7,6 +7,8 @@ These typically take place in a dungeon, which you enter by dropping
 special items on their altar. Afterwards, you're warped in, taking the
 form of other characters.
 
+__TOC__
+
 Single-player
 -----------------------------------------------------------------------------
 
@@ -47,3 +49,9 @@ If you succeed, you get a **Wooden Blade** as reward.
 Give Caitin a Golden Egg as a gift to receive the *Egg from Caitin*.
 Drop this egg onto the Alby dungeon altar to play a chick on its search
 for its mother.
+
+<style>
+	.toc-level2 {
+		display: block;
+	}
+</style>
