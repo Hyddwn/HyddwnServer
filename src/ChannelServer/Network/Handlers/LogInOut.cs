@@ -79,8 +79,16 @@ namespace Aura.Channel.Network.Handlers
 				character.Client = client;
 
 				client.State = ClientState.LoggedIn;
+
+				// Update online status
 				ChannelServer.Instance.Database.SetAccountLoggedIn(account.Id, true);
 
+				var playerCreature = character as PlayerCreature;
+				if (playerCreature != null)
+					ChannelServer.Instance.Database.UpdateOnlineStatus(playerCreature.CreatureId, true);
+				ChannelServer.Instance.Database.UpdateOnlineStatus((character as PlayerCreature).CreatureId, true);
+
+				// Response
 				Send.ChannelLoginR(client, character.EntityId);
 
 				// Special login to Soul Stream for new chars and on birthdays
