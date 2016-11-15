@@ -4,6 +4,8 @@ Hunting Quests
 Considered to be part of the [Beginner Quests](?Beginner_Quests_(Uladh)),
 the Hunting Quests task you with killing certain monsters throughout Uladh.
 
+__TOC__
+
 Hunt 5 White Spiders
 -----------------------------------------------------------------------------
 
