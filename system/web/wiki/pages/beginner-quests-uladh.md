@@ -485,7 +485,7 @@ Reach Level 40
 
 ### How to get
 
-- Reach level 55.
+- Reach level 35.
 
 ### Objectives
 
