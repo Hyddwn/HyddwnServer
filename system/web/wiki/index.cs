@@ -20,7 +20,9 @@ using System.Threading.Tasks;
 
 public class WikiController : Controller
 {
-	private Dictionary<string, string> pages;
+	private const string DefaultPageTitle = "Main Page";
+
+	private Dictionary<string, Page> pages;
 
 	private Regex _headerRegex = new Regex(@"<h(?<number>[1-6])>(?<title>.*?)<\/h[1-6]>", RegexOptions.Compiled);
 	private string _tocCheck = "<p><strong>TOC</strong></p>";
@@ -37,35 +39,32 @@ public class WikiController : Controller
 		var handlebars = server.GetEngine("hbs");
 		var commonmark = server.GetEngine("md");
 
-		var name = "main";
-		var exists = true;
+		Page page = null;
+		string content;
 
-		var pageName = GetPageName(request.RawQueryString);
-		if (!string.IsNullOrWhiteSpace(pageName))
+		var pageTitle = GetPageName(request.RawQueryString);
+		if (string.IsNullOrWhiteSpace(pageTitle))
+			pageTitle = DefaultPageTitle;
+
+		if (pages.TryGetValue(pageTitle, out page))
 		{
-			if (!pages.TryGetValue(pageName, out name))
-				exists = false;
+			var pageFilePath = server.GetLocalPath("wiki/pages/" + page.FileName + ".md");
+
+			if (page.Contents == null || File.GetLastWriteTime(pageFilePath) > page.LastUpdate)
+			{
+				Log.Debug("recache");
+				page.Contents = GetPageContents(server, pageFilePath);
+				page.LastUpdate = DateTime.Now;
+			}
+
+			content = page.Contents;
+		}
+		else
+		{
+			content = handlebars.RenderFile(server.GetLocalPath("wiki/templates/notfound.htm"), new { pageTitle });
 		}
 
-		var pageFilePath = server.GetLocalPath("wiki/pages/" + name + ".md");
-		if (pageFilePath == null)
-			exists = false;
-
-		string content;
-		if (exists)
-			content = commonmark.RenderFile(pageFilePath);
-		else
-			content = handlebars.RenderFile(server.GetLocalPath("wiki/templates/notfound.htm"), new { pageName });
-
 		var sidebar = commonmark.RenderFile(server.GetLocalPath("wiki/pages/sidebar.md"));
-
-		// Insert table of contents
-		// (TODO: Cache, so it doesn't have to be done every time.)
-		//if (content.Contains(_tocCheck))
-		//{
-		//	var toc = this.GenerateTableOfContents(ref content);
-		//	content = content.Replace(_tocCheck, toc);
-		//}
 
 		// Render
 		response.Send(handlebars.RenderFile(server.GetLocalPath("wiki/templates/main.htm"), new
@@ -93,14 +92,13 @@ public class WikiController : Controller
 	}
 
 	/// <summary>
-	/// Returns a list of pages, the key being the title of the page and the
-	/// value being the file name.
+	/// Returns a list of pages, the key being the title of the page.
 	/// </summary>
 	/// <param name="server"></param>
 	/// <returns></returns>
-	private Dictionary<string, string> GetPages(HttpServer server)
+	private Dictionary<string, Page> GetPages(HttpServer server)
 	{
-		var result = new Dictionary<string, string>();
+		var result = new Dictionary<string, Page>();
 
 		var commonmark = server.GetEngine("md");
 		var titleRegex = new Regex(@"<h1>(?<name>.+?)<\/h1>", RegexOptions.Compiled);
@@ -118,10 +116,31 @@ public class WikiController : Controller
 			if (match.Success)
 				pageName = match.Groups["name"].Value;
 
-			result[pageName] = name;
+			result[pageName] = new Page() { Title = pageName, FileName = name };
 		}
 
 		return result;
+	}
+
+	/// <summary>
+	/// Returns the contents for the page at filePath, rendered with
+	/// CommonMark and with a TOC if applicable.
+	/// </summary>
+	/// <param name="server"></param>
+	/// <param name="filePath"></param>
+	/// <returns></returns>
+	private string GetPageContents(HttpServer server, string filePath)
+	{
+		var commonmark = server.GetEngine("md");
+		var contents = commonmark.RenderFile(filePath);
+
+		if (contents.Contains(_tocCheck))
+		{
+			var toc = this.GenerateTableOfContents(ref contents);
+			contents = contents.Replace(_tocCheck, toc);
+		}
+
+		return contents;
 	}
 
 	/// <summary>
@@ -140,7 +159,7 @@ public class WikiController : Controller
 			return "";
 
 		var result = new StringBuilder();
-		result.AppendLine("<div class=\"toc\"><div class=\"title\">Contents</div><ol>");
+		result.AppendLine("<div class=\"toc\"><div class=\"title\">Contents</div><ul class=\"list\">");
 
 		var prevHeaderNumber = 0;
 		foreach (Match match in headerMatches)
@@ -159,7 +178,18 @@ public class WikiController : Controller
 			var title = match.Groups["title"].Value;
 			var href = this.ToAnchorName(title);
 
-			result.AppendLine(string.Format("<li class=\"toc-level{2}\"><a href=\"#{3}\">{1}</a></li>", number, title, level, href));
+			var num = (number - 1).ToString();
+			if (level - 1 != 0)
+				num += "." + (level - 1);
+
+			result.AppendLine(string.Format(
+				"<li class=\"toc-level{2}\">" +
+					"<a href=\"#{3}\">" +
+						"<span class=\"number\">{4}</span>{1}" +
+					"</a>" +
+				"</li>"
+				, number, title, level, href, num)
+			);
 			html = html.Replace(match.Groups[0].Value, string.Format("<h{0}><span id=\"{1}\"></span>{2}</h{0}>", headerNumber, href, title));
 
 			prevHeaderNumber = headerNumber;
@@ -179,7 +209,16 @@ public class WikiController : Controller
 	{
 		title = title.Replace("'", "");
 		title = Regex.Replace(title, @"[^\w]+", "_");
+		title = title.Trim('_');
 
 		return title;
+	}
+
+	private class Page
+	{
+		public string Title { get; set; }
+		public string FileName { get; set; }
+		public string Contents { get; set; }
+		public DateTime LastUpdate { get; set; }
 	}
 }
