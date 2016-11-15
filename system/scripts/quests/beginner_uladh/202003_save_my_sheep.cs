@@ -65,7 +65,7 @@ public class SaveMySheepQuestScript : QuestScript
 		return HookResult.Continue;
 	}
 
-	const int Time = 180000 / 3; // Duration
+	const int Minute = 60 * 1000; // A minute in milliseconds
 	const int SheepAmount = 20; // Sheeps to protect
 	const int SheepMinAmount = 5; // Amount you need to save to succeed
 	const int WolfAmount = 10; // Wolves to (re)spawn
@@ -73,6 +73,14 @@ public class SaveMySheepQuestScript : QuestScript
 
 	public void CreateRegionAndWarp(Creature creature)
 	{
+		// Get duration
+		var time = 5;
+		if (IsEnabled("ShortSheepProtection"))
+			time = 3;
+
+		time *= Minute;
+
+		// Create region
 		var region = new DynamicRegion(118);
 		ChannelServer.Instance.World.AddRegion(region);
 
@@ -80,7 +88,7 @@ public class SaveMySheepQuestScript : QuestScript
 		var sheepAmount = SheepAmount;
 
 		// After x ms (success)
-		var timer = SetTimeout(Time, () =>
+		var timer = SetTimeout(time, () =>
 		{
 			// Unofficial, I think the msg also depends on how well you did.
 			// Official >10: Thanks to my dilligent supervision, over 10 sheep are safe.
@@ -121,7 +129,7 @@ public class SaveMySheepQuestScript : QuestScript
 
 		// Warp to region and start visible timer
 		creature.Warp(region.Id, 60000, 58000);
-		Send.SetQuestTimer(creature, Time, L("Protect the sheep from wolves"), L("Deadline: {0}"), L("Remaining sheep: {0}"), sheepAmount);
+		Send.SetQuestTimer(creature, time, L("Protect the sheep from wolves"), L("Deadline: {0}"), L("Remaining sheep: {0}"), sheepAmount);
 	}
 
 	private void SpawnWolf(int regionId, Random rnd)

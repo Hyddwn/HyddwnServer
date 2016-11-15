@@ -346,6 +346,9 @@
 		]},
 		// Enables quest tabs.
 		{ name: "QuestViewRenewal", enabled: true },
+		
+		// Makes sheep protection quest easier. (Part of gfC4Tutorial)
+		{ name: "ShortSheepProtection", enabled: true },
 	]},
 	
 	// Season 2
