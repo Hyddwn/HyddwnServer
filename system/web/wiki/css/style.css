@@ -97,6 +97,11 @@ a:hover {
 	padding-left: 40px;
 }
 
+.toc-level3 {
+	display: none;
+	padding-left: 80px;
+}
+
 .toc .number {
 	margin-right: 10px;
 }

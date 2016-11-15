@@ -151,8 +151,8 @@ public class WikiController : Controller
 	/// <returns></returns>
 	private string GenerateTableOfContents(ref string html)
 	{
-		var level = 0;
-		var number = 1;
+		var currentLevel = 0;
+		var levels = new List<int>();
 
 		var headerMatches = _headerRegex.Matches(html);
 		if (headerMatches.Count == 0)
@@ -165,31 +165,36 @@ public class WikiController : Controller
 		foreach (Match match in headerMatches)
 		{
 			var headerNumber = Convert.ToInt32(match.Groups["number"].Value);
+
+			// Ignore H1
 			if (headerNumber == 1)
 				continue;
-			else if (headerNumber == 2)
-				number++;
 
-			if (prevHeaderNumber < headerNumber)
-				level++;
-			else if (prevHeaderNumber > headerNumber)
-				level--;
+			// Remove one level if we go back to a higher header
+			if (prevHeaderNumber > headerNumber)
+				levels.RemoveAt(levels.Count - 1);
 
+			// Set current level to header number and add levels as needed
+			currentLevel = headerNumber - 1;
+			while (levels.Count < currentLevel)
+				levels.Add(0);
+
+			// Increase the current level by one.
+			levels[currentLevel - 1]++;
+
+			// Build list item
 			var title = match.Groups["title"].Value;
 			var href = this.ToAnchorName(title);
-
-			var num = (number - 1).ToString();
-			if (level - 1 != 0)
-				num += "." + (level - 1);
+			var number = string.Join(".", levels.Select(a => a.ToString()));
 
 			result.AppendLine(string.Format(
-				"<li class=\"toc-level{2}\">" +
-					"<a href=\"#{3}\">" +
-						"<span class=\"number\">{4}</span>{1}" +
+				"<li class=\"toc-level{0}\">" +
+					"<a href=\"#{1}\">" +
+						"<span class=\"number\">{2}</span>{3}" +
 					"</a>" +
 				"</li>"
-				, number, title, level, href, num)
-			);
+				, currentLevel, href, number, title
+			));
 			html = html.Replace(match.Groups[0].Value, string.Format("<h{0}><span id=\"{1}\"></span>{2}</h{0}>", headerNumber, href, title));
 
 			prevHeaderNumber = headerNumber;
