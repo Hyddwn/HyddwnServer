@@ -717,7 +717,7 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 				catch (Exception ex)
 				{
-					Log.Exception(ex, "Exception during SetInterval callback in {0}.", this.GetType().Name);
+					Log.Exception(ex, "Exception during SetTimeout callback in {0}.", this.GetType().Name);
 				}
 				GC.KeepAlive(timer);
 			}
