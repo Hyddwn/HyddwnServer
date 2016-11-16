@@ -216,7 +216,13 @@ namespace Aura.Channel.Skills.Combat
 			// Reduce life in old combat system
 			if (!AuraData.FeaturesDb.IsEnabled("CombatSystemRenewal"))
 			{
-				var amount = (attacker.LifeMax < 10 ? 2 : attacker.LifeMax / 10);
+				// Default reduction is 10%, it's reduced to 2% if attacker
+				// has less max life than the rate is set to.
+				var lifeReducationRate = skill.RankData.Var2;
+				if (attacker.LifeMax < lifeReducationRate)
+					lifeReducationRate /= 5;
+
+				var amount = attacker.LifeMax / 100f * lifeReducationRate;
 				attacker.ModifyLife(-amount);
 
 				// TODO: Invincibility
