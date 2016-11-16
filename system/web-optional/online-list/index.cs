@@ -57,7 +57,7 @@ public class OnlineListController : Controller
 					character.Name = reader.GetStringSafe("name");
 					character.RaceId = reader.GetInt32("race");
 					character.Level = reader.GetInt32("level");
-					character.TotalLevel = reader.GetInt32("levelTotal") + character.Level;
+					character.TotalLevel = reader.GetInt32("levelTotal");
 					character.Age = reader.GetInt32("age");
 					character.RegionId = reader.GetInt32("region");
 
