@@ -27,7 +27,7 @@ public class WikiController : Controller
 	private Regex _headerRegex = new Regex(@"<h(?<number>[1-6])>(?<title>.*?)<\/h[1-6]>", RegexOptions.Compiled);
 	private string _tocCheck = "<p><strong>TOC</strong></p>";
 
-	public override void Handle(HttpRequestEventArgs args, string requestuestPath, string localPath)
+	public override void Handle(HttpRequestEventArgs args, string requestedPath, string localPath)
 	{
 		var request = args.Request;
 		var response = args.Response;
