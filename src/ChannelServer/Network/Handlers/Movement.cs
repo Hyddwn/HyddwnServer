@@ -37,7 +37,12 @@ namespace Aura.Channel.Network.Handlers
 			var unkByte1 = packet.GetByte();
 			var unkByte2 = packet.GetByte();
 
-			var creature = client.GetCreatureSafe(packet.Id);
+			// Don't use GetCreatureSafe here, since pets may send another
+			// move packet after they have already been despawned,
+			// which kicks their master.
+			var creature = client.GetCreature(packet.Id);
+			if (creature == null)
+				return;
 
 			var from = creature.GetPosition();
 			var to = new Position(x, y);
