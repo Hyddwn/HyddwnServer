@@ -632,6 +632,8 @@ namespace Aura.Channel.World.Entities
 				score += this.Toughness * taste.Toughness;
 				score += this.Utility * taste.Utility;
 
+				score /= 8;
+
 				return (int)score;
 			}
 		}
