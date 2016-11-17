@@ -254,7 +254,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		protected virtual async Task Gift(Item gift, GiftReaction reaction)
 		{
-			this.Msg("Thank you.");
+			this.Msg(Localization.Get("Thank you."));
 
 			await Task.Yield();
 		}
