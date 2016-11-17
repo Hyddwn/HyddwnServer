@@ -524,7 +524,7 @@ namespace Aura.Channel.World.Shops
 			var val = this.LicenseItem.MetaData1.GetInt("EVALUE") + revenue;
 			val = Math.Min(this.LicenseData.Limit, val);
 
-			this.LicenseItem.MetaData1.SetInt("EVALUE", revenue);
+			this.LicenseItem.MetaData1.SetInt("EVALUE", val);
 			Send.ItemUpdate(this.Owner, this.LicenseItem);
 
 			return true;
