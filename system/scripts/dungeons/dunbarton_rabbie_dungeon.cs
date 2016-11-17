@@ -66,6 +66,31 @@ public class RabbieDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Ranald's Medal (RP)
+		if (item.Info.Id == 73101)
+		{
+			if (creature.Keywords.Has("RP_Ranald_Complete"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon anymore."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You must enter this dungeon alone."));
+				return false;
+			}
+
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
+			dungeonName = "rp_ranald_dunbarton_rabbie_dungeon";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{
