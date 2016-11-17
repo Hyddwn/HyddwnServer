@@ -446,20 +446,27 @@ public class DuncanScript : NpcScript
 		switch (reaction)
 		{
 			case GiftReaction.Love:
-				Msg("Oh! How did you know I like this?<br/>Thank you very much.");
+				Msg(L("Oh! How did you know I like this?<br/>Thank you very much."));
+				break;
+
+			case GiftReaction.Like:
+				RndMsg(
+					L("Ah, thank you very much.<br/>As a matter of fact, I've been looking for this."),
+					L("Hahaha, I don't know if I can take this. Thank you!")
+				);
+				break;
+
+			case GiftReaction.Neutral:
+				RndMsg(
+					L("Is that for me?"),
+					L("You didn't need to do this...")
+				);
 				break;
 
 			case GiftReaction.Dislike:
 				RndMsg(
-					"Hmm. Not exactly to my taste...",
-					"Hmm. I'll keep it safe for someone who may need it."
-				);
-				break;
-
-			default:
-				RndMsg(
-					"Is that for me?",
-					"You didn't need to do this..."
+					L("Hmm. Not exactly to my taste..."),
+					L("Hmm. I'll keep it safe for someone who may need it.")
 				);
 				break;
 		}
