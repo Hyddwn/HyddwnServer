@@ -230,6 +230,10 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				var score = this.GetGiftReaction(gift);
 
+				// Debug output
+				if (this.Player.IsDev)
+					this.Msg(string.Format("-Debug-<br/>Reaction: {0}<br/>Score: {1}", this.NPC.GiftWeights.CalculateScore(gift), score));
+
 				await Hook("before_gift", gift, score);
 
 				await this.Gift(gift, score);
