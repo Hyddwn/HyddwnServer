@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Ranald RP dungeon
 //--- Description -----------------------------------------------------------
-// Tells the story of Ranald visiting Rabbie dungeon..
+// Tells the story of Ranald visiting Rabbie dungeon.
 //---------------------------------------------------------------------------
 
 [DungeonScript("rp_ranald_dunbarton_rabbie_dungeon")]
