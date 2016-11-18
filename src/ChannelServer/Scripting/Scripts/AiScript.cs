@@ -762,18 +762,6 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Returns true if there are collisions between the two positions.
-		/// </summary>
-		/// <param name="pos1"></param>
-		/// <param name="pos2"></param>
-		/// <returns></returns>
-		protected bool AnyCollisions(Position pos1, Position pos2)
-		{
-			Position intersection;
-			return this.Creature.Region.Collisions.Find(pos1, pos2, out intersection);
-		}
-
-		/// <summary>
 		/// Sends SharpMind to all applicable creatures.
 		/// </summary>
 		/// <remarks>
