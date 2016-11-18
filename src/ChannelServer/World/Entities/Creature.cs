@@ -1394,8 +1394,11 @@ namespace Aura.Channel.World.Entities
 				speed = ZombieSpeed;
 
 			// Hurry condition
-			var hurry = this.Conditions.GetExtraVal(169);
-			speed *= 1 + (hurry / 100f);
+			if (this.Conditions.Has(ConditionsC.Hurry))
+			{
+				var hurry = this.Conditions.GetExtraVal(169);
+				speed *= 1 + (hurry / 100f);
+			}
 
 			return speed;
 		}
