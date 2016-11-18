@@ -51,24 +51,6 @@ namespace Aura.Channel.World.Dungeons
 		}
 
 		/// <summary>
-		/// Returns the first prop that matches the given predicate.
-		/// </summary>
-		/// <param name="propId"></param>
-		/// <returns></returns>
-		public Prop GetProp(Func<Prop, bool> predicate)
-		{
-			_propsRWLS.EnterReadLock();
-			try
-			{
-				return _props.Values.FirstOrDefault(predicate);
-			}
-			finally
-			{
-				_propsRWLS.ExitReadLock();
-			}
-		}
-
-		/// <summary>
 		/// Kills all monster NPCs in this region.
 		/// </summary>
 		public void RemoveAllMonsters()
