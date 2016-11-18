@@ -429,8 +429,8 @@ public class NaoScript : NpcScript
 				Msg(L("(Missing dialog: Nao asking if she should wear Explorer Suit."), Button("Yes"), Button("No"));
 				if (await Select() == "@yes")
 				{
-					Player.NaoOutfit = NaoOutfit.PinkSpringDress;
 					Msg(L("(Missing dialog: Nao responding to wearing Explorer Suit."));
+					Player.NaoOutfit = NaoOutfit.ExplorerSuit;
 				}
 				else
 					Msg(L("(Missing dialog: Nao responding to not wearing Explorer Suit."));
@@ -440,8 +440,8 @@ public class NaoScript : NpcScript
 				Msg(L("(Missing dialog: Nao asking if she should wear Iria Casual Wear."), Button("Yes"), Button("No"));
 				if (await Select() == "@yes")
 				{
-					Player.NaoOutfit = NaoOutfit.PinkSpringDress;
 					Msg(L("(Missing dialog: Nao responding to wearing Iria Casual Wear."));
+					Player.NaoOutfit = NaoOutfit.IriaCasualWear;
 				}
 				else
 					Msg(L("(Missing dialog: Nao responding to not wearing Iria Casual Wear."));
