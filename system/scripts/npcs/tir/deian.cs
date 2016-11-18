@@ -306,7 +306,7 @@ public class DeianScript : NpcScript
 					}
 					else
 					{
-						Msg("(Missing dialog: Another Campfire explanation. Use the skill to finish the quest.)");
+						Msg(L("I gave out the Campfire book a while ago.<br/>You haven't figured the skill out yet?<br/>Well, it was difficult even for the brilliant me,<br/>it'll just take some more time~<p/>Whoops...don't make such a scary face.<br/>It's a long book and I couldn't understand it.<br/>I'm not ashamed!<br/>After poking around I made some friends, hehehe."));
 					}
 				}
 				else

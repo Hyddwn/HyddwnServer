@@ -33,7 +33,7 @@ public class ElenIronOreMiningQuestScript : QuestScript
 		{
 			npc.FinishQuest(this.Id, "talk");
 			npc.RemoveItem(64002, 10); // Iron Ore
-			npc.Msg("(Missing dialog: Mine Lumps of Iron Ore)");
+			npc.Msg(L("(I give the ore to Elen)<p/>Thank you~, was it difficult to get this?<p/>Because of all the Fomors recently, nobody's going into the dungeon.<br/>Comgan's been asking people to dig here...<br/>It'll be very worrying if this situation continues.<p/>I'd appreciate someone digging on a regular basis...<br/>Ah! Don't mind my musing!"));
 
 			return HookResult.Break;
 		}
