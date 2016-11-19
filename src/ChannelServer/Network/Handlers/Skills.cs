@@ -688,7 +688,10 @@ namespace Aura.Channel.Network.Handlers
 			var activeSkill = creature.Skills.ActiveSkill;
 			if (activeSkill == null || activeSkill.Data.Type != SkillType.RangedCombat)
 			{
-				Log.Debug("CombatSetAim: No active (ranged) skill.");
+				var skillId = (activeSkill == null ? SkillId.None : activeSkill.Info.Id);
+				var type = (activeSkill == null ? SkillType.None : activeSkill.Data.Type);
+
+				Log.Debug("CombatSetAim: No active (ranged) skill. ({0}, {1})", skillId, type);
 				Send.CombatSetAimR(creature, 0, SkillId.None, 0);
 				return;
 			}
@@ -721,7 +724,11 @@ namespace Aura.Channel.Network.Handlers
 			var activeSkill = creature.Skills.ActiveSkill;
 			if (activeSkill == null || activeSkill.Data.Type != SkillType.RangedCombat || creature.Target == null)
 			{
-				Log.Debug("CombatSetAim2: No active (ranged) skill or invalid target.");
+				var skillId = (activeSkill == null ? SkillId.None : activeSkill.Info.Id);
+				var type = (activeSkill == null ? SkillType.None : activeSkill.Data.Type);
+				var targetId = (creature.Target == null ? 0 : creature.Target.EntityId);
+
+				Log.Debug("CombatSetAim: No active (ranged) skill or invalid target.. ({0}, {1}, {2})", skillId, type, targetId);
 				Send.CombatSetAimR(creature, 0, SkillId.None, 0);
 				return;
 			}
