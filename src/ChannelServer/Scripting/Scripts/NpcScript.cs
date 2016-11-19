@@ -1901,6 +1901,11 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetShort("CTBONUS", (short)(collectionBonusBuff + effect.Value[0]));
 						break;
 
+					case "CollectionBonusProduct":
+						// CTBONUSPT:4:64004;CTBONUS:2:20;
+						result.Item.MetaData1.SetInt("CTBONUSPT", (int)effect.Value[0]);
+						break;
+
 					case "CollectionSpeed":
 						// CTBONUS:2:40;CTSPEED:4:750;MTWR:1:1;
 						var collectionSpeedBuff = result.Item.MetaData1.GetInt("CTSPEED");

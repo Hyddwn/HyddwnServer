@@ -238,8 +238,18 @@ namespace Aura.Channel.Skills.Life
 			var receiveItemId = 0;
 			if (collectSuccess)
 			{
+				// Get collection bonuses
+				var collectionBonus = 0;
+				var collectionBonusProduct = 0;
+
+				if (creature.RightHand != null)
+				{
+					collectionBonus = creature.RightHand.MetaData1.GetShort("CTBONUS");
+					collectionBonusProduct = creature.RightHand.MetaData1.GetInt("CTBONUSPT");
+				}
+
 				// Product
-				var itemId = receiveItemId = collectData.GetRndProduct(rnd);
+				var itemId = receiveItemId = collectData.GetRndProduct(rnd, new ProductBonus(collectionBonusProduct, collectionBonus));
 				if (itemId != 0)
 				{
 					var item = new Item(itemId);
@@ -255,10 +265,13 @@ namespace Aura.Channel.Skills.Life
 						item.Drop(creature.Region, pos, 0, creature, false);
 
 						// Collection Bonus Upgrade
-						if (creature.RightHand != null)
+						// CTBONUS is only used for the double drop upgrade if
+						// CTBONUSPT is not set, which makes use of CTBONUS
+						// for the increased chance of getting a certain
+						// product.
+						if (collectionBonusProduct == 0 && collectionBonus != 0)
 						{
-							var doubleChance = creature.RightHand.MetaData1.GetShort("CTBONUS");
-							if (rnd.Next(100) < doubleChance)
+							if (rnd.Next(100) < collectionBonus)
 								new Item(item).Drop(creature.Region, creaturePosition, DropRange, creature, false);
 						}
 					}
@@ -270,7 +283,7 @@ namespace Aura.Channel.Skills.Life
 				}
 
 				// Product2
-				itemId = collectData.GetRndProduct2(rnd);
+				itemId = collectData.GetRndProduct2(rnd, null);
 				if (itemId != 0)
 				{
 					var item = new Item(itemId);
