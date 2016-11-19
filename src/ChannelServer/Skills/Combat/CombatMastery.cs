@@ -15,6 +15,8 @@ using Aura.Channel.Skills.Life;
 using Aura.Mabi;
 using Aura.Channel.Skills.Magic;
 using Aura.Channel.Network.Sending;
+using Aura.Data;
+using System.Threading.Tasks;
 
 namespace Aura.Channel.Skills.Combat
 {
@@ -239,6 +241,27 @@ namespace Aura.Channel.Skills.Combat
 
 				// Handle
 				cap.Handle();
+			}
+
+			// Reduce stun in new combat, to allow quicker movement after
+			// hits.
+			// It's unknown when exactly this was added, but older EU logs
+			// don't have this packet, so we'll assume it was part of the the
+			// new combat, which's purpose was to be faster.
+			// Sending the packet appears to reset the movement lock, and
+			// officials seem to send this about 1s after the attack, for
+			// an effective 1s movement lock after an attack.
+			if (AuraData.FeaturesDb.IsEnabled("CombatSystemRenewal"))
+			{
+				if (skill.Info.Id == SkillId.CombatMastery)
+				{
+					// Apparently it's only sent if the stun is high enough.
+					if (attacker.Stun > 1500)
+					{
+						Task.Delay(1000).ContinueWith(_ =>
+							Send.CharacterLockUpdate(attacker, 18, 1500));
+					}
+				}
 			}
 
 			return CombatSkillResult.Okay;
