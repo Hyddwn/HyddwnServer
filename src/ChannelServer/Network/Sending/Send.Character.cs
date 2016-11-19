@@ -40,6 +40,36 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends CharacterLockUpdate to creature's client.
+		/// </summary>
+		/// <remarks>
+		/// The name of this op is guessed, based on its position in the op
+		/// list and its behavior. Originally I thought this might change
+		/// a lock's timeout time, to, for example, reduce the time until
+		/// you can move again, after you attacked something, but after
+		/// testing it, it seems like it actually completely resets the
+		/// locks.
+		/// 
+		/// The only known value for the byte is "18" (0x12), which doesn't
+		/// match a known combination of locks, 0x10 being Run and 0x02 being
+		/// unknown, however, 0x18 would be Run|Walk, which would match what
+		/// it's doing.
+		/// </remarks>
+		/// <example>
+		/// Resets movement stun?
+		/// 001 [..............12] Byte   : 18
+		/// 002 [........000005DC] Int    : 1500
+		/// </example>
+		public static void CharacterLockUpdate(Creature creature, byte unkByte, int unkInt)
+		{
+			var packet = new Packet(Op.CharacterLockUpdate, creature.EntityId);
+			packet.PutByte(unkByte);
+			packet.PutInt(unkInt);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends EnterRegion to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

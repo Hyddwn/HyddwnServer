@@ -265,6 +265,7 @@ namespace Aura.Mabi.Network
 		public const int RiseFromTheDead = 0x701D;
 		public const int CharacterLock = 0x701E;
 		public const int CharacterUnlock = 0x701F;
+		public const int CharacterLockUpdate = 0x7020; // ?
 		public const int PlayDead = 0x7021;
 		public const int OpenUmbrella = 0x7025;
 		public const int CloseUmbrella = 0x7026;
