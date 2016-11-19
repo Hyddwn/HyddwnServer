@@ -503,7 +503,7 @@ public class NaoScript : NpcScript
 				break;
 
 			case "nao_cloth_shakespeare":
-				Msg(L("(Missing dialog: Nao asking if she should wear Playwright Costume."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
+				Msg(L("Do you like the Playwright Costume you gave me before?<br/>Ok then, I'll be wearing it when we meet again, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.PlaywrightCostume;
@@ -514,7 +514,7 @@ public class NaoScript : NpcScript
 				break;
 
 			case "nao_cloth_farmer":
-				Msg(L("(Missing dialog: Nao asking if she should wear Farming Outfit."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
+				Msg(L("Do you like the Farming Outfit you gave me before?<br/>Ok then, I'll be wearing it when we meet again, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.FarmingOutfit;
@@ -821,14 +821,14 @@ public class NaoScript : NpcScript
 				GiveKeyword("nao_cloth0");
 				GiveKeyword("nao_cloth_shakespeare");
 
-				Msg(L("(Missing dialog: Nao receiving Playwright Costume."));
+				Msg(L("Thank you very much. It's the clothes of a playwright.<br/>From now on, <username/>, I'll wear this when we meet."));
 				break;
 
 			case NaoOutfit.FarmingOutfit:
 				GiveKeyword("nao_cloth0");
 				GiveKeyword("nao_cloth_farmer");
 
-				Msg(L("(Missing dialog: Nao receiving Farming Outfit."));
+				Msg(L("Thank you very much. It's a farmer's outfit.<br/>From now on, <username/>, I'll wear this when we meet."));
 				break;
 
 			default:
