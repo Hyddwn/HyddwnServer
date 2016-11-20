@@ -7,6 +7,27 @@
 
 public class CustomPointsShopScript : NpcScript
 {
+	public CustomPointsShopScript()
+	{
+		CharacterCards = new List<Card>();
+		PetCards = new List<Card>();
+
+		//-- Options ------------------------------------------------------------
+
+		CharacterCards.Add(new Card(L("Basic Character Card"), id: 0, price: 7900));
+		CharacterCards.Add(new Card(L("Premium Character Card"), id: 1, price: 9500));
+
+		PetCards.Add(new Card(L("Yellow Jindo"), id: 200001, price: 2900));
+		PetCards.Add(new Card(L("Orange Pixie"), id: 201001, price: 2900));
+
+		// For the item shop, see end of file.
+
+		//-- Options End --------------------------------------------------------
+	}
+
+	private List<Card> CharacterCards { get; set; }
+	private List<Card> PetCards { get; set; }
+
 	public override void Load()
 	{
 		SetRace(10001);
@@ -24,8 +45,9 @@ public class CustomPointsShopScript : NpcScript
 	{
 		var menu = Elements(L("What can I do for you?"));
 
-		menu.Add(Button(L("Character Cards"), "@characters"));
-		if (IsEnabled("SystemPet"))
+		if (CharacterCards.Count != 0)
+			menu.Add(Button(L("Character Cards"), "@characters"));
+		if (IsEnabled("SystemPet") && PetCards.Count != 0)
 			menu.Add(Button(L("Pet Cards"), "@pets"));
 		menu.Add(Button(L("Item Shop"), "@items"));
 		menu.Add(Button(L("End Conversation"), "@end"));
@@ -39,12 +61,12 @@ public class CustomPointsShopScript : NpcScript
 			switch (result)
 			{
 				case "@characters":
-					await CharacterCardShop();
+					await CardShop(CharacterCards);
 					break;
 
 				case "@pets":
 					if (IsEnabled("SystemPet"))
-						await PetCardShop();
+						await CardShop(PetCards);
 					break;
 
 				case "@items":
@@ -56,12 +78,15 @@ public class CustomPointsShopScript : NpcScript
 		Close(Hide.None, "Come back any time!");
 	}
 
-	protected virtual async Task CharacterCardShop()
+	protected virtual async Task CardShop(List<Card> cardList)
 	{
-		var list = List("",
-			Button(L("Basic Character Card (7,900 Pon)"), "@basic_human"),
-			Button(L("Premium Character Card (9,500 Pon)"), "@premium_human")
-		);
+		var list = List("", Math.Min(10, cardList.Count));
+
+		for (int i = 0; i < cardList.Count; ++i)
+		{
+			var card = cardList[i];
+			list.Add(Button(string.Format("{0} ({1:n0})", card.Name, card.Price), "@card" + i));
+		}
 
 		while (true)
 		{
@@ -73,12 +98,19 @@ public class CustomPointsShopScript : NpcScript
 			if (result == "@end")
 				break;
 
-			int cardId = 0, price = 0;
-			switch (result)
+			var indexStr = result.Replace("@card", "");
+
+			int index;
+			if (!int.TryParse(indexStr, out index) || index > cardList.Count - 1)
 			{
-				case "@basic_human": cardId = 0; price = 7900; break;
-				case "@premium_human": cardId = 1; price = 9500; break;
+				Close(L("(Error: Invalid response, please report.)"));
+				Log.Error("Invalid response '{0}' in points shop script.", result);
+				break;
 			}
+
+			var card = cardList[index];
+			var cardId = card.Id;
+			var price = card.Price;
 
 			if (Player.Points < price)
 			{
@@ -93,40 +125,17 @@ public class CustomPointsShopScript : NpcScript
 		}
 	}
 
-	protected virtual async Task PetCardShop()
+	protected class Card
 	{
-		var list = List("",
-			Button(L("Yellow Jindo (2900 Pon)"), "@pet200001"),
-			Button(L("Orange Pixie (2900 Pon)"), "@pet201001")
-		);
+		public int Id { get; private set; }
+		public int Price { get; private set; }
+		public string Name { get; private set; }
 
-		while (true)
+		public Card(string name, int id, int price)
 		{
-			list.Text = string.Format(L("Pets - Your Pon: {0:n0}"), Player.Points);
-
-			Msg(list);
-
-			var result = await Select();
-			if (result == "@end")
-				break;
-
-			int raceId = 0, price = 0;
-			switch (result)
-			{
-				case "@pet200001": raceId = 200001; price = 2900; break;
-				case "@pet201001": raceId = 201001; price = 2900; break;
-			}
-
-			if (Player.Points < price)
-			{
-				Msg(L("Oh, it seems like you can't afford that right now."));
-				continue;
-			}
-
-			Player.Points -= price;
-			ChannelServer.Instance.Database.AddCard(Player.Client.Account.Id, MabiId.PetCardType, raceId);
-
-			Msg(L("Thank you! Anything else?"));
+			this.Id = id;
+			this.Name = name;
+			this.Price = price;
 		}
 	}
 }
@@ -138,19 +147,19 @@ public class CustomPointsShop : NpcShopScript
 		SetPaymentMethod(L("Combat"), PaymentMethod.Points);
 		SetPaymentMethod(L("Consumables"), PaymentMethod.Points);
 
-		Add(L("Combat"), 45014, 1000, 50); // Arrows (1000)
-		Add(L("Combat"), 45015, 1000, 50); // Bolts (1000)
-		Add(L("Combat"), 63044, 1, 200);   // Party Phoenix Feather (1)
-		Add(L("Combat"), 63044, 5, 800);   // Party Phoenix Feather (5)
+		Add(L("Combat"), itemId: 45014, amount: 1000, price: 50); // Arrows (1000)
+		Add(L("Combat"), itemId: 45015, amount: 1000, price: 50); // Bolts (1000)
+		Add(L("Combat"), itemId: 63044, amount: 1, price: 200);   // Party Phoenix Feather (1)
+		Add(L("Combat"), itemId: 63044, amount: 5, price: 800);   // Party Phoenix Feather (5)
 
-		Add(L("Consumables"), 63029, 1, 150); // Campfire Kit (1)
-		Add(L("Consumables"), 63029, 5, 600); // Campfire Kit (5)
+		Add(L("Consumables"), itemId: 63029, amount: 1, price: 150); // Campfire Kit (1)
+		Add(L("Consumables"), itemId: 63029, amount: 5, price: 600); // Campfire Kit (5)
 
 		if (IsEnabled("NaoCoupon"))
 		{
-			Add(L("Consumables"), 85000, 1, 300);   // Nao Soul Stone (1)
-			Add(L("Consumables"), 85000, 10, 2500); // Nao Soul Stone (10)
-			Add(L("Consumables"), 85000, 30, 7000); // Nao Soul Stone (30)
+			Add(L("Consumables"), itemId: 85000, amount: 1, price: 300);   // Nao Soul Stone (1)
+			Add(L("Consumables"), itemId: 85000, amount: 10, price: 2500); // Nao Soul Stone (10)
+			Add(L("Consumables"), itemId: 85000, amount: 30, price: 7000); // Nao Soul Stone (30)
 		}
 	}
 }
