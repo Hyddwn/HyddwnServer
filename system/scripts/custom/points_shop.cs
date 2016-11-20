@@ -22,7 +22,15 @@ public class CustomPointsShopScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		Msg(L("What can I do for you?"), Button(L("Character Cards"), "@characters"), Button(L("Pet Cards"), "@pets"), Button(L("Item Shop"), "@items"), Button(L("End Conversation"), "@end"));
+		var menu = Elements(L("What can I do for you?"));
+
+		menu.Add(Button(L("Character Cards"), "@characters"));
+		if (IsEnabled("SystemPet"))
+			menu.Add(Button(L("Pet Cards"), "@pets"));
+		menu.Add(Button(L("Item Shop"), "@items"));
+		menu.Add(Button(L("End Conversation"), "@end"));
+
+		Msg(menu);
 
 		var result = await Select();
 		if (result != "@end")
@@ -30,9 +38,18 @@ public class CustomPointsShopScript : NpcScript
 			Msg(L("Please have a look around."));
 			switch (result)
 			{
-				case "@characters": await CharacterCardShop(); break;
-				case "@pets": await PetCardShop(); break;
-				case "@items": OpenShop("CustomPointsShop"); break;
+				case "@characters":
+					await CharacterCardShop();
+					break;
+
+				case "@pets":
+					if (IsEnabled("SystemPet"))
+						await PetCardShop();
+					break;
+
+				case "@items":
+					OpenShop("CustomPointsShop");
+					break;
 			}
 		}
 
