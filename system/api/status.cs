@@ -16,6 +16,7 @@ public class StatusController : Controller
 
 		var status = this.CreateStatusText();
 
+		response.Headers.Add("Access-Control-Allow-Origin", "*");
 		response.ContentType = "text/plain";
 		response.Send(status);
 	}
@@ -67,8 +68,10 @@ public class StatusController : Controller
 									jsonWriter.WritePropertyName("state");
 									jsonWriter.WriteValue(channel.Value.State);
 								}
+								jsonWriter.WriteEndObject();
 							}
 						}
+						jsonWriter.WriteEndObject();
 					}
 				}
 				jsonWriter.WriteEndObject();
