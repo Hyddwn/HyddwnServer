@@ -415,9 +415,11 @@ namespace Aura.Channel.Scripting.Scripts
 				case PaymentMethod.Points: price = item.OptionInfo.PointPrice; break;
 			}
 
-			// The client expects the price for a full stack to be sent
-			// in the ItemOptionInfo, so we have to calculate the actual price here.
-			if (item.Data.StackType == StackType.Stackable)
+			// The client expects the price for a full stack to be sent in the
+			// ItemOptionInfo, so we have to calculate the actual price here.
+			// However, the points payment method prices are absolute, the
+			// client displays them as is.
+			if (item.Data.StackType == StackType.Stackable && paymentMethod != PaymentMethod.Points)
 				price = (int)(price / (float)item.Data.StackMax * item.Amount);
 
 			// Wednesday: Decrease in prices (5%) for items in NPC shops,
