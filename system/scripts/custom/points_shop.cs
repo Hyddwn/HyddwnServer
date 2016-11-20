@@ -23,7 +23,7 @@ public class CustomPointsShopScript : NpcScript
 	protected override async Task Talk()
 	{
 		Msg(L("What can I do for you?"), Button(L("Character Cards"), "@characters"), Button(L("Pet Cards"), "@pets"), Button(L("Item Shop"), "@items"), Button(L("End Conversation"), "@end"));
-		
+
 		var result = await Select();
 		if (result != "@end")
 		{
@@ -42,8 +42,8 @@ public class CustomPointsShopScript : NpcScript
 	protected virtual async Task CharacterCardShop()
 	{
 		var list = List("",
-			Button(L("Basic Character Card (80 Pon)"), "@basic_human"),
-			Button(L("Premium Character Card (120 Pon)"), "@premium_human")
+			Button(L("Basic Character Card (7,900 Pon)"), "@basic_human"),
+			Button(L("Premium Character Card (9,500 Pon)"), "@premium_human")
 		);
 
 		while (true)
@@ -51,7 +51,7 @@ public class CustomPointsShopScript : NpcScript
 			list.Text = string.Format(L("Cards - Your Pon: {0:n0}"), Player.Points);
 
 			Msg(list);
-			
+
 			var result = await Select();
 			if (result == "@end")
 				break;
@@ -59,8 +59,8 @@ public class CustomPointsShopScript : NpcScript
 			int cardId = 0, price = 0;
 			switch (result)
 			{
-				case "@basic_human": cardId = 0; price = 80; break;
-				case "@premium_human": cardId = 1; price = 120; break;
+				case "@basic_human": cardId = 0; price = 7900; break;
+				case "@premium_human": cardId = 1; price = 9500; break;
 			}
 
 			if (Player.Points < price)
@@ -79,8 +79,8 @@ public class CustomPointsShopScript : NpcScript
 	protected virtual async Task PetCardShop()
 	{
 		var list = List("",
-			Button(L("Yellow Jindo (290 Pon)"), "@pet200001"),
-			Button(L("Orange Pixie (290 Pon)"), "@pet201001")
+			Button(L("Yellow Jindo (2900 Pon)"), "@pet200001"),
+			Button(L("Orange Pixie (2900 Pon)"), "@pet201001")
 		);
 
 		while (true)
@@ -88,7 +88,7 @@ public class CustomPointsShopScript : NpcScript
 			list.Text = string.Format(L("Pets - Your Pon: {0:n0}"), Player.Points);
 
 			Msg(list);
-			
+
 			var result = await Select();
 			if (result == "@end")
 				break;
@@ -96,8 +96,8 @@ public class CustomPointsShopScript : NpcScript
 			int raceId = 0, price = 0;
 			switch (result)
 			{
-				case "@pet200001": raceId = 200001; price = 290; break;
-				case "@pet201001": raceId = 201001; price = 290; break;
+				case "@pet200001": raceId = 200001; price = 2900; break;
+				case "@pet201001": raceId = 201001; price = 2900; break;
 			}
 
 			if (Player.Points < price)
