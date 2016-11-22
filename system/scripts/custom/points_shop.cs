@@ -146,14 +146,19 @@ public class CustomPointsShop : NpcShopScript
 	{
 		SetPaymentMethod(L("Combat"), PaymentMethod.Points);
 		SetPaymentMethod(L("Consumables"), PaymentMethod.Points);
+		SetPaymentMethod(L("Appearance"), PaymentMethod.Points);
 
 		Add(L("Combat"), itemId: 45014, amount: 1000, price: 50); // Arrows (1000)
 		Add(L("Combat"), itemId: 45015, amount: 1000, price: 50); // Bolts (1000)
 		Add(L("Combat"), itemId: 63044, amount: 1, price: 200);   // Party Phoenix Feather (1)
 		Add(L("Combat"), itemId: 63044, amount: 5, price: 800);   // Party Phoenix Feather (5)
 
-		Add(L("Consumables"), itemId: 63029, amount: 1, price: 150); // Campfire Kit (1)
-		Add(L("Consumables"), itemId: 63029, amount: 5, price: 600); // Campfire Kit (5)
+		Add(L("Consumables"), itemId: 63029, amount: 1, price: 150);  // Campfire Kit (1)
+		Add(L("Consumables"), itemId: 63029, amount: 5, price: 600);  // Campfire Kit (5)
+		Add(L("Consumables"), itemId: 63025, amount: 1, price: 600);  // Massive Holy Water of Lymilark (1)
+		Add(L("Consumables"), itemId: 63025, amount: 5, price: 2300); // Massive Holy Water of Lymilark (5)
+
+		Add(L("Appearance"), itemId: 63037, amount: 1, price: 990); // Dye Ampoule
 
 		if (IsEnabled("NaoCoupon"))
 		{
