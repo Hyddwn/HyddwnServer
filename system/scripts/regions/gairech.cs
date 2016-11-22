@@ -19,7 +19,7 @@ public class GairechRegionScript : RegionScript
 
 		// Gairech - Sen Mag
 		SetPropBehavior(0x00A0001E00050060, PropWarp(30,8230,72405, 53,137680,121906));
-		SetPropBehavior(0x00A0003500030005, PropWarp(53, 139366, 121883, 30, 9462, 72387));
+		SetPropBehavior(0x00A0003500030005, PropWarp(53, 139366, 121883, 30, 9825, 72620));
 	}
 
 	public override void LoadSpawns()
