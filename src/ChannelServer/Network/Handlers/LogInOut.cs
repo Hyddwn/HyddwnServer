@@ -465,6 +465,13 @@ namespace Aura.Channel.Network.Handlers
 				Send.EntitiesDisappear(playerCreature.Client, playerCreature.Region.GetVisibleEntities(playerCreature));
 			}
 
+			if (!rebirth)
+				Log.Info("'{0}' is switching channels. Saving...", client.Account.Id);
+			else
+				Log.Info("'{0}' is reconnecting for rebirth. Saving...", client.Account.Id);
+
+			client.CleanUp();
+
 			// Success
 			Send.SwitchChannelR(creature, channel);
 		}
