@@ -44,8 +44,16 @@ public class FeatureFencesScript : GeneralScript
 		if (!IsEnabled("PeacaDungeon"))
 		{
 			// Peaca Dungeon entrance
-			SpawnProp(40000, 53, 75600, 118000, 1.57f);
-			SpawnProp(40000, 53, 75600, 117600, 2.00f);
+			SpawnProp(40000, 53, 75600, 118000, 1.57f, Prop.GetEmptyBehavior());
+			SpawnProp(40000, 53, 75600, 117600, 2.00f, Prop.GetEmptyBehavior());
+		}
+
+		if (!IsEnabled("SenMag"))
+		{
+			// Gairech -> Sen Mag
+			SpawnProp(40000, 30, 9170, 72124, 1.57f, Prop.GetEmptyBehavior());
+			SpawnProp(40000, 30, 9070, 72824, 3.84f, Prop.GetEmptyBehavior());
+			SpawnProp(40000, 30, 9316, 72444, 2.90f, Prop.GetEmptyBehavior());
 		}
 	}
 }

@@ -365,6 +365,20 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns a prop behavior that doesn't do anything.
+		/// </summary>
+		/// <remarks>
+		/// Use to prevent unimplemented messages.
+		/// </remarks>
+		/// <returns></returns>
+		public static PropFunc GetEmptyBehavior()
+		{
+			return (creature, prop) =>
+			{
+			};
+		}
+
+		/// <summary>
 		///  Returns true if prop's data has the tag.
 		/// </summary>
 		/// <param name="tag"></param>
