@@ -505,5 +505,4 @@
 { name: "CombatSystemRenewal", enabled: true },
 { name: "PassiveSharpMind", enabled: true },
 { name: "TalentRenovationCloseCombat", enabled: true },
-{ name: "MoonTunnel", enabled: true },
 ]
