@@ -762,6 +762,31 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		#endregion Timers
+
+		#region Game Events
+
+		/// <summary>
+		/// Schedules event to be active during the given time span.
+		/// </summary>
+		/// <param name="gameEventId"></param>
+		/// <param name="from"></param>
+		/// <param name="till"></param>
+		protected void ScheduleEvent(string gameEventId, DateTime from, DateTime till)
+		{
+			ChannelServer.Instance.GameEventManager.AddActivationSpan(gameEventId, from, till);
+		}
+
+		/// <summary>
+		/// Returns true if the given event is active.
+		/// </summary>
+		/// <param name="gameEventId"></param>
+		/// <returns></returns>
+		protected bool IsActive(string gameEventId)
+		{
+			return ChannelServer.Instance.GameEventManager.IsActive(gameEventId);
+		}
+
+		#endregion
 	}
 
 	/// <summary>
