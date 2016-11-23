@@ -51,7 +51,6 @@
 { name: "G2", enabled: false, children: [
 	{ name: "MainStreamG2", enabled: true },
 	{ name: "EmainMacha", enabled: true },
-	{ name: "SenMag", enabled: true },
 	{ name: "NaoDressUp", enabled: true },
 	{ name: "CollectionBooks", enabled: true },
 	
