@@ -33,14 +33,24 @@ namespace Aura.Channel.World.GameEvents
 		/// <param name="now"></param>
 		private void OnMinutesTimeTick(ErinnTime now)
 		{
-			IEnumerable<GameEventScript> toStart, toEnd;
+			var toStart = new List<GameEventScript>();
+			var toEnd = new List<GameEventScript>();
+
 			lock (_gameEvents)
 			{
 				if (_gameEvents.Count == 0)
 					return;
 
-				toStart = _gameEvents.Values.Where(a => a.State == GameEventState.Inactive && a.IsActiveTime(now.DateTime));
-				toEnd = _gameEvents.Values.Where(a => a.State == GameEventState.Active && !a.IsActiveTime(now.DateTime));
+				foreach (var gameEvent in _gameEvents.Values)
+				{
+					var isActive = (gameEvent.State == GameEventState.Active);
+					var isActiveTime = gameEvent.IsActiveTime(now.DateTime);
+
+					if (!isActive && isActiveTime)
+						toStart.Add(gameEvent);
+					else if (isActive && !isActiveTime)
+						toEnd.Add(gameEvent);
+				}
 			}
 
 			foreach (var gameEvent in toStart)
