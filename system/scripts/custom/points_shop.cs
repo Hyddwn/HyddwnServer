@@ -61,12 +61,12 @@ public class CustomPointsShopScript : NpcScript
 			switch (result)
 			{
 				case "@characters":
-					await CardShop(CharacterCards);
+					await CardShop(CharacterCards, false);
 					break;
 
 				case "@pets":
 					if (IsEnabled("SystemPet"))
-						await CardShop(PetCards);
+						await CardShop(PetCards, true);
 					break;
 
 				case "@items":
@@ -78,7 +78,7 @@ public class CustomPointsShopScript : NpcScript
 		Close(Hide.None, "Come back any time!");
 	}
 
-	protected virtual async Task CardShop(List<Card> cardList)
+	protected virtual async Task CardShop(List<Card> cardList, bool pets)
 	{
 		var list = List("", Math.Min(10, cardList.Count));
 
@@ -119,7 +119,10 @@ public class CustomPointsShopScript : NpcScript
 			}
 
 			Player.Points -= price;
-			ChannelServer.Instance.Database.AddCard(Player.Client.Account.Id, cardId, 0);
+			if (!pets)
+				ChannelServer.Instance.Database.AddCard(Player.Client.Account.Id, cardId, 0);
+			else
+				ChannelServer.Instance.Database.AddCard(Player.Client.Account.Id, MabiId.PetCardType, cardId);
 
 			Msg(L("Thank you! Anything else?"));
 		}
