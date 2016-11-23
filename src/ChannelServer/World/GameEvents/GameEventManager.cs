@@ -1,12 +1,16 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Channel.Network.Sending;
 using Aura.Channel.Scripting.Scripts;
+using Aura.Channel.World.Entities;
 using Aura.Mabi;
+using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Aura.Channel.World.GameEvents
 {
@@ -24,6 +28,8 @@ namespace Aura.Channel.World.GameEvents
 		public void Initialize()
 		{
 			ChannelServer.Instance.Events.MinutesTimeTick += this.OnMinutesTimeTick;
+			ChannelServer.Instance.Events.ErinnDaytimeTick += this.OnErinnDaytimeTick;
+			ChannelServer.Instance.Events.PlayerLoggedIn += this.OnPlayerLoggedIn;
 		}
 
 		/// <summary>
@@ -58,6 +64,27 @@ namespace Aura.Channel.World.GameEvents
 
 			foreach (var gameEvent in toEnd)
 				gameEvent.End();
+		}
+
+		/// <summary>
+		/// Called at 6:00 and 18:00 Erinn Time, broadcasts notice about
+		/// active events.
+		/// </summary>
+		/// <param name="now"></param>
+		private void OnErinnDaytimeTick(ErinnTime now)
+		{
+			var message = this.GetBroadcastMessage();
+			Send.Notice(NoticeType.TopGreen, message);
+		}
+
+		/// <summary>
+		/// Called when a player logged in, sends notice about active events.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void OnPlayerLoggedIn(Creature creature)
+		{
+			var message = this.GetBroadcastMessage();
+			Send.Notice(creature, NoticeType.TopGreen, message);
 		}
 
 		/// <summary>
@@ -113,6 +140,29 @@ namespace Aura.Channel.World.GameEvents
 				return false;
 
 			return (gameEvent.State == GameEventState.Active);
+		}
+
+		/// <summary>
+		/// Returns broadcast message that is used to inform players about
+		/// active events.
+		/// </summary>
+		/// <returns></returns>
+		private string GetBroadcastMessage()
+		{
+			var sb = new StringBuilder();
+
+			lock (_gameEvents)
+			{
+				var i = 0;
+				foreach (var gameEvent in _gameEvents.Values)
+				{
+					sb.AppendFormat("The {0} Event is in progress.", gameEvent.Name);
+					if (++i < _gameEvents.Count)
+						sb.Append("     ");
+				}
+			}
+
+			return sb.ToString();
 		}
 	}
 }
