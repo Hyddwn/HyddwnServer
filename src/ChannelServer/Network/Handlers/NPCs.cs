@@ -232,7 +232,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var entityId = packet.GetLong();
 			var moveToInventory = packet.GetBool(); // 0:cursor, 1:inv
-			var unk = packet.GetByte(); // storage gold?
+			var directBankTransaction = packet.GetBool();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -246,7 +246,7 @@ namespace Aura.Channel.Network.Handlers
 				throw new ModerateViolation("Tried to buy an item with a null shop.");
 			}
 
-			var success = creature.Temp.CurrentShop.Buy(creature, entityId, moveToInventory);
+			var success = creature.Temp.CurrentShop.Buy(creature, entityId, moveToInventory, directBankTransaction);
 
 			Send.NpcShopBuyItemR(creature, success);
 		}

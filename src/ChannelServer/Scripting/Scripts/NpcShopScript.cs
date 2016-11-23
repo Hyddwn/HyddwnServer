@@ -371,8 +371,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="creature"></param>
 		/// <param name="itemEntityId"></param>
 		/// <param name="moveToInventory"></param>
+		/// <param name="directBankTransaction"></param>
 		/// <returns></returns>
-		public bool Buy(Creature creature, long itemEntityId, bool moveToInventory)
+		public bool Buy(Creature creature, long itemEntityId, bool moveToInventory, bool directBankTransaction)
 		{
 			var shop = this;
 			var owner = creature.Temp.CurrentShopOwner;
@@ -405,6 +406,13 @@ namespace Aura.Channel.Scripting.Scripts
 			if (item.OptionInfo.PointPrice > 0)
 				paymentMethod = PaymentMethod.Points;
 
+			// Allow direct transaction only for buying with gold
+			if (directBankTransaction && paymentMethod != PaymentMethod.Gold)
+			{
+				Send.MsgBox(creature, Localization.Get("You can't by this item via direct bank transaction."));
+				return false;
+			}
+
 			// Get buying price
 			var price = int.MaxValue;
 			switch (paymentMethod)
@@ -431,7 +439,24 @@ namespace Aura.Channel.Scripting.Scripts
 			var canPay = false;
 			switch (paymentMethod)
 			{
-				case PaymentMethod.Gold: canPay = (creature.Inventory.Gold >= price); break;
+				case PaymentMethod.Gold:
+					// Disable direct bank transaction if price is less than 50k
+					if (directBankTransaction && price < 50000)
+						directBankTransaction = false;
+
+					// Check gold
+					var gold = 0;
+					if (directBankTransaction)
+					{
+						gold = creature.Client.Account.Bank.Gold;
+						price = price + (int)(price * 0.05f); // Fee
+					}
+					else
+						gold = creature.Inventory.Gold;
+
+					canPay = (gold >= price);
+					break;
+
 				case PaymentMethod.Stars: canPay = (creature.Inventory.Stars >= price); break;
 				case PaymentMethod.Ducats: canPay = false; break; // TODO: Implement ducats.
 				case PaymentMethod.Points: canPay = (creature.Points >= price); break;
@@ -489,7 +514,13 @@ namespace Aura.Channel.Scripting.Scripts
 				// Reduce gold/points
 				switch (paymentMethod)
 				{
-					case PaymentMethod.Gold: creature.Inventory.Gold -= price; break;
+					case PaymentMethod.Gold:
+						if (directBankTransaction)
+							creature.Client.Account.Bank.RemoveGold(creature, price);
+						else
+							creature.Inventory.Gold -= price;
+						break;
+
 					case PaymentMethod.Stars: creature.Inventory.Stars -= price; break;
 					case PaymentMethod.Ducats: break; // TODO: Implement ducats.
 					case PaymentMethod.Points: creature.Points -= price; break;
