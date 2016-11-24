@@ -84,7 +84,11 @@ namespace Aura.Channel.World.GameEvents
 		private void OnPlayerLoggedIn(Creature creature)
 		{
 			var message = this.GetBroadcastMessage();
+			var activeEvents = this.GetActiveEvents();
+
 			Send.Notice(creature, NoticeType.TopGreen, message);
+			foreach (var gameEvent in activeEvents)
+				Send.GameEventStateUpdate(creature, gameEvent.Id, gameEvent.State);
 		}
 
 		/// <summary>
@@ -163,6 +167,16 @@ namespace Aura.Channel.World.GameEvents
 			}
 
 			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Returns list of all events that are currently active.
+		/// </summary>
+		/// <returns></returns>
+		public GameEventScript[] GetActiveEvents()
+		{
+			lock (_gameEvents)
+				return _gameEvents.Values.Where(a => a.State == GameEventState.Active).ToArray();
 		}
 	}
 }
