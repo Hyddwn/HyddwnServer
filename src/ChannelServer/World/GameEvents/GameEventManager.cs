@@ -29,7 +29,7 @@ namespace Aura.Channel.World.GameEvents
 		{
 			ChannelServer.Instance.Events.MinutesTimeTick += this.OnMinutesTimeTick;
 			ChannelServer.Instance.Events.ErinnDaytimeTick += this.OnErinnDaytimeTick;
-			ChannelServer.Instance.Events.PlayerLoggedIn += this.OnPlayerLoggedIn;
+			ChannelServer.Instance.Events.CreatureConnected += this.OnCreatureConnected;
 		}
 
 		/// <summary>
@@ -81,8 +81,13 @@ namespace Aura.Channel.World.GameEvents
 		/// Called when a player logged in, sends notice about active events.
 		/// </summary>
 		/// <param name="creature"></param>
-		private void OnPlayerLoggedIn(Creature creature)
+		private void OnCreatureConnected(Creature creature)
 		{
+			// RP characters "connect", but they don't need another set of
+			// notices and event activations.
+			if (creature.IsRpCharacter)
+				return;
+
 			var message = this.GetBroadcastMessage();
 			var activeEvents = this.GetActiveEvents();
 
