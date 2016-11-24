@@ -159,16 +159,14 @@ namespace Aura.Channel.World.GameEvents
 		private string GetBroadcastMessage()
 		{
 			var sb = new StringBuilder();
+			var activeEvents = this.GetActiveEvents();
 
-			lock (_gameEvents)
+			var i = 0;
+			foreach (var gameEvent in activeEvents)
 			{
-				var i = 0;
-				foreach (var gameEvent in _gameEvents.Values)
-				{
-					sb.AppendFormat("The {0} Event is in progress.", gameEvent.Name);
-					if (++i < _gameEvents.Count)
-						sb.Append("     ");
-				}
+				sb.AppendFormat("The {0} Event is in progress.", gameEvent.Name);
+				if (++i < _gameEvents.Count)
+					sb.Append("     ");
 			}
 
 			return sb.ToString();
