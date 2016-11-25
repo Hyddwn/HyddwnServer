@@ -2240,15 +2240,24 @@ namespace Aura.Channel.World.Entities
 					continue;
 				}
 
-				var dropRate = dropData.Chance * ChannelServer.Instance.Conf.World.DropRate;
+				var dropRate = dropData.Chance;
 				var dropChance = rnd.NextDouble() * 100;
 				var month = ErinnTime.Now.Month;
+
+				// Add global bonus
+				float itemDropBonus;
+				string bonuses;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.ItemDropRate, out itemDropBonus, out bonuses))
+					dropRate *= itemDropBonus;
 
 				// Tuesday: Increase in dungeon item drop rate.
 				// Wednesday: Increase in item drop rate from animals and nature.
 				// +50%, bonus is unofficial.
 				if ((month == ErinnMonth.Baltane && this.Region.IsDungeon) || (month == ErinnMonth.AlbanHeruin && !this.Region.IsDungeon))
 					dropRate *= 1.5f;
+
+				// Add conf
+				dropRate *= ChannelServer.Instance.Conf.World.DropRate;
 
 				if (dropChance < dropRate)
 				{
