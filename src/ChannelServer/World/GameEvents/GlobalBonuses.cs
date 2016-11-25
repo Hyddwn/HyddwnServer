@@ -89,7 +89,7 @@ namespace Aura.Channel.World.GameEvents
 
 	public enum GlobalBonusStat
 	{
-		Ap,
+		LevelUpAp,
 		CombatExp,
 		QuestExp,
 		SkillTraining,

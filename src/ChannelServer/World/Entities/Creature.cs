@@ -22,6 +22,7 @@ using System.Threading;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Shared.Database;
 using Aura.Channel.World.Dungeons;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel.World.Entities
 {
@@ -2347,7 +2348,18 @@ namespace Aura.Channel.World.Entities
 				if (levelStats == null)
 					continue;
 
-				this.AbilityPoints += (short)Math2.Clamp(0, short.MaxValue, levelStats.AP * ChannelServer.Instance.Conf.World.LevelApRate);
+				var addAp = levelStats.AP;
+
+				// Add global bonus
+				float bonusMultiplier;
+				string bonuses;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.LevelUpAp, out bonusMultiplier, out bonuses))
+					addAp = (int)(addAp * bonusMultiplier);
+
+				// Add conf
+				addAp = (int)(addAp * ChannelServer.Instance.Conf.World.LevelApRate);
+
+				this.AbilityPoints += (short)addAp;
 				this.LifeMaxBase += levelStats.Life;
 				this.ManaMaxBase += levelStats.Mana;
 				this.StaminaMaxBase += levelStats.Stamina;
