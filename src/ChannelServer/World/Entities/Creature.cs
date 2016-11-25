@@ -2144,7 +2144,20 @@ namespace Aura.Channel.World.Entities
 				if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
 					luckyChance += 0.05;
 
-				if (luckyChance < ChannelServer.Instance.Conf.World.HugeLuckyFinishChance)
+				var hugeLuckyFinishChance = ChannelServer.Instance.Conf.World.HugeLuckyFinishChance;
+				var bigLuckyFinishChance = ChannelServer.Instance.Conf.World.BigLuckyFinishChance;
+				var luckyFinishChance = ChannelServer.Instance.Conf.World.LuckyFinishChance;
+
+				// Add global bonus
+				float luckyDropBonus;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.LuckyFinishRate, out luckyDropBonus, out bonuses))
+				{
+					hugeLuckyFinishChance *= luckyDropBonus;
+					bigLuckyFinishChance *= luckyDropBonus;
+					luckyFinishChance *= luckyDropBonus;
+				}
+
+				if (luckyChance < hugeLuckyFinishChance)
 				{
 					amount *= 100;
 					finish = LuckyFinish.Lucky;
@@ -2152,7 +2165,7 @@ namespace Aura.Channel.World.Entities
 					Send.CombatMessage(killer, Localization.Get("Huge Lucky Finish!!"));
 					Send.Notice(killer, Localization.Get("Huge Lucky Finish!!"));
 				}
-				else if (luckyChance < ChannelServer.Instance.Conf.World.BigLuckyFinishChance)
+				else if (luckyChance < bigLuckyFinishChance)
 				{
 					amount *= 5;
 					finish = LuckyFinish.BigLucky;
@@ -2160,7 +2173,7 @@ namespace Aura.Channel.World.Entities
 					Send.CombatMessage(killer, Localization.Get("Big Lucky Finish!!"));
 					Send.Notice(killer, Localization.Get("Big Lucky Finish!!"));
 				}
-				else if (luckyChance < ChannelServer.Instance.Conf.World.LuckyFinishChance)
+				else if (luckyChance < luckyFinishChance)
 				{
 					amount *= 2;
 					finish = LuckyFinish.HugeLucky;
