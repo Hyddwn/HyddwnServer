@@ -510,11 +510,11 @@ namespace Aura.Channel.Network.Sending
 		/// Sends GameEventStateUpdate to all clients connected to the channel.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="success"></param>
-		public static void GameEventStateUpdate(string gameEventId, GameEventState state)
+		/// <param name="isActive"></param>
+		public static void GameEventStateUpdate(string gameEventId, bool isActive)
 		{
 			var packet = new Packet(Op.GameEventStateUpdate, MabiId.Broadcast);
-			packet.PutByte((byte)state);
+			packet.PutByte(isActive);
 			packet.PutInt(0);
 
 			ChannelServer.Instance.World.Broadcast(packet);
@@ -524,11 +524,11 @@ namespace Aura.Channel.Network.Sending
 		/// Sends GameEventStateUpdate creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="success"></param>
-		public static void GameEventStateUpdate(Creature creature, string gameEventId, GameEventState state)
+		/// <param name="isActive"></param>
+		public static void GameEventStateUpdate(Creature creature, string gameEventId, bool isActive)
 		{
 			var packet = new Packet(Op.GameEventStateUpdate, MabiId.Broadcast);
-			packet.PutByte((byte)state);
+			packet.PutByte(isActive);
 			packet.PutInt(0);
 
 			creature.Client.Send(packet);

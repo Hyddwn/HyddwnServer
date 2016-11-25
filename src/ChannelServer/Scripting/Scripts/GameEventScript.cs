@@ -31,7 +31,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Returns the current state of the event.
 		/// </summary>
-		public GameEventState State { get; private set; }
+		public bool IsActive { get; private set; }
 
 		/// <summary>
 		/// Loads and sets up event.
@@ -80,26 +80,26 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Starts event.
+		/// Starts event if it's not active yet.
 		/// </summary>
 		public void Start()
 		{
-			if (this.State == GameEventState.Active)
+			if (this.IsActive)
 				return;
 
-			this.State = GameEventState.Active;
+			this.IsActive = true;
 			this.OnStart();
 		}
 
 		/// <summary>
-		/// Stops event.
+		/// Stops event if it's active.
 		/// </summary>
 		public void End()
 		{
-			if (this.State == GameEventState.Inactive)
+			if (!this.IsActive)
 				return;
 
-			this.State = GameEventState.Inactive;
+			this.IsActive = false;
 			this.OnEnd();
 		}
 
@@ -132,14 +132,12 @@ namespace Aura.Channel.Scripting.Scripts
 			// Active time
 			if (now >= span.Start && now < span.End)
 			{
-				if (this.State == GameEventState.Inactive)
-					this.Start();
+				this.Start();
 			}
 			// Inactive time
 			else
 			{
-				if (this.State == GameEventState.Active)
-					this.End();
+				this.End();
 			}
 		}
 
@@ -154,12 +152,6 @@ namespace Aura.Channel.Scripting.Scripts
 			lock (_activationSpans)
 				return _activationSpans.Any(a => time >= a.Start && time < a.End);
 		}
-	}
-
-	public enum GameEventState
-	{
-		Inactive,
-		Active,
 	}
 
 	public class ActivationSpan

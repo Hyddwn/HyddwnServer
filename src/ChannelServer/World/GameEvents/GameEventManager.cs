@@ -49,7 +49,7 @@ namespace Aura.Channel.World.GameEvents
 
 				foreach (var gameEvent in _gameEvents.Values)
 				{
-					var isActive = (gameEvent.State == GameEventState.Active);
+					var isActive = (gameEvent.IsActive);
 					var isActiveTime = gameEvent.IsActiveTime(now.DateTime);
 
 					if (!isActive && isActiveTime)
@@ -93,7 +93,7 @@ namespace Aura.Channel.World.GameEvents
 
 			Send.Notice(creature, NoticeType.TopGreen, message);
 			foreach (var gameEvent in activeEvents)
-				Send.GameEventStateUpdate(creature, gameEvent.Id, gameEvent.State);
+				Send.GameEventStateUpdate(creature, gameEvent.Id, gameEvent.IsActive);
 		}
 
 		/// <summary>
@@ -148,7 +148,7 @@ namespace Aura.Channel.World.GameEvents
 			if (gameEvent == null)
 				return false;
 
-			return (gameEvent.State == GameEventState.Active);
+			return gameEvent.IsActive;
 		}
 
 		/// <summary>
@@ -179,7 +179,7 @@ namespace Aura.Channel.World.GameEvents
 		public GameEventScript[] GetActiveEvents()
 		{
 			lock (_gameEvents)
-				return _gameEvents.Values.Where(a => a.State == GameEventState.Active).ToArray();
+				return _gameEvents.Values.Where(a => a.IsActive).ToArray();
 		}
 	}
 }
