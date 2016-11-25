@@ -35,37 +35,39 @@ namespace Aura.Channel.World.GameEvents
 		}
 
 		/// <summary>
-		/// Returns all bonuses for the given stat and the related event's
-		/// names via out parameter.
+		/// Returns whether there are any bonuses for the given stat,
+		/// and if so returns the total multiplier and the names of the
+		/// events that affected it via out parameter.
 		/// </summary>
 		/// <param name="stat"></param>
+		/// <param name="multiplier"></param>
 		/// <param name="eventNames"></param>
-		public float GetBonusMultiplier(GlobalBonusStat stat, out string eventNames)
+		public bool GetBonusMultiplier(GlobalBonusStat stat, out float multiplier, out string eventNames)
 		{
-			var result = 0f;
+			multiplier = 0;
+			eventNames = "";
+
+			lock (_bonuses)
+			{
+				if (!_bonuses.Any(a => a.Stat == stat))
+					return false;
+			}
+
 			var names = new HashSet<string>();
-			var found = 0;
 
 			lock (_bonuses)
 			{
 				foreach (var bonus in _bonuses.Where(a => a.Stat == stat))
 				{
-					found++;
-					result += bonus.Multiplier;
+					multiplier += bonus.Multiplier;
 					if (!string.IsNullOrWhiteSpace(bonus.Name))
 						names.Add(bonus.Name);
 				}
 			}
 
-			if (found == 0)
-			{
-				eventNames = "";
-				return 1;
-			}
-
 			eventNames = string.Join(", ", names);
 
-			return result;
+			return true;
 		}
 	}
 
