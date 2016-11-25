@@ -31,7 +31,7 @@ namespace Aura.Channel.World.GameEvents
 		public void RemoveBonuses(string eventId)
 		{
 			lock (_bonuses)
-				_bonuses.RemoveAll(a => a.EventId == eventId);
+				_bonuses.RemoveAll(a => a.Identifier == eventId);
 		}
 
 		/// <summary>
@@ -52,8 +52,8 @@ namespace Aura.Channel.World.GameEvents
 				{
 					found++;
 					result += bonus.Multiplier;
-					if (!string.IsNullOrWhiteSpace(bonus.EventName))
-						names.Add(bonus.EventName);
+					if (!string.IsNullOrWhiteSpace(bonus.Name))
+						names.Add(bonus.Name);
 				}
 			}
 
@@ -71,15 +71,15 @@ namespace Aura.Channel.World.GameEvents
 
 	public class GlobalBonus
 	{
-		public string EventId { get; private set; }
-		public string EventName { get; private set; }
+		public string Identifier { get; private set; }
+		public string Name { get; private set; }
 		public GlobalBonusStat Stat { get; private set; }
 		public float Multiplier { get; private set; }
 
-		public GlobalBonus(string eventId, string eventName, GlobalBonusStat stat, float multiplier)
+		public GlobalBonus(string identifier, string name, GlobalBonusStat stat, float multiplier)
 		{
-			this.EventId = EventId;
-			this.EventName = eventName;
+			this.Identifier = Identifier;
+			this.Name = name;
 			this.Stat = stat;
 			this.Multiplier = multiplier;
 		}
