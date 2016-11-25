@@ -11,6 +11,7 @@ using System;
 using Aura.Channel.Network.Sending;
 using Aura.Data.Database;
 using Aura.Data;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel.World.Entities
 {
@@ -332,11 +333,22 @@ namespace Aura.Channel.World.Entities
 			// Exp
 			var exp = (long)(this.RaceData.Exp * ChannelServer.Instance.Conf.World.ExpRate);
 			var expRule = killer.Party.ExpRule;
+			var expMessage = "+{0} EXP";
 
+			// Add global bonus
+			float bonusMultiplier;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.CombatExp, out bonusMultiplier, out bonuses))
+				exp = (long)(exp * bonusMultiplier);
+
+			if (!string.IsNullOrWhiteSpace(bonuses))
+				expMessage += " (" + bonuses + ")";
+
+			// Give
 			if (!killer.IsInParty || expRule == PartyExpSharing.AllToFinish)
 			{
 				killer.GiveExp(exp);
-				Send.CombatMessage(killer, "+{0} EXP", exp);
+				Send.CombatMessage(killer, expMessage, exp);
 			}
 			else
 			{
@@ -370,13 +382,13 @@ namespace Aura.Channel.World.Entities
 
 				// Killer's exp
 				killer.GiveExp(killerExp);
-				Send.CombatMessage(killer, "+{0} EXP", killerExp);
+				Send.CombatMessage(killer, expMessage, killerExp);
 
 				// Exp for members in range of killer, the range is unofficial
 				foreach (var member in members.Where(a => a != killer && a.GetPosition().InRange(killerPos, 3000)))
 				{
 					member.GiveExp(eaExp);
-					Send.CombatMessage(member, "+{0} EXP", eaExp);
+					Send.CombatMessage(member, expMessage, eaExp);
 				}
 			}
 		}
