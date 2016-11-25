@@ -2112,7 +2112,16 @@ namespace Aura.Channel.World.Entities
 		/// <param name="pos"></param>
 		private void DropGold(Creature killer, Random rnd, Position pos)
 		{
-			if (rnd.NextDouble() >= ChannelServer.Instance.Conf.World.GoldDropChance)
+			var goldDropChance = ChannelServer.Instance.Conf.World.GoldDropChance;
+
+			// Add global bonus
+			float goldRateBonus;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.GoldDropRate, out goldRateBonus, out bonuses))
+				goldDropChance *= goldRateBonus;
+
+			// Check if drop
+			if (rnd.NextDouble() >= goldDropChance)
 				return;
 
 			// Random base amount
