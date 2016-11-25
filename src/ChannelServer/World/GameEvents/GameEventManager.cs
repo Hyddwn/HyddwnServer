@@ -23,6 +23,19 @@ namespace Aura.Channel.World.GameEvents
 		private Dictionary<string, GameEventScript> _gameEvents = new Dictionary<string, GameEventScript>();
 
 		/// <summary>
+		/// Global bonuses for AP, EXP, etc.
+		/// </summary>
+		public GlobalBonusManager GlobalBonuses { get; private set; }
+
+		/// <summary>
+		/// Creates new instance of manager.
+		/// </summary>
+		public GameEventManager()
+		{
+			this.GlobalBonuses = new GlobalBonusManager();
+		}
+
+		/// <summary>
 		/// Sets up necessarily subscriptions.
 		/// </summary>
 		public void Initialize()

@@ -258,6 +258,7 @@
     <Compile Include="World\Dungeons\Generation\Position.cs" />
     <Compile Include="World\Entities\RpCharacter.cs" />
     <Compile Include="World\GameEvents\GameEventManager.cs" />
+    <Compile Include="World\GameEvents\GlobalBonuses.cs" />
     <Compile Include="World\Guilds\GuildManager.cs" />
     <Compile Include="World\Dungeons\Props\Chest.cs" />
     <Compile Include="World\Dungeons\Props\Door.cs" />

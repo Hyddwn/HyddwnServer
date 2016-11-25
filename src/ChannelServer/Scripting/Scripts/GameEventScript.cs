@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Channel.World.GameEvents;
 using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
@@ -101,6 +102,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 			this.IsActive = false;
 			this.OnEnd();
+
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveBonuses(this.Id);
 		}
 
 		/// <summary>
@@ -151,6 +154,20 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			lock (_activationSpans)
 				return _activationSpans.Any(a => time >= a.Start && time < a.End);
+		}
+
+		/// <summary>
+		/// Adds global bonus.
+		/// </summary>
+		/// <remarks>
+		/// All global bonuses added by the event are removed automatically
+		/// when it ends.
+		/// </remarks>
+		/// <param name="stat"></param>
+		/// <param name="multiplier"></param>
+		protected void AddGlobalBonus(GlobalBonusStat stat, float multiplier)
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddBonus(this.Id, this.Name, stat, multiplier);
 		}
 	}
 
