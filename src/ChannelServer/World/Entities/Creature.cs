@@ -2127,6 +2127,11 @@ namespace Aura.Channel.World.Entities
 			// Random base amount
 			var amount = rnd.Next(this.Drops.GoldMin, this.Drops.GoldMax + 1);
 
+			// Add global bonus
+			float goldDropBonus;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.GoldDropAmount, out goldDropBonus, out bonuses))
+				amount = (int)(amount * goldDropBonus);
+
 			if (amount > 0)
 			{
 				var finish = LuckyFinish.None;
