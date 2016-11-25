@@ -784,7 +784,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		/// <param name="gameEventId"></param>
 		/// <returns></returns>
-		protected bool IsActive(string gameEventId)
+		protected bool IsEventActive(string gameEventId)
 		{
 			return ChannelServer.Instance.GameEventManager.IsActive(gameEventId);
 		}
