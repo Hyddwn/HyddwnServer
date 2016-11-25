@@ -13,13 +13,13 @@ namespace Aura.Channel.World.GameEvents
 		/// <summary>
 		/// Adds global bonus.
 		/// </summary>
-		/// <param name="eventId"></param>
-		/// <param name="eventName"></param>
+		/// <param name="identifier"></param>
+		/// <param name="name"></param>
 		/// <param name="stat"></param>
 		/// <param name="multiplier"></param>
-		public void AddBonus(string eventId, string eventName, GlobalBonusStat stat, float multiplier)
+		public void AddBonus(string identifier, string name, GlobalBonusStat stat, float multiplier)
 		{
-			var bonus = new GlobalBonus(eventId, eventName, stat, multiplier);
+			var bonus = new GlobalBonus(identifier, name, stat, multiplier);
 			lock (_bonuses)
 				_bonuses.Add(bonus);
 		}
@@ -27,11 +27,11 @@ namespace Aura.Channel.World.GameEvents
 		/// <summary>
 		/// Removes all global bonuses with given event id.
 		/// </summary>
-		/// <param name="eventId"></param>
-		public void RemoveBonuses(string eventId)
+		/// <param name="identifier"></param>
+		public void RemoveBonuses(string identifier)
 		{
 			lock (_bonuses)
-				_bonuses.RemoveAll(a => a.Identifier == eventId);
+				_bonuses.RemoveAll(a => a.Identifier == identifier);
 		}
 
 		/// <summary>
@@ -78,7 +78,7 @@ namespace Aura.Channel.World.GameEvents
 
 		public GlobalBonus(string identifier, string name, GlobalBonusStat stat, float multiplier)
 		{
-			this.Identifier = Identifier;
+			this.Identifier = identifier;
 			this.Name = name;
 			this.Stat = stat;
 			this.Multiplier = multiplier;
