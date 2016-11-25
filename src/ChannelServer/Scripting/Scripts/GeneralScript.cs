@@ -773,6 +773,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="till"></param>
 		protected void ScheduleEvent(string gameEventId, DateTime from, DateTime till)
 		{
+			if (till < from)
+				Log.Warning("{0}: ScheduleEvent: Till date is earlier than from date.", this.GetType().Name);
+
 			ChannelServer.Instance.GameEventManager.AddActivationSpan(gameEventId, from, till);
 		}
 

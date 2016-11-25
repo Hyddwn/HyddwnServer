@@ -106,7 +106,8 @@ namespace Aura.Channel.World.GameEvents
 			var activeEvents = this.GetActiveEvents();
 			var message = GetBroadcastMessage(activeEvents);
 
-			Send.Notice(creature, NoticeType.TopGreen, message);
+			if (!string.IsNullOrWhiteSpace(message))
+				Send.Notice(creature, NoticeType.TopGreen, message);
 			foreach (var gameEvent in activeEvents)
 				Send.GameEventStateUpdate(creature, gameEvent.Id, gameEvent.IsActive);
 		}
