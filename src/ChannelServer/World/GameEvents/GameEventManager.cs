@@ -73,7 +73,9 @@ namespace Aura.Channel.World.GameEvents
 		/// <param name="now"></param>
 		private void OnErinnDaytimeTick(ErinnTime now)
 		{
-			var message = this.GetBroadcastMessage();
+			var activeEvents = this.GetActiveEvents();
+			var message = GetBroadcastMessage(activeEvents);
+
 			Send.Notice(NoticeType.TopGreen, message);
 		}
 
@@ -88,8 +90,8 @@ namespace Aura.Channel.World.GameEvents
 			if (creature.IsRpCharacter)
 				return;
 
-			var message = this.GetBroadcastMessage();
 			var activeEvents = this.GetActiveEvents();
+			var message = GetBroadcastMessage(activeEvents);
 
 			Send.Notice(creature, NoticeType.TopGreen, message);
 			foreach (var gameEvent in activeEvents)
@@ -156,16 +158,16 @@ namespace Aura.Channel.World.GameEvents
 		/// active events.
 		/// </summary>
 		/// <returns></returns>
-		private string GetBroadcastMessage()
+		private static string GetBroadcastMessage(IEnumerable<GameEventScript> gameEvents)
 		{
 			var sb = new StringBuilder();
-			var activeEvents = this.GetActiveEvents();
+			var count = gameEvents.Count();
 
 			var i = 0;
-			foreach (var gameEvent in activeEvents)
+			foreach (var gameEvent in gameEvents)
 			{
 				sb.AppendFormat("The {0} Event is in progress.", gameEvent.Name);
-				if (++i < _gameEvents.Count)
+				if (++i < count)
 					sb.Append("     ");
 			}
 
