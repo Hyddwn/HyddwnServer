@@ -528,6 +528,7 @@ namespace Aura.Channel.Network.Sending
 		public static void GameEventStateUpdate(Creature creature, string gameEventId, bool isActive)
 		{
 			var packet = new Packet(Op.GameEventStateUpdate, MabiId.Broadcast);
+			packet.PutString(gameEventId);
 			packet.PutByte(isActive);
 			packet.PutInt(0);
 
