@@ -30,14 +30,10 @@ public class DoubleRainbowEventScript : GameEventScript
 		AddGlobalBonus(GlobalBonusStat.GoldDropRate, 2);
 		AddGlobalBonus(GlobalBonusStat.GoldDropAmount, 2);
 		AddGlobalBonus(GlobalBonusStat.LuckyFinishRate, 2);
-
-		Send.Notice(NoticeType.Middle, L("The {0} Event is now in progress."), Name);
 	}
 
 	protected override void OnEnd()
 	{
 		RemoveGlobalBonuses();
-
-		Send.Notice(NoticeType.Middle, L("The {0} Event has ended."), Name);
 	}
 }

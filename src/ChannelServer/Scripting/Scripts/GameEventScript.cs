@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using Aura.Channel.Network.Sending;
 using Aura.Channel.World.GameEvents;
+using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using System;
 using System.Collections.Generic;
@@ -90,6 +92,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 			this.IsActive = true;
 			this.OnStart();
+
+			Send.Notice(NoticeType.Middle, L("The {0} Event is now in progress."), this.Name);
 		}
 
 		/// <summary>
@@ -103,7 +107,7 @@ namespace Aura.Channel.Scripting.Scripts
 			this.IsActive = false;
 			this.OnEnd();
 
-			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveBonuses(this.Id);
+			Send.Notice(NoticeType.Middle, L("The {0} Event has ended."), this.Name);
 		}
 
 		/// <summary>

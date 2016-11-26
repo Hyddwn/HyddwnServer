@@ -21,14 +21,10 @@ public class TrippleMonsterExpEventScript : GameEventScript
 	protected override void OnStart()
 	{
 		AddGlobalBonus(GlobalBonusStat.CombatExp, 3);
-
-		Send.Notice(NoticeType.Middle, L("The {0} Event is now in progress."), Name);
 	}
 
 	protected override void OnEnd()
 	{
 		RemoveGlobalBonuses();
-
-		Send.Notice(NoticeType.Middle, L("The {0} Event has ended."), Name);
 	}
 }
