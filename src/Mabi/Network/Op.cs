@@ -582,6 +582,7 @@ namespace Aura.Mabi.Network
 
 		// [150000~180000] Something was removed here
 
+		public const int GameEventStateUpdate = 0xA805;
 		public const int MailsRequest = 0xA897;
 		public const int MailsRequestR = 0xA898;
 		public const int SetPetAi = 0xA8A1;

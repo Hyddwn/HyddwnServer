@@ -41,6 +41,7 @@ namespace Aura.Channel.Scripting.Compilers
 			add.Append("using Aura.Channel.World.Dungeons.Puzzles;");
 			add.Append("using Aura.Channel.World.Entities;");
 			add.Append("using Aura.Channel.World.Entities.Props;");
+			add.Append("using Aura.Channel.World.GameEvents;");
 			add.Append("using Aura.Channel.World;");
 			add.Append("using Aura.Channel.World.Quests;");
 			add.Append("using Aura.Channel;");

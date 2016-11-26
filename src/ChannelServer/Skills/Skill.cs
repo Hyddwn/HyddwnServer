@@ -16,6 +16,7 @@ using Aura.Channel.Util.Configuration.Files;
 using System.Globalization;
 using Aura.Mabi;
 using Aura.Channel.Scripting.Scripts;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel.Skills
 {
@@ -177,13 +178,24 @@ namespace Aura.Channel.Skills
 			if (_creature.IsPet)
 				return;
 
-			var bonus = "";
+			var bonusMessage = "";
+
+			// Add global bonus
+			float bonusMultiplier;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.SkillTraining, out bonusMultiplier, out bonuses))
+			{
+				amount = (int)(amount * bonusMultiplier);
+				if (!string.IsNullOrWhiteSpace(bonuses))
+					bonusMessage += string.Format(Localization.Get(" ({0} Bonus: x{1})"), bonuses, bonusMultiplier);
+			}
 
 			// Apply skill exp multiplier
-			if (ChannelServer.Instance.Conf.World.SkillExpRate != 1)
+			var skillExpRateBonus = ChannelServer.Instance.Conf.World.SkillExpRate;
+			if (skillExpRateBonus != 1)
 			{
-				amount = (int)(amount * ChannelServer.Instance.Conf.World.SkillExpRate);
-				bonus = string.Format(Localization.Get(" (Skill Exp Rate Bonus: x{0})"), ChannelServer.Instance.Conf.World.SkillExpRate);
+				amount = (int)(amount * skillExpRateBonus);
+				bonusMessage += string.Format(Localization.Get(" ({0} Bonus: x{1})"), Localization.Get("Skill Exp Rate"), skillExpRateBonus);
 			}
 
 			// Change count and reveal the condition
@@ -208,7 +220,7 @@ namespace Aura.Channel.Skills
 
 			var exp = this.UpdateExperience();
 			if (exp > 0)
-				Send.SkillTrainingUp(_creature, this, exp, bonus);
+				Send.SkillTrainingUp(_creature, this, exp, bonusMessage);
 
 			this.CheckMaster();
 		}

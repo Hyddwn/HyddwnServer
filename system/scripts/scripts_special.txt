@@ -4,6 +4,8 @@
 // All scripts listed here will be loaded.
 //---------------------------------------------------------------------------
 
+events/**/*
+
 ai/**/*
 
 dungeons/**/*
