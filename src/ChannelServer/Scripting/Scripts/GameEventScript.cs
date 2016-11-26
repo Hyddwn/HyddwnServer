@@ -173,6 +173,28 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveBonuses(this.Id);
 		}
+
+		/// <summary>
+		/// Schedules this event to be active during the given time span.
+		/// </summary>
+		/// <param name="from"></param>
+		/// <param name="till"></param>
+		protected void ScheduleEvent(DateTime from, DateTime till)
+		{
+			var gameEventId = this.Id;
+			this.ScheduleEvent(gameEventId, from, till);
+		}
+
+		/// <summary>
+		/// Schedules this event to be active during the given time span.
+		/// </summary>
+		/// <param name="from"></param>
+		/// <param name="timeSpan"></param>
+		protected void ScheduleEvent(DateTime from, TimeSpan timeSpan)
+		{
+			var gameEventId = this.Id;
+			this.ScheduleEvent(gameEventId, from, timeSpan);
+		}
 	}
 
 	public class ActivationSpan

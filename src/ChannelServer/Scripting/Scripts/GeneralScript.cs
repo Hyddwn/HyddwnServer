@@ -784,7 +784,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </summary>
 		/// <param name="gameEventId"></param>
 		/// <param name="from"></param>
-		/// <param name="till"></param>
+		/// <param name="timeSpan"></param>
 		protected void ScheduleEvent(string gameEventId, DateTime from, TimeSpan timeSpan)
 		{
 			var till = from.Add(timeSpan);
