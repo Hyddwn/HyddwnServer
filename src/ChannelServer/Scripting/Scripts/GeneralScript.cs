@@ -780,6 +780,18 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Schedules event to be active during the given time span.
+		/// </summary>
+		/// <param name="gameEventId"></param>
+		/// <param name="from"></param>
+		/// <param name="till"></param>
+		protected void ScheduleEvent(string gameEventId, DateTime from, TimeSpan timeSpan)
+		{
+			var till = from.Add(timeSpan);
+			this.ScheduleEvent(gameEventId, from, till);
+		}
+
+		/// <summary>
 		/// Returns true if the given event is active.
 		/// </summary>
 		/// <param name="gameEventId"></param>
