@@ -20,5 +20,7 @@ public class TestEventScript : GameEventScript
 	protected override void OnEnd()
 	{
 		Send.Notice(NoticeType.Middle, "test event stopped");
+
+		RemoveGlobalBonuses();
 	}
 }

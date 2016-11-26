@@ -159,15 +159,19 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Adds global bonus.
 		/// </summary>
-		/// <remarks>
-		/// All global bonuses added by the event are removed automatically
-		/// when it ends.
-		/// </remarks>
 		/// <param name="stat"></param>
 		/// <param name="multiplier"></param>
 		protected void AddGlobalBonus(GlobalBonusStat stat, float multiplier)
 		{
 			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddBonus(this.Id, this.Name, stat, multiplier);
+		}
+
+		/// <summary>
+		/// Removes all global bonuses associated with this event.
+		/// </summary>
+		protected void RemoveGlobalBonuses()
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveBonuses(this.Id);
 		}
 	}
 
