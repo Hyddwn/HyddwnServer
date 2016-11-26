@@ -5,7 +5,7 @@
 // Reference: http://wiki.mabinogiworld.com/view/2x_AP_Event
 //---------------------------------------------------------------------------
 
-public class DoubleRainbowEventScript : GameEventScript
+public class DoubleApEventScript : GameEventScript
 {
 	public override void Load()
 	{
