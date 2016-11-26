@@ -183,7 +183,7 @@ namespace Aura.Channel.Skills
 			// Add global bonus
 			float bonusMultiplier;
 			string bonuses;
-			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.CombatExp, out bonusMultiplier, out bonuses))
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.SkillTraining, out bonusMultiplier, out bonuses))
 			{
 				amount = (int)(amount * bonusMultiplier);
 				if (!string.IsNullOrWhiteSpace(bonuses))
