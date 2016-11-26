@@ -57,6 +57,14 @@ namespace Aura.Channel.Scripting.Scripts
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			ChannelServer.Instance.GameEventManager.Unregister(this.Id);
+			this.End();
+
+			base.Dispose();
+		}
+
 		/// <summary>
 		/// Called after script was registered, so it can schedule itself.
 		/// </summary>

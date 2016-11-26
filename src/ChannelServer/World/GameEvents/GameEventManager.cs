@@ -128,6 +128,19 @@ namespace Aura.Channel.World.GameEvents
 		}
 
 		/// <summary>
+		/// Unregisters an event from the manager.
+		/// </summary>
+		/// <param name="gameEvent"></param>
+		public void Unregister(string gameEventId)
+		{
+			lock (_gameEvents)
+			{
+				if (_gameEvents.ContainsKey(gameEventId))
+					_gameEvents.Remove(gameEventId);
+			}
+		}
+
+		/// <summary>
 		/// Adds an activation span to the given event.
 		/// </summary>
 		/// <param name="gameEventId"></param>
