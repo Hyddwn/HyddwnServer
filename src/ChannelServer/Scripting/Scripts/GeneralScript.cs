@@ -435,6 +435,23 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Attempts to remove prop from world and returns whether it was
+		/// successful.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		protected bool RemoveProp(long entityId)
+		{
+			var prop = ChannelServer.Instance.World.GetProp(entityId);
+			if (prop == null)
+				return false;
+
+			prop.Region.RemoveProp(prop);
+
+			return true;
+		}
+
+		/// <summary>
 		/// Sets behavior for the prop with entityId.
 		/// </summary>
 		/// <returns>Prop that the behavior was added for.</returns>
