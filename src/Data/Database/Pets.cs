@@ -31,6 +31,7 @@ namespace Aura.Data.Database
 		public short Defense { get; set; }
 		public float Protection { get; set; }
 
+		public bool Colorable { get; set; }
 		public uint Color1 { get; set; }
 		public uint Color2 { get; set; }
 		public uint Color3 { get; set; }
@@ -64,6 +65,7 @@ namespace Aura.Data.Database
 			info.Defense = entry.ReadShort("defense");
 			info.Protection = entry.ReadFloat("protection");
 
+			info.Colorable = entry.ReadBool("colorable", false);
 			info.Color1 = entry.ReadUInt("color1", 0x808080);
 			info.Color2 = entry.ReadUInt("color2", 0x808080);
 			info.Color3 = entry.ReadUInt("color3", 0x808080);
