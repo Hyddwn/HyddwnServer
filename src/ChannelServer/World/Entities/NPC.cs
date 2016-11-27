@@ -319,16 +319,17 @@ namespace Aura.Channel.World.Entities
 		/// Kills NPC, rewarding the killer.
 		/// </summary>
 		/// <param name="killer"></param>
-		public override void Kill(Creature killer)
+		public override bool Kill(Creature killer)
 		{
-			base.Kill(killer);
+			if (!base.Kill(killer))
+				return false;
 
 			this.DisappearTime = DateTime.Now.AddSeconds(NPC.DisappearDelay);
 
 			if (killer == null)
-				return;
+				return true;
 
-			// Exp
+			// Prepare exp
 			var exp = (long)(this.RaceData.Exp * ChannelServer.Instance.Conf.World.ExpRate);
 			var expRule = killer.Party.ExpRule;
 			var expMessage = "+{0} EXP";
@@ -342,7 +343,7 @@ namespace Aura.Channel.World.Entities
 			if (!string.IsNullOrWhiteSpace(bonuses))
 				expMessage += " (" + bonuses + ")";
 
-			// Give
+			// Give exp
 			if (!killer.IsInParty || expRule == PartyExpSharing.AllToFinish)
 			{
 				killer.GiveExp(exp);
@@ -389,6 +390,8 @@ namespace Aura.Channel.World.Entities
 					Send.CombatMessage(member, expMessage, eaExp);
 				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
