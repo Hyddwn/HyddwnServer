@@ -88,4 +88,5 @@
 { name: "portal_ula_bangor", location: "Ula_Bangor/_Ula_Bangor/_portal_Ula_Bangor" },
 { name: "portal_tara_contest", location: "Tara_main_field/_Tara_main_field_0013/portal_tara_contest" },
 { name: "portal_poulnabrone", location: "Uladh_Dunbarton/field_Dunbarton_11/Dunbarton_DungeonLobby" },
+{ name: "portal_festia", location: "ErinnLand/_ErinnLand_005/ErinnLand_Enter_Box" },
 ]

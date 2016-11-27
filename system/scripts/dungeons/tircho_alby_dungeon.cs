@@ -139,6 +139,60 @@ public class AlbyDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Egg from Caitin (RP)
+		if (item.Info.Id == 73109)
+		{
+			if (creature.Keywords.Has("RP_Monster_Chicken_complete"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon anymore."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You must enter this dungeon alone."));
+				return false;
+			}
+
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
+			dungeonName = "rp_monster_chicken";
+			return true;
+		}
+
+		// Trefor's Gauntlet (RP)
+		if (item.Info.Id == 73103)
+		{
+			if (creature.Keywords.Has("RP_Trefor_Complete"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon anymore."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You must enter this dungeon alone."));
+				return false;
+			}
+
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
+			if (!creature.Keywords.Has("RP_Trefor_Failed_2") && !creature.Keywords.Has("RP_Trefor_Failed_3"))
+				dungeonName = "rp_trefor_tircho_alby_dungeon";
+			else
+				dungeonName = "rp_trefor_tircho_alby_dungeon2";
+
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{

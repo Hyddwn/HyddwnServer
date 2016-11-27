@@ -10,6 +10,7 @@ using Aura.Channel.Network.Sending;
 using System.Collections.Generic;
 using Aura.Shared.Util;
 using Aura.Mabi;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel.World.Quests
 {
@@ -377,6 +378,12 @@ namespace Aura.Channel.World.Quests
 		public override void Reward(Creature creature, Quest quest)
 		{
 			var amount = this.Amount;
+
+			// Add global bonus
+			float bonusMultiplier;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.QuestExp, out bonusMultiplier, out bonuses))
+				amount = (int)(amount * bonusMultiplier);
 
 			// Friday: Increase in rewards for completing part-time jobs.
 			// (20% increase in EXP and Gold rewards)

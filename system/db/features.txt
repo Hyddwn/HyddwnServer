@@ -53,10 +53,10 @@
 	{ name: "EmainMacha", enabled: true },
 	{ name: "NaoDressUp", enabled: true },
 	{ name: "CollectionBooks", enabled: true },
+	{ name: "Price", enabled: true },
 	
 	// Season 1
 	{ name: "G2S1", enabled: true, children: [
-		{ name: "PeacaDungeon", enabled: true },
 		{ name: "RundalDungeon", enabled: true },
 		{ name: "CoillDungeon", enabled: true },
 		{ name: "Fireball", enabled: true },
@@ -68,17 +68,20 @@
 		{ name: "SystemPet", enabled: true, children: [
 			{ name: "PetBirds", enabled: true },
 		]},
+		{ name: "G1Skip", enabled: true },
 	]},
 	
 	// Season 3
 	{ name: "G2S3", enabled: true, children: [
 		{ name: "PotionPartyMaking", enabled: true },
 		{ name: "Thunder", enabled: true },
+		{ name: "Fleta", enabled: true },
 	]},
 	
 	// Season 4
 	{ name: "G2S4", enabled: true, children: [
 		{ name: "SpiritWeapons", enabled: true },
+		{ name: "PeacaDungeon", enabled: true },
 	]},
 ]},
 
@@ -346,6 +349,9 @@
 		]},
 		// Enables quest tabs.
 		{ name: "QuestViewRenewal", enabled: true },
+		
+		// Makes sheep protection quest easier. (Part of gfC4Tutorial)
+		{ name: "ShortSheepProtection", enabled: true },
 	]},
 	
 	// Season 2
@@ -501,5 +507,4 @@
 { name: "CombatSystemRenewal", enabled: true },
 { name: "PassiveSharpMind", enabled: true },
 { name: "TalentRenovationCloseCombat", enabled: true },
-{ name: "MoonTunnel", enabled: true },
 ]

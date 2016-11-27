@@ -130,21 +130,36 @@ namespace Aura.Channel.World
 		{
 			intersection = to;
 
-			double x1 = from.X, y1 = from.Y;
-			double x2 = to.X, y2 = to.Y;
+			var x1 = from.X;
+			var y1 = from.Y;
+			var x2 = to.X;
+			var y2 = to.Y;
 
 			var intersections = new List<Position>();
 
 			// Query lines
+			var rect = new LinePath(from, to).Rect;
+
+			// Extend rect a little, so there's no chance to miss any lines.
+			rect.X -= 100;
+			rect.Y -= 100;
+			rect.Width += 200;
+			rect.Height += 200;
+
 			List<LinePath> lines;
 			lock (_tree)
-				lines = _tree.Query(new LinePath(from, to).Rect);
+				lines = _tree.Query(rect);
 
 			// Get intersections
 			foreach (var line in lines)
 			{
+				var x3 = line.P1.X;
+				var y3 = line.P1.Y;
+				var x4 = line.P2.X;
+				var y4 = line.P2.Y;
+
 				Position inter;
-				if (this.FindIntersection(x1, y1, x2, y2, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, out inter))
+				if (this.FindIntersection(x1, y1, x2, y2, x3, y3, x4, y4, out inter))
 					intersections.Add(inter);
 			}
 

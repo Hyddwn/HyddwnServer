@@ -259,7 +259,7 @@ namespace Aura.Login.Network.Handlers
 			pet.Defense = petInfo.Defense;
 			pet.Protection = petInfo.Protection;
 
-			if (color1 > 0 || color2 > 0 || color3 > 0)
+			if (petInfo.Colorable)
 			{
 				pet.Color1 = color1;
 				pet.Color2 = color2;

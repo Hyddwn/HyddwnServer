@@ -22,6 +22,7 @@ using System.Threading;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Shared.Database;
 using Aura.Channel.World.Dungeons;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel.World.Entities
 {
@@ -1394,8 +1395,11 @@ namespace Aura.Channel.World.Entities
 				speed = ZombieSpeed;
 
 			// Hurry condition
-			var hurry = this.Conditions.GetExtraVal(169);
-			speed *= 1 + (hurry / 100f);
+			if (this.Conditions.Has(ConditionsC.Hurry))
+			{
+				var hurry = this.Conditions.GetExtraVal(169);
+				speed *= 1 + (hurry / 100f);
+			}
 
 			return speed;
 		}
@@ -2108,11 +2112,25 @@ namespace Aura.Channel.World.Entities
 		/// <param name="pos"></param>
 		private void DropGold(Creature killer, Random rnd, Position pos)
 		{
-			if (rnd.NextDouble() >= ChannelServer.Instance.Conf.World.GoldDropChance)
+			var goldDropChance = ChannelServer.Instance.Conf.World.GoldDropChance;
+
+			// Add global bonus
+			float goldRateBonus;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.GoldDropRate, out goldRateBonus, out bonuses))
+				goldDropChance *= goldRateBonus;
+
+			// Check if drop
+			if (rnd.NextDouble() >= goldDropChance)
 				return;
 
 			// Random base amount
 			var amount = rnd.Next(this.Drops.GoldMin, this.Drops.GoldMax + 1);
+
+			// Add global bonus
+			float goldDropBonus;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.GoldDropAmount, out goldDropBonus, out bonuses))
+				amount = (int)(amount * goldDropBonus);
 
 			if (amount > 0)
 			{
@@ -2126,7 +2144,20 @@ namespace Aura.Channel.World.Entities
 				if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
 					luckyChance += 0.05;
 
-				if (luckyChance < ChannelServer.Instance.Conf.World.HugeLuckyFinishChance)
+				var hugeLuckyFinishChance = ChannelServer.Instance.Conf.World.HugeLuckyFinishChance;
+				var bigLuckyFinishChance = ChannelServer.Instance.Conf.World.BigLuckyFinishChance;
+				var luckyFinishChance = ChannelServer.Instance.Conf.World.LuckyFinishChance;
+
+				// Add global bonus
+				float luckyDropBonus;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.LuckyFinishRate, out luckyDropBonus, out bonuses))
+				{
+					hugeLuckyFinishChance *= luckyDropBonus;
+					bigLuckyFinishChance *= luckyDropBonus;
+					luckyFinishChance *= luckyDropBonus;
+				}
+
+				if (luckyChance < hugeLuckyFinishChance)
 				{
 					amount *= 100;
 					finish = LuckyFinish.Lucky;
@@ -2134,7 +2165,7 @@ namespace Aura.Channel.World.Entities
 					Send.CombatMessage(killer, Localization.Get("Huge Lucky Finish!!"));
 					Send.Notice(killer, Localization.Get("Huge Lucky Finish!!"));
 				}
-				else if (luckyChance < ChannelServer.Instance.Conf.World.BigLuckyFinishChance)
+				else if (luckyChance < bigLuckyFinishChance)
 				{
 					amount *= 5;
 					finish = LuckyFinish.BigLucky;
@@ -2142,7 +2173,7 @@ namespace Aura.Channel.World.Entities
 					Send.CombatMessage(killer, Localization.Get("Big Lucky Finish!!"));
 					Send.Notice(killer, Localization.Get("Big Lucky Finish!!"));
 				}
-				else if (luckyChance < ChannelServer.Instance.Conf.World.LuckyFinishChance)
+				else if (luckyChance < luckyFinishChance)
 				{
 					amount *= 2;
 					finish = LuckyFinish.HugeLucky;
@@ -2209,15 +2240,24 @@ namespace Aura.Channel.World.Entities
 					continue;
 				}
 
-				var dropRate = dropData.Chance * ChannelServer.Instance.Conf.World.DropRate;
+				var dropRate = dropData.Chance;
 				var dropChance = rnd.NextDouble() * 100;
 				var month = ErinnTime.Now.Month;
+
+				// Add global bonus
+				float itemDropBonus;
+				string bonuses;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.ItemDropRate, out itemDropBonus, out bonuses))
+					dropRate *= itemDropBonus;
 
 				// Tuesday: Increase in dungeon item drop rate.
 				// Wednesday: Increase in item drop rate from animals and nature.
 				// +50%, bonus is unofficial.
 				if ((month == ErinnMonth.Baltane && this.Region.IsDungeon) || (month == ErinnMonth.AlbanHeruin && !this.Region.IsDungeon))
 					dropRate *= 1.5f;
+
+				// Add conf
+				dropRate *= ChannelServer.Instance.Conf.World.DropRate;
 
 				if (dropChance < dropRate)
 				{
@@ -2344,7 +2384,18 @@ namespace Aura.Channel.World.Entities
 				if (levelStats == null)
 					continue;
 
-				this.AbilityPoints += (short)Math2.Clamp(0, short.MaxValue, levelStats.AP * ChannelServer.Instance.Conf.World.LevelApRate);
+				var addAp = levelStats.AP;
+
+				// Add global bonus
+				float bonusMultiplier;
+				string bonuses;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.LevelUpAp, out bonusMultiplier, out bonuses))
+					addAp = (int)(addAp * bonusMultiplier);
+
+				// Add conf
+				addAp = (int)(addAp * ChannelServer.Instance.Conf.World.LevelApRate);
+
+				this.AbilityPoints += (short)addAp;
 				this.LifeMaxBase += levelStats.Life;
 				this.ManaMaxBase += levelStats.Mana;
 				this.StaminaMaxBase += levelStats.Stamina;
@@ -2599,9 +2650,14 @@ namespace Aura.Channel.World.Entities
 					break;
 
 				case ReviveOptions.PhoenixFeather:
-					// 10% additional injuries
-					this.Injuries += this.LifeInjured * 0.10f;
-					this.Life = 1;
+					// Only set life if life is not at max, since creatures
+					// will keep their life if they leveled up while dead.
+					if (this.Life < this.LifeMax)
+					{
+						// 10% additional injuries
+						this.Injuries += this.LifeInjured * 0.10f;
+						this.Life = 1;
+					}
 					break;
 
 				case ReviveOptions.WaitForRescue:

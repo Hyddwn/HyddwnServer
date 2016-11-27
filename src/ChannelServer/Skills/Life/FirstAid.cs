@@ -140,6 +140,8 @@ namespace Aura.Channel.Skills.Life
 			var unkInt1 = packet.GetInt();
 			var unkInt2 = packet.GetInt();
 
+			creature.StopMove();
+
 			// Do checks in Complete.
 
 			Send.SkillUse(creature, skill.Info.Id, entityId, unkInt1, unkInt2);

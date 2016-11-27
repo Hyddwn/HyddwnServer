@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<title>Online List</title>
+		
+		<link rel="stylesheet" href="/lib/normalize.min.css" />
+		<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		
+		<script src="/lib/jquery.min.js"></script>
+	</head>
+	<body>
+		<div id="main">
+			<div id="header">
+				Players online
+			</div>
+			{{#if anyOnline}}
+				<table id="list">
+					<tr>
+						<th>Name</th>
+						<th>Race</th>
+						<th>Level</th>
+						<th>Total Level</th>
+						<th>Age</th>
+					</tr>
+					{{#each onlineCharacters}}
+						<tr>
+							<td>{{this.Name}}</td>
+							<td>{{this.RaceName}}</td>
+							<td>{{this.Level}}</td>
+							<td>{{this.TotalLevel}}</td>
+							<td>{{this.Age}}</td>
+						</tr>
+					{{/each}}
+				</table>
+				<div class="total">Total: {{onlineCount}}</div>
+			{{#else}}
+				<div class="nobody">Nobody.</td>
+			{{/if}}
+		</div>
+	</body>
+</html>

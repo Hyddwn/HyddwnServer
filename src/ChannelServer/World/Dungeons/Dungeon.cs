@@ -147,6 +147,11 @@ namespace Aura.Channel.World.Dungeons
 		public bool HasRoles { get { lock (_roles) return _roles.Any(); } }
 
 		/// <summary>
+		/// Remaining bosses in boss room.
+		/// </summary>
+		public int RemainingBosses { get { return _bossesRemaining; } }
+
+		/// <summary>
 		/// Creates new dungeon.
 		/// </summary>
 		/// <param name="instanceId"></param>
@@ -560,6 +565,9 @@ namespace Aura.Channel.World.Dungeons
 					}
 				}
 			}
+
+			// Set up entered floor event.
+			region.PlayerEntered += (creature, prevRegionId) => this.Script.OnPlayerEnteredFloor(this, creature, iRegion);
 		}
 
 		/// <summary>
@@ -915,18 +923,22 @@ namespace Aura.Channel.World.Dungeons
 		}
 
 		/// <summary>
-		/// Returns creators inside the dungeon.
+		/// Returns creators inside the dungeon. If dungeon has roles,
+		/// it gets the creators by calling GetActualCreature on the
+		/// RP characters.
 		/// </summary>
 		/// <returns></returns>
 		public List<Creature> GetCreators()
 		{
 			var result = new List<Creature>();
 
-			foreach (var entityId in this.Creators)
+			var creatures = (this.HasRoles ? this.RpCharacters : this.Creators);
+
+			foreach (var entityId in creatures)
 			{
 				var creature = this.GetCreature(entityId);
 				if (creature != null)
-					result.Add(creature);
+					result.Add(creature.GetActualCreature());
 			}
 
 			return result;

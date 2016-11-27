@@ -151,6 +151,22 @@ public class ManusPtjScript : GeneralScript
 					npc.Msg(npc.FavorExpression(), L("Is this the best you can do?<br/>Then I have no choice but to pay only a little."));
 					npc.ModifyRelation(0, -Random(2), 0);
 				}
+
+				// Herbalism quest
+				if (npc.GetPtjSuccessCount(JobType) >= 10 && !npc.HasSkill(SkillId.Herbalism) && !npc.HasQuest(200042) && !npc.HasQuest(200063))
+				{
+					// Unofficial/Copy of Dilys
+					npc.Msg(L("Say, <username/>. Do you have any interest in learning Herbalism?<br/>You've been such a great help to me here, I thought you might be interested in becoming a healer.<br/>If you're interested in Herbalism, I have a favor to ask you.<br/>If you do it, then I'll teach you."), npc.Button(L("I will do it"), "@yes"), npc.Button(L("No, thanks"), "@no"));
+					if (await npc.Select() == "@yes")
+					{
+						npc.SendOwl(200042); // Gather Base Herb (Manus)
+						npc.Msg(L("You sound really interested in becoming a healer...<br/>If you step outside, an owl will deliver my request to you."));
+					}
+					else
+					{
+						npc.Msg(L("Really?<br/>Then, I will see you next time when you need another part-time job."));
+					}
+				}
 			}
 			return;
 		}

@@ -9,6 +9,8 @@ Custom pages should go into the [user folder](https://github.com/aura-project/au
 improvements to existing pages should be pushed to the [main repository](https://github.com/aura-project/aura),
 for the benefit of all Aura users.
 
+__TOC__
+
 URL
 ------------------------------------------------------------------------------
 
@@ -97,3 +99,46 @@ displayed, depending on whether the EmainMacha feature is enabled or not.
 
 This is the big advantage of this Wiki over others, which only ever reflect
 the latest updates of Mabinogi.
+
+Table of contents
+-----------------------------------------------------------------------------
+
+The table of contents (TOC) is a list of headers on a page that you can jump
+to by clicking on them. It's not inserted by default, but you can add it
+to a page by placing the following code somewhere on it:
+
+```
+__TOC__
+```
+
+For example:
+
+```
+Page Title
+=============================================================================
+
+Description.
+
+__TOC__
+
+First header
+-----------------------------------------------------------------------------
+```
+
+By default only level 1 headers (H2) are visible in the table, so we can
+use H3 and higher without them blowing up the TOC. The others are hidden
+via CSS. To make them appear on one page only, you need to place CSS code
+on it to make that happen. For example, to display level 2 headers (H3)
+you would change the respective display property to `block`.
+
+```
+End of page text.
+
+<style>
+	.toc-level2 {
+		display: block;
+	}
+</style>
+```
+
+For more examples, just look at the existing pages.

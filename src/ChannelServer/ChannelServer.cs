@@ -26,6 +26,7 @@ using System.Linq;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Channel.World.Guilds;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel
 {
@@ -74,6 +75,7 @@ namespace Aura.Channel
 		public WeatherManager Weather { get; private set; }
 		public PartyManager PartyManager { get; private set; }
 		public GuildManager GuildManager { get; private set; }
+		public GameEventManager GameEventManager { get; private set; }
 
 		public WorldManager World { get; private set; }
 		public bool ShuttingDown { get; private set; }
@@ -99,6 +101,7 @@ namespace Aura.Channel
 			this.Weather = new WeatherManager();
 			this.PartyManager = new PartyManager();
 			this.GuildManager = new GuildManager();
+			this.GameEventManager = new GameEventManager();
 
 			this.Timer = new Timer(new TimerCallback(ShutdownTimerDone));
 		}
@@ -316,6 +319,7 @@ namespace Aura.Channel
 			this.World.Initialize();
 			this.PartyManager.Initialize();
 			this.GuildManager.Initialize();
+			this.GameEventManager.Initialize();
 
 			Log.Info("  done loading {0} regions.", this.World.Count);
 			Log.Info("  done loading {0} guilds.", this.GuildManager.Count);

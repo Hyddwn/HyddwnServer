@@ -6,6 +6,8 @@ start a new character. They provide some useful rewards, like certain basic
 skills, experience points (EXP), ability points (AP), and money (gold),
 and guide the player through Uladh.
 
+__TOC__
+
 Nao's Letter of Introduction
 -----------------------------------------------------------------------------
 
@@ -82,7 +84,10 @@ Save my Sheep
 ### Additional Information
 
 When the player agrees to look after Deian's sheep, they will be teleported
-to an enclosed area. For five minutes, the player must protect the sheep
+to an enclosed area. For
+<span data-feature="!ShortSheepProtection">five</span>
+<span data-feature="ShortSheepProtection">three</span>
+minutes, the player must protect the sheep
 from a pack of Gray Wolves. The mission will fail if the player dies and
 teleports back to town or the number of sheep falls below 5.
 
@@ -480,7 +485,7 @@ Reach Level 40
 
 ### How to get
 
-- Reach level 55.
+- Reach level 35.
 
 ### Objectives
 

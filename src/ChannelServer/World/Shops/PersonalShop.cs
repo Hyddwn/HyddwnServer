@@ -514,7 +514,7 @@ namespace Aura.Channel.World.Shops
 			// Notice to owner
 			var msg = string.Format(Localization.Get("[{0}] was sold to [{1}]."), Localization.Get(item.Data.Name), buyer.Name);
 			Send.Notice(this.Owner, msg);
-			Send.SystemMessageFrom(this.Owner, "<PERSONALSHOP>", msg);
+			Send.SystemMessageFrom(this.Owner, Localization.Get("<PERSONALSHOP>"), msg);
 
 			// Add gold to the license
 			var fee = this.LicenseData.SalesFee;
@@ -524,7 +524,7 @@ namespace Aura.Channel.World.Shops
 			var val = this.LicenseItem.MetaData1.GetInt("EVALUE") + revenue;
 			val = Math.Min(this.LicenseData.Limit, val);
 
-			this.LicenseItem.MetaData1.SetInt("EVALUE", revenue);
+			this.LicenseItem.MetaData1.SetInt("EVALUE", val);
 			Send.ItemUpdate(this.Owner, this.LicenseItem);
 
 			return true;

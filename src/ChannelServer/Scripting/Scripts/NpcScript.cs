@@ -230,6 +230,10 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				var score = this.GetGiftReaction(gift);
 
+				// Debug output
+				if (this.Player.IsDev)
+					this.Msg(string.Format("-Debug-<br/>Reaction: {0}<br/>Score: {1}", this.NPC.GiftWeights.CalculateScore(gift), score));
+
 				await Hook("before_gift", gift, score);
 
 				await this.Gift(gift, score);
@@ -254,7 +258,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		protected virtual async Task Gift(Item gift, GiftReaction reaction)
 		{
-			this.Msg("Thank you.");
+			this.Msg(Localization.Get("Thank you."));
 
 			await Task.Yield();
 		}
@@ -1270,6 +1274,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Returns true if a PTJ quest is active and its type matches
+		/// the given one.
+		/// </summary>
+		public bool DoingPtj(PtjType type)
+		{
+			var quest = this.Player.Quests.GetPtjQuest();
+			return (quest != null && quest.Data.PtjType == type);
+		}
+
+		/// <summary>
 		/// Returns true if a PTJ quest is active.
 		/// </summary>
 		public bool DoingPtj()
@@ -1461,7 +1475,8 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="args"></param>
 		public void SystemNotice(string format, params object[] args)
 		{
-			this.Notice(NoticeType.MiddleSystem, format, args);
+			this.Notice(format, args);
+			this.SystemMsg(format, args);
 		}
 
 		/// <summary>
@@ -1884,6 +1899,11 @@ namespace Aura.Channel.Scripting.Scripts
 						// CTBONUS:2:40;CTSPEED:4:750;MTWR:1:1;
 						var collectionBonusBuff = result.Item.MetaData1.GetShort("CTBONUS");
 						result.Item.MetaData1.SetShort("CTBONUS", (short)(collectionBonusBuff + effect.Value[0]));
+						break;
+
+					case "CollectionBonusProduct":
+						// CTBONUSPT:4:64004;CTBONUS:2:20;
+						result.Item.MetaData1.SetInt("CTBONUSPT", (int)effect.Value[0]);
 						break;
 
 					case "CollectionSpeed":

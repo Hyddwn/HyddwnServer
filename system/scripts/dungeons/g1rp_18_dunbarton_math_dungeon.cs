@@ -9,7 +9,7 @@ public class MoresRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#mores");
+		dungeon.SetRole(0, "#mores");
 	}
 
 	public override void OnBoss(Dungeon dungeon)
@@ -17,6 +17,12 @@ public class MoresRPDungeonScript : DungeonScript
 		dungeon.AddBoss(12001, 6); // Ghost Armor
 
 		dungeon.PlayCutscene("G1_18_b_MoresRP");
+	}
+
+	public override void OnBossDeath(Dungeon dungeon, Creature boss, Creature killer)
+	{
+		if (dungeon.RemainingBosses <= 3)
+			dungeon.Complete();
 	}
 
 	public override void OnSectionCleared(Dungeon dungeon, int floor, int section)

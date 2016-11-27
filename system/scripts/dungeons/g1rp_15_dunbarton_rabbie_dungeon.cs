@@ -9,7 +9,7 @@ public class SuccubusRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#tarlach2");
+		dungeon.SetRole(0, "#tarlach2");
 	}
 
 	public override void OnBoss(Dungeon dungeon)

@@ -35,7 +35,7 @@ public class OnEquipSkillLearnScript : GeneralScript
 			creature.Skills.Give(SkillId.Tailoring, SkillRank.Novice);
 
 		// Give Blacksmithing when equipping a Blacksmith Hammer
-		if ((item.HasTag("/tool/blacksmith/")) && !creature.Skills.Has(SkillId.Blacksmithing))
+		if ((item.HasTag("/Blacksmith_Hammer/")) && !creature.Skills.Has(SkillId.Blacksmithing))
 			creature.Skills.Give(SkillId.Blacksmithing, SkillRank.Novice);
 
 		// Give Fishing when equipping a Fishing Rod

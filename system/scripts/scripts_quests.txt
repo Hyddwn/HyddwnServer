@@ -92,6 +92,7 @@ quests/ptj/woodcutting_tracy.cs
 quests/skills/20006_elen_refine.cs
 quests/skills/20007_ranald_windmill.cs
 quests/skills/200063_dilys_herbalism.cs
+quests/skills/200042_manus_herbalism.cs
 quests/skills/204003_malcolm_weaving_g7.cs
 
 // Scroll Hunting

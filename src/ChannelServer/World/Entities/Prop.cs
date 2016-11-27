@@ -365,6 +365,20 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns a prop behavior that doesn't do anything.
+		/// </summary>
+		/// <remarks>
+		/// Use to prevent unimplemented messages.
+		/// </remarks>
+		/// <returns></returns>
+		public static PropFunc GetEmptyBehavior()
+		{
+			return (creature, prop) =>
+			{
+			};
+		}
+
+		/// <summary>
 		///  Returns true if prop's data has the tag.
 		/// </summary>
 		/// <param name="tag"></param>
@@ -467,6 +481,35 @@ namespace Aura.Channel.World.Entities
 			});
 
 			return targetable;
+		}
+
+		/// <summary>
+		/// Returns true if the given position is inside the prop.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public bool IsInside(int x, int y)
+		{
+			if (this.Shapes.Count == 0)
+				return false;
+
+			var result = false;
+			var point = new Point(x, y);
+
+			foreach (var points in this.Shapes)
+			{
+				for (int i = 0, j = points.Length - 1; i < points.Length; j = i++)
+				{
+					if (((points[i].Y > point.Y) != (points[j].Y > point.Y)) && (point.X < (points[j].X - points[i].X) * (point.Y - points[i].Y) / (points[j].Y - points[i].Y) + points[i].X))
+						result = !result;
+				}
+
+				if (result)
+					return true;
+			}
+
+			return false;
 		}
 	}
 

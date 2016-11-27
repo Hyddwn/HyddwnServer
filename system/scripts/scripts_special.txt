@@ -11,4 +11,6 @@ dungeons/**/*
 /cache/system/scripts/items/inline.generated.cs
 items/**/*
 
+events/**/*
+
 include "/user/scripts/scripts_special.txt"

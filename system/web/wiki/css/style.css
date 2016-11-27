@@ -76,7 +76,7 @@ a:hover {
 	background: #fbfbfb;
 	border: 1px solid #ddd;
 	display: table;
-	padding: 10px 10px 10px 5px;
+	padding: 10px 15px;
 	margin: 1em 0;
 }
 
@@ -86,12 +86,24 @@ a:hover {
 	margin-bottom: 10px;
 }
 
-.toc ol {
+.toc .list {
 	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
 .toc-level2 {
 	display: none;
+	padding-left: 40px;
+}
+
+.toc-level3 {
+	display: none;
+	padding-left: 80px;
+}
+
+.toc .number {
+	margin-right: 10px;
 }
 
 #sidebar {

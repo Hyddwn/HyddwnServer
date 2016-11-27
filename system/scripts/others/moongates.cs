@@ -516,7 +516,7 @@ public class MoonGateScript : GeneralScript
 		creature.Client.Send(packet);
 	}
 
-	private void UpdateCurrentGates()
+	private void UpdateCurrentGates(ErinnTime now)
 	{
 		var table = GetTable();
 
@@ -527,6 +527,10 @@ public class MoonGateScript : GeneralScript
 
 		currentGateKeyword = table[cycles % table.Length];
 		nextGateKeyword = table[(cycles + 1) % table.Length];
+
+		// During the day the "current" gate is the next gate.
+		if (now.IsDay)
+			currentGateKeyword = nextGateKeyword;
 
 		if (!gatesStr.TryGetValue(currentGateKeyword, out currentGate))
 			throw new Exception("Gate '" + currentGateKeyword + "' not found.");
@@ -540,7 +544,7 @@ public class MoonGateScript : GeneralScript
 		var firstRun = (currentGateKeyword == null);
 
 		if (now.IsDusk || currentGateKeyword == null)
-			UpdateCurrentGates();
+			UpdateCurrentGates(now);
 
 		// Just update gates on first run, to set initial state.
 		if (firstRun)

@@ -143,6 +143,16 @@ namespace Aura.Channel.Scripting.Scripts
 		public virtual void OnRpCharacterCreated(Dungeon dungeon, RpCharacter rpCharacter)
 		{
 		}
+
+		/// <summary>
+		/// Called when a creature enters a floor region. The floor ids start at 1.
+		/// </summary>
+		/// <param name="dungeon"></param>
+		/// <param name="creature"></param>
+		/// <param name="floor"></param>
+		public virtual void OnPlayerEnteredFloor(Dungeon dungeon, Creature creature, int floor)
+		{
+		}
 	}
 
 	public class DungeonScriptAttribute : Attribute

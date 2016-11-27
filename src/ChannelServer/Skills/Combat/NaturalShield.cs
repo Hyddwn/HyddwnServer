@@ -90,7 +90,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <summary>
 		/// Handles Natural Shield bonuses and auto-defense, reducing damage
 		/// and setting the appropriate options on tAction. Returns the
-		/// delay reduction.
+		/// delay reduction and whether a ping occured.
 		/// </summary>
 		/// <remarks>
 		/// All active and passive Natural Shields are checked in sequence,
@@ -102,7 +102,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="target"></param>
 		/// <param name="damage"></param>
 		/// <param name="tAction"></param>
-		public static float Handle(Creature attacker, Creature target, ref float damage, TargetAction tAction)
+		public static PassiveDefenseResult Handle(Creature attacker, Creature target, ref float damage, TargetAction tAction)
 		{
 			var pinged = false;
 			var used = false;
@@ -170,7 +170,19 @@ namespace Aura.Channel.Skills.Combat
 			if (damageReduction > 0)
 				damage = Math.Max(1, damage - (damage / 100 * damageReduction));
 
-			return delayReduction;
+			return new PassiveDefenseResult(pinged, delayReduction);
+		}
+	}
+
+	public struct PassiveDefenseResult
+	{
+		public readonly bool Pinged;
+		public readonly float DelayReduction;
+
+		public PassiveDefenseResult(bool pinged, float delayReduction)
+		{
+			this.Pinged = pinged;
+			this.DelayReduction = delayReduction;
 		}
 	}
 }

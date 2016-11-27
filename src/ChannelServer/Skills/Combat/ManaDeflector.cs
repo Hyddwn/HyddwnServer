@@ -102,7 +102,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <param name="target"></param>
 		/// <param name="damage"></param>
 		/// <param name="tAction"></param>
-		public static float Handle(Creature attacker, Creature target, ref float damage, TargetAction tAction)
+		public static PassiveDefenseResult Handle(Creature attacker, Creature target, ref float damage, TargetAction tAction)
 		{
 			var pinged = false;
 			var used = false;
@@ -116,7 +116,7 @@ namespace Aura.Channel.Skills.Combat
 			if (target.HasTag("/darklord/") && !target.HasTag("/darklord/darklord2/"))
 			{
 				damage = 1;
-				return delayReduction;
+				return new PassiveDefenseResult(pinged, delayReduction);
 			}
 
 			// Check skills
@@ -178,7 +178,7 @@ namespace Aura.Channel.Skills.Combat
 			if (damageReduction > 0)
 				damage = Math.Max(1, damage - (damage / 100 * damageReduction));
 
-			return delayReduction;
+			return new PassiveDefenseResult(pinged, delayReduction);
 		}
 	}
 }

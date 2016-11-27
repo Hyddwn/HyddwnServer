@@ -79,8 +79,16 @@ namespace Aura.Channel.Network.Handlers
 				character.Client = client;
 
 				client.State = ClientState.LoggedIn;
+
+				// Update online status
 				ChannelServer.Instance.Database.SetAccountLoggedIn(account.Id, true);
 
+				var playerCreature = character as PlayerCreature;
+				if (playerCreature != null)
+					ChannelServer.Instance.Database.UpdateOnlineStatus(playerCreature.CreatureId, true);
+				ChannelServer.Instance.Database.UpdateOnlineStatus((character as PlayerCreature).CreatureId, true);
+
+				// Response
 				Send.ChannelLoginR(client, character.EntityId);
 
 				// Special login to Soul Stream for new chars and on birthdays
@@ -134,6 +142,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 			var firstSpawn = (creature.Region == Region.Limbo);
+			var prevRegionId = creature.RegionId;
 			var regionId = creature.WarpLocation.RegionId;
 
 			// Check permission
@@ -150,7 +159,7 @@ namespace Aura.Channel.Network.Handlers
 			var region = ChannelServer.Instance.World.GetRegion(regionId);
 			if (region == null)
 			{
-				Log.Warning("Player '{0}' tried to enter unknown region '{1}'.", creature.Name, regionId);
+				Log.Warning("EnterRegionRequest: Player '{0}' tried to enter unknown region '{1}'.", creature.Name, regionId);
 				return;
 			}
 
@@ -206,6 +215,10 @@ namespace Aura.Channel.Network.Handlers
 				if (dungeonLobbyRegion != null)
 					dungeonLobbyRegion.Dungeon.OnPlayerEntersLobby(creature);
 			}
+
+			// Raise entered event after sending the response packets,
+			// so the client is ready to receive things like cutscenes.
+			region.OnPlayerEntered(creature, prevRegionId);
 		}
 
 		/// <summary>
@@ -451,6 +464,13 @@ namespace Aura.Channel.Network.Handlers
 				playerCreature.Watching = false;
 				Send.EntitiesDisappear(playerCreature.Client, playerCreature.Region.GetVisibleEntities(playerCreature));
 			}
+
+			if (!rebirth)
+				Log.Info("'{0}' is switching channels. Saving...", client.Account.Id);
+			else
+				Log.Info("'{0}' is reconnecting for rebirth. Saving...", client.Account.Id);
+
+			client.CleanUp();
 
 			// Success
 			Send.SwitchChannelR(creature, channel);

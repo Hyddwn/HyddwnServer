@@ -320,6 +320,23 @@ public class CaitinScript : NpcScript
 				break;
 		}
 	}
+
+	protected override async Task Gift(Item gift, GiftReaction reaction)
+	{
+		// Start of Chicken RP
+		if (gift.Info.Id == 50012 && !HasItem(73109) && !HasKeyword("RP_Monster_Chicken_complete"))
+		{
+			GiveKeyword("RP_Monster_Chicken_start");
+			GiveItem(73109); // Egg from Caitin
+			SystemNotice(L("Received Egg from Caitin."));
+
+			Msg(L("Oh my god, this is a golden egg! Do you really want to give this to me?<br/>This is such a valuable gift...<br/>Not so long ago I picked up a special egg around here...<br/>Put it onto the Alby dungeon altar to see something special..."));
+		}
+		else
+		{
+			base.Gift(gift, reaction);
+		}
+	}
 }
 
 public class CaitinShop : NpcShopScript

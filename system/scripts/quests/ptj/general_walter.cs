@@ -477,7 +477,7 @@ public abstract class WalterExtDeliveryPtjBaseScript : QuestScript
 
 		SetType(QuestType.Deliver);
 		SetPtjType(PtjType.GeneralShop);
-		SetLevel(QuestLevel.Basic);
+		SetLevel(QuestLevel);
 		SetHours(start: 7, report: 9, deadline: 19);
 
 		AddObjective("ptj1", LGetObjectiveDescription, 0, 0, 0, Talk(GetNpcIdent));

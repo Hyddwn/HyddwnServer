@@ -122,7 +122,7 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet(Op.OpenNpcShop, creature.EntityId);
 			packet.PutString("shopname"); // e.g. TirchonaillShop_Dilys
-			packet.PutByte(0); // 1 in remote shops?
+			packet.PutByte(true); // allow direct transaction
 			packet.PutByte(0);
 			packet.PutInt(0);
 			packet.PutByte((byte)tabs.Count);

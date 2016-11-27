@@ -32,7 +32,7 @@ using System.Text.RegularExpressions;
 
 public class UploadAvatarController : Controller
 {
-	public override void Handle(HttpRequestEventArgs args, string requestuestPath, string localPath)
+	public override void Handle(HttpRequestEventArgs args, string requestedPath, string localPath)
 	{
 		var request = args.Request;
 		var response = args.Response;

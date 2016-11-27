@@ -125,6 +125,7 @@ namespace Aura.Channel.World.Inventory
 				Pocket.EntrustmentItem2,
 				Pocket.EntrustmentReward,
 				Pocket.VIPInventory,
+				Pocket.TailStyle,
 			};
 
 			// Add bags to the list of modifiable pockets.
@@ -246,6 +247,8 @@ namespace Aura.Channel.World.Inventory
 			// Style
 			for (var i = Pocket.ArmorStyle; i <= Pocket.RobeStyle; ++i)
 				this.Add(new InventoryPocketSingle(i));
+
+			this.Add(new InventoryPocketSingle(Pocket.TailStyle));
 		}
 
 		/// <summary>

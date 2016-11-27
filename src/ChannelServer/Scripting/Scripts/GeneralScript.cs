@@ -435,6 +435,23 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Attempts to remove prop from world and returns whether it was
+		/// successful.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		protected bool RemoveProp(long entityId)
+		{
+			var prop = ChannelServer.Instance.World.GetProp(entityId);
+			if (prop == null)
+				return false;
+
+			prop.Region.RemoveProp(prop);
+
+			return true;
+		}
+
+		/// <summary>
 		/// Sets behavior for the prop with entityId.
 		/// </summary>
 		/// <returns>Prop that the behavior was added for.</returns>
@@ -717,7 +734,7 @@ namespace Aura.Channel.Scripting.Scripts
 				}
 				catch (Exception ex)
 				{
-					Log.Exception(ex, "Exception during SetInterval callback in {0}.", this.GetType().Name);
+					Log.Exception(ex, "Exception during SetTimeout callback in {0}.", this.GetType().Name);
 				}
 				GC.KeepAlive(timer);
 			}
@@ -762,6 +779,46 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		#endregion Timers
+
+		#region Game Events
+
+		/// <summary>
+		/// Schedules event to be active during the given time span.
+		/// </summary>
+		/// <param name="gameEventId"></param>
+		/// <param name="from"></param>
+		/// <param name="till"></param>
+		protected void ScheduleEvent(string gameEventId, DateTime from, DateTime till)
+		{
+			if (till < from)
+				Log.Warning("{0}: ScheduleEvent: Till date is earlier than from date.", this.GetType().Name);
+
+			ChannelServer.Instance.GameEventManager.AddActivationSpan(gameEventId, from, till);
+		}
+
+		/// <summary>
+		/// Schedules event to be active during the given time span.
+		/// </summary>
+		/// <param name="gameEventId"></param>
+		/// <param name="from"></param>
+		/// <param name="timeSpan"></param>
+		protected void ScheduleEvent(string gameEventId, DateTime from, TimeSpan timeSpan)
+		{
+			var till = from.Add(timeSpan);
+			this.ScheduleEvent(gameEventId, from, till);
+		}
+
+		/// <summary>
+		/// Returns true if the given event is active.
+		/// </summary>
+		/// <param name="gameEventId"></param>
+		/// <returns></returns>
+		protected bool IsEventActive(string gameEventId)
+		{
+			return ChannelServer.Instance.GameEventManager.IsActive(gameEventId);
+		}
+
+		#endregion
 	}
 
 	/// <summary>

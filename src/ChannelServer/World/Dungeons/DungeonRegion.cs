@@ -4,6 +4,7 @@
 using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.World.Dungeons.Generation;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World.Weather;
 using Aura.Data;
 using Aura.Data.Database;
 using Aura.Mabi;
@@ -38,6 +39,31 @@ namespace Aura.Channel.World.Dungeons
 		{
 			this.Dungeon = dungeon;
 			this.Name = dungeon.Name + "_" + regionId;
+
+			this.InitWeather();
+		}
+
+		/// <summary>
+		/// Initiate weather for the new region.
+		/// </summary>
+		private void InitWeather()
+		{
+			var regionId = this.Id;
+			var dungeon = this.Dungeon;
+
+			// Set weather for Fiodh and Coill, which use the weather of
+			// their respective outer regions.
+			// We could add this information to the data, but officials
+			// don't seem to have it either, which suggests that they hard-
+			// coded it. Were we to add the info to the data, users could
+			// quickly desynchonize the weather.
+
+			// Fiodh = Gairech (type2)
+			if (dungeon.Name.Contains("gairech_fiodh"))
+				ChannelServer.Instance.Weather.SetProviderAndUpdate(regionId, new WeatherProviderTable(regionId, "type2"));
+			// Coill = Emain (type4)
+			else if (dungeon.Name.Contains("emain_coill"))
+				ChannelServer.Instance.Weather.SetProviderAndUpdate(regionId, new WeatherProviderTable(regionId, "type4"));
 		}
 
 		/// <summary>
@@ -48,24 +74,6 @@ namespace Aura.Channel.World.Dungeons
 		public Prop GetPropById(int propId)
 		{
 			return this.GetProp(a => a.Info.Id == propId);
-		}
-
-		/// <summary>
-		/// Returns the first prop that matches the given predicate.
-		/// </summary>
-		/// <param name="propId"></param>
-		/// <returns></returns>
-		public Prop GetProp(Func<Prop, bool> predicate)
-		{
-			_propsRWLS.EnterReadLock();
-			try
-			{
-				return _props.Values.FirstOrDefault(predicate);
-			}
-			finally
-			{
-				_propsRWLS.ExitReadLock();
-			}
 		}
 
 		/// <summary>

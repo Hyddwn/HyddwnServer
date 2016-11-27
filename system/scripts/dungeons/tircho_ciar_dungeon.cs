@@ -81,6 +81,31 @@ public class CiarDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Tracy's Hatchet (RP)
+		if (item.Info.Id == 73102)
+		{
+			if (creature.Keywords.Has("RP_Tracy_Complete"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon anymore."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 2)
+			{
+				Send.Notice(creature, L("You must enter this dungeon with a party of two."));
+				return false;
+			}
+
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
+			dungeonName = "rp_tracy_tircho_ciar_dungeon";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{

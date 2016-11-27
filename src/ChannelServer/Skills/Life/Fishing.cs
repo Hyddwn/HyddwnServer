@@ -247,7 +247,14 @@ namespace Aura.Channel.Skills.Life
 				// Drop if inv add failed
 				List<Item> changed;
 				if (!creature.Inventory.Insert(item, false, out changed))
+				{
 					item.Drop(creature.Region, creature.GetPosition(), 100, creature, false);
+
+					// Set protection limit to max, since fished items that
+					// drop out of the player's overfilled bags should be
+					// protected indefinitely.
+					item.ProtectionLimit = DateTime.MaxValue;
+				}
 
 				var itemEntityId = (changed == null || changed.Count == 0 ? item.EntityId : changed.First().EntityId);
 

@@ -168,8 +168,47 @@ public class TreforScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "Hmm... Have something to ask me?<br/>I'm nothing but a regular fellow from this town.<br/>I am but a humble servant of Lymirark, whose duty is to protect this town.");
-				ModifyRelation(Random(2), 0, Random(3));
+				// Start of Trefor RP
+				if (DoingPtj(PtjType.General) && !HasItem(73103) && !HasKeyword("RP_Trefor_Complete"))
+				{
+					if (!HasKeyword("RP_Trefor_Failed_1") && !HasKeyword("RP_Trefor_Failed_2") && !HasKeyword("RP_Trefor_Failed_3"))
+					{
+						Msg(L("Sometimes travelers get lost on their way here and enter Alby Dungeon. It happens occasionally when I'm off duty.<br/>Someone got lost not too long ago, and I had to go and find her.<br/>Let's see if you can do it. Find out yourself by dropping my gauntlet in Alby Dungeon."));
+					}
+					else if (HasKeyword("RP_Trefor_Failed_1"))
+					{
+						Msg(L("Gee, I guess I was asking too much of you, <username/>.<br/>This is not a job everyone can do. Ha ha.<br/>Go try again."));
+					}
+					else if (HasKeyword("RP_Trefor_Failed_2"))
+					{
+						Msg(L("You failed... ? Again? Well, well...<br/>Try again!"));
+					}
+					else if (HasKeyword("RP_Trefor_Failed_3"))
+					{
+						Msg(L("... Keep trying until you succeed!<br/>My honor is also at stake here!"));
+					}
+
+					GiveItem(73103); // Trefor's Gauntlet
+					SystemNotice(L("Received Trefor's Gauntlet from Trefor."));
+				}
+				// Hint at asking for reward for Trefor RP
+				else if (HasKeyword("RP_Trefor_LifeGuard"))
+				{
+					Msg(L("How was the experience of being part of a real rescue mission?<br/>I'm sure you've learned your lesson.<br/>Haha. Once you return, come and talk to me about 'Rescue Mission'.<br/>You just have to experience some things for yourself to truly make them yours."));
+				}
+				else
+				{
+					Msg(FavorExpression(), "Hmm... Have something to ask me?<br/>I'm nothing but a regular fellow from this town.<br/>I am but a humble servant of Lymirark, whose duty is to protect this town.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
+				break;
+
+			case "RP_Trefor_LifeGuard":
+				RemoveKeyword("RP_Trefor_LifeGuard");
+				GiveItem(40002); // Wooden Blade
+				SystemNotice(L("Received Wooden Blade from Trefor."));
+
+				Msg(L("Yes, saving people's lives is not an easy task.<br/>It looks like your body needs some physical training!<br/>To help you strengthen your body, here's something you may need."));
 				break;
 
 			case "rumor":

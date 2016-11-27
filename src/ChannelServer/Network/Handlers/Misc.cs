@@ -545,5 +545,28 @@ namespace Aura.Channel.Network.Handlers
 			Send.DressingRoomCloseR(creature, false);
 			Send.MsgBox(creature, Localization.Get("This feature hasn't been implemented yet."));
 		}
+
+		/// <summary>
+		/// Sent on login, presumably to request the list of Erinn Land
+		/// achievements. (Dummy handler)
+		/// </summary>
+		/// <remarks>
+		/// The purpose is guessed, based on the ids in the response packet on
+		/// NA matching the ids found in the Erinn Land achievement XML.
+		/// </remarks>
+		/// <example>
+		/// No parameter.
+		/// </example>
+		[PacketHandler(Op.ErinnLandAchievementsRequest)]
+		public void ErinnLandAchievementsRequest(ChannelClient client, Packet packet)
+		{
+			// ... ErinnLandAchievementsList
+			// 001 [........00000000] Int    : 0
+			// 002 [........00000000] Int    : 0
+			// 003 [........000000CA] Int    : 202 // count
+			//     004 [........00000001] Int    : 1
+			//     005 [........00000001] Int    : 1 // count
+			//         006 [..............00] Byte   : 0
+		}
 	}
 }

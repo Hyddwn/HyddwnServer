@@ -4,6 +4,8 @@ Hunting Quests
 Considered to be part of the [Beginner Quests](?Beginner_Quests_(Uladh)),
 the Hunting Quests task you with killing certain monsters throughout Uladh.
 
+__TOC__
+
 Hunt 5 White Spiders
 -----------------------------------------------------------------------------
 
@@ -112,7 +114,7 @@ Hunt 1 Brown Bear
 - 3,200 EXP
 - Fine Leather x 1
 
-Defeat 1 Wisp
+Hunt 1 Wisp
 -----------------------------------------------------------------------------
 
 ### How to get
@@ -129,7 +131,7 @@ Hunt 5 Kobold Bandits
 
 ### How to get
 
-- Complete "Defeat 1 Wisp".
+- Complete "Hunt 1 Wisp".
 
 ### Rewards
 
@@ -285,7 +287,7 @@ Hunt 1 Black Succubus
 
 ### How to get
 
-- Complete "Hellhound".
+- Complete "Hunt 1 Hellhound".
 
 ### Rewards
 
@@ -297,7 +299,7 @@ Hunt 1 Golem
 
 ### How to get
 
-- Complete "Black Succubus".
+- Complete "Hunt 1 Black Succubus".
 
 ### Rewards
 
@@ -309,14 +311,10 @@ Hunt 1 Ogre Warrior
 
 ### How to get
 
-- Complete "Golem".
+- Complete "Hunt 1 Golem".
 
 ### Rewards
 
 - 50,000 EXP Points
 - Two-handed Sword
 - Holy Water of Lymilark x 8
-
-------------------------------------------------------------------------------
-
-<span class="license-footer">Based on [MWW](http://wiki.mabinogiworld.com/index.php?title=Beginner_Quests_(Human_Uladh)&oldid=14665), available under [Attribution-Noncommercial-Share Alike 3.0 Unported](http://creativecommons.org/licenses/by-nc-sa/3.0/).</span>

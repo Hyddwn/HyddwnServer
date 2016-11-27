@@ -100,6 +100,7 @@ namespace Aura.Web
 			// so Swebs references it in the C# scripts as well.
 			_swebsReferences.Add(Mabi.Const.GuildMemberRank.Applied);
 			_swebsReferences.Add(AuraData.FeaturesDb);
+			_swebsReferences.Add(typeof(MySql.Data.MySqlClient.MySqlCommand));
 
 			var conf = new Configuration();
 			conf.Port = this.Conf.Web.Port;
