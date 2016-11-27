@@ -819,6 +819,21 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		#endregion
+
+		#region Creatures
+
+		/// <summary>
+		/// Returns NPC with the given name, or null if it doesn't exist.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		protected NPC FindNpc(string name)
+		{
+			var npc = ChannelServer.Instance.World.GetNpc(name);
+			return npc;
+		}
+
+		#endregion
 	}
 
 	/// <summary>
