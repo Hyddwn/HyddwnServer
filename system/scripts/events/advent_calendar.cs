@@ -34,6 +34,27 @@ public class AdventCalendarEventScript : GameEventScript
 	}
 }
 
+public class AdventCalendarQuestScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(1100000);
+		SetName(L("Advent Calendar"));
+		SetDescription(L("Would you visit me in Dunbarton, I have something for you. - Coco -"));
+		SetCancelable(true);
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Event);
+
+		SetReceive(Receive.Automatically);
+		AddPrerequisite(EventActive("aura_advent_calendar"));
+
+		AddObjective("talk", "Talk to Coco at the unicorn statue in Dunbarton", 14, 36005, 33000, Talk("coco"));
+
+		AddReward(Exp(10000));
+	}
+}
+
 public class AdventCalenderEventNpcScript : NpcScript
 {
 	private const string LastReceivedVar = "AdventCalendarEventLastGift2016";
@@ -89,6 +110,9 @@ public class AdventCalenderEventNpcScript : NpcScript
 
 	protected override async Task Talk()
 	{
+		if (QuestActive(1100000, "talk"))
+			FinishQuest(1100000, "talk");
+
 		if (!IsEventActive("aura_advent_calendar"))
 		{
 			Msg(L("I'm sorry, the event is over."));
