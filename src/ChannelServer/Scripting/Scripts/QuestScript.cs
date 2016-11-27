@@ -380,6 +380,15 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Sets whether the quest can be canceled.
+		/// </summary>
+		/// <param name="cancelable"></param>
+		protected void SetCancelable(bool cancelable)
+		{
+			this.Cancelable = cancelable;
+		}
+
+		/// <summary>
 		/// Adds prerequisite that has to be met before auto receiving the quest.
 		/// </summary>
 		/// <param name="prerequisite"></param>
@@ -573,6 +582,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestPrerequisite ReachedRank(SkillId skillId, SkillRank rank) { return new QuestPrerequisiteReachedRank(skillId, rank); }
 		protected QuestPrerequisite ReachedAge(int age) { return new QuestPrerequisiteReachedAge(age); }
 		protected QuestPrerequisite NotSkill(SkillId skillId, SkillRank rank = SkillRank.Novice) { return new QuestPrerequisiteNotSkill(skillId, rank); }
+		protected QuestPrerequisite EventActive(string gameEventId) { return new QuestPrerequisiteEventActive(gameEventId); }
 		protected QuestPrerequisite And(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteAnd(prerequisites); }
 		protected QuestPrerequisite Or(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteOr(prerequisites); }
 
