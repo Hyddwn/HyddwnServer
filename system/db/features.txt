@@ -16,128 +16,226 @@
 
 [
 // General
+//---------------------------------------------------------------------------
+
+// Enables Sharp Mind
+// The skill wasn't available at all times in all versions of Mabinogi.
 { name: "SharpMind", enabled: true },
 
 // World-shaping Events
+//---------------------------------------------------------------------------
+
+// Modifies certain spawns, to account for the client-sided props during
+// the MabiLand event.
 { name: "MabiLand", enabled: false },
 
 // Generation 1
+//---------------------------------------------------------------------------
 { name: "G1", enabled: true, children: [
 	// Season 1
 	{ name: "G1S1", enabled: true, children: [
+		// Enables G1 mainstream quest line
 		{ name: "MainStreamG1", enabled: true },
+		
+		// Enables rebirthing
 		{ name: "Rebirth", enabled: true },
+		
+		// Enables guilds
 		{ name: "SystemGuild", enabled: true },
+		
+		// Enables personal shops
 		{ name: "PersonalShop", enabled: true },
+		
+		// Enables entrusting others with enchanting an item
 		{ name: "EnchantEntrust", enabled: true },
+		
+		// Enables dynamic allocation of field monsters
 		{ name: "DynamicMonsterAllocation", enabled: true },
-		{ name: "FoodStatLimit", enabled: true },
+		
+		// Decreses G1 difficulty
 		{ name: "G1EasyOverseas", enabled: false, children: [
 			// Kill only ten zombies to revive in TNN.
 			{ name: "EasyBinding1", enabled: true },
 		]},
-		{ name: "CiarAdvanced", enabled: true },
+		
+		// Enables Alby, Ciar, and Fiodh Int dungeon
+		{ name: "AlbyInt", enabled: true },
+		{ name: "CiarInt", enabled: true },
+		{ name: "FiodhInt", enabled: true },
+		
+		// Enables Math dungeon
 		{ name: "MathDungeon", enabled: true },
 	]},
 	
 	// Season 2
 	{ name: "G1S2", enabled: true, children: [
+		// Enables opening the in-game web item shop.
 		{ name: "ItemShop", enabled: false },
 	]},
 ]},
 
 // Generation 2
+//---------------------------------------------------------------------------
 { name: "G2", enabled: false, children: [
 	// Season 1
 	{ name: "G2S1", enabled: true, children: [
+		// Enables G2 mainstream quest line
 		{ name: "MainStreamG2", enabled: true },
+		
+		// Enables Emain, allowing to break the seal stones
 		{ name: "EmainMacha", enabled: true },
+		
+		// Enables giving dresses to Nao for her to wear
 		{ name: "NaoDressUp", enabled: true },
+		
+		// Enables collection books
 		{ name: "CollectionBooks", enabled: true },
+		
+		// Enables the traveling NPC Price
 		{ name: "Price", enabled: true },
+		
+		// Enables Rundal dungeon
 		{ name: "RundalDungeon", enabled: true },
+		
+		// Enables Coill dungeon
 		{ name: "CoillDungeon", enabled: true },
+		
+		// Enables obtaining the Fireball skill
 		{ name: "Fireball", enabled: true },
+		
+		// Enables obtaining the Arrow Revolver skill
 		{ name: "ArrowRevolver", enabled: true },
 	]},
 	
 	// Season 2
 	{ name: "G2S2", enabled: true, children: [
+		// Enables pet system
 		{ name: "SystemPet", enabled: true, children: [
+			// Enables certain bird pet items in shops
 			{ name: "PetBirds", enabled: true },
 		]},
+		
+		// Enables skipping G1 at the Weird Cat
 		{ name: "G1Skip", enabled: true },
 	]},
 	
 	// Season 3
 	{ name: "G2S3", enabled: true, children: [
-		{ name: "PotionPartyMaking", enabled: true },
+		// Enables obtaining the Thunder
 		{ name: "Thunder", enabled: true },
+		
+		// Enables merchant NPC Fleta
 		{ name: "Fleta", enabled: true },
 	]},
 	
 	// Season 4
 	{ name: "G2S4", enabled: true, children: [
+		// Enables spirit weapons (egos)
 		{ name: "SpiritWeapons", enabled: true },
+		
+		// Enables Peaca dungeon
 		{ name: "PeacaDungeon", enabled: true },
 	]},
 ]},
 
 // Generation 3
+//---------------------------------------------------------------------------
 { name: "G3", enabled: false, children: [
 	// Season 1
 	{ name: "G3S1", enabled: true, children: [
+		// Enables marriage
 		{ name: "Mate", enabled: true },
+		
+		// Enables searching for items in shops with pets
 		{ name: "SearchItemByPet", enabled: true },
 	]},
 	
 	// Season 2
 	{ name: "G3S2", enabled: true, children: [
+		// Enables Barri Advanced dungeon
 		{ name: "BarriAdvanced", enabled: true },
+		
+		// Enables Poison status effect
 		{ name: "Poison", enabled: true },
 	]},
 	
 	// Season 3
 	{ name: "G3S3", enabled: true, children: [
+		// Enables Ciar Advanced dungeon
 		{ name: "CiarAdvanced", enabled: true },
+		
+		// Enables Barri Advanced dungeon
 		{ name: "BarriAdvanced", enabled: true },
+		
+		// Enables obtaining the passive defense Paladin skills
 		{ name: "PaladinPassiveDefence", enabled: true },
+		
+		// Enables Rabbie Arena
 		{ name: "RabbieArena", enabled: true },
 	]},
 	
 	// Season 4
 	{ name: "G3S4", enabled: true, children: [
+		// Enables Dark Knight quest and related items in shops
+		{ name: "DarkKnight", enabled: true },
+		
+		// Enables Rabbie Advanced dungeon
 		{ name: "RabbieAdvanced", enabled: true },
+		
+		// Enables Peaca Basic dungeon
 		{ name: "PeacaBasic", enabled: true },
 	]},
 	
 	// Season 5
 	{ name: "G3S5", enabled: true, children: [
-		{ name: "DarkKnight", enabled: true },
+		// Enables mounting pets
 		{ name: "Mounts", enabled: true },
+		
+		// Enables mail system
+		{ name: "Mailbox", enabled: true },
+		
+		// Enables Housing system
+		{ name: "Housing", enabled: true },
+		
+		// Enables party boards
+		{ name: "PartyBoard", enabled: true },
+		
+		// Enables guild robes
+		{ name: "GuildRobe", enabled: true },
+		
+		// Enables messenging guild members
+		{ name: "GuildMessenger", enabled: true },
+		
+		// Enables marker on the map, displaying the
+		// location of the guild stone.
+		{ name: "MarkerMyGuildStone", enabled: true },
+		
+		// Enables access to Morva Aisle and Port Ceann
+		{ name: "PortCeann", enabled: true },
 	]},
 ]},
 
 // Generation 4
+//---------------------------------------------------------------------------
 { name: "G4", enabled: false, children: [
 	// Season 1
-	{ name: "G4S1", enabled: true, children: [
-		{ name: "BlowDelayReduce", enabled: true },
-		{ name: "Housing", enabled: true },
-		{ name: "Mailbox", enabled: true },
-		{ name: "PartyBoard", enabled: true },
-		{ name: "GuildRobe", enabled: true },
-		{ name: "GuildMessenger", enabled: true },
-		{ name: "MarkerMyGuildStone", enabled: true },
-		{ name: "PortCeann", enabled: true },
-	]},
+	{ name: "G4S1", enabled: true, children: []},
 	
 	// Season 2
 	{ name: "G4S2", enabled: true, children: [
+		// Enables "traveling" Iria dungeons
 		{ name: "Ruin", enabled: true },
+		
+		// Enables rebirth in Iria
 		{ name: "IriaRebirth", enabled: true },
+		
+		// Enables exploration
 		{ name: "Exploration", enabled: true },
+		
+		// Enables contintent warp
 		{ name: "ContinentWarp", enabled: true },
+		
+		// Enables obtaining the Ice Spear skill
 		{ name: "IceSpear", enabled: true },
 	]},
 	
@@ -146,24 +244,31 @@
 	
 	// Season 4
 	{ name: "G4S4", enabled: true, children: [
+		// Enables dual wielding
 		{ name: "TwinSword", enabled: true },
 	]},
 ]},
 
 // Generation 5
+//---------------------------------------------------------------------------
 { name: "G5", enabled: false, children: [
 	// Season 1
 	{ name: "G5S1", enabled: true, children: [
+		// Enables Elf race
 		{ name: "Elf", enabled: true },
+		
+		// Enables Lost Elves quest
 		{ name: "LostPeopleQuest", enabled: true },
+		
+		// Enables elves to use ranged skills from mounts
 		{ name: "RangedAttackOnHorse", enabled: true },
+		
+		// Enables Ant Hell
 		{ name: "AntHell", enabled: true },
 	]},
 	
 	// Season 2
-	{ name: "G5S2", enabled: true, children: [
-		{ name: "NaoBombRenewal", enabled: true },
-	]},
+	{ name: "G5S2", enabled: true, children: []},
 	
 	// Season 3
 	{ name: "G5S3", enabled: true, children: [
@@ -171,15 +276,20 @@
 	
 	// Season 4
 	{ name: "G5S4", enabled: true, children: [
+		// Enables obtaining the Spirit Awakening skill
 		{ name: "EgoSpecialAttack", enabled: true },
 	]},
 ]},
 
 // Generation 6
+//---------------------------------------------------------------------------
 { name: "G6", enabled: false, children: [
 	// Season 1
 	{ name: "G6S1", enabled: true, children: [
+		// Enables Giant race
 		{ name: "Giant", enabled: true },
+		
+		// Enables ice fishing
 		{ name: "IceFishing", enabled: true },
 	]},
 	
@@ -188,76 +298,87 @@
 	
 	// Season 3
 	{ name: "G6S3", enabled: true, children: [
+		// Enables Alby Advanced dungeon
 		{ name: "AlbyAdvanced", enabled: true },
-		{ name: "FemaleGiant", enabled: true },
 	]},
 	
 	// Season 4
 	{ name: "G6S4", enabled: true, children: [
+		// Enables Falcon and Savage Beast quests
 		{ name: "ElfGiantTransform", enabled: true },
-		{ name: "FreeRebirth", enabled: true },
+		
+		// Enables Ticking Quiz Bomb in shops
 		{ name: "AntiMacroCaptcha", enabled: true },
 	]},
 	
 	// Season 5
 	{ name: "G6S5", enabled: true, children: [
+		// Enables Ciar Boss Rush dungeon
 		{ name: "BossRushDungeon", enabled: true },
 	]},
 	
 	// Season 6
 	{ name: "G6S6", enabled: true, children: [
+		// Enables jam sessions
 		{ name: "EnsemblePlay", enabled: true },
+		
+		// Enables advanced wands in shops
 		{ name: "WandUpgradeAndChainCasting", enabled: true },
 	]},
 ]},
 
 // Generation 7
+//---------------------------------------------------------------------------
 { name: "G7", enabled: false, children: [
 	// Season 1
 	{ name: "G7S1", enabled: true, children: [
+		// Enables fishing ship
 		{ name: "Ship", enabled: true },
+		
+		// Enables obtaining the Magic Shield skill
 		{ name: "MagicShield", enabled: true },
+		
+		// Enables obtaining Animal Training skill
 		{ name: "AnimalTraining", enabled: true },
-		{ name: "CombatRenewal", enabled: true },
-		{ name: "AdvancedItemRenewal", enabled: true },
-		{ name: "Aviation", enabled: true },
+		
+		// Enables NPCs going into deadly
 		{ name: "DeadlyNPCs", enabled: true },
 	]},
 	
 	// Season 2
-	{ name: "G7S2", enabled: true, children: [
-		{ name: "Waterfall", enabled: true },
-	]},
+	{ name: "G7S2", enabled: true, children: []},
 	
 	// Season 3
-	{ name: "G7S3", enabled: true, children: [
-		{ name: "RoarSkill", enabled: true },
-		{ name: "JumpingStompSkill", enabled: true },
-		{ name: "LionDashSkill", enabled: true },
-	]},
+	{ name: "G7S3", enabled: true, children: []},
 	
 	// Season 4
 	{ name: "G7S4", enabled: true, children: [
+		// Enables paper airplane action
 		{ name: "PaperAirplaneAction", enabled: true },
 	]},
 ]},
 
 // Generation 8
+//---------------------------------------------------------------------------
 { name: "G8", enabled: false, children: [
 	// Season 1
 	{ name: "G8S1", enabled: true, children: [
+		// Enables Hard Mode dungeons
 		{ name: "HardModeDungeons", enabled: true },
 	]},
 	
 	// Season 2
 	{ name: "G8S2", enabled: true, children: [
-		{ name: "PerformanceOption", enabled: true },
+		// Changes magic casting motion
 		{ name: "MagicMotionRenewal", enabled: true },
 	]},
 	
 	// Season 3
 	{ name: "G8S3", enabled: true, children: [
+		// Enables obtaining the Mana Shield skill
 		{ name: "ManaShield", enabled: true },
+		
+		// Enables hot spring effects
 		{ name: "HotspringEffect", enabled: true },
 	]},
 	
@@ -269,42 +390,63 @@
 ]},
 
 // Generation 9
+//---------------------------------------------------------------------------
 { name: "G9", enabled: false, children: [
 	// Season 1
 	{ name: "G9S1", enabled: true, children: [
-		{ name: "ServiceModelRenewal2008", enabled: true },
+		// Enables obtaining the Fragmentation skill
 		{ name: "Dissolution", enabled: true },
+		
+		// Enables obtaining the Synthesis skill
 		{ name: "Synthesis", enabled: true },
+		
+		// Enables shadow missions
 		{ name: "ShadowMissionBoard", enabled: true },
-		{ name: "Alchemy", enabled: true },
+		
+		// Enables obtaining ice mines
 		{ name: "IceMine", enabled: true },
+		
+		// Enables Nao Soul Stones
 		{ name: "NaoCoupon", enabled: true },
+		
+		// Enables breaking of the Abb Neag Seal Stone in Dunbarton
 		{ name: "AbbNeaghSealStone", enabled: true },
+		
+		// Enables breaking of the Sliab Cuilin Seal Stone in Dugald
 		{ name: "SliabCuilinSealStone", enabled: true },
 	]},
 	
 	// Season 2
 	{ name: "G9S2", enabled: true, children: [
+		// Enables field boss Neid
 		{ name: "LakeNeaghBoss", enabled: true },
+		
+		// Enables farming near Taillteann
 		{ name: "Farming", enabled: true },
 	]},
 	
 	// Season 3
 	{ name: "G9S3", enabled: true, children: [
+		// Changes to magic combat
 		{ name: "MagicCombatRenewal", enabled: true },
 	]},
 ]},
 
 // Generation 10
+//---------------------------------------------------------------------------
 { name: "G10", enabled: false, children: [
 	// Season 1
 	{ name: "G10S1", enabled: true, children: [
+		// Enables breaking of Tara seal stone
 		{ name: "TaraSealStone", enabled: true },
+		
+		// Enables ingredients for fine arrows in shops
 		{ name: "FineArrows", enabled: true },
 	]},
 	
 	// Season 2
 	{ name: "G10S2", enabled: true, children: [
+		// Enables visual chat feature (also needs to be enabled on the client)
 		{ name: "VisualChat", enabled: true },
 	]},
 	
@@ -313,20 +455,26 @@
 ]},
 
 // Generation 11
+//---------------------------------------------------------------------------
 { name: "G11", enabled: false, children: [
 	// Season 1
 	{ name: "G11S1", enabled: true, children: [
+		// Allows invitations to guilds via right click
 		{ name: "InviteGuild", enabled: true },
+		
+		// Enables guild board
 		{ name: "GuildListBoard", enabled: true },
 	]},
 	
 	// Season 2
 	{ name: "G11S2", enabled: true, children: [
+		// Enables obtaining the Carpentry skill
 		{ name: "Carpentry", enabled: true },
 	]},
 ]},
 
 // Generation 12
+//---------------------------------------------------------------------------
 { name: "G12", enabled: false, children: [
 	// Season 1
 	{ name: "G12S1", enabled: true, children: []},
@@ -336,14 +484,22 @@
 ]},
 
 // Generation 13
+//---------------------------------------------------------------------------
 { name: "G13", enabled: false, children: [
 	// Season 1
 	{ name: "G13S1", enabled: true, children: [
+		// Enables Fiodh Advanced dungeon
 		{ name: "FiodhAdvanced", enabled: true },
+		
+		// Enables Kiosk player shops
 		{ name: "Kiosk", enabled: true },
+		
+		// Enables renewed tutorial
 		{ name: "TutorialRenewal2010", enabled: true, children: [
+			// Disables rebirth presents
 			{ name: "NoRebirthPresent", enabled: true },
 		]},
+		
 		// Enables quest tabs.
 		{ name: "QuestViewRenewal", enabled: true },
 		
@@ -356,9 +512,11 @@
 ]},
 
 // Generation 14
+//---------------------------------------------------------------------------
 { name: "G14", enabled: false, children: [
 	// Season 1
 	{ name: "G14S1", enabled: true, children: [
+		// Enables lance weapons
 		{ name: "Lance", enabled: true },
 	]},
 	
@@ -370,19 +528,23 @@
 	
 	// Season 4
 	{ name: "G14S4", enabled: true, children: [
+		// Enables Port Cobh
 		{ name: "CobhWorld", enabled: true },
 	]},
 ]},
 
 // Generation 15
+//---------------------------------------------------------------------------
 { name: "G15", enabled: false, children: [
 	// Season 1
 	{ name: "G15S1", enabled: true, children: [
+		// Enables item sealing
 		{ name: "ItemSeal2", enabled: true },
 	]},
 	
 	// Season 2
 	{ name: "G15S2", enabled: true, children: [
+		// Disables mana removal when unequipping wands
 		{ name: "ManaBurnRemove", enabled: true },
 	]},
 	
@@ -394,18 +556,26 @@
 ]},
 
 // Generation 16
+//---------------------------------------------------------------------------
 { name: "G16", enabled: false, children: [
 	// Season 1
 	{ name: "G16S1", enabled: true, children: [
+		// Changes Moon Gates to function like Mana Tunnels
 		{ name: "MoonTunnel", enabled: true },
+		
+		// Enables obtaining Fighter skills and items
 		{ name: "FighterJob", enabled: true },
 	]},
 	
 	// Season 2
 	{ name: "G16S2", enabled: true, children: [
+		// Changes to combat system
 		{ name: "CombatSystemRenewal", enabled: true, children: [
+			// Enables passive Sharp Mind skill
 			{ name: "PassiveSharpMind", enabled: true },
 		]},
+		
+		// Changes in mainstream quests
 		{ name: "MainStream2012Part1", enabled: true, children: [
 			// Enables G1~3 for elves and giants.
 			{ name: "NonHumanChapter1", enabled: true },
@@ -429,17 +599,20 @@
 	
 	// Season 3
 	{ name: "G16S3", enabled: true, children: [
+		// Changes to hot springs
 		{ name: "G16HotSpringRenewal", enabled: true },
 	]},
 ]},
 
 // Generation 17
+//---------------------------------------------------------------------------
 { name: "G17", enabled: false, children: [
 	// Season 1
 	{ name: "G17S1", enabled: true, children: []},
 	
 	// Season 2
 	{ name: "G17S2", enabled: true, children: [
+		// Enables obtaining puppet skills and items
 		{ name: "PuppetMasterJob", enabled: true },
 	]},
 	
@@ -451,6 +624,7 @@
 ]},
 
 // Generation 18
+//---------------------------------------------------------------------------
 { name: "G18", enabled: false, children: [
 	// Season 1
 	{ name: "G18S1", enabled: true, children: []},
@@ -463,8 +637,13 @@
 	
 	// Season 4
 	{ name: "G18S4", enabled: true, children: [
+		// Enables obtaining the Singing skill
 		{ name: "Singing", enabled: true },
+		
+		// Enables instruments that use props, like Cellos
 		{ name: "PropInstruments", enabled: true },
+		
+		// Switches Moon Tunnels to be always open
 		{ name: "Tunnel24Free", enabled: true },
 	]},
 	
@@ -473,8 +652,8 @@
 	
 	// Season 6
 	{ name: "G18S6", enabled: true, children: [
+		// Enables Reforces
 		{ name: "Reforges", enabled: true },
-		{ name: "FreeRebirthWeekly", enabled: true },
 	]},
 	
 	// Season 7
@@ -482,21 +661,38 @@
 	
 	// Season 8
 	{ name: "G18S8", enabled: true, children: [
+		// Enables obtaining Ninja skills and items
 		{ name: "Ninjajob", enabled: true },
 	]},
 ]},
 
 // Generation 19
+//---------------------------------------------------------------------------
 { name: "G19", enabled: false, children: [
 	// Season 1
 	{ name: "G19S1", enabled: true, children: []},
 	
 	// Season 2
 	{ name: "G19S2", enabled: true, children: [
+		// Changes to combat skills
 		{ name: "TalentRenovationCloseCombat", enabled: true },
+		
+		// Changes to magic skills
 		{ name: "TalentRenovationMagic", enabled: true },
+		
+		// Changes to ranged skills
 		{ name: "TalentRenovationArchery", enabled: true },
 	]},
+]},
+
+// Generation 20
+//---------------------------------------------------------------------------
+{ name: "G20", enabled: false, children: [
+	// Season 1
+	{ name: "G20S1", enabled: true, children: []},
+	
+	// Season 2
+	{ name: "G20S2", enabled: true, children: []},
 ]},
 
 // Temporarily enabled until we go full G1.
