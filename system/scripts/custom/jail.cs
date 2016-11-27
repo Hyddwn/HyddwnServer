@@ -1,8 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Jail
 //--- Description -----------------------------------------------------------
-// Puts all players who commit a security violation in "jail" and adds
-// the "jail" command (default auth 50:-1), that can be used to jail
+// Adds the "jail" command (default auth 50:-1), that can be used to jail
 // characters freely.
 //--- By --------------------------------------------------------------------
 // Xcelled, exec
@@ -94,15 +93,6 @@ public class JailScript : NpcScript
 		Close();
 	}
 
-	[On("SecurityViolation")]
-	public void NewPlayer(SecurityViolationEventArgs e)
-	{
-		if (e.Client.Controlling == null)
-			return;
-
-		Jail(e.Client.Controlling, TimeSpan.FromMinutes(30));
-	}
-	
 	public static void Jail(Creature creature, TimeSpan time)
 	{
 		creature.Warp(126, 4400, 4200);
