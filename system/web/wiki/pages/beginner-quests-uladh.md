@@ -108,7 +108,7 @@ Campfire
 ### Rewards
 
 - 1,300 EXP
-- Campefire skill
+- Campfire skill
 
 Caution against Fire
 -----------------------------------------------------------------------------
