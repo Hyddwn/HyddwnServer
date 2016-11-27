@@ -29,6 +29,10 @@ public class AdventCalendarEventScript : GameEventScript
 
 	protected override void OnEnd()
 	{
+	}
+
+	protected override void CleanUp()
+	{
 		foreach (var prop in props)
 			RemoveProp(prop.EntityId);
 	}
