@@ -3022,11 +3022,18 @@ namespace Aura.Channel.World.Entities
 		public override void Disappear()
 		{
 			this.Dispose();
-
-			if (this.Region != Region.Limbo)
-				this.Region.RemoveCreature(this);
+			this.RemoveFromRegion();
 
 			base.Disappear();
+		}
+
+		/// <summary>
+		/// Removes creature from its current region.
+		/// </summary>
+		public void RemoveFromRegion()
+		{
+			if (this.Region != Region.Limbo)
+				this.Region.RemoveCreature(this);
 		}
 
 		/// <summary>
