@@ -23,20 +23,19 @@
 
 // Generation 1
 { name: "G1", enabled: true, children: [
-	{ name: "MainStreamG1", enabled: true },
-	{ name: "Rebirth", enabled: true },
-	{ name: "SystemGuild", enabled: true },
-	{ name: "PersonalShop", enabled: true },
-	{ name: "EnchantEntrust", enabled: true },
-	{ name: "DynamicMonsterAllocation", enabled: true },
-	{ name: "FoodStatLimit", enabled: true },
-	{ name: "G1EasyOverseas", enabled: false, children: [
-		// Kill only ten zombies to revive in TNN.
-		{ name: "EasyBinding1", enabled: true },
-	]},
-	
 	// Season 1
 	{ name: "G1S1", enabled: true, children: [
+		{ name: "MainStreamG1", enabled: true },
+		{ name: "Rebirth", enabled: true },
+		{ name: "SystemGuild", enabled: true },
+		{ name: "PersonalShop", enabled: true },
+		{ name: "EnchantEntrust", enabled: true },
+		{ name: "DynamicMonsterAllocation", enabled: true },
+		{ name: "FoodStatLimit", enabled: true },
+		{ name: "G1EasyOverseas", enabled: false, children: [
+			// Kill only ten zombies to revive in TNN.
+			{ name: "EasyBinding1", enabled: true },
+		]},
 		{ name: "CiarAdvanced", enabled: true },
 		{ name: "MathDungeon", enabled: true },
 	]},
@@ -49,14 +48,13 @@
 
 // Generation 2
 { name: "G2", enabled: false, children: [
-	{ name: "MainStreamG2", enabled: true },
-	{ name: "EmainMacha", enabled: true },
-	{ name: "NaoDressUp", enabled: true },
-	{ name: "CollectionBooks", enabled: true },
-	{ name: "Price", enabled: true },
-	
 	// Season 1
 	{ name: "G2S1", enabled: true, children: [
+		{ name: "MainStreamG2", enabled: true },
+		{ name: "EmainMacha", enabled: true },
+		{ name: "NaoDressUp", enabled: true },
+		{ name: "CollectionBooks", enabled: true },
+		{ name: "Price", enabled: true },
 		{ name: "RundalDungeon", enabled: true },
 		{ name: "CoillDungeon", enabled: true },
 		{ name: "Fireball", enabled: true },
@@ -87,10 +85,9 @@
 
 // Generation 3
 { name: "G3", enabled: false, children: [
-	{ name: "Mate", enabled: true },
-	
 	// Season 1
 	{ name: "G3S1", enabled: true, children: [
+		{ name: "Mate", enabled: true },
 		{ name: "SearchItemByPet", enabled: true },
 	]},
 	
