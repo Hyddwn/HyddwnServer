@@ -102,6 +102,7 @@ namespace Aura.Channel.Scripting.Scripts
 			this.OnStart();
 
 			Send.Notice(NoticeType.Middle, L("The {0} Event is now in progress."), this.Name);
+			Send.GameEventStateUpdate(this.Id, this.IsActive);
 		}
 
 		/// <summary>
@@ -116,6 +117,7 @@ namespace Aura.Channel.Scripting.Scripts
 			this.OnEnd();
 
 			Send.Notice(NoticeType.Middle, L("The {0} Event has ended."), this.Name);
+			Send.GameEventStateUpdate(this.Id, this.IsActive);
 		}
 
 		/// <summary>
