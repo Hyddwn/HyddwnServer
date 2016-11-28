@@ -129,7 +129,31 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "about_skill":
-				Msg("I've talked a lot with other people regarding skills, but<br/>you seem be very knowledgeable about music,<username/>.<br/>I'm impressed. Hahaha.");
+				if (!HasSkill(SkillId.MusicalKnowledge))
+				{
+					if (Favor < 15)
+					{
+						Msg(L("Oh, what a headache."));
+						Msg(L("I paid a large sum of money and ordered in a ton of music theory books a while ago.<br/>I don't know if it's because they are expensive, but no one buys them.<br/>Still, they even have the skill-related green seals on them.<br/>It's not like I can just give them away to Stewart, either."));
+						Msg(L("I'm tempted to give them away to someone who's nice to me.<br/>*Sigh* I should have just ordered poetry books that I like...<br/>It would be so good to have someone give me a poetry book as a gift."));
+					}
+					else if (!HasItem(1013)) // Music Theory
+					{
+						GiveItem(1013);
+						SystemNotice(L("Received Music Theory from Aeira."));
+
+						Msg(L("It's so good to have you come by so often, <username/>!<br/>Come to think of it, you've been really nice to me,<br/>but I don't think I've returned the favor..."));
+						Msg(L("Hmm... I want to make that up to you, and for that, I'd like to give you a gift.<br/>Here you go. Hope you like it!! *Giggle*"));
+					}
+					else
+					{
+						Msg(L("Oh... That book on music - did I give it to you as a gift? Hehehe. Good. It makes me happy to know that you're cherishing it."));
+					}
+				}
+				else
+				{
+					Msg(L("I've talked a lot with other people regarding skills, but<br/>you seem be very knowledgeable about music, <username/>.<br/>I'm impressed. Hahaha."));
+				}
 				break;
 
 			case "shop_misc":
