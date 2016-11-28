@@ -268,6 +268,17 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns list of all members that match the predicate, sorted by
+		/// their position in the party.
+		/// </summary>
+		/// <returns></returns>
+		public Creature[] GetSortedMembers(Func<Creature, bool> predicate)
+		{
+			lock (_sync)
+				return _members.Where(predicate).OrderBy(a => a.PartyPosition).ToArray();
+		}
+
+		/// <summary>
 		/// Returns first available slot, throws if none are available.
 		/// Check availability before adding members.
 		/// </summary>

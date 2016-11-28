@@ -70,7 +70,7 @@ namespace Aura.Channel.World
 			var viewersList = new List<Creature>();
 
 			viewersList.Add(leader);
-			viewersList.AddRange(leader.Party.GetSortedMembers());
+			viewersList.AddRange(leader.Party.GetSortedMembers(a => a.Region == leader.Region));
 
 			if (viewers != null)
 				viewersList.AddRange(viewers);
