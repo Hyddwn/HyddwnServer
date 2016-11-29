@@ -2231,8 +2231,28 @@ namespace Aura.Channel.World.Entities
 		private void DropItems(Creature killer, Random rnd, Position pos)
 		{
 			// Normal
+			this.DropItems(killer, rnd, pos, this.Drops.Drops);
+
+			// Event
+			var eventDrops = ChannelServer.Instance.GameEventManager.GlobalBonuses.GetDrops(this);
+			if (eventDrops.Count != 0)
+				this.DropItems(killer, rnd, pos, eventDrops);
+
+			// Static
+			foreach (var item in this.Drops.StaticDrops)
+				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
+
+			this.Drops.ClearStaticDrops();
+		}
+
+		/// <summary>
+		/// Handles dropping of items in given collection.
+		/// </summary>
+		/// <param name="dataCollection"></param>
+		private void DropItems(Creature killer, Random rnd, Position pos, IEnumerable<DropData> dataCollection)
+		{
 			var dropped = new HashSet<int>();
-			foreach (var dropData in this.Drops.Drops)
+			foreach (var dropData in dataCollection)
 			{
 				if (dropData == null || !AuraData.ItemDb.Exists(dropData.ItemId))
 				{
@@ -2272,12 +2292,6 @@ namespace Aura.Channel.World.Entities
 					dropped.Add(dropData.ItemId);
 				}
 			}
-
-			// Static
-			foreach (var item in this.Drops.StaticDrops)
-				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
-
-			this.Drops.ClearStaticDrops();
 		}
 
 		/// <summary>

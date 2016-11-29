@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.GameEvents;
+using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using System;
@@ -186,6 +187,34 @@ namespace Aura.Channel.Scripting.Scripts
 		protected void RemoveGlobalBonuses()
 		{
 			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveBonuses(this.Id);
+		}
+
+		/// <summary>
+		/// Adds global drop by race id.
+		/// </summary>
+		/// <param name="raceId"></param>
+		/// <param name="data"></param>
+		protected void AddGlobalDrop(int raceId, DropData data)
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddDrop(this.Id, new GlobalDropById(this.Id, raceId, data));
+		}
+
+		/// <summary>
+		/// Adds global drop by race tag.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <param name="data"></param>
+		protected void AddGlobalDrop(string tag, DropData data)
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddDrop(this.Id, new GlobalDropByTag(this.Id, tag, data));
+		}
+
+		/// <summary>
+		/// Removes all global bonuses associated with this event.
+		/// </summary>
+		protected void RemoveGlobalDrops()
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveAllDrops(this.Id);
 		}
 
 		/// <summary>
