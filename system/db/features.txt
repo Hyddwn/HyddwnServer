@@ -704,6 +704,5 @@
 // Temporarily enabled until we go full G1.
 { name: "TwinSword", enabled: true },
 { name: "CombatSystemRenewal", enabled: true },
-{ name: "PassiveSharpMind", enabled: true },
 { name: "TalentRenovationCloseCombat", enabled: true },
 ]
