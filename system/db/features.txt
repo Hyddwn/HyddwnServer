@@ -546,6 +546,9 @@
 	{ name: "G15S2", enabled: true, children: [
 		// Disables mana removal when unequipping wands
 		{ name: "ManaBurnRemove", enabled: true },
+		
+		// Enables obtaining premium bags (8x10)
+		{ name: "PremiumBags", enabled: true },
 	]},
 	
 	// Season 3
