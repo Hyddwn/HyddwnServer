@@ -33,7 +33,7 @@ namespace Aura.Channel.Skills.Combat
 				targetSkill.Train(2); // Successfully notice a same level enemy's skill.
 
 			if (skillRank >= SkillRank.RD && skillRank <= SkillRank.RB && rating == PowerRating.Strong)
-				targetSkill.Train(2); // Successfully notice a strong enemy's skill.
+				targetSkill.Train(3); // Successfully notice a strong enemy's skill.
 
 			if (skillRank == SkillRank.RB && rating == PowerRating.Awful)
 				targetSkill.Train(4); // Successfully notice an awful enemy's skill.
