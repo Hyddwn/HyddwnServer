@@ -634,22 +634,22 @@ namespace Aura.Channel.Database
 			var activeSharpMind = (sharpMindEnabled && !passiveSharpMindEnabled);
 			var hasSharpMind = character.Skills.Has(SkillId.SharpMind);
 
-			// Remove active Sharp Mind and return all AP spent on it if
-			// it's not enabled but the character has it.
-			if (!activeSharpMind && hasSharpMind)
-			{
-				var skill = character.Skills.Get(SkillId.SharpMind);
-				character.AbilityPoints += (short)skill.RankData.APTotal;
-				character.Skills.RemoveSilent(SkillId.SharpMind);
-			}
-
-			// Give active Sharp Mind if it's enabled but the character
-			// doesn't have it.
-			if (activeSharpMind && !hasSharpMind)
-				character.Skills.Add(SkillId.SharpMind, SkillRank.Novice, character.RaceId);
-
 			if (character is Character)
 			{
+				// Remove active Sharp Mind and return all AP spent on it if
+				// it's not enabled but the character has it.
+				if (!activeSharpMind && hasSharpMind)
+				{
+					var skill = character.Skills.Get(SkillId.SharpMind);
+					character.AbilityPoints += (short)skill.RankData.APTotal;
+					character.Skills.RemoveSilent(SkillId.SharpMind);
+				}
+
+				// Give active Sharp Mind if it's enabled but the character
+				// doesn't have it.
+				if (activeSharpMind && !hasSharpMind)
+					character.Skills.Add(SkillId.SharpMind, SkillRank.Novice, character.RaceId);
+
 				character.Skills.Add(SkillId.HiddenEnchant, SkillRank.Novice, character.RaceId);
 				character.Skills.Add(SkillId.HiddenResurrection, SkillRank.Novice, character.RaceId);
 				character.Skills.Add(SkillId.HiddenTownBack, SkillRank.Novice, character.RaceId);
