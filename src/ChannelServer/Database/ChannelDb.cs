@@ -629,13 +629,13 @@ namespace Aura.Channel.Database
 			// According to the Wiki you get Crit upon advancing CM to RF, should CM be Novice?
 			character.Skills.Add(SkillId.CriticalHit, SkillRank.Novice, character.RaceId);
 
-			var sharpMindEnabled = AuraData.FeaturesDb.IsEnabled("SharpMind");
-			var passiveSharpMindEnabled = AuraData.FeaturesDb.IsEnabled("PassiveSharpMind");
-			var activeSharpMind = (sharpMindEnabled && !passiveSharpMindEnabled);
-			var hasSharpMind = character.Skills.Has(SkillId.SharpMind);
-
 			if (character is Character)
 			{
+				var sharpMindEnabled = AuraData.FeaturesDb.IsEnabled("SharpMind");
+				var passiveSharpMindEnabled = AuraData.FeaturesDb.IsEnabled("PassiveSharpMind");
+				var activeSharpMind = (sharpMindEnabled && !passiveSharpMindEnabled);
+				var hasSharpMind = character.Skills.Has(SkillId.SharpMind);
+
 				// Remove active Sharp Mind and return all AP spent on it if
 				// it's not enabled but the character has it.
 				if (!activeSharpMind && hasSharpMind)
