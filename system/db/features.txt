@@ -22,6 +22,9 @@
 // The skill wasn't available at all times in all versions of Mabinogi.
 { name: "SharpMind", enabled: true },
 
+// Enables opening the in-game web item shop.
+{ name: "ItemShop", enabled: false },
+
 // World-shaping Events
 //---------------------------------------------------------------------------
 
@@ -68,10 +71,7 @@
 	]},
 	
 	// Season 2
-	{ name: "G1S2", enabled: true, children: [
-		// Enables opening the in-game web item shop.
-		{ name: "ItemShop", enabled: false },
-	]},
+	{ name: "G1S2", enabled: true, children: []},
 ]},
 
 // Generation 2
