@@ -343,6 +343,9 @@
 		
 		// Enables NPCs going into deadly
 		{ name: "DeadlyNPCs", enabled: true },
+		
+		// Enables obtaining percussion instruments
+		{ name: "PercussionInstruments", enabled: true },
 	]},
 	
 	// Season 2

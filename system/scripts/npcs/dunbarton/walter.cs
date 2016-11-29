@@ -324,7 +324,6 @@ public class WalterShop : NpcShopScript
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
-		Add("General Goods", 40215);      // Small Drum
 		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -398,6 +397,11 @@ public class WalterShop : NpcShopScript
 		{
 			Add("General Goods", 51227, 1);  // Ticking Quiz Bomb x1
 			Add("General Goods", 51227, 20); // Ticking Quiz Bomb x20
+		}
+
+		if (IsEnabled("PercussionInstruments"))
+		{
+			Add("General Goods", 40215); // Small Drum
 		}
 
 		if (IsEnabled("Kiosk"))
