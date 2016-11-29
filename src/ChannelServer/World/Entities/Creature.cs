@@ -2266,63 +2266,7 @@ namespace Aura.Channel.World.Entities
 						continue;
 
 					var item = new Item(dropData);
-
-					// Equip stat modification
-					// http://wiki.mabinogiworld.com/view/Category:Weapons
-					if (item.HasTag("/righthand/weapon/|/twohand/weapon/"))
-					{
-						var num = rnd.Next(100);
-
-						// Durability
-						if (num == 0)
-							item.OptionInfo.DurabilityMax += 4000;
-						else if (num <= 5)
-							item.OptionInfo.DurabilityMax += 3000;
-						else if (num <= 10)
-							item.OptionInfo.DurabilityMax += 2000;
-						else if (num <= 25)
-							item.OptionInfo.DurabilityMax += 1000;
-
-						// Attack
-						if (num == 0)
-						{
-							item.OptionInfo.AttackMin += 3;
-							item.OptionInfo.AttackMax += 3;
-						}
-						else if (num <= 30)
-						{
-							item.OptionInfo.AttackMin += 2;
-							item.OptionInfo.AttackMax += 2;
-						}
-						else if (num <= 60)
-						{
-							item.OptionInfo.AttackMin += 1;
-							item.OptionInfo.AttackMax += 1;
-						}
-
-						// Crit
-						if (num == 0)
-							item.OptionInfo.Critical += 3;
-						else if (num <= 30)
-							item.OptionInfo.Critical += 2;
-						else if (num <= 60)
-							item.OptionInfo.Critical += 1;
-
-						// Balance
-						if (num == 0)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 12);
-						else if (num <= 10)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 10);
-						else if (num <= 30)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 8);
-						else if (num <= 50)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 6);
-						else if (num <= 70)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 4);
-						else if (num <= 90)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 2);
-					}
-
+					item.ModifyEquipStats(rnd);
 					item.Drop(this.Region, pos, Item.DropRadius, killer, false);
 
 					dropped.Add(dropData.ItemId);
