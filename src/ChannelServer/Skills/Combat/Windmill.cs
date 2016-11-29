@@ -1,4 +1,4 @@
-﻿// Copyright (c) Aura development team - Licensed under GNU GPL
+// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
 using Aura.Channel.Network.Sending;
@@ -360,8 +360,8 @@ namespace Aura.Channel.Skills.Combat
 					attackerSkill.Train(5); // Counterattack with Windmill.
 			}
 
-			// rA-8
-			if (attackerSkill.Info.Rank >= SkillRank.RA && attackerSkill.Info.Rank <= SkillRank.R8)
+			// rA-9
+			if (attackerSkill.Info.Rank >= SkillRank.RA && attackerSkill.Info.Rank <= SkillRank.R9)
 			{
 				if (rating == PowerRating.Normal && tAction.Creature.IsDead)
 					attackerSkill.Train(1); // Defeat a similar ranked enemy.
@@ -374,6 +374,25 @@ namespace Aura.Channel.Skills.Combat
 
 				if (tAction.Attacker.Stability <= CounterStability)
 					attackerSkill.Train(4); // Counterattack with Windmill.
+			}
+			
+			// r8
+			if (attackerSkill.Info.Rank == SkillRank.R8)
+			{
+				if (rating == PowerRating.Normal && tAction.Creature.IsDead)
+					attackerSkill.Train(1); // Defeat a similar ranked enemy.
+
+				if (rating == PowerRating.Strong && tAction.Creature.IsDead)
+					attackerSkill.Train(2); // Defeat a powerful enemy.
+
+				if (rating == PowerRating.Awful && tAction.Creature.IsDead)
+					attackerSkill.Train(3); // Defeat a very powerful enemy.
+
+				if (rating == PowerRating.Boss && tAction.Creature.IsDead)
+					attackerSkill.Train(4); // Defeat a boss-level enemy.
+					
+				if (tAction.Attacker.Stability <= CounterStability)
+					attackerSkill.Train(5); // Counterattack with Windmill.
 			}
 
 			// r7
