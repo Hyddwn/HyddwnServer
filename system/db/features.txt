@@ -152,9 +152,6 @@
 	
 	// Season 2
 	{ name: "G3S2", enabled: true, children: [
-		// Enables Barri Advanced dungeon
-		{ name: "BarriAdvanced", enabled: true },
-		
 		// Enables Poison status effect
 		{ name: "Poison", enabled: true },
 	]},
@@ -480,7 +477,10 @@
 //---------------------------------------------------------------------------
 { name: "G12", enabled: false, children: [
 	// Season 1
-	{ name: "G12S1", enabled: true, children: []},
+	{ name: "G12S1", enabled: true, children: [
+		// Enables Peaca Int dungeon
+		{ name: "PeacaInt", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G12S2", enabled: true, children: []},
