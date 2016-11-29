@@ -210,6 +210,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds global drop by race tag.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <param name="data"></param>
+		protected void AddGlobalDrop(GlobalDropType type, DropData data)
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddDrop(this.Id, new GlobalDropByType(this.Id, type, data));
+		}
+
+		/// <summary>
 		/// Removes all global bonuses associated with this event.
 		/// </summary>
 		protected void RemoveGlobalDrops()

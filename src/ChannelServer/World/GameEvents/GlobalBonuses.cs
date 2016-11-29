@@ -3,6 +3,7 @@
 
 using Aura.Channel.World.Entities;
 using Aura.Data.Database;
+using Aura.Mabi.Const;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -174,6 +175,33 @@ namespace Aura.Channel.World.GameEvents
 		}
 	}
 
+	public class GlobalDropByType : GlobalDrop
+	{
+		public GlobalDropType Type { get; private set; }
+
+		public GlobalDropByType(string identifier, GlobalDropType type, DropData data)
+			: base(identifier, data)
+		{
+			this.Type = type;
+		}
+
+		public override bool Matches(Creature creature)
+		{
+			switch (this.Type)
+			{
+				case GlobalDropType.Npcs:
+					var isMonster = creature.Has(CreatureStates.Npc);
+					return isMonster;
+
+				case GlobalDropType.Players:
+					var isPlayer = (creature.IsPlayer);
+					return isPlayer;
+			}
+
+			return false;
+		}
+	}
+
 	public enum GlobalBonusStat
 	{
 		LevelUpAp,
@@ -184,5 +212,11 @@ namespace Aura.Channel.World.GameEvents
 		GoldDropRate,
 		GoldDropAmount,
 		LuckyFinishRate,
+	}
+
+	public enum GlobalDropType
+	{
+		Npcs,
+		Players,
 	}
 }
