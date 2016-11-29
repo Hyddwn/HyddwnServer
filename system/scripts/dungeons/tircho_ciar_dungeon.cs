@@ -182,10 +182,14 @@ public class CiarDungeonScript : DungeonScript
 			drops.Add(new DropData(itemId: 71037, chance: 4, amountMin: 2, amountMax: 4)); // Goblin Fomor Scroll
 			drops.Add(new DropData(itemId: 71035, chance: 4, amountMin: 3, amountMax: 5)); // Gray Town Rat Fomor Scroll
 			drops.Add(new DropData(itemId: 63104, chance: 3, amount: 1, expires: 480)); // Ciar Basic Fomor Pass
-			drops.Add(new DropData(itemId: 63123, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for One
-			drops.Add(new DropData(itemId: 63124, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for Two
-			drops.Add(new DropData(itemId: 63125, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for Four
 			drops.Add(new DropData(itemId: 40006, chance: 2, amount: 1, color1: 0xFFDB60, durability: 0)); // Dagger (gold)
+
+			if (IsEnabled("CiarInt"))
+			{
+				drops.Add(new DropData(itemId: 63123, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for One
+				drops.Add(new DropData(itemId: 63124, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for Two
+				drops.Add(new DropData(itemId: 63125, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for Four
+			}
 
 			if (IsEnabled("CiarAdvanced"))
 			{
