@@ -163,6 +163,15 @@
 	{ name: "G3S2", enabled: true, children: [
 		// Enables Poison status effect
 		{ name: "Poison", enabled: true },
+		
+		// Enables pet PvP duels
+		{ name: "PetDueling", enabled: true },
+		
+		// Enables obtaining Party Healing skill
+		{ name: "PartyHealing", enabled: true },
+		
+		// Enables magical music effects
+		{ name: "MagicalMusic", enabled: true },
 	]},
 	
 	// Season 3
@@ -176,8 +185,11 @@
 		// Enables obtaining the passive defense Paladin skills
 		{ name: "PaladinPassiveDefence", enabled: true },
 		
-		// Enables Rabbie Arena
-		{ name: "RabbieArena", enabled: true },
+		// Enables taming via magical music
+		{ name: "MagicalTamingMusic", enabled: true },
+		
+		// Enables the traveling dungeon merchant NPC Tiro
+		{ name: "Tiro", enabled: true },
 	]},
 	
 	// Season 4
@@ -187,6 +199,9 @@
 		
 		// Enables Rabbie Advanced dungeon
 		{ name: "RabbieAdvanced", enabled: true },
+		
+		// Enables Rabbie Arena
+		{ name: "RabbieArena", enabled: true },
 		
 		// Enables Peaca Basic dungeon
 		{ name: "PeacaBasic", enabled: true },
@@ -218,6 +233,12 @@
 		
 		// Enables access to Morva Aisle and Port Ceann
 		{ name: "PortCeann", enabled: true },
+		
+		// Enables obtaining Jam Session action
+		{ name: "JamSession", enabled: true },
+		
+		// Enables obtaining Performance action
+		{ name: "PublicPerformance", enabled: true },
 	]},
 ]},
 
@@ -325,9 +346,6 @@
 	
 	// Season 6
 	{ name: "G6S6", enabled: true, children: [
-		// Enables jam sessions
-		{ name: "EnsemblePlay", enabled: true },
-		
 		// Enables advanced wands in shops
 		{ name: "WandUpgradeAndChainCasting", enabled: true },
 	]},
