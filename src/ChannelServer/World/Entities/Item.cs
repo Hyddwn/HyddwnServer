@@ -462,6 +462,10 @@ namespace Aura.Channel.World.Entities
 			// Lowered durability
 			if (dropData.Durability != -1)
 				this.Durability = dropData.Durability;
+
+			// Food quality
+			if (dropData.FoodQuality != null)
+				this.MetaData1.SetInt("QUAL", (int)dropData.FoodQuality);
 		}
 
 		/// <summary>
