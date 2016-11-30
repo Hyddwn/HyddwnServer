@@ -124,13 +124,14 @@ namespace Aura.Data.Database
 		public int Expires { get; set; }
 		public int Durability { get; set; }
 		public int? FoodQuality { get; set; }
+		public int? FormId { get; set; }
 
 		public DropData()
 		{
 			this.Durability = -1;
 		}
 
-		public DropData(int itemId, float chance, int amount = 0, int amountMin = 0, int amountMax = 0, uint? color1 = null, uint? color2 = null, uint? color3 = null, int prefix = 0, int suffix = 0, int expires = 0, int durability = -1, int? foodQuality = null)
+		public DropData(int itemId, float chance, int amount = 0, int amountMin = 0, int amountMax = 0, uint? color1 = null, uint? color2 = null, uint? color3 = null, int prefix = 0, int suffix = 0, int expires = 0, int durability = -1, int? foodQuality = null, int? formId = null)
 		{
 			if (amount != 0)
 				amountMin = amountMax = amount;
@@ -149,6 +150,7 @@ namespace Aura.Data.Database
 			this.Expires = expires;
 			this.Durability = durability;
 			this.FoodQuality = foodQuality;
+			this.FormId = formId;
 		}
 
 		public DropData Copy()
@@ -168,6 +170,7 @@ namespace Aura.Data.Database
 			result.Expires = this.Expires;
 			result.Durability = this.Durability;
 			result.FoodQuality = this.FoodQuality;
+			result.FormId = this.FormId;
 
 			return result;
 		}

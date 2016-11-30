@@ -466,6 +466,10 @@ namespace Aura.Channel.World.Entities
 			// Food quality
 			if (dropData.FoodQuality != null)
 				this.MetaData1.SetInt("QUAL", (int)dropData.FoodQuality);
+
+			// Form id (manuals)
+			if (dropData.FormId != null)
+				this.MetaData1.SetInt("FORMID", (int)dropData.FormId);
 		}
 
 		/// <summary>
