@@ -601,6 +601,26 @@ namespace Aura.Channel.Scripting.Scripts
 			Stage5,
 			Stage6
 		}
+
+		/// <summary>
+		/// Activates weaken conditions for creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="levels">Amount of levels to lower the power level.</param>
+		/// <param name="duration">Duration of the state.</param>
+		protected void Weaken(Creature creature, int levels, int duration)
+		{
+			levels = Math2.Clamp(1, 255, levels);
+
+			var extra = new MabiDictionary();
+			extra.SetByte("WKN_LV", (byte)levels);
+
+			// min -> ms
+			duration = duration * 60 * 1000;
+
+			Send.Notice(creature, Localization.Get("The enemies seem to be much more powerful now."));
+			creature.Conditions.Activate(ConditionsA.Weaken, extra, duration);
+		}
 	}
 
 	/// <summary>

@@ -2694,12 +2694,29 @@ namespace Aura.Channel.World.Entities
 			var cp = this.CombatPower;
 			var otherCp = compareCreature.CombatPower;
 
-			if (otherCp < cp * 0.8f) return PowerRating.Weakest;
-			if (otherCp < cp * 1.0f) return PowerRating.Weak;
-			if (otherCp < cp * 1.4f) return PowerRating.Normal;
-			if (otherCp < cp * 2.0f) return PowerRating.Strong;
-			if (otherCp < cp * 3.0f) return PowerRating.Awful;
-			return PowerRating.Boss;
+			var result = PowerRating.Boss;
+
+			if (otherCp < cp * 0.8f) result = PowerRating.Weakest;
+			else if (otherCp < cp * 1.0f) result = PowerRating.Weak;
+			else if (otherCp < cp * 1.4f) result = PowerRating.Normal;
+			else if (otherCp < cp * 2.0f) result = PowerRating.Strong;
+			else if (otherCp < cp * 3.0f) result = PowerRating.Awful;
+
+			// Weaken condition
+			if (this.Conditions.Has(ConditionsA.Weaken))
+			{
+				var levels = 1;
+				var wkn_lv = this.Conditions.GetExtraField(31, "WKN_LV");
+				if (wkn_lv != null)
+					levels = (byte)wkn_lv;
+
+				result += levels;
+			}
+
+			if (result > PowerRating.Boss)
+				result = PowerRating.Boss;
+
+			return result;
 		}
 
 		/// <summary>
