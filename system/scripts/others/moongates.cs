@@ -342,6 +342,12 @@ public class MoonGateScript : GeneralScript
 			if (!creature.Keywords.Has(gate.Keyword))
 				creature.Keywords.Give(gate.Keyword);
 
+			// Enabled/Disable Ceo gate
+			if (!creature.Keywords.Has("_moontunnel_ceoisland") && IsEnabled("G2"))
+				creature.Keywords.Give("_moontunnel_ceoisland");
+			else if (creature.Keywords.Has("_moontunnel_ceoisland") && !IsEnabled("G2"))
+				creature.Keywords.Remove("_moontunnel_ceoisland");
+
 			// Get list of moon gates the creature can use
 			var freeRoaming = (FreeRoaming || creature.Keywords.Has("freemoongate"));
 			var mygates = gates.Values.Where(a => CanWarpTo(creature, a));
