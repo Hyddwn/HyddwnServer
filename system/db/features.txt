@@ -105,6 +105,9 @@
 		
 		// Enables obtaining the Arrow Revolver skill
 		{ name: "ArrowRevolver", enabled: true },
+		
+		// Enables Math Avanced dungeon
+		{ name: "MathAdvanced", enabled: true },
 	]},
 	
 	// Season 2
