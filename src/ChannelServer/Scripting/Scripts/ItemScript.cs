@@ -396,8 +396,12 @@ namespace Aura.Channel.Scripting.Scripts
 			// Prepare quality value for the calculations
 			// Bonus Formula: floor(dbValue / 200 * (quality + 100))
 			var quality = 0;
+			var hasQuality = false;
 			if (item.MetaData1.Has("QUAL"))
+			{
 				quality = item.MetaData1.GetInt("QUAL");
+				hasQuality = true;
+			}
 			quality += 100;
 
 			// Remove previous buffs
@@ -446,16 +450,40 @@ namespace Aura.Channel.Scripting.Scripts
 
 			// Add regens
 			if (lifeRecovery != 0)
-				creature.Regens.Add(regenGroup, Stat.Life, (float)Math.Floor(lifeRecovery / 200f * quality), creature.LifeInjured, timeout);
+			{
+				var value = (float)lifeRecovery;
+				if (hasQuality)
+					value = (float)Math.Floor(value / 200f * quality);
+
+				creature.Regens.Add(regenGroup, Stat.Life, value, creature.LifeInjured, timeout * 1000);
+			}
 
 			if (manaRecovery != 0)
-				creature.Regens.Add(regenGroup, Stat.Mana, (float)Math.Floor(manaRecovery / 200f * quality), creature.ManaMax, timeout);
+			{
+				var value = (float)manaRecovery;
+				if (hasQuality)
+					value = (float)Math.Floor(value / 200f * quality);
+
+				creature.Regens.Add(regenGroup, Stat.Mana, value, creature.ManaMax, timeout * 1000);
+			}
 
 			if (staminaRecovery != 0)
-				creature.Regens.Add(regenGroup, Stat.Stamina, (float)Math.Floor(staminaRecovery / 200f * quality), creature.StaminaMax, timeout);
+			{
+				var value = (float)staminaRecovery;
+				if (hasQuality)
+					value = (float)Math.Floor(value / 200f * quality);
+
+				creature.Regens.Add(regenGroup, Stat.Stamina, value, creature.StaminaMax, timeout * 1000);
+			}
 
 			if (injuryRecovery != 0)
-				creature.Regens.Add(regenGroup, Stat.LifeInjured, (float)Math.Floor(injuryRecovery / 200f * quality), creature.LifeMax, timeout);
+			{
+				var value = (float)injuryRecovery;
+				if (hasQuality)
+					value = (float)Math.Floor(value / 200f * quality);
+
+				creature.Regens.Add(regenGroup, Stat.LifeInjured, value, creature.LifeMax, timeout * 1000);
+			}
 
 			// Update client
 			Send.StatUpdate(creature, StatUpdateType.Private,
