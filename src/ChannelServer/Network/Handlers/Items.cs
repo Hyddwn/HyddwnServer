@@ -1155,5 +1155,23 @@ namespace Aura.Channel.Network.Handlers
 				this.Name = name;
 			}
 		}
+
+		/// <summary>
+		/// Sent when using an Ordinary Chest.
+		/// </summary>
+		/// <remarks>
+		/// The exact purpose of this packet is unknown, and the response
+		/// can be considered a dummy, since it's not based on logs. Sending
+		/// true + the entity id simply gets us past this, to the use packet.
+		/// </remarks>
+		[PacketHandler(Op.UnkOrdinaryChest)]
+		public void UnkOrdinaryChest(ChannelClient client, Packet packet)
+		{
+			var chestItemEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.UnkOrdinaryChestR(creature, chestItemEntityId);
+		}
 	}
 }

@@ -582,6 +582,8 @@ namespace Aura.Mabi.Network
 
 		// [150000~180000] Something was removed here
 
+		public const int UnkOrdinaryChest = 0xA803;
+		public const int UnkOrdinaryChestR = 0xA804;
 		public const int GameEventStateUpdate = 0xA805;
 		public const int MailsRequest = 0xA897;
 		public const int MailsRequestR = 0xA898;
