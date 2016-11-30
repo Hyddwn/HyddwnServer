@@ -436,6 +436,9 @@ namespace Aura.Data.Database
 
 					dropData.Durability = drop.ReadInt("durability", -1);
 
+					if (drop.ContainsKey("foodQuality")) dropData.FoodQuality = drop.ReadInt("foodQuality");
+					if (drop.ContainsKey("formId")) dropData.FormId = drop.ReadInt("formId");
+
 					raceData.Drops.Add(dropData);
 				}
 			}
