@@ -18,6 +18,11 @@
 
 public class TreasureChestEventScript : GameEventScript
 {
+	public const int OrdinaryChestId = 91038;
+	public const int PremiumChestId = 91039;
+	public const int OrdinaryKeyId = 70155;
+	public const int PremiumKeyId = 70156;
+
 	public override void Load()
 	{
 		SetId("aura_treasure_chest");
@@ -31,11 +36,11 @@ public class TreasureChestEventScript : GameEventScript
 
 	protected override void OnStart()
 	{
-		AddGlobalDrop(GlobalDropType.Npcs, new DropData(itemId: 91038, chance: 2)); // Ordinary Chest
-		AddGlobalDrop(GlobalDropType.Npcs, new DropData(itemId: 70155, chance: 2)); // Ordinary Key
+		AddGlobalDrop(GlobalDropType.Npcs, new DropData(itemId: OrdinaryChestId, chance: 2)); // Ordinary Chest
+		AddGlobalDrop(GlobalDropType.Npcs, new DropData(itemId: OrdinaryKeyId, chance: 2)); // Ordinary Key
 
-		//AddGlobalDrop(GlobalDropType.Npcs, new DropData(itemId: 91039, chance: 1)); // Premium Chest
-		//AddGlobalDrop(GlobalDropType.Npcs, new DropData(itemId: 70156, chance: 1)); // Premium Key
+		//AddGlobalDrop(GlobalDropType.Npcs, new DropData(itemId: PremiumChestId, chance: 1)); // Premium Chest
+		//AddGlobalDrop(GlobalDropType.Npcs, new DropData(itemId: PremiumKeyId, chance: 1)); // Premium Key
 	}
 
 	protected override void OnEnd()
@@ -44,12 +49,9 @@ public class TreasureChestEventScript : GameEventScript
 	}
 }
 
-[ItemScript(91038)]
+[ItemScript(TreasureChestEventScript.OrdinaryChestId)]
 public class OrdinaryChest91038ItemScript : ItemScript
 {
-	private const int OrdinaryKeyId = 70155;
-	private const int PremiumKeyId = 70156;
-
 	private static readonly List<DropData> rewards = new List<DropData>
 	{
 		new DropData(itemId: 40012, chance: 1),                   // Bastard Sword
@@ -104,17 +106,20 @@ public class OrdinaryChest91038ItemScript : ItemScript
 
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		if (creature.Inventory.Has(OrdinaryKeyId))
+		var ordinaryKeyId = TreasureChestEventScript.OrdinaryKeyId;
+		var premiumKeyId = TreasureChestEventScript.PremiumKeyId;
+
+		if (creature.Inventory.Has(ordinaryKeyId))
 		{
 			GiveRandomGift(creature);
-			creature.Inventory.Remove(OrdinaryKeyId);
+			creature.Inventory.Remove(ordinaryKeyId);
 
 			Send.Notice(creature, L("Opened chest with Key to the Ordinary Chest."));
 		}
-		else if (creature.Inventory.Has(PremiumKeyId))
+		else if (creature.Inventory.Has(premiumKeyId))
 		{
 			GiveRandomGift(creature);
-			creature.Inventory.Remove(PremiumKeyId);
+			creature.Inventory.Remove(premiumKeyId);
 
 			Send.Notice(creature, L("Opened chest with Key to the Premium Chest."));
 		}
@@ -136,11 +141,9 @@ public class OrdinaryChest91038ItemScript : ItemScript
 	}
 }
 
-[ItemScript(91039)]
+[ItemScript(TreasureChestEventScript.PremiumChestId)]
 public class PremiumChest91039ItemScript : ItemScript
 {
-	private const int PremiumKeyId = 70156;
-
 	private static readonly List<DropData> rewards = new List<DropData>
 	{
 		new DropData(itemId: 51022, chance: 1, amount: 5),     // HP && MP 30 Potion
@@ -168,10 +171,12 @@ public class PremiumChest91039ItemScript : ItemScript
 
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		if (creature.Inventory.Has(PremiumKeyId))
+		var premiumKeyId = TreasureChestEventScript.PremiumKeyId;
+
+		if (creature.Inventory.Has(premiumKeyId))
 		{
 			GiveRandomGifts(creature);
-			creature.Inventory.Remove(PremiumKeyId);
+			creature.Inventory.Remove(premiumKeyId);
 
 			Send.Notice(creature, L("Opened chest with Key to the Premium Chest."));
 		}
