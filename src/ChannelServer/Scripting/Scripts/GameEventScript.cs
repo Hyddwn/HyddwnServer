@@ -210,7 +210,7 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Adds global drop by race tag.
+		/// Adds global drop by type.
 		/// </summary>
 		/// <param name="tag"></param>
 		/// <param name="data"></param>
