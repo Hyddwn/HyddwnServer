@@ -129,6 +129,9 @@
 		
 		// Enables merchant NPC Fleta
 		{ name: "Fleta", enabled: true },
+		
+		// Enabled Scary Library dungeon
+		{ name: "ScaryLibrary", enabled: true },
 	]},
 	
 	// Season 4
@@ -138,6 +141,9 @@
 		
 		// Enables Peaca dungeon
 		{ name: "PeacaDungeon", enabled: true },
+		
+		// Enables obtaining Handicraft skill
+		{ name: "Handicraft", enabled: true },
 	]},
 ]},
 
