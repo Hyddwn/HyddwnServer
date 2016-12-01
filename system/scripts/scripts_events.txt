@@ -4,11 +4,6 @@
 // All scripts listed here will be loaded.
 //---------------------------------------------------------------------------
 
-ai/**/*
+events/**/*
 
-dungeons/**/*
-
-/cache/system/scripts/items/inline.generated.cs
-items/**/*
-
-include "/user/scripts/scripts_special.txt"
+include "/user/scripts/scripts_events.txt"
