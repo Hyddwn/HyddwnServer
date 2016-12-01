@@ -111,6 +111,11 @@ namespace Aura.Channel.Skills.Combat
 			var rank = DefaultMsgRank;
 			var rnd = RandomProvider.Get();
 
+			// Monsters with the /beatable_only/ tag don't take damage from
+			// anything but pillows.
+			if (target.HasTag("/beatable_only/"))
+				damage = 1;
+
 			// Check skills
 			for (int i = 0; i < Skills.Length; ++i)
 			{
