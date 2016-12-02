@@ -238,16 +238,21 @@ namespace Aura.Mabi
 				throw new ArgumentException("Invalid minute.");
 
 			var nowErinn = new ErinnTime(now);
-			var nowTimeStamp = (nowErinn.Hour * 100) + nowErinn.Minute;
-			var thenTimeStamp = (hour * 100) + minute;
 
-			var diff = thenTimeStamp - nowTimeStamp;
-			var rollover = (diff == 0 || hour < nowErinn.Hour || (hour == nowErinn.Hour && minute < nowErinn.Minute));
-			if (rollover)
-				diff += 2400;
+			var hours = hour - nowErinn.Hour;
+			var minutes = minute - nowErinn.Minute;
 
-			var hours = (diff / 100);
-			var minutes = (diff - hours * 100);
+			if (hours <= 0)
+			{
+				hours += 24;
+			}
+
+			if (minutes < 0)
+			{
+				minutes = 60 + minutes;
+				hours -= 1;
+			}
+
 			var thenDateTime = now.AddTicks(hours * TicksPerHour).AddTicks(minutes * TicksPerMinute);
 
 			return new ErinnTime(thenDateTime);

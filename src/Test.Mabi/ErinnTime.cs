@@ -182,6 +182,22 @@ namespace Aura.Tests.Mabi
 				Assert.Equal(then, time.DateTime);
 			}
 
+			// Real world 1
+			{
+				var now = DateTime.Parse("2016-12-02 16:32");
+				var then = DateTime.Parse("2016-12-02 16:40:30");
+				var time = ErinnTime.GetNextTime(now, 19, 0);
+				Assert.Equal(then, time.DateTime);
+			}
+
+			// Real world 2
+			{
+				var now = DateTime.Parse("2016-12-02 11:17");
+				var then = DateTime.Parse("2016-12-02 11:52:30");
+				var time = ErinnTime.GetNextTime(now, 19, 0);
+				Assert.Equal(then, time.DateTime);
+			}
+
 			// 2 hours based on now (one random test, just in case)
 			{
 				var erinnNow = ErinnTime.Now;
