@@ -26,5 +26,7 @@ public class FomorCommandScrollItemScript : ItemScript
 		var msg = string.Format(Localization.Get("{0} has informed that {1} will appear in {2} at {3}."), announcerName, bossName, locationName, time);
 
 		Send.Notice(creature.Region, NoticeType.Top, 20000, msg);
+
+		creature.Inventory.Remove(item);
 	}
 }
