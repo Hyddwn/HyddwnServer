@@ -9,8 +9,8 @@
 // gender: 0 None, 1 Female, 2 Male, 3 Universal
 // 
 // state: Default state (bitmask)
-//   0x20000000 Good NPC
-//   0x80000000 NPC
+//     0x20000000 Good NPC
+//     0x80000000 NPC
 // 
 // stand: 0x01 Knockback-able, 0x02 Knockdown-able, 0x03 Both
 //---------------------------------------------------------------------------

@@ -415,8 +415,8 @@ namespace Aura.Data.Database
 					dropData.ItemId = drop.ReadInt("itemId");
 					dropData.Chance = drop.ReadFloat("chance");
 					var amount = drop.ReadInt("amount");
-					dropData.AmountMin = drop.ReadInt("minAmount");
-					dropData.AmountMax = drop.ReadInt("maxAmount");
+					dropData.AmountMin = drop.ReadInt("amountMin");
+					dropData.AmountMax = drop.ReadInt("amountMax");
 					dropData.Prefix = drop.ReadInt("prefix");
 					dropData.Suffix = drop.ReadInt("suffix");
 
