@@ -3357,6 +3357,27 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns all creatures that have hit this creature and are still
+		/// in the same region.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetAllHitters()
+		{
+			var result = new List<Creature>();
+
+			lock (_hitTrackers)
+			{
+				foreach (var tracker in _hitTrackers.Values)
+				{
+					if (tracker.Attacker.Region == this.Region)
+						result.Add(tracker.Attacker);
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Returns the total number of hits the creature took.
 		/// </summary>
 		/// <returns></returns>
