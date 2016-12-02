@@ -29,6 +29,27 @@ public class PillowFightEventScript : GameEventScript
 	}
 }
 
+public class PillowFightEventQuestScript : QuestScript
+{
+	public override void Load()
+	{
+		SetId(1100001);
+		SetName(L("Pillow Fight Event"));
+		SetDescription(L("You up for a round of pillow fighting? I'm by the Dunbarton square. - Pillow Master Jeff -"));
+		SetCancelable(true);
+
+		if (IsEnabled("QuestViewRenewal"))
+			SetCategory(QuestCategory.Event);
+
+		SetReceive(Receive.Automatically);
+		AddPrerequisite(EventActive("aura_pillow_fight"));
+
+		AddObjective("talk", "Talk to Pillow Master Jeff in Dunbarton", 14, 39575, 37049, Talk("jeff"));
+
+		AddReward(Exp(10000));
+	}
+}
+
 public class PillowFightEventNpc1Script : NpcScript
 {
 	private const int PlayPillow = 40721;
@@ -53,6 +74,9 @@ public class PillowFightEventNpc1Script : NpcScript
 
 	protected override async Task Talk()
 	{
+		if (QuestActive(1100001, "talk"))
+			FinishQuest(1100001, "talk");
+
 		if (!IsEventActive("aura_pillow_fight"))
 		{
 			Msg(L("Sorry, the event is over.<br/>I hope you had fun!"));
