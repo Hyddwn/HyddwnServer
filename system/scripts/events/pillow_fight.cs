@@ -35,10 +35,8 @@ public abstract class PillowFightFieldBaseBossScript : FieldBossBaseScript
 	{
 		var spawn = new SpawnInfo();
 		spawn.BossName = L("Pillow Fighters");
-		spawn.Time = DateTime.Now.AddHours(Random(3, 6));
-		spawn.LifeSpan = TimeSpan.FromMinutes(20);
-		spawn.Time = DateTime.Now.AddMinutes(1);
-		spawn.LifeSpan = TimeSpan.FromMinutes(10);
+		spawn.Time = ErinnTime.GetNextTime(19, 0).DateTime;
+		spawn.LifeSpan = TimeSpan.FromMinutes(6);
 
 		return spawn;
 	}
