@@ -29,6 +29,132 @@ public class PillowFightEventScript : GameEventScript
 	}
 }
 
+public class PillowFightEventNpc1Script : NpcScript
+{
+	private const int PlayPillow = 40721;
+
+	public override void Load()
+	{
+		SetRace(10002);
+		SetName("_pillowmaster");
+		SetFace(skinColor: 15, eyeType: 147, eyeColor: 29, mouthType: 1);
+
+		if (IsEventActive("aura_pillow_fight"))
+			SetLocation(14, 39575, 37049, 33);
+
+		EquipItem(Pocket.Face, 4900, 15, 0x000000, 0x000000);
+		EquipItem(Pocket.Hair, 6004, 0x220043, 0x000000, 0x000000);
+		EquipItem(Pocket.Armor, 15939, 0x773333, 0xFF2222, 0x000000);
+		EquipItem(Pocket.Shoe, 17278, 0x773333, 0x000000, 0x000000);
+		EquipItem(Pocket.RightHand1, 40719, 0x773333, 0x000000, 0x000000);
+
+		AddPhrase(string.Format(L("I've been swinging pillows for {0} years now."), DateTime.Now.Year - 1995));
+	}
+
+	protected override async Task Talk()
+	{
+		if (!IsEventActive("aura_pillow_fight"))
+		{
+			Msg(L("Sorry, the event is over.<br/>I hope you had fun!"));
+			End();
+		}
+
+		var msg = "";
+		if (!HasItem(PlayPillow))
+			msg = L("Do you want a pillow?");
+		else
+			msg = L("You already have a pillow.<br/>Did it break?<br/>You want a new one?");
+
+		Msg(msg, Button(L("Yes"), "@yes"), Button(L("No"), "@no"));
+		if (await Select() == "@yes")
+		{
+			RemoveItem(PlayPillow, 100);
+
+			GiveItem(PlayPillow); // Play Pillow
+			SystemNotice(L("Received Play Pillow from Pillow Master Jeff."));
+
+			Msg(L("There you go."));
+		}
+		else
+		{
+			Msg(L("Come back if you change your mind."));
+		}
+
+		End();
+	}
+}
+
+public class PillowFightEventNpc2Script : NpcScript
+{
+	private const int Feather = 75512;
+	private const int GiftBox = 91545;
+
+	public override void Load()
+	{
+		SetRace(10001);
+		SetName("_pillowgift");
+		SetFace(skinColor: 15, eyeType: 101, eyeColor: 54, mouthType: 0);
+
+		if (IsEventActive("aura_pillow_fight"))
+			SetLocation(14, 39800, 37049, 87);
+
+		EquipItem(Pocket.Face, 3907, 15, 0x000000, 0x000000);
+		EquipItem(Pocket.Hair, 3034, 0x442312, 0x000000, 0x000000);
+		EquipItem(Pocket.Armor, 15940, 0x773333, 0xFF2222, 0xD17633);
+		EquipItem(Pocket.Shoe, 17278, 0x773333, 0x000000, 0x000000);
+		EquipItem(Pocket.RightHand1, 40719, 0x773333, 0x000000, 0x000000);
+	}
+
+	protected override async Task Talk()
+	{
+		if (!IsEventActive("aura_pillow_fight"))
+		{
+			Msg(L("Sorry, the event is over.<br/>I hope you had fun!"));
+			End();
+		}
+
+		Msg(L("Hi there! The Pillow Fight event is in progress.<br/>What brings you here?"),
+			Button(L("Pillow Fight?"), "@explanation"), Button(L("Give me gifts!"), "@gifts"));
+
+		switch (await Select())
+		{
+			case "@explanation":
+				Msg(L("Every day at around 7 P.M. monsters wielding pillows<br/>appear in certain areas around Uladh."));
+				Msg(L("They can't be harmed with normal weapons,<br/>but for some reason they're vulnerable to pillows."));
+				Msg(L("Ask Jeff to give you one and fight them.<br/>I'll reward you for bringing me the feathers they drop."));
+				break;
+
+			case "@gifts":
+				var count = Player.Inventory.Count(Feather);
+				if (count < 10)
+				{
+					Msg(L("As soon as you have at least 10 feathers<br/>you can trade them for a reward."));
+				}
+				else
+				{
+					Msg(L("Nice feathers you have there.<br/>You can get 1 gift box for 10 feathers.<br/>Want to make the trade?"), Button(L("Yes"), "@yes"), Button(L("No"), "@no"));
+					if (await Select() == "@yes")
+					{
+						var amount = count / 10;
+						var remove = amount * 10;
+
+						RemoveItem(Feather, remove);
+						GiveItem(GiftBox, amount);
+
+						Msg(L("There you go!"));
+					}
+					else
+					{
+						Msg(L("Come back anytime."));
+					}
+				}
+				break;
+		}
+
+		End();
+	}
+}
+
 public abstract class PillowFightFieldBaseBossScript : FieldBossBaseScript
 {
 	protected override SpawnInfo GetNextSpawn()
