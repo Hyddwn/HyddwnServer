@@ -29,6 +29,46 @@ public class PillowFightEventScript : GameEventScript
 	}
 }
 
+[ItemScript(91545)]
+public class PillowFightGiftBox91545ItemScript : ItemScript
+{
+	public override void OnUse(Creature creature, Item item, string parameter)
+	{
+		var rnd = RandomProvider.Get();
+		var rndItem = Item.GetRandomDrop(rnd, items);
+
+		creature.AcquireItem(rndItem);
+	}
+
+	private static List<DropData> items = new List<DropData>
+	{
+		new DropData(itemId: 40719, chance: 1), // Bear Paw Pillow
+		new DropData(itemId: 40721, chance: 1), // Play Pillow
+
+		new DropData(itemId: 40050, chance: 1), // Chalumeau
+		new DropData(itemId: 40049, chance: 1), // Flute
+		new DropData(itemId: 40004, chance: 1), // Lute
+		new DropData(itemId: 40017, chance: 1), // Mandolin
+		new DropData(itemId: 40018, chance: 1), // Ukulele
+		new DropData(itemId: 40048, chance: 1), // Whistle
+
+		new DropData(itemId: 51141, chance: 1, amount: 10), // HP 100 Potion RE
+		new DropData(itemId: 51142, chance: 1, amount: 10), // HP 300 Potion RE
+		new DropData(itemId: 51143, chance: 1, amount: 10), // HP 500 Potion RE
+		new DropData(itemId: 51146, chance: 1, amount: 10), // MP 100 Potion RE
+		new DropData(itemId: 51147, chance: 1, amount: 10), // MP 300 Potion RE
+		new DropData(itemId: 51148, chance: 1, amount: 10), // MP 500 Potion RE
+		new DropData(itemId: 51149, chance: 1, amount: 10), // Stamina 100 Potion RE
+		new DropData(itemId: 51150, chance: 1, amount: 10), // Stamina 300 Potion RE
+		new DropData(itemId: 51151, chance: 1, amount: 10), // Stamina 500 Potion RE
+		new DropData(itemId: 51153, chance: 1, amount: 10), // Wound Remedy 100 Potion RE
+		new DropData(itemId: 51154, chance: 1, amount: 10), // Wound Remedy 300 Potion RE
+		new DropData(itemId: 51155, chance: 1, amount: 10), // Wound Remedy 500 Potion RE
+
+		new DropData(itemId: 85593, chance: 1), // Party Phoenix Feather (Event)
+	};
+}
+
 public class PillowFightEventQuestScript : QuestScript
 {
 	public override void Load()
