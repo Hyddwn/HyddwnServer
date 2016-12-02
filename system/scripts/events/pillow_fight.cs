@@ -67,6 +67,42 @@ public abstract class PillowFightFieldBaseBossScript : FieldBossBaseScript
 	protected override void OnBossDied(Creature boss, Creature killer)
 	{
 		BossNotice(L("{0} has defeated Pillow Fighter that appeared at {2}!"), killer.Name, Spawn.BossName, Spawn.LocationName);
+		ContributorDrops(boss, GetContributorDrops());
+	}
+
+	List<DropData> drops;
+	public List<DropData> GetContributorDrops()
+	{
+		if (drops == null)
+		{
+			drops = new List<DropData>();
+
+			drops.Add(new DropData(itemId: 2000, chance: 200, amount: 10)); // Gold
+			drops.Add(new DropData(itemId: 75512, chance: 10)); // White Pillow Feather
+			drops.Add(new DropData(itemId: 64018, chance: 5));  // Paper
+			drops.Add(new DropData(itemId: 60009, chance: 5));  // Wool
+			drops.Add(new DropData(itemId: 52002, chance: 4));  // Small Gem
+			drops.Add(new DropData(itemId: 52004, chance: 4));  // Small Green Gem
+			drops.Add(new DropData(itemId: 52005, chance: 4));  // Small Blue Gem
+			drops.Add(new DropData(itemId: 52006, chance: 4));  // Small Red Gem
+			drops.Add(new DropData(itemId: 52007, chance: 4));  // Small Silver Gem
+			drops.Add(new DropData(itemId: 51101, chance: 3));  // Bloody Herb
+			drops.Add(new DropData(itemId: 51102, chance: 3));  // Mana Herb
+			drops.Add(new DropData(itemId: 51103, chance: 3));  // Sunlight Herb
+			drops.Add(new DropData(itemId: 51104, chance: 3));  // Base Herb
+			drops.Add(new DropData(itemId: 51105, chance: 3));  // Gold Herb
+			drops.Add(new DropData(itemId: 51106, chance: 3));  // Garbage Herb
+			drops.Add(new DropData(itemId: 51107, chance: 3));  // White Herb
+			drops.Add(new DropData(itemId: 64025, chance: 2));  // Iron Plate
+
+			if (IsEnabled("Sketching"))
+				drops.Add(new DropData(itemId: 61501, chance: 5)); // Sketch Paper
+
+			if (IsEnabled("Metallurgy"))
+				drops.Add(new DropData(itemId: 64041, chance: 2)); // Unknown Ore Fragment
+		}
+
+		return drops;
 	}
 }
 
