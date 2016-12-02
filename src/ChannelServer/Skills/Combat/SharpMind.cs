@@ -27,7 +27,8 @@ namespace Aura.Channel.Skills.Combat
 			var rating = target.GetPowerRating(skillUser);
 			var skillRank = targetSkill.Info.Rank;
 
-			targetSkill.Train(1); // Successfully notice an enemy's skill.
+			if (skillRank >= SkillRank.Novice && skillRank <= SkillRank.RB)
+				targetSkill.Train(1); // Successfully notice an enemy's skill.
 
 			if (skillRank >= SkillRank.RF && skillRank <= SkillRank.RB && rating == PowerRating.Normal)
 				targetSkill.Train(2); // Successfully notice a same level enemy's skill.
