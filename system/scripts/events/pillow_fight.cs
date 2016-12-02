@@ -1,8 +1,14 @@
 //--- Aura Script -----------------------------------------------------------
-// 100% Repair Rate Event
+// Pillow Fight Event
 //--- Description -----------------------------------------------------------
-// Spawns field bosses that fight pillows and and can only be damaged by
-// pillows as well.
+// Field bosses who are vulnerable only to melee combat with pillows spawn
+// every day at 7 P.M. in the following 2-5 locations, depending on which
+// towns are available: Tir Chonall, Dunbarton, Emain Macha, Tara, Taillteann
+// 
+// To damage them, players need a pillow, which they get for free from
+// "Jeff", at Dunbarton Square. Upon death they drop "White Pillow Feathers",
+// which can be turned in for gift boxes at the second event NPC, right
+// beside Jeff. You get 1 gift box for every 10 feathers.
 // 
 // Reference: http://wiki.mabinogiworld.com/view/Pillow_Fight_Event_(2013)
 //---------------------------------------------------------------------------
@@ -17,7 +23,7 @@ public class PillowFightEventScript : GameEventScript
 
 	public override void AfterLoad()
 	{
-		ScheduleEvent(DateTime.Parse("2013-05-22 00:00"), DateTime.Parse("2016-06-12 00:00"));
+		ScheduleEvent(DateTime.Parse("2013-05-22 00:00"), DateTime.Parse("2013-06-12 00:00"));
 	}
 
 	protected override void OnStart()
