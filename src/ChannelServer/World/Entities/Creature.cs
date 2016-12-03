@@ -192,6 +192,11 @@ namespace Aura.Channel.World.Entities
 		public DateTime LastLogin { get; set; }
 
 		/// <summary>
+		/// The time the creature has been active in seconds.
+		/// </summary>
+		public long PlayTime { get; set; }
+
+		/// <summary>
 		/// How many times the character rebirthed.
 		/// </summary>
 		public int RebirthCount { get; set; }
@@ -1549,6 +1554,8 @@ namespace Aura.Channel.World.Entities
 			this.StatMods.OnSecondsTimeTick(time);
 			this.Conditions.OnSecondsTimeTick(time);
 			this.Skills.OnSecondsTimeTick(time);
+
+			this.PlayTime++;
 		}
 
 		/// <summary>
