@@ -13,6 +13,7 @@ public class Laghodessas30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Laghodessas"));
 		SetDescription(L("Laghodessas under the control of an evil power are attacking travelers. Please do us a favor and [hunt 30 Laghodessass]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

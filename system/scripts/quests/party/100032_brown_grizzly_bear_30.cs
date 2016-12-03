@@ -13,6 +13,7 @@ public class BrownGrizzlyBear30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Brown Grizzly Bears"));
 		SetDescription(L("The Grizzly Bears roaming in the plains are under a mighty evil spell which can be seen in their eyes. Please [Hunt 30 Brown Grizzly Bears]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

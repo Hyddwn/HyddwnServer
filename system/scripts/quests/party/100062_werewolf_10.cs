@@ -13,6 +13,7 @@ public class Werewolf10PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Werewolves"));
 		SetDescription(L("Werewolves are under an evil spell and are attacking travelers. Please [Hunt 10 Werewolves]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

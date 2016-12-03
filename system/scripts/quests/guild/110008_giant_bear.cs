@@ -13,6 +13,7 @@ public class GiantBearGuildQuest : QuestScript
 		SetName(L("Eliminate Giant Bear"));
 		SetDescription(L("Defeat [Giant Bear] that sometimes appears in Dugald Aisle."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

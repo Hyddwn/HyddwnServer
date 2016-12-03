@@ -13,6 +13,7 @@ public class VariousKobolds30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Kobolds"));
 		SetDescription(L("Recently, various Kobolds have been showing up. Although Kobold's are not as intelligent as humans, they are becoming a threat. I will give you a reward if you [Hunt 10 Poison Kobolds and 20 Kobold Archers]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

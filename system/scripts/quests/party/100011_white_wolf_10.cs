@@ -13,6 +13,7 @@ public class WhiteWolf10PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt White Wolves"));
 		SetDescription(L("The wolves that started to appear recently, are natural enemies of the sheep. To protect the sheep, please hunt [10 white wolves] roaming the plains."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

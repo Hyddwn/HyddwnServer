@@ -13,6 +13,7 @@ public class GiantOgreGuildQuest : QuestScript
 		SetName(L("Eliminate Giant Ogre"));
 		SetDescription(L("Defeat [Giant Ogre] that sometimes appears in Gairech."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

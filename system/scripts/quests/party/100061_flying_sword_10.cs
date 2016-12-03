@@ -13,6 +13,7 @@ public class FlyingSword10PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Flying Swords"));
 		SetDescription(L("Flying Swords are under an evil spell and are attacking travelers. Please [Hunt 10 Flying Swords]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))
