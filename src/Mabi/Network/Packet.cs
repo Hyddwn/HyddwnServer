@@ -211,6 +211,9 @@ namespace Aura.Mabi.Network
 		/// <summary>Writes val as long to buffer.</summary>
 		public Packet PutLong(DateTime val) { return this.PutLong((long)(val.Ticks / 10000)); }
 
+		/// <summary>Writes val as long to buffer.</summary>
+		public Packet PutLong(TimeSpan val) { return this.PutLong((long)(val.Ticks / 10000)); }
+
 		/// <summary>Writes val to buffer.</summary>
 		public Packet PutFloat(float val) { return this.PutSimple(PacketElementType.Float, BitConverter.GetBytes(val)); }
 
