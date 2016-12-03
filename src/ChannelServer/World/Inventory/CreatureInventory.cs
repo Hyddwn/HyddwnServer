@@ -1388,7 +1388,6 @@ namespace Aura.Channel.World.Inventory
 			else
 			{
 				this.Remove(item);
-				Send.ItemRemove(_creature, item);
 			}
 
 			return true;
