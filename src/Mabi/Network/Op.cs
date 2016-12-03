@@ -703,6 +703,10 @@ namespace Aura.Mabi.Network
 		public const int DcUnk = 0xAC20;
 		public const int DcUnkR = 0xAC21;
 
+		public const int RebirthEventInfoRequest = 0xAC5E;
+		public const int RebirthEventInfo = 0xAC5F;
+		public const int RebirthEventReceivePotion = 0xAC61;
+
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
 
