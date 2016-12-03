@@ -14,7 +14,6 @@ public class SoldierGachapon91036ItemScript : ItemScript
 		var rndItem = Item.GetRandomDrop(rnd, items);
 
 		creature.AcquireItem(rndItem);
-		creature.Inventory.Decrement(item);
 	}
 
 	private static List<DropData> items = new List<DropData>
