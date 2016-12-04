@@ -40,11 +40,6 @@ namespace Aura.Data.Database
 		public string[] Locations { get; set; }
 
 		/// <summary>
-		/// Event during which this ground is available.
-		/// </summary>
-		public string Event { get; set; }
-
-		/// <summary>
 		/// Percentage chance for this ground to be available.
 		/// </summary>
 		public float Chance { get; set; }
@@ -90,7 +85,6 @@ namespace Aura.Data.Database
 			else
 				data.Locations = new string[0];
 
-			data.Event = entryConditions.ReadString("event");
 			data.Chance = entryConditions.ReadFloat("chance", 100);
 			data.Rod = entryConditions.ReadInt("rod");
 			data.Bait = entryConditions.ReadInt("bait");
