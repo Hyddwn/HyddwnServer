@@ -382,12 +382,18 @@ namespace Aura.Channel.Skills.Life
 			if (prop == null)
 				return null;
 
+			// Get equip
 			var rightHand = creature.RightHand;
 			var magazine = creature.Magazine;
 			var rod = rightHand == null ? 0 : rightHand.Info.Id;
 			var bait = magazine == null ? 0 : magazine.Info.Id;
 
+			// Get grounds
 			var grounds = (IEnumerable<FishingGroundData>)AuraData.FishingGroundsDb.Entries.Values;
+
+			var eventGrounds = ChannelServer.Instance.GameEventManager.GlobalBonuses.GetFishingGrounds();
+			if (eventGrounds.Any())
+				grounds = grounds.Concat(eventGrounds);
 
 			// Check all grounds ordered by priority
 			foreach (var fishingGround in grounds.OrderByDescending(a => a.Priority))

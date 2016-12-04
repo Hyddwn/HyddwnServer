@@ -220,11 +220,73 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Removes all global bonuses associated with this event.
+		/// Removes all global drops associated with this event.
 		/// </summary>
 		protected void RemoveGlobalDrops()
 		{
 			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveAllDrops(this.Id);
+		}
+
+		/// <summary>
+		/// Adds fishing ground, to be considered when players fish.
+		/// </summary>
+		/// <remarks>
+		/// The fishing grounds describe where a player can fish under which
+		/// circumstances, and what they can catch. If multiple fishing
+		/// grounds exist for a location, the priority and the chance
+		/// determine which ground is used.
+		/// 
+		/// For example, if you want to override the Tir fishing spots during
+		/// and event, you could do the following, which would add a new
+		/// ground for the Tir spots, with a high priority and a 100% chance,
+		/// so it always gets selected over the default.
+		/// </remarks>
+		/// <example>
+		/// // Override Tir for the apple fishing event
+		/// AddFishingGround(
+		/// 	priority: 100000,
+		/// 	chance: 100,
+		/// 	locations: new[]
+		/// 	{
+		/// 		"Uladh_main/town_TirChonaill/fish_tircho_res_",
+		/// 		"Uladh_main/field_Tir_S_aa/fish_tircho_stream_",
+		/// 		"Uladh_main/town_TirChonaill/fish_tircho_stream_",
+		/// 	},
+		/// 	items: new[] 
+		/// 	{
+		/// 		new DropData(itemId: 50003, chance: 250), // Apple
+		/// 		new DropData(itemId: 12241, chance: 50),  // Golden Apple
+		/// 		new DropData(itemId: 75463, chance: 1),   // Avon Apple
+		/// 	}
+		/// );
+		/// </example>
+		/// <param name="priority"></param>
+		/// <param name="chance"></param>
+		/// <param name="rod"></param>
+		/// <param name="bait"></param>
+		/// <param name="locations"></param>
+		/// <param name="items"></param>
+		protected void AddFishingGround(int priority, double chance, IEnumerable<string> locations, IEnumerable<DropData> items, int rod = 0, int bait = 0)
+		{
+			var fishingGroundData = new FishingGroundData();
+			fishingGroundData.Name = this.Id;
+			fishingGroundData.Priority = priority;
+			fishingGroundData.Chance = (float)chance;
+			fishingGroundData.Rod = rod;
+			fishingGroundData.Bait = bait;
+			fishingGroundData.Locations = locations.ToArray();
+			fishingGroundData.Items = items.ToArray();
+			fishingGroundData.TotalItemChance = items.Sum(a => a.Chance);
+
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddFishingGround(this.Id, fishingGroundData);
+		}
+
+		/// <summary>
+		/// Removes all event fishing grounds associated with this event.
+		/// </summary>
+		protected void RemoveFishingGrounds()
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveAllFishingGrounds(this.Id);
 		}
 
 		/// <summary>

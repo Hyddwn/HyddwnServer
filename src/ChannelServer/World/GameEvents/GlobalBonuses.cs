@@ -13,6 +13,7 @@ namespace Aura.Channel.World.GameEvents
 	{
 		private List<GlobalBonus> _bonuses = new List<GlobalBonus>();
 		private List<GlobalDrop> _drops = new List<GlobalDrop>();
+		private List<GlobalFishingGround> _fishingGrounds = new List<GlobalFishingGround>();
 
 		/// <summary>
 		/// Adds global bonus.
@@ -109,6 +110,44 @@ namespace Aura.Channel.World.GameEvents
 
 			return result;
 		}
+
+		/// <summary>
+		/// Adds event fishing ground.
+		/// </summary>
+		/// <param name="identifier"></param>
+		/// <param name="drop"></param>
+		public void AddFishingGround(string identifier, FishingGroundData fishingGroundData)
+		{
+			lock (_fishingGrounds)
+				_fishingGrounds.Add(new GlobalFishingGround(identifier, fishingGroundData));
+		}
+
+		/// <summary>
+		/// Removes all event fishing grounds associated with the given
+		/// identifier.
+		/// </summary>
+		/// <param name="identifier"></param>
+		public void RemoveAllFishingGrounds(string identifier)
+		{
+			lock (_fishingGrounds)
+				_fishingGrounds.RemoveAll(a => a.Identifier == identifier);
+		}
+
+		/// <summary>
+		/// Returns a list of all event fishing grounds.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="fishingGroundData"></param>
+		/// <returns></returns>
+		public List<FishingGroundData> GetFishingGrounds()
+		{
+			var result = new List<FishingGroundData>();
+
+			lock (_fishingGrounds)
+				result.AddRange(_fishingGrounds.Select(a => a.Data));
+
+			return result;
+		}
 	}
 
 	public class GlobalBonus
@@ -199,6 +238,18 @@ namespace Aura.Channel.World.GameEvents
 			}
 
 			return false;
+		}
+	}
+
+	public class GlobalFishingGround
+	{
+		public string Identifier { get; private set; }
+		public FishingGroundData Data { get; private set; }
+
+		public GlobalFishingGround(string identifier, FishingGroundData data)
+		{
+			this.Identifier = identifier;
+			this.Data = data;
 		}
 	}
 
