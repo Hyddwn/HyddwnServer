@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Permanent Tail Gachapon
 //--- Description -----------------------------------------------------------
-// Gives one of 5 random permant tails.
+// Gives one of 5 random permanent tails.
 // Reference: http://wiki.mabinogiworld.com/view/Wishbone_Exchange_Event#Wishbone_Shop
 //---------------------------------------------------------------------------
 
