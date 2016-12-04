@@ -310,6 +310,42 @@ namespace Aura.Channel.Scripting.Scripts
 			var gameEventId = this.Id;
 			this.ScheduleEvent(gameEventId, from, timeSpan);
 		}
+
+		/// <summary>
+		/// Adds the the item to the given shop.
+		/// </summary>
+		/// <param name="shopName"></param>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <param name="price"></param>
+		/// <param name="stock"></param>
+		protected void AddEventItemToShop(string shopName, int itemId, int amount = 1, int price = -1, int stock = -1)
+		{
+			var shop = ChannelServer.Instance.ScriptManager.NpcShopScripts.Get(shopName);
+			if (shop == null)
+			{
+				Log.Error("{0}.AddEventItemToShop: Shop '{1}' not found.", this.GetType().Name, shopName);
+				return;
+			}
+
+			shop.Add(Localization.Get("Event"), itemId, amount, price, stock);
+		}
+
+		/// <summary>
+		/// Removes all event items from the given shop.
+		/// </summary>
+		/// <param name="shopName"></param>
+		protected void RemoveEventItemsFromShop(string shopName)
+		{
+			var shop = ChannelServer.Instance.ScriptManager.NpcShopScripts.Get(shopName);
+			if (shop == null)
+			{
+				Log.Error("{0}.RemoveEventItemsFromShop: Shop '{1}' not found.", this.GetType().Name, shopName);
+				return;
+			}
+
+			shop.ClearTab(Localization.Get("Event"));
+		}
 	}
 
 	public class ActivationSpan
