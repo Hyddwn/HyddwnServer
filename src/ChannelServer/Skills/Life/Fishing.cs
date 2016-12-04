@@ -326,6 +326,11 @@ namespace Aura.Channel.Skills.Life
 
 			// Get fishing drop 
 			creature.Temp.FishingDrop = this.GetFishingDrop(creature, rnd);
+			if (creature.Temp.FishingDrop == null)
+			{
+				Log.Debug("Fishing.StartFishing: No drop found.");
+				return;
+			}
 
 			// Random time
 			var time = 10000;
