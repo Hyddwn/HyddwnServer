@@ -850,9 +850,9 @@ namespace Aura.Channel.World.Entities
 		/// <param name="drops"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"></exception>
-		public static Item GetRandomDrop(Random rnd, List<DropData> drops)
+		public static Item GetRandomDrop(Random rnd, IEnumerable<DropData> drops)
 		{
-			if (drops == null || drops.Count == 0)
+			if (drops == null || !drops.Any())
 				throw new ArgumentException("Drops list empty.");
 
 			return GetRandomDrop(rnd, drops.Sum(a => a.Chance), drops);
@@ -867,9 +867,9 @@ namespace Aura.Channel.World.Entities
 		/// <param name="drops"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"></exception>
-		public static Item GetRandomDrop(Random rnd, float total, List<DropData> drops)
+		public static Item GetRandomDrop(Random rnd, float total, IEnumerable<DropData> drops)
 		{
-			if (drops == null || drops.Count == 0)
+			if (drops == null || !drops.Any())
 				throw new ArgumentException("Drops list empty.");
 
 			var num = rnd.NextDouble() * total;
