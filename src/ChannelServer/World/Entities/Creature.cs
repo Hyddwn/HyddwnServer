@@ -192,6 +192,11 @@ namespace Aura.Channel.World.Entities
 		public DateTime LastLogin { get; set; }
 
 		/// <summary>
+		/// The time the creature has been active in seconds.
+		/// </summary>
+		public long PlayTime { get; set; }
+
+		/// <summary>
 		/// How many times the character rebirthed.
 		/// </summary>
 		public int RebirthCount { get; set; }
@@ -1395,7 +1400,7 @@ namespace Aura.Channel.World.Entities
 				speed = ZombieSpeed;
 
 			// Hurry condition
-			if (this.Conditions.Has(ConditionsC.Hurry))
+			if (!this.IsWalking && this.Conditions.Has(ConditionsC.Hurry))
 			{
 				var hurry = this.Conditions.GetExtraVal(169);
 				speed *= 1 + (hurry / 100f);
@@ -1549,6 +1554,8 @@ namespace Aura.Channel.World.Entities
 			this.StatMods.OnSecondsTimeTick(time);
 			this.Conditions.OnSecondsTimeTick(time);
 			this.Skills.OnSecondsTimeTick(time);
+
+			this.PlayTime++;
 		}
 
 		/// <summary>
@@ -2231,8 +2238,28 @@ namespace Aura.Channel.World.Entities
 		private void DropItems(Creature killer, Random rnd, Position pos)
 		{
 			// Normal
+			this.DropItems(killer, rnd, pos, this.Drops.Drops);
+
+			// Event
+			var eventDrops = ChannelServer.Instance.GameEventManager.GlobalBonuses.GetDrops(this);
+			if (eventDrops.Count != 0)
+				this.DropItems(killer, rnd, pos, eventDrops);
+
+			// Static
+			foreach (var item in this.Drops.StaticDrops)
+				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
+
+			this.Drops.ClearStaticDrops();
+		}
+
+		/// <summary>
+		/// Handles dropping of items in given collection.
+		/// </summary>
+		/// <param name="dataCollection"></param>
+		private void DropItems(Creature killer, Random rnd, Position pos, IEnumerable<DropData> dataCollection)
+		{
 			var dropped = new HashSet<int>();
-			foreach (var dropData in this.Drops.Drops)
+			foreach (var dropData in dataCollection)
 			{
 				if (dropData == null || !AuraData.ItemDb.Exists(dropData.ItemId))
 				{
@@ -2266,74 +2293,12 @@ namespace Aura.Channel.World.Entities
 						continue;
 
 					var item = new Item(dropData);
-
-					// Equip stat modification
-					// http://wiki.mabinogiworld.com/view/Category:Weapons
-					if (item.HasTag("/righthand/weapon/|/twohand/weapon/"))
-					{
-						var num = rnd.Next(100);
-
-						// Durability
-						if (num == 0)
-							item.OptionInfo.DurabilityMax += 4000;
-						else if (num <= 5)
-							item.OptionInfo.DurabilityMax += 3000;
-						else if (num <= 10)
-							item.OptionInfo.DurabilityMax += 2000;
-						else if (num <= 25)
-							item.OptionInfo.DurabilityMax += 1000;
-
-						// Attack
-						if (num == 0)
-						{
-							item.OptionInfo.AttackMin += 3;
-							item.OptionInfo.AttackMax += 3;
-						}
-						else if (num <= 30)
-						{
-							item.OptionInfo.AttackMin += 2;
-							item.OptionInfo.AttackMax += 2;
-						}
-						else if (num <= 60)
-						{
-							item.OptionInfo.AttackMin += 1;
-							item.OptionInfo.AttackMax += 1;
-						}
-
-						// Crit
-						if (num == 0)
-							item.OptionInfo.Critical += 3;
-						else if (num <= 30)
-							item.OptionInfo.Critical += 2;
-						else if (num <= 60)
-							item.OptionInfo.Critical += 1;
-
-						// Balance
-						if (num == 0)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 12);
-						else if (num <= 10)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 10);
-						else if (num <= 30)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 8);
-						else if (num <= 50)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 6);
-						else if (num <= 70)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 4);
-						else if (num <= 90)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 2);
-					}
-
+					item.ModifyEquipStats(rnd);
 					item.Drop(this.Region, pos, Item.DropRadius, killer, false);
 
 					dropped.Add(dropData.ItemId);
 				}
 			}
-
-			// Static
-			foreach (var item in this.Drops.StaticDrops)
-				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
-
-			this.Drops.ClearStaticDrops();
 		}
 
 		/// <summary>
@@ -2736,12 +2701,29 @@ namespace Aura.Channel.World.Entities
 			var cp = this.CombatPower;
 			var otherCp = compareCreature.CombatPower;
 
-			if (otherCp < cp * 0.8f) return PowerRating.Weakest;
-			if (otherCp < cp * 1.0f) return PowerRating.Weak;
-			if (otherCp < cp * 1.4f) return PowerRating.Normal;
-			if (otherCp < cp * 2.0f) return PowerRating.Strong;
-			if (otherCp < cp * 3.0f) return PowerRating.Awful;
-			return PowerRating.Boss;
+			var result = PowerRating.Boss;
+
+			if (otherCp < cp * 0.8f) result = PowerRating.Weakest;
+			else if (otherCp < cp * 1.0f) result = PowerRating.Weak;
+			else if (otherCp < cp * 1.4f) result = PowerRating.Normal;
+			else if (otherCp < cp * 2.0f) result = PowerRating.Strong;
+			else if (otherCp < cp * 3.0f) result = PowerRating.Awful;
+
+			// Weaken condition
+			if (this.Conditions.Has(ConditionsA.Weaken))
+			{
+				var levels = 1;
+				var wkn_lv = this.Conditions.GetExtraField(31, "WKN_LV");
+				if (wkn_lv != null)
+					levels = (byte)wkn_lv;
+
+				result += levels;
+			}
+
+			if (result > PowerRating.Boss)
+				result = PowerRating.Boss;
+
+			return result;
 		}
 
 		/// <summary>
@@ -3375,6 +3357,27 @@ namespace Aura.Channel.World.Entities
 						result = tracker;
 						top = tracker.Damage;
 					}
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns all creatures that have hit this creature and are still
+		/// in the same region.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetAllHitters()
+		{
+			var result = new List<Creature>();
+
+			lock (_hitTrackers)
+			{
+				foreach (var tracker in _hitTrackers.Values)
+				{
+					if (tracker.Attacker.Region == this.Region)
+						result.Add(tracker.Attacker);
 				}
 			}
 

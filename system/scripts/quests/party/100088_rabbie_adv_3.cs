@@ -13,6 +13,7 @@ public class RabbieAdv3PartyQuest : QuestScript
 		SetName(L("[PQ] Defeat the Red Succubus"));
 		SetDescription(L("Please offer [Rabbie Adv. Fomor Pass for 3] on the altar of Rabbie Dungeon, and defeat a [Red Succubus] that can be found at the deepest part of the dungeon."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

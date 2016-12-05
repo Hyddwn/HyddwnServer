@@ -216,6 +216,23 @@ namespace Aura.Channel.World.Entities.Creatures
 			}
 		}
 
+		/// <summary>
+		/// Returns extra data for id, or null.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public object GetExtraField(int id, string name)
+		{
+			lock (_extra)
+			{
+				if (!_extra.ContainsKey(id))
+					return null;
+
+				var value = _extra[id].Get(name);
+				return value;
+			}
+		}
+
 		public override string ToString()
 		{
 			return ("(" + this.A + " ; " + this.B + " ; " + this.C + " ; " + this.D + " ; " + this.E + " ; " + this.F + " ; " + this.G + ")");

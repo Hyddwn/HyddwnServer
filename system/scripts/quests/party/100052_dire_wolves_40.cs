@@ -13,6 +13,7 @@ public class DireWolf40PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Dire Wolves"));
 		SetDescription(L("Recently, Dire Wolves and Skeleton Wolves which are under a more powerful evil spell than regular Wolves are threatening travelers near the Dragon Ruins, Please [Hunt 10 Brown Dire Wolves and 30 Skeleton Wolves]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

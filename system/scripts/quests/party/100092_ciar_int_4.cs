@@ -13,6 +13,7 @@ public class CiarInt4PartyQuest : QuestScript
 		SetName(L("[PQ] Defeat the Golem"));
 		SetDescription(L("Please offer [Ciar Intermediate Fomor Pass for 4] on the altar of Ciar Dungeon, and defeat a [Golem] that can be found at the deepest part of the dungeon. The reward will be given to you outside the dungeon after completing the quest."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

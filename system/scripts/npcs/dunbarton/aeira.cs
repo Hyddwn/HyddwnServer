@@ -340,6 +340,7 @@ public class AeiraShop : NpcShopScript
 		Add("Skill Book", 1114); // The History of Music in Erinn (3)
 		Add("Skill Book", 1111); // The Path of Composing
 		Add("Skill Book", 1013, 1, 80000); // Music Theory
+		Add("Skill Book", 1115); // Effective Meditation
 
 		Add("Life Skill Book", 1055); // The Road to Becoming a Magic Warrior
 		Add("Life Skill Book", 1056); // How to Enjoy Field Hunting

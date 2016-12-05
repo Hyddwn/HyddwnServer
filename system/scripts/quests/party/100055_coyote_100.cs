@@ -13,6 +13,7 @@ public class Coyote100PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Coyotes"));
 		SetDescription(L("Coyotes have fallen under an evil spell and are attacking travelers. Please [Hunt 100 Coyotes]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

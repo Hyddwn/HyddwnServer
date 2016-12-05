@@ -28,7 +28,7 @@ public class KristellsRequestQuest : QuestScript
 		AddObjective("talk", L("Talk to Kristell"), 14, 34657, 42808, Talk("kristell"));
 
 		AddReward(Item(BlackFomorPass));
-		AddReward(WarpScroll(63009, "barri_dungeon"));
+		AddReward(WarpScroll(63009, "Barri_Dungeon"));
 
 		AddHook("_duncan", "before_keywords", DuncanBeforeKeywords);
 		AddHook("_kristell", "before_keywords", KristellBeforeKeywords);

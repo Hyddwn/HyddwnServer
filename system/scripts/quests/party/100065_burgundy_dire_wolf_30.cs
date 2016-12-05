@@ -13,6 +13,7 @@ public class BurgundyDireWolf30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Burgundy Dire Wolves"));
 		SetDescription(L("Burgundy dire wolves under the control of an evil power are attacking travelers. Please [hunt 30 burgundy dire wolves]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

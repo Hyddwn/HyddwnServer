@@ -41,7 +41,6 @@ namespace Aura.Channel.World.GameEvents
 		public void Initialize()
 		{
 			ChannelServer.Instance.Events.MinutesTimeTick += this.OnMinutesTimeTick;
-			ChannelServer.Instance.Events.ErinnDaytimeTick += this.OnErinnDaytimeTick;
 			ChannelServer.Instance.Events.CreatureConnected += this.OnCreatureConnected;
 		}
 
@@ -77,19 +76,14 @@ namespace Aura.Channel.World.GameEvents
 
 			foreach (var gameEvent in toEnd)
 				gameEvent.End();
-		}
 
-		/// <summary>
-		/// Called at 6:00 and 18:00 Erinn Time, broadcasts notice about
-		/// active events.
-		/// </summary>
-		/// <param name="now"></param>
-		private void OnErinnDaytimeTick(ErinnTime now)
-		{
-			var activeEvents = this.GetActiveEvents();
-			var message = GetBroadcastMessage(activeEvents);
-
-			Send.Notice(NoticeType.TopGreen, message);
+			// Update broadcast
+			if (toStart.Any() || toEnd.Any())
+			{
+				var activeEvents = this.GetActiveEvents();
+				var message = GetBroadcastMessage(activeEvents);
+				Send.Notice(NoticeType.TopGreen, message);
+			}
 		}
 
 		/// <summary>

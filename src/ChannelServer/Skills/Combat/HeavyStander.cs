@@ -115,6 +115,18 @@ namespace Aura.Channel.Skills.Combat
 				return false;
 			}
 
+			// Monsters with the /beatable_only/ tag don't take damage from
+			// anything but pillows. Pillows on the other hand do 3x damage.
+			// (Guessed, based on event information and client data.)
+			if (target.HasTag("/beatable_only/"))
+			{
+				var rightHand = attacker.RightHand;
+				if (rightHand == null || !rightHand.HasTag("/pillow/"))
+					damage = 1;
+				else
+					damage *= 3;
+			}
+
 			// Check skills
 			for (int i = 0; i < Skills.Length; ++i)
 			{

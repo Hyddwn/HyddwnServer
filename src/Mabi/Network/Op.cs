@@ -582,6 +582,8 @@ namespace Aura.Mabi.Network
 
 		// [150000~180000] Something was removed here
 
+		public const int UnkOrdinaryChest = 0xA803;
+		public const int UnkOrdinaryChestR = 0xA804;
 		public const int GameEventStateUpdate = 0xA805;
 		public const int MailsRequest = 0xA897;
 		public const int MailsRequestR = 0xA898;
@@ -700,6 +702,10 @@ namespace Aura.Mabi.Network
 		// [200200, NA229 (2016-10-13)] Shifted by 1, from AC1F to AC20.
 		public const int DcUnk = 0xAC20;
 		public const int DcUnkR = 0xAC21;
+
+		public const int RebirthEventInfoRequest = 0xAC5E;
+		public const int RebirthEventInfo = 0xAC5F;
+		public const int RebirthEventReceivePotion = 0xAC61;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;

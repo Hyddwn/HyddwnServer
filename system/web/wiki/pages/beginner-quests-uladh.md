@@ -145,6 +145,11 @@ Malcolm's Ring
 - 3 AP
 - Gold Pouch
 
+### Additional Information
+
+You need to be the one to kill the spider, if you're not, you can get
+another pass from Malcolm to try again.
+
 Duncan's Praise
 -----------------------------------------------------------------------------
 

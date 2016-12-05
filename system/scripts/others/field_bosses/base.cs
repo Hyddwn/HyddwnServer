@@ -240,6 +240,21 @@ public abstract class FieldBossBaseScript : GeneralScript
 		return true;
 	}
 
+	protected void ContributorDrops(Creature boss, List<DropData> drops)
+	{
+		var hitters = boss.GetAllHitters();
+		var rnd = RandomProvider.Get();
+
+		foreach (var hitter in hitters)
+		{
+			var pos = hitter.GetPosition();
+			var item = Item.GetRandomDrop(rnd, drops);
+			var region = hitter.Region;
+
+			item.Drop(region, pos, 100);
+		}
+	}
+
 	protected class SpawnInfo
 	{
 		public string BossName { get; set; }

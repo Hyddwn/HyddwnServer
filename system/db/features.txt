@@ -22,6 +22,9 @@
 // The skill wasn't available at all times in all versions of Mabinogi.
 { name: "SharpMind", enabled: true },
 
+// Enables opening the in-game web item shop.
+{ name: "ItemShop", enabled: false },
+
 // World-shaping Events
 //---------------------------------------------------------------------------
 
@@ -68,10 +71,7 @@
 	]},
 	
 	// Season 2
-	{ name: "G1S2", enabled: true, children: [
-		// Enables opening the in-game web item shop.
-		{ name: "ItemShop", enabled: false },
-	]},
+	{ name: "G1S2", enabled: true, children: []},
 ]},
 
 // Generation 2
@@ -105,6 +105,9 @@
 		
 		// Enables obtaining the Arrow Revolver skill
 		{ name: "ArrowRevolver", enabled: true },
+		
+		// Enables Math Avanced dungeon
+		{ name: "MathAdvanced", enabled: true },
 	]},
 	
 	// Season 2
@@ -126,6 +129,9 @@
 		
 		// Enables merchant NPC Fleta
 		{ name: "Fleta", enabled: true },
+		
+		// Enabled Scary Library dungeon
+		{ name: "ScaryLibrary", enabled: true },
 	]},
 	
 	// Season 4
@@ -135,6 +141,9 @@
 		
 		// Enables Peaca dungeon
 		{ name: "PeacaDungeon", enabled: true },
+		
+		// Enables obtaining Handicraft skill
+		{ name: "Handicraft", enabled: true },
 	]},
 ]},
 
@@ -152,11 +161,17 @@
 	
 	// Season 2
 	{ name: "G3S2", enabled: true, children: [
-		// Enables Barri Advanced dungeon
-		{ name: "BarriAdvanced", enabled: true },
-		
 		// Enables Poison status effect
 		{ name: "Poison", enabled: true },
+		
+		// Enables pet PvP duels
+		{ name: "PetDueling", enabled: true },
+		
+		// Enables obtaining Party Healing skill
+		{ name: "PartyHealing", enabled: true },
+		
+		// Enables magical music effects
+		{ name: "MagicalMusic", enabled: true },
 	]},
 	
 	// Season 3
@@ -170,8 +185,11 @@
 		// Enables obtaining the passive defense Paladin skills
 		{ name: "PaladinPassiveDefence", enabled: true },
 		
-		// Enables Rabbie Arena
-		{ name: "RabbieArena", enabled: true },
+		// Enables taming via magical music
+		{ name: "MagicalTamingMusic", enabled: true },
+		
+		// Enables the traveling dungeon merchant NPC Tiro
+		{ name: "Tiro", enabled: true },
 	]},
 	
 	// Season 4
@@ -181,6 +199,9 @@
 		
 		// Enables Rabbie Advanced dungeon
 		{ name: "RabbieAdvanced", enabled: true },
+		
+		// Enables Rabbie Arena
+		{ name: "RabbieArena", enabled: true },
 		
 		// Enables Peaca Basic dungeon
 		{ name: "PeacaBasic", enabled: true },
@@ -212,6 +233,12 @@
 		
 		// Enables access to Morva Aisle and Port Ceann
 		{ name: "PortCeann", enabled: true },
+		
+		// Enables obtaining Jam Session action
+		{ name: "JamSession", enabled: true },
+		
+		// Enables obtaining Performance action
+		{ name: "PublicPerformance", enabled: true },
 	]},
 ]},
 
@@ -319,9 +346,6 @@
 	
 	// Season 6
 	{ name: "G6S6", enabled: true, children: [
-		// Enables jam sessions
-		{ name: "EnsemblePlay", enabled: true },
-		
 		// Enables advanced wands in shops
 		{ name: "WandUpgradeAndChainCasting", enabled: true },
 	]},
@@ -343,6 +367,9 @@
 		
 		// Enables NPCs going into deadly
 		{ name: "DeadlyNPCs", enabled: true },
+		
+		// Enables obtaining percussion instruments
+		{ name: "PercussionInstruments", enabled: true },
 	]},
 	
 	// Season 2
@@ -477,7 +504,10 @@
 //---------------------------------------------------------------------------
 { name: "G12", enabled: false, children: [
 	// Season 1
-	{ name: "G12S1", enabled: true, children: []},
+	{ name: "G12S1", enabled: true, children: [
+		// Enables Peaca Int dungeon
+		{ name: "PeacaInt", enabled: true },
+	]},
 	
 	// Season 2
 	{ name: "G12S2", enabled: true, children: []},
@@ -546,6 +576,9 @@
 	{ name: "G15S2", enabled: true, children: [
 		// Disables mana removal when unequipping wands
 		{ name: "ManaBurnRemove", enabled: true },
+		
+		// Enables obtaining premium bags (8x10)
+		{ name: "PremiumBags", enabled: true },
 	]},
 	
 	// Season 3
@@ -698,6 +731,5 @@
 // Temporarily enabled until we go full G1.
 { name: "TwinSword", enabled: true },
 { name: "CombatSystemRenewal", enabled: true },
-{ name: "PassiveSharpMind", enabled: true },
 { name: "TalentRenovationCloseCombat", enabled: true },
 ]

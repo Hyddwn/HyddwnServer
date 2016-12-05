@@ -200,6 +200,63 @@ namespace Aura.Mabi
 			_months[5] = albanElved;
 			_months[6] = samhain;
 		}
+
+		/// <summary>
+		/// Returns an instance of ErinnTime that's set to the next time the
+		/// given hour and minute is.
+		/// </summary>
+		/// <example>
+		/// If it's 00:00:00 in real-time (00:00 in Erinn-time), then
+		/// GetNextTime(12, 00) would return Erinn-time 12:00, with a
+		/// DateTime of 00:18:00.
+		/// </example>
+		/// <param name="hour"></param>
+		/// <param name="minutes"></param>
+		/// <returns></returns>
+		public static ErinnTime GetNextTime(int hour, int minute)
+		{
+			return GetNextTime(DateTime.Now, hour, minute);
+		}
+
+		/// <summary>
+		/// Returns an instance of ErinnTime that's set to the next time the
+		/// given hour and minute is.
+		/// </summary>
+		/// <example>
+		/// If it's 00:00:00 in real-time (00:00 in Erinn-time), then
+		/// GetNextTime(12, 00) would return Erinn-time 12:00, with a
+		/// DateTime of 00:18:00.
+		/// </example>
+		/// <param name="hour"></param>
+		/// <param name="minutes"></param>
+		/// <returns></returns>
+		public static ErinnTime GetNextTime(DateTime now, int hour, int minute)
+		{
+			if (hour < 0 || hour > 23)
+				throw new ArgumentException("Invalid hour.");
+			if (minute < 0 || minute > 59)
+				throw new ArgumentException("Invalid minute.");
+
+			var nowErinn = new ErinnTime(now);
+
+			var hours = hour - nowErinn.Hour;
+			var minutes = minute - nowErinn.Minute;
+
+			if (hours <= 0)
+			{
+				hours += 24;
+			}
+
+			if (minutes < 0)
+			{
+				minutes = 60 + minutes;
+				hours -= 1;
+			}
+
+			var thenDateTime = now.AddTicks(hours * TicksPerHour).AddTicks(minutes * TicksPerMinute);
+
+			return new ErinnTime(thenDateTime);
+		}
 	}
 
 	public static class ErinnMonth

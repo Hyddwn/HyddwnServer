@@ -65,9 +65,9 @@ public class AdventCalenderEventNpcScript : NpcScript
 
 	static List<DropData> gifts = new List<DropData>
 	{
-		new DropData(itemId: 50206, chance: 6), // Chocolate
-		new DropData(itemId: 50177, chance: 6), // Chocolate Chip Cookie
-		new DropData(itemId: 50503, chance: 6), // Hot Chocolate
+		new DropData(itemId: 50206, chance: 6, foodQuality: 100), // Chocolate
+		new DropData(itemId: 50177, chance: 6, foodQuality: 100), // Chocolate Chip Cookie
+		new DropData(itemId: 50503, chance: 6, foodQuality: 100), // Hot Chocolate
 		new DropData(itemId: 63295, chance: 6, amountMin: 1, amountMax: 5),  // Christmas Campfire Kit
 		
 		new DropData(itemId: 51125, chance: 4, amountMin: 2, amountMax: 20), // HP 100 Potion SE
