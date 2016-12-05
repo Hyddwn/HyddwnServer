@@ -28,7 +28,7 @@ public class MagicPowderOfPreservationQuest : QuestScript
 		AddReward(Exp(455));
 		AddReward(Gold(650));
 		AddReward(Item(Glasses));
-		AddReward(WarpScroll(63009, "rabbie_dungeon"));
+		AddReward(WarpScroll(63009, "Rabbie_Dungeon"));
 
 		AddHook("_tarlach", "after_intro", TarlachAfterIntro);
 		AddHook("_tarlach", "before_keywords", TarlachBeforeKeywords);

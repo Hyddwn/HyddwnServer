@@ -68,7 +68,7 @@ public class TheThreeMissingWarriorsQuest : GeneralScript
 			npc.GiveKeyword("g1_03");
 
 			npc.GiveItem(TarlachsLocket);
-			npc.GiveWarpScroll(63009, "alby_dungeon");
+			npc.GiveWarpScroll(63009, "Alby_Dungeon");
 
 			npc.Msg(L("The three missing Warriors? The ones who are said to have gone to Tir Na Nog?"));
 			npc.Msg(L("I see...<br/>There was a time when scholars debated back and forth regarding the validity of that legend."));

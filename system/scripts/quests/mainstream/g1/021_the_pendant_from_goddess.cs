@@ -24,7 +24,7 @@ public class ThePendantFromGoddessQuest : QuestScript
 		AddObjective("talk", L("Talk to Duncan."), 1, 15409, 38310, Talk("duncan"));
 
 		AddReward(Exp(370));
-		AddReward(WarpScroll(63009, "math_dungeon"));
+		AddReward(WarpScroll(63009, "Math_Dungeon"));
 
 		AddHook("_duncan", "before_keywords", DuncanBeforeKeywords);
 		AddHook("_duncan", "after_intro", DuncanAfterIntro);
