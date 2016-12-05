@@ -13,6 +13,7 @@ public class GoldGoblinScrollQuest : QuestScript
 		SetName(L("Collect the Gold Goblin's Fomor Scrolls"));
 		SetDescription(L("The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Gold Goblin Fomor Scrolls]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Collect);
 		if (IsEnabled("QuestViewRenewal"))
