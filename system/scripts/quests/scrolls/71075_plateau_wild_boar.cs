@@ -13,6 +13,7 @@ public class PlateauWildBoarScrollQuest : QuestScript
 		SetName(L("Collect the Plateau Wild Boar's Fomor Scrolls"));
 		SetDescription(L("The evil Fomors are controlling various creatures in the neighborhood. Retrieve Fomor Scrolls from these animals in order to free them from the reign of these evil spirits. You will be rewarded for collecting [10 Plateau Wild Boar Fomor Scrolls]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Collect);
 		if (IsEnabled("QuestViewRenewal"))
