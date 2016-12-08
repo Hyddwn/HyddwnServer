@@ -203,7 +203,7 @@ namespace Aura.Tests.Mabi
 				var erinnNow = ErinnTime.Now;
 				var now = erinnNow.DateTime;
 				var then = now.AddSeconds(2 * 90);
-				var time = ErinnTime.GetNextTime(now, erinnNow.Hour + 2, erinnNow.Minute);
+				var time = ErinnTime.GetNextTime(now, (erinnNow.Hour + 2) % 24, erinnNow.Minute);
 				Assert.Equal(then, time.DateTime);
 			}
 		}
