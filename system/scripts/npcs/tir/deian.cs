@@ -33,6 +33,7 @@ public class DeianScript : NpcScript
 		AddPhrase("It's amazing how fast they grow feeding on grass.");
 		AddPhrase("I wonder if I could buy a house with my savings yet...");
 		AddPhrase("What the... Now there's one missing!");
+		AddPhrase("I used to think they were cute. But it gets annoying when you have too many of them.");
 	}
 
 	protected override async Task Talk()
@@ -152,8 +153,41 @@ public class DeianScript : NpcScript
 				}
 				else
 				{
-					Msg(FavorExpression(), "Yeah, yeah. I'm a mere shepherd...for now.<br/>But I will soon be a mighty warrior!<br/>");
-					ModifyRelation(Random(2), 0, Random(3));
+					if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+					{
+						Msg(FavorExpression(), "Do you know what shepherds and warriors have in common?<br/>They both need to look after others.<br/>...<br/>I was being serious for once!");
+						ModifyRelation(Random(2), 0, Random(2));
+					}
+					else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+					{
+						Msg(FavorExpression(), "Hmm... I come from a family of generals. Some of them were very famous.<br/>What...? So what am I doing here?<br/>How should I know?");
+						ModifyRelation(Random(2), 0, Random(2));
+					}
+					else if (Favor >= 10 && Stress <= 10)
+					{
+						Msg(FavorExpression(), "What does a shepherd do? Uh, look after sheep?<br/>Let the sheep feed, look for them if they get lost...");
+						ModifyRelation(Random(2), Random(2), Random(2));
+					}
+					else if (Favor <= -10)
+					{
+						Msg(FavorExpression(), "People look down on me because I live out here...<br/>Whatever...");
+						ModifyRelation(Random(2), 0, Random(1, 3));
+					}
+					else if (Favor <= -30 && Stress <= 10)
+					{
+						Msg(FavorExpression(), "My BGM, I know others like it, but I don't.<br/>Can't it be more romantic and sentimental, you know?<br/>A song revealing the pure heart and mind of a teenage boy who has gentle pangs of loneliness?");
+						ModifyRelation(Random(2), 0, Random(1, 3));
+					}
+					else if (Favor <= -30 && Stress > 10)
+					{
+						Msg(FavorExpression(), "I get frustrated when people like you keep asking questions! Jeez, you're ruining my day.");
+						ModifyRelation(Random(2), -Random(2), Random(1, 4));
+					}
+					else
+					{
+						Msg(FavorExpression(), "Yeah, yeah. I'm a mere shepherd...for now.<br/>But I will soon be a mighty warrior!");
+						ModifyRelation(Random(2), 0, Random(3));
+					}
 				}
 				break;
 
@@ -165,10 +199,43 @@ public class DeianScript : NpcScript
 				break;
 
 			case "rumor":
-				GiveKeyword("pool");
-				Msg(FavorExpression(), "Some people should have been born as fish.<br/>They can't pass water without diving right in.<br/>I wish they'd stop.");
-				Msg("Not long ago, someone jumped into the reservoir<br/>and made a huge mess.<br/>Guess who got stuck cleaning it up?<br/>Sooo not my job.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "<username/>. Now that I've even memorized your name...<br/>You are really persistent.<br/>Everyone in town has something to say about you.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "You heard that sheep are gentle? News flash, buddy! That's totally wrong.<br/>Do you know how stubborn sheep are?<br/>Imagine taking care of an entire flock of these suckers...<br/>Sure, they provide wool but sometimes it's definitely not worth it!");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "There are always a few knuckle heads that try to hit the sheep... Please don't do that.<br/>That's animal abuse, you know that?");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Dude, you must have a lot of spare time.<br/>Killing time with a shepherd boy like me.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "You can't just believe every rumor you hear. Don't take it so seriously.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "If you keep listening to gossip,<br/>you're going to end up wasting your life...");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("pool");
+					Msg(FavorExpression(), "Some people should have been born as fish.<br/>They can't pass water without diving right in.<br/>I wish they'd stop.");
+					Msg("Not long ago, someone jumped into the reservoir<br/>and made a huge mess.<br/>Guess who got stuck cleaning it up?<br/>Sooo not my job.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -375,17 +442,63 @@ public class DeianScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
-					"Meh, I don't want to tell you.",
-					"Ask all you want, I'm not telling you.",
-					"What are you going to give me in exchange?",
-					"Hold up, I feel like I'm being interrogated.",
-					"Pry all you like. You'll get nothing from me.",
-					"So many questions, at least give me a small gift...",
-					"Sometimes, I'm just not in the mood to answer questions.",
-					"Don't be ridiculous. It's not that I don't know, I just don't want to tell you."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I almost fell asleep! Sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Hmm... I think I heard about that somewhere, but I forget. Sorry!");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Life must be easy for you, right? Talking about such things...");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Don't you have anything else to do?");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndMsg(
+						"Meh, I don't want to tell you.",
+						"Ask all you want, I'm not telling you.",
+						"What are you going to give me in exchange?",
+						"Hold up, I feel like I'm being interrogated.",
+						"Pry all you like. You'll get nothing from me.",
+						"So many questions, at least give me a small gift...",
+						"Sometimes, I'm just not in the mood to answer questions.",
+						"Don't be ridiculous. It's not that I don't know, I just don't want to tell you."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Wow!"));
+				Msg(L("This is what I really wanted! Are you really giving it to me?<br/>Wow, thank you so much!"));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Haha! What's up with the present all of a sudden? Thanks. I'll put it to good use."));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("A present? Thank you."));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("Hmm... It's not really my style, but since it's free..."));
 				break;
 		}
 	}
