@@ -2041,23 +2041,21 @@ namespace Aura.Channel.World.Entities
 				_totalHits = Interlocked.Increment(ref _totalHits);
 			}
 
-			var equip = this.Inventory.GetEquipment();
-
-			// Give proficiency to random main armor
-			var mainArmors = equip.Where(a => a.Info.Pocket.IsMainArmor());
-			if (mainArmors.Count() != 0)
+			// Update equip
+			var mainArmors = this.Inventory.GetMainEquipment(a => a.Info.Pocket.IsMainArmor());
+			if (mainArmors.Length != 0)
 			{
+				// Select a random armor item to gain proficiency and lose
+				// durability, as the one that was "hit" by the damage.
 				var item = mainArmors.Random();
-				var amount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Damage);
-				this.Inventory.AddProficiency(item, amount);
-			}
 
-			// Reduce durability of random item
-			if (equip.Length != 0)
-			{
-				var item = equip.Random();
-				var amount = RandomProvider.Get().Next(1, 30);
-				this.Inventory.ReduceDurability(item, amount);
+				// Give proficiency
+				var profAmount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Damage);
+				this.Inventory.AddProficiency(item, profAmount);
+
+				// Reduce durability
+				var duraAmount = RandomProvider.Get().Next(1, 30);
+				this.Inventory.ReduceDurability(item, duraAmount);
 			}
 
 			// Kill if life too low
