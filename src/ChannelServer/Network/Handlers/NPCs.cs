@@ -288,16 +288,21 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Calculate selling price
-			var sellingPrice = item.OptionInfo.SellingPrice;
-			if (item.Data.StackType == StackType.Sac)
+			var sellingPrice = 0;
+			if (!item.IsIncomplete)
 			{
-				// Add costs of the items inside the sac
-				sellingPrice += (int)((item.Info.Amount / (float)item.Data.StackItem.StackMax) * item.Data.StackItem.SellingPrice);
-			}
-			else if (item.Data.StackType == StackType.Stackable)
-			{
-				// Individuel price for this stack
-				sellingPrice = (int)((item.Amount / (float)item.Data.StackMax) * sellingPrice);
+				sellingPrice = item.OptionInfo.SellingPrice;
+
+				if (item.Data.StackType == StackType.Sac)
+				{
+					// Add costs of the items inside the sac
+					sellingPrice += (int)((item.Info.Amount / (float)item.Data.StackItem.StackMax) * item.Data.StackItem.SellingPrice);
+				}
+				else if (item.Data.StackType == StackType.Stackable)
+				{
+					// Individuel price for this stack
+					sellingPrice = (int)((item.Amount / (float)item.Data.StackMax) * sellingPrice);
+				}
 			}
 
 			// Remove item from inv

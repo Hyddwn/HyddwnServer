@@ -373,6 +373,12 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns true if item hasn't been completed yet, e.g via Tailoring
+		/// or Blacksmithing.
+		/// </summary>
+		public bool IsIncomplete { get { return this.MetaData1.Has("PRGRATE"); } }
+
+		/// <summary>
 		/// Item's price in a personal shop.
 		/// </summary>
 		public int PersonalShopPrice { get; set; }
