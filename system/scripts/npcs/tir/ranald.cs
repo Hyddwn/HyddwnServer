@@ -429,7 +429,7 @@ public class RanaldScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"You know I've been busy...",
 					"Well, I don't really know...",
 					"I am not very interested in that.",

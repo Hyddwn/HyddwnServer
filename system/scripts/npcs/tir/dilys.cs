@@ -449,7 +449,7 @@ public class DilysScript : NpcScript
 				}
 				else
 				{
-					RndMsg(
+					RndFavorMsg(
 						"Eh?",
 						"I don't know... I'm sorry.",
 						"What are you talking about?",

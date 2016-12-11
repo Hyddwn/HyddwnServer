@@ -361,7 +361,7 @@ public class EndelyonScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"I have no idea...",
 					"Well, I'm afraid I can't comment on that.",
 					"It doesn't sound familiar to me, I mean...",

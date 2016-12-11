@@ -464,7 +464,7 @@ public class DeianScript : NpcScript
 				}
 				else
 				{
-					RndMsg(
+					RndFavorMsg(
 						"Meh, I don't want to tell you.",
 						"Ask all you want, I'm not telling you.",
 						"What are you going to give me in exchange?",

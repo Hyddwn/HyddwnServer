@@ -407,7 +407,7 @@ public class MalcolmScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"I don't know.",
 					"Hm... Beats me.",
 					"Well... I don't have much to say about it.",

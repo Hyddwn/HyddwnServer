@@ -398,7 +398,7 @@ public class CaitinScript : NpcScript
 				}
 				else
 				{
-					RndMsg(
+					RndFavorMsg(
 						"Can we change the subject?",
 						"Well, I really don't know.",
 						"Never heard of that before.",

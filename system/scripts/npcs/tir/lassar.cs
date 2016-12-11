@@ -399,7 +399,7 @@ public class LassarScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"Hmm... I don't know.",
 					"Honestly, I don't know much.",
 					"Being a teacher doesn't necessarily mean knowing everything.",

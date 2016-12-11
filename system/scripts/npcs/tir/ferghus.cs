@@ -394,7 +394,7 @@ public class FerghusScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"?",
 					"*Yawn* I don't know.",
 					"Haha. I have no idea.",
