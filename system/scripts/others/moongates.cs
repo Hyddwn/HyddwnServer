@@ -323,7 +323,7 @@ public class MoonGateScript : GeneralScript
 		MoonGate gate;
 		if (!gates.TryGetValue(prop.EntityId, out gate))
 		{
-			Send.Notice(creature, Localization.Get("This moon gate is currently not operable. Please report."));
+			Send.Notice(creature, L("This moon gate is currently not operable. Please report."));
 			return;
 		}
 
@@ -440,7 +440,7 @@ public class MoonGateScript : GeneralScript
 		// Check locations
 		if (origin == destination)
 		{
-			Send.Notice(creature, Localization.Get("You cannot teleport using the same Moon Gate."));
+			Send.Notice(creature, L("You cannot teleport using the same Moon Gate."));
 			return false;
 		}
 
@@ -448,7 +448,7 @@ public class MoonGateScript : GeneralScript
 		MoonGate originGate, destinationGate;
 		if (!gatesStr.TryGetValue(origin, out originGate) || !gatesStr.TryGetValue(destination, out destinationGate))
 		{
-			Send.Notice(creature, Localization.Get("This moon gate is currently not operable. Please report."));
+			Send.Notice(creature, L("This moon gate is currently not operable. Please report."));
 			return false;
 		}
 
