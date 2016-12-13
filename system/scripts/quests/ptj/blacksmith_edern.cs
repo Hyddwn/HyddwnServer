@@ -25,27 +25,35 @@ public class EdernPtjScript : GeneralScript
 
 	int remaining = PerDay;
 
-	readonly int[] QuestIds = new int[]
+	private class QuestIdSkillRankPairs : List<Tuple<int, SkillRank>>
 	{
-		507201, // Basic  Smith 2 Weeding Hoes
-		507231, // Int    Smith 2 Weeding Hoes
-		507261, // Adv    Smith 2 Weeding Hoes
-		507202, // Basic  Smith 2 Sickles
-		507232, // Int    Smith 2 Sickles
-		507262, // Adv    Smith 2 Sickles
-		507203, // Basic  Smith 2 Round Shields
-		507204, // Basic  Smith 2 Evil Dying Crowns
-		507264, // Adv    Smith 2 Evil Dying Crowns
-		507205, // Basic  Smith 2 Cuirassier Helms
-		507236, // Int    Smith 2 Arish Ashuvain Gauntlets
-		507207, // Basic  Smith 2 Plate Gauntlets
-		507237, // Int    Smith 2 Plate Gauntlets
-		507238, // Int    Smith 2 Vito Crux Greaves
-		507268, // Adv    Smith 2 Vito Crux Greaves
-		507239, // Int    Smith 2 Arish Ashuvain Boots (M)
-		507269, // Adv    Smith 2 Arish Ashuvain Boots (M)
-		507270, // Adv    Smith 1 Scale Armor
-		507271, // Adv    Smith 1 Giant Half Guard Leather Armor (F)
+		public void Add(int questId, SkillRank skillRank)
+		{
+			Add(new Tuple<int, SkillRank>(questId, skillRank));
+		}
+	}
+
+	readonly QuestIdSkillRankPairs QuestIdSkillRankList = new QuestIdSkillRankPairs
+	{
+		{507201, SkillRank.RF}, // Basic  Smith 2 Weeding Hoes
+		{507231, SkillRank.RF}, // Int    Smith 2 Weeding Hoes
+		{507261, SkillRank.RF}, // Adv    Smith 2 Weeding Hoes
+		{507202, SkillRank.RF}, // Basic  Smith 2 Sickles
+		{507232, SkillRank.RF}, // Int    Smith 2 Sickles
+		{507262, SkillRank.RF}, // Adv    Smith 2 Sickles
+		{507203, SkillRank.RC}, // Basic  Smith 2 Round Shields
+		{507204, SkillRank.RB}, // Basic  Smith 2 Evil Dying Crowns
+		{507264, SkillRank.RB}, // Adv    Smith 2 Evil Dying Crowns
+		{507205, SkillRank.RC}, // Basic  Smith 2 Cuirassier Helms
+		{507236, SkillRank.RB}, // Int    Smith 2 Arish Ashuvain Gauntlets
+		{507207, SkillRank.RA}, // Basic  Smith 2 Plate Gauntlets
+		{507237, SkillRank.RA}, // Int    Smith 2 Plate Gauntlets
+		{507238, SkillRank.RB}, // Int    Smith 2 Vito Crux Greaves
+		{507268, SkillRank.RB}, // Adv    Smith 2 Vito Crux Greaves
+		{507239, SkillRank.RA}, // Int    Smith 2 Arish Ashuvain Boots (M)
+		{507269, SkillRank.RA}, // Adv    Smith 2 Arish Ashuvain Boots (M)
+		{507270, SkillRank.RA}, // Adv    Smith 1 Scale Armor
+		{507271, SkillRank.RA}, // Adv    Smith 1 Giant Half Guard Leather Armor (F)
 	};
 
 	public override void Load()
@@ -192,8 +200,26 @@ public class EdernPtjScript : GeneralScript
 			return;
 		}
 
+		// Get quests only for player's Blacksmithing skill level (or whatever's closest)
+		// http://wiki.mabinogiworld.com/view/Thread:Talk:Edern/Part-time_job_requests
+		var playerSkills = npc.Player.Skills;
+		var skillRank = playerSkills.Has(SkillId.Blacksmithing)
+			? playerSkills.Get(SkillId.Blacksmithing).Info.Rank
+			: SkillRank.RF; // Default to RF jobs if player does not know Blacksmithing.
+
+		// Restrict ranks to one of the following: F, C, B, A
+		if (skillRank > SkillRank.RA)
+			skillRank = SkillRank.RA;
+		else if (skillRank < SkillRank.RC)
+			skillRank = SkillRank.RF;
+
+		int[] questIds = QuestIdSkillRankList
+			.FindAll(e => e.Item2 == skillRank)
+			.ConvertAll<int>(e => e.Item1)
+			.ToArray();
+
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = npc.RandomPtj(JobType, questIds);
 		var msg = "";
 
 		if (npc.GetPtjDoneCount(JobType) == 0)
