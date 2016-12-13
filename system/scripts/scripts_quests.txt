@@ -80,6 +80,7 @@ quests/ptj/healer_manus.cs
 quests/ptj/inn_piaras.cs
 quests/ptj/library_stewart.cs
 quests/ptj/neighboring_deian.cs
+quests/ptj/blacksmith_edern.cs
 quests/ptj/blacksmith_elen.cs
 quests/ptj/stope_sion.cs
 quests/ptj/blacksmith_ferghus.cs
