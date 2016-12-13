@@ -15,7 +15,7 @@ public class PegwaldPatronScript : NpcScript
 		SetStand("data/gfx/char/chapter4/human/anim/social_motion/male_2014_springdress");
 		SetLocation(31, 14799, 8219, 167);
 
-		EquipItem(Pocket.Face, 4909, 16);
+		EquipItem(Pocket.Face, 4900, 16);
 		EquipItem(Pocket.Hair, 4006, 0x000000);
 		EquipItem(Pocket.Head, 18940, 0x000000, 0x000000, 0x000000);
 		EquipItem(Pocket.Armor, 15508, 0x000000, 0x000000, 0x333333);
