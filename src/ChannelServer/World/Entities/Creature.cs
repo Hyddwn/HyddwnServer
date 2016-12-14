@@ -1867,16 +1867,16 @@ namespace Aura.Channel.World.Entities
 			else
 			{
 				balance = this.RightBalanceMod;
-				if (this.LeftHand != null)
+				if (this.IsDualWielding)
 					balance = (balance + this.LeftBalanceMod) / 2;
 			}
 
 			var min = this.AttackMinBase + this.AttackMinBaseMod + this.RightAttackMinMod;
-			if (this.LeftHand != null)
+			if (this.IsDualWielding)
 				min = (min + this.LeftAttackMinMod) / 2;
 
 			var max = this.AttackMaxBase + this.AttackMaxBaseMod + this.RightAttackMaxMod;
-			if (this.LeftHand != null)
+			if (this.IsDualWielding)
 				max = (max + this.LeftAttackMaxMod) / 2;
 
 			return this.GetRndDamage(min, max, balance);
