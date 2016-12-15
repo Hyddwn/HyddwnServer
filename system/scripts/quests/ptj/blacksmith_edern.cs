@@ -3,9 +3,6 @@
 //--- Description -----------------------------------------------------------
 // All quests used by the PTJ, and a script to handle the PTJ via hooks.
 //--- Notes -----------------------------------------------------------------
-// Quest IDs are likely incorrect.
-// Update with official values whenever possible.
-//
 // Warning: Following dialogue is missing:
 // * first time worker PTJ inquiry
 // * first time accepting PTJ offer
@@ -46,8 +43,8 @@ public class EdernPtjScript : GeneralScript
 		{507264, SkillRank.RB}, // Adv    Smith 2 Evil Dying Crowns
 		{507205, SkillRank.RC}, // Basic  Smith 2 Cuirassier Helms
 		{507236, SkillRank.RB}, // Int    Smith 2 Arish Ashuvain Gauntlets
-		{507207, SkillRank.RA}, // Basic  Smith 2 Plate Gauntlets
 		{507237, SkillRank.RA}, // Int    Smith 2 Plate Gauntlets
+		{507267, SkillRank.RA}, // Adv    Smith 2 Plate Gauntlets
 		{507238, SkillRank.RB}, // Int    Smith 2 Vito Crux Greaves
 		{507268, SkillRank.RB}, // Adv    Smith 2 Vito Crux Greaves
 		{507239, SkillRank.RA}, // Int    Smith 2 Arish Ashuvain Boots (M)
@@ -488,9 +485,9 @@ public class EdernSmithCuirassierHelmBasicPtjScript : EdernSmithBasicPtjBaseScri
 	}
 }
 
-public class EdernSmithPlateGauntletsBasicPtjScript : EdernSmithBasicPtjBaseScript
+public class EdernSmithPlateGauntletsIntPtjScript : EdernSmithIntPtjBaseScript
 {
-	protected override int QuestId { get { return 507207; } }
+	protected override int QuestId { get { return 507237; } }
 	protected override string LQuestDescription { get { return L("This job involves creating equipment to supply the Blacksmith's Shop. Today's task is creating [Plate Gauntlets], using the materials given for this part-time job. Deadline starts at noon. Be careful not to deliver them before the deadline since the final work doesn't begin until then."); } }
 	protected override int ItemId { get { return 60807; } }
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Plate Gauntlets (Part-Time Job)"); } }
@@ -561,9 +558,9 @@ public class EdernSmithArishAshuvainGauntletsIntPtjScript : EdernSmithIntPtjBase
 	}
 }
 
-public class EdernSmithPlateGauntletsIntPtjScript : EdernSmithIntPtjBaseScript
+public class EdernSmithPlateGauntletsAdvPtjScript : EdernSmithAdvPtjBaseScript
 {
-	protected override int QuestId { get { return 507237; } }
+	protected override int QuestId { get { return 507267; } }
 	protected override string LQuestDescription { get { return L("This job involves creating equipment to supply the Blacksmith's Shop. Today's task is creating [Plate Gauntlets], using the materials given for this part-time job. Deadline starts at noon. Be careful not to deliver them before the deadline since the final work doesn't begin until then."); } }
 	protected override int ItemId { get { return 60807; } }
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Plate Gauntlets (Part-Time Job)"); } }
