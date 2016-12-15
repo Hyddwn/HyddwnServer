@@ -110,7 +110,7 @@ public class PegwaldPatronScript : NpcScript
 				Msg("I really hope he was just a terrible shot and did not intend to hit me.");
 				break;
 
-			case "skill_instrument":
+			case "skill_composing":
 				Msg("Look at me. Do I look like some great composer to you?");
 				break;
 
@@ -202,6 +202,10 @@ public class PegwaldPatronScript : NpcScript
 			case "graveyard":
 				Msg("I always pay my respects and try to memory<br/>all my dear and loved ones when I'm at sea.<br/>They say all sources of life comes from the sea.");
 				Msg("My experience is that the sea only claims it.<br/>The surface is the line that draws the difference of it.<br/>Life and death.");
+				break;
+
+			case "skill_instrument":
+				Msg("I'd love me a good song or two!<br/>Can you play me one?");
 				break;
 
 			case "tir_na_nog":
