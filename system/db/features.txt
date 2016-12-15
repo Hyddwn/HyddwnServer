@@ -554,7 +554,10 @@
 	{ name: "G14S2", enabled: true, children: []},
 	
 	// Season 3
-	{ name: "G14S3", enabled: true, children: []},
+	{ name: "G14S3", enabled: true, children: [
+		// Enables Edern's blacksmith PTJ
+		{ name: "EdernPtj", enabled: true },
+	]},
 	
 	// Season 4
 	{ name: "G14S4", enabled: true, children: [

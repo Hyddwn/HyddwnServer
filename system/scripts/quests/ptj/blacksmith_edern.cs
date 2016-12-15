@@ -83,7 +83,7 @@ public class EdernPtjScript : GeneralScript
 		var keyword = args[0] as string;
 
 		// Hook PTJ keyword
-		if (keyword == "about_arbeit" && IsEnabled("G14"))
+		if (keyword == "about_arbeit" && IsEnabled("EdernPtj"))
 		{
 			await AboutArbeit(npc);
 			await npc.Conversation();
