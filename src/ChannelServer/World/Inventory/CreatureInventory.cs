@@ -1530,9 +1530,8 @@ namespace Aura.Channel.World.Inventory
 				this.ApplyDefenseBonuses(item);
 				this.ApplyUpgrades(item);
 				this.ApplyUpgradeEffects(item);
+				this.HandleWUUpgrades(item);
 			}
-
-			this.HandleWUUpgrades(item);
 		}
 
 		/// <summary>
