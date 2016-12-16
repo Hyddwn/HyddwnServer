@@ -65,6 +65,23 @@ namespace Aura.Mabi.Const
 		TailStyle = 90,
 		ItemBags = 100,
 		ItemBagsMax = 199,
+
+		BardBoardScroll1 = 1000,
+		BardBoardScroll2 = 1001,
+		BardBoardScroll3 = 1002,
+		BardBoardScroll4 = 1003,
+		BardBoardScroll5 = 1004,
+		BardBoardScroll6 = 1005,
+		BardBoardScroll7 = 1006,
+		BardBoardScroll8 = 1007,
+		BardBoardScroll9 = 1008,
+		BardBoardScroll10 = 1009,
+		BardBoardScroll11 = 1010,
+		BardBoardScroll12 = 1011,
+		BardBoardScroll13 = 1012,
+		BardBoardScroll14 = 1013,
+		BardBoardScroll15 = 1014,
+		BardBoardScroll16 = 1015,
 	}
 
 	[Flags]
