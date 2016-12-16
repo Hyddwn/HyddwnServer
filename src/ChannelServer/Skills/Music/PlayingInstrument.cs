@@ -79,26 +79,29 @@ namespace Aura.Channel.Skills.Music
 
 			// Quality seems to go from 0 (worst) to 3 (best).
 			// TODO: Base quality on skills and score ranks.
-			var quality = (PlayingQuality)rnd.Next((int)PlayingQuality.VeryBad, (int)PlayingQuality.VeryGood + 1);
+			// The quality was apparently changed to a value from 0 to 100
+			// in the MusicQ update. We'll use the quality "rating" as fall-
+			// back for the success messages and the training for now.
+			var quality = rnd.Next(0, 100 + 1);
 
 			// Sunday: Increase in success rate for instrument playing.
 			// Another attempt if quality was bad, unofficial.
-			if (quality < PlayingQuality.Good && ErinnTime.Now.Month == ErinnMonth.Imbolic)
-				quality = (PlayingQuality)rnd.Next((int)PlayingQuality.VeryBad, (int)PlayingQuality.VeryGood + 1);
+			if (quality < 50 && ErinnTime.Now.Month == ErinnMonth.Imbolic)
+				quality = rnd.Next(0, 100 + 1);
 
 			// Up quality by chance, based on Musical Knowledge
 			var musicalKnowledgeSkill = creature.Skills.Get(SkillId.MusicalKnowledge);
 			if (musicalKnowledgeSkill != null && rnd.Next(100) < musicalKnowledgeSkill.RankData.Var2)
-				quality++;
+				quality += 25;
 
-			if (quality > PlayingQuality.VeryGood)
-				quality = PlayingQuality.VeryGood;
+			if (quality > 100)
+				quality = 100;
 
 			// Get quality for the effect, perfect play makes every sound perfect.
 			var effectQuality = quality;
 			if (ChannelServer.Instance.Conf.World.PerfectPlay)
 			{
-				effectQuality = PlayingQuality.VeryGood;
+				effectQuality = 100;
 				Send.ServerMessage(creature, Localization.Get("Perfect play is enabled, your performance will sound perfect."));
 			}
 
@@ -107,13 +110,13 @@ namespace Aura.Channel.Skills.Music
 				creature.Inventory.ReduceDurability(creature.Magazine, DurabilityUse);
 
 			// Music effect and Use
-			Send.PlayEffect(creature, instrumentType, effectQuality, mml, rndScore);
+			this.StartPlay(creature, skill, instrumentType, effectQuality, mml, rndScore);
 			this.OnPlay(creature, skill, quality);
 			Send.SkillUsePlayingInstrument(creature, skill.Info.Id, instrumentType, mml, rndScore);
 			skill.State = SkillState.Used;
 
 			// Special motion on highest quality.
-			if (quality == PlayingQuality.VeryGood)
+			if (quality >= 100)
 				Send.UseMotion(creature, 88, 2, true);
 
 			// Give proficiency
@@ -131,6 +134,39 @@ namespace Aura.Channel.Skills.Music
 			});
 
 			return true;
+		}
+
+		/// <summary>
+		/// Starts play effect.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="instrumentType"></param>
+		/// <param name="quality"></param>
+		/// <param name="compressedMml"></param>
+		/// <param name="scoreId"></param>
+		private void StartPlay(Creature creature, Skill skill, InstrumentType instrumentType, int quality, string compressedMml, int scoreId)
+		{
+			// [200200, NA242 (2016-12-15)]
+			// The playing effect for instruments was turned into a prop,
+			// presumably to have something to reference in the world
+			// for jams, and to make it more than a temp effect.
+
+			//Send.PlayEffect(creature, instrumentType, quality, mml, rndScore);
+
+			var regionId = creature.RegionId;
+			var pos = creature.GetPosition();
+
+			var prop = new PlayingInstrumentProp(regionId, pos.X, pos.Y);
+			prop.CompressedMML = compressedMml;
+			prop.ScoreId = scoreId;
+			prop.Quality = quality;
+			prop.Instrument = instrumentType;
+			prop.StartTime = DateTime.Now;
+			prop.CreatureEntityId = creature.EntityId;
+
+			creature.Region.AddProp(prop);
+
+			creature.Temp.PlayingInstrumentProp = prop;
 		}
 
 		/// <summary>
@@ -167,6 +203,10 @@ namespace Aura.Channel.Skills.Music
 		public virtual void Cancel(Creature creature, Skill skill)
 		{
 			Send.Effect(creature, Effect.StopMusic);
+
+			var prop = creature.Temp.PlayingInstrumentProp;
+			if (prop != null)
+				prop.Region.RemoveProp(prop);
 
 			creature.Regens.Remove("PlayingInstrument");
 		}
@@ -219,10 +259,10 @@ namespace Aura.Channel.Skills.Music
 		/// </remarks>
 		/// <param name="quality"></param>
 		/// <returns></returns>
-		protected virtual string GetRandomQualityMessage(PlayingQuality quality)
+		protected virtual string GetRandomQualityMessage(int quality)
 		{
 			string[] msgs = null;
-			switch (quality)
+			switch (this.GetQualityRating(quality))
 			{
 				case PlayingQuality.VeryGood:
 					msgs = new string[] {
@@ -267,10 +307,29 @@ namespace Aura.Channel.Skills.Music
 		/// <param name="creature"></param>
 		/// <param name="skill"></param>
 		/// <param name="quality"></param>
-		protected virtual void OnPlay(Creature creature, Skill skill, PlayingQuality quality)
+		protected virtual void OnPlay(Creature creature, Skill skill, int quality)
 		{
 			if (skill.Info.Rank == SkillRank.Novice)
 				skill.Train(1); // Try the skill.
+		}
+
+		/// <summary>
+		/// Return PlayingQuality based on given quality from 0~100.
+		/// </summary>
+		/// <param name="quality"></param>
+		/// <returns></returns>
+		protected PlayingQuality GetQualityRating(int quality)
+		{
+			if (quality >= 90)
+				return PlayingQuality.VeryGood;
+
+			if (quality >= 60)
+				return PlayingQuality.Good;
+
+			if (quality >= 30)
+				return PlayingQuality.Bad;
+
+			return PlayingQuality.VeryBad;
 		}
 
 		/// <summary>
@@ -279,32 +338,34 @@ namespace Aura.Channel.Skills.Music
 		/// <param name="creature"></param>
 		/// <param name="skill"></param>
 		/// <param name="quality"></param>
-		protected virtual void AfterPlay(Creature creature, Skill skill, PlayingQuality quality)
+		protected virtual void AfterPlay(Creature creature, Skill skill, int quality)
 		{
+			var playingQuality = this.GetQualityRating(quality);
+
 			// Success unless total failure, condition 2 for Novice.
-			if (skill.Info.Rank == SkillRank.Novice && quality != PlayingQuality.VeryBad)
+			if (skill.Info.Rank == SkillRank.Novice && playingQuality != PlayingQuality.VeryBad)
 				skill.Train(2); // Use the skill successfully.
 
 			// All ranks above F have the same 2 first conditions.
 			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.R1)
 			{
-				if (quality >= PlayingQuality.Bad)
+				if (playingQuality >= PlayingQuality.Bad)
 					skill.Train(1); // Use the skill successfully.
 
-				if (quality == PlayingQuality.VeryGood)
+				if (playingQuality == PlayingQuality.VeryGood)
 					skill.Train(2); // Get a very good result.
 			}
 
 			// Training by failing is possible between F and 6.
-			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.R6 && quality == PlayingQuality.Bad)
+			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.R6 && playingQuality == PlayingQuality.Bad)
 				skill.Train(3); // Fail at using the skill.
 
 			// Training by failing badly is possible at F and E.
-			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.RE && quality == PlayingQuality.VeryBad)
+			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.RE && playingQuality == PlayingQuality.VeryBad)
 				skill.Train(4); // Get a horrible result.
 
 			// Cancel special motion
-			if (quality == PlayingQuality.VeryGood)
+			if (playingQuality == PlayingQuality.VeryGood)
 				Send.CancelMotion(creature);
 
 			// TODO: "Use the skill successfully to grow crops faster."

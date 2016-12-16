@@ -42,6 +42,41 @@ namespace Aura.Channel.Network.Sending.Helpers
 				}
 
 				packet.PutShort(0);
+
+				// [200200, NA242 (2016-12-15)]
+				// The playing effect for instruments was turned into a prop,
+				// presumably to have something to reference in the world
+				// for jams, and to make it more than a temp effect.
+				if (prop is PlayingInstrumentProp)
+				{
+					var piProp = (prop as PlayingInstrumentProp);
+
+					// This part is basically the old play effect
+					packet.PutByte(piProp.HasMML);
+					packet.PutString(piProp.CompressedMML);
+					packet.PutInt(piProp.ScoreId);
+					packet.PutInt(2);
+					packet.PutShort(0);
+					packet.PutInt(22124);
+					packet.PutByte((byte)piProp.Quality); // Originally 0~3, now 0~100
+					packet.PutByte((byte)piProp.Instrument);
+					packet.PutByte(0);
+					packet.PutByte(0);
+					packet.PutByte(1); // loops?
+
+					// This part is new in MusicQ
+					packet.PutByte(0);
+					packet.PutByte(1);
+					packet.PutLong(piProp.StartTime);
+					packet.PutLong(0); // Jam leader or something like that?
+					packet.PutByte(0);
+					packet.PutInt(0);
+					packet.PutLong(piProp.CreatureEntityId);
+					packet.PutInt(0);
+					packet.PutByte(0);
+					packet.PutInt(0);
+
+				}
 			}
 			else
 			{

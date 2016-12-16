@@ -89,4 +89,5 @@
 { name: "portal_tara_contest", location: "Tara_main_field/_Tara_main_field_0013/portal_tara_contest" },
 { name: "portal_poulnabrone", location: "Uladh_Dunbarton/field_Dunbarton_11/Dunbarton_DungeonLobby" },
 { name: "portal_festia", location: "ErinnLand/_ErinnLand_005/ErinnLand_Enter_Box" },
+{ name: "portal_bard_camp", location: "Taillteann_SE_field/_Taillteann_SE_field_0007/Abbneagh_Bard_Camp" },
 ]

@@ -1000,6 +1000,13 @@ namespace Aura.Channel.Network.Sending.Helpers
 				{
 					packet.PutByte(0);
 				}
+				// [200200, NA242 (2016-12-15)] ?
+				{
+					packet.PutByte(0);
+					packet.PutByte(0); // Toggles "Pure Music Mode" button. It's true on NA, but for some reason the button doesn't appear there?
+					packet.PutLong(0);
+					packet.PutString("");
+				}
 				packet.PutByte(false);                                           // ? (formerly IsUsingExtraStorage)
 				packet.PutByte(account.PremiumServices.HasVipService);           // Style tab (formerly IsUsingNaosSupport)
 				packet.PutByte(false);                                           // ? (formerly IsUsingAdvancedPlay)
@@ -1081,6 +1088,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 			{
 				packet.PutByte(0);
 				packet.PutInt(0);
+			}
+
+			// [200200, NA242 (2016-12-15)] ?
+			{
+				packet.PutLong(0);
 			}
 
 			return packet;

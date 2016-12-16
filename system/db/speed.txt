@@ -464,3 +464,7 @@ petkokopo/*/Run,              1243.350000
 petkokopo/*/Walk,              160.255000
 petminighost/littleghost/Run,  510.000000
 petminighost/littleghost/Walk , 210.000000
+petalo/*/run,                  845.000000
+petalo/*/walk,                  53.515000
+grief/*/run,                   116.652000
+grief/*/walk,                  116.652000
