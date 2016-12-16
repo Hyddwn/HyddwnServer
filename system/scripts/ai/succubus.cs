@@ -389,8 +389,6 @@ public class SuccubusAi : AiScript
 			if (Random() < 30)
 			{
 				Do(StackAttack(SkillId.Firebolt));
-				Do(Wait(1000, 2000));
-				Do(Attack(1, 4000));
 				Do(Wait(2000, 3000));
 				Do(Say("You're not mad at me, are you? (Laughter)"));
 			}
@@ -672,9 +670,7 @@ public class SuccubusAi : AiScript
 				if (Case(20))
 				{
 					Do(CancelSkill());
-					Do(PrepareSkill(SkillId.Lightningbolt, Rnd(1, 1, 2))); 
-					Do(Wait(1000, 2000));
-					Do(Attack(1, 4000));
+					Do(StackAttack(SkillId.Lightningbolt, Rnd(1, 1, 2))); 
 					Do(Wait(500));
 					Do(Say("Flash!"));
 				}
