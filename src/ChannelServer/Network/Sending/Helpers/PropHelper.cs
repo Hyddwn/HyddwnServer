@@ -58,7 +58,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 					packet.PutInt(2);
 					packet.PutShort(0);
 					packet.PutInt(22124);
-					packet.PutByte((byte)piProp.Quality);
+					packet.PutByte((byte)piProp.Quality); // Originally 0~3, now 0~100
 					packet.PutByte((byte)piProp.Instrument);
 					packet.PutByte(0);
 					packet.PutByte(0);
