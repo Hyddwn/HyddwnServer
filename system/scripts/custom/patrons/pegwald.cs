@@ -51,7 +51,7 @@ public class PegwaldPatronScript : NpcScript
 				break;
 
 			case "rumor":
-				Msg("So far I feel very welcome here. I'm always happy give out<br/>a hand or two too if that's needed.<br/>I only have one problem however...");
+				Msg("So far I feel very welcome here. I'm always happy to give out<br/>a hand or two too if that's needed.<br/>I only have one problem however...");
 				Msg("... There's a severe lack of rum. The rum is gone.<br/>Why is the rum gone?");
 				break;
 
@@ -91,7 +91,7 @@ public class PegwaldPatronScript : NpcScript
 				break;
 
 			case "shop_smith":
-				Msg("If you don't mind the topless old man over there sweating<br/>it off at that piece of blade, I'm pretty sure he willoffer you some good<br/>deals if you came looking for armor and weapons.");
+				Msg("If you don't mind the topless old man over there sweating<br/>it off at that piece of blade, I'm pretty sure he will offer you some good<br/>deals if you came looking for armor and weapons.");
 				Msg("His grand daughter over there however, should not be trusted with repairs.<br/>Leave that to Mr. Hulk Hogan.");
 				break;
 
