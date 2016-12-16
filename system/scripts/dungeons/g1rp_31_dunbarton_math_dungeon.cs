@@ -30,6 +30,12 @@ public class ShielaMoresRPDungeonScript : DungeonScript
 
 		dungeon.PlayCutscene("G1_31_b_ShielaRP");
 	}
+	
+	public override void OnBossDeath(Dungeon dungeon, Creature boss, Creature killer)
+	{
+		if (dungeon.RemainingBosses <= 3)
+			dungeon.Complete();
+	}
 
 	public override void OnCleared(Dungeon dungeon)
 	{
