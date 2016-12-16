@@ -458,10 +458,15 @@ namespace Aura.Mabi.Const
 		Tuba = 18,
 		Lyra = 19,
 		ElectricGuitar = 20,
-
 		Piano = 21,
 		Violin = 22,
 		Cello = 23,
+		Harp = 24,
+		TunedViolin = 25,
+		TunedCello = 26,
+
+		TunedFlute = 55,
+		TunedWhistle = 56,
 
 		BassDrum = 66,
 		Drum = 67,
