@@ -107,7 +107,7 @@ namespace Aura.Channel.Skills.Music
 				creature.Inventory.ReduceDurability(creature.Magazine, DurabilityUse);
 
 			// Music effect and Use
-			Send.PlayEffect(creature, instrumentType, effectQuality, mml, rndScore);
+			this.StartPlay(creature, skill, instrumentType, effectQuality, mml, rndScore);
 			this.OnPlay(creature, skill, quality);
 			Send.SkillUsePlayingInstrument(creature, skill.Info.Id, instrumentType, mml, rndScore);
 			skill.State = SkillState.Used;
@@ -131,6 +131,39 @@ namespace Aura.Channel.Skills.Music
 			});
 
 			return true;
+		}
+
+		/// <summary>
+		/// Starts play effect.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="instrumentType"></param>
+		/// <param name="quality"></param>
+		/// <param name="compressedMml"></param>
+		/// <param name="scoreId"></param>
+		private void StartPlay(Creature creature, Skill skill, InstrumentType instrumentType, PlayingQuality quality, string compressedMml, int scoreId)
+		{
+			// [200200, NA242 (2016-12-15)]
+			// The playing effect for instruments was turned into a prop,
+			// presumably to have something to reference in the world
+			// for jams, and to make it more than a temp effect.
+
+			//Send.PlayEffect(creature, instrumentType, quality, mml, rndScore);
+
+			var regionId = creature.RegionId;
+			var pos = creature.GetPosition();
+
+			var prop = new PlayingInstrumentProp(regionId, pos.X, pos.Y);
+			prop.CompressedMML = compressedMml;
+			prop.ScoreId = 37;
+			prop.Quality = new int[] { 25, 50, 75, 100 }.Random();
+			prop.Instrument = instrumentType;
+			prop.StartTime = DateTime.Now;
+			prop.CreatureEntityId = creature.EntityId;
+
+			creature.Region.AddProp(prop);
+
+			creature.Temp.PlayingInstrumentProp = prop;
 		}
 
 		/// <summary>
@@ -167,6 +200,10 @@ namespace Aura.Channel.Skills.Music
 		public virtual void Cancel(Creature creature, Skill skill)
 		{
 			Send.Effect(creature, Effect.StopMusic);
+
+			var prop = creature.Temp.PlayingInstrumentProp;
+			if (prop != null)
+				prop.Region.RemoveProp(prop);
 
 			creature.Regens.Remove("PlayingInstrument");
 		}
