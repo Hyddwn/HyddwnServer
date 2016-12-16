@@ -994,39 +994,47 @@ namespace Aura.Channel.Network.Sending.Helpers
 				// - VIP tab: Access to VIP inventory tab.
 				// - Style tab: Access to Style inventory tab.
 				// 
-				// Last update of what the bytes do: 2015-11-02
-				// --------------------------------------------------------------
+				// Last update of what the bytes do: 2016-12-16
+				// 
+				// It's hard to follow the structure of this part, with all
+				// the bytes and changes to the premium packs over the years.
+				// After the MusicQ update it seems like there's not toggle
+				// for the style tab anymore, but the client seems to cache
+				// some information from the login screen, and if the
+				// services are enabled there, the style tab will work
+				// in-game.
+				// ----------------------------------------------------------
 				// [180600, NA187 (25.06.2014)] ?
 				{
 					packet.PutByte(0);
 				}
+				packet.PutByte(0);
+				packet.PutByte(true);                                            // Setting this to false affects the packet structure in an unknown way
 				// [200200, NA242 (2016-12-15)] ?
 				{
-					packet.PutByte(0);
-					packet.PutByte(0); // Toggles "Pure Music Mode" button. It's true on NA, but for some reason the button doesn't appear there?
 					packet.PutLong(0);
 					packet.PutString("");
+					packet.PutByte(0);
+					packet.PutByte(false);                                       // Enables "Pure Music Mode" button above head
 				}
-				packet.PutByte(false);                                           // ? (formerly IsUsingExtraStorage)
-				packet.PutByte(account.PremiumServices.HasVipService);           // Style tab (formerly IsUsingNaosSupport)
-				packet.PutByte(false);                                           // ? (formerly IsUsingAdvancedPlay)
-				packet.PutByte(false);                                           // ?
-				packet.PutByte(account.PremiumServices.HasPremiumService);       // Bags, Account Bank, Premium Gestures
-				packet.PutByte(false);                                           // ? (formerly Premium Gestures?)
-				packet.PutByte(true);                                            // ? (Default 1 on NA?)
+				packet.PutByte(false);                                            // Bags, Account Bank
+				packet.PutByte(false);
+				packet.PutByte(false);
+				packet.PutByte(false);                                           // ? (Default 1 on NA?)
 				packet.PutByte(account.PremiumServices.HasInventoryPlusService); // Bags, Account Bank
-				// [170402, TW170300] New premium thing
+				packet.PutByte(account.PremiumServices.HasVipService);           // Bags, Account Bank, Premium Gestures, VIP tab
+				// [170402, TW170300] ?
 				{
-					packet.PutByte(account.PremiumServices.HasVipService);       // Bags, Account Bank, Premium Gestures, VIP tab
+					packet.PutByte(false);                                       // Bags, Account Bank, Premium Gestures, VIP tab
 				}
 				// [180300, NA166 (18.09.2013)] ?
 				{
 					packet.PutByte(false);                                       // Bags, Account Bank, Premium Gestures, VIP tab
-					packet.PutByte(false);                                       // Bags, Account Bank, Premium Gestures, VIP tab
+					packet.PutByte(false);
 				}
 				// [180800, NA196 (14.10.2014)] ?
 				{
-					packet.PutByte(0);
+					packet.PutByte(false);
 				}
 				packet.PutInt(0);
 				packet.PutByte(0);
