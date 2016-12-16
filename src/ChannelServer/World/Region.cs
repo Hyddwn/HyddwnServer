@@ -807,7 +807,7 @@ namespace Aura.Channel.World
 			// Add collisions
 			this.Collisions.Add(prop);
 
-			Send.EntityAppears(prop);
+			//Send.EntityAppears(prop);
 		}
 
 		/// <summary>
