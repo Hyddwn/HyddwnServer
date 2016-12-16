@@ -485,7 +485,7 @@ public class EdernSmithCuirassierHelmBasicPtjScript : EdernSmithBasicPtjBaseScri
 	}
 }
 
-public class EdernSmithPlateGauntletsIntPtjScript : EdernSmithIntPtjBaseScript
+public class EdernSmithPlateGauntletsBasicPtjScript : EdernSmithBasicPtjBaseScript
 {
 	protected override int QuestId { get { return 507237; } }
 	protected override string LQuestDescription { get { return L("This job involves creating equipment to supply the Blacksmith's Shop. Today's task is creating [Plate Gauntlets], using the materials given for this part-time job. Deadline starts at noon. Be careful not to deliver them before the deadline since the final work doesn't begin until then."); } }
@@ -558,7 +558,7 @@ public class EdernSmithArishAshuvainGauntletsIntPtjScript : EdernSmithIntPtjBase
 	}
 }
 
-public class EdernSmithPlateGauntletsAdvPtjScript : EdernSmithAdvPtjBaseScript
+public class EdernSmithPlateGauntletsIntPtjScript : EdernSmithIntPtjBaseScript
 {
 	protected override int QuestId { get { return 507267; } }
 	protected override string LQuestDescription { get { return L("This job involves creating equipment to supply the Blacksmith's Shop. Today's task is creating [Plate Gauntlets], using the materials given for this part-time job. Deadline starts at noon. Be careful not to deliver them before the deadline since the final work doesn't begin until then."); } }
