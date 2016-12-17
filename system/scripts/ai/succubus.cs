@@ -379,18 +379,7 @@ public class SuccubusAi : AiScript
 		else if (Case(20))
 		{
 			Do(Say(Alert8));
-			if (Random() < 33)
-			{
-				Do(Timeout(5000, (PrepareSkill(SkillId.Firebolt)))); // 1 charge
-			}
-			else if (Random() < 66)
-			{
-				Do(Timeout(5000, (PrepareSkill(SkillId.Firebolt)))); // 2 charges
-			}
-			else
-			{
-				Do(Timeout(5000, (PrepareSkill(SkillId.Firebolt)))); // 5 charge
-			}
+			Do(PrepareSkill(SkillId.Firebolt, Rnd(1, 2, 5)));
 			Do(Wait(1000, 2000));
 			Do(Say(Alert9));
 			Do(Wait(3000, 4000));
@@ -399,9 +388,7 @@ public class SuccubusAi : AiScript
 
 			if (Random() < 30)
 			{
-				Do(PrepareSkill(SkillId.Firebolt)); // Actually does only attack with previous charges, charges only if no charges
-				Do(Wait(1000, 2000));
-				Do(Attack(1, 4000));
+				Do(StackAttack(SkillId.Firebolt));
 				Do(Wait(2000, 3000));
 				Do(Say("You're not mad at me, are you? (Laughter)"));
 			}
@@ -683,21 +670,8 @@ public class SuccubusAi : AiScript
 				if (Case(20))
 				{
 					Do(CancelSkill());
-
-					if (Random() < 70)
-					{
-						Do(PrepareSkill(SkillId.Lightningbolt)); // 1 charge
-						Do(Wait(1000, 2000));
-						Do(Attack(1, 4000));
-						Do(Wait(500));
-					}
-					else
-					{
-						Do(PrepareSkill(SkillId.Lightningbolt)); // 2 charge
-						Do(Wait(1000, 2000));
-						Do(Attack(1, 4000));
-						Do(Wait(500));
-					}
+					Do(StackAttack(SkillId.Lightningbolt, Rnd(1, 1, 2))); 
+					Do(Wait(500));
 					Do(Say("Flash!"));
 				}
 				else if (Case(20))
