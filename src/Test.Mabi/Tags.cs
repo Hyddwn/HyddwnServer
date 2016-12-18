@@ -13,6 +13,7 @@ namespace Aura.Tests.Mabi
 		{
 			var tags = new Tags("/test1/test2/test3/");
 
+			Assert.True(tags.Matches(""));
 			Assert.True(tags.Matches("*"));
 			Assert.True(tags.Matches("/test1/"));
 			Assert.True(tags.Matches("/test2/"));

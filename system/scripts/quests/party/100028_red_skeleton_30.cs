@@ -13,6 +13,7 @@ public class RedSkeletons30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Red Skeletons"));
 		SetDescription(L("Have you ever seen a Red Skeleton? The Red Skeletons living in Rabbie Dungeon are controlled by a more powerful evil force than regular Skeletons. Please hunt [30 Red Skeletons]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

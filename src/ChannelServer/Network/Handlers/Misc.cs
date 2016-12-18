@@ -117,13 +117,13 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// No parameters.
 		/// </example>
-		[PacketHandler(Op.ChannelLoginUnk)]
-		public void ChannelLoginUnk(ChannelClient client, Packet packet)
+		[PacketHandler(Op.CollectionRequest)]
+		public void CollectionRequest(ChannelClient client, Packet packet)
 		{
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			// Default answer
-			Send.ChannelLoginUnkR(creature);
+			Send.CollectionRequestR(creature);
 		}
 
 		/// <summary>

@@ -326,6 +326,11 @@ namespace Aura.Channel.Skills.Life
 
 			// Get fishing drop 
 			creature.Temp.FishingDrop = this.GetFishingDrop(creature, rnd);
+			if (creature.Temp.FishingDrop == null)
+			{
+				Log.Debug("Fishing.StartFishing: No drop found.");
+				return;
+			}
 
 			// Random time
 			var time = 10000;
@@ -377,11 +382,30 @@ namespace Aura.Channel.Skills.Life
 			if (prop == null)
 				return null;
 
-			// More efficient way?
+			// Get equip
+			var rightHand = creature.RightHand;
+			var magazine = creature.Magazine;
+			var rod = rightHand == null ? 0 : rightHand.Info.Id;
+			var bait = magazine == null ? 0 : magazine.Info.Id;
+
+			// Get grounds
+			var grounds = (IEnumerable<FishingGroundData>)AuraData.FishingGroundsDb.Entries.Values;
+
+			var eventGrounds = ChannelServer.Instance.GameEventManager.GlobalBonuses.GetFishingGrounds();
+			if (eventGrounds.Any())
+				grounds = grounds.Concat(eventGrounds);
 
 			// Check all grounds ordered by priority
-			foreach (var fishingGround in AuraData.FishingGroundsDb.Entries.Values.OrderByDescending(a => a.Priority))
+			foreach (var fishingGround in grounds.OrderByDescending(a => a.Priority))
 			{
+				// Check chance
+				if (rnd.Next(100) >= fishingGround.Chance)
+					continue;
+
+				// Check equip
+				if ((fishingGround.Rod != 0 && fishingGround.Rod != rod) || (fishingGround.Bait != 0 && fishingGround.Bait != bait))
+					continue;
+
 				// Check locations
 				var locationCondition = (fishingGround.Locations.Length == 0);
 				foreach (var location in fishingGround.Locations)
@@ -409,21 +433,19 @@ namespace Aura.Channel.Skills.Life
 					}
 				}
 
-				// Event
-				// Chance
-				// Rod
-				// Bait
-
 				// Conditions not met
 				if (!locationCondition)
 					continue;
 
 				// Conditions met
 
+				var items = fishingGround.Items;
+				var totalChance = fishingGround.TotalItemChance;
+
 				// Get random item
 				var n = 0.0;
-				var chance = rnd.NextDouble() * fishingGround.TotalItemChance;
-				foreach (var item in fishingGround.Items)
+				var chance = rnd.NextDouble() * totalChance;
+				foreach (var item in items)
 				{
 					n += item.Chance;
 					if (chance <= n)

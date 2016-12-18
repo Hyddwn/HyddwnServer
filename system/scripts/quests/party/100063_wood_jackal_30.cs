@@ -13,6 +13,7 @@ public class WoodJackal30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Wood Jackals"));
 		SetDescription(L("Wood Jackals are under an evil spell and are attacking travelers. Please [hunt 30 Wood Jackals]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

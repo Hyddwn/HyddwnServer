@@ -3,6 +3,7 @@
 
 using Aura.Channel.Network.Sending;
 using Aura.Channel.World.GameEvents;
+using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using System;
@@ -102,6 +103,7 @@ namespace Aura.Channel.Scripting.Scripts
 			this.OnStart();
 
 			Send.Notice(NoticeType.Middle, L("The {0} Event is now in progress."), this.Name);
+			Send.GameEventStateUpdate(this.Id, this.IsActive);
 		}
 
 		/// <summary>
@@ -116,6 +118,7 @@ namespace Aura.Channel.Scripting.Scripts
 			this.OnEnd();
 
 			Send.Notice(NoticeType.Middle, L("The {0} Event has ended."), this.Name);
+			Send.GameEventStateUpdate(this.Id, this.IsActive);
 		}
 
 		/// <summary>
@@ -187,6 +190,106 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds global drop by race id.
+		/// </summary>
+		/// <param name="raceId"></param>
+		/// <param name="data"></param>
+		protected void AddGlobalDrop(int raceId, DropData data)
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddDrop(this.Id, new GlobalDropById(this.Id, raceId, data));
+		}
+
+		/// <summary>
+		/// Adds global drop by race tag.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <param name="data"></param>
+		protected void AddGlobalDrop(string tag, DropData data)
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddDrop(this.Id, new GlobalDropByTag(this.Id, tag, data));
+		}
+
+		/// <summary>
+		/// Adds global drop by type.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <param name="data"></param>
+		protected void AddGlobalDrop(GlobalDropType type, DropData data)
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddDrop(this.Id, new GlobalDropByType(this.Id, type, data));
+		}
+
+		/// <summary>
+		/// Removes all global drops associated with this event.
+		/// </summary>
+		protected void RemoveGlobalDrops()
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveAllDrops(this.Id);
+		}
+
+		/// <summary>
+		/// Adds fishing ground, to be considered when players fish.
+		/// </summary>
+		/// <remarks>
+		/// The fishing grounds describe where a player can fish under which
+		/// circumstances, and what they can catch. If multiple fishing
+		/// grounds exist for a location, the priority and the chance
+		/// determine which ground is used.
+		/// 
+		/// For example, if you want to override the Tir fishing spots during
+		/// and event, you could do the following, which would add a new
+		/// ground for the Tir spots, with a high priority and a 100% chance,
+		/// so it always gets selected over the default.
+		/// </remarks>
+		/// <example>
+		/// // Override Tir for the apple fishing event
+		/// AddFishingGround(
+		/// 	priority: 100000,
+		/// 	chance: 100,
+		/// 	locations: new[]
+		/// 	{
+		/// 		"Uladh_main/town_TirChonaill/fish_tircho_res_",
+		/// 		"Uladh_main/field_Tir_S_aa/fish_tircho_stream_",
+		/// 		"Uladh_main/town_TirChonaill/fish_tircho_stream_",
+		/// 	},
+		/// 	items: new[] 
+		/// 	{
+		/// 		new DropData(itemId: 50003, chance: 250), // Apple
+		/// 		new DropData(itemId: 12241, chance: 50),  // Golden Apple
+		/// 		new DropData(itemId: 75463, chance: 1),   // Avon Apple
+		/// 	}
+		/// );
+		/// </example>
+		/// <param name="priority"></param>
+		/// <param name="chance"></param>
+		/// <param name="rod"></param>
+		/// <param name="bait"></param>
+		/// <param name="locations"></param>
+		/// <param name="items"></param>
+		protected void AddFishingGround(int priority, double chance, IEnumerable<string> locations, IEnumerable<DropData> items, int rod = 0, int bait = 0)
+		{
+			var fishingGroundData = new FishingGroundData();
+			fishingGroundData.Name = this.Id;
+			fishingGroundData.Priority = priority;
+			fishingGroundData.Chance = (float)chance;
+			fishingGroundData.Rod = rod;
+			fishingGroundData.Bait = bait;
+			fishingGroundData.Locations = locations.ToArray();
+			fishingGroundData.Items = items.ToArray();
+			fishingGroundData.TotalItemChance = items.Sum(a => a.Chance);
+
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddFishingGround(this.Id, fishingGroundData);
+		}
+
+		/// <summary>
+		/// Removes all event fishing grounds associated with this event.
+		/// </summary>
+		protected void RemoveFishingGrounds()
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.RemoveAllFishingGrounds(this.Id);
+		}
+
+		/// <summary>
 		/// Schedules this event to be active during the given time span.
 		/// </summary>
 		/// <param name="from"></param>
@@ -206,6 +309,42 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			var gameEventId = this.Id;
 			this.ScheduleEvent(gameEventId, from, timeSpan);
+		}
+
+		/// <summary>
+		/// Adds the the item to the given shop.
+		/// </summary>
+		/// <param name="shopName"></param>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <param name="price"></param>
+		/// <param name="stock"></param>
+		protected void AddEventItemToShop(string shopName, int itemId, int amount = 1, int price = -1, int stock = -1)
+		{
+			var shop = ChannelServer.Instance.ScriptManager.NpcShopScripts.Get(shopName);
+			if (shop == null)
+			{
+				Log.Error("{0}.AddEventItemToShop: Shop '{1}' not found.", this.GetType().Name, shopName);
+				return;
+			}
+
+			shop.Add(Localization.Get("Event"), itemId, amount, price, stock);
+		}
+
+		/// <summary>
+		/// Removes all event items from the given shop.
+		/// </summary>
+		/// <param name="shopName"></param>
+		protected void RemoveEventItemsFromShop(string shopName)
+		{
+			var shop = ChannelServer.Instance.ScriptManager.NpcShopScripts.Get(shopName);
+			if (shop == null)
+			{
+				Log.Error("{0}.RemoveEventItemsFromShop: Shop '{1}' not found.", this.GetType().Name, shopName);
+				return;
+			}
+
+			shop.ClearTab(Localization.Get("Event"));
 		}
 	}
 

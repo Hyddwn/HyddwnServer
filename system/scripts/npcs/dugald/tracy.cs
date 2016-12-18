@@ -381,7 +381,7 @@ public class TracyScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"You think that's funny?",
 					"Man! You want me to talk about it?",
 					"What? You want to be a know-it-all?",

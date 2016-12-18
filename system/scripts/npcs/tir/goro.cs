@@ -130,7 +130,7 @@ public class GoroScript : NpcScript
 
 	protected override async Task Keywords(string kw)
 	{
-		RndMsg(
+		RndFavorMsg(
 			"Well...",
 			"Excuse me, what did you say?",
 			"Hmm...I believe I have heard about it...",

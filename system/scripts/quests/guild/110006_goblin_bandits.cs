@@ -13,6 +13,7 @@ public class GoblinBanditsGuildQuest : QuestScript
 		SetName(L("Eliminate Goblin Bandits"));
 		SetDescription(L("Defeat [Goblin Bandits] that sometimes appear near Dunbarton."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

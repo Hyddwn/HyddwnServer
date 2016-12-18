@@ -108,7 +108,7 @@ Campfire
 ### Rewards
 
 - 1,300 EXP
-- Campefire skill
+- Campfire skill
 
 Caution against Fire
 -----------------------------------------------------------------------------
@@ -144,6 +144,11 @@ Malcolm's Ring
 - 1,700 Gold
 - 3 AP
 - Gold Pouch
+
+### Additional Information
+
+You need to be the one to kill the spider, if you're not, you can get
+another pass from Malcolm to try again.
 
 Duncan's Praise
 -----------------------------------------------------------------------------

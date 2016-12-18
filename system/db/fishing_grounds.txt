@@ -2,7 +2,7 @@
 // Database file
 // 
 // Values: name, [priority], conditions, items
-// Condition Values: [location], [event], [chance], [rod], [bait]
+// Condition Values: [location], [chance], [rod], [bait]
 // Item Values: itemId, chance, [color1], [color2], [color3], [durability]
 //---------------------------------------------------------------------------
 

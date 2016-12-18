@@ -34,6 +34,10 @@ public abstract class FieldBossBaseScript : GeneralScript
 	[On("CreatureKilled")]
 	public void OnCreatureKilled(Creature creature, Creature killer)
 	{
+		// Don't drop anything if nothing should spawn
+		if (!ShouldSpawn())
+			return;
+
 		// Only drop once, from NPCs in the region
 		if (_droppedScroll || creature.RegionId != Spawn.Location.RegionId || !creature.Has(CreatureStates.Npc))
 			return;
@@ -82,7 +86,16 @@ public abstract class FieldBossBaseScript : GeneralScript
 
 	private void SpawnAll()
 	{
-		OnSpawnBosses();
+		if (ShouldSpawn())
+			OnSpawnBosses();
+
+		// Get number of bosses spawned, so we can check for it when it comes
+		// to preparing the next spawn. If no bosses were spawned, they can't
+		// die, and as such, the following tasks has to prepare the next one,
+		// even if all bosses are technically dead, because there aren't any.
+		var spawnCount = 0;
+		lock (_syncLock)
+			spawnCount = _bosses.Count;
 
 		Task.Delay(Spawn.LifeSpan).ContinueWith(a =>
 		{
@@ -93,7 +106,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 
 			DespawnAll();
 
-			if (!allDead)
+			if (!allDead || spawnCount == 0)
 				PrepareSpawn();
 		});
 	}
@@ -220,6 +233,26 @@ public abstract class FieldBossBaseScript : GeneralScript
 
 	protected virtual void OnMinionDied(Creature boss, Creature killer)
 	{
+	}
+
+	protected virtual bool ShouldSpawn()
+	{
+		return true;
+	}
+
+	protected void ContributorDrops(Creature boss, List<DropData> drops)
+	{
+		var hitters = boss.GetAllHitters();
+		var rnd = RandomProvider.Get();
+
+		foreach (var hitter in hitters)
+		{
+			var pos = hitter.GetPosition();
+			var item = Item.GetRandomDrop(rnd, drops);
+			var region = hitter.Region;
+
+			item.Drop(region, pos, 100);
+		}
 	}
 
 	protected class SpawnInfo

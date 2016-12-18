@@ -276,7 +276,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </remarks>
 		/// <param name="tabTitle"></param>
 		/// <returns>Whether clearing was successful. Fails if tab doesn't exist.</returns>
-		protected bool ClearTab(string tabTitle)
+		public bool ClearTab(string tabTitle)
 		{
 			NpcShopTab tab;
 			lock (_tabs)
@@ -385,7 +385,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var item = shop.GetItem(itemEntityId);
 			if (item == null)
 			{
-				Log.Warning("NpcShopScript.Buy: Item '{0:X16}' doesn't exist in shop.", itemEntityId);
+				// Don't warn, this might happen when items are moved while
+				// a player has the shop open.
+				Send.MsgBox(creature, Localization.Get("The item is not available."));
 				return false;
 			}
 

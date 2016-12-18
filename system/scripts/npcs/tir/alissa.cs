@@ -427,7 +427,7 @@ public class AlissaScript : NpcScript
 				}
 				else
 				{
-					RndMsg(
+					RndFavorMsg(
 						"You're not testing me, are you?",
 						"You're expecting too much from me.",
 						"Perhaps Caitin might know. Well... Anyway...",

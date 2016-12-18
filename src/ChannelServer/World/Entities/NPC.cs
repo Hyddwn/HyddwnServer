@@ -259,9 +259,7 @@ namespace Aura.Channel.World.Entities
 				return false;
 			}
 
-			if (this.Region != Region.Limbo)
-				this.Region.RemoveCreature(this);
-
+			this.RemoveFromRegion();
 			this.SetLocation(regionId, x, y);
 
 			region.AddCreature(this);

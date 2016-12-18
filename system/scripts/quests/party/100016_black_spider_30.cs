@@ -13,6 +13,7 @@ public class BlackSpider30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Black Spiders"));
 		SetDescription(L("The Black Spiders in dungeons are a good source of cobwebs for collectors, but they also pose a serious threat to their safety. I will reward you for hunting [30 Black Spiders]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

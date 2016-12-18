@@ -95,6 +95,9 @@ namespace Aura.Mabi
 		/// <returns></returns>
 		private bool Check(string tags, int level)
 		{
+			if (tags == "")
+				return true;
+
 			var result = false;
 			var length = tags.Length;
 			var start = 0;

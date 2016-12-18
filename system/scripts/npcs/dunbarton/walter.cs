@@ -316,7 +316,6 @@ public class WalterShop : NpcShopScript
 		Add("General Goods", 2024);       // Item Bag (7x6)
 		Add("General Goods", 2026);       // Item Bag (44)
 		Add("General Goods", 2029);       // Item Bag (8x6)
-		Add("General Goods", 2038);       // Item Bag (8X10)
 		Add("General Goods", 18028);      // Folding Glasses
 		Add("General Goods", 18158);      // Conky Glasses
 		Add("General Goods", 40004);      // Lute
@@ -325,7 +324,6 @@ public class WalterShop : NpcShopScript
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
-		Add("General Goods", 40215);      // Small Drum
 		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -401,6 +399,11 @@ public class WalterShop : NpcShopScript
 			Add("General Goods", 51227, 20); // Ticking Quiz Bomb x20
 		}
 
+		if (IsEnabled("PercussionInstruments"))
+		{
+			Add("General Goods", 40215); // Small Drum
+		}
+
 		if (IsEnabled("Kiosk"))
 			Add("General Goods", 2037); // Kiosk
 
@@ -413,6 +416,9 @@ public class WalterShop : NpcShopScript
 			Add("General Goods", 91366, 1);  // Seal Scroll (30-day) x1
 			Add("General Goods", 91366, 10); // Seal Scroll (30-day) x10
 		}
+
+		if (IsEnabled("PremiumBags"))
+			Add("General Goods", 2038); // Item Bag (8X10)
 
 		if (IsEnabled("Singing"))
 		{

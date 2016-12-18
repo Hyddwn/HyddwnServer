@@ -662,7 +662,7 @@ public class NaoScript : NpcScript
 			// --------------------------------------------------------------
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					L("Ummm...why don't we talk about something else?")
 				);
 				break;

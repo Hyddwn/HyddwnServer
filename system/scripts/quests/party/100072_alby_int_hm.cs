@@ -13,6 +13,7 @@ public class AlbyIntHardPartyQuest : QuestScript
 		SetName(L("[PQ] Defeat the Lycanthrope"));
 		SetDescription(L("Recently a new altar has been found at the back of Alby Dungeon. Try offering [Alby Intermediate Fomor Pass], and defeat the [Lycanthrope] that can be found at the deepest part of the dungeon."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

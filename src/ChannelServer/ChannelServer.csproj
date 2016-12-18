@@ -184,6 +184,7 @@
     <Compile Include="Skills\Combat\HeavyStander.cs" />
     <Compile Include="Skills\Combat\MagnumShot.cs" />
     <Compile Include="Skills\Combat\ArrowRevolver.cs" />
+    <Compile Include="Skills\Combat\SharpMind.cs" />
     <Compile Include="Skills\Combat\SupportShot.cs" />
     <Compile Include="Skills\Combat\RangedAttack.cs" />
     <Compile Include="Skills\Combat\Smash.cs" />
@@ -256,6 +257,7 @@
     <Compile Include="World\Dungeons\Generation\MazeMove.cs" />
     <Compile Include="World\Dungeons\Generation\MazeRoomInternal.cs" />
     <Compile Include="World\Dungeons\Generation\Position.cs" />
+    <Compile Include="World\Entities\PlayingInstrumentProp.cs" />
     <Compile Include="World\Entities\RpCharacter.cs" />
     <Compile Include="World\GameEvents\GameEventManager.cs" />
     <Compile Include="World\GameEvents\GlobalBonuses.cs" />

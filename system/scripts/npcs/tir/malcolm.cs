@@ -407,7 +407,7 @@ public class MalcolmScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"I don't know.",
 					"Hm... Beats me.",
 					"Well... I don't have much to say about it.",
@@ -431,7 +431,6 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 2006);       // Big Gold Pouch
 		Add("General Goods", 2024);       // Item Bag (7x6)
 		Add("General Goods", 2029);       // Item Bag (8x6)
-		Add("General Goods", 2038);       // Item Bag (8X10)
 		Add("General Goods", 18029);      // Wood-rimmed Glasses
 		Add("General Goods", 18029);      // Wood-rimmed Glasses
 		Add("General Goods", 19001);      // Robe
@@ -447,9 +446,6 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40045);      // Fishing Rod
-		Add("General Goods", 40214);      // Big Drum
-		Add("General Goods", 40214);      // Big Drum
-		Add("General Goods", 40214);      // Big Drum
 		Add("General Goods", 60034, 300); // Bait Tin x300
 		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
@@ -522,6 +518,13 @@ public class MalcolmShop : NpcShopScript
 			Add("General Goods", 40093);   // Pet Instructor Stick
 		}
 
+		if (IsEnabled("PercussionInstruments"))
+		{
+			Add("General Goods", 40214);      // Big Drum
+			Add("General Goods", 40214);      // Big Drum
+			Add("General Goods", 40214);      // Big Drum
+		}
+
 		if (IsEnabled("ItemSeal2"))
 		{
 			Add("General Goods", 91364, 1);  // Seal Scroll (1-day) x1
@@ -531,6 +534,9 @@ public class MalcolmShop : NpcShopScript
 			Add("General Goods", 91366, 1);  // Seal Scroll (30-day) x1
 			Add("General Goods", 91366, 10); // Seal Scroll (30-day) x10
 		}
+
+		if (IsEnabled("PremiumBags"))
+			Add("General Goods", 2038); // Item Bag (8X10)
 
 		if (IsEnabled("Singing"))
 		{

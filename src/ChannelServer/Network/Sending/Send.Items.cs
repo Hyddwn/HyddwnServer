@@ -519,6 +519,20 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends UnkOrdinaryChestR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="itemEntityId"></param>
+		public static void UnkOrdinaryChestR(Creature creature, long itemEntityId)
+		{
+			var packet = new Packet(Op.UnkOrdinaryChestR, creature.EntityId);
+			packet.PutByte(true);
+			packet.PutLong(itemEntityId);
+
+			creature.Client.Send(packet);
+		}
 	}
 
 	public enum ItemPickUpResult : byte

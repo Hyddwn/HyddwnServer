@@ -13,6 +13,7 @@ public class BarriBasicPartyQuest : QuestScript
 		SetName(L("[PQ] Defeat the Werewolf"));
 		SetDescription(L("Please offer [Barri Basic Fomor Pass] on the altar of Barri Dungeon. [Werewolf] that can be found at the deepest part of the dungeon. The reward will be given to you outside the dungeon after completing the quest."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

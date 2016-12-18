@@ -365,7 +365,7 @@ public class NoraScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"Huh?",
 					"I don't... I don't know.",
 					"Can we change the subject?",

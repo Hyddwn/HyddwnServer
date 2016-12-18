@@ -86,12 +86,12 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends ChannelLoginUnkR to creature's client.
+		/// Sends CollectionRequestR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void ChannelLoginUnkR(Creature creature)
+		public static void CollectionRequestR(Creature creature)
 		{
-			var packet = new Packet(Op.ChannelLoginUnkR, creature.EntityId);
+			var packet = new Packet(Op.CollectionRequestR, creature.EntityId);
 			packet.PutByte(1); // success?
 			packet.PutInt(0);
 			packet.PutInt(0);
@@ -514,6 +514,7 @@ namespace Aura.Channel.Network.Sending
 		public static void GameEventStateUpdate(string gameEventId, bool isActive)
 		{
 			var packet = new Packet(Op.GameEventStateUpdate, MabiId.Broadcast);
+			packet.PutString(gameEventId);
 			packet.PutByte(isActive);
 			packet.PutInt(0);
 

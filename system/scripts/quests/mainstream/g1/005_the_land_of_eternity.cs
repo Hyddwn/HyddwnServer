@@ -100,7 +100,7 @@ public class TheLandOfEternityQuest : QuestScript
 			npc.GiveKeyword("g1_10");
 
 			npc.GiveItem(BrownFomorPass);
-			npc.GiveWarpScroll(63009, "barri_dungeon");
+			npc.GiveWarpScroll(63009, "Barri_Dungeon");
 
 			npc.Msg(L("...Did you actually read the book?<br/>You still want to go...?<br/>Just as I'd thought...<br/>..."));
 			npc.Msg(L("...Honestly, I was hoping that<br/>reading the book would be enough to satisfy your curiosity and that you would forget all about it...<br/>But, you can't help that you're an adventurer..."));
@@ -110,7 +110,7 @@ public class TheLandOfEternityQuest : QuestScript
 			npc.Msg(L("If you offer that to the statue of the Goddess in Barri dungeon,<br/>you will witness everything I just told you with your own eyes.<br/>Here's a Red Wing of the Goddess, so use it if you need it...<br/>You can go there alone, but taking one or two friends with you is probably a better idea."));
 			npc.Msg(L("...The best thing to do would be to forget<br/>trying to go to Tir Na Nog.<p/>...Heed my warning..."));
 		}
-		else if (npc.HasKeyword("g1_10"))
+		else if (npc.HasKeyword("g1_10") || npc.HasKeyword("g1_11"))
 		{
 			if (!npc.HasItem(BrownFomorPass))
 				npc.GiveItem(BrownFomorPass);

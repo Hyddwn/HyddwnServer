@@ -268,6 +268,17 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Returns list of all members that match the predicate, sorted by
+		/// their position in the party.
+		/// </summary>
+		/// <returns></returns>
+		public Creature[] GetSortedMembers(Func<Creature, bool> predicate)
+		{
+			lock (_sync)
+				return _members.Where(predicate).OrderBy(a => a.PartyPosition).ToArray();
+		}
+
+		/// <summary>
 		/// Returns first available slot, throws if none are available.
 		/// Check availability before adding members.
 		/// </summary>
@@ -634,12 +645,12 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns which creatures in the party are both in region, and a specified range.
-		/// If no range is supplied, it returns all party creatures within visual(?) range.
+		/// Returns party members in range of given creature, but not the
+		/// creature itself.
 		/// </summary>
 		/// <remarks>3000 is a total guess as to the actual visible range.</remarks>
-		/// <param name="creature"></param>
-		/// <param name="range">Use 0 to get every member in the region.</param>
+		/// <param name="creature">Reference creature</param>
+		/// <param name="range">Pass -1 for visual range.</param>
 		/// <returns></returns>
 		public List<Creature> GetMembersInRange(Creature creature, int range = -1)
 		{

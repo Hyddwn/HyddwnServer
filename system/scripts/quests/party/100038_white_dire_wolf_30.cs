@@ -13,6 +13,7 @@ public class WhiteDireWolf30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the White Dire Wolves"));
 		SetDescription(L("Dire wolves are totally under the control of evil spirits, even more than ordinary wolves. Please do us a favor and [hunt 30 white dire wolves]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

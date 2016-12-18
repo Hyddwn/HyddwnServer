@@ -373,6 +373,12 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns true if item hasn't been completed yet, e.g via Tailoring
+		/// or Blacksmithing.
+		/// </summary>
+		public bool IsIncomplete { get { return this.MetaData1.Has("PRGRATE"); } }
+
+		/// <summary>
 		/// Item's price in a personal shop.
 		/// </summary>
 		public int PersonalShopPrice { get; set; }
@@ -462,6 +468,14 @@ namespace Aura.Channel.World.Entities
 			// Lowered durability
 			if (dropData.Durability != -1)
 				this.Durability = dropData.Durability;
+
+			// Food quality
+			if (dropData.FoodQuality != null)
+				this.MetaData1.SetInt("QUAL", (int)dropData.FoodQuality);
+
+			// Form id (manuals)
+			if (dropData.FormId != null)
+				this.MetaData1.SetInt("FORMID", (int)dropData.FormId);
 		}
 
 		/// <summary>
@@ -842,9 +856,9 @@ namespace Aura.Channel.World.Entities
 		/// <param name="drops"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"></exception>
-		public static Item GetRandomDrop(Random rnd, List<DropData> drops)
+		public static Item GetRandomDrop(Random rnd, IEnumerable<DropData> drops)
 		{
-			if (drops == null || drops.Count == 0)
+			if (drops == null || !drops.Any())
 				throw new ArgumentException("Drops list empty.");
 
 			return GetRandomDrop(rnd, drops.Sum(a => a.Chance), drops);
@@ -859,9 +873,9 @@ namespace Aura.Channel.World.Entities
 		/// <param name="drops"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"></exception>
-		public static Item GetRandomDrop(Random rnd, float total, List<DropData> drops)
+		public static Item GetRandomDrop(Random rnd, float total, IEnumerable<DropData> drops)
 		{
-			if (drops == null || drops.Count == 0)
+			if (drops == null || !drops.Any())
 				throw new ArgumentException("Drops list empty.");
 
 			var num = rnd.NextDouble() * total;
@@ -1613,6 +1627,71 @@ namespace Aura.Channel.World.Entities
 
 				default:
 					throw new ArgumentException("Unknown type '" + type + "'.");
+			}
+		}
+
+		/// <summary>
+		/// Modifies equip stats. Run one for every dropped item.
+		/// </summary>
+		/// <param name="rnd"></param>
+		public void ModifyEquipStats(Random rnd)
+		{
+			var item = this;
+
+			// Equip stat modification
+			// http://wiki.mabinogiworld.com/view/Category:Weapons
+			if (item.HasTag("/righthand/weapon/|/twohand/weapon/"))
+			{
+				var num = rnd.Next(100);
+
+				// Durability
+				if (num == 0)
+					item.OptionInfo.DurabilityMax += 4000;
+				else if (num <= 5)
+					item.OptionInfo.DurabilityMax += 3000;
+				else if (num <= 10)
+					item.OptionInfo.DurabilityMax += 2000;
+				else if (num <= 25)
+					item.OptionInfo.DurabilityMax += 1000;
+
+				// Attack
+				if (num == 0)
+				{
+					item.OptionInfo.AttackMin += 3;
+					item.OptionInfo.AttackMax += 3;
+				}
+				else if (num <= 30)
+				{
+					item.OptionInfo.AttackMin += 2;
+					item.OptionInfo.AttackMax += 2;
+				}
+				else if (num <= 60)
+				{
+					item.OptionInfo.AttackMin += 1;
+					item.OptionInfo.AttackMax += 1;
+				}
+
+				// Crit
+				if (num == 0)
+					item.OptionInfo.Critical += 3;
+				else if (num <= 30)
+					item.OptionInfo.Critical += 2;
+				else if (num <= 60)
+					item.OptionInfo.Critical += 1;
+
+				// Balance
+				if (num == 0)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 12);
+				else if (num <= 10)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 10);
+				else if (num <= 30)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 8);
+				else if (num <= 50)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 6);
+				else if (num <= 70)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 4);
+				else if (num <= 90)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 2);
 			}
 		}
 	}

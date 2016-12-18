@@ -96,7 +96,10 @@ public class BebhinnScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("<username/>, right? Good to see you again."));
+			RndFavorMsg(
+				L("<username/>, right? Good to see you again."),
+				L("I have some bad news...<br/>A strange man came here<br/>and took all the items and money from your account!<p>Juuuuust kidding, haha! That would definitely be bad, huh?")
+			);
 		}
 		else if (Memory <= 6)
 		{
@@ -121,18 +124,84 @@ public class BebhinnScript : NpcScript
 					Msg(FavorExpression(), "My name is <npcname/>. Don't forget it!");
 					ModifyRelation(1, 0, 0);
 				}
+				else if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Malcolm is so adorable sometimes...<br/>What do you think, <username/>? Isn't he cute?");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Boys are so clueless and simple sometimes.<br/>You just give them a nice smile and they start growing a huge ego.<br/>Malcom and a few old folks might be the only exceptions, haha.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Being a small town, this place wasn't very busy before.<br/>But I've gotten more customers lately.<br/>The problem is that the road has been obstructed somewhere.<br/>I'm having a hard time contacting the main headquarters.");
+					Msg("I feel bad for inconveniencing the customers...<br/>Hopefully, it will work out.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "On the day this bank opened, the bank president, Erskin, came by.<br/>He said he was looking for a clerk to work at the new bank.<br/>I applied for the job and was hired on the spot.<br/>I was hoping to go out to the city... But so it goes...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "It's important to have a good memory when you work at a bank,<br/>not to mention that I must always maintain good relationships<br/>with the people in town.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Why do you want to know so much about me?");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
 				else
 				{
-					Msg(FavorExpression(), "Excuse me!<br/>Did an item just disappear from your Inventory?<br/>Please press <hotkey name='InventoryView'/> and check.");
-					Msg("Did you really press it? Hahaha... So gullible!");
+					RndFavorMsg(
+						"Allow me to introduce myself. I'm the head teller of the Erskin Bank,<br/>but you can just call me <npcname/>.",
+						"Excuse me!<br/>Did an item just disappear from your Inventory?<br/>Please press <hotkey name='InventoryView'/> and check.<p>Did you really press it? Hahaha... So gullible!"
+					);
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
-				GiveKeyword("farmland");
-				Msg(FavorExpression(), "Oh, you know what?<br/>Some people were hitting the scarecrow at the School to practice their skills,<br/>and they wandered off and ruined the crops in the farmland.<br/>The owner got pretty upset about it.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Hmm... Did you know? Malcolm has this big crush on Nora.<br/>He even sent her a love letter.<br/>I secretly read it...<br/>And he definitely needs to learn how to write a real love letter...hehe...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "It seems like Ranald has feelings for Priestess Endelyon.<br/>Did you notice that, <username/>?<br/>Strange how people pursue love that has no hope...<br/>I know this is mean, but people need to recognize their limits...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Dilys is quite a beauty.<br/>I don't know how she ended up here, working as a healer.<br/>If I were her, I would go out to a big city, party, dance, date, and all that. What a life!<br/>Hey, don't look at me like that. I am just saying that because I'm jealous!");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Something's strange about Piaras.<br/>They say it's because he traveled a lot and experienced many things.<br/>But the way he talks and acts... Does that really stem from having more experiences?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "A lot of people have been complaining about the Bank not working properly lately.<br/>Well, it's not my fault!<br/>I haven't stolen any money, geez!<br/>Hey, <username/>. Don't tell me you think I'm doing something illegal?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "<username/>,<br/>I think you may love gossiping more than I do.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("farmland");
+					Msg(FavorExpression(), "Oh, you know what?<br/>Some people were hitting the scarecrow at the School to practice their skills,<br/>and they wandered off and ruined the crops in the farmland.<br/>The owner got pretty upset about it.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -317,16 +386,84 @@ public class BebhinnScript : NpcScript
 				break;
 
 			default:
-				RndFavorMsg(
-					"What's that?",
-					"Well...what do you mean?",
-					"Can we change the subject?",
-					"Hehe... I don't know what you're talking about...",
-					"I have no idea... Why don't you ask someone else?",
-					"Hmm... You know a story I've never heard of... How could that be?",
-					"I said I don't know! Why do you keep rubbing it in my face? That's mean... Hehe."
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Haha, I'm not usually interested in such things. But you make it sound so intriguing...");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Interesting story, but I don't really care. Sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "You shouldn't stop by so often...");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "*yawn* Boring...");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"What's that?",
+						"Well...what do you mean?",
+						"Can we change the subject?",
+						"I don't know anything about that.",
+						"Hehe... I don't know what you're talking about...",
+						"I have no idea... Why don't you ask someone else?",
+						"Hmm... You know a story I've never heard of... How could that be?",
+						"A lot of people have asked me that...I didn't know it was that important!",
+						"I said I don't know! Why do you keep rubbing it in my face? That's mean... Hehe.",
+						"Where did you hear that from? It looks like you have better sources than I do..."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				RndMsg(
+					L("This is it! Thank you!"),
+					L("This is so wonderful. Thank you!"),
+					L("I don't know how to thank you enough. Thank you."),
+					L("I don't know what else to say! Thank you so much for this wonderful gift...")
 				);
-				ModifyRelation(0, 0, Random(3));
+				break;
+
+			case GiftReaction.Like:
+				RndMsg(
+					L("I love it!"),
+					L("How did you know I like this?"),
+					L("Wow! This is exactly what I wanted."),
+					L("Wow, unbelievable! Thank you! I am so happy.")
+				);
+				break;
+
+			case GiftReaction.Neutral:
+				RndMsg(
+					L("Thank you again..."),
+					L("Thank you for this great gift."),
+					L("You are so kind. A gift for me..."),
+					L("It's been a while since I received a gift. Thank you!")
+				);
+				break;
+
+			case GiftReaction.Dislike:
+				RndMsg(
+					L("Ah, this is quite awkward."),
+					L("Why are you giving me this?"),
+					L("Hmm... I don't know what to do with this..."),
+					L("I will keep it because you gave it to me, but this is just... Hehe...")
+				);
 				break;
 		}
 	}

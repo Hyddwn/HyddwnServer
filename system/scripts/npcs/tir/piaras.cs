@@ -379,7 +379,7 @@ public class PiarasScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"?",
 					"I don't know about that.",
 					"To be honest, I don't know.",

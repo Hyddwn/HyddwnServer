@@ -13,6 +13,7 @@ public class RatMan10PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Rat Men"));
 		SetDescription(L("Rat Men under the control of an evil power are attacking travelers. Please [hunt 10 rat men]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

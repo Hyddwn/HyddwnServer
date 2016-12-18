@@ -303,7 +303,7 @@ public class MevenScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"...?",
 					"...<br/>I really don't know.",
 					"I am sorry, but ignorance is not a sin.",

@@ -111,17 +111,84 @@ public class CaitinScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("shop_grocery");
-				Msg(FavorExpression(), "My grandmother named me.<br/>I work here at the Grocery Store, so I know one important thing.<br/>You have to eat to survive!<br/>Food helps you regain your Stamina.");
-				Msg("That doesn't mean you can eat just anything.<br/>You shouldn't have too much greasy food<br/>because you could gain a lot of weight.");
-				Msg("Huh? You have food with you but don't know how to eat it?<br/>Okay, open the Inventory and right-click on the food.<br/>Then, click \"Use\" to eat.<br/>If you have bread in your Inventory, and your Stamina is low,<br/>try eating it now.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "When are you available?<br/>I know you're busy but I would love to treat you to a meal when you're free.<br/>You don't have to feel bad, just let me know when you have time.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Actually, my mother isn't well.<br/>Her eyesight is getting worse these days.<br/>I still have a lot to learn from her... I hope she gets better soon.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					GiveKeyword("skill_gathering");
+					Msg(FavorExpression(), "When running a grocery store,<br/>it's not easy stocking goods just from the resources in this town.<br/>That's why I plant and raise rare crops myself<br/>rather than buy from neighboring towns.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "My mother used to run the Grocery Store.<br/>Now I know how hard it was for her.<br/>Every time there is a problem, I'm reminded of all that my mom<br/>must have gone through to raise me.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "You are asking too many personal questions.<br/>Shouldn't you mind your own business?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "If you keep doing that, you'll wear out my patience.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("shop_grocery");
+					Msg(FavorExpression(), "My grandmother named me.<br/>I work here at the Grocery Store, so I know one important thing.<br/>You have to eat to survive!<br/>Food helps you regain your Stamina.");
+					Msg("That doesn't mean you can eat just anything.<br/>You shouldn't have too much greasy food<br/>because you could gain a lot of weight.");
+					Msg("Huh? You have food with you but don't know how to eat it?<br/>Okay, open the Inventory and right-click on the food.<br/>Then, click \"Use\" to eat.<br/>If you have bread in your Inventory, and your Stamina is low,<br/>try eating it now.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				GiveKeyword("brook");
-				Msg(FavorExpression(), "Do you know anything about the Adelia Stream?<br/>The river near the Windmill is the Adelia Stream.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Priestess Endelyon is a very nice person.<br/>She helps my mother even late at night.<br/>If an angel from heaven lost  her wings and put on priestess clothes,<br/>it would probably be someone like Priestess Endelyon.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "One day, the Shepherd Boy's lie made<br/>the whole town panic.<br/>It might have been a funny prank for him<br/>but if he does it again, people will start disliking him.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I heard the school teaches a lot of interesting things.<br/>I wish I could go to school, too. Learning is always fun.<br/>By the way, I hear the School is on holiday right now.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "The Chief is a respectable man.<br/>Long ago, a monster attacked our town and he was injured fighting the monster.<br/>If it were me, I would've fainted or run away...<br/>I guess it's different since I'm not an adult.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Ranald and Ferghus seem to be very close.<br/>I saw them drinking together at the Inn several times.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "You're acting strange.<br/>As a traveler, why are you so interested<br/>in every detail of our town?");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("brook");
+					Msg(FavorExpression(), "Do you know anything about the Adelia Stream?<br/>The river near the Windmill is the Adelia Stream.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -309,14 +376,37 @@ public class CaitinScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
-					"Can we change the subject?",
-					"I don't have much to say about that.",
-					"Never heard of that before.",
-					"Well, I really don't know.",
-					"Did you ask everyone else the same question?"
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I don't really know much about that.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I'm sorry. I'm afraid I don't know.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "You're bothering me. Stop it.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Why are you asking me? I don't know anything about that.");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"Can we change the subject?",
+						"Well, I really don't know.",
+						"Never heard of that before.",
+						"I don't have much to say about that.",
+						"Did you ask everyone else the same question?"
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
 				break;
 		}
 	}
@@ -334,7 +424,24 @@ public class CaitinScript : NpcScript
 		}
 		else
 		{
-			base.Gift(gift, reaction);
+			switch (reaction)
+			{
+				case GiftReaction.Love:
+					Msg(L("It's just what I wanted. Thank you so much!"));
+					break;
+
+				case GiftReaction.Like:
+					Msg(L("Oh, a gift for me? Thanks a lot."));
+					break;
+
+				case GiftReaction.Neutral:
+					Msg(L("I'm sorry that I don't have a gift for you."));
+					break;
+
+				case GiftReaction.Dislike:
+					Msg(L("Hehe. You're funny."));
+					break;
+			}
 		}
 	}
 }

@@ -13,6 +13,7 @@ public class PoisonGoblins30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Poison Goblins"));
 		SetDescription(L("Poison goblins are different from ordinary goblins with their poisonous purple skin. This threatening creature is from the lower class of Fomors. Please do us a favor and [hunt 30 poison goblins]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

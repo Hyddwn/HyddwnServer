@@ -461,6 +461,12 @@ namespace Aura.Channel.World
 				// because there are thousands of client props. We only need
 				// the ones that make a difference. Added check for
 				// state and XML. [exec]
+				// 
+				// After the MusicQ update (NA242) I thought this might become
+				// a problem, that you would hear the music from the new music
+				// props from across the region, but it seems like the client
+				// filters them, based on the creature that spawned them.
+				// Is the creature not in range, the music stops. [exec]
 
 				result.AddRange(_props.Values.Where(a => a.ServerSide || a.ModifiedClientSide));
 			}
@@ -807,7 +813,7 @@ namespace Aura.Channel.World
 			// Add collisions
 			this.Collisions.Add(prop);
 
-			Send.EntityAppears(prop);
+			//Send.EntityAppears(prop);
 		}
 
 		/// <summary>

@@ -1673,6 +1673,10 @@ namespace Aura.Channel.Scripting.Scripts
 				if (result.Item.IsBlessed)
 					useRate = 100 - ((100 - useRate) / 2);
 
+				// 100% Repair Event
+				if (IsEventActive("all_repairrate_100"))
+					useRate = 100;
+
 				// Success
 				if (this.Random(100) < useRate)
 				{
