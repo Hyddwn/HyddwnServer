@@ -49,8 +49,13 @@ namespace Aura.Channel.Skills.Combat
 					attackerSkill.Train(3); // Finish off with critical hit.
 			}
 
-			if (targetSkill != null && targetSkill.Info.Rank >= SkillRank.RF)
-				targetSkill.Train(2); // Learn from enemy's critical hit.
+			if (targetSkill != null)
+			{
+				if (targetSkill.Info.Rank == SkillRank.Novice)
+					targetSkill.Train(1); // Learn from enemy's critical hit.
+				else if (targetSkill.Info.Rank >= SkillRank.RF)
+					targetSkill.Train(2); // Learn from enemy's critical hit.
+			}
 		}
 
 		/// <summary>
