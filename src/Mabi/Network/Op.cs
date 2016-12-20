@@ -258,6 +258,7 @@ namespace Aura.Mabi.Network
 		public const int ArenaHideOn = 0x6D6F;
 		public const int ArenaHideOff = 0x6D70;
 		public const int SetStandStyleTalking = 0x6D79;
+		public const int UnkKnockBack = 0x6D7D;
 		public const int ChangeStanceRequest = 0x6E28;
 		public const int ChangeStanceRequestR = 0x6E29;
 		public const int ChangeStance = 0x6E2A;
