@@ -530,9 +530,22 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="delayMax">Maximum respawn delay in seconds</param>
 		/// <param name="titles">List of random titles to apply to creatures</param>
 		/// <param name="coordinates">Even number of coordinates, specifying the spawn area</param>
-		protected void CreateSpawner(int race, int amount, int region, int delay = 0, int delayMin = 10, int delayMax = 20, int[] titles = null, int[] coordinates = null)
+		/// <returns>Id of the new spawner.</returns>
+		protected int CreateSpawner(int race, int amount, int region, int delay = 0, int delayMin = 10, int delayMax = 20, int[] titles = null, int[] coordinates = null)
 		{
-			ChannelServer.Instance.World.SpawnManager.Add(new CreatureSpawner(race, amount, region, delay, delayMin, delayMax, titles, coordinates));
+			var spawner = new CreatureSpawner(race, amount, region, delay, delayMin, delayMax, titles, coordinates);
+			ChannelServer.Instance.World.SpawnManager.Add(spawner);
+
+			return spawner.Id;
+		}
+
+		/// <summary>
+		/// Removes spawner with given id if it exists.
+		/// </summary>
+		/// <param name="spawnerId"></param>
+		protected void RemoveSpawner(int spawnerId)
+		{
+			ChannelServer.Instance.World.SpawnManager.Remove(spawnerId);
 		}
 
 		/// <summary>
