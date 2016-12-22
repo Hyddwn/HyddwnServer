@@ -81,10 +81,10 @@ namespace Aura.Channel.World.Entities
 		public int InventoryHeight { get; set; }
 
 		/// <summary>
-		/// Temporary and permanent variables, exclusive to this creature.
+		/// Temporary and permanent variables exclusive to this creature.
 		/// </summary>
 		/// <remarks>
-		/// Permanent variables are saved across relogs, if the creature
+		/// Permanent variables are saved across relogs if the creature
 		/// is a player creature. NPCs and monster variables aren't saved.
 		/// </remarks>
 		public ScriptVariables Vars { get; protected set; }

@@ -124,7 +124,7 @@
 	
 	// Season 3
 	{ name: "G2S3", enabled: true, children: [
-		// Enables obtaining the Thunder
+		// Enables obtaining the Thunder skill
 		{ name: "Thunder", enabled: true },
 		
 		// Enables merchant NPC Fleta
