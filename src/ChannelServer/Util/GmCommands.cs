@@ -1382,7 +1382,7 @@ namespace Aura.Channel.Util
 			var listOfSkills = new SkillId[]
 			{
 				SkillId.Counterattack, SkillId.CriticalHit, SkillId.Defense, SkillId.FinalHit, SkillId.MagnumShot, SkillId.RangedAttack,
-				SkillId.Smash, SkillId.Windmill, SkillId.SupportShot, SkillId.ArrowRevolver2,
+				SkillId.SharpMind, SkillId.Smash, SkillId.Windmill, SkillId.SupportShot, SkillId.ArrowRevolver2,
 
 				SkillId.Blacksmithing, SkillId.Campfire, SkillId.FirstAid, SkillId.Fishing, SkillId.Handicraft, SkillId.Herbalism, SkillId.PotionMaking,
 				SkillId.ProductionMastery, SkillId.Refining, SkillId.Rest, SkillId.Tailoring, SkillId.Weaving,
