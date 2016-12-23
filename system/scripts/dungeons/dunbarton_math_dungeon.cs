@@ -16,6 +16,13 @@ public class MathDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Math Adv. Fomor Pass for 3
+		if (item.Info.Id == 63130)
+		{
+			dungeonName = "dunbarton_math_high_3_dungeon";
+			return true;
+		}
+
 		// Math Adv. Fomor Pass
 		if (item.Info.Id == 63131)
 		{
