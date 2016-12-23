@@ -9,6 +9,13 @@ public class MathDungeonScript : DungeonScript
 {
 	public override bool Route(Creature creature, Item item, ref string dungeonName)
 	{
+		// Math Adv. Fomor Pass for 2
+		if (item.Info.Id == 63129)
+		{
+			dungeonName = "dunbarton_math_high_2_dungeon";
+			return true;
+		}
+
 		// Math Adv. Fomor Pass
 		if (item.Info.Id == 63131)
 		{
