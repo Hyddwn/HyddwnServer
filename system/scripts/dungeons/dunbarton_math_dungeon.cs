@@ -9,6 +9,13 @@ public class MathDungeonScript : DungeonScript
 {
 	public override bool Route(Creature creature, Item item, ref string dungeonName)
 	{
+		// Math Adv. Fomor Pass
+		if (item.Info.Id == 63131)
+		{
+			dungeonName = "dunbarton_math_high_dungeon";
+			return true;
+		}
+
 		// Broken Torque (G1, Mores RP)
 		if (item.Info.Id == 73003)
 		{
