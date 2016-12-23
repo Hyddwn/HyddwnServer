@@ -22,6 +22,19 @@ public class RundalDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Rundal Adv. Fomor Pass for 3
+		if (item.Info.Id == 63127)
+		{
+			if (creature.Party.MemberCount != 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 members."));
+				return false;
+			}
+
+			dungeonName = "emain_runda_high_3_dungeon";
+			return true;
+		}
+
 		// Rundal Adv. Fomor Pass
 		if (item.Info.Id == 63128)
 		{

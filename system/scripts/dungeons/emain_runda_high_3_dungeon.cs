@@ -1,11 +1,11 @@
 //--- Aura Script -----------------------------------------------------------
-// Rundal Advanced for 2 Dungeon
+// Rundal Advanced for 3 Dungeon
 //--- Description -----------------------------------------------------------
-// Dungeon script for Rundal Advanced for 2.
+// Dungeon script for Rundal Advanced for 3.
 //---------------------------------------------------------------------------
 
-[DungeonScript("emain_runda_high_2_dungeon")]
-public class RundalAdv2DungeonScript : DungeonScript
+[DungeonScript("emain_runda_high_3_dungeon")]
+public class RundalAdv3DungeonScript : DungeonScript
 {
 	public override void OnBoss(Dungeon dungeon)
 	{
@@ -38,7 +38,7 @@ public class RundalAdv2DungeonScript : DungeonScript
 				treasureChest.Add(Item.CreateEnchant(suffix));
 			}
 
-			treasureChest.AddGold(rnd.Next(5400, 11400)); // Gold
+			treasureChest.AddGold(rnd.Next(6480, 10800)); // Gold
 			treasureChest.Add(GetRandomTreasureItem(rnd)); // Random item
 
 			dungeon.AddChest(treasureChest);
