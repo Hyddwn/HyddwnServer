@@ -9,6 +9,13 @@ public class CoillDungeonScript : DungeonScript
 {
 	public override bool Route(Creature creature, Item item, ref string dungeonName)
 	{
+		// Fall back for unknown passes
+		if (item.IsDungeonPass)
+		{
+			Send.Notice(creature, L("This dungeon hasn't been implemented yet."));
+			return false;
+		}
+
 		// emain_coill_dungeon
 		return true;
 	}
