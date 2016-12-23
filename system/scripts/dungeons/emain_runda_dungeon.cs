@@ -9,6 +9,19 @@ public class RundalDungeonScript : DungeonScript
 {
 	public override bool Route(Creature creature, Item item, ref string dungeonName)
 	{
+		// Rundal Adv. Fomor Pass for 2
+		if (item.Info.Id == 63126)
+		{
+			if (creature.Party.MemberCount != 2)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 2 members."));
+				return false;
+			}
+
+			dungeonName = "emain_runda_high_2_dungeon";
+			return true;
+		}
+
 		// Rundal Adv. Fomor Pass
 		if (item.Info.Id == 63128)
 		{
