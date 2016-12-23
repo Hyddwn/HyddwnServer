@@ -12,6 +12,12 @@ public class MathDungeonScript : DungeonScript
 		// Math Adv. Fomor Pass for 2
 		if (item.Info.Id == 63129)
 		{
+			if (creature.Party.MemberCount != 2)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 2 members."));
+				return false;
+			}
+
 			dungeonName = "dunbarton_math_high_2_dungeon";
 			return true;
 		}
@@ -19,6 +25,12 @@ public class MathDungeonScript : DungeonScript
 		// Math Adv. Fomor Pass for 3
 		if (item.Info.Id == 63130)
 		{
+			if (creature.Party.MemberCount != 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 members."));
+				return false;
+			}
+
 			dungeonName = "dunbarton_math_high_3_dungeon";
 			return true;
 		}
