@@ -398,7 +398,7 @@ namespace Aura.Channel.Util
 				Send.ServerMessage(sender,
 					Localization.Get("Destinations:") +
 					" Tir Chonaill, Dugald Isle, Dunbarton, Gairech, Bangor, Emain Macha, Taillteann, Tara, Cobh, Ceo Island, Nekojima, GM Island," +
-					" Alby, Ciar, Rabbie, Math, Fiodh, Barri, Albey"
+					" Alby, Ciar, Rabbie, Math, Fiodh, Barri, Albey, Coill"
 				);
 				return CommandResult.InvalidArgument;
 			}
@@ -426,6 +426,7 @@ namespace Aura.Channel.Util
 			else if (destination.StartsWith("barri")) { regionId = 32; x = 3200; y = 2880; }
 			else if (destination.StartsWith("fiodh")) { regionId = 49; x = 3530; y = 7150; }
 			else if (destination.StartsWith("albey")) { regionId = 44; x = 3200; y = 3450; }
+			else if (destination.StartsWith("coil")) { regionId = 54; x = 3520; y = 7180; }
 			else
 			{
 				Send.ServerMessage(sender, Localization.Get("Unkown destination"), args[1]);
