@@ -9,6 +9,13 @@ public class RundalDungeonScript : DungeonScript
 {
 	public override bool Route(Creature creature, Item item, ref string dungeonName)
 	{
+		// Rundal Basic Pass
+		if (item.Info.Id == 63105)
+		{
+			dungeonName = "emain_runda_low_dungeon";
+			return true;
+		}
+
 		// Rundal Adv. Fomor Pass for 2
 		if (item.Info.Id == 63126)
 		{
