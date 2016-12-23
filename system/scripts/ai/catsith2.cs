@@ -4,10 +4,10 @@
 // AI for one of the Cat Sith Knights.
 //---------------------------------------------------------------------------
 
-[AiScript("catsith1")]
-public class CatSith1Ai : AiScript
+[AiScript("catsith2")]
+public class CatSith2Ai : AiScript
 {
-	public CatSith1Ai()
+	public CatSith2Ai()
 	{
 		SetVisualField(950, 120);
 		SetAggroRadius(400);
@@ -49,7 +49,7 @@ public class CatSith1Ai : AiScript
 	protected override IEnumerable Aggro()
 	{
 		SwitchRandom();
-		if (Case(30))
+		if (Case(20))
 		{
 			if (Random() < 50)
 			{
@@ -62,20 +62,27 @@ public class CatSith1Ai : AiScript
 			Do(Attack(3, 4000));
 
 			SwitchRandom();
-			if (Case(60))
+			if (Case(30))
 			{
-				Do(Say("", "", ""));
 				Do(Attack(3, 4000));
 			}
 			else if (Case(30))
 			{
-				Do(PrepareSkill(SkillId.Counterattack));
-				Do(Wait(1000));
+				Do(PrepareSkill(SkillId.Defense));
+				Do(Follow(50, true, 1000));
+				Do(CancelSkill());
+			}
+			else if (Case(30))
+			{
+				Do(Say("", "", ""));
+				Do(StackAttack(SkillId.Icebolt, Rnd(1, 2)));
+
+				if (Random() < 50)
+					Do(Attack(3, 4000));
 			}
 			else if (Case(10))
 			{
 				Do(PrepareSkill(SkillId.Counterattack));
-				Do(Say("", "", ""));
 				Do(Wait(500, 2000));
 				Do(Say("", "", ""));
 				Do(CancelSkill());
@@ -89,49 +96,24 @@ public class CatSith1Ai : AiScript
 			SwitchRandom();
 			if (Case(40))
 			{
-				Do(Say("", "", ""));
 				Do(PrepareSkill(SkillId.Smash));
-				Do(Wait(1000, 1500));
+				Do(Say("", "", ""));
 				Do(Attack(1, 4000));
 			}
 			else if (Case(30))
 			{
 				Do(PrepareSkill(SkillId.Smash));
 				Do(CancelSkill());
+				Do(Say("", "", ""));
 				Do(Attack(3, 4000));
 			}
 			else if (Case(30))
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Wait(2000, 6000));
-				Do(CancelSkill());
 			}
-		}
-		else if (Case(20))
-		{
-			if (Random(100) < 50)
-			{
-				Do(PrepareSkill(SkillId.Defense));
-				Do(KeepDistance(1000, false, 3000));
 
-				if (Random(100) < 70)
-				{
-					Do(Wait(1000, 2000));
-					Do(CancelSkill());
-				}
-				else
-				{
-					Do(CancelSkill());
-					Do(Wait(1000, 2000));
-				}
-			}
-			else
-			{
-				Do(PrepareSkill(SkillId.Counterattack));
-				Do(Wait(3000, 7000));
-				Do(CancelSkill());
-				Do(Wait(1000, 2000));
-			}
+			Do(Wait(1000, 2000));
 		}
 		else if (Case(10))
 		{
@@ -168,6 +150,87 @@ public class CatSith1Ai : AiScript
 			Do(Wait(1000, 10000));
 			Do(CancelSkill());
 		}
+		else if (Case(15))
+		{
+			Do(Say("", "", ""));
+			Do(StackAttack(SkillId.Icebolt, 1));
+
+			if (Random(100) < 80)
+			{
+				Do(Attack(3, 4000));
+			}
+			else
+			{
+				Do(StackAttack(SkillId.Icebolt, 1));
+				Do(Wait(1000, 2000));
+			}
+
+			Do(Wait(500, 1500));
+		}
+		else if (Case(15))
+		{
+			SwitchRandom();
+			if (Case(50))
+			{
+				Do(PrepareSkill(SkillId.Defense));
+				Do(KeepDistance(1000, false, 3000));
+
+				SwitchRandom();
+				if (Case(60))
+				{
+					Do(CancelSkill());
+
+					Do(Say("", "", ""));
+					Do(StackAttack(SkillId.Icebolt, 1));
+
+					if (Random(100) < 80)
+					{
+						Do(Say("", "", ""));
+						Do(Attack(3, 4000));
+					}
+					else
+					{
+						Do(StackAttack(SkillId.Icebolt, 1));
+						Do(Wait(1000, 2000));
+					}
+				}
+				else if (Case(30))
+				{
+					Do(CancelSkill());
+
+					Do(Say("", "", ""));
+					Do(StackAttack(SkillId.Icebolt, 1));
+					Do(Wait(1000, 2000));
+				}
+				else if (Case(10))
+				{
+					Do(Wait(4000, 6000));
+					Do(CancelSkill());
+				}
+			}
+			else if (Case(30))
+			{
+				Do(PrepareSkill(SkillId.Counterattack));
+				Do(Wait(3000, 7000));
+				Do(CancelSkill());
+				Do(Wait(1000, 2000));
+			}
+			else if (Case(20))
+			{
+				Do(KeepDistance(1400, false, 3000));
+
+				if (Random(100) < 50)
+				{
+					Do(Say("", "", ""));
+					Do(StackAttack(SkillId.Icebolt, 1));
+					Do(Wait(1000, 2000));
+				}
+				else
+				{
+					Do(Wait(4000, 6000));
+				}
+			}
+		}
 	}
 
 	private IEnumerable OnHit()
@@ -177,7 +240,7 @@ public class CatSith1Ai : AiScript
 		if (Random(100) < 80)
 			Do(Attack(3, 4000));
 		else
-			Do(KeepDistance(10000, false, 2000));
+			Do(KeepDistance(600, false, 2000));
 	}
 
 	private IEnumerable OnKnockDown()
@@ -219,7 +282,14 @@ public class CatSith1Ai : AiScript
 			Do(Attack(3, 4000));
 
 			if (Random(100) < 50)
+			{
 				Do(Wait(1000, 2000));
+			}
+			else
+			{
+				Do(StackAttack(SkillId.Icebolt, 1));
+				Do(Attack(3, 4000));
+			}
 		}
 		else
 		{
