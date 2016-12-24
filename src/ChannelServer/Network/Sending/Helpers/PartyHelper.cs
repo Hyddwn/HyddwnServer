@@ -51,16 +51,18 @@ namespace Aura.Channel.Network.Sending.Helpers
 			{
 				packet.AddPartyMember(members[i]);
 
-				if (i == 0)
+				packet.PutInt(i == 0 ? 3 : 1);
+
+				// [200200, NA242 (2016-12-15)]
 				{
-					packet.PutInt(3);
-					packet.PutLong(0);
+					packet.PutByte(0);
+					packet.PutShort(128);
+					packet.PutInt(0);
+					packet.PutInt(0);
+					packet.PutInt(0);
 				}
-				else
-				{
-					packet.PutInt(1);
-					packet.PutLong(0);
-				}
+
+				packet.PutLong(0);
 			}
 			packet.PutByte(0);
 		}

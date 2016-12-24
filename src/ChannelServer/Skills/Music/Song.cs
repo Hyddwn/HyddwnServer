@@ -91,10 +91,10 @@ namespace Aura.Channel.Skills.Music
 		/// </remarks>
 		/// <param name="quality"></param>
 		/// <returns></returns>
-		protected override string GetRandomQualityMessage(PlayingQuality quality)
+		protected override string GetRandomQualityMessage(int quality)
 		{
 			string[] msgs = null;
-			switch (quality)
+			switch (this.GetQualityRating(quality))
 			{
 				case PlayingQuality.VeryGood:
 					msgs = new string[] {
@@ -139,7 +139,7 @@ namespace Aura.Channel.Skills.Music
 		/// <param name="creature"></param>
 		/// <param name="skill"></param>
 		/// <param name="quality"></param>
-		protected override void OnPlay(Creature creature, Skill skill, PlayingQuality quality)
+		protected override void OnPlay(Creature creature, Skill skill, int quality)
 		{
 			Send.Effect(creature, 356, (byte)1);
 
@@ -153,22 +153,24 @@ namespace Aura.Channel.Skills.Music
 		/// <param name="creature"></param>
 		/// <param name="skill"></param>
 		/// <param name="quality"></param>
-		protected override void AfterPlay(Creature creature, Skill skill, PlayingQuality quality)
+		protected override void AfterPlay(Creature creature, Skill skill, int quality)
 		{
+			var playingQuality = this.GetQualityRating(quality);
+
 			// All ranks above F have the same 3 first conditions.
 			if (skill.Info.Rank >= SkillRank.RF && skill.Info.Rank <= SkillRank.R1)
 			{
-				if (quality >= PlayingQuality.Bad)
+				if (playingQuality >= PlayingQuality.Bad)
 					skill.Train(1); // Use the skill successfully.
 
-				if (quality == PlayingQuality.Good)
+				if (playingQuality == PlayingQuality.Good)
 					skill.Train(2); // Give an excellent vocal performance.
 
-				if (quality == PlayingQuality.VeryGood)
+				if (playingQuality == PlayingQuality.VeryGood)
 					skill.Train(3); // Give a heavenly performance.
 
 				// Very bad training possible till E.
-				if (skill.Info.Rank <= SkillRank.RE && quality == PlayingQuality.VeryBad)
+				if (skill.Info.Rank <= SkillRank.RE && playingQuality == PlayingQuality.VeryBad)
 					skill.Train(4); // Fail at using the skill.
 			}
 

@@ -323,7 +323,7 @@ public class MoonGateScript : GeneralScript
 		MoonGate gate;
 		if (!gates.TryGetValue(prop.EntityId, out gate))
 		{
-			Send.Notice(creature, Localization.Get("This moon gate is currently not operable. Please report."));
+			Send.Notice(creature, L("This moon gate is currently not operable. Please report."));
 			return;
 		}
 
@@ -440,7 +440,7 @@ public class MoonGateScript : GeneralScript
 		// Check locations
 		if (origin == destination)
 		{
-			Send.Notice(creature, Localization.Get("You cannot teleport using the same Moon Gate."));
+			Send.Notice(creature, L("You cannot teleport using the same Moon Gate."));
 			return false;
 		}
 
@@ -448,7 +448,7 @@ public class MoonGateScript : GeneralScript
 		MoonGate originGate, destinationGate;
 		if (!gatesStr.TryGetValue(origin, out originGate) || !gatesStr.TryGetValue(destination, out destinationGate))
 		{
-			Send.Notice(creature, Localization.Get("This moon gate is currently not operable. Please report."));
+			Send.Notice(creature, L("This moon gate is currently not operable. Please report."));
 			return false;
 		}
 
@@ -525,18 +525,20 @@ public class MoonGateScript : GeneralScript
 	private void UpdateCurrentGates(ErinnTime now)
 	{
 		var table = GetTable();
+		var nowDt = now.DateTime;
+		var beginOfTimeDt = ErinnTime.BeginOfTime;
 
-		// Add 9 minutes, to compensate for the 6 in-game hours between
-		// 18:00 and 00:00, otherwise we get the gates for the next day
-		// when starting the server between 00:00 and 05:59.
-		var cycles = (int)((DateTime.Now.AddMinutes(9) - ErinnTime.BeginOfTime).TotalSeconds / 2160);
+		// The begin of time is at 00:00 on some day, if we used it as is,
+		// we'd get a cycle for between 00:00 and 23:59 Erinn time, and the
+		// cycle for the *next* day after 00:00 Erinn time, when it's
+		// actually still the same, since it's still the same night. Adding
+		// 9 minutes (6 Erinn hours) to the begin of time fixes this.
+		beginOfTimeDt = beginOfTimeDt.AddMinutes(9);
+
+		var cycles = (int)((nowDt - beginOfTimeDt).TotalSeconds / 2160);
 
 		currentGateKeyword = table[cycles % table.Length];
 		nextGateKeyword = table[(cycles + 1) % table.Length];
-
-		// During the day the "current" gate is the next gate.
-		if (now.IsDay)
-			currentGateKeyword = nextGateKeyword;
 
 		if (!gatesStr.TryGetValue(currentGateKeyword, out currentGate))
 			throw new Exception("Gate '" + currentGateKeyword + "' not found.");
@@ -549,7 +551,7 @@ public class MoonGateScript : GeneralScript
 	{
 		var firstRun = (currentGateKeyword == null);
 
-		if (now.IsDusk || currentGateKeyword == null)
+		if (now.IsDawn || firstRun)
 			UpdateCurrentGates(now);
 
 		// Just update gates on first run, to set initial state.

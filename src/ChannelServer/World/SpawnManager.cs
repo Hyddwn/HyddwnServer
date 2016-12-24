@@ -53,6 +53,27 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Removes spawner with given id, returns true if one was removed.
+		/// </summary>
+		/// <param name="spawnerId"></param>
+		/// <returns></returns>
+		public bool Remove(int spawnerId)
+		{
+			var spawner = this.Get(spawnerId);
+			if (spawner == null)
+				return false;
+
+			// Remove spawner
+			lock (_spawners)
+				_spawners.Remove(spawnerId);
+
+			// Dispose to remove spawned creatures
+			spawner.Dispose();
+
+			return true;
+		}
+
+		/// <summary>
 		/// Disposes and removes all spawners.
 		/// </summary>
 		public void Clear()

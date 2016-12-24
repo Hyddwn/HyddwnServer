@@ -488,7 +488,7 @@ public class TreforScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"Oh, is that so?",
 					"That was quite boring...",
 					"I don't know anything about that...",

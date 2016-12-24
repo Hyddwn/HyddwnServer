@@ -110,7 +110,7 @@ public class TheLandOfEternityQuest : QuestScript
 			npc.Msg(L("If you offer that to the statue of the Goddess in Barri dungeon,<br/>you will witness everything I just told you with your own eyes.<br/>Here's a Red Wing of the Goddess, so use it if you need it...<br/>You can go there alone, but taking one or two friends with you is probably a better idea."));
 			npc.Msg(L("...The best thing to do would be to forget<br/>trying to go to Tir Na Nog.<p/>...Heed my warning..."));
 		}
-		else if (npc.HasKeyword("g1_10"))
+		else if (npc.HasKeyword("g1_10") || npc.HasKeyword("g1_11"))
 		{
 			if (!npc.HasItem(BrownFomorPass))
 				npc.GiveItem(BrownFomorPass);

@@ -96,14 +96,103 @@ public class MevenScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("temple");
-				Msg(FavorExpression(), "I am Priest <npcname/>.<br/>It's so nice to see someone cares for an old man.<br/>Ha ha.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Lymilark is the God of Love.<br/>Love for others and mercy for the underprivileged.<br/>We have the ability to show them what love is, what mercy is.<br/>And that is because Lymilark cares about us.");
+					Msg("We must be mindful of the voice of God.<br/>God speaks to us at all times in our mind.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Through consultation with many believers,<br/>I realized one of the most important things in your life is to find the right job for you.");
+					Msg("Deep deliberation should precede a choice at all times.<br/>A rushed decision may cause people to lose their peace of mind<br/>and find themselves committing sins.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Some books take more to understand than just simple reading.<br/>They reveal their true values when read with care.<br/>When you get your hands on a book, make sure you read in detail for optimal comprehension.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "She used to serve at the Pontiff's Court in a big city.<br/>You're wondering why she ended up in this country town far from all the glory?<br/>Well, she's not far from the glory, as a matter of fact.");
+					Msg("Living in a relaxed countryside with fresh air and clean water.<br/>It is a real blessing from Lymilark for her.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Endelyon has been a great help to me.<br/>She relieved much of my workload at the Church.<br/>Could I ever find a better person than Priestess Endelyon?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "My life is in Lymilark's hands.<br/>I don't have anything more to say.<br/>Why don't you accept and serve Lymilark?<br/>All your sins will be forgiven through the greatest love of all.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("temple");
+					Msg(FavorExpression(), "I am Priest <npcname/>.<br/>It's so nice to see someone cares for an old man.<br/>Ha ha.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				Msg(FavorExpression(), "The General Shop, Grocery Store and the Bank<br/>surround the Square of the town.<br/>A bit higher up the hill is the Chief's House.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Did you ever have go to a town office<br/>and beg the clerk there to look for your lost items?");
+					Msg("It costs you Gold. It's embarrassing.<br/>The clerk keeps grumbling if you visit often.<br/>In the worst case, you may lose your item forever.");
+					Msg("You may not understand what I'm saying<br/>if you haven't been through this before.<br/>But if you have, this will be quite interesting.");
+					Msg("Have you ever heard of the 'Holy Water of Lymilark' before?<br/>Yes, we use this water for our rites.");
+					Msg("Oh. Oh. I'm not implying the Holy Water of Lymilark<br/>improves durability of goods.<br/>Oh, please wait. Let me finish first.");
+					Msg("The Holy Water of Lymilark also helps you<br/>not to lose the items you have.<br/>Use the Holy Water of Lymilark on your item,<br/>and you will not lose it even if you die.");
+					Msg("Isn't it incredible?<br/>This is certainly a miracle of Lymilark!<br/>What more evidence would you need? Ha ha.");
+					Msg("But the blessings of an item may disappear quite often<br/>when the owner loses health and falls.");
+					Msg("To be on the safe side,<br/>perhaps you'd better carry enough Holy Water of Lymilark at all times<br/>and use it on your items.<br/>Better to be safe than sorry, a piece of wisdom from an old man.");
+					Msg("If you are interested in Holy Water of Lymilark, please help Priestess Endelyon.<br/>She's got too much to attend to by herself. We don't sell Holy Water of Lymilark for several reasons.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Malcolm must be having a hard time because of Nora.<br/>A priest shouldn't interfere with the relationship between a young man and a woman.<br/>But... Malcolm is simply too shy. And Nora needs a little more self-confidence.");
+					Msg("Actually, I heard this story from Bebhinn.<br/>Well, if Bebhinn knows, then everyone in town knows about it.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Did you ever have go to a town office<br/>and beg the clerk there to look for your lost items?");
+					Msg("It costs you Gold. It's embarrassing.<br/>The clerk keeps grumbling if you visit often.<br/>In the worst case, you may lose your item forever.");
+					Msg("You may not understand what I'm saying<br/>if you haven't been through this before.<br/>But if you have, this will be quite interesting.");
+					Msg("Have you ever heard of the 'Holy Water of Lymilark' before?<br/>Yes, we use this water for our rites.");
+					Msg("Oh. Oh. I'm not implying the Holy Water of Lymilark<br/>improves durability of goods.<br/>Oh, please wait. Let me finish first.");
+					Msg("The Holy Water of Lymilark also helps you<br/>not to lose the items you have.<br/>Use the Holy Water of Lymilark on your item,<br/>and you will not lose it even if you die.");
+					Msg("Isn't it incredible?<br/>This is certainly a miracle of Lymilark!<br/>What more evidence would you need? Ha ha.");
+					Msg("But the blessings of an item may disappear quite often<br/>when the owner loses health and falls.");
+					Msg("To be on the safe side,<br/>perhaps you'd better carry enough Holy Water of Lymilark at all times<br/>and use it on your items.<br/>Better to be safe than sorry, a piece of wisdom from an old man.");
+					Msg("If you are interested in Holy Water of Lymilark, please help Priestess Endelyon.<br/>She's got too much to attend to by herself. We don't sell Holy Water of Lymilark for several reasons.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "I have known Duncan for a long time.<br/>He is a good man. He really cares about his people.<br/>I have never seen a person like him before.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "See how fast time flies?<br/>Ranald at the School was such an adorable kid once.<br/>And now he has become a swordmaster, teaching students at the School.");
+					Msg("Time is simply amazing. How it passes and changes everything.<br/>Every instant feels different and new.<br/>Don't you think so?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Try not to seek too much information from a priest, please.<br/>I am not supposed to reveal any part of people's confessions.<br/>Hahaha.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Msg(FavorExpression(), "The General Shop, Grocery Store and the Bank<br/>surround the Square of the town.<br/>A bit higher up the hill is the Chief's House.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_arbeit":
@@ -303,14 +392,59 @@ public class MevenScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
-					"...?",
-					"...<br/>I really don't know.",
-					"I am sorry, but ignorance is not a sin.",
-					"I don't think I heard of that, I'm sorry.",
-					"How could I know about that, I'm just a priest."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I am sorry that I can't help you. But I don't really know about that.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "To be honest, I can't understand what you're talking about. I'm sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Well, it doesn't ring a bell.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Oh, I just remembered I have something urgent to take care of. Let's talk about this next time.");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"...?",
+						"...<br/>I really don't know.",
+						"I am sorry, but ignorance is not a sin.",
+						"I don't think I heard of that, I'm sorry.",
+						"How could I know about that, I'm just a priest."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Oh, thank you so much. This will be a great asset for the people coming to our Church."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Thank you so much. I just don't know if I can accept this."));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("Thank you for this. It was unexpected, thank you."));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("Ha ha, you like jokes, don't you? Thank you anyway."));
 				break;
 		}
 	}

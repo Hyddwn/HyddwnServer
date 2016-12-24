@@ -81,10 +81,10 @@ namespace Aura.Channel.World.Entities
 		public int InventoryHeight { get; set; }
 
 		/// <summary>
-		/// Temporary and permanent variables, exclusive to this creature.
+		/// Temporary and permanent variables exclusive to this creature.
 		/// </summary>
 		/// <remarks>
-		/// Permanent variables are saved across relogs, if the creature
+		/// Permanent variables are saved across relogs if the creature
 		/// is a player creature. NPCs and monster variables aren't saved.
 		/// </remarks>
 		public ScriptVariables Vars { get; protected set; }
@@ -568,6 +568,9 @@ namespace Aura.Channel.World.Entities
 		public long _hitTrackerIds;
 		public Dictionary<long, HitTracker> _hitTrackers;
 		public int _totalHits;
+
+		public long FinisherId { get; private set; }
+		public bool IsFinished { get; private set; }
 
 		// Stats
 		// ------------------------------------------------------------------
@@ -1748,10 +1751,30 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public virtual bool CanTarget(Creature creature)
 		{
-			if (this.IsDead || creature.IsDead || creature == this)
+			var attackerIsDead = this.IsDead;
+			var targetIsDead = creature.IsDead;
+			var attackerCanFinish = this.CanFinish(creature);
+			var attackerIsTarget = (creature == this);
+
+			if (attackerIsDead || (targetIsDead && !attackerCanFinish) || attackerIsTarget)
 				return false;
 
 			return true;
+		}
+
+		/// <summary>
+		/// Returns whether this creature is eligible to finish the given
+		/// target.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public bool CanFinish(Creature target)
+		{
+			var finisherId = target.FinisherId;
+			var isFinished = target.IsFinished;
+			var isFinisher = (finisherId == 0 || finisherId == this.Party.Id || this.Client.Creatures.ContainsKey(finisherId));
+
+			return (!isFinished && isFinisher);
 		}
 
 		/// <summary>
@@ -1867,16 +1890,16 @@ namespace Aura.Channel.World.Entities
 			else
 			{
 				balance = this.RightBalanceMod;
-				if (this.LeftHand != null)
+				if (this.IsDualWielding)
 					balance = (balance + this.LeftBalanceMod) / 2;
 			}
 
 			var min = this.AttackMinBase + this.AttackMinBaseMod + this.RightAttackMinMod;
-			if (this.LeftHand != null)
+			if (this.IsDualWielding)
 				min = (min + this.LeftAttackMinMod) / 2;
 
 			var max = this.AttackMaxBase + this.AttackMaxBaseMod + this.RightAttackMaxMod;
-			if (this.LeftHand != null)
+			if (this.IsDualWielding)
 				max = (max + this.LeftAttackMaxMod) / 2;
 
 			return this.GetRndDamage(min, max, balance);
@@ -2041,23 +2064,21 @@ namespace Aura.Channel.World.Entities
 				_totalHits = Interlocked.Increment(ref _totalHits);
 			}
 
-			var equip = this.Inventory.GetEquipment();
-
-			// Give proficiency to random main armor
-			var mainArmors = equip.Where(a => a.Info.Pocket.IsMainArmor());
-			if (mainArmors.Count() != 0)
+			// Update equip
+			var mainArmors = this.Inventory.GetMainEquipment(a => a.Info.Pocket.IsMainArmor());
+			if (mainArmors.Length != 0)
 			{
+				// Select a random armor item to gain proficiency and lose
+				// durability, as the one that was "hit" by the damage.
 				var item = mainArmors.Random();
-				var amount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Damage);
-				this.Inventory.AddProficiency(item, amount);
-			}
 
-			// Reduce durability of random item
-			if (equip.Length != 0)
-			{
-				var item = equip.Random();
-				var amount = RandomProvider.Get().Next(1, 30);
-				this.Inventory.ReduceDurability(item, amount);
+				// Give proficiency
+				var profAmount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Damage);
+				this.Inventory.AddProficiency(item, profAmount);
+
+				// Reduce durability
+				var duraAmount = RandomProvider.Get().Next(1, 30);
+				this.Inventory.ReduceDurability(item, duraAmount);
 			}
 
 			// Kill if life too low
@@ -2075,20 +2096,62 @@ namespace Aura.Channel.World.Entities
 		protected abstract bool ShouldSurvive(float damage, Creature from, float lifeBefore);
 
 		/// <summary>
-		/// Kills creature.
+		/// Kills creature. Returns true if it was killed and false if it
+		/// entered "finish mode".
 		/// </summary>
 		/// <param name="killer"></param>
-		public virtual void Kill(Creature killer)
+		public virtual bool Kill(Creature killer)
 		{
 			// Conditions
 			if (this.Conditions.Has(ConditionsA.Deadly))
 				this.Conditions.Deactivate(ConditionsA.Deadly);
 			this.Activate(CreatureStates.Dead);
 
-			//Send.SetFinisher(this, killer.EntityId);
-			//Send.SetFinisher2(this);
+			// When a creature is killed, and the attacker is in a party,
+			// the party's finisher rules come into effect. Depending on its
+			// settings a finisher might be set, who gets to actually kill the
+			// monster and gets assigned the drops.
+			// If a finisher is set, the method returns, so nothing is done
+			// but setting the creature to be dead. The next time we come here,
+			// after the finisher attacked the monster again, the finisher id
+			// won't be 0, and as such it won't return again, but continue
+			// to the actual kill behavior.
+			if (killer.IsInParty && this.FinisherId == 0)
+			{
+				if (killer.Party.Finish == PartyFinishRule.Anyone)
+				{
+					this.SetFinisher(killer.Party.Id);
+				}
+				else if (killer.Party.Finish == PartyFinishRule.BiggestContributer)
+				{
+					// Get top damage dealer and set them to be finisher,
+					// if they're still around and they aren't the killer.
+					// If they are the killer, we don't need a finish.
+					var hitTracker = this.GetTopDamageDealer();
+					if (hitTracker != null)
+					{
+						var finisher = hitTracker.Attacker;
+						if (finisher.Region == this.Region && finisher != killer)
+							this.SetFinisher(finisher.EntityId);
+					}
+				}
+				else if (killer.Party.Finish == PartyFinishRule.Turn)
+				{
+					var finisher = killer.Party.GetNextFinisher();
+					if (finisher.Region == this.Region && finisher != killer)
+						this.SetFinisher(finisher.EntityId);
+				}
+
+				// Stop here if we just set a finisher
+				if (this.FinisherId != 0)
+				{
+					Send.IsNowDead(this);
+					return false;
+				}
+			}
+
+			this.SetFinisher(0);
 			Send.IsNowDead(this);
-			Send.SetFinisher(this, 0);
 
 			// Events
 			ChannelServer.Instance.Events.OnCreatureKilled(this, killer);
@@ -2109,6 +2172,21 @@ namespace Aura.Channel.World.Entities
 
 			// DeadMenu
 			this.DeadMenu.Update();
+
+			return true;
+		}
+
+		/// <summary>
+		/// Sets finisher and sends SetFinisher.
+		/// </summary>
+		/// <param name="id"></param>
+		protected void SetFinisher(long id)
+		{
+			this.FinisherId = id;
+			if (id == 0)
+				this.IsFinished = true;
+
+			Send.SetFinisher(this, id);
 		}
 
 		/// <summary>
