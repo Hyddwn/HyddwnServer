@@ -73,6 +73,8 @@ npcs/gairech/seumas_part_timer.cs
 npcs/sidhe/tarlach.cs
 npcs/sidhe/tarlach_bear.cs
 
+npcs/ceo/muro.cs
+
 custom/patrons/trigger.cs
 custom/patrons/pegwald.cs
 
