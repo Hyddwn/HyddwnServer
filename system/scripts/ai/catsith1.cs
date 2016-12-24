@@ -11,6 +11,7 @@ public class CatSith1Ai : AiScript
 	{
 		SetVisualField(950, 120);
 		SetAggroRadius(400);
+		SetAggroLimit(AggroLimit.None);
 
 		Doubts("/pc/", "/pet/");
 		HatesNearby(3000);
