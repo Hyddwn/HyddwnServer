@@ -476,6 +476,10 @@ namespace Aura.Channel.World.Entities
 			// Form id (manuals)
 			if (dropData.FormId != null)
 				this.MetaData1.SetInt("FORMID", (int)dropData.FormId);
+
+			// Scale (fish, gems)
+			if (dropData.Scale != null)
+				this.MetaData1.SetFloat("SCALE", (float)dropData.Scale);
 		}
 
 		/// <summary>
