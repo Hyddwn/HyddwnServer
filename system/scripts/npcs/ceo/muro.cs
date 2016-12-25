@@ -191,9 +191,8 @@ public class MuroScript : NpcScript
 
 	protected override async Task Keywords(string kw)
 	{
-		if (Memory >= 5 && Favor >= 10 && Stress <= 5) 
-		//Memory, favor, and stress values are not official, but this message 
-		//was gained by using one likeability potion on official.		
+		if (Favor >= 10 && Stress <= 10) 
+		
 		{
 			Msg("You are a Human being with a lot of knowledge.<br/>...I think I can learn a lot from you if we could talk more...<br/>...Like I said...");
 		}
