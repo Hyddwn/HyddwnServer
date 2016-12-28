@@ -127,31 +127,34 @@ public class AerScript : NpcScript
 
 	protected override async Task Gift(Item item, GiftReaction reaction)
 	{
-		if (item.Info.Id == 63103) // Suspicious Fomor Pass
-		{
-			if (Player.Vars.Perm["rundalSirenClear"] == null) 
+		if (IsEnabled("RundalDungeon"))
+		{		
+			if (item.Info.Id == 63103) // Suspicious Fomor Pass
 			{
-				GiveItem(63102);
-				SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));
-				Msg(L("...This is ...a dungeon pass...isn't it...?<br/>What is it for...?<br/>Oh, I see..."));
-				Msg(L("<username/>,<br/>have you ever heard of Siren?"));
-				Msg(L("Usually, spirits of water, are created by the influence of nature's forces...<br/>However, from time to time,<br/>there are spirits created by the influence of the Human soul."));
-				Msg(L("I don't know how, but Sirens are<br/>created by these influences of the Human soul...<br/>especially Humans who had drowned...their hatred...sorrows...<br/>And it is all those negative emotions which cause these Sirens to become Fomors as everyone knows them."));
-				Msg(L("Sirens try to harm those<br/>who come close to water.<br/>They seduce Humans with a song that is hard to resist ..."));
-				Msg(L("And just when a Human approaches one of them,<br/>they will drown the person to death and eerily laugh at them.<br/>They also like to trick Humans with other mischievous tricks and will sometimes even steal peoples' belongings."));
-				Msg(L("<username/>, can you... stop these Sirens' mischievous behavior?<br/>I think it's about time for them to be stopped...<br/>I'll give you a pass to go to the Sirens' Dungeon."));
-				Msg(L("If you drop this pass onto the altar of Rundal dungeon,<br/>you will be able to get into the dungeon where the Sirens live..."));				
+				if (Player.Vars.Perm["rundalSirenClear"] == null) 
+				{
+					GiveItem(63102);
+					SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));
+					Msg(L("...This is ...a dungeon pass...isn't it...?<br/>What is it for...?<br/>Oh, I see..."));
+					Msg(L("<username/>,<br/>have you ever heard of Siren?"));
+					Msg(L("Usually, spirits of water, are created by the influence of nature's forces...<br/>However, from time to time,<br/>there are spirits created by the influence of the Human soul."));
+					Msg(L("I don't know how, but Sirens are<br/>created by these influences of the Human soul...<br/>especially Humans who had drowned...their hatred...sorrows...<br/>And it is all those negative emotions which cause these Sirens to become Fomors as everyone knows them."));
+					Msg(L("Sirens try to harm those<br/>who come close to water.<br/>They seduce Humans with a song that is hard to resist ..."));
+					Msg(L("And just when a Human approaches one of them,<br/>they will drown the person to death and eerily laugh at them.<br/>They also like to trick Humans with other mischievous tricks and will sometimes even steal peoples' belongings."));
+					Msg(L("<username/>, can you... stop these Sirens' mischievous behavior?<br/>I think it's about time for them to be stopped...<br/>I'll give you a pass to go to the Sirens' Dungeon."));
+					Msg(L("If you drop this pass onto the altar of Rundal dungeon,<br/>you will be able to get into the dungeon where the Sirens live..."));				
+				}
+				else
+				{
+					GiveItem(63102);
+					SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));
+					Msg(L("<username/>...<br/>Have you been to the Sirens' Dungeon<br/>that we talked about?"));
+					Msg(L("That's strange...<br/>If you've visted their dungeon, <username/>,<br/>all the rumors about them should've stopped by now ..."));
+					Msg(L("From what I'd heard from my friends,<br/>the Sirens have been acting exactly the same!<br/>I wish they would learn their lesson already..."));
+					Msg(L("Since you brought me this pass,<br/>I'll change it so that<br/>you can re-enter the Sirens' dungeon once more..."));
+					Msg(L("I wish they would stop bothering people<br/>once and for all..."));				
+				}		
 			}
-			else
-			{
-				GiveItem(63102);
-				SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));
-				Msg(L("<username/>...<br/>Have you been to the Sirens' Dungeon<br/>that we talked about?"));
-				Msg(L("That's strange...<br/>If you've visted their dungeon, <username/>,<br/>all the rumors about them should've stopped by now ..."));
-				Msg(L("From what I'd heard from my friends,<br/>the Sirens have been acting exactly the same!<br/>I wish they would learn their lesson already..."));
-				Msg(L("Since you brought me this pass,<br/>I'll change it so that<br/>you can re-enter the Sirens' dungeon once more..."));
-				Msg(L("I wish they would stop bothering people<br/>once and for all..."));				
-			}		
 		}
 		else
 		{
