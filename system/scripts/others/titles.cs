@@ -317,8 +317,8 @@ public class TitleRewardingScript : GeneralScript
 		}
 	}
 
-	[On("CreatureKilled")]
-	public void OnCreatureKilled(Creature deadCreature, Creature killer)
+	[On("CreatureFinished")]
+	public void OnCreatureFinished(Creature deadCreature, Creature killer)
 	{
 		// the Tank
 		// Enable if a creature dies for a party member.

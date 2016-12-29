@@ -668,7 +668,7 @@ namespace Aura.Channel.Scripting.Scripts
 				var creature = ChannelServer.Instance.World.SpawnManager.Spawn(raceId, regionId, pos.X, pos.Y, true, effect);
 
 				if (onDeath != null)
-					creature.Death += onDeath;
+					creature.Finish += onDeath;
 
 				result.Add(creature);
 			}
