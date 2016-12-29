@@ -74,7 +74,7 @@ namespace Aura.Channel.World.Dungeons.Puzzles
 				{
 					var monster = new NPC(monsterData.RaceId);
 					monster.State |= CreatureStates.Spawned | CreatureStates.InstantNpc;
-					monster.Death += this.OnDeath;
+					monster.Finish += this.OnDeath;
 
 					_monsters.Add(monster);
 				}

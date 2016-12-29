@@ -1116,9 +1116,10 @@ namespace Aura.Channel.World.Entities
 		// ------------------------------------------------------------------
 
 		/// <summary>
-		/// Raised when creature dies.
+		/// Raised when creature is finished. It's called if no finishing
+		/// happens as well, when going straight to being completely dead.
 		/// </summary>
-		public event Action<Creature, Creature> Death;
+		public event Action<Creature, Creature> Finish;
 
 		/// <summary>
 		/// Raised when creature levels up.
@@ -2154,10 +2155,10 @@ namespace Aura.Channel.World.Entities
 			Send.IsNowDead(this);
 
 			// Events
-			ChannelServer.Instance.Events.OnCreatureKilled(this, killer);
+			ChannelServer.Instance.Events.OnCreatureFinished(this, killer);
 			if (killer != null && killer.IsPlayer)
-				ChannelServer.Instance.Events.OnCreatureKilledByPlayer(this, killer);
-			this.Death.Raise(this, killer);
+				ChannelServer.Instance.Events.OnCreatureFinishedByPlayer(this, killer);
+			this.Finish.Raise(this, killer);
 
 			// Cancel active skill
 			if (this.Skills.ActiveSkill != null)

@@ -231,7 +231,7 @@ namespace Aura.Channel.Scripting.Scripts
 			base.Dispose();
 
 			ChannelServer.Instance.Events.PlayerLoggedIn -= this.OnPlayerLoggedIn;
-			ChannelServer.Instance.Events.CreatureKilledByPlayer -= this.OnCreatureKilledByPlayer;
+			ChannelServer.Instance.Events.CreatureFinishedByPlayer -= this.OnCreatureKilledByPlayer;
 			ChannelServer.Instance.Events.PlayerReceivesItem -= this.OnPlayerReceivesOrRemovesItem;
 			ChannelServer.Instance.Events.PlayerRemovesItem -= this.OnPlayerReceivesOrRemovesItem;
 			ChannelServer.Instance.Events.PlayerCompletesQuest -= this.OnPlayerCompletesQuest;
@@ -440,8 +440,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 			if (objective.Type == ObjectiveType.Kill)
 			{
-				ChannelServer.Instance.Events.CreatureKilledByPlayer -= this.OnCreatureKilledByPlayer;
-				ChannelServer.Instance.Events.CreatureKilledByPlayer += this.OnCreatureKilledByPlayer;
+				ChannelServer.Instance.Events.CreatureFinishedByPlayer -= this.OnCreatureKilledByPlayer;
+				ChannelServer.Instance.Events.CreatureFinishedByPlayer += this.OnCreatureKilledByPlayer;
 			}
 
 			if (objective.Type == ObjectiveType.Collect)

@@ -187,7 +187,7 @@ namespace Aura.Channel.Scripting.Scripts
 		public void Attach(Creature creature)
 		{
 			this.Creature = creature;
-			this.Creature.Death += OnDeath;
+			this.Creature.Finish += OnDeath;
 		}
 
 		/// <summary>
@@ -201,7 +201,7 @@ namespace Aura.Channel.Scripting.Scripts
 				return;
 
 			npc.AI.Dispose();
-			npc.Death -= OnDeath;
+			npc.Finish -= OnDeath;
 			npc.AI = null;
 			this.Creature = null;
 		}
@@ -2079,7 +2079,7 @@ namespace Aura.Channel.Scripting.Scripts
 				var y = summonPos.Y;
 
 				var creature = ChannelServer.Instance.World.SpawnManager.Spawn(raceId, regionId, x, y, true, true);
-				creature.Death += (_, __) => this.ModifySummonCount(raceId, -1);
+				creature.Finish += (_, __) => this.ModifySummonCount(raceId, -1);
 
 				this.ModifySummonCount(raceId, +1);
 			}

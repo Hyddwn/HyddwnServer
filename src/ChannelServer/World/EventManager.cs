@@ -178,16 +178,20 @@ namespace Aura.Channel.World
 		// ------------------------------------------------------------------
 
 		/// <summary>
-		/// Raised when a creature is killed by something.
+		/// Raised when a creature is finished by something. It's called if
+		/// no finishing happens as well, when going straight to being
+		/// completely dead.
 		/// </summary>
-		public event Action<Creature, Creature> CreatureKilled;
-		public void OnCreatureKilled(Creature creature, Creature killer) { CreatureKilled.Raise(creature, killer); }
+		public event Action<Creature, Creature> CreatureFinished;
+		public void OnCreatureFinished(Creature creature, Creature killer) { CreatureFinished.Raise(creature, killer); }
 
 		/// <summary>
-		/// Raised when a creature is killed by a player.
+		/// Raised when a creature is finished by a player. It's called if
+		/// no finishing happens as well, when going straight to being
+		/// completely dead.
 		/// </summary>
-		public event Action<Creature, Creature> CreatureKilledByPlayer;
-		public void OnCreatureKilledByPlayer(Creature creature, Creature killer) { CreatureKilledByPlayer.Raise(creature, killer); }
+		public event Action<Creature, Creature> CreatureFinishedByPlayer;
+		public void OnCreatureFinishedByPlayer(Creature creature, Creature killer) { CreatureFinishedByPlayer.Raise(creature, killer); }
 
 		/// <summary>
 		/// Raised when a creature is attacked by a player.
