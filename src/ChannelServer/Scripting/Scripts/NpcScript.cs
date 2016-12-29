@@ -1346,13 +1346,13 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Returns a random quest id from the given ones, based on the current
-		/// Erinn day and the player's success rate for this PTJ type.
+		/// Of the given <paramref name="questIds"/>, returns those matched to
+		/// the player's success rate for the given PTJ <paramref name="type"/>.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="questIds"></param>
 		/// <returns></returns>
-		public int RandomPtj(PtjType type, params int[] questIds)
+		public IEnumerable<int> GetLevelMatchingQuestIds(PtjType type, params int[] questIds)
 		{
 			var level = this.GetPtjQuestLevel(type);
 
@@ -1387,13 +1387,25 @@ namespace Aura.Channel.Scripting.Scripts
 				Log.Warning("NpcScript.RandomPtj: Missing quest for level '" + level + "', using 'Basic' as fallback.");
 			}
 
+			return sameLevelQuests.Select(qscript => qscript.Id);
+		}
+
+		/// <summary>
+		/// Returns a random quest id from the given ones, based on the current
+		/// Erinn day and the player's success rate for this PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="questIds"></param>
+		/// <returns></returns>
+		public int RandomPtj(PtjType type, params int[] questIds)
+		{
+			var sameLevelQuests = this.GetLevelMatchingQuestIds(type, questIds);
+
 			// Return random quest's id
 			// Random is seeded with the current Erinn day so we always get
 			// the same result for one in-game day.
 			var rnd = new Random(ErinnTime.Now.DateTimeStamp);
-			var randomQuest = sameLevelQuests.ElementAt(rnd.Next(sameLevelQuestsCount));
-
-			return randomQuest.Id;
+			return sameLevelQuests.ElementAt(rnd.Next(sameLevelQuests.Count()));
 		}
 
 		/// <summary>
