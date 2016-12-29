@@ -48,16 +48,11 @@ public class MuroScript : NpcScript
 		{
 			case "@warp":
 				Msg("Hmm.. I see... So you came here by accident...?<br/>Well, since you sound really desperate, I'll let you return...<br/>Thank me, Muro, for doing a good deed.", Button("Return", "@return"), Button("End Conversation", "@end"));
-				switch (await Select())
+				if (await Select() == "@return")
 				{
-
-					case "@return":
-						Player.Vars.Perm["ceoWarp"] = true;
-						Player.Warp(Player.LastTown);
-						return;
-
-					case "@end":
-						break;
+					Player.Vars.Perm["ceoWarp"] = true;
+					Player.Warp(Player.LastTown);
+					return;
 				}
 				break;
 
@@ -65,7 +60,6 @@ public class MuroScript : NpcScript
 				Msg("There's a Golem inside.<br/>Hmm... Although you are a Human, you seem to be able to handle Golems here...<br/>Good luck.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 				switch (await Select())
 				{
-
 					case "@talk":
 						Greet();
 
@@ -183,7 +177,6 @@ public class MuroScript : NpcScript
 
 				default:
 					await Hook("before_keywords", keyword);
-
 					await this.Keywords(keyword);
 					break;
 			}
@@ -227,15 +220,15 @@ public class MuroShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Potions", 51001);     // HP 10 Potion
+		Add("Potions", 51001, 1);  // HP 10 Potion x1
 		Add("Potions", 51002, 1);  // HP 30 Potion x1
 		Add("Potions", 51002, 10); // HP 30 Potion x10
 		Add("Potions", 51002, 20); // HP 30 Potion x20
-		Add("Potions", 51006);     // MP 10 Potion
+		Add("Potions", 51006, 1);  // MP 10 Potion x1
 		Add("Potions", 51007, 1);  // MP 30 Potion x1
 		Add("Potions", 51007, 10); // MP 30 Potion x10
 		Add("Potions", 51007, 20); // MP 30 Potion x20
-		Add("Potions", 51011);     // Stamina 10 Potion
+		Add("Potions", 51011, 1);  // Stamina 10 Potion x1
 		Add("Potions", 51012, 1);  // Stamina 30 Potion x1
 		Add("Potions", 51012, 10); // Stamina 30 Potion x10
 		Add("Potions", 51012, 20); // Stamina 30 Potion x20
@@ -245,6 +238,6 @@ public class MuroShop : NpcShopScript
 		Add("First Aid Kits", 63000, 10); // Phoenix Feather x10
 		Add("First Aid Kits", 63000, 20); // Phoenix Feather x20
 		Add("First Aid Kits", 63001, 1);  // Wings of a Goddess x1
-		Add("First Aid Kits", 63001, 5);  // Wings of a Goddess x1
+		Add("First Aid Kits", 63001, 5);  // Wings of a Goddess x5
 	}
 }
