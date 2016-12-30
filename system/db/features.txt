@@ -599,6 +599,10 @@
 		// Changes Moon Gates to function like Mana Tunnels
 		{ name: "MoonTunnel", enabled: true },
 		
+		// Automatically gives access to Ceo Moon Tunnel if Moon Tunnels
+		// are enabled.
+		{ name: "CeoMoonTunnel", enabled: true },
+		
 		// Enables obtaining Fighter skills and items
 		{ name: "FighterJob", enabled: true },
 	]},
