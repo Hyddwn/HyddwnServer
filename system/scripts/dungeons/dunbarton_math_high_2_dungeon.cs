@@ -17,8 +17,10 @@ public class MathAdv2DungeonScript : DungeonScript
 
 	public override void OnBossDeath(Dungeon dungeon, Creature boss, Creature killer)
 	{
-		if (boss.RaceId == 20019 && dungeon.RemainingBosses == 0)
+		// Transform Bard Skeletons when their hounds were killed.
+		if (boss.RaceId == 20019 && dungeon.RemainingBosses == 2)
 		{
+			dungeon.RemoveAllMonsters();
 			dungeon.AddBoss(11020, 2); // Metal Bard Skeleton
 			dungeon.PlayCutscene("bossroom_Math_BardSkeleton_change");
 		}

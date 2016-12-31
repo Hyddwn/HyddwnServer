@@ -679,7 +679,7 @@ namespace Aura.Channel.World.Dungeons
 			_bossSpawned = true;
 
 			// Remove all monsters
-			this.Regions.ForEach(a => a.RemoveAllMonsters());
+			this.RemoveAllMonsters();
 
 			// Call OnBoss
 			if (this.Script != null)
@@ -709,6 +709,14 @@ namespace Aura.Channel.World.Dungeons
 			// Complete dungeon when all bosses were killed
 			if (_bossesRemaining == 0 && !_manualCompletion)
 				this.Complete();
+		}
+
+		/// <summary>
+		/// Removes all monsters in the dungeon.
+		/// </summary>
+		public void RemoveAllMonsters()
+		{
+			this.Regions.ForEach(a => a.RemoveAllMonsters());
 		}
 
 		/// <summary>
