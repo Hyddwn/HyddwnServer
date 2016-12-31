@@ -711,7 +711,9 @@ namespace Aura.Channel.World.Dungeons
 				this.Complete();
 		}
 
-		// Completes dungeon, opening doors and spawning chests.
+		/// <summary>
+		/// Completes dungeon, opening doors and spawning chests.
+		/// </summary>
 		public void Complete()
 		{
 			// Call OnCleared
