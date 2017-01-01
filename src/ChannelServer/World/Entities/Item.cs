@@ -429,6 +429,13 @@ namespace Aura.Channel.World.Entities
 			if (this.Data.StackType != StackType.Sac && this.Info.Amount < 1)
 				this.Info.Amount = 1;
 
+			// Meta data, set before anything else, so other properties can
+			// overwrite the ones set manually.
+			if (!string.IsNullOrWhiteSpace(dropData.MetaData1))
+				this.MetaData1.Parse(dropData.MetaData1);
+			if (!string.IsNullOrWhiteSpace(dropData.MetaData2))
+				this.MetaData2.Parse(dropData.MetaData2);
+
 			// Set enchant meta data or apply option sets to item
 			if (dropData.Prefix != 0 || dropData.Suffix != 0)
 			{
