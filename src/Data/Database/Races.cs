@@ -173,6 +173,7 @@ namespace Aura.Data.Database
 			result.Durability = this.Durability;
 			result.FoodQuality = this.FoodQuality;
 			result.FormId = this.FormId;
+			result.Scale = this.Scale;
 
 			return result;
 		}
