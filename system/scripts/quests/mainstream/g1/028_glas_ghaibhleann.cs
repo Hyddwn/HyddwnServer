@@ -82,7 +82,7 @@ public class GlasGhaibhleannQuest : GeneralScript
 
 			npc.RemoveItem(PendantOfTheGoddess);
 			npc.GiveItem(PendantOfTheGoddessBind);
-			npc.GiveItem(Item.CreateWarpScroll(63009, "tirnanog_dungeon"));
+			npc.GiveItem(Item.CreateWarpScroll(63009, "TirNaNog_Dungeon"));
 
 			npc.Msg(L("Okay, I'll trust you.<br/>I guess it might not be a bad idea to trust you since<br/>you rescued the Goddess."));
 			npc.Msg(L("Go to Albey Dungeon and offer this pendant there.<br/>You know how to use the Red Wings of a Goddess, right?<br/>If you succeed,<br/>it will only be a matter time before I free myself from being an Added Soul."));

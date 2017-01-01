@@ -15,7 +15,7 @@ public class PegwaldPatronScript : NpcScript
 		SetStand("data/gfx/char/chapter4/human/anim/social_motion/male_2014_springdress");
 		SetLocation(31, 14799, 8219, 167);
 
-		EquipItem(Pocket.Face, 4909, 16);
+		EquipItem(Pocket.Face, 4900, 16);
 		EquipItem(Pocket.Hair, 4006, 0x000000);
 		EquipItem(Pocket.Head, 18940, 0x000000, 0x000000, 0x000000);
 		EquipItem(Pocket.Armor, 15508, 0x000000, 0x000000, 0x333333);
@@ -51,12 +51,12 @@ public class PegwaldPatronScript : NpcScript
 				break;
 
 			case "rumor":
-				Msg("So far I feel very welcome here. I feel very happy to make<br/>my presence here and help out those who need a hand or two.<br/>There is only one problem.");
-				Msg("There is something terribly wrong with this rum.<br/>Reason? There is no rum.");
+				Msg("So far I feel very welcome here. I'm always happy to give out<br/>a hand or two too if that's needed.<br/>I only have one problem however...");
+				Msg("... There's a severe lack of rum. The rum is gone.<br/>Why is the rum gone?");
 				break;
 
 			case "about_skill":
-				Msg("Heh, I am very good at swimming, but I don't expect<br/>a land crab like you to have such interests.");
+				Msg("I am an excellent swimmer, but I suppose no landlubber<br/>like you have such interests.");
 				break;
 
 			case "about_arbeit":
@@ -64,27 +64,139 @@ public class PegwaldPatronScript : NpcScript
 				break;
 
 			case "about_study":
-				Msg("You should try asking a teacher about that.<br/>I had a very good master who taught me a lot of things.<br/>Yes, I might not look the type, but I was a very good student.<br/>Alas, the poor man died too young when raiders came along and<br/>caused hell upon the temple.");
-				Msg("What? You thought I was I pirate? No, I'm a ninja.");
+				Msg("I am no teacher I'm afraid, but if there's one thing life<br/>has taught me it's telling a girl to calm down works<br/>about as well as trying to baptize a cat.");
 				break;
 
 			case "shop_misc":
+				Msg("Try talking to that old geezer with the glasses over there.<br/>I think he runs a general store.<br/>Just keep in mind he's very grumpy and stiff when it<br/>comes to running this business.");
+				break;
+
+			case "shop_grocery":
+				Msg("Not in this town, but Lady Jennifer across this desk might<br/>be able to help you out!<br/>(Unless you've got certain rum-issues like me.)");
+				break;
+
+			case "shop_healing":
+				Msg("We don't have anything like that. If you need treatment I'm affraid<br/>you've got to head over to the closest town from here.");
+				Msg("Comgan over there, by the way, he sells potions and bandages<br/>in case you're looking for some.");
+				break;
+
+			case "shop_inn":
+				Msg("Sorry kiddo, I don't think we have anything like that here.");
+				break;
+
 			case "shop_bank":
+				Msg("Right over there! Talk to Bryce, he'll help you out...<br/>unless you have other intentions.<br/>*cracks fingers*");
+				Msg("You don't look like the type for it, but try anything<br/>naughty and ol' Waldon will whoop your socks off<br/>and prove to you he's a master ninja!");
+				Msg("What? Did you expect me to be a pirate?");
+				break;
+
 			case "shop_smith":
+				Msg("If you don't mind the topless old man over there sweating<br/>it off at that piece of blade, I'm pretty sure he will offer you some good<br/>deals if you came looking for armor and weapons.");
+				Msg("His grand daughter over there however, should not be trusted with repairs.<br/>Leave that to Mr. Hulk Hogan.");
+				break;
+
 			case "shop_armory":
 				Msg("It's somewhere over there, I think.");
 				break;
 
+			case "skill_rest":
+				Msg("Have a seat if you want!");
+				break;
+
+			case "skill_range":
+				Msg("Did I tell you about the time someone nearly killed<br/>me with one of those bow and arrows?<br/>The poor guy was a terrible shot and missed a bear cub.");
+				Msg("The arrow flew right past and got me right here.");
+				Msg(Hide.Both, "(He pulls out a charm hanging from around his<br/>neck from the inside of his jacket.<br/>It is a thick ring-shaped stone that and<br/>has deep cuts around the center.)");
+				Msg("I really hope he was just a terrible shot and did not intend to hit me.");
+				break;
+
+			case "skill_composing":
+				Msg("Look at me. Do I look like some great composer to you?");
+				break;
+
+			case "skill_tailoring":
+				Msg("Tailoring? Well don't look at me, I've never in my life known how to sew clothes.");
+				break;
+
+			case "skill_counter_attack":
+				Msg("A sneaky skill to trick your enemies and taking the advantage of battle.<br/>Don't rely on it too much, however.");
+				break;
+
+			case "skill_smash":
+				Msg("A lethal blow that will sometimes slay foes in a single blow.<br/>Not the most graceful technique, but it works.");
+				break;
+
+			case "skill_gathering":
+				Msg("If you go into Barri dungeon you can gather a lot of<br/>minerals that you can use to make ingots and such.");
+				break;
+
+			case "windmill":
+				Msg("Spin to win, am I right? It's a very useful technique that<br/>makes you very dizzy if you use it too much!");
+				Msg("Wait- You were actually talking about a windmill, weren't you?<br/>Sorry I don't know about any.");
+				break;
+
 			case "temple":
-				Msg("Church? Is that like a temple? A shrine?<br/>I don't know, kid.");
+				Msg("Church? Comgan over there mentioned he wants to build one soon.<br/>I don't know much about them, but I'll be there to help him with it!");
+				Msg("I was actually raised in a monastery back in the day.<br/>Huh? Why's that funny? I'm actually not a pirate!");
 				break;
 
 			case "school":
-				Msg("I never went to school,<br/>I was raised in a temple.");
+				Msg("I think that's sort of like a monastery, am I right?");
+				Msg("I stayed at one for years to become a master at shadow and martial arts,<br/>but one day a band of murderers came along and killed everyone I knew.");
+				Msg("I believe so at least, because I was the only one<br/>to make it out alive... Ani...");
+				Msg(Hide.Both, "(You're not sure what he's thinking about but you can feel a sort of sadness around him.)");
+				break;
+
+			case "skill_windmill":
+				Msg("Spin to win, am I right? It's a very useful technique that<br/>makes you very dizzy if you use it too much!");
+				break;
+
+			case "skill_campfire":
+				Msg("Fire is such a beautiful element, but yet so wild and chaotic.<br/>It's so mesmerizing...");
 				break;
 
 			case "shop_restaurant":
-				Msg("This place is not a restaurant.<br/>It's a pub. A rum-less pub.");
+				Msg("Ahh, I would do anything to enjoy myself a good meal right now.<br/>... No, not anything, but... Oh you get it.");
+				break;
+
+			case "shop_cloth":
+				Msg("We only have our old geezer over there who sells a few hats and shoes,<br/>I believe. Don't try to haggle with him.");
+				break;
+
+			case "shop_bookstore":
+				Msg("Nope, we don't have anything like that. You have to go to<br/>Dunbarton if you want some good literature.");
+				break;
+
+			case "skill_fishing":
+				Msg("Do you even know where you are right now?");
+				break;
+
+			case "bow":
+				Msg("Need a bow? Check out Edern's or Elen's blacksmith shop over there.");
+				break;
+
+			case "lute":
+				Msg("I don't mind lutes. A good song will always cheer me up.");
+				break;
+
+			case "complicity":
+				Msg("What?");
+				break;
+
+			case "musicsheet":
+				Msg("You can find those in any general shop,<br/>even Gilmore has a few in stock.");
+				break;
+
+			case "nao_friend":
+				Msg("A friend of who, nao? (laughs.)");
+				break;
+
+			case "nao_blacksuit":
+				Msg("Uhh... Why are you talking to me about this?");
+				break;
+
+			case "present_to_nao":
+				Msg("I don't even know who this Nao is.");
 				break;
 
 			case "graveyard":

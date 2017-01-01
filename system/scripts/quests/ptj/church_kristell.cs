@@ -272,7 +272,7 @@ public abstract class KristellPtjBaseScript : QuestScript
 				break;
 
 			default: // Fallback
-				Log.Error("Quest ID {0} has no set quest level. Fell back to basic rewards.", QuestId);
+				Log.Warning("KristellPtjScript: Quest ID {0} has no set quest level. Fell back to basic rewards.", QuestId);
 				goto case QuestLevel.Basic;
 		}
 	}

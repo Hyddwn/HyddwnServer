@@ -143,15 +143,87 @@ public class EndelyonScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("temple");
-				Msg(FavorExpression(), "I don't have much knowledge, but I am here if you need help.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "You must be interested in Lymilark.<br/>Lymilark is the head of the three main gods worshipping Aton Cimeni, the Absolute God Almighty.");
+					Msg("Lymilark also represents the Uladh Continent where Tir Chonaill is located.<br/>Whenever the flames of war engulfed people in the past,<br/>Lymilark rose to save humans from misery.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Lymilark is one of three main gods of Erinn.<br/>There are three virtues that form as the pillars of the land: love, freedom and peace.<br/>Lymilark presides over Love.");
+					Msg("If I had not experienced Lymilark's love during childhood,<br/>I would have grown up to be just an ordinary girl like everyone else.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "We worship and serve gods, not necessarily to be blessed<br/>but to be one step closer to the truth and possess a peace of mind.<br/>Unfortunately, most of the people don't understand this point.<br/>What about you, <username/>?");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Where do you come from, <username/>?<br/>I wasn't born in Tir Chonaill, but I really love this place.<br/>Since you already saw how beautiful this town is,<br/>I believe you can understand what I mean.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I know that you ask questions with good intention, but I am a priestess.<br/>Think about that for a moment, and please stop asking me inappropriate questions.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "It seems you are more interested in me, a servant of the gods,<br/>and not in my teachings about the gods.<br/>This is unacceptable.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("temple");
+					Msg(FavorExpression(), "I don't have much knowledge, but I am here if you need help.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_healing");
-				Msg(FavorExpression(), "Have you met Dilys? She's the town's Healer.<br/>Walk along the road heading northeast, and you will find the Healer's House.<br/>Make sure to meet her if you pass by there.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "People might complain about Bebhinn.<br/>However, she helps people in her own way,<br/>and never means any harm.<br/>If you meet anyone with a grudge against her,<br/>please tell remind them of this.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Priest Meven is not an ordinary man.<br/>If he had stayed with the Pontiff's Court, he could have earned admiration and respect from many.<br/>Instead, he chose to help people in a remote town hidden in the middle of the mountains.<br/>It's really not as easy as it sounds.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Hmm, want to hear something?<br/>When someone runs out of HP and falls to the ground,<br/>they may lose an item.<br/>Lost items can be retrieved from Town Offices in big cities like Dunbarton,<br/>but it can be quite costly.");
+					Msg("Worse, you can't do it over and over.<br/>I hear the clerks at Town Offices sometimes get upset and refuse to return found items.<br/>It's better to get up immediately and recover your lost items yourself,<br/>but that probably won't happen often.");
+					Msg("Some folks went to great expense to discover a way around this.<br/>Turns out that the Holy Water of Lymilark used at Churches prevents items from getting lost!<br/>It also slows down durability loss.");
+					Msg("All you have to do is spinkle some Holy Water of Lymilark onto your important items to bless them.<br/>But there's always a catch.<br/>When you fall to the ground, the impact may cause the blessings on the items to disappear.<br/>The chance is about 50-50.");
+					Msg("Even so, let me know if you need some Holy Water of Lymilark.<br/>I can't give it to you for free,<br/>but I can let you have some if you help me.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Nora is a cute girl who's also very tough.<br/>Whenever I talk with her, I'm amazed that she is so positive and determined despite her hardships.<br/>If only she realized how highly Malcolm thinks of her...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I'm worried that Ferghus drinks too much.<br/>Looks like he's drinking almost every day.<br/>Working all day and drinking all night... I'm really worried about his health.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "I don't think it's a good idea to talk about people behind their backs.<br/>That's not the way to win friends in Tir Chonaill.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("shop_healing");
+					Msg(FavorExpression(), "Have you met Dilys? She's the town's Healer.<br/>Walk along the road heading northeast, and you will find the Healer's House.<br/>Make sure to meet her if you pass by there.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -361,14 +433,59 @@ public class EndelyonScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
-					"I have no idea...",
-					"Well, I'm afraid I can't comment on that.",
-					"It doesn't sound familiar to me, I mean...",
-					"I guess you'd better ask someone else about such things.",
-					"I don't think I can help you with that. Can we talk about something else?"
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Can I ask you for a favor? Can you tell me about the things you know, too?");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Oh, it's just that... I think you know more things than I do.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "I'm sorry, but I just realized I have some errands to take care of. Can we talk later?");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Sorry, I'm too busy right now.");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"I have no idea...",
+						"Well, I'm afraid I can't comment on that.",
+						"It doesn't sound familiar to me, I mean...",
+						"I guess you'd better ask someone else about such things.",
+						"I don't think I can help you with that. Can we talk about something else?"
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Oh, I am overwhelmed. Thank you so much for the gift.<br/>May the blessings of Lymilark be with you."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Thank you.<br/>May Lymilark be with you always."));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("I'm afraid Meven won't be happy if he found out I kept things given by travelers.<br/>Oh, no. It's fine. I'll keep it at the Church for the time being."));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("I'm sorry, but I can't take this."));
 				break;
 		}
 	}

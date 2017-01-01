@@ -156,17 +156,16 @@ namespace Aura.Channel.Skills.Hidden
 				return false;
 			}
 
-			// Warp
+			// Warp party
 			if (warpPartyMembers && item.HasTag("/party_enable/") && creature.Party.Leader == creature)
 			{
 				var partyMembers = creature.Party.GetMembersInRange(creature);
 				foreach (var member in partyMembers)
 					member.Warp(loc);
 			}
-			else
-			{
-				creature.Warp(loc);
-			}
+
+			// Warp user after we got the party members
+			creature.Warp(loc);
 
 			return true;
 		}

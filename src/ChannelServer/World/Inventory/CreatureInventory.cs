@@ -125,6 +125,7 @@ namespace Aura.Channel.World.Inventory
 				Pocket.EntrustmentItem2,
 				Pocket.EntrustmentReward,
 				Pocket.VIPInventory,
+				Pocket.TailStyle,
 			};
 
 			// Add bags to the list of modifiable pockets.
@@ -246,6 +247,8 @@ namespace Aura.Channel.World.Inventory
 			// Style
 			for (var i = Pocket.ArmorStyle; i <= Pocket.RobeStyle; ++i)
 				this.Add(new InventoryPocketSingle(i));
+
+			this.Add(new InventoryPocketSingle(Pocket.TailStyle));
 		}
 
 		/// <summary>
@@ -853,9 +856,11 @@ namespace Aura.Channel.World.Inventory
 						// Remove colliding item
 						Send.ItemRemove(other, collidingItem, target);
 
+						var collidingItemCopy = new Item(collidingItem);
+
 						// Toss it in, it should be the cursor.
-						_pockets[source].Add(collidingItem);
-						Send.ItemNew(_creature, collidingItem);
+						_pockets[source].Add(collidingItemCopy);
+						Send.ItemNew(_creature, collidingItemCopy);
 					}
 
 					Send.ItemNew(other, newItem);
@@ -1385,7 +1390,6 @@ namespace Aura.Channel.World.Inventory
 			else
 			{
 				this.Remove(item);
-				Send.ItemRemove(_creature, item);
 			}
 
 			return true;
@@ -1526,9 +1530,8 @@ namespace Aura.Channel.World.Inventory
 				this.ApplyDefenseBonuses(item);
 				this.ApplyUpgrades(item);
 				this.ApplyUpgradeEffects(item);
+				this.HandleWUUpgrades(item);
 			}
-
-			this.HandleWUUpgrades(item);
 		}
 
 		/// <summary>

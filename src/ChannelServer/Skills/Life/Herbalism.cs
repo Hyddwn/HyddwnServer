@@ -358,7 +358,26 @@ namespace Aura.Channel.Skills.Life
 						skill.Train(6); // Succeed at picking a White Herb.
 				}
 			}
-			else if (skill.Info.Rank >= SkillRank.R9 && skill.Info.Rank <= SkillRank.R6)
+			else if (skill.Info.Rank == SkillRank.R9)
+			{
+				if (args.CollectData.Target.Contains("/manaherb"))
+					skill.Train(2); // Try to pick a Mana Herb.
+
+				if (args.Success)
+				{
+					if (args.ItemId == 51103)
+						skill.Train(1); // Succeed at picking a Sunlight Herb.
+					else if (args.ItemId == 51102)
+						skill.Train(3); // Succeed at picking a Mana Herb.
+					else if (args.ItemId == 51105)
+						skill.Train(4); // Succeed at picking a Golden Herb.
+					else if (args.ItemId == 51107)
+						skill.Train(5); // Succeed at picking a White Herb.
+					else if (args.ItemId == 51110)
+						skill.Train(6); // Succeed at picking a Mandrake.
+				}
+			}
+			else if (skill.Info.Rank >= SkillRank.R8 && skill.Info.Rank <= SkillRank.R6)
 			{
 				if (args.CollectData.Target.Contains("/orangeherb"))
 					skill.Train(5); // Try to pick a Mandrake.

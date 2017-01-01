@@ -215,7 +215,7 @@ namespace Aura.Channel.Skills.Combat
 					var targetLeftHand = target.LeftHand;
 					if (tAction.SkillId != SkillId.Defense || targetLeftHand == null || !targetLeftHand.IsShield)
 					{
-						// TODO: We have to calculate knockback distance right
+						target.Stability = Creature.MinStability;
 						attacker.Shove(target, KnockBackDistance);
 						tAction.Set(TargetOptions.KnockDownFinish);
 					}

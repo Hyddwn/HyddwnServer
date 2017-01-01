@@ -426,6 +426,7 @@ public class StewartShop : NpcShopScript
 		Add("Spellbook", 1008); // Icebolt Spell: Origin and Training
 		Add("Spellbook", 1009); // A Guidebook on Firebolt
 		Add("Spellbook", 1010); // Basics of Lightning Magic: the Lightning Bolt
+		Add("Spellbook", 1085); // The First Steps of Meditation
 
 		Add("Magic Weapons", 40038); // Lightning Wand
 		Add("Magic Weapons", 40039); // Ice Wand

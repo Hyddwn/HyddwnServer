@@ -93,6 +93,18 @@ namespace Aura.Channel.World
 		public event Action<Creature> PlayerLeaves;
 
 		/// <summary>
+		/// Raised when a player was added to the region.
+		/// </summary>
+		/// <remarks>
+		/// Called after all is said and done, and the player is officially
+		/// in this region, unlike PlayerEnters, which is called during the
+		/// warp process, before informing the client about the successful
+		/// warp.
+		/// </remarks>
+		public event Action<Creature, int> PlayerEntered;
+		public void OnPlayerEntered(Creature creature, int prevRegionId) { this.PlayerEntered.Raise(creature, prevRegionId); }
+
+		/// <summary>
 		/// Initializes class.
 		/// </summary>
 		/// <param name="regionId"></param>
@@ -449,6 +461,12 @@ namespace Aura.Channel.World
 				// because there are thousands of client props. We only need
 				// the ones that make a difference. Added check for
 				// state and XML. [exec]
+				// 
+				// After the MusicQ update (NA242) I thought this might become
+				// a problem, that you would hear the music from the new music
+				// props from across the region, but it seems like the client
+				// filters them, based on the creature that spawned them.
+				// Is the creature not in range, the music stops. [exec]
 
 				result.AddRange(_props.Values.Where(a => a.ServerSide || a.ModifiedClientSide));
 			}
@@ -795,7 +813,7 @@ namespace Aura.Channel.World
 			// Add collisions
 			this.Collisions.Add(prop);
 
-			Send.EntityAppears(prop);
+			//Send.EntityAppears(prop);
 		}
 
 		/// <summary>
@@ -1182,7 +1200,11 @@ namespace Aura.Channel.World
 					if (!(pos.X >= minX && pos.X <= maxX && pos.Y >= minY && pos.Y <= maxY))
 						continue;
 
-					var time = (from.GetDistance(to) / creature.GetSpeed()) * 1000;
+					var speed = creature.GetSpeed();
+					if (speed < 1)
+						speed = 1;
+
+					var time = (from.GetDistance(to) / speed) * 1000;
 
 					npc.AI.Activate(time);
 				}

@@ -230,6 +230,10 @@ namespace Aura.Channel.Scripting.Scripts
 			{
 				var score = this.GetGiftReaction(gift);
 
+				// Debug output
+				if (this.Player.IsDev)
+					this.Msg(string.Format("-Debug-<br/>Reaction: {0}<br/>Score: {1}", this.NPC.GiftWeights.CalculateScore(gift), score));
+
 				await Hook("before_gift", gift, score);
 
 				await this.Gift(gift, score);
@@ -254,7 +258,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <returns></returns>
 		protected virtual async Task Gift(Item gift, GiftReaction reaction)
 		{
-			this.Msg("Thank you.");
+			this.Msg(Localization.Get("Thank you."));
 
 			await Task.Yield();
 		}
@@ -1270,6 +1274,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Returns true if a PTJ quest is active and its type matches
+		/// the given one.
+		/// </summary>
+		public bool DoingPtj(PtjType type)
+		{
+			var quest = this.Player.Quests.GetPtjQuest();
+			return (quest != null && quest.Data.PtjType == type);
+		}
+
+		/// <summary>
 		/// Returns true if a PTJ quest is active.
 		/// </summary>
 		public bool DoingPtj()
@@ -1332,13 +1346,13 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Returns a random quest id from the given ones, based on the current
-		/// Erinn day and the player's success rate for this PTJ type.
+		/// Of the given <paramref name="questIds"/>, returns those matched to
+		/// the player's success rate for the given PTJ <paramref name="type"/>.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="questIds"></param>
 		/// <returns></returns>
-		public int RandomPtj(PtjType type, params int[] questIds)
+		public IEnumerable<int> GetLevelMatchingQuestIds(PtjType type, params int[] questIds)
 		{
 			var level = this.GetPtjQuestLevel(type);
 
@@ -1373,13 +1387,25 @@ namespace Aura.Channel.Scripting.Scripts
 				Log.Warning("NpcScript.RandomPtj: Missing quest for level '" + level + "', using 'Basic' as fallback.");
 			}
 
+			return sameLevelQuests.Select(qscript => qscript.Id);
+		}
+
+		/// <summary>
+		/// Returns a random quest id from the given ones, based on the current
+		/// Erinn day and the player's success rate for this PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="questIds"></param>
+		/// <returns></returns>
+		public int RandomPtj(PtjType type, params int[] questIds)
+		{
+			var sameLevelQuests = this.GetLevelMatchingQuestIds(type, questIds);
+
 			// Return random quest's id
 			// Random is seeded with the current Erinn day so we always get
 			// the same result for one in-game day.
 			var rnd = new Random(ErinnTime.Now.DateTimeStamp);
-			var randomQuest = sameLevelQuests.ElementAt(rnd.Next(sameLevelQuestsCount));
-
-			return randomQuest.Id;
+			return sameLevelQuests.ElementAt(rnd.Next(sameLevelQuests.Count()));
 		}
 
 		/// <summary>
@@ -1451,6 +1477,18 @@ namespace Aura.Channel.Scripting.Scripts
 		public void Notice(NoticeType type, string format, params object[] args)
 		{
 			Send.Notice(this.Player, type, format, args);
+		}
+
+		/// <summary>
+		/// Displays as notice and system message.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public void SystemNotice(string format, params object[] args)
+		{
+			this.Notice(format, args);
+			this.SystemMsg(format, args);
 		}
 
 		/// <summary>
@@ -1646,6 +1684,10 @@ namespace Aura.Channel.Scripting.Scripts
 				// Holy Water
 				if (result.Item.IsBlessed)
 					useRate = 100 - ((100 - useRate) / 2);
+
+				// 100% Repair Event
+				if (IsEventActive("all_repairrate_100"))
+					useRate = 100;
 
 				// Success
 				if (this.Random(100) < useRate)
@@ -1873,6 +1915,11 @@ namespace Aura.Channel.Scripting.Scripts
 						// CTBONUS:2:40;CTSPEED:4:750;MTWR:1:1;
 						var collectionBonusBuff = result.Item.MetaData1.GetShort("CTBONUS");
 						result.Item.MetaData1.SetShort("CTBONUS", (short)(collectionBonusBuff + effect.Value[0]));
+						break;
+
+					case "CollectionBonusProduct":
+						// CTBONUSPT:4:64004;CTBONUS:2:20;
+						result.Item.MetaData1.SetInt("CTBONUSPT", (int)effect.Value[0]);
 						break;
 
 					case "CollectionSpeed":

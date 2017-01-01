@@ -34,7 +34,7 @@ public class SuccubusRpQuest : GeneralScript
 				npc.GiveKeyword("g1_15");
 
 				npc.GiveItem(TarlachsGlassesPouch);
-				npc.GiveWarpScroll(63009, "rabbie_dungeon");
+				npc.GiveWarpScroll(63009, "Rabbie_Dungeon");
 
 				npc.Msg(L("...How... how did you interpret...it...<br/>It means that the Goddess is sending Fomors here?<br/>Where did you hear that...?<br/>What...? The wizard...you heard from a Druid?"));
 				npc.Msg(L("...Named Tarlach...?"));

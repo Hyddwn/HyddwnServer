@@ -73,7 +73,11 @@ public class ComganScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("<username/>, I trust that you are doing the task I've asked you to do?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("I don't think we've met before... My name is <npcname/>.<br/>I'm the priest of this town. Nice to meet you."));
 		}
@@ -114,10 +118,6 @@ public class ComganScript : NpcScript
 				Msg(FavorExpression(), "This town is rather run-down, don't you think?<br/>I used to think that when I first arrived here...");
 				Msg("Those who have been here for a long time would tell me that this place was once very prosperous.<br/>Had a church, even...");
 				ModifyRelation(Random(2), 0, Random(3));
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":

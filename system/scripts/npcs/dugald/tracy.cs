@@ -138,6 +138,16 @@ public class TracyScript : NpcScript
 					Msg("Stop grinning. Don't give me that look any more. It's really disturbing.");
 					ModifyRelation(1, 0, 0);
 				}
+				else if (Favor > 40 && !HasKeyword("RP_Tracy_Complete"))
+				{
+					if (!HasItem(73102))
+					{
+						GiveItem(73102); // Tracy's Hatchet
+						SystemNotice(L("Received Tracy's Hatchet from Tracy."));
+					}
+
+					Msg(L("I've always had a rough time because of my name.<br/>My childhood was a nightmare, ridiculed for having such a girly name. I mean, people still make fun of it, even now.<br/>If you go to Ciar Dungeon with this and a buddy, you'll see what had happened to me recently because of my name.<br/>Hahaha."));
+				}
 				else
 				{
 					Msg(FavorExpression(), "Yes, <npcname/> is my name. The lumberjack...<br/>Hey! Why are you giggling while you ask?");
@@ -371,7 +381,7 @@ public class TracyScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"You think that's funny?",
 					"Man! You want me to talk about it?",
 					"What? You want to be a know-it-all?",

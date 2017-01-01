@@ -27,7 +27,7 @@ public class DilysScript : NpcScript
 		AddPhrase("Perhaps I should order a safe this month.");
 		AddPhrase("Should I go to the market?");
 		AddPhrase("I wish I could see the stars.");
-		AddPhrase("Should I go to the market?");
+		AddPhrase("What should I cook for dinner tonight?");
 	}
 
 	protected override async Task Talk()
@@ -181,16 +181,83 @@ public class DilysScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("shop_healing");
-				Msg(FavorExpression(), "A healer's job is to treat sick people.<br/>Don't hesitate to come to me if you ever feel sick.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "You're not like other people I've met here. You're special...<br/>Actually, I am embarrassed to say this... But I think about you quite often...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Lassar and I were high school classmates and we were both interested in magic.<br/>At first, I was interested in the art of healing through magic,<br/>but I realized that my true calling was in medicine.<br/>So, we both went to Emain Macha to study.");
+					Msg("Lassar studied magic, while I studied medicine.<br/>Lassar came back to Tir Chonaill first and said she was lonely and missed me a lot.<br/>So I came back...<br/>It's true!");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I can treat physical illnesses, but if you have an illness in your heart,<br/>it would be better for you to talk to Priest Meven or Priestess Endelyon.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Actually, I don't know what to do with all these men who keep asking me out.<br/>They're all the same... They only ask me out because of how I look on the outside... I don't want a man like that.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I don't know why guys always flirt with me.<br/>Please don't think of me like that.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "It makes me uncomfortable when you show too much interest in my personal life.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("shop_healing");
+					Msg(FavorExpression(), "A healer's job is to treat sick people.<br/>Don't hesitate to come to me if you ever feel sick.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				GiveKeyword("graveyard");
-				Msg(FavorExpression(), "It was hard for you to get here, wasn't it? I bet if I were a little closer to the Square<br/>you would've come earlier. Hehe...<br/>Truthfully, it is kind of scary being next to the graveyard.");
-				Msg("At first I thought about opening the Healer's House near the Square<br/>but Duncan advised me that this place would be better for business.<br/>Actually, I haven't had many patients.<br/>Only people who come to hunt spiders and...Trefor, who stores his goods here...");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I don't really know much about that.<br/>But, <username/>, since you're not from around here<br/>you must've heard some rumors, no?<br/>Can you tell me anything you know?");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Ah... How I envy Lassar. She enjoys so much free time during the School holiday...<br/>I sometimes wish I had become a teacher like her...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "You must be careful at night. The number of hungry wild animals has increased recently.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Lassar may look calm and mature, but she is actually a very jealous person...<br/>She hasn't changed a bit.<br/>But she has a warm heart, which makes it fun to be around her.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Chief Duncan hasn't changed a bit.<br/>He looks the same as he did when I was a young girl.<br/>But don't tell him that I said that!");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "You have way too much interest in the people around you.<br/>Maybe if you showed as much interest in your own life,<br/>everyone would say good things about you.<br/>Actually, I've heard a lot of negative things about you from the townspeople.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("graveyard");
+					Msg(FavorExpression(), "It was hard for you to get here, wasn't it? I bet if I were a little closer to the Square<br/>you would've come earlier. Hehe...<br/>Truthfully, it is kind of scary being next to the graveyard.");
+					Msg("At first I thought about opening the Healer's House near the Square<br/>but Duncan advised me that this place would be better for business.<br/>Actually, I haven't had many patients.<br/>Only people who come to hunt spiders and...Trefor, who stores his goods here...");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -360,14 +427,55 @@ public class DilysScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
-					"Eh?",
-					"I don't know... I'm sorry.",
-					"What are you talking about?",
-					"Did you ask others about this as well?",
-					"Did they say they didn't know about it either?<br/>Well..."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Hmm... Well? But talking with you makes me feel better.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Hehe...I don't really know anything about that.<br/>But, it is nice of you to ask me.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Whew... I am kind of tired right now. Can we talk later?");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Okay, I get the point. I said, I get it..");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"Eh?",
+						"I don't know... I'm sorry.",
+						"What are you talking about?",
+						"Did you ask others about this as well?",
+						"Did they say they didn't know about it either?<br/>Well..."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Oh, thank you very much."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Thank you."));
+				break;
+
+			default: // GiftReaction.Neutral
+				Msg(L("Hmmm? Can I keep it?"));
 				break;
 		}
 	}

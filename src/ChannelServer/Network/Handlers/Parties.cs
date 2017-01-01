@@ -337,6 +337,14 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
+			// Check for active party quest
+			if (party.Quest != null)
+			{
+				Send.MsgBox(creature, Localization.Get("You can't switch leaders while a party quest is active."));
+				Send.PartyChangeLeaderR(creature, false);
+				return;
+			}
+
 			// Set leader
 			// Is there any instance in which you're not allowed to change party leader?
 			var success = party.SetLeader(entityId);

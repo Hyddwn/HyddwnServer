@@ -104,7 +104,92 @@ public class AlbyDungeonScript : DungeonScript
 				return false;
 			}
 
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
 			dungeonName = "g1rp_05_tircho_alby_dungeon";
+			return true;
+		}
+
+		// Giant Spider Fomor Scroll (RP)
+		if (item.Info.Id == 73108)
+		{
+			if (creature.Keywords.Has("RP_Monster_GiantSpider_complete"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon anymore."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You must enter this dungeon alone."));
+				return false;
+			}
+
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
+			dungeonName = "rp_monster_giantspider";
+			return true;
+		}
+
+		// Egg from Caitin (RP)
+		if (item.Info.Id == 73109)
+		{
+			if (creature.Keywords.Has("RP_Monster_Chicken_complete"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon anymore."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You must enter this dungeon alone."));
+				return false;
+			}
+
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
+			dungeonName = "rp_monster_chicken";
+			return true;
+		}
+
+		// Trefor's Gauntlet (RP)
+		if (item.Info.Id == 73103)
+		{
+			if (creature.Keywords.Has("RP_Trefor_Complete"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon anymore."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You must enter this dungeon alone."));
+				return false;
+			}
+
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
+			if (!creature.Keywords.Has("RP_Trefor_Failed_2") && !creature.Keywords.Has("RP_Trefor_Failed_3"))
+				dungeonName = "rp_trefor_tircho_alby_dungeon";
+			else
+				dungeonName = "rp_trefor_tircho_alby_dungeon2";
+
 			return true;
 		}
 
@@ -173,11 +258,15 @@ public class AlbyDungeonScript : DungeonScript
 			drops.Add(new DropData(itemId: 51102, chance: 44, amountMin: 1, amountMax: 2)); // Mana Herb
 			drops.Add(new DropData(itemId: 71017, chance: 2, amountMin: 1, amountMax: 2));  // White Spider Fomor Scroll
 			drops.Add(new DropData(itemId: 71019, chance: 2, amountMin: 1, amountMax: 1)); // Red Spider Fomor Scroll
-			drops.Add(new DropData(itemId: 63116, chance: 1, amount: 1, expires: 480)); // Alby Int 1
-			drops.Add(new DropData(itemId: 63117, chance: 1, amount: 1, expires: 480)); // Alby Int 2
-			drops.Add(new DropData(itemId: 63118, chance: 1, amount: 1, expires: 480)); // Alby Int 4
 			drops.Add(new DropData(itemId: 63101, chance: 2, amount: 1, expires: 480)); // Alby Basic
 			drops.Add(new DropData(itemId: 40002, chance: 1, amount: 1, color1: 0x000000, durability: 0)); // Wooden Blade (black)
+
+			if (IsEnabled("AlbyInt"))
+			{
+				drops.Add(new DropData(itemId: 63116, chance: 1, amount: 1, expires: 480)); // Alby Int 1
+				drops.Add(new DropData(itemId: 63117, chance: 1, amount: 1, expires: 480)); // Alby Int 2
+				drops.Add(new DropData(itemId: 63118, chance: 1, amount: 1, expires: 480)); // Alby Int 4
+			}
 
 			if (IsEnabled("AlbyAdvanced"))
 			{

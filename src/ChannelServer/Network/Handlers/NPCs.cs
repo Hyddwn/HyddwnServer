@@ -232,7 +232,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var entityId = packet.GetLong();
 			var moveToInventory = packet.GetBool(); // 0:cursor, 1:inv
-			var unk = packet.GetByte(); // storage gold?
+			var directBankTransaction = packet.GetBool();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -246,7 +246,7 @@ namespace Aura.Channel.Network.Handlers
 				throw new ModerateViolation("Tried to buy an item with a null shop.");
 			}
 
-			var success = creature.Temp.CurrentShop.Buy(creature, entityId, moveToInventory);
+			var success = creature.Temp.CurrentShop.Buy(creature, entityId, moveToInventory, directBankTransaction);
 
 			Send.NpcShopBuyItemR(creature, success);
 		}
@@ -288,16 +288,21 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Calculate selling price
-			var sellingPrice = item.OptionInfo.SellingPrice;
-			if (item.Data.StackType == StackType.Sac)
+			var sellingPrice = 0;
+			if (!item.IsIncomplete)
 			{
-				// Add costs of the items inside the sac
-				sellingPrice += (int)((item.Info.Amount / (float)item.Data.StackItem.StackMax) * item.Data.StackItem.SellingPrice);
-			}
-			else if (item.Data.StackType == StackType.Stackable)
-			{
-				// Individuel price for this stack
-				sellingPrice = (int)((item.Amount / (float)item.Data.StackMax) * sellingPrice);
+				sellingPrice = item.OptionInfo.SellingPrice;
+
+				if (item.Data.StackType == StackType.Sac)
+				{
+					// Add costs of the items inside the sac
+					sellingPrice += (int)((item.Info.Amount / (float)item.Data.StackItem.StackMax) * item.Data.StackItem.SellingPrice);
+				}
+				else if (item.Data.StackType == StackType.Stackable)
+				{
+					// Individuel price for this stack
+					sellingPrice = (int)((item.Amount / (float)item.Data.StackMax) * sellingPrice);
+				}
 			}
 
 			// Remove item from inv

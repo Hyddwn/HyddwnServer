@@ -187,7 +187,7 @@ namespace Aura.Channel.Scripting.Scripts
 		public void Attach(Creature creature)
 		{
 			this.Creature = creature;
-			this.Creature.Death += OnDeath;
+			this.Creature.Finish += OnDeath;
 		}
 
 		/// <summary>
@@ -201,7 +201,7 @@ namespace Aura.Channel.Scripting.Scripts
 				return;
 
 			npc.AI.Dispose();
-			npc.Death -= OnDeath;
+			npc.Finish -= OnDeath;
 			npc.AI = null;
 			this.Creature = null;
 		}
@@ -762,18 +762,6 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Returns true if there are collisions between the two positions.
-		/// </summary>
-		/// <param name="pos1"></param>
-		/// <param name="pos2"></param>
-		/// <returns></returns>
-		protected bool AnyCollisions(Position pos1, Position pos2)
-		{
-			Position intersection;
-			return this.Creature.Region.Collisions.Find(pos1, pos2, out intersection);
-		}
-
-		/// <summary>
 		/// Sends SharpMind to all applicable creatures.
 		/// </summary>
 		/// <remarks>
@@ -821,10 +809,14 @@ namespace Aura.Channel.Scripting.Scripts
 					if (!creature.Skills.Has(SkillId.SharpMind))
 						continue;
 
+					var success = (this.Random() < ChannelServer.Instance.Conf.World.SharpMindChance);
+
 					// Set skill id to 0, so the bubble displays a question mark,
 					// if skill is unknown to the player or Sharp Mind fails.
-					if (!creature.Skills.Has(skillId) || this.Random() >= ChannelServer.Instance.Conf.World.SharpMindChance)
+					if (!creature.Skills.Has(skillId) || !success)
 						skillId = SkillId.None;
+
+					SharpMindHandler.Train(this.Creature, creature, success);
 				}
 
 				// Cancel and None are sent for removing the bubble
@@ -2087,7 +2079,7 @@ namespace Aura.Channel.Scripting.Scripts
 				var y = summonPos.Y;
 
 				var creature = ChannelServer.Instance.World.SpawnManager.Spawn(raceId, regionId, x, y, true, true);
-				creature.Death += (_, __) => this.ModifySummonCount(raceId, -1);
+				creature.Finish += (_, __) => this.ModifySummonCount(raceId, -1);
 
 				this.ModifySummonCount(raceId, +1);
 			}

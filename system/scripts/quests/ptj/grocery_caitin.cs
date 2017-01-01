@@ -709,7 +709,7 @@ public class CaitinBreadMevenBasicPtjScript : CaitinBreadBasicPtjBaseScript
 	protected override async Task OnFinish(NpcScript npc)
 	{
 		npc.Msg(L("Oh, this Bread looks lovely.<br/>Another blessing from our God, Lymilark.<br/>Thank you."));
-		npc.Msg(Hide.None, L("(Delivered the Bread to the Priest.)"));
+		npc.Msg(Hide.Name, L("(Delivered the Bread to the Priest.)"));
 	}
 }
 
@@ -796,7 +796,7 @@ public class CaitinBreadMevenIntPtjScript : CaitinBreadIntPtjBaseScript
 	protected override async Task OnFinish(NpcScript npc)
 	{
 		npc.Msg(L("Oh, this Bread looks lovely.<br/>Another blessing from our God, Lymilark.<br/>Thank you."));
-		npc.Msg(Hide.None, L("(Delivered the Bread to the Priest.)"));
+		npc.Msg(Hide.Name, L("(Delivered the Bread to the Priest.)"));
 	}
 }
 
@@ -886,7 +886,7 @@ public class CaitinBreadMevenAdvPtjScript : CaitinBreadAdvPtjBaseScript
 	protected override async Task OnFinish(NpcScript npc)
 	{
 		npc.Msg(L("Oh, this Bread looks lovely.<br/>Another blessing from our God, Lymilark.<br/>Thank you."));
-		npc.Msg(Hide.None, L("(Delivered the Bread to the Priest.)"));
+		npc.Msg(Hide.Name, L("(Delivered the Bread to the Priest.)"));
 	}
 }
 

@@ -1,8 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Jail
 //--- Description -----------------------------------------------------------
-// Puts all players who commit a security violation in "jail" and adds
-// the "jail" command (default auth 50:-1), that can be used to jail
+// Adds the "jail" command (default auth 50:-1), that can be used to jail
 // characters freely.
 //--- By --------------------------------------------------------------------
 // Xcelled, exec
@@ -38,49 +37,49 @@ public class JailScript : NpcScript
 	{
 		SetBgm("Dungeon_17.mp3");
 
-		while (true)
+	L_Menu:
+		Msg("<username/>...<br/>Our newest \"inmate\"...<br/>Do you need something?",
+			Button("End Conversation", "@end"),
+			Button("Why am I here?", "@why"),
+			Button("Can I leave?", "@leave"));
+
+		switch (await Select())
 		{
-			Msg("<username/>...<br/>Our newest \"inmate\"...<br/>Do you need something?",
-				Button("End Conversation", "@end"),
-				Button("Why am I here?", "@why"),
-				Button("Can I leave?", "@leave"));
+			case "@why":
+				Msg("You've been imprisoned here because you were<br/>caught trying to do something you shouldn't have.");
+				Msg("That's a big no no, <username/>...<br/>Do you know what happens to repeat offenders?");
+				Msg(Hide.Both, "(<npcname/> draws his finger across his neck menacingly)");
+				Msg("You'll be released after spending some quality time here with me,<br/>so you can think about what you've done.");
+				Msg("Oh, one more thing, <username/>...<br/>See that you don't return.<br/>Subsequent visits can be... unpleaseant.");
+				goto L_Menu;
 
-			switch (await Select())
-			{
-				case "@why":
-					Msg("You've been imprisoned here because you were<br/>caught trying to do something you shouldn't have.");
-					Msg("That's a big no no, <username/>...<br/>Do you know what happens to repeat offenders?");
-					Msg(Hide.Both, "(<npcname/> draws his finger across his neck menacingly)");
-					Msg("You'll be released after spending some quality time here with me,<br/>so you can think about what you've done.");
-					Msg("Oh, one more thing, <username/>...<br/>See that you don't return.<br/>Subsequent visits can be... unpleaseant.");
-					break;
+			case "@leave":
+				Msg("You think your time is up, <username/>?<br/>Well, let's see...");
 
-				case "@leave":
-					Msg("You think your time is up, <username/>?<br/>Well, let's see...");
+				var end = Player.Vars.Perm["jail_free_time"];
+				if (end == null || end < DateTime.Now)
+				{
+					Msg("Congratulations. Your time has been served.<br/>You are free to go.", Button("Get me out of here", "@go"), Button("I want to stay a bit", "@stay"));
 
-					var end = Player.Vars.Perm["jail_free_time"];
-					if (end == null || end < DateTime.Now)
+					switch (await Select())
 					{
-						Msg("Congratulations. Your time has been served.<br/>You are free to go.", Button("Get me out of here", "@go"), Button("I want to stay a bit", "@stay"));
+						case "@go":
+							await Warp();
+							return;
 
-						switch (await Select())
-						{
-							case "@go":
-								await Warp();
-								return;
-
-							default:
-								Msg("Going to hang around a bit?<br/>No problem, just talk to me when you're ready to leave.");
-								break;
-						}
+						default:
+							Msg("Going to hang around a bit?<br/>No problem, just talk to me when you're ready to leave.");
+							break;
 					}
-					else
-					{
-						Msg("I'm sorry, but you need to wait an additional<br/>" + FormatTS(end - DateTime.Now) + " before you can leave.");
-					}
-					break;
-			}
+				}
+				else
+				{
+					Msg("I'm sorry, but you need to wait an additional<br/>" + FormatTS(end - DateTime.Now) + " before you can leave.");
+				}
+				goto L_Menu;
 		}
+		
+		End();
 	}
 
 	private async Task Warp()
@@ -94,15 +93,6 @@ public class JailScript : NpcScript
 		Close();
 	}
 
-	[On("SecurityViolation")]
-	public void NewPlayer(SecurityViolationEventArgs e)
-	{
-		if (e.Client.Controlling == null)
-			return;
-
-		Jail(e.Client.Controlling, TimeSpan.FromMinutes(30));
-	}
-	
 	public static void Jail(Creature creature, TimeSpan time)
 	{
 		creature.Warp(126, 4400, 4200);

@@ -136,5 +136,76 @@ namespace Aura.Tests.Mabi
 			var time4 = new ErinnTime(DateTime.MaxValue);
 			Assert.Equal("417187-6-40 23:59", time4.ToString());
 		}
+
+		[Fact]
+		public void GetNextTime()
+		{
+			// 12 hours
+			{
+				var now = DateTime.Parse("2016-01-01 00:00:00");
+				var then = DateTime.Parse("2016-01-01 00:18:00");
+				var time = ErinnTime.GetNextTime(now, 12, 0);
+				Assert.Equal(then, time.DateTime);
+			}
+
+			// 24 hours
+			{
+				var now = DateTime.Parse("2016-01-01 00:00:00");
+				var then = DateTime.Parse("2016-01-01 00:36:00");
+				var time = ErinnTime.GetNextTime(now, 0, 0);
+				Assert.Equal(then, time.DateTime);
+			}
+
+			// Hours
+			for (int i = 1; i < 24; ++i)
+			{
+				var now = DateTime.Parse("2016-01-01 00:00:00");
+				var then = now.AddSeconds(i * 90);
+				var time = ErinnTime.GetNextTime(now, i, 0);
+				Assert.Equal(then, time.DateTime);
+			}
+
+			// Minutes
+			for (int i = 0; i < 60; ++i)
+			{
+				var now = DateTime.Parse("2016-01-01 00:00:00");
+				var then = now.AddSeconds(90).AddMilliseconds(i * 1500);
+				var time = ErinnTime.GetNextTime(now, 1, i);
+				Assert.Equal(then, time.DateTime);
+			}
+
+			// 23 hours, rollover
+			{
+				var now = DateTime.Parse("2016-01-01 00:04:30");
+				var then = now.AddSeconds(23 * 90);
+				var time = ErinnTime.GetNextTime(now, 2, 0);
+				Assert.Equal(then, time.DateTime);
+			}
+
+			// Real world 1
+			{
+				var now = DateTime.Parse("2016-12-02 16:32");
+				var then = DateTime.Parse("2016-12-02 16:40:30");
+				var time = ErinnTime.GetNextTime(now, 19, 0);
+				Assert.Equal(then, time.DateTime);
+			}
+
+			// Real world 2
+			{
+				var now = DateTime.Parse("2016-12-02 11:17");
+				var then = DateTime.Parse("2016-12-02 11:52:30");
+				var time = ErinnTime.GetNextTime(now, 19, 0);
+				Assert.Equal(then, time.DateTime);
+			}
+
+			// 2 hours based on now (one random test, just in case)
+			{
+				var erinnNow = ErinnTime.Now;
+				var now = erinnNow.DateTime;
+				var then = now.AddSeconds(2 * 90);
+				var time = ErinnTime.GetNextTime(now, (erinnNow.Hour + 2) % 24, erinnNow.Minute);
+				Assert.Equal(then, time.DateTime);
+			}
+		}
 	}
 }

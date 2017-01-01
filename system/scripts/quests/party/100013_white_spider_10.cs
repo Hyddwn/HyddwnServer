@@ -13,6 +13,7 @@ public class WhiteSpider10PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt White Spiders"));
 		SetDescription(L("The White Spiders are a threat for people trying to collect cobwebs. I will reward you for hunting [10 White Spiders]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

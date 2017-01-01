@@ -54,6 +54,7 @@ namespace Aura.Login.Network.Handlers
 			var users = packet.GetInt();
 			var maxUsers = packet.GetInt();
 			var state = (ChannelState)packet.GetInt();
+			var events = (ChannelEvent)packet.GetInt();
 
 			var server = LoginServer.Instance.ServerList.Add(serverName);
 
@@ -85,6 +86,7 @@ namespace Aura.Login.Network.Handlers
 			channel.MaxUsers = maxUsers;
 			channel.LastUpdate = DateTime.Now;
 			channel.State = state;
+			channel.Events = events;
 
 			Send.ChannelStatus(LoginServer.Instance.ServerList.List);
 			Send.Internal_ChannelStatus(LoginServer.Instance.ServerList.List);

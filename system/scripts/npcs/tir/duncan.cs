@@ -143,7 +143,12 @@ public class DuncanScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Ah, <username/>. You remind me when I was young.<br/>I was once full of dreams and great ambitions too, you know.<br/>But now I am an old man with graying hair. My, does time fly.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
 				{
 					Msg(FavorExpression(), "My name, <npcname/>, is a warrior name.<br/>My father gave it to me hoping that I would become a great warrior leader.");
 					ModifyRelation(Random(2), 0, Random(2));
@@ -153,9 +158,28 @@ public class DuncanScript : NpcScript
 					Msg(FavorExpression(), "See that bird on the tree over there? When I was young, he used to help me on the battlefield.<br/>Now he's as old as I am and sleeps all the time.<br/>Perhaps he has closed his heart in disappointment at my present appearance, so old and changed...");
 					ModifyRelation(Random(2), Random(2), Random(2));
 				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Although I am the Chief of this town, if you show too much interest in an old man like me,<br/>people will get the wrong ideas about us.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "It looks like other people need my help.<br/>Can we talk later?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "I should take care of the graveyard now.<br/>I need some time to prepare, so I won't have much time to converse for the rest of the day.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
 				else
 				{
-					if (Title == 33)
+					if (Title == 33 && Player.Age > 20)
+					{
+						Msg(FavorExpression(), "(Missing dialog: Information about the Diligent title while being over the age of 20).");
+					}
+					else if (Title == 33)
 					{
 						Msg(FavorExpression(), "Now that I think about it, I have something to tell you...<br/>Oh, it's not serious. But you have quite the reputation around here.<br/>Your diligence and hard work is well known to everyone in town.<br/>People say you're good-hearted and a decent human being.<br/>I trust you too, so keep up the good work.");
 					}
@@ -169,7 +193,12 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "rumor":
-				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I advise you not to head north.<br/>There have been sightings of terrible monsters,<br/>and I'm afraid things will get out of control if an accident occurs.<br/>I told the guards to block off the place for the time being.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
 				{
 					GiveKeyword("graveyard");
 					Msg(FavorExpression(), "In the graveyard lay those who sacrificed their lives<br/>to keep Tir Chonaill safe from monsters and evil creatures...");
@@ -179,6 +208,21 @@ public class DuncanScript : NpcScript
 				{
 					Msg(FavorExpression(), "The weather here changes unpredictably because Tir Chonaill is located high up in the mountains.<br/>There are instances where bridges collapse and roads are destroyed after a heavy rainfall,<br/>and people lose all contact with the outside world.<br/>Despite that, I think you've done quite well here.");
 					ModifyRelation(Random(2), Random(2), Random(3));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Even though I have stationed guards there so the town residents won't be paralyzed with fear, I'm still very much concerned.<br/>Have you thought about helping them out a bit?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Have you talked with Meven?<br/>He's a knowledgeable person who knows about a wide variety of subjects.<br/>If you do not stereotype him as a dull priest, and instead pay close attention to his words,<br/>you might be surprised at his depth of knowledge.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Take care of yourself first before worrying about others.<br/>Why am I saying this? I've heard people complain that you're too nosy.<br/>Don't take it personally, but I think you need to be more careful.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
 				}
 				else
 				{
@@ -194,9 +238,6 @@ public class DuncanScript : NpcScript
 					}
 					ModifyRelation(Random(2), 0, Random(3));
 				}
-
-				// Not sure where this goes
-				// Msg("I heard a rumor that this is just a copy of the world of Erin. Trippy, huh?");
 				break;
 
 			case "about_skill":
@@ -427,16 +468,37 @@ public class DuncanScript : NpcScript
 				break;
 
 			default:
-				RndFavorMsg(
-					"Hm?",
-					"I have no idea...",
-					"I don't really know about that...",
-					"I don't know anything about that...",
-					"Hmm, I wonder who might know about that...",
-					"I think it'd be better for you to ask someone else."
-				);
-
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Haha. That's something I don't really know.<br/>You know more than others your age.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I'm sorry, but I don't know much about that.<br/>Why don't you ask someone else? I'm sure someone can help you.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Oh, come on. Put yourself in my position.<br/>Will that make you understand what I'm saying?");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Let's talk later.");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"Hm?",
+						"I have no idea...",
+						"I don't really know about that...",
+						"Hmm, I wonder who might know about that...",
+						"I think it'd be better for you to ask someone else."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
 				break;
 		}
 	}
@@ -446,20 +508,27 @@ public class DuncanScript : NpcScript
 		switch (reaction)
 		{
 			case GiftReaction.Love:
-				Msg("Oh! How did you know I like this?<br/>Thank you very much.");
+				Msg(L("Oh! How did you know I like this?<br/>Thank you very much."));
+				break;
+
+			case GiftReaction.Like:
+				RndMsg(
+					L("Ah, thank you very much.<br/>As a matter of fact, I've been looking for this."),
+					L("Hahaha, I don't know if I can take this. Thank you!")
+				);
+				break;
+
+			case GiftReaction.Neutral:
+				RndMsg(
+					L("Is that for me?"),
+					L("You didn't need to do this...")
+				);
 				break;
 
 			case GiftReaction.Dislike:
 				RndMsg(
-					"Hmm. Not exactly to my taste...",
-					"Hmm. I'll keep it safe for someone who may need it."
-				);
-				break;
-
-			default:
-				RndMsg(
-					"Is that for me?",
-					"You didn't need to do this..."
+					L("Hmm. Not exactly to my taste..."),
+					L("Hmm. I'll keep it safe for someone who may need it.")
 				);
 				break;
 		}

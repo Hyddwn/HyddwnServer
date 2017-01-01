@@ -28,39 +28,72 @@ namespace Aura.Data.Database
 		public List<CollectingItemData> FailProducts { get; set; }
 		public List<CollectingItemData> FailProducts2 { get; set; }
 
-		public int GetRndProduct(Random rnd)
+		public int GetRndProduct(Random rnd, ProductBonus bonus)
 		{
-			return this.GetRndFrom(this.Products, rnd);
+			return this.GetRndFrom(this.Products, rnd, bonus);
 		}
 
-		public int GetRndProduct2(Random rnd)
+		public int GetRndProduct2(Random rnd, ProductBonus bonus)
 		{
-			return this.GetRndFrom(this.Products2, rnd);
+			return this.GetRndFrom(this.Products2, rnd, bonus);
 		}
 
-		public int GetRndFailProduct(Random rnd)
+		public int GetRndFailProduct(Random rnd, ProductBonus bonus)
 		{
-			return this.GetRndFrom(this.FailProducts, rnd);
+			return this.GetRndFrom(this.FailProducts, rnd, bonus);
 		}
 
-		public int GetRndFailProduct2(Random rnd)
+		public int GetRndFailProduct2(Random rnd, ProductBonus bonus)
 		{
-			return this.GetRndFrom(this.FailProducts2, rnd);
+			return this.GetRndFrom(this.FailProducts2, rnd, bonus);
 		}
 
-		private int GetRndFrom(List<CollectingItemData> items, Random rnd)
+		private int GetRndFrom(List<CollectingItemData> items, Random rnd, ProductBonus productBonus)
 		{
 			if (items.Count == 0)
 				return 0;
 
-			var total = items.Sum(cls => cls.Chance);
+			// Create a new list, with the adjusted chances if necessary
+			List<CollectingItemData> list;
+			if (productBonus != null)
+			{
+				list = new List<CollectingItemData>();
+				foreach (var item in items)
+				{
+					var itemId = item.Id;
+					var chance = item.Chance;
+
+					if (itemId == productBonus.ItemId)
+						chance += productBonus.Bonus;
+
+					list.Add(new CollectingItemData() { Id = itemId, Chance = chance });
+				}
+			}
+			else
+			{
+				list = items;
+			}
+
+			var total = list.Sum(cls => cls.Chance);
 
 			var randVal = rnd.NextDouble() * total;
 			var i = 0;
 			for (; randVal > 0; ++i)
-				randVal -= items[i].Chance;
+				randVal -= list[i].Chance;
 
-			return items[i - 1].Id;
+			return list[i - 1].Id;
+		}
+	}
+
+	public class ProductBonus
+	{
+		public readonly int ItemId;
+		public readonly int Bonus;
+
+		public ProductBonus(int itemId, int bonus)
+		{
+			this.ItemId = itemId;
+			this.Bonus = bonus;
 		}
 	}
 

@@ -19,10 +19,6 @@ namespace Aura.Channel.Skills.Life
 	/// <summary>
 	/// Skill used by spiders to drop cobweb.
 	/// </summary>
-	/// <remarks>
-	/// This implementation is guessed. It can be used by players and
-	/// monsters, but it's unlikely that it's official.
-	/// </remarks>
 	[Skill(SkillId.WebSpinning)]
 	public class WebSpinning : IPreparable, ICompletable, ICancelable
 	{

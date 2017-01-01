@@ -13,6 +13,7 @@ public class DireWolvesGrizzlyBears40PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Dire Wolves and the Grizzly Bears"));
 		SetDescription(L("Recently, Dire Wolves and Grizzly Bears, which are under a powerful evil spell, are threatening travelers passing through north of Gairech. Please [Hunt 20 Brown Dire Wolves and 20 Grizzly Bears]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<title>Registration</title>
+		
+		<link rel="stylesheet" href="/lib/normalize.min.css" />
+		<link rel="stylesheet" href="style.css" />
+		
+		<script src="/lib/jquery.min.js"></script>
+		
+		<script>
+			$().ready(function()
+			{
+				$('input[type=submit]').click(function()
+				{
+					$(this).val('Please wait...');
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="main">
+			<img src="/images/aura-white.png" />
+			
+			<div id="notice">
+				{{#if error}}<span class="error">Error:</span> {{/if}}{{error}}
+				{{success}}
+			</div>
+			
+			<form method="post" action="">
+				<table>
+					<tr>
+						<td>Name</td>
+						<td><input type="text" name="name" value="{{name}}" /></td>
+					</tr>
+					<tr>
+						<td>Password</td>
+						<td><input type="password" name="password1" /></td>
+					</tr>
+					<tr>
+						<td>Repeat Password</td>
+						<td><input type="password" name="password2" /></td>
+					</tr>
+				</table>
+				
+				<input type="submit" value="Register" />
+			</form>
+		</div>
+	</body>
+</html>

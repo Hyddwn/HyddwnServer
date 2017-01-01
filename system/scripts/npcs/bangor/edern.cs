@@ -140,7 +140,11 @@ public class EdernScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("I trust that you're doing the task I gave you, right?<br/>Be sure to finish it before the deadline!"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("What is your business here?"));
 		}
@@ -206,10 +210,6 @@ public class EdernScript : NpcScript
 					Msg("Shouldn't you be coming to a certain realization to see that<br/>my granddaughter, Elen, who is much better than you are,<br/>is only tending to item sales?");
 					Msg("To become proficient in the Blacksmith skill,<br/>the blacksmith hammer should never be too far from your hands.<br/>You, too, will feel differently about blacksmiths<br/>when you are holding a hammer yourself.");
 				}
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":

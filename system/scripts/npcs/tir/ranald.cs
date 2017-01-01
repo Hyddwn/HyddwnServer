@@ -161,10 +161,23 @@ public class RanaldScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("school");
-				Msg(FavorExpression(), "Hello, there. I teach combat skills at the School in Tir Chonaill.<br/>If you're interested, talk to me with the 'Classes and Training' keyword.");
-				Msg("Hey, hey... This is not free. You'll need to pay tuition for my classes...");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Favor > 20 && !HasKeyword("RP_Ranald_Complete"))
+				{
+					if (!HasItem(73101))
+					{
+						GiveItem(73101); // Ranald's Medal
+						SystemNotice(L("Received Ranald's Medal from Ranald."));
+					}
+
+					Msg(L("I used to be a Dunbarton mercenary.<br/>I'd spent my youth as a mercenary and then built a School here at Tir Chonaill.<br/>You'll be able to see my past if you enter Rabbie Dungeon alone with this. Haha."));
+				}
+				else
+				{
+					GiveKeyword("school");
+					Msg(FavorExpression(), "Hello, there. I teach combat skills at the School in Tir Chonaill.<br/>If you're interested, talk to me with the 'Classes and Training' keyword.");
+					Msg("Hey, hey... This is not free. You'll need to pay tuition for my classes...");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
@@ -416,7 +429,7 @@ public class RanaldScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					"You know I've been busy...",
 					"Well, I don't really know...",
 					"I am not very interested in that.",

@@ -878,6 +878,23 @@ namespace Aura.Shared.Database
 
 			return result;
 		}
+
+		/// <summary>
+		/// Updates creature's online status.
+		/// </summary>
+		/// <param name="creatureId"></param>
+		/// <param name="isOnline"></param>
+		public void UpdateOnlineStatus(long creatureId, bool isOnline)
+		{
+			using (var conn = this.Connection)
+			using (var cmd = new UpdateCommand("UPDATE `creatures` SET {0} WHERE `creatureId` = @creatureId", conn))
+			{
+				cmd.AddParameter("@creatureId", creatureId);
+				cmd.Set("online", isOnline);
+
+				cmd.Execute();
+			}
+		}
 	}
 
 	public class GuildSearchResult

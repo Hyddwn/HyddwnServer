@@ -10,9 +10,9 @@ public class TheThreeMissingWarriorsRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#tarlach");
-		//dungeon.SetRole(1, "#mari");
-		//dungeon.SetRole(2, "#ruairi");
+		dungeon.SetRole(0, "#tarlach");
+		dungeon.SetRole(1, "#mari");
+		dungeon.SetRole(2, "#ruairi");
 	}
 
 	public override void OnBoss(Dungeon dungeon)
@@ -46,8 +46,7 @@ public class TheThreeMissingWarriorsRPDungeonScript : DungeonScript
 			// Switch keywords for all members
 			// Iirc officials do it only for the leader, but really,
 			// who wants to run this thrice...?
-			var creators = dungeon.GetCreators();
-			foreach (var member in creators)
+			foreach (var member in dungeon.GetCreators())
 			{
 				if (member.Keywords.Has("g1_03"))
 				{

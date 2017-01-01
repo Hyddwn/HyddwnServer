@@ -347,21 +347,93 @@ namespace Aura.Mabi.Const
 	public enum ConditionsF : ulong
 	{
 		IgnoreCommercePenalty = 0x0000000000000001,
-		BashCombo = 0x0000000000000002,
-		BashComboMax = 0x0000000000000004,
+		RageStack = 0x0000000000000002, // Bash Combo
+		RageStackMax = 0x0000000000000004, // Bash Combo Max
 		DamageCurse2 = 0x0000000000000008,
-		EnhancedCriticalDamage = 0x0000000000000010,
-		EnhancedBash = 0x0000000000000020,
-		DecreasedDurabilityLoss = 0x0000000000000040,
-		SleepingWool = 0x0000000000000080, // SheepSleep
-		GivingOffTheCharm = 0x0000000000000100, // SheepBewitch
-		LightAsWool = 0x0000000000000200, // TouchMoveUp
+		CriticalDamageUp = 0x0000000000000010, // Enhanced Critical Damage
+		BashEnhance = 0x0000000000000020,
+		DurabilityLossDecrease = 0x0000000000000040,
+		SheepSleep = 0x0000000000000080, // Sleeping Wool
+		SheepBewitch = 0x0000000000000100, // Giving Off the Charm
+		TouchMoveUp = 0x0000000000000200, // Light as Wool
+		SkillIceSpearWithDamageReduce = 0x0000000000000400, // Ice Spear Deep Freeze
+		SkillIceboltSlow = 0x0000000000000800, // Icebolt Hobble
+		HpUpBonus = 0x0000000000001000,
+		MaxDamageBonus = 0x0000000000002000,
+		HpRecoverSpeedBonus = 0x0000000000004000,
+		ManaRecoverSpeedBonus = 0x0000000000008000,
+		StaminaRecoverSpeedBonus = 0x0000000000010000,
+		CriticalRateBonus = 0x0000000000020000,
+		TalentSkillExpBonus = 0x0000000000040000, // Increases Training Experience for particular talent skills
+		MeleeDamageBonus = 0x0000000000080000, // Increases Close Combat Talent Skill damage
+		MagicSpeedBonus = 0x0000000000100000, // Increases Magic Talent Skill Casting Speed
+		RangeAttackSpeedBonus = 0x0000000000200000, // Increases Archer Talent Aim Speed
+		CollectingSpeedBonus = 0x0000000000400000,
+		SheepWolfWorldQuest = 0x0000000000800000, // Sheep Wolf World Quest check
+		UrgentShotRangeSpeedBonus = 0x0000000001000000, // Ranged aiming speed increased
+		Immobilize = 0x0000000002000000,
+		TuanPetSleep = 0x0000000004000000,
+		TuanPetSlow = 0x0000000008000000,
+		MagicalEnergySupply = 0x0000000010000000,
+		MagicalEnergyCancel = 0x0000000020000000,
+		GodHand = 0x0000000040000000,
+		DefenseProtectDebuff = 0x0000000080000000,
+		DivineLinkMasterBuff = 0x0000000100000000,
+		DivineLinkPetBuff = 0x0000000200000000,
+		CookingExp1 = 0x0000000400000000, // Cooking Training EXP Boost
+		CookingExp2 = 0x0000000800000000, // Cooking Training EXP Boost
+		CookingQuality = 0x0000001000000000, // Recipe Quality Boost
+		CookingBuffing = 0x0000002000000000, // Cooking Buff Duration Increased
+		JudgementBladeEnhance = 0x0000004000000000,
+		LanceChargeEnhance = 0x0000008000000000,
+		CurseOfDevil = 0x0000010000000000, // Fallen Fairy Summon Skill
+		BlessingOfDevilMove = 0x0000020000000000, // Fallen Fairy Summon Skill Movement Speed Buff
+		BlessingOfDevilAttack = 0x0000040000000000, // Fallen Fairy Summon Skill Attack Speed Buff
+		ComebackMilesian = 0x0000080000000000, // the Returned
+		FlownSkyLantern = 0x0000100000000000,
+		ProductionRateEnhance = 0x0000200000000000, // Craft Success Rate Enhanced
+		FiresOfAllure = 0x0000400000000000, // Safeguard
+		PhantomBerserk = 0x0000800000000000,
+		PhantomFear = 0x0001000000000000,
+		EnjoyPerformance = 0x0002000000000000, // Captive Audience
+		SweetIllusion = 0x0004000000000000, // Soul Rift
+		DoubleCombatExpOnEvent = 0x0008000000000000,
+		BalloonReviveLock = 0x0010000000000000, // Cannot be revived by the balloon
+		ForgetTarget = 0x0020000000000000, // Stealth Soul
+		Cancer1 = 0x0040000000000000, // Doki Doki Wig Condition 1
+		Sagittarius1 = 0x0080000000000000, // Doki Doki Wig Condition 2
+		Capricorn1 = 0x0100000000000000, // Doki Doki Wig Condition 3
+		CompleteLock = 0x0200000000000000,
+		HitBossMonster = 0x0400000000000000, // Boss Monster Hit Check Condition
+		SuchAsOil = 0x0800000000000000, // Scooter Imp Summon Skill
+		Redicule = 0x1000000000000000, // Tiny Jibes
+		PetDoubleExp = 0x2000000000000000,
+		SpeedUpTotem = 0x4000000000000000,
+		ShootingPose = 0x8000000000000000,
 		All = 0xFFFFFFFFFFFFFFFF,
 	}
 
 	[Flags]
 	public enum ConditionsG : ulong
 	{
+		OrgelPlaying = 0x0000000000000001, // Play Music Box
+		LandMarkBuff = 0x0000000000000002,
+		SpeedUpPlus = 0x0000000000000004,
+		AttackDelay = 0x0000000000000008,
+		MaxDamagePlus = 0x0000000000000010,
+		MagicAttackPlus = 0x0000000000000020,
+		SkillSummonLock = 0x0000000000000040,
+		ImmuneToDot = 0x0000000000000080,
+		OrientalDragonSummon = 0x0000000000000100, // Decreases Defense/Protection
+		FantasyMelody = 0x0000000000000200,
+		Psycomancy = 0x0000000000000400,
+		BlessedFantasyMelody = 0x0000000000000800,
+		PotionEffectUp = 0x0000000000001000,
+		ExploreExpEnhance = 0x0000000000002000,
+		HugeLuckyEffect = 0x0000000000004000,
+		StatusUp = 0x0000000000008000,
+		MerchantExpEnhance = 0x0000000000010000,
+		QuadraCombatExp = 0x0000000000020000,
 		All = 0xFFFFFFFFFFFFFFFF,
 	}
 }

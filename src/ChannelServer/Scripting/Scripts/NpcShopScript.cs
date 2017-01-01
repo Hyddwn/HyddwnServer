@@ -276,7 +276,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// </remarks>
 		/// <param name="tabTitle"></param>
 		/// <returns>Whether clearing was successful. Fails if tab doesn't exist.</returns>
-		protected bool ClearTab(string tabTitle)
+		public bool ClearTab(string tabTitle)
 		{
 			NpcShopTab tab;
 			lock (_tabs)
@@ -371,8 +371,9 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="creature"></param>
 		/// <param name="itemEntityId"></param>
 		/// <param name="moveToInventory"></param>
+		/// <param name="directBankTransaction"></param>
 		/// <returns></returns>
-		public bool Buy(Creature creature, long itemEntityId, bool moveToInventory)
+		public bool Buy(Creature creature, long itemEntityId, bool moveToInventory, bool directBankTransaction)
 		{
 			var shop = this;
 			var owner = creature.Temp.CurrentShopOwner;
@@ -384,7 +385,9 @@ namespace Aura.Channel.Scripting.Scripts
 			var item = shop.GetItem(itemEntityId);
 			if (item == null)
 			{
-				Log.Warning("NpcShopScript.Buy: Item '{0:X16}' doesn't exist in shop.", itemEntityId);
+				// Don't warn, this might happen when items are moved while
+				// a player has the shop open.
+				Send.MsgBox(creature, Localization.Get("The item is not available."));
 				return false;
 			}
 
@@ -405,6 +408,13 @@ namespace Aura.Channel.Scripting.Scripts
 			if (item.OptionInfo.PointPrice > 0)
 				paymentMethod = PaymentMethod.Points;
 
+			// Allow direct transaction only for buying with gold
+			if (directBankTransaction && paymentMethod != PaymentMethod.Gold)
+			{
+				Send.MsgBox(creature, Localization.Get("You can't by this item via direct bank transaction."));
+				return false;
+			}
+
 			// Get buying price
 			var price = int.MaxValue;
 			switch (paymentMethod)
@@ -415,9 +425,11 @@ namespace Aura.Channel.Scripting.Scripts
 				case PaymentMethod.Points: price = item.OptionInfo.PointPrice; break;
 			}
 
-			// The client expects the price for a full stack to be sent
-			// in the ItemOptionInfo, so we have to calculate the actual price here.
-			if (item.Data.StackType == StackType.Stackable)
+			// The client expects the price for a full stack to be sent in the
+			// ItemOptionInfo, so we have to calculate the actual price here.
+			// However, the points payment method prices are absolute, the
+			// client displays them as is.
+			if (item.Data.StackType == StackType.Stackable && paymentMethod != PaymentMethod.Points)
 				price = (int)(price / (float)item.Data.StackMax * item.Amount);
 
 			// Wednesday: Decrease in prices (5%) for items in NPC shops,
@@ -429,7 +441,24 @@ namespace Aura.Channel.Scripting.Scripts
 			var canPay = false;
 			switch (paymentMethod)
 			{
-				case PaymentMethod.Gold: canPay = (creature.Inventory.Gold >= price); break;
+				case PaymentMethod.Gold:
+					// Disable direct bank transaction if price is less than 50k
+					if (directBankTransaction && price < 50000)
+						directBankTransaction = false;
+
+					// Check gold
+					var gold = 0;
+					if (directBankTransaction)
+					{
+						gold = creature.Client.Account.Bank.Gold;
+						price = price + (int)(price * 0.05f); // Fee
+					}
+					else
+						gold = creature.Inventory.Gold;
+
+					canPay = (gold >= price);
+					break;
+
 				case PaymentMethod.Stars: canPay = (creature.Inventory.Stars >= price); break;
 				case PaymentMethod.Ducats: canPay = false; break; // TODO: Implement ducats.
 				case PaymentMethod.Points: canPay = (creature.Points >= price); break;
@@ -487,7 +516,13 @@ namespace Aura.Channel.Scripting.Scripts
 				// Reduce gold/points
 				switch (paymentMethod)
 				{
-					case PaymentMethod.Gold: creature.Inventory.Gold -= price; break;
+					case PaymentMethod.Gold:
+						if (directBankTransaction)
+							creature.Client.Account.Bank.RemoveGold(creature, price);
+						else
+							creature.Inventory.Gold -= price;
+						break;
+
 					case PaymentMethod.Stars: creature.Inventory.Stars -= price; break;
 					case PaymentMethod.Ducats: break; // TODO: Implement ducats.
 					case PaymentMethod.Points: creature.Points -= price; break;

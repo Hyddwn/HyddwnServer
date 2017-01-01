@@ -13,6 +13,7 @@ public class RedBear10PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Red Bears"));
 		SetDescription(L("It is uncommon to see red bear roaming around the plains. Supposedly, the Red Bears have amazing power. Will you please hunt [10 red bears]?"));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

@@ -6,13 +6,12 @@ using Aura.Login.Network;
 using Aura.Login.Network.Handlers;
 using Aura.Login.Scripting;
 using Aura.Login.Util;
-using Aura.Login.Web;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
-using SharpExpress;
+using Swebs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -55,7 +54,7 @@ namespace Aura.Login
 		/// <summary>
 		/// Web API server
 		/// </summary>
-		public WebApplication WebApp { get; private set; }
+		public HttpServer HttpServer { get; private set; }
 
 		/// <summary>
 		/// Login's script manager
@@ -212,21 +211,29 @@ namespace Aura.Login
 		{
 			Log.Info("Loading Web API...");
 
-			this.WebApp = new WebApplication();
+			// Trick compiler into referencing Mabi.dll, so Swebs references
+			// it in the C# scripts as well.
+			var x = Mabi.Const.GuildMemberRank.Applied;
 
-			this.WebApp.Get("/status", new StatusController());
-			this.WebApp.All("/broadcast", new BroadcastController());
-			this.WebApp.All("/check-user", new CheckUserController());
+			var conf = new Configuration();
+			conf.Port = this.Conf.Login.WebPort;
+			conf.SourcePaths.Add("user/api/");
+			conf.SourcePaths.Add("system/api/");
+
+			this.HttpServer = new HttpServer(conf);
+			this.HttpServer.UnhandledException += (s, e) => Log.Exception(e.Exception);
 
 			try
 			{
-				this.WebApp.Listen(this.Conf.Login.WebPort);
+				this.HttpServer.Start();
 
-				Log.Info("Web API listening on 0.0.0.0:{0}", this.Conf.Login.WebPort);
+				Log.Info("Web API listening on 0.0.0.0:{0}.", this.Conf.Login.WebPort);
 			}
-			catch (Exception)
+			catch (NHttpException)
 			{
-				Log.Error("Failed to load Web API, port already in use?");
+				Log.Error("Failed to start web server.");
+				Log.Info("Port {0} might already be in use, make sure no other application, like other web servers or Skype, are using it or set a different port in web.conf.", this.Conf.Login.WebPort);
+				CliUtil.Exit(1);
 			}
 		}
 

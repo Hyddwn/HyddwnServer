@@ -127,7 +127,7 @@ public class PeroScript : NpcScript
 
 	protected override async Task Keywords(string kw)
 	{
-		RndMsg(
+		RndFavorMsg(
 			"<npcname/>. Don't. Know. Learn. Now.",
 			"<npcname/>. Don't. Know. Learn. Now. Important.",
 			"<username/>. Smart. Human. Pero. Listening. Now."

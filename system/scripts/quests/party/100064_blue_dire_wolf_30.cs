@@ -13,6 +13,7 @@ public class BlueDireWolf30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Blue Dire Wolves"));
 		SetDescription(L("Blue dire wolves under the control of an evil power are attacking travelers. Please [hunt 30 blue dire wolves]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

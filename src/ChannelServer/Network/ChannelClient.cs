@@ -143,6 +143,11 @@ namespace Aura.Channel.Network
 						dungeonRegion.Dungeon.Script.OnLeftEarly(dungeonRegion.Dungeon, creature);
 				}
 
+				// Finish running cutscenes
+				var cutscene = creature.Temp.CurrentCutscene;
+				if (cutscene != null && cutscene.Leader == creature)
+					cutscene.Finish();
+
 				// Unspawn creature
 				creature.Region.RemoveCreature(creature);
 
@@ -151,6 +156,11 @@ namespace Aura.Channel.Network
 				// original position.
 				if (newLocation.RegionId != 0)
 					creature.SetLocation(newLocation);
+
+				// Update online status
+				var playerCreature = creature as PlayerCreature;
+				if (playerCreature != null)
+					ChannelServer.Instance.Database.UpdateOnlineStatus(playerCreature.CreatureId, false);
 			}
 
 			// Save everything after we're done cleaning up

@@ -12,6 +12,7 @@ using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using Aura.Channel.Network.Sending.Helpers;
 using Aura.Mabi.Network;
+using Aura.Channel.Scripting.Scripts;
 
 namespace Aura.Channel.Network.Sending
 {
@@ -85,12 +86,12 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
-		/// Sends ChannelLoginUnkR to creature's client.
+		/// Sends CollectionRequestR to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		public static void ChannelLoginUnkR(Creature creature)
+		public static void CollectionRequestR(Creature creature)
 		{
-			var packet = new Packet(Op.ChannelLoginUnkR, creature.EntityId);
+			var packet = new Packet(Op.CollectionRequestR, creature.EntityId);
 			packet.PutByte(1); // success?
 			packet.PutInt(0);
 			packet.PutInt(0);
@@ -501,6 +502,36 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet(Op.DressingRoomCloseR, creature.EntityId);
 			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends GameEventStateUpdate to all clients connected to the channel.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="isActive"></param>
+		public static void GameEventStateUpdate(string gameEventId, bool isActive)
+		{
+			var packet = new Packet(Op.GameEventStateUpdate, MabiId.Broadcast);
+			packet.PutString(gameEventId);
+			packet.PutByte(isActive);
+			packet.PutInt(0);
+
+			ChannelServer.Instance.World.Broadcast(packet);
+		}
+
+		/// <summary>
+		/// Sends GameEventStateUpdate creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="isActive"></param>
+		public static void GameEventStateUpdate(Creature creature, string gameEventId, bool isActive)
+		{
+			var packet = new Packet(Op.GameEventStateUpdate, MabiId.Broadcast);
+			packet.PutString(gameEventId);
+			packet.PutByte(isActive);
+			packet.PutInt(0);
 
 			creature.Client.Send(packet);
 		}

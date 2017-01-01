@@ -191,16 +191,88 @@ public class LassarScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("school");
-				Msg(FavorExpression(), "<npcname/> means 'flame'.<br/>My mother gave birth to me after having dreamed about a wildfire burning the field.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Hmm... Do I look that cold-hearted? Actually, it concerns me a little.<br/>How would you say I look, <username/>?");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Since childhood, I believed I was good at magic.<br/>I studied hard.<br/>And I even got to study in the southern city of Emain Macha...");
+					Msg("But, there, I found many students who were a lot more capable than I.<br/>Eventually, I decided to come back to my hometown<br/>and foster apprentices who are more talented.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Do you want to learn magic? The tuition might be a little steep, but why don't you enroll in a class?");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "People seem to avoid me because I am a magic teacher.<br/>You know. People may think that, if I hate someone,<br/>I would use magic to harm that person.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "The power of magic fundamentally comes from balance.<br/>The power of magic that breaks the balance may gain power temporarily<br/>but, in the end, it hurts the caster.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Did you ever think that you might be bothering me?");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("school");
+					Msg(FavorExpression(), "<npcname/> means 'flame'.<br/>My mother gave birth to me after having dreamed about a wildfire burning the field.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				GiveKeyword("farmland");
-				Msg(FavorExpression(), "Farmland is just to the south of the School.<br/>They mainly grow wheat or barley, and the crop yields are enough<br/>for the people in Tir Chonaill.<br/>But I think there will be a shortage if travelers stay longer.");
-				Msg("That means no stealing crops for you!");
-				ModifyRelation(Random(2), 0, Random(3));
+				// Field Boss Info
+				// Have you heard that Gigantic Black Wolf appeared at Southern Plains of Tir Chonaill?<br/>I wonder if everything's okay...
+
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Hmm... We may argue at times, but Dilys and I are old friends.<br/>Still, I cannot forgive her for not paying my money back...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I hear Dilys would stop treating patients and only sell<br/>potions until she gets some treatment tables.<br/>She does everything she pleases, don't you think?<br/>You know your occupation pays you too much when...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "The grass at the back of the School is herbs<br/>that we grow with students to be used as magic ingredients.<br/>It takes far more work than meets the eye.");
+					Msg("It smells good, though, and it makes the atmosphere here tranquil.<br/>So I believe it is worth the work.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "It seems to me that Priestess Endelyon doesn't take magic power seriously<br/>But, in fact, even the power of gods has something in common with magic power.<br/>It is not right to put what you like above what someone else cherishes<br/>and then look down on that person.");
+					Msg("Then again, Priestess Endelyon wouldn't do that...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Be careful. People who aren't careful enough at night<br/>sometimes fall and get seriously hurt.<br/>If you get hurt, it is you who must bear the consequence. Well, maybe not Dilys.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Is there no one else to ask but me?<br/>I am just a magic teacher,<br/>not a person who counts which person owns how many clothes.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("farmland");
+					Msg(FavorExpression(), "Farmland is just to the south of the School.<br/>They mainly grow wheat or barley, and the crop yields are enough<br/>for the people in Tir Chonaill.<br/>But I think there will be a shortage if travelers stay longer.");
+					Msg("That means no stealing crops for you!");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -399,15 +471,166 @@ public class LassarScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
-					"Hmm... I don't know.",
-					"Honestly, I don't know much.",
-					"Being a teacher doesn't necessarily mean knowing everything.",
-					"Why don't you ask other people? I am afraid I would be of little help.",
-					"I thought I knew. But it is more difficult to actually explain it than I thought."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I don't really know much about this. I will find someone who can help you with it.<br/>It probably won't be easy, though.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Actually, I don't really know too much about stuff like that.<br/>Oh, but don't think that I'm strange or anything.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Please get out of my way.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Please get out of my way. And shut your mouth while you're at it!");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"Hmm... I don't know.",
+						"Honestly, I don't know much.",
+						"Being a teacher doesn't necessarily mean knowing everything.",
+						"Why don't you ask other people? I am afraid I would be of little help.",
+						"I thought I knew. But it is more difficult to actually explain it than I thought."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
 				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		if (item.Info.Id >= 64042 && item.Info.Id <= 64050) // Gems
+		{
+			var size = item.MetaData1.GetFloat("SCALE") * 10;
+			var rnd = Random(100);
+
+			switch (item.Info.Id)
+			{
+				case 64042: // Topaz
+					if (size >= 7)
+						Msg(L("Wow, is this for me?<br/>How did you know that I love Topaz?<br/>Oh my, look at this size! Thank you so much. I'd like to give you this in return.<br/>I hope you'll like it."));
+					else
+						Msg(L("Wow, is this for me?<br/>I love Topaz!<br/>Thank you so much. I'd like to give you this in return.<br/>I hope you'll like it."));
+
+					if (rnd < size)
+					{
+						switch (Random(2))
+						{
+							case 0:
+								GiveItem(Item.CreateEnchant(30706, 600)); // Formal Enchant
+								SystemNotice(L("You have received an Enchant Scroll from Lassar."));
+								break;
+
+							case 1:
+								GiveItem(62014); // Spirit Weapon Restoration Potion
+								SystemNotice(L("You have received a Spirit Weapon Restoration Potion from Lassar."));
+								break;
+						}
+					}
+					else
+					{
+						switch (Random(2))
+						{
+							case 0:
+								GiveItem(63001); // Wings of a Goddess
+								SystemNotice(L("You have received Wings of a Goddess from Lassar."));
+								break;
+
+							case 1:
+								GiveItem(62001); // Elite Magic Powder
+								SystemNotice(L("You have received Elite Magic Powder from Lassar."));
+								break;
+						}
+					}
+					break;
+
+				case 64050: // Diamond
+					Msg(L("Wow, are you really giving this to me?<br/>Are you sure? You know this is a valuable Diamond, right?<br/>Oh! Look at how the light refracts all the colors of the rainbow... It's no wonder it's called the queen of all gems.<br/>I didn't know you would care so much for me. Hoho.<br/>I should give you something in return... Oh, I've got this. Would you like to have it?"));
+
+					var doubleSize = size * size;
+					if (rnd < doubleSize)
+					{
+						switch (Random(3))
+						{
+							case 0:
+								GiveItem(Item.CreateEnchanted(40038, 308)); // Deadly Lightning Wand
+								SystemNotice(L("You have received a Deadly Lightning Wand from Lassar."));
+								break;
+
+							case 1:
+								GiveItem(Item.CreateEnchanted(40039, 308)); // Deadly Ice Wand
+								SystemNotice(L("You have received a Deadly Ice Wand from Lassar."));
+								break;
+
+							case 2:
+								GiveItem(Item.CreateEnchanted(40040, 308)); // Deadly Fire Wand
+								SystemNotice(L("You have received a Deadly Fire Wand from Lassar."));
+								break;
+						}
+					}
+					else if (rnd < doubleSize * 2)
+					{
+						switch (Random(3))
+						{
+							case 0:
+								GiveItem(40038); // Lightning Wand
+								SystemNotice(L("You have received a Lightning Wand from Lassar."));
+								break;
+
+							case 1:
+								GiveItem(40039); // Ice Wand
+								SystemNotice(L("You have received an Ice Wand from Lassar."));
+								break;
+
+							case 2:
+								GiveItem(40040); // Fire Wand
+								SystemNotice(L("You have received a Fire Wand from Lassar."));
+								break;
+						}
+					}
+					else
+					{
+						GiveItem(51009, 10); // MP 100 Potion x10
+						SystemNotice(L("You have received 10 Mana 100 Potions from Lassar."));
+					}
+					break;
+
+				default:
+					Msg(L("Wow, what's this?<br/>Oh, it's a pretty gem. Thanks...<br/>(She looks disappointed somehow. I guess she doesn't really like this gem.)"));
+					break;
+			}
+		}
+		else
+		{
+			switch (reaction)
+			{
+				case GiftReaction.Love:
+					Msg(L("Hmm, you're not going to ask for it back, are you?<br/>No way!<br/>Now that you've given it to me, it belongs to me. Hee hee."));
+					break;
+
+				case GiftReaction.Like:
+					RndMsg(
+							L("Ha ha. You are kind of cute."),
+							L("You aren't my type, though.<br/>Hey! Just because I said that, don't even think about taking it back.")
+						);
+					break;
+
+				default: // GiftReaction.Neutral
+					RndMsg(
+							L("Hmm."),
+							L("Thanks.")
+						);
+					break;
+			}
 		}
 	}
 }

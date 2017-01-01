@@ -667,13 +667,13 @@ public abstract class EavanExtDeliveryManusAusteynPtjBaseScript : EavanExtDelive
 	protected override void ClientAfterIntroDialogue(NpcScript npc)
 	{
 		npc.Msg(L("What a boring book I just read...<br/>Oh, <username/>. I heard from Eavan. This is Austeyn's, right?<br/>Say hello to the old man for me. Haha!"));
-		npc.Msg(L("(Received a book from Manus.)"));
+		npc.Msg(Hide.Name, L("(Received a book from Manus.)"));
 	}
 
 	protected override void RecipientAfterIntroDialogue(NpcScript npc)
 	{
 		npc.Msg(L("I was wondering where I lost that book.<br/>Thank you."));
-		npc.Msg(L("(Delivered the book to Austeyn.)"));
+		npc.Msg(Hide.Name, L("(Delivered the book to Austeyn.)"));
 	}
 }
 
@@ -875,15 +875,14 @@ public abstract class EavanExtDeliveryNerysSimonPtjBaseScript : EavanExtDelivery
 
 	protected override void ClientAfterIntroDialogue(NpcScript npc)
 	{
-		npc.Msg(L("...just pick this up himself...?"));
-		npc.Msg(L("Oh, sorry. Was just talking to myself.<br/>Here you go."));
-		npc.Msg(L("(Received the sewing kit from Nerys.)"));
+		npc.Msg(L("...just pick this up himself...?<p/>Oh, sorry. Was just talking to myself.<br/>Here you go."));
+		npc.Msg(Hide.Name, L("(Received the sewing kit from Nerys.)"));
 	}
 
 	protected override void RecipientAfterIntroDialogue(NpcScript npc)
 	{
 		npc.Msg(L("Ah, there's my sewing kit.<br/>So you must be sent by Eavan?"));
-		npc.Msg(L("(Delivered the sewing kit to Simon.)"));
+		npc.Msg(Hide.Name, L("(Delivered the sewing kit to Simon.)"));
 	}
 }
 

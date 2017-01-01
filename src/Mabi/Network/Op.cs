@@ -66,6 +66,7 @@ namespace Aura.Mabi.Network
 		public const int DisconnectRequest = 0x4E24;
 		public const int DisconnectRequestR = 0x4E25;
 		public const int RequestClientDisconnect = 0x4E26;
+		public const int RequestSecondaryLogin = 0x4E29;
 		public const int Disappear = 0x4E2A;
 		public const int SwitchChannel = 0x4E32;
 		public const int SwitchChannelR = 0x4E33;
@@ -257,6 +258,7 @@ namespace Aura.Mabi.Network
 		public const int ArenaHideOn = 0x6D6F;
 		public const int ArenaHideOff = 0x6D70;
 		public const int SetStandStyleTalking = 0x6D79;
+		public const int UnkKnockBack = 0x6D7D;
 		public const int ChangeStanceRequest = 0x6E28;
 		public const int ChangeStanceRequestR = 0x6E29;
 		public const int ChangeStance = 0x6E2A;
@@ -264,6 +266,7 @@ namespace Aura.Mabi.Network
 		public const int RiseFromTheDead = 0x701D;
 		public const int CharacterLock = 0x701E;
 		public const int CharacterUnlock = 0x701F;
+		public const int CharacterLockUpdate = 0x7020; // ?
 		public const int PlayDead = 0x7021;
 		public const int OpenUmbrella = 0x7025;
 		public const int CloseUmbrella = 0x7026;
@@ -498,6 +501,8 @@ namespace Aura.Mabi.Network
 
 		public const int PetRegister = 0x9024;
 		public const int PetUnregister = 0x9025;
+		public const int StartRP = 0x902A;
+		public const int EndRP = 0x902B;
 		public const int SummonPet = 0x902C;
 		public const int SummonPetR = 0x902D;
 		public const int PersonalShopPetProtectStart = 0x902F;
@@ -578,6 +583,9 @@ namespace Aura.Mabi.Network
 
 		// [150000~180000] Something was removed here
 
+		public const int UnkOrdinaryChest = 0xA803;
+		public const int UnkOrdinaryChestR = 0xA804;
+		public const int GameEventStateUpdate = 0xA805;
 		public const int MailsRequest = 0xA897;
 		public const int MailsRequestR = 0xA898;
 		public const int SetPetAi = 0xA8A1;
@@ -586,8 +594,8 @@ namespace Aura.Mabi.Network
 		public const int GuildChangeStone = 0xA8AC;
 		public const int WarpUnk3 = 0xA8AF;
 		public const int SetQuestTimer = 0xA8CF; // Was 0xA8D0 on RE (G13)
-		public const int RemoveQuestTimer = 0xA8D0; // ?
-		public const int UpdateQuestTimerCounter = 0xA8D1;
+		public const int RemoveQuestTimer = 0xA8D0;
+		public const int UpdateQuestTimer = 0xA8D1;
 		public const int UmbrellaJump = 0xA8E0;
 		public const int UmbrellaJumpR = 0xA8E1;
 		public const int UmbrellaLand = 0xA8E2;
@@ -597,21 +605,24 @@ namespace Aura.Mabi.Network
 		// The PetAi ops were unchanged, but others in this area might've
 		// changed as well.
 
-		public const int SetBgm = 0xA912;
-		public const int UnsetBgm = 0xA913;
-		public const int EnterDynamicRegionExtended = 0xA982; // Creates multiple dynamic regions and warps to one
-		public const int EnableRoyalAlchemist = 0xA9A7;
-		public const int SpinColorWheel = 0xA9A9;
-		public const int SpinColorWheelR = 0xA9AA;
-		public const int ChangeNameColor = 0xA9AB;
-		public const int SosButtonRequest = 0xA9AD;
-		public const int SosButtonRequestR = 0xA9AE;
-		public const int PersonalShopSetPriceForAll = 0xA9B4;
-		public const int PersonalShopSetPriceForAllR = 0xA9B5;
-		public const int SkillTeleport = 0xA9F4;
-		public const int SetCamera = 0xA9F8;
-		public const int EnterRebirth = 0xA9FD;
-		public const int EnterRebirthR = 0xA9FE;
+		// [200200, NA242 (2016-06-16)]
+		// Presumably 2 ops were added, which shifted SetBgm?~DestroyExpiredItemsR.
+
+		public const int SetBgm = 0xA914;
+		public const int UnsetBgm = 0xA915;
+		public const int EnterDynamicRegionExtended = 0xA984; // Creates multiple dynamic regions and warps to one
+		public const int EnableRoyalAlchemist = 0xA9A9;
+		public const int SpinColorWheel = 0xA9AB;
+		public const int SpinColorWheelR = 0xA9AC;
+		public const int ChangeNameColor = 0xA9AD;
+		public const int SosButtonRequest = 0xA9AF;
+		public const int SosButtonRequestR = 0xA9B0;
+		public const int PersonalShopSetPriceForAll = 0xA9B6;
+		public const int PersonalShopSetPriceForAllR = 0xA9B7;
+		public const int SkillTeleport = 0xA9F6;
+		public const int SetCamera = 0xA9FA;
+		public const int EnterRebirth = 0xA9FF;
+		public const int EnterRebirthR = 0xAA00;
 
 		// [150000~180000] Something was added? Next two ops changed.
 		// [180800, NA196] Something was added? Ops 0xAAXX - 0xABXX increased by 4.
@@ -619,27 +630,24 @@ namespace Aura.Mabi.Network
 		// [200100, NA209 (2016-06-16)]
 		// 4 new ops somewhere here, that shifted the SubsribeStabilityMeter~ChannelLoginUnkR ops by 4.
 
-		public const int SubscribeStabilityMeter = 0xAA25;
-		public const int StabilityMeterInit = 0xAA26;
-		public const int StabilityMeterUpdate = 0xAA27;
+		public const int SubscribeStabilityMeter = 0xAA27;
+		public const int StabilityMeterInit = 0xAA28;
+		public const int StabilityMeterUpdate = 0xAA29;
 
-		public const int HomesteadInfoRequest = 0xAA5C;
-		public const int HomesteadInfoRequestR = 0xAA5D;
-		public const int HomesteadEnterRequest = 0xAA5E;
-		public const int HomesteadEnterRequestR = 0xAA5F;
+		public const int HomesteadInfoRequest = 0xAA5E;
+		public const int HomesteadInfoRequestR = 0xAA5F;
+		public const int HomesteadEnterRequest = 0xAA60;
+		public const int HomesteadEnterRequestR = 0xAA61;
 
 		// [180300, NA166 (18.09.2013)] 2 new ops somewhere here, possibly the two below
 
-		public const int ChannelLoginUnk = 0xAA8B;
-		public const int ChannelLoginUnkR = 0xAA8C;
-
-		public const int CollectionRequest = 0xAA8B;
-		public const int CollectionRequestR = 0xAA8C;
+		public const int CollectionRequest = 0xAA8D;
+		public const int CollectionRequestR = 0xAA8E;
 
 		// [200100, NA209 (2016-06-16)]
 		// 4 new ops somewhere here, that shifted the UnkEsc~? ops by 4.
 
-		public const int UnkEsc = 0xAAF7;
+		public const int UnkEsc = 0xAAF9;
 
 		//public const int GoBeautyShop = 0xAAF8;
 		//public const int GoBeautyShopR = 0xAAF9;
@@ -671,13 +679,13 @@ namespace Aura.Mabi.Network
 
 		// [190100, NA200 (2015-01-15)] Added
 		// [190200, NA221 (2016-02-17)] Increased by one, ABAC->ABAD
-		public const int ItemMagnet = 0xABB1;
+		public const int ItemMagnet = 0xABB3;
 
 		// [190200, NA221 (2016-02-17)] Added
 		// [200100, NA229 (2016-06-16)] DestroyExpired* increased by four, ABAE->ABB2, ABAF->ABB3, ABB0->ABB4
-		public const int DestroyExpiredItems = 0xABB2;
-		public const int DestroyExpiredItemsConfirm = 0xABB3;
-		public const int DestroyExpiredItemsR = 0xABB4;
+		public const int DestroyExpiredItems = 0xABB4;
+		public const int DestroyExpiredItemsConfirm = 0xABB5;
+		public const int DestroyExpiredItemsR = 0xABB6;
 
 		// [200100, NA229 (2016-04-16)] Shifted by +8, from ABBB to ABC3.
 		public const int AmmoRequired = 0xABC3;
@@ -692,8 +700,19 @@ namespace Aura.Mabi.Network
 		// [190200, NA223 (2016-03-17)] Shifted by 6, from AC1D to AC23.
 		// [200100, NA226 (2016-04-14)] Shifted by 9, from AC23 to AC1A.
 		// [200100, NA229 (2016-06-16)] Shifted by 5, from AC1A to AC1F.
-		public const int DcUnk = 0xAC1F;
-		public const int DcUnkR = 0xAC20;
+		// [200200, NA229 (2016-10-13)] Shifted by 1, from AC1F to AC20.
+		// [200200, NA242 (2016-12-15)] Shifted by 4, from AC20 to AC24.
+		public const int DcUnk = 0xAC24;
+		public const int DcUnkR = 0xAC25;
+
+		public const int RebirthEventInfoRequest = 0xAC5E;
+		public const int RebirthEventInfo = 0xAC5F;
+		public const int RebirthEventReceivePotion = 0xAC61;
+
+		// [200200, NA242 (2016-06-16)] SwitchToPureMusicMode added
+		// Sent when clicking headset icon I had above my head for some
+		// reason.
+		public const int SwitchToPureMusicMode = 0xAC8B;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
@@ -739,6 +758,9 @@ namespace Aura.Mabi.Network
 		// [200100, NA226 (2016-04-14)] Added
 		public const int SpecialUnitInfoRequest = 0x20F86;
 		public const int SpecialUnitInfoRequestR = 0x20F87;
+
+		public const int ErinnLandAchievementsRequest = 0x211DD;
+		public const int ErinnLandAchievementsList = 0x211DE;
 
 		public const int Run = 0x0F213303;
 		public const int Running = 0x0F44BBA3;

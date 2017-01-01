@@ -141,7 +141,11 @@ public class SionScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (DoingPtjForNpc())
+		{
+			Msg(FavorExpression(), L("How's the job going?<br/>Don't slack off, okay?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("You're not from this town, are you? I don't think I've seen you before."));
 		}

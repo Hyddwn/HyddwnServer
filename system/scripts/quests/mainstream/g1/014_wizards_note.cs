@@ -176,7 +176,7 @@ public class WizardsNote2Quest : QuestScript
 			npc.GiveKeyword("g1_25");
 			npc.GiveKeyword("g1_memo_of_parcelman");
 
-			npc.GiveWarpScroll(63009, "ciar_dungeon");
+			npc.GiveWarpScroll(63009, "Ciar_Dungeon");
 
 			npc.Msg(L("Ah! <username/>! Welcome. Do you remember the book I gave you before, 'Land of Eternity, Tir Na Nog?'<br/>The author of that book, Leslie, called.<br/>You see, Leslie is a famous historian and an avide explorer."));
 			npc.Msg(L("She sent me this note.<br/>It says that she once found 'The Book of Revenge' inside Ciar dungeon, written in Fomor language.<br/>She said if you offer this note on the Altar of Ciar Dungeon, you'll be transported to where you can find the book.<br/>...Apparently this note has some kind of magic on it or something..."), npc.Image("g1_ch21_memo"));

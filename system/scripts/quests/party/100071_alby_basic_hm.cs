@@ -13,6 +13,7 @@ public class AlbyBasicHardPartyQuest : QuestScript
 		SetName(L("[PQ] Defeat the Giant Red Spider"));
 		SetDescription(L("Recently a new altar has been found at the back of Alby Dungeon. Try offering [Alby Basic Fomor Pass], and defeat the [Giant Red Spider] that can be found at the deepest part of the dungeon."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

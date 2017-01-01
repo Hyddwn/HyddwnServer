@@ -81,6 +81,31 @@ public class CiarDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Tracy's Hatchet (RP)
+		if (item.Info.Id == 73102)
+		{
+			if (creature.Keywords.Has("RP_Tracy_Complete"))
+			{
+				Send.Notice(creature, L("You can't enter this dungeon anymore."));
+				return false;
+			}
+
+			if (creature.Party.MemberCount != 2)
+			{
+				Send.Notice(creature, L("You must enter this dungeon with a party of two."));
+				return false;
+			}
+
+			if (creature.Party.HasPets)
+			{
+				Send.MsgBox(creature, L("You may not enter the dungeon; one of the members in your party has summoned an animal."));
+				return false;
+			}
+
+			dungeonName = "rp_tracy_tircho_ciar_dungeon";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{
@@ -157,10 +182,14 @@ public class CiarDungeonScript : DungeonScript
 			drops.Add(new DropData(itemId: 71037, chance: 4, amountMin: 2, amountMax: 4)); // Goblin Fomor Scroll
 			drops.Add(new DropData(itemId: 71035, chance: 4, amountMin: 3, amountMax: 5)); // Gray Town Rat Fomor Scroll
 			drops.Add(new DropData(itemId: 63104, chance: 3, amount: 1, expires: 480)); // Ciar Basic Fomor Pass
-			drops.Add(new DropData(itemId: 63123, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for One
-			drops.Add(new DropData(itemId: 63124, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for Two
-			drops.Add(new DropData(itemId: 63125, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for Four
 			drops.Add(new DropData(itemId: 40006, chance: 2, amount: 1, color1: 0xFFDB60, durability: 0)); // Dagger (gold)
+
+			if (IsEnabled("CiarInt"))
+			{
+				drops.Add(new DropData(itemId: 63123, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for One
+				drops.Add(new DropData(itemId: 63124, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for Two
+				drops.Add(new DropData(itemId: 63125, chance: 2, amount: 1, expires: 480)); // Ciar Intermediate Fomor Pass for Four
+			}
 
 			if (IsEnabled("CiarAdvanced"))
 			{

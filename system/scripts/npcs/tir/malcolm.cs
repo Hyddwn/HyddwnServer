@@ -23,10 +23,14 @@ public class MalcolmScript : NpcScript
 		EquipItem(Pocket.RightHand1, 40491, 0x00808080, 0x00000000, 0x00000000);
 		EquipItem(Pocket.LeftHand1, 40017, 0x003F7246, 0x00C0B584, 0x003F4B40);
 
-		AddPhrase("Maybe I should wrap it up and call it a day...");
+		AddPhrase("Maybe I should wrap it up and call it a day... (confused)");
 		AddPhrase("Aww! My legs hurt. My feet are all swollen from standing all day long.");
 		AddPhrase("I wonder what Nora is doing now...");
 		AddPhrase("These travelers will buy something sooner or later.");
+		AddPhrase("So much work, so little time... I'm in trouble!");
+		AddPhrase("Dear love, you live right next door, yet I cannot see you... I can't sleep at night thinking of you...");
+		AddPhrase("Ha ha, look at what that person is wearing. (laugh)");
+		AddPhrase("It isn't easy running a shop alone... Maybe I should hire a clerk.");
 	}
 
 	protected override async Task Talk()
@@ -190,15 +194,83 @@ public class MalcolmScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("shop_misc");
-				Msg(FavorExpression(), "I run this General Shop. I sell various goods.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I think you know this already, <username/>, but anyway, I'm in love with Nora.<br/>The problem is, she doesn't acknowledge my feelings for her<br/>and treats all those travelers with so much kindness that I become really jealous.<br/>I try to understand that it's a part of her job but I can't help feeling what I feel.");
+					Msg("Can you understand the pain I am feeling?");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I have an older brother who's away on a journey.<br/>I haven't heard from him for a long time and I miss him a lot.<br/>He was always very nice to me...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "These days, there are so many people that all the goods are nearly sold out.<br/>I'm making as many as I can to keep up the stock but there is a limit to what I can make alone.<br/>And since I can't afford to hire someone... I ask you for your understanding on any shortages we may have.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "You're poking your nose into my business.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Why do you keep asking these questions? Stop it.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "You like meddling in other people's business, don't you? It won't do you any good.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("shop_misc");
+					Msg(FavorExpression(), "I run this General Shop. I sell various goods.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				Msg(FavorExpression(), "Tir Chonaill is a peaceful town.<br/>So when something happens, everyone in the town knows it right away.<br/>I warn you, some were humiliated because of that...<br/>Nothing is as important as being responsible for your own actions.");
-				Msg("If you behave like Tracy, you'll be in big trouble.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Bebhinn is too much of a gossip.<br/>Although I understand her, it definitely looks bad.<br/>What do you think, <username/>?");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "As more travelers come to our town,<br/>the Inn is having more customers as well.<br/>It's always so crowded and noisy<br/>that I have a hard time sleeping at night.");
+					Msg("Nora must be so tired from all the work...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "They say that the Bank isn't fully in service yet.<br/>I heard that there's a problem with the transportation between other towns.<br/>By the way, have you heard any rumors about Nora dating someone?<br/>So many people have come to this town and I'm starting to get nervous.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "I haven't heard many rumors because I usually stay home working.<br/>What difference does it make to know the rumors going around anyway?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Do you know that people speak ill of you?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Why are you so obsessed with rumors?<br/>Don't you think you should have your own life and your own way of living it?");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Msg(FavorExpression(), "Tir Chonaill is a peaceful town.<br/>So when something happens, everyone in the town knows it right away.<br/>I warn you, some were humiliated because of that...<br/>Nothing is as important as being responsible for your own actions.");
+					Msg("If you behave like Tracy, you'll be in big trouble.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -407,15 +479,64 @@ public class MalcolmScript : NpcScript
 				break;
 
 			default:
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Sorry, I pretty much don't know anything about it.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Um... I'm not familiar with that subject. Sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Stop it.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "I don't know. Go ask someone else.");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"I don't know.",
+						"Hm... Beats me.",
+						"Well... I don't have much to say about it.",
+						"I think I heard about it but... I can't remember.",
+						"NPCs don't have a conversation book.<br/>So I won't remember the things you told me...",
+						"Sorry, I don't know.<br/>Hm... Maybe I should have a travel diary to write things down."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Wow!<br/>May I keep this for a while?<br/>Um... I'm really interested in this."));
+				Msg(L("You say you're giving it to me?<br/>Thank you, thank you so much."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Why, thank you!"));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("Oh, thanks."));
+				break;
+
+			case GiftReaction.Dislike:
 				RndMsg(
-					"I don't know.",
-					"Hm... Beats me.",
-					"Well... I don't have much to say about it.",
-					"I think I heard about it but... I can't remember.",
-					"NPCs don't have a conversation book.<br/>So I won't remember the things you told me...",
-					"Sorry, I don't know.<br/>Hm... Maybe I should have a travel diary to write things down."
+					L("Eh... Um, thanks."),
+					L("Oh... well... This present is a bit odd.")
 				);
-				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
@@ -431,7 +552,6 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 2006);       // Big Gold Pouch
 		Add("General Goods", 2024);       // Item Bag (7x6)
 		Add("General Goods", 2029);       // Item Bag (8x6)
-		Add("General Goods", 2038);       // Item Bag (8X10)
 		Add("General Goods", 18029);      // Wood-rimmed Glasses
 		Add("General Goods", 18029);      // Wood-rimmed Glasses
 		Add("General Goods", 19001);      // Robe
@@ -447,9 +567,6 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40045);      // Fishing Rod
-		Add("General Goods", 40214);      // Big Drum
-		Add("General Goods", 40214);      // Big Drum
-		Add("General Goods", 40214);      // Big Drum
 		Add("General Goods", 60034, 300); // Bait Tin x300
 		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
@@ -522,6 +639,13 @@ public class MalcolmShop : NpcShopScript
 			Add("General Goods", 40093);   // Pet Instructor Stick
 		}
 
+		if (IsEnabled("PercussionInstruments"))
+		{
+			Add("General Goods", 40214);      // Big Drum
+			Add("General Goods", 40214);      // Big Drum
+			Add("General Goods", 40214);      // Big Drum
+		}
+
 		if (IsEnabled("ItemSeal2"))
 		{
 			Add("General Goods", 91364, 1);  // Seal Scroll (1-day) x1
@@ -531,6 +655,9 @@ public class MalcolmShop : NpcShopScript
 			Add("General Goods", 91366, 1);  // Seal Scroll (30-day) x1
 			Add("General Goods", 91366, 10); // Seal Scroll (30-day) x10
 		}
+
+		if (IsEnabled("PremiumBags"))
+			Add("General Goods", 2038); // Item Bag (8X10)
 
 		if (IsEnabled("Singing"))
 		{

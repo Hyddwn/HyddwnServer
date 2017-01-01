@@ -287,7 +287,8 @@ public class TitleRewardingScript : GeneralScript
 		// who reached Lv 50 at Age 10
 		// Show on level 45 at age 10, enable on level 50.
 		// ------------------------------------------------------------------
-		CheckStatTitle(creature, creature.Level, 45, 50, 76);
+		if (creature.Age == 10)
+			CheckStatTitle(creature, creature.Level, 45, 50, 76);
 	}
 
 	private void CheckStatTitle(Creature creature, float statVal, float knowVal, float enableVal, ushort titleId)
@@ -316,8 +317,8 @@ public class TitleRewardingScript : GeneralScript
 		}
 	}
 
-	[On("CreatureKilled")]
-	public void OnCreatureKilled(Creature deadCreature, Creature killer)
+	[On("CreatureFinished")]
+	public void OnCreatureFinished(Creature deadCreature, Creature killer)
 	{
 		// the Tank
 		// Enable if a creature dies for a party member.

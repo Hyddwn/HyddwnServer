@@ -33,6 +33,7 @@ public class AlissaScript : NpcScript
 		AddPhrase("How are you going to make flour without any wheat?");
 		AddPhrase("La la la la.");
 		AddPhrase("La la la, one leaf, la la la, two leaves.");
+		AddPhrase("La la la, three leaves, la la la, fooour leaves.");
 		AddPhrase("My sister needs to grow up...");
 		AddPhrase("There's a guard at the wheat field, and I'm watching the Windmill.");
 		AddPhrase("When is Caitin going to teach me how to bake bread?");
@@ -149,15 +150,84 @@ public class AlissaScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("school");
-				Msg(FavorExpression(), "My name? I am <npcname/>.<br/>I work here at the mill, helping around with chores.<br/>Have you seen my sister? She's at the School.<br/>If you happen to go there, go inside the left building.<br/>She'll be in the magic class.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Did you know that you're an awesome person?<br/>Actually... Nevermind, forget I just said that.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I like Caitin so much.<br/>She's pretty, kind...<br/>And always gives me some of her delicious food when I visit.<br/>And she also teaches me how to cook.");
+					Msg("I wonder why she doesn't have a boyfriend.<br/>These boys don't know what they're missing.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I want to be an awesome baker when I grow up.<br/>So it's important that I know all the ingredients for baking bread.<br/>I know it's not going to be easy, but you'll see one day...<br/>I can't wait to become as good as Caitin, hehe.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "When I look at the Windmill,<br/>I'm amazed by the power of wind.<br/>What do you think, <username/>?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "<username/>... I get the feeling<br/>that you're looking down on me because I'm younger than you.<br/>I don't like that...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Eh... I don't feel like talking. Forget it.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("school");
+					Msg(FavorExpression(), "My name? I am <npcname/>.<br/>I work here at the mill, helping around with chores.<br/>Have you seen my sister? She's at the School.<br/>If you happen to go there, go inside the left building.<br/>She'll be in the magic class.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_smith");
-				Msg(FavorExpression(), "Ferghus?<br/>I don't know if he's a good blacksmith, but he's a nice person.<br/>Usually, when you ask him a question, he kindly answers everything...<br/>Go find out for yourself.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I don't know if you already know this...<br/>Ranald is in love with Priestess Endelyon.<br/>And everybody knows Trefor has a crush on Dilys.<br/>And Malcolm...when he's near Nora, his face just gets red and he can't say a word.<br/>Is it that hard to just confess your love?");
+					Msg("Anyhow, I shouldn't be gossiping about their love problems. It's none of my business.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Did you know? My sister's hair. She dyed it.<br/>She sometimes goes to the city to get her hair done.<br/>Then she comes home with some expensive hair dye.");
+					Msg("She can afford all that expensive dye for herself, but never buys me anything.<br/>Sometimes I wonder if she's really my sister.<br/>Does she even remember that I work here at the Mill? *sob*");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Tell me, <username/>... Who's your favorite person in this town?");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Deian?<br/>Well, he's not bad.<br/>But you know...he's really immature!<br/>Don't tell him that I said that though.<br/>I mean, it's not that big a deal...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Have you met Tracy, the lumberjack?<br/>He comes here sometimes, and calls me an old lady trapped in a kid's body. Argh!<br/>He has no common sense... Doesn't understand a girl's heart...<br/>I wish someone will just pluck off his beard!");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "No matter how bored I am, I don't want to talk about that...");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("shop_smith");
+					Msg(FavorExpression(), "Ferghus?<br/>I don't know if he's a good blacksmith, but he's a nice person.<br/>Usually, when you ask him a question, he kindly answers everything...<br/>Go find out for yourself.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -335,15 +405,62 @@ public class AlissaScript : NpcScript
 				break;
 
 			default:
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Oh. So that's what happened. I never knew.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Haha... I don't know anything about that...");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Jeez... Stop showing off! Whatever... I know that too.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Stop using hard words! Are you making fun of me? I warn you, I'll cry...");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"You're not testing me, are you?",
+						"You're expecting too much from me.",
+						"Perhaps Caitin might know. Well... Anyway...",
+						"Ah... well, I don't know anything about that.",
+						"Eh... It feels like you're treating me like a child.",
+						"Hmm... I think Ferghus would be able to explain it better. He's across the stream."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
 				RndMsg(
-					"You're not testing me, are you?",
-					"You're expecting too much from me.",
-					"Perhaps Caitin might know. Well... Anyway...",
-					"Ah... well, I don't know anything about that.",
-					"Eh... It feels like you're treating me like a child.",
-					"Hmm... I think Ferghus would be able to explain it better. He's across the stream."
+					"Wow. I wasn't expecting this.<br/>Thank you!",
+					"Are you really giving me this?<br/>Thank you!",
+					"Thank you.<br/>Lassar should learn from you.<br/>You care more about me than she does!"
 				);
-				ModifyRelation(0, 0, Random(3));
+				break;
+
+			// everything seems to be neutral for her except likeability pots
+			default:
+				RndMsg(
+					"Now I've got more gifts than Deian!",
+					"I guess I am quite popular, getting gifts like this all the time. Hehe...",
+					"I am so sorry... I don't have anything to give you. <br/>Is it really okay to just accept this?",
+					"To tell the truth, I was a little bit jealous when Caitin and Deian told me they got gifts from other people... <br/>I guess I didn't need to feel jealous after all, haha."
+				);
 				break;
 		}
 	}

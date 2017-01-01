@@ -175,16 +175,83 @@ public class FerghusScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("shop_smith");
-				Msg(FavorExpression(), "I'm the blacksmith of Tir Chonaill. We'll see each other often, <username/>.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "In fact, this shop is my family business. My dad used to work here.<br/>When I was young, I didn't understand anything. At that time, I hated my father for being a blacksmith.<br/>I don't know why I did that. I really shouldn't have. So many regrets...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Honestly, the only pleasure I get these days is to step out for a second and have a drink.<br/>When I have some time to spare, I sit out here and look at the sunset.<br/>With a drink made by Caitin's mom in my hand.<br/>Now that's what I call pleasure.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "It's a bit difficult to keep up the orders these days. I was actually thinking of hiring someone.<br/>Will you work with me?<br/>Haha, just joking. I don't want to hire people randomly either.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "What was your name? I don't recall. Sorry.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "You're acting like you're a friend of mine. A bit awkward...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Hmm... This is complicated. Let's talk later.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("shop_smith");
+					Msg(FavorExpression(), "I'm the blacksmith of Tir Chonaill. We'll see each other often, <username/>.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				GiveKeyword("windmill");
-				Msg(FavorExpression(), "The wind around Tir Chonaill is very strong. It even breaks the windmill blades.<br/>And I'm the one to fix them.<br/>Malcolm's got some skills,<br/>but I'm the one who deals with iron.");
-				Msg("I made those extra blades out there just in case.<br/>When the Windmill stops working, it's really inconvenient around here.<br/>It's always better to be prepared, isn't it?");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Priest Meven might be a bit stubborn sometimes,<br/>but I do like him.<br/>He once came to me with a bottle of wine he made himself,<br/>and asked me to join him for a drink.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "From time to time, Caitin brings me a bottle of wine her mom makes.<br/>I know she's ill. That makes me feel sorry since I can imagine how much effort she has to put in.<br/>But at the same time,<br/>I'm really grateful that she remembers a guy like me.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Sometimes it's much better to make a new tool<br/>than fix a broken one.<br/>But I know people don't want to throw away their old tools,<br/>and that's why I try to fix them for the owners.");
+					Msg("You know the more these tools are used, the better and more valuable they become.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Bebhinn sometimes teases people,<br/>but I don't think she's a bad girl.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I know there's a rumor that some people don't really like me.<br/>I'm trying to be careful, too.<br/>If you see or hear what others say about me, please share it with me.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "You just love talking about others, don't you?");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("windmill");
+					Msg(FavorExpression(), "The wind around Tir Chonaill is very strong. It even breaks the windmill blades.<br/>And I'm the one to fix them.<br/>Malcolm's got some skills,<br/>but I'm the one who deals with iron.");
+					Msg("I made those extra blades out there just in case.<br/>When the Windmill stops working, it's really inconvenient around here.<br/>It's always better to be prepared, isn't it?");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -394,14 +461,58 @@ public class FerghusScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
-					"?",
-					"*Yawn* I don't know.",
-					"Haha. I have no idea.",
-					"That's not my concern.",
-					"I don't know, man. That's just out of my league."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Speaking of which, I don't think I ever paid much attention to that.<br/>I need to think about it for a while.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I am sorry. I have never been interested in such things.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "I don't have time to waste with you. There's work to do.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "You enjoy these talks?");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"?",
+						"*Yawn* I don't know.",
+						"Haha. I have no idea.",
+						"That's not my concern.",
+						"I don't know, man. That's just out of my league."
+					);
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Haha. I like you."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Oh, you know who the truly skilled blacksmith is!"));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("Hmm... I know what you're up to.<br/>You are trying to win my favor and receive discounts, right?"));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("What do you want me to do with this?"));
 				break;
 		}
 	}

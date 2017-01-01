@@ -267,5 +267,24 @@ namespace Aura.Channel.Network.Handlers
 
 			Send.UnkCombatR(creature);
 		}
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Sent by client if character is knocked back, purpose unknown.
+		/// </remarks>
+		/// <example>
+		/// 001 [..............01] Byte   : 1
+		/// </example>
+		[PacketHandler(Op.UnkKnockBack)]
+		public void UnkKnockBack(ChannelClient client, Packet packet)
+		{
+			//var unkByte = packet.GetByte();
+
+			//var creature = client.GetCreatureSafe(packet.Id);
+
+			// ...
+		}
 	}
 }

@@ -13,6 +13,7 @@ public class GoldGoblin10PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Gold Goblins"));
 		SetDescription(L("Gold goblins that live deep inside the Rabbie Dungeon are scarier than ordinary goblins because of their powerful strength. They are from the lower class of Fomors. Please do us a favor and [hunt 10 gold goblins]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

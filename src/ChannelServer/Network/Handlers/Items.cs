@@ -54,6 +54,13 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Check ability to move equip.
+			// (For example, RP characters usually can't.)
+			if ((source.IsEquip() || target.IsEquip()) && !creature.CanMoveEquip)
+			{
+				goto L_Fail;
+			}
+
 			// Check touchability
 			if (target.IsEquip())
 			{
@@ -171,6 +178,14 @@ namespace Aura.Channel.Network.Handlers
 			// Check item
 			var item = creature.Inventory.GetItem(entityId);
 			if (item == null)
+			{
+				Send.ItemDropR(creature, false, 0);
+				return;
+			}
+
+			// Check ability to move equip.
+			// (For example, RP characters usually can't.)
+			if (item.Info.Pocket.IsEquip() && !creature.CanMoveEquip)
 			{
 				Send.ItemDropR(creature, false, 0);
 				return;
@@ -1139,6 +1154,24 @@ namespace Aura.Channel.Network.Handlers
 				this.Id = id;
 				this.Name = name;
 			}
+		}
+
+		/// <summary>
+		/// Sent when using an Ordinary Chest.
+		/// </summary>
+		/// <remarks>
+		/// The exact purpose of this packet is unknown, and the response
+		/// can be considered a dummy, since it's not based on logs. Sending
+		/// true + the entity id simply gets us past this, to the use packet.
+		/// </remarks>
+		[PacketHandler(Op.UnkOrdinaryChest)]
+		public void UnkOrdinaryChest(ChannelClient client, Packet packet)
+		{
+			var chestItemEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.UnkOrdinaryChestR(creature, chestItemEntityId);
 		}
 	}
 }

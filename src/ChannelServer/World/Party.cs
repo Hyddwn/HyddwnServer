@@ -22,6 +22,7 @@ namespace Aura.Channel.World
 		private List<Creature> _members;
 		private Dictionary<int, Creature> _occupiedSlots;
 		private int _adTimer;
+		private int _finisher;
 
 		/// <summary>
 		/// Party's unique identifier (comparable to EntityId).
@@ -133,6 +134,11 @@ namespace Aura.Channel.World
 		/// Used in guild creation to keep track of name votes.
 		/// </summary>
 		public int GuildNameVotes { get; set; }
+
+		/// <summary>
+		/// Returns true if any of the party members has a pet spawned.
+		/// </summary>
+		public bool HasPets { get { return this.GetMembers().Any(a => a.Pet != null); } }
 
 		/// <summary>
 		/// Initializes party.
@@ -260,6 +266,17 @@ namespace Aura.Channel.World
 		{
 			lock (_sync)
 				return _members.OrderBy(a => a.PartyPosition).ToArray();
+		}
+
+		/// <summary>
+		/// Returns list of all members that match the predicate, sorted by
+		/// their position in the party.
+		/// </summary>
+		/// <returns></returns>
+		public Creature[] GetSortedMembers(Func<Creature, bool> predicate)
+		{
+			lock (_sync)
+				return _members.Where(predicate).OrderBy(a => a.PartyPosition).ToArray();
 		}
 
 		/// <summary>
@@ -629,12 +646,12 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Returns which creatures in the party are both in region, and a specified range.
-		/// If no range is supplied, it returns all party creatures within visual(?) range.
+		/// Returns party members in range of given creature, but not the
+		/// creature itself.
 		/// </summary>
 		/// <remarks>3000 is a total guess as to the actual visible range.</remarks>
-		/// <param name="creature"></param>
-		/// <param name="range">Use 0 to get every member in the region.</param>
+		/// <param name="creature">Reference creature</param>
+		/// <param name="range">Pass -1 for visual range.</param>
 		/// <returns></returns>
 		public List<Creature> GetMembersInRange(Creature creature, int range = -1)
 		{
@@ -802,6 +819,22 @@ namespace Aura.Channel.World
 
 			Send.PartyUnsetActiveQuest(this, quest.UniqueId);
 			return true;
+		}
+
+		/// <summary>
+		/// Returns the next eligable finisher for the "in turn" finisher
+		/// rule.
+		/// </summary>
+		/// <returns></returns>
+		public Creature GetNextFinisher()
+		{
+			var members = this.GetMembers();
+
+			_finisher++;
+			if (_finisher >= members.Length)
+				_finisher = 0;
+
+			return members[_finisher];
 		}
 	}
 }

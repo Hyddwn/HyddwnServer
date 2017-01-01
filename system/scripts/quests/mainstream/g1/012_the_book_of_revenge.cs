@@ -117,7 +117,7 @@ public class TheBookOfRevengeQuest : GeneralScript
 				npc.RemoveKeyword("g1_20");
 				npc.GiveKeyword("g1_21");
 
-				npc.GiveWarpScroll(63009, "math_dungeon");
+				npc.GiveWarpScroll(63009, "Math_Dungeon");
 
 				npc.Msg(L("You're back. I knew you would be back.<br/>Here's the item you're looking for."));
 				npc.Msg(L("I only remembered it later on too.<br/>I figured the person who wrote that can<br/>find the lost item at the Town Office."), npc.Image("g1_ch18_torque01"));

@@ -11,6 +11,7 @@ using System;
 using Aura.Channel.Network.Sending;
 using Aura.Data.Database;
 using Aura.Data;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel.World.Entities
 {
@@ -48,11 +49,6 @@ namespace Aura.Channel.World.Entities
 		public GiftWeightInfo GiftWeights { get; set; }
 
 		/// <summary>
-		/// For initializing RP NPCs on login
-		/// </summary>
-		public Action OnNPCLoggedIn { get; protected set; }
-
-		/// <summary>
 		/// Location the NPC was spawned at.
 		/// </summary>
 		public Location SpawnLocation { get; set; }
@@ -67,7 +63,7 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		public NPC()
 		{
-			this.EntityId = Interlocked.Increment(ref _npcId);
+			this.EntityId = GetNewNpcEntityId();
 
 			// Some default values to prevent errors
 			this.Name = "_undefined";
@@ -228,6 +224,14 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns a new, unused entity id in the NPC range.
+		/// </summary>
+		public static long GetNewNpcEntityId()
+		{
+			return Interlocked.Increment(ref _npcId);
+		}
+
+		/// <summary>
 		/// Disposes AI.
 		/// </summary>
 		public override void Dispose()
@@ -255,9 +259,7 @@ namespace Aura.Channel.World.Entities
 				return false;
 			}
 
-			if (this.Region != Region.Limbo)
-				this.Region.RemoveCreature(this);
-
+			this.RemoveFromRegion();
 			this.SetLocation(regionId, x, y);
 
 			region.AddCreature(this);
@@ -317,23 +319,35 @@ namespace Aura.Channel.World.Entities
 		/// Kills NPC, rewarding the killer.
 		/// </summary>
 		/// <param name="killer"></param>
-		public override void Kill(Creature killer)
+		public override bool Kill(Creature killer)
 		{
-			base.Kill(killer);
+			if (!base.Kill(killer))
+				return false;
 
 			this.DisappearTime = DateTime.Now.AddSeconds(NPC.DisappearDelay);
 
 			if (killer == null)
-				return;
+				return true;
 
-			// Exp
+			// Prepare exp
 			var exp = (long)(this.RaceData.Exp * ChannelServer.Instance.Conf.World.ExpRate);
 			var expRule = killer.Party.ExpRule;
+			var expMessage = "+{0} EXP";
 
+			// Add global bonus
+			float bonusMultiplier;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.CombatExp, out bonusMultiplier, out bonuses))
+				exp = (long)(exp * bonusMultiplier);
+
+			if (!string.IsNullOrWhiteSpace(bonuses))
+				expMessage += " (" + bonuses + ")";
+
+			// Give exp
 			if (!killer.IsInParty || expRule == PartyExpSharing.AllToFinish)
 			{
 				killer.GiveExp(exp);
-				Send.CombatMessage(killer, "+{0} EXP", exp);
+				Send.CombatMessage(killer, expMessage, exp);
 			}
 			else
 			{
@@ -367,15 +381,17 @@ namespace Aura.Channel.World.Entities
 
 				// Killer's exp
 				killer.GiveExp(killerExp);
-				Send.CombatMessage(killer, "+{0} EXP", killerExp);
+				Send.CombatMessage(killer, expMessage, killerExp);
 
 				// Exp for members in range of killer, the range is unofficial
 				foreach (var member in members.Where(a => a != killer && a.GetPosition().InRange(killerPos, 3000)))
 				{
 					member.GiveExp(eaExp);
-					Send.CombatMessage(member, "+{0} EXP", eaExp);
+					Send.CombatMessage(member, expMessage, eaExp);
 				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -628,6 +644,8 @@ namespace Aura.Channel.World.Entities
 				score += this.Sexy * taste.Sexy;
 				score += this.Toughness * taste.Toughness;
 				score += this.Utility * taste.Utility;
+
+				score /= 8;
 
 				return (int)score;
 			}

@@ -97,9 +97,11 @@ namespace Aura.Channel.Network.Handlers
 
 			ChannelServer.Instance.Events.OnSecurityViolation(new SecurityViolationEventArgs(client, ex.Level, ex.Message, ex.StackReport));
 
-			client.Kill();
+			// Don't kill connection, since this frequently happens when the
+			// client sends a packet for a creature it doesn't control anymore.
+			//client.Kill();
 
-			Log.Warning("Client '{0}' : Account {1} (Controlling {2}) just committed a {3} offense. Incident report: {4}", client.Address, accName, charName, ex.Level, ex.Message);
+			Log.Debug("Client '{0}' : Account {1} (Controlling {2}) just committed a {3} offense. Incident report: {4}", client.Address, accName, charName, ex.Level, ex.Message);
 		}
 	}
 }

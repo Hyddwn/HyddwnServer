@@ -17,6 +17,7 @@ public class DougalScript : NpcScript
 		SetFace(skinColor: 16, eyeType: 5, eyeColor: 126, mouthType: 0);
 		SetStand("human/male/anim/male_natural_stand_npc_Duncan");
 		SetLocation(35, 15354, 38361, 130);
+		SetGiftWeights(beauty: -1, individuality: 2, luxury: -1, toughness: 0, utility: 1, rarity: 0, meaning: 2, adult: 1, maniac: 0, anime: 0, sexy: -1);
 
 		EquipItem(Pocket.Face, 4900, 0x00737473, 0x00F14274, 0x00C3DC78);
 		EquipItem(Pocket.Hair, 4152, 0x009D845E, 0x009D845E, 0x009D845E);
@@ -32,19 +33,13 @@ public class DougalScript : NpcScript
 		AddPhrase("I don't like crowds...");
 		AddPhrase("Hmm...");
 		AddPhrase("Sigh...");
-		AddPhrase("Mm... Why does my head hurt so much...?");
 	}
 
 	protected override async Task Talk()
 	{
 		SetBgm("NPC_Dougal.mp3");
 
-		await Intro(
-			"The young man is of medium height with sandy hair down to his shoulders, his eyes the color of ash.",
-			"His leg seems to be bothering him, as he is shifting his weight onto the wooden cane in his right hand.",
-			"His well defined chin, serene eyes and lips convey a handsome charm,",
-			"but his eyes seem dry and desolate."
-		);
+		await Intro(L("The young man is of medium height with sandy hair down to his shoulders, his eyes the color of ash.<br/>His leg seems to be bothering him, as he is shifting his weight onto the wooden cane in his right hand.<br/>His well defined chin, serene eyes and lips convey a handsome charm,<br/>but his eyes seem dry and desolate."));
 
 		Msg("...How can I help you?", Button("Start a Conversation", "@talk"), Button("Trade", "@shop"), Button("Return to Erinn", "@return"));
 
@@ -53,21 +48,29 @@ public class DougalScript : NpcScript
 			case "@talk":
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
-				if (Title == 11002)
+
+				if (Title == 11001)
 				{
 					Msg("...So you were able to defeat my body and<br/>push Mores and Cichol out even when you're only a Human.");
 					Msg("I've learned that there are<br/>those even among Humans that can be trusted with that kind of abilities.");
 				}
+				else if (Title == 11002)
+				{
+					Msg("...So you were able to defeat my body and<br/>push Mores and Cichol out even when you're only a Human.");
+					Msg("I've learned that there are<br/>those even among Humans that can be trusted with that kind of abilities.");
+				}
+
 				await Conversation();
 				break;
 
 			case "@shop":
-				Msg("What are you looking for?<br/>");
+				Msg("What are you looking for?");
 				OpenShop("DougalShop");
 				return;
 
 			case "@return":
 				Msg("It seems you wish to leave this place.<br/>Well, I didn't get my hopes up anyway...<br/>I'll help you so you can get back on track.<br/>I wish you a safe trip.", Button("Continue", "@to_erinn"), Button("Cancel", "@cancel"));
+
 				switch (await Select())
 				{
 					case "@to_erinn":
@@ -88,7 +91,7 @@ public class DougalScript : NpcScript
 	{
 		if (Memory <= 0)
 		{
-			Msg(FavorExpression(), L("You're quite brave to come to a place like this. I'm Dougal.<br/>I'm here... alone."));
+			Msg(FavorExpression(), L("You're quite brave to come to a place like this.<br/>I'm Dougal and I am the lone resident of this town."));
 		}
 		else if (Memory == 1)
 		{
@@ -96,15 +99,15 @@ public class DougalScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("You're back. I was wondering why you hadn't come back yet."));
+			Msg(FavorExpression(), L("Do you plan on residing here or something?<br/>Well, I'm sure you got it all figured out."));
 		}
 		else if (Memory <= 6)
 		{
-			Msg(FavorExpression(), L("We meet again, <username/>. How may I help you today?"));
+			Msg(FavorExpression(), L("You're back. I was wondering why you hadn't come back yet."));
 		}
 		else
 		{
-			Msg(FavorExpression(), L("(Missing)"));
+			Msg(FavorExpression(), L("We meet again, <username/>. How may I help you today?"));
 		}
 
 		UpdateRelationAfterGreet();
@@ -118,12 +121,13 @@ public class DougalScript : NpcScript
 				if (Memory == 1)
 				{
 					Msg("You're quite brave to come to a place like this. I'm Dougal.<br/>I'm here... alone.");
-					ModifyRelation(1, 0, Random(2));
+					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
 					Msg(FavorExpression(), "About me? You want to know all sort of things, don't you?");
 					Msg("I'm just a loser who was left alone to guard this town.");
+					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
@@ -131,7 +135,7 @@ public class DougalScript : NpcScript
 				Msg(FavorExpression(), "Have you, by chance, ever heard of the parallel world?<br/>Well, it's nothing special...<br/>It's just that whoever comes here<br/>tells me that this place looks like some other place they've been to.");
 				Msg("If this really is a parallel world,<br/>it must have some sort of a connection to the real world.<br/>Still, I'm not sure which world is the real one and which one is the mirror of it.");
 				Msg("If a change is to occur in one world,<br/>that would mean that a change would occur in the other world as well.<br/>I'm not sure just how it would change, but...");
-				ModifyRelation(Random(2), 0, Random(2));
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "shop_misc":
@@ -314,13 +318,18 @@ public class DougalScript : NpcScript
 
 			default:
 				RndFavorMsg(
-					"I'm not sure. I can't exactly answer that question.",
 					"I don't know much about that.",
 					"I'm much too limited to answer that.",
+					"Is there such a thing? So now I know.",
 					"Hmm...I'm not sure. I really don't know.",
-					"I'm simply not sure. Do you have any other questions?"
+					"All I can say is that I simply do not know.",
+					"I'm not sure. I can't exactly answer that question.",
+					"I'm simply not sure. Do you have any other questions?",
+					"What exactly do you mean? I don't know much about that.",
+					"That's the first time anyone's asked me that question, so... No, I don't know.",
+					"Since I'm all alone, my knowledge is limited. Any other subjects you'd like to talk about?"
 				);
-				ModifyRelation(0, 0, Random(2));
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

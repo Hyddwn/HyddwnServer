@@ -231,7 +231,7 @@ namespace Aura.Channel.Scripting.Scripts
 			base.Dispose();
 
 			ChannelServer.Instance.Events.PlayerLoggedIn -= this.OnPlayerLoggedIn;
-			ChannelServer.Instance.Events.CreatureKilledByPlayer -= this.OnCreatureKilledByPlayer;
+			ChannelServer.Instance.Events.CreatureFinishedByPlayer -= this.OnCreatureKilledByPlayer;
 			ChannelServer.Instance.Events.PlayerReceivesItem -= this.OnPlayerReceivesOrRemovesItem;
 			ChannelServer.Instance.Events.PlayerRemovesItem -= this.OnPlayerReceivesOrRemovesItem;
 			ChannelServer.Instance.Events.PlayerCompletesQuest -= this.OnPlayerCompletesQuest;
@@ -380,6 +380,15 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Sets whether the quest can be canceled.
+		/// </summary>
+		/// <param name="cancelable"></param>
+		protected void SetCancelable(bool cancelable)
+		{
+			this.Cancelable = cancelable;
+		}
+
+		/// <summary>
 		/// Adds prerequisite that has to be met before auto receiving the quest.
 		/// </summary>
 		/// <param name="prerequisite"></param>
@@ -431,8 +440,8 @@ namespace Aura.Channel.Scripting.Scripts
 
 			if (objective.Type == ObjectiveType.Kill)
 			{
-				ChannelServer.Instance.Events.CreatureKilledByPlayer -= this.OnCreatureKilledByPlayer;
-				ChannelServer.Instance.Events.CreatureKilledByPlayer += this.OnCreatureKilledByPlayer;
+				ChannelServer.Instance.Events.CreatureFinishedByPlayer -= this.OnCreatureKilledByPlayer;
+				ChannelServer.Instance.Events.CreatureFinishedByPlayer += this.OnCreatureKilledByPlayer;
 			}
 
 			if (objective.Type == ObjectiveType.Collect)
@@ -573,6 +582,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestPrerequisite ReachedRank(SkillId skillId, SkillRank rank) { return new QuestPrerequisiteReachedRank(skillId, rank); }
 		protected QuestPrerequisite ReachedAge(int age) { return new QuestPrerequisiteReachedAge(age); }
 		protected QuestPrerequisite NotSkill(SkillId skillId, SkillRank rank = SkillRank.Novice) { return new QuestPrerequisiteNotSkill(skillId, rank); }
+		protected QuestPrerequisite EventActive(string gameEventId) { return new QuestPrerequisiteEventActive(gameEventId); }
 		protected QuestPrerequisite And(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteAnd(prerequisites); }
 		protected QuestPrerequisite Or(params QuestPrerequisite[] prerequisites) { return new QuestPrerequisiteOr(prerequisites); }
 
@@ -602,6 +612,7 @@ namespace Aura.Channel.Scripting.Scripts
 		protected QuestReward QuestScroll(int questId) { return new QuestRewardQuestScroll(questId); }
 		protected QuestReward Skill(SkillId skillId, SkillRank rank) { return new QuestRewardSkill(skillId, rank, 0); }
 		protected QuestReward Skill(SkillId skillId, SkillRank rank, int training) { return new QuestRewardSkill(skillId, rank, training); }
+		protected QuestReward Pattern(int itemId, int formId, int useCount) { return new QuestRewardPattern(itemId, formId, useCount); }
 		protected QuestReward Gold(int amount) { return new QuestRewardGold(Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.GoldQuestRewardRate)); }
 		protected QuestReward Exp(int amount) { return new QuestRewardExp(Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.QuestExpRate)); }
 		protected QuestReward ExplExp(int amount) { return new QuestRewardExplExp(Math2.MultiplyChecked(amount, ChannelServer.Instance.Conf.World.QuestExpRate)); }
@@ -736,7 +747,7 @@ namespace Aura.Channel.Scripting.Scripts
 						var itemId = (objective as QuestObjectiveCollect).ItemId;
 
 						// Do not count incomplete items (e.g. tailoring, blacksmithing).
-						var count = creature.Inventory.Count((Item item) => (item.Info.Id == itemId || item.Data.StackItemId == itemId) && !item.MetaData1.Has("PRGRATE"));
+						var count = creature.Inventory.Count((Item item) => (item.Info.Id == itemId || item.Data.StackItemId == itemId) && !item.IsIncomplete);
 
 						if (!progress.Done && count >= objective.Amount)
 							quest.SetDone(progress.Ident);

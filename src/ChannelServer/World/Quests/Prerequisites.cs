@@ -175,6 +175,29 @@ namespace Aura.Channel.World.Quests
 	}
 
 	/// <summary>
+	/// Skill prerequisite, met if a certain event is in progress.
+	/// </summary>
+	public class QuestPrerequisiteEventActive : QuestPrerequisite
+	{
+		public string GameEventId { get; protected set; }
+
+		public QuestPrerequisiteEventActive(string gameEventId)
+		{
+			this.GameEventId = gameEventId;
+		}
+
+		public override bool Met(Creature character)
+		{
+			return ChannelServer.Instance.GameEventManager.IsActive(this.GameEventId);
+		}
+
+		public override bool Is(Type type)
+		{
+			return (this.GetType() == type);
+		}
+	}
+
+	/// <summary>
 	/// Collection of prerequisites, met if all are met.
 	/// </summary>
 	public class QuestPrerequisiteAnd : QuestPrerequisite

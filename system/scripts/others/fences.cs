@@ -44,8 +44,8 @@ public class FeatureFencesScript : GeneralScript
 		if (!IsEnabled("PeacaDungeon"))
 		{
 			// Peaca Dungeon entrance
-			SpawnProp(40000, 53, 75600, 118000, 1.57f);
-			SpawnProp(40000, 53, 75600, 117600, 2.00f);
+			SpawnProp(40000, 53, 75600, 118000, 1.57f, Prop.GetEmptyBehavior());
+			SpawnProp(40000, 53, 75600, 117600, 2.00f, Prop.GetEmptyBehavior());
 		}
 	}
 }

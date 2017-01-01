@@ -22,6 +22,7 @@ using System.Threading;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Shared.Database;
 using Aura.Channel.World.Dungeons;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel.World.Entities
 {
@@ -40,6 +41,8 @@ namespace Aura.Channel.World.Entities
 		public const int BareHandStaminaUsage = 2;
 
 		public const int MaxElementalAffinity = 9;
+
+		public const float ZombieSpeed = 28.6525f;
 
 		private byte _inquiryId;
 		private Dictionary<byte, Action<Creature>> _inquiryCallbacks;
@@ -78,24 +81,39 @@ namespace Aura.Channel.World.Entities
 		public int InventoryHeight { get; set; }
 
 		/// <summary>
-		/// Temporary and permanent variables, exclusive to this creature.
+		/// Temporary and permanent variables exclusive to this creature.
 		/// </summary>
 		/// <remarks>
-		/// Permanent variables are saved across relogs, if the creature
+		/// Permanent variables are saved across relogs if the creature
 		/// is a player creature. NPCs and monster variables aren't saved.
 		/// </remarks>
 		public ScriptVariables Vars { get; protected set; }
 
 		/// <summary>
-		/// Returns true if creature is a Character or Pet.
+		/// Returns true if creature is a Character, RpCharacter, or Pet.
 		/// </summary>
-		public bool IsPlayer { get { return (this.IsCharacter || this.IsPet); } }
+		/// <remarks>
+		/// This propery is frequently used to determine if a creature should
+		/// get special treatment because it's a player. Player creatures
+		/// can level up, have special events, can keep dynamic regions open,
+		/// and other things.
+		/// 
+		/// TODO: Dedicated properties might be better to determine what a
+		///   creature can do, as they would be more descriptive and easier
+		///   to maintain.
+		/// </remarks>
+		public bool IsPlayer { get { return (this.IsCharacter || this.IsPet || this.IsRpCharacter); } }
 
 		/// <summary>
 		/// Returns true if creature is a character, i.e. a player creature,
 		/// but not a pet/partner.
 		/// </summary>
 		public bool IsCharacter { get { return (this is Character); } }
+
+		/// <summary>
+		/// Returns true if creature is an role-playing character.
+		/// </summary>
+		public bool IsRpCharacter { get { return (this is RpCharacter); } }
 
 		/// <summary>
 		/// Returns true if creature is a pet.
@@ -174,6 +192,11 @@ namespace Aura.Channel.World.Entities
 		public DateTime LastLogin { get; set; }
 
 		/// <summary>
+		/// The time the creature has been active in seconds.
+		/// </summary>
+		public long PlayTime { get; set; }
+
+		/// <summary>
 		/// How many times the character rebirthed.
 		/// </summary>
 		public int RebirthCount { get; set; }
@@ -227,6 +250,12 @@ namespace Aura.Channel.World.Entities
 			{
 				// Only players with active premium service can receive gifts.
 				if (!this.Client.Account.PremiumServices.HasPremiumService)
+					return false;
+
+				// Dead characters should not be moved to the Soul Stream,
+				// as they will get stuck there, not being able to move
+				// or revive.
+				if (this.IsDead)
 					return false;
 
 				var now = DateTime.Now;
@@ -331,6 +360,12 @@ namespace Aura.Channel.World.Entities
 		/// Shields and similar items are not considered main weapons.
 		/// </summary>
 		public bool IsDualWielding { get { return this.RightHand != null && this.LeftHand != null && this.LeftHand.Data.WeaponType != 0; } }
+
+		/// <summary>
+		/// Returns whether the creature is naturally able to equip/unequip
+		/// items, based on its class.
+		/// </summary>
+		public virtual bool CanMoveEquip { get { return true; } }
 
 		// Movement
 		// ------------------------------------------------------------------
@@ -533,6 +568,9 @@ namespace Aura.Channel.World.Entities
 		public long _hitTrackerIds;
 		public Dictionary<long, HitTracker> _hitTrackers;
 		public int _totalHits;
+
+		public long FinisherId { get; private set; }
+		public bool IsFinished { get; private set; }
 
 		// Stats
 		// ------------------------------------------------------------------
@@ -1078,9 +1116,16 @@ namespace Aura.Channel.World.Entities
 		// ------------------------------------------------------------------
 
 		/// <summary>
-		/// Raised when creature dies.
+		/// Raised when creature died, regardless of whether it's already
+		/// finished as well.
 		/// </summary>
 		public event Action<Creature, Creature> Death;
+
+		/// <summary>
+		/// Raised when creature is finished. It's called if no finishing
+		/// happens as well, when going straight to being completely dead.
+		/// </summary>
+		public event Action<Creature, Creature> Finish;
 
 		/// <summary>
 		/// Raised when creature levels up.
@@ -1358,9 +1403,18 @@ namespace Aura.Channel.World.Entities
 			if (!this.IsWalking)
 				speed *= this.RaceData.RunSpeedFactor;
 
+			// The Zombie condition reduces speed to that of a Zombie.
+			// We could query it from the speed db, but hardcoding is
+			// more efficient, and it shouldn't be changing anyway.
+			if (this.Conditions.Has(ConditionsC.Zombie))
+				speed = ZombieSpeed;
+
 			// Hurry condition
-			var hurry = this.Conditions.GetExtraVal(169);
-			speed *= 1 + (hurry / 100f);
+			if (!this.IsWalking && this.Conditions.Has(ConditionsC.Hurry))
+			{
+				var hurry = this.Conditions.GetExtraVal(169);
+				speed *= 1 + (hurry / 100f);
+			}
 
 			return speed;
 		}
@@ -1510,6 +1564,8 @@ namespace Aura.Channel.World.Entities
 			this.StatMods.OnSecondsTimeTick(time);
 			this.Conditions.OnSecondsTimeTick(time);
 			this.Skills.OnSecondsTimeTick(time);
+
+			this.PlayTime++;
 		}
 
 		/// <summary>
@@ -1702,10 +1758,30 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public virtual bool CanTarget(Creature creature)
 		{
-			if (this.IsDead || creature.IsDead || creature == this)
+			var attackerIsDead = this.IsDead;
+			var targetIsDead = creature.IsDead;
+			var attackerCanFinish = this.CanFinish(creature);
+			var attackerIsTarget = (creature == this);
+
+			if (attackerIsDead || (targetIsDead && !attackerCanFinish) || attackerIsTarget)
 				return false;
 
 			return true;
+		}
+
+		/// <summary>
+		/// Returns whether this creature is eligible to finish the given
+		/// target.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public bool CanFinish(Creature target)
+		{
+			var finisherId = target.FinisherId;
+			var isFinished = target.IsFinished;
+			var isFinisher = (finisherId == 0 || finisherId == this.Party.Id || this.Client.Creatures.ContainsKey(finisherId));
+
+			return (!isFinished && isFinisher);
 		}
 
 		/// <summary>
@@ -1821,16 +1897,16 @@ namespace Aura.Channel.World.Entities
 			else
 			{
 				balance = this.RightBalanceMod;
-				if (this.LeftHand != null)
+				if (this.IsDualWielding)
 					balance = (balance + this.LeftBalanceMod) / 2;
 			}
 
 			var min = this.AttackMinBase + this.AttackMinBaseMod + this.RightAttackMinMod;
-			if (this.LeftHand != null)
+			if (this.IsDualWielding)
 				min = (min + this.LeftAttackMinMod) / 2;
 
 			var max = this.AttackMaxBase + this.AttackMaxBaseMod + this.RightAttackMaxMod;
-			if (this.LeftHand != null)
+			if (this.IsDualWielding)
 				max = (max + this.LeftAttackMaxMod) / 2;
 
 			return this.GetRndDamage(min, max, balance);
@@ -1995,23 +2071,21 @@ namespace Aura.Channel.World.Entities
 				_totalHits = Interlocked.Increment(ref _totalHits);
 			}
 
-			var equip = this.Inventory.GetEquipment();
-
-			// Give proficiency to random main armor
-			var mainArmors = equip.Where(a => a.Info.Pocket.IsMainArmor());
-			if (mainArmors.Count() != 0)
+			// Update equip
+			var mainArmors = this.Inventory.GetMainEquipment(a => a.Info.Pocket.IsMainArmor());
+			if (mainArmors.Length != 0)
 			{
+				// Select a random armor item to gain proficiency and lose
+				// durability, as the one that was "hit" by the damage.
 				var item = mainArmors.Random();
-				var amount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Damage);
-				this.Inventory.AddProficiency(item, amount);
-			}
 
-			// Reduce durability of random item
-			if (equip.Length != 0)
-			{
-				var item = equip.Random();
-				var amount = RandomProvider.Get().Next(1, 30);
-				this.Inventory.ReduceDurability(item, amount);
+				// Give proficiency
+				var profAmount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Damage);
+				this.Inventory.AddProficiency(item, profAmount);
+
+				// Reduce durability
+				var duraAmount = RandomProvider.Get().Next(1, 30);
+				this.Inventory.ReduceDurability(item, duraAmount);
 			}
 
 			// Kill if life too low
@@ -2029,26 +2103,79 @@ namespace Aura.Channel.World.Entities
 		protected abstract bool ShouldSurvive(float damage, Creature from, float lifeBefore);
 
 		/// <summary>
-		/// Kills creature.
+		/// Kills creature. Returns true if it was killed and false if it
+		/// entered "finish mode".
 		/// </summary>
 		/// <param name="killer"></param>
-		public virtual void Kill(Creature killer)
+		public virtual bool Kill(Creature killer)
 		{
 			// Conditions
 			if (this.Conditions.Has(ConditionsA.Deadly))
 				this.Conditions.Deactivate(ConditionsA.Deadly);
+
+			var wasAlive = !this.Has(CreatureStates.Dead);
 			this.Activate(CreatureStates.Dead);
 
-			//Send.SetFinisher(this, killer.EntityId);
-			//Send.SetFinisher2(this);
-			Send.IsNowDead(this);
-			Send.SetFinisher(this, 0);
+			// Kill events, fire once when the creature dies.
+			if (wasAlive)
+			{
+				ChannelServer.Instance.Events.OnCreatureKilled(this, killer);
+				if (killer != null && killer.IsPlayer)
+					ChannelServer.Instance.Events.OnCreatureKilledByPlayer(this, killer);
+				this.Death.Raise(this, killer);
+			}
 
-			// Events
-			ChannelServer.Instance.Events.OnCreatureKilled(this, killer);
+			// When a creature is killed, and the attacker is in a party,
+			// the party's finisher rules come into effect. Depending on its
+			// settings a finisher might be set, who gets to actually kill the
+			// monster and gets assigned the drops.
+			// If a finisher is set, the method returns, so nothing is done
+			// but setting the creature to be dead. The next time we come here,
+			// after the finisher attacked the monster again, the finisher id
+			// won't be 0, and as such it won't return again, but continue
+			// to the actual kill behavior.
+			if (killer.IsInParty && this.FinisherId == 0)
+			{
+				if (killer.Party.Finish == PartyFinishRule.Anyone)
+				{
+					this.SetFinisher(killer.Party.Id);
+				}
+				else if (killer.Party.Finish == PartyFinishRule.BiggestContributer)
+				{
+					// Get top damage dealer and set them to be finisher,
+					// if they're still around and they aren't the killer.
+					// If they are the killer, we don't need a finish.
+					var hitTracker = this.GetTopDamageDealer();
+					if (hitTracker != null)
+					{
+						var finisher = hitTracker.Attacker;
+						if (finisher.Region == this.Region && finisher != killer)
+							this.SetFinisher(finisher.EntityId);
+					}
+				}
+				else if (killer.Party.Finish == PartyFinishRule.Turn)
+				{
+					var finisher = killer.Party.GetNextFinisher();
+					if (finisher.Region == this.Region && finisher != killer)
+						this.SetFinisher(finisher.EntityId);
+				}
+
+				// Stop here if we just set a finisher
+				if (this.FinisherId != 0)
+				{
+					Send.IsNowDead(this);
+					return false;
+				}
+			}
+
+			this.SetFinisher(0);
+			Send.IsNowDead(this);
+
+			// Finish events, fire when creature is finished.
+			ChannelServer.Instance.Events.OnCreatureFinished(this, killer);
 			if (killer != null && killer.IsPlayer)
-				ChannelServer.Instance.Events.OnCreatureKilledByPlayer(this, killer);
-			this.Death.Raise(this, killer);
+				ChannelServer.Instance.Events.OnCreatureFinishedByPlayer(this, killer);
+			this.Finish.Raise(this, killer);
 
 			// Cancel active skill
 			if (this.Skills.ActiveSkill != null)
@@ -2063,6 +2190,21 @@ namespace Aura.Channel.World.Entities
 
 			// DeadMenu
 			this.DeadMenu.Update();
+
+			return true;
+		}
+
+		/// <summary>
+		/// Sets finisher and sends SetFinisher.
+		/// </summary>
+		/// <param name="id"></param>
+		protected void SetFinisher(long id)
+		{
+			this.FinisherId = id;
+			if (id == 0)
+				this.IsFinished = true;
+
+			Send.SetFinisher(this, id);
 		}
 
 		/// <summary>
@@ -2073,11 +2215,25 @@ namespace Aura.Channel.World.Entities
 		/// <param name="pos"></param>
 		private void DropGold(Creature killer, Random rnd, Position pos)
 		{
-			if (rnd.NextDouble() >= ChannelServer.Instance.Conf.World.GoldDropChance)
+			var goldDropChance = ChannelServer.Instance.Conf.World.GoldDropChance;
+
+			// Add global bonus
+			float goldRateBonus;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.GoldDropRate, out goldRateBonus, out bonuses))
+				goldDropChance *= goldRateBonus;
+
+			// Check if drop
+			if (rnd.NextDouble() >= goldDropChance)
 				return;
 
 			// Random base amount
 			var amount = rnd.Next(this.Drops.GoldMin, this.Drops.GoldMax + 1);
+
+			// Add global bonus
+			float goldDropBonus;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.GoldDropAmount, out goldDropBonus, out bonuses))
+				amount = (int)(amount * goldDropBonus);
 
 			if (amount > 0)
 			{
@@ -2091,7 +2247,20 @@ namespace Aura.Channel.World.Entities
 				if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
 					luckyChance += 0.05;
 
-				if (luckyChance < ChannelServer.Instance.Conf.World.HugeLuckyFinishChance)
+				var hugeLuckyFinishChance = ChannelServer.Instance.Conf.World.HugeLuckyFinishChance;
+				var bigLuckyFinishChance = ChannelServer.Instance.Conf.World.BigLuckyFinishChance;
+				var luckyFinishChance = ChannelServer.Instance.Conf.World.LuckyFinishChance;
+
+				// Add global bonus
+				float luckyDropBonus;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.LuckyFinishRate, out luckyDropBonus, out bonuses))
+				{
+					hugeLuckyFinishChance *= luckyDropBonus;
+					bigLuckyFinishChance *= luckyDropBonus;
+					luckyFinishChance *= luckyDropBonus;
+				}
+
+				if (luckyChance < hugeLuckyFinishChance)
 				{
 					amount *= 100;
 					finish = LuckyFinish.Lucky;
@@ -2099,7 +2268,7 @@ namespace Aura.Channel.World.Entities
 					Send.CombatMessage(killer, Localization.Get("Huge Lucky Finish!!"));
 					Send.Notice(killer, Localization.Get("Huge Lucky Finish!!"));
 				}
-				else if (luckyChance < ChannelServer.Instance.Conf.World.BigLuckyFinishChance)
+				else if (luckyChance < bigLuckyFinishChance)
 				{
 					amount *= 5;
 					finish = LuckyFinish.BigLucky;
@@ -2107,7 +2276,7 @@ namespace Aura.Channel.World.Entities
 					Send.CombatMessage(killer, Localization.Get("Big Lucky Finish!!"));
 					Send.Notice(killer, Localization.Get("Big Lucky Finish!!"));
 				}
-				else if (luckyChance < ChannelServer.Instance.Conf.World.LuckyFinishChance)
+				else if (luckyChance < luckyFinishChance)
 				{
 					amount *= 2;
 					finish = LuckyFinish.HugeLucky;
@@ -2165,8 +2334,28 @@ namespace Aura.Channel.World.Entities
 		private void DropItems(Creature killer, Random rnd, Position pos)
 		{
 			// Normal
+			this.DropItems(killer, rnd, pos, this.Drops.Drops);
+
+			// Event
+			var eventDrops = ChannelServer.Instance.GameEventManager.GlobalBonuses.GetDrops(this);
+			if (eventDrops.Count != 0)
+				this.DropItems(killer, rnd, pos, eventDrops);
+
+			// Static
+			foreach (var item in this.Drops.StaticDrops)
+				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
+
+			this.Drops.ClearStaticDrops();
+		}
+
+		/// <summary>
+		/// Handles dropping of items in given collection.
+		/// </summary>
+		/// <param name="dataCollection"></param>
+		private void DropItems(Creature killer, Random rnd, Position pos, IEnumerable<DropData> dataCollection)
+		{
 			var dropped = new HashSet<int>();
-			foreach (var dropData in this.Drops.Drops)
+			foreach (var dropData in dataCollection)
 			{
 				if (dropData == null || !AuraData.ItemDb.Exists(dropData.ItemId))
 				{
@@ -2174,15 +2363,24 @@ namespace Aura.Channel.World.Entities
 					continue;
 				}
 
-				var dropRate = dropData.Chance * ChannelServer.Instance.Conf.World.DropRate;
+				var dropRate = dropData.Chance;
 				var dropChance = rnd.NextDouble() * 100;
 				var month = ErinnTime.Now.Month;
+
+				// Add global bonus
+				float itemDropBonus;
+				string bonuses;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.ItemDropRate, out itemDropBonus, out bonuses))
+					dropRate *= itemDropBonus;
 
 				// Tuesday: Increase in dungeon item drop rate.
 				// Wednesday: Increase in item drop rate from animals and nature.
 				// +50%, bonus is unofficial.
 				if ((month == ErinnMonth.Baltane && this.Region.IsDungeon) || (month == ErinnMonth.AlbanHeruin && !this.Region.IsDungeon))
 					dropRate *= 1.5f;
+
+				// Add conf
+				dropRate *= ChannelServer.Instance.Conf.World.DropRate;
 
 				if (dropChance < dropRate)
 				{
@@ -2191,74 +2389,12 @@ namespace Aura.Channel.World.Entities
 						continue;
 
 					var item = new Item(dropData);
-
-					// Equip stat modification
-					// http://wiki.mabinogiworld.com/view/Category:Weapons
-					if (item.HasTag("/righthand/weapon/|/twohand/weapon/"))
-					{
-						var num = rnd.Next(100);
-
-						// Durability
-						if (num == 0)
-							item.OptionInfo.DurabilityMax += 4000;
-						else if (num <= 5)
-							item.OptionInfo.DurabilityMax += 3000;
-						else if (num <= 10)
-							item.OptionInfo.DurabilityMax += 2000;
-						else if (num <= 25)
-							item.OptionInfo.DurabilityMax += 1000;
-
-						// Attack
-						if (num == 0)
-						{
-							item.OptionInfo.AttackMin += 3;
-							item.OptionInfo.AttackMax += 3;
-						}
-						else if (num <= 30)
-						{
-							item.OptionInfo.AttackMin += 2;
-							item.OptionInfo.AttackMax += 2;
-						}
-						else if (num <= 60)
-						{
-							item.OptionInfo.AttackMin += 1;
-							item.OptionInfo.AttackMax += 1;
-						}
-
-						// Crit
-						if (num == 0)
-							item.OptionInfo.Critical += 3;
-						else if (num <= 30)
-							item.OptionInfo.Critical += 2;
-						else if (num <= 60)
-							item.OptionInfo.Critical += 1;
-
-						// Balance
-						if (num == 0)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 12);
-						else if (num <= 10)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 10);
-						else if (num <= 30)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 8);
-						else if (num <= 50)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 6);
-						else if (num <= 70)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 4);
-						else if (num <= 90)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 2);
-					}
-
+					item.ModifyEquipStats(rnd);
 					item.Drop(this.Region, pos, Item.DropRadius, killer, false);
 
 					dropped.Add(dropData.ItemId);
 				}
 			}
-
-			// Static
-			foreach (var item in this.Drops.StaticDrops)
-				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
-
-			this.Drops.ClearStaticDrops();
 		}
 
 		/// <summary>
@@ -2281,8 +2417,12 @@ namespace Aura.Channel.World.Entities
 					// Only warn when creature was a player, we'll let NPCs fall
 					// back to Human 17 silently, until we know if they
 					// have specific level up stats.
-					if (this.IsPlayer)
-						Log.Warning("Creature.GiveExp: Level up stats missing for race {0}, age {1}. Falling back to Human 17.", this.RaceId, this.Age);
+					//if (this.IsPlayer)
+					//	Log.Warning("Creature.GiveExp: Level up stats missing for race {0}, age {1}. Falling back to Human 17.", this.RaceId, this.Age);
+
+					// Don't warn anymore, as that would put out a warning for
+					// every kill as an RP monster, since only normal
+					// characters and pets have level up stats.
 				}
 			}
 
@@ -2305,7 +2445,18 @@ namespace Aura.Channel.World.Entities
 				if (levelStats == null)
 					continue;
 
-				this.AbilityPoints += (short)Math2.Clamp(0, short.MaxValue, levelStats.AP * ChannelServer.Instance.Conf.World.LevelApRate);
+				var addAp = levelStats.AP;
+
+				// Add global bonus
+				float bonusMultiplier;
+				string bonuses;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.LevelUpAp, out bonusMultiplier, out bonuses))
+					addAp = (int)(addAp * bonusMultiplier);
+
+				// Add conf
+				addAp = (int)(addAp * ChannelServer.Instance.Conf.World.LevelApRate);
+
+				this.AbilityPoints += (short)addAp;
 				this.LifeMaxBase += levelStats.Life;
 				this.ManaMaxBase += levelStats.Mana;
 				this.StaminaMaxBase += levelStats.Stamina;
@@ -2560,9 +2711,14 @@ namespace Aura.Channel.World.Entities
 					break;
 
 				case ReviveOptions.PhoenixFeather:
-					// 10% additional injuries
-					this.Injuries += this.LifeInjured * 0.10f;
-					this.Life = 1;
+					// Only set life if life is not at max, since creatures
+					// will keep their life if they leveled up while dead.
+					if (this.Life < this.LifeMax)
+					{
+						// 10% additional injuries
+						this.Injuries += this.LifeInjured * 0.10f;
+						this.Life = 1;
+					}
 					break;
 
 				case ReviveOptions.WaitForRescue:
@@ -2641,12 +2797,29 @@ namespace Aura.Channel.World.Entities
 			var cp = this.CombatPower;
 			var otherCp = compareCreature.CombatPower;
 
-			if (otherCp < cp * 0.8f) return PowerRating.Weakest;
-			if (otherCp < cp * 1.0f) return PowerRating.Weak;
-			if (otherCp < cp * 1.4f) return PowerRating.Normal;
-			if (otherCp < cp * 2.0f) return PowerRating.Strong;
-			if (otherCp < cp * 3.0f) return PowerRating.Awful;
-			return PowerRating.Boss;
+			var result = PowerRating.Boss;
+
+			if (otherCp < cp * 0.8f) result = PowerRating.Weakest;
+			else if (otherCp < cp * 1.0f) result = PowerRating.Weak;
+			else if (otherCp < cp * 1.4f) result = PowerRating.Normal;
+			else if (otherCp < cp * 2.0f) result = PowerRating.Strong;
+			else if (otherCp < cp * 3.0f) result = PowerRating.Awful;
+
+			// Weaken condition
+			if (this.Conditions.Has(ConditionsA.Weaken))
+			{
+				var levels = 1;
+				var wkn_lv = this.Conditions.GetExtraField(31, "WKN_LV");
+				if (wkn_lv != null)
+					levels = (byte)wkn_lv;
+
+				result += levels;
+			}
+
+			if (result > PowerRating.Boss)
+				result = PowerRating.Boss;
+
+			return result;
 		}
 
 		/// <summary>
@@ -2927,11 +3100,18 @@ namespace Aura.Channel.World.Entities
 		public override void Disappear()
 		{
 			this.Dispose();
-
-			if (this.Region != Region.Limbo)
-				this.Region.RemoveCreature(this);
+			this.RemoveFromRegion();
 
 			base.Disappear();
+		}
+
+		/// <summary>
+		/// Removes creature from its current region.
+		/// </summary>
+		public void RemoveFromRegion()
+		{
+			if (this.Region != Region.Limbo)
+				this.Region.RemoveCreature(this);
 		}
 
 		/// <summary>
@@ -3280,6 +3460,27 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns all creatures that have hit this creature and are still
+		/// in the same region.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetAllHitters()
+		{
+			var result = new List<Creature>();
+
+			lock (_hitTrackers)
+			{
+				foreach (var tracker in _hitTrackers.Values)
+				{
+					if (tracker.Attacker.Region == this.Region)
+						result.Add(tracker.Attacker);
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Returns the total number of hits the creature took.
 		/// </summary>
 		/// <returns></returns>
@@ -3304,8 +3505,10 @@ namespace Aura.Channel.World.Entities
 			if (item.OwnerId == 0 || item.ProtectionLimit == null || item.ProtectionLimit < DateTime.Now)
 				return true;
 
-			// Return whether creature is the owner
-			return (item.OwnerId == this.EntityId);
+			// Return whether the item's owner is controlled by the
+			// creature's client, this way masters can pick up their
+			// follower's (e.g. pet's) items.
+			return this.Client.Creatures.ContainsKey(item.OwnerId);
 		}
 
 		/// <summary>
@@ -3579,6 +3782,30 @@ namespace Aura.Channel.World.Entities
 				result = item.Data.SplashDamage;
 
 			return result;
+		}
+
+		/// <summary>
+		/// If this creature is an RP character, it returns the player's
+		/// character behind the RP character, if not it just returns itself.
+		/// </summary>
+		/// <remarks>
+		/// Use in cases where you want to execute an action on the actual
+		/// player character, but you don't know if you're working with an
+		/// RP character or not.
+		/// 
+		/// For example, maybe you want to give a player a quest item at the
+		/// end of the dungeon, but the dungeon can be played as RP or
+		/// non-RP. Using just the creature would give it to the RP
+		/// character, with the player never getting it.
+		/// </remarks>
+		/// <returns></returns>
+		public Creature GetActualCreature()
+		{
+			if (!this.IsRpCharacter)
+				return this;
+
+			var rpCharacter = this as RpCharacter;
+			return rpCharacter.Actor;
 		}
 	}
 

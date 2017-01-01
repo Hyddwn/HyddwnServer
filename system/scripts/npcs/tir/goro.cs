@@ -130,13 +130,28 @@ public class GoroScript : NpcScript
 
 	protected override async Task Keywords(string kw)
 	{
-		RndMsg(
+		RndFavorMsg(
 			"Well...",
 			"Excuse me, what did you say?",
 			"Hmm...I believe I have heard about it...",
 			"I do not know anything about that kind of story."
 		);
 		ModifyRelation(0, 0, Random(3));
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Ah... Thank you. Thank you very much."));
+				Msg(L("My father always told me<br/>that if I treat a human like a human, they will treat me like a human as well."));
+				break;
+
+			default:
+				Msg(L("Thank you.<br/>I'll cherish it."));
+				break;
+		}
 	}
 }
 

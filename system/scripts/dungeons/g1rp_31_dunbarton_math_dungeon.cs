@@ -9,8 +9,8 @@ public class ShielaMoresRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#shiela");
-		//dungeon.SetRole(1, "#mores");
+		dungeon.SetRole(0, "#shiela");
+		dungeon.SetRole(1, "#mores");
 	}
 
 	public virtual void OnPartyEntered(Dungeon dungeon, Creature creature)
@@ -29,6 +29,12 @@ public class ShielaMoresRPDungeonScript : DungeonScript
 		dungeon.AddBoss(12001, 6); // Ghost Armor
 
 		dungeon.PlayCutscene("G1_31_b_ShielaRP");
+	}
+	
+	public override void OnBossDeath(Dungeon dungeon, Creature boss, Creature killer)
+	{
+		if (dungeon.RemainingBosses <= 3)
+			dungeon.Complete();
 	}
 
 	public override void OnCleared(Dungeon dungeon)
