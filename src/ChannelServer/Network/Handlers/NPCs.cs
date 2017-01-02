@@ -308,7 +308,12 @@ namespace Aura.Channel.Network.Handlers
 			}
 			else
 			{
-				// TODO: Fee
+				// Fee
+				// Unofficial, will not match *exactly* what the client
+				// displays in the sell item window in all cases.
+				var fee = (sellingPrice * (8.958 + ((sellingPrice / 10000 - 5) * 1.002)) / 100);
+				sellingPrice = (int)(sellingPrice - fee);
+
 				client.Account.Bank.AddGold(creature, sellingPrice);
 			}
 
