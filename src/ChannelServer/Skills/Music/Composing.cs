@@ -60,9 +60,9 @@ namespace Aura.Channel.Skills.Music
 
 			// Check lengths
 			if (mml.Length > MmlMaxLength || song.Length > MmlMaxLength) goto L_Fail; // Total
-			if (mmlParts.Length > 0 && mmlParts[0].Length > skill.RankData.Var1) goto L_Fail; // Melody
-			if (mmlParts.Length > 1 && mmlParts[1].Length > skill.RankData.Var2) goto L_Fail; // Harmony 1
-			if (mmlParts.Length > 2 && mmlParts[2].Length > skill.RankData.Var3) goto L_Fail; // Harmony 2
+			if (mmlParts.Length > 0 && !string.IsNullOrWhiteSpace(mmlParts[0]) && mmlParts[0].Length > skill.RankData.Var1) goto L_Fail; // Melody
+			if (mmlParts.Length > 1 && !string.IsNullOrWhiteSpace(mmlParts[1]) && mmlParts[1].Length > skill.RankData.Var2) goto L_Fail; // Harmony 1
+			if (mmlParts.Length > 2 && !string.IsNullOrWhiteSpace(mmlParts[2]) && mmlParts[2].Length > skill.RankData.Var3) goto L_Fail; // Harmony 2
 
 			// Score level = Musical Knowledge rank
 			var level = SkillRank.Novice;
