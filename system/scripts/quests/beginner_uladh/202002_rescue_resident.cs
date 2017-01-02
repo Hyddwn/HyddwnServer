@@ -63,6 +63,15 @@ public class RescueResidentQuestScript : QuestScript
 			
 			return HookResult.Break;
 		}
+		else if (npc.QuestActive(this.Id, "clear_alby"))
+		{
+			npc.Msg("Follow the road up and turn right and you'll find the Alby Dungeon.<br/>You can enter the dungeon by dropping this item on the altar.<br/>If you either lose it or fail to rescue her, come back to me so I can give you another one. Please be careful.", npc.Image("dungeonpass", 128, 128));
+
+			if (!npc.HasItem(63180))
+				npc.GiveItem(63180, 1);
+			
+			return HookResult.Break;
+		}
 		else if(npc.QuestActive(this.Id, "talk_trefor3"))
 		{
 			npc.FinishQuest(this.Id, "talk_trefor3");
