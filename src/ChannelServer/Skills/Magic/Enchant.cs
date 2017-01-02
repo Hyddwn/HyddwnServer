@@ -219,7 +219,7 @@ namespace Aura.Channel.Skills.Magic
 			// Check target
 			if (!item.HasTag(optionSetData.Allow) || item.HasTag(optionSetData.Disallow))
 			{
-				Log.Warning("Enchant.Complete: Creature '{0:X16}' tried to use set '{0}' on invalid item '{1}'.", optionSetData.Id, item.Info.Id);
+				Log.Warning("Enchant.Complete: Creature '{0:X16}' tried to use set '{1}' on invalid item '{2}'.", creature.EntityId, optionSetData.Id, item.Info.Id);
 				goto L_End;
 			}
 
