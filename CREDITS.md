@@ -37,6 +37,7 @@ People who have supported the development with a considerable donation
 * Pegwald
 * Seeker
 * Trigger of Ruairi
+* Zaxanity
 
 Others
 ==============================
