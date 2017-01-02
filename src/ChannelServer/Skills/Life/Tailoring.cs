@@ -63,8 +63,7 @@ namespace Aura.Channel.Skills.Life
 			else if (stage == Stage.Finish)
 			{
 				// Stitches
-				if (!this.ReadStitches(creature, packet, out stitches))
-					return false;
+				this.ReadStitches(creature, packet, out stitches);
 			}
 			else
 			{
@@ -169,8 +168,7 @@ namespace Aura.Channel.Skills.Life
 			else if (stage == Stage.Finish)
 			{
 				// Stitches
-				if (!this.ReadStitches(creature, packet, out stitches))
-					goto L_Fail;
+				this.ReadStitches(creature, packet, out stitches);
 			}
 			else
 			{
@@ -462,29 +460,33 @@ namespace Aura.Channel.Skills.Life
 
 		/// <summary>
 		/// Reads stitches from packet, starting with the bool, saying whether
-		/// there are any. Returns false if bool is false.
+		/// there are any.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="packet"></param>
 		/// <param name="stitches"></param>
-		/// <returns></returns>
-		private bool ReadStitches(Creature creature, Packet packet, out List<Point> stitches)
+		private void ReadStitches(Creature creature, Packet packet, out List<Point> stitches)
 		{
 			stitches = new List<Point>();
 
+			// This is true if all stitches were made. If not, it still goes
+			// through, but the result will be abysmal, because we don't get
+			// any stitch data.
 			var gotStitches = packet.GetBool();
-			if (!gotStitches)
-				return false;
 
 			for (int i = 0; i < 6; ++i)
 			{
-				var x = packet.GetShort();
-				var y = packet.GetShort();
+				// Use 0,0 if not all stitches were made.
+				var point = Point.Empty;
 
-				stitches.Add(new Point(x, y));
+				if (gotStitches)
+				{
+					point.X = packet.GetShort();
+					point.Y = packet.GetShort();
+				}
+
+				stitches.Add(point);
 			}
-
-			return true;
 		}
 
 		/// <summary>
