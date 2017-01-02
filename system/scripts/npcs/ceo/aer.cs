@@ -128,7 +128,7 @@ public class AerScript : NpcScript
 
 	protected override async Task Gift(Item item, GiftReaction reaction)
 	{
-		if (IsEnabled("RundalDungeon") && item.Info.Id == 63103) // Suspicious Fomor Pass
+		if (IsEnabled("RundalSirenDungeon") && item.Info.Id == 63103) // Suspicious Fomor Pass
 		{
 			GiveItem(63102);
 			SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));

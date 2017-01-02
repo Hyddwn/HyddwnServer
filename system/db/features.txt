@@ -132,6 +132,9 @@
 		
 		// Enabled Scary Library dungeon
 		{ name: "ScaryLibrary", enabled: true },
+	
+		// Enables Rundal Siren dungeon
+		{ name: "RundalSirenDungeon", enabled: true },
 	]},
 	
 	// Season 4

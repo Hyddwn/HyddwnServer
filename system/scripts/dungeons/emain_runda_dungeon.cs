@@ -120,6 +120,10 @@ public class RundalDungeonScript : DungeonScript
 				drops.Add(new DropData(itemId: 63127, chance: 2, amount: 1, expires: 360)); // Rundal Adv. Fomor Pass for 3
 				drops.Add(new DropData(itemId: 63128, chance: 2, amount: 1, expires: 360)); // Rundal Adv. Fomor Pass
 				drops.Add(new DropData(itemId: 63105, chance: 5, amount: 1, expires: 600)); // Rundal Basic Fomor Pass
+			}
+
+			if (IsEnabled("RundalSirenDungeon"))
+			{
 				drops.Add(new DropData(itemId: 63103, chance: 3, amount: 1)); // Suspicious Fomor Pass
 			}
 
