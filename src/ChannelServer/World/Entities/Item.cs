@@ -354,6 +354,21 @@ namespace Aura.Channel.World.Entities
 		public bool IsBreakable { get { return (this.OptionInfo.DurabilityOriginal != 0); } }
 
 		/// <summary>
+		/// Returns true if item can be destroyed.
+		/// </summary>
+		public bool IsDestroyable
+		{
+			get
+			{
+				// The check for the Sword of Elsinore is a terrible hack,
+				// but in my defense, it was devCAT's idea. Instead of adding the
+				// destroyable tag to the item, the client checks for the
+				// hamlets_sword tag >_>
+				return this.HasTag("/destroyable/|/hamlets_sword/|/guild_robe/");
+			}
+		}
+
+		/// <summary>
 		/// Returns true if item has upgrade effects, e.g. from upgrades
 		/// or enchants.
 		/// </summary>
