@@ -262,7 +262,7 @@ namespace Aura.Channel.Network.Handlers
 		public void NpcShopSellItem(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
-			var unk = packet.GetByte();
+			var directTransaction = packet.GetBool();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -290,6 +290,10 @@ namespace Aura.Channel.Network.Handlers
 			// Calculate selling price
 			var sellingPrice = item.GetSellingPrice();
 
+			// Disable direct bank transaction if price is less than 50k
+			if (directTransaction && sellingPrice < 50000)
+				directTransaction = false;
+
 			// Remove item from inv
 			if (!creature.Inventory.Remove(item))
 			{
@@ -298,7 +302,15 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Add gold
-			creature.Inventory.AddGold(sellingPrice);
+			if (!directTransaction)
+			{
+				creature.Inventory.AddGold(sellingPrice);
+			}
+			else
+			{
+				// TODO: Fee
+				client.Account.Bank.AddGold(creature, sellingPrice);
+			}
 
 			// Respond in any case, to unlock the player
 		L_End:
