@@ -288,22 +288,7 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Calculate selling price
-			var sellingPrice = 0;
-			if (!item.IsIncomplete)
-			{
-				sellingPrice = item.OptionInfo.SellingPrice;
-
-				if (item.Data.StackType == StackType.Sac)
-				{
-					// Add costs of the items inside the sac
-					sellingPrice += (int)((item.Info.Amount / (float)item.Data.StackItem.StackMax) * item.Data.StackItem.SellingPrice);
-				}
-				else if (item.Data.StackType == StackType.Stackable)
-				{
-					// Individuel price for this stack
-					sellingPrice = (int)((item.Amount / (float)item.Data.StackMax) * sellingPrice);
-				}
-			}
+			var sellingPrice = item.GetSellingPrice();
 
 			// Remove item from inv
 			if (!creature.Inventory.Remove(item))
@@ -318,6 +303,47 @@ namespace Aura.Channel.Network.Handlers
 			// Respond in any case, to unlock the player
 		L_End:
 			Send.NpcShopSellItemR(creature);
+		}
+
+		/// <summary>
+		/// Sent when trying to sell an item worth more than 50k, to check
+		/// if it can be sold via Direct Transaction.
+		/// </summary>
+		/// <example>
+		/// 001 [0050F00000000652] Long   : 22781880927520338
+		/// </example>
+		[PacketHandler(Op.CheckDirectBankSelling)]
+		public void CheckDirectBankSelling(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check item
+			var item = creature.Inventory.GetItem(itemEntityId);
+			if (item == null)
+			{
+				Send.CheckDirectBankSellingR(creature, false);
+				return;
+			}
+
+			// Check price
+			var sellingPrice = item.GetSellingPrice();
+			if (sellingPrice < 50000)
+			{
+				Send.CheckDirectBankSellingR(creature, false);
+				return;
+			}
+
+			// Check space
+			var goldMax = Math.Min((long)int.MaxValue, client.Account.Characters.Count * (long)ChannelServer.Instance.Conf.World.BankGoldPerCharacter);
+			if ((long)client.Account.Bank.Gold + sellingPrice > goldMax)
+			{
+				Send.CheckDirectBankSellingR(creature, false);
+				return;
+			}
+
+			Send.CheckDirectBankSellingR(creature, true);
 		}
 
 		/// <summary>

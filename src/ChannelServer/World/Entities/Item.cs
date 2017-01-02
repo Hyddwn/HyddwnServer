@@ -1720,6 +1720,34 @@ namespace Aura.Channel.World.Entities
 					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 2);
 			}
 		}
+
+		/// <summary>
+		/// Returns item's selling price based on the specified price and
+		/// its properties, including stackability and amount.
+		/// </summary>
+		/// <returns></returns>
+		public int GetSellingPrice()
+		{
+			var sellingPrice = 0;
+
+			if (!this.IsIncomplete)
+			{
+				sellingPrice = this.OptionInfo.SellingPrice;
+
+				if (this.Data.StackType == StackType.Sac)
+				{
+					// Add costs of the items inside the sac
+					sellingPrice += (int)((this.Info.Amount / (float)this.Data.StackItem.StackMax) * this.Data.StackItem.SellingPrice);
+				}
+				else if (this.Data.StackType == StackType.Stackable)
+				{
+					// Individuel price for this stack
+					sellingPrice = (int)((this.Amount / (float)this.Data.StackMax) * sellingPrice);
+				}
+			}
+
+			return sellingPrice;
+		}
 	}
 
 	public enum ProficiencyGainType
