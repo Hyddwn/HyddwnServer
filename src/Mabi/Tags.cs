@@ -165,7 +165,7 @@ namespace Aura.Mabi
 
 			tag = tag.Trim().Replace("*", ".*");
 			// TODO: Cache?
-			return Regex.IsMatch(this.Value, tag);
+			return Regex.IsMatch(this.Value, tag, RegexOptions.IgnoreCase);
 		}
 	}
 }
