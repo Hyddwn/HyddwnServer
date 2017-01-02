@@ -588,9 +588,9 @@ namespace Aura.Channel.Util
 				var item = Item.CreateEnchant(optionSetId);
 				target.Inventory.Add(item, Pocket.Temporary);
 			}
-			catch (ArgumentException)
+			catch (ArgumentException ex)
 			{
-				Send.ServerMessage(sender, Localization.Get("Invalid enchant id."));
+				Send.ServerMessage(sender, Localization.Get("Failed to create enchant: {0}"), ex.Message);
 				return CommandResult.Fail;
 			}
 
