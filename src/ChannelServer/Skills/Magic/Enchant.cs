@@ -129,16 +129,19 @@ namespace Aura.Channel.Skills.Magic
 				return false;
 			}
 
-			if (!optionSetData.IgnoreRank)
+			// Skill rank for enchants of r5 and above
+			if (!optionSetData.IgnoreRank && !optionSetData.AlwaysSuccess)
 			{
-				// Skill rank for enchants of r5 and above
 				if (optionSetData.Rank >= SkillRank.R5 && skill.Info.Rank < SkillRank.R5)
 				{
 					Send.Notice(creature, Localization.Get("Your Enchant skill must be Rank 5 or above to use this Enchant Scroll."));
 					return false;
 				}
+			}
 
-				// Sequence for enchants of r9 and above
+			// Sequence for enchants of r9 and above
+			if (!optionSetData.IgnoreRank)
+			{
 				if (optionSetData.Rank >= SkillRank.R9)
 				{
 					var checkSetId = (optionSetData.Type == UpgradeType.Prefix ? item.OptionInfo.Prefix : item.OptionInfo.Suffix);
