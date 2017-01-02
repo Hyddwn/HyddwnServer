@@ -6,6 +6,11 @@
 
 public class AranwenScript : NpcScript
 {
+	private const int ArrowRevolverQuest = 105;
+	private const int BookOnArrowRevolver = 63505;
+	private const int BookOnArrowRevolverPage10 = 40060;
+	private const int AdvancedSkillScrollId = 70500;
+
 	public override void Load()
 	{
 		SetRace(10001);
@@ -140,10 +145,9 @@ public class AranwenScript : NpcScript
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
-			case "about_skill":
-				Msg("...I am sorry, but someone that has yet to master the skill<br/>should not be bluntly asking questions about skills like this.");
-				Msg("...if you are interested in high-leveled bowman skills, then<br/>you should at least master the Fire Arrow skill first.");
-				break;
+			// Handled by Arrow Revolver quest script
+			//case "about_skill":
+			//	break;
 
 			case "shop_misc":
 				Msg("Hmm. Looking for the General Shop?<br/>You'll find it down there across the Square.");
