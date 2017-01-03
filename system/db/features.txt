@@ -132,6 +132,9 @@
 		
 		// Enabled Scary Library dungeon
 		{ name: "ScaryLibrary", enabled: true },
+	
+		// Enables Rundal Siren dungeon
+		{ name: "RundalSirenDungeon", enabled: true },
 	]},
 	
 	// Season 4
@@ -598,6 +601,10 @@
 	{ name: "G16S1", enabled: true, children: [
 		// Changes Moon Gates to function like Mana Tunnels
 		{ name: "MoonTunnel", enabled: true },
+		
+		// Automatically gives access to Ceo Moon Tunnel if Moon Tunnels
+		// are enabled.
+		{ name: "CeoMoonTunnel", enabled: true },
 		
 		// Enables obtaining Fighter skills and items
 		{ name: "FighterJob", enabled: true },

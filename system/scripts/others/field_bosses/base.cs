@@ -31,8 +31,8 @@ public abstract class FieldBossBaseScript : GeneralScript
 		return true;
 	}
 
-	[On("CreatureKilled")]
-	public void OnCreatureKilled(Creature creature, Creature killer)
+	[On("CreatureFinished")]
+	public void OnCreatureFinished(Creature creature, Creature killer)
 	{
 		// Don't drop anything if nothing should spawn
 		if (!ShouldSpawn())
@@ -134,7 +134,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 		var y = Spawn.Location.Y + yOffset;
 
 		var npc = new NPC(raceId);
-		npc.Death += this.OnBossDeath;
+		npc.Finish += this.OnBossFinished;
 
 		npc.Spawn(regionId, x, y);
 		Send.SpawnEffect(SpawnEffect.Monster, regionId, x, y, npc, npc);
@@ -160,7 +160,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 		var y = Spawn.Location.Y + yOffset;
 
 		var npc = new NPC(raceId);
-		npc.Death += this.OnMinionDied;
+		npc.Finish += this.OnMinionFinished;
 
 		npc.Spawn(regionId, x, y);
 		Send.SpawnEffect(SpawnEffect.Monster, regionId, x, y, npc, npc);
@@ -171,7 +171,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 		return npc;
 	}
 
-	private void OnBossDeath(Creature boss, Creature killer)
+	private void OnBossFinished(Creature boss, Creature killer)
 	{
 		lock (_syncLock)
 		{
@@ -231,7 +231,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 	{
 	}
 
-	protected virtual void OnMinionDied(Creature boss, Creature killer)
+	protected virtual void OnMinionFinished(Creature boss, Creature killer)
 	{
 	}
 

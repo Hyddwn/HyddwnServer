@@ -38,33 +38,28 @@ public class MuroScript : NpcScript
 	protected override async Task Talk()
 	{
 		await Intro(L("With his rough skin, menacing face, and his constant hard-breathing,<br/>he has the sure look of a Goblin.<br/>Yet, there is something different about this one.<br/>Strangely, it appears to have a sense of noble demeanor that does not match its rugged looks."));
-		if (Player.Vars.Perm["ceoWarp"] == null) 
+
+		if (Player.Vars.Perm["ceoWarp"] == null)
 			Msg("Because of the Moon Gate nearby, too many people walk by this place. Annoying.<br/>What do you want from me.... Aren't you looking for a Golem?<br/>Is that what you want to say to me?", Button("How Do I Get Out of Here?", "@warp"), Button("Challenge", "@challenge"), Button("Shop", "@shop"));
 		else
 			Msg("Again...come...?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
+
 		switch (await Select())
 		{
-		
 			case "@warp":
 				Msg("Hmm.. I see... So you came here by accident...?<br/>Well, since you sound really desperate, I'll let you return...<br/>Thank me, Muro, for doing a good deed.", Button("Return", "@return"), Button("End Conversation", "@end"));
-				switch (await Select())
+				if (await Select() == "@return")
 				{
-					
-					case "@return":
-						Player.Vars.Perm["ceoWarp"] = true;
-						Player.Warp(Player.LastTown);
-						return;
-						
-					case "@end":
-						break;
+					Player.Vars.Perm["ceoWarp"] = true;
+					Player.Warp(Player.LastTown);
+					return;
 				}
 				break;
-				
-			case "@challenge":	
+
+			case "@challenge":
 				Msg("There's a Golem inside.<br/>Hmm... Although you are a Human, you seem to be able to handle Golems here...<br/>Good luck.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
 				switch (await Select())
 				{
-				
 					case "@talk":
 						Greet();
 
@@ -82,14 +77,14 @@ public class MuroScript : NpcScript
 
 						await StartConversation();
 						break;
-					
+
 					case "@shop":
 						Msg("Need anything...?<br/>...You must be mighty prepared...if you are to face off against a Golem.");
 						OpenShop("MuroShop");
 						return;
 				}
 				break;
-				
+
 			case "@talk":
 				Greet();
 
@@ -118,7 +113,7 @@ public class MuroScript : NpcScript
 	}
 
 	private void Greet()
-	{	
+	{
 		if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("First time seeing your face...<br/>...What, why that dirty look?<br/>...You don't like me?"));
@@ -129,14 +124,14 @@ public class MuroScript : NpcScript
 		}
 		else if (Memory == 2)
 		{
-			Msg(FavorExpression(), L("Ah, you are a Human being named <username/>...<br/>I remember your name.")); 
+			Msg(FavorExpression(), L("Ah, you are a Human being named <username/>...<br/>I remember your name."));
 		}
 		else if (Memory <= 6)
 		{
 			Msg(FavorExpression(), L("<username/>... <username/>, the Human...<br/>what brings you to Ceo island again... Do you like it here?"));
 		}
 		else
-		{		
+		{
 			Msg(FavorExpression(), L("<username/>... A Human being I see very often...<br/>...like I said."));
 			Msg("....Why don't you just live here with me....?");
 		}
@@ -150,7 +145,7 @@ public class MuroScript : NpcScript
 		{
 			this.ShowKeywords();
 
-			Msg("What, you want to talk to me?<br/>...You don't speak Goblin language, so I, Muro, will speak in Human language.<br/>....I'll let you speak first.", Button ("End Conversation", "@end"), Button("Ceo Island", "@reply1"), Button("A Talking Goblin", "@reply2"));
+			Msg("What, you want to talk to me?<br/>...You don't speak Goblin language, so I, Muro, will speak in Human language.<br/>....I'll let you speak first.", Button("End Conversation", "@end"), Button("Ceo Island", "@reply1"), Button("A Talking Goblin", "@reply2"));
 
 			var keyword = await Select();
 			switch (keyword)
@@ -167,22 +162,21 @@ public class MuroScript : NpcScript
 					break;
 
 				case "@end":
-					return;					
-					
+					return;
+
 				case "rumor":
 					Msg("Many Humans come here for Golems.<br/>That is why Muro built a Shop here.");
 					Msg("...There are many clueless Humans who want to face the Golem,<br/>so if I sell items that are important for facing Golem,");
 					Msg("Muro will be a great merchant very soon!");
 					ModifyRelation(Random(2), 0, Random(3));
 					break;
-					
+
 				case "g3_DarkKnight":
 					Msg("Dark Knights, they are the Knights of Darkness.<br/>They will bring glory unto Fomors.");
 					break;
 
 				default:
 					await Hook("before_keywords", keyword);
-
 					await this.Keywords(keyword);
 					break;
 			}
@@ -191,8 +185,7 @@ public class MuroScript : NpcScript
 
 	protected override async Task Keywords(string kw)
 	{
-		if (Favor >= 10 && Stress <= 10) 
-		
+		if (Favor >= 10 && Stress <= 10)
 		{
 			Msg("You are a Human being with a lot of knowledge.<br/>...I think I can learn a lot from you if we could talk more...<br/>...Like I said...");
 		}
@@ -227,25 +220,24 @@ public class MuroShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Potions", 51001);     // HP 10 Potion
+		Add("Potions", 51001, 1);  // HP 10 Potion x1
 		Add("Potions", 51002, 1);  // HP 30 Potion x1
 		Add("Potions", 51002, 10); // HP 30 Potion x10
 		Add("Potions", 51002, 20); // HP 30 Potion x20
-		Add("Potions", 51006);     // MP 10 Potion
+		Add("Potions", 51006, 1);  // MP 10 Potion x1
 		Add("Potions", 51007, 1);  // MP 30 Potion x1
 		Add("Potions", 51007, 10); // MP 30 Potion x10
 		Add("Potions", 51007, 20); // MP 30 Potion x20
-		Add("Potions", 51011);     // Stamina 10 Potion
+		Add("Potions", 51011, 1);  // Stamina 10 Potion x1
 		Add("Potions", 51012, 1);  // Stamina 30 Potion x1
 		Add("Potions", 51012, 10); // Stamina 30 Potion x10
 		Add("Potions", 51012, 20); // Stamina 30 Potion x20
-		
+
 		Add("First Aid Kits", 60005, 10); // Bandage x10
 		Add("First Aid Kits", 60005, 20); // Bandage x20
 		Add("First Aid Kits", 63000, 10); // Phoenix Feather x10
 		Add("First Aid Kits", 63000, 20); // Phoenix Feather x20
 		Add("First Aid Kits", 63001, 1);  // Wings of a Goddess x1
-		Add("First Aid Kits", 63001, 5);  // Wings of a Goddess x1
-
+		Add("First Aid Kits", 63001, 5);  // Wings of a Goddess x5
 	}
 }

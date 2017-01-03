@@ -104,7 +104,7 @@ public class SaveMySheepQuestScript : QuestScript
 			var pos = Center.GetRandomInRect(6000, 4000, rnd);
 
 			var npc = new NPC(40001); // Sheep
-			npc.Death += (killed, killer) =>
+			npc.Finish += (killed, killer) =>
 			{
 				sheepAmount--;
 
@@ -138,7 +138,7 @@ public class SaveMySheepQuestScript : QuestScript
 
 		// Spawn wolf on random position and respawn it if it dies.
 		var npc = new NPC(20001); // Gray Wolf
-		npc.Death += (killed, killer) =>
+		npc.Finish += (killed, killer) =>
 		{
 			SpawnWolf(regionId, rnd);
 		};

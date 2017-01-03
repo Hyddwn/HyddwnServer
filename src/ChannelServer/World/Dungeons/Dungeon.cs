@@ -635,7 +635,7 @@ namespace Aura.Channel.World.Dungeons
 				pos = pos.GetRandomInRange(TileSize / 2, rnd);
 
 				var npc = new NPC(raceId);
-				npc.Death += this.OnBossDeath;
+				npc.Finish += this.OnBossDeath;
 				npc.Spawn(regionId, pos.X, pos.Y);
 				Send.SpawnEffect(SpawnEffect.Monster, regionId, pos.X, pos.Y, npc, npc);
 				if (npc.AI != null)
@@ -679,7 +679,7 @@ namespace Aura.Channel.World.Dungeons
 			_bossSpawned = true;
 
 			// Remove all monsters
-			this.Regions.ForEach(a => a.RemoveAllMonsters());
+			this.RemoveAllMonsters();
 
 			// Call OnBoss
 			if (this.Script != null)
@@ -711,7 +711,17 @@ namespace Aura.Channel.World.Dungeons
 				this.Complete();
 		}
 
-		// Completes dungeon, opening doors and spawning chests.
+		/// <summary>
+		/// Removes all monsters in the dungeon.
+		/// </summary>
+		public void RemoveAllMonsters()
+		{
+			this.Regions.ForEach(a => a.RemoveAllMonsters());
+		}
+
+		/// <summary>
+		/// Completes dungeon, opening doors and spawning chests.
+		/// </summary>
 		public void Complete()
 		{
 			// Call OnCleared

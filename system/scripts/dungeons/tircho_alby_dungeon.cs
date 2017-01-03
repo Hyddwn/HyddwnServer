@@ -19,6 +19,12 @@ public class AlbyDungeonScript : DungeonScript
 		// Rescue Resident quest dungeon
 		if (item.Info.Id == 63180) // Trefor's Pass
 		{
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You can only enter this dungeon alone."));
+				return false;
+			}
+
 			dungeonName = "tircho_alby_dungeon_tutorial_ranald";
 			return true;
 		}
@@ -26,6 +32,12 @@ public class AlbyDungeonScript : DungeonScript
 		// Malcolm's Ring quest dungeon
 		if (item.Info.Id == 63181) // Malcolm's Pass
 		{
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You can only enter this dungeon alone."));
+				return false;
+			}
+
 			dungeonName = "tircho_alby_dungeon_tutorial_malcolm";
 			return true;
 		}

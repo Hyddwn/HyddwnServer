@@ -343,9 +343,9 @@ public class MoonGateScript : GeneralScript
 				creature.Keywords.Give(gate.Keyword);
 
 			// Enabled/Disable Ceo gate
-			if (!creature.Keywords.Has("_moontunnel_ceoisland") && IsEnabled("G2"))
+			if (!creature.Keywords.Has("_moontunnel_ceoisland") && IsEnabled("CeoMoonTunnel"))
 				creature.Keywords.Give("_moontunnel_ceoisland");
-			else if (creature.Keywords.Has("_moontunnel_ceoisland") && !IsEnabled("G2"))
+			else if (creature.Keywords.Has("_moontunnel_ceoisland") && !IsEnabled("CeoMoonTunnel"))
 				creature.Keywords.Remove("_moontunnel_ceoisland");
 
 			// Get list of moon gates the creature can use

@@ -31,7 +31,7 @@ public class TalkEavanQuestScript : QuestScript
 		if (npc.QuestActive(this.Id, "talk"))
 		{
 			npc.FinishQuest(this.Id, "talk");
-			
+
 			npc.Msg(L("Welcome to Dunbarton.<br/>My name is Eavan, the Town Office worker who takes care of all the business related to the Adventurer's Association."));
 			npc.Msg(L("<username/>, your outstanding achievements are already well-known<br/>all around the Adventurers' Association."));
 			npc.Msg(L("I'm certain that all the hardships you went through<br/>will help you during your stay<br/>here on Erinn."));

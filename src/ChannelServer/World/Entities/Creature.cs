@@ -1116,9 +1116,16 @@ namespace Aura.Channel.World.Entities
 		// ------------------------------------------------------------------
 
 		/// <summary>
-		/// Raised when creature dies.
+		/// Raised when creature died, regardless of whether it's already
+		/// finished as well.
 		/// </summary>
 		public event Action<Creature, Creature> Death;
+
+		/// <summary>
+		/// Raised when creature is finished. It's called if no finishing
+		/// happens as well, when going straight to being completely dead.
+		/// </summary>
+		public event Action<Creature, Creature> Finish;
 
 		/// <summary>
 		/// Raised when creature levels up.
@@ -2105,7 +2112,18 @@ namespace Aura.Channel.World.Entities
 			// Conditions
 			if (this.Conditions.Has(ConditionsA.Deadly))
 				this.Conditions.Deactivate(ConditionsA.Deadly);
+
+			var wasAlive = !this.Has(CreatureStates.Dead);
 			this.Activate(CreatureStates.Dead);
+
+			// Kill events, fire once when the creature dies.
+			if (wasAlive)
+			{
+				ChannelServer.Instance.Events.OnCreatureKilled(this, killer);
+				if (killer != null && killer.IsPlayer)
+					ChannelServer.Instance.Events.OnCreatureKilledByPlayer(this, killer);
+				this.Death.Raise(this, killer);
+			}
 
 			// When a creature is killed, and the attacker is in a party,
 			// the party's finisher rules come into effect. Depending on its
@@ -2153,11 +2171,11 @@ namespace Aura.Channel.World.Entities
 			this.SetFinisher(0);
 			Send.IsNowDead(this);
 
-			// Events
-			ChannelServer.Instance.Events.OnCreatureKilled(this, killer);
+			// Finish events, fire when creature is finished.
+			ChannelServer.Instance.Events.OnCreatureFinished(this, killer);
 			if (killer != null && killer.IsPlayer)
-				ChannelServer.Instance.Events.OnCreatureKilledByPlayer(this, killer);
-			this.Death.Raise(this, killer);
+				ChannelServer.Instance.Events.OnCreatureFinishedByPlayer(this, killer);
+			this.Finish.Raise(this, killer);
 
 			// Cancel active skill
 			if (this.Skills.ActiveSkill != null)
