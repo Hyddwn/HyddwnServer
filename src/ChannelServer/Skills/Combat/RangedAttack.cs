@@ -308,6 +308,14 @@ namespace Aura.Channel.Skills.Combat
 						aAction.Stun = DefenseAttackerStun;
 					}
 				}
+				else
+				{
+					// Dummy target action on miss, so the client knows what
+					// the target would've been. Possibly affects arrow
+					// animations.
+					var tAction = new TargetAction(CombatActionType.None, target, attacker, SkillId.None);
+					cap.Add(tAction);
+				}
 
 				// Update current weapon
 				SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Ranged, attacker.RightHand);
@@ -333,7 +341,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <summary>
 		/// Handles the majority of the skill training.
 		/// </summary>
-		/// <param name="obj"></param>
+		/// <param name="tAction"></param>
 		private void OnCreatureAttacks(TargetAction tAction)
 		{
 			if (tAction.AttackerSkillId != SkillId.RangedAttack)
