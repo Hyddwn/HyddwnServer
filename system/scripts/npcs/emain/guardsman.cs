@@ -5,7 +5,7 @@
 // guardsman07 is different from the other guards and says lots of gossip
 //---------------------------------------------------------------------------
 
-public class _GuardsmanBaseScript : NpcScript
+public abstract class GuardsmanBaseScript : NpcScript
 {
 	public override void Load()
 	{
@@ -28,7 +28,7 @@ public class _GuardsmanBaseScript : NpcScript
 			"No talking is allowed during duty",
 			"I cannot talk to you while on duty!",
 			"...We're the proud guards of Emain Macha!<br/>As long as we're here, there's no need to fear!",
-			"(A guard with shining armor is standing post.)Everything here is in order!!", //hide name
+			"<title name='NONE' />(A guard with shining armor is standing post.)Everything here is in order!!",
 			"When can I go home...",
 			"Everything here is in order!",
 			"......<p/>......<p/>......<p/>?<p/>I, I didn't fall asleep!"
@@ -141,15 +141,15 @@ public class Guardsman07Script : NpcScript
 	}
 }
 
-public class Guardsman01Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman01"); SetLocation(52, 34270, 45985, 222); EquipItem(Pocket.Face, 4900, 0x00460D00, 0x00471E00, 0x00EAB21C); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
-public class Guardsman02Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman02"); SetLocation(52, 34825, 46534, 221); EquipItem(Pocket.Face, 4900, 0x00F57B34, 0x0070A1D6, 0x00ACB361); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
-public class Guardsman05Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman05"); SetLocation(52, 32032, 48355, 223); EquipItem(Pocket.Face, 4900, 0x00673138, 0x00315934, 0x0099422C); EquipItem(Pocket.Hair, 4041, 0x00004040, 0x00004040, 0x00004040); } }
-public class Guardsman06Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman06"); SetLocation(52, 32462, 48773, 225); EquipItem(Pocket.Face, 4900, 0x0024587B, 0x00F69063, 0x00DC1B40); EquipItem(Pocket.Hair, 4041, 0x00004040, 0x00004040, 0x00004040); } }
-public class Guardsman08Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman08"); SetLocation(52, 41213, 58006, 63); EquipItem(Pocket.Face, 4900, 0x007B6C3C, 0x006E5E5A, 0x00E4E97E); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
-public class Guardsman13Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman13"); SetLocation(52, 31273, 49527, 226); EquipItem(Pocket.Face, 4900, 0x00616169, 0x00435467, 0x0000295D); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
-public class Guardsman15Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman15"); SetLocation(52, 30253, 46178, 32); EquipItem(Pocket.Face, 4900, 0x00F57046, 0x00B94E8F, 0x00004E22); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
-public class Guardsman16Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman16"); SetLocation(52, 34614, 50555, 165); EquipItem(Pocket.Face, 4900, 0x00272476, 0x003F6863, 0x00693200); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
-public class Guardsman51Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman51"); SetLocation(60, 5487, 6048, 201); EquipItem(Pocket.Face, 4900, 0x00F32D37, 0x00FFC380, 0x0056001D); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
-public class Guardsman52Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman52"); SetLocation(60, 5922, 6088, 194); EquipItem(Pocket.Face, 4900, 0x00E20048, 0x00FFF3D7, 0x00FBC75B); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
-public class Guardsman53Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman53"); SetLocation(66, 5460, 6346, 250); EquipItem(Pocket.Face, 4900, 0x0052BA61, 0x00AFC5E6, 0x00852957); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
-public class Guardsman54Script : _GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman54"); SetLocation(66, 6545, 6346, 133); EquipItem(Pocket.Face, 4900, 0x00216F60, 0x000184C5, 0x002B0039); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman01Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman01"); SetLocation(52, 34270, 45985, 222); EquipItem(Pocket.Face, 4900, 0x00460D00, 0x00471E00, 0x00EAB21C); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman02Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman02"); SetLocation(52, 34825, 46534, 221); EquipItem(Pocket.Face, 4900, 0x00F57B34, 0x0070A1D6, 0x00ACB361); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman05Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman05"); SetLocation(52, 32032, 48355, 223); EquipItem(Pocket.Face, 4900, 0x00673138, 0x00315934, 0x0099422C); EquipItem(Pocket.Hair, 4041, 0x00004040, 0x00004040, 0x00004040); } }
+public class Guardsman06Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman06"); SetLocation(52, 32462, 48773, 225); EquipItem(Pocket.Face, 4900, 0x0024587B, 0x00F69063, 0x00DC1B40); EquipItem(Pocket.Hair, 4041, 0x00004040, 0x00004040, 0x00004040); } }
+public class Guardsman08Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman08"); SetLocation(52, 41213, 58006, 63); EquipItem(Pocket.Face, 4900, 0x007B6C3C, 0x006E5E5A, 0x00E4E97E); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman13Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman13"); SetLocation(52, 31273, 49527, 226); EquipItem(Pocket.Face, 4900, 0x00616169, 0x00435467, 0x0000295D); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman15Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman15"); SetLocation(52, 30253, 46178, 32); EquipItem(Pocket.Face, 4900, 0x00F57046, 0x00B94E8F, 0x00004E22); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman16Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman16"); SetLocation(52, 34614, 50555, 165); EquipItem(Pocket.Face, 4900, 0x00272476, 0x003F6863, 0x00693200); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman51Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman51"); SetLocation(60, 5487, 6048, 201); EquipItem(Pocket.Face, 4900, 0x00F32D37, 0x00FFC380, 0x0056001D); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman52Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman52"); SetLocation(60, 5922, 6088, 194); EquipItem(Pocket.Face, 4900, 0x00E20048, 0x00FFF3D7, 0x00FBC75B); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman53Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman53"); SetLocation(66, 5460, 6346, 250); EquipItem(Pocket.Face, 4900, 0x0052BA61, 0x00AFC5E6, 0x00852957); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
+public class Guardsman54Script : GuardsmanBaseScript { public override void Load() { base.Load(); SetName("_guardsman54"); SetLocation(66, 6545, 6346, 133); EquipItem(Pocket.Face, 4900, 0x00216F60, 0x000184C5, 0x002B0039); EquipItem(Pocket.Hair, 4030, 0x00FCF4D1, 0x00FCF4D1, 0x00FCF4D1); } }
