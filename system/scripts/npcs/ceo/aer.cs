@@ -13,7 +13,7 @@ public class AerScript : NpcScript
 		SetName("_aer");
 		SetBody(height: 1.3f, lower: 1.2f);
 		SetLocation(68, 5599, 8550, 192);
-		SetGiftWeights(beauty: 2, individuality: 0, luxury: 2, toughness: 0, utility: 0, rarity: 0, meaning: 2, adult: 1, maniac: 0, anime: 0, sexy: 2);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		AddPhrase("I hear the water's grieving...");
 		AddPhrase("How do I look...?");
