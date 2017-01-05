@@ -172,6 +172,38 @@ public class NoraScript : NpcScript
 					Msg(FavorExpression(), "My name is <npcname/>. Please don't forget it.");
 					ModifyRelation(1, 0, 0);
 				}
+				else if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "My mom and dad rest in the graveyard just behind us.<br/>My mom died while giving birth to me<br/>and my dad died from a disease.<br/>If we only had a healer like Dilys in town back then...");
+					Msg("Sometimes...I'm bitter about it.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "You're asking how I am related to Uncle Piaras?<br/>He is my dad's brother.");
+					Msg("He was traveling around Erinn when he heard about us,<br/>and rushed back to Tir Chonaill.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Have you noticed that Malcolm is way too friendly to me?<br/>I don't know how to treat him now. I appreciate his kindness, but...");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "My work?<br/>I make beds, clean sheets, dust windows, clean floors, and so on.<br/>It was hard at first, but I'm used to it now.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "You think I'm easy prey because I work at the Inn?<br/>How irritating.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Do you have a habit of flirting with women?<br/>Find somebody else, then!");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
 				else
 				{
 					Msg(FavorExpression(), "I take care of chores at the Inn.<br/>I sometimes get tired of it, but after trying other jobs,<br/>I realized this is the job for me.<br/>It allows me to daydream.");
@@ -180,9 +212,42 @@ public class NoraScript : NpcScript
 				break;
 
 			case "rumor":
-				GiveKeyword("square");
-				Msg(FavorExpression(), "The Square is right up the little hill next to us.<br/>It's worth a visit if you have some time.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Caitin cooks food for our Inn.<br/>She must be very busy and tired because more travelers are coming to our town.<br/>Still, she never complains to anyone.<br/>I'm really impressed seeing how considerate she can be.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "To be honest, Malcolm doesn't look like a man to me. He looks so weak.<br/>A man, a proper man, should be someone<br/>a woman can trust and rely on.<br/>But Malcolm, I'm sorry but he doesn't fit that criteria.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Uncle Piaras is always very kind to me.<br/>I am grateful for that. He's such an important person to me.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Don't you think Dilys is just beautiful? She's a healer living nearby.<br/>She's tall and in very good shape!<br/>I wish I could become a fine lady like her and venture out to a different town.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "If it weren't for Priestess Endelyon telling me<br/>I should always think of God's blessings whenever I feel bad,<br/>I would be very angry with you by now.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "I know we're supposed to pay attention to what's going on around town,<br/>but you know how ugly it can be<br/>when someone roams around searching for rumors, right?");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("square");
+					Msg(FavorExpression(), "The Square is right up the little hill next to us.<br/>It's worth a visit if you have some time.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -365,15 +430,82 @@ public class NoraScript : NpcScript
 				break;
 
 			default:
-				RndFavorMsg(
-					"Huh?",
-					"I don't... I don't know.",
-					"Can we change the subject?",
-					"What are you talking about?",
-					"I don't know much about that.",
-					"I can't understand what you're asking."
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					RndFavorMsg(
+						L("It seems you know a lot."),
+						L("Oh, is that so? I didn't know that."),
+						L("I feel ashamed that I know so little."),
+						L("I don't know, but I want to help you."),
+						L("Whenever I talk with you,<br/>I realize there are so many things I do not know.")
+					);
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Well? Well, I don't know.<br/>I might be able to help you with other things...");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					RndFavorMsg(
+						L("I am very tired! So...?"),
+						L("Stop! I don't want to talk any more.")
+					);
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					RndFavorMsg(
+						"Oh, you're so irritating! Stop it!",
+						"Can't you just stop saying what others don't want to hear?",
+						"You think you know sooooo much... But it won't help you here.",
+						"Is that how you make yourself feel good? By showing off what you know?"
+					);
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"Huh?",
+						"I don't... I don't know.",
+						"What are you talking about?",
+						"I don't know much about that.",
+						"I can't understand what you're asking."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				RndMsg(
+					L("That's exactly what I want! Thank you!"),
+					L("Where did you get it? Thank you!")
 				);
-				ModifyRelation(0, 0, Random(3));
+				break;
+
+			case GiftReaction.Like:
+				RndMsg(
+					L("Is it for me? Wow!"),
+					L("Cool! That's exactly what I wanted.")
+				);
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("I really appreciate it."));
+				break;
+
+			case GiftReaction.Dislike:
+				RndMsg(
+					L("For me? Why?"),
+					L("I'll take it since you insist, but...")
+				);
 				break;
 		}
 	}
