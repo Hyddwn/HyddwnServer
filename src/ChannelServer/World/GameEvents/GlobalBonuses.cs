@@ -101,12 +101,12 @@ namespace Aura.Channel.World.GameEvents
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <returns></returns>
-		public List<DropData> GetDrops(Creature creature)
+		public List<DropData> GetDrops(Creature creature, Creature killer)
 		{
 			var result = new List<DropData>();
 
 			lock (_drops)
-				result.AddRange(_drops.Where(a => a.Matches(creature)).Select(a => a.Data));
+				result.AddRange(_drops.Where(a => a.Matches(creature, killer)).Select(a => a.Data));
 
 			return result;
 		}
@@ -177,7 +177,7 @@ namespace Aura.Channel.World.GameEvents
 			this.Data = data;
 		}
 
-		public abstract bool Matches(Creature creature);
+		public abstract bool Matches(Creature creature, Creature killer);
 	}
 
 	public class GlobalDropById : GlobalDrop
@@ -190,7 +190,7 @@ namespace Aura.Channel.World.GameEvents
 			this.RaceId = raceId;
 		}
 
-		public override bool Matches(Creature creature)
+		public override bool Matches(Creature creature, Creature killer)
 		{
 			var isRace = (creature.RaceId == this.RaceId);
 			return isRace;
@@ -207,7 +207,7 @@ namespace Aura.Channel.World.GameEvents
 			this.Tag = tag;
 		}
 
-		public override bool Matches(Creature creature)
+		public override bool Matches(Creature creature, Creature killer)
 		{
 			var isTag = (creature.HasTag(this.Tag));
 			return isTag;
@@ -224,7 +224,7 @@ namespace Aura.Channel.World.GameEvents
 			this.Type = type;
 		}
 
-		public override bool Matches(Creature creature)
+		public override bool Matches(Creature creature, Creature killer)
 		{
 			switch (this.Type)
 			{

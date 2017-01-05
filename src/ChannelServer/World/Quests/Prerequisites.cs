@@ -18,7 +18,7 @@ namespace Aura.Channel.World.Quests
 		public abstract bool Met(Creature character);
 
 		/// <summary>
-		/// Returns true if this prerequisite, or on of its nested ones,
+		/// Returns true if this prerequisite, or one of its nested ones,
 		/// is of the given type.
 		/// </summary>
 		/// <param name="type"></param>

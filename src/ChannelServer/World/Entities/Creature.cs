@@ -2337,7 +2337,7 @@ namespace Aura.Channel.World.Entities
 			this.DropItems(killer, rnd, pos, this.Drops.Drops);
 
 			// Event
-			var eventDrops = ChannelServer.Instance.GameEventManager.GlobalBonuses.GetDrops(this);
+			var eventDrops = ChannelServer.Instance.GameEventManager.GlobalBonuses.GetDrops(this, killer);
 			if (eventDrops.Count != 0)
 				this.DropItems(killer, rnd, pos, eventDrops);
 
