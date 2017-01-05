@@ -241,6 +241,22 @@ namespace Aura.Channel.World.GameEvents
 		}
 	}
 
+	public class GlobalDropByRegion : GlobalDrop
+	{
+		public int RegionId { get; private set; }
+
+		public GlobalDropByRegion(string identifier, int regionId, DropData data)
+			: base(identifier, data)
+		{
+			this.RegionId = regionId;
+		}
+
+		public override bool Matches(Creature creature, Creature killer)
+		{
+			return (creature.RegionId == this.RegionId);
+		}
+	}
+
 	public class GlobalFishingGround
 	{
 		public string Identifier { get; private set; }
