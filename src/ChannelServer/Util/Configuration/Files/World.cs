@@ -13,6 +13,18 @@ namespace Aura.Channel.Util.Configuration.Files
 		public float ExpRate { get; protected set; }
 		public float QuestExpRate { get; protected set; }
 		public float SkillExpRate { get; protected set; }
+		public float LifeSkillExpRate { get; protected set; }
+		public float CombatSkillExpRate { get; protected set; }
+		public float MagicSkillExpRate { get; protected set; }
+		public float AlchemySkillExpRate { get; protected set; }
+		public float FighterSkillExpRate { get; protected set; }
+		public float MusicSkillExpRate { get; protected set; }
+		public float PuppetSkillExpRate { get; protected set; }
+		public float GunsSkillExpRate { get; protected set; }
+		public float NinjaSkillExpRate { get; protected set; }
+		public float TransformationSkillExpRate { get; protected set; }
+		public float DemiSkillExpRate { get; protected set; }
+		public float DivineKnightsSkillExpRate { get; protected set; }
 
 		public float LevelApRate { get; protected set; }
 		public float QuestApRate { get; protected set; }
@@ -76,6 +88,18 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.ExpRate = this.GetFloat("exp_rate", 100) / 100.0f;
 			this.QuestExpRate = this.GetFloat("quest_exp_rate", 100) / 100.0f;
 			this.SkillExpRate = this.GetFloat("skill_exp_rate", 100) / 100.0f;
+			this.LifeSkillExpRate = this.GetFloat("life_skill_exp_rate", 100) / 100.0f;
+			this.CombatSkillExpRate = this.GetFloat("combat_skill_exp_rate", 100) / 100.0f;
+			this.MagicSkillExpRate = this.GetFloat("magic_skill_exp_rate", 100) / 100.0f;
+			this.AlchemySkillExpRate = this.GetFloat("alchemy_skill_exp_rate", 100) / 100.0f;
+			this.FighterSkillExpRate = this.GetFloat("fighter_skill_exp_rate", 100) / 100.0f;
+			this.MusicSkillExpRate = this.GetFloat("music_skill_exp_rate", 100) / 100.0f;
+			this.PuppetSkillExpRate = this.GetFloat("puppetry_skill_exp_rate", 100) / 100.0f;
+			this.GunsSkillExpRate = this.GetFloat("dualgun_skill_exp_rate", 100) / 100.0f;
+			this.NinjaSkillExpRate = this.GetFloat("ninja_skill_exp_rate", 100) / 100.0f;
+			this.TransformationSkillExpRate = this.GetFloat("transformations_skill_exp_rate", 100) / 100.0f;
+			this.DemiSkillExpRate = this.GetFloat("demigod_skill_exp_rate", 100) / 100.0f;
+			this.DivineKnightsSkillExpRate = this.GetFloat("crusader_skill_exp_rate", 100) / 100.0f;
 
 			this.LevelApRate = this.GetFloat("level_ap_rate", 100) / 100.0f;
 			this.QuestApRate = this.GetFloat("quest_ap_rate", 100) / 100.0f;
