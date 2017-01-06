@@ -95,6 +95,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "fillpotions", "", Localization.Get("Fills all potion stacks in inventory."), HandleFillPotions);
 			Add(50, 50, "keyword", "[-|+]<name>", Localization.Get("Adds/removes keywords."), HandleKeyword);
 			Add(50, 50, "ptj", "<type> <level>", Localization.Get("Sets the level of a certain PTJ type."), HandlePtj);
+			Add(50, 50, "quest", "<id> [finish objective]", Localization.Get("Starts a quest or sets the specified objective to be finished."), HandleQuest);
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", Localization.Get("Creates dynamic region, based on the current one."), HandleDynamic);
@@ -2347,6 +2348,60 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Role-play started, use same command without actor argument to stop."));
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("{0} started a role-play session for you."), sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleQuest(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			int questId;
+			if (!int.TryParse(args[1], out questId))
+				return CommandResult.InvalidArgument;
+
+			var quest = ChannelServer.Instance.ScriptManager.QuestScripts.Get(questId);
+			if (quest == null)
+			{
+				Send.ServerMessage(sender, Localization.Get("Quest not found."));
+				return CommandResult.Okay;
+			}
+
+			string objective = null;
+			if (args.Count > 2)
+			{
+				objective = args[2];
+
+				if (!quest.Objectives.ContainsKey(objective))
+				{
+					Send.ServerMessage(sender, Localization.Get("Unknown quest objective."));
+					return CommandResult.InvalidArgument;
+				}
+			}
+
+			if (objective == null)
+			{
+				target.Quests.Start(questId);
+
+				Send.ServerMessage(sender, Localization.Get("Started '{0}' quest."), quest.Name);
+				if (target != sender)
+					Send.ServerMessage(target, Localization.Get("The '{0}' quest was started for you by {1}."), quest.Name, sender.Name);
+			}
+			else
+			{
+				if (!target.Quests.Has(questId))
+				{
+					Send.ServerMessage(sender, Localization.Get("Quest not found on target creature."));
+					return CommandResult.Okay;
+				}
+
+				target.Quests.Finish(questId, objective);
+
+				Send.ServerMessage(sender, Localization.Get("Finished quest objective '{0}' on '{1}' quest."), objective, quest.Name);
+				if (target != sender)
+					Send.ServerMessage(target, Localization.Get("Quest objective '{0}' on '{1}' quest was finished for you by {2}."), objective, quest.Name, sender.Name);
+			}
 
 			return CommandResult.Okay;
 		}
