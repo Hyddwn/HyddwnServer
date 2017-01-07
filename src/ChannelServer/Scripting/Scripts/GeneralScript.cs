@@ -306,6 +306,23 @@ namespace Aura.Channel.Scripting.Scripts
 			return time;
 		}
 
+		/// <summary>
+		/// Returns true if Erinn time is between min (incl.) and max (excl.).
+		/// </summary>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		public bool ErinnHour(int min, int max)
+		{
+			var now = ErinnTime.Now;
+
+			// Normal (e.g. 12-21)
+			if (max >= min)
+				return (now.Hour >= min && now.Hour < max);
+			// Day spanning (e.g. 21-3)
+			else
+				return !(now.Hour >= max && now.Hour < min);
+		}
+
 		#endregion
 
 		#region Extension
