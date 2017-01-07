@@ -55,6 +55,7 @@ npcs/bangor/jenifer.cs
 npcs/bangor/riocard.cs
 npcs/bangor/sion.cs
 
+npcs/emain/nele.cs
 npcs/emain/guardsman.cs
 
 npcs/egos/eiry.cs
