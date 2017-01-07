@@ -434,9 +434,9 @@ public class StewartShop : NpcShopScript
 		Add("Magic Weapons", 40041); // Combat Wand
 		Add("Magic Weapons", 40090); // Healing Wand
 
-		//AddQuests("Quest", InsertQuestId); // Collecting Quest - 10 Ice Elementals
-		//AddQuests("Quest", InsertQuestId); // Collecting Quest - 10 Fire Elementals
-		//AddQuests("Quest", InsertQuestId); // Collecting Quest - 10 Lightning Elementals
+		//AddQuest("Quest", 1016, 350); // Produce Massive Ice Elemental
+		//AddQuest("Quest", 1017, 350); // Produce Massive Fire Elemental
+		//AddQuest("Quest", 1018, 350); // Produce Massive Lightning Elemental
 
 		if (IsEnabled("SpiritWeapons"))
 			Add("Magic Items", 62014); // Spirit Weapon Restoration Potion
