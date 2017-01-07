@@ -1624,7 +1624,7 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// (Re)Starts quest.
+		/// Starts quest.
 		/// </summary>
 		/// <param name="questId"></param>
 		public void StartQuest(int questId)
