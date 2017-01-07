@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Nele
 //--- Description -----------------------------------------------------------
-// Bard and music item shop-keeper
+// Bard and music item shop-keeper.
 //---------------------------------------------------------------------------
 
 public class NeleScript : NpcScript
@@ -419,6 +419,13 @@ public class NeleShop : NpcShopScript
 		Add("Music Book", 1020); // Composition Lessons with Helene (1)
 		Add("Music Book", 1013, 1, 80000); // Music Theory
 
+		// TODO: add items to the existing Music Book tab when favor is >= 50	
+		Add("Special Music Books", (creature, npc) => npc.GetFavor(creature) >= 50); // Allow access with >= 50 favor	
+		Add("Special Music Books", 1111); // The Path of Composing
+		Add("Special Music Books", 1086); // What is an Ensemble?
+		Add("Special Music Books", 1121); // Instrument Ranges
+		Add("Special Music Books", 1122); // The Fundamentals of Becoming a Great Composer
+
 		AddQuest("Quest", 71018, 30); // Collect the Black Spider's Fomor Scrolls
 		AddQuest("Quest", 71032, 30); // Collect the Mimic's Fomor Scrolls
 		AddQuest("Quest", 71035, 30); // Collect the Gray Town Rat's Fomor Scrolls
@@ -466,12 +473,5 @@ public class NeleShop : NpcShopScript
 
 		if (IsEnabled("PropInstruments"))
 			Add("Instruments", 41123); // Cello
-
-		/*TODO add items to the existing Music Book tab when favor is >= 50		
-		Add("Music Book", 1111); // The Path of Composing
-		Add("Music Book", 1086); // What is an Ensemble?
-		Add("Music Book", 1121); // Instrument Ranges
-		Add("Music Book", 1122); // The Fundamentals of Becoming a Great Composer
-		*/
 	}
 }
