@@ -431,9 +431,9 @@ public class NeleShop : NpcShopScript
 		AddQuest("Quest", 71035, 30); // Collect the Gray Town Rat's Fomor Scrolls
 		AddQuest("Quest", 71049, 30); // Collect the Snake's Fomor Scrolls
 		AddQuest("Quest", 71052, 30); // Collect the Jackal's Fomor Scrolls
-		//AddQuest("Quest", 1016, 350); // Produce Massive Ice Elemental
-		//AddQuest("Quest", 1017, 350); // Produce Massive Fire Elemental
-		//AddQuest("Quest", 1018, 350); // Produce Massive Lightning Elemental
+		AddQuest("Quest", 1016, 350); // Produce Massive Ice Elemental
+		AddQuest("Quest", 1017, 350); // Produce Massive Fire Elemental
+		AddQuest("Quest", 1018, 350); // Produce Massive Lightning Elemental
 
 		if (IsEnabled("PercussionInstruments"))
 		{
