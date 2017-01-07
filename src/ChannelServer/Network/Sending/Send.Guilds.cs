@@ -325,7 +325,7 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="amount"></param>
-		public static void GuildOpenGuildCreation(Creature creature, long entityId, string guildName, uint color)
+		public static void GuildOpenGuildRobeCreation(Creature creature, long entityId, string guildName, uint color)
 		{
 			var packet = new Packet(Op.GuildOpenGuildRobeCreation, creature.EntityId);
 			packet.PutLong(entityId);

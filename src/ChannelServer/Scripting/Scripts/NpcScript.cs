@@ -1403,7 +1403,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 			this.Player.Vars.Temp["GuildRobeColor"] = color;
 
-			Send.GuildOpenGuildCreation(this.Player, entityId, guildName, color);
+			Send.GuildOpenGuildRobeCreation(this.Player, entityId, guildName, color);
 		}
 
 		// Player Methods
