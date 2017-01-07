@@ -15,7 +15,6 @@ public class NeleScript : NpcScript
 		SetLocation(52, 40527, 41230, 217);
 		SetGiftWeights(beauty: 1, individuality: 2, luxury: 1, toughness: 0, utility: 0, rarity: -1, meaning: 2, adult: -1, maniac: -1, anime: -1, sexy: 1);
 
-
 		EquipItem(Pocket.Face, 4900, 0x008A8D91, 0x00954C2C, 0x003B6922);
 		EquipItem(Pocket.Hair, 4953, 0x00A97534, 0x00A97534, 0x00A97534);
 		EquipItem(Pocket.Armor, 15002, 0x00004040, 0x00539540, 0x006A8C91);
@@ -25,7 +24,6 @@ public class NeleScript : NpcScript
 		EquipItem(Pocket.RightHand1, 40017, 0x00067974, 0x0031150F, 0x001D5567);
 		SetHoodDown();
 
-
 		AddPhrase("Mmm... nothing like a cool breeze...");
 		AddPhrase("Nice weather...");
 		AddPhrase("A great day to listen to music, don't you think...?");
@@ -33,7 +31,7 @@ public class NeleScript : NpcScript
 		AddPhrase("I need to fix this lute...");
 		AddPhrase("That water makes such a pleasant sound...");
 		AddPhrase("Hmm... should I use this song... or that...");
-		AddPhrase("Maybe I should write a new song...");	
+		AddPhrase("Maybe I should write a new song...");
 		AddPhrase("Everyone. Please hear my music.");
 		AddPhrase("Hmm... I've just thought of something...");
 		AddPhrase("Hmm... I'm hungry... Hahaha...");
@@ -68,9 +66,9 @@ public class NeleScript : NpcScript
 
 			case "@shop":
 				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
-				Msg("Hey, are you here to buy something from me again?<br/>Since you are here so often, <username/>, I feel like I have to show you something very special...<br/>Haha, take a look...");			
+					Msg("Hey, are you here to buy something from me again?<br/>Since you are here so often, <username/>, I feel like I have to show you something very special...<br/>Haha, take a look...");
 				else
-				Msg("Do you want anything? Feel free to take a look...");
+					Msg("Do you want anything? Feel free to take a look...");
 				OpenShop("NeleShop");
 				return;
 		}
@@ -82,7 +80,7 @@ public class NeleScript : NpcScript
 	{
 		if (DoingPtjForNpc())
 		{
-			Msg(FavorExpression(), L("Missing Dialogue, talking to npc during ptj"));
+			Msg(FavorExpression(), L("(Missing Dialogue, talking to npc during PTJ.)"));
 		}
 		else if (Memory <= 0)
 		{
@@ -115,7 +113,7 @@ public class NeleScript : NpcScript
 			case "personal_info":
 				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
 				{
-					Msg(FavorExpression(), "Do you believe in destiny, <username/>?<br/>Well... I do.");	
+					Msg(FavorExpression(), "Do you believe in destiny, <username/>?<br/>Well... I do.");
 					Msg("I am sure you have a very unique destiny awaiting you.");
 					Msg("How do I know this?<br/>I just do... I just do...");
 					ModifyRelation(Random(2), 0, Random(2));
@@ -137,19 +135,19 @@ public class NeleScript : NpcScript
 				}
 				else
 				{
-					Msg(FavorExpression(), "My name is <npcname/>. It means \"Clouds\"...<br/>I go wherever the wind blows... wherever my feet lead me...<br/>With my name, don't you think it fits that I am sort of a wanderer?");					
+					Msg(FavorExpression(), "My name is <npcname/>. It means \"Clouds\"...<br/>I go wherever the wind blows... wherever my feet lead me...<br/>With my name, don't you think it fits that I am sort of a wanderer?");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
-				
+
 				break;
 
 			case "rumor":
 				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
 				{
-					Msg(FavorExpression(),"The Sen Mag Plains is where countless Humans and Fomors perished<br/>during the time of war in Erinn...<br/>Maybe because of that, people claim to have seen<br/>ghosts of warriors around the area...");
+					Msg(FavorExpression(), "The Sen Mag Plains is where countless Humans and Fomors perished<br/>during the time of war in Erinn...<br/>Maybe because of that, people claim to have seen<br/>ghosts of warriors around the area...");
 					Msg("Hahaha, whatever...");
 					ModifyRelation(Random(2), 0, Random(2));
-				}		
+				}
 				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
 				{
 					Msg(FavorExpression(), "The father of the Lord that used to lead this place a long time ago<br/>had two sons.<br/>One of his sons, when he was very young,<br/>left home to see the world.");
@@ -159,7 +157,7 @@ public class NeleScript : NpcScript
 				}
 				else if (Favor >= 10 && Stress <= 10)
 				{
-					Msg(FavorExpression(),"Emain Macha has been known as a liberal, tourist town<br/>with scores of tourists visiting this place everyday.<br/>That's what's brought me here, too... the free atmosphere I'd felt here...");
+					Msg(FavorExpression(), "Emain Macha has been known as a liberal, tourist town<br/>with scores of tourists visiting this place everyday.<br/>That's what's brought me here, too... the free atmosphere I'd felt here...");
 					Msg("Lately, however, it feels different around here.<br/>I wonder why that is...");
 					ModifyRelation(Random(2), 2, Random(3));
 				}
@@ -168,10 +166,6 @@ public class NeleScript : NpcScript
 					Msg(FavorExpression(), "There are many legends about the water fountain at the Square.<br/>One of the tales says that if someone in love tosses a coin in and prays,<br/>then the prayer will be answered.<br/>What do you think? Do you want to give it a try...?");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
-				break;
-				
-			case "about_arbeit":
-				Msg(Hide.Name, "Not implemented.");
 				break;
 
 			case "about_skill":
@@ -203,7 +197,7 @@ public class NeleScript : NpcScript
 			case "shop_smith":
 				Msg("There's no Blacksmith's Shop around Emain Macha, but there's a Weapons Shop...<br/>Head west from here and you'll find it.");
 				break;
-				
+
 			case "skill_rest":
 				Msg("I like it... It's my favorite skill out there... Haha.");
 				break;
@@ -223,11 +217,11 @@ public class NeleScript : NpcScript
 			case "square":
 				Msg("You ARE at the Square...");
 				break;
-				
+
 			case "pool":
 				Msg("There is a lake here... maybe that's why there isn't one.");
 				break;
-				
+
 			case "farmland":
 				Msg("Corns around Emain Macha are very delicious.<br/>Eh... Well... I picked out a few from the field, but...<br/>please don't tell anyone. Hahaha...");
 				break;
@@ -278,65 +272,61 @@ public class NeleScript : NpcScript
 			case "graveyard":
 				Msg("Hmmm... I don't like to talk about sad stories...");
 				break;
-				
+
 			case "fishing":
 				Msg("Are you aware that Priest James enjoys fishing<br/>a lot more than he would like people to believe...?");
 				break;
-			
+
 			case "lute":
 				Msg("I hear some people tell me<br/>this lute looks old, and that I'll need it replaced...<br/>I've been playing this lute for so long, though,<br/>that this lute feels more like a friend to me than an instrument...");
 				break;
-				
+
 			case "tir_na_nog":
 				Msg("Tir Na Nog is the ideal land of utopia where<br/>eternal happiness and youth supposedly exist...");
 				Msg("But...<br/>is there a thing such as eternal happiness...?");
 				break;
-				
 
 			case "musicsheet":
 				Msg("I have plenty of music scores... Would you like to buy some?<br/>If you do, then press 'Shop'...");
 				break;
-				
+
 			case "g3_DarkKnight":
 				Msg("...You're asking me<br/>about the Dark knight...?<br/>Now it's nout about Macha,<br/>but a new situation involving Dark Knights...?");
 				Msg("...When will we ever have peace...");
 				break;
-				
+
 			case "EG_C2_Unknown_Continet":
 				Msg("I don't know... maybe there is...<br/>and maybe there isn't...<br/>Argh...");
 				break;
-				
+
 			case "EG_C2_HowTo_Shipboard":
 				Msg("Well, sailing on a ship certainly sounds very romantic...<br/>Being in the ocean is a little like giving up your body,<br/>perhaps even your life, to the flow of nature in a way... you know what I mean?<br/>You'll have to have a lot of courage... haha...");
 				break;
-				
-			//keyword should be removed upon ranking the skill up rather than 
-			//after receiving skill training
+
+			// keyword should be removed upon ranking the skill up rather than 
+			// after receiving skill training
 			case "musical_know_a_nele_loeiz":
-				if(IsSkill(SkillId.MusicalKnowledge, SkillRank.RA))
-				{						
+				if (IsSkill(SkillId.MusicalKnowledge, SkillRank.RA))
+				{
 					Msg("What? You read my mentor's book?<br/>Erinn's Musicians...? I see.<br/>... I don't know how my mentor Loeiz is doing...");
-					Msg("......");
-					Msg("...To be honest, I have actually been excommunicated from him.<br/>He is essentially the pillar of the old school of thought...<br/>It's like a slap in the face for him to have a student like me.<br/>You know, a student who is obsessed with putting a magical element in music...");
+					Msg("......<p/>...To be honest, I have actually been excommunicated from him.<br/>He is essentially the pillar of the old school of thought...<br/>It's like a slap in the face for him to have a student like me.<br/>You know, a student who is obsessed with putting a magical element in music...");
 					Msg("That's right, I have quite an interest in<br/>using magic effects within music.");
 					Msg("...But, I don't think my thinking is wrong.<br/>If a Bard cannot help those<br/>who really need help with their music<br/>because of their stubbornness for the purity of music...");
 					Msg("...I believe that is wrong<br/>first and foremost as a human being.");
 					Msg("Humans have such a limited lifespan...<br/>Isn't it meaningful in and of itself if<br/>you can help even one person<br/>with your gifts?");
 					Msg("...They say magic effects take place<br/>in scores that are written by people with a high musical knowledge rank and composing rank.<br/>If you happen to be interested in<br/>musical knowledge, why don't you try composing...?", Button("Ok", "@ok"));
-					switch (await Select())
-					{
-						case "@ok":
-							RemoveKeyword("musical_know_a_nele_loeiz");
-							TrainSkill(SkillId.MusicalKnowledge, 1);	
-							Msg("Yes.<br/>Thank you for showing interest in magical music.");
-							Msg("If you want to compose magical songs, your Composing skill needs to be at rank 9<br/>and in order to perform it, you need to raise your Playing Instrument skill to at least 9 as well.<br/>Until then, I can't really help you.");
-							Msg("May your life be filled with joy through music...");
-							break;
-					}
+					await Select();
+
+					RemoveKeyword("musical_know_a_nele_loeiz");
+					TrainSkill(SkillId.MusicalKnowledge, 1);
+
+					Msg("Yes.<br/>Thank you for showing interest in magical music.");
+					Msg("If you want to compose magical songs, your Composing skill needs to be at rank 9<br/>and in order to perform it, you need to raise your Playing Instrument skill to at least 9 as well.<br/>Until then, I can't really help you.");
+					Msg("May your life be filled with joy through music...");
 				}
 				break;
-			
-			default:				
+
+			default:
 				if (Favor >= 10 && Stress <= 10)
 				{
 					RndFavorMsg(
@@ -364,7 +354,7 @@ public class NeleScript : NpcScript
 				break;
 		}
 	}
-	
+
 	protected override async Task Gift(Item item, GiftReaction reaction)
 	{
 		switch (reaction)
@@ -384,7 +374,7 @@ public class NeleScript : NpcScript
 					"I'm not sure I should accept this, but... thank you."
 				);
 				break;
-				
+
 			case GiftReaction.Dislike:
 				RndMsg(
 					"Most people shriek when they receive a gift like this...",
@@ -414,21 +404,21 @@ public class NeleShop : NpcShopScript
 		Add("Instruments", 40018); // Ukulele
 		Add("Instruments", 40018); // Ukulele
 		Add("Instruments", 40018); // Ukulele		
-		
+
 		Add("Music Score", 61001); // Score Scroll
 		Add("Music Score", 61001); // Score Scroll
 		Add("Music Score", 61001); // Score Scroll
 		Add("Music Score", 61001); // Score Scroll
 		Add("Music Score", 61001); // Score Scroll
 		//TODO add pre-made scores
-	
+
 		Add("Music Book", 1006); // Introduction to Music Composition
 		Add("Music Book", 1011); // Improving Your Composing Skill
 		Add("Music Book", 1018); // The History of Music in Erinn (1)
 		Add("Music Book", 1019); // The History of Music in Erinn (2)
 		Add("Music Book", 1020); // Composition Lessons with Helene (1)
 		Add("Music Book", 1013, 1, 80000); // Music Theory
-		
+
 		AddQuest("Quest", 71018, 30); // Collect the Black Spider's Fomor Scrolls
 		AddQuest("Quest", 71032, 30); // Collect the Mimic's Fomor Scrolls
 		AddQuest("Quest", 71035, 30); // Collect the Gray Town Rat's Fomor Scrolls
@@ -437,7 +427,7 @@ public class NeleShop : NpcShopScript
 		//AddQuest("Quest", 1016, 350); // Produce Massive Ice Elemental
 		//AddQuest("Quest", 1017, 350); // Produce Massive Fire Elemental
 		//AddQuest("Quest", 1018, 350); // Produce Massive Lightning Elemental
-		
+
 		if (IsEnabled("PercussionInstruments"))
 		{
 			Add("Instruments", 40214); // Big Drum
@@ -450,7 +440,7 @@ public class NeleShop : NpcShopScript
 			Add("Instruments", 40216); // Cymbols
 			Add("Instruments", 40216); // Cymbols
 		}
-		
+
 		// Dye-able versions of woodwind instruments were added at some point
 		// Is this when they were added?
 		if (IsEnabled("!G18S4"))
@@ -464,24 +454,24 @@ public class NeleShop : NpcShopScript
 			Add("Instruments", 40050); // Chalumeau
 			Add("Instruments", 40050); // Chalumeau
 			Add("Instruments", 40050); // Chalumeau
-			
+
 		}
-		
+
 		if (IsEnabled("G18S4"))
 		{
 			Add("Instruments", 40658); // Whistle (dyeable)
 			Add("Instruments", 40659); // Flute (dyeable)
 			Add("Instruments", 40660); // Chalumeau (dyeable)
 		}
-		
+
 		if (IsEnabled("PropInstruments"))
 			Add("Instruments", 41123); // Cello
-		
+
 		/*TODO add items to the existing Music Book tab when favor is >= 50		
 		Add("Music Book", 1111); // The Path of Composing
 		Add("Music Book", 1086); // What is an Ensemble?
 		Add("Music Book", 1121); // Instrument Ranges
 		Add("Music Book", 1122); // The Fundamentals of Becoming a Great Composer
-		*/		
+		*/
 	}
 }
