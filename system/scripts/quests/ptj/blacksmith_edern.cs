@@ -133,7 +133,8 @@ public class EdernPtjScript : GeneralScript
 		Func<IEnumerable<int>, int> GetRandomIdOfTheDay = ids => ids.ElementAt(new Random(ErinnTime.Now.DateTimeStamp).Next(ids.Count()));
 
 		var rankProbe = skillRank;
-		var sameLevelQuestIds = npc.Player.GetLevelMatchingQuestIds(JobType, QuestIdSkillRankList.Select(pair => pair.Item1).ToArray());
+		var level = npc.Player.GetPtjQuestLevel(JobType);
+		var sameLevelQuestIds = GetLevelMatchingQuestIds(level, JobType, QuestIdSkillRankList.Select(pair => pair.Item1).ToArray());
 
 		IEnumerable<int> matchingQuestIds;
 		// Clamp on rank A, the most difficult job available.
@@ -265,7 +266,7 @@ public class EdernPtjScript : GeneralScript
 		}
 
 		// Offer PTJ
-		var randomPtj = this.RandomPtj(npc);
+		var randomPtj = RandomPtj(npc);
 		var msg = "";
 
 		if (npc.Player.GetPtjDoneCount(JobType) == 0)

@@ -42,7 +42,7 @@ public class EavanPtjScript : GeneralScript
 	/// </summary>
 	private void GetPersonalReportAndDeadline(NpcScript npc, out int report, out int deadline)
 	{
-		int ptjid = npc.Player.RandomPtj(JobType, QuestIds);
+		int ptjid = GetRandomPtj(npc.Player, JobType, QuestIds);
 		switch ((ptjid / 10) % 10) // Extract second least significant digit
 		{
 			case 0:
@@ -206,7 +206,7 @@ public class EavanPtjScript : GeneralScript
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.Player.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
 		if (npc.Player.GetPtjDoneCount(JobType) == 0)

@@ -161,7 +161,7 @@ public class DeianPtjScript : GeneralScript
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.Player.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 
 		// Msg is kinda unofficial, she currently says the following, and then
 		// tells you you'd get Homestead seeds.

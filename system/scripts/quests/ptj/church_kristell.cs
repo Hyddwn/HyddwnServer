@@ -181,7 +181,7 @@ public class KristellPtjScript : GeneralScript
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.Player.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
 		if (npc.Player.GetPtjDoneCount(JobType) == 0)
