@@ -1765,7 +1765,7 @@ namespace Aura.Channel.Scripting.Scripts
 		[Obsolete]
 		public IEnumerable<int> GetLevelMatchingQuestIds(PtjType type, params int[] questIds)
 		{
-			return this.Player.GetLevelMatchingQuestIds(type, questIds);
+			throw new NotSupportedException("Not available anymore, use GetLevelMatchingQuestIds in QuestScript.");
 		}
 
 		/// <summary>
@@ -1778,7 +1778,7 @@ namespace Aura.Channel.Scripting.Scripts
 		[Obsolete]
 		public int RandomPtj(PtjType type, params int[] questIds)
 		{
-			return this.Player.RandomPtj(type, questIds);
+			throw new NotSupportedException("Not available anymore, use GetRandomPtj in QuestScript.");
 		}
 
 		/// <summary>
