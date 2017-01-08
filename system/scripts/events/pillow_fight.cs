@@ -195,7 +195,7 @@ public class PillowFightEventNpc2Script : NpcScript
 				break;
 
 			case "@gifts":
-				var count = Player.Inventory.Count(Feather);
+				var count = Player.CountItems(Feather);
 				if (count < 10)
 				{
 					Msg(L("As soon as you have at least 10 feathers<br/>you can trade them for a reward."));

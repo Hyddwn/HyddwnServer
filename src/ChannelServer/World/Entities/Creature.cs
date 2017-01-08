@@ -3290,6 +3290,17 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns the amount of the given item the creature has in its
+		/// inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public int CountItems(int itemId)
+		{
+			return this.Inventory.Count(itemId);
+		}
+
+		/// <summary>
 		/// Removes items with the given id from the creature's inventory.
 		/// </summary>
 		/// <param name="itemId"></param>
