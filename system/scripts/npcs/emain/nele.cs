@@ -418,6 +418,7 @@ public class NeleShop : NpcShopScript
 		Add("Music Book", 1019); // The History of Music in Erinn (2)
 		Add("Music Book", 1020); // Composition Lessons with Helene (1)
 		Add("Music Book", 1013, 1, 80000); // Music Theory
+		Add("Music Book", 1087); // Wind Instruments: Melodies of the Soul
 
 		// TODO: add items to the existing Music Book tab when favor is >= 50	
 		Add("Special Music Books", (creature, npc) => npc.GetFavor(creature) >= 50); // Allow access with >= 50 favor	
