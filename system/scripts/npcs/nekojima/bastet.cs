@@ -15,12 +15,10 @@ public class BastetScript : NpcScript
         SetLocation(600, 102115, 97502, 20);
         SetGiftWeights(beauty: 0, individuality: 2, luxury: 1, toughness: 1, utility: 0, rarity: 1, meaning: 2, adult: 1, maniac: 1, anime: 1, sexy: 0);
 
-
         EquipItem(Pocket.Face, 3908, 0x00F79723, 0x0057686A, 0x0005004F);
         EquipItem(Pocket.Hair, 3041, 0xFCC66666, 0xFCC66666, 0xFCC66666);
         EquipItem(Pocket.Armor, 15018, 0xFF339933, 0xFF669900, 0xFFFFFFCC);
         EquipItem(Pocket.Shoe, 17021, 0xFFFFFFCC, 0x00000000, 0x00000000);
-
 
         AddPhrase("I'd like some new clothes to wear~!");
         AddPhrase("I wonder if I look young~?");
@@ -29,6 +27,7 @@ public class BastetScript : NpcScript
 
     protected override async Task Talk()
     {
+    	Msg(SetDefaultName("Bastet"));
         await Intro(L("It seems that her harsh appearance is representative of her vibrant character.<br/>Her curious eyes dart around indicating a high interest in her surroundings,<br/>but her talkative mouth is proof of that interest."));
 
         Msg("Hello!<br/>I may be small, but I'm a super important person on this island!!<br/>I'm Bastet!", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"));
