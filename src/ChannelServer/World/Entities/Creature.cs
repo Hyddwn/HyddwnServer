@@ -3305,9 +3305,10 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		/// <param name="itemId"></param>
 		/// <param name="amount"></param>
-		public void RemoveItem(int itemId, int amount = 1)
+		/// <returns></returns>
+		public bool RemoveItem(int itemId, int amount = 1)
 		{
-			this.Inventory.Remove(itemId, amount);
+			return this.Inventory.Remove(itemId, amount);
 		}
 
 		/// <summary>
