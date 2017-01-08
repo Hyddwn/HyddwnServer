@@ -109,10 +109,10 @@ public class MalcolmPtjScript : GeneralScript
 		int id;
 		if (npc.Player.QuestActive(id = 508405, "ptj3") || npc.Player.QuestActive(id = 508435, "ptj3") || npc.Player.QuestActive(id = 508465, "ptj3"))
 		{
-			if (!npc.Player.Inventory.Has(Flowerpot))
+			if (!npc.Player.HasItem(Flowerpot))
 				return HookResult.Continue;
 
-			npc.Player.Inventory.Remove(Flowerpot, 1);
+			npc.Player.RemoveItem(Flowerpot, 1);
 			npc.Player.FinishQuestObjective(id, "ptj3");
 
 			npc.Player.Notice(L("You have given Flowerpot to be Delivered to Malcolm."));
@@ -335,10 +335,10 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(Garment))
+		if (!npc.Player.HasItem(Garment))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(Garment, 1);
+		npc.Player.RemoveItem(Garment, 1);
 		npc.Player.Notice(LGivenNotice);
 		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
@@ -597,7 +597,7 @@ public abstract class MalcolmExtDeliveryTreforPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(Garment))
+		if (!npc.Player.HasItem(Garment))
 			return HookResult.Continue;
 
 		npc.Player.FinishQuestObjective(this.Id, "ptj1");
@@ -615,10 +615,10 @@ public abstract class MalcolmExtDeliveryTreforPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(Garment))
+		if (!npc.Player.HasItem(Garment))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(Garment, 1);
+		npc.Player.RemoveItem(Garment, 1);
 		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 		npc.Msg(L("Hmm? I'm guessing those are Trefor's clothes?"));
@@ -752,7 +752,7 @@ public abstract class MalcolmExtDeliveryBebhinnPtjBaseScript : QuestScript
 	{
 		if (npc.Player.QuestActive(this.Id, "ptj1"))
 		{
-			if (!npc.Player.Inventory.Has(Garment))
+			if (!npc.Player.HasItem(Garment))
 				return HookResult.Continue;
 
 			npc.Player.FinishQuestObjective(this.Id, "ptj1");

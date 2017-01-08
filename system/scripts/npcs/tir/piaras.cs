@@ -126,7 +126,7 @@ public class PiarasScript : NpcScript
 			case "about_skill":
 				// When the beginner quests changed, he no longer removes the keyword. Instead he says "I'm sorry.<br/>I don't have the time to talk about that right now."
 				// He also checks for race, but until we get the respective quests in for other races, we'll leave it out
-				if (Player.Skills.Has(SkillId.Campfire))
+				if (Player.HasSkill(SkillId.Campfire))
 				{
 					Player.RemoveKeyword("skill_campfire");
 					Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
@@ -285,7 +285,7 @@ public class PiarasScript : NpcScript
 			case "skill_campfire":
 				// When the beginner quests changed, he no longer removes the keyword. Instead he says "I'm sorry.<br/>I don't have the time to talk about that right now."
 				// He also checks for race, but until we get the respective quests in for other races, we'll leave it out
-				if (Player.Skills.Has(SkillId.Campfire))
+				if (Player.HasSkill(SkillId.Campfire))
 				{
 					Player.RemoveKeyword("skill_campfire");
 					Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");

@@ -100,9 +100,9 @@ public class DilysScript : NpcScript
 							Player.FullLifeHeal();
 							Player.Mana = Player.ManaMax;
 							Msg("Good, I've put on some bandages and your treatment is done.<br/>If you get injured again, don't hesitate to visit me.");
-							if (!Player.Skills.Has(SkillId.FirstAid))
+							if (!Player.HasSkill(SkillId.FirstAid))
 							{
-								Player.Skills.Give(SkillId.FirstAid, SkillRank.Novice);
+								Player.GiveSkill(SkillId.FirstAid, SkillRank.Novice);
 								Msg("I see you haven't learned the First Aid skill yet.<br/>Since you can't come to me every time you get hurt,<br/>you should learn how to apply a bandage to yourself.<p/>I will teach you the First Aid skill.<br/>This skill requires bandages<br/>so always keep them handy in your inventory.");
 							}
 						}

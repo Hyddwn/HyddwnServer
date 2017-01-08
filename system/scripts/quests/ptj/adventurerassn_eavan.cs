@@ -281,12 +281,12 @@ public abstract class EavanDeliveryPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
 		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
-		npc.Player.Inventory.Remove(ItemId, 1);
+		npc.Player.RemoveItem(ItemId, 1);
 		npc.Player.Notice(LGivenNotice);
 
 		RecipientAfterIntroDialogue(npc);
@@ -356,7 +356,7 @@ public abstract class EavanExtDeliveryPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
 		npc.Player.FinishQuestObjective(this.Id, "ptj2");

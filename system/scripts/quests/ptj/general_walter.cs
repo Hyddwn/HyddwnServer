@@ -251,7 +251,7 @@ public abstract class WalterDeliveryPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
 		npc.Player.RemoveItem(ItemId);
@@ -507,7 +507,7 @@ public abstract class WalterExtDeliveryPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
 		npc.Player.FinishQuestObjective(this.Id, "ptj2");

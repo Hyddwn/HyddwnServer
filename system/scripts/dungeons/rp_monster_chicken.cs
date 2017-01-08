@@ -23,10 +23,10 @@ public class ChickenRPDungeonScript : DungeonScript
 		{
 			var creature = cutscene.Leader.GetActualCreature();
 
-			if (!creature.Keywords.Has("RP_Monster_Chicken_complete"))
+			if (!creature.HasKeyword("RP_Monster_Chicken_complete"))
 			{
-				creature.Keywords.Remove("RP_Monster_Chicken_start");
-				creature.Keywords.Give("RP_Monster_Chicken_complete");
+				creature.RemoveKeyword("RP_Monster_Chicken_start");
+				creature.GiveKeyword("RP_Monster_Chicken_complete");
 			}
 
 			dungeon.RemoveAllPlayers();

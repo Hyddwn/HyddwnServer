@@ -41,12 +41,12 @@ public class SionPtjScript : GeneralScript
 
 		if (itemCount != -1)
 		{
-			if (!npc.Player.Inventory.Has(64002, itemCount)) // Iron Ore
+			if (!npc.Player.HasItem(64002, itemCount)) // Iron Ore
 				return HookResult.Continue;
 
 			npc.Player.FinishQuestObjective(id, "ptj2");
 
-			npc.Player.Inventory.Remove(64002, itemCount);
+			npc.Player.RemoveItem(64002, itemCount);
 			npc.Player.Notice(L("You have given Iron Ore to Sion."));
 			npc.Msg(string.Format(LN("(Gave Sion {0} Iron Ore)", "(Gave Sion {0} Iron Ore)", itemCount), itemCount));
 		}

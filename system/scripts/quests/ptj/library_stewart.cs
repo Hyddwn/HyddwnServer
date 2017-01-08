@@ -378,7 +378,7 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 			if (!npc.Player.QuestActive(this.Id, objectiveIdent))
 				return HookResult.Continue;
 
-			if (!npc.Player.Inventory.Has(bookItemId))
+			if (!npc.Player.HasItem(bookItemId))
 				return HookResult.Continue;
 
 			npc.Player.RemoveItem(bookItemId);

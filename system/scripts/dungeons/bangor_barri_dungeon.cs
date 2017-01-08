@@ -19,7 +19,7 @@ public class BarriDungeonScript : DungeonScript
 		// Brown Fomor Pass (G1)
 		if (item.Info.Id == 73011)
 		{
-			if (!creature.Party.Leader.Keywords.Has("g1_10"))
+			if (!creature.Party.Leader.HasKeyword("g1_10"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;

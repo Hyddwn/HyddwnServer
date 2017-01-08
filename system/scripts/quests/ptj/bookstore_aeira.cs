@@ -283,7 +283,7 @@ public abstract class AeiraVarDeliveryPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
 		npc.Player.FinishQuestObjective(this.Id, "ptj2");

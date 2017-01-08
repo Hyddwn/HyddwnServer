@@ -33,11 +33,11 @@ public class GatherBaseHerbManusQuestScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(51104, 1)) // 1 Base Herb
+		if (!npc.Player.HasItem(51104, 1)) // 1 Base Herb
 			return HookResult.Continue;
 
 		Send.Notice(npc.Player, "You have given Base Herb to Manus.");
-		npc.Player.Inventory.Remove(51104, 1); // 1 Base Herb
+		npc.Player.RemoveItem(51104, 1); // 1 Base Herb
 		npc.Player.FinishQuestObjective(this.Id, "talk");
 
 		npc.Msg("You've come, <username/>.<br/>And with the base herb. Well done.");

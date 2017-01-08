@@ -19,7 +19,7 @@ public class RabbieDungeonScript : DungeonScript
 		// Tarlach's Glasses Pouch (G1 RP)
 		if (item.Info.Id == 73022)
 		{
-			if (!creature.Party.Leader.Keywords.Has("g1_15"))
+			if (!creature.Party.Leader.HasKeyword("g1_15"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;
@@ -44,7 +44,7 @@ public class RabbieDungeonScript : DungeonScript
 		// Tarlach's Preserved Broken Glasses (G1 RP)
 		if (item.Info.Id == 73004)
 		{
-			if (!creature.Party.Leader.Keywords.Has("g1_29"))
+			if (!creature.Party.Leader.HasKeyword("g1_29"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;
@@ -69,7 +69,7 @@ public class RabbieDungeonScript : DungeonScript
 		// Ranald's Medal (RP)
 		if (item.Info.Id == 73101)
 		{
-			if (creature.Keywords.Has("RP_Ranald_Complete"))
+			if (creature.HasKeyword("RP_Ranald_Complete"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon anymore."));
 				return false;

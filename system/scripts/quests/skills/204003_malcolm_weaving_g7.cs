@@ -36,10 +36,10 @@ public class GatheringWoolMalcolmScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "talk_malcolm"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(60009, 5)) // 5 Wool
+		if (!npc.Player.HasItem(60009, 5)) // 5 Wool
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(60009, 5); // 5 Wool
+		npc.Player.RemoveItem(60009, 5); // 5 Wool
 		Send.Notice(npc.Player, L("You have given Wool to Malcolm."));
 		npc.Player.FinishQuestObjective(this.Id, "talk_malcolm");
 

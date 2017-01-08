@@ -25,9 +25,9 @@ public class TreforRpDungeonScript : DungeonScript
 	{
 		var leader = dungeon.GetCreators().First();
 
-		if (!leader.Keywords.Has("RP_Trefor_Failed_1") && !leader.Keywords.Has("RP_Trefor_Failed_2") && !leader.Keywords.Has("RP_Trefor_Failed_3"))
+		if (!leader.HasKeyword("RP_Trefor_Failed_1") && !leader.HasKeyword("RP_Trefor_Failed_2") && !leader.HasKeyword("RP_Trefor_Failed_3"))
 			dungeon.PlayCutscene("RP_Trefor_00_e");
-		else if (leader.Keywords.Has("RP_Trefor_Failed_1"))
+		else if (leader.HasKeyword("RP_Trefor_Failed_1"))
 			dungeon.PlayCutscene("RP_Trefor_00_f");
 		else
 			dungeon.PlayCutscene("RP_Trefor_00_g");

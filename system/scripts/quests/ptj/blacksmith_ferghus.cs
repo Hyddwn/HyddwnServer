@@ -350,10 +350,10 @@ public abstract class FerghusDeliveryPtjBaseScript : FerghusPtjBaseScript
 		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ArmorToDeliver))
+		if (!npc.Player.HasItem(ArmorToDeliver))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(ArmorToDeliver, 1);
+		npc.Player.RemoveItem(ArmorToDeliver, 1);
 		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
 		await this.OnFinish(npc);
@@ -575,7 +575,7 @@ public abstract class FerghusExtDeliveryPtjBaseScript : FerghusPtjBaseScript
 		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ArmorToDeliver))
+		if (!npc.Player.HasItem(ArmorToDeliver))
 			return HookResult.Continue;
 
 		npc.Player.FinishQuestObjective(this.Id, "ptj1");
@@ -593,10 +593,10 @@ public abstract class FerghusExtDeliveryPtjBaseScript : FerghusPtjBaseScript
 		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ArmorToDeliver))
+		if (!npc.Player.HasItem(ArmorToDeliver))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(ArmorToDeliver, 1);
+		npc.Player.RemoveItem(ArmorToDeliver, 1);
 		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 		npc.Msg(L("Not again!<br/>Did Trefor ask you to leave that armor here?"));

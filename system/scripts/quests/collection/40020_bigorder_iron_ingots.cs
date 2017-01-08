@@ -35,7 +35,7 @@ public class BigOrderIronIngotsQuestScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "deliver1"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(64001, 30))
+		if (!npc.Player.HasItem(64001, 30))
 			return HookResult.Continue;
 
 		npc.Player.FinishQuestObjective(this.Id, "deliver1");

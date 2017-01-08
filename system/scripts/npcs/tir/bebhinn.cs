@@ -205,11 +205,11 @@ public class BebhinnScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (Player.Skills.Has(SkillId.Composing))
+				if (Player.HasSkill(SkillId.Composing))
 				{
 					Msg("Wow! You know about the Composition skill?<br/>Can you write me a song someday? Hehe...");
 				}
-				else if (Player.Skills.Has(SkillId.PlayingInstrument))
+				else if (Player.HasSkill(SkillId.PlayingInstrument))
 				{
 					Player.GiveKeyword("skill_composing");
 					Msg("Haha. You do work hard at everything! Impressive.<br/>You seem to love music. Do you know anything about the Composition skill?<br/>I think that skill allows you to create your own tunes<br/>if you're tired of the songs at the General Shop.");

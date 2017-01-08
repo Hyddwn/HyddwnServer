@@ -31,11 +31,11 @@ public class ElensRequestQuestScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(64002, 5)) // 5 Iron Ore
+		if (!npc.Player.HasItem(64002, 5)) // 5 Iron Ore
 			return HookResult.Continue;
 
 		Send.Notice(npc.Player, "You have given Iron Ore to Elen.");
-		npc.Player.Inventory.Remove(64002, 5); // 5 Iron Ore
+		npc.Player.RemoveItem(64002, 5); // 5 Iron Ore
 		npc.Player.CompleteQuest(this.Id);
 
 		return HookResult.Break;

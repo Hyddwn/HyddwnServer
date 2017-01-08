@@ -67,10 +67,10 @@ public class CaitinPtjScript : GeneralScript
 		int id;
 		if (npc.Player.QuestActive(id = 501405, "ptj3") || npc.Player.QuestActive(id = 501435, "ptj3") || npc.Player.QuestActive(id = 501465, "ptj3"))
 		{
-			if (!npc.Player.Inventory.Has(Anthology))
+			if (!npc.Player.HasItem(Anthology))
 				return HookResult.Continue;
 
-			npc.Player.Inventory.Remove(Anthology, 1);
+			npc.Player.RemoveItem(Anthology, 1);
 			npc.Player.FinishQuestObjective(id, "ptj3");
 
 			npc.Player.Notice(L("You have given Anthology to be Delivered to Caitin."));
@@ -645,10 +645,10 @@ public abstract class CaitinBreadPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(ItemId, 1);
+		npc.Player.RemoveItem(ItemId, 1);
 		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
 		await this.OnFinish(npc);
@@ -962,10 +962,10 @@ public abstract class CaitinExtBreadPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(Bread))
+		if (!npc.Player.HasItem(Bread))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(Bread, 1);
+		npc.Player.RemoveItem(Bread, 1);
 		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		npc.Msg(L("Oh, so Caitin asked you to deliver this Bread to me?<br/>Thanks."));

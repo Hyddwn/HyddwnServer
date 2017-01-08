@@ -40,7 +40,7 @@ public class AlbeyDungeonScript : DungeonScript
 		// Black Orb (G1)
 		if (item.Info.Id == 73033)
 		{
-			if (!creature.Party.Leader.Keywords.Has("g1_36"))
+			if (!creature.Party.Leader.HasKeyword("g1_36"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;
@@ -59,7 +59,7 @@ public class AlbeyDungeonScript : DungeonScript
 		// Pendant of the Goddess (G1 Final)
 		if (item.Info.Id == 73029)
 		{
-			if (!creature.Party.Leader.Keywords.Has("g1_38"))
+			if (!creature.Party.Leader.HasKeyword("g1_38"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;
@@ -78,7 +78,7 @@ public class AlbeyDungeonScript : DungeonScript
 		// Goddess Pass (G1 Final)
 		if (item.Info.Id == 73034)
 		{
-			if (!creature.Party.Leader.Keywords.Has("g1_38"))
+			if (!creature.Party.Leader.HasKeyword("g1_38"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;

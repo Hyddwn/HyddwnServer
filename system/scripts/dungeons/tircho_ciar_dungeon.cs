@@ -71,7 +71,7 @@ public class CiarDungeonScript : DungeonScript
 		// Wizard's Note (G1)
 		if (item.Info.Id == 73024)
 		{
-			if (!creature.Party.Leader.Keywords.Has("g1_25"))
+			if (!creature.Party.Leader.HasKeyword("g1_25"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;
@@ -84,7 +84,7 @@ public class CiarDungeonScript : DungeonScript
 		// Tracy's Hatchet (RP)
 		if (item.Info.Id == 73102)
 		{
-			if (creature.Keywords.Has("RP_Tracy_Complete"))
+			if (creature.HasKeyword("RP_Tracy_Complete"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon anymore."));
 				return false;

@@ -175,14 +175,14 @@ public class StewartScript : NpcScript
 				}
 				else
 				{
-					Player.Keywords.Give("shop_misc");
+					Player.GiveKeyword("shop_misc");
 					Msg(FavorExpression(), "Mmm... many of the people in this town came from other towns.<br/>But some like me or Walter at the General Shop<br/>have been here for a long time.<br/>I'm not saying there are any particular advantages to that but...haha...");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
-				Player.Keywords.Give("shop_bookstore");
+				Player.GiveKeyword("shop_bookstore");
 				Msg(FavorExpression(), "If you're looking for books on magic or enchantments,<br/>you'll find useful learning resources at the Bookstore nearby.<br/>Just say I sent you and Aeira will be pleased to help you.<br/>It'll take a long time to explain these topics, so let's talk after you've read the books.");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;

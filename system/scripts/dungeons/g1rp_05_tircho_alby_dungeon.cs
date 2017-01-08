@@ -48,13 +48,13 @@ public class TheThreeMissingWarriorsRPDungeonScript : DungeonScript
 			// who wants to run this thrice...?
 			foreach (var member in dungeon.GetCreators())
 			{
-				if (member.Keywords.Has("g1_03"))
+				if (member.HasKeyword("g1_03"))
 				{
-					member.Keywords.Remove("g1_03");
-					member.Keywords.Give("g1_04");
-					member.Keywords.Remove("g1_tarlach1");
-					member.Keywords.Remove("g1_tarlach2");
-					member.Keywords.Give("g1_goddess");
+					member.RemoveKeyword("g1_03");
+					member.GiveKeyword("g1_04");
+					member.RemoveKeyword("g1_tarlach1");
+					member.RemoveKeyword("g1_tarlach2");
+					member.GiveKeyword("g1_goddess");
 				}
 			}
 

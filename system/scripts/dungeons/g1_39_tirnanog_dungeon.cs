@@ -67,13 +67,13 @@ public class AlbeyFinalDungeonScript : DungeonScript
 		var creators = dungeon.GetCreators();
 		var leader = creators[0].Party.Leader;
 
-		if (leader.Keywords.Has("g1_38"))
+		if (leader.HasKeyword("g1_38"))
 		{
-			leader.Keywords.Remove("g1");
-			leader.Keywords.Remove("g1_38");
-			leader.Keywords.Remove("g1_revive_of_glasgavelen");
-			leader.Keywords.Give("g1_complete");
-			leader.Keywords.Give("g1_KnightOfTheLight");
+			leader.RemoveKeyword("g1");
+			leader.RemoveKeyword("g1_38");
+			leader.RemoveKeyword("g1_revive_of_glasgavelen");
+			leader.GiveKeyword("g1_complete");
+			leader.GiveKeyword("g1_KnightOfTheLight");
 
 			leader.Titles.Enable(WhoSavedTheGoddessTitle);
 			leader.AcquireItem(Item.CreateEnchant(GoddessEnchant, 3600));

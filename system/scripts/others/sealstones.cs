@@ -57,8 +57,8 @@ public class CiarSealStoneScript : SealStoneScript
 	public override void OnBreak(Creature creature)
 	{
 		creature.Titles.Enable(10003); // the Ciar Seal Breaker
-		if (!creature.Skills.Has(SkillId.FirstAid, SkillRank.RE))
-			creature.Skills.Give(SkillId.FirstAid, SkillRank.RE);
+		if (!creature.HasSkill(SkillId.FirstAid, SkillRank.RE))
+			creature.GiveSkill(SkillId.FirstAid, SkillRank.RE);
 	}
 }
 
@@ -82,8 +82,8 @@ public class RabbieSealStoneScript : SealStoneScript
 	public override void OnBreak(Creature creature)
 	{
 		creature.Titles.Enable(10004); // the Rabbie Seal Breaker
-		if (!creature.Skills.Has(SkillId.Windmill, SkillRank.RE))
-			creature.Skills.Give(SkillId.Windmill, SkillRank.RE);
+		if (!creature.HasSkill(SkillId.Windmill, SkillRank.RE))
+			creature.GiveSkill(SkillId.Windmill, SkillRank.RE);
 	}
 }
 
@@ -106,17 +106,17 @@ public class MathSealStoneScript : SealStoneScript
 	{
 		// Must have rank D Playing Instrument, Composing, and Musical Knowledge
 		return (
-			(creature.Skills.Has(SkillId.PlayingInstrument) && creature.Skills.Get(SkillId.PlayingInstrument).Info.Rank >= SkillRank.RD) &&
-			(creature.Skills.Has(SkillId.Composing) && creature.Skills.Get(SkillId.Composing).Info.Rank >= SkillRank.RD) &&
-			(creature.Skills.Has(SkillId.MusicalKnowledge) && creature.Skills.Get(SkillId.MusicalKnowledge).Info.Rank >= SkillRank.RD)
+			(creature.HasSkill(SkillId.PlayingInstrument) && creature.Skills.Get(SkillId.PlayingInstrument).Info.Rank >= SkillRank.RD) &&
+			(creature.HasSkill(SkillId.Composing) && creature.Skills.Get(SkillId.Composing).Info.Rank >= SkillRank.RD) &&
+			(creature.HasSkill(SkillId.MusicalKnowledge) && creature.Skills.Get(SkillId.MusicalKnowledge).Info.Rank >= SkillRank.RD)
 		);
 	}
 
 	public override void OnBreak(Creature creature)
 	{
 		creature.Titles.Enable(10005); // the Math Seal Breaker
-		if (!creature.Skills.Has(SkillId.MusicalKnowledge, SkillRank.RC))
-			creature.Skills.Give(SkillId.MusicalKnowledge, SkillRank.RC);
+		if (!creature.HasSkill(SkillId.MusicalKnowledge, SkillRank.RC))
+			creature.GiveSkill(SkillId.MusicalKnowledge, SkillRank.RC);
 	}
 }
 
@@ -247,8 +247,8 @@ public class AbbSealStoneScript : SealStoneScript
 	public override void OnBreak(Creature creature)
 	{
 		creature.Titles.Enable(10068); // the Abb Neagh Seal Breaker
-		if (!creature.Skills.Has(SkillId.Lightningbolt, SkillRank.RC))
-			creature.Skills.Give(SkillId.Lightningbolt, SkillRank.RC);
+		if (!creature.HasSkill(SkillId.Lightningbolt, SkillRank.RC))
+			creature.GiveSkill(SkillId.Lightningbolt, SkillRank.RC);
 	}
 }
 

@@ -388,10 +388,10 @@ public abstract class DilysDeliveryPtjBaseScript : QuestScript
 		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(ItemId, 1);
+		npc.Player.RemoveItem(ItemId, 1);
 		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
 		await this.OnFinish(npc);
