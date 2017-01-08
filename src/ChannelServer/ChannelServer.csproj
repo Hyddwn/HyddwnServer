@@ -198,6 +198,7 @@
     <Compile Include="Skills\Combat\AdministrativePicking2.cs" />
     <Compile Include="Skills\Actions\DiceTossing.cs" />
     <Compile Include="Skills\Hidden\HiddenGuildStoneSetting.cs" />
+    <Compile Include="Skills\Hidden\EnchantElementalAllSlot.cs" />
     <Compile Include="Skills\Magic\Enchant.cs" />
     <Compile Include="Skills\Hidden\HiddenResurrection.cs" />
     <Compile Include="Skills\Hidden\HiddenTownBack.cs" />
