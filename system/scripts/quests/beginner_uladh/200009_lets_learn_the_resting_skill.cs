@@ -30,7 +30,7 @@ public class BeginnerUladhRestQuestScript : QuestScript
 
 	public async Task<HookResult> TalkNora(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id) && !npc.Player.Skills.Has(SkillId.Rest))
+		if (npc.Player.QuestActive(this.Id) && !npc.Player.HasSkill(SkillId.Rest))
 		{
 			npc.Msg("If you came here because of the mail you received about the Resting skill,<br/>we need to talk about it first.<br/>You know you should ask me with the 'Skills' keyword, right?");
 			return HookResult.Break;
@@ -43,10 +43,10 @@ public class BeginnerUladhRestQuestScript : QuestScript
 	{
 		var keyword = args[0] as string;
 
-		if (keyword == "about_skill" && !npc.Player.Skills.Has(SkillId.Rest))
+		if (keyword == "about_skill" && !npc.Player.HasSkill(SkillId.Rest))
 		{
-			npc.Player.Skills.Give(SkillId.Rest, SkillRank.Novice);
-			npc.GiveKeyword("skill_rest");
+			npc.Player.GiveSkill(SkillId.Rest, SkillRank.Novice);
+			npc.Player.GiveKeyword("skill_rest");
 
 			npc.Msg("You are at the Inn. This is where weary travelers rest.<br/>It's important to rejuvenate yourself both mentally and physically by resting.<br/>Do you know about the Resting skill?<br/>If not, I'll tell you about it.");
 			npc.Msg("Now, open the Skill window. Press the 'Skills' button at the bottom of the screen.<br/>Or, just press 'S'.");

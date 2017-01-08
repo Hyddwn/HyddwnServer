@@ -169,7 +169,7 @@ public class StewartScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					GiveKeyword("school");
+					Player.GiveKeyword("school");
 					Msg(FavorExpression(), "Yes, I'm Stewart. And you are?<br/>Hmm... <username/>?<br/>I teach magic to students here.<br/>That makes me a... magic teacher.");
 					ModifyRelation(1, 0, 0);
 				}
@@ -192,27 +192,27 @@ public class StewartScript : NpcScript
 				// else if Fireball quest...
 				// else if Thunder quest
 				// else --v
-				if (!HasSkill(SkillId.Meditation, SkillRank.RF))
+				if (!Player.HasSkill(SkillId.Meditation, SkillRank.RF))
 				{
 					// Teach Meditation if bolts are rF, otherwise teach
 					// about Meditation.
-					if (HasSkill(SkillId.Icebolt, SkillRank.RF) && HasSkill(SkillId.Firebolt, SkillRank.RF) && HasSkill(SkillId.Lightningbolt, SkillRank.RF))
+					if (Player.HasSkill(SkillId.Icebolt, SkillRank.RF) && Player.HasSkill(SkillId.Firebolt, SkillRank.RF) && Player.HasSkill(SkillId.Lightningbolt, SkillRank.RF))
 					{
 						Msg(L("You've learned the magic involving all three of the Elements!<br/>I'm impressed that you worked so hard even though it was not a quest or a part-time job...<br/>To be honest, I'm amazed!"));
 						Msg(L("Now that you know how to deal with the three Elements,<br/>I think you understand the elemental rules governing this world.<br/>There's nothing more I can tell you about this.<br/>By the way, there is a reason why I explained about controlling the flow of Mana through meditation."));
 						Msg(L("As you use all three magic,<br/>you'll often feel there's not enough Mana.<br/>Just remember to use the Meditation skill."));
 
-						if (!HasSkill(SkillId.Meditation))
-							GiveSkill(SkillId.Meditation, SkillRank.Novice);
-						if (IsSkill(SkillId.Meditation, SkillRank.Novice))
-							TrainSkill(SkillId.Meditation, 1);
+						if (!Player.HasSkill(SkillId.Meditation))
+							Player.GiveSkill(SkillId.Meditation, SkillRank.Novice);
+						if (Player.IsSkill(SkillId.Meditation, SkillRank.Novice))
+							Player.TrainSkill(SkillId.Meditation, 1);
 					}
 					else
 					{
 						Msg(L("Do you know anything about the Meditation skill?<br/>This is used to control the flow of Mana through meditation.<br/>This magic is useful when you are short on Mana<br/>before the Eweca has risen."));
 						Msg(L("I'd really like to teach you how to use this magic, but without the basic understanding of Elements,<br/>it could confuse you.<br/>I'll teach you this skill when you learn the three basic Elements of magic.<br/>If you're interested, learn these other magic as well."));
 
-						GiveSkill(SkillId.Meditation, SkillRank.Novice);
+						Player.GiveSkill(SkillId.Meditation, SkillRank.Novice);
 					}
 				}
 				else
@@ -227,7 +227,7 @@ public class StewartScript : NpcScript
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("The Grocery Store? I don't know...<br/>If groceries are what you need,<br/>you might as well go to the Restaurant.<br/>They sell food ingredients as well. I think you'll find what you're looking for there.");
 				break;
 
@@ -244,7 +244,7 @@ public class StewartScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("A blacksmith's shop?<br/>There isn't a blacksmith's shop in this town.<br/>But, Nerys at the Weapons Shop might know something.");
 				break;
 
@@ -262,30 +262,30 @@ public class StewartScript : NpcScript
 				break;
 
 			case "skill_composing":
-				GiveKeyword("shop_bookstore");
+				Player.GiveKeyword("shop_bookstore");
 				Msg("I don't think<br/>there is anyone in this town who plays music professionally.<br/>But there must be some books on it.<br/>Right! You might find something at Aeira's Bookstore!");
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_cloth");
+				Player.GiveKeyword("shop_cloth");
 				Msg("If you want to learn Tailoring,<br/>go and see Simon near the Square.<br/>He runs the Clothing Shop.<br/>He can be a bit awkward sometimes but<br/>generally he's okay.");
 				Msg("I'm not sure if he would teach you the skills though...");
 				break;
 
 			case "skill_magnum_shot":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Mmm... I think you're talking about attacks<br/>using bows...<br/>You might want to talk to Aranwen<br/>about that.");
 				Msg("Aranwen is outside the School.<br/>She teaches combat skills but she might know something about that.");
 				break;
 
 			case "skill_counter_attack":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Oh! Aranwen should know.<br/>Once I saw her defeating a man twice her size during a training session<br/>and she used the Counterattack skill.");
 				Msg("I wonder if anyone would want to get married to<br/>such a tomboy? Haha...");
 				break;
 
 			case "skill_smash":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Smash skill... It's one of Aranwen's specialties.<br/>She teaches combat skills.<br/>But everyone always asks her and it seems like<br/>she's getting tired of answering questions.");
 				break;
 
@@ -295,7 +295,7 @@ public class StewartScript : NpcScript
 				break;
 
 			case "square":
-				GiveKeyword("shop_goverment_office");
+				Player.GiveKeyword("shop_goverment_office");
 				Msg("The Town Square naturally formed<br/>as people began loading and unloading goods in front of the Town Office.<br/>As shops began setting up near the Square<br/>it has turned into what it is today.");
 				break;
 
@@ -367,12 +367,12 @@ public class StewartScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("Bows are sold at Nerys' Weapons Shop.<br/>Excuse me? They're not free, of course. Haha...");
 				break;
 
 			case "lute":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("If you go to the General Shop,<br/>you'll find Lutes<br/>that Walter made himself.");
 				Msg("You'll find other instruments as well,<br/>so go and have a look.");
 				break;
@@ -389,7 +389,7 @@ public class StewartScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Go to Walter's General Shop for a Music Score.<br/>He doesn't compose himself but...");
 				Msg("Haha... I was just imagining Walter writing music<br/>with that serious look on his face.");
 				break;

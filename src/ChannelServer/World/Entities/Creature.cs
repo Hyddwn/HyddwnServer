@@ -3935,7 +3935,7 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		/// <param name="skillId"></param>
 		/// <param name="condition"></param>
-		protected void TrainSkill(SkillId skillId, int condition)
+		public void TrainSkill(SkillId skillId, int condition)
 		{
 			var skill = this.Skills.Get(skillId);
 			if (skill == null)

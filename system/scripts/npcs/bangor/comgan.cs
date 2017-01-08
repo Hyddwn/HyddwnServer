@@ -73,7 +73,7 @@ public class ComganScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("<username/>, I trust that you are doing the task I've asked you to do?"));
 		}

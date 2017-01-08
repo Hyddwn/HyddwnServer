@@ -37,26 +37,26 @@ public class BookOfRevengeVol2Quest : QuestScript
 
 	public async Task<HookResult> KristellAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.HasKeyword("g1_25") && npc.HasItem(BookOfRevenge2))
+		if (npc.Player.HasKeyword("g1_25") && npc.Player.HasItem(BookOfRevenge2))
 		{
-			npc.RemoveItem(BookOfRevenge2);
-			npc.SendOwl(this.Id, OwlDelay1);
+			npc.Player.RemoveItem(BookOfRevenge2);
+			npc.Player.SendOwl(this.Id, OwlDelay1);
 
-			npc.RemoveKeyword("g1_memo_of_parcelman");
-			npc.RemoveKeyword("g1_25");
-			npc.GiveKeyword("g1_26");
+			npc.Player.RemoveKeyword("g1_memo_of_parcelman");
+			npc.Player.RemoveKeyword("g1_25");
+			npc.Player.GiveKeyword("g1_26");
 
 			npc.Msg(L("So there really was another volume.<br/>I'm impressed. I didn't think you'd be able to find it."));
 			npc.Msg(L("I'll translate this book, as promised.<br/>I'll let you know as soon as I'm finished."));
 
 			return HookResult.Break;
 		}
-		else if (npc.QuestActive(this.Id, "get_book"))
+		else if (npc.Player.QuestActive(this.Id, "get_book"))
 		{
-			npc.FinishQuest(this.Id, "get_book");
+			npc.Player.FinishQuestObjective(this.Id, "get_book");
 
-			npc.GiveItem(BookOfRevenge2Translated);
-			npc.Notice(L("You have received the Book of Revenge, Vol. 2 (Translated) from Kristell."));
+			npc.Player.GiveItem(BookOfRevenge2Translated);
+			npc.Player.Notice(L("You have received the Book of Revenge, Vol. 2 (Translated) from Kristell."));
 
 			npc.Msg(L("You must be here for your translated copy of the book.<br/>Here, I think you should read it yourself.<br/>It's better than having me summarize it for you."));
 			npc.Msg(L("That said, I can't believe what's written in this book..."));
@@ -69,12 +69,12 @@ public class BookOfRevengeVol2Quest : QuestScript
 
 	public async Task<HookResult> DuncanAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "give_book"))
+		if (npc.Player.QuestActive(this.Id, "give_book"))
 		{
-			npc.FinishQuest(this.Id, "give_book");
+			npc.Player.FinishQuestObjective(this.Id, "give_book");
 
-			npc.RemoveItem(BookOfRevenge2Translated);
-			npc.Notice(L("You have given the Book of Revenge, Vol. 2 (Translated) to Duncan."));
+			npc.Player.RemoveItem(BookOfRevenge2Translated);
+			npc.Player.Notice(L("You have given the Book of Revenge, Vol. 2 (Translated) to Duncan."));
 
 			npc.Msg(L("Good job.<br/>You not only found the book but even got it translated...<br/>Here, let me see it."));
 			npc.Msg(Hide.Name, L("(Duncan starts reading the book.)"));
@@ -94,10 +94,10 @@ public class BookOfRevengeVol2Quest : QuestScript
 
 	public async Task<HookResult> AeiraAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_aeira"))
+		if (npc.Player.QuestActive(this.Id, "talk_aeira"))
 		{
-			npc.CompleteQuest(this.Id);
-			npc.SendOwl(210008, OwlDelay2); // Find the Book of Revenge, Vol. III
+			npc.Player.CompleteQuest(this.Id);
+			npc.Player.SendOwl(210008, OwlDelay2); // Find the Book of Revenge, Vol. III
 
 			npc.Msg(L("Since you're looking for volume 3, I'm guessing you already<br/>found volume 2? I'm afraid I haven't heard anything about volume 3 just yet."));
 			npc.Msg(L("It's turning out to be a lot harder to find the last volume.<br/>My distributor has been absolutely useless, and Eavan says<br/>she hasn't come across such a book. Even Leslie says she<br/>doesn't know anything. Same with Stewart."));

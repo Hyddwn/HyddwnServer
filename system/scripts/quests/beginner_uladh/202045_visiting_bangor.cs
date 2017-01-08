@@ -28,9 +28,9 @@ public class VisitingBangorQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk"))
+		if (npc.Player.QuestActive(this.Id, "talk"))
 		{
-			npc.FinishQuest(this.Id, "talk");
+			npc.Player.FinishQuestObjective(this.Id, "talk");
 			npc.Msg("(Missing dialog: Visiting Bangor)");
 
 			return HookResult.Break;

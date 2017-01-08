@@ -29,9 +29,9 @@ public class ProductionMasteryHumanQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk"))
+		if (npc.Player.QuestActive(this.Id, "talk"))
 		{
-			npc.FinishQuest(this.Id, "talk");
+			npc.Player.FinishQuestObjective(this.Id, "talk");
 
 			npc.Msg("Hey, it's you, <username/>!<br/>I was wondering why you didn't come to see me.");
 			npc.Msg("Have you heard of the Production Mastery skill?<br/>It's a skill that's needed for both gathering and crafting.<br/>You can make things more easily if you know this skill.");

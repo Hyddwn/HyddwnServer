@@ -29,9 +29,9 @@ public class ReachLevl40QuestScript : QuestScript
 
 	public async Task<HookResult> TalkDuncan(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_duncan"))
+		if (npc.Player.QuestActive(this.Id, "talk_duncan"))
 		{
-			npc.FinishQuest(this.Id, "talk_duncan");
+			npc.Player.FinishQuestObjective(this.Id, "talk_duncan");
 
 			// TODO: Get official dialog.
 			npc.Msg("Good job reaching Level 40!");

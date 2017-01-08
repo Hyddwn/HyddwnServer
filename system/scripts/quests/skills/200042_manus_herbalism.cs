@@ -30,7 +30,7 @@ public class GatherBaseHerbManusQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id))
+		if (!npc.Player.QuestActive(this.Id))
 			return HookResult.Continue;
 
 		if (!npc.Player.Inventory.Has(51104, 1)) // 1 Base Herb
@@ -38,7 +38,7 @@ public class GatherBaseHerbManusQuestScript : QuestScript
 
 		Send.Notice(npc.Player, "You have given Base Herb to Manus.");
 		npc.Player.Inventory.Remove(51104, 1); // 1 Base Herb
-		npc.FinishQuest(this.Id, "talk");
+		npc.Player.FinishQuestObjective(this.Id, "talk");
 
 		npc.Msg("You've come, <username/>.<br/>And with the base herb. Well done.");
 		npc.Msg("Okay, I'll tell you about Herbalism.<br/>Herbalism is the knowledge to be able<br/>to classify the physiological effect of eating herbs.");

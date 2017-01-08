@@ -32,15 +32,15 @@ public class RanaldsArmorDeliveryQuestScript : QuestScript
 	{
 		var keyword = args[0] as string;
 
-		if (keyword == "about_skill" && npc.HasSkill(SkillId.Defense) && !npc.HasSkill(SkillId.Windmill))
+		if (keyword == "about_skill" && npc.Player.HasSkill(SkillId.Defense) && !npc.Player.HasSkill(SkillId.Windmill))
 		{
 			// Unofficial
 			npc.Msg("You would like to learn more? That's the attitude!");
 			npc.Msg("Unfortunately I'm a little busy right now, I've borrowed an armor from Ferghus that I have to get back to him. Unless...");
 			npc.Msg("Could you deliver it to him for me? Afterwards I'll give you help with the Windmill skill.<button title='End Conversation' keyword='@end'/>");
 			await npc.Select();
-			npc.StartQuest(this.Id);
-			//npc.GiveItem(70002); // Full Ring Mail to be Delivered (TODO: implement quest item handling)
+			npc.Player.StartQuest(this.Id);
+			//npc.Player.GiveItem(70002); // Full Ring Mail to be Delivered (TODO: implement quest item handling)
 			npc.Close();
 
 			return HookResult.End;
@@ -51,13 +51,13 @@ public class RanaldsArmorDeliveryQuestScript : QuestScript
 
 	public async Task<HookResult> TalkFerghus(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_ferghus"))
+		if (npc.Player.QuestActive(this.Id, "talk_ferghus"))
 		{
-			npc.FinishQuest(this.Id, "talk_ferghus");
+			npc.Player.FinishQuestObjective(this.Id, "talk_ferghus");
 
 			// Unofficial
 			npc.Msg("Ah, my armor. Thank you, <username/>.");
-			//npc.RemoveItem(70002); // Full Ring Mail to be Delivered
+			//npc.Player.RemoveItem(70002); // Full Ring Mail to be Delivered
 
 			return HookResult.Break;
 		}
@@ -67,10 +67,10 @@ public class RanaldsArmorDeliveryQuestScript : QuestScript
 
 	public async Task<HookResult> TalkRanald(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_ranald"))
+		if (npc.Player.QuestActive(this.Id, "talk_ranald"))
 		{
-			npc.FinishQuest(this.Id, "talk_ranald");
-			npc.CompleteQuest(this.Id);
+			npc.Player.FinishQuestObjective(this.Id, "talk_ranald");
+			npc.Player.CompleteQuest(this.Id);
 
 			// Unofficial
 			npc.Msg("Thank you, <username/>. Now that that's out of the way, let me teach you all about the Windmill skill.");

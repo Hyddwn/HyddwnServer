@@ -28,9 +28,9 @@ public class AdulthoodCeremonyQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk"))
+		if (npc.Player.QuestActive(this.Id, "talk"))
 		{
-			npc.FinishQuest(this.Id, "talk");
+			npc.Player.FinishQuestObjective(this.Id, "talk");
 
 			npc.Msg("Oh, so finally you are here. <username/>.<br/>Now you are a respectable adult too.<br/>And you must have earned necessary titles for your age...");
 			npc.Msg("Up till now, the age limit for adulthood was 18,<br/>but in Erinn, the druid gives a ceremony for youths<br/>of the age like you and this special event is so they remember<br/>the taboo 'geis' which should never be violated.");

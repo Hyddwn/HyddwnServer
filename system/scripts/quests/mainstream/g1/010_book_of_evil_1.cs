@@ -34,14 +34,14 @@ public class BookOfEvilPart1_1Quest : QuestScript
 
 	public async Task<HookResult> KristellAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id) || !npc.HasItem(BookOfFomor))
+		if (!npc.Player.QuestActive(this.Id) || !npc.Player.HasItem(BookOfFomor))
 			return HookResult.Continue;
 
-		npc.CompleteQuest(this.Id);
-		npc.SendOwl(210004, OwlDelay); // [Book of Fomors] Translation Completed
+		npc.Player.CompleteQuest(this.Id);
+		npc.Player.SendOwl(210004, OwlDelay); // [Book of Fomors] Translation Completed
 
-		npc.RemoveItem(BookOfFomor);
-		npc.Notice(L("You have given Book of Fomors to Kristell."));
+		npc.Player.RemoveItem(BookOfFomor);
+		npc.Player.Notice(L("You have given Book of Fomors to Kristell."));
 
 		npc.Msg(L("...Tarlach asked me...?<br/>To translate...this book for him...?"));
 		npc.Msg(L("I see... This is definitely Tarlach's book...<br/>... ...Is he still living as a Druid...with his injured body and all...?<br/>Poor guy..."));
@@ -77,10 +77,10 @@ public class BookOfEvilPart1_2Quest : QuestScript
 
 	public async Task<HookResult> KristellAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "talk_kristell"))
+		if (!npc.Player.QuestActive(this.Id, "talk_kristell"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "talk_kristell");
+		npc.Player.FinishQuestObjective(this.Id, "talk_kristell");
 
 		npc.Msg(L("...Hello... <username/>, welcome...<br/>...And Tarlach... he didn't come...did he?"));
 		npc.Msg(L("...I see. Of course...<br/>I'm not surprised...<br/>He doesn't let anyone enter in his life..."));
@@ -94,10 +94,10 @@ public class BookOfEvilPart1_2Quest : QuestScript
 
 	public async Task<HookResult> TarlachAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "talk_tarlach"))
+		if (!npc.Player.QuestActive(this.Id, "talk_tarlach"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "talk_tarlach");
+		npc.Player.FinishQuestObjective(this.Id, "talk_tarlach");
 
 		npc.Msg(Hide.Name, L("(Tarlach listens intently as I relayed Kristell's message to him."));
 		npc.Msg(L("...<br/>Is that what she said...?<br/>But... I can't leave this place."));
@@ -111,13 +111,13 @@ public class BookOfEvilPart1_2Quest : QuestScript
 
 	public async Task<HookResult> MevenAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "talk_meven"))
+		if (!npc.Player.QuestActive(this.Id, "talk_meven"))
 			return HookResult.Continue;
 
-		npc.CompleteQuest(this.Id);
-		npc.RemoveKeyword("g1_17_1");
-		npc.GiveKeyword("g1_17_2");
-		npc.GiveKeyword("g1_black_rose");
+		npc.Player.CompleteQuest(this.Id);
+		npc.Player.RemoveKeyword("g1_17_1");
+		npc.Player.GiveKeyword("g1_17_2");
+		npc.Player.GiveKeyword("g1_black_rose");
 
 		npc.Msg(L("Oh, it's you <username/>... Welcome."));
 		npc.Msg(Hide.Name, L("(Told priest Meven about the item Tarlach left with him.)"));
@@ -147,16 +147,16 @@ public class BookOfEvilPart1_3Quest : GeneralScript
 
 		if (keyword == "g1_black_rose")
 		{
-			if (npc.HasKeyword("g1_17_2"))
+			if (npc.Player.HasKeyword("g1_17_2"))
 			{
-				npc.RemoveKeyword("g1_17_2");
-				npc.GiveKeyword("g1_17_3");
+				npc.Player.RemoveKeyword("g1_17_2");
+				npc.Player.GiveKeyword("g1_17_3");
 
 				npc.Msg(L("Hmm. Priest Meven's favor?<br/>Why would he need something like that? Hehehe."));
 				npc.Msg(L("Hmm, I don't know how this will sound<br/>but I need some Holy Water of Lymilark to grow this.<br/>Priest Meven used to supply me with it up until recently."));
 				npc.Msg(L("I guess he got caught by Priestess Endelyon.<br/>He hasn't given me any for the past few days."));
 				npc.Msg(L("If you have any Holy Water of Lymilark, could you give me a bottle?"), npc.Button(L("Here."), "@yes"), npc.Button(L("No"), "@no"));
-				if (await npc.Select() != "@yes" || !npc.HasItem(HolyWater))
+				if (await npc.Select() != "@yes" || !npc.Player.HasItem(HolyWater))
 				{
 					npc.Msg(L("I need some Holy Water of Lymilark to grow this, please come back once you have some."));
 					return HookResult.Break;
@@ -166,10 +166,10 @@ public class BookOfEvilPart1_3Quest : GeneralScript
 
 				return HookResult.Break;
 			}
-			else if (npc.HasKeyword("g1_17_3"))
+			else if (npc.Player.HasKeyword("g1_17_3"))
 			{
 				npc.Msg(L("Did you get a bottle of Holy Water of Lymilark?"), npc.Button(L("Here."), "@yes"), npc.Button(L("No"), "@no"));
-				if (await npc.Select() != "@yes" || !npc.HasItem(HolyWater))
+				if (await npc.Select() != "@yes" || !npc.Player.HasItem(HolyWater))
 				{
 					npc.Msg(L("I need some Holy Water of Lymilark to grow this, please come back once you have some."));
 					return HookResult.Break;
@@ -186,15 +186,15 @@ public class BookOfEvilPart1_3Quest : GeneralScript
 
 	private void LassarFinish(NpcScript npc)
 	{
-		npc.RemoveKeyword("g1_black_rose");
-		npc.RemoveKeyword("g1_17_3");
-		npc.RemoveKeyword("g1_17_4");
-		npc.GiveKeyword("g1_17_5");
+		npc.Player.RemoveKeyword("g1_black_rose");
+		npc.Player.RemoveKeyword("g1_17_3");
+		npc.Player.RemoveKeyword("g1_17_4");
+		npc.Player.GiveKeyword("g1_17_5");
 
-		npc.RemoveItem(HolyWater);
-		npc.Notice(L("You have given Holy Water of Lymilark to Lassar."));
+		npc.Player.RemoveItem(HolyWater);
+		npc.Player.Notice(L("You have given Holy Water of Lymilark to Lassar."));
 
-		npc.SendOwl(210023, OwlDelay); // Receive the Requested Object
+		npc.Player.SendOwl(210023, OwlDelay); // Receive the Requested Object
 
 		npc.Msg(L("Yes, this should be enough.<br/>It's almost ready. Once it forms the proper shape, I'll let you know via an owl. Hahaha.<br/>Owls don't fly into buildings so<br/>don't forget to check the sky outside."));
 		npc.Msg(L("Now, will you excuse me?"));

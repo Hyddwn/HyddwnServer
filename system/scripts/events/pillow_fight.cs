@@ -120,8 +120,8 @@ public class PillowFightEventNpc1Script : NpcScript
 
 	protected override async Task Talk()
 	{
-		if (QuestActive(1100001, "talk"))
-			FinishQuest(1100001, "talk");
+		if (Player.QuestActive(1100001, "talk"))
+			Player.FinishQuestObjective(1100001, "talk");
 
 		if (!IsEventActive("aura_pillow_fight"))
 		{
@@ -130,7 +130,7 @@ public class PillowFightEventNpc1Script : NpcScript
 		}
 
 		var msg = "";
-		if (!HasItem(PlayPillow))
+		if (!Player.HasItem(PlayPillow))
 			msg = L("Do you want a pillow?");
 		else
 			msg = L("You already have a pillow.<br/>Did it break?<br/>You want a new one?");
@@ -138,10 +138,10 @@ public class PillowFightEventNpc1Script : NpcScript
 		Msg(msg, Button(L("Yes"), "@yes"), Button(L("No"), "@no"));
 		if (await Select() == "@yes")
 		{
-			RemoveItem(PlayPillow, 100);
+			Player.RemoveItem(PlayPillow, 100);
 
-			GiveItem(PlayPillow); // Play Pillow
-			SystemNotice(L("Received Play Pillow from Pillow Master Jeff."));
+			Player.GiveItem(PlayPillow); // Play Pillow
+			Player.SystemNotice(L("Received Play Pillow from Pillow Master Jeff."));
 
 			Msg(L("There you go."));
 		}
@@ -208,8 +208,8 @@ public class PillowFightEventNpc2Script : NpcScript
 						var amount = count / 10;
 						var remove = amount * 10;
 
-						RemoveItem(Feather, remove);
-						GiveItem(GiftBox, amount);
+						Player.RemoveItem(Feather, remove);
+						Player.GiveItem(GiftBox, amount);
 
 						Msg(L("There you go!"));
 					}

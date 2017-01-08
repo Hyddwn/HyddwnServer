@@ -29,9 +29,9 @@ public class ReachLevl30QuestScript : QuestScript
 
 	public async Task<HookResult> TalkAranwen(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_aranwen"))
+		if (npc.Player.QuestActive(this.Id, "talk_aranwen"))
 		{
-			npc.FinishQuest(this.Id, "talk_aranwen");
+			npc.Player.FinishQuestObjective(this.Id, "talk_aranwen");
 
 			// TODO: Get official dialog.
 			npc.Msg("Good job reaching Level 30!");

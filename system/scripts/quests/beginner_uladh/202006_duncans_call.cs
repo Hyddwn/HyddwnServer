@@ -29,9 +29,9 @@ public class DuncansCallQuestScript : QuestScript
 
 	public async Task<HookResult> TalkDuncan(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_duncan"))
+		if (npc.Player.QuestActive(this.Id, "talk_duncan"))
 		{
-			npc.FinishQuest(this.Id, "talk_duncan");
+			npc.Player.FinishQuestObjective(this.Id, "talk_duncan");
 
 			Send.Effect(npc.NPC, Effect.ScreenFlash, 3000, 0);
 
@@ -41,8 +41,8 @@ public class DuncansCallQuestScript : QuestScript
 				npc.Player.Inventory.Remove(eiry);
 
 			// Give sword
-			npc.GiveItem(40015);
-			npc.Notice("Received Fluted Short Sword from Duncan.");
+			npc.Player.GiveItem(40015);
+			npc.Player.Notice("Received Fluted Short Sword from Duncan.");
 
 			npc.Msg("Welcome to Tir Chonaill.");
 			npc.Msg("Oh, you are finally here, <username/>.<br/>I've heard a lot about you from the villagers.<br/>You've leveled up quite a lot.");

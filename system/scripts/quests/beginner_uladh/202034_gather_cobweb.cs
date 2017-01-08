@@ -29,10 +29,10 @@ public class GatherCobwebQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id) && npc.HasItem(60008, 5))
+		if (npc.Player.QuestActive(this.Id) && npc.Player.HasItem(60008, 5))
 		{
-			npc.RemoveItem(60008, 5); // Cobweb
-			npc.CompleteQuest(this.Id);
+			npc.Player.RemoveItem(60008, 5); // Cobweb
+			npc.Player.CompleteQuest(this.Id);
 
 			npc.Msg(L("You brought the cobwebs! Thank you."));
 			npc.Msg(L("Cobwebs are used to make Fine Yarn.<br/>The cobwebs dropped by the spiders in TirChonaill are sturdier than usual, so they're great for making strings."));

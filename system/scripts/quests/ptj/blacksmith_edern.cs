@@ -61,7 +61,7 @@ public class EdernPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -125,7 +125,7 @@ public class EdernPtjScript : GeneralScript
 		var skillRank = playerSkills.Has(SkillId.Blacksmithing)
 			? playerSkills.Get(SkillId.Blacksmithing).Info.Rank
 			: SkillRank.RF; // Default to RF jobs if player does not know Blacksmithing.
-		var ptjQuestLevel = npc.GetPtjQuestLevel(JobType);
+		var ptjQuestLevel = npc.Player.GetPtjQuestLevel(JobType);
 
 		Func<SkillRank, IEnumerable<int>> GetSameRankQuests = r => QuestIdSkillRankList
 			.Where(pair => pair.Item2 == r) // Filter on skill rank
@@ -133,7 +133,7 @@ public class EdernPtjScript : GeneralScript
 		Func<IEnumerable<int>, int> GetRandomIdOfTheDay = ids => ids.ElementAt(new Random(ErinnTime.Now.DateTimeStamp).Next(ids.Count()));
 
 		var rankProbe = skillRank;
-		var sameLevelQuestIds = npc.GetLevelMatchingQuestIds(JobType, QuestIdSkillRankList.Select(pair => pair.Item1).ToArray());
+		var sameLevelQuestIds = npc.Player.GetLevelMatchingQuestIds(JobType, QuestIdSkillRankList.Select(pair => pair.Item1).ToArray());
 
 		IEnumerable<int> matchingQuestIds;
 		// Clamp on rank A, the most difficult job available.
@@ -165,19 +165,19 @@ public class EdernPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Tasks at the Blacksmith's Shop aren't as easy as you think.<br/>Come back after you finish what you're doing."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 				{
@@ -205,7 +205,7 @@ public class EdernPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Leave.<br/>Don't ever come work for me again."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -227,7 +227,7 @@ public class EdernPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -251,14 +251,14 @@ public class EdernPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("Come back at the deadline."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("That's enough for today.<br/>Come back tomorrow."));
 			return;
@@ -268,7 +268,7 @@ public class EdernPtjScript : GeneralScript
 		var randomPtj = this.RandomPtj(npc);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("(missing): first time worker PTJ inquiry");
 		else
 			msg = L("Are you looking for work? I just happen to have the perfect job for you.");
@@ -276,20 +276,20 @@ public class EdernPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Edern's Blacksmith's Shop Part-Time Job"),
 			L("Looking for help with crafting items needed for Blacksmith Shop."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("(missing): first time accepting PTJ offer"));
 			else
 				npc.Msg(L("Do it right."));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("(missing): first time declining PTJ offer"));
 			else
 				npc.Msg(L("Don't bother me. I'm a busy person."));

@@ -35,12 +35,12 @@ public class TheStoryOfTheGoddessQuest : GeneralScript
 		if (keyword != "g1_goddess")
 			return HookResult.Continue;
 
-		npc.GiveItem(73059); // Book: The Goddess Who Turned into Stone
+		npc.Player.GiveItem(73059); // Book: The Goddess Who Turned into Stone
 
-		npc.RemoveKeyword("g1_04");
-		npc.GiveKeyword("g1_05");
-		npc.RemoveKeyword("g1_goddess");
-		npc.GiveKeyword("g1_tarlach_of_lughnasadh");
+		npc.Player.RemoveKeyword("g1_04");
+		npc.Player.GiveKeyword("g1_05");
+		npc.Player.RemoveKeyword("g1_goddess");
+		npc.Player.GiveKeyword("g1_tarlach_of_lughnasadh");
 
 		npc.Msg(Hide.Name, L("(Received The Goddess Who Turned into Stone from Meven.)"));
 		npc.Msg(L("So you wish to know more about the black-winged Goddess of War and Vengeance.<br/>Please, take a look at this free reading material on Morrighan."));
@@ -56,10 +56,10 @@ public class TheStoryOfTheGoddessQuest : GeneralScript
 		if (keyword != "g1_tarlach_of_lughnasadh")
 			return HookResult.Continue;
 
-		npc.RemoveKeyword("g1_05");
-		npc.GiveKeyword("g1_06");
-		npc.RemoveKeyword("g1_tarlach_of_lughnasadh");
-		npc.GiveKeyword("g1_book1");
+		npc.Player.RemoveKeyword("g1_05");
+		npc.Player.GiveKeyword("g1_06");
+		npc.Player.RemoveKeyword("g1_tarlach_of_lughnasadh");
+		npc.Player.GiveKeyword("g1_book1");
 
 		npc.Msg(L("Meven must have told you how to find me..."));
 		npc.Msg(L("Hah. Sorry if I surprised you. Well, what do you think?<br/>Do you like Sidhe Sneachta at night?<br/>Yes, the bear you met earlier was me.<br/>Oh, I forgot to thank you for the Mana Herb."));
