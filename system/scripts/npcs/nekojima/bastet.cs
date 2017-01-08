@@ -256,18 +256,18 @@ public class BastetScript : NpcScript
                 else if (Favor <= -10)
                 {
                     RndFavorMsg(
-                    "...Umm...",
-                    "Huh? Did I hear that wrong?",
-                    "I don't understand to well..."
+                   	"...Umm...",
+                    	"Huh? Did I hear that wrong?",
+                    	"I don't understand to well..."
                     );
                     ModifyRelation(0, 0, Random(4));
                 }
                 else if (Favor <= -30)
                 {
                     RndFavorMsg(
-                    "...Umm...",
-                    "Huh? Did I hear that wrong?",
-                    "I don't understand to well..."
+                 	 "...Umm...",
+                  	 "Huh? Did I hear that wrong?",
+                  	 "I don't understand to well..."
                     );
                     ModifyRelation(0, 0, Random(5));
                 }
