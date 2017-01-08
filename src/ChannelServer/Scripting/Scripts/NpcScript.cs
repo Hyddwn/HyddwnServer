@@ -1477,7 +1477,12 @@ namespace Aura.Channel.Scripting.Scripts
 		[Obsolete]
 		public bool GiveItem(int itemId, uint color1, uint color2, uint color3)
 		{
-			return this.Player.GiveItem(itemId, color1, color2, color3);
+			var item = new Item(itemId);
+			item.Info.Color1 = color1;
+			item.Info.Color2 = color2;
+			item.Info.Color3 = color3;
+
+			return this.Player.GiveItem(item);
 		}
 
 		/// <summary>
