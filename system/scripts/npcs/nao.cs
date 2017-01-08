@@ -58,7 +58,13 @@ public class NaoScript : NpcScript
 
 		while (true)
 		{
-			Msg(RandomPhrase(),
+			var msg = Rnd(
+				L("If there is something you'd like to know more of, please ask me now."),
+				L("Do not hesitate to ask questions. I am more than happy to answer them for you."),
+				L("If you have any questions before heading off to Erinn, please feel free to ask.")
+			);
+
+			Msg(msg,
 				Button(L("End Conversation"), "@endconv"),
 				List(L("Talk to Nao"), 4, "@endconv",
 					Button(L("About Mabinogi"), "@mabinogi"),
@@ -115,17 +121,6 @@ public class NaoScript : NpcScript
 		Player.GiveKeyword("tutorial_present");
 
 		Close();
-	}
-
-	private string RandomPhrase()
-	{
-		switch (Random(3))
-		{
-			default:
-			case 0: return L("If there is something you'd like to know more of, please ask me now.");
-			case 1: return L("Do not hesitate to ask questions. I am more than happy to answer them for you.");
-			case 2: return L("If you have any questions before heading off to Erinn, please feel free to ask.");
-		}
 	}
 
 	private async Task Rebirth()
@@ -239,7 +234,24 @@ public class NaoScript : NpcScript
 
 	private async Task Birthday()
 	{
-		var potentialGifts = new int[] { 12000, 12001, 12002, 12003, 12004, 12005, 12006, 12007, 12008, 12009, 12010, 12011, 12012, 12013, 12014, 12015, 12016, 12017, 12018, 12019, 12020, 12021, 12022, 12023 };
+		Player.GiveItem(CreateRandomBirthdayGift());
+		Player.Vars.Perm["NaoLastPresentDate"] = DateTime.Now.Date;
+
+		// Unofficial
+		Msg(L("Happy Birthday, <username/>! "));
+		Msg(L("I have a little something for you on this special day,<br/>please accept it."));
+
+		if (IsEnabled("NaoDressUp") && !Player.HasKeyword("present_to_nao"))
+			Player.GiveKeyword("present_to_nao");
+
+		await Conversation();
+
+		Close(Hide.None, "Until we meet again, then.<br/>I wish you the best of luck in Erinn.<br/>I'll see you around.");
+	}
+
+	private Item CreateRandomBirthdayGift()
+	{
+		var potentialGifts = new[] { 12000, 12001, 12002, 12003, 12004, 12005, 12006, 12007, 12008, 12009, 12010, 12011, 12012, 12013, 12014, 12015, 12016, 12017, 12018, 12019, 12020, 12021, 12022, 12023 };
 
 		var rndGift = potentialGifts.Random();
 		var prefix = 0;
@@ -322,19 +334,7 @@ public class NaoScript : NpcScript
 			}
 		}
 
-		Player.GiveItem(Item.CreateEnchanted(rndGift, prefix, suffix));
-		Player.Vars.Perm["NaoLastPresentDate"] = DateTime.Now.Date;
-
-		// Unofficial
-		Msg(L("Happy Birthday, <username/>! "));
-		Msg(L("I have a little something for you on this special day,<br/>please accept it."));
-
-		if (IsEnabled("NaoDressUp") && !Player.HasKeyword("present_to_nao"))
-			Player.GiveKeyword("present_to_nao");
-
-		await Conversation();
-
-		Close(Hide.None, "Until we meet again, then.<br/>I wish you the best of luck in Erinn.<br/>I'll see you around.");
+		return Item.CreateEnchanted(rndGift, prefix, suffix);
 	}
 
 	protected override async Task Keywords(string keyword)
