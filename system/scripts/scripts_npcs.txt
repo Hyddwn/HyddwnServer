@@ -79,6 +79,8 @@ npcs/sidhe/tarlach_bear.cs
 npcs/ceo/muro.cs
 npcs/ceo/aer.cs
 
+npcs/nekojima/bastet.cs
+
 custom/patrons/trigger.cs
 custom/patrons/pegwald.cs
 
