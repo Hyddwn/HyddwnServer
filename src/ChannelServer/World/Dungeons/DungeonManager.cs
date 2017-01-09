@@ -47,7 +47,7 @@ namespace Aura.Channel.World.Dungeons
 			205,   // Dugald_Aisle_keep_DgnHall_before (Dugald Castle)
 			207,   // Sen_Mag_keep_DgnHall_before (Sen Mag Castle)
 			217,   // Abb_Neagh_keep_DgnHall_before (Abb Neagh Castle)
-			600,   // JP_Nekojima_islet (Nekojima)
+			//600,   // JP_Nekojima_islet (Nekojima)
 			60206, // Tara_keep_DgnHall_before (Tara Castle)
 		};
 

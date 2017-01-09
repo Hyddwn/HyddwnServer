@@ -125,7 +125,7 @@ namespace Aura.Channel.Skills.Magic
 			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
 			if (optionSetData == null)
 			{
-				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant with unknown option set '{0}'.", optionSetId);
+				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant with unknown option set '{1}'.", creature.EntityId, optionSetId);
 				return false;
 			}
 

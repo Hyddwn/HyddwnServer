@@ -77,7 +77,10 @@ public class NoraScript : NpcScript
 				break;
 
 			case "@shop":
-				Msg("Are you looking for a Tailoring Kit and materials?<br/>If so, you've come to the right place.");
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+					Msg("Hmm, I'm not supposed to show this to other people.<br/>But I have a book...for your eyes only, <username/>!<br/>Tell me if you want it.<br/>Wait, it's not free!");
+				else
+					Msg("Are you looking for a Tailoring Kit and materials?<br/>If so, you've come to the right place.");
 				OpenShop("NoraShop");
 				return;
 

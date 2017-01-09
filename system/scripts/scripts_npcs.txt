@@ -55,6 +55,7 @@ npcs/bangor/jenifer.cs
 npcs/bangor/riocard.cs
 npcs/bangor/sion.cs
 
+npcs/emain/nele.cs
 npcs/emain/guardsman.cs
 
 npcs/egos/eiry.cs
@@ -77,6 +78,8 @@ npcs/sidhe/tarlach_bear.cs
 
 npcs/ceo/muro.cs
 npcs/ceo/aer.cs
+
+npcs/nekojima/bastet.cs
 
 custom/patrons/trigger.cs
 custom/patrons/pegwald.cs
