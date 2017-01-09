@@ -4354,6 +4354,34 @@ namespace Aura.Channel.World.Entities
 			if (this.HasKeyword(keyword))
 				this.Keywords.Remove(keyword);
 		}
+
+		/// <summary>
+		/// Adds points (Pon) to creature's account.
+		/// </summary>
+		/// <param name="amount"></param>
+		public void GivePoints(int amount)
+		{
+			this.Points += amount;
+		}
+
+		/// <summary>
+		/// Removes points (Pon) from creature's account.
+		/// </summary>
+		/// <param name="amount"></param>
+		public void RemovePoints(int amount)
+		{
+			this.Points -= amount;
+		}
+
+		/// <summary>
+		/// Returns true if creature's account has at least the given amount
+		/// of points (Pon).
+		/// </summary>
+		/// <param name="amount"></param>
+		public bool HasPoints(int amount)
+		{
+			return (this.Points >= amount);
+		}
 	}
 
 	public enum TargetableOptions
