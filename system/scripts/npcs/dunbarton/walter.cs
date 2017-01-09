@@ -139,7 +139,7 @@ public class WalterScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("Are you a part-timer?"));
 		}
@@ -185,7 +185,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg(FavorExpression(), "If you need something, you're at the right place.<br/>But you'll have to go down to Nerys' Shop for weapons.<br/>The Weapons Shop.");
 				ModifyRelation(Random(2), 0, Random(3));
 
@@ -198,7 +198,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("Are you talking about the Restaurant?");
 				break;
 
@@ -215,7 +215,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("There's no such place here.<br/>Maybe in the Weapons Shop...");
 				break;
 
@@ -264,7 +264,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_healing");
+				Player.GiveKeyword("shop_healing");
 				Msg("Go near the Healer's House.");
 				break;
 

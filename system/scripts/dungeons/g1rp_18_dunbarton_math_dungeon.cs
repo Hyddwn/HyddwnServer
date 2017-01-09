@@ -44,12 +44,12 @@ public class MoresRPDungeonScript : DungeonScript
 			var creators = dungeon.GetCreators();
 			foreach (var member in creators)
 			{
-				if (member.Keywords.Has("g1_21"))
+				if (member.HasKeyword("g1_21"))
 				{
-					member.Keywords.Remove("g1_21");
-					member.Keywords.Give("g1_22");
-					member.Keywords.Remove("g1_memo_of_lost_thing");
-					member.Keywords.Give("g1_goddess_morrighan1");
+					member.RemoveKeyword("g1_21");
+					member.GiveKeyword("g1_22");
+					member.RemoveKeyword("g1_memo_of_lost_thing");
+					member.GiveKeyword("g1_goddess_morrighan1");
 				}
 			}
 

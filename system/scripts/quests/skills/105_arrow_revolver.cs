@@ -62,7 +62,7 @@ public class ArrowRevolverQuestScript : QuestScript
 		}
 
 		// Check skill
-		if (npc.HasSkill(SkillId.ArrowRevolver2))
+		if (npc.Player.HasSkill(SkillId.ArrowRevolver2))
 		{
 			// Unofficial
 			npc.Msg(L("...You've learned Arrow Revolver. I hope you keep learning<br/>until you master it."));
@@ -71,9 +71,9 @@ public class ArrowRevolverQuestScript : QuestScript
 		}
 
 		// Start quest
-		if (!npc.QuestActive(this.Id))
+		if (!npc.Player.QuestActive(this.Id))
 		{
-			if (!npc.HasItem(this.ScrollId))
+			if (!npc.Player.HasItem(this.ScrollId))
 			{
 				npc.Msg(L("Hmmm... <username/>, you knew how to shoot a Fire Arrow?<br/>It seems like you are interested in bows, and...<br/>it's nice to meet someone who's talent is only surpassed by their work ethic."));
 				npc.Msg(L("I think it'll be very beneficial for you to learn this skill called the Arrow Revolver..."));
@@ -105,7 +105,7 @@ public class ArrowRevolverQuestScript : QuestScript
 			var book = npc.Player.Inventory.GetItem(a => a.Info.Id == BookOnArrowRevolver && a.OptionInfo.Suffix == BookOnArrowRevolverPage10);
 			if (book != null)
 			{
-				npc.FinishQuest(this.Id, "talk");
+				npc.Player.FinishQuestObjective(this.Id, "talk");
 				npc.Player.Inventory.Remove(book);
 
 				npc.Msg(L("Yes? Please don't block my view."));

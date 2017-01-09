@@ -140,7 +140,7 @@ namespace Aura.Channel.World.Dungeons.Props
 
 				case 5: // Gold
 					{
-						creature.GiveItem(Item.CreateGold(rnd.Next(100, 200 + 1)));
+						creature.GiveGold(rnd.Next(100, 200 + 1));
 						Send.Notice(creature, Localization.Get("Gold"));
 						break;
 					}

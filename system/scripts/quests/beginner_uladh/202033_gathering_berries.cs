@@ -31,24 +31,24 @@ public class GatheringBerriesQuestScript : QuestScript
 
 	public async Task<HookResult> TalkNpc(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_dilys1"))
+		if (npc.Player.QuestActive(this.Id, "talk_dilys1"))
 		{
-			npc.FinishQuest(this.Id, "talk_dilys1");
+			npc.Player.FinishQuestObjective(this.Id, "talk_dilys1");
 
 			npc.Msg("There's been talk recently about how healthy berries are.<br/>Their qualities have peaked my interest, even about the weight!");
 			npc.Msg("Can you bring me one berry? I'd be very grateful.");
 
 			return HookResult.Break;
 		}
-		else if (npc.QuestActive(this.Id, "talk_dilys2") && npc.HasItem(50007))
+		else if (npc.Player.QuestActive(this.Id, "talk_dilys2") && npc.Player.HasItem(50007))
 		{
-			npc.FinishQuest(this.Id, "talk_dilys2");
+			npc.Player.FinishQuestObjective(this.Id, "talk_dilys2");
 
 			npc.Msg("Oh thank you so much! I can't wait to try it!<br/>Here, as an exchange, take these potions I've been working on.<button title='Continue' keyword='@continue'/>");
 			await npc.Select();
 
-			npc.RemoveItem(50007); // Berry
-			npc.CompleteQuest(this.Id);
+			npc.Player.RemoveItem(50007); // Berry
+			npc.Player.CompleteQuest(this.Id);
 
 			return HookResult.Break;
 		}

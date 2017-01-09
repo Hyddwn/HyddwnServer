@@ -368,6 +368,9 @@
 		// Enables obtaining Animal Training skill
 		{ name: "AnimalTraining", enabled: true },
 		
+		// Enables obtaining Metallurgy skill
+		{ name: "Metallurgy", enabled: true },
+		
 		// Enables NPCs going into deadly
 		{ name: "DeadlyNPCs", enabled: true },
 		

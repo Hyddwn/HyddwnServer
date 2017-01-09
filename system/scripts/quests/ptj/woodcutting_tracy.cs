@@ -31,7 +31,7 @@ public class TracyPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -67,19 +67,19 @@ public class TracyPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("You can do only one part-time job per day.<br/>You're done for the day, so find something else to do."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("What? Already finished everything?<br/>Man, that's the spirit.<br/>But there's still time left before the deadline.<br/>Come back a little later. Haha..."));
@@ -103,7 +103,7 @@ public class TracyPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("What is this? A joke?<br/>Don't even think about a payment!"));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -125,7 +125,7 @@ public class TracyPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -149,24 +149,24 @@ public class TracyPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("You want a logging job?<br/>This is not the right time. Come back later.<br/>When the shadow's in the northwest... I think 7 o'clock in the morning will do."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("You can do only one part-time job per day.<br/>You're done for the day, so find something else to do."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("Good. You want a logging job?<br/>I was actually a little bored working alone.<br/>I can use some help. If you're good enough, I can pay you more.<p/>Want to give it a try?");
 		else
 			msg = L("Want to play lumberjack again?");
@@ -174,20 +174,20 @@ public class TracyPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Tracy's Firewood-Chopping PTJ"),
 			L("Looking for material collectors."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("(missing): first time accepting PTJ offer"));
 			else
 				npc.Msg(L("Outstanding! Go on, man."));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("(missing): first time declining PTJ offer"));
 			else
 				npc.Msg(L("Well... if you're not interested..."));

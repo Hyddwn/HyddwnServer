@@ -66,7 +66,7 @@ public class AlbyTutorialDungeonScript : DungeonScript
 	public override void OnLeftEarly(Dungeon dungeon, Creature creature)
 	{
 		// Give pass again if lost
-		if (!creature.Keywords.Has("Clear_Tutorial_Alby_Dungeon"))
+		if (!creature.HasKeyword("Clear_Tutorial_Alby_Dungeon"))
 			creature.GiveItem(63180); // Trefor's Pass
 	}
 

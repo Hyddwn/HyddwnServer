@@ -25,7 +25,7 @@ public class WizardsNoteCiarDungeonScript : DungeonScript
 			var member = creators[i];
 			var treasureChest = new TreasureChest();
 
-			if (member.Keywords.Has("g1_25"))
+			if (member.HasKeyword("g1_25"))
 				treasureChest.Add(Item.Create(73054)); // Book of Revenge Vol 2
 
 			treasureChest.AddGold(rnd.Next(326, 800)); // Gold

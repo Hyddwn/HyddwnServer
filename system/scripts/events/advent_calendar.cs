@@ -114,8 +114,8 @@ public class AdventCalenderEventNpcScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		if (QuestActive(1100000, "talk"))
-			FinishQuest(1100000, "talk");
+		if (Player.QuestActive(1100000, "talk"))
+			Player.FinishQuestObjective(1100000, "talk");
 
 		if (!IsEventActive("aura_advent_calendar"))
 		{
@@ -149,8 +149,8 @@ public class AdventCalenderEventNpcScript : NpcScript
 		await Select();
 
 		var item = GetRandomGift();
-		SystemNotice(L("Received {0} from Coco."), L(item.Data.Name));
-		GiveItem(item);
+		Player.GiveItem(item);
+		Player.SystemNotice(L("Received {0} from Coco."), L(item.Data.Name));
 
 		SaveLastReceivedDay(now);
 

@@ -130,8 +130,8 @@ public class AerScript : NpcScript
 	{
 		if (IsEnabled("RundalSirenDungeon") && item.Info.Id == 63103) // Suspicious Fomor Pass
 		{
-			GiveItem(63102);
-			SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));
+			Player.GiveItem(63102);
+			Player.SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));
 
 			if (Player.Vars.Perm["rundalSirenClear"] == null)
 			{

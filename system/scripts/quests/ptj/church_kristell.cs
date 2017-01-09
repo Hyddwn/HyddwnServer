@@ -45,7 +45,7 @@ public class KristellPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -81,19 +81,19 @@ public class KristellPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("The Church also needs workers.<br/>Please pay a visit here once you finish the current task."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 				{
@@ -121,7 +121,7 @@ public class KristellPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Oh, good heavens!<br/><username/>, I trusted you with this and this is all you have done. How disappointing.<br/>I cannot pay you for this."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -143,7 +143,7 @@ public class KristellPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -167,24 +167,24 @@ public class KristellPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("Oh, no. It is not time for Church duties yet.<br/>Would you return later?"));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("Today's work has been completed.<br/>Only one task is given to one person per day.<br/>Please return tomorrow."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("(missing): first time worker PTJ inquiry");
 		else
 			msg = L("Do you want to work at the Church again today?<br/>Please take a look at the work details before you decide.");
@@ -192,20 +192,20 @@ public class KristellPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Kristell's Church Part-Time Job"),
 			L("Looking for help with delivering goods to the Church."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("(missing): first time accepting PTJ offer"));
 			else
 				npc.Msg(L("Thank you.<br/>I hope you finish it in time."));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("(missing): first time declining PTJ offer"));
 			else
 				npc.Msg(L("Are you busy with something else?<br/>If not today, please give me a hand later."));

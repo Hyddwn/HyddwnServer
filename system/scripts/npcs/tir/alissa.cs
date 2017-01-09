@@ -67,9 +67,9 @@ public class AlissaScript : NpcScript
 
 							Player.Vars.Perm["alissa_title_gift"] = today;
 
-							GiveItem(71021); // Berry
-							Notice(L("Received Berry from Alissa."));
-							SystemMsg(L("Received Berry from Alissa."));
+							Player.GiveItem(71021); // Berry
+							Player.Notice(L("Received Berry from Alissa."));
+							Player.SystemMsg(L("Received Berry from Alissa."));
 
 							Msg(L("I wanted to give you this..."));
 							break;
@@ -183,7 +183,7 @@ public class AlissaScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("school");
+					Player.GiveKeyword("school");
 					Msg(FavorExpression(), "My name? I am <npcname/>.<br/>I work here at the mill, helping around with chores.<br/>Have you seen my sister? She's at the School.<br/>If you happen to go there, go inside the left building.<br/>She'll be in the magic class.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
@@ -224,16 +224,16 @@ public class AlissaScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("shop_smith");
+					Player.GiveKeyword("shop_smith");
 					Msg(FavorExpression(), "Ferghus?<br/>I don't know if he's a good blacksmith, but he's a nice person.<br/>Usually, when you ask him a question, he kindly answers everything...<br/>Go find out for yourself.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "about_skill":
-				if (!HasSkill(SkillId.ProductionMastery))
+				if (!Player.HasSkill(SkillId.ProductionMastery))
 				{
-					GiveSkill(SkillId.ProductionMastery, SkillRank.RF);
+					Player.GiveSkill(SkillId.ProductionMastery, SkillRank.RF);
 					Msg("Have you heard of the Production Mastery skill? Learning it will give you more Stamina and Dexterity,<br/>and you'll be more successful at gathering and crafting.");
 					Msg("It's not a skill you have to activate manually, either. Simply gathering and crafting will trigger the skill,<br/>so it'll improve without any particular effort on your part.");
 				}
@@ -275,7 +275,7 @@ public class AlissaScript : NpcScript
 				break;
 
 			case "skill_instrument":
-				GiveKeyword("lute");
+				Player.GiveKeyword("lute");
 				Msg("You can practice if you have a lute.<br/>Were you planning to learn the skill without an instrument?");
 				break;
 
@@ -361,7 +361,7 @@ public class AlissaScript : NpcScript
 				break;
 
 			case "shop_bookstore":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("The Bookstore? Ah, you're looking for a place to buy books?<br/>Well, I don't know if we have one in town.<br/>My sister sells some books at the School...<br/>But it's not exactly a bookstore...");
 				break;
 
@@ -390,7 +390,7 @@ public class AlissaScript : NpcScript
 				break;
 
 			case "tir_na_nog":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("Tir Na Nog? I remember Endelyon talked to me about that place before...<br/>If I remember correctly, she said it's a place of eternal happiness and life.<br/>If you want to know more about it, you should go to Church.");
 				Msg("It's not that far from here. Just go around the farmland, and it should be right there.");
 				break;

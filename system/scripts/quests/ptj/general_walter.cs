@@ -51,7 +51,7 @@ public class WalterPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -87,19 +87,19 @@ public class WalterPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Just finish what you're doing."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 				{
@@ -124,7 +124,7 @@ public class WalterPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Don't ever come here again!"));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -146,7 +146,7 @@ public class WalterPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -170,24 +170,24 @@ public class WalterPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("It's not the right time."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("That's it for today."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("Is this your first time? Good luck.");
 		else
 			msg = L("I'm counting on you as usual.");
@@ -198,16 +198,16 @@ public class WalterPtjScript : GeneralScript
 		else
 			ptjTitle = L("Looking for help with delivery of goods in General Shop.");
 
-		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Walter's General Shop Part-Time Job"), ptjTitle, PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Walter's General Shop Part-Time Job"), ptjTitle, PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("You have to finish your work before the deadline and come back to me.<br/>"));
 			else
 				npc.Msg(L("Well, then."));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
@@ -248,15 +248,15 @@ public abstract class WalterDeliveryPtjBaseScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj"))
+		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
 		npc.Player.RemoveItem(ItemId);
-		npc.FinishQuest(this.Id, "ptj");
-		npc.Notice(LItemNotice);
+		npc.Player.FinishQuestObjective(this.Id, "ptj");
+		npc.Player.Notice(LItemNotice);
 
 		await this.OnFinish(npc);
 
@@ -490,12 +490,12 @@ public abstract class WalterExtDeliveryPtjBaseScript : QuestScript
 
 	public async Task<HookResult> GetAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
 		npc.Player.GiveItem(ItemId);
-		npc.FinishQuest(this.Id, "ptj1");
-		npc.Notice(LGetItemNotice);
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
+		npc.Player.Notice(LGetItemNotice);
 
 		await this.GetOnFinish(npc);
 
@@ -504,15 +504,15 @@ public abstract class WalterExtDeliveryPtjBaseScript : QuestScript
 
 	public async Task<HookResult> GiveAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj2"))
+		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj2");
+		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 		npc.Player.RemoveItem(ItemId);
-		npc.Notice(LGiveItemNotice);
+		npc.Player.Notice(LGiveItemNotice);
 
 		await this.GiveOnFinish(npc);
 

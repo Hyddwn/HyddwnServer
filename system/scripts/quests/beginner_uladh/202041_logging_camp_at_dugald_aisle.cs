@@ -32,20 +32,20 @@ public class TracyLoggingCampQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk"))
+		if (npc.Player.QuestActive(this.Id, "talk"))
 		{
-			npc.FinishQuest(this.Id, "talk");
+			npc.Player.FinishQuestObjective(this.Id, "talk");
 
-			npc.AcquireItem(40022); // Gathering Axe
+			npc.Player.AcquireItem(40022); // Gathering Axe
 			npc.Msg("(Missing dialog: Explanation on getting firewood");
 
 			return HookResult.Break;
 		}
-		else if (npc.QuestActive(this.Id, "deliver") && npc.HasItem(63002, 6))
+		else if (npc.Player.QuestActive(this.Id, "deliver") && npc.Player.HasItem(63002, 6))
 		{
-			npc.FinishQuest(this.Id, "deliver");
+			npc.Player.FinishQuestObjective(this.Id, "deliver");
 
-			npc.RemoveItem(63002, 6);
+			npc.Player.RemoveItem(63002, 6);
 			npc.Msg("(Missing dialog: Appreciation for getting firewood");
 
 			return HookResult.Break;

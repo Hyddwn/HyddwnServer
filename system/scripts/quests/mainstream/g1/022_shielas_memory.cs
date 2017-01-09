@@ -28,7 +28,7 @@ public class ShielasMemoryQuest : GeneralScript
 
 		if (keyword == "g1_cichol")
 		{
-			npc.GiveKeyword("g1_33_2");
+			npc.Player.GiveKeyword("g1_33_2");
 
 			npc.Msg(L("Say what!? Someone is pretending to be Morrighan?<br/>White winged...and an obscured face?"));
 			npc.Msg(L("I don't believe this! Damn it!<br/>I've been deceived.<br/>Why didn't I think of that?"));
@@ -48,10 +48,10 @@ public class ShielasMemoryQuest : GeneralScript
 	{
 		var keyword = args[0] as string;
 
-		if (keyword == "g1_memorial4" && npc.HasKeyword("g1_34_1"))
+		if (keyword == "g1_memorial4" && npc.Player.HasKeyword("g1_34_1"))
 		{
-			if (!npc.HasItem(Torque))
-				npc.GiveItem(Torque);
+			if (!npc.Player.HasItem(Torque))
+				npc.Player.GiveItem(Torque);
 
 			npc.Msg(L("(Missing dialog: Eavan giving you back the lost Torque.)"));
 

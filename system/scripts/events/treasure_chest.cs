@@ -109,17 +109,17 @@ public class OrdinaryChest91038ItemScript : ItemScript
 		var ordinaryKeyId = TreasureChestEventScript.OrdinaryKeyId;
 		var premiumKeyId = TreasureChestEventScript.PremiumKeyId;
 
-		if (creature.Inventory.Has(ordinaryKeyId))
+		if (creature.HasItem(ordinaryKeyId))
 		{
 			GiveRandomGift(creature);
-			creature.Inventory.Remove(ordinaryKeyId);
+			creature.RemoveItem(ordinaryKeyId);
 
 			Send.Notice(creature, L("Opened chest with Key to the Ordinary Chest."));
 		}
-		else if (creature.Inventory.Has(premiumKeyId))
+		else if (creature.HasItem(premiumKeyId))
 		{
 			GiveRandomGift(creature);
-			creature.Inventory.Remove(premiumKeyId);
+			creature.RemoveItem(premiumKeyId);
 
 			Send.Notice(creature, L("Opened chest with Key to the Premium Chest."));
 		}
@@ -173,10 +173,10 @@ public class PremiumChest91039ItemScript : ItemScript
 	{
 		var premiumKeyId = TreasureChestEventScript.PremiumKeyId;
 
-		if (creature.Inventory.Has(premiumKeyId))
+		if (creature.HasItem(premiumKeyId))
 		{
 			GiveRandomGifts(creature);
-			creature.Inventory.Remove(premiumKeyId);
+			creature.RemoveItem(premiumKeyId);
 
 			Send.Notice(creature, L("Opened chest with Key to the Premium Chest."));
 		}

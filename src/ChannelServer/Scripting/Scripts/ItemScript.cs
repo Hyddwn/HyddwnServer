@@ -337,21 +337,6 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Trains the specified condition for skill by one.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skillId"></param>
-		/// <param name="condition"></param>
-		protected void TrainSkill(Creature creature, SkillId skillId, int condition)
-		{
-			var skill = creature.Skills.Get(skillId);
-			if (skill == null)
-				return;
-
-			skill.Train(condition);
-		}
-
-		/// <summary>
 		/// Activates the sticker for the given duration.
 		/// </summary>
 		/// <param name="sticker">Sticker to activate.</param>

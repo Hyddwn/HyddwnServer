@@ -179,10 +179,10 @@ public class CostumeFishingEventQuestScript : QuestScript
 
 	private async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "talk") || !IsEventActive("aura_costume_fishing_event"))
+		if (!npc.Player.QuestActive(this.Id, "talk") || !IsEventActive("aura_costume_fishing_event"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "talk");
+		npc.Player.FinishQuestObjective(this.Id, "talk");
 
 		npc.Msg(L("Boatloads of clothes were dumped into<br/>rivers and lakes everywhere!!"));
 		npc.Msg(L("Quick, complete the quest,<br/>take the fishing bait, and rescue them!"));

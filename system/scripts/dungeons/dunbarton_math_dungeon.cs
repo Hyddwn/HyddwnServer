@@ -45,7 +45,7 @@ public class MathDungeonScript : DungeonScript
 		// Broken Torque (G1, Mores RP)
 		if (item.Info.Id == 73003)
 		{
-			if (!creature.Keywords.Has("g1_21"))
+			if (!creature.HasKeyword("g1_21"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;
@@ -70,7 +70,7 @@ public class MathDungeonScript : DungeonScript
 		// Broken Torque (G1, Shiela+Mores RP)
 		if (item.Info.Id == 73005)
 		{
-			if (!creature.Keywords.Has("g1_34_1"))
+			if (!creature.HasKeyword("g1_34_1"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;

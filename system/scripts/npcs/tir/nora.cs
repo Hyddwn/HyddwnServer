@@ -54,9 +54,9 @@ public class NoraScript : NpcScript
 					{
 						Player.Vars.Perm["nora_title_gift"] = today;
 
-						GiveItem(60005, 5); // Bandage x5
-						Notice(L("Received Bandage from Nora."));
-						SystemMsg(L("Received Bandage from Nora."));
+						Player.GiveItem(60005, 5); // Bandage x5
+						Player.Notice(L("Received Bandage from Nora."));
+						Player.SystemMsg(L("Received Bandage from Nora."));
 
 						Msg(L("Welcome, my dear friend.<br/>Don't you think Uncle Piaras has noticed<br/>how much time you and I spend talking to each other?"));
 					}
@@ -247,7 +247,7 @@ public class NoraScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("square");
+					Player.GiveKeyword("square");
 					Msg(FavorExpression(), "The Square is right up the little hill next to us.<br/>It's worth a visit if you have some time.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
@@ -271,7 +271,7 @@ public class NoraScript : NpcScript
 				break;
 
 			case "shop_healing":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Dilys bickers a lot with Lassar at the School.<br/>They seem to be close friends,<br/>so I don't understand why they don't get along.");
 				break;
 
@@ -284,13 +284,13 @@ public class NoraScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("graveyard");
+				Player.GiveKeyword("graveyard");
 				Msg("Ferghus at the Blacksmith's Shop? I hope he stops working at night.<br/>His hammering always wakes me up!");
 				Msg("The graveyard is up that hill. It's scary to be awake in the middle of the night!");
 				break;
 
 			case "skill_range":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Ranald is the man to ask about such things.<br/>You'll have to head to the School.");
 				Msg("You need to go up to the Square first,<br/>and then follow the path down from the Bank until you see it.");
 				break;
@@ -355,13 +355,13 @@ public class NoraScript : NpcScript
 				break;
 
 			case "temple":
-				GiveKeyword("shop_bank");
+				Player.GiveKeyword("shop_bank");
 				Msg("To get to the Church,<br/>walk up the hill and follow the path down from the Bank.<br/>It's not far.");
 				Msg("Can you say hello to Priestess Endelyon for me?<br/>If she's not in,<br/>ask Priest Meven to do it on my behalf.");
 				break;
 
 			case "school":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("The School is just a few seconds' walk down from the Church.<br/>Lassar teaches magic, and Ranald teaches combat skills.<br/>Both teachers are very knowledgeable.");
 				break;
 
@@ -374,27 +374,27 @@ public class NoraScript : NpcScript
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Are you looking for a place to have a nice meal?<br/>Many people buy food at the Grocery Store<br/>and come here to eat with others.<br/>Didn't Caitin at the Grocery Store<br/>tell you?");
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("Are you looking for a Weapons Shop?<br/>Hmm... I can't remember...<br/>Oh, right! Head to the Blacksmith's Shop.<br/>Ferghus is good at making things.<br/>I'm sure he can make all sorts of weapons.");
 				break;
 
 			case "shop_cloth":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Sorry.<br/>There are no Clothing Shops in this town.<br/>Malcolm at the General Shop sells some clothes,<br/>but I wouldn't call them fashionable.");
 				break;
 
 			case "shop_bookstore":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Tir Chonaill doesn't have a bookstore.<br/>But if you need a book, go to the General Shop.<br/>It's beyond the hill over there.");
 				break;
 
 			case "shop_goverment_office":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("A town office in this small town?<br/>Yeah, right!<br/>The Chief's House is probably the closest thing, though.");
 				Msg("It's right on the hill<br/>near the Square.");
 				break;
@@ -404,7 +404,7 @@ public class NoraScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("Are you looking for a bow?<br/>The General Shop usually has everything you need...<br/>Ah, wait! I think you should go to the Blacksmith's Shop.<br/>Malcolm can't make arrows, so...yeah.<br/>The Blacksmith's Shop is just across the bridge from here.");
 				break;
 

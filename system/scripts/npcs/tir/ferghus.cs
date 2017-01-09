@@ -142,7 +142,7 @@ public class FerghusScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("Hey, part-timer!<br/>You're not just lounging around, are you? Haha."));
 		}
@@ -207,7 +207,7 @@ public class FerghusScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("shop_smith");
+					Player.GiveKeyword("shop_smith");
 					Msg(FavorExpression(), "I'm the blacksmith of Tir Chonaill. We'll see each other often, <username/>.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
@@ -247,7 +247,7 @@ public class FerghusScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("windmill");
+					Player.GiveKeyword("windmill");
 					Msg(FavorExpression(), "The wind around Tir Chonaill is very strong. It even breaks the windmill blades.<br/>And I'm the one to fix them.<br/>Malcolm's got some skills,<br/>but I'm the one who deals with iron.");
 					Msg("I made those extra blades out there just in case.<br/>When the Windmill stops working, it's really inconvenient around here.<br/>It's always better to be prepared, isn't it?");
 					ModifyRelation(Random(2), 0, Random(3));
@@ -255,14 +255,14 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "about_skill":
-				GiveKeyword("skill_fishing");
+				Player.GiveKeyword("skill_fishing");
 				Msg("Hmm... Well, <username/>, since you ask,<br/>I might as well answer you. Let's see.<br/>Fishing. Do you know about the Fishing skill?");
 				Msg("I'm not sure about the details, but<br/>I've seen a lot of people fishing up there.<br/>I'm not sure if fishing would be considered a skill, though.");
 				Msg("From what I've seen, all you need is<br/>a Fishing Rod and a Bait Tin.");
 				break;
 
 			case "shop_misc":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("This is the Blacksmith's Shop. Surprisingly, many people think they are at the General Shop.");
 				Msg("Let me tell you the biggest difference between Malcolm and me.<br/>He sells all kinds of stuff for your everyday life,<br/>but I, the best smithy in town, make metal stuff, you know.<br/>Like weapons, for example.");
 				Msg("If you insist, I'll show you the way to the General Shop.<br/>Walk across the bridge, and go up the hill to the Square.");
@@ -301,13 +301,13 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "skill_composing":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("You want to write music?<br/>Priestess Endelyon at the Church<br/>knows a bit about composing, I think.<br/>You can talk to her.");
 				Msg("She's such a nice lady.<br/>I'm sure she'll help you a lot.");
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Did you buy a Tailoring Kit? You can buy one at the General Shop.<br/>I know nothing about Tailoring, but I do know you need a Tailoring Kit and Fabric to make clothes.<br/>Just like a blacksmith needs an Anvil and a Bellows.");
 				break;
 
@@ -323,7 +323,7 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "skill_smash":
-				RemoveKeyword("skill_smash");
+				Player.RemoveKeyword("skill_smash");
 				Msg("Did you use the Smash skill?<br/>It is like a double-edged sword. Its weakness is as big as its strength. Better use it carefully.");
 				break;
 
@@ -340,13 +340,13 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("brook");
+				Player.GiveKeyword("brook");
 				Msg("The reservoir is not on this side.<br/>Cross the Adelia Stream out there,<br/>take a left, and then go straight.");
 				Msg("When you think you're close to the School, that's where it is.");
 				break;
 
 			case "farmland":
-				GiveKeyword("brook");
+				Player.GiveKeyword("brook");
 				Msg("The farmland? Then you're on the wrong side.<br/>Cross the Adelia Stream,<br/>and follow the path to the left.");
 				break;
 
@@ -379,7 +379,7 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "school":
-				GiveKeyword("farmland");
+				Player.GiveKeyword("farmland");
 				Msg("Did you ask because you want to know the location of the School?<br/>Then I will give you an answer.<br/>Cross the bridge first,<br/>and there's a road. Just go to the left until you see the farmland.");
 				Msg("If you pass the farmland, the School is very near you.<br/>The School gate is pretty big so you can't miss it.");
 				Msg("When you get there, can you tell Ranald<br/>we should get a drink together?<br/>Lassar must not find out about it, alright?");
@@ -422,7 +422,7 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "graveyard":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("The graveyard is near the Chief's House.<br/>Walk to the north of his house and you'll see it.<br/>Several days ago, I came home and slept like a log after drinking.<br/>But it turns out I slept in the graveyard, not in my bed!");
 				Msg("It was a bit chilly and more than a little creepy! But it was fun too.<br/>If there were no spiders, I could have a real good drinking binge there.");
 				break;
@@ -432,13 +432,13 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "bow":
-				RemoveKeyword("bow");
-				RemoveKeyword("skill_range");
+				Player.RemoveKeyword("bow");
+				Player.RemoveKeyword("skill_range");
 				Msg("Ha, ha. You are looking for bows. You came to the right place.<br/>I certainly have bows. In fact, you know what?<br/>This is a great chance to get your own bow!<br/>By the way, you know that you need arrows too, right?<br/>I mean, what can we do with just a bow and a string?<br/>Play with it?");
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Malcolm's General Shop sells lutes.<br/>He also sells... Um...<br/>What was that called? Ukul... something.");
 				break;
 
@@ -456,7 +456,7 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("If you are looking for Music Scores, you came too far down.<br/>Malcolm's General Shop is near the Square.<br/>Looks like someone wasted their time, haha.");
 				break;
 

@@ -104,7 +104,7 @@ public class AlbyDungeonScript : DungeonScript
 		// Tarlach's Locket (G1 RP)
 		if (item.Info.Id == 73002)
 		{
-			if (!creature.Party.Leader.Keywords.Has("g1_03"))
+			if (!creature.Party.Leader.HasKeyword("g1_03"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;
@@ -129,7 +129,7 @@ public class AlbyDungeonScript : DungeonScript
 		// Giant Spider Fomor Scroll (RP)
 		if (item.Info.Id == 73108)
 		{
-			if (creature.Keywords.Has("RP_Monster_GiantSpider_complete"))
+			if (creature.HasKeyword("RP_Monster_GiantSpider_complete"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon anymore."));
 				return false;
@@ -154,7 +154,7 @@ public class AlbyDungeonScript : DungeonScript
 		// Egg from Caitin (RP)
 		if (item.Info.Id == 73109)
 		{
-			if (creature.Keywords.Has("RP_Monster_Chicken_complete"))
+			if (creature.HasKeyword("RP_Monster_Chicken_complete"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon anymore."));
 				return false;
@@ -179,7 +179,7 @@ public class AlbyDungeonScript : DungeonScript
 		// Trefor's Gauntlet (RP)
 		if (item.Info.Id == 73103)
 		{
-			if (creature.Keywords.Has("RP_Trefor_Complete"))
+			if (creature.HasKeyword("RP_Trefor_Complete"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon anymore."));
 				return false;
@@ -197,7 +197,7 @@ public class AlbyDungeonScript : DungeonScript
 				return false;
 			}
 
-			if (!creature.Keywords.Has("RP_Trefor_Failed_2") && !creature.Keywords.Has("RP_Trefor_Failed_3"))
+			if (!creature.HasKeyword("RP_Trefor_Failed_2") && !creature.HasKeyword("RP_Trefor_Failed_3"))
 				dungeonName = "rp_trefor_tircho_alby_dungeon";
 			else
 				dungeonName = "rp_trefor_tircho_alby_dungeon2";

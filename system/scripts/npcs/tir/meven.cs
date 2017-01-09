@@ -131,7 +131,7 @@ public class MevenScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("temple");
+					Player.GiveKeyword("temple");
 					Msg(FavorExpression(), "I am Priest <npcname/>.<br/>It's so nice to see someone cares for an old man.<br/>Ha ha.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
@@ -200,7 +200,7 @@ public class MevenScript : NpcScript
 				break;
 
 			case "shop_misc":
-				GiveKeyword("square");
+				Player.GiveKeyword("square");
 				Msg("I haven't been to the General Shop for a long time.<br/>I should go and see brother Malcolm someday.<br/>If you happen to pass by the Square,<br/>please give my regards to Malcolm, would you?");
 				break;
 
@@ -209,7 +209,7 @@ public class MevenScript : NpcScript
 				break;
 
 			case "shop_healing":
-				GiveKeyword("tir_na_nog");
+				Player.GiveKeyword("tir_na_nog");
 				Msg("A diseased body can be treated at the Healer's House, but an ill mind should be treated at the Church.<br/>I hope you can stay away from an obsession with the external appearance of a person<br/>since it may erode the innocence of your soul.<br/>A soul that has lost its innocence further delays the advent of Tir Na Nog.");
 				Msg("Go to the other side of the Square and walk up the path a little and you'll find the Healer's House.");
 				break;
@@ -228,7 +228,7 @@ public class MevenScript : NpcScript
 				break;
 
 			case "skill_range":
-				GiveKeyword("bow");
+				Player.GiveKeyword("bow");
 				Msg("As far as I know, you need a bow before anything else<br/>to attack an enemy from a distance.<br/>You could perhaps learn magic or something<br/>for the same purpose, but");
 				Msg("magic requires AP to learn and books are also costly.<br/>So if it's just the long range attack you're interested in,<br/>I suggest you buy a bow and practice on your own.<br/>It would take less time and Gold in the end.");
 				break;
@@ -243,8 +243,8 @@ public class MevenScript : NpcScript
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_misc");
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Oh! You heard about this from Priestess Endelyon a minute ago?<br/>Indeed. She seems to have a great interest in the skill these days.<br/>I saw her talking to Caitin many times<br/>after buying Tailoring kits from the General Shop.");
 				Msg("You could probably receive a lot of help from Caitin.<br/>Why don't you go and visit her?<br/>She is always at the Grocery Store.");
 				Msg("I'm telling you she's always there<br/>because some people wander into the field<br/>and ask the shepherd boy where she is.<br/>I'm serious, some people did that before.");
@@ -274,7 +274,7 @@ public class MevenScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("windmill");
+				Player.GiveKeyword("windmill");
 				Msg("The reservoir? It's right in front of here.<br/>Oh, you must have missed it on your way here.<br/>It's all right. Everyone makes mistakes.");
 				Msg("Well, have you walked up along the waterway from the reservoir?<br/>You can see the Windmill from where the waterway meets the Adelia Stream.");
 				break;
@@ -291,7 +291,7 @@ public class MevenScript : NpcScript
 				break;
 
 			case "brook":
-				GiveKeyword("windmill");
+				Player.GiveKeyword("windmill");
 				Msg("Adelia Stream flows in front of our town, next to the Windmill.<br/>It was named after Saint Adelia,<br/>who used to be the priestess of the town.");
 				Msg("If you knew how important Adelia Stream is to Tir Chonaill,<br/>as a water source for drinking and farming,<br/>I believe you could understand<br/>how much respect we have for Saint Adelia.");
 				break;
@@ -312,26 +312,26 @@ public class MevenScript : NpcScript
 				break;
 
 			case "skill_windmill":
-				GiveKeyword("windmill");
+				Player.GiveKeyword("windmill");
 				Msg("Can you tell the difference between the Windmill and the Windmill skill?<br/>If you can't, you may be like Ferghus.");
 				Msg("Ha ha, I am just kidding.<br/>You don't have to be upset like that<br/>about a silly joke of an old man, ha ha.");
 				break;
 
 			case "skill_campfire":
-				GiveKeyword("brook");
+				Player.GiveKeyword("brook");
 				Msg("Well...<br/>Did Piaras tell you this?<br/>Then, he must have told you to go and see Deian<br/>across the Adelia Stream.");
 				Msg("Oh, please don't misunderstand.<br/>I just heard about it<br/>from someone who visited the Church before.");
 				Msg("You can find Deian across the Adelia Stream,<br/>located at the entrance of the town.<br/>You should go and see him.");
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Well, I am quite hungry now.<br/>Why don't we eat something?<br/>Caitin's Grocery Store sells some food.<br/>It would be wonderful if you could buy some from there.");
 				Msg("Hahaha. I am a humble priest serving God at the Church. What Gold could I possibly have?<br/>You can count this as your contribution.");
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("You wish to talk about the Weapons Shop here at the Church?<br/>I'm afraid you have a peculiar sense of choosing questions.<br/>You should ask about weapons<br/>not at the Church, but at the Blacksmith's Shop.");
 				Msg("You're not going to ask about the Church<br/>at the Blacksmith's Shop, are you?");
 				break;
@@ -342,20 +342,20 @@ public class MevenScript : NpcScript
 				break;
 
 			case "shop_bookstore":
-				GiveKeyword("mabinogi");
+				Player.GiveKeyword("mabinogi");
 				Msg("If you are looking for a book, please go to the General Shop.<br/>Malcolm may have some books on the Composing skill, at least.<br/>This town has few books, if any. Not even a book on Mabinogi, which I know is pretty common in other cities.");
 				Msg("I guess everybody is busy making a living.<br/>That's why nobody has time to read books.");
 				break;
 
 			case "shop_government_office":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("Are you looking for a town office?<br/>A small town like Tir Chonaill doesn't have a town office.<br/>Moreover, we are not under the control of the Aliech Kingdom.<br/>Tir Chonaill is sort of an autonomous district built by the descendants of Ulaid.");
 				Msg("If you must go to a town office,<br/>why don't you try a larger city?<br/>I believe there's one in Dunbarton south of here.");
 				Msg("If you simply want to know<br/>more about what's going on in town,<br/>you could try the Chief Duncan's House.");
 				break;
 
 			case "graveyard":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("The graveyard?<br/>It's near the Chief's House.");
 				Msg("There are big spiders spotted there.<br/>You should be very careful.");
 				Msg("Some people venture out there on purpose<br/>to get cobwebs,<br/>I heard.");

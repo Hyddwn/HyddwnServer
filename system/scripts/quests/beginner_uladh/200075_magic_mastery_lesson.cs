@@ -29,9 +29,9 @@ public class MagicMasteryLessonQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "obj1"))
+		if (npc.Player.QuestActive(this.Id, "obj1"))
 		{
-			npc.FinishQuest(this.Id, "obj1");
+			npc.Player.FinishQuestObjective(this.Id, "obj1");
 
 			npc.Msg(L("Umm... Are you <username/> by any chance?"));
 			npc.Msg(L("Hahaha! You look exactly like the way Bebhinn described.<br/>I'm sorry, I apologize for laughing.<br/>Nice to meet you, I am Lassar."));

@@ -85,5 +85,15 @@ namespace Aura.Channel.World.Entities.Creatures
 			lock (_staticDrops)
 				_staticDrops.Clear();
 		}
+
+		/// <summary>
+		/// Removes items from static drops that match the given predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		public void RemoveFromStaticDrops(Predicate<Item> predicate)
+		{
+			lock (_staticDrops)
+				_staticDrops.RemoveAll(predicate);
+		}
 	}
 }
