@@ -27,9 +27,9 @@ public class NaosLetterQuestScript : QuestScript
 
 	public async Task<HookResult> TalkDuncan(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_duncan"))
+		if (npc.Player.QuestActive(this.Id, "talk_duncan"))
 		{
-			npc.FinishQuest(this.Id, "talk_duncan");
+			npc.Player.FinishQuestObjective(this.Id, "talk_duncan");
 
 			npc.Msg(Hide.Name, "(You hand Nao's Letter of Introduction to Duncan.)");
 			npc.Msg("Ah, a letter from Nao.<br/>Hard to believe that little<br/>tomboy's all grown up...");

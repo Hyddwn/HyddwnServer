@@ -25,31 +25,31 @@ public class BookOfRevengeVol3_1Quest : GeneralScript
 
 		if (keyword == "g1_glasgavelen")
 		{
-			if (npc.HasKeyword("g1_26"))
+			if (npc.Player.HasKeyword("g1_26"))
 			{
-				npc.RemoveKeyword("g1_26");
-				npc.GiveKeyword("g1_27");
+				npc.Player.RemoveKeyword("g1_26");
+				npc.Player.GiveKeyword("g1_27");
 
 				npc.Msg(L("What? What did you just say?"));
 				npc.Msg(L("G-Glas Ghaibhleann?<br/>This can't be... Where did you hear that name?"));
 				npc.Msg(L("Does the third book of Fomors cover that?<br/>I'd like to read it. If you have it on you, please let me see it."), npc.Button(L("Here it is."), "@yes"), npc.Button(L("No"), "@no"));
 			}
-			else if (npc.HasKeyword("g1_27"))
+			else if (npc.Player.HasKeyword("g1_27"))
 			{
 				npc.Msg(L("I'd like to read the third book of Fomors. If you have it on you, please let me see it."), npc.Button(L("Here it is."), "@yes"), npc.Button(L("No"), "@no"));
 			}
 
-			if (await npc.Select() != "@yes" || !npc.HasItem(BookOfRevenge3Translated))
+			if (await npc.Select() != "@yes" || !npc.Player.HasItem(BookOfRevenge3Translated))
 			{
 				npc.Msg(L("Please come back immediately once you have the book on you."));
 				return HookResult.Break;
 			}
 
-			npc.RemoveKeyword("g1_glasgavelen");
-			npc.GiveKeyword("g1_book_of_glasgavelen");
+			npc.Player.RemoveKeyword("g1_glasgavelen");
+			npc.Player.GiveKeyword("g1_book_of_glasgavelen");
 
-			npc.RemoveItem(BookOfRevenge3Translated);
-			npc.Notice(L("You have given the Book of Revenge, Vol. 3 (Translated) to Duncan."));
+			npc.Player.RemoveItem(BookOfRevenge3Translated);
+			npc.Player.Notice(L("You have given the Book of Revenge, Vol. 3 (Translated) to Duncan."));
 
 			npc.Msg(Hide.Name, L("(Duncan receives the book and carefully starts reading.)"));
 			npc.Msg(L("This can't be!<br/>Things are a lot more serious than I'd thought.<br/>This is a problem. What should we do?"));
@@ -79,10 +79,10 @@ public class BookOfRevengeVol3_1Quest : GeneralScript
 
 		if (keyword == "g1_book_of_glasgavelen")
 		{
-			npc.RemoveKeyword("g1_27");
-			npc.GiveKeyword("g1_28");
-			npc.RemoveKeyword("g1_book_of_glasgavelen");
-			npc.GiveKeyword("g1_bone_of_glasgavelen");
+			npc.Player.RemoveKeyword("g1_27");
+			npc.Player.GiveKeyword("g1_28");
+			npc.Player.RemoveKeyword("g1_book_of_glasgavelen");
+			npc.Player.GiveKeyword("g1_bone_of_glasgavelen");
 
 			npc.Msg(L("...So you must be the one who spoke to Duncan in Tir Chonaill.<br/>I was roughly brought up to speed by the owl he'd sent me."));
 			npc.Msg(L("I've always had an interest in old stories, so<br/>when I happened to meet the Chief, I was able to read this book.<br/>I am done with this book now, so you can take it if you want to."));

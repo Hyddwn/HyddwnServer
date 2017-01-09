@@ -141,7 +141,7 @@ public class SionScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("How's the job going?<br/>Don't slack off, okay?"));
 		}

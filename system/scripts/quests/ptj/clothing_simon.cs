@@ -92,7 +92,7 @@ public class SimonPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -128,19 +128,19 @@ public class SimonPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("You seem pretty busy yourself.<br/>You should worry about finishing the work first."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
+			if (!ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("You are done already?<br/>I'm a little busy right now. Come see me closer to the deadline, OK?"));
@@ -165,7 +165,7 @@ public class SimonPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Oh my...<br/>If you're going to be like this, don't even think about working for me again."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -187,7 +187,7 @@ public class SimonPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -211,24 +211,24 @@ public class SimonPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("No, no, no. There is no work before or after the designated time."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("I'm done for today.<br/>Come back tomorrow!"));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("Do you have any experience in this line of work?<br/>The path of a designer is long and challenging.<br/>If you're feeling confident enough, though, I can entrust you with the work.");
 		else
 			msg = L("Here to work again?");
@@ -243,20 +243,20 @@ public class SimonPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Simon's Clothing Shop Part-Time Job"),
 			ptjDescTitle,
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Alright. Finish the work and report back to me before the deadline."));
 			else
 				npc.Msg(L("All right. I'll see you before the deadline. OK?"));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Huh? Are you giving up that easily?"));
 			else
 				npc.Msg(L("Oh well, then. Maybe next time."));
@@ -1042,13 +1042,13 @@ public abstract class SimonDeliveryPtjBaseScript : QuestScript
 
 	public virtual async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj1");
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		npc.Player.RemoveItem(ItemId, 1);
-		npc.Notice(LItemNotice);
+		npc.Player.Notice(LItemNotice);
 
 		await OnFinish(npc);
 
@@ -1277,10 +1277,10 @@ public abstract class SimonExtDeliveryPtjBaseScript : SimonDeliveryPtjBaseScript
 	/// <remarks>Overriden to not remove item on intro finish.</remarks>
 	public override async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj1");
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		await OnFinish(npc);
 
@@ -1289,13 +1289,13 @@ public abstract class SimonExtDeliveryPtjBaseScript : SimonDeliveryPtjBaseScript
 
 	public async Task<HookResult> AfterIntro2(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj2"))
+		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj2");
+		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 		npc.Player.RemoveItem(ItemId, 1);
-		npc.Notice(LItemNotice);
+		npc.Player.Notice(LItemNotice);
 
 		await OnFinish2(npc);
 

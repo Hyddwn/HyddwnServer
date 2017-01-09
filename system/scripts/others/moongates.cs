@@ -339,17 +339,17 @@ public class MoonGateScript : GeneralScript
 			// Add keyword if creature doesn't have it yet, this "marks" the
 			// moon gate as potential target in the new system, you can only
 			// warp to those you have visited before.
-			if (!creature.Keywords.Has(gate.Keyword))
-				creature.Keywords.Give(gate.Keyword);
+			if (!creature.HasKeyword(gate.Keyword))
+				creature.GiveKeyword(gate.Keyword);
 
 			// Enabled/Disable Ceo gate
-			if (!creature.Keywords.Has("_moontunnel_ceoisland") && IsEnabled("CeoMoonTunnel"))
-				creature.Keywords.Give("_moontunnel_ceoisland");
-			else if (creature.Keywords.Has("_moontunnel_ceoisland") && !IsEnabled("CeoMoonTunnel"))
-				creature.Keywords.Remove("_moontunnel_ceoisland");
+			if (!creature.HasKeyword("_moontunnel_ceoisland") && IsEnabled("CeoMoonTunnel"))
+				creature.GiveKeyword("_moontunnel_ceoisland");
+			else if (creature.HasKeyword("_moontunnel_ceoisland") && !IsEnabled("CeoMoonTunnel"))
+				creature.RemoveKeyword("_moontunnel_ceoisland");
 
 			// Get list of moon gates the creature can use
-			var freeRoaming = (FreeRoaming || creature.Keywords.Has("freemoongate"));
+			var freeRoaming = (FreeRoaming || creature.HasKeyword("freemoongate"));
 			var mygates = gates.Values.Where(a => CanWarpTo(creature, a));
 
 			SendMoonGateMap(creature, gate, mygates);
@@ -412,8 +412,8 @@ public class MoonGateScript : GeneralScript
 		if (!IsEnabled("MoonTunnel"))
 			return true;
 
-		var freeRoaming = (FreeRoaming || creature.Keywords.Has("freemoongate"));
-		return (freeRoaming || creature.Keywords.Has(gate.Keyword));
+		var freeRoaming = (FreeRoaming || creature.HasKeyword("freemoongate"));
+		return (freeRoaming || creature.HasKeyword(gate.Keyword));
 	}
 
 	private void HandleMoonGateUse(ChannelClient client, Packet packet)

@@ -33,15 +33,15 @@ public class GatheringWoolMalcolmScript : QuestScript
 
 	public async Task<HookResult> IntroHook(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "talk_malcolm"))
+		if (!npc.Player.QuestActive(this.Id, "talk_malcolm"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(60009, 5)) // 5 Wool
+		if (!npc.Player.HasItem(60009, 5)) // 5 Wool
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(60009, 5); // 5 Wool
+		npc.Player.RemoveItem(60009, 5); // 5 Wool
 		Send.Notice(npc.Player, L("You have given Wool to Malcolm."));
-		npc.FinishQuest(this.Id, "talk_malcolm");
+		npc.Player.FinishQuestObjective(this.Id, "talk_malcolm");
 
 		npc.Msg("Thank you.<br/>Thanks to you I was able to complete the fabric orders.<br/>I will teach you the Weaving skill as promised.");
 
@@ -52,15 +52,15 @@ public class GatheringWoolMalcolmScript : QuestScript
 	{
 		var keyword = args[0] as string;
 
-		if (keyword != "about_skill" || npc.HasSkill(SkillId.Weaving))
+		if (keyword != "about_skill" || npc.Player.HasSkill(SkillId.Weaving))
 			return HookResult.Continue;
 
-		if (!npc.QuestActive(this.Id))
+		if (!npc.Player.QuestActive(this.Id))
 		{
 			npc.Msg("Have you heard of the Weaving skill?<br/>It is a skill of spinning yarn from natural materials and making fabric.");
 			npc.Msg("Do you want to learn the Weaving skill?<br/>Actually, I'm out of thick yarn and can't meet all the orders for fabric...<br/>If you get me some wool, I'll teach you the Weaving skill in return.<br/>An owl will deliver you a note on how to find wool if you wait outside.");
 			await npc.Select();
-			npc.StartQuest(this.Id);
+			npc.Player.StartQuest(this.Id);
 			npc.Close();
 		}
 		else

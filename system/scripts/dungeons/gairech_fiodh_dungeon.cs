@@ -44,7 +44,7 @@ public class FiodhDungeonScript : DungeonScript
 				treasureChest.Add(Item.CreateEnchanted(18004, prefix, suffix));
 
 				// Magic Powder of Preservation (G1)
-				if (member.Keywords.Has("g1_28"))
+				if (member.HasKeyword("g1_28"))
 					treasureChest.Add(Item.Create(73061));
 			}
 

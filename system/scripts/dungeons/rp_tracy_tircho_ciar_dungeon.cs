@@ -24,7 +24,7 @@ public class TracyRPDungeonScript : DungeonScript
 		{
 			var creature = cutscene.Leader.GetActualCreature();
 
-			creature.Keywords.Give("RP_Tracy_Complete");
+			creature.GiveKeyword("RP_Tracy_Complete");
 
 			dungeon.RemoveAllPlayers();
 		});

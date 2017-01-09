@@ -41,11 +41,11 @@ public class GorosRingQuest : QuestScript
 
 	public async Task<HookResult> GoroAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id) || !npc.HasItem(GorosRing))
+		if (!npc.Player.QuestActive(this.Id) || !npc.Player.HasItem(GorosRing))
 			return HookResult.Continue;
 
-		npc.CompleteQuest(this.Id);
-		npc.RemoveItem(GorosRing);
+		npc.Player.CompleteQuest(this.Id);
+		npc.Player.RemoveItem(GorosRing);
 
 		npc.Msg(Hide.Name, L("(You give Goro his ring.)"));
 		npc.Msg(L("Thank you, I'll now read it to you..."));
@@ -60,16 +60,16 @@ public class GorosRingQuest : QuestScript
 
 		if (keyword == "g1_voucher_of_priest")
 		{
-			if (npc.QuestActive(this.Id))
+			if (npc.Player.QuestActive(this.Id))
 			{
 				npc.Msg(L("If you get Goro's Ring back, I'll read it to you."));
 			}
-			else if (npc.HasItem(FomorMedal))
+			else if (npc.Player.HasItem(FomorMedal))
 			{
-				npc.RemoveKeyword("g1_voucher_of_priest");
-				npc.RemoveKeyword("g1_12");
-				npc.GiveKeyword("g1_13");
-				npc.StartQuest(this.Id);
+				npc.Player.RemoveKeyword("g1_voucher_of_priest");
+				npc.Player.RemoveKeyword("g1_12");
+				npc.Player.GiveKeyword("g1_13");
+				npc.Player.StartQuest(this.Id);
 
 				npc.Msg(L("Priest's Token...? This...?<br/>This...is an amulet that belongs to a high ranking Fomor...let's see...<br/>Just what I'd thought...'Dul Brau Dairam Shanon.' It surely belongs to a Fomor. Heh."), npc.Image("g1_ch11_12_fomormedal02"));
 				npc.Msg(L("It's been a while since I came across such Fomor writings. Heheh."));
@@ -108,12 +108,12 @@ public class GorosRingQuest : QuestScript
 
 		if (keyword == "g1_dulbrau1")
 		{
-			if (npc.HasItem(FomorMedal))
+			if (npc.Player.HasItem(FomorMedal))
 			{
-				if (npc.HasKeyword("g1_13"))
+				if (npc.Player.HasKeyword("g1_13"))
 				{
-					npc.RemoveKeyword("g1_13");
-					npc.GiveKeyword("g1_14");
+					npc.Player.RemoveKeyword("g1_13");
+					npc.Player.GiveKeyword("g1_14");
 
 					npc.Msg(L("'Goddess, lend me the moonlight...'<br/>That's what Goro said it means?<br/>The line 'Dul Brau Dairam Shanon?'"));
 					npc.Msg(L("I can't say for sure that's it's a wrong interpretation but...<br/>it's slightly different from what I remember."));
@@ -126,9 +126,9 @@ public class GorosRingQuest : QuestScript
 					return HookResult.Break;
 				}
 
-				npc.RemoveItem(FomorMedal);
-				npc.RemoveKeyword("g1_dulbrau1");
-				npc.GiveKeyword("g1_dulbrau2");
+				npc.Player.RemoveItem(FomorMedal);
+				npc.Player.RemoveKeyword("g1_dulbrau1");
+				npc.Player.GiveKeyword("g1_dulbrau2");
 
 				npc.Msg(L("Thank you, let's take a look.<br/>Hm... I see."));
 				npc.Msg(L("The reason I am human during the night,<br/>is because of Eweca's moonlight and its magic power..."));

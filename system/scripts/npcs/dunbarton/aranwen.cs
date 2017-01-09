@@ -128,7 +128,7 @@ public class AranwenScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					GiveKeyword("school");
+					Player.GiveKeyword("school");
 					Msg("Let me introduce myself.<br/>My name is <npcname/>. I teach combat skills at the Dunbarton School.");
 					ModifyRelation(1, 0, 0);
 				}
@@ -140,7 +140,7 @@ public class AranwenScript : NpcScript
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg(FavorExpression(), "If you need a weapon for the training,<br/>why don't you go see Nerys in the south side?<br/>She runs the Weapons Shop.");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
@@ -155,7 +155,7 @@ public class AranwenScript : NpcScript
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("If you are looking to buy cooking ingredients,<br/>the Restaurant will be your best bet.");
 				break;
 
@@ -173,17 +173,17 @@ public class AranwenScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("There is no blacksmith's shop in this town, but<br/>if you are looking for anything like weapons or armor,<br/>why don't you head south and visit the Weapons Shop?");
 				break;
 
 			case "skill_range":
-				GiveKeyword("bow");
+				Player.GiveKeyword("bow");
 				Msg("I suppose I could take my time and verbally explain it to you,<br/>but you should be able to quickly get the hang of it<br/>once you equip and use a bow a few times.");
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_cloth");
+				Player.GiveKeyword("shop_cloth");
 				Msg("It would be most logical to get Simon's help<br/>at the Clothing Shop.");
 				break;
 
@@ -231,7 +231,7 @@ public class AranwenScript : NpcScript
 				break;
 
 			case "skill_windmill":
-				RemoveKeyword("skill_windmill");
+				Player.RemoveKeyword("skill_windmill");
 				Msg("Are you curious about the Windmill skill?<br/>It is a useful skill to have when you're surrounded by enemies.<br/>Very well. I will teach you the Windmill skill.");
 				break;
 
@@ -260,12 +260,12 @@ public class AranwenScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("Hey! You'll have to go to the Weapons Shop to buy bows.<br/>We don't give out bows at the school.<br/>We can only teach you how to fight<br/>with them.");
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("I saw a lute at the General Shop once.<br/>I'm not too interested in it<br/>so I don't have much more to tell you.");
 				break;
 

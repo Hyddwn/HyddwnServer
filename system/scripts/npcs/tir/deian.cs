@@ -59,9 +59,9 @@ public class DeianScript : NpcScript
 						case 10060: // is a friend of Deian
 							Player.Vars.Perm["deian_title_gift"] = today;
 
-							GiveItem(71021); // Brown Fox Fomor Scroll
-							Notice(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
-							SystemMsg(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
+							Player.GiveItem(71021); // Brown Fox Fomor Scroll
+							Player.Notice(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
+							Player.SystemMsg(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
 
 							Msg(L("Perfect timing. <username/>.<br/>I've been meaning to give you this."));
 							break;
@@ -143,11 +143,11 @@ public class DeianScript : NpcScript
 			case "personal_info":
 				// Got White, Red, and Black Spider Fomor Scrolls?
 				// Give Giant Spider Fomor Scroll for spider RP dungeon.
-				if ((HasItem(71017) && HasItem(71018) && HasItem(71019)) && !HasItem(73108) && !HasKeyword("RP_Monster_GiantSpider_complete"))
+				if ((Player.HasItem(71017) && Player.HasItem(71018) && Player.HasItem(71019)) && !Player.HasItem(73108) && !Player.HasKeyword("RP_Monster_GiantSpider_complete"))
 				{
-					GiveKeyword("RP_Monster_GiantSpider_start");
-					GiveItem(73108); // Giant Spider Fomor Scroll
-					SystemNotice(L("Received Giant Spider Fomor Scroll from Shepherd Boy Deian."));
+					Player.GiveKeyword("RP_Monster_GiantSpider_start");
+					Player.GiveItem(73108); // Giant Spider Fomor Scroll
+					Player.SystemNotice(L("Received Giant Spider Fomor Scroll from Shepherd Boy Deian."));
 
 					Msg(L("Do you know there is a giant spider living inside Alby Dungeon?<br/>I picked up a scroll titled 'Giant Spider's Fomor Scroll'.<br/>I think you can see something if you use this in Alby Dungeon.<br/>You can have it. I don't need it."));
 				}
@@ -192,8 +192,8 @@ public class DeianScript : NpcScript
 				break;
 
 			case "RP_Monster_GiantSpider_Born":
-				GiveItem(Item.CreateEnchanted(40023, prefix: 20203)); // Shepherd's Gathering Knife
-				RemoveKeyword("RP_Monster_GiantSpider_Born");
+				Player.GiveItem(Item.CreateEnchanted(40023, prefix: 20203)); // Shepherd's Gathering Knife
+				Player.RemoveKeyword("RP_Monster_GiantSpider_Born");
 
 				Msg(L("So, the Giant Spider had a great story behind it.<br/>But, it's incredible that you could experience the world from a spider's point of view.<br/>Alright. I'll give you a present for having done that.<br/>Check your Inventory."));
 				break;
@@ -231,7 +231,7 @@ public class DeianScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("pool");
+					Player.GiveKeyword("pool");
 					Msg(FavorExpression(), "Some people should have been born as fish.<br/>They can't pass water without diving right in.<br/>I wish they'd stop.");
 					Msg("Not long ago, someone jumped into the reservoir<br/>and made a huge mess.<br/>Guess who got stuck cleaning it up?<br/>Sooo not my job.");
 					ModifyRelation(Random(2), 0, Random(3));
@@ -239,13 +239,13 @@ public class DeianScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (HasSkill(SkillId.PlayingInstrument))
+				if (Player.HasSkill(SkillId.PlayingInstrument))
 				{
 					Msg("Alright, so you know about the Instrument Playing skill.<br/>It's always good to know how to appreciate art, haha!");
 				}
 				else
 				{
-					GiveKeyword("skill_instrument");
+					Player.GiveKeyword("skill_instrument");
 					Msg("Know anything about the Instrument Playing skill?<br/>Only introspective guys like me<br/>can handle instruments.<br/>I wonder how well you would do...");
 					Msg("Priestess Endelyon knows all about this skill.<br/>You should talk to her.<br/>");
 				}
@@ -271,7 +271,7 @@ public class DeianScript : NpcScript
 				break;
 
 			case "shop_inn":
-				GiveKeyword("skill_campfire");
+				Player.GiveKeyword("skill_campfire");
 				Msg("Staying up all night, sleeping under trees during the day...<br/>When you have my lifestyle, you don't need to sleep at an Inn!<br/>All I need is the Campfire skill to survive!");
 				break;
 
@@ -284,12 +284,12 @@ public class DeianScript : NpcScript
 				break;
 
 			case "skill_range":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Don't you think it's best to go to the School<br/>and ask Ranald about it?<br/>I don't mind telling you about it myself,<br/>but Ranald doesn't like it when I teach people...");
 				break;
 
 			case "skill_instrument":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("You really are something.<br/>I just told you,<br/>talk to Priestess Endelyon at the Church<br/>about that.");
 				Msg("I know your type...<br/>You like to use everything single<br/>keyword you get... Bug off!");
 				break;
@@ -358,13 +358,13 @@ public class DeianScript : NpcScript
 				break;
 
 			case "skill_campfire":
-				if (!HasSkill(SkillId.Campfire))
+				if (!Player.HasSkill(SkillId.Campfire))
 				{
-					if (!HasKeyword("deian_01"))
+					if (!Player.HasKeyword("deian_01"))
 					{
-						GiveItem(1012); // Campfire Manual
-						GiveItem(63002, 5); // Firewood
-						GiveKeyword("deian_01");
+						Player.GiveItem(1012); // Campfire Manual
+						Player.GiveItem(63002, 5); // Firewood
+						Player.GiveKeyword("deian_01");
 
 						Msg(L("Are you here for the Campfire skill?<br/>You see that over there? The burnt spot on the ground? I've been trying to learn it myself.<br/>But no matter how much I try, I just can't get it."));
 						Msg(L("It's harder than it looks... All I get is smoke and the spark won't catch.<br/>It's driving me crazy..."));
@@ -378,20 +378,20 @@ public class DeianScript : NpcScript
 				}
 				else
 				{
-					RemoveKeyword("skill_campfire");
-					RemoveKeyword("deian_01");
+					Player.RemoveKeyword("skill_campfire");
+					Player.RemoveKeyword("deian_01");
 					Msg("Hey, you! What are you doing!<br/>Are you trying to use the Campfire skill here?<br/>Are you crazy!? You want to burn all my wool?<br/>Go away! Go away!<br/>You want to play with fire? Go do it far away from here!");
 				}
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Restaurant? You must be talking about the Grocery Store.<br/>Speaking of food,<br/>my stomach is growling...");
 				Msg("It's been a while since I've had a decent meal.<br/>I always eat out here.<br/>A hard loaf of bread and plain water.<br/>Let's see, was there a restaurant in our town?");
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("A Weapons Shop? What for?<br/>What are you going to do with a weapon?<br/>Think you'll put good use to it if you buy it now?<br/>I don't think so!");
 				break;
 
@@ -415,7 +415,7 @@ public class DeianScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("You can find a lot of bows at the Blacksmith's Shop.<br/>There's one nearby.<br/>If Ferghus is drunk, it might be possible to sneak one out.");
 				Msg("I'm just kidding! You weren't really thinking about doing that...were you?");
 				break;

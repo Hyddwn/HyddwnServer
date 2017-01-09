@@ -86,7 +86,7 @@ public class TitleRewardingScript : GeneralScript
 		if (creature.Titles.IsUsable(28) || !skill.Is(SkillId.Icebolt, SkillId.Firebolt, SkillId.Lightningbolt))
 			return;
 
-		if (creature.Skills.Has(SkillId.Icebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Firebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Lightningbolt, SkillRank.RF))
+		if (creature.HasSkill(SkillId.Icebolt, SkillRank.RF) && creature.HasSkill(SkillId.Firebolt, SkillRank.RF) && creature.HasSkill(SkillId.Lightningbolt, SkillRank.RF))
 			creature.Titles.Enable(28);
 	}
 
@@ -97,7 +97,7 @@ public class TitleRewardingScript : GeneralScript
 		// Enable if creature has all basic bolts. Fallback for players
 		// who already have all bolts. TODO: Remove.
 		// ------------------------------------------------------------------
-		if (!creature.Titles.IsUsable(28) && creature.Skills.Has(SkillId.Icebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Firebolt, SkillRank.RF) && creature.Skills.Has(SkillId.Lightningbolt, SkillRank.RF))
+		if (!creature.Titles.IsUsable(28) && creature.HasSkill(SkillId.Icebolt, SkillRank.RF) && creature.HasSkill(SkillId.Firebolt, SkillRank.RF) && creature.HasSkill(SkillId.Lightningbolt, SkillRank.RF))
 			creature.Titles.Enable(28);
 
 		// the Reborn 

@@ -28,9 +28,9 @@ public class TalkWithStewartQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk"))
+		if (npc.Player.QuestActive(this.Id, "talk"))
 		{
-			npc.FinishQuest(this.Id, "talk");
+			npc.Player.FinishQuestObjective(this.Id, "talk");
 
 			npc.Msg(L("Welcome. I am Stewart.<br/>I will give you a mana potion that will help you with your magic training studies.<br/>I think you have talent in magic."));
 			npc.Msg(L("I'd be thankful if you had interest in magic."));

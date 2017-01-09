@@ -44,7 +44,7 @@ public class CiarBasicDungeonScript : DungeonScript
 				treasureChest.Add(Item.CreateEnchanted(40019, prefix, suffix));
 
 				// Goro's Ring (G1)
-				if (member.Keywords.Has("g1_13"))
+				if (member.HasKeyword("g1_13"))
 					treasureChest.Add(Item.Create(73060));
 			}
 

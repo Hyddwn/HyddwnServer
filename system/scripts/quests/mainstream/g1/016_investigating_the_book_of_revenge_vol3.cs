@@ -36,9 +36,9 @@ public class InvestigatingBookOfRevengeVol3_1Quest : QuestScript
 
 	public async Task<HookResult> AeiraAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_aeira"))
+		if (npc.Player.QuestActive(this.Id, "talk_aeira"))
 		{
-			npc.FinishQuest(this.Id, "talk_aeira");
+			npc.Player.FinishQuestObjective(this.Id, "talk_aeira");
 
 			npc.Msg(L("Ah! I've been waiting!<br/>I have good news."));
 			npc.Msg(L("I found out where you can find volume 3<br/>of that Fomor book you've been looking for,<br/>Lassar, the magic instructor at the school in<br/>Tir Chonaill has it. You know her, don't you?"));
@@ -53,9 +53,9 @@ public class InvestigatingBookOfRevengeVol3_1Quest : QuestScript
 
 	public async Task<HookResult> LassarAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_lassar"))
+		if (npc.Player.QuestActive(this.Id, "talk_lassar"))
 		{
-			npc.FinishQuest(this.Id, "talk_lassar");
+			npc.Player.FinishQuestObjective(this.Id, "talk_lassar");
 
 			npc.Msg(L("Welcome. You must be... <username/>?"));
 			npc.Msg(L("...So it was you who was looking for the book.<br/>Aeira had asked me about the book before.<br/>Did she tell you what I told her...?"));
@@ -74,13 +74,13 @@ public class InvestigatingBookOfRevengeVol3_1Quest : QuestScript
 
 	public async Task<HookResult> SeumasAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_seumas"))
+		if (npc.Player.QuestActive(this.Id, "talk_seumas"))
 		{
-			npc.CompleteQuest(this.Id);
-			npc.StartQuest(210012);
+			npc.Player.CompleteQuest(this.Id);
+			npc.Player.StartQuest(210012);
 
-			npc.GiveItem(FathersGift);
-			npc.Notice(L("You have received Father's Gift from Seumas."));
+			npc.Player.GiveItem(FathersGift);
+			npc.Player.Notice(L("You have received Father's Gift from Seumas."));
 
 			npc.Msg(L("(He gasps for breath as he speaks.)<br/>Ah... I suppose you're the one Lassar mentioned...?<br/>You need the...book of Fomors...?"));
 			npc.Msg(L("Not too long ago...I asked Lassar...<br/>to translate it<br/>but she said she couldn't do it..."));
@@ -124,12 +124,12 @@ public class InvestigatingBookOfRevengeVol3_2Quest : QuestScript
 
 	public async Task<HookResult> SionAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_sion"))
+		if (npc.Player.QuestActive(this.Id, "talk_sion"))
 		{
-			npc.FinishQuest(this.Id, "talk_sion");
+			npc.Player.FinishQuestObjective(this.Id, "talk_sion");
 
-			npc.RemoveItem(FathersGift);
-			npc.Notice(L("You have given Father's Gift to Sion."));
+			npc.Player.RemoveItem(FathersGift);
+			npc.Player.Notice(L("You have given Father's Gift to Sion."));
 
 			npc.Msg(L("... What's this?<br/>Eh, a present from dad?<br/>Wow, thank you!"));
 
@@ -141,12 +141,12 @@ public class InvestigatingBookOfRevengeVol3_2Quest : QuestScript
 
 	public async Task<HookResult> SeumasAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_seumas"))
+		if (npc.Player.QuestActive(this.Id, "talk_seumas"))
 		{
-			npc.FinishQuest(this.Id, "talk_seumas");
+			npc.Player.FinishQuestObjective(this.Id, "talk_seumas");
 
-			npc.GiveItem(BookOfRevenge3);
-			npc.Notice(L("You have received The Book of Revenge, Vol. III from Seumas."));
+			npc.Player.GiveItem(BookOfRevenge3);
+			npc.Player.Notice(L("You have received The Book of Revenge, Vol. III from Seumas."));
 
 			npc.Msg(L("Oh, that was fast, <username/>...<br/>Did Sion like it? Hah... Thank you...<br/>Here...is the...book...<br/>Hope it would be helpful..."));
 
@@ -158,13 +158,13 @@ public class InvestigatingBookOfRevengeVol3_2Quest : QuestScript
 
 	public async Task<HookResult> KristellAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_kristell"))
+		if (npc.Player.QuestActive(this.Id, "talk_kristell"))
 		{
-			npc.CompleteQuest(this.Id);
-			npc.SendOwl(210009, OwlDelay); // Receive the Book of Revenge, Vol. III.
+			npc.Player.CompleteQuest(this.Id);
+			npc.Player.SendOwl(210009, OwlDelay); // Receive the Book of Revenge, Vol. III.
 
-			npc.RemoveItem(BookOfRevenge3);
-			npc.Notice(L("You have given the Book of Revenge, Vol. III to Kristell."));
+			npc.Player.RemoveItem(BookOfRevenge3);
+			npc.Player.Notice(L("You have given the Book of Revenge, Vol. III to Kristell."));
 
 			npc.Msg(L("You really did bring the Book of Fomors...<br/>Volume 3 is indeed the last in the series."));
 			npc.Msg(L("I knew you could get the job done.<br/>I'll let you know when my translation is complete."));
@@ -201,12 +201,12 @@ public class InvestigatingBookOfRevengeVol3_3Quest : QuestScript
 
 	public async Task<HookResult> KristellAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_kristell"))
+		if (npc.Player.QuestActive(this.Id, "talk_kristell"))
 		{
-			npc.CompleteQuest(this.Id);
+			npc.Player.CompleteQuest(this.Id);
 
-			npc.GiveItem(BookOfRevenge3Translated);
-			npc.Notice(L("You have received The Book of Revenge, Vol. III (Translated) from Kristell."));
+			npc.Player.GiveItem(BookOfRevenge3Translated);
+			npc.Player.Notice(L("You have received The Book of Revenge, Vol. III (Translated) from Kristell."));
 
 			npc.Msg(L("Here is the translated copy you've been waiting for.<br/>With that, I've finished translating all three volumes of the Book of Revenge."));
 			npc.Msg(L("...<br/>I must warn you...<br/>This last volume contains some...disturbing passages."));

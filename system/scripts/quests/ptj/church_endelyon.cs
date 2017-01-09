@@ -37,7 +37,7 @@ public class EndelyonPtjScript : GeneralScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -70,17 +70,17 @@ public class EndelyonPtjScript : GeneralScript
 
 	public async Task AboutArbeit(NpcScript npc)
 	{
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("You have other things to do, right?<br/>If you need the Holy Water of Lymilark, can you come back after you are finished with your work?"));
 			return;
 		}
 
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("It seems you took care of your end of the bargain.<br/>I'm a little busy right now, but come back later so I can compensate you for your work."));
@@ -99,7 +99,7 @@ public class EndelyonPtjScript : GeneralScript
 
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("I'm sorry,<br/>but I cannot give you the Holy Water of Lymilark unless you complete the task I've asked you to take care of.<br/>Please work harder next time."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -115,7 +115,7 @@ public class EndelyonPtjScript : GeneralScript
 					return;
 				}
 
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				if (result == QuestResult.Perfect)
@@ -137,32 +137,32 @@ public class EndelyonPtjScript : GeneralScript
 			return;
 		}
 
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("Are you willing to help the Church?<br/>It's a bit early, though. Please come back at a later time."));
 			return;
 		}
 
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("Today's part-time jobs are all taken.<br/>If you need some Holy Water of Lymilark, please come back tomorrow."));
 			return;
 		}
 
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("Our Church is looking for a kind soul to help take care of our crops.<br/>The main job is to harvest wheat or barley from the farmland located south of the Church.<br/>One thing to note: because of our tight budget, we cannot afford to pay in gold.<p/>Instead, anyone who completes the job will receive some Holy Water of Lymilark,<br/>which can be used to bless items.<br/>Blessed items do not fall to the ground<br/>when its owner is knocked unconscious.<br/>Now, what do you say?");
 		else
 			msg = L("Are you here for the Holy Water of Lymilark again?<br/>Please take a look at today's part-time job and tell me if you want it.");
 
-		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Endelyon's Church Part-Time Job"), L("Looking for help with delivering goods to Church."), PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Endelyon's Church Part-Time Job"), L("Looking for help with delivering goods to Church."), PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
 			npc.Msg(L("Thank you.<br/>Please take care of this on time."));
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
