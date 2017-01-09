@@ -2109,6 +2109,9 @@ namespace Aura.Channel.World.Entities
 		/// <param name="killer"></param>
 		public virtual bool Kill(Creature killer)
 		{
+			var rnd = RandomProvider.Get();
+			var pos = this.GetPosition();
+
 			// Conditions
 			if (this.Conditions.Has(ConditionsA.Deadly))
 				this.Conditions.Deactivate(ConditionsA.Deadly);
@@ -2124,6 +2127,9 @@ namespace Aura.Channel.World.Entities
 					ChannelServer.Instance.Events.OnCreatureKilledByPlayer(this, killer);
 				this.Death.Raise(this, killer);
 			}
+
+			// Drop keys in case the monster isn't being finished yet
+			this.DropKeys(killer, rnd, pos);
 
 			// When a creature is killed, and the attacker is in a party,
 			// the party's finisher rules come into effect. Depending on its
@@ -2182,9 +2188,6 @@ namespace Aura.Channel.World.Entities
 				this.Skills.CancelActiveSkill();
 
 			// Drops
-			var rnd = RandomProvider.Get();
-			var pos = this.GetPosition();
-
 			this.DropGold(killer, rnd, pos);
 			this.DropItems(killer, rnd, pos);
 
@@ -2346,6 +2349,22 @@ namespace Aura.Channel.World.Entities
 				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
 
 			this.Drops.ClearStaticDrops();
+		}
+
+		/// <summary>
+		/// Drops only keys from creature's static drops.
+		/// </summary>
+		/// <param name="killer"></param>
+		/// <param name="rnd"></param>
+		/// <param name="pos"></param>
+		private void DropKeys(Creature killer, Random rnd, Position pos)
+		{
+			var keys = this.Drops.StaticDrops.Where(a => a.IsDungeonKey);
+
+			foreach (var item in keys)
+				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
+
+			this.Drops.RemoveFromStaticDrops(a => a.IsDungeonKey);
 		}
 
 		/// <summary>
