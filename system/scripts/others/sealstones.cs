@@ -452,3 +452,41 @@ public abstract class SealStoneScript : GeneralScript
 	public abstract void Setup();
 	public abstract bool Check(Creature creature, Prop prop);
 }
+
+// Reset command
+// --------------------------------------------------------------------------
+
+public class SealStoneResetCommand : GeneralScript
+{
+	private readonly string[] sealStones = new[]
+	{
+		"_sealstone_dugald", "_sealstone_ciar", "_sealstone_rabbie",
+		"_sealstone_math", "_sealstone_bangor", "_sealstone_fiodh",
+		"_sealstone_osnasail", "_sealstone_south_emainmacha",
+		"_sealstone_south_taillteann", "_sealstone_east_taillteann",
+		"_sealstone_tara"
+	};
+
+	public override void Load()
+	{
+		AddCommand(99, -1, "resetsealstone", "<seal stone>", "Resets seal stone, so it can be broken again.", HandleResetSealStone);
+	}
+
+	private CommandResult HandleResetSealStone(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+	{
+		if (args.Count < 2 || !sealStones.Contains(args[1].ToLower()))
+		{
+			Send.ServerMessage(sender, L("Seal Stones: ") + string.Join(", ", sealStones));
+			return CommandResult.InvalidArgument;
+		}
+
+		var ident = args[1].ToLower();
+
+		GlobalVars.Perm["SealStoneId" + ident] = null;
+		GlobalVars.Perm["SealStoneName" + ident] = null;
+
+		Send.ServerMessage(sender, L("The seal stone's variables were reset, restart server or reload scripts to make it whole again."));
+
+		return CommandResult.Okay;
+	}
+}
