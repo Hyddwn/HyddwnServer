@@ -3166,10 +3166,7 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public bool GiveItem(int itemId, int amount = 1)
 		{
-			var item = new Item(itemId);
-			item.Amount = amount;
-
-			return this.GiveItem(item);
+			return this.Inventory.InsertStacks(itemId, amount);
 		}
 
 		/// <summary>
@@ -3179,7 +3176,7 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public bool GiveItem(Item item)
 		{
-			return this.Inventory.Add(item, true);
+			return this.Inventory.Insert(item, true);
 		}
 
 		/// <summary>
@@ -3199,10 +3196,8 @@ namespace Aura.Channel.World.Entities
 		/// <param name="amount"></param>
 		public void AcquireItem(int itemId, int amount = 1)
 		{
-			var item = new Item(itemId);
-			item.Amount = amount;
-
-			this.AcquireItem(item);
+			this.GiveItem(itemId, amount);
+			Send.AcquireItemInfo(this, itemId, amount);
 		}
 
 		/// <summary>
