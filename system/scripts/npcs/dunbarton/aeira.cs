@@ -321,7 +321,6 @@ public class AeiraShop : NpcShopScript
 	{
 		Add("Skill Book", 1006); // Introduction to Music Composition
 		Add("Skill Book", 1012); // Campfire Manual
-		Add("Skill Book", 1505); // The World of Handicrafts
 		Add("Skill Book", 1302); // Your first Glass of Wine Vol. 1
 		Add("Skill Book", 1303); // Your first Glass of Wine Vol. 2
 		Add("Skill Book", 1011); // Improving Your Composing Skill
@@ -386,5 +385,8 @@ public class AeiraShop : NpcShopScript
 		Add("Literature", 74028); // The Forgotten Legend of Fiodh Forest
 		Add("Literature", 74029); // The Tragedy of Emain Macha
 		Add("Literature", 74027); // The Knight of Light Lugh, The Hero of Mag Tuireadh
+
+		if (IsEnabled("Handicraft"))
+			Add("Skill Book", 1505); // The World of Handicrafts
 	}
 }

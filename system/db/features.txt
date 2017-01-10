@@ -745,4 +745,5 @@
 { name: "TwinSword", enabled: true },
 { name: "CombatSystemRenewal", enabled: true },
 { name: "TalentRenovationCloseCombat", enabled: true },
+{ name: "Handicraft", enabled: true },
 ]

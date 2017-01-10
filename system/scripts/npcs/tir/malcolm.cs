@@ -568,7 +568,6 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40045);      // Fishing Rod
 		Add("General Goods", 60034, 300); // Bait Tin x300
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -633,6 +632,9 @@ public class MalcolmShop : NpcShopScript
 
 		Add("Event");
 
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045); // Handicraft Kit
+
 		if (IsEnabled("PetBirds"))
 		{
 			Add("Shoes && Gloves", 16024); // Pet Instructor Glove
@@ -641,9 +643,9 @@ public class MalcolmShop : NpcShopScript
 
 		if (IsEnabled("PercussionInstruments"))
 		{
-			Add("General Goods", 40214);      // Big Drum
-			Add("General Goods", 40214);      // Big Drum
-			Add("General Goods", 40214);      // Big Drum
+			Add("General Goods", 40214); // Big Drum
+			Add("General Goods", 40214); // Big Drum
+			Add("General Goods", 40214); // Big Drum
 		}
 
 		if (IsEnabled("ItemSeal2"))

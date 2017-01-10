@@ -60,7 +60,7 @@ public abstract class DuncansPraiseQuestScript : QuestScript
 			return HookResult.Continue;
 		npc.Player.FinishQuestObjective(this.Id, "talk_friend");
 
-		npc.Player.Titles.Enable(FriendTitle); // is a friend of ...
+		npc.Player.EnableTitle(FriendTitle); // is a friend of ...
 		await FriendDialog(npc);
 
 		return HookResult.Break;

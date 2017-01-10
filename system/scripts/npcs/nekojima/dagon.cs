@@ -329,11 +329,11 @@ public class DagonShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Ingredients", 50219);       // Basil
-		Add("Ingredients", 50131);       // Sugar
-		Add("Ingredients", 50132);       // Salt
-		Add("Ingredients", 50156);       // Pepper
-		Add("Ingredients", 50217);       // Celery
-		Add("Ingredients", 50186);       // Red Pepper Powder
+		Add("Ingredients", 50219); // Basil
+		Add("Ingredients", 50131); // Sugar
+		Add("Ingredients", 50132); // Salt
+		Add("Ingredients", 50156); // Pepper
+		Add("Ingredients", 50217); // Celery
+		Add("Ingredients", 50186); // Red Pepper Powder
 	}
 }
