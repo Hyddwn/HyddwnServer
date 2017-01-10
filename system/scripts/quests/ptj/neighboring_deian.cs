@@ -42,7 +42,7 @@ public class DeianPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -71,19 +71,19 @@ public class DeianPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("You have some other job?<br/>Shearing is the best part-time job.<br/>You'll understand once you try it."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("You still have time left.<br/>Come back later."));
@@ -104,7 +104,7 @@ public class DeianPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Hey, this isn't enough...<br/>I won't pay you a penny."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -123,7 +123,7 @@ public class DeianPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -147,30 +147,30 @@ public class DeianPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("It's not time for part-time jobs yet.<br/>Come back later."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("Ah, I have enough wool for the day.<br/>Want to try again tomorrow?"));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 
 		// Msg is kinda unofficial, she currently says the following, and then
 		// tells you you'd get Homestead seeds.
-		npc.Msg(L("Do you want a part-time shearing job?"), npc.PtjDesc(randomPtj, L("Shepherd Boy Deian's Shearing Part-Time Job"), L("Looking for material collectors."), PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+		npc.Msg(L("Do you want a part-time shearing job?"), npc.PtjDesc(randomPtj, L("Shepherd Boy Deian's Shearing Part-Time Job"), L("Looking for material collectors."), PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
 			npc.Msg(L("Let's see what you've got."));
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{

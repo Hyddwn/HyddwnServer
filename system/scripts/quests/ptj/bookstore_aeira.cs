@@ -43,7 +43,7 @@ public class AeiraPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -79,19 +79,19 @@ public class AeiraPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("You seem to be working on something else already....<br/>It's probably a good idea to finish what you're working on first."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 				{
@@ -119,7 +119,7 @@ public class AeiraPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("You didn't want to work, did you?<br/>I can't pay you, then."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -141,7 +141,7 @@ public class AeiraPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -160,24 +160,24 @@ public class AeiraPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("Oh no. It's not time for a part-time job, yet.<br/>Please come back later."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("I'm done for today!<br/>Please come again tomorrow."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("It must be your first time working at a bookstore.<br/>It's actually more of my personal business than work. Hehe.<br/>Will you do it?");
 		else
 			msg = L("Oh, can you help me today, too?");
@@ -185,20 +185,20 @@ public class AeiraPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Aeira's Bookstore Part-time Job"),
 			L("Looking for help with delivery of goods in Bookstore."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Thank you. Please be on time for the deadline.<br/>Even if you don't get to finish everything, please come back and report.<br/>I'll pay you for the amount of work you've accomplished."));
 			else
 				npc.Msg(L("I believe in you."));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Well, if you don't want to, then I can't force you."));
 			else
 				npc.Msg(L("You must be pretty busy, aren't you?"));
@@ -260,16 +260,16 @@ public abstract class AeiraVarDeliveryPtjBaseScript : QuestScript
 
 	public async Task<HookResult> ClientAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj1");
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		if (!IsTwoPart)
 			npc.Player.RemoveItem(ItemId, 1);
 		else
 			npc.Player.GiveItem(ItemId);
-		npc.Notice(LItemNotice[0]);
+		npc.Player.Notice(LItemNotice[0]);
 
 		AfterIntroDialogue[0](npc);
 
@@ -280,16 +280,16 @@ public abstract class AeiraVarDeliveryPtjBaseScript : QuestScript
 	/// <exception cref="System.IndexOutOfRangeException">Thrown if precondition is not met.</exception>
 	public async Task<HookResult> RecipientAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj2"))
+		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj2");
+		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 		npc.Player.RemoveItem(ItemId, 1);
-		npc.Notice(LItemNotice[1]);
+		npc.Player.Notice(LItemNotice[1]);
 
 		AfterIntroDialogue[1](npc);
 

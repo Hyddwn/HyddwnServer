@@ -306,6 +306,85 @@ namespace Aura.Channel.Scripting.Scripts
 			return time;
 		}
 
+		/// <summary>
+		/// Returns true if Erinn time is between min (incl.) and max (excl.).
+		/// </summary>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		public bool ErinnHour(int min, int max)
+		{
+			var now = ErinnTime.Now;
+
+			// Normal (e.g. 12-21)
+			if (max >= min)
+				return (now.Hour >= min && now.Hour < max);
+			// Day spanning (e.g. 21-3)
+			else
+				return !(now.Hour >= max && now.Hour < min);
+		}
+
+		/// <summary>
+		/// Of the given <paramref name="questIds"/>, returns those matched to
+		/// the player's success rate for the given PTJ <paramref name="type"/>.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="questIds"></param>
+		/// <returns></returns>
+		public IEnumerable<int> GetLevelMatchingQuestIds(QuestLevel level, PtjType type, params int[] questIds)
+		{
+			// Check ids
+			if (questIds.Length == 0)
+				throw new ArgumentException("Creature.RandomPtj: questIds may not be empty.");
+
+			// Check quest scripts and get a list of available ones
+			var questScripts = questIds.Select(id => ChannelServer.Instance.ScriptManager.QuestScripts.Get(id)).Where(a => a != null);
+			var questScriptsCount = questScripts.Count();
+			if (questScriptsCount == 0)
+				throw new Exception("Creature.RandomPtj: Unable to find any of the given quests.");
+			if (questScriptsCount != questIds.Length)
+			{
+				var missing = questIds.Where(a => !questScripts.Any(b => b.Id == a));
+				Log.Warning("Creature.RandomPtj: Some of the given quest ids are unknown (" + string.Join(", ", missing) + ").");
+			}
+
+			// Check same level quests
+			var sameLevelQuests = questScripts.Where(a => a.Level == level);
+			var sameLevelQuestsCount = sameLevelQuests.Count();
+
+			if (sameLevelQuestsCount == 0)
+			{
+				// Try to fall back to Basic
+				sameLevelQuests = questScripts.Where(a => a.Level == QuestLevel.Basic);
+				sameLevelQuestsCount = sameLevelQuests.Count();
+
+				if (sameLevelQuestsCount == 0)
+					throw new Exception("Creature.RandomPtj: Missing quest for level '" + level + "'.");
+
+				Log.Warning("Creature.RandomPtj: Missing quest for level '" + level + "', using 'Basic' as fallback.");
+			}
+
+			return sameLevelQuests.Select(qscript => qscript.Id);
+		}
+
+		/// <summary>
+		/// Returns a random quest id from the given ones, based on the current
+		/// Erinn day and the player's success rate for this PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="questIds"></param>
+		/// <returns></returns>
+		public int GetRandomPtj(Creature creature, PtjType type, params int[] questIds)
+		{
+			var level = creature.GetPtjQuestLevel(type);
+			var sameLevelQuests = this.GetLevelMatchingQuestIds(level, type, questIds);
+
+			// Return random quest's id
+			// Random is seeded with the current Erinn day so we always get
+			// the same result for one in-game day.
+			var rnd = new Random(ErinnTime.Now.DateTimeStamp);
+			return sameLevelQuests.ElementAt(rnd.Next(sameLevelQuests.Count()));
+		}
+
 		#endregion
 
 		#region Extension
@@ -530,9 +609,22 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <param name="delayMax">Maximum respawn delay in seconds</param>
 		/// <param name="titles">List of random titles to apply to creatures</param>
 		/// <param name="coordinates">Even number of coordinates, specifying the spawn area</param>
-		protected void CreateSpawner(int race, int amount, int region, int delay = 0, int delayMin = 10, int delayMax = 20, int[] titles = null, int[] coordinates = null)
+		/// <returns>Id of the new spawner.</returns>
+		protected int CreateSpawner(int race, int amount, int region, int delay = 0, int delayMin = 10, int delayMax = 20, int[] titles = null, int[] coordinates = null)
 		{
-			ChannelServer.Instance.World.SpawnManager.Add(new CreatureSpawner(race, amount, region, delay, delayMin, delayMax, titles, coordinates));
+			var spawner = new CreatureSpawner(race, amount, region, delay, delayMin, delayMax, titles, coordinates);
+			ChannelServer.Instance.World.SpawnManager.Add(spawner);
+
+			return spawner.Id;
+		}
+
+		/// <summary>
+		/// Removes spawner with given id if it exists.
+		/// </summary>
+		/// <param name="spawnerId"></param>
+		protected void RemoveSpawner(int spawnerId)
+		{
+			ChannelServer.Instance.World.SpawnManager.Remove(spawnerId);
 		}
 
 		/// <summary>
@@ -655,7 +747,7 @@ namespace Aura.Channel.Scripting.Scripts
 				var creature = ChannelServer.Instance.World.SpawnManager.Spawn(raceId, regionId, pos.X, pos.Y, true, effect);
 
 				if (onDeath != null)
-					creature.Death += onDeath;
+					creature.Finish += onDeath;
 
 				result.Add(creature);
 			}

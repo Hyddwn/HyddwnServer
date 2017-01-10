@@ -35,8 +35,8 @@ public class NewRebirthEventScript : GameEventScript
 		if (!IsEventActive("new_rebirth_event") || !creature.IsCharacter)
 		{
 			// Remove any event Rebirth Potions the creature might have
-			if (creature.Inventory.Has(RebirthPotion))
-				creature.Inventory.Remove(RebirthPotion, 1000);
+			if (creature.HasItem(RebirthPotion))
+				creature.RemoveItem(RebirthPotion, 1000);
 			return;
 		}
 

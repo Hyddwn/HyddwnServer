@@ -45,12 +45,12 @@ public class ShielaMoresRPDungeonScript : DungeonScript
 			var creators = dungeon.GetCreators();
 			foreach (var member in creators)
 			{
-				if (member.Keywords.Has("g1_34_1"))
+				if (member.HasKeyword("g1_34_1"))
 				{
-					member.Keywords.Remove("g1_34_1");
-					member.Keywords.Give("g1_34_2");
-					member.Keywords.Remove("g1_memorial4");
-					member.Keywords.Give("g1_cichol");
+					member.RemoveKeyword("g1_34_1");
+					member.GiveKeyword("g1_34_2");
+					member.RemoveKeyword("g1_memorial4");
+					member.GiveKeyword("g1_cichol");
 				}
 			}
 

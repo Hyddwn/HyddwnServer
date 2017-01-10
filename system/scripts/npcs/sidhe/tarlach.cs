@@ -257,7 +257,7 @@ public class TarlachScript : NpcScript
 				break;
 
 			case "tir_na_nog":
-				if (HasKeyword("g3_complete"))
+				if (Player.HasKeyword("g3_complete"))
 				{
 					Msg("...I didn't know Erinn was Tir Na Nog...");
 					Msg("So... when Goddess Morrighan said...<br/>Tir Na Nog might be destroyed...<br/>She was really talking about Erinn.");
@@ -296,7 +296,7 @@ public class TarlachScript : NpcScript
 				break;*/
 
 			case "nao_friend":
-				if (HasKeyword("g3_complete"))
+				if (Player.HasKeyword("g3_complete"))
 					Msg("Mari... I mean, Nao... said that...?<br/>......<br/>...Okay... ");
 				else
 					Msg("...Who's Nao?<br/>That's the first time I've heard of that name.");

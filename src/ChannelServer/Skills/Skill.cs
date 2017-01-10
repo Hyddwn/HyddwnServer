@@ -180,23 +180,8 @@ namespace Aura.Channel.Skills
 
 			var bonusMessage = "";
 
-			// Add global bonus
-			float bonusMultiplier;
-			string bonuses;
-			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.SkillTraining, out bonusMultiplier, out bonuses))
-			{
-				amount = (int)(amount * bonusMultiplier);
-				if (!string.IsNullOrWhiteSpace(bonuses))
-					bonusMessage += string.Format(Localization.Get(" ({0} Bonus: x{1})"), bonuses, bonusMultiplier);
-			}
-
-			// Apply skill exp multiplier
-			var skillExpRateBonus = ChannelServer.Instance.Conf.World.SkillExpRate;
-			if (skillExpRateBonus != 1)
-			{
-				amount = (int)(amount * skillExpRateBonus);
-				bonusMessage += string.Format(Localization.Get(" ({0} Bonus: x{1})"), Localization.Get("Skill Exp Rate"), skillExpRateBonus);
-			}
+			// Add bonuses
+			this.HandleSkillExpRateBonuses(ref amount, ref bonusMessage);
 
 			// Change count and reveal the condition
 			if (amount > 0)
@@ -223,6 +208,63 @@ namespace Aura.Channel.Skills
 				Send.SkillTrainingUp(_creature, this, exp, bonusMessage);
 
 			this.CheckMaster();
+		}
+
+		/// <summary>
+		/// Modifies amount and bonus message based on active skill exp
+		/// rate bonuses, like rate settings and events.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <param name="bonusMessage"></param>
+		private void HandleSkillExpRateBonuses(ref int amount, ref string bonusMessage)
+		{
+			// Add global bonus
+			float bonusMultiplier;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.SkillTraining, out bonusMultiplier, out bonuses))
+				ApplySkillExpRateBonus(ref amount, bonusMultiplier, bonuses, ref bonusMessage);
+
+			// Apply skill exp multiplier
+			var skillExpRate = ChannelServer.Instance.Conf.World.SkillExpRate;
+			ApplySkillExpRateBonus(ref amount, skillExpRate, Localization.Get("Skill Exp Rate"), ref bonusMessage);
+
+			// Apply separate skill exp multipliers
+			// The code be cleaner if we combined skill exp rates into one
+			// amount, but we might want separate bonus names.
+			var worldConf = ChannelServer.Instance.Conf.World;
+			switch (this.Data.Category)
+			{
+				case SkillCategory.Life: ApplySkillExpRateBonus(ref amount, worldConf.LifeSkillExpRate, Localization.Get("Life Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Combat: ApplySkillExpRateBonus(ref amount, worldConf.CombatSkillExpRate, Localization.Get("Combat Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Magic: ApplySkillExpRateBonus(ref amount, worldConf.MagicSkillExpRate, Localization.Get("Magic Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Alchemy: ApplySkillExpRateBonus(ref amount, worldConf.AlchemySkillExpRate, Localization.Get("Alchemy Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Fighter: ApplySkillExpRateBonus(ref amount, worldConf.FighterSkillExpRate, Localization.Get("Fighter Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Music: ApplySkillExpRateBonus(ref amount, worldConf.MusicSkillExpRate, Localization.Get("Music Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Puppet: ApplySkillExpRateBonus(ref amount, worldConf.PuppetSkillExpRate, Localization.Get("Puppetry Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Guns: ApplySkillExpRateBonus(ref amount, worldConf.GunsSkillExpRate, Localization.Get("Dual Gun Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Ninja: ApplySkillExpRateBonus(ref amount, worldConf.NinjaSkillExpRate, Localization.Get("Ninja Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Transformation: ApplySkillExpRateBonus(ref amount, worldConf.TransformationSkillExpRate, Localization.Get("Transformations Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Demi: ApplySkillExpRateBonus(ref amount, worldConf.DemiSkillExpRate, Localization.Get("Demigod Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.DivineKnights: ApplySkillExpRateBonus(ref amount, worldConf.DivineKnightsSkillExpRate, Localization.Get("Crusader Skill Exp Rate"), ref bonusMessage); break;
+			}
+		}
+
+		/// <summary>
+		/// Multiplies amount with multiplier if multiplier doesn't equal 1
+		/// and appends bonus name to message if it's not empty.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <param name="multiplier"></param>
+		/// <param name="bonusName"></param>
+		/// <param name="bonusMessage"></param>
+		private static void ApplySkillExpRateBonus(ref int amount, float multiplier, string bonusName, ref string bonusMessage)
+		{
+			if (multiplier == 1)
+				return;
+
+			amount = (int)(amount * multiplier);
+			if (!string.IsNullOrWhiteSpace(bonusName))
+				bonusMessage += string.Format(Localization.Get(" ({0} Bonus: x{1})"), bonusName, multiplier);
 		}
 
 		/// <summary>

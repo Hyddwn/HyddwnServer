@@ -44,7 +44,6 @@ public class EdernPtjScript : GeneralScript
 		{507205, SkillRank.RC}, // Basic  Smith 2 Cuirassier Helms
 		{507236, SkillRank.RB}, // Int    Smith 2 Arish Ashuvain Gauntlets
 		{507237, SkillRank.RA}, // Int    Smith 2 Plate Gauntlets
-		{507267, SkillRank.RA}, // Adv    Smith 2 Plate Gauntlets
 		{507238, SkillRank.RB}, // Int    Smith 2 Vito Crux Greaves
 		{507268, SkillRank.RB}, // Adv    Smith 2 Vito Crux Greaves
 		{507239, SkillRank.RA}, // Int    Smith 2 Arish Ashuvain Boots (M)
@@ -62,7 +61,7 @@ public class EdernPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -95,22 +94,91 @@ public class EdernPtjScript : GeneralScript
 		return HookResult.Continue;
 	}
 
+	/// <summary>
+	/// Returns a random quest ID from QuestIdSkillRankList,
+	/// based on the current Erinn day and the player's blacksmithing
+	/// PTJ level/skill rank (via <paramref name="npc"/>).
+	/// </summary>
+	/// <param name="npc"></param>
+	/// <returns>
+	/// Will always return a quest ID of the given <paramref name="level"/>.
+	/// However, if no job of the matching rank can be found,
+	/// a job of next-highest rank will be returned.
+	/// </returns>
+	/// <remarks>
+	/// As there are (at the time of writing) only jobs of rank F, C, B, and A,
+	/// the ranks that are supplied to and returned from this method are as follows:
+	/// <list type="table">
+	/// 	<listheader> <term>Supplied Rank</term> <term>Returned Rank</term> </listheader>
+	/// 	<item>       <term>(Unlearned)</term>   <term>rF</term>                </item>
+	/// 	<item>       <term>rN ~ rD</term>       <term>rF</term>                </item>
+	/// 	<item>       <term>rC ~ rA</term>       <term>[Same as supplied]</term></item>
+	/// 	<item>       <term>r9 and up</term>     <term>rA</term>                </item>
+	/// </list>
+	///
+	/// See also: http://wiki.mabinogiworld.com/view/Thread:Talk:Edern/Part-time_job_requests
+	/// </remarks>
+	public int RandomPtj(NpcScript npc)
+	{
+		// Determine player's Blacksmithing skill level
+		var playerSkills = npc.Player.Skills;
+		var skillRank = playerSkills.Has(SkillId.Blacksmithing)
+			? playerSkills.Get(SkillId.Blacksmithing).Info.Rank
+			: SkillRank.RF; // Default to RF jobs if player does not know Blacksmithing.
+		var ptjQuestLevel = npc.Player.GetPtjQuestLevel(JobType);
+
+		Func<SkillRank, IEnumerable<int>> GetSameRankQuests = r => QuestIdSkillRankList
+			.Where(pair => pair.Item2 == r) // Filter on skill rank
+			.Select(pair => pair.Item1); // Get resulting quest IDs
+		Func<IEnumerable<int>, int> GetRandomIdOfTheDay = ids => ids.ElementAt(new Random(ErinnTime.Now.DateTimeStamp).Next(ids.Count()));
+
+		var rankProbe = skillRank;
+		var level = npc.Player.GetPtjQuestLevel(JobType);
+		var sameLevelQuestIds = GetLevelMatchingQuestIds(level, JobType, QuestIdSkillRankList.Select(pair => pair.Item1).ToArray());
+
+		IEnumerable<int> matchingQuestIds;
+		// Clamp on rank A, the most difficult job available.
+		if (rankProbe > SkillRank.RA)
+			rankProbe = SkillRank.RA;
+		// Filter on skill rank, retrying on a lower rank if no results.
+		while (rankProbe >= SkillRank.RC)
+		{
+			// Merge with filter on sameLevelQuestIds.
+			matchingQuestIds = GetSameRankQuests(rankProbe).Where(id => sameLevelQuestIds.Contains(id));
+
+			if (matchingQuestIds.Any())
+				return GetRandomIdOfTheDay(matchingQuestIds);
+			else
+				--rankProbe; // Retry on lower rank.
+		}
+		// Else no matching jobs at A, B, or C.
+
+		// Try rank F jobs?
+		matchingQuestIds = GetSameRankQuests(SkillRank.RF).Where(id => sameLevelQuestIds.Contains(id));
+		if (matchingQuestIds.Any())
+			return GetRandomIdOfTheDay(matchingQuestIds);
+		// Else no matching jobs at F.
+		// If this point is reached,
+		// we were not able to find a quest for the player.
+		throw new Exception(string.Format("EdernPtjScript.RandomPtj: Unable to provide a quest for level:{0}, rank:{1}", ptjQuestLevel, skillRank));
+	}
+
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Tasks at the Blacksmith's Shop aren't as easy as you think.<br/>Come back after you finish what you're doing."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 				{
@@ -138,7 +206,7 @@ public class EdernPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Leave.<br/>Don't ever come work for me again."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -160,7 +228,7 @@ public class EdernPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -184,42 +252,24 @@ public class EdernPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("Come back at the deadline."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("That's enough for today.<br/>Come back tomorrow."));
 			return;
 		}
 
-		// Get quests only for player's Blacksmithing skill level (or whatever's closest)
-		// http://wiki.mabinogiworld.com/view/Thread:Talk:Edern/Part-time_job_requests
-		var playerSkills = npc.Player.Skills;
-		var skillRank = playerSkills.Has(SkillId.Blacksmithing)
-			? playerSkills.Get(SkillId.Blacksmithing).Info.Rank
-			: SkillRank.RF; // Default to RF jobs if player does not know Blacksmithing.
-
-		// Restrict ranks to one of the following: F, C, B, A
-		if (skillRank > SkillRank.RA)
-			skillRank = SkillRank.RA;
-		else if (skillRank < SkillRank.RC)
-			skillRank = SkillRank.RF;
-
-		int[] questIds = QuestIdSkillRankList
-			.FindAll(e => e.Item2 == skillRank)
-			.ConvertAll<int>(e => e.Item1)
-			.ToArray();
-
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, questIds);
+		var randomPtj = RandomPtj(npc);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("(missing): first time worker PTJ inquiry");
 		else
 			msg = L("Are you looking for work? I just happen to have the perfect job for you.");
@@ -227,20 +277,20 @@ public class EdernPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Edern's Blacksmith's Shop Part-Time Job"),
 			L("Looking for help with crafting items needed for Blacksmith Shop."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("(missing): first time accepting PTJ offer"));
 			else
 				npc.Msg(L("Do it right."));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("(missing): first time declining PTJ offer"));
 			else
 				npc.Msg(L("Don't bother me. I'm a busy person."));
@@ -484,28 +534,6 @@ public class EdernSmithCuirassierHelmBasicPtjScript : EdernSmithBasicPtjBaseScri
 		creature.GiveItem(60815, 20); // Iron Ingot (Part-Time Job)
 	}
 }
-
-public class EdernSmithPlateGauntletsBasicPtjScript : EdernSmithBasicPtjBaseScript
-{
-	protected override int QuestId { get { return 507237; } }
-	protected override string LQuestDescription { get { return L("This job involves creating equipment to supply the Blacksmith's Shop. Today's task is creating [Plate Gauntlets], using the materials given for this part-time job. Deadline starts at noon. Be careful not to deliver them before the deadline since the final work doesn't begin until then."); } }
-	protected override int ItemId { get { return 60807; } }
-	protected override string LCreateObjectiveDescription { get { return L("Make 2 Plate Gauntlets (Part-Time Job)"); } }
-	protected override string LCollectObjectiveDescription { get { return L("2 Plate Gauntlets (Part-Time Job)"); } }
-
-	public override void OnReceive(Creature creature)
-	{
-		creature.GiveItem(ItemEntity.CreatePattern(60800, 30007, 20)); // Part-Time Job Blacksmithing Manual - Plate Gauntlets
-		creature.GiveItem(60425, 2);  // Fine Leather (Part-Time Job)
-		creature.GiveItem(60406, 2);  // Thick Thread Ball (Part-Time Job)
-		creature.GiveItem(60815, 20); // Iron Ingot (Part-Time Job)
-		creature.GiveItem(60815, 20); // Iron Ingot (Part-Time Job)
-		creature.GiveItem(60815, 20); // Iron Ingot (Part-Time Job)
-		creature.GiveItem(60815, 20); // Iron Ingot (Part-Time Job)
-		creature.GiveItem(60815, 20); // Iron Ingot (Part-Time Job)
-	}
-}
-
 public class EdernSmithWeedingHoeIntPtjScript : EdernSmithIntPtjBaseScript
 {
 	protected override int QuestId { get { return 507231; } }
@@ -560,7 +588,7 @@ public class EdernSmithArishAshuvainGauntletsIntPtjScript : EdernSmithIntPtjBase
 
 public class EdernSmithPlateGauntletsIntPtjScript : EdernSmithIntPtjBaseScript
 {
-	protected override int QuestId { get { return 507267; } }
+	protected override int QuestId { get { return 507237; } }
 	protected override string LQuestDescription { get { return L("This job involves creating equipment to supply the Blacksmith's Shop. Today's task is creating [Plate Gauntlets], using the materials given for this part-time job. Deadline starts at noon. Be careful not to deliver them before the deadline since the final work doesn't begin until then."); } }
 	protected override int ItemId { get { return 60807; } }
 	protected override string LCreateObjectiveDescription { get { return L("Make 2 Plate Gauntlets (Part-Time Job)"); } }

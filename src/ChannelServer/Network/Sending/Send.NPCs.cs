@@ -211,6 +211,19 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends CheckDirectBankSellingR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="success"></param>
+		public static void CheckDirectBankSellingR(Creature creature, bool success)
+		{
+			var packet = new Packet(Op.CheckDirectBankSellingR, creature.EntityId);
+			packet.PutByte(success);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Sends OpenBank to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>

@@ -36,10 +36,10 @@ public class BookOfEvilPart2Quest : QuestScript
 
 	public async Task<HookResult> LassarAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "get_item"))
+		if (!npc.Player.QuestActive(this.Id, "get_item"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "get_item");
+		npc.Player.FinishQuestObjective(this.Id, "get_item");
 
 		npc.Msg(L("Here... This is the item Priest Meven told me to give to you."));
 		npc.Msg(L("Isn't it beautiful? It's a black rose.<br/>The overwhelming redness of the flower itself turned the flower pitch black...<br/>I am happy it grew so beautifully compared to other flowers..."), npc.Image("g1_ch16_blackrose"));
@@ -50,10 +50,10 @@ public class BookOfEvilPart2Quest : QuestScript
 
 	public async Task<HookResult> TarlachAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "talk_tarlach"))
+		if (!npc.Player.QuestActive(this.Id, "talk_tarlach"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "talk_tarlach");
+		npc.Player.FinishQuestObjective(this.Id, "talk_tarlach");
 
 		npc.Msg(L("...!<br/>Yes... that's it.<br/>The black rose I have been looking for..."));
 		npc.Msg(L("No... it's different. This...<br/>is a new flower..."));
@@ -66,12 +66,12 @@ public class BookOfEvilPart2Quest : QuestScript
 
 	public async Task<HookResult> KristellAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "deliver_item"))
+		if (!npc.Player.QuestActive(this.Id, "deliver_item"))
 			return HookResult.Continue;
 
-		npc.CompleteQuest(this.Id);
-		npc.RemoveKeyword("g1_17_5");
-		npc.GiveKeyword("g1_18");
+		npc.Player.CompleteQuest(this.Id);
+		npc.Player.RemoveKeyword("g1_17_5");
+		npc.Player.GiveKeyword("g1_18");
 
 		npc.Msg(L("This is!"));
 		npc.Msg(L("Tarlach......"));

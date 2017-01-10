@@ -33,9 +33,11 @@ People who have supported the development with a considerable donation
 
 * evehour
 * Hitzuki
+* Mr.Gundum
 * Pegwald
 * Seeker
 * Trigger of Ruairi
+* Zaxanity
 
 Others
 ==============================

@@ -124,7 +124,7 @@
 	
 	// Season 3
 	{ name: "G2S3", enabled: true, children: [
-		// Enables obtaining the Thunder
+		// Enables obtaining the Thunder skill
 		{ name: "Thunder", enabled: true },
 		
 		// Enables merchant NPC Fleta
@@ -132,6 +132,9 @@
 		
 		// Enabled Scary Library dungeon
 		{ name: "ScaryLibrary", enabled: true },
+	
+		// Enables Rundal Siren dungeon
+		{ name: "RundalSirenDungeon", enabled: true },
 	]},
 	
 	// Season 4
@@ -364,6 +367,9 @@
 		
 		// Enables obtaining Animal Training skill
 		{ name: "AnimalTraining", enabled: true },
+		
+		// Enables obtaining Metallurgy skill
+		{ name: "Metallurgy", enabled: true },
 		
 		// Enables NPCs going into deadly
 		{ name: "DeadlyNPCs", enabled: true },
@@ -598,6 +604,10 @@
 	{ name: "G16S1", enabled: true, children: [
 		// Changes Moon Gates to function like Mana Tunnels
 		{ name: "MoonTunnel", enabled: true },
+		
+		// Automatically gives access to Ceo Moon Tunnel if Moon Tunnels
+		// are enabled.
+		{ name: "CeoMoonTunnel", enabled: true },
 		
 		// Enables obtaining Fighter skills and items
 		{ name: "FighterJob", enabled: true },

@@ -9,10 +9,43 @@ public class MathDungeonScript : DungeonScript
 {
 	public override bool Route(Creature creature, Item item, ref string dungeonName)
 	{
+		// Math Adv. Fomor Pass for 2
+		if (item.Info.Id == 63129)
+		{
+			if (creature.Party.MemberCount != 2)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 2 members."));
+				return false;
+			}
+
+			dungeonName = "dunbarton_math_high_2_dungeon";
+			return true;
+		}
+
+		// Math Adv. Fomor Pass for 3
+		if (item.Info.Id == 63130)
+		{
+			if (creature.Party.MemberCount != 3)
+			{
+				Send.Notice(creature, L("To enter this dungeon, you need a party with 3 members."));
+				return false;
+			}
+
+			dungeonName = "dunbarton_math_high_3_dungeon";
+			return true;
+		}
+
+		// Math Adv. Fomor Pass
+		if (item.Info.Id == 63131)
+		{
+			dungeonName = "dunbarton_math_high_dungeon";
+			return true;
+		}
+
 		// Broken Torque (G1, Mores RP)
 		if (item.Info.Id == 73003)
 		{
-			if (!creature.Keywords.Has("g1_21"))
+			if (!creature.HasKeyword("g1_21"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;
@@ -37,7 +70,7 @@ public class MathDungeonScript : DungeonScript
 		// Broken Torque (G1, Shiela+Mores RP)
 		if (item.Info.Id == 73005)
 		{
-			if (!creature.Keywords.Has("g1_34_1"))
+			if (!creature.HasKeyword("g1_34_1"))
 			{
 				Send.Notice(creature, L("You can't enter this dungeon right now."));
 				return false;

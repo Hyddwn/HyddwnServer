@@ -28,6 +28,16 @@ namespace Aura.Channel.World.GameEvents
 		public GlobalBonusManager GlobalBonuses { get; private set; }
 
 		/// <summary>
+		/// Returns the number of active events.
+		/// </summary>
+		public int CountActive { get { lock (_gameEvents) return _gameEvents.Values.Where(a => a.IsActive).Count(); } }
+
+		/// <summary>
+		/// Returns true if any events are active.
+		/// </summary>
+		public bool AnyActive { get { lock (_gameEvents) return _gameEvents.Values.Any(a => a.IsActive); } }
+
+		/// <summary>
 		/// Creates new instance of manager.
 		/// </summary>
 		public GameEventManager()

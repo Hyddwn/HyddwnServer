@@ -86,7 +86,7 @@ public class StewartPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -122,19 +122,19 @@ public class StewartPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Are you trying to do this while working on another part-time job?<br/>Hahaha, that's greedy!"));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 				{
@@ -162,7 +162,7 @@ public class StewartPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("This is not good...<br/>Hope you'll get the job done another time."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -184,7 +184,7 @@ public class StewartPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -208,24 +208,24 @@ public class StewartPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("I'm sorry, but I can't give you work right now."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("You've already done this today...<br/>Did you forget that? Haha..."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("You must be here for the first time...<br/>the job is pretty simple, actually.<br/>All you have to do is retrieve books that have been borrowwed, but haven't been returned yet.");
 		else
 			msg = L("Thanks, and good luck.<br/>It would have been so much easier if people retured books on time.");
@@ -233,20 +233,20 @@ public class StewartPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Stewart's Library Delivery Part-time Job"),
 			L("Looking for help with delivery of goods in Library."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("All you have to do is retrieve the books before deadline, and return them to me. You'll have plenty of time."));
 			else
 				npc.Msg(L("Okay, now please take care of it. Don't forget it just because it's an easy task!"));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Ah... That's too bad.<br/>It could have been really nice if you could help me."));
 			else
 				npc.Msg(L("It's an easy task... well, no can do."));
@@ -375,14 +375,14 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 	{
 		return async (NpcScript npc, object[] args) =>
 		{
-			if (!npc.QuestActive(this.Id, objectiveIdent))
+			if (!npc.Player.QuestActive(this.Id, objectiveIdent))
 				return HookResult.Continue;
 
-			if (!npc.Player.Inventory.Has(bookItemId))
+			if (!npc.Player.HasItem(bookItemId))
 				return HookResult.Continue;
 
 			npc.Player.RemoveItem(bookItemId);
-			npc.FinishQuest(this.Id, objectiveIdent);
+			npc.Player.FinishQuestObjective(this.Id, objectiveIdent);
 
 			npc.End(L("(Placed the book in the bookshelf)"));
 
@@ -394,12 +394,12 @@ public abstract class StewartVarLibraryPtjBaseScript : QuestScript
 	{
 		return async (NpcScript npc, object[] args) =>
 		{
-			if (!npc.QuestActive(this.Id, objectiveIdent))
+			if (!npc.Player.QuestActive(this.Id, objectiveIdent))
 				return HookResult.Continue;
 
-			npc.FinishQuest(this.Id, objectiveIdent);
+			npc.Player.FinishQuestObjective(this.Id, objectiveIdent);
 			npc.Player.GiveItem(nbp.ItemId);
-			npc.Notice(GetLItemReceivedNotice(nbp));
+			npc.Player.Notice(GetLItemReceivedNotice(nbp));
 
 			await this.OnFinish(npc, nbp.NpcIdent);
 

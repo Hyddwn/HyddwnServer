@@ -42,20 +42,20 @@ public class rp_treforPuzzleScript : PuzzleScript
 
 				// You only get the reward keyword if you've failed less
 				// than three times.
-				if (!leader.Keywords.Has("RP_Trefor_Failed_3"))
+				if (!leader.HasKeyword("RP_Trefor_Failed_3"))
 				{
 					dungeon.PlayCutscene("RP_Trefor_00_c", cutscene => dungeon.RemoveAllPlayers());
-					leader.Keywords.Give("RP_Trefor_LifeGuard");
+					leader.GiveKeyword("RP_Trefor_LifeGuard");
 				}
 				else
 				{
 					dungeon.PlayCutscene("RP_Trefor_00_d", cutscene => dungeon.RemoveAllPlayers());
 				}
 
-				leader.Keywords.Give("RP_Trefor_Complete");
-				leader.Keywords.Remove("RP_Trefor_Failed_1");
-				leader.Keywords.Remove("RP_Trefor_Failed_2");
-				leader.Keywords.Remove("RP_Trefor_Failed_3");
+				leader.GiveKeyword("RP_Trefor_Complete");
+				leader.RemoveKeyword("RP_Trefor_Failed_1");
+				leader.RemoveKeyword("RP_Trefor_Failed_2");
+				leader.RemoveKeyword("RP_Trefor_Failed_3");
 			}
 		}
 		// Traveler died
@@ -63,19 +63,19 @@ public class rp_treforPuzzleScript : PuzzleScript
 		{
 			var leader = dungeon.GetCreators().First();
 
-			if (leader.Keywords.Has("RP_Trefor_Failed_1"))
+			if (leader.HasKeyword("RP_Trefor_Failed_1"))
 			{
-				leader.Keywords.Remove("RP_Trefor_Failed_1");
-				leader.Keywords.Give("RP_Trefor_Failed_2");
+				leader.RemoveKeyword("RP_Trefor_Failed_1");
+				leader.GiveKeyword("RP_Trefor_Failed_2");
 			}
-			else if (leader.Keywords.Has("RP_Trefor_Failed_2"))
+			else if (leader.HasKeyword("RP_Trefor_Failed_2"))
 			{
-				leader.Keywords.Remove("RP_Trefor_Failed_2");
-				leader.Keywords.Give("RP_Trefor_Failed_3");
+				leader.RemoveKeyword("RP_Trefor_Failed_2");
+				leader.GiveKeyword("RP_Trefor_Failed_3");
 			}
-			else if (!leader.Keywords.Has("RP_Trefor_Failed_3"))
+			else if (!leader.HasKeyword("RP_Trefor_Failed_3"))
 			{
-				leader.Keywords.Give("RP_Trefor_Failed_1");
+				leader.GiveKeyword("RP_Trefor_Failed_1");
 			}
 
 			dungeon.PlayCutscene("RP_Trefor_00_b", cutscene => dungeon.RemoveAllPlayers());

@@ -885,148 +885,6 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
-		/// Adds item(s) to player's inventory.
-		/// </summary>
-		/// <param name="itemId"></param>
-		/// <param name="amount"></param>
-		/// <returns></returns>
-		public bool GiveItem(int itemId, int amount = 1)
-		{
-			return this.Player.GiveItem(itemId, amount);
-		}
-
-		/// <summary>
-		/// Adds item to player's inventory.
-		/// </summary>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public bool GiveItem(Item item)
-		{
-			return this.Player.GiveItem(item);
-		}
-
-		/// <summary>
-		/// Adds warp scroll to player's inventory.
-		/// </summary>
-		/// <param name="itemId"></param>
-		/// <param name="portal"></param>
-		/// <returns></returns>
-		public bool GiveWarpScroll(int itemId, string portal)
-		{
-			return this.Player.GiveItem(Item.CreateWarpScroll(itemId, portal));
-		}
-
-		/// <summary>
-		/// Adds item to player's inventory and shows an acquire window.
-		/// </summary>
-		/// <param name="itemId"></param>
-		public void AcquireItem(int itemId)
-		{
-			var item = new Item(itemId);
-			this.Player.AcquireItem(item);
-		}
-
-		/// <summary>
-		/// Adds given amount of gold to the player's inventory.
-		/// </summary>
-		/// <param name="itemId"></param>
-		/// <param name="amount"></param>
-		/// <returns></returns>
-		public bool GiveGold(int amount)
-		{
-			return this.Player.Inventory.AddGold(amount);
-		}
-
-		/// <summary>
-		/// Adds an item to player's inventory with specific colors.
-		/// </summary>
-		/// <param name="itemId"></param>
-		/// <param name="color1"></param>
-		/// <param name="color2"></param>
-		/// <param name="color3"></param>
-		/// <returns></returns>
-		public bool GiveItem(int itemId, uint color1, uint color2, uint color3)
-		{
-			var item = new Item(itemId);
-			item.Info.Color1 = color1;
-			item.Info.Color2 = color2;
-			item.Info.Color3 = color3;
-
-			return Player.Inventory.Add(item, true);
-		}
-
-		/// <summary>
-		/// Removes item(s) from a player's inventory.
-		/// </summary>
-		/// <param name="itemId"></param>
-		/// <param name="amount"></param>
-		/// <returns></returns>
-		public bool RemoveItem(int itemId, int amount = 1)
-		{
-			return this.Player.Inventory.Remove(itemId, amount);
-		}
-
-		/// <summary>
-		/// Checks if player has item(s) in their inventory.
-		/// </summary>
-		/// <param name="itemId"></param>
-		/// <param name="amount"></param>
-		/// <returns></returns>
-		public bool HasItem(int itemId, int amount = 1)
-		{
-			return this.Player.Inventory.Has(itemId, amount);
-		}
-
-		/// <summary>
-		/// Checks if player has the skill.
-		/// </summary>
-		/// <param name="skillId"></param>
-		/// <param name="rank"></param>
-		/// <returns></returns>
-		public bool HasSkill(SkillId skillId, SkillRank rank = SkillRank.Novice)
-		{
-			return this.Player.Skills.Has(skillId, rank);
-		}
-
-		/// <summary>
-		/// Checks if player has the skill on the specified rank.
-		/// </summary>
-		/// <param name="skillId"></param>
-		/// <param name="rank"></param>
-		/// <returns></returns>
-		public bool IsSkill(SkillId skillId, SkillRank rank)
-		{
-			return this.Player.Skills.Is(skillId, rank);
-		}
-
-		/// <summary>
-		/// Gives skill to player if he doesn't have it on that rank yet.
-		/// </summary>
-		/// <param name="skillId"></param>
-		/// <param name="rank"></param>
-		public void GiveSkill(SkillId skillId, SkillRank rank = SkillRank.Novice)
-		{
-			if (this.HasSkill(skillId, rank))
-				return;
-
-			this.Player.Skills.Give(skillId, rank);
-		}
-
-		/// <summary>
-		/// Trains the specified condition for skill by one.
-		/// </summary>
-		/// <param name="skillId"></param>
-		/// <param name="condition"></param>
-		protected void TrainSkill(SkillId skillId, int condition)
-		{
-			var skill = this.Player.Skills.Get(skillId);
-			if (skill == null)
-				return;
-
-			skill.Train(condition);
-		}
-
-		/// <summary>
 		/// Execute Hook! Harhar.
 		/// </summary>
 		/// <remarks>
@@ -1060,433 +918,6 @@ namespace Aura.Channel.Scripting.Scripts
 			//   to confusing dialogues... Maybe add a second Continue type,
 			//   in case we actually need it.
 			return false;
-		}
-
-		/// <summary>
-		/// Returns true if quest is in progress.
-		/// </summary>
-		/// <param name="questId"></param>
-		/// <param name="objective"></param>
-		/// <returns></returns>
-		public bool QuestActive(int questId, string objective = null)
-		{
-			return this.Player.Quests.IsActive(questId, objective);
-		}
-
-		/// <summary>
-		/// Returns true if player has quest, completed or not.
-		/// </summary>
-		/// <param name="questId"></param>
-		/// <returns></returns>
-		public bool HasQuest(int questId)
-		{
-			return this.Player.Quests.Has(questId);
-		}
-
-		/// <summary>
-		/// Returns true if quest was completed.
-		/// </summary>
-		/// <param name="questId"></param>
-		/// <returns></returns>
-		public bool QuestCompleted(int questId)
-		{
-			return this.Player.Quests.IsComplete(questId);
-		}
-
-		/// <summary>
-		/// Returns true if player has quest, but it's not done yet,
-		/// or hasn't been completed.
-		/// </summary>
-		/// <param name="questId"></param>
-		/// <returns></returns>
-		public bool QuestActiveUncompleted(int questId)
-		{
-			return (this.HasQuest(questId) && !this.QuestCompleted(questId));
-		}
-
-		/// <summary>
-		/// Finishes objective in quest.
-		/// </summary>
-		/// <param name="questId"></param>
-		/// <param name="objective"></param>
-		/// <returns></returns>
-		public bool FinishQuest(int questId, string objective)
-		{
-			return this.Player.Quests.Finish(questId, objective);
-		}
-
-		/// <summary>
-		/// Returns current quest objective.
-		/// </summary>
-		/// <param name="questId"></param>
-		/// <param name="objective"></param>
-		/// <returns></returns>
-		public string QuestObjective(int questId)
-		{
-			var quest = this.Player.Quests.GetFirstIncomplete(questId);
-			if (quest == null)
-				throw new Exception("NPC.GetQuestObjective: Player doesn't have quest '" + questId.ToString() + "'.");
-
-			var current = quest.CurrentObjective;
-			if (current == null)
-				return null;
-
-			return current.Ident;
-		}
-
-		/// <summary>
-		/// (Re)Starts quest.
-		/// </summary>
-		/// <param name="questId"></param>
-		public void StartQuest(int questId)
-		{
-			try
-			{
-				this.Player.Quests.Start(questId);
-			}
-			catch (Exception ex)
-			{
-				Log.Exception(ex, "NpcScript.StartQuest: Quest '{0}'", questId);
-				this.Msg("(Error)");
-			}
-		}
-
-		/// <summary>
-		/// Sends quest to player via owl.
-		/// </summary>
-		/// <param name="questId"></param>
-		public void SendOwl(int questId)
-		{
-			this.SendOwl(questId, 0);
-		}
-
-		/// <summary>
-		/// Sends quest to player via owl after the delay.
-		/// </summary>
-		/// <param name="questId"></param>
-		/// <param name="delay">Arrival delay in seconds.</param>
-		public void SendOwl(int questId, int delay)
-		{
-			try
-			{
-				this.Player.Quests.SendOwl(questId, delay);
-			}
-			catch (Exception ex)
-			{
-				Log.Exception(ex, "NpcScript.SendOwl: Quest '{0}'", questId);
-				this.Msg("(Error)");
-			}
-		}
-
-		/// <summary>
-		/// Completes quest (incl rewards).
-		/// </summary>
-		/// <param name="questId"></param>
-		public void CompleteQuest(int questId)
-		{
-			this.Player.Quests.Complete(questId, false);
-		}
-
-		/// <summary>
-		/// Starts PTJ quest.
-		/// </summary>
-		/// <param name="questId"></param>
-		public void StartPtj(int questId)
-		{
-			try
-			{
-				var scroll = Item.CreateQuestScroll(questId);
-				var quest = scroll.Quest;
-
-				quest.MetaData.SetByte("QMRTCT", (byte)quest.Data.RewardGroups.Count);
-				quest.MetaData.SetInt("QMRTBF", 0x4321); // (specifies which groups to display at which position, 1 group per hex char)
-				quest.MetaData.SetString("QRQSTR", this.NPC.Name);
-				quest.MetaData.SetBool("QMMABF", false);
-
-				// Calculate deadline, based on current time and quest data
-				var now = ErinnTime.Now;
-				var diffHours = Math.Max(0, quest.Data.DeadlineHour - now.Hour - 1);
-				var diffMins = Math.Max(0, 60 - now.Minute);
-				var deadline = DateTime.Now.AddTicks(diffHours * ErinnTime.TicksPerHour + diffMins * ErinnTime.TicksPerMinute);
-				quest.Deadline = deadline;
-
-				// Do quests given out by NPCs *always* go into the
-				// quest pocket?
-				this.Player.Inventory.Add(scroll, Pocket.Quests);
-
-				ChannelServer.Instance.Events.OnCreatureStartedPtj(this.Player, quest.Data.PtjType);
-			}
-			catch (Exception ex)
-			{
-				Log.Exception(ex, "NpcScript.StartPtj: Quest '{0}'", questId);
-				this.Msg("(Error)");
-			}
-		}
-
-		/// <summary>
-		/// Completes PTJ quest, if one is active. Rewards the selected rewards.
-		/// </summary>
-		/// <param name="rewardReply">Example: @reward:0</param>
-		public void CompletePtj(string rewardReply)
-		{
-			var quest = this.Player.Quests.GetPtjQuest();
-			if (quest == null)
-				return;
-
-			// Get reward group index
-			var rewardGroupIdx = 0;
-			if (!int.TryParse(rewardReply.Substring("@reward:".Length), out rewardGroupIdx))
-			{
-				Log.Warning("NpcScript.CompletePtj: Invalid reply '{0}'.", rewardReply);
-				return;
-			}
-
-			// Get reward group id
-			// The client displays a list of all available rewards,
-			// ordered by group id, with unobtainable ones disabled.
-			// What it sends is the index of the element in that list,
-			// not the actual group id, because that would be too easy.
-			var rewardGroup = -1;
-			var group = quest.Data.RewardGroups.Values.OrderBy(a => a.Id).ElementAt(rewardGroupIdx);
-			if (group == null)
-				Log.Warning("NpcScript.CompletePtj: Invalid group index '{0}' for quest '{1}'.", rewardGroupIdx, quest.Id);
-			else if (!group.HasRewardsFor(quest.GetResult()))
-				throw new Exception("Invalid reward group, doesn't have rewards for result.");
-			else
-				rewardGroup = group.Id;
-
-			// Complete
-			this.Player.Quests.Complete(quest, rewardGroup, false);
-
-			ChannelServer.Instance.Events.OnCreatureCompletedPtj(this.Player, quest.Data.PtjType);
-		}
-
-		/// <summary>
-		/// Gives up Ptj (fail without rewards).
-		/// </summary>
-		public void GiveUpPtj()
-		{
-			var quest = this.Player.Quests.GetPtjQuest();
-			if (quest == null)
-				return;
-
-			this.Player.Quests.GiveUp(quest);
-		}
-
-		/// <summary>
-		/// Returns true if a PTJ quest is active and its type matches
-		/// the given one.
-		/// </summary>
-		public bool DoingPtj(PtjType type)
-		{
-			var quest = this.Player.Quests.GetPtjQuest();
-			return (quest != null && quest.Data.PtjType == type);
-		}
-
-		/// <summary>
-		/// Returns true if a PTJ quest is active.
-		/// </summary>
-		public bool DoingPtj()
-		{
-			var quest = this.Player.Quests.GetPtjQuest();
-			return (quest != null);
-		}
-
-		/// <summary>
-		/// Returns true if a PTJ quest is active.
-		/// </summary>
-		public bool DoingPtjForNpc()
-		{
-			var quest = this.Player.Quests.GetPtjQuest();
-			return (quest != null && quest.MetaData.GetString("QRQSTR") == this.NPC.Name);
-		}
-
-		/// <summary>
-		/// Returns true if a PTJ quest is active for a different NPC.
-		/// </summary>
-		public bool DoingPtjForOtherNpc()
-		{
-			var quest = this.Player.Quests.GetPtjQuest();
-			return (quest != null && quest.MetaData.GetString("QRQSTR") != this.NPC.Name);
-		}
-
-		/// <summary>
-		/// Returns true if the player can do a PTJ of type, because he hasn't
-		/// done one of the same type today.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public bool CanDoPtj(PtjType type, int remaining = 99)
-		{
-			// Always allow devCATs
-			//if (this.Title == TitleId.devCAT)
-			//	return true;
-
-			// Check remaining
-			if (remaining <= 0)
-				return false;
-
-			// Check if PTJ has already been done this Erinn day
-			var ptj = this.Player.Quests.GetPtjTrackRecord(type);
-			var change = new ErinnTime(ptj.LastChange);
-			var now = ErinnTime.Now;
-
-			return (now.Day != change.Day || now.Month != change.Month || now.Year != change.Year);
-		}
-
-		/// <summary>
-		/// Returns the player's level (basic, int, adv) for the given PTJ type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public QuestLevel GetPtjQuestLevel(PtjType type)
-		{
-			var record = this.Player.Quests.GetPtjTrackRecord(type);
-			return record.GetQuestLevel();
-		}
-
-		/// <summary>
-		/// Returns a random quest id from the given ones, based on the current
-		/// Erinn day and the player's success rate for this PTJ type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="questIds"></param>
-		/// <returns></returns>
-		public int RandomPtj(PtjType type, params int[] questIds)
-		{
-			var level = this.GetPtjQuestLevel(type);
-
-			// Check ids
-			if (questIds.Length == 0)
-				throw new ArgumentException("NpcScript.RandomPtj: questIds may not be empty.");
-
-			// Check quest scripts and get a list of available ones
-			var questScripts = questIds.Select(id => ChannelServer.Instance.ScriptManager.QuestScripts.Get(id)).Where(a => a != null);
-			var questScriptsCount = questScripts.Count();
-			if (questScriptsCount == 0)
-				throw new Exception("NpcScript.RandomPtj: Unable to find any of the given quests.");
-			if (questScriptsCount != questIds.Length)
-			{
-				var missing = questIds.Where(a => !questScripts.Any(b => b.Id == a));
-				Log.Warning("NpcScript.RandomPtj: Some of the given quest ids are unknown (" + string.Join(", ", missing) + ").");
-			}
-
-			// Check same level quests
-			var sameLevelQuests = questScripts.Where(a => a.Level == level);
-			var sameLevelQuestsCount = sameLevelQuests.Count();
-
-			if (sameLevelQuestsCount == 0)
-			{
-				// Try to fall back to Basic
-				sameLevelQuests = questScripts.Where(a => a.Level == QuestLevel.Basic);
-				sameLevelQuestsCount = sameLevelQuests.Count();
-
-				if (sameLevelQuestsCount == 0)
-					throw new Exception("NpcScript.RandomPtj: Missing quest for level '" + level + "'.");
-
-				Log.Warning("NpcScript.RandomPtj: Missing quest for level '" + level + "', using 'Basic' as fallback.");
-			}
-
-			// Return random quest's id
-			// Random is seeded with the current Erinn day so we always get
-			// the same result for one in-game day.
-			var rnd = new Random(ErinnTime.Now.DateTimeStamp);
-			var randomQuest = sameLevelQuests.ElementAt(rnd.Next(sameLevelQuestsCount));
-
-			return randomQuest.Id;
-		}
-
-		/// <summary>
-		/// Returns number of times the player has done the given PTJ type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public int GetPtjDoneCount(PtjType type)
-		{
-			return this.Player.Quests.GetPtjTrackRecord(type).Done;
-		}
-
-		/// <summary>
-		/// Returns number of times the player has successfully done the given PTJ type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public int GetPtjSuccessCount(PtjType type)
-		{
-			return this.Player.Quests.GetPtjTrackRecord(type).Success;
-		}
-
-		/// <summary>
-		/// Returns how well the current PTJ has been done (so far).
-		/// </summary>
-		/// <returns></returns>
-		public QuestResult GetPtjResult()
-		{
-			var quest = this.Player.Quests.GetPtjQuest();
-			if (quest != null)
-				return quest.GetResult();
-
-			return QuestResult.None;
-		}
-
-		/// <summary>
-		/// Returns true if Erinn time is between min (incl.) and max (excl.).
-		/// </summary>
-		/// <param name="min"></param>
-		/// <param name="max"></param>
-		public bool ErinnHour(int min, int max)
-		{
-			var now = ErinnTime.Now;
-
-			// Normal (e.g. 12-21)
-			if (max >= min)
-				return (now.Hour >= min && now.Hour < max);
-			// Day spanning (e.g. 21-3)
-			else
-				return !(now.Hour >= max && now.Hour < min);
-		}
-
-		/// <summary>
-		/// Displays notice.
-		/// </summary>
-		/// <param name="format"></param>
-		/// <param name="args"></param>
-		public void Notice(string format, params object[] args)
-		{
-			Send.Notice(this.Player, format, args);
-		}
-
-		/// <summary>
-		/// Displays notice.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="format"></param>
-		/// <param name="args"></param>
-		public void Notice(NoticeType type, string format, params object[] args)
-		{
-			Send.Notice(this.Player, type, format, args);
-		}
-
-		/// <summary>
-		/// Displays as notice and system message.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="format"></param>
-		/// <param name="args"></param>
-		public void SystemNotice(string format, params object[] args)
-		{
-			this.Notice(format, args);
-			this.SystemMsg(format, args);
-		}
-
-		/// <summary>
-		/// Displays system message in player's chat log.
-		/// </summary>
-		/// <param name="format"></param>
-		/// <param name="args"></param>
-		public void SystemMsg(string format, params object[] args)
-		{
-			Send.SystemMessage(this.Player, format, args);
 		}
 
 		/// <summary>
@@ -1587,35 +1018,6 @@ namespace Aura.Channel.Scripting.Scripts
 			this.Player.Temp.CurrentBankTitle = bankTitle;
 
 			Send.OpenBank(this.Player, this.Player.Client.Account.Bank, BankTabRace.Human, bankId, bankTitle);
-		}
-
-		/// <summary>
-		/// Returns true if player has the keyword.
-		/// </summary>
-		/// <param name="keyword"></param>
-		public bool HasKeyword(string keyword)
-		{
-			return this.Player.Keywords.Has(keyword);
-		}
-
-		/// <summary>
-		/// Returns true if player has the keyword.
-		/// </summary>
-		/// <param name="keyword"></param>
-		public void GiveKeyword(string keyword)
-		{
-			if (!this.HasKeyword(keyword))
-				this.Player.Keywords.Give(keyword);
-		}
-
-		/// <summary>
-		/// Returns true if player has the keyword.
-		/// </summary>
-		/// <param name="keyword"></param>
-		public void RemoveKeyword(string keyword)
-		{
-			if (this.HasKeyword(keyword))
-				this.Player.Keywords.Remove(keyword);
 		}
 
 		/// <summary>
@@ -2001,7 +1403,491 @@ namespace Aura.Channel.Scripting.Scripts
 
 			this.Player.Vars.Temp["GuildRobeColor"] = color;
 
-			Send.GuildOpenGuildCreation(this.Player, entityId, guildName, color);
+			Send.GuildOpenGuildRobeCreation(this.Player, entityId, guildName, color);
+		}
+
+		// Player Methods
+		// ------------------------------------------------------------------
+
+		/// <summary>
+		/// Adds item(s) to player's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool GiveItem(int itemId, int amount = 1)
+		{
+			return this.Player.GiveItem(itemId, amount);
+		}
+
+		/// <summary>
+		/// Adds item to player's inventory.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool GiveItem(Item item)
+		{
+			return this.Player.GiveItem(item);
+		}
+
+		/// <summary>
+		/// Adds warp scroll to player's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="portal"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool GiveWarpScroll(int itemId, string portal)
+		{
+			return this.Player.GiveWarpScroll(itemId, portal);
+		}
+
+		/// <summary>
+		/// Adds item to player's inventory and shows an acquire window.
+		/// </summary>
+		/// <param name="itemId"></param>
+		[Obsolete]
+		public void AcquireItem(int itemId)
+		{
+			this.Player.AcquireItem(itemId);
+		}
+
+		/// <summary>
+		/// Adds given amount of gold to the player's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool GiveGold(int amount)
+		{
+			return this.Player.GiveGold(amount);
+		}
+
+		/// <summary>
+		/// Adds an item to player's inventory with specific colors.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="color1"></param>
+		/// <param name="color2"></param>
+		/// <param name="color3"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool GiveItem(int itemId, uint color1, uint color2, uint color3)
+		{
+			var item = new Item(itemId);
+			item.Info.Color1 = color1;
+			item.Info.Color2 = color2;
+			item.Info.Color3 = color3;
+
+			return this.Player.GiveItem(item);
+		}
+
+		/// <summary>
+		/// Removes item(s) from a player's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool RemoveItem(int itemId, int amount = 1)
+		{
+			return this.Player.RemoveItem(itemId, amount);
+		}
+
+		/// <summary>
+		/// Checks if player has item(s) in their inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool HasItem(int itemId, int amount = 1)
+		{
+			return this.Player.HasItem(itemId, amount);
+		}
+
+		/// <summary>
+		/// Checks if player has the skill.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="rank"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool HasSkill(SkillId skillId, SkillRank rank = SkillRank.Novice)
+		{
+			return this.Player.HasSkill(skillId, rank);
+		}
+
+		/// <summary>
+		/// Checks if player has the skill on the specified rank.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="rank"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool IsSkill(SkillId skillId, SkillRank rank)
+		{
+			return this.Player.IsSkill(skillId, rank);
+		}
+
+		/// <summary>
+		/// Gives skill to player if he doesn't have it on that rank yet.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="rank"></param>
+		[Obsolete]
+		public void GiveSkill(SkillId skillId, SkillRank rank = SkillRank.Novice)
+		{
+			this.Player.GiveSkill(skillId, rank);
+		}
+
+		/// <summary>
+		/// Trains the specified condition for skill by one.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="condition"></param>
+		[Obsolete]
+		protected void TrainSkill(SkillId skillId, int condition)
+		{
+			this.Player.TrainSkill(skillId, condition);
+		}
+
+		/// <summary>
+		/// Returns true if quest is in progress.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="objective"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool QuestActive(int questId, string objective = null)
+		{
+			return this.Player.QuestActive(questId, objective);
+		}
+
+		/// <summary>
+		/// Returns true if player has quest, completed or not.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool HasQuest(int questId)
+		{
+			return this.Player.HasQuest(questId);
+		}
+
+		/// <summary>
+		/// Returns true if quest was completed.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool QuestCompleted(int questId)
+		{
+			return this.Player.QuestCompleted(questId);
+		}
+
+		/// <summary>
+		/// Returns true if player has quest, but it's not done yet,
+		/// or hasn't been completed.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool QuestActiveUncompleted(int questId)
+		{
+			return this.Player.QuestInProgress(questId);
+		}
+
+		/// <summary>
+		/// Finishes objective in quest.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="objective"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool FinishQuest(int questId, string objective)
+		{
+			return this.Player.FinishQuestObjective(questId, objective);
+		}
+
+		/// <summary>
+		/// Returns current quest objective.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="objective"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public string QuestObjective(int questId)
+		{
+			return this.Player.GetCurrentQuestObjective(questId);
+		}
+
+		/// <summary>
+		/// Starts quest.
+		/// </summary>
+		/// <param name="questId"></param>
+		[Obsolete]
+		public void StartQuest(int questId)
+		{
+			this.Player.StartQuest(questId);
+		}
+
+		/// <summary>
+		/// Sends quest to player via owl.
+		/// </summary>
+		/// <param name="questId"></param>
+		[Obsolete]
+		public void SendOwl(int questId)
+		{
+			this.Player.SendOwl(questId);
+		}
+
+		/// <summary>
+		/// Sends quest to player via owl after the delay.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="delay">Arrival delay in seconds.</param>
+		[Obsolete]
+		public void SendOwl(int questId, int delay)
+		{
+			this.Player.SendOwl(questId, delay);
+		}
+
+		/// <summary>
+		/// Completes quest (incl rewards).
+		/// </summary>
+		/// <param name="questId"></param>
+		[Obsolete]
+		public void CompleteQuest(int questId)
+		{
+			this.Player.CompleteQuest(questId);
+		}
+
+		/// <summary>
+		/// Starts PTJ quest.
+		/// </summary>
+		/// <param name="questId"></param>
+		[Obsolete]
+		public void StartPtj(int questId)
+		{
+			this.Player.StartPtj(questId, this.NPC.Name);
+		}
+
+		/// <summary>
+		/// Completes PTJ quest, if one is active. Rewards the selected rewards.
+		/// </summary>
+		/// <param name="rewardReply">Example: @reward:0</param>
+		[Obsolete]
+		public void CompletePtj(string rewardReply)
+		{
+			this.Player.CompletePtj(rewardReply);
+		}
+
+		/// <summary>
+		/// Gives up Ptj (fail without rewards).
+		/// </summary>
+		[Obsolete]
+		public void GiveUpPtj()
+		{
+			this.Player.GiveUpPtj();
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest is active and its type matches
+		/// the given one.
+		/// </summary>
+		[Obsolete]
+		public bool DoingPtj(PtjType type)
+		{
+			return this.Player.IsDoingPtj(type);
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest is active.
+		/// </summary>
+		[Obsolete]
+		public bool DoingPtj()
+		{
+			return this.Player.IsDoingPtj();
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest is active.
+		/// </summary>
+		[Obsolete]
+		public bool DoingPtjForNpc()
+		{
+			return this.Player.IsDoingPtjFor(this.NPC);
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest is active for a different NPC.
+		/// </summary>
+		[Obsolete]
+		public bool DoingPtjForOtherNpc()
+		{
+			return this.Player.IsDoingPtjNotFor(this.NPC);
+		}
+
+		/// <summary>
+		/// Returns true if the player can do a PTJ of type, because he hasn't
+		/// done one of the same type today.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool CanDoPtj(PtjType type, int remaining = 99)
+		{
+			return this.Player.CanDoPtj(type, remaining);
+		}
+
+		/// <summary>
+		/// Returns the player's level (basic, int, adv) for the given PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public QuestLevel GetPtjQuestLevel(PtjType type)
+		{
+			return this.Player.GetPtjQuestLevel(type);
+		}
+
+		/// <summary>
+		/// Of the given <paramref name="questIds"/>, returns those matched to
+		/// the player's success rate for the given PTJ <paramref name="type"/>.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="questIds"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public IEnumerable<int> GetLevelMatchingQuestIds(PtjType type, params int[] questIds)
+		{
+			throw new NotSupportedException("Not available anymore, use GetLevelMatchingQuestIds in QuestScript.");
+		}
+
+		/// <summary>
+		/// Returns a random quest id from the given ones, based on the current
+		/// Erinn day and the player's success rate for this PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="questIds"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public int RandomPtj(PtjType type, params int[] questIds)
+		{
+			throw new NotSupportedException("Not available anymore, use GetRandomPtj in QuestScript.");
+		}
+
+		/// <summary>
+		/// Returns number of times the player has done the given PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public int GetPtjDoneCount(PtjType type)
+		{
+			return this.Player.GetPtjDoneCount(type);
+		}
+
+		/// <summary>
+		/// Returns number of times the player has successfully done the given PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public int GetPtjSuccessCount(PtjType type)
+		{
+			return this.Player.GetPtjSuccessCount(type);
+		}
+
+		/// <summary>
+		/// Returns how well the current PTJ has been done (so far).
+		/// </summary>
+		/// <returns></returns>
+		[Obsolete]
+		public QuestResult GetPtjResult()
+		{
+			return this.Player.GetPtjResult();
+		}
+
+		/// <summary>
+		/// Displays notice.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		[Obsolete]
+		public void Notice(string format, params object[] args)
+		{
+			this.Player.Notice(format, args);
+		}
+
+		/// <summary>
+		/// Displays notice.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		[Obsolete]
+		public void Notice(NoticeType type, string format, params object[] args)
+		{
+			this.Player.Notice(type, format, args);
+		}
+
+		/// <summary>
+		/// Displays as notice and system message.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		[Obsolete]
+		public void SystemNotice(string format, params object[] args)
+		{
+			this.Player.SystemNotice(format, args);
+		}
+
+		/// <summary>
+		/// Displays system message in player's chat log.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		[Obsolete]
+		public void SystemMsg(string format, params object[] args)
+		{
+			this.Player.SystemMsg(format, args);
+		}
+
+		/// <summary>
+		/// Returns true if player has the keyword.
+		/// </summary>
+		/// <param name="keyword"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool HasKeyword(string keyword)
+		{
+			return this.Player.HasKeyword(keyword);
+		}
+
+		/// <summary>
+		/// Returns true if player has the keyword.
+		/// </summary>
+		/// <param name="keyword"></param>
+		[Obsolete]
+		public void GiveKeyword(string keyword)
+		{
+			this.Player.GiveKeyword(keyword);
+		}
+
+		/// <summary>
+		/// Returns true if player has the keyword.
+		/// </summary>
+		/// <param name="keyword"></param>
+		[Obsolete]
+		public void RemoveKeyword(string keyword)
+		{
+			this.Player.RemoveKeyword(keyword);
 		}
 
 		// Dialog

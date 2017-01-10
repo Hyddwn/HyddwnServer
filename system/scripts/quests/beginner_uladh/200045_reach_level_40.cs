@@ -18,27 +18,27 @@ public class ReachLevl40QuestScript : QuestScript
 
 		SetReceive(Receive.Automatically);
 		AddPrerequisite(ReachedLevel(35));
-		
+
 		AddObjective("reach_level", "Reach Level 40", 0, 0, 0, ReachLevel(40));
 		AddObjective("talk_duncan", "Talk with Chief Duncan", 1, 15409, 38310, Talk("duncan"));
 
 		AddReward(Exp(15000));
-		
+
 		AddHook("_duncan", "after_intro", TalkDuncan);
 	}
-	
+
 	public async Task<HookResult> TalkDuncan(NpcScript npc, params object[] args)
 	{
-		if(npc.QuestActive(this.Id, "talk_duncan"))
+		if (npc.Player.QuestActive(this.Id, "talk_duncan"))
 		{
-			npc.FinishQuest(this.Id, "talk_duncan");
-			
+			npc.Player.FinishQuestObjective(this.Id, "talk_duncan");
+
 			// TODO: Get official dialog.
 			npc.Msg("Good job reaching Level 40!");
-			
+
 			return HookResult.Break;
 		}
-		
+
 		return HookResult.Continue;
 	}
 }

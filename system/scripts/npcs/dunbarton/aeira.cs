@@ -76,7 +76,7 @@ public class AeiraScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("How is the work coming along?<br/>I hope you're doing well."));
 		}
@@ -116,20 +116,20 @@ public class AeiraScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("shop_bookstore");
+					Player.GiveKeyword("shop_bookstore");
 					Msg(FavorExpression(), "Hehehe... I may not look the part, but I own this Bookstore.<br/>It's okay to be casual, but<br/>at least give me some respect as a store owner.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg(FavorExpression(), "If you want to properly train the stuff that's written on the book,<br/>why don't you first read the book in detail, then visit the school?<br/>Oh, and don't forget to talk to Stewart when you're there.");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
-				if (!HasSkill(SkillId.MusicalKnowledge))
+				if (!Player.HasSkill(SkillId.MusicalKnowledge))
 				{
 					if (Favor < 15)
 					{
@@ -137,10 +137,10 @@ public class AeiraScript : NpcScript
 						Msg(L("I paid a large sum of money and ordered in a ton of music theory books a while ago.<br/>I don't know if it's because they are expensive, but no one buys them.<br/>Still, they even have the skill-related green seals on them.<br/>It's not like I can just give them away to Stewart, either."));
 						Msg(L("I'm tempted to give them away to someone who's nice to me.<br/>*Sigh* I should have just ordered poetry books that I like...<br/>It would be so good to have someone give me a poetry book as a gift."));
 					}
-					else if (!HasItem(1013)) // Music Theory
+					else if (!Player.HasItem(1013)) // Music Theory
 					{
-						GiveItem(1013);
-						SystemNotice(L("Received Music Theory from Aeira."));
+						Player.GiveItem(1013);
+						Player.SystemNotice(L("Received Music Theory from Aeira."));
 
 						Msg(L("It's so good to have you come by so often, <username/>!<br/>Come to think of it, you've been really nice to me,<br/>but I don't think I've returned the favor..."));
 						Msg(L("Hmm... I want to make that up to you, and for that, I'd like to give you a gift.<br/>Here you go. Hope you like it!! *Giggle*"));
@@ -162,7 +162,7 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("A grocery store?<br/>In this town, you can find the food ingredients at the Restaurant, too,<br/>so try going there instead.");
 				break;
 
@@ -171,7 +171,7 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "shop_inn":
-				GiveKeyword("skill_campfire");
+				Player.GiveKeyword("skill_campfire");
 				Msg("Oh, no. There is no inn in our town.<br/>There's really no good place to rest either.<br/>Why don't you stay with people who can use the Campfire skill for now?");
 				break;
 
@@ -181,7 +181,7 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("Do we have a blacksmith's shop in this town? I think Nerys might know.<br/>It's just that I've never seen Nerys hammering<br/>or using the bellow.");
 				Msg("You might want to go visit the Weapons Shop first.");
 				break;
@@ -239,7 +239,7 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("The Restaurant? You must be talking about Glenis' place.<br/>All you need to do is go straight to the Square.");
 				Msg("While you are on the way, make sure to<br/>visit the General Shop, too. Tee hee.");
 				break;
@@ -272,7 +272,7 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Right! The instrument my dad sold at his shop was called the Lute!<br/>You WILL go stop by his shop later, right?");
 				Msg("What, you forgot already? It's the General Shop!!. I can't believe you forgot already.");
 				break;
@@ -290,7 +290,7 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("The Music Scores?<br/>My father's shop carries them!<br/>It's over on the other side of the Square across the street from here.");
 				Msg("They may sell out, so hurry!");
 				break;

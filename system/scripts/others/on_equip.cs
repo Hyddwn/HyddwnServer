@@ -11,41 +11,41 @@ public class OnEquipSkillLearnScript : GeneralScript
 	public void PlayerEquipsItem(Creature creature, Item item)
 	{
 		// Give Ranged Attack when equipping a (cross)bow
-		if ((item.HasTag("/bow/|/bow01/|/crossbow/")) && !creature.Skills.Has(SkillId.RangedAttack))
-			creature.Skills.Give(SkillId.RangedAttack, SkillRank.Novice);
+		if ((item.HasTag("/bow/|/bow01/|/crossbow/")) && !creature.HasSkill(SkillId.RangedAttack))
+			creature.GiveSkill(SkillId.RangedAttack, SkillRank.Novice);
 
 		// Give Dice Tossing When equiping Dice
-		if ((item.HasTag("/dice/")) && !creature.Skills.Has(SkillId.DiceTossing))
-			creature.Skills.Give(SkillId.DiceTossing, SkillRank.Novice);
+		if ((item.HasTag("/dice/")) && !creature.HasSkill(SkillId.DiceTossing))
+			creature.GiveSkill(SkillId.DiceTossing, SkillRank.Novice);
 
 		// Give Playing Instrument when equipping an instrument
-		if ((item.HasTag("/instrument/")) && !creature.Skills.Has(SkillId.PlayingInstrument))
-			creature.Skills.Give(SkillId.PlayingInstrument, SkillRank.Novice);
+		if ((item.HasTag("/instrument/")) && !creature.HasSkill(SkillId.PlayingInstrument))
+			creature.GiveSkill(SkillId.PlayingInstrument, SkillRank.Novice);
 
 		// Give Potion Making when equipping a Potion Concoction Kit
-		if ((item.HasTag("/potion_making/kit/")) && !creature.Skills.Has(SkillId.PotionMaking))
-			creature.Skills.Give(SkillId.PotionMaking, SkillRank.Novice);
+		if ((item.HasTag("/potion_making/kit/")) && !creature.HasSkill(SkillId.PotionMaking))
+			creature.GiveSkill(SkillId.PotionMaking, SkillRank.Novice);
 
 		// Give Handicraft when equipping a Handicraft Kit
-		if ((item.HasTag("/handicraft_kit/")) && !creature.Skills.Has(SkillId.Handicraft))
-			creature.Skills.Give(SkillId.Handicraft, SkillRank.RF);
+		if ((item.HasTag("/handicraft_kit/")) && !creature.HasSkill(SkillId.Handicraft))
+			creature.GiveSkill(SkillId.Handicraft, SkillRank.RF);
 
 		// Give Tailoring when equipping a Tailoring Kit
-		if ((item.HasTag("/tailor/kit/")) && !creature.Skills.Has(SkillId.Tailoring))
-			creature.Skills.Give(SkillId.Tailoring, SkillRank.Novice);
+		if ((item.HasTag("/tailor/kit/")) && !creature.HasSkill(SkillId.Tailoring))
+			creature.GiveSkill(SkillId.Tailoring, SkillRank.Novice);
 
 		// Give Blacksmithing when equipping a Blacksmith Hammer
-		if ((item.HasTag("/Blacksmith_Hammer/")) && !creature.Skills.Has(SkillId.Blacksmithing))
-			creature.Skills.Give(SkillId.Blacksmithing, SkillRank.Novice);
+		if ((item.HasTag("/Blacksmith_Hammer/")) && !creature.HasSkill(SkillId.Blacksmithing))
+			creature.GiveSkill(SkillId.Blacksmithing, SkillRank.Novice);
 
 		// Give Fishing when equipping a Fishing Rod
-		if ((item.HasTag("/fishingrod/")) && !creature.Skills.Has(SkillId.Fishing))
-			creature.Skills.Give(SkillId.Fishing, SkillRank.Novice);
+		if ((item.HasTag("/fishingrod/")) && !creature.HasSkill(SkillId.Fishing))
+			creature.GiveSkill(SkillId.Fishing, SkillRank.Novice);
 
 		// Give Enchant when equipping Magic Powder
-		if ((item.HasTag("/enchant/powder/")) && !creature.Skills.Has(SkillId.Enchant))
+		if ((item.HasTag("/enchant/powder/")) && !creature.HasSkill(SkillId.Enchant))
 		{
-			creature.Skills.Give(SkillId.Enchant, SkillRank.Novice);
+			creature.GiveSkill(SkillId.Enchant, SkillRank.Novice);
 			creature.Skills.Train(SkillId.Enchant, 1);
 		}
 

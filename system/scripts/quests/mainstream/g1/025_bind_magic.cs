@@ -39,10 +39,10 @@ public class BindMagicQuest : QuestScript
 
 	public async Task<HookResult> DougalAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.HasQuest(this.Id) && !npc.HasKeyword("g1_37_1"))
+		if (!npc.Player.HasQuest(this.Id) && !npc.Player.HasKeyword("g1_37_1"))
 		{
-			npc.SendOwl(this.Id, OwlDelay);
-			npc.GiveKeyword("g1_37_1");
+			npc.Player.SendOwl(this.Id, OwlDelay);
+			npc.Player.GiveKeyword("g1_37_1");
 
 			npc.Msg(L("You're quite brave to come to a place like this. I'm Dougal.<br/>I'm here... alone."));
 			npc.Msg(L("I see that you're not from around here.<br/>I'm Dougal, the last remaining human here.<br/>I was pretty lonely. It's been a while since I've seen anyone."));
@@ -58,9 +58,9 @@ public class BindMagicQuest : QuestScript
 
 			return HookResult.Break;
 		}
-		else if (npc.QuestActive(this.Id, "talk1"))
+		else if (npc.Player.QuestActive(this.Id, "talk1"))
 		{
-			npc.FinishQuest(this.Id, "talk1");
+			npc.Player.FinishQuestObjective(this.Id, "talk1");
 
 			npc.Msg(L("You've come... I was waiting for you.<br/>Because you're not from around here,<br/>I thought that losing the freedom of your body<br/>might end up getting you into big trouble."));
 			npc.Msg(L("...True... Nobody but your party can help you<br/>in here.<br/>Even if your life ends and you pass away..."));
@@ -74,12 +74,12 @@ public class BindMagicQuest : QuestScript
 
 			return HookResult.Break;
 		}
-		else if (npc.QuestActive(this.Id, "talk2"))
+		else if (npc.Player.QuestActive(this.Id, "talk2"))
 		{
-			npc.CompleteQuest(this.Id);
+			npc.Player.CompleteQuest(this.Id);
 
-			npc.RemoveKeyword("g1_37_1");
-			npc.GiveKeyword("g1_bind");
+			npc.Player.RemoveKeyword("g1_37_1");
+			npc.Player.GiveKeyword("g1_bind");
 
 			npc.Msg(L("It's just as I'd thought. We can use the added soul phenomenon<br/>and have your spirit stay here.<br/>If you believe me, from now on,<br/>you won't ever be an undead even if you collapse here."));
 			npc.Msg(L("...Yes. My body and soul<br/>are exchanging with you the amount of strength<br/>you need to resurrect here..."));

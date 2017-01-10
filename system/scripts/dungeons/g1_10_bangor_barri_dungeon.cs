@@ -17,11 +17,11 @@ public class BrownFomorPassDungeonScript : DungeonScript
 			var creators = dungeon.GetCreators();
 			foreach (var member in creators)
 			{
-				if (member.Keywords.Has("g1_10"))
+				if (member.HasKeyword("g1_10"))
 				{
-					member.Keywords.Remove("g1_10");
-					member.Keywords.Give("g1_11");
-					member.Keywords.Give("g1_medal_of_fomor");
+					member.RemoveKeyword("g1_10");
+					member.GiveKeyword("g1_11");
+					member.GiveKeyword("g1_medal_of_fomor");
 				}
 			}
 		});
@@ -43,7 +43,7 @@ public class BrownFomorPassDungeonScript : DungeonScript
 			var treasureChest = new TreasureChest();
 
 			// Fomor Medal
-			if (member.Keywords.Has("g1_medal_of_fomor"))
+			if (member.HasKeyword("g1_medal_of_fomor"))
 				treasureChest.Add(Item.Create(73021));
 
 			treasureChest.AddGold(rnd.Next(576, 1440)); // Gold

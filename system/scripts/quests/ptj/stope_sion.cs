@@ -32,27 +32,27 @@ public class SionPtjScript : GeneralScript
 	{
 		// Handle delivery of Iron Ore from some of his PTJ quests
 		int id, itemCount = -1;
-		if (npc.QuestActive(id = 514602, "ptj2"))
+		if (npc.Player.QuestActive(id = 514602, "ptj2"))
 			itemCount = 5;
-		else if (npc.QuestActive(id = 514632, "ptj2"))
+		else if (npc.Player.QuestActive(id = 514632, "ptj2"))
 			itemCount = 7;
-		else if (npc.QuestActive(id = 514662, "ptj2"))
+		else if (npc.Player.QuestActive(id = 514662, "ptj2"))
 			itemCount = 10;
 
 		if (itemCount != -1)
 		{
-			if (!npc.Player.Inventory.Has(64002, itemCount)) // Iron Ore
+			if (!npc.Player.HasItem(64002, itemCount)) // Iron Ore
 				return HookResult.Continue;
 
-			npc.FinishQuest(id, "ptj2");
+			npc.Player.FinishQuestObjective(id, "ptj2");
 
-			npc.Player.Inventory.Remove(64002, itemCount);
-			npc.Notice(L("You have given Iron Ore to Sion."));
+			npc.Player.RemoveItem(64002, itemCount);
+			npc.Player.Notice(L("You have given Iron Ore to Sion."));
 			npc.Msg(string.Format(LN("(Gave Sion {0} Iron Ore)", "(Gave Sion {0} Iron Ore)", itemCount), itemCount));
 		}
 
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -88,19 +88,19 @@ public class SionPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Are you working for someone else right now?<br/>If you want to help me, go finish that job first, then come back."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("You have to wait until the deadline.<br/>You're gonna have to wait a little more."));
@@ -125,7 +125,7 @@ public class SionPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("What is this! If you agreed to work, then you should keep your promise!<br/>What do you take me for?"));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -147,7 +147,7 @@ public class SionPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -166,24 +166,24 @@ public class SionPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("It's too early for work."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("Hmm... That's enough for today.<br/>Can you come back tomorrow?"));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("Alright, if you've heard about my family,<br/>then I take it that you know what kind of work you'll be doing?<br/>You're going to need a good grip on that Pickaxe.");
 		else
 			msg = L("You brought your Pickaxe, right?");
@@ -191,20 +191,20 @@ public class SionPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Sion's Iron Ore-Mining Part-time Job"),
 			L("Looking for miners."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Please come back to report before the deadline ends."));
 			else
 				npc.Msg(L("Alright! Don't be late for the deadline!"));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Hmm. Are you scared?"));
 			else
 				npc.Msg(L("I guess you don't feel like working today.<br/>Well, you can just help me next time then."));

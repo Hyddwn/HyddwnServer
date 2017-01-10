@@ -19,23 +19,23 @@ public class DungeonLostResidentNpcScript : NpcScript
 		Msg("My hero! How can I ever repay you for this... How about a reward?", Button("Some gold maybe?", "@gold"), Button("An item!", "@item"));
 		var reward = await Select();
 
-		if (!HasKeyword("TirChonaill_Tutorial_Judging") && !HasKeyword("TirChonaill_Tutorial_Perceiving"))
+		if (!Player.HasKeyword("TirChonaill_Tutorial_Judging") && !Player.HasKeyword("TirChonaill_Tutorial_Perceiving"))
 		{
 			if (reward == "@gold")
 			{
 				Msg("Some money? Of course, here you go.");
-				GiveGold(1000);
-				GiveKeyword("TirChonaill_Tutorial_Judging");
+				Player.GiveGold(1000);
+				Player.GiveKeyword("TirChonaill_Tutorial_Judging");
 			}
 			else if (reward == "@item")
 			{
 				Msg("Please take this, may it bring you luck.");
-				GiveItem(16009);
-				GiveKeyword("TirChonaill_Tutorial_Perceiving");
+				Player.GiveItem(16009);
+				Player.GiveKeyword("TirChonaill_Tutorial_Perceiving");
 			}
 		}
 
-		GiveKeyword("Clear_Tutorial_Alby_Dungeon");
+		Player.GiveKeyword("Clear_Tutorial_Alby_Dungeon");
 		Msg("Thank you so much, now let's leave this horrible place...", Button("End Conversation"));
 		await Select();
 		Close2();

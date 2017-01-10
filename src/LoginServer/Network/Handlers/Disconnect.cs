@@ -11,11 +11,9 @@ namespace Aura.Login.Network.Handlers
 	public partial class LoginServerHandlers : PacketHandlerManager<LoginClient>
 	{
 		/// <summary>
-		/// Sent before going back to login screen or continuing to a channel.
+		/// Sent before going back to login screen or continuing to a channel,
+		/// apparently related to the favorites list.
 		/// </summary>
-		/// <remarks>
-		/// No response, it only informs us that the connection is being closed.
-		/// </remarks>
 		/// <example>
 		/// 0001 [................] String : admin
 		/// 0002 [4D80902C6DF00000] Long   : ?
@@ -29,8 +27,25 @@ namespace Aura.Login.Network.Handlers
 			var accountName = packet.GetString();
 			var unkLong = packet.GetLong();
 			var unkInt1 = packet.GetInt();
-			var unkInt2 = packet.GetInt();
-			var unkInt3 = packet.GetInt();
+
+			// The following two ints appear to be counts for lists.
+			// They seem to contain updates about the favorite characters/pets.
+
+			var characterCount = packet.GetInt();
+			for (int i = 0; i < characterCount; ++i)
+			{
+				var entityId = packet.GetLong();
+				var serverName = packet.GetString();
+				var unkByte = packet.GetByte();
+			}
+
+			var petCount = packet.GetInt();
+			for (int i = 0; i < petCount; ++i)
+			{
+				var entityId = packet.GetLong();
+				var serverName = packet.GetString();
+				var unkByte = packet.GetByte();
+			}
 
 			if (accountName != client.Account.Name)
 				return;

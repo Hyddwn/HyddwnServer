@@ -34,7 +34,7 @@ public class TirBeginnerRegionScript : RegionScript
 		OnClientEvent("Tin_Beginner_Tutorial/_Tin_Beginner_Tutorial_01/tuto_start", SignalType.Enter, (creature, eventData) =>
 		{
 			// Only do this once.
-			if (creature.Keywords.Has("tin_tutorial_guide"))
+			if (creature.HasKeyword("tin_tutorial_guide"))
 				return;
 
 			if (!creature.Quests.Has(202001))
@@ -55,7 +55,7 @@ public class TirBeginnerRegionScript : RegionScript
 				}
 
 				// Give as soon as the player got everything
-				creature.Keywords.Give("tin_tutorial_guide");
+				creature.GiveKeyword("tin_tutorial_guide");
 
 				// Required to remove the fade effect.
 				scene.Leader.Warp(125, 22930, 75423);

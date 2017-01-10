@@ -65,19 +65,19 @@ public class CaitinPtjScript : GeneralScript
 	{
 		// Handle receiving of Anthology from some of her PTJ quests
 		int id;
-		if (npc.QuestActive(id = 501405, "ptj3") || npc.QuestActive(id = 501435, "ptj3") || npc.QuestActive(id = 501465, "ptj3"))
+		if (npc.Player.QuestActive(id = 501405, "ptj3") || npc.Player.QuestActive(id = 501435, "ptj3") || npc.Player.QuestActive(id = 501465, "ptj3"))
 		{
-			if (!npc.Player.Inventory.Has(Anthology))
+			if (!npc.Player.HasItem(Anthology))
 				return HookResult.Continue;
 
-			npc.Player.Inventory.Remove(Anthology, 1);
-			npc.FinishQuest(id, "ptj3");
+			npc.Player.RemoveItem(Anthology, 1);
+			npc.Player.FinishQuestObjective(id, "ptj3");
 
-			npc.Notice(L("You have given Anthology to be Delivered to Caitin."));
+			npc.Player.Notice(L("You have given Anthology to be Delivered to Caitin."));
 		}
 
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -113,19 +113,19 @@ public class CaitinPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Hmm... You seem to be on a different job.<br/>Why don't you finish that first and come back later?"));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("Did you finish all the work I requested?<br/>It's a bit early for that now.<br/>Please come back at the deadline."));
@@ -146,7 +146,7 @@ public class CaitinPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Are you here to work or what? Why did you even ask for the job in the first place?<br/>Sorry, but I can't pay you anything."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -165,7 +165,7 @@ public class CaitinPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -189,30 +189,30 @@ public class CaitinPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("I'm sorry... This isn't the right time for a part-time job.<br/>Please come back later."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("That's it for today's Grocery Store work.<br/>I'll give you a new task when you come tomorrow."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 
 		// Msg is kinda unofficial, she currently says the following, and then
 		// tells you you'd get Homestead seeds.
-		npc.Msg(L("Ah, <username/>! Are you here for part-time work as usual?"), npc.PtjDesc(randomPtj, L("Caitin's Grocery Store Part-Time Job"), L("Looking for help with delivery of goods in Grocery Store."), PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+		npc.Msg(L("Ah, <username/>! Are you here for part-time work as usual?"), npc.PtjDesc(randomPtj, L("Caitin's Grocery Store Part-Time Job"), L("Looking for help with delivery of goods in Grocery Store."), PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
 			npc.Msg(L("I'm counting on you."));
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
@@ -642,14 +642,14 @@ public abstract class CaitinBreadPtjBaseScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj"))
+		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(ItemId, 1);
-		npc.FinishQuest(this.Id, "ptj");
+		npc.Player.RemoveItem(ItemId, 1);
+		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
 		await this.OnFinish(npc);
 
@@ -959,14 +959,14 @@ public abstract class CaitinExtBreadPtjBaseScript : QuestScript
 
 	public async Task<HookResult> LassarAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(Bread))
+		if (!npc.Player.HasItem(Bread))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(Bread, 1);
-		npc.FinishQuest(this.Id, "ptj1");
+		npc.Player.RemoveItem(Bread, 1);
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		npc.Msg(L("Oh, so Caitin asked you to deliver this Bread to me?<br/>Thanks."));
 		npc.Msg(Hide.Name, L("(Delivered the Bread to Lassar.)"));
@@ -977,11 +977,11 @@ public abstract class CaitinExtBreadPtjBaseScript : QuestScript
 
 	public async Task<HookResult> RanaldAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj2"))
+		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj2");
-		npc.GiveItem(Anthology);
+		npc.Player.FinishQuestObjective(this.Id, "ptj2");
+		npc.Player.GiveItem(Anthology);
 
 		npc.Msg(L("You are working for Caitin now?<br/>Then, can you do me a favor? Please give this to her for me."));
 		npc.Msg(Hide.Name, L("(Received an Anthology.)"));

@@ -71,9 +71,9 @@ public class RanaldScript : NpcScript
 
 						Player.Vars.Perm["ranald_title_gift"] = today;
 
-						GiveItem(51011, 3); // Stamina 10 Potion x3
-						Notice(L("Received Stamina 10 Potion from Ranald."));
-						SystemMsg(L("Received Stamina 10 Potion from Ranald."));
+						Player.GiveItem(51011, 3); // Stamina 10 Potion x3
+						Player.Notice(L("Received Stamina 10 Potion from Ranald."));
+						Player.SystemMsg(L("Received Stamina 10 Potion from Ranald."));
 
 						Msg(L("I think you'll need this Stamina Potion quite often<br/>for your combat training."));
 					}
@@ -121,8 +121,8 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "@ciarpass":
-				GiveItem(63139); // Ciar Beginner Dungeon Pass
-				Notice("Recieved Ciar Beginner Dungeon Pass from Ranald.");
+				Player.GiveItem(63139); // Ciar Beginner Dungeon Pass
+				Player.Notice("Recieved Ciar Beginner Dungeon Pass from Ranald.");
 				Msg("OK, here's the pass.<br/>You can ask for it again if you need it.<br/>That doesn't mean you can fill up the inventory with a pile of passes.");
 				break;
 		}
@@ -161,19 +161,19 @@ public class RanaldScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				if (Favor > 20 && !HasKeyword("RP_Ranald_Complete"))
+				if (Favor > 20 && !Player.HasKeyword("RP_Ranald_Complete"))
 				{
-					if (!HasItem(73101))
+					if (!Player.HasItem(73101))
 					{
-						GiveItem(73101); // Ranald's Medal
-						SystemNotice(L("Received Ranald's Medal from Ranald."));
+						Player.GiveItem(73101); // Ranald's Medal
+						Player.SystemNotice(L("Received Ranald's Medal from Ranald."));
 					}
 
 					Msg(L("I used to be a Dunbarton mercenary.<br/>I'd spent my youth as a mercenary and then built a School here at Tir Chonaill.<br/>You'll be able to see my past if you enter Rabbie Dungeon alone with this. Haha."));
 				}
 				else
 				{
-					GiveKeyword("school");
+					Player.GiveKeyword("school");
 					Msg(FavorExpression(), "Hello, there. I teach combat skills at the School in Tir Chonaill.<br/>If you're interested, talk to me with the 'Classes and Training' keyword.");
 					Msg("Hey, hey... This is not free. You'll need to pay tuition for my classes...");
 					ModifyRelation(Random(2), 0, Random(3));
@@ -181,10 +181,10 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "rumor":
-				if (!HasSkill(SkillId.RangedAttack))
+				if (!Player.HasSkill(SkillId.RangedAttack))
 				{
-					GiveKeyword("complicity");
-					RemoveKeyword("bow");
+					Player.GiveKeyword("complicity");
+					Player.RemoveKeyword("bow");
 					Msg(FavorExpression(), "Hmm... Did you hear the news?<br/>Ferghus can't stop smiling these days.<br/>I heard his arrow sales have jumped up lately.");
 					Msg("It seems like Trefor received a huge gift from Ferghus.<br/>People are assuming that Trefor is helping Ferghus with something.");
 				}
@@ -196,7 +196,7 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (HasSkill(SkillId.Windmill))
+				if (Player.HasSkill(SkillId.Windmill))
 				{
 					Msg("How was the Windmill skill? Was it of any help?<br/>You will one day become a great warrior<br/>as long as you remain an ardent student eager for training just like you are now.");
 					break;
@@ -206,7 +206,7 @@ public class RanaldScript : NpcScript
 			//case "about_study": // Handled in quest script
 
 			case "shop_misc":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("You're not going to the General Shop for weapons, are you?<br/>For weapons, you would need to go to the Blacksmith's Shop.");
 				break;
 
@@ -232,8 +232,8 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "skill_range":
-				GiveKeyword("bow");
-				RemoveKeyword("skill_range");
+				Player.GiveKeyword("bow");
+				Player.RemoveKeyword("skill_range");
 				if (Player.IsGiant)
 				{
 					// Giants can't get this keyword anymore
@@ -249,7 +249,7 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "skill_instrument":
-				GiveKeyword("church");
+				Player.GiveKeyword("church");
 				Msg("You want to learn the Instrument Playing skill?<br/>Hmm... Did you forget that I am a combat instructor?<br/>I can't believe you are asking me for that. I am a little disappointed");
 				Msg("Ha ha... Don't be so disheartened about what I said, though.<br/>I didn't know you would be easily affected by my words. Hahaha.<br/>You're just like Malcolm when he was a kid.");
 				Msg("OK, about the Instrument Playing skill...<br/>Go ask Priestess Endelyon at the Church about it.<br/>I'm sure she will teach you well.");
@@ -263,17 +263,17 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("You want to make clothes for yourself?<br/>Hmm... Why would you come to the School to ask me, a combat instructor,<br/>how to make clothes?<br/>I just don't get it. But, anyway...");
 				Msg("You have asked me a question, and as a teacher, I feel obligated to answer it.<br/>Talk to Caitin at the Grocery Store.<br/>She knows more about that skill than anyone else.");
 				Msg("From what I've heard, most of the clothes at Malcolm's shop<br/>were either designed or tailored by her...");
 				break;
 
 			case "skill_magnum_shot":
-				RemoveKeyword("skill_magnum_shot");
+				Player.RemoveKeyword("skill_magnum_shot");
 				Msg("Oh... You already know about that?<br/>I only gave you a brief summary about the Ranged Attack,<br/>and you already picked up that much! Quite impressive!<br/>Alright! Let's move on then!");
 				Msg("Magnum Shot skill helps you to shoot a powerful blow<br/>with the power you have concentrated in the bow.<br/>Go on and work on the training.<br/>");
-				GiveSkill(SkillId.MagnumShot, SkillRank.RF); // This is removed in later updates
+				Player.GiveSkill(SkillId.MagnumShot, SkillRank.RF); // This is removed in later updates
 				break;
 
 			case "skill_counter_attack":
@@ -300,24 +300,24 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("brook");
+				Player.GiveKeyword("brook");
 				Msg("The reservoir? Go up north a little bit, and that's where you'll find it.<br/>The water in the reservoir comes from the Adelia Stream.<br/>We use the Windmill to get water up from the stream to fill the reservoir.<br/>It's critical for irrigating the farmland.");
 				break;
 
 			case "farmland":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("The farmland?<br/>Well, it's right in front of the School. You didn't see it?<br/>If you're talking about another farmland,<br/>there's a small one next to Caitin's Grocery Store, but...");
 				Msg("Don't step on those crops!<br/>Let the scarecrow take care of it.");
 				break;
 
 			case "windmill":
-				GiveKeyword("shop_inn");
+				Player.GiveKeyword("shop_inn");
 				Msg("Hmm... are you looking for the windmill?<br/>I see... The windmill here is well worth a visit. It's picturesque.");
 				Msg("If you want to see the windmill up close, go near the Inn.");
 				break;
 
 			case "brook":
-				GiveKeyword("farmland");
+				Player.GiveKeyword("farmland");
 				Msg("Hmm... you want to know how to reach the Adelia Stream?<br/>It will take some time to get there...<br/>It's not easy to explain where it is...");
 				Msg("Walk outside the School and follow along the farmland.<br/>After a while, you will see a small stream and a bridge.<br/>Well, that's the Adelia Stream.");
 				break;
@@ -351,13 +351,13 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Hmm... As far as I know, there are no restaurants in Tir Chonaill.<br/>If you're looking for something to eat, then talk to Caitin.");
 				Msg("She spends most of her time working at the Grocery Store,<br/>so why don't you go there and say hi to her?");
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("You can't find the Weapons Shop?<br/>Hmm... Well, this is very heartbreaking to say, but there is no Weapons Shop in this town.<br/>You will need to go to the Blacksmith's Shop if you need a weapon.");
 				Msg("All weapons and armor are made at the Blacksmith's Shop by Ferghus himself.");
 				Msg("There's not much of a variety there,<br/>but talk to Ferghus if you need something.");
@@ -385,7 +385,7 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "graveyard":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("The graveyard? Hmm...<br/>There is one located over the hill behind the Chief's House but...");
 				Msg("If I were you,<br/>I would stay away from that place.<br/>It's not right to cause a commotion literally on top of the dead.<br/>It is simply not the right thing to do.");
 				Msg("I want you to respect the dead,<br/>and let them rest in peace.");

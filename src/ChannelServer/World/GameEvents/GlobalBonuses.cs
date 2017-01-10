@@ -4,6 +4,7 @@
 using Aura.Channel.World.Entities;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -87,6 +88,16 @@ namespace Aura.Channel.World.GameEvents
 		}
 
 		/// <summary>
+		/// Adds global drop.
+		/// </summary>
+		/// <param name="drop"></param>
+		public void AddDrop(GlobalDrop drop)
+		{
+			lock (_drops)
+				_drops.Add(drop);
+		}
+
+		/// <summary>
 		/// Removes all global drops associated with the given identifier.
 		/// </summary>
 		/// <param name="identifier"></param>
@@ -101,12 +112,12 @@ namespace Aura.Channel.World.GameEvents
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <returns></returns>
-		public List<DropData> GetDrops(Creature creature)
+		public List<DropData> GetDrops(Creature creature, Creature killer)
 		{
 			var result = new List<DropData>();
 
 			lock (_drops)
-				result.AddRange(_drops.Where(a => a.Matches(creature)).Select(a => a.Data));
+				result.AddRange(_drops.Where(a => a.Matches(creature, killer)).Select(a => a.Data));
 
 			return result;
 		}
@@ -177,7 +188,7 @@ namespace Aura.Channel.World.GameEvents
 			this.Data = data;
 		}
 
-		public abstract bool Matches(Creature creature);
+		public abstract bool Matches(Creature creature, Creature killer);
 	}
 
 	public class GlobalDropById : GlobalDrop
@@ -190,10 +201,26 @@ namespace Aura.Channel.World.GameEvents
 			this.RaceId = raceId;
 		}
 
-		public override bool Matches(Creature creature)
+		public override bool Matches(Creature creature, Creature killer)
 		{
 			var isRace = (creature.RaceId == this.RaceId);
 			return isRace;
+		}
+	}
+
+	public class GlobalDropByMatch : GlobalDrop
+	{
+		public Func<Creature, Creature, bool> IsMatch { get; private set; }
+
+		public GlobalDropByMatch(string identifier, Func<Creature, Creature, bool> isMatch, DropData data)
+			: base(identifier, data)
+		{
+			this.IsMatch = isMatch;
+		}
+
+		public override bool Matches(Creature creature, Creature killer)
+		{
+			return this.IsMatch(creature, killer);
 		}
 	}
 
@@ -207,7 +234,7 @@ namespace Aura.Channel.World.GameEvents
 			this.Tag = tag;
 		}
 
-		public override bool Matches(Creature creature)
+		public override bool Matches(Creature creature, Creature killer)
 		{
 			var isTag = (creature.HasTag(this.Tag));
 			return isTag;
@@ -224,7 +251,7 @@ namespace Aura.Channel.World.GameEvents
 			this.Type = type;
 		}
 
-		public override bool Matches(Creature creature)
+		public override bool Matches(Creature creature, Creature killer)
 		{
 			switch (this.Type)
 			{
@@ -238,6 +265,22 @@ namespace Aura.Channel.World.GameEvents
 			}
 
 			return false;
+		}
+	}
+
+	public class GlobalDropByRegion : GlobalDrop
+	{
+		public int RegionId { get; private set; }
+
+		public GlobalDropByRegion(string identifier, int regionId, DropData data)
+			: base(identifier, data)
+		{
+			this.RegionId = regionId;
+		}
+
+		public override bool Matches(Creature creature, Creature killer)
+		{
+			return (creature.RegionId == this.RegionId);
 		}
 	}
 

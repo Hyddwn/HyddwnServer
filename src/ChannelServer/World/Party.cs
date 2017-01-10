@@ -22,6 +22,7 @@ namespace Aura.Channel.World
 		private List<Creature> _members;
 		private Dictionary<int, Creature> _occupiedSlots;
 		private int _adTimer;
+		private int _finisher;
 
 		/// <summary>
 		/// Party's unique identifier (comparable to EntityId).
@@ -818,6 +819,22 @@ namespace Aura.Channel.World
 
 			Send.PartyUnsetActiveQuest(this, quest.UniqueId);
 			return true;
+		}
+
+		/// <summary>
+		/// Returns the next eligable finisher for the "in turn" finisher
+		/// rule.
+		/// </summary>
+		/// <returns></returns>
+		public Creature GetNextFinisher()
+		{
+			var members = this.GetMembers();
+
+			_finisher++;
+			if (_finisher >= members.Length)
+				_finisher = 0;
+
+			return members[_finisher];
 		}
 	}
 }

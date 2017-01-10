@@ -36,7 +36,7 @@ public class SaveMySheepQuestScript : QuestScript
 
 	public async Task<HookResult> TalkDeian(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_deian1") || npc.QuestActive(this.Id, "protect_sheep"))
+		if (npc.Player.QuestActive(this.Id, "talk_deian1") || npc.Player.QuestActive(this.Id, "protect_sheep"))
 		{
 			npc.Msg("I'm glad to see you. I've been stuck here all day!<br/>Can you look after my sheep for a few minutes? I got some business to take care of.<br/>It should be easy, as long as the wolves don't show up.");
 			npc.Msg("Just make sure to keep my sheep safe if wolves show up.<br/>The number of sheep and the time left will display<br/>on the top right corner.");
@@ -47,15 +47,15 @@ public class SaveMySheepQuestScript : QuestScript
 				return HookResult.Break;
 
 			npc.Close2();
-			npc.FinishQuest(this.Id, "talk_deian1");
+			npc.Player.FinishQuestObjective(this.Id, "talk_deian1");
 
 			CreateRegionAndWarp(npc.Player);
 
 			return HookResult.End;
 		}
-		else if (npc.QuestActive(this.Id, "talk_deian2"))
+		else if (npc.Player.QuestActive(this.Id, "talk_deian2"))
 		{
-			npc.FinishQuest(this.Id, "talk_deian2");
+			npc.Player.FinishQuestObjective(this.Id, "talk_deian2");
 
 			npc.Msg("Wow, good job.<br/>I got everything done thanks to you.<br/>You'll do this again next time, right? Thanks!");
 
@@ -94,7 +94,7 @@ public class SaveMySheepQuestScript : QuestScript
 			// Official >10: Thanks to my dilligent supervision, over 10 sheep are safe.
 			Send.Notice(creature, NoticeType.MiddleSystem, L("The time is over, you did it."));
 			Send.RemoveQuestTimer(creature);
-			creature.Keywords.Give("TirChonaill_Tutorial_Thinking");
+			creature.GiveKeyword("TirChonaill_Tutorial_Thinking");
 			creature.Warp(1, 27622, 42125);
 		});
 
@@ -104,7 +104,7 @@ public class SaveMySheepQuestScript : QuestScript
 			var pos = Center.GetRandomInRect(6000, 4000, rnd);
 
 			var npc = new NPC(40001); // Sheep
-			npc.Death += (killed, killer) =>
+			npc.Finish += (killed, killer) =>
 			{
 				sheepAmount--;
 
@@ -138,7 +138,7 @@ public class SaveMySheepQuestScript : QuestScript
 
 		// Spawn wolf on random position and respawn it if it dies.
 		var npc = new NPC(20001); // Gray Wolf
-		npc.Death += (killed, killer) =>
+		npc.Finish += (killed, killer) =>
 		{
 			SpawnWolf(regionId, rnd);
 		};

@@ -42,7 +42,7 @@ public class PiarasPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -71,19 +71,19 @@ public class PiarasPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Are you working on a different part-time job?<br/>Well, then. Please help me in the future when you have a chance."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("Ah, you are here already?<br/>It's a little bit too early. Can you come back around the deadline?"));
@@ -104,7 +104,7 @@ public class PiarasPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Ha ha. This is a little disappointing.<br/>I don't think I can pay you for this."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -123,7 +123,7 @@ public class PiarasPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -147,30 +147,30 @@ public class PiarasPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("Hmm... It's not a good time for this.<br/>Can you come back when it is time for part-time jobs?"));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("I'm all set for today.<br/>Will you come back tomorrow?"));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 
 		// Msg is kinda unofficial, she currently says the following, and then
 		// tells you you'd get Homestead seeds.
-		npc.Msg(L("Are you here for a part-time job at my Inn again?"), npc.PtjDesc(randomPtj, L("Piaras's Inn Part-time Job"), L("Looking for help with delivering goods to Inn."), PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+		npc.Msg(L("Are you here for a part-time job at my Inn again?"), npc.PtjDesc(randomPtj, L("Piaras's Inn Part-time Job"), L("Looking for help with delivering goods to Inn."), PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
 			npc.Msg(L("I'll be counting on you as usual."));
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{

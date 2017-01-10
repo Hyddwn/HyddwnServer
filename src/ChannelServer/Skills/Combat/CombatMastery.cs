@@ -77,6 +77,8 @@ namespace Aura.Channel.Skills.Combat
 			var maxHits = (byte)(attacker.IsDualWielding ? 2 : 1);
 			int prevId = 0;
 
+			var knockedBackTargets = new HashSet<long>();
+
 			for (byte i = 1; i <= maxHits; ++i)
 			{
 				var weapon = (i == 1 ? rightWeapon : leftWeapon);
@@ -101,7 +103,9 @@ namespace Aura.Channel.Skills.Combat
 
 				foreach (var target in targets)
 				{
-					if (target.IsDead)
+					// Skip targets that were knocked back, as they aren't in
+					// range anymore.
+					if (knockedBackTargets.Contains(target.EntityId))
 						continue;
 
 					target.StopMove();
@@ -194,6 +198,8 @@ namespace Aura.Channel.Skills.Combat
 						attacker.Shove(target, KnockBackDistance);
 						if (target == mainTarget)
 							aAction.Set(AttackerOptions.KnockBackHit2);
+
+						knockedBackTargets.Add(target.EntityId);
 					}
 
 					// Set stun time if not defended, Defense handles the stun

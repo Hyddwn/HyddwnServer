@@ -120,7 +120,7 @@ public class IbbieScript : NpcScript
 				break;
 
 			case "shop_misc":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("General shop?<br/>You mean Gilmore's place<br/>next to the Blacksmith's Shop?");
 				Msg("The General Shop is at the end of that building down there.<br/>I would take you there myself but...");
 				Msg("My legs hurt... I'm sorry.");

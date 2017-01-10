@@ -52,9 +52,9 @@ public class CaitinScript : NpcScript
 
 						Player.Vars.Perm["caitin_title_gift"] = today;
 
-						GiveItem(50134); // Sliced Bread
-						Notice(L("Received Sliced Bread from Caitin."));
-						SystemMsg(L("Received Sliced Bread from Caitin."));
+						Player.GiveItem(50134); // Sliced Bread
+						Player.Notice(L("Received Sliced Bread from Caitin."));
+						Player.SystemMsg(L("Received Sliced Bread from Caitin."));
 
 						Msg(L("Would you like to have a taste of this?<br/>It's nothing special...but I made it myself."));
 					}
@@ -123,7 +123,7 @@ public class CaitinScript : NpcScript
 				}
 				else if (Favor >= 10 && Stress <= 10)
 				{
-					GiveKeyword("skill_gathering");
+					Player.GiveKeyword("skill_gathering");
 					Msg(FavorExpression(), "When running a grocery store,<br/>it's not easy stocking goods just from the resources in this town.<br/>That's why I plant and raise rare crops myself<br/>rather than buy from neighboring towns.");
 					ModifyRelation(Random(2), Random(2), Random(2));
 				}
@@ -144,7 +144,7 @@ public class CaitinScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("shop_grocery");
+					Player.GiveKeyword("shop_grocery");
 					Msg(FavorExpression(), "My grandmother named me.<br/>I work here at the Grocery Store, so I know one important thing.<br/>You have to eat to survive!<br/>Food helps you regain your Stamina.");
 					Msg("That doesn't mean you can eat just anything.<br/>You shouldn't have too much greasy food<br/>because you could gain a lot of weight.");
 					Msg("Huh? You have food with you but don't know how to eat it?<br/>Okay, open the Inventory and right-click on the food.<br/>Then, click \"Use\" to eat.<br/>If you have bread in your Inventory, and your Stamina is low,<br/>try eating it now.");
@@ -185,14 +185,14 @@ public class CaitinScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("brook");
+					Player.GiveKeyword("brook");
 					Msg(FavorExpression(), "Do you know anything about the Adelia Stream?<br/>The river near the Windmill is the Adelia Stream.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "about_skill":
-				if (!HasSkill(SkillId.Cooking, SkillRank.RF))
+				if (!Player.HasSkill(SkillId.Cooking, SkillRank.RF))
 				{
 					Msg("Hehe, skills?<br/>Well, how about cooking? Do you enjoy cooking?<br/>Oh, but that doesn't mean I can teach you the Cooking skill.<br/>I'm not good enough to teach you...<br/>Though I can share my experiences of cooking if you like.", Button("OK", "@skilleffect01"), Button("No, thanks", "@skilleffect02"));
 					switch (await Select())
@@ -239,7 +239,7 @@ public class CaitinScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Ferghus at the Blacksmith's Shop loves to drink.<br/>He often hangs out with Ranald from the school for a drink.");
 				break;
 
@@ -248,34 +248,34 @@ public class CaitinScript : NpcScript
 				break;
 
 			case "skill_instrument":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("Playing an instrument?<br/>I saw Priestess Endelyon play an organ at the Church before.<br/>Why don't you go and talk to her?");
 				break;
 
 			case "skill_composing":
-				GiveKeyword("shop_bank");
+				Player.GiveKeyword("shop_bank");
 				Msg("I'm not sure...<br/>But Bebhinn is the one you should ask.<br/>She knows all the rumors.<br/>She'll definitely know who's the best at composing around here.");
 				Msg("Bebhinn works at the Bank.<br/>It's the building to the left.");
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_inn");
+				Player.GiveKeyword("shop_inn");
 				Msg("You just need a Tailoring Kit to use the Tailoring skill.<br/>Anyone can use the skill as long as they have a kit with them.<br/>It's not difficult at all.");
 				Msg("You will, however, need various materials,<br/>such as fabric and sewing patterns to make anything.<br/>Ask Nora at the Inn for materials.");
 				break;
 
 			case "skill_magnum_shot":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Sounds like a combat skill to me.<br/>Why don't you ask Ranald at the School?<br/>He teaches combat skills.");
 				break;
 
 			case "skill_counter_attack":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Melee Counterattack? Sounds like a combat skill to me.<br/>Why don't you ask Ranald at the School?<br/>He teaches combat skills.");
 				break;
 
 			case "skill_smash":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("The Smash skill... Sounds like a combat skill to me.<br/>Why don't you ask Ranald at the School?<br/>He teaches combat skills.");
 				break;
 
@@ -324,12 +324,12 @@ public class CaitinScript : NpcScript
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("A Weapons Shop?<br/>I don't think there is a shop just for weapons...<br/>Oh yea!  Go to Ferghus's Blacksmith.<br/>I saw him making all sorts of swords and hammers recently.");
 				break;
 
 			case "shop_cloth":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("I usually make my own clothes<br/>but sometimes I purchase them at Malcolm's General Shop.<br/>Do you need new clothes?");
 				break;
 
@@ -339,7 +339,7 @@ public class CaitinScript : NpcScript
 				break;
 
 			case "shop_goverment_office":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("The Town Office? Huh?<br/>Er, if you are looking for someone who takes care of town affairs,<br/>go and see the Chief.");
 				break;
 
@@ -353,12 +353,12 @@ public class CaitinScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("I saw Ferghus making bows at his Blacksmith's Shop<br/>I think he's selling them...<br/>Bows make me nervous because I don't like the thought<br/>of someone pointing one at me...");
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Lute...? Do you mean that small stringed instrument?<br/>I saw Malcolm selling them at the General Shop.<br/>If you plan to buy one, the General Shop is the place to go.");
 				break;
 
@@ -371,7 +371,7 @@ public class CaitinScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("A Music Score?<br/>You can find Music Scores at Malcolm's General Shop.<br/>Have you ever been there?");
 				break;
 
@@ -411,14 +411,14 @@ public class CaitinScript : NpcScript
 		}
 	}
 
-	protected override async Task Gift(Item gift, GiftReaction reaction)
+	protected override async Task Gift(Item item, GiftReaction reaction)
 	{
 		// Start of Chicken RP
-		if (gift.Info.Id == 50012 && !HasItem(73109) && !HasKeyword("RP_Monster_Chicken_complete"))
+		if (item.Info.Id == 50012 && !Player.HasItem(73109) && !Player.HasKeyword("RP_Monster_Chicken_complete"))
 		{
-			GiveKeyword("RP_Monster_Chicken_start");
-			GiveItem(73109); // Egg from Caitin
-			SystemNotice(L("Received Egg from Caitin."));
+			Player.GiveKeyword("RP_Monster_Chicken_start");
+			Player.GiveItem(73109); // Egg from Caitin
+			Player.SystemNotice(L("Received Egg from Caitin."));
 
 			Msg(L("Oh my god, this is a golden egg! Do you really want to give this to me?<br/>This is such a valuable gift...<br/>Not so long ago I picked up a special egg around here...<br/>Put it onto the Alby dungeon altar to see something special..."));
 		}

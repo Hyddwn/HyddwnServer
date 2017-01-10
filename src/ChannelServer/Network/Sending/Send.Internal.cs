@@ -37,6 +37,10 @@ namespace Aura.Channel.Network.Sending
 			var cur = ChannelServer.Instance.World.CountPlayers();
 			var max = ChannelServer.Instance.Conf.Channel.MaxUsers;
 
+			var events = 0;
+			if (ChannelServer.Instance.GameEventManager.AnyActive)
+				events |= 1;
+
 			var packet = new Packet(Op.Internal.ChannelStatus, 0);
 			packet.PutString(ChannelServer.Instance.Conf.Channel.ChannelServer);
 			packet.PutString(ChannelServer.Instance.Conf.Channel.ChannelName);
@@ -45,6 +49,7 @@ namespace Aura.Channel.Network.Sending
 			packet.PutInt(cur);
 			packet.PutInt(max);
 			packet.PutInt((int)state);
+			packet.PutInt((int)events);
 
 			ChannelServer.Instance.LoginServer.Send(packet);
 		}
