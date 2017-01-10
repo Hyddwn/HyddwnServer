@@ -4,7 +4,7 @@
 // Killing some monsters for Kristell and obtaining the Black Fomor Pass.
 // 
 // Wiki:
-// - Requirement: npc.Titles stated below while level 25 or higher
+// - Requirement: Titles stated below while level 25 or higher
 // - Instruction: Slay monsters threatening Kristell.
 //---------------------------------------------------------------------------
 

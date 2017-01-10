@@ -3,9 +3,9 @@ public class SantaClausTitleItemScript : ItemScript
 {
 	public override void OnUse(Creature cr, Item i, string param)
 	{
-		if (!cr.Titles.Knows(10696))
+		if (!cr.KnowsTitle(10696))
 		{
-			cr.Titles.Enable(10696);
+			cr.EnableTitle(10696);
 			Send.Notice(cr, L("The title \"Santa Claus\" has been added!"));
 		}
 		else
@@ -21,9 +21,9 @@ public class GiftSackTitleItemScript : ItemScript
 {
 	public override void OnUse(Creature cr, Item i, string param)
 	{
-		if (!cr.Titles.Knows(10696))
+		if (!cr.KnowsTitle(10696))
 		{
-			cr.Titles.Enable(10696);
+			cr.EnableTitle(10696);
 			Send.Notice(cr, L("The title \"Gift Sack\" has been added!"));
 		}
 		else
@@ -39,9 +39,9 @@ public class ChristmasTreeTitleItemScript : ItemScript
 {
 	public override void OnUse(Creature cr, Item i, string param)
 	{
-		if (!cr.Titles.Knows(10697))
+		if (!cr.KnowsTitle(10697))
 		{
-			cr.Titles.Enable(10697);
+			cr.EnableTitle(10697);
 			Send.Notice(cr, L("The title \"Christmas Tree\" has been added!"));
 		}
 		else
@@ -57,9 +57,9 @@ public class RedNosedTitleItemScript : ItemScript
 {
 	public override void OnUse(Creature cr, Item i, string param)
 	{
-		if (!cr.Titles.Knows(10698))
+		if (!cr.KnowsTitle(10698))
 		{
-			cr.Titles.Enable(10698);
+			cr.EnableTitle(10698);
 			Send.Notice(cr, L("The title \"Red-Nosed\" has been added!"));
 		}
 		else
@@ -75,9 +75,9 @@ public class WinterAngelTitleItemScript : ItemScript
 {
 	public override void OnUse(Creature cr, Item i, string param)
 	{
-		if (!cr.Titles.Knows(15000))
+		if (!cr.KnowsTitle(15000))
 		{
-			cr.Titles.Enable(15000);
+			cr.EnableTitle(15000);
 			Send.Notice(cr, L("The title \"Winter Angel\" has been added!"));
 		}
 		else
@@ -93,9 +93,9 @@ public class IfItSnowsOnChristmasTitleItemScript : ItemScript
 {
 	public override void OnUse(Creature cr, Item i, string param)
 	{
-		if (!cr.Titles.Knows(15001))
+		if (!cr.KnowsTitle(15001))
 		{
-			cr.Titles.Enable(15001);
+			cr.EnableTitle(15001);
 			Send.Notice(cr, L("The title \"If It Snows On Christmas\" has been added!"));
 		}
 		else
@@ -111,9 +111,9 @@ public class IHopeItRainsOnChristmasTitleItemScript : ItemScript
 {
 	public override void OnUse(Creature cr, Item i, string param)
 	{
-		if (!cr.Titles.Knows(15002))
+		if (!cr.KnowsTitle(15002))
 		{
-			cr.Titles.Enable(15002);
+			cr.EnableTitle(15002);
 			Send.Notice(cr, L("The title \"I Hope It Rains On Christmas\" has been added!"));
 		}
 		else
@@ -129,9 +129,9 @@ public class BeCarefulOfIcyRoadsTitleItemScript : ItemScript
 {
 	public override void OnUse(Creature cr, Item i, string param)
 	{
-		if (!cr.Titles.Knows(15003))
+		if (!cr.KnowsTitle(15003))
 		{
-			cr.Titles.Enable(15003);
+			cr.EnableTitle(15003);
 			Send.Notice(cr, "The title \"Be Careful Of Icy Roads\" has been added!");
 		}
 		else

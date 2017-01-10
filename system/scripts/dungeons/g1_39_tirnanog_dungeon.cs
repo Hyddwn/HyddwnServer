@@ -75,7 +75,7 @@ public class AlbeyFinalDungeonScript : DungeonScript
 			leader.GiveKeyword("g1_complete");
 			leader.GiveKeyword("g1_KnightOfTheLight");
 
-			leader.Titles.Enable(WhoSavedTheGoddessTitle);
+			leader.EnableTitle(WhoSavedTheGoddessTitle);
 			leader.AcquireItem(Item.CreateEnchant(GoddessEnchant, 3600));
 		}
 

@@ -33,7 +33,7 @@ public class DugaldSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature cr)
 	{
-		cr.Titles.Enable(10002); // the Dugald Aisle Seal Breaker
+		cr.EnableTitle(10002); // the Dugald Aisle Seal Breaker
 	}
 }
 
@@ -56,7 +56,7 @@ public class CiarSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10003); // the Ciar Seal Breaker
+		creature.EnableTitle(10003); // the Ciar Seal Breaker
 		if (!creature.HasSkill(SkillId.FirstAid, SkillRank.RE))
 			creature.GiveSkill(SkillId.FirstAid, SkillRank.RE);
 	}
@@ -81,7 +81,7 @@ public class RabbieSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10004); // the Rabbie Seal Breaker
+		creature.EnableTitle(10004); // the Rabbie Seal Breaker
 		if (!creature.HasSkill(SkillId.Windmill, SkillRank.RE))
 			creature.GiveSkill(SkillId.Windmill, SkillRank.RE);
 	}
@@ -114,7 +114,7 @@ public class MathSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10005); // the Math Seal Breaker
+		creature.EnableTitle(10005); // the Math Seal Breaker
 		if (!creature.HasSkill(SkillId.MusicalKnowledge, SkillRank.RC))
 			creature.GiveSkill(SkillId.MusicalKnowledge, SkillRank.RC);
 	}
@@ -141,7 +141,7 @@ public class BangorSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10006); // the Bangor Breaker
+		creature.EnableTitle(10006); // the Bangor Breaker
 	}
 }
 
@@ -164,7 +164,7 @@ public class FiodhSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10008); // the Fiodh Breaker
+		creature.EnableTitle(10008); // the Fiodh Breaker
 	}
 }
 
@@ -190,7 +190,7 @@ public class NorthEmainSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10025); // the North Emain Macha Seal Breaker
+		creature.EnableTitle(10025); // the North Emain Macha Seal Breaker
 	}
 }
 
@@ -216,7 +216,7 @@ public class SouthEmainSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10009); // the South Emain Macha Seal Breaker
+		creature.EnableTitle(10009); // the South Emain Macha Seal Breaker
 	}
 }
 
@@ -246,7 +246,7 @@ public class AbbSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10068); // the Abb Neagh Seal Breaker
+		creature.EnableTitle(10068); // the Abb Neagh Seal Breaker
 		if (!creature.HasSkill(SkillId.Lightningbolt, SkillRank.RC))
 			creature.GiveSkill(SkillId.Lightningbolt, SkillRank.RC);
 	}
@@ -274,7 +274,7 @@ public class SliabSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10067); // the Sliab Cuilin Seal Breaker
+		creature.EnableTitle(10067); // the Sliab Cuilin Seal Breaker
 	}
 }
 
@@ -297,7 +297,7 @@ public class TaraSealStoneScript : SealStoneScript
 	{
 		// Have alchemist clothes, shoes, a Cylinder, and Beginner Alchemist title equipped ?
 
-		if (creature.Titles.SelectedTitle != 26)
+		if (!creature.IsUsingTitle(26))
 			return false;
 
 		// Shoes
@@ -327,7 +327,7 @@ public class TaraSealStoneScript : SealStoneScript
 
 	public override void OnBreak(Creature creature)
 	{
-		creature.Titles.Enable(10077); // the Tara Seal Breaker
+		creature.EnableTitle(10077); // the Tara Seal Breaker
 	}
 }
 
@@ -430,17 +430,17 @@ public abstract class SealStoneScript : GeneralScript
 
 	public bool IsBreaker(Creature creature)
 	{
-		if (creature.Titles.IsUsable(10002)) return true; // the Dugald Aisle Seal Breaker
-		if (creature.Titles.IsUsable(10003)) return true; // the Ciar Seal Breaker
-		if (creature.Titles.IsUsable(10004)) return true; // the Rabbie Seal Breaker
-		if (creature.Titles.IsUsable(10005)) return true; // the Math Seal Breaker
-		if (creature.Titles.IsUsable(10006)) return true; // the Bangor Seal Breaker
-		if (creature.Titles.IsUsable(10008)) return true; // the Fiodh Seal Breaker
-		if (creature.Titles.IsUsable(10009)) return true; // the South Emain Macha Seal Breaker
-		if (creature.Titles.IsUsable(10025)) return true; // the North Emain Macha Seal Breaker
-		if (creature.Titles.IsUsable(10067)) return true; // the Sliab Cuilin Seal Breaker
-		if (creature.Titles.IsUsable(10068)) return true; // the Abb Neagh Seal Breaker
-		if (creature.Titles.IsUsable(10077)) return true; // the Tara Seal Breaker
+		if (creature.CanUseTitle(10002)) return true; // the Dugald Aisle Seal Breaker
+		if (creature.CanUseTitle(10003)) return true; // the Ciar Seal Breaker
+		if (creature.CanUseTitle(10004)) return true; // the Rabbie Seal Breaker
+		if (creature.CanUseTitle(10005)) return true; // the Math Seal Breaker
+		if (creature.CanUseTitle(10006)) return true; // the Bangor Seal Breaker
+		if (creature.CanUseTitle(10008)) return true; // the Fiodh Seal Breaker
+		if (creature.CanUseTitle(10009)) return true; // the South Emain Macha Seal Breaker
+		if (creature.CanUseTitle(10025)) return true; // the North Emain Macha Seal Breaker
+		if (creature.CanUseTitle(10067)) return true; // the Sliab Cuilin Seal Breaker
+		if (creature.CanUseTitle(10068)) return true; // the Abb Neagh Seal Breaker
+		if (creature.CanUseTitle(10077)) return true; // the Tara Seal Breaker
 
 		return false;
 	}
