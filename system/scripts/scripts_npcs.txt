@@ -80,6 +80,7 @@ npcs/ceo/muro.cs
 npcs/ceo/aer.cs
 
 npcs/nekojima/bastet.cs
+npcs/nekojima/dagon.cs
 
 custom/patrons/trigger.cs
 custom/patrons/pegwald.cs
