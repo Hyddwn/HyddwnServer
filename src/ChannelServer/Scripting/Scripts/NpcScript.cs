@@ -84,6 +84,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Returns the player's current title.
 		/// </summary>
+		[Obsolete]
 		public int Title
 		{
 			get { return this.Player.Titles.SelectedTitle; }
@@ -93,6 +94,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Gets and set the player's amount of gold,
 		/// by modifying the inventory.
 		/// </summary>
+		[Obsolete]
 		public int Gold
 		{
 			get { return this.Player.Inventory.Gold; }
