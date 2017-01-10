@@ -412,12 +412,14 @@ public class PiarasShop : NpcShopScript
 		Add("Book", 1058); // Understanding Wisps
 		Add("Book", 1062); // The Greedy Snow Imp
 		Add("Book", 1124); // An Easy Guide to Taking Up Residence in a Home
-		Add("Book", 1505); // The World of Handicrafts
 
 		Add("Gift", 52008); // Anthology
 		Add("Gift", 52009); // Cubic Puzzle
 		Add("Gift", 52011); // Socks
 		Add("Gift", 52017); // Underwear Set
 		Add("Gift", 52018); // Hammer
+
+		if (IsEnabled("Handicraft"))
+			Add("Book", 1505); // The World of Handicrafts
 	}
 }

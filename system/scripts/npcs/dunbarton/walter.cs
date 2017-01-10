@@ -324,7 +324,6 @@ public class WalterShop : NpcShopScript
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -389,6 +388,9 @@ public class WalterShop : NpcShopScript
 		Add("Cooking Appliances", 46005); // Cooking Table
 
 		Add("Event"); // Empty
+
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045); // Handicraft Kit
 
 		if (IsEnabled("PetBirds"))
 			Add("General Goods", 40093); // Pet Instructor Stick

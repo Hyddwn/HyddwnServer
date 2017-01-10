@@ -337,7 +337,6 @@ public class GilmoreShop : NpcShopScript
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40216);      // Cymbals
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 62021, 100); // Six-sided Die x100
@@ -422,6 +421,9 @@ public class GilmoreShop : NpcShopScript
 		Add("Gift", 52018); // Hammer
 
 		Add("Event"); // Empty
+
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045); // Handicraft Kit
 
 		if (IsEnabled("PetBirds"))
 		{
