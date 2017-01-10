@@ -103,10 +103,10 @@ public class DagonScript : NpcScript
 				else if (Favor >= 10 && Stress <= 10)
 				{
 					RndFavorMsg(
-					   "The fish that we can catch on our island are quite rare elsewhere,<br/>but on the contrary I'm interested in fish that can be caught elsewhere.<br/>Especially what seems to be a very rare fish dubbed as the giant carnivorous fish of the river!",
-					   "Everyone really seems to like my fish dishes, but I don't do anything special.<br/>I just make it with good ingredients and a lot of heart.<br/>Well, yes, everyone does seem pleased with my cooking, so thats probably why<br/>I can put so much heart into it. Ufufufu.",
-					   "I probably would not have chosen to become a fisherman<br/>if I had not been born here,<br/>but I thought about it and I probably would have gone on journey and found work at sea,<br/>and I'd probably be doing pretty much the same job I'm doing now.<p/>You know, it feels like fish exist in order to be caught by me.<br/>Just kidding!"
-				   );
+						"The fish that we can catch on our island are quite rare elsewhere,<br/>but on the contrary I'm interested in fish that can be caught elsewhere.<br/>Especially what seems to be a very rare fish dubbed as the giant carnivorous fish of the river!",
+						"Everyone really seems to like my fish dishes, but I don't do anything special.<br/>I just make it with good ingredients and a lot of heart.<br/>Well, yes, everyone does seem pleased with my cooking, so thats probably why<br/>I can put so much heart into it. Ufufufu.",
+						"I probably would not have chosen to become a fisherman<br/>if I had not been born here,<br/>but I thought about it and I probably would have gone on journey and found work at sea,<br/>and I'd probably be doing pretty much the same job I'm doing now.<p/>You know, it feels like fish exist in order to be caught by me.<br/>Just kidding!"
+					);
 					ModifyRelation(Random(2), Random(2), Random(2));
 				}
 				else if (Favor <= -10)
@@ -316,9 +316,9 @@ public class DagonScript : NpcScript
 
 				default: // GiftReaction.Neutral
 					RndMsg(
-							"I will appreciate it.",
-							"I can sense your sincerity. Thank you."
-						);
+						"I will appreciate it.",
+						"I can sense your sincerity. Thank you."
+					);
 					break;
 			}
 		}
