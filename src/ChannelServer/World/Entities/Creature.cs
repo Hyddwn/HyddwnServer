@@ -4401,6 +4401,56 @@ namespace Aura.Channel.World.Entities
 		{
 			return (this.Points >= amount);
 		}
+
+		/// <summary>
+		/// Returns true if creature knows about the title, even if it
+		/// doesn't have it.
+		/// </summary>
+		/// <param name="titleId"></param>
+		/// <returns></returns>
+		public bool KnowsTitle(int titleId)
+		{
+			return this.Titles.Knows((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Returns true if creature has and is able to use the given title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		/// <returns></returns>
+		public bool CanUseTitle(int titleId)
+		{
+			return this.Titles.IsUsable((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Let's creature know about given title, but doesn't enable it.
+		/// </summary>
+		/// <param name="titleId"></param>
+		public void ShowTitle(int titleId)
+		{
+			this.Titles.Show((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Enables creature to use given title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		public void EnableTitle(int titleId)
+		{
+			this.Titles.Enable((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Returns true if creature is using the given title as either main
+		/// or option title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		/// <returns></returns>
+		public bool IsUsingTitle(int titleId)
+		{
+			return (this.Titles.SelectedTitle == titleId || this.Titles.SelectedOptionTitle == titleId);
+		}
 	}
 
 	public enum TargetableOptions
