@@ -46,5 +46,27 @@ public class GiantGoldenRatmanFieldBossScript : FieldBossBaseScript
 	protected override void OnBossDied(Creature boss, Creature killer)
 	{
 		BossNotice(L("{0} has defeated {1} that appeared at {2}!"), killer.Name, Spawn.BossName, Spawn.LocationName);
+		ContributorDrops(boss, GetContributorDrops());
+	}
+
+	List<DropData> drops;
+	public List<DropData> GetContributorDrops()
+	{
+		if (drops == null)
+		{
+			drops = new List<DropData>();
+
+			drops.Add(new DropData(itemId: 51003, chance: 20, amount: 6)); // HP 50 Potion
+			drops.Add(new DropData(itemId: 51004, chance: 10, amount: 6)); // HP 100 Potion
+			drops.Add(new DropData(itemId: 51008, chance: 20, amount: 6)); // MP 50 Potion
+			drops.Add(new DropData(itemId: 51009, chance: 10, amount: 6)); // MP 100 Potion
+			drops.Add(new DropData(itemId: 51013, chance: 20, amount: 3)); // Stamina 50 Potion
+			drops.Add(new DropData(itemId: 51014, chance: 10, amount: 3)); // Stamina 100 Potion
+			drops.Add(new DropData(itemId: 51016, chance: 20, amount: 3)); // Wound Remedy 10 Potion
+			drops.Add(new DropData(itemId: 51017, chance: 10, amount: 3)); // Wound Remedy 30 Potion
+			drops.Add(new DropData(itemId: 91108, chance: 80, amount: 5)); // Cat Bell
+		}
+
+		return drops;
 	}
 }
