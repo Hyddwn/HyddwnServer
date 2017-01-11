@@ -21,6 +21,11 @@ public class GiantGoldenRatmanFieldBossScript : FieldBossBaseScript
 		return spawn;
 	}
 
+	protected virtual bool ShouldSpawn()
+	{
+		return IsEnabled("Nekojima");
+	}
+
 	protected override void OnSpawnBosses()
 	{
 		// Giant Golden Ratman
