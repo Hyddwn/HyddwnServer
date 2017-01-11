@@ -21,6 +21,12 @@ public class GolemFieldBossScript : FieldBossBaseScript
 		return spawn;
 	}
 
+	protected virtual bool ShouldSpawn()
+	{
+		// Ceo's availability is tied to Emain Macha right now
+		return IsEnabled("EmainMacha");
+	}
+
 	protected override void OnSpawnBosses()
 	{
 		// Golem (Black)
