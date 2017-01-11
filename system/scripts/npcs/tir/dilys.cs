@@ -71,9 +71,9 @@ public class DilysScript : NpcScript
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 					Msg("...<username/>, Who Saved the Goddess?<br/>...<br/>Ugh, spare me.<br/>Trefor suffices as the town fool and we only need one.");
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 					Msg("Sigh...<br/>As if Trefore weren't enough...<br/>Do we really need more dummies in this town?");
 
 				await Conversation();

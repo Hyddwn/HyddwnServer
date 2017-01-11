@@ -49,7 +49,7 @@ public class AeiraScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Come to think of it... You're <username/>, right?<br/>The one who came looking for all those odd books. Haha.");
 					Msg("Thanks to you, I spent a lot of time and effort searching for those books, too.<br/>And since you really inconvenienced me in a lot of ways,<br/>I think it's only right that you return the favor.");
@@ -57,7 +57,7 @@ public class AeiraScript : NpcScript
 					Msg("Hmm... Well? Did the books I'd found help you at all?<br/>Congratulations on what you've accomplished.");
 					Msg("I look forward to doing more business with you.<br/>And come by the Bookstore more often!");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Wow... <username/>, you really<br/>rescued Erinn?<br/>I wasn't sure before, but you really are an amazing person.<br/>Please continue to watch over my Bookstore!");
 				}

@@ -49,7 +49,7 @@ public class TracyScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Wow! You rescued the Goddess? You?<br/>Oh, man... That's awesome!");
 					Msg("...Not!");

@@ -41,7 +41,7 @@ public class PiarasScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 10062) // is a friend of Nora
+				if (Player.IsUsingTitle(10062)) // is a friend of Nora
 				{
 					var today = ErinnTime.Now.ToString("yyyyMMdd");
 					if (today != Player.Vars.Perm["piaras_title_gift"])
@@ -55,13 +55,13 @@ public class PiarasScript : NpcScript
 						Msg(L("If you are a friend of Nora, you are my friend as well.<br/>Would you like to take some?"));
 					}
 				}
-				else if (Title == 11001)
+				else if (Player.IsUsingTitle(11001))
 				{
 					Msg("I imagine what you did is incredible.");
 					Msg("... Although I do wonder why<br/>the Goddess won't descend upon us.");
 					Msg("But, really, I believe you.<br/>Follow the will of the Goddess and do the best you can do.");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("<username/>.<br/>I was wondering where you've been...");
 					Msg("...You must've went on a great adventure.<br/>You know I love adventure stories...");

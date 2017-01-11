@@ -52,12 +52,12 @@ public class IbbieScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Cough, Cough!<br/>Then, can you save me, too....?");
 					Msg("I, <npcname/>....am so miserable...<br/>I'm hurting...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Guardian... of Erinn...?<br/>Then will this person watch over <npcname/>, too...?");
 				}

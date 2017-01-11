@@ -47,14 +47,14 @@ public class WalterScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("...");
 					Msg("What do you think about my daughter...?");
 					Msg("...I didn't mean to give you the book so late... I apologize.");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("...I sense you are an amazing person.");
 				}

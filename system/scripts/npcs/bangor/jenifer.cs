@@ -50,13 +50,13 @@ public class JeniferScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("So, you rescued the Goddess?<br/>I bet there's an interesting story behind that...");
 					Msg("What do you say?<br/>If you don't mind, would you tell me the story sometime...?");
 					Msg("...Who knows...your tale may turn into a song that's passed down through generations to come...");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("<username/>, protecting Erinn is a noble thing,<br/>but how about protecting someone near you first?<br/>You won't regret taking my advice.");
 				}

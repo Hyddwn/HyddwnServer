@@ -84,14 +84,14 @@ public class TreforScript : NpcScript
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("......");
 					Msg("Can you do me a favor?<br/>Please don't go to Dilys and show off your strength and skills.");
 					Msg("To be honest, I am staying in this town only because of her.<br/>I don't want Dilys comparing me to you in any way, shape or form.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Wha...? You're the Guardian of Erinn...?<br/>You, <username/>...?");
 					Msg("......");

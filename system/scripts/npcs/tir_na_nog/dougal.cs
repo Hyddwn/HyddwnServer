@@ -49,12 +49,12 @@ public class DougalScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...So you were able to defeat my body and<br/>push Mores and Cichol out even when you're only a Human.");
 					Msg("I've learned that there are<br/>those even among Humans that can be trusted with that kind of abilities.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("...So you were able to defeat my body and<br/>push Mores and Cichol out even when you're only a Human.");
 					Msg("I've learned that there are<br/>those even among Humans that can be trusted with that kind of abilities.");

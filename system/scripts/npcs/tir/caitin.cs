@@ -43,7 +43,7 @@ public class CaitinScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 10061) // is a friend of Malcolm
+				if (Player.IsUsingTitle(10061)) // is a friend of Malcolm
 				{
 					var today = ErinnTime.Now.ToString("yyyyMMdd");
 					if (today != Player.Vars.Perm["caitin_title_gift"])
@@ -59,11 +59,11 @@ public class CaitinScript : NpcScript
 						Msg(L("Would you like to have a taste of this?<br/>It's nothing special...but I made it myself."));
 					}
 				}
-				else if (Title == 11001)
+				else if (Player.IsUsingTitle(11001))
 				{
 					Msg("Poor you...<br/>How many old tales did you have to read to make something like that up?<br/>You know I'll give you a part-time job if I can.<br/>Why don't you put on the part-timer title instead?<br/>It actually pays pretty well!");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Wow. You're the Guardian of Erinn? My, what an honor!<br/>I still remember the first day you came here...<br/>Feels just like yesterday!<br/>People will remember your name years to come...");
 				}

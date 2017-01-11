@@ -46,7 +46,7 @@ public class StewartScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("<username/>, you saved the Goddess?");
 					Msg("Wow!!! What an accomplishment!<br/>Does that mean you've been to Tir Na Nog too?<br/>And does that mean that the Goddess has");
@@ -54,7 +54,7 @@ public class StewartScript : NpcScript
 					Msg("...");
 					Msg("...Judging by your expression,<br/>I'll take that as a no.");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("Welcome, <username/>, Guardian of Erinn.<br/>It seems like we should already start writing about your legacy<br/>along with the legendary three warriors. Haha...");
 				}

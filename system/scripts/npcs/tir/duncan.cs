@@ -84,11 +84,11 @@ public class DuncanScript : NpcScript
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("You rescued the Goddess? And defeated Glas Ghaibhleann?<br/>Well done! A great accomplishment.<br/>However, most people won't understand the gravity of what you have just done.<br/>But don't be disappointed. Erinn shall prosper for a long time, thanks to you.<br/>Accept my deepest gratitude as Chief of this town.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Oh. <username/>! You finally did it...<br/>I can't believe you became the Knight of Light and saved Erinn...<br/>Nao would be so proud.");
 					Msg("I'm starting to understand Goddess Morrighan and Nao's will<br/>for sending people like you to this world.");
@@ -175,11 +175,11 @@ public class DuncanScript : NpcScript
 				}
 				else
 				{
-					if (Title == 33 && Player.Age > 20)
+					if (Player.IsUsingTitle(33) && Player.Age > 20)
 					{
 						Msg(FavorExpression(), "(Missing dialog: Information about the Diligent title while being over the age of 20).");
 					}
-					else if (Title == 33)
+					else if (Player.IsUsingTitle(33))
 					{
 						Msg(FavorExpression(), "Now that I think about it, I have something to tell you...<br/>Oh, it's not serious. But you have quite the reputation around here.<br/>Your diligence and hard work is well known to everyone in town.<br/>People say you're good-hearted and a decent human being.<br/>I trust you too, so keep up the good work.");
 					}

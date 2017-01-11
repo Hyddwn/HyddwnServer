@@ -52,9 +52,9 @@ public class EdernScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 					Msg("A title doesn't define who the person is.<br/>If you don't strive to become someone who fits the title,<br/>the title is no more than a fancy name for yourself. Don't forget.");
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 					Msg("You got quite a name there...<br/>But you can't be satisfied with being the guardian of Erinn!<br/>It's good to think big.");
 
 				await Conversation();

@@ -51,11 +51,11 @@ public class NeleScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("This is great...<br/>You might hear a mabinogi named after you in Erinn, <username/>...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("I can't believe you, the one who was researching about Macha earlier,<br/>has become the Guardian of Erinn...");
 					Msg("...I'm assuming you've stopped Macha's curse...?<br/>Thank you. <username/>...");

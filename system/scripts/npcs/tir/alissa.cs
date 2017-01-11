@@ -76,13 +76,13 @@ public class AlissaScript : NpcScript
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("You rescued the Goddess?<br/>You?");
 					Msg("Umm... Well, I guess I'll have to take your word for it.<br/>So then, can you say that our world has become a paradise?");
 					Msg("Well, will I still need to look after my big sister in this paradise?<br/>Oh... I see... Right. Paradox. It's a paradox.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Huh? <username/>...<br/>You're the Guardian of Erinn?<br/>When did this happen...?<br/>Even I can see that there's something different about you.");
 				}

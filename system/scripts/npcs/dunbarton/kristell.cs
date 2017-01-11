@@ -46,13 +46,13 @@ public class KristellScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...I see... You have succeeded, <username/>.");
 					Msg("Thank you for keeping your promise.");
 					Msg("I wonder... if Tarlach can<br/>finally be at peace...?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Guardian of Erinn... There's nothing wrong with someone like you<br/>being called that, <username/>.<br/>Thank you... For saving Erinn...");
 				}
