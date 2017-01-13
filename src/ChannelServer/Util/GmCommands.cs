@@ -96,6 +96,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "keyword", "[-|+]<name>", Localization.Get("Adds/removes keywords."), HandleKeyword);
 			Add(50, 50, "ptj", "<type> <level>", Localization.Get("Sets the level of a certain PTJ type."), HandlePtj);
 			Add(50, 50, "quest", "<id> [finish objective]", Localization.Get("Starts a quest or sets the specified objective to be finished."), HandleQuest);
+			Add(50, 50, "prof", "[equipflags=7 (1:armor,2:rhand,4:lhand)] [amount=101000]", Localization.Get("Sets proficiency of equipped item(s)."), HandleProf);
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", Localization.Get("Creates dynamic region, based on the current one."), HandleDynamic);
@@ -2402,6 +2403,49 @@ namespace Aura.Channel.Util
 				if (target != sender)
 					Send.ServerMessage(target, Localization.Get("Quest objective '{0}' on '{1}' quest was finished for you by {2}."), objective, quest.Name, sender.Name);
 			}
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleProf(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			const int
+				EquipFlag_Armor = 1,
+				EquipFlag_RHand = 2,
+				EquipFlag_LHand = 4,
+				MaxProficiency = 101000;
+
+			// Set default values
+			int equipFlags = EquipFlag_Armor | EquipFlag_RHand | EquipFlag_LHand;
+			int profAmount = MaxProficiency;
+
+			if (args.Count >= 2 && !int.TryParse(args[1], out equipFlags))
+			{
+				Send.ServerMessage(sender, Localization.Get("Could not parse 'equipflags' argument."));
+				return CommandResult.InvalidArgument;
+			}
+
+			if (args.Count >= 3 && !int.TryParse(args[2], out profAmount))
+			{
+				Send.ServerMessage(sender, Localization.Get("Could not parse 'amount' argument."));
+				return CommandResult.InvalidArgument;
+			}
+
+			var targetEquipment = target.Inventory.GetMainEquipment(item =>
+				((equipFlags & EquipFlag_Armor) != 0 && item.Info.Pocket == Pocket.Armor) ||
+				((equipFlags & EquipFlag_RHand) != 0 && item.Info.Pocket == (target.Inventory.WeaponSet == WeaponSet.First ? Pocket.RightHand1 : Pocket.RightHand2)) ||
+				((equipFlags & EquipFlag_LHand) != 0 && item.Info.Pocket == (target.Inventory.WeaponSet == WeaponSet.First ? Pocket.LeftHand1 : Pocket.LeftHand2))
+			);
+
+			foreach (var equipment in targetEquipment)
+			{
+				equipment.Proficiency = profAmount;
+				Send.ItemExpUpdate(target, equipment);
+			}
+
+			Send.ServerMessage(sender, Localization.Get("Proficiency set."));
+			if (target != sender)
+				Send.ServerMessage(target, Localization.Get("Your equipment proficiency has been set by {0}."), sender.Name);
 
 			return CommandResult.Okay;
 		}
