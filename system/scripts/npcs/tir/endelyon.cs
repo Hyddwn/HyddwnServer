@@ -47,7 +47,7 @@ public class EndelyonScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10060: // is a friend of Deian
 							message = L("Do you like boiled eggs?<p>I think these will help when you get hungry.");

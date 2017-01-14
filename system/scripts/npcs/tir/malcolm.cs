@@ -53,7 +53,7 @@ public class MalcolmScript : NpcScript
 					string message1 = null;
 					string message2 = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message2 = L("I am an old friend of Trefor.<br/>So please receive my small token of appreciation.");

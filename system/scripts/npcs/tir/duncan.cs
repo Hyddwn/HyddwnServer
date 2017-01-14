@@ -51,7 +51,7 @@ public class DuncanScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message = L("That's great, <username/>.<br/>Seeing you and Trefor are such good friends<br/>makes me feel great as the chief of this town.");

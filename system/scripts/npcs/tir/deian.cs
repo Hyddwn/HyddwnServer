@@ -53,7 +53,7 @@ public class DeianScript : NpcScript
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
 				if (today != Player.Vars.Perm["deian_title_gift"])
 				{
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 						case 10060: // is a friend of Deian

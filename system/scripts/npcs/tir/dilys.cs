@@ -48,7 +48,7 @@ public class DilysScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10061: // is a friend of Malcolm
 							message = L("Hello, <username/>, a Friend of Malcolm.<br/>I'm giving you this because I think you will find it useful.");

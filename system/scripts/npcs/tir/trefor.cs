@@ -59,7 +59,7 @@ public class TreforScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message = L("Ha ha, welcome back, <username/>.<br/>How are things going for you?");

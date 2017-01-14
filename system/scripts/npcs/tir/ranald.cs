@@ -50,7 +50,7 @@ public class RanaldScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message = L("Here you are, <username/>.<br/>A friend of Trefor it is...");

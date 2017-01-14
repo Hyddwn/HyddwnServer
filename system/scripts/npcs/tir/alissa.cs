@@ -59,7 +59,7 @@ public class AlissaScript : NpcScript
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
 				if (today != Player.Vars.Perm["alissa_title_gift"])
 				{
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10060: // is a friend of Deian
 						case 10062: // is a friend of Nora
