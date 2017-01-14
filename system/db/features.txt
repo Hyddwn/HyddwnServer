@@ -543,7 +543,7 @@
 		{ name: "ShortSheepProtection", enabled: true },
 		
 		// Enables artisan upgrades
-		{ name: "ArtisanUpgrades", enabled: true },
+		{ name: "ArtisanUpgrade", enabled: true },
 	]},
 	
 	// Season 2

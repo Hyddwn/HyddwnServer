@@ -1175,9 +1175,9 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 
 			// Check for disabled Artisan
-			if (result.Upgrade.Effects.Any(a => a.Key == "Artisan") && !IsEnabled("ArtisanUpgrades"))
+			if (result.Upgrade.Effects.Any(a => a.Key == "Artisan") && !IsEnabled("ArtisanUpgrade"))
 			{
-				Send.MsgBox(this.Player, Localization.Get("Artisan upgrades are currently unavailable."));
+				Send.MsgBox(this.Player, Localization.Get("Artisan upgrades are unavailable."));
 				return result;
 			}
 
@@ -1365,17 +1365,20 @@ namespace Aura.Channel.Scripting.Scripts
 
 						// Choose a random number of random effect sets to apply to item.
 						// Has to be at least one of the random effect sets.
-						var randomEffectSet = UniqueRnd(Random(artisanData.Random.Count) + 1, artisanData.Random.ToArray());
-						foreach (var setid in randomEffectSet)
+						if (artisanData.Random.Count > 0)
 						{
-							var optionSetData = AuraData.OptionSetDb.Find(setid);
-							if (optionSetData == null)
+							var randomEffectSet = UniqueRnd(Random(artisanData.Random.Count) + 1, artisanData.Random.ToArray());
+							foreach (var setid in randomEffectSet)
 							{
-								Log.Warning("NpcScript.Upgrade: Artisan upgrade '{0}' references unknown option set '{1}'.", artisanId, setid);
-								continue;
-							}
+								var optionSetData = AuraData.OptionSetDb.Find(setid);
+								if (optionSetData == null)
+								{
+									Log.Warning("NpcScript.Upgrade: Artisan upgrade '{0}' references unknown option set '{1}'.", artisanId, setid);
+									continue;
+								}
 
-							result.Item.ApplyOptionSet(AuraData.OptionSetDb.Find(setid), false);
+								result.Item.ApplyOptionSet(AuraData.OptionSetDb.Find(setid), false);
+							}
 						}
 
 						// 'Always' effect sets will always be applied to item.
