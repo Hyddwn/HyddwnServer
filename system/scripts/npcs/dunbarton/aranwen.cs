@@ -53,12 +53,12 @@ public class AranwenScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("It's the duty of a warrior<br/>to offer help to the weak.");
 					Msg("If I were you, I wouldn't boast about such acts, as you were just doing your job.<br/>...Even if the one you ended up rescuing is a Goddess.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Guardian of Erinn...<br/>If it were anyone else,<br/>I would tell them to stop being so arrogant...");
 					Msg("But with you, <username/>, you are definitely qualified.<br/>Good job.");

@@ -45,9 +45,9 @@ public class BebhinnScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 					Msg("Oh? You rescued the Goddess, <username/>? How amazing!<br/>So, was she beautiful? Not prettier than me, right? Haha.<br/>Otherwise, why would you leave the Goddess of Tir Na Nog<br/>to come here and tell ME about it? Hehe!");
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 					Msg("What? <username/>, you're the Guardian of Erinn?<br/>I don't get it!<br/>I've worked so hard all my life, and you just walk in and you're already a Guardian of Erinn...<br/>It's so unfair!<p>Hey, I'm just teasing. Don't get all upset.");
 
 				await Conversation();

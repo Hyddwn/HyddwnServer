@@ -1058,7 +1058,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 			// Check gold
 			var cost = result.Item.GetRepairCost(rate, 1);
-			if (this.Gold < cost * result.Points)
+			if (this.Player.Inventory.Gold < cost * result.Points)
 			{
 				result.HadGold = false;
 				return result;
@@ -1105,7 +1105,7 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 
 			// Reduce gold, but only for successes
-			this.Gold -= cost * result.Successes;
+			this.Player.Inventory.Gold -= cost * result.Successes;
 
 			// Update max dura
 			if (result.Fails != 0)
@@ -1185,12 +1185,12 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 
 			// Check gold
-			if (this.Gold < result.Upgrade.Gold)
+			if (this.Player.Inventory.Gold < result.Upgrade.Gold)
 				return result;
 
 			// Take gold and exp
 			result.Item.Proficiency -= result.Upgrade.Exp;
-			this.Gold -= result.Upgrade.Gold;
+			this.Player.Inventory.Gold -= result.Upgrade.Gold;
 
 			// Increase upgrade count
 			result.Item.OptionInfo.Upgraded++;

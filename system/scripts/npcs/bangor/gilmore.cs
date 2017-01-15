@@ -48,12 +48,12 @@ public class GilmoreScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("...You're quite a good liar.<br/>I don't know what to say to that.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("...Guardian? Ha!");
 				}
@@ -121,7 +121,7 @@ public class GilmoreScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				if (Title == 33)
+				if (Player.IsUsingTitle(33))
 				{
 					Msg(FavorExpression(), "Wait, <username/> the Diligent?<br/>Hmm. Not so bad for a youngster.");
 					Msg("You got it. You have to live diligently like that to save money. Yep.<br/>Now, don't get complacent!");

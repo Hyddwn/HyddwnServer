@@ -50,12 +50,12 @@ public class ElenScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Hmm...<br/>Don't you think your equipment is kind of shabby for someone with a title like yours?");
 					Msg("You can find good merchandise in our Blacksmith's Shop, if you're interested. Why not check it out?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Oh my. You're the Guardian, right?<br/>...I'm not trying to tease you, I'm serious!");
 				}

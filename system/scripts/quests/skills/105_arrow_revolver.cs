@@ -53,7 +53,7 @@ public class ArrowRevolverQuestScript : QuestScript
 		}
 
 		// Check Fire Arrow title
-		if (npc.Title != 88)
+		if (!npc.Player.IsUsingTitle(88))
 		{
 			npc.Msg(L("...I am sorry, but someone that has yet to master the skill<br/>should not be bluntly asking questions about skills like this."));
 			npc.Msg(L("...if you are interested in high-leveled bowman skills, then<br/>you should at least master the Fire Arrow skill first."));

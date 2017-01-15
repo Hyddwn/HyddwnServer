@@ -307,6 +307,16 @@ namespace Aura.Channel.World.Entities
 			}
 		}
 
+		/// <summary>
+		/// Returns amount of gold in creature's inventory.
+		/// </summary>
+		public int Gold { get { return this.Inventory.Gold; } }
+
+		/// <summary>
+		/// Returns id of creature's current title.
+		/// </summary>
+		public int Title { get { return this.Titles.SelectedTitle; } }
+
 		// Look
 		// ------------------------------------------------------------------
 

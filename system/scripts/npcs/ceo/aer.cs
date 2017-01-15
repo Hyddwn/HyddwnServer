@@ -34,7 +34,7 @@ public class AerScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("...The story about you, <username/>,<br/>has already spread throughout the world of the spirits...");
 					Msg("...Your courage of how you<br/>risked your life to save the world...");

@@ -50,7 +50,7 @@ public class RanaldScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message = L("Here you are, <username/>.<br/>A friend of Trefor it is...");
@@ -79,13 +79,13 @@ public class RanaldScript : NpcScript
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg(".......");
 					Msg("Well, I don't care much about titles.<br/>Just train! Continue to train! That's what will make you stronger!<br/>Don't slack off and focus on your training!");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Hah... I can't believe<br/>you've become the Guardian of Erinn.<br/>I still remember you practicing your combat skills on those dummies...");
 					Msg("...I can't be more proud as your teacher.<br/>These are the moments that make teachers feel rewarded...");
