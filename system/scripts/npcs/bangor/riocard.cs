@@ -47,14 +47,14 @@ public class RiocardScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Wow... You rescued a goddess....?<br/>Morrighan, the Goddess?<br/>You... <username/>?");
 					Msg("...Haha.  You expect me to believe this?<br/>It seems a bit far fetched don't you think?");
 					Msg("I mean, don't get me wrong.<br/>I just thought a hero has a little something, I don't know, a je ne sais quois, that others don't...");
 					Msg("...Anyway, congratulations!<br/>If ever there's a lot of people gathered around the Pub,<br/>you should share your story.");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("Wow, <username/>, your fame reaches the heavens.<br/>But, I bet the burden on your shoulders<br/>is quite heavy as well...");
 				}

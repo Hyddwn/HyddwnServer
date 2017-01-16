@@ -456,6 +456,9 @@
 		
 		// Enables farming near Taillteann
 		{ name: "Farming", enabled: true },
+		
+		// Enables Nekojima island
+		{ name: "Nekojima", enabled: true },
 	]},
 	
 	// Season 3
@@ -541,6 +544,9 @@
 		
 		// Makes sheep protection quest easier. (Part of gfC4Tutorial)
 		{ name: "ShortSheepProtection", enabled: true },
+		
+		// Enables artisan upgrades
+		{ name: "ArtisanUpgrade", enabled: true },
 	]},
 	
 	// Season 2

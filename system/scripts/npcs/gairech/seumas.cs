@@ -51,13 +51,13 @@ public class SeumasScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("(gasp, gasp)");
 					Msg("So, did the book I gave you the last time help...?  (gasp, gasp)");
 					Msg("Can you go give it to Sion...? (gasp...gasp...)<br/>I think he would really like it... (gasp...gasp...)<br/>Please...could you do that...?  (gasp...gasp...)");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Gasp... Gasp... You've done enough<br/>to be called, Gasp... Gasp...a Guardian.<br/>Either way, Gasp... Gasp... Thanks a lot.");
 				}

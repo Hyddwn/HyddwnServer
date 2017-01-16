@@ -46,12 +46,12 @@ public class GlenisScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Oh, look who's here! It's <username/>, the rescuer of the Goddess!<br/>So, how was Tir Na Nog...?");
 					Msg("Don't tell me you couldn't go.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Erinn's Guardian, huh...?<br/>Sounds like my husband when he was young... Hehe.<br/>If you need anything, just let me know.");
 				}

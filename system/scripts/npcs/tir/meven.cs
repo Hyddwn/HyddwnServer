@@ -46,13 +46,13 @@ public class MevenScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Even Tarlach had failed,<br/>but you managed to do it...<br/>I'd like to congratulate you.");
 					Msg("You saved this world from great danger.<br/>Have confidence in your thoughts and actions,<br/>and try to live up to your reputation.");
 					Msg("...Just a piece of advice for you that should be taken with a pinch of salt.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("...I see...<br/>So you're the one<br/>who prevented Macha from being reborn...");
 					Msg("Good job. <username/>...<br/>The sky is the limit for you<br/>to change this world to a better place...");

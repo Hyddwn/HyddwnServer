@@ -53,7 +53,7 @@ public class DeianScript : NpcScript
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
 				if (today != Player.Vars.Perm["deian_title_gift"])
 				{
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 						case 10060: // is a friend of Deian
@@ -68,11 +68,11 @@ public class DeianScript : NpcScript
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Hey! <username/>, that's my job you just did! What am I supposed to do now?<br/>Man! There must be something more heroic that I could do as a warrior...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Eh? <username/>...<br/>You've become the Guardian of Erinn?<br/>So fast!<br/>I'm still trying to become a Warrior!");
 					Msg("Good for you.<br/>Just make sure you leave me some work to do for when I become a Warrior.<br/>Wow, must've been tough.");

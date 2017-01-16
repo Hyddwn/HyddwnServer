@@ -50,13 +50,13 @@ public class BryceScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Unbelievable... Did you really rescue the Goddess, <username/>?<br/>For real?");
 					Msg("...Was Glas Ghaibhleann defeated as well?");
 					Msg("This is... beyond comprehension...<br/>...What you've accomplished is extraordinary.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Guardian of Erinn...?<br/>You know, listening to over exaggerated rumors<br/>can be dangerous to you.");
 					Msg("Although, if anyone, you could<br/>probably fit that title...");

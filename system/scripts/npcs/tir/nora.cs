@@ -47,7 +47,7 @@ public class NoraScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 10062) // is a friend of Nora
+				if (Player.IsUsingTitle(10062)) // is a friend of Nora
 				{
 					var today = ErinnTime.Now.ToString("yyyyMMdd");
 					if (today != Player.Vars.Perm["nora_title_gift"])
@@ -61,13 +61,13 @@ public class NoraScript : NpcScript
 						Msg(L("Welcome, my dear friend.<br/>Don't you think Uncle Piaras has noticed<br/>how much time you and I spend talking to each other?"));
 					}
 				}
-				else if (Title == 11001)
+				else if (Player.IsUsingTitle(11001))
 				{
 					Msg("You rescued the Goddess, <username/>?");
 					Msg("Amazing!");
 					Msg("It'd be nice if that wimp who lives up the hill<br/>could learn a thing or two from you...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("<username/>, the Guardian of Erinn?<br/>Perfect timing.<br/>Rats keep appearing around town...<br/>Can you kill them for us?");
 					Msg("Malcom at the General Shop<br/>is so scared that he won't even step outside...");

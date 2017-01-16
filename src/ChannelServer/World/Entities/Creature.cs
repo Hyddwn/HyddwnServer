@@ -307,6 +307,16 @@ namespace Aura.Channel.World.Entities
 			}
 		}
 
+		/// <summary>
+		/// Returns amount of gold in creature's inventory.
+		/// </summary>
+		public int Gold { get { return this.Inventory.Gold; } }
+
+		/// <summary>
+		/// Returns id of creature's current title.
+		/// </summary>
+		public int Title { get { return this.Titles.SelectedTitle; } }
+
 		// Look
 		// ------------------------------------------------------------------
 
@@ -2378,10 +2388,15 @@ namespace Aura.Channel.World.Entities
 			{
 				if (dropData == null || !AuraData.ItemDb.Exists(dropData.ItemId))
 				{
-					Log.Warning("Creature.Kill: Invalid drop '{0}' from '{1}'.", (dropData == null ? "null" : dropData.ItemId.ToString()), this.RaceId);
+					Log.Warning("Creature.DropItems: Invalid drop '{0}' from '{1}'.", (dropData == null ? "null" : dropData.ItemId.ToString()), this.RaceId);
 					continue;
 				}
 
+				// Check feature
+				if (!string.IsNullOrWhiteSpace(dropData.Feature) && !AuraData.FeaturesDb.IsEnabled(dropData.Feature))
+					continue;
+
+				// Get chance
 				var dropRate = dropData.Chance;
 				var dropChance = rnd.NextDouble() * 100;
 				var month = ErinnTime.Now.Month;

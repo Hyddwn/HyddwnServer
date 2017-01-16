@@ -48,12 +48,12 @@ public class NerysScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("<username/>, I'm only telling you this for your own good.<br/>If you're the warrior who saved the Goddess...<br/>You should really put a little more care to your equipment.<br/>I mean, it's not too bad right now, but...");
 					Msg("Look. I'll give you a good price. Why don't you look around?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("...Guardian of Erinn...?<br/>Well, as long as you didn't break anything, I guess that's a good thing.<br/>Anyway, good job.");
 				}
