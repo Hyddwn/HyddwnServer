@@ -5670,4 +5670,7 @@
 
 // Laighlinne Partner
 { race: [730207], age: 10, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
+
+// Partner [William]
+{ race: [730208], age: 10, life: 0.00, mana: 0.00, stamina: 0.00, str: 0.00, int: 0.00, dex: 0.00, will: 0.00, luck: 0.00 },
 ]

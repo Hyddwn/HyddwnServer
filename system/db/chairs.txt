@@ -65,4 +65,10 @@
 { itemId: 50938, name: "Tropical Pineapple Beach Tube", propId: 45523, giantPropId: 45523 },
 { itemId: 50939, name: "Pink Bean Chair", propId: 45572, giantPropId: 45571 },
 { itemId: 50940, name: "Kokopo Chair", propId: 45589, giantPropId: 45589 },
+{ itemId: 50941, name: "Conductor's Podium", propId: 45632, giantPropId: 45633 },
+{ itemId: 50942, name: "Hipster Musician's Oak Barrel", propId: 45630, giantPropId: 45631 },
+{ itemId: 50943, name: "Busking Chair", propId: 45638, giantPropId: 45639 },
+{ itemId: 50944, name: "Tap Dance Floor Board", propId: 45635, giantPropId: 45636 },
+{ itemId: 50945, name: "Milky Way Music Box", propId: 45637, giantPropId: 0 },
+{ itemId: 50946, name: "Elephant Chair", propId: 45661, giantPropId: 45661 },
 ]
