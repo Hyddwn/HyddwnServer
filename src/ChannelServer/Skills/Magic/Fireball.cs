@@ -55,6 +55,12 @@ namespace Aura.Channel.Skills.Magic
 		{
 			creature.StopMove();
 
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/fire_wand/|/knuckle_staff/"))
+			{
+				creature.Notice("You need a Fire Wand to use this skill.");
+				return false;
+			}
+
 			Send.SkillInitEffect(creature, "fireball", skill.Info.Id);
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
