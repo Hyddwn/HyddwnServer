@@ -2970,7 +2970,7 @@ namespace Aura.Channel.World.Entities
 
 		/// <summary>
 		/// Sets new position for target, based on attacker's position
-		/// and the distance, takes collision into consideration.
+		/// and the distance, takes collision into account.
 		/// </summary>
 		/// <param name="target">Entity to be knocked back</param>
 		/// <param name="distance">Distance to knock back the target</param>
@@ -2987,6 +2987,29 @@ namespace Aura.Channel.World.Entities
 				newPos = targetPosition.GetRelative(intersection, -50);
 
 			target.SetPosition(newPos.X, newPos.Y);
+
+			return newPos;
+		}
+
+		/// <summary>
+		/// Sets new position for creature, based on entity's position
+		/// and the distance, takes collision into account.
+		/// </summary>
+		/// <param name="entity">Source of the force (attacker, prop)</param>
+		/// <param name="distance">Distance to knock back the target</param>
+		/// <returns>New position</returns>
+		public Position GetShoved(Entity entity, int distance)
+		{
+			var attackerPosition = entity.GetPosition();
+			var targetPosition = this.GetPosition();
+
+			var newPos = attackerPosition.GetRelative(targetPosition, distance);
+
+			Position intersection;
+			if (this.Region.Collisions.Find(targetPosition, newPos, out intersection))
+				newPos = targetPosition.GetRelative(intersection, -50);
+
+			this.SetPosition(newPos.X, newPos.Y);
 
 			return newPos;
 		}
