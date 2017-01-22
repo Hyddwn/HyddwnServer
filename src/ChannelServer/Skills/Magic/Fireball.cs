@@ -73,6 +73,10 @@ namespace Aura.Channel.Skills.Magic
 			if (skill.Stacks < skill.RankData.StackMax)
 				skill.Stacks = Math.Min(skill.RankData.StackMax, skill.Stacks += skill.RankData.StackMax);
 
+			// Novice training
+			if (skill.Info.Rank == SkillRank.Novice && skill.Stacks == skill.RankData.StackMax)
+				skill.Train(1); // Fully charge Fireball.
+
 			Send.Effect(creature, Effect.StackUpdate, "firebolt", (byte)skill.Stacks, (byte)0);
 			Send.Effect(creature, Effect.HoldMagic, "fireball", (ushort)skill.Info.Id);
 			Send.SkillReady(creature, skill.Info.Id);
@@ -186,6 +190,8 @@ namespace Aura.Channel.Skills.Magic
 				target.GetShoved(fireballProp, KnockbackDistance);
 				if (target.IsDead)
 					tAction.Set(TargetOptions.FinishingKnockDown);
+
+				this.Train(skill, tAction);
 			}
 
 			cap.Handle();
@@ -255,6 +261,222 @@ namespace Aura.Channel.Skills.Magic
 		protected float GetElementalDamageMultiplier(Creature attacker, Creature target)
 		{
 			return attacker.CalculateElementalDamageMultiplier(0, Creature.MaxElementalAffinity, 0, target);
+		}
+
+		/// <summary>
+		/// Called for training the skill, based on what happened.
+		/// </summary>
+		/// <param name="attackerSkill"></param>
+		/// <param name="tAction"></param>
+		private void Train(Skill attackerSkill, TargetAction tAction)
+		{
+			var target = tAction.Creature;
+
+			if (attackerSkill.Info.Rank == SkillRank.RF)
+			{
+				attackerSkill.Train(1); // Attack an enemy.
+
+				if (target.IsDead)
+					attackerSkill.Train(2); // Defeat an enemy.
+
+				return;
+			}
+
+			var rating = tAction.Attacker.GetPowerRating(target);
+
+			if (attackerSkill.Info.Rank >= SkillRank.RE && attackerSkill.Info.Rank <= SkillRank.RD)
+			{
+				attackerSkill.Train(1); // Attack an enemy.
+
+				if (target.IsDead)
+					attackerSkill.Train(2); // Defeat an enemy.
+
+				if (rating == PowerRating.Normal)
+				{
+					attackerSkill.Train(3); // Attack a similar-ranked enemy.
+
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(4); // Knock down a similar-ranked enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(5); // Defeat a similar-ranked enemy.
+				}
+				else if (rating == PowerRating.Strong)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(6); // Knock down a powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(7); // Defeat a powerful enemy.
+				}
+
+				return;
+			}
+
+			if (attackerSkill.Info.Rank >= SkillRank.RC && attackerSkill.Info.Rank <= SkillRank.RB)
+			{
+				if (rating == PowerRating.Normal)
+				{
+					attackerSkill.Train(1); // Attack a similar-ranked enemy.
+
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(2); // Knock down a similar-ranked enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(3); // Defeat a similar-ranked enemy.
+				}
+				else if (rating == PowerRating.Strong)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(4); // Knock down a powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(5); // Defeat a powerful enemy.
+				}
+				else if (rating == PowerRating.Awful)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(6); // Knock down a very powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(7); // Defeat a very powerful enemy.
+				}
+
+				return;
+			}
+
+			if (attackerSkill.Info.Rank >= SkillRank.RA && attackerSkill.Info.Rank <= SkillRank.R9)
+			{
+				if (rating == PowerRating.Normal)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(1); // Knock down a similar-ranked enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(2); // Defeat a similar-ranked enemy.
+				}
+				else if (rating == PowerRating.Strong)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(3); // Knock down a powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(4); // Defeat a powerful enemy.
+				}
+				else if (rating == PowerRating.Awful)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(5); // Knock down a very powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(6); // Defeat a very powerful enemy.
+				}
+
+				return;
+			}
+
+			if (attackerSkill.Info.Rank == SkillRank.R8)
+			{
+				if (rating == PowerRating.Normal)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(1); // Knock down a similar-ranked enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(2); // Defeat a similar-ranked enemy.
+				}
+				else if (rating == PowerRating.Strong)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(3); // Knock down a powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(4); // Defeat a powerful enemy.
+				}
+				else if (rating == PowerRating.Awful)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(5); // Knock down a very powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(6); // Defeat a very powerful enemy.
+				}
+				else if (rating == PowerRating.Boss)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(7); // Knock down a boss-level enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(8); // Defeat a boss-level enemy.
+				}
+
+				return;
+			}
+
+			if (attackerSkill.Info.Rank == SkillRank.R7)
+			{
+				if (rating == PowerRating.Normal)
+				{
+					if (target.IsDead)
+						attackerSkill.Train(1); // Defeat a similar-ranked enemy.
+				}
+				else if (rating == PowerRating.Strong)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(2); // Knock down a powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(3); // Defeat a powerful enemy.
+				}
+				else if (rating == PowerRating.Awful)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(4); // Knock down a very powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(5); // Defeat a very powerful enemy.
+				}
+				else if (rating == PowerRating.Boss)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(6); // Knock down a boss-level enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(7); // Defeat a boss-level enemy.
+				}
+
+				return;
+			}
+
+			if (attackerSkill.Info.Rank >= SkillRank.R6 && attackerSkill.Info.Rank <= SkillRank.R1)
+			{
+				if (rating == PowerRating.Strong)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(1); // Knock down a powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(2); // Defeat a powerful enemy.
+				}
+				else if (rating == PowerRating.Awful)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(3); // Knock down a very powerful enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(4); // Defeat a very powerful enemy.
+				}
+				else if (rating == PowerRating.Boss)
+				{
+					if (tAction.Has(TargetOptions.KnockDown))
+						attackerSkill.Train(5); // Knock down a boss-level enemy.
+
+					if (target.IsDead)
+						attackerSkill.Train(6); // Defeat a boss-level enemy.
+				}
+
+				return;
+			}
 		}
 	}
 }
