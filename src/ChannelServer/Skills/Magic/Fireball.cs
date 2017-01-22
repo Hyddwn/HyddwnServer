@@ -129,8 +129,6 @@ namespace Aura.Channel.Skills.Magic
 			var fireballProp = new Prop(280, regionId, targetPos.X, targetPos.Y, 0.19f, 1);
 			fireballProp.DisappearTime = DateTime.Now.AddMilliseconds(FlyTime + 1000);
 			attacker.Region.AddProp(fireballProp);
-			//Send.EntityAppears(fireballProp);
-			(attacker as PlayerCreature).LookAround();
 
 			Send.Effect(fireballProp, Effect.FireballFly, regionId, fromX, fromY, toX, toY, time, (byte)0, (ushort)skill.Info.Id);
 
