@@ -77,7 +77,7 @@ namespace Aura.Channel.Skills.Magic
 		public bool Ready(Creature creature, Skill skill, Packet packet)
 		{
 			if (skill.Stacks < skill.RankData.StackMax)
-				skill.Stacks = Math.Min(skill.RankData.StackMax, skill.Stacks += skill.RankData.StackMax);
+				skill.Stacks = Math.Min(skill.RankData.StackMax, skill.Stacks += skill.RankData.Stack);
 
 			// Novice training
 			if (skill.Info.Rank == SkillRank.Novice && skill.Stacks == skill.RankData.StackMax)
