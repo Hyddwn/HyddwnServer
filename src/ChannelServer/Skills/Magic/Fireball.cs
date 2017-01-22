@@ -8,6 +8,7 @@ using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using Aura.Shared.Util;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -98,6 +99,13 @@ namespace Aura.Channel.Skills.Magic
 		/// <param name="packet"></param>
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
+			if (skill.Stacks < skill.RankData.StackMax)
+			{
+				attacker.Skills.CancelActiveSkill();
+				Log.Warning("Fireball.Use: User '{0}' tried to fire a not fully charged Fireball.", attacker.Client.Account.Id);
+				return;
+			}
+
 			var targetEntityId = packet.GetLong();
 			var unkInt1 = packet.GetInt();
 			var unkInt2 = packet.GetInt();
