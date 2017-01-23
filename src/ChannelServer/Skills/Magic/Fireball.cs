@@ -130,7 +130,7 @@ namespace Aura.Channel.Skills.Magic
 			fireballProp.DisappearTime = DateTime.Now.AddMilliseconds(FlyTime + 1000);
 			attacker.Region.AddProp(fireballProp);
 
-			Send.Effect(fireballProp, Effect.FireballFly, regionId, fromX, fromY, toX, toY, time, (byte)0, (ushort)skill.Info.Id);
+			Send.Effect(fireballProp, Effect.FireballFly, 0, regionId, fromX, fromY, toX, toY, time, (byte)0, (ushort)skill.Info.Id);
 
 			SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Melee, attacker.RightHand);
 
