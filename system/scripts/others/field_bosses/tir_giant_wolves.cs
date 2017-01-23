@@ -104,8 +104,11 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
-				// ?
+				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
+				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} will spawn around {1} in {2}."), Spawn.BossName, Spawn.LocationName, time));
 			}
+
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -126,6 +129,8 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("I have something to tell you.<br/>Can you feel the evil presence of {0} spreading around {1}?<br/>I think something bad will happen in around {2}..."), Spawn.BossName, Spawn.LocationName, time));
 			}
+
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -139,13 +144,15 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			var spawnTime = GetTimeUntilSpawn();
 			if (spawnTime.Ticks == 0)
 			{
-				// ?
+				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} spawned around {1}."), Spawn.BossName, Spawn.LocationName));
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("A monster will show up in {1} at {2}!<br/>{0} will show up!<br/>Hey, I said I'm not lying!"), Spawn.BossName, Spawn.LocationName, time));
 			}
+
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -163,8 +170,11 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
-				// ?
+				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
+				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} will spawn around {1} in {2}."), Spawn.BossName, Spawn.LocationName, time));
 			}
+
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -182,8 +192,11 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
-				// ?
+				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
+				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} will spawn around {1} in {2}."), Spawn.BossName, Spawn.LocationName, time));
 			}
+
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -201,8 +214,11 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
-				// ?
+				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
+				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} will spawn around {1} in {2}."), Spawn.BossName, Spawn.LocationName, time));
 			}
+
+			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
