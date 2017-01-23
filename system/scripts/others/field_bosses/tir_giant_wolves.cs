@@ -84,9 +84,31 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 
 	public override void Load()
 	{
+		AddHook("_bebhinn", "before_keywords", BebhinnKeywords);
 		AddHook("_duncan", "before_keywords", DuncanKeywords);
 		AddHook("_deian", "before_keywords", DeianKeywords);
 		AddHook("_dilys", "before_keywords", DilysKeywords);
+		AddHook("_endelyon", "before_keywords", EndelyonKeywords);
+		AddHook("_ranald", "before_keywords", RanaldKeywords);
+	}
+
+	private async Task<HookResult> BebhinnKeywords(NpcScript npc, params object[] args)
+	{
+		var keyword = args[0] as string;
+		if (keyword == "rumor")
+		{
+			var spawnTime = GetTimeUntilSpawn();
+			if (spawnTime.Ticks == 0)
+			{
+				npc.Msg(npc.FavorExpression(), string.Format(L("You should go to {1} immediately!<br/>There's news about a {0} attack!"), Spawn.BossName, Spawn.LocationName));
+			}
+			else if (spawnTime.TotalMinutes < 100)
+			{
+				// ?
+			}
+		}
+
+		return HookResult.Continue;
 	}
 
 	private async Task<HookResult> DuncanKeywords(NpcScript npc, params object[] args)
@@ -138,6 +160,44 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			if (spawnTime.Ticks == 0)
 			{
 				npc.Msg(npc.FavorExpression(), string.Format(L("Head to {1} right away!<br/>Trefor made a fuss because of {0}'s attack."), Spawn.BossName, Spawn.LocationName));
+			}
+			else if (spawnTime.TotalMinutes < 100)
+			{
+				// ?
+			}
+		}
+
+		return HookResult.Continue;
+	}
+
+	private async Task<HookResult> EndelyonKeywords(NpcScript npc, params object[] args)
+	{
+		var keyword = args[0] as string;
+		if (keyword == "rumor")
+		{
+			var spawnTime = GetTimeUntilSpawn();
+			if (spawnTime.Ticks == 0)
+			{
+				npc.Msg(npc.FavorExpression(), string.Format(L("There is a rumor about {0}'s sneak attack at {1}.<br/>I pray there would be nothing to worry about this time."), Spawn.BossName, Spawn.LocationName));
+			}
+			else if (spawnTime.TotalMinutes < 100)
+			{
+				// ?
+			}
+		}
+
+		return HookResult.Continue;
+	}
+
+	private async Task<HookResult> RanaldKeywords(NpcScript npc, params object[] args)
+	{
+		var keyword = args[0] as string;
+		if (keyword == "rumor")
+		{
+			var spawnTime = GetTimeUntilSpawn();
+			if (spawnTime.Ticks == 0)
+			{
+				npc.Msg(npc.FavorExpression(), string.Format(L("Did you hear {0} appearing at {1}?"), Spawn.BossName, Spawn.LocationName));
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
