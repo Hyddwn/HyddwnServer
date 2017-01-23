@@ -4489,6 +4489,30 @@ namespace Aura.Channel.World.Entities
 		{
 			return (this.Titles.SelectedTitle == titleId || this.Titles.SelectedOptionTitle == titleId);
 		}
+
+		/// <summary>
+		/// Returns true if the creature has equipped an item with the given
+		/// id in one of its main equip slots.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool HasEquipped(int itemId)
+		{
+			var items = this.Inventory.GetMainEquipment(a => a.Info.Id == itemId);
+			return items.Any();
+		}
+
+		/// <summary>
+		/// Returns true if the creature has equipped an item that matches
+		/// the given tag in one of its main equip slots.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool HasEquipped(string tag)
+		{
+			var items = this.Inventory.GetMainEquipment(a => a.HasTag(tag));
+			return items.Any();
+		}
 	}
 
 	public enum TargetableOptions
