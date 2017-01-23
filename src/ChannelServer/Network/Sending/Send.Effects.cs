@@ -149,6 +149,23 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Broadcasts skill init effect.
+		/// in range of creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="type"></param>
+		/// <param name="skillId"></param>
+		public static void SkillInitEffect(Creature creature, string type, SkillId skillId)
+		{
+			var packet = new Packet(Op.Effect, creature.EntityId);
+			packet.PutInt(E.SkillInit);
+			packet.PutString(type);
+			packet.PutUShort((ushort)skillId);
+
+			creature.Region.Broadcast(packet, creature);
+		}
+
+		/// <summary>
 		/// Broadcasts spawn effect (Effect, Spawn) in range of sendFrom.
 		/// </summary>
 		/// <param name="spawnEffect"></param>
