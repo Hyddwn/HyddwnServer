@@ -177,7 +177,7 @@ public class DuncanScript : NpcScript
 				{
 					if (Player.IsUsingTitle(33) && Player.Age > 20)
 					{
-						Msg(FavorExpression(), "(Missing dialog: Information about the Diligent title while being over the age of 20).");
+						Msg(FavorExpression(), "Ah... <username/>. I've heard nothing but good things about you!<br/>People rave about your diligence and hard work.<br/>And now, I get the pleasure of seeing you in person.<br/>So, how's everything going? Are you well?");
 					}
 					else if (Player.IsUsingTitle(33))
 					{
