@@ -406,4 +406,5 @@
 { raceId: 730205, name: "Butler Partner", timeLimit: 180, exp: 0.05, height: 1.0, upper: 1.0, lower: 1.0, life: 350, mana: 40, stamina: 90, str: 80, int: 60, dex: 60, will: 60, luck: 40, defense: 0, protection: 2 },
 { raceId: 730206, name: "Commerce Partner", timeLimit: 180, exp: 0.05, height: 1.0, upper: 1.0, lower: 1.0, life: 320, mana: 300, stamina: 90, str: 80, int: 90, dex: 50, will: 80, luck: 80, defense: 2, protection: 2 },
 { raceId: 730207, name: "Laighlinne Partner", timeLimit: 180, exp: 0.05, height: 1.0, upper: 1.0, lower: 1.0, life: 100, mana: 80, stamina: 90, str: 60, int: 80, dex: 60, will: 50, luck: 40, defense: 0, protection: 2 },
+{ raceId: 730208, name: "Partner [William]", timeLimit: 180, exp: 0.05, height: 1.0, upper: 1.0, lower: 1.0, life: 320, mana: 300, stamina: 90, str: 80, int: 90, dex: 50, will: 80, luck: 80, defense: 2, protection: 2 },
 ]

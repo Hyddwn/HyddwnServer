@@ -74,7 +74,7 @@ public class BryceScript : NpcScript
 				var input = await Select();
 
 				if (input == "@cancel")
-					return;
+					break;
 
 				if (!RedeemCoupon(input))
 				{
