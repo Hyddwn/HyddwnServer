@@ -152,17 +152,31 @@ namespace Aura.Channel.Skills.Magic
 		/// <param name="packet"></param>
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
+			var targetEntityId = packet.GetLong();
+			var unkInt1 = 0;
+			var unkInt2 = 0;
+
+			// The following two ints aren't sent always?
+			if (packet.NextIs(PacketElementType.Int)) unkInt1 = packet.GetInt();
+			if (packet.NextIs(PacketElementType.Int)) unkInt2 = packet.GetInt();
+
+			this.Use(attacker, skill, targetEntityId, unkInt1, unkInt2);
+		}
+
+		/// <summary>
+		/// Uses skill, firing the fire ball and scheduling the impact.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Use(Creature attacker, Skill skill, long targetEntityId, int unkIn1, int unkInt2)
+		{
 			if (skill.Stacks < skill.RankData.StackMax)
 			{
 				attacker.Skills.CancelActiveSkill();
 				Log.Warning("Fireball.Use: User '{0}' tried to fire a not fully charged Fireball.", attacker.Client.Account.Id);
 				return;
 			}
-
-			var targetEntityId = packet.GetLong();
-			// The following two ints aren't sent always?
-			if (packet.NextIs(PacketElementType.Int)) packet.GetInt();
-			if (packet.NextIs(PacketElementType.Int)) packet.GetInt();
 
 			var target = attacker.Region.GetCreature(targetEntityId);
 
@@ -188,7 +202,7 @@ namespace Aura.Channel.Skills.Magic
 
 			SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Melee, attacker.RightHand);
 
-			Send.Echo(attacker, packet);
+			Send.SkillUse(attacker, skill.Info.Id, targetEntityId, unkIn1, unkInt2);
 
 			skill.Stacks = 0;
 			Send.Effect(attacker, Effect.StackUpdate, "firebolt", (byte)0, (byte)0);
