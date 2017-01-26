@@ -4398,8 +4398,17 @@ namespace Aura.Channel.World.Entities
 		/// <param name="keyword"></param>
 		public void GiveKeyword(string keyword)
 		{
-			if (!this.HasKeyword(keyword))
+			if (this.HasKeyword(keyword))
+				return;
+
+			// Don't update the client if creature is in Soul Stream,
+			// as that apprently freezes the client oO" This isn't a problem
+			// though, since the character info, incl the new keyword,
+			// is sent to the client after leaving the Soul Stream.
+			if (!this.Temp.InSoulStream)
 				this.Keywords.Give(keyword);
+			else
+				this.Keywords.Add(keyword);
 		}
 
 		/// <summary>

@@ -56,7 +56,7 @@ namespace Aura.Channel.Skills.Magic
 		{
 			creature.StopMove();
 
-			if (creature.RightHand == null || !creature.RightHand.HasTag("/fire_wand/|/knuckle_staff/"))
+			if (!this.CheckWeapon(creature))
 			{
 				creature.Notice("You need a Fire Wand to use this skill.");
 				return false;
@@ -64,6 +64,25 @@ namespace Aura.Channel.Skills.Magic
 
 			Send.SkillInitEffect(creature, "fireball", skill.Info.Id);
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
+
+			return true;
+		}
+
+		/// <summary>
+		/// Returns true if creature can use the skill with its currently
+		/// equipped weapon.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <returns></returns>
+		public bool CheckWeapon(Creature creature)
+		{
+			var rightHand = creature.RightHand;
+
+			if (rightHand == null)
+				return false;
+
+			if (!rightHand.HasTag("/fire_wand/|/no_bolt_stack/"))
+				return false;
 
 			return true;
 		}
