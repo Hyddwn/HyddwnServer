@@ -133,8 +133,9 @@ namespace Aura.Channel.Skills.Magic
 			}
 
 			var targetEntityId = packet.GetLong();
-			var unkInt1 = packet.GetInt();
-			var unkInt2 = packet.GetInt();
+			// The following two ints aren't sent always?
+			if (packet.NextIs(PacketElementType.Int)) packet.GetInt();
+			if (packet.NextIs(PacketElementType.Int)) packet.GetInt();
 
 			var target = attacker.Region.GetCreature(targetEntityId);
 
