@@ -24,18 +24,20 @@ public class TreforScript : NpcScript
 		EquipItem(Pocket.Head, 18405, 0x191919, 0x293D52);
 		EquipItem(Pocket.LeftHand2, 40005, 0xB6B6C2, 0x404332, 0x22B653);
 
-		AddPhrase("(Fart)...");
-		AddPhrase("(Spits out a loogie)");
+		AddPhrase("*farts*");
+		AddPhrase("*spits a loogie*");
 		AddPhrase("Ah-choo!");
-		AddPhrase("Ahem");
-		AddPhrase("Burp.");
-		AddPhrase("Cough cough...");
+		AddPhrase("Ahem...");
+		AddPhrase("Ahem!");
+		AddPhrase("*burps*");
 		AddPhrase("I heard people can go bald when they wear a helmet for too long...");
 		AddPhrase("I need to get married...");
-		AddPhrase("It's been a while since I took a shower");
+		AddPhrase("It's been a while since I took a shower.");
 		AddPhrase("Seems like I caught a cold...");
 		AddPhrase("Soo itchy... and I can't scratch it!");
-		AddPhrase("This helmet's really making me sweat");
+		AddPhrase("This helmet's really making me sweat.");
+		AddPhrase("*scratches himself*");
+		AddPhrase("*cracks knuckles*");
 	}
 
 	protected override async Task Talk()
@@ -196,6 +198,36 @@ public class TreforScript : NpcScript
 				{
 					Msg(L("How was the experience of being part of a real rescue mission?<br/>I'm sure you've learned your lesson.<br/>Haha. Once you return, come and talk to me about 'Rescue Mission'.<br/>You just have to experience some things for yourself to truly make them yours."));
 				}
+				else if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "When I'm standing guard at night,<br/>it creeps me out quite a bit to hear foxes or wolves howl.<br/>It really is a little scary out here.<br/>Sometimes I may doze off while on duty, but hearing the howls instantly wakes me up.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "You really are annoying, <username/>, but I think you are alright.<br/>Go on and tell me what you want to know.<br/>I will help you as much as I can.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I know this is no easy work but someone has got to do it, right?<br/>This is the way I live my life.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Wild animals? There's nothing to be afraid of when I'm around!");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Ugh... I wonder when my shift will be over.<br/>I need to get some rest now...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Do I look that easy to you? Don't test my patience.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
 				else
 				{
 					Msg(FavorExpression(), "Hmm... Have something to ask me?<br/>I'm nothing but a regular fellow from this town.<br/>I am but a humble servant of Lymirark, whose duty is to protect this town.");
@@ -212,9 +244,44 @@ public class TreforScript : NpcScript
 				break;
 
 			case "rumor":
-				Msg(FavorExpression(), "Recently, the people in this town have become somewhat anxious<br/>about the howling of wild animals outside.<br/>For some reason, their howling seems to be getting a little bit closer each day.");
-				Msg("That's why I'm standing guard like this.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Chief Duncan may look like a strict disciplinarian,<br/>but I have felt from time to time that he is a warm person inside.<br/>He tries to do everything he can to help out<br/>people like us who are having a hard time.");
+					Msg("One night, when I was especially nervous after hearing the wolves howl,<br/>I saw him come out and watch over me, even though it was late at night.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Ranald is a great warrior and an expert with swords.<br/>Some say his enemies tremble in fear the moment he draws his sword.<br/>It would be best if you sought advice on swordsmanship from him.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Priestess Endelyon is like an angel. Have you ever met her?<br/>If not, you can find her at the Church.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Dilys... She's just beautiful.<br/>My heart has belonged to her ever since she first set her foot in this town.<br/>I assume every man in this town feels the same about her.<br/>How about you, <username/>?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I really think Bebhinn crosses the line.<br/>Why would anyone want to gossip so much about other people?<br/>It seems as if she doesn't care about the people in this town anymore<br/>now that so many travelers are using the Bank.");
+					Msg("Spreading gossip about the town people<br/>to any traveler willing to listen won't make them loyal clients, right?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Stop snooping around. You're starting to bother me.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Msg(FavorExpression(), "Recently, the people in this town have become somewhat anxious<br/>about the howling of wild animals outside.<br/>For some reason, their howling seems to be getting a little bit closer each day.");
+					Msg("That's why I'm standing guard like this.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -488,15 +555,59 @@ public class TreforScript : NpcScript
 				break;
 
 			default:
-				RndFavorMsg(
-					"Oh, is that so?",
-					"That was quite boring...",
-					"I don't know anything about that...",
-					"I'm bored. Why don't we talk about something else?",
-					"Do you have anything more interesting to talk about?",
-					"Never heard of it. I don't think that has anything to do with me."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I think I heard it from somewhere but I keep forgetting... I'm sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Oh... I fell asleep for a moment. Sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Stop bugging me! I have no time for this.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Hey, get out of the way!");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"That was quite boring...",
+						"I don't know anything about that...",
+						"I'm bored. Why don't we talk about something else?",
+						"Do you have anything more interesting to talk about?",
+						"Never heard of it. I don't think that has anything to do with me."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Ahahahaha! You really know what I want! Thank you! Thank you!"));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Ha ha, it never hurts to make a good impression on me!"));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("Hmm, not bad. Thank you."));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("Are you trying to make fun of me?"));
 				break;
 		}
 	}
