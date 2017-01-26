@@ -74,13 +74,22 @@ namespace Aura.Channel.Skills.Magic
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <returns></returns>
-		public bool CheckWeapon(Creature creature)
+		private bool CheckWeapon(Creature creature)
 		{
+			// Give NPCs a free pass, their AI decides what they can and
+			// can't do.
+			if (creature.Has(CreatureStates.Npc))
+				return true;
+
 			var rightHand = creature.RightHand;
 
+			// No weapon, no Fireball.
 			if (rightHand == null)
 				return false;
 
+			// TODO: Elemental charging
+
+			// Disallow non-wands and staffs without special tag.
 			if (!rightHand.HasTag("/fire_wand/|/no_bolt_stack/"))
 				return false;
 
@@ -99,10 +108,7 @@ namespace Aura.Channel.Skills.Magic
 			// Increase stack count
 			if (skill.Stacks < skill.RankData.StackMax)
 			{
-				var addStacks = skill.RankData.Stack;
-				if (creature.Skills.Has(SkillId.ChainCasting))
-					addStacks = skill.RankData.StackMax;
-
+				var addStacks = this.GetStacks(creature, skill);
 				skill.Stacks = Math.Min(skill.RankData.StackMax, skill.Stacks + addStacks);
 			}
 
@@ -118,12 +124,52 @@ namespace Aura.Channel.Skills.Magic
 		}
 
 		/// <summary>
+		/// Returns the number of stacks to charge on each Ready.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <returns></returns>
+		private int GetStacks(Creature creature, Skill skill)
+		{
+			var stacks = skill.RankData.Stack;
+
+			var hasChainCasting = creature.Skills.Has(SkillId.ChainCasting);
+			var isMonster = creature.Has(CreatureStates.Npc);
+
+			// Monsters and creatures with the Chain Casting skill get the
+			// max stacks.
+			if (hasChainCasting || isMonster)
+				stacks = skill.RankData.StackMax;
+
+			return stacks;
+		}
+
+		/// <summary>
 		/// Uses skill, firing the fire ball and scheduling the impact.
 		/// </summary>
 		/// <param name="attacker"></param>
 		/// <param name="skill"></param>
 		/// <param name="packet"></param>
 		public void Use(Creature attacker, Skill skill, Packet packet)
+		{
+			var targetEntityId = packet.GetLong();
+			var unkInt1 = 0;
+			var unkInt2 = 0;
+
+			// The following two ints aren't sent always?
+			if (packet.NextIs(PacketElementType.Int)) unkInt1 = packet.GetInt();
+			if (packet.NextIs(PacketElementType.Int)) unkInt2 = packet.GetInt();
+
+			this.Use(attacker, skill, targetEntityId, unkInt1, unkInt2);
+		}
+
+		/// <summary>
+		/// Uses skill, firing the fire ball and scheduling the impact.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Use(Creature attacker, Skill skill, long targetEntityId, int unkIn1, int unkInt2)
 		{
 			if (skill.Stacks < skill.RankData.StackMax)
 			{
@@ -132,11 +178,13 @@ namespace Aura.Channel.Skills.Magic
 				return;
 			}
 
-			var targetEntityId = packet.GetLong();
-			var unkInt1 = packet.GetInt();
-			var unkInt2 = packet.GetInt();
-
 			var target = attacker.Region.GetCreature(targetEntityId);
+			if (target == null)
+			{
+				Log.Warning("Fireball.Use: Creature '0x{0}' tried to use Fireball on invalid target.", attacker.EntityId);
+				Send.SkillUse(attacker, skill.Info.Id, targetEntityId, unkIn1, unkInt2);
+				return;
+			}
 
 			var regionId = attacker.RegionId;
 			var attackerPos = attacker.GetPosition();
@@ -160,7 +208,7 @@ namespace Aura.Channel.Skills.Magic
 
 			SkillHelper.UpdateWeapon(attacker, target, ProficiencyGainType.Melee, attacker.RightHand);
 
-			Send.Echo(attacker, packet);
+			Send.SkillUse(attacker, skill.Info.Id, targetEntityId, unkIn1, unkInt2);
 
 			skill.Stacks = 0;
 			Send.Effect(attacker, Effect.StackUpdate, "firebolt", (byte)0, (byte)0);
@@ -179,10 +227,7 @@ namespace Aura.Channel.Skills.Magic
 			var regionId = attacker.RegionId;
 			var propPos = fireballProp.GetPosition();
 			var targetLocation = new Location(regionId, propPos);
-
 			var targets = attacker.GetTargetableCreaturesAround(propPos, ExplosionRadius);
-			if (!targets.Any())
-				return;
 
 			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetLocation.ToLocationId(), skill.Info.Id);
 			aAction.Set(AttackerOptions.UseEffect);
