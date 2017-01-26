@@ -74,7 +74,7 @@ namespace Aura.Channel.Skills.Magic
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <returns></returns>
-		public bool CheckWeapon(Creature creature)
+		private bool CheckWeapon(Creature creature)
 		{
 			var rightHand = creature.RightHand;
 
@@ -99,10 +99,7 @@ namespace Aura.Channel.Skills.Magic
 			// Increase stack count
 			if (skill.Stacks < skill.RankData.StackMax)
 			{
-				var addStacks = skill.RankData.Stack;
-				if (creature.Skills.Has(SkillId.ChainCasting))
-					addStacks = skill.RankData.StackMax;
-
+				var addStacks = this.GetStacks(creature, skill);
 				skill.Stacks = Math.Min(skill.RankData.StackMax, skill.Stacks + addStacks);
 			}
 
@@ -115,6 +112,27 @@ namespace Aura.Channel.Skills.Magic
 			Send.SkillReady(creature, skill.Info.Id);
 
 			return true;
+		}
+
+		/// <summary>
+		/// Returns the number of stacks to charge on each Ready.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <returns></returns>
+		private int GetStacks(Creature creature, Skill skill)
+		{
+			var stacks = skill.RankData.Stack;
+
+			var hasChainCasting = creature.Skills.Has(SkillId.ChainCasting);
+			var isMonster = creature.Has(CreatureStates.Npc);
+
+			// Monsters and creatures with the Chain Casting skill get the
+			// max stacks.
+			if (hasChainCasting || isMonster)
+				stacks = skill.RankData.StackMax;
+
+			return stacks;
 		}
 
 		/// <summary>
