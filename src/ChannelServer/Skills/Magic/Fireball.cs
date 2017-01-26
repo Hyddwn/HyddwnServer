@@ -180,10 +180,7 @@ namespace Aura.Channel.Skills.Magic
 			var regionId = attacker.RegionId;
 			var propPos = fireballProp.GetPosition();
 			var targetLocation = new Location(regionId, propPos);
-
 			var targets = attacker.GetTargetableCreaturesAround(propPos, ExplosionRadius);
-			if (!targets.Any())
-				return;
 
 			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetLocation.ToLocationId(), skill.Info.Id);
 			aAction.Set(AttackerOptions.UseEffect);
