@@ -179,6 +179,12 @@ namespace Aura.Channel.Skills.Magic
 			}
 
 			var target = attacker.Region.GetCreature(targetEntityId);
+			if (target == null)
+			{
+				Log.Warning("Fireball.Use: Creature '0x{0}' tried to use Fireball on invalid target.", attacker.EntityId);
+				Send.SkillUse(attacker, skill.Info.Id, targetEntityId, unkIn1, unkInt2);
+				return;
+			}
 
 			var regionId = attacker.RegionId;
 			var attackerPos = attacker.GetPosition();
