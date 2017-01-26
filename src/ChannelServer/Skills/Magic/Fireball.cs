@@ -76,11 +76,20 @@ namespace Aura.Channel.Skills.Magic
 		/// <returns></returns>
 		private bool CheckWeapon(Creature creature)
 		{
+			// Give NPCs a free pass, their AI decides what they can and
+			// can't do.
+			if (creature.Has(CreatureStates.Npc))
+				return true;
+
 			var rightHand = creature.RightHand;
 
+			// No weapon, no Fireball.
 			if (rightHand == null)
 				return false;
 
+			// TODO: Elemental charging
+
+			// Disallow non-wands and staffs without special tag.
 			if (!rightHand.HasTag("/fire_wand/|/no_bolt_stack/"))
 				return false;
 
