@@ -35,7 +35,7 @@ public class RundalBasicDungeonScript : DungeonScript
 				{
 					case 0: prefix = 20601; break; // Blessed
 					case 1: prefix = 20406; break; // Convenient
-					case 2: prefix = 30307; break; // Red Bear
+					case 2: suffix = 30307; break; // Red Bear
 				}
 				treasureChest.Add(Item.CreateEnchanted(18052, prefix, suffix));
 			}

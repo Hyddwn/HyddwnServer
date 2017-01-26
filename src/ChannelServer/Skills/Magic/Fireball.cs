@@ -96,8 +96,15 @@ namespace Aura.Channel.Skills.Magic
 		/// <returns></returns>
 		public bool Ready(Creature creature, Skill skill, Packet packet)
 		{
+			// Increase stack count
 			if (skill.Stacks < skill.RankData.StackMax)
-				skill.Stacks = Math.Min(skill.RankData.StackMax, skill.Stacks += skill.RankData.Stack);
+			{
+				var addStacks = skill.RankData.Stack;
+				if (creature.Skills.Has(SkillId.ChainCasting))
+					addStacks = skill.RankData.StackMax;
+
+				skill.Stacks = Math.Min(skill.RankData.StackMax, skill.Stacks + addStacks);
+			}
 
 			// Novice training
 			if (skill.Info.Rank == SkillRank.Novice && skill.Stacks == skill.RankData.StackMax)
