@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
-// Fire Sprite AI
+// Giant Fire Sprite AI
 //--- Description -----------------------------------------------------------
-// AI for Fire Sprites.
+// AI for Giant Fire Sprites.
 //---------------------------------------------------------------------------
 
 [AiScript("giantfiresprite")]
@@ -80,10 +80,10 @@ public class GiantFireSpriteAi : AiScript
 			Do(Say("!!!"));
 			Do(PrepareSkill(SkillId.Fireball));
 			Do(UseSkill());
-			
+
 			if (Random() < 40)
 				Do(KeepDistance(600, false, 1000));
-				
+
 			if (Random() < 50)
 				Do(Circle(800, 2000, 2000, false));
 			else
