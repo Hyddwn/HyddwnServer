@@ -24,9 +24,15 @@ namespace Aura.Channel.World.Entities
 
 		/// <summary>
 		/// Time in seconds it takes a creature (i.e. a monster)
-		/// to disappear after dying.
+		/// to disappear after being finished.
 		/// </summary>
 		public const int DisappearDelay = 20;
+
+		/// <summary>
+		/// Time in seconds it takes a creature (i.e. a monster)
+		/// to disappear after dying, even if it's not finished.
+		/// </summary>
+		public const int DisappearDelayDeath = 60;
 
 		/// <summary>
 		/// Type of the NpcScript used by the NPC.
@@ -322,7 +328,10 @@ namespace Aura.Channel.World.Entities
 		public override bool Kill(Creature killer)
 		{
 			if (!base.Kill(killer))
+			{
+				this.DisappearTime = DateTime.Now.AddSeconds(NPC.DisappearDelayDeath);
 				return false;
+			}
 
 			this.DisappearTime = DateTime.Now.AddSeconds(NPC.DisappearDelay);
 

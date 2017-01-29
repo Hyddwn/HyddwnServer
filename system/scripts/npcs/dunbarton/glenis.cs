@@ -46,12 +46,12 @@ public class GlenisScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Oh, look who's here! It's <username/>, the rescuer of the Goddess!<br/>So, how was Tir Na Nog...?");
 					Msg("Don't tell me you couldn't go.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Erinn's Guardian, huh...?<br/>Sounds like my husband when he was young... Hehe.<br/>If you need anything, just let me know.");
 				}
@@ -70,7 +70,7 @@ public class GlenisScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("Ha ha. I trust that the work is going well today?"));
 		}
@@ -110,23 +110,23 @@ public class GlenisScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("shop_restaurant");
+					Player.GiveKeyword("shop_restaurant");
 					Msg(FavorExpression(), "What do I do for a living, you ask? Ha ha. I own this Restaurant, and my name is <npcname/>. I thought I told you all of this.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_healing");
+				Player.GiveKeyword("shop_healing");
 				Msg(FavorExpression(), "Rumors around here? Well...<br/>Do I look like I would be keen on other people's affairs? Ha ha.<br/>You seem pretty tired.<br/>Why don't you go to the Healer's House down there and talk to Manus.");
 				Msg("If you have the Resting skill handy, he'll give you some helpful tips.");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
-				if (!HasSkill(SkillId.Cooking))
+				if (!Player.HasSkill(SkillId.Cooking))
 				{
-					if (!HasItem(1063)) // Step-By-Step Cooking Skill 101
+					if (!Player.HasItem(1063)) // Step-By-Step Cooking Skill 101
 					{
 						Msg("Seeing how you are asking about skills at a Restaurant,<br/>are you looking to learn some Cooking skills from me?");
 						Msg("<image name='cooking_glenis01'/>Hahaha. Oh, my.<br/>It makes me feel like you're looking up to me and I'm flattered, but<br/>cooking actually isn't anything special in that it doesn't require a particular teaching process.<br/>It's simply a matter of getting cooking ingredients and mixing them well according to the recipe.");
@@ -140,8 +140,8 @@ public class GlenisScript : NpcScript
 						else
 							Msg("Ha ha. A thoughtful one, are you?<br/>Are you worried about us going in the red?<br/>Hahaha. Just take it. I won't charge you for it.<br/>This is an introductory cookbook, so read through it carefully.");
 
-						GiveItem(1063); // Step-By-Step Cooking Skill 101
-						Notice(NoticeType.MiddleSystem, "Received Step-By-Step Cooking Skill 101 from Glenis.");
+						Player.GiveItem(1063); // Step-By-Step Cooking Skill 101
+						Player.Notice(NoticeType.MiddleSystem, "Received Step-By-Step Cooking Skill 101 from Glenis.");
 
 						Msg("<image name='Novice_cook_items'/>By the way... Do you have any cooking tools, <username/>?<br/>To use the Cooking skill, you need to have the proper cooking tools that the recipe calls for.<br/>You will learn lots of different recipes as your skill improves<br/>but, for the time being, you will need to have at least a cooking knife and a cooking table.");
 						Msg("Don't forget.<br/>A cooking knife and a cooking table!<br/>You'll find them at Walter's shop. Hahaha.");
@@ -151,7 +151,7 @@ public class GlenisScript : NpcScript
 						Msg("Hmm. You'll have to at least read a book that<br/>teaches you the Cooking skill before talking to me.<br/>");
 					}
 				}
-				else if (!HasSkill(SkillId.Cooking, SkillRank.RF))
+				else if (!Player.HasSkill(SkillId.Cooking, SkillRank.RF))
 				{
 					Msg("Hmm. You've read the book I gave you, haven't you?");
 					Msg("But cooking is something you learn by actually doing it yourself.");
@@ -186,7 +186,7 @@ public class GlenisScript : NpcScript
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("Ah, you are looking for my Restaurant.<br/>Next time, ask for the Restaurant.<br/>A lot of people tend to get confused.");
 				break;
 
@@ -203,7 +203,7 @@ public class GlenisScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("A Blacksmith's Shop? Hahaha.<br/>I never heard that there was a Blacksmith's Shop in this town...<br/>Are you talking about the Weapons Shop, by any chance?");
 				break;
 

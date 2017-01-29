@@ -107,15 +107,15 @@ public class MalcolmPtjScript : GeneralScript
 		// Handle receiving of Flowerpot from Bebhinn
 		const int Flowerpot = 70010;
 		int id;
-		if (npc.QuestActive(id = 508405, "ptj3") || npc.QuestActive(id = 508435, "ptj3") || npc.QuestActive(id = 508465, "ptj3"))
+		if (npc.Player.QuestActive(id = 508405, "ptj3") || npc.Player.QuestActive(id = 508435, "ptj3") || npc.Player.QuestActive(id = 508465, "ptj3"))
 		{
-			if (!npc.Player.Inventory.Has(Flowerpot))
+			if (!npc.Player.HasItem(Flowerpot))
 				return HookResult.Continue;
 
-			npc.Player.Inventory.Remove(Flowerpot, 1);
-			npc.FinishQuest(id, "ptj3");
+			npc.Player.RemoveItem(Flowerpot, 1);
+			npc.Player.FinishQuestObjective(id, "ptj3");
 
-			npc.Notice(L("You have given Flowerpot to be Delivered to Malcolm."));
+			npc.Player.Notice(L("You have given Flowerpot to be Delivered to Malcolm."));
 
 			npc.Msg(L("Oh, no.<br/>That Flowerpot, did Bebhinn give it to you instead of the money for the clothes?"));
 			npc.Msg(Hide.Name, L("(Delivered the small Flowerpot to Malcolm.)"));
@@ -124,7 +124,7 @@ public class MalcolmPtjScript : GeneralScript
 		}
 
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -160,19 +160,19 @@ public class MalcolmPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("You seem to be on another job.<br/>You should finish it first."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
+			if (!ErinnHour(GetPersonalReportTime(npc.Player), Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("Oh...<br/>Would you come after the deadline starts?<p/>Thanks for your help."));
@@ -197,7 +197,7 @@ public class MalcolmPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Did I ask too much of you?<br/>Sorry, but I can't pay you because you didn't work at all. Please understand."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -219,7 +219,7 @@ public class MalcolmPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -243,24 +243,24 @@ public class MalcolmPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("Sorry, but it is not time for part-time jobs.<br/>Would you come later?"));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("I don't have anymore work to give you today.<br/>Would you come back tomorrow?"));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 
 		var msg = "";
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("Our town may be small, but running the General Shop<br/>can really get hectic since I'm running this all by myself.<br/>Fortunately, many people are helping me out, so it's a lot easier for me to handle.<br/>Are you also interested in working here, <username/>?<p/>I'll pay you if you can help me.");
 		else
 			msg = L("Are you here to work at the General Shop?");
@@ -282,20 +282,20 @@ public class MalcolmPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Malcolm's General Shop Part-Time Job"),
 			ptjDescTitle,
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Thank you.<br/>Then I'll see you when the deadline starts.<br/>Please report your work even if you couldn't finish it on time. That way, I can get on with other jobs without worry."));
 			else
 				npc.Msg(L("Thanks, and good luck!"));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Oh, well.<br/>If you change your mind, let me know."));
 			else
 				npc.Msg(L("Oh, I misunderstood.<br/>I'm sorry."));
@@ -332,15 +332,15 @@ public abstract class MalcolmDeliveryPtjBaseScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj"))
+		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(Garment))
+		if (!npc.Player.HasItem(Garment))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(Garment, 1);
-		npc.Notice(LGivenNotice);
-		npc.FinishQuest(this.Id, "ptj");
+		npc.Player.RemoveItem(Garment, 1);
+		npc.Player.Notice(LGivenNotice);
+		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
 		await this.OnFinish(npc);
 
@@ -594,13 +594,13 @@ public abstract class MalcolmExtDeliveryTreforPtjBaseScript : QuestScript
 
 	public async Task<HookResult> TreforAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(Garment))
+		if (!npc.Player.HasItem(Garment))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj1");
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		npc.Msg(L("Are those the clothes I ordered from the general store?<br/>Thank you.<p/>By the way, these clothes are not for me.<br/>They're women's clothes, after all."));
 		npc.Msg(Hide.Name, L("(Delivered the clothes to shy Trefor.)"));
@@ -612,14 +612,14 @@ public abstract class MalcolmExtDeliveryTreforPtjBaseScript : QuestScript
 
 	public async Task<HookResult> DilysAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj2"))
+		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(Garment))
+		if (!npc.Player.HasItem(Garment))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(Garment, 1);
-		npc.FinishQuest(this.Id, "ptj2");
+		npc.Player.RemoveItem(Garment, 1);
+		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 		npc.Msg(L("Hmm? I'm guessing those are Trefor's clothes?"));
 		npc.Msg(Hide.Name, L("(Gave the clothes to Dilys.)"));
@@ -750,15 +750,15 @@ public abstract class MalcolmExtDeliveryBebhinnPtjBaseScript : QuestScript
 
 	public async Task<HookResult> BebhinnAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "ptj1"))
+		if (npc.Player.QuestActive(this.Id, "ptj1"))
 		{
-			if (!npc.Player.Inventory.Has(Garment))
+			if (!npc.Player.HasItem(Garment))
 				return HookResult.Continue;
 
-			npc.FinishQuest(this.Id, "ptj1");
+			npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 			npc.Player.RemoveItem(Garment, 1);
-			npc.Notice(L("You have given Garment to be Delivered to Bebhinn."));
+			npc.Player.Notice(L("You have given Garment to be Delivered to Bebhinn."));
 
 			npc.Msg(L("Wow, so the clothes I ordered have finally arrived.<br/>Thank you so much! Wow, I really like this style!"));
 			npc.Msg(Hide.Name, L("(Delivered the clothes to Bebhinn.)"));
@@ -767,12 +767,12 @@ public abstract class MalcolmExtDeliveryBebhinnPtjBaseScript : QuestScript
 
 			return HookResult.Break;
 		}
-		else if (npc.QuestActive(this.Id, "ptj2"))
+		else if (npc.Player.QuestActive(this.Id, "ptj2"))
 		{
-			npc.FinishQuest(this.Id, "ptj2");
+			npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 			npc.Player.GiveItem(Flowerpot, 1);
-			npc.Notice(L("You have received Flowerpot to be Delivered from Bebhinn."));
+			npc.Player.Notice(L("You have received Flowerpot to be Delivered from Bebhinn."));
 
 			npc.Msg(L("Oh, give me a break! Go tell Malcolm to put it on my bill and I'll pay him later."));
 			npc.Msg(Hide.Name, L("(Keep asking Bebhinn for payment, saying you won't be able to get a reward otherwise.)"));

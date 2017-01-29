@@ -51,7 +51,7 @@ public class DuncanScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message = L("That's great, <username/>.<br/>Seeing you and Trefor are such good friends<br/>makes me feel great as the chief of this town.");
@@ -76,19 +76,19 @@ public class DuncanScript : NpcScript
 
 						Player.Vars.Perm["duncan_title_gift"] = today;
 
-						GiveItem(63000, 3); // Phoenix Feather x3
-						Notice(L("Received Phoenix Feather from Duncan."));
-						SystemMsg(L("Received Phoenix Feather from Duncan."));
+						Player.GiveItem(63000, 3); // Phoenix Feather x3
+						Player.Notice(L("Received Phoenix Feather from Duncan."));
+						Player.SystemMsg(L("Received Phoenix Feather from Duncan."));
 
 						Msg(L("I hope you can continue to help us and care for the town, haha..."));
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("You rescued the Goddess? And defeated Glas Ghaibhleann?<br/>Well done! A great accomplishment.<br/>However, most people won't understand the gravity of what you have just done.<br/>But don't be disappointed. Erinn shall prosper for a long time, thanks to you.<br/>Accept my deepest gratitude as Chief of this town.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Oh. <username/>! You finally did it...<br/>I can't believe you became the Knight of Light and saved Erinn...<br/>Nao would be so proud.");
 					Msg("I'm starting to understand Goddess Morrighan and Nao's will<br/>for sending people like you to this world.");
@@ -175,17 +175,17 @@ public class DuncanScript : NpcScript
 				}
 				else
 				{
-					if (Title == 33 && Player.Age > 20)
+					if (Player.IsUsingTitle(33) && Player.Age > 20)
 					{
-						Msg(FavorExpression(), "(Missing dialog: Information about the Diligent title while being over the age of 20).");
+						Msg(FavorExpression(), "Ah... <username/>. I've heard nothing but good things about you!<br/>People rave about your diligence and hard work.<br/>And now, I get the pleasure of seeing you in person.<br/>So, how's everything going? Are you well?");
 					}
-					else if (Title == 33)
+					else if (Player.IsUsingTitle(33))
 					{
 						Msg(FavorExpression(), "Now that I think about it, I have something to tell you...<br/>Oh, it's not serious. But you have quite the reputation around here.<br/>Your diligence and hard work is well known to everyone in town.<br/>People say you're good-hearted and a decent human being.<br/>I trust you too, so keep up the good work.");
 					}
 					else
 					{
-						GiveKeyword("shop_headman");
+						Player.GiveKeyword("shop_headman");
 						Msg(FavorExpression(), "Once again, welcome to Tir Chonaill.");
 					}
 					ModifyRelation(Random(2), 0, Random(3));
@@ -200,7 +200,7 @@ public class DuncanScript : NpcScript
 				}
 				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
 				{
-					GiveKeyword("graveyard");
+					Player.GiveKeyword("graveyard");
 					Msg(FavorExpression(), "In the graveyard lay those who sacrificed their lives<br/>to keep Tir Chonaill safe from monsters and evil creatures...");
 					ModifyRelation(Random(2), 0, Random(2));
 				}
@@ -226,9 +226,9 @@ public class DuncanScript : NpcScript
 				}
 				else
 				{
-					if (!HasKeyword("square"))
+					if (!Player.HasKeyword("square"))
 					{
-						GiveKeyword("square");
+						Player.GiveKeyword("square");
 						Msg(FavorExpression(), "Talk to the good people in Tir Chonaill as much as you can, and pay close attention to what they say.<br/>Once you become friends with them, they will help you in many ways.<br/>Why don't you start off by visiting the buildings around the Square?");
 					}
 					else
@@ -248,21 +248,21 @@ public class DuncanScript : NpcScript
 				}
 				else
 				{
-					if (HasSkill(SkillId.RangedAttack) && !HasSkill(SkillId.MagnumShot))
+					if (Player.HasSkill(SkillId.RangedAttack) && !Player.HasSkill(SkillId.MagnumShot))
 					{
-						GiveKeyword("skill_magnum_shot");
+						Player.GiveKeyword("skill_magnum_shot");
 						Msg("You seem much more comfortable conversing with people using the 'Skills' keyword now.<br/>Wait. You can shoot an arrow? Congratulations!<br/>You've only been here for a short time, yet you pick up things so fast.");
 						Msg("Now, have you heard about Magnum Shot?<br/>You see, a bow is great for attacking enemies from a distance,<br/>yet it's frustrating when you miss a target.<br/>Plus, the damage from a bow isn't as strong as a melee attack.");
 						Msg("Since you were so diligent, I will teach you<br/>Magnum Shot, which I learned from Ranald.");
 						Msg("The Magnum Shot skill helps you to shoot a powerful arrow<br/>with the power you have concentrated in your bow.<br/>Go on and work on your training...");
 						// Duncan started giving the skill some time after G13, so a feature check should go here
 						// On official, he adds the skill as rNovice, then adds on 100 skill training
-						GiveSkill(SkillId.MagnumShot, SkillRank.RF);
+						Player.GiveSkill(SkillId.MagnumShot, SkillRank.RF);
 						break;
 					}
 					else
 					{
-						if (HasSkill(SkillId.Rest))
+						if (Player.HasSkill(SkillId.Rest))
 						{
 							Msg("You know about the Combat Mastery skill?<br/>It's one of the basic skills needed to protect yourself in combat.<br/>It may look simple, but never underestimate its efficiency.<br/>Continue training the skill diligently and you will soon reap the rewards. That's a promise.");
 						}
@@ -287,7 +287,7 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "about_study":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Ah, you'll need to go to the School for that.<br/>Talk to one of the teachers with that keyword.<br/>That should get you started with classes.");
 				Msg("Find the guidepost near the Bank down the street.<br/>Once you do, it should be easy to locate the School.<br/>Keep in mind that the guideposts around town are there to help you out.");
 				break;
@@ -301,7 +301,7 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "shop_healing":
-				GiveKeyword("graveyard");
+				Player.GiveKeyword("graveyard");
 				Msg("The Healer's House is right past here.<br/>Some people get freaked out because it's so close to the graveyard. Hahaha!<br/>When you visit, please say hello to Dilys for me.");
 				break;
 
@@ -318,13 +318,13 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "skill_range":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Hmm. I could tell you some things about long-ranged attacks,<br/>but I think it's better for you to ask Ranald.<br/>Don't take it personally! I just think you should learn from an expert.");
 				Msg("Long-ranged attacks consist of attacking a monster at a distance with a bow or a rock.<br/>But you need to spend time training, as long-ranged attacks and melee attacks use different muscles.");
 				break;
 
 			case "skill_instrument":
-				GiveKeyword("lute");
+				Player.GiveKeyword("lute");
 				Msg("The shepherd boy, Deian, told you that?<br/>I know Deian wants to learn how to play the lute.<br/>But I am a little concerned he may neglect his sheep<br/>if he gets carried away playing his lute...");
 				Msg("I expect Deian told you to go to Priestess Endelyon to get the Instrument Playing skill.<br/>Priestess Endelyon is at the Church. Go on and meet her.");
 				break;
@@ -359,7 +359,7 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("To get to the reservoir, go down the hill and walk around the Grocery Store.");
 				break;
 
@@ -370,7 +370,7 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "windmill":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("The Windmill is near the Blacksmith's Shop.<br/>It pulls water up to the reservoir and grinds grain. Watch your fingers, though.<br/>If you go there, say hello to Alissa for me.<br/>For some reason, that girls loves to play with my beard...");
 				break;
 
@@ -384,12 +384,12 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "temple":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Have you talked to Priest Meven at the Church?<br/>Walk down near the School and you should easily find the Church.");
 				break;
 
 			case "school":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("The School? It's near the Church.<br/>Walk down the path by the Bank and head past the Church to get to the School.<br/>Lassar and Ranald, the teachers there, should be of great help for you.<br/>They'll be more than willing to answer questions.");
 				break;
 
@@ -406,7 +406,7 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("Are you looking for a better weapon?<br/>If so, head south and you'll find the Blacksmith's Shop where Ferghus works.<br/>Tir Chonaill is known for its fearsome warriors, but interestingly enough, there isn't a single Weapon Shop in town.");
 				Msg("Why? Because only beginners and cowards entrust their lives to weapons!<br/>If you want to become a true warrior, never mistake your weapon's power for your own.");
 				break;
@@ -417,7 +417,7 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "shop_bookstore":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Unfortunately, Tir Chonaill does not have a bookstore.<br/>In fact, when it comes to passing down the history and heritage of our town,<br/>we believe that books are a supplementary form of record-keeping.");
 				Msg("If you are determined to buy a book, go see Malcolm.<br/>I'm sure there are some available at the General Shop.<br/>Piaras at the Inn should have a couple, too...<br/>In fact, all the town residents probably own a book or two, so talk to them.<br/>I hope you gain much wisdom from the time you spend reading books.");
 				break;
@@ -442,7 +442,7 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("You can find lutes and other items at Malcolm's General Shop.<br/>Why don't you go take a look?");
 				break;
 
@@ -463,7 +463,7 @@ public class DuncanScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("For Music Scores, go to the General Shop and talk to Malcolm.<br/>But don't think that Malcolm composes a lot of music!<br/>He has terrible rhythm! He just sells the scrolls on behalf of the composers.");
 				break;
 

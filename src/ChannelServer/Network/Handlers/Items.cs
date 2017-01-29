@@ -321,7 +321,7 @@ namespace Aura.Channel.Network.Handlers
 		/// Sent when destroying an item (right click option).
 		/// </summary>
 		/// <example>
-		/// ...
+		/// 001 [005000CBB3152EEC] Long   : 22518873019723500
 		/// </example>
 		[PacketHandler(Op.ItemDestroy)]
 		public void ItemDestroy(ChannelClient client, Packet packet)
@@ -332,11 +332,7 @@ namespace Aura.Channel.Network.Handlers
 			var item = creature.Inventory.GetItemSafe(itemEntityId);
 
 			// Check if item is destroyable
-			// The check for the Sword of Elsinore is a terrible hack,
-			// but in my defense, it was devCAT's idea. Instead of adding the
-			// destroyable tag to the item, the client checks for the
-			// hamlets_sword tag >_>
-			if (!item.HasTag("/destroyable/|/hamlets_sword/|/guild_robe/"))
+			if (!item.IsDestroyable)
 			{
 				Log.Warning("ItemDestroy: Creature '{0:X16}' tried to destroy a non-destroyable item.", creature.EntityId);
 				Send.ItemDestroyR(creature, false);

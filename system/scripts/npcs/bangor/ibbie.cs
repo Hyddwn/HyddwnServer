@@ -52,12 +52,12 @@ public class IbbieScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Cough, Cough!<br/>Then, can you save me, too....?");
 					Msg("I, <npcname/>....am so miserable...<br/>I'm hurting...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Guardian... of Erinn...?<br/>Then will this person watch over <npcname/>, too...?");
 				}
@@ -120,7 +120,7 @@ public class IbbieScript : NpcScript
 				break;
 
 			case "shop_misc":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("General shop?<br/>You mean Gilmore's place<br/>next to the Blacksmith's Shop?");
 				Msg("The General Shop is at the end of that building down there.<br/>I would take you there myself but...");
 				Msg("My legs hurt... I'm sorry.");

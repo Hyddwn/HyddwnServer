@@ -48,7 +48,7 @@ public class DilysScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10061: // is a friend of Malcolm
 							message = L("Hello, <username/>, a Friend of Malcolm.<br/>I'm giving you this because I think you will find it useful.");
@@ -63,17 +63,17 @@ public class DilysScript : NpcScript
 					{
 						Player.Vars.Perm["dilys_title_gift"] = today;
 
-						GiveItem(51011, 3); // Stamina 10 Potion x3
-						Notice(L("Received HP 10 Potion from Dilys."));
-						SystemMsg(L("Received HP 10 Potion from Dilys."));
+						Player.GiveItem(51011, 3); // Stamina 10 Potion x3
+						Player.Notice(L("Received HP 10 Potion from Dilys."));
+						Player.SystemMsg(L("Received HP 10 Potion from Dilys."));
 
 						Msg(message);
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 					Msg("...<username/>, Who Saved the Goddess?<br/>...<br/>Ugh, spare me.<br/>Trefor suffices as the town fool and we only need one.");
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 					Msg("Sigh...<br/>As if Trefore weren't enough...<br/>Do we really need more dummies in this town?");
 
 				await Conversation();
@@ -100,9 +100,9 @@ public class DilysScript : NpcScript
 							Player.FullLifeHeal();
 							Player.Mana = Player.ManaMax;
 							Msg("Good, I've put on some bandages and your treatment is done.<br/>If you get injured again, don't hesitate to visit me.");
-							if (!Player.Skills.Has(SkillId.FirstAid))
+							if (!Player.HasSkill(SkillId.FirstAid))
 							{
-								Player.Skills.Give(SkillId.FirstAid, SkillRank.Novice);
+								Player.GiveSkill(SkillId.FirstAid, SkillRank.Novice);
 								Msg("I see you haven't learned the First Aid skill yet.<br/>Since you can't come to me every time you get hurt,<br/>you should learn how to apply a bandage to yourself.<p/>I will teach you the First Aid skill.<br/>This skill requires bandages<br/>so always keep them handy in your inventory.");
 							}
 						}
@@ -214,7 +214,7 @@ public class DilysScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("shop_healing");
+					Player.GiveKeyword("shop_healing");
 					Msg(FavorExpression(), "A healer's job is to treat sick people.<br/>Don't hesitate to come to me if you ever feel sick.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
@@ -253,7 +253,7 @@ public class DilysScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("graveyard");
+					Player.GiveKeyword("graveyard");
 					Msg(FavorExpression(), "It was hard for you to get here, wasn't it? I bet if I were a little closer to the Square<br/>you would've come earlier. Hehe...<br/>Truthfully, it is kind of scary being next to the graveyard.");
 					Msg("At first I thought about opening the Healer's House near the Square<br/>but Duncan advised me that this place would be better for business.<br/>Actually, I haven't had many patients.<br/>Only people who come to hunt spiders and...Trefor, who stores his goods here...");
 					ModifyRelation(Random(2), 0, Random(3));
@@ -261,13 +261,13 @@ public class DilysScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (HasSkill(SkillId.Counterattack))
+				if (Player.HasSkill(SkillId.Counterattack))
 				{
 					Msg("Was the Melee Counterattack skill helpful?<br/>I heard that the stronger the enemy is, the more powerful the skill becomes.");
 				}
 				else
 				{
-					GiveKeyword("skill_counter_attack");
+					Player.GiveKeyword("skill_counter_attack");
 					Msg("Skills...<br/>Oh! A while ago, Ranald defeated a fox<br/>that had appeared in town using some skill or other... What was that called...?<br/>I think it's called  Melee... Counter... Counterattack? Something like that...");
 				}
 				break;
@@ -298,30 +298,30 @@ public class DilysScript : NpcScript
 				break;
 
 			case "skill_range":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("You should not ask such questions to a healer...<br/>Why don't you go to the School and talk to Ranald?");
 				break;
 
 			case "skill_instrument":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("Hmm... Priestess Endelyon at the Church would know about that.<br/>Have you talked to her yet?");
 				break;
 
 			case "skill_composing":
-				GiveKeyword("shop_bank");
-				GiveKeyword("temple");
+				Player.GiveKeyword("shop_bank");
+				Player.GiveKeyword("temple");
 				Msg("Did you hear about the Composing skill from Bebhinn at the Bank?<br/>To be honest, Bebhinn is kind of tone deaf!<br/>She wants to compose so badly,<br/>but she just doesn't have the musical talent.");
 				Msg("Sometimes, I get the feeling that she pushes people to learn that skill,<br/>just so one of them will write her a song!<br/>But that's besides the point...<br/>Have you talked to Priestess Endelyon at the Church?<br/>She composes beautiful music.");
 				Msg("If you ever learn how to compose,<br/>would you please write a song not just for Bebhinn,<br/>but for me, too?");
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Caitin at the Grocery Store is the best tailor in town.<br/>Everyone knows it.<br/>Word around town is that all the clothes at Malcolm's General Shop<br/>were actually made by Caitin.<br/>Why don't you go to the Grocery Store and talk to her about it?");
 				break;
 
 			case "skill_counter_attack":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Come on, stop teasing.<br/>How can a fragile lady like me use such a powerful skill?<br/>Maybe, if I use it on Lassar... Haha!<br/>Teacher Ranald is at the School.<br/>Try talking to him about it.");
 				break;
 
@@ -334,17 +334,17 @@ public class DilysScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("You can get water from the reservoir,<br/>but you will need a bottle or a bowl.<br/>You could probably buy something at Malcolm's General Shop.");
 				break;
 
 			case "farmland":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("The farmland is near the School.<br/>Farmers grow crops like wheat or barley,<br/>but I don't usually go there.<br/>You will need to check it out for yourself.");
 				break;
 
 			case "windmill":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("The Windmill is near the Blacksmith's Shop.<br/>If you want to grind wheat or grain, talk to Alissa first.<br/>She's in front of the Windmill.<br/>Be careful not to get hurt by the mill.");
 				break;
 
@@ -353,7 +353,7 @@ public class DilysScript : NpcScript
 				break;
 
 			case "shop_headman":
-				GiveKeyword("square");
+				Player.GiveKeyword("square");
 				Msg("The Chief's House is not far from here. It's a short walk.<br/>Follow the path around the hill near the Square,<br/>and you will find it.<br/>");
 				break;
 
@@ -362,28 +362,28 @@ public class DilysScript : NpcScript
 				break;
 
 			case "school":
-				GiveKeyword("shop_bank");
+				Player.GiveKeyword("shop_bank");
 				Msg("The School is nearby.<br/>See that road by the Bank? Follow it down the hill.<br/>Ah, I forgot Lassar is at the School.<br/>She claims that she is a teacher of magic,<br/>but actually, she can't even do half of what she teaches.");
 				break;
 
 			case "skill_campfire":
-				GiveKeyword("shop_inn");
+				Player.GiveKeyword("shop_inn");
 				Msg("Seems like a lot of people are using the Campfire skill lately...<br/>You can go ask Piaras at the Inn. He traveled around before settling in this town.<br/>He probably knows all sorts of skills.");
 				Msg("Oh? Piaras already told you everything he knows?<br/>Hmm... Then, er, perhaps Shepherd Deian might know something?");
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Restaurant?<br/>There are no restaurants in this town. But you could go to the Grocery Store.<br/>Go down the road and you will see a shop with a chef sign.<br/>You will find Caitin there.");
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_inn");
+				Player.GiveKeyword("shop_inn");
 				Msg("Hmm... We don't have a shop that sells weapons here...<br/>But you could go and talk to Ferghus.<br/>His Blacksmith's Shop is past the Inn, just across the bridge.");
 				break;
 
 			case "shop_cloth":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("A clothing shop?<br/>I always hoped someone would open a clothing shop here...<br/>But no such luck.<br/>If you need clothes, try Malcolm's General Shop.");
 				break;
 
@@ -422,7 +422,7 @@ public class DilysScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Music Score? The General Shop should sell them....<br/>Haven't you been there, yet?");
 				break;
 

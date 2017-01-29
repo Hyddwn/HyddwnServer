@@ -50,26 +50,26 @@ public class LassarScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 10061) // is a friend of Malcolm
+				if (Player.IsUsingTitle(10061)) // is a friend of Malcolm
 				{
 					var today = ErinnTime.Now.ToString("yyyyMMdd");
 					if (today != Player.Vars.Perm["lassar_title_gift"])
 					{
 						Player.Vars.Perm["lassar_title_gift"] = today;
 
-						GiveItem(51006, 3); // MP 10 Potion x3
-						Notice(L("Received MP 10 Potion from Lassar."));
-						SystemMsg(L("Received MP 10 Potion from Lassar."));
+						Player.GiveItem(51006, 3); // MP 10 Potion x3
+						Player.Notice(L("Received MP 10 Potion from Lassar."));
+						Player.SystemMsg(L("Received MP 10 Potion from Lassar."));
 
 						Msg(L("Hahaha. I was wondering who you were.<br/>You must be Malcolm's friend, <username/>, right?<br/>I would like to give you this MP Potion.<br/>Will you accept it?"));
 					}
 				}
-				else if (Title == 11001)
+				else if (Player.IsUsingTitle(11001))
 				{
 					Msg("Hmm... So you rescued the Goddess?<br/>And... that means you've done something the Three Missing Warriors couldn't do, right?<br/>This is a bit hard to believe. Hahaha...");
 					Msg("If you saved the Goddess, why hasn't she descend down upon Erinn as of yet?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Hm? <username/>, you're the Guardian of Erinn?<br/>Are you <username/>, the one<br/>who used to train magic and combat here?");
 					Msg("...Wow... I'm amazed.<br/>I never knew a day like this would come.");
@@ -224,7 +224,7 @@ public class LassarScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("school");
+					Player.GiveKeyword("school");
 					Msg(FavorExpression(), "<npcname/> means 'flame'.<br/>My mother gave birth to me after having dreamed about a wildfire burning the field.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
@@ -268,7 +268,7 @@ public class LassarScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("farmland");
+					Player.GiveKeyword("farmland");
 					Msg(FavorExpression(), "Farmland is just to the south of the School.<br/>They mainly grow wheat or barley, and the crop yields are enough<br/>for the people in Tir Chonaill.<br/>But I think there will be a shortage if travelers stay longer.");
 					Msg("That means no stealing crops for you!");
 					ModifyRelation(Random(2), 0, Random(3));
@@ -354,7 +354,7 @@ public class LassarScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("windmill");
+				Player.GiveKeyword("windmill");
 				Msg("The reservoir? Just over there. Hee hee.<br/>It was built to supply water to the farmland.<br/>People say that having a mill<br/>made it far easier to make it.");
 				Msg("But, if you stay for too long near the reservoir,<br/>a water ghost might appear.<br/>You know, like Undine. Hee hee.");
 				break;
@@ -364,7 +364,7 @@ public class LassarScript : NpcScript
 				break;
 
 			case "windmill":
-				GiveKeyword("brook");
+				Player.GiveKeyword("brook");
 				Msg("The mill is near the Adelia Stream.<br/>My sister Alissa works there.");
 				Msg("She is kind of stubborn, but she's about that age, you know? Hee hee.");
 				Msg("Working at the mill can be deceptively stressful...<br/>The mill draws water from<br/>Adelia Stream to the reservoir.");
@@ -378,7 +378,7 @@ public class LassarScript : NpcScript
 				break;
 
 			case "shop_headman":
-				GiveKeyword("square");
+				Player.GiveKeyword("square");
 				Msg("You are looking for the Chief's House?<br/>The Chief's House is right over the hill from the Square.<br/>So you haven't been there but came here right away?");
 				Msg("The Chief might be disappointed.<br/>You should go now!");
 				break;
@@ -401,17 +401,17 @@ public class LassarScript : NpcScript
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Hmm. You're hungry?<br/>Actually, I am hungry too.<br/>We don't have a restaurant, so why don't you go to the Grocery Store<br/>and buy some food? We can share the food.");
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("Ranald has asked you to buy a weapon, right?<br/>But, to buy weapons in this town,<br/>you need to go to the Blacksmith's Shop.");
 				break;
 
 			case "shop_cloth":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Hmm... You seem more clothing-savvy than you look.<br/>We just might get along really well... Hehehe...<br/>But this town is so rural<br/>that you need to go to the General Shop to buy clothing.");
 				Msg("Hmm... It would be really nice if someone opened a boutique...");
 				break;
@@ -423,7 +423,7 @@ public class LassarScript : NpcScript
 				break;
 
 			case "shop_goverment_office":
-				GiveKeyword("shop_healing");
+				Player.GiveKeyword("shop_healing");
 				Msg("Huh? Did you say town office?<br/>Oh, you must have been to a city before.");
 				Msg("Which one have you been in? Emain Macha? Tara?<br/>Or Dunbarton?<br/>Oh. Nothing, really.<br/>It's just that I myself studied in a city.");
 				Msg("You know Emain Macha, don't you? Hee hee.");
@@ -526,13 +526,13 @@ public class LassarScript : NpcScript
 						switch (Random(2))
 						{
 							case 0:
-								GiveItem(Item.CreateEnchant(30706, 600)); // Formal Enchant
-								SystemNotice(L("You have received an Enchant Scroll from Lassar."));
+								Player.GiveItem(Item.CreateEnchant(30706, 600)); // Formal Enchant
+								Player.SystemNotice(L("You have received an Enchant Scroll from Lassar."));
 								break;
 
 							case 1:
-								GiveItem(62014); // Spirit Weapon Restoration Potion
-								SystemNotice(L("You have received a Spirit Weapon Restoration Potion from Lassar."));
+								Player.GiveItem(62014); // Spirit Weapon Restoration Potion
+								Player.SystemNotice(L("You have received a Spirit Weapon Restoration Potion from Lassar."));
 								break;
 						}
 					}
@@ -541,13 +541,13 @@ public class LassarScript : NpcScript
 						switch (Random(2))
 						{
 							case 0:
-								GiveItem(63001); // Wings of a Goddess
-								SystemNotice(L("You have received Wings of a Goddess from Lassar."));
+								Player.GiveItem(63001); // Wings of a Goddess
+								Player.SystemNotice(L("You have received Wings of a Goddess from Lassar."));
 								break;
 
 							case 1:
-								GiveItem(62001); // Elite Magic Powder
-								SystemNotice(L("You have received Elite Magic Powder from Lassar."));
+								Player.GiveItem(62001); // Elite Magic Powder
+								Player.SystemNotice(L("You have received Elite Magic Powder from Lassar."));
 								break;
 						}
 					}
@@ -562,18 +562,18 @@ public class LassarScript : NpcScript
 						switch (Random(3))
 						{
 							case 0:
-								GiveItem(Item.CreateEnchanted(40038, 308)); // Deadly Lightning Wand
-								SystemNotice(L("You have received a Deadly Lightning Wand from Lassar."));
+								Player.GiveItem(Item.CreateEnchanted(40038, 308)); // Deadly Lightning Wand
+								Player.SystemNotice(L("You have received a Deadly Lightning Wand from Lassar."));
 								break;
 
 							case 1:
-								GiveItem(Item.CreateEnchanted(40039, 308)); // Deadly Ice Wand
-								SystemNotice(L("You have received a Deadly Ice Wand from Lassar."));
+								Player.GiveItem(Item.CreateEnchanted(40039, 308)); // Deadly Ice Wand
+								Player.SystemNotice(L("You have received a Deadly Ice Wand from Lassar."));
 								break;
 
 							case 2:
-								GiveItem(Item.CreateEnchanted(40040, 308)); // Deadly Fire Wand
-								SystemNotice(L("You have received a Deadly Fire Wand from Lassar."));
+								Player.GiveItem(Item.CreateEnchanted(40040, 308)); // Deadly Fire Wand
+								Player.SystemNotice(L("You have received a Deadly Fire Wand from Lassar."));
 								break;
 						}
 					}
@@ -582,25 +582,25 @@ public class LassarScript : NpcScript
 						switch (Random(3))
 						{
 							case 0:
-								GiveItem(40038); // Lightning Wand
-								SystemNotice(L("You have received a Lightning Wand from Lassar."));
+								Player.GiveItem(40038); // Lightning Wand
+								Player.SystemNotice(L("You have received a Lightning Wand from Lassar."));
 								break;
 
 							case 1:
-								GiveItem(40039); // Ice Wand
-								SystemNotice(L("You have received an Ice Wand from Lassar."));
+								Player.GiveItem(40039); // Ice Wand
+								Player.SystemNotice(L("You have received an Ice Wand from Lassar."));
 								break;
 
 							case 2:
-								GiveItem(40040); // Fire Wand
-								SystemNotice(L("You have received a Fire Wand from Lassar."));
+								Player.GiveItem(40040); // Fire Wand
+								Player.SystemNotice(L("You have received a Fire Wand from Lassar."));
 								break;
 						}
 					}
 					else
 					{
-						GiveItem(51009, 10); // MP 100 Potion x10
-						SystemNotice(L("You have received 10 Mana 100 Potions from Lassar."));
+						Player.GiveItem(51009, 10); // MP 100 Potion x10
+						Player.SystemNotice(L("You have received 10 Mana 100 Potions from Lassar."));
 					}
 					break;
 

@@ -48,12 +48,12 @@ public class GilmoreScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("...You're quite a good liar.<br/>I don't know what to say to that.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("...Guardian? Ha!");
 				}
@@ -121,7 +121,7 @@ public class GilmoreScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				if (Title == 33)
+				if (Player.IsUsingTitle(33))
 				{
 					Msg(FavorExpression(), "Wait, <username/> the Diligent?<br/>Hmm. Not so bad for a youngster.");
 					Msg("You got it. You have to live diligently like that to save money. Yep.<br/>Now, don't get complacent!");
@@ -337,7 +337,6 @@ public class GilmoreShop : NpcShopScript
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40216);      // Cymbals
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 62021, 100); // Six-sided Die x100
@@ -422,6 +421,9 @@ public class GilmoreShop : NpcShopScript
 		Add("Gift", 52018); // Hammer
 
 		Add("Event"); // Empty
+
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045); // Handicraft Kit
 
 		if (IsEnabled("PetBirds"))
 		{

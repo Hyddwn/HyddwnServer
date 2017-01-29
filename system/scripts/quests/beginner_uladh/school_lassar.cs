@@ -29,7 +29,7 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 		var remaintime = end - now.Hour;
 		var lastState = 8;
 
-		if (npc.QuestActiveUncompleted(200029))
+		if (npc.Player.QuestInProgress(200029))
 		{
 			npc.Msg(L("Haven't you finished the assignment I gave you?<br/>Well... Don't tell me you haven't received the assignment yet?<br/>It's been a long time since I sent it by an owl!"));
 			npc.Msg(L("Well, this assignment has no deadline,<br/>so you can take your time."));
@@ -380,9 +380,9 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 
 	public async Task Class1_3(NpcScript npc)
 	{
-		if (!npc.Player.Skills.Has(SkillId.Icebolt, SkillRank.Novice))
+		if (!npc.Player.HasSkill(SkillId.Icebolt, SkillRank.Novice))
 		{
-			npc.Player.Skills.Give(SkillId.Icebolt, SkillRank.Novice);
+			npc.Player.GiveSkill(SkillId.Icebolt, SkillRank.Novice);
 			npc.Player.Skills.Train(SkillId.Icebolt, SkillRank.Novice, 1);
 		}
 
@@ -552,9 +552,9 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 
 	public async Task Class2_3(NpcScript npc)
 	{
-		if (!npc.Player.Skills.Has(SkillId.Firebolt, SkillRank.Novice))
+		if (!npc.Player.HasSkill(SkillId.Firebolt, SkillRank.Novice))
 		{
-			npc.Player.Skills.Give(SkillId.Firebolt, SkillRank.Novice);
+			npc.Player.GiveSkill(SkillId.Firebolt, SkillRank.Novice);
 			npc.Player.Skills.Train(SkillId.Firebolt, SkillRank.Novice, 1);
 		}
 
@@ -752,7 +752,7 @@ public class SchoolMagicLassarQuestScript : GeneralScript
 		npc.Msg(L("You can start the assignment as soon as the owl delivers it.<br/>Check it immediately after receiving the assignment."));
 		npc.Msg(L("Now, then, I wish you good luck."));
 
-		npc.StartQuest(200029); // Basic Sorcery 3 Mission
+		npc.Player.StartQuest(200029); // Basic Sorcery 3 Mission
 	}
 }
 
@@ -779,9 +779,9 @@ public class BasicSorcery3MissionQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "obj2"))
+		if (npc.Player.QuestActive(this.Id, "obj2"))
 		{
-			npc.FinishQuest(this.Id, "obj2");
+			npc.Player.FinishQuestObjective(this.Id, "obj2");
 			npc.Msg(L("Ah, you are done with the sorcery assignment? I see you made it back in one piece."));
 			npc.Msg(L("<image local='true' name='magic_lightning'/>Okay then, after you complete this quest,<br/>check your Skill window and press the 'Learn' button.<br/>You will see the Lightningbolt spell."));
 			npc.Msg(L("If you paid attention in class<br/>you will easily know which part of the spell<br/>you need to practice."));

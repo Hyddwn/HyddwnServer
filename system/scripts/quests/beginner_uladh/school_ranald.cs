@@ -29,7 +29,7 @@ public class SchoolCombatRanaldQuestScript : GeneralScript
 		var remaintime = end - now.Hour;
 		var lastState = 10;
 
-		if (npc.QuestActiveUncompleted(200040) || npc.QuestActiveUncompleted(200041) || npc.QuestActiveUncompleted(200028))
+		if (npc.Player.QuestInProgress(200040) || npc.Player.QuestInProgress(200041) || npc.Player.QuestInProgress(200028))
 		{
 			npc.Msg(L("Are you working on the assignment I gave you?<br/>You can't proceed to the next class unless you complete the assignment first."));
 		}
@@ -256,7 +256,7 @@ public class SchoolCombatRanaldQuestScript : GeneralScript
 		npc.Msg(L("Anyone learning how to fight should first think about how to serve others.<br/>There's no way you can follow them one by one and stop them from doing stupid things,<br/>but you can help them by removing nails from those objects they hit.<br/>At least, they won't get hurt by them. Just hit the objects a few times and get the nails from them."));
 		npc.Msg(L("Get me 10 nails and you're done for the day.<br/>Cheating is not allowed. Nails from other people don't count.<br/>Get them on your own.<br/>Now, go!"));
 
-		npc.StartQuest(200040); // Basic Combat 1 Mission
+		npc.Player.StartQuest(200040); // Basic Combat 1 Mission
 	}
 
 	public async Task Class2_1(NpcScript npc)
@@ -291,7 +291,7 @@ public class SchoolCombatRanaldQuestScript : GeneralScript
 		npc.Msg(L("You may not agree that the Defense Rate is so critical in the beginning, but it will become more and more important for your survival."));
 		npc.Msg(L("<image name='whitespider'/>Here's the assignment for the class.<br/>Go to Alby Dungeon and defeat 5 spiders.<br/>Dismissed!"));
 
-		npc.StartQuest(200041); // Basic Combat 2 Mission
+		npc.Player.StartQuest(200041); // Basic Combat 2 Mission
 	}
 
 	public async Task Class3_1(NpcScript npc)
@@ -349,7 +349,7 @@ public class SchoolCombatRanaldQuestScript : GeneralScript
 		npc.Msg(L("All right, this is the end of Basic Combat.<br/>You've been a good student.<br/>Don't stop training. Become a great warrior."));
 		npc.Msg(L("When you're done with your homework, make sure you come back and let me know.<br/>I'll be all ears for your whining if you make it through Alby Dungeon, hahaha.<br/>"));
 
-		npc.StartQuest(200028); // Basic Combat 3 Mission
+		npc.Player.StartQuest(200028); // Basic Combat 3 Mission
 	}
 }
 
@@ -374,13 +374,13 @@ public class BasicCombat1MissionQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id))
+		if (npc.Player.QuestActive(this.Id))
 		{
-			if (npc.HasItem(52003, 10)) // Large Nail
+			if (npc.Player.HasItem(52003, 10)) // Large Nail
 			{
-				npc.FinishQuest(this.Id, "obj1");
-				npc.RemoveItem(52003, 10);
-				npc.Notice(L("You have given Large Nail to Ranald."));
+				npc.Player.FinishQuestObjective(this.Id, "obj1");
+				npc.Player.RemoveItem(52003, 10);
+				npc.Player.Notice(L("You have given Large Nail to Ranald."));
 				npc.Msg(L("Good job.<br/>Keep up the good work."));
 
 				return HookResult.Break;
@@ -414,9 +414,9 @@ public class BasicCombat2MissionQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "obj2"))
+		if (npc.Player.QuestActive(this.Id, "obj2"))
 		{
-			npc.FinishQuest(this.Id, "obj2");
+			npc.Player.FinishQuestObjective(this.Id, "obj2");
 			npc.Msg(L("Good job.<br/>Keep up the good work."));
 
 			return HookResult.Break;
@@ -450,9 +450,9 @@ public class BasicCombat3MissionQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "obj2"))
+		if (npc.Player.QuestActive(this.Id, "obj2"))
 		{
-			npc.FinishQuest(this.Id, "obj2");
+			npc.Player.FinishQuestObjective(this.Id, "obj2");
 			npc.Msg(L("Ah, did you complete the Alby Dungeon assignment?<br/>Good job!<br/>Keep on training.<br/>Okay, this is enough of the basic combat class for now."));
 
 			return HookResult.Break;

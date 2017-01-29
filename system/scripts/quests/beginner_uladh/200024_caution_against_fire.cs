@@ -29,9 +29,9 @@ public class CautionAgainstFireQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id))
+		if (!npc.Player.QuestActive(this.Id))
 			return HookResult.Continue;
-		npc.FinishQuest(this.Id, "talk");
+		npc.Player.FinishQuestObjective(this.Id, "talk");
 
 		npc.Msg("(Missing dialog: Advice about Campfire)");
 

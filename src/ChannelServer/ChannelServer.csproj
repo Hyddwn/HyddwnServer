@@ -179,6 +179,7 @@
     <Compile Include="Skills\Combat\CriticalHit.cs" />
     <Compile Include="Skills\Combat\Defense.cs" />
     <Compile Include="Skills\Combat\FinalHit.cs" />
+    <Compile Include="Skills\Magic\Fireball.cs" />
     <Compile Include="Skills\Combat\GlasGhaibhleannSkill.cs" />
     <Compile Include="Skills\Combat\ManaDeflector.cs" />
     <Compile Include="Skills\Combat\NaturalShield.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Skills\Combat\AdministrativePicking2.cs" />
     <Compile Include="Skills\Actions\DiceTossing.cs" />
     <Compile Include="Skills\Hidden\HiddenGuildStoneSetting.cs" />
+    <Compile Include="Skills\Hidden\EnchantElementalAllSlot.cs" />
     <Compile Include="Skills\Magic\Enchant.cs" />
     <Compile Include="Skills\Hidden\HiddenResurrection.cs" />
     <Compile Include="Skills\Hidden\HiddenTownBack.cs" />

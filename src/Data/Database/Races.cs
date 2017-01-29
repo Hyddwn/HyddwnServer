@@ -126,13 +126,16 @@ namespace Aura.Data.Database
 		public int? FoodQuality { get; set; }
 		public int? FormId { get; set; }
 		public float? Scale { get; set; }
+		public string MetaData1 { get; set; }
+		public string MetaData2 { get; set; }
+		public string Feature { get; set; }
 
 		public DropData()
 		{
 			this.Durability = -1;
 		}
 
-		public DropData(int itemId, float chance, int amount = 0, int amountMin = 0, int amountMax = 0, uint? color1 = null, uint? color2 = null, uint? color3 = null, int prefix = 0, int suffix = 0, int expires = 0, int durability = -1, int? foodQuality = null, int? formId = null, float? scale = null)
+		public DropData(int itemId, float chance, int amount = 0, int amountMin = 0, int amountMax = 0, uint? color1 = null, uint? color2 = null, uint? color3 = null, int prefix = 0, int suffix = 0, int expires = 0, int durability = -1, int? foodQuality = null, int? formId = null, float? scale = null, string metaData1 = null, string metaData2 = null)
 		{
 			if (amount != 0)
 				amountMin = amountMax = amount;
@@ -173,6 +176,10 @@ namespace Aura.Data.Database
 			result.Durability = this.Durability;
 			result.FoodQuality = this.FoodQuality;
 			result.FormId = this.FormId;
+			result.Scale = this.Scale;
+			result.MetaData1 = this.MetaData1;
+			result.MetaData2 = this.MetaData2;
+			result.Feature = this.Feature;
 
 			return result;
 		}
@@ -408,11 +415,6 @@ namespace Aura.Data.Database
 				{
 					drop.AssertNotMissing("itemId", "chance");
 
-					// Check feature
-					var feature = drop.ReadString("feature");
-					if (!string.IsNullOrWhiteSpace(feature) && !AuraData.FeaturesDb.IsEnabled(feature))
-						continue;
-
 					var dropData = new DropData();
 					dropData.ItemId = drop.ReadInt("itemId");
 					dropData.Chance = drop.ReadFloat("chance");
@@ -421,6 +423,7 @@ namespace Aura.Data.Database
 					dropData.AmountMax = drop.ReadInt("amountMax");
 					dropData.Prefix = drop.ReadInt("prefix");
 					dropData.Suffix = drop.ReadInt("suffix");
+					dropData.Feature = drop.ReadString("feature");
 
 					if (amount != 0)
 						dropData.AmountMin = dropData.AmountMax = amount;
@@ -441,6 +444,8 @@ namespace Aura.Data.Database
 					if (drop.ContainsKey("foodQuality")) dropData.FoodQuality = drop.ReadInt("foodQuality");
 					if (drop.ContainsKey("formId")) dropData.FormId = drop.ReadInt("formId");
 					if (drop.ContainsKey("scale")) dropData.Scale = drop.ReadFloat("scale");
+					if (drop.ContainsKey("metaData1")) dropData.MetaData1 = drop.ReadString("metaData1");
+					if (drop.ContainsKey("metaData2")) dropData.MetaData2 = drop.ReadString("metaData2");
 
 					raceData.Drops.Add(dropData);
 				}

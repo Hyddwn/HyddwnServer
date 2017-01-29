@@ -24,11 +24,11 @@ public class GiantSpiderRPDungeonScript : DungeonScript
 		{
 			var creature = cutscene.Leader.GetActualCreature();
 
-			if (!creature.Keywords.Has("RP_Monster_GiantSpider_complete"))
+			if (!creature.HasKeyword("RP_Monster_GiantSpider_complete"))
 			{
-				creature.Keywords.Remove("RP_Monster_GiantSpider_start");
-				creature.Keywords.Give("RP_Monster_GiantSpider_complete");
-				creature.Keywords.Give("RP_Monster_GiantSpider_Born");
+				creature.RemoveKeyword("RP_Monster_GiantSpider_start");
+				creature.GiveKeyword("RP_Monster_GiantSpider_complete");
+				creature.GiveKeyword("RP_Monster_GiantSpider_Born");
 			}
 
 			dungeon.RemoveAllPlayers();

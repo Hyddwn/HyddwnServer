@@ -132,6 +132,9 @@
 		
 		// Enabled Scary Library dungeon
 		{ name: "ScaryLibrary", enabled: true },
+	
+		// Enables Rundal Siren dungeon
+		{ name: "RundalSirenDungeon", enabled: true },
 	]},
 	
 	// Season 4
@@ -365,6 +368,9 @@
 		// Enables obtaining Animal Training skill
 		{ name: "AnimalTraining", enabled: true },
 		
+		// Enables obtaining Metallurgy skill
+		{ name: "Metallurgy", enabled: true },
+		
 		// Enables NPCs going into deadly
 		{ name: "DeadlyNPCs", enabled: true },
 		
@@ -450,6 +456,9 @@
 		
 		// Enables farming near Taillteann
 		{ name: "Farming", enabled: true },
+		
+		// Enables Nekojima island
+		{ name: "Nekojima", enabled: true },
 	]},
 	
 	// Season 3
@@ -535,6 +544,9 @@
 		
 		// Makes sheep protection quest easier. (Part of gfC4Tutorial)
 		{ name: "ShortSheepProtection", enabled: true },
+		
+		// Enables artisan upgrades
+		{ name: "ArtisanUpgrade", enabled: true },
 	]},
 	
 	// Season 2
@@ -739,4 +751,5 @@
 { name: "TwinSword", enabled: true },
 { name: "CombatSystemRenewal", enabled: true },
 { name: "TalentRenovationCloseCombat", enabled: true },
+{ name: "Handicraft", enabled: true },
 ]

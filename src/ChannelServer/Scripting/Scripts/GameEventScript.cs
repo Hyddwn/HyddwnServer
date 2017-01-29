@@ -220,6 +220,16 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds global drop by region.
+		/// </summary>
+		/// <param name="regionId"></param>
+		/// <param name="data"></param>
+		protected void AddGlobalDropByRegion(int regionId, DropData data)
+		{
+			ChannelServer.Instance.GameEventManager.GlobalBonuses.AddDrop(this.Id, new GlobalDropByRegion(this.Id, regionId, data));
+		}
+
+		/// <summary>
 		/// Removes all global drops associated with this event.
 		/// </summary>
 		protected void RemoveGlobalDrops()

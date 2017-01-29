@@ -55,6 +55,7 @@
     <Compile Include="DatabaseJson.cs" />
     <Compile Include="Database\Actors.cs" />
     <Compile Include="Database\AncientDrops.cs" />
+    <Compile Include="Database\ArtisanUpgrades.cs" />
     <Compile Include="Database\Chairs.cs" />
     <Compile Include="Database\CharacterStyles.cs" />
     <Compile Include="Database\CharCards.cs" />

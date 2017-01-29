@@ -29,10 +29,10 @@ public class HarvestPotatoQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk") && npc.HasItem(50010, 5))
+		if (npc.Player.QuestActive(this.Id, "talk") && npc.Player.HasItem(50010, 5))
 		{
-			npc.FinishQuest(this.Id, "talk");
-			npc.RemoveItem(50010, 5); // Potatoes
+			npc.Player.FinishQuestObjective(this.Id, "talk");
+			npc.Player.RemoveItem(50010, 5); // Potatoes
 			npc.Msg("(Missing dialog: Harvest Potato)");
 
 			return HookResult.Break;

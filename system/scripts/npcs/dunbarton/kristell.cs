@@ -42,17 +42,17 @@ public class KristellScript : NpcScript
 		switch (await Select())
 		{
 			case "@talk":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...I see... You have succeeded, <username/>.");
 					Msg("Thank you for keeping your promise.");
 					Msg("I wonder... if Tarlach can<br/>finally be at peace...?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Guardian of Erinn... There's nothing wrong with someone like you<br/>being called that, <username/>.<br/>Thank you... For saving Erinn...");
 				}
@@ -73,7 +73,7 @@ public class KristellScript : NpcScript
 	{
 		if (Memory <= 0)
 		{
-			GiveKeyword("temple");
+			Player.GiveKeyword("temple");
 			Msg(FavorExpression(), L("I am Priestess <npcname/>. Nice to meet you."));
 		}
 		else if (Memory == 1)
@@ -108,26 +108,26 @@ public class KristellScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("temple");
+					Player.GiveKeyword("temple");
 					Msg(FavorExpression(), "I am the priestess at this Church.<br/>Have you ever heard about Lord Lymilark's deep love and compassion towards humans?<br/>You probably have.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg(FavorExpression(), "You can satisfy the hunger of the soul at the Church.<br/>For the hunger of the body, you should visit the Restaurant.<br/>Glenis' Restaurant is popular around here,<br/>so you should be able to find it easily.");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "shop_misc":
-				GiveKeyword("musicsheet");
+				Player.GiveKeyword("musicsheet");
 				Msg("Looking for the General Shop?<br/>The General Shop is down this way.<br/>Go down to the Square from here<br/>and look for Walter.");
 				Msg("It might be useful for you to know that<br/>the General Shop also carries music scores and instruments.");
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("A grocery store? We usually buy our ingredients at the Restaurant.<br/>Did you get on Glenis' bad side or something?");
 				Msg("If not,<br/>why don't you just go there for the ingredients?");
 				break;
@@ -148,7 +148,7 @@ public class KristellScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("It's the first time I've heard anyone asking about a blacksmith's shop in this town.<br/>If you are looking for weapons or armor,<br/>why don't you stop by Nerys' Weapons Shop?");
 				break;
 
@@ -164,12 +164,12 @@ public class KristellScript : NpcScript
 				break;
 
 			case "skill_composing":
-				GiveKeyword("musicsheet");
+				Player.GiveKeyword("musicsheet");
 				Msg("I have enough trouble simply reading the score and playing.<br/>Only those who are blessed can do such amazing things.");
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_cloth");
+				Player.GiveKeyword("shop_cloth");
 				Msg("Why don't you go ask Simon at the Clothing Shop?<br/>I have yet to see someone<br/>who is as skilled as Simon.");
 				break;
 
@@ -241,13 +241,13 @@ public class KristellScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("You can purchase a bow at<br/>Nerys' Weapons Shop.<br/>But please don't go around shooting<br/>innocent animals or do other mean things.");
 				Msg("A while ago, Manus the healer told me that he was having a difficult time with it.<br/>Please, I beg you...");
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("If you are looking for a lute,<br/>you will be able to buy it at the General Shop.");
 				Msg("By the way, it has been a while since Walter last attended church...");
 				Msg("And I'm worried that he may be concerned with something these days.");

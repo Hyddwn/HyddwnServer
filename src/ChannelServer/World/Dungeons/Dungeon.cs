@@ -635,7 +635,7 @@ namespace Aura.Channel.World.Dungeons
 				pos = pos.GetRandomInRange(TileSize / 2, rnd);
 
 				var npc = new NPC(raceId);
-				npc.Finish += this.OnBossDeath;
+				npc.Death += this.OnBossDeath;
 				npc.Spawn(regionId, pos.X, pos.Y);
 				Send.SpawnEffect(SpawnEffect.Monster, regionId, pos.X, pos.Y, npc, npc);
 				if (npc.AI != null)

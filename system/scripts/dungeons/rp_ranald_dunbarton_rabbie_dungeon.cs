@@ -30,7 +30,7 @@ public class RanaldRPDungeonScript : DungeonScript
 		{
 			var creature = cutscene.Leader.GetActualCreature();
 
-			creature.Keywords.Give("RP_Ranald_Complete");
+			creature.GiveKeyword("RP_Ranald_Complete");
 
 			dungeon.RemoveAllPlayers();
 		});

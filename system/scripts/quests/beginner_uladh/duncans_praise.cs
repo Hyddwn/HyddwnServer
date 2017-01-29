@@ -44,9 +44,9 @@ public abstract class DuncansPraiseQuestScript : QuestScript
 
 	public async Task<HookResult> TalkDuncan(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "talk_duncan"))
+		if (!npc.Player.QuestActive(this.Id, "talk_duncan"))
 			return HookResult.Continue;
-		npc.FinishQuest(this.Id, "talk_duncan");
+		npc.Player.FinishQuestObjective(this.Id, "talk_duncan");
 
 		// Unofficial
 		npc.Msg("Hello <username/>.<br/>I heard you worked hard and made a difference helping the town residents.<br/>Why don't you pay " + FriendName + " a visit?<br/>I think you could become good friends.");
@@ -56,11 +56,11 @@ public abstract class DuncansPraiseQuestScript : QuestScript
 
 	public async Task<HookResult> TalkFriend(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "talk_friend"))
+		if (!npc.Player.QuestActive(this.Id, "talk_friend"))
 			return HookResult.Continue;
-		npc.FinishQuest(this.Id, "talk_friend");
+		npc.Player.FinishQuestObjective(this.Id, "talk_friend");
 
-		npc.Player.Titles.Enable(FriendTitle); // is a friend of ...
+		npc.Player.EnableTitle(FriendTitle); // is a friend of ...
 		await FriendDialog(npc);
 
 		return HookResult.Break;

@@ -61,7 +61,7 @@ public class GlenisPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -97,19 +97,19 @@ public class GlenisPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Well, you seem to be involved in another part-time job right now.<br/>Is that right?"));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("My, someone's in a hurry.<br/>It's not the deadline yet, so why don't you come back later?<p/>Now, I'll see you back here by the deadline."));
@@ -133,7 +133,7 @@ public class GlenisPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("You know what? It's ok.<br/>If you didn't do your work, I won't need to pay you. Simple as that."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -155,7 +155,7 @@ public class GlenisPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -179,24 +179,24 @@ public class GlenisPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("Are you here for work?<br/>Sorry, but it's not business hours yet."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("Didn't you just work here?<br/>You have to take care of yourself. Don't overwork yourself."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("Are you looking for work?<br/>You don't seem to have any experience in this line of work. Are you sure you can handle it?<br/>Well, why don't you get started on this now?<br/>Any type of work is difficult at first, but you get used to it as you gain more experience, you see.<p/>Well, how about it?");
 		else
 			msg = L("Are you looking for work?");//<br/>You can get a seed for your Homestead.");
@@ -204,20 +204,20 @@ public class GlenisPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Glenis's Grocery Store Part-Time Job"),
 			L("Looking for help with delivering goods to Grocery Store."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Yes, yes. Good idea.<br/>Now, I'll see you by the deadline.<br/>Even if you don't finish everything, at least come file a report."));
 			else
 				npc.Msg(L("I'll be waiting for you."));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Ha ha. You don't have to get so intimidated.<br/>All right. Come by next time."));
 			else
 				npc.Msg(L("If today's not a good day, I'm sure we'll do this some other time."));
@@ -408,13 +408,13 @@ public abstract class GlenisDeliveryPtjBaseScript : QuestScript
 
 	public virtual async Task<HookResult> ClientAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj1");
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		npc.Player.RemoveItem(ItemId, 1);
-		npc.Notice(LItemNotice);
+		npc.Player.Notice(LItemNotice);
 
 		AfterIntroDialogue(npc);
 
@@ -725,10 +725,10 @@ public abstract class GlenisExtDeliveryAeiraStewartPtjBaseScript : GlenisDeliver
 
 	public override async Task<HookResult> ClientAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj1");
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		AfterIntroDialogue(npc);
 
@@ -751,13 +751,13 @@ public abstract class GlenisExtDeliveryAeiraStewartPtjBaseScript : GlenisDeliver
 
 	private async Task<HookResult> RecipientAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj2"))
+		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj2");
+		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 		npc.Player.RemoveItem(ItemId, 1);
-		npc.Notice(LItemNotice);
+		npc.Player.Notice(LItemNotice);
 
 		npc.Msg(L("Whose bread is that?<br/>Ah Aeira's, is it?<br/>It looks very appetizing. Thank you very much for bringing this."));
 		npc.Msg(Hide.Name, L("(Delivered a Fresh-baked Bread to Stewart.)"));
@@ -814,13 +814,13 @@ public abstract class GlenisExtDeliveryAranwenStewartPtjBaseScript : GlenisDeliv
 
 	private async Task<HookResult> RecipientAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj2"))
+		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj2");
+		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 		npc.Player.RemoveItem(ItemId, 1);
-		npc.Notice(L("You have given Fresh-baked Bread to be Delivered to Stewart."));
+		npc.Player.Notice(L("You have given Fresh-baked Bread to be Delivered to Stewart."));
 
 		npc.Msg(L("Bread from Glenis?<br/>Thank you very much."));
 		npc.Msg(Hide.Name, L("(Delivered a Fresh-baked Bread to Stewart.)"));

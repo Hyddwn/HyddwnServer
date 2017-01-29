@@ -13,7 +13,7 @@ public class AerScript : NpcScript
 		SetName("_aer");
 		SetBody(height: 1.3f, lower: 1.2f);
 		SetLocation(68, 5599, 8550, 192);
-		SetGiftWeights(beauty: 2, individuality: 0, luxury: 2, toughness: 0, utility: 0, rarity: 0, meaning: 2, adult: 1, maniac: 0, anime: 0, sexy: 2);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
 		AddPhrase("I hear the water's grieving...");
 		AddPhrase("How do I look...?");
@@ -34,7 +34,7 @@ public class AerScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("...The story about you, <username/>,<br/>has already spread throughout the world of the spirits...");
 					Msg("...Your courage of how you<br/>risked your life to save the world...");
@@ -128,10 +128,10 @@ public class AerScript : NpcScript
 
 	protected override async Task Gift(Item item, GiftReaction reaction)
 	{
-		if (IsEnabled("RundalDungeon") && item.Info.Id == 63103) // Suspicious Fomor Pass
+		if (IsEnabled("RundalSirenDungeon") && item.Info.Id == 63103) // Suspicious Fomor Pass
 		{
-			GiveItem(63102);
-			SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));
+			Player.GiveItem(63102);
+			Player.SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));
 
 			if (Player.Vars.Perm["rundalSirenClear"] == null)
 			{

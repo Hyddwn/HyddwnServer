@@ -32,13 +32,13 @@ public class BigOrderIronIngotsQuestScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "deliver1"))
+		if (!npc.Player.QuestActive(this.Id, "deliver1"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(64001, 30))
+		if (!npc.Player.HasItem(64001, 30))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "deliver1");
+		npc.Player.FinishQuestObjective(this.Id, "deliver1");
 
 		npc.Player.RemoveItem(64001, 30);
 

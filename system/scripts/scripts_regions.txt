@@ -17,5 +17,6 @@ regions/osna_snail.cs
 regions/emain.cs
 regions/ceo.cs
 regions/crossroad.cs
+regions/nekojima.cs
 
 include "/user/scripts/scripts_regions.txt"

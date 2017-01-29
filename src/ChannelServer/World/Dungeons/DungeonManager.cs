@@ -255,14 +255,26 @@ namespace Aura.Channel.World.Dungeons
 				return false;
 			}
 
-			var parameter = clientEvent.Data.Parameters.FirstOrDefault(a => a.EventType == EventType.Altar);
-			if (parameter == null || parameter.XML == null || parameter.XML.Attribute("dungeonname") == null)
-			{
-				Log.Warning("DungeonManager.CheckDrop: No dungeon name found in altar event '{0:X16}'.", clientEvent.EntityId);
-				return false;
-			}
+			// Get dungeon name
+			string dungeonName;
 
-			var dungeonName = parameter.XML.Attribute("dungeonname").Value.ToLower();
+			// Hack for Nekojima, since it doesn't have the proper
+			// attributes
+			if (clientEvent.Data.Name == "nekojima_altar_eventbox")
+			{
+				dungeonName = "JG_Neko_Dungeon".ToLower();
+			}
+			else
+			{
+				var parameter = clientEvent.Data.Parameters.FirstOrDefault(a => a.EventType == EventType.Altar);
+				if (parameter == null || parameter.XML == null || parameter.XML.Attribute("dungeonname") == null)
+				{
+					Log.Warning("DungeonManager.CheckDrop: No dungeon name found in altar event '{0:X16}'.", clientEvent.EntityId);
+					return false;
+				}
+
+				dungeonName = parameter.XML.Attribute("dungeonname").Value.ToLower();
+			}
 
 			// Check script
 			var dungeonScript = ChannelServer.Instance.ScriptManager.DungeonScripts.Get(dungeonName);

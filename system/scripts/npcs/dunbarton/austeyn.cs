@@ -49,7 +49,7 @@ public class AusteynScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Hmm... Welcome.<br/>Your title says you've rescued the Goddess.");
 					Msg("That's a great title, but...");
@@ -57,7 +57,7 @@ public class AusteynScript : NpcScript
 					Msg("Well, I hear a lot of people are forging titles these days...");
 					Msg("Ah, no, I don't mean you...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Oh wow, you're the one who saved Erinn?<br/>While you're at it,<br/>can you take care of the economic state of Dunbarton as well? Hehe...");
 				}
@@ -70,7 +70,7 @@ public class AusteynScript : NpcScript
 				var input = await Select();
 
 				if (input == "@cancel")
-					return;
+					break;
 
 				if (!RedeemCoupon(input))
 				{
@@ -139,7 +139,7 @@ public class AusteynScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("shop_bank");
+					Player.GiveKeyword("shop_bank");
 					RndFavorMsg(
 						"That's right. I am <npcname/>, the manager of this Dunbarton branch of the Erskin Bank. Nice to meet you.",
 						"Welcome to Erskin Bank, the Dunbarton branch.<br/>I am the manager, Austeyn. Ahem."
@@ -181,7 +181,7 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("A grocery store?<br/>Just go to the Restaurant and ask for food.<br/>Hahaha.");
 				break;
 
@@ -199,7 +199,7 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_bookstore");
+				Player.GiveKeyword("shop_bookstore");
 				Msg("The Blacksmith's Shop?");
 				Msg("Do you know what a blacksmith's shop is by any chance?<br/>I happened to buy an expensive encyclopedia<br/>at the Bookstore over there the other day, and let's see...");
 				Msg("A blacksmith's shop is<br/>'...It's a place with bellows that treats pig iron...'<br/>That's what it says here.");
@@ -208,7 +208,7 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "skill_instrument":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("I thought I heard someone say that<br/>you can learn that skill once you buy an instrument.<br/>Have you tried it before?");
 				Msg("The General Shop happens to be next door.<br/>If you really want to learn it, do as I told you.");
 				break;
@@ -226,13 +226,13 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "skill_counter_attack":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("...<br/>Hmm... Did you get on Aranwen's bad side in class?");
 				Msg("Why else would you ask a banker for such things<br/>when there is a combat instructor in town?");
 				break;
 
 			case "skill_smash":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("It's probably better to ask Aranwen at school.<br/>Don't tell me you are too lazy for that.");
 				break;
 
@@ -265,7 +265,7 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "skill_windmill":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Ha ha.<br/>If you want combat skills,<br/>talking to the martial arts instructor at the School<br/>is your best bet.");
 				break;
 
@@ -297,13 +297,13 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("A bow? What makes you think that there's a bow at a Bank?<br/>Well, there ARE some bows locked away here,<br/>but it's not like I can take them out and give them to you, you know?");
 				Msg("Of course, it's a different story if you deposited one yourself...<br/>If anything, I'd say go see Nerys to buy one.");
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("A Lute is a simple instrument to build, but<br/>it somehow feels a bit shabby compared to a ukulele or a mandolin...<br/>You get what you pay for, I suppose.");
 				Msg("Mandolin is for men! Definitely more manly than a Lute!<br/>Hmmm... If you think you need a Lute, try the General Shop.<br/>Walter should have some at cheap prices.");
 				break;
@@ -320,7 +320,7 @@ public class AusteynScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Walter at the General Shop<br/>carries Musical Scores.<br/>Buy lots from him, would you?");
 				break;
 

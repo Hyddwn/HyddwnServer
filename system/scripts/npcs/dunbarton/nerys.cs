@@ -48,12 +48,12 @@ public class NerysScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("<username/>, I'm only telling you this for your own good.<br/>If you're the warrior who saved the Goddess...<br/>You should really put a little more care to your equipment.<br/>I mean, it's not too bad right now, but...");
 					Msg("Look. I'll give you a good price. Why don't you look around?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("...Guardian of Erinn...?<br/>Well, as long as you didn't break anything, I guess that's a good thing.<br/>Anyway, good job.");
 				}
@@ -139,7 +139,7 @@ public class NerysScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("Hmm? You're a part-time worker at our shop, right?<br/>Is the work going alright?"));
 		}
@@ -174,13 +174,13 @@ public class NerysScript : NpcScript
 			case "personal_info":
 				if (Memory == 1)
 				{
-					GiveKeyword("shop_armory");
+					Player.GiveKeyword("shop_armory");
 					Msg(FavorExpression(), "I'm <npcname/>, the owner of this Weapons Shop. Nice to meet you.");
 					ModifyRelation(1, 0, 0);
 				}
 				else
 				{
-					GiveKeyword("shop_armory");
+					Player.GiveKeyword("shop_armory");
 					Msg(FavorExpression(), "Aren't you here to buy weapons?<br/>Well, I guess having a chat buddy doesn't hurt.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
@@ -235,12 +235,12 @@ public class NerysScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("Hmm... This town doesn't have a Blacksmith's Shop.<br/>But we do simple repairs here<br/>so you can leave your items with me.");
 				break;
 
 			case "skill_range":
-				GiveKeyword("bow");
+				Player.GiveKeyword("bow");
 				Msg("There is a variety of long range attacks.<br/>You can use a bow,<br/>cast a spell,<br/>or throw spears.");
 				Msg("So, is that what you're into?<br/>Why don't you buy a bow for now?");
 				break;
@@ -258,13 +258,13 @@ public class NerysScript : NpcScript
 				break;
 
 			case "skill_magnum_shot":
-				GiveKeyword("bow");
+				Player.GiveKeyword("bow");
 				Msg("Don't you think you need to use the bow a little first?");
 				break;
 
 			case "skill_counter_attack":
 			case "skill_smash":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Aranwen should know skills like that.<br/>She's rather irritable, though, so I'm not sure if she'll teach you.<br/>Anyhow, go see her at the School.");
 				break;
 
@@ -305,7 +305,7 @@ public class NerysScript : NpcScript
 				break;
 
 			case "shop_cloth":
-				GiveKeyword("shop_bank");
+				Player.GiveKeyword("shop_bank");
 				Msg("It's between the Bank and the General Shop.<br/>There are some pretty decent clothes there, so stop by.");
 				break;
 

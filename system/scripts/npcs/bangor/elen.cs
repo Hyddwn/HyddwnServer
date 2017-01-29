@@ -50,12 +50,12 @@ public class ElenScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Hmm...<br/>Don't you think your equipment is kind of shabby for someone with a title like yours?");
 					Msg("You can find good merchandise in our Blacksmith's Shop, if you're interested. Why not check it out?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Oh my. You're the Guardian, right?<br/>...I'm not trying to tease you, I'm serious!");
 				}
@@ -143,7 +143,7 @@ public class ElenScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("What is it?<br/>Are you doing the work at the shop?"));
 		}
@@ -235,7 +235,7 @@ public class ElenScript : NpcScript
 				break;
 
 			case "skill_magnum_shot":
-				GiveKeyword("bow");
+				Player.GiveKeyword("bow");
 				Msg("Did you know?<br/>Magnum Shot is powerful,<br/>but it becomes even more powerful if you use a better bow.");
 				Msg("If you want to see for yourself, try it with a few bows.<br/>It would help our business too... What do you say?");
 				break;
@@ -305,7 +305,7 @@ public class ElenScript : NpcScript
 				break;
 
 			case "shop_bookstore":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Looking for books?<br/>I don't know... At the General Shop, perhaps?");
 				break;
 

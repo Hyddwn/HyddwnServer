@@ -36,12 +36,12 @@ public class GoroScript : NpcScript
 			case "@talk":
 				Greet();
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...Did you finally succeed?<br/>That's incredible. Haha.");
 					Msg("But... Honestly, I believe all this is just the beginning.<br/>Puhahahaha...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("The power of humans is truly amazing...<br/>You're already strong enough to protect Erinn...");
 					Msg("...<npcname/> is quite curious<br/>where humans<br/>get such strength...");

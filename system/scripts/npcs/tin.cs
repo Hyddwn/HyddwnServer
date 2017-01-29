@@ -66,7 +66,7 @@ public class TinScript : NpcScript
 			}
 			UpdateRelationAfterGreet();
 
-			if (Title == 11002)
+			if (Player.IsUsingTitle(11002))
 			{
 				Msg("Well done. <username/>.<br/>But you know what? This isn't the<br/>end of the Fomors.");
 				Msg("...Cichol and Dark Lord is still alive,<br/>and besides the fact that the goddess statue has been restored,<br/>much hasn't really changed...");
@@ -79,7 +79,7 @@ public class TinScript : NpcScript
 
 			// Check CreatureStates.FreeRebirth?
 
-			if (!HasKeyword("tutorial_present") && !IsEnabled("NoRebirthPresent"))
+			if (!Player.HasKeyword("tutorial_present") && !IsEnabled("NoRebirthPresent"))
 			{
 				Msg("Hmmm... How about I give you a present since you've been reborn and all.<br/>This is a Dye you can use to dye your clothes, but unlike regular Dye, the color is already set.<br/>I'll show you ten different colors in order, so choose the one that you'd like to keep.<br/>If you don't pick one while I'm showing it to you, I won't be able to give it to you, so be sure to pick one.");
 
@@ -98,10 +98,10 @@ public class TinScript : NpcScript
 					// color is selected, without any chances to cheat.
 					if (i < max)
 					{
-						if (HasKeyword("Tin_ColorAmpul_" + i))
+						if (Player.HasKeyword("Tin_ColorAmpul_" + i))
 							continue;
 
-						GiveKeyword("Tin_ColorAmpul_" + i);
+						Player.GiveKeyword("Tin_ColorAmpul_" + i);
 					}
 
 					// Completely random color
@@ -135,7 +135,7 @@ public class TinScript : NpcScript
 
 				// Give dye
 				Player.AcquireItem(Item.Create(itemId, color1: color));
-				GiveKeyword("tutorial_present");
+				Player.GiveKeyword("tutorial_present");
 
 				Msg("I'll give you a useful book here.<br/>You know how Nao keeps giving you all sorts of rare accessories?<br/>Well, try collecting all those things in this book.");
 			}
@@ -156,7 +156,7 @@ public class TinScript : NpcScript
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("Are you off to Tir Chonaill?<br/>I suppose you'll be meeting Duncan first, right?<br/>Keep walking towards the opposite end of where I am standing, and that should lead you to Tir Chonaill.");
 				Msg("I created this temporary path.<br/>Shall I say, an invisible path to another world?");
 				Msg("Make sure to have everything ready when you head there, because once you are out of here, you can never come back.<br/>And don't waste your time trying to find this path later because I made it for my own personal use only.");

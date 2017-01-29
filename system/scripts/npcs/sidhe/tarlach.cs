@@ -66,14 +66,14 @@ public class TarlachScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...You successfully rescued the Goddess from Cichol...");
 					Msg("Even though the Goddess is guarding the passage to that world<br/>and couldn't make her descent to this world...");
 					Msg("...I think you are a true hero nonetheless.<br/>Although nothing has changed<br/>I have a newfound faith...");
 					Msg("Faith that the Goddess is protecting us...<br/>and that one day Tir Na Nog will come here in this place...");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("...You've accomplished what<br/>Mari, Ruairi and myself could not do....<br/>...Thank you.");
 					Msg("......");
@@ -257,7 +257,7 @@ public class TarlachScript : NpcScript
 				break;
 
 			case "tir_na_nog":
-				if (HasKeyword("g3_complete"))
+				if (Player.HasKeyword("g3_complete"))
 				{
 					Msg("...I didn't know Erinn was Tir Na Nog...");
 					Msg("So... when Goddess Morrighan said...<br/>Tir Na Nog might be destroyed...<br/>She was really talking about Erinn.");
@@ -296,7 +296,7 @@ public class TarlachScript : NpcScript
 				break;*/
 
 			case "nao_friend":
-				if (HasKeyword("g3_complete"))
+				if (Player.HasKeyword("g3_complete"))
 					Msg("Mari... I mean, Nao... said that...?<br/>......<br/>...Okay... ");
 				else
 					Msg("...Who's Nao?<br/>That's the first time I've heard of that name.");

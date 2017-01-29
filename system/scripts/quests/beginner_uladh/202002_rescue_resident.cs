@@ -24,22 +24,22 @@ public class RescueResidentQuestScript : QuestScript
 		AddObjective("talk_trefor2", "Talk with Trefor", 1, 8692, 52637, Talk("trefor"));
 		AddObjective("clear_alby", "Rescue a town resident from Alby Dungeon", 13, 3200, 3200, GetKeyword("Clear_Tutorial_Alby_Dungeon"));
 		AddObjective("talk_trefor3", "Talk with Trefor", 1, 8692, 52637, Talk("trefor"));
-		
+
 		AddReward(Exp(300));
 		AddReward(Gold(1800));
 		AddReward(AP(3));
-		
+
 		AddHook("_trefor", "after_intro", TalkTrefor);
 	}
-	
+
 	public async Task<HookResult> TalkTrefor(NpcScript npc, params object[] args)
 	{
-		if(npc.QuestActive(this.Id, "talk_trefor"))
+		if (npc.Player.QuestActive(this.Id, "talk_trefor"))
 		{
-			npc.FinishQuest(this.Id, "talk_trefor");
-			
-			npc.Player.Skills.Give(SkillId.Smash, SkillRank.Novice);
-			
+			npc.Player.FinishQuestObjective(this.Id, "talk_trefor");
+
+			npc.Player.GiveSkill(SkillId.Smash, SkillRank.Novice);
+
 			npc.Msg("Welcome, I am Trefor, the guard.<br/>Someone from the town went into Alby Dungeon a while ago, but hasn't returned yet.<br/>I wish I could go there myself, but I can't leave my post. I'd really appreciate it if you can go and look for in Alby Dungeon.");
 			npc.Msg("Since the dungeon is a dangerous place to be in, I'll teach you a skill that will help you in an emergency situation.<br/>It's called the Smash skill. If you use it, you can knock down a monster with a single blow!<br/>It is also highly effective when you sneak up on a target and deliver the blow without warning.");
 			npc.Msg("Against monsters that are using the Defense skill,<br/>Smash will be the only way to penetrate that skill and deliver a killer blow.");
@@ -49,32 +49,41 @@ public class RescueResidentQuestScript : QuestScript
 			npc.Close2();
 
 			Cutscene.Play("tuto_smash", npc.Player);
-			
+
 			return HookResult.End;
 		}
-		else if(npc.QuestActive(this.Id, "talk_trefor2"))
+		else if (npc.Player.QuestActive(this.Id, "talk_trefor2"))
 		{
-			npc.FinishQuest(this.Id, "talk_trefor2");
-			
+			npc.Player.FinishQuestObjective(this.Id, "talk_trefor2");
+
 			npc.Msg("Good, I see that you're getting the hang of it.<br/>Well, I was able to do that when I was 8, but whatever...<br/>It is now time for you to go and search for the missing Villager.");
 			npc.Msg("Follow the road up and turn right and you'll find the Alby Dungeon.<br/>You can enter the dungeon by dropping this item on the altar.<br/>If you either lose it or fail to rescue her, come back to me so I can give you another one. Please be careful.", npc.Image("dungeonpass", 128, 128));
 
-			npc.GiveItem(63180, 1);
-			
+			npc.Player.GiveItem(63180, 1);
+
 			return HookResult.Break;
 		}
-		else if(npc.QuestActive(this.Id, "talk_trefor3"))
+		else if (npc.Player.QuestActive(this.Id, "clear_alby"))
 		{
-			npc.FinishQuest(this.Id, "talk_trefor3");
-			
-			npc.Msg("You did it! Good job.<br/>Good thing I asked for your help.<br/>For your great work, I will now teach you how to properly use the Smash skill.<br/>If you open your Skill window and press the 'LEARN' button, you will be able to use a more powerful Smash skill.<br/>I can always use some help here, so drop by often, okay?");
-			
-			if(npc.Player.Skills.Is(SkillId.Smash, SkillRank.Novice))
-				npc.Player.Skills.Train(SkillId.Smash, 1);
-			
+			npc.Msg("Follow the road up and turn right and you'll find the Alby Dungeon.<br/>You can enter the dungeon by dropping this item on the altar.<br/>If you either lose it or fail to rescue her, come back to me so I can give you another one. Please be careful.", npc.Image("dungeonpass", 128, 128));
+
+			if (!npc.Player.HasItem(63180))
+				npc.Player.GiveItem(63180, 1);
+
 			return HookResult.Break;
 		}
-		
+		else if (npc.Player.QuestActive(this.Id, "talk_trefor3"))
+		{
+			npc.Player.FinishQuestObjective(this.Id, "talk_trefor3");
+
+			npc.Msg("You did it! Good job.<br/>Good thing I asked for your help.<br/>For your great work, I will now teach you how to properly use the Smash skill.<br/>If you open your Skill window and press the 'LEARN' button, you will be able to use a more powerful Smash skill.<br/>I can always use some help here, so drop by often, okay?");
+
+			if (npc.Player.Skills.Is(SkillId.Smash, SkillRank.Novice))
+				npc.Player.Skills.Train(SkillId.Smash, 1);
+
+			return HookResult.Break;
+		}
+
 		return HookResult.Continue;
 	}
 }

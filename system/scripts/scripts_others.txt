@@ -16,5 +16,7 @@ others/field_bosses/tir_giant_wolves.cs
 others/field_bosses/dugald_giant_black_bear_warrior.cs
 others/field_bosses/dunbarton_black_raccoon_goblin_bandit.cs
 others/field_bosses/gairech_giant_black_ogre_wizard.cs
+others/field_bosses/ceo_golem.cs
+others/field_bosses/neko_giant_golden_ratman.cs
 
 include "/user/scripts/scripts_others.txt"

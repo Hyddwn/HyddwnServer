@@ -185,6 +185,7 @@ namespace Aura.Shared
 				if ((toLoad & DataLoad.ItemUpgrades) != 0)
 				{
 					this.LoadDb(AuraData.ItemUpgradesDb, "db/itemupgrades.txt", reload);
+					this.LoadDb(AuraData.ArtisanUpgradesDb, "db/artisanupgrades.txt", reload);
 				}
 
 				if ((toLoad & DataLoad.Props) != 0)

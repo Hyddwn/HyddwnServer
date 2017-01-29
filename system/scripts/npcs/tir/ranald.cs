@@ -50,7 +50,7 @@ public class RanaldScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message = L("Here you are, <username/>.<br/>A friend of Trefor it is...");
@@ -71,21 +71,21 @@ public class RanaldScript : NpcScript
 
 						Player.Vars.Perm["ranald_title_gift"] = today;
 
-						GiveItem(51011, 3); // Stamina 10 Potion x3
-						Notice(L("Received Stamina 10 Potion from Ranald."));
-						SystemMsg(L("Received Stamina 10 Potion from Ranald."));
+						Player.GiveItem(51011, 3); // Stamina 10 Potion x3
+						Player.Notice(L("Received Stamina 10 Potion from Ranald."));
+						Player.SystemMsg(L("Received Stamina 10 Potion from Ranald."));
 
 						Msg(L("I think you'll need this Stamina Potion quite often<br/>for your combat training."));
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg(".......");
 					Msg("Well, I don't care much about titles.<br/>Just train! Continue to train! That's what will make you stronger!<br/>Don't slack off and focus on your training!");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Hah... I can't believe<br/>you've become the Guardian of Erinn.<br/>I still remember you practicing your combat skills on those dummies...");
 					Msg("...I can't be more proud as your teacher.<br/>These are the moments that make teachers feel rewarded...");
@@ -121,8 +121,8 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "@ciarpass":
-				GiveItem(63139); // Ciar Beginner Dungeon Pass
-				Notice("Recieved Ciar Beginner Dungeon Pass from Ranald.");
+				Player.GiveItem(63139); // Ciar Beginner Dungeon Pass
+				Player.Notice("Recieved Ciar Beginner Dungeon Pass from Ranald.");
 				Msg("OK, here's the pass.<br/>You can ask for it again if you need it.<br/>That doesn't mean you can fill up the inventory with a pile of passes.");
 				break;
 		}
@@ -161,19 +161,52 @@ public class RanaldScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				if (Favor > 20 && !HasKeyword("RP_Ranald_Complete"))
+				if (Favor > 20 && !Player.HasKeyword("RP_Ranald_Complete"))
 				{
-					if (!HasItem(73101))
+					if (!Player.HasItem(73101))
 					{
-						GiveItem(73101); // Ranald's Medal
-						SystemNotice(L("Received Ranald's Medal from Ranald."));
+						Player.GiveItem(73101); // Ranald's Medal
+						Player.SystemNotice(L("Received Ranald's Medal from Ranald."));
 					}
 
 					Msg(L("I used to be a Dunbarton mercenary.<br/>I'd spent my youth as a mercenary and then built a School here at Tir Chonaill.<br/>You'll be able to see my past if you enter Rabbie Dungeon alone with this. Haha."));
 				}
+				else if (Memory >= 15 && Favor >= 50 && Stress <= 5) // Translated
+				{
+					Msg(FavorExpression(), "Ah... you noticed the scar under my hair?<br/>That was from when I was a soldier in another district.<br/>The scratches were deeper than I thought, so now there's a scar there. Haha.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5) // Translated
+				{
+					Msg(FavorExpression(), "Becoming a warrior is not as simple as you might think.<br/>Your body and spirit become one,<br/>while realizing your true potential.");
+					Msg("If you don't understand this, the end result will always be unsatisfactory,<br/>even if you do learn how to fight.<br/>I was unaware of this when I first started, which resulted in me wasting a lot of time.<br/>I still regret it to this day...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Hey, you seem to be a good person.<br/>What do you say? Are you interested in taking my class and becoming a warrior?");
+					Msg("The class is not free, of course...");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Sword skills can be practiced wherever and whenever you want.<br/>There are training poles at the School for practicing your aim and strikes.<br/>But you can also use trees in the forest or even barrels on the street<br/>to sharpen your skills and senses for your future battles.");
+					Msg("You don't need me standing next to you and shouting instructions.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Don't nag about how I like to drink. I do what I want to do in my free time.<br/>Even if it was meant to be a joke,<br/>the way you said it was insulting. That's how you lose friends.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Please stop bothering me. In fact, I have nothing more to tell you now.<br/>You should just wait until the School opens.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
 				else
 				{
-					GiveKeyword("school");
+					Player.GiveKeyword("school");
 					Msg(FavorExpression(), "Hello, there. I teach combat skills at the School in Tir Chonaill.<br/>If you're interested, talk to me with the 'Classes and Training' keyword.");
 					Msg("Hey, hey... This is not free. You'll need to pay tuition for my classes...");
 					ModifyRelation(Random(2), 0, Random(3));
@@ -181,22 +214,58 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "rumor":
-				if (!HasSkill(SkillId.RangedAttack))
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
 				{
-					GiveKeyword("complicity");
-					RemoveKeyword("bow");
-					Msg(FavorExpression(), "Hmm... Did you hear the news?<br/>Ferghus can't stop smiling these days.<br/>I heard his arrow sales have jumped up lately.");
-					Msg("It seems like Trefor received a huge gift from Ferghus.<br/>People are assuming that Trefor is helping Ferghus with something.");
+					Msg(FavorExpression(), "Do you know how Priestess Endelyon is doing these days by any chance?<br/>She's right next door, but lately, she hasn't come down to the School. Not even for a visit.<br/>It would be good if you could ask her how she's doing...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Years ago, Chief Duncan was my mentor.<br/>The basics of my swordsmanship originated from Duncan's teachings.");
+					Msg("Now that I'm teaching students how to use their swords<br/>using the same methods I learned from him,<br/>I see how knowledge is passed on through generations. It's quite amazing.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Chief Duncan was, in fact, a great warrior.<br/>His reputation is well-known even in cities far from here.");
+					Msg("If you hear his name while traveling through those places,<br/>always keep that in mind.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Tir Chonaill is the town of warriors.<br/>So many great warriors came from this town,<br/>and they have dedicated their lives to keeping this town safe.");
+					Msg("When I think that I might be making a small contribution to the time-honored tradition,<br/>I realize that this is what I live for.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Since this town is located in the middle of a mountain,<br/>even a light rain could flood the road and destroy it.<br/>The heavy rain the other day destroyed one of the roads, and it still hasn't been fixed yet...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Just be a man and get straight to the point.<br/>You'll get nothing by beating around the bush!");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
 				}
 				else
 				{
-					Msg("A dinner with Ferghus usually leads to a bit of drinking at the end.<br/>You know he loves to drink, right? As a matter of fact, I like to drink, too. Hahaha...");
+					if (!Player.HasSkill(SkillId.RangedAttack))
+					{
+						Player.GiveKeyword("complicity");
+						Player.RemoveKeyword("bow");
+						Msg(FavorExpression(), "Hmm... Did you hear the news?<br/>Ferghus can't stop smiling these days.<br/>I heard his arrow sales have jumped up lately.");
+						Msg("It seems like Trefor received a huge gift from Ferghus.<br/>People are assuming that Trefor is helping Ferghus with something.");
+					}
+					else
+					{
+						Msg("A dinner with Ferghus usually leads to a bit of drinking at the end.<br/>You know he loves to drink, right? As a matter of fact, I like to drink, too. Hahaha...");
+					}
+					ModifyRelation(Random(2), 0, Random(3));
 				}
-				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
-				if (HasSkill(SkillId.Windmill))
+				if (Player.HasSkill(SkillId.Windmill))
 				{
 					Msg("How was the Windmill skill? Was it of any help?<br/>You will one day become a great warrior<br/>as long as you remain an ardent student eager for training just like you are now.");
 					break;
@@ -206,7 +275,7 @@ public class RanaldScript : NpcScript
 			//case "about_study": // Handled in quest script
 
 			case "shop_misc":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("You're not going to the General Shop for weapons, are you?<br/>For weapons, you would need to go to the Blacksmith's Shop.");
 				break;
 
@@ -232,8 +301,8 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "skill_range":
-				GiveKeyword("bow");
-				RemoveKeyword("skill_range");
+				Player.GiveKeyword("bow");
+				Player.RemoveKeyword("skill_range");
 				if (Player.IsGiant)
 				{
 					// Giants can't get this keyword anymore
@@ -249,7 +318,7 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "skill_instrument":
-				GiveKeyword("church");
+				Player.GiveKeyword("church");
 				Msg("You want to learn the Instrument Playing skill?<br/>Hmm... Did you forget that I am a combat instructor?<br/>I can't believe you are asking me for that. I am a little disappointed");
 				Msg("Ha ha... Don't be so disheartened about what I said, though.<br/>I didn't know you would be easily affected by my words. Hahaha.<br/>You're just like Malcolm when he was a kid.");
 				Msg("OK, about the Instrument Playing skill...<br/>Go ask Priestess Endelyon at the Church about it.<br/>I'm sure she will teach you well.");
@@ -263,17 +332,17 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("You want to make clothes for yourself?<br/>Hmm... Why would you come to the School to ask me, a combat instructor,<br/>how to make clothes?<br/>I just don't get it. But, anyway...");
 				Msg("You have asked me a question, and as a teacher, I feel obligated to answer it.<br/>Talk to Caitin at the Grocery Store.<br/>She knows more about that skill than anyone else.");
 				Msg("From what I've heard, most of the clothes at Malcolm's shop<br/>were either designed or tailored by her...");
 				break;
 
 			case "skill_magnum_shot":
-				RemoveKeyword("skill_magnum_shot");
+				Player.RemoveKeyword("skill_magnum_shot");
 				Msg("Oh... You already know about that?<br/>I only gave you a brief summary about the Ranged Attack,<br/>and you already picked up that much! Quite impressive!<br/>Alright! Let's move on then!");
 				Msg("Magnum Shot skill helps you to shoot a powerful blow<br/>with the power you have concentrated in the bow.<br/>Go on and work on the training.<br/>");
-				GiveSkill(SkillId.MagnumShot, SkillRank.RF); // This is removed in later updates
+				Player.GiveSkill(SkillId.MagnumShot, SkillRank.RF); // This is removed in later updates
 				break;
 
 			case "skill_counter_attack":
@@ -300,24 +369,24 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("brook");
+				Player.GiveKeyword("brook");
 				Msg("The reservoir? Go up north a little bit, and that's where you'll find it.<br/>The water in the reservoir comes from the Adelia Stream.<br/>We use the Windmill to get water up from the stream to fill the reservoir.<br/>It's critical for irrigating the farmland.");
 				break;
 
 			case "farmland":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("The farmland?<br/>Well, it's right in front of the School. You didn't see it?<br/>If you're talking about another farmland,<br/>there's a small one next to Caitin's Grocery Store, but...");
 				Msg("Don't step on those crops!<br/>Let the scarecrow take care of it.");
 				break;
 
 			case "windmill":
-				GiveKeyword("shop_inn");
+				Player.GiveKeyword("shop_inn");
 				Msg("Hmm... are you looking for the windmill?<br/>I see... The windmill here is well worth a visit. It's picturesque.");
 				Msg("If you want to see the windmill up close, go near the Inn.");
 				break;
 
 			case "brook":
-				GiveKeyword("farmland");
+				Player.GiveKeyword("farmland");
 				Msg("Hmm... you want to know how to reach the Adelia Stream?<br/>It will take some time to get there...<br/>It's not easy to explain where it is...");
 				Msg("Walk outside the School and follow along the farmland.<br/>After a while, you will see a small stream and a bridge.<br/>Well, that's the Adelia Stream.");
 				break;
@@ -351,13 +420,13 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Hmm... As far as I know, there are no restaurants in Tir Chonaill.<br/>If you're looking for something to eat, then talk to Caitin.");
 				Msg("She spends most of her time working at the Grocery Store,<br/>so why don't you go there and say hi to her?");
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("You can't find the Weapons Shop?<br/>Hmm... Well, this is very heartbreaking to say, but there is no Weapons Shop in this town.<br/>You will need to go to the Blacksmith's Shop if you need a weapon.");
 				Msg("All weapons and armor are made at the Blacksmith's Shop by Ferghus himself.");
 				Msg("There's not much of a variety there,<br/>but talk to Ferghus if you need something.");
@@ -385,7 +454,7 @@ public class RanaldScript : NpcScript
 				break;
 
 			case "graveyard":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("The graveyard? Hmm...<br/>There is one located over the hill behind the Chief's House but...");
 				Msg("If I were you,<br/>I would stay away from that place.<br/>It's not right to cause a commotion literally on top of the dead.<br/>It is simply not the right thing to do.");
 				Msg("I want you to respect the dead,<br/>and let them rest in peace.");
@@ -429,14 +498,62 @@ public class RanaldScript : NpcScript
 				break;
 
 			default:
-				RndFavorMsg(
-					"You know I've been busy...",
-					"Well, I don't really know...",
-					"I am not very interested in that.",
-					"Hmm... Actually, I forgot my lines... Haha.",
-					"I haven't paid much attention to it, especially on a topic like that."
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I wish I could help you, but... Well...");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I don't think I can help you with that.<br/>Please don't take this the wrong way.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Can you please speak in a language I could understand?");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "I honestly don't know about that.");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"You know I've been busy...",
+						"Well, I don't really know...",
+						"I am not very interested in that.",
+						"Hmm... Actually, I forgot my lines... Haha.",
+						"I haven't paid much attention to it, especially on a topic like that."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Oh... That's right. This was MADE for me. Thank you very much."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Ah, thank you. This is a bit too much for me..."));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("Well, I'll keep it well."));
+				break;
+
+			case GiftReaction.Dislike:
+				RndMsg(
+					L("Thank you anyway, but I'm not particularly interested in such things."),
+					L("This will be safe in my hand.<p/>Uh? For me? This? Well, what am I going to use this for?")
 				);
-				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

@@ -13,7 +13,6 @@ namespace Aura.Tests.Mabi
 		{
 			var tags = new Tags("/test1/test2/test3/");
 
-			Assert.True(tags.Matches(""));
 			Assert.True(tags.Matches("*"));
 			Assert.True(tags.Matches("/test1/"));
 			Assert.True(tags.Matches("/test2/"));
@@ -32,6 +31,7 @@ namespace Aura.Tests.Mabi
 			Assert.True(tags.Matches("((/*1/&/test*/)&(/test2/&/test3/))"));
 			Assert.True(tags.Matches("/test[^5]/test[^5]/test[^2]/"));
 
+			Assert.False(tags.Matches(""));
 			Assert.False(tags.Matches("*/*test_*/*"));
 			Assert.False(tags.Matches("*/*fest*/*"));
 			Assert.False(tags.Matches("/test4/"));

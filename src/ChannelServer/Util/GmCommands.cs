@@ -95,6 +95,8 @@ namespace Aura.Channel.Util
 			Add(50, 50, "fillpotions", "", Localization.Get("Fills all potion stacks in inventory."), HandleFillPotions);
 			Add(50, 50, "keyword", "[-|+]<name>", Localization.Get("Adds/removes keywords."), HandleKeyword);
 			Add(50, 50, "ptj", "<type> <level>", Localization.Get("Sets the level of a certain PTJ type."), HandlePtj);
+			Add(50, 50, "quest", "<id> [finish objective]", Localization.Get("Starts a quest or sets the specified objective to be finished."), HandleQuest);
+			Add(50, 50, "prof", "[equipflags=all|armor|glove|shoe|head|robe|rhand1|rhand2|lhand1|lhand2|accessory1|accessory2] [amount=101000]", Localization.Get("Sets proficiency of equipped item(s)."), HandleProf);
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", Localization.Get("Creates dynamic region, based on the current one."), HandleDynamic);
@@ -588,9 +590,9 @@ namespace Aura.Channel.Util
 				var item = Item.CreateEnchant(optionSetId);
 				target.Inventory.Add(item, Pocket.Temporary);
 			}
-			catch (ArgumentException)
+			catch (ArgumentException ex)
 			{
-				Send.ServerMessage(sender, Localization.Get("Invalid enchant id."));
+				Send.ServerMessage(sender, Localization.Get("Failed to create enchant: {0}"), ex.Message);
 				return CommandResult.Fail;
 			}
 
@@ -2347,6 +2349,153 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Role-play started, use same command without actor argument to stop."));
 			if (sender != target)
 				Send.ServerMessage(target, Localization.Get("{0} started a role-play session for you."), sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleQuest(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+				return CommandResult.InvalidArgument;
+
+			int questId;
+			if (!int.TryParse(args[1], out questId))
+				return CommandResult.InvalidArgument;
+
+			var quest = ChannelServer.Instance.ScriptManager.QuestScripts.Get(questId);
+			if (quest == null)
+			{
+				Send.ServerMessage(sender, Localization.Get("Quest not found."));
+				return CommandResult.Okay;
+			}
+
+			string objective = null;
+			if (args.Count > 2)
+			{
+				objective = args[2];
+
+				if (!quest.Objectives.ContainsKey(objective))
+				{
+					Send.ServerMessage(sender, Localization.Get("Unknown quest objective."));
+					return CommandResult.InvalidArgument;
+				}
+			}
+
+			if (objective == null)
+			{
+				target.Quests.Start(questId);
+
+				Send.ServerMessage(sender, Localization.Get("Started '{0}' quest."), quest.Name);
+				if (target != sender)
+					Send.ServerMessage(target, Localization.Get("The '{0}' quest was started for you by {1}."), quest.Name, sender.Name);
+			}
+			else
+			{
+				if (!target.Quests.Has(questId))
+				{
+					Send.ServerMessage(sender, Localization.Get("Quest not found on target creature."));
+					return CommandResult.Okay;
+				}
+
+				target.Quests.Finish(questId, objective);
+
+				Send.ServerMessage(sender, Localization.Get("Finished quest objective '{0}' on '{1}' quest."), objective, quest.Name);
+				if (target != sender)
+					Send.ServerMessage(target, Localization.Get("Quest objective '{0}' on '{1}' quest was finished for you by {2}."), objective, quest.Name, sender.Name);
+			}
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleProf(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			const int
+				EquipFlag_Armor = 1 << 0,
+				EquipFlag_Glove = 1 << 1,
+				EquipFlag_Shoe = 1 << 2,
+				EquipFlag_Head = 1 << 3,
+				EquipFlag_Robe = 1 << 4,
+				EquipFlag_RHand1 = 1 << 5,
+				EquipFlag_RHand2 = 1 << 6,
+				EquipFlag_LHand1 = 1 << 7,
+				EquipFlag_LHand2 = 1 << 8,
+				EquipFlag_Accessory1 = 1 << 9,
+				EquipFlag_Accessory2 = 1 << 10,
+				EquipFlag_All = (1 << 11) - 1,
+
+				MaxProficiency = 101000;
+
+			// Set default values
+			int equipFlags = EquipFlag_All;
+			int profAmount = MaxProficiency;
+
+			if (args.Count >= 2)
+			{ // Read 'equipflags' argument
+				equipFlags = 0;
+				foreach (var flag in args[1].ToLower().Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					switch (flag)
+					{
+						case "all":
+							equipFlags |= EquipFlag_All; break;
+						case "armor":
+							equipFlags |= EquipFlag_Armor; break;
+						case "glove":
+							equipFlags |= EquipFlag_Glove; break;
+						case "shoe":
+							equipFlags |= EquipFlag_Shoe; break;
+						case "head":
+							equipFlags |= EquipFlag_Head; break;
+						case "robe":
+							equipFlags |= EquipFlag_Robe; break;
+						case "rhand1":
+							equipFlags |= EquipFlag_RHand1; break;
+						case "rhand2":
+							equipFlags |= EquipFlag_RHand2; break;
+						case "lhand1":
+							equipFlags |= EquipFlag_LHand1; break;
+						case "lhand2":
+							equipFlags |= EquipFlag_LHand2; break;
+						case "accessory1":
+							equipFlags |= EquipFlag_Accessory1; break;
+						case "accessory2":
+							equipFlags |= EquipFlag_Accessory2; break;
+						default:
+							Send.ServerMessage(sender, Localization.Get("Unrecognised token '{0}' in 'equipflags' argument."), flag);
+							return CommandResult.InvalidArgument;
+					}
+				}
+			}
+
+			if (args.Count >= 3 && !int.TryParse(args[2], out profAmount))
+			{ // Read 'amount' argument
+				Send.ServerMessage(sender, Localization.Get("Could not parse 'amount' argument."));
+				return CommandResult.InvalidArgument;
+			}
+
+			var targetEquipment = target.Inventory.GetMainEquipment(item =>
+				((equipFlags & EquipFlag_Armor) != 0 && item.Info.Pocket == Pocket.Armor) ||
+				((equipFlags & EquipFlag_Glove) != 0 && item.Info.Pocket == Pocket.Glove) ||
+				((equipFlags & EquipFlag_Shoe) != 0 && item.Info.Pocket == Pocket.Shoe) ||
+				((equipFlags & EquipFlag_Head) != 0 && item.Info.Pocket == Pocket.Head) ||
+				((equipFlags & EquipFlag_Robe) != 0 && item.Info.Pocket == Pocket.Robe) ||
+				((equipFlags & EquipFlag_RHand1) != 0 && item.Info.Pocket == Pocket.RightHand1) ||
+				((equipFlags & EquipFlag_RHand2) != 0 && item.Info.Pocket == Pocket.RightHand2) ||
+				((equipFlags & EquipFlag_LHand1) != 0 && item.Info.Pocket == Pocket.LeftHand1) ||
+				((equipFlags & EquipFlag_LHand2) != 0 && item.Info.Pocket == Pocket.LeftHand2) ||
+				((equipFlags & EquipFlag_Accessory1) != 0 && item.Info.Pocket == Pocket.Accessory1) ||
+				((equipFlags & EquipFlag_Accessory2) != 0 && item.Info.Pocket == Pocket.Accessory2)
+			);
+
+			foreach (var equipment in targetEquipment)
+			{
+				equipment.Proficiency = profAmount;
+				Send.ItemExpUpdate(target, equipment);
+			}
+
+			Send.ServerMessage(sender, Localization.Get("Proficiency set."));
+			if (target != sender)
+				Send.ServerMessage(target, Localization.Get("Your equipment proficiency has been set by {0}."), sender.Name);
 
 			return CommandResult.Okay;
 		}

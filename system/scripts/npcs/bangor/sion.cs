@@ -62,12 +62,12 @@ public class SionScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Hey! You're back again. Hehe...<br/>Thanks for delivering daddy's gift the other time.");
 					Msg("Although...I don't think Ibbie likes it all that much...");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("You're incredible...<br/>but, I'll be happy just being Ibbie's guardian.");
 				}
@@ -141,7 +141,7 @@ public class SionScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("How's the job going?<br/>Don't slack off, okay?"));
 		}

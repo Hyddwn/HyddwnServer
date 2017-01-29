@@ -28,16 +28,16 @@ public class LetsGatherGreenGemQuestScript : QuestScript
 
 	public async Task<HookResult> TalkNpc(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_bebhinn") && npc.HasItem(52004))
+		if (npc.Player.QuestActive(this.Id, "talk_bebhinn") && npc.Player.HasItem(52004))
 		{
-			npc.FinishQuest(this.Id, "talk_bebhinn");
+			npc.Player.FinishQuestObjective(this.Id, "talk_bebhinn");
 
 			npc.Msg("Oh hello! Looks like you got my message.");
 			npc.Msg("Is that a Small Green Gem for me? Thank you!<br/>Now I can finish my necklace!<br/>I found this old guide book while waiting for your<br/>arrival. It's probably better in your hands.<button title='Continue' keyword='@continue'/>");
 			await npc.Select();
 
-			npc.RemoveItem(52004); // Small Green Gem
-			npc.CompleteQuest(this.Id);
+			npc.Player.RemoveItem(52004); // Small Green Gem
+			npc.Player.CompleteQuest(this.Id);
 
 			return HookResult.Break;
 		}

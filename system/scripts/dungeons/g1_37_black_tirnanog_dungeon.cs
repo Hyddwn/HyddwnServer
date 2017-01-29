@@ -34,11 +34,11 @@ public class AlbeyBlackOrbDungeonScript : DungeonScript
 			var creators = dungeon.GetCreators();
 			foreach (var member in creators)
 			{
-				if (member.Keywords.Has("g1_36"))
+				if (member.HasKeyword("g1_36"))
 				{
-					member.Keywords.Remove("g1_36");
-					member.Keywords.Give("g1_37");
-					member.Keywords.Give("g1_revive_of_glasgavelen");
+					member.RemoveKeyword("g1_36");
+					member.GiveKeyword("g1_37");
+					member.GiveKeyword("g1_revive_of_glasgavelen");
 				}
 			}
 

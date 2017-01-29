@@ -40,7 +40,7 @@ public class BarriTnnDungeonScript : DungeonScript
 		if (gate.State != "closed")
 			return;
 
-		var canOpen = creature.Keywords.Has("g1_36") || creature.Titles.IsUsable(BreakerTitle);
+		var canOpen = creature.HasKeyword("g1_36") || creature.CanUseTitle(BreakerTitle);
 		var saturday = (ErinnTime.Now.Month == ErinnMonth.Samhain || IsEnabled("AllWeekBreaker"));
 
 		if (!canOpen)
@@ -53,7 +53,7 @@ public class BarriTnnDungeonScript : DungeonScript
 		}
 		else
 		{
-			creature.Titles.Enable(BreakerTitle);
+			creature.EnableTitle(BreakerTitle);
 
 			gate.SetState("open");
 

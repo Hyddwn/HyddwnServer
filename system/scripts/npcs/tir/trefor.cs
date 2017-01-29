@@ -24,18 +24,20 @@ public class TreforScript : NpcScript
 		EquipItem(Pocket.Head, 18405, 0x191919, 0x293D52);
 		EquipItem(Pocket.LeftHand2, 40005, 0xB6B6C2, 0x404332, 0x22B653);
 
-		AddPhrase("(Fart)...");
-		AddPhrase("(Spits out a loogie)");
+		AddPhrase("*farts*");
+		AddPhrase("*spits a loogie*");
 		AddPhrase("Ah-choo!");
-		AddPhrase("Ahem");
-		AddPhrase("Burp.");
-		AddPhrase("Cough cough...");
+		AddPhrase("Ahem...");
+		AddPhrase("Ahem!");
+		AddPhrase("*burps*");
 		AddPhrase("I heard people can go bald when they wear a helmet for too long...");
 		AddPhrase("I need to get married...");
-		AddPhrase("It's been a while since I took a shower");
+		AddPhrase("It's been a while since I took a shower.");
 		AddPhrase("Seems like I caught a cold...");
 		AddPhrase("Soo itchy... and I can't scratch it!");
-		AddPhrase("This helmet's really making me sweat");
+		AddPhrase("This helmet's really making me sweat.");
+		AddPhrase("*scratches himself*");
+		AddPhrase("*cracks knuckles*");
 	}
 
 	protected override async Task Talk()
@@ -59,7 +61,7 @@ public class TreforScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message = L("Ha ha, welcome back, <username/>.<br/>How are things going for you?");
@@ -76,22 +78,22 @@ public class TreforScript : NpcScript
 
 						Player.Vars.Perm["trefor_title_gift"] = today;
 
-						GiveItem(71017); // White Spider Fomor Scroll
-						Notice(L("Received White Spider Fomor Scroll from Trefor."));
-						SystemMsg(L("Received White Spider Fomor Scroll from Trefor."));
+						Player.GiveItem(71017); // White Spider Fomor Scroll
+						Player.Notice(L("Received White Spider Fomor Scroll from Trefor."));
+						Player.SystemMsg(L("Received White Spider Fomor Scroll from Trefor."));
 
 						Msg(L("You might be a little puzzled about the Fomor Scroll I have here.<br/>But you get to experience all sorts of things<br/>if you work as a guard here."));
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("......");
 					Msg("Can you do me a favor?<br/>Please don't go to Dilys and show off your strength and skills.");
 					Msg("To be honest, I am staying in this town only because of her.<br/>I don't want Dilys comparing me to you in any way, shape or form.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Wha...? You're the Guardian of Erinn...?<br/>You, <username/>...?");
 					Msg("......");
@@ -128,8 +130,8 @@ public class TreforScript : NpcScript
 				break;
 
 			case "@pass":
-				GiveItem(63140);
-				Notice("Recieved Alby Beginner Dungeon Pass from Trefor.");
+				Player.GiveItem(63140);
+				Player.Notice("Recieved Alby Beginner Dungeon Pass from Trefor.");
 				Msg("Do you need an Alby Beginner Dungeon Pass?<br/>No problem. Here you go.<br/>Drop by anytime when you need more.<br/>I'm a generous man, ha ha.");
 				break;
 		}
@@ -169,32 +171,62 @@ public class TreforScript : NpcScript
 		{
 			case "personal_info":
 				// Start of Trefor RP
-				if (DoingPtj(PtjType.General) && !HasItem(73103) && !HasKeyword("RP_Trefor_Complete"))
+				if (Player.IsDoingPtj(PtjType.General) && !Player.HasItem(73103) && !Player.HasKeyword("RP_Trefor_Complete"))
 				{
-					if (!HasKeyword("RP_Trefor_Failed_1") && !HasKeyword("RP_Trefor_Failed_2") && !HasKeyword("RP_Trefor_Failed_3"))
+					if (!Player.HasKeyword("RP_Trefor_Failed_1") && !Player.HasKeyword("RP_Trefor_Failed_2") && !Player.HasKeyword("RP_Trefor_Failed_3"))
 					{
 						Msg(L("Sometimes travelers get lost on their way here and enter Alby Dungeon. It happens occasionally when I'm off duty.<br/>Someone got lost not too long ago, and I had to go and find her.<br/>Let's see if you can do it. Find out yourself by dropping my gauntlet in Alby Dungeon."));
 					}
-					else if (HasKeyword("RP_Trefor_Failed_1"))
+					else if (Player.HasKeyword("RP_Trefor_Failed_1"))
 					{
 						Msg(L("Gee, I guess I was asking too much of you, <username/>.<br/>This is not a job everyone can do. Ha ha.<br/>Go try again."));
 					}
-					else if (HasKeyword("RP_Trefor_Failed_2"))
+					else if (Player.HasKeyword("RP_Trefor_Failed_2"))
 					{
 						Msg(L("You failed... ? Again? Well, well...<br/>Try again!"));
 					}
-					else if (HasKeyword("RP_Trefor_Failed_3"))
+					else if (Player.HasKeyword("RP_Trefor_Failed_3"))
 					{
 						Msg(L("... Keep trying until you succeed!<br/>My honor is also at stake here!"));
 					}
 
-					GiveItem(73103); // Trefor's Gauntlet
-					SystemNotice(L("Received Trefor's Gauntlet from Trefor."));
+					Player.GiveItem(73103); // Trefor's Gauntlet
+					Player.SystemNotice(L("Received Trefor's Gauntlet from Trefor."));
 				}
 				// Hint at asking for reward for Trefor RP
-				else if (HasKeyword("RP_Trefor_LifeGuard"))
+				else if (Player.HasKeyword("RP_Trefor_LifeGuard"))
 				{
 					Msg(L("How was the experience of being part of a real rescue mission?<br/>I'm sure you've learned your lesson.<br/>Haha. Once you return, come and talk to me about 'Rescue Mission'.<br/>You just have to experience some things for yourself to truly make them yours."));
+				}
+				else if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "When I'm standing guard at night,<br/>it creeps me out quite a bit to hear foxes or wolves howl.<br/>It really is a little scary out here.<br/>Sometimes I may doze off while on duty, but hearing the howls instantly wakes me up.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "You really are annoying, <username/>, but I think you are alright.<br/>Go on and tell me what you want to know.<br/>I will help you as much as I can.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I know this is no easy work but someone has got to do it, right?<br/>This is the way I live my life.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Wild animals? There's nothing to be afraid of when I'm around!");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Ugh... I wonder when my shift will be over.<br/>I need to get some rest now...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Do I look that easy to you? Don't test my patience.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
 				}
 				else
 				{
@@ -204,17 +236,52 @@ public class TreforScript : NpcScript
 				break;
 
 			case "RP_Trefor_LifeGuard":
-				RemoveKeyword("RP_Trefor_LifeGuard");
-				GiveItem(40002); // Wooden Blade
-				SystemNotice(L("Received Wooden Blade from Trefor."));
+				Player.RemoveKeyword("RP_Trefor_LifeGuard");
+				Player.GiveItem(40002); // Wooden Blade
+				Player.SystemNotice(L("Received Wooden Blade from Trefor."));
 
 				Msg(L("Yes, saving people's lives is not an easy task.<br/>It looks like your body needs some physical training!<br/>To help you strengthen your body, here's something you may need."));
 				break;
 
 			case "rumor":
-				Msg(FavorExpression(), "Recently, the people in this town have become somewhat anxious<br/>about the howling of wild animals outside.<br/>For some reason, their howling seems to be getting a little bit closer each day.");
-				Msg("That's why I'm standing guard like this.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Chief Duncan may look like a strict disciplinarian,<br/>but I have felt from time to time that he is a warm person inside.<br/>He tries to do everything he can to help out<br/>people like us who are having a hard time.");
+					Msg("One night, when I was especially nervous after hearing the wolves howl,<br/>I saw him come out and watch over me, even though it was late at night.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Ranald is a great warrior and an expert with swords.<br/>Some say his enemies tremble in fear the moment he draws his sword.<br/>It would be best if you sought advice on swordsmanship from him.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Priestess Endelyon is like an angel. Have you ever met her?<br/>If not, you can find her at the Church.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Dilys... She's just beautiful.<br/>My heart has belonged to her ever since she first set her foot in this town.<br/>I assume every man in this town feels the same about her.<br/>How about you, <username/>?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I really think Bebhinn crosses the line.<br/>Why would anyone want to gossip so much about other people?<br/>It seems as if she doesn't care about the people in this town anymore<br/>now that so many travelers are using the Bank.");
+					Msg("Spreading gossip about the town people<br/>to any traveler willing to listen won't make them loyal clients, right?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Stop snooping around. You're starting to bother me.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Msg(FavorExpression(), "Recently, the people in this town have become somewhat anxious<br/>about the howling of wild animals outside.<br/>For some reason, their howling seems to be getting a little bit closer each day.");
+					Msg("That's why I'm standing guard like this.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -223,13 +290,13 @@ public class TreforScript : NpcScript
 					Msg("Hmm... I'm sorry, but I can't think of any skill that'd be useful to you at the moment, <username/>.");
 					return;
 				}
-				if (!HasSkill(SkillId.RangedAttack))
+				if (!Player.HasSkill(SkillId.RangedAttack))
 				{
-					GiveKeyword("skill_range");
+					Player.GiveKeyword("skill_range");
 					Msg("I've been observing your combat style for some time now.<br/>If you want to be a warrior, you shouldn't limit yourself to just melee attacks.");
 					Msg("I'm sure Ranald at the School can teach you some things about ranged attacks<br/>which will allow you to attack monsters from a distance.");
 				}
-				else if (!HasSkill(SkillId.SupportShot))
+				else if (!Player.HasSkill(SkillId.SupportShot))
 				{
 					Msg("Ah! <username/>. Haha. Has your archery skills improved since I last saw you?<br/>Hmm...It seems like you improved quite a bit, even though you're not as skilled as I am.");
 					Msg("Are you interested in learning the Support Shot skill?<br/>It's a skill that will help<br/>other members when you're in a party.", Button("I am interested!", "@yes"), Button("Can... I trust you?", "@no"));
@@ -241,7 +308,7 @@ public class TreforScript : NpcScript
 							Msg("...In this case, how would you shoot your arrows?<br/>How can you shoot so that<br/>you won't interrupt your friend, while still injuring the enemy?<br/>Why don't you close your eyes and visualize it?", Button("I visualized it."));
 							await Select();
 
-							GiveSkill(SkillId.SupportShot, SkillRank.RF);
+							Player.GiveSkill(SkillId.SupportShot, SkillRank.RF);
 							Msg("I'm not certain how well you followed<br/>my instructions with your eyes closed, but it's all good.<br/>I gave you an easy-to-follow guide,<br/>so you shouldn't have any difficulties using Support Shot.");
 							Msg("I pray in the name of Morrighan the Goddess<br/>that you, whose arrows fly with bravery, will always be surrounded by glory.");
 							Msg("Also, don't forget to drop by the Blacksmith's Shop when you run out of arrows.");
@@ -296,7 +363,7 @@ public class TreforScript : NpcScript
 				break;
 
 			case "skill_range":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Well, I'm quite busy right now.<br/>Why don't you ask Ranald at the School?<br/>I CAN say that Ranged Attack is really useful, though.<br/>I strongly recommend you master it... It's THAT useful.");
 				break;
 
@@ -315,7 +382,7 @@ public class TreforScript : NpcScript
 				break;
 
 			case "skill_magnum_shot":
-				GiveSkill(SkillId.MagnumShot, SkillRank.Novice);
+				Player.GiveSkill(SkillId.MagnumShot, SkillRank.Novice);
 				Msg("Magnum Shot is a skill that lets you shoot your arrow with greater power.<br/>The problem is, I don't know how to use it myself.<br/>I am sure Ranald could teach you, though.");
 				break;
 
@@ -328,14 +395,14 @@ public class TreforScript : NpcScript
 				Msg("Your legs are all tensed up. You can't react in time like that.<br/>Loosen your left leg to make sure you can absorb your enemy's strength...<br/>Yes. That's it. Now you look like you're ready.", Button("Continue"));
 				await Select();
 
-				RemoveKeyword("skill_counter_attack");
-				GiveSkill(SkillId.Counterattack, SkillRank.RF);
+				Player.RemoveKeyword("skill_counter_attack");
+				Player.GiveSkill(SkillId.Counterattack, SkillRank.RF);
 
 				Msg("Now all you need to do is actually pull it off in the heat of the battle!<br/>Please don't try it on other villagers, though.");
 				break;
 
 			case "skill_smash":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("Hmm... Lassar teaches Magic at the School,<br/>and yet she seems to be very interested in the Smash skill.");
 				Msg("Isn't it funny that a magic teacher is interested in a melee skill?<br/>She is a friend of Dilys, yet they are so different when it comes to their femininity.");
 				break;
@@ -352,7 +419,7 @@ public class TreforScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("shop_bank");
+				Player.GiveKeyword("shop_bank");
 				Msg("Looking for the reservoir?<br/>The reservoir will be on your left when you go down the path near the Bank.");
 				break;
 
@@ -362,31 +429,31 @@ public class TreforScript : NpcScript
 				break;
 
 			case "windmill":
-				GiveKeyword("shop_inn");
+				Player.GiveKeyword("shop_inn");
 				Msg("Are you looking for the Windmill?<br/>Head down south, and you'll easily find the Windmill near the Inn.<br/>Go to the bridge where the barrels are stacked.");
 				Msg("Make sure not to get too close,<br/>as the blades and the mill can be very dangerous.");
 				Msg("And if Alissa says anything about me...<br/>Well, just ignore it.");
 				break;
 
 			case "brook":
-				GiveKeyword("shop_inn");
+				Player.GiveKeyword("shop_inn");
 				Msg("Adelia Stream runs by the Inn.<br/>It's not far from here. Just head straight down.<br/>I don't know why you'd want to go there, though.");
 				break;
 
 			case "shop_headman":
-				GiveKeyword("square");
+				Player.GiveKeyword("square");
 				Msg("You want to know where the Chief's House is?<br/>Hmm... It's on the hill on the opposite side of the Square, but...<br/>You haven't gone to see him yet?");
 				Msg("You must have, right?<br/>I'll just assume that you came here because you like me.");
 				break;
 
 			case "temple":
-				GiveKeyword("shop_bank");
+				Player.GiveKeyword("shop_bank");
 				Msg("The Church is located down south, following the road behind the Bank.<br/>The people there are really nice. They will treat you well.");
 				break;
 
 			case "school":
-				GiveKeyword("shop_bank");
-				GiveKeyword("temple");
+				Player.GiveKeyword("shop_bank");
+				Player.GiveKeyword("temple");
 				Msg("The School... Hmm... Go right from the Bank,<br/>then straight down past the Church.");
 				Msg("You can find my mentor Ranald at School.<br/>He's a really tough combat instructor.<br/>If you ask him about combat in general,<br/>he'll be able to teach you a lot about it.");
 				Msg("If you go to the back,<br/>there is another teacher named Lassar.<br/>She's really beautiful, but not as much as Dilys.");
@@ -407,8 +474,8 @@ public class TreforScript : NpcScript
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
-				GiveKeyword("skill_campfire");
+				Player.GiveKeyword("shop_grocery");
+				Player.GiveKeyword("skill_campfire");
 				Msg("After running around working up a sweat, people tend to get hungry.<br/>It'd be good if we had a decent restaurant in town,<br/>but people here usually go to the Grocery Store.");
 				Msg("I think the Campfire skill is mainly responsible for that.");
 				Msg("What? You don't know what I'm talking about?<br/>Hmm, so you haven't used the skill to share food with others, right?");
@@ -417,18 +484,18 @@ public class TreforScript : NpcScript
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("You are looking for the Weapons Shop?<br/>Hahaha. You should go to the Blacksmith's Shop.<br/>Go and get a bunch of arrows!");
 				Msg("Hmm... You don't have a bow?");
 				break;
 
 			case "shop_cloth":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("If you need some clothes, you can go to the General Shop,<br/>but if you want an armor like mine, then you must go to the Blacksmith's Shop.");
 				break;
 
 			case "shop_bookstore":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("You need a book?<br/>Malcolm at the General Shop is an avid reader with a collection of books at his shop.<br/>It looks like he's selling some of them, too.");
 				Msg("Why don't you go there and talk to him about it?<br/>He's not selling too many books and chances are, you might have read them all...");
 				Msg("Just so you know, Malcolm absolutely HATES lending his stuff.<br/>If you want one of his books, you'll probably have to pay for it.");
@@ -457,20 +524,20 @@ public class TreforScript : NpcScript
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Are you looking for a lute?<br/>I noticed Malcolm at the General Shop selling some.");
 				Msg("Malcolm is terrible at playing musical instruments,<br/>but he keeps on making lutes anyway.<br/>Isn't that strange?");
 				break;
 
 			case "complicity":
-				RemoveKeyword("complicity");
+				Player.RemoveKeyword("complicity");
 				Msg("(We previously discussed the Ranged Attack and Ferghus's story on his arrow sales.)");
 				Msg("An instigator?<br/>Haha, I have no idea what you are talking about.");
 				Msg("Hey, why are you making such a big deal out of this?<br/>We should help each other out, you know.");
 				break;
 
 			case "tir_na_nog":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("I believe Priest Meven at the Church would know better on this subject.<br/>I heard it's what everyone dreams of as the perfect place,<br/>but frankly, I don't know much about it.");
 				break;
 
@@ -479,7 +546,7 @@ public class TreforScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Hmm... A Music Score... Are you planning to compose a song?<br/>Why don't you go see Malcolm at the General Shop then?");
 				Msg("Anyway, just letting you know, it takes quite a lot of money to do anything related to music,<br/>be it Music Scores or Instruments.<br/>I'm telling you, Malcolm makes a living on selling those items.");
 				Msg("I've known Malcolm for many years, but I still have a hard time getting close to him.<br/>I think he doesn't appreciate manly tastes such as swords and combat training.");
@@ -488,15 +555,59 @@ public class TreforScript : NpcScript
 				break;
 
 			default:
-				RndFavorMsg(
-					"Oh, is that so?",
-					"That was quite boring...",
-					"I don't know anything about that...",
-					"I'm bored. Why don't we talk about something else?",
-					"Do you have anything more interesting to talk about?",
-					"Never heard of it. I don't think that has anything to do with me."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I think I heard it from somewhere but I keep forgetting... I'm sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Oh... I fell asleep for a moment. Sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Stop bugging me! I have no time for this.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Hey, get out of the way!");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"That was quite boring...",
+						"I don't know anything about that...",
+						"I'm bored. Why don't we talk about something else?",
+						"Do you have anything more interesting to talk about?",
+						"Never heard of it. I don't think that has anything to do with me."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Ahahahaha! You really know what I want! Thank you! Thank you!"));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Ha ha, it never hurts to make a good impression on me!"));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("Hmm, not bad. Thank you."));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("Are you trying to make fun of me?"));
 				break;
 		}
 	}

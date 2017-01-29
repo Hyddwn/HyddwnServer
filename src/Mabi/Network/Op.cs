@@ -278,6 +278,8 @@ namespace Aura.Mabi.Network
 		public const int NpcShopSellItemR = 0x7153;
 		public const int ClearNpcShop = 0x7158; // Empties tabs
 		public const int AddToNpcShop = 0x7159; // Adds items while shop is open, works like open
+		public const int CheckDirectBankSelling = 0x715A;
+		public const int CheckDirectBankSellingR = 0x715B;
 		public const int OpenShopRemotely = 0x715C; // ?
 		public const int OpenShopRemotelyR = 0x715D; // ?
 		public const int OpenNpcShop = 0x715E;
@@ -688,7 +690,8 @@ namespace Aura.Mabi.Network
 		public const int DestroyExpiredItemsR = 0xABB6;
 
 		// [200100, NA229 (2016-04-16)] Shifted by +8, from ABBB to ABC3.
-		public const int AmmoRequired = 0xABC3;
+		// [200200, NA242 (2016-12-15)] Shifted by +2, from ABC3 to ABC5.
+		public const int AmmoRequired = 0xABC5;
 
 		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
 		// [200100, NA229 (2016-06-16)] Shifted by +8, from AC0E to AC16.

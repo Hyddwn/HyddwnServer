@@ -42,7 +42,7 @@ public class EavanPtjScript : GeneralScript
 	/// </summary>
 	private void GetPersonalReportAndDeadline(NpcScript npc, out int report, out int deadline)
 	{
-		int ptjid = npc.RandomPtj(JobType, QuestIds);
+		int ptjid = GetRandomPtj(npc.Player, JobType, QuestIds);
 		switch ((ptjid / 10) % 10) // Extract second least significant digit
 		{
 			case 0:
@@ -71,7 +71,7 @@ public class EavanPtjScript : GeneralScript
 		// Call PTJ method after intro if it's time to report
 		int report, deadline;
 		GetPersonalReportAndDeadline(npc, out report, out deadline);
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(report, deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(report, deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -109,20 +109,20 @@ public class EavanPtjScript : GeneralScript
 		int report, deadline;
 
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Are you working for someone else?<br/>Can you help me later with this job?"));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
 			GetPersonalReportAndDeadline(npc, out report, out deadline);
-			if (!npc.ErinnHour(report, deadline))
+			if (!ErinnHour(report, deadline))
 			{
 				if (result == QuestResult.Perfect)
 				{
@@ -150,7 +150,7 @@ public class EavanPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Are you feeling sick?<br/>You should rest instead of overworking yourself.<br/>But a promise is a promise. I am sorry, but I can't pay you this time."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -172,7 +172,7 @@ public class EavanPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -192,24 +192,24 @@ public class EavanPtjScript : GeneralScript
 
 		// Check if PTJ time
 		GetPersonalReportAndDeadline(npc, out report, out deadline);
-		if (!npc.ErinnHour(Start, deadline))
+		if (!ErinnHour(Start, deadline))
 		{
 			npc.Msg(L("It's not time to start work yet.<br/>Can you come back and ask for a job later?"));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("There are no more jobs today.<br/>I will give you another job tomorrow."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("Do you need some work to do?<br/>If you want, you can help me here.<br/>The pay is not that great, but I will definitely pay you for your work.<br/>The pay will be adjusted depending on how long you've worked for me.<p/>Would you like to try?");
 		else
 			msg = L("Ah, <username/>. Can you help me today?");
@@ -217,20 +217,20 @@ public class EavanPtjScript : GeneralScript
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Eavan's Adven. Assoc. Part-Time Job"),
 			L("Looking for help with delivery of goods in Adventurers' Association."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Thank you. I know you will be of great help to me.<br/>I want to make one thing clear before we start, though.<br/>You must report to me before the deadline whether or not your job is complete."));
 			else
 				npc.Msg(L("Thank you for your help in advance."));
 
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Do you have something else to do?<br/>Then, I will find someone else."));
 			else
 				npc.Msg(L("You seem busy today."));
@@ -278,16 +278,16 @@ public abstract class EavanDeliveryPtjBaseScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj"))
+		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj");
+		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
-		npc.Player.Inventory.Remove(ItemId, 1);
-		npc.Notice(LGivenNotice);
+		npc.Player.RemoveItem(ItemId, 1);
+		npc.Player.Notice(LGivenNotice);
 
 		RecipientAfterIntroDialogue(npc);
 
@@ -338,13 +338,13 @@ public abstract class EavanExtDeliveryPtjBaseScript : QuestScript
 
 	public async Task<HookResult> ClientAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj1");
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		npc.Player.GiveItem(ItemId);
-		npc.Notice(LReceivedNotice);
+		npc.Player.Notice(LReceivedNotice);
 
 		ClientAfterIntroDialogue(npc);
 
@@ -353,16 +353,16 @@ public abstract class EavanExtDeliveryPtjBaseScript : QuestScript
 
 	public async Task<HookResult> RecipientAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj2"))
+		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj2");
+		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 		npc.Player.RemoveItem(ItemId, 1);
-		npc.Notice(LGivenNotice);
+		npc.Player.Notice(LGivenNotice);
 
 		RecipientAfterIntroDialogue(npc);
 

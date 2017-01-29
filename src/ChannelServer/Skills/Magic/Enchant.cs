@@ -125,20 +125,23 @@ namespace Aura.Channel.Skills.Magic
 			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
 			if (optionSetData == null)
 			{
-				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant with unknown option set '{0}'.", optionSetId);
+				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant with unknown option set '{1}'.", creature.EntityId, optionSetId);
 				return false;
 			}
 
-			if (!optionSetData.IgnoreRank)
+			// Skill rank for enchants of r5 and above
+			if (!optionSetData.IgnoreRank && !optionSetData.AlwaysSuccess)
 			{
-				// Skill rank for enchants of r5 and above
 				if (optionSetData.Rank >= SkillRank.R5 && skill.Info.Rank < SkillRank.R5)
 				{
 					Send.Notice(creature, Localization.Get("Your Enchant skill must be Rank 5 or above to use this Enchant Scroll."));
 					return false;
 				}
+			}
 
-				// Sequence for enchants of r9 and above
+			// Sequence for enchants of r9 and above
+			if (!optionSetData.IgnoreRank)
+			{
 				if (optionSetData.Rank >= SkillRank.R9)
 				{
 					var checkSetId = (optionSetData.Type == UpgradeType.Prefix ? item.OptionInfo.Prefix : item.OptionInfo.Suffix);
@@ -219,7 +222,7 @@ namespace Aura.Channel.Skills.Magic
 			// Check target
 			if (!item.HasTag(optionSetData.Allow) || item.HasTag(optionSetData.Disallow))
 			{
-				Log.Warning("Enchant.Complete: Creature '{0:X16}' tried to use set '{0}' on invalid item '{1}'.", optionSetData.Id, item.Info.Id);
+				Log.Warning("Enchant.Complete: Creature '{0:X16}' tried to use set '{1}' on invalid item '{2}'.", creature.EntityId, optionSetData.Id, item.Info.Id);
 				goto L_End;
 			}
 

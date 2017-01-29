@@ -34,10 +34,10 @@ public class FindingTheLostEarringQuest : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "deliver") && npc.HasItem(Earring))
+		if (npc.Player.QuestActive(this.Id, "deliver") && npc.Player.HasItem(Earring))
 		{
-			npc.RemoveItem(Earring);
-			npc.CompleteQuest(this.Id);
+			npc.Player.RemoveItem(Earring);
+			npc.Player.CompleteQuest(this.Id);
 
 			npc.Msg(Hide.Name, L("(You have given Lost Earring to Duncan.)"));
 			npc.Msg(L("Ahh, that's the earring. Well done.<br/>I don't suppose it was... stuck in a snowman, was it?<br/>Ha, I figured as much. This isn't my earring, you see."));
@@ -59,7 +59,7 @@ public class FindingTheLostEarringQuest : QuestScript
 			return;
 
 		// Already done or in progress?
-		if (creature.Keywords.Has("g1_complete") || creature.Keywords.Has("g1"))
+		if (creature.HasKeyword("g1_complete") || creature.HasKeyword("g1"))
 			return;
 
 		// If human > level 5
@@ -67,8 +67,8 @@ public class FindingTheLostEarringQuest : QuestScript
 		{
 			Cutscene.Play("G1_0_a_Morrighan", creature, cutscene =>
 			{
-				creature.Keywords.Give("g1");
-				creature.Keywords.Give("g1_01");
+				creature.GiveKeyword("g1");
+				creature.GiveKeyword("g1_01");
 				creature.Quests.SendOwl(this.Id);
 			});
 		}

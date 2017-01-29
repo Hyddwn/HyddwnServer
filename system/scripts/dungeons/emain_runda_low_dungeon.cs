@@ -35,7 +35,7 @@ public class RundalBasicDungeonScript : DungeonScript
 				{
 					case 0: prefix = 20601; break; // Blessed
 					case 1: prefix = 20406; break; // Convenient
-					case 2: prefix = 30307; break; // Red Bear
+					case 2: suffix = 30307; break; // Red Bear
 				}
 				treasureChest.Add(Item.CreateEnchanted(18052, prefix, suffix));
 			}
@@ -65,6 +65,10 @@ public class RundalBasicDungeonScript : DungeonScript
 			drops.Add(new DropData(itemId: 63127, chance: 2, amount: 1, expires: 300)); // Rundal Adv. Fomor Pass for 3
 			drops.Add(new DropData(itemId: 63128, chance: 2, amount: 1, expires: 360)); // Rundal Adv. Fomor Pass
 			drops.Add(new DropData(itemId: 63105, chance: 3, amount: 1, expires: 480)); // Rundal Basic Fomor Pass
+		}
+
+		if (IsEnabled("RundalSirenDungeon"))
+		{
 			drops.Add(new DropData(itemId: 63103, chance: 3, amount: 1)); // Suspicious Fomor Pass
 		}
 

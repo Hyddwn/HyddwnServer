@@ -49,7 +49,7 @@ public class TracyScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Wow! You rescued the Goddess? You?<br/>Oh, man... That's awesome!");
 					Msg("...Not!");
@@ -92,13 +92,13 @@ public class TracyScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForOtherNpc())
+		if (Player.IsDoingPtjNotFor(NPC))
 		{
 			Msg(L("You... A part-timer?"));
 			Msg(L("You're kidding right?"));
 			Msg(L("You like part-time jobs? Are they fun? Well?<br/>Are they fun? I can't believe this!"));
 		}
-		else if (DoingPtjForNpc())
+		else if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("Hey, what happened to my logs?<br/>Remember, no firewood, no reward. OK?"));
 		}
@@ -138,12 +138,12 @@ public class TracyScript : NpcScript
 					Msg("Stop grinning. Don't give me that look any more. It's really disturbing.");
 					ModifyRelation(1, 0, 0);
 				}
-				else if (Favor > 40 && !HasKeyword("RP_Tracy_Complete"))
+				else if (Favor > 40 && !Player.HasKeyword("RP_Tracy_Complete"))
 				{
-					if (!HasItem(73102))
+					if (!Player.HasItem(73102))
 					{
-						GiveItem(73102); // Tracy's Hatchet
-						SystemNotice(L("Received Tracy's Hatchet from Tracy."));
+						Player.GiveItem(73102); // Tracy's Hatchet
+						Player.SystemNotice(L("Received Tracy's Hatchet from Tracy."));
 					}
 
 					Msg(L("I've always had a rough time because of my name.<br/>My childhood was a nightmare, ridiculed for having such a girly name. I mean, people still make fun of it, even now.<br/>If you go to Ciar Dungeon with this and a buddy, you'll see what had happened to me recently because of my name.<br/>Hahaha."));
@@ -163,7 +163,7 @@ public class TracyScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (IsEnabled("Carpentry") && !HasSkill(SkillId.Carpentry) && !HasQuest(20113))
+				if (IsEnabled("Carpentry") && !Player.HasSkill(SkillId.Carpentry) && !Player.HasQuest(20113))
 				{
 					// Learn skill Carpentry Mastery
 					// StartQuest(20113);
