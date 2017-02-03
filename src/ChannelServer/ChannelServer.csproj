@@ -232,6 +232,7 @@
     <Compile Include="Skills\Magic\Icebolt.cs" />
     <Compile Include="Skills\Magic\ManaShield.cs" />
     <Compile Include="Skills\Magic\SilentMove.cs" />
+    <Compile Include="Skills\Magic\Thunder.cs" />
     <Compile Include="Skills\Music\Composing.cs" />
     <Compile Include="Skills\Music\PlayingInstrument.cs" />
     <Compile Include="Skills\Music\Song.cs" />
