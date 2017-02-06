@@ -42,6 +42,11 @@ public class WhiteGrizzlyBearFieldBossScript : FieldBossBaseScript
 		return spawn;
 	}
 
+	protected virtual bool ShouldSpawn()
+	{
+		return IsEnabled("G2FieldBosses");
+	}
+
 	protected override void OnSpawnBosses()
 	{
 		// White Grizzly Bear

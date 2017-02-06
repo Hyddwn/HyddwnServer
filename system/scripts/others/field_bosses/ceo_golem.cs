@@ -23,8 +23,7 @@ public class GolemFieldBossScript : FieldBossBaseScript
 
 	protected virtual bool ShouldSpawn()
 	{
-		// Ceo's availability is tied to Emain Macha right now
-		return IsEnabled("EmainMacha");
+		return IsEnabled("G2FieldBosses");
 	}
 
 	protected override void OnSpawnBosses()
