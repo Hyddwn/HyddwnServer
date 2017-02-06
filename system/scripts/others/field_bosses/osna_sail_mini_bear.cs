@@ -22,7 +22,7 @@ public class MiniBearFieldBossScript : FieldBossBaseScript
 			spawn.LocationName = L("West Osna Sail");
 			spawn.Location = new Location("Ula_Osna_Sail/_Ula_Osna_Sail_C/mon_188");
 		}
-		
+
 		spawn.Time = DateTime.Now.AddHours(Random(3, 6));
 		spawn.LifeSpan = TimeSpan.FromMinutes(30);
 
@@ -47,6 +47,6 @@ public class MiniBearFieldBossScript : FieldBossBaseScript
 	{
 		BossNotice(L("{0} has defeated {1} that appeared at {2}!"), killer.Name, Spawn.BossName, Spawn.LocationName);
 	}
-	
+
 	//TODO: Add NPC hooks for Mini Bear Field Boss 
 }

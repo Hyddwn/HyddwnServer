@@ -167,8 +167,8 @@ public abstract class FieldBossBaseScript : GeneralScript
 
 		var npc = new NPC(raceId);
 		npc.Finish += this.OnMinionFinished;
-        
-        if (title != 0)
+
+		if (title != 0)
 		{
 			npc.Titles.Enable((ushort)title);
 			npc.Titles.ChangeTitle((ushort)title, false);

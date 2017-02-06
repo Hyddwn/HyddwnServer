@@ -33,7 +33,7 @@ public class WhiteGrizzlyBearFieldBossScript : FieldBossBaseScript
 			case 4:
 				spawn.LocationName = L("North-East Sen Mag Plains");
 				spawn.Location = new Location("Ula_Sen_Mag/_Ula_Sen_Mag_C1/mon131");
-				break;	
+				break;
 		}
 
 		spawn.Time = DateTime.Now.AddHours(Random(3, 6));
