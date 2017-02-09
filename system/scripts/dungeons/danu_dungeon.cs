@@ -41,7 +41,7 @@ public class FiodhDungeonRouteScript : DungeonScript
 			}
 		}
         
-        // Fiodh Int 2 Pink Gem Pass
+		// Fiodh Int 2 Pink Gem Pass
 		if (item.Info.Id == 90017) // Pink Gem Pass for 2
 		{
 			dungeonName = "gairech_fiodh_middle_2_dungeon";
@@ -63,7 +63,7 @@ public class FiodhDungeonRouteScript : DungeonScript
 			}
 		}
         
-        // Fiodh Int 4 Pink Gem Pass
+		// Fiodh Int 4 Pink Gem Pass
 		if (item.Info.Id == 90018) // Pink Gem Pass for 4
 		{
 			dungeonName = "gairech_fiodh_middle_4_dungeon";
