@@ -59,8 +59,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			creature.StopMove();
-			var creaturePos = creature.GetPosition();
+			var creaturePos = creature.StopMove();
 
 			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Prepare, (DateTime.Now.Ticks / 10000), skill.RankData.LoadTime);
 
@@ -78,7 +77,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Ready(Creature creature, Skill skill, Packet packet)
 		{
-			skill.Stacks += 1;
+			skill.Stacks = 1;
 			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Ready);
 
 			Send.SkillReady(creature, skill.Info.Id);
@@ -102,19 +101,17 @@ namespace Aura.Channel.Skills.Combat
 			if (initTarget == null)
 				return CombatSkillResult.InvalidTarget;
 
-			attacker.StopMove();
-
-			var attackerPos = attacker.GetPosition();
+			var attackerPos = attacker.StopMove();
 			var initTargetPos = initTarget.GetPosition();
-
-			// Check for Collisions
-			if (attacker.Region.Collisions.Any(attackerPos, initTargetPos))
-				return CombatSkillResult.InvalidTarget;
 
 			// Check Range
 			var range = (int)skill.RankData.Var2;
 			if (!attacker.GetPosition().InRange(initTargetPos, range))
 				return CombatSkillResult.OutOfRange;
+
+			// Check for Collisions
+			if (attacker.Region.Collisions.Any(attackerPos, initTargetPos))
+				return CombatSkillResult.InvalidTarget;
 
 			initTarget.StopMove();
 
@@ -123,7 +120,7 @@ namespace Aura.Channel.Skills.Combat
 
 			// Skill Use
 			Send.SkillUseStun(attacker, skill.Info.Id, AttackerStun, 1);
-			skill.Stacks -= 1;
+			skill.Stacks = 0;
 
 			// Prepare Combat Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
