@@ -22,7 +22,7 @@ public class MathDungeonScript : DungeonScript
 			return true;
 		}
         
-        // Math Adv. Fomor Pass for 2 (Test) Pass
+		// Math Adv. Fomor Pass for 2 (Test) Pass
 		if (item.Info.Id == 90019) // (Test) Advanced Fomor Pass for 2
 		{
 			dungeonName = "dunbarton_math_high_2_dungeon";
@@ -42,7 +42,7 @@ public class MathDungeonScript : DungeonScript
 			return true;
 		}
         
-        // Math Adv. Fomor Pass for 3 (Test) Pass
+		// Math Adv. Fomor Pass for 3 (Test) Pass
 		if (item.Info.Id == 90020) // (Test) Advanced Fomor Pass for 3
 		{
 			dungeonName = "dunbarton_math_high_3_dungeon";
