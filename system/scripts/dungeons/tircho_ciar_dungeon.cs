@@ -53,6 +53,13 @@ public class CiarDungeonScript : DungeonScript
 			}
 		}
 
+		// Ciar Int 2 Pink Gem Pass
+		if (item.Info.Id == 90017) // Pink Gem Pass for 2
+		{
+			dungeonName = "tircho_ciar_middle_2_dungeon";
+			return true;
+		}
+
 		// Ciar Int 4
 		if (item.Info.Id == 63125) // Ciar Intermediate Fomor Pass for Four
 		{
@@ -66,6 +73,13 @@ public class CiarDungeonScript : DungeonScript
 				Send.Notice(creature, L("To enter this dungeon, you need a party with 4 members."));
 				return false;
 			}
+		}
+
+		// Ciar Int 4 Pink Gem Pass
+		if (item.Info.Id == 90018) // Pink Gem Pass for 4
+		{
+			dungeonName = "tircho_ciar_middle_4_dungeon";
+			return true;
 		}
 
 		// Wizard's Note (G1)
