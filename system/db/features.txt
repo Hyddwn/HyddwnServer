@@ -108,6 +108,9 @@
 		
 		// Enables Math Avanced dungeon
 		{ name: "MathAdvanced", enabled: true },
+		
+		// Enables Ceo Golem, White Grizzly and Mini Bear field bosses
+		{ name: "G2FieldBosses", enabled: true },
 	]},
 	
 	// Season 2

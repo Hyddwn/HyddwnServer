@@ -159,7 +159,7 @@ public abstract class FieldBossBaseScript : GeneralScript
 		return SpawnMinion(raceId, xOffset, yOffset);
 	}
 
-	protected Creature SpawnMinion(int raceId, int xOffset, int yOffset)
+	protected Creature SpawnMinion(int raceId, int xOffset, int yOffset, int title = 0)
 	{
 		var regionId = Spawn.Location.RegionId;
 		var x = Spawn.Location.X + xOffset;
@@ -167,6 +167,12 @@ public abstract class FieldBossBaseScript : GeneralScript
 
 		var npc = new NPC(raceId);
 		npc.Finish += this.OnMinionFinished;
+
+		if (title != 0)
+		{
+			npc.Titles.Enable((ushort)title);
+			npc.Titles.ChangeTitle((ushort)title, false);
+		}
 
 		npc.Spawn(regionId, x, y);
 		Send.SpawnEffect(SpawnEffect.Monster, regionId, x, y, npc, npc);

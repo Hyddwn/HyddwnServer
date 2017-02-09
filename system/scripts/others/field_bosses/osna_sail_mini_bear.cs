@@ -1,19 +1,27 @@
 ﻿//--- Aura Script -----------------------------------------------------------
-// Ceo Island Field Boss
+// Osna Sail Field Boss
 //--- Description -----------------------------------------------------------
-// Handles spawning and NPC hooks for Ceo Island Golem Boss
+// Handles spawning and NPC hooks for the Mini Bear field boss
 //---------------------------------------------------------------------------
 
-public class GolemFieldBossScript : FieldBossBaseScript
+public class MiniBearFieldBossScript : FieldBossBaseScript
 {
 	protected override SpawnInfo GetNextSpawn()
 	{
 		var spawn = new SpawnInfo();
 
-		spawn.BossName = L("Golem");
+		spawn.BossName = L("Mini Bear");
 
-		spawn.LocationName = L("Southeast Ceo Island");
-		spawn.Location = new Location("Ula_Emainmacha_Ceo/_Ula_Emainmacha_Ceo_E2/mon121");
+		if (Random(100) < 50)
+		{
+			spawn.LocationName = L("East Osna Sail");
+			spawn.Location = new Location("Ula_Osna_Sail/_Ula_Osna_Sail_C/mon_184");
+		}
+		else
+		{
+			spawn.LocationName = L("West Osna Sail");
+			spawn.Location = new Location("Ula_Osna_Sail/_Ula_Osna_Sail_C/mon_188");
+		}
 
 		spawn.Time = DateTime.Now.AddHours(Random(3, 6));
 		spawn.LifeSpan = TimeSpan.FromMinutes(30);
@@ -28,14 +36,14 @@ public class GolemFieldBossScript : FieldBossBaseScript
 
 	protected override void OnSpawnBosses()
 	{
-		// Golem (Black)
-		SpawnBoss(130046, 0, 0);
+		// Brown Bear (Mini)
+		SpawnBoss(70102, 0, 0, 30002);
 
-		// Golems (Red)
-		SpawnMinion(130006, 0, 1000);
-		SpawnMinion(130006, 0, -1000);
-		SpawnMinion(130006, 1000, 0);
-		SpawnMinion(130006, -1000, 0);
+		// Sheep Wolves
+		SpawnMinion(20020, 0, 300, 30001);
+		SpawnMinion(20020, 0, -300, 30004);
+		SpawnMinion(20020, 300, 0, 30005);
+		SpawnMinion(20020, -300, 0, 30007);
 
 		BossNotice(L("{0} has appeared at {1}!!"), Spawn.BossName, Spawn.LocationName);
 	}
@@ -45,5 +53,5 @@ public class GolemFieldBossScript : FieldBossBaseScript
 		BossNotice(L("{0} has defeated {1} that appeared at {2}!"), killer.Name, Spawn.BossName, Spawn.LocationName);
 	}
 
-	//TODO: Add NPC hooks for Golem Field Boss 
+	//TODO: Add NPC hooks for Mini Bear Field Boss 
 }
