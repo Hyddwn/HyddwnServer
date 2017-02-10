@@ -65,6 +65,7 @@ namespace Aura.Channel.Network.Sending
 				else if (p is ulong) packet.PutULong((ulong)p);
 				else if (p is float) packet.PutFloat((float)p);
 				else if (p is string) packet.PutString((string)p);
+				else if (p is DateTime) packet.PutLong((DateTime)p);
 				else
 					throw new Exception("Unsupported effect parameter: " + p.GetType());
 			}
