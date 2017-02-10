@@ -432,6 +432,7 @@ namespace Aura.Channel.Skills.Magic
 		{
 			skill.Stacks = 0;
 			Send.Effect(creature, Effect.StackUpdate, "lightningbolt", (byte)skill.Stacks, (byte)0);
+			Send.Effect(creature, Effect.CancelMagic, "thunder", (short)skill.Info.Id);
 			Send.MotionCancel2(creature, 1);
 		}
 

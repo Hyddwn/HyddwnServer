@@ -70,6 +70,12 @@ namespace Aura.Mabi.Const
 		public static readonly int UseMagic = 14;
 
 		/// <summary>
+		/// Removes int magic effects?
+		/// string:effectName, short:skillId
+		/// </summary>
+		public static readonly int CancelMagic = 15;
+
+		/// <summary>
 		/// b:type, i|s:song, i:?, si:?, i:?, b:quality?, b:instrument, b:?, b:?, b:loops
 		/// </summary>
 		public static readonly int PlayMusic = 17;
