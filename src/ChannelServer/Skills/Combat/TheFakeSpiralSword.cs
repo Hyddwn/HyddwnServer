@@ -23,12 +23,13 @@ namespace Aura.Channel.Skills.Combat
 	/// <summary>
 	/// Skill handler for The Fake Spiral Sword
 	/// </summary>
+	/// <remarks>
 	/// Var1: Damage Percentage ?
 	/// Var2: Attack Range ?
 	/// Var3: Explosion Radius ?
 	/// Var4: ?
 	/// Var5: ?
-	/// <remarks>
+	/// 
 	/// There isn't much data on this skill, so skill variable use
 	/// is mostly based on speculation from gameplay and packet data.
 	/// </remarks>
@@ -59,10 +60,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			var creaturePos = creature.StopMove();
-
 			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Prepare, (DateTime.Now.Ticks / 10000), skill.RankData.LoadTime);
-
 			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
 			return true;
@@ -78,8 +76,8 @@ namespace Aura.Channel.Skills.Combat
 		public bool Ready(Creature creature, Skill skill, Packet packet)
 		{
 			skill.Stacks = 1;
-			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Ready);
 
+			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Ready);
 			Send.SkillReady(creature, skill.Info.Id);
 
 			return true;
@@ -217,7 +215,6 @@ namespace Aura.Channel.Skills.Combat
 		public void Complete(Creature creature, Skill skill, Packet packet)
 		{
 			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Complete);
-
 			Send.SkillComplete(creature, skill.Info.Id);
 		}
 
@@ -230,7 +227,6 @@ namespace Aura.Channel.Skills.Combat
 		public void Cancel(Creature creature, Skill skill)
 		{
 			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Cancel);
-
 			Send.SkillCancel(creature);
 		}
 	}
