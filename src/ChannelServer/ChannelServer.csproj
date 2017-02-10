@@ -173,6 +173,7 @@
     <Compile Include="Skills\Base\StandardPrepareHandler.cs" />
     <Compile Include="Skills\Base\StartStopSkillHandler.cs" />
     <Compile Include="Skills\CombatAction.cs" />
+    <Compile Include="Skills\Combat\TheFakeSpiralSword.cs" />
     <Compile Include="Skills\Combat\CombatMastery.cs" />
     <Compile Include="Skills\Combat\Counterattack.cs" />
     <Compile Include="Skills\Combat\CriticalHit.cs" />
