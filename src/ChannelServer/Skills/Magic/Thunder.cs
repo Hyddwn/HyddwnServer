@@ -431,7 +431,7 @@ namespace Aura.Channel.Skills.Magic
 		public void Cancel(Creature creature, Skill skill)
 		{
 			skill.Stacks = 0;
-			Send.Effect(creature, Effect.StackUpdate, "firebolt", (byte)skill.Stacks, (byte)0);
+			Send.Effect(creature, Effect.StackUpdate, "lightningbolt", (byte)skill.Stacks, (byte)0);
 			Send.MotionCancel2(creature, 1);
 		}
 
