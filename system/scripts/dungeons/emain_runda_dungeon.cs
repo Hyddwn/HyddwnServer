@@ -29,6 +29,13 @@ public class RundalDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Rundal Adv. Fomor Pass for 2 (Test) Pass
+		if (item.Info.Id == 90019) // (Test) Advanced Fomor Pass for 2
+		{
+			dungeonName = "emain_runda_high_2_dungeon";
+			return true;
+		}
+
 		// Rundal Adv. Fomor Pass for 3
 		if (item.Info.Id == 63127)
 		{
@@ -38,6 +45,13 @@ public class RundalDungeonScript : DungeonScript
 				return false;
 			}
 
+			dungeonName = "emain_runda_high_3_dungeon";
+			return true;
+		}
+
+		// Rundal Adv. Fomor Pass for 3 (Test) Pass
+		if (item.Info.Id == 90020) // (Test) Advanced Fomor Pass for 3
+		{
 			dungeonName = "emain_runda_high_3_dungeon";
 			return true;
 		}
