@@ -4515,6 +4515,15 @@ namespace Aura.Channel.World.Entities
 			var items = this.Inventory.GetMainEquipment(a => a.HasTag(tag));
 			return items.Any();
 		}
+
+		/// <summary>
+		/// Plays sound for creature.
+		/// </summary>
+		/// <param name="fileName"></param>
+		public void PlaySound(string fileName)
+		{
+			Send.PlaySound(this, fileName);
+		}
 	}
 
 	public enum TargetableOptions
