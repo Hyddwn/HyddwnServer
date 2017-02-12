@@ -1660,6 +1660,12 @@ namespace Aura.Channel.World.Entities
 		/// Returns collection list, based on meta data "COLLIST", as char
 		/// array of "1" and "0" chars, for easy checking and modification.
 		/// </summary>
+		/// <remarks>
+		/// As the 1s and 0s make up bytes, the array is a multitude of 8,
+		/// so make sure to check to check the amount of 1s to check for
+		/// completion, and not if all are 1, as that's not necessarily
+		/// correct.
+		/// </remarks>
 		/// <returns></returns>
 		public char[] GetCollectionList()
 		{

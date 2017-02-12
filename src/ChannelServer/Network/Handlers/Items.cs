@@ -1190,8 +1190,8 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			var collectionList = book.GetCollectionList();
-			var collected = collectionList.Count(a => a == '1');
-			if (collected >= max)
+			var complete = (collectionList.Count(a => a == '1') >= max);
+			if (complete)
 			{
 				Send.MsgBox(creature, Localization.Get("The collection book is complete."));
 				Send.CollectionAddItemR(creature, false);
@@ -1227,14 +1227,16 @@ namespace Aura.Channel.Network.Handlers
 			collectionList[itemIndex] = '1';
 
 			// Update items
-			if (collectionList.All(a => a == '1'))
+			creature.Inventory.Remove(item);
+
+			complete = (collectionList.Count(a => a == '1') >= max);
+			if (complete)
 			{
 				script.OnComplete(creature, book);
 				book.MetaData1.SetByte("COLFLAG", 1); // 1 = can collect
 			}
 
 			book.SetCollectionList(collectionList);
-			creature.Inventory.Remove(item);
 			Send.ItemUpdate(creature, book);
 
 			// Response
@@ -1281,8 +1283,8 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			var collectionList = book.GetCollectionList();
-			var collected = collectionList.Count(a => a == '1');
-			if (collected < max)
+			var complete = (collectionList.Count(a => a == '1') >= max);
+			if (!complete)
 			{
 				Send.MsgBox(creature, Localization.Get("The collection book is not complete."));
 				Send.CollectionGetRewardR(creature, false);
