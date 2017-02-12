@@ -18,7 +18,7 @@ public class FireballQuestScript : QuestScript
 		SetDescription(L("In order to learn the Fireball, you'll need to complete the  'Book of Fireball'. Collect pages 1-10 of the 'Book of Fireball' and enchant each page in order. -Stewart-"));
 		SetCancelable(true);
 
-		SetIcon(QuestIcon.Archery);
+		SetIcon(QuestIcon.Magic);
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.Skill);
 
