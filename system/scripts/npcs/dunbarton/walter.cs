@@ -47,14 +47,14 @@ public class WalterScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("...");
 					Msg("What do you think about my daughter...?");
 					Msg("...I didn't mean to give you the book so late... I apologize.");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("...I sense you are an amazing person.");
 				}
@@ -139,7 +139,11 @@ public class WalterScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (Player.IsDoingPtjFor(NPC))
+		{
+			Msg(FavorExpression(), L("Are you a part-timer?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("...What do you want?"));
 		}
@@ -181,7 +185,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg(FavorExpression(), "If you need something, you're at the right place.<br/>But you'll have to go down to Nerys' Shop for weapons.<br/>The Weapons Shop.");
 				ModifyRelation(Random(2), 0, Random(3));
 
@@ -189,16 +193,12 @@ public class WalterScript : NpcScript
 				// There is news about a Goblin Bandits assault at North Plains of Dunbarton.
 				break;
 
-			case "about_arbeit":
-				Msg("Unimplemented");
-				break;
-
 			case "shop_misc":
 				Msg("Right over here.");
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("Are you talking about the Restaurant?");
 				break;
 
@@ -215,7 +215,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("There's no such place here.<br/>Maybe in the Weapons Shop...");
 				break;
 
@@ -264,7 +264,7 @@ public class WalterScript : NpcScript
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_healing");
+				Player.GiveKeyword("shop_healing");
 				Msg("Go near the Healer's House.");
 				break;
 
@@ -316,7 +316,6 @@ public class WalterShop : NpcShopScript
 		Add("General Goods", 2024);       // Item Bag (7x6)
 		Add("General Goods", 2026);       // Item Bag (44)
 		Add("General Goods", 2029);       // Item Bag (8x6)
-		Add("General Goods", 2038);       // Item Bag (8X10)
 		Add("General Goods", 18028);      // Folding Glasses
 		Add("General Goods", 18158);      // Conky Glasses
 		Add("General Goods", 40004);      // Lute
@@ -325,8 +324,6 @@ public class WalterShop : NpcShopScript
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
-		Add("General Goods", 40215);      // Small Drum
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -392,6 +389,9 @@ public class WalterShop : NpcShopScript
 
 		Add("Event"); // Empty
 
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045); // Handicraft Kit
+
 		if (IsEnabled("PetBirds"))
 			Add("General Goods", 40093); // Pet Instructor Stick
 
@@ -399,6 +399,11 @@ public class WalterShop : NpcShopScript
 		{
 			Add("General Goods", 51227, 1);  // Ticking Quiz Bomb x1
 			Add("General Goods", 51227, 20); // Ticking Quiz Bomb x20
+		}
+
+		if (IsEnabled("PercussionInstruments"))
+		{
+			Add("General Goods", 40215); // Small Drum
 		}
 
 		if (IsEnabled("Kiosk"))
@@ -413,6 +418,9 @@ public class WalterShop : NpcShopScript
 			Add("General Goods", 91366, 1);  // Seal Scroll (30-day) x1
 			Add("General Goods", 91366, 10); // Seal Scroll (30-day) x10
 		}
+
+		if (IsEnabled("PremiumBags"))
+			Add("General Goods", 2038); // Item Bag (8X10)
 
 		if (IsEnabled("Singing"))
 		{

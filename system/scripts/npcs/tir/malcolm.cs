@@ -23,10 +23,14 @@ public class MalcolmScript : NpcScript
 		EquipItem(Pocket.RightHand1, 40491, 0x00808080, 0x00000000, 0x00000000);
 		EquipItem(Pocket.LeftHand1, 40017, 0x003F7246, 0x00C0B584, 0x003F4B40);
 
-		AddPhrase("Maybe I should wrap it up and call it a day...");
+		AddPhrase("Maybe I should wrap it up and call it a day... (confused)");
 		AddPhrase("Aww! My legs hurt. My feet are all swollen from standing all day long.");
 		AddPhrase("I wonder what Nora is doing now...");
 		AddPhrase("These travelers will buy something sooner or later.");
+		AddPhrase("So much work, so little time... I'm in trouble!");
+		AddPhrase("Dear love, you live right next door, yet I cannot see you... I can't sleep at night thinking of you...");
+		AddPhrase("Ha ha, look at what that person is wearing. (laugh)");
+		AddPhrase("It isn't easy running a shop alone... Maybe I should hire a clerk.");
 	}
 
 	protected override async Task Talk()
@@ -49,7 +53,7 @@ public class MalcolmScript : NpcScript
 					string message1 = null;
 					string message2 = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message2 = L("I am an old friend of Trefor.<br/>So please receive my small token of appreciation.");
@@ -72,22 +76,22 @@ public class MalcolmScript : NpcScript
 
 						Player.Vars.Perm["malcolm_title_gift"] = today;
 
-						GiveItem(61001); // Score Scroll
-						Notice(L("Received Score Scroll from Malcolm."));
-						SystemMsg(L("Received Score Scroll from Malcolm."));
+						Player.GiveItem(61001); // Score Scroll
+						Player.Notice(L("Received Score Scroll from Malcolm."));
+						Player.SystemMsg(L("Received Score Scroll from Malcolm."));
 
 						if (message2 != null)
 							Msg(message2);
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("...*Sigh*");
 					Msg("Has your life gotten any better after saving the Goddess?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("You're the... Guardian of Erinn?<br/>I don't know what you do exactly,<br/>but you seem to leave<br/>a really good impression on people.");
 					Msg("...I'm a bit jealous...");
@@ -157,7 +161,7 @@ public class MalcolmScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("How are you doing on your work?<br/>Please keep up the good work."));
 		}
@@ -190,15 +194,83 @@ public class MalcolmScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("shop_misc");
-				Msg(FavorExpression(), "I run this General Shop. I sell various goods.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I think you know this already, <username/>, but anyway, I'm in love with Nora.<br/>The problem is, she doesn't acknowledge my feelings for her<br/>and treats all those travelers with so much kindness that I become really jealous.<br/>I try to understand that it's a part of her job but I can't help feeling what I feel.");
+					Msg("Can you understand the pain I am feeling?");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I have an older brother who's away on a journey.<br/>I haven't heard from him for a long time and I miss him a lot.<br/>He was always very nice to me...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "These days, there are so many people that all the goods are nearly sold out.<br/>I'm making as many as I can to keep up the stock but there is a limit to what I can make alone.<br/>And since I can't afford to hire someone... I ask you for your understanding on any shortages we may have.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "You're poking your nose into my business.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Why do you keep asking these questions? Stop it.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "You like meddling in other people's business, don't you? It won't do you any good.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Player.GiveKeyword("shop_misc");
+					Msg(FavorExpression(), "I run this General Shop. I sell various goods.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				Msg(FavorExpression(), "Tir Chonaill is a peaceful town.<br/>So when something happens, everyone in the town knows it right away.<br/>I warn you, some were humiliated because of that...<br/>Nothing is as important as being responsible for your own actions.");
-				Msg("If you behave like Tracy, you'll be in big trouble.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Bebhinn is too much of a gossip.<br/>Although I understand her, it definitely looks bad.<br/>What do you think, <username/>?");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "As more travelers come to our town,<br/>the Inn is having more customers as well.<br/>It's always so crowded and noisy<br/>that I have a hard time sleeping at night.");
+					Msg("Nora must be so tired from all the work...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "They say that the Bank isn't fully in service yet.<br/>I heard that there's a problem with the transportation between other towns.<br/>By the way, have you heard any rumors about Nora dating someone?<br/>So many people have come to this town and I'm starting to get nervous.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "I haven't heard many rumors because I usually stay home working.<br/>What difference does it make to know the rumors going around anyway?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Do you know that people speak ill of you?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Why are you so obsessed with rumors?<br/>Don't you think you should have your own life and your own way of living it?");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Msg(FavorExpression(), "Tir Chonaill is a peaceful town.<br/>So when something happens, everyone in the town knows it right away.<br/>I warn you, some were humiliated because of that...<br/>Nothing is as important as being responsible for your own actions.");
+					Msg("If you behave like Tracy, you'll be in big trouble.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -219,14 +291,14 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "shop_healing":
-				GiveKeyword("graveyard");
+				Player.GiveKeyword("graveyard");
 				Msg("Health is the most valuable thing to have.<br/>What use can wealth and fame be<br/>when you're bedridden or buried dead?<br/>We should try to stay healthy all the time.");
 				Msg("In my opinion, avoiding anything that can be dangerous<br/>is the top priority.<br/>A penny for your thoughts!");
 				Msg("Oh, I'm sorry.<br/>I forgot to tell you where Dilys lives.<br/>Go up the road and you'll see the Healer's House in no time.");
 				break;
 
 			case "shop_inn":
-				GiveKeyword("windmill");
+				Player.GiveKeyword("windmill");
 				Msg("It's right next door. See the building down there?<br/>It's just down the road.<br/>The Windmill nearby is worth watching, so if you have time, go take a look.<br/>Oh, and... Don't forget to see Piaras at the Inn.");
 				Msg("Um... Nora... You know, the girl standing in front of the Inn.<br/>Can you... Maybe... Umm... Say hello to her for me?");
 				break;
@@ -237,7 +309,7 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("brook");
+				Player.GiveKeyword("brook");
 				Msg("Many people seem to be confusing the General Shop with the Blacksmith's Shop.<br/>I sell general goods, and Ferghus usually sells<br/>weapons or armor made from iron.<br/>His shop is near the Adelia Stream at the entrance of town.");
 				break;
 
@@ -257,31 +329,31 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("No one is as good as Caitin when it comes to tailoring.<br/>Have you talked to her?");
 				Msg("She's at the Grocery Store just out the door.<br/>You should talk to her about it<br/>if you haven't already.");
 				break;
 
 			case "skill_magnum_shot":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("I'm sure I've heard about it before.<br/>It's a powerful attack you can shoot with a bow...<br/>Travelers mention it a lot.");
 				Msg("They say Trefor up the road<br/>and Ranald at the School<br/>can teach it.");
 				Msg("Huh? Are you asking me whether I have learned it?<br/>Frankly speaking, I'm not interested.<br/>Bows are not of much use in daily life, you know.<br/>But if you're interested, why not go learn it yourself?");
 				break;
 
 			case "skill_counter_attack":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Um... I don't know what it is,<br/>but it sounds like a combat skill.<br/>How about asking Ranald at the School?");
 				Msg("I'm sure he'll be a lot more helpful than me.");
 				break;
 
 			case "skill_smash":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("I did see people using the Smash skill.<br/>But that doesn't mean I know anything about it...<br/>Ask Ranald, the combat instructor at the School.<br/>He'd definitely know more about it.");
 				break;
 
 			case "skill_gathering":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("Sounds like you're trying to do some gathering.<br/>You can't do much with your bare hands. You need the right tools.<br/>I happen to sell some Gathering Knives. Would you like to buy one?");
 				Msg("If you don't want any,<br/>there are other blade weapons at the Blacksmith's Shop...");
 				break;
@@ -292,12 +364,12 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Go down the road behind Caitin's Grocery Store and you'll find it soon.<br/>If it weren't for the reservoir,<br/>the crops wouldn't grow.<br/>It sure does play a vital role in our town's agriculture.");
 				break;
 
 			case "farmland":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("The farmland is near the School.<br/>How come so many travelers are interested in it?<br/>There's nothing special about it.");
 				Msg("What's more, their careless strolls through the farmland<br/>are damaging the crops...");
 				break;
@@ -308,7 +380,7 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "brook":
-				GiveKeyword("pool");
+				Player.GiveKeyword("pool");
 				Msg("Adelia Stream is like water of life<br/>to our town, Tir Chonaill.<br/>To begin with, the reservoir's water is mainly from the Adelia Stream...");
 				Msg("The water from the stream plays an important role,<br/>providing drinking water for us and our sheep, but also water for housework too.<br/>My words can't fully describe the importance of it... Hmmph.");
 				break;
@@ -324,7 +396,7 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "school":
-				GiveKeyword("pool");
+				Player.GiveKeyword("pool");
 				Msg("The School?<br/>You can get there by going down the road towards the Bank and to the reservoir.<br/>If you still can't find it, right-click your mouse and look around.<br/>Scrolling the mouse wheel would help too.");
 				Msg("By the way, are you a student?");
 				break;
@@ -340,20 +412,20 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("Weapons Shop? Well...<br/>If you're looking for weapons, try the Blacksmith's Shop.<br/>There aren't any Weapons Shops in this town.");
 				Msg("Is it just me? Or are you trying to boast about<br/>having come from a city?");
 				break;
 
 			case "shop_cloth":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("If you're looking for clothes, you can buy them here.<br/>This may be a General Shop, but I do have some simple clothes in stock.<br/>We also have lots of clothes for ladies. Why don't you take a look around?");
 				Msg("...");
 				Msg("Um... Why do you look so doubtful?");
 				break;
 
 			case "shop_bookstore":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Ah, are you looking for books?<br/>I once brought in a lot of books, but nobody bought them and I lost a lot of money.<br/>Since then, I haven't been stocking books.");
 				Msg("At least some books on the Composing skill did sell pretty well.");
 				break;
@@ -376,7 +448,7 @@ public class MalcolmScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("A bow? Well... I could make and sell them...<br/>Actually, I did sell them before, but I felt bad for Ferghus<br/>so I just stopped selling them.");
 				Msg("You should just go to Ferghus' Blacksmith's Shop.<br/>After all, you need to buy arrows,<br/>and bows are useless without them.");
 				break;
@@ -407,15 +479,64 @@ public class MalcolmScript : NpcScript
 				break;
 
 			default:
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Sorry, I pretty much don't know anything about it.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Um... I'm not familiar with that subject. Sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Stop it.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "I don't know. Go ask someone else.");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"I don't know.",
+						"Hm... Beats me.",
+						"Well... I don't have much to say about it.",
+						"I think I heard about it but... I can't remember.",
+						"NPCs don't have a conversation book.<br/>So I won't remember the things you told me...",
+						"Sorry, I don't know.<br/>Hm... Maybe I should have a travel diary to write things down."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Wow!<br/>May I keep this for a while?<br/>Um... I'm really interested in this."));
+				Msg(L("You say you're giving it to me?<br/>Thank you, thank you so much."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Why, thank you!"));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("Oh, thanks."));
+				break;
+
+			case GiftReaction.Dislike:
 				RndMsg(
-					"I don't know.",
-					"Hm... Beats me.",
-					"Well... I don't have much to say about it.",
-					"I think I heard about it but... I can't remember.",
-					"NPCs don't have a conversation book.<br/>So I won't remember the things you told me...",
-					"Sorry, I don't know.<br/>Hm... Maybe I should have a travel diary to write things down."
+					L("Eh... Um, thanks."),
+					L("Oh... well... This present is a bit odd.")
 				);
-				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}
@@ -431,7 +552,6 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 2006);       // Big Gold Pouch
 		Add("General Goods", 2024);       // Item Bag (7x6)
 		Add("General Goods", 2029);       // Item Bag (8x6)
-		Add("General Goods", 2038);       // Item Bag (8X10)
 		Add("General Goods", 18029);      // Wood-rimmed Glasses
 		Add("General Goods", 18029);      // Wood-rimmed Glasses
 		Add("General Goods", 19001);      // Robe
@@ -447,11 +567,7 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40045);      // Fishing Rod
-		Add("General Goods", 40214);      // Big Drum
-		Add("General Goods", 40214);      // Big Drum
-		Add("General Goods", 40214);      // Big Drum
 		Add("General Goods", 60034, 300); // Bait Tin x300
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -516,10 +632,20 @@ public class MalcolmShop : NpcShopScript
 
 		Add("Event");
 
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045); // Handicraft Kit
+
 		if (IsEnabled("PetBirds"))
 		{
 			Add("Shoes && Gloves", 16024); // Pet Instructor Glove
 			Add("General Goods", 40093);   // Pet Instructor Stick
+		}
+
+		if (IsEnabled("PercussionInstruments"))
+		{
+			Add("General Goods", 40214); // Big Drum
+			Add("General Goods", 40214); // Big Drum
+			Add("General Goods", 40214); // Big Drum
 		}
 
 		if (IsEnabled("ItemSeal2"))
@@ -531,6 +657,9 @@ public class MalcolmShop : NpcShopScript
 			Add("General Goods", 91366, 1);  // Seal Scroll (30-day) x1
 			Add("General Goods", 91366, 10); // Seal Scroll (30-day) x10
 		}
+
+		if (IsEnabled("PremiumBags"))
+			Add("General Goods", 2038); // Item Bag (8X10)
 
 		if (IsEnabled("Singing"))
 		{

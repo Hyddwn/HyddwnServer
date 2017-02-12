@@ -323,7 +323,7 @@ public class MoonGateScript : GeneralScript
 		MoonGate gate;
 		if (!gates.TryGetValue(prop.EntityId, out gate))
 		{
-			Send.Notice(creature, Localization.Get("This moon gate is currently not operable. Please report."));
+			Send.Notice(creature, L("This moon gate is currently not operable. Please report."));
 			return;
 		}
 
@@ -339,11 +339,17 @@ public class MoonGateScript : GeneralScript
 			// Add keyword if creature doesn't have it yet, this "marks" the
 			// moon gate as potential target in the new system, you can only
 			// warp to those you have visited before.
-			if (!creature.Keywords.Has(gate.Keyword))
-				creature.Keywords.Give(gate.Keyword);
+			if (!creature.HasKeyword(gate.Keyword))
+				creature.GiveKeyword(gate.Keyword);
+
+			// Enabled/Disable Ceo gate
+			if (!creature.HasKeyword("_moontunnel_ceoisland") && IsEnabled("CeoMoonTunnel"))
+				creature.GiveKeyword("_moontunnel_ceoisland");
+			else if (creature.HasKeyword("_moontunnel_ceoisland") && !IsEnabled("CeoMoonTunnel"))
+				creature.RemoveKeyword("_moontunnel_ceoisland");
 
 			// Get list of moon gates the creature can use
-			var freeRoaming = (FreeRoaming || creature.Keywords.Has("freemoongate"));
+			var freeRoaming = (FreeRoaming || creature.HasKeyword("freemoongate"));
 			var mygates = gates.Values.Where(a => CanWarpTo(creature, a));
 
 			SendMoonGateMap(creature, gate, mygates);
@@ -406,8 +412,8 @@ public class MoonGateScript : GeneralScript
 		if (!IsEnabled("MoonTunnel"))
 			return true;
 
-		var freeRoaming = (FreeRoaming || creature.Keywords.Has("freemoongate"));
-		return (freeRoaming || creature.Keywords.Has(gate.Keyword));
+		var freeRoaming = (FreeRoaming || creature.HasKeyword("freemoongate"));
+		return (freeRoaming || creature.HasKeyword(gate.Keyword));
 	}
 
 	private void HandleMoonGateUse(ChannelClient client, Packet packet)
@@ -434,7 +440,7 @@ public class MoonGateScript : GeneralScript
 		// Check locations
 		if (origin == destination)
 		{
-			Send.Notice(creature, Localization.Get("You cannot teleport using the same Moon Gate."));
+			Send.Notice(creature, L("You cannot teleport using the same Moon Gate."));
 			return false;
 		}
 
@@ -442,7 +448,7 @@ public class MoonGateScript : GeneralScript
 		MoonGate originGate, destinationGate;
 		if (!gatesStr.TryGetValue(origin, out originGate) || !gatesStr.TryGetValue(destination, out destinationGate))
 		{
-			Send.Notice(creature, Localization.Get("This moon gate is currently not operable. Please report."));
+			Send.Notice(creature, L("This moon gate is currently not operable. Please report."));
 			return false;
 		}
 
@@ -516,14 +522,20 @@ public class MoonGateScript : GeneralScript
 		creature.Client.Send(packet);
 	}
 
-	private void UpdateCurrentGates()
+	private void UpdateCurrentGates(ErinnTime now)
 	{
 		var table = GetTable();
+		var nowDt = now.DateTime;
+		var beginOfTimeDt = ErinnTime.BeginOfTime;
 
-		// Add 9 minutes, to compensate for the 6 in-game hours between
-		// 18:00 and 00:00, otherwise we get the gates for the next day
-		// when starting the server between 00:00 and 05:59.
-		var cycles = (int)((DateTime.Now.AddMinutes(9) - ErinnTime.BeginOfTime).TotalSeconds / 2160);
+		// The begin of time is at 00:00 on some day, if we used it as is,
+		// we'd get a cycle for between 00:00 and 23:59 Erinn time, and the
+		// cycle for the *next* day after 00:00 Erinn time, when it's
+		// actually still the same, since it's still the same night. Adding
+		// 9 minutes (6 Erinn hours) to the begin of time fixes this.
+		beginOfTimeDt = beginOfTimeDt.AddMinutes(9);
+
+		var cycles = (int)((nowDt - beginOfTimeDt).TotalSeconds / 2160);
 
 		currentGateKeyword = table[cycles % table.Length];
 		nextGateKeyword = table[(cycles + 1) % table.Length];
@@ -539,8 +551,8 @@ public class MoonGateScript : GeneralScript
 	{
 		var firstRun = (currentGateKeyword == null);
 
-		if (now.IsDusk || currentGateKeyword == null)
-			UpdateCurrentGates();
+		if (now.IsDawn || firstRun)
+			UpdateCurrentGates(now);
 
 		// Just update gates on first run, to set initial state.
 		if (firstRun)

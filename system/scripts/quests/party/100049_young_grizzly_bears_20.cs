@@ -13,6 +13,7 @@ public class YoungGrizzlyBears30_1PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Young Grizzly Bears"));
 		SetDescription(L("Grizzly cubs are small but they are still a threat to humans. Please [Hunt 15 Black Grizzly Bear Cubs, and Brown Grizzly Bear Cubs.]"));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

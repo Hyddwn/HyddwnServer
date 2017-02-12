@@ -16,6 +16,7 @@ using Aura.Channel.Util.Configuration.Files;
 using System.Globalization;
 using Aura.Mabi;
 using Aura.Channel.Scripting.Scripts;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel.Skills
 {
@@ -174,32 +175,28 @@ namespace Aura.Channel.Skills
 		public void Train(int condition, int amount = 1)
 		{
 			// Only characters can train skills.
-			if (!_creature.IsCharacter)
+			if (_creature.IsPet)
 				return;
 
-			var bonus = "";
+			var bonusMessage = "";
 
-			// Apply skill exp multiplier
-			if (ChannelServer.Instance.Conf.World.SkillExpRate != 1)
-			{
-				amount = (int)(amount * ChannelServer.Instance.Conf.World.SkillExpRate);
-				bonus = string.Format(Localization.Get(" (Skill Exp Rate Bonus: x{0})"), ChannelServer.Instance.Conf.World.SkillExpRate);
-			}
+			// Add bonuses
+			this.HandleSkillExpRateBonuses(ref amount, ref bonusMessage);
 
 			// Change count and reveal the condition
 			if (amount > 0)
 			{
 				switch (condition)
 				{
-					case 1: this.Info.ConditionCount1 = (short)Math.Max(0, this.Info.ConditionCount1 - amount); this.Info.Flag |= SkillFlags.ShowCondition1; break;
-					case 2: this.Info.ConditionCount2 = (short)Math.Max(0, this.Info.ConditionCount2 - amount); this.Info.Flag |= SkillFlags.ShowCondition2; break;
-					case 3: this.Info.ConditionCount3 = (short)Math.Max(0, this.Info.ConditionCount3 - amount); this.Info.Flag |= SkillFlags.ShowCondition3; break;
-					case 4: this.Info.ConditionCount4 = (short)Math.Max(0, this.Info.ConditionCount4 - amount); this.Info.Flag |= SkillFlags.ShowCondition4; break;
-					case 5: this.Info.ConditionCount5 = (short)Math.Max(0, this.Info.ConditionCount5 - amount); this.Info.Flag |= SkillFlags.ShowCondition5; break;
-					case 6: this.Info.ConditionCount6 = (short)Math.Max(0, this.Info.ConditionCount6 - amount); this.Info.Flag |= SkillFlags.ShowCondition6; break;
-					case 7: this.Info.ConditionCount7 = (short)Math.Max(0, this.Info.ConditionCount7 - amount); this.Info.Flag |= SkillFlags.ShowCondition7; break;
-					case 8: this.Info.ConditionCount8 = (short)Math.Max(0, this.Info.ConditionCount8 - amount); this.Info.Flag |= SkillFlags.ShowCondition8; break;
-					case 9: this.Info.ConditionCount9 = (short)Math.Max(0, this.Info.ConditionCount9 - amount); this.Info.Flag |= SkillFlags.ShowCondition9; break;
+					case 1: if (this.Info.ConditionCount1 == 0) return; this.Info.ConditionCount1 = (short)Math.Max(0, this.Info.ConditionCount1 - amount); this.Info.Flag |= SkillFlags.ShowCondition1; break;
+					case 2: if (this.Info.ConditionCount2 == 0) return; this.Info.ConditionCount2 = (short)Math.Max(0, this.Info.ConditionCount2 - amount); this.Info.Flag |= SkillFlags.ShowCondition2; break;
+					case 3: if (this.Info.ConditionCount3 == 0) return; this.Info.ConditionCount3 = (short)Math.Max(0, this.Info.ConditionCount3 - amount); this.Info.Flag |= SkillFlags.ShowCondition3; break;
+					case 4: if (this.Info.ConditionCount4 == 0) return; this.Info.ConditionCount4 = (short)Math.Max(0, this.Info.ConditionCount4 - amount); this.Info.Flag |= SkillFlags.ShowCondition4; break;
+					case 5: if (this.Info.ConditionCount5 == 0) return; this.Info.ConditionCount5 = (short)Math.Max(0, this.Info.ConditionCount5 - amount); this.Info.Flag |= SkillFlags.ShowCondition5; break;
+					case 6: if (this.Info.ConditionCount6 == 0) return; this.Info.ConditionCount6 = (short)Math.Max(0, this.Info.ConditionCount6 - amount); this.Info.Flag |= SkillFlags.ShowCondition6; break;
+					case 7: if (this.Info.ConditionCount7 == 0) return; this.Info.ConditionCount7 = (short)Math.Max(0, this.Info.ConditionCount7 - amount); this.Info.Flag |= SkillFlags.ShowCondition7; break;
+					case 8: if (this.Info.ConditionCount8 == 0) return; this.Info.ConditionCount8 = (short)Math.Max(0, this.Info.ConditionCount8 - amount); this.Info.Flag |= SkillFlags.ShowCondition8; break;
+					case 9: if (this.Info.ConditionCount9 == 0) return; this.Info.ConditionCount9 = (short)Math.Max(0, this.Info.ConditionCount9 - amount); this.Info.Flag |= SkillFlags.ShowCondition9; break;
 					default:
 						Log.Error("Skill.Train: Unknown training condition ({0})", condition);
 						break;
@@ -208,9 +205,66 @@ namespace Aura.Channel.Skills
 
 			var exp = this.UpdateExperience();
 			if (exp > 0)
-				Send.SkillTrainingUp(_creature, this, exp, bonus);
+				Send.SkillTrainingUp(_creature, this, exp, bonusMessage);
 
 			this.CheckMaster();
+		}
+
+		/// <summary>
+		/// Modifies amount and bonus message based on active skill exp
+		/// rate bonuses, like rate settings and events.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <param name="bonusMessage"></param>
+		private void HandleSkillExpRateBonuses(ref int amount, ref string bonusMessage)
+		{
+			// Add global bonus
+			float bonusMultiplier;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.SkillTraining, out bonusMultiplier, out bonuses))
+				ApplySkillExpRateBonus(ref amount, bonusMultiplier, bonuses, ref bonusMessage);
+
+			// Apply skill exp multiplier
+			var skillExpRate = ChannelServer.Instance.Conf.World.SkillExpRate;
+			ApplySkillExpRateBonus(ref amount, skillExpRate, Localization.Get("Skill Exp Rate"), ref bonusMessage);
+
+			// Apply separate skill exp multipliers
+			// The code be cleaner if we combined skill exp rates into one
+			// amount, but we might want separate bonus names.
+			var worldConf = ChannelServer.Instance.Conf.World;
+			switch (this.Data.Category)
+			{
+				case SkillCategory.Life: ApplySkillExpRateBonus(ref amount, worldConf.LifeSkillExpRate, Localization.Get("Life Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Combat: ApplySkillExpRateBonus(ref amount, worldConf.CombatSkillExpRate, Localization.Get("Combat Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Magic: ApplySkillExpRateBonus(ref amount, worldConf.MagicSkillExpRate, Localization.Get("Magic Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Alchemy: ApplySkillExpRateBonus(ref amount, worldConf.AlchemySkillExpRate, Localization.Get("Alchemy Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Fighter: ApplySkillExpRateBonus(ref amount, worldConf.FighterSkillExpRate, Localization.Get("Fighter Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Music: ApplySkillExpRateBonus(ref amount, worldConf.MusicSkillExpRate, Localization.Get("Music Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Puppet: ApplySkillExpRateBonus(ref amount, worldConf.PuppetSkillExpRate, Localization.Get("Puppetry Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Guns: ApplySkillExpRateBonus(ref amount, worldConf.GunsSkillExpRate, Localization.Get("Dual Gun Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Ninja: ApplySkillExpRateBonus(ref amount, worldConf.NinjaSkillExpRate, Localization.Get("Ninja Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Transformation: ApplySkillExpRateBonus(ref amount, worldConf.TransformationSkillExpRate, Localization.Get("Transformations Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.Demi: ApplySkillExpRateBonus(ref amount, worldConf.DemiSkillExpRate, Localization.Get("Demigod Skill Exp Rate"), ref bonusMessage); break;
+				case SkillCategory.DivineKnights: ApplySkillExpRateBonus(ref amount, worldConf.DivineKnightsSkillExpRate, Localization.Get("Crusader Skill Exp Rate"), ref bonusMessage); break;
+			}
+		}
+
+		/// <summary>
+		/// Multiplies amount with multiplier if multiplier doesn't equal 1
+		/// and appends bonus name to message if it's not empty.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <param name="multiplier"></param>
+		/// <param name="bonusName"></param>
+		/// <param name="bonusMessage"></param>
+		private static void ApplySkillExpRateBonus(ref int amount, float multiplier, string bonusName, ref string bonusMessage)
+		{
+			if (multiplier == 1)
+				return;
+
+			amount = (int)(amount * multiplier);
+			if (!string.IsNullOrWhiteSpace(bonusName))
+				bonusMessage += string.Format(Localization.Get(" ({0} Bonus: x{1})"), bonusName, multiplier);
 		}
 
 		/// <summary>

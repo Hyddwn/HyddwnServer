@@ -46,14 +46,14 @@ public class SimonScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("<username/>, the one who saved the Goddess...?");
 					Msg("...Wait, if you're so great as to be saving the Goddess,<br/>shouldn't you know to be humble too?");
 					Msg("...Soon, all the rumors of your self-aggrandizing behavior will start catching up with you.");
 					Msg("Even so, I have to admit that what you did was pretty fabulous.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("...Doesn't a title like that overwhelm you at all?<br/>Well... Judging by your confident look,<br/>I guess you have the skills to back it up.");
 				}
@@ -139,7 +139,7 @@ public class SimonScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("Hmm? A part-timer at my shop?<br/>Keep in mind that being indecisive is very unprofessional."));
 		}
@@ -179,14 +179,14 @@ public class SimonScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("shop_cloth");
+					Player.GiveKeyword("shop_cloth");
 					Msg(FavorExpression(), "So, are you saying that you don't know the only<br/>Clothing Shop in Dunbarton that happens to be mine?<br/>You're denser than you look.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_bookstore");
+				Player.GiveKeyword("shop_bookstore");
 				Msg(FavorExpression(), "I don't like to talk about people behind their backs.<br/>It's not a very good habit and you should get rid of it, too.<br/>Oh... You didn't mean that? Oh, I am so sorry.");
 				Msg("Aeira at the Bookstore seems to be very interested in music.<br/>If you happen to be interested in music, be nice to her.<br/>She'll give you something good if you become friends.");
 				ModifyRelation(Random(2), 0, Random(3));
@@ -198,7 +198,7 @@ public class SimonScript : NpcScript
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("Are you interested in buying cooking ingredients?<br/>Go to the Restaurant.<br/>The Restaurant carries them, too.");
 				break;
 
@@ -217,7 +217,7 @@ public class SimonScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("Mmm? You are definitely not from here, are you?<br/>The villagers here knows not to ask ME<br/>where the Blacksmith's Shop is in this town.");
 				Msg("If you must know,<br/>go talk to Nerys at the Weapons Shop.<br/>She's rather nice to outsiders.<br/>After all, she once was a traveler, too.");
 				break;
@@ -236,7 +236,7 @@ public class SimonScript : NpcScript
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Ha! You want to make clothes?<br/>Why don't you stop by the General Shop first?");
 				Msg("You can simply buy the cheap tailoring kit<br/>and equip it to learn the skill.<br/>Did you ask me about the Tailoring skill<br/>so you can get it from me for free?");
 				Msg("Don't be so cheap!");
@@ -305,7 +305,7 @@ public class SimonScript : NpcScript
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("A lute? Hmm...<br/>Ask Walter, the guy with that intimidating look over there.<br/>It's all right. He won't bite. Don't be so scared and go check out the General Shop.");
 				break;
 
@@ -316,7 +316,7 @@ public class SimonScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Music Scores? I thought Walter sold them next door.<br/>Have you checked with him?");
 				Msg("You know you can't play music without<br/>a music score, don't you?");
 				break;

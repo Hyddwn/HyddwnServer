@@ -1,0 +1,13 @@
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "alby_dungeon", "Alby_Dungeon") WHERE `meta1` LIKE "%portal@alby_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "ciar_dungeon", "Ciar_Dungeon") WHERE `meta1` LIKE "%portal@ciar_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "rabbie_dungeon", "Rabbie_Dungeon") WHERE `meta1` LIKE "%portal@rabbie_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "math_dungeon", "Math_Dungeon") WHERE `meta1` LIKE "%portal@math_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "barri_dungeon", "Barri_Dungeon") WHERE `meta1` LIKE "%portal@barri_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "tirnanog_dungeon", "TirNaNog_Dungeon") WHERE `meta1` LIKE "%portal@tirnanog_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "fiodth_dungeon", "Fiodth_Dungeon") WHERE `meta1` LIKE "%portal@fiodth_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "coill_dungeon", "Coill_Dungeon") WHERE `meta1` LIKE "%portal@coill_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "runda_dungeon", "Runda_Dungeon") WHERE `meta1` LIKE "%portal@runda_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "peaca_dungeon", "Peaca_Dungeon") WHERE `meta1` LIKE "%portal@peaca_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "par_dungeon", "Par_Dungeon") WHERE `meta1` LIKE "%portal@par_dungeon%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "portal_iria_c_main_field_0114", "portal_Iria_C_main_field_0114") WHERE `meta1` LIKE "%portal@portal_iria_c_main_field_0114%";
+UPDATE `items` SET `meta1` = REPLACE(`meta1`, "portal_ula_bangor", "portal_Ula_Bangor") WHERE `meta1` LIKE "%portal@portal_ula_bangor%";

@@ -69,6 +69,7 @@ namespace Aura.Data.Database
 		public int Race { get; set; }
 		public SkillRank Rank { get; set; }
 		public byte AP { get; set; }
+		public int APTotal { get; set; }
 		public float CP { get; set; }
 		public int Range { get; set; }
 
@@ -299,6 +300,7 @@ namespace Aura.Data.Database
 				foreach (var raceList in skillList.Values)
 				{
 					float lifeT = 0, manaT = 0, staminaT = 0, strT = 0, intT = 0, dexT = 0, willT = 0, luckT = 0;
+					int apT = 0;
 
 					for (var i = SkillRank.Novice; i <= SkillRank.Dan3; ++i)
 					{
@@ -314,6 +316,7 @@ namespace Aura.Data.Database
 							sInfo.StaminaTotal = (staminaT += sInfo.Stamina);
 							sInfo.StrTotal = (strT += sInfo.Str);
 							sInfo.WillTotal = (willT += sInfo.Will);
+							sInfo.APTotal = (apT += sInfo.AP);
 						}
 					}
 				}

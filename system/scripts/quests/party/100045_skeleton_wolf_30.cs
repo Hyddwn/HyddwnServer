@@ -13,6 +13,7 @@ public class SkeletonWolves30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Skeleton Wolves"));
 		SetDescription(L("Recently, there has been an emergence of Skeleton Wolves. Skeleton Wolves are under a stronger evil spell than regular Wolves. I will give you a reward if you [Hunt 30 Skeleton Wolves]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

@@ -48,13 +48,13 @@ public class ComganScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...you rescued the Goddess?<br/>You? <username/>...?<br/>That's just incredible...<br/>But... can I really believe what you're claiming?");
 					Msg("...It's just like how people find it so hard to believe that I'm a Priest...<br/>I can definitely relate.");
 					Msg("Anyway, this helps me to place myself in another person's shoes,<br/>so I must thank you for that.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Thank you for saving Erinn, <username/>.<br/>Please continue to watch out for us.");
 				}
@@ -73,7 +73,11 @@ public class ComganScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (Player.IsDoingPtjFor(NPC))
+		{
+			Msg(FavorExpression(), L("<username/>, I trust that you are doing the task I've asked you to do?"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("I don't think we've met before... My name is <npcname/>.<br/>I'm the priest of this town. Nice to meet you."));
 		}
@@ -114,10 +118,6 @@ public class ComganScript : NpcScript
 				Msg(FavorExpression(), "This town is rather run-down, don't you think?<br/>I used to think that when I first arrived here...");
 				Msg("Those who have been here for a long time would tell me that this place was once very prosperous.<br/>Had a church, even...");
 				ModifyRelation(Random(2), 0, Random(3));
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":

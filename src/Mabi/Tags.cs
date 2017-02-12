@@ -95,6 +95,9 @@ namespace Aura.Mabi
 		/// <returns></returns>
 		private bool Check(string tags, int level)
 		{
+			if (string.IsNullOrEmpty(tags))
+				return false;
+
 			var result = false;
 			var length = tags.Length;
 			var start = 0;
@@ -162,7 +165,7 @@ namespace Aura.Mabi
 
 			tag = tag.Trim().Replace("*", ".*");
 			// TODO: Cache?
-			return Regex.IsMatch(this.Value, tag);
+			return Regex.IsMatch(this.Value, tag, RegexOptions.IgnoreCase);
 		}
 	}
 }

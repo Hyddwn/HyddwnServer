@@ -25,12 +25,12 @@ public class TheThreeMissingWarriorsQuest : GeneralScript
 
 	public async Task<HookResult> TarlachBearBeforeGift(NpcScript npc, params object[] args)
 	{
-		if (!npc.HasKeyword("g1_01") || npc.Favor < 15)
+		if (!npc.Player.HasKeyword("g1_01") || npc.Favor < 15)
 			return HookResult.Continue;
 
-		npc.RemoveKeyword("g1_01");
-		npc.GiveKeyword("g1_02");
-		npc.GiveKeyword("g1_tarlach1");
+		npc.Player.RemoveKeyword("g1_01");
+		npc.Player.GiveKeyword("g1_02");
+		npc.Player.GiveKeyword("g1_tarlach1");
 
 		npc.Msg(Hide.Name, L("(The bear is writing something in the snow.)"));
 		npc.Msg(Hide.Name, L("(Tar...)<p/>(Tar... la... ch.)<p/>(The bear writes the word 'Tarlach' and stares at you.)<p/>(Tarlach...)<p/>(It seems to be someone's name.)"));
@@ -44,8 +44,8 @@ public class TheThreeMissingWarriorsQuest : GeneralScript
 		if (keyword == null || keyword != "g1_tarlach1")
 			return HookResult.Continue;
 
-		npc.RemoveKeyword("g1_tarlach1");
-		npc.GiveKeyword("g1_tarlach2");
+		npc.Player.RemoveKeyword("g1_tarlach1");
+		npc.Player.GiveKeyword("g1_tarlach2");
 
 		npc.Msg(L("Tar...lach? Did you say Tarlach?<br/>One of the three missing warriors..."));
 		npc.Msg(Hide.Name, L("(Duncan seems shocked.)"));
@@ -62,13 +62,13 @@ public class TheThreeMissingWarriorsQuest : GeneralScript
 		if (keyword == null || keyword != "g1_tarlach2")
 			return HookResult.Continue;
 
-		if (npc.HasKeyword("g1_02"))
+		if (npc.Player.HasKeyword("g1_02"))
 		{
-			npc.RemoveKeyword("g1_02");
-			npc.GiveKeyword("g1_03");
+			npc.Player.RemoveKeyword("g1_02");
+			npc.Player.GiveKeyword("g1_03");
 
-			npc.GiveItem(TarlachsLocket);
-			npc.GiveWarpScroll(63009, "alby_dungeon");
+			npc.Player.GiveItem(TarlachsLocket);
+			npc.Player.GiveWarpScroll(63009, "Alby_Dungeon");
 
 			npc.Msg(L("The three missing Warriors? The ones who are said to have gone to Tir Na Nog?"));
 			npc.Msg(L("I see...<br/>There was a time when scholars debated back and forth regarding the validity of that legend."));
@@ -85,11 +85,11 @@ public class TheThreeMissingWarriorsQuest : GeneralScript
 
 			return HookResult.Break;
 		}
-		else if (npc.HasKeyword("g1_03"))
+		else if (npc.Player.HasKeyword("g1_03"))
 		{
 			// Give locket again if lost
-			if (!npc.HasItem(TarlachsLocket))
-				npc.GiveItem(TarlachsLocket);
+			if (!npc.Player.HasItem(TarlachsLocket))
+				npc.Player.GiveItem(TarlachsLocket);
 
 			npc.Msg(L("Drop the locket on the Alby Dungeon altar.<br/>And get two more friends to go with you."));
 

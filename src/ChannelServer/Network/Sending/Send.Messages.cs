@@ -24,7 +24,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="args"></param>
 		public static void SystemMessage(Creature creature, string format, params object[] args)
 		{
-			SystemMessage(creature, Localization.Get("<SYSTEM>"), format, args);
+			SystemMessageFrom(creature, Localization.Get("<SYSTEM>"), format, args);
 		}
 
 		/// <summary>
@@ -35,7 +35,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="args"></param>
 		public static void ServerMessage(Creature creature, string format, params object[] args)
 		{
-			SystemMessage(creature, Localization.Get("<SERVER>"), format, args);
+			SystemMessageFrom(creature, Localization.Get("<SERVER>"), format, args);
 		}
 
 		public static void System_Broadcast(string from, string format, params object[] args)
@@ -66,7 +66,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="args"></param>
 		public static void CombatMessage(Creature creature, string format, params object[] args)
 		{
-			SystemMessage(creature, Localization.Get("<COMBAT>"), format, args);
+			SystemMessageFrom(creature, Localization.Get("<COMBAT>"), format, args);
 		}
 
 		/// <summary>
@@ -76,7 +76,7 @@ namespace Aura.Channel.Network.Sending
 		/// <param name="from"></param>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		public static void SystemMessage(Creature creature, string from, string format, params object[] args)
+		public static void SystemMessageFrom(Creature creature, string from, string format, params object[] args)
 		{
 			var packet = new Packet(Op.Chat, creature.EntityId);
 

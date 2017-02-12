@@ -37,7 +37,14 @@ namespace Aura.Msgr
 		/// <param name="now"></param>
 		private void OnUpdateTick(object state)
 		{
-			this.SynchronizeGuilds();
+			try
+			{
+				this.SynchronizeGuilds();
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex, "Exception during guild update tick.");
+			}
 		}
 
 		/// <summary>

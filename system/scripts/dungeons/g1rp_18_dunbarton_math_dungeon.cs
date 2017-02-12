@@ -9,7 +9,7 @@ public class MoresRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#mores");
+		dungeon.SetRole(0, "#mores");
 	}
 
 	public override void OnBoss(Dungeon dungeon)
@@ -17,6 +17,12 @@ public class MoresRPDungeonScript : DungeonScript
 		dungeon.AddBoss(12001, 6); // Ghost Armor
 
 		dungeon.PlayCutscene("G1_18_b_MoresRP");
+	}
+
+	public override void OnBossDeath(Dungeon dungeon, Creature boss, Creature killer)
+	{
+		if (dungeon.RemainingBosses <= 3)
+			dungeon.Complete();
 	}
 
 	public override void OnSectionCleared(Dungeon dungeon, int floor, int section)
@@ -38,12 +44,12 @@ public class MoresRPDungeonScript : DungeonScript
 			var creators = dungeon.GetCreators();
 			foreach (var member in creators)
 			{
-				if (member.Keywords.Has("g1_21"))
+				if (member.HasKeyword("g1_21"))
 				{
-					member.Keywords.Remove("g1_21");
-					member.Keywords.Give("g1_22");
-					member.Keywords.Remove("g1_memo_of_lost_thing");
-					member.Keywords.Give("g1_goddess_morrighan1");
+					member.RemoveKeyword("g1_21");
+					member.GiveKeyword("g1_22");
+					member.RemoveKeyword("g1_memo_of_lost_thing");
+					member.GiveKeyword("g1_goddess_morrighan1");
 				}
 			}
 

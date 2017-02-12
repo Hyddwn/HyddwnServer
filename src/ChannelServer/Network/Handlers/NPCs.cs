@@ -232,7 +232,7 @@ namespace Aura.Channel.Network.Handlers
 		{
 			var entityId = packet.GetLong();
 			var moveToInventory = packet.GetBool(); // 0:cursor, 1:inv
-			var unk = packet.GetByte(); // storage gold?
+			var directBankTransaction = packet.GetBool();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -246,7 +246,7 @@ namespace Aura.Channel.Network.Handlers
 				throw new ModerateViolation("Tried to buy an item with a null shop.");
 			}
 
-			var success = creature.Temp.CurrentShop.Buy(creature, entityId, moveToInventory);
+			var success = creature.Temp.CurrentShop.Buy(creature, entityId, moveToInventory, directBankTransaction);
 
 			Send.NpcShopBuyItemR(creature, success);
 		}
@@ -262,7 +262,7 @@ namespace Aura.Channel.Network.Handlers
 		public void NpcShopSellItem(ChannelClient client, Packet packet)
 		{
 			var entityId = packet.GetLong();
-			var unk = packet.GetByte();
+			var directTransaction = packet.GetBool();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
@@ -283,22 +283,16 @@ namespace Aura.Channel.Network.Handlers
 			// bought with them.
 			if (item.OptionInfo.PointPrice != 0)
 			{
-				Send.MsgBox(creature, Localization.Get("You cannot sell items bought by Pon at the shop."));
+				Send.MsgBox(creature, Localization.Get("You cannot sell items bought with Pon at the shop."));
 				goto L_End;
 			}
 
 			// Calculate selling price
-			var sellingPrice = item.OptionInfo.SellingPrice;
-			if (item.Data.StackType == StackType.Sac)
-			{
-				// Add costs of the items inside the sac
-				sellingPrice += (int)((item.Info.Amount / (float)item.Data.StackItem.StackMax) * item.Data.StackItem.SellingPrice);
-			}
-			else if (item.Data.StackType == StackType.Stackable)
-			{
-				// Individuel price for this stack
-				sellingPrice = (int)((item.Amount / (float)item.Data.StackMax) * sellingPrice);
-			}
+			var sellingPrice = item.GetSellingPrice();
+
+			// Disable direct bank transaction if price is less than 50k
+			if (directTransaction && sellingPrice < 50000)
+				directTransaction = false;
 
 			// Remove item from inv
 			if (!creature.Inventory.Remove(item))
@@ -308,11 +302,65 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Add gold
-			creature.Inventory.AddGold(sellingPrice);
+			if (!directTransaction)
+			{
+				creature.Inventory.AddGold(sellingPrice);
+			}
+			else
+			{
+				// Fee
+				// Unofficial, will not match *exactly* what the client
+				// displays in the sell item window in all cases.
+				var fee = (sellingPrice * (8.958 + ((sellingPrice / 10000 - 5) * 1.002)) / 100);
+				sellingPrice = (int)(sellingPrice - fee);
+
+				client.Account.Bank.AddGold(creature, sellingPrice);
+			}
 
 			// Respond in any case, to unlock the player
 		L_End:
 			Send.NpcShopSellItemR(creature);
+		}
+
+		/// <summary>
+		/// Sent when trying to sell an item worth more than 50k, to check
+		/// if it can be sold via Direct Transaction.
+		/// </summary>
+		/// <example>
+		/// 001 [0050F00000000652] Long   : 22781880927520338
+		/// </example>
+		[PacketHandler(Op.CheckDirectBankSelling)]
+		public void CheckDirectBankSelling(ChannelClient client, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check item
+			var item = creature.Inventory.GetItem(itemEntityId);
+			if (item == null)
+			{
+				Send.CheckDirectBankSellingR(creature, false);
+				return;
+			}
+
+			// Check price
+			var sellingPrice = item.GetSellingPrice();
+			if (sellingPrice < 50000)
+			{
+				Send.CheckDirectBankSellingR(creature, false);
+				return;
+			}
+
+			// Check space
+			var goldMax = Math.Min((long)int.MaxValue, client.Account.Characters.Count * (long)ChannelServer.Instance.Conf.World.BankGoldPerCharacter);
+			if ((long)client.Account.Bank.Gold + sellingPrice > goldMax)
+			{
+				Send.CheckDirectBankSellingR(creature, false);
+				return;
+			}
+
+			Send.CheckDirectBankSellingR(creature, true);
 		}
 
 		/// <summary>

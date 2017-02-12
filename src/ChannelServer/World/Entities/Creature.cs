@@ -22,6 +22,7 @@ using System.Threading;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Shared.Database;
 using Aura.Channel.World.Dungeons;
+using Aura.Channel.World.GameEvents;
 
 namespace Aura.Channel.World.Entities
 {
@@ -40,6 +41,8 @@ namespace Aura.Channel.World.Entities
 		public const int BareHandStaminaUsage = 2;
 
 		public const int MaxElementalAffinity = 9;
+
+		public const float ZombieSpeed = 28.6525f;
 
 		private byte _inquiryId;
 		private Dictionary<byte, Action<Creature>> _inquiryCallbacks;
@@ -78,24 +81,39 @@ namespace Aura.Channel.World.Entities
 		public int InventoryHeight { get; set; }
 
 		/// <summary>
-		/// Temporary and permanent variables, exclusive to this creature.
+		/// Temporary and permanent variables exclusive to this creature.
 		/// </summary>
 		/// <remarks>
-		/// Permanent variables are saved across relogs, if the creature
+		/// Permanent variables are saved across relogs if the creature
 		/// is a player creature. NPCs and monster variables aren't saved.
 		/// </remarks>
 		public ScriptVariables Vars { get; protected set; }
 
 		/// <summary>
-		/// Returns true if creature is a Character or Pet.
+		/// Returns true if creature is a Character, RpCharacter, or Pet.
 		/// </summary>
-		public bool IsPlayer { get { return (this.IsCharacter || this.IsPet); } }
+		/// <remarks>
+		/// This propery is frequently used to determine if a creature should
+		/// get special treatment because it's a player. Player creatures
+		/// can level up, have special events, can keep dynamic regions open,
+		/// and other things.
+		/// 
+		/// TODO: Dedicated properties might be better to determine what a
+		///   creature can do, as they would be more descriptive and easier
+		///   to maintain.
+		/// </remarks>
+		public bool IsPlayer { get { return (this.IsCharacter || this.IsPet || this.IsRpCharacter); } }
 
 		/// <summary>
 		/// Returns true if creature is a character, i.e. a player creature,
 		/// but not a pet/partner.
 		/// </summary>
 		public bool IsCharacter { get { return (this is Character); } }
+
+		/// <summary>
+		/// Returns true if creature is an role-playing character.
+		/// </summary>
+		public bool IsRpCharacter { get { return (this is RpCharacter); } }
 
 		/// <summary>
 		/// Returns true if creature is a pet.
@@ -174,6 +192,11 @@ namespace Aura.Channel.World.Entities
 		public DateTime LastLogin { get; set; }
 
 		/// <summary>
+		/// The time the creature has been active in seconds.
+		/// </summary>
+		public long PlayTime { get; set; }
+
+		/// <summary>
 		/// How many times the character rebirthed.
 		/// </summary>
 		public int RebirthCount { get; set; }
@@ -229,6 +252,12 @@ namespace Aura.Channel.World.Entities
 				if (!this.Client.Account.PremiumServices.HasPremiumService)
 					return false;
 
+				// Dead characters should not be moved to the Soul Stream,
+				// as they will get stuck there, not being able to move
+				// or revive.
+				if (this.IsDead)
+					return false;
+
 				var now = DateTime.Now;
 
 				// No present if today is not the player's birthday or the character
@@ -277,6 +306,16 @@ namespace Aura.Channel.World.Entities
 				return false;
 			}
 		}
+
+		/// <summary>
+		/// Returns amount of gold in creature's inventory.
+		/// </summary>
+		public int Gold { get { return this.Inventory.Gold; } }
+
+		/// <summary>
+		/// Returns id of creature's current title.
+		/// </summary>
+		public int Title { get { return this.Titles.SelectedTitle; } }
 
 		// Look
 		// ------------------------------------------------------------------
@@ -331,6 +370,12 @@ namespace Aura.Channel.World.Entities
 		/// Shields and similar items are not considered main weapons.
 		/// </summary>
 		public bool IsDualWielding { get { return this.RightHand != null && this.LeftHand != null && this.LeftHand.Data.WeaponType != 0; } }
+
+		/// <summary>
+		/// Returns whether the creature is naturally able to equip/unequip
+		/// items, based on its class.
+		/// </summary>
+		public virtual bool CanMoveEquip { get { return true; } }
 
 		// Movement
 		// ------------------------------------------------------------------
@@ -534,6 +579,9 @@ namespace Aura.Channel.World.Entities
 		public Dictionary<long, HitTracker> _hitTrackers;
 		public int _totalHits;
 
+		public long FinisherId { get; private set; }
+		public bool IsFinished { get; private set; }
+
 		// Stats
 		// ------------------------------------------------------------------
 
@@ -686,12 +734,12 @@ namespace Aura.Channel.World.Entities
 		public int LeftAttackMaxMod { get { return (this.LeftHand != null ? this.LeftHand.OptionInfo.AttackMax : 0); } }
 
 		/// <summary>
-		/// Used for title bonuses.
+		/// Used for title, enchant, and other bonuses.
 		/// </summary>
 		public int AttackMinMod { get { return (int)this.StatMods.Get(Stat.AttackMinMod); } }
 
 		/// <summary>
-		/// Used for title bonuses.
+		/// Used for title, enchant, and other bonuses.
 		/// </summary>
 		public int AttackMaxMod { get { return (int)this.StatMods.Get(Stat.AttackMaxMod); } }
 
@@ -1078,9 +1126,16 @@ namespace Aura.Channel.World.Entities
 		// ------------------------------------------------------------------
 
 		/// <summary>
-		/// Raised when creature dies.
+		/// Raised when creature died, regardless of whether it's already
+		/// finished as well.
 		/// </summary>
 		public event Action<Creature, Creature> Death;
+
+		/// <summary>
+		/// Raised when creature is finished. It's called if no finishing
+		/// happens as well, when going straight to being completely dead.
+		/// </summary>
+		public event Action<Creature, Creature> Finish;
 
 		/// <summary>
 		/// Raised when creature levels up.
@@ -1358,9 +1413,18 @@ namespace Aura.Channel.World.Entities
 			if (!this.IsWalking)
 				speed *= this.RaceData.RunSpeedFactor;
 
+			// The Zombie condition reduces speed to that of a Zombie.
+			// We could query it from the speed db, but hardcoding is
+			// more efficient, and it shouldn't be changing anyway.
+			if (this.Conditions.Has(ConditionsC.Zombie))
+				speed = ZombieSpeed;
+
 			// Hurry condition
-			var hurry = this.Conditions.GetExtraVal(169);
-			speed *= 1 + (hurry / 100f);
+			if (!this.IsWalking && this.Conditions.Has(ConditionsC.Hurry))
+			{
+				var hurry = this.Conditions.GetExtraVal(169);
+				speed *= 1 + (hurry / 100f);
+			}
 
 			return speed;
 		}
@@ -1510,6 +1574,8 @@ namespace Aura.Channel.World.Entities
 			this.StatMods.OnSecondsTimeTick(time);
 			this.Conditions.OnSecondsTimeTick(time);
 			this.Skills.OnSecondsTimeTick(time);
+
+			this.PlayTime++;
 		}
 
 		/// <summary>
@@ -1702,10 +1768,30 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public virtual bool CanTarget(Creature creature)
 		{
-			if (this.IsDead || creature.IsDead || creature == this)
+			var attackerIsDead = this.IsDead;
+			var targetIsDead = creature.IsDead;
+			var attackerCanFinish = this.CanFinish(creature);
+			var attackerIsTarget = (creature == this);
+
+			if (attackerIsDead || (targetIsDead && !attackerCanFinish) || attackerIsTarget)
 				return false;
 
 			return true;
+		}
+
+		/// <summary>
+		/// Returns whether this creature is eligible to finish the given
+		/// target.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public bool CanFinish(Creature target)
+		{
+			var finisherId = target.FinisherId;
+			var isFinished = target.IsFinished;
+			var isFinisher = (finisherId == 0 || finisherId == this.Party.Id || this.Client.Creatures.ContainsKey(finisherId));
+
+			return (!isFinished && isFinisher);
 		}
 
 		/// <summary>
@@ -1821,16 +1907,16 @@ namespace Aura.Channel.World.Entities
 			else
 			{
 				balance = this.RightBalanceMod;
-				if (this.LeftHand != null)
+				if (this.IsDualWielding)
 					balance = (balance + this.LeftBalanceMod) / 2;
 			}
 
 			var min = this.AttackMinBase + this.AttackMinBaseMod + this.RightAttackMinMod;
-			if (this.LeftHand != null)
+			if (this.IsDualWielding)
 				min = (min + this.LeftAttackMinMod) / 2;
 
 			var max = this.AttackMaxBase + this.AttackMaxBaseMod + this.RightAttackMaxMod;
-			if (this.LeftHand != null)
+			if (this.IsDualWielding)
 				max = (max + this.LeftAttackMaxMod) / 2;
 
 			return this.GetRndDamage(min, max, balance);
@@ -1939,8 +2025,8 @@ namespace Aura.Channel.World.Entities
 		public float GetRndRangedDamage()
 		{
 			// Base damage
-			float min = this.AttackMinBase;
-			float max = this.AttackMaxBase;
+			float min = this.AttackMinBase + this.AttackMinMod;
+			float max = this.AttackMaxBase + this.AttackMaxMod;
 
 			// Weapon
 			min += (this.RightHand == null ? 0 : this.RightHand.OptionInfo.AttackMin);
@@ -1995,23 +2081,21 @@ namespace Aura.Channel.World.Entities
 				_totalHits = Interlocked.Increment(ref _totalHits);
 			}
 
-			var equip = this.Inventory.GetEquipment();
-
-			// Give proficiency to random main armor
-			var mainArmors = equip.Where(a => a.Info.Pocket.IsMainArmor());
-			if (mainArmors.Count() != 0)
+			// Update equip
+			var mainArmors = this.Inventory.GetMainEquipment(a => a.Info.Pocket.IsMainArmor());
+			if (mainArmors.Length != 0)
 			{
+				// Select a random armor item to gain proficiency and lose
+				// durability, as the one that was "hit" by the damage.
 				var item = mainArmors.Random();
-				var amount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Damage);
-				this.Inventory.AddProficiency(item, amount);
-			}
 
-			// Reduce durability of random item
-			if (equip.Length != 0)
-			{
-				var item = equip.Random();
-				var amount = RandomProvider.Get().Next(1, 30);
-				this.Inventory.ReduceDurability(item, amount);
+				// Give proficiency
+				var profAmount = Item.GetProficiencyGain(this.Age, ProficiencyGainType.Damage);
+				this.Inventory.AddProficiency(item, profAmount);
+
+				// Reduce durability
+				var duraAmount = RandomProvider.Get().Next(1, 30);
+				this.Inventory.ReduceDurability(item, duraAmount);
 			}
 
 			// Kill if life too low
@@ -2029,40 +2113,111 @@ namespace Aura.Channel.World.Entities
 		protected abstract bool ShouldSurvive(float damage, Creature from, float lifeBefore);
 
 		/// <summary>
-		/// Kills creature.
+		/// Kills creature. Returns true if it was killed and false if it
+		/// entered "finish mode".
 		/// </summary>
 		/// <param name="killer"></param>
-		public virtual void Kill(Creature killer)
+		public virtual bool Kill(Creature killer)
 		{
+			var rnd = RandomProvider.Get();
+			var pos = this.GetPosition();
+
 			// Conditions
 			if (this.Conditions.Has(ConditionsA.Deadly))
 				this.Conditions.Deactivate(ConditionsA.Deadly);
+
+			var wasAlive = !this.Has(CreatureStates.Dead);
 			this.Activate(CreatureStates.Dead);
 
-			//Send.SetFinisher(this, killer.EntityId);
-			//Send.SetFinisher2(this);
-			Send.IsNowDead(this);
-			Send.SetFinisher(this, 0);
+			// Kill events, fire once when the creature dies.
+			if (wasAlive)
+			{
+				ChannelServer.Instance.Events.OnCreatureKilled(this, killer);
+				if (killer != null && killer.IsPlayer)
+					ChannelServer.Instance.Events.OnCreatureKilledByPlayer(this, killer);
+				this.Death.Raise(this, killer);
+			}
 
-			// Events
-			ChannelServer.Instance.Events.OnCreatureKilled(this, killer);
+			// Drop keys in case the monster isn't being finished yet
+			this.DropKeys(killer, rnd, pos);
+
+			// When a creature is killed, and the attacker is in a party,
+			// the party's finisher rules come into effect. Depending on its
+			// settings a finisher might be set, who gets to actually kill the
+			// monster and gets assigned the drops.
+			// If a finisher is set, the method returns, so nothing is done
+			// but setting the creature to be dead. The next time we come here,
+			// after the finisher attacked the monster again, the finisher id
+			// won't be 0, and as such it won't return again, but continue
+			// to the actual kill behavior.
+			if (killer.IsInParty && this.FinisherId == 0)
+			{
+				if (killer.Party.Finish == PartyFinishRule.Anyone)
+				{
+					this.SetFinisher(killer.Party.Id);
+				}
+				else if (killer.Party.Finish == PartyFinishRule.BiggestContributer)
+				{
+					// Get top damage dealer and set them to be finisher,
+					// if they're still around and they aren't the killer.
+					// If they are the killer, we don't need a finish.
+					var hitTracker = this.GetTopDamageDealer();
+					if (hitTracker != null)
+					{
+						var finisher = hitTracker.Attacker;
+						if (finisher.Region == this.Region && finisher != killer)
+							this.SetFinisher(finisher.EntityId);
+					}
+				}
+				else if (killer.Party.Finish == PartyFinishRule.Turn)
+				{
+					var finisher = killer.Party.GetNextFinisher();
+					if (finisher.Region == this.Region && finisher != killer)
+						this.SetFinisher(finisher.EntityId);
+				}
+
+				// Stop here if we just set a finisher
+				if (this.FinisherId != 0)
+				{
+					Send.IsNowDead(this);
+					return false;
+				}
+			}
+
+			this.SetFinisher(0);
+			Send.IsNowDead(this);
+
+			// Finish events, fire when creature is finished.
+			ChannelServer.Instance.Events.OnCreatureFinished(this, killer);
 			if (killer != null && killer.IsPlayer)
-				ChannelServer.Instance.Events.OnCreatureKilledByPlayer(this, killer);
-			this.Death.Raise(this, killer);
+				ChannelServer.Instance.Events.OnCreatureFinishedByPlayer(this, killer);
+			this.Finish.Raise(this, killer);
 
 			// Cancel active skill
 			if (this.Skills.ActiveSkill != null)
 				this.Skills.CancelActiveSkill();
 
 			// Drops
-			var rnd = RandomProvider.Get();
-			var pos = this.GetPosition();
-
 			this.DropGold(killer, rnd, pos);
 			this.DropItems(killer, rnd, pos);
 
 			// DeadMenu
 			this.DeadMenu.Update();
+
+			return true;
+		}
+
+		/// <summary>
+		/// Sets finisher and sends SetFinisher.
+		/// </summary>
+		/// <param name="id"></param>
+		protected void SetFinisher(long id)
+		{
+			this.FinisherId = id;
+			if (id == 0)
+				this.IsFinished = true;
+
+			Send.SetFinisher(this, id);
 		}
 
 		/// <summary>
@@ -2073,11 +2228,25 @@ namespace Aura.Channel.World.Entities
 		/// <param name="pos"></param>
 		private void DropGold(Creature killer, Random rnd, Position pos)
 		{
-			if (rnd.NextDouble() >= ChannelServer.Instance.Conf.World.GoldDropChance)
+			var goldDropChance = ChannelServer.Instance.Conf.World.GoldDropChance;
+
+			// Add global bonus
+			float goldRateBonus;
+			string bonuses;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.GoldDropRate, out goldRateBonus, out bonuses))
+				goldDropChance *= goldRateBonus;
+
+			// Check if drop
+			if (rnd.NextDouble() >= goldDropChance)
 				return;
 
 			// Random base amount
 			var amount = rnd.Next(this.Drops.GoldMin, this.Drops.GoldMax + 1);
+
+			// Add global bonus
+			float goldDropBonus;
+			if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.GoldDropAmount, out goldDropBonus, out bonuses))
+				amount = (int)(amount * goldDropBonus);
 
 			if (amount > 0)
 			{
@@ -2091,7 +2260,20 @@ namespace Aura.Channel.World.Entities
 				if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
 					luckyChance += 0.05;
 
-				if (luckyChance < ChannelServer.Instance.Conf.World.HugeLuckyFinishChance)
+				var hugeLuckyFinishChance = ChannelServer.Instance.Conf.World.HugeLuckyFinishChance;
+				var bigLuckyFinishChance = ChannelServer.Instance.Conf.World.BigLuckyFinishChance;
+				var luckyFinishChance = ChannelServer.Instance.Conf.World.LuckyFinishChance;
+
+				// Add global bonus
+				float luckyDropBonus;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.LuckyFinishRate, out luckyDropBonus, out bonuses))
+				{
+					hugeLuckyFinishChance *= luckyDropBonus;
+					bigLuckyFinishChance *= luckyDropBonus;
+					luckyFinishChance *= luckyDropBonus;
+				}
+
+				if (luckyChance < hugeLuckyFinishChance)
 				{
 					amount *= 100;
 					finish = LuckyFinish.Lucky;
@@ -2099,7 +2281,7 @@ namespace Aura.Channel.World.Entities
 					Send.CombatMessage(killer, Localization.Get("Huge Lucky Finish!!"));
 					Send.Notice(killer, Localization.Get("Huge Lucky Finish!!"));
 				}
-				else if (luckyChance < ChannelServer.Instance.Conf.World.BigLuckyFinishChance)
+				else if (luckyChance < bigLuckyFinishChance)
 				{
 					amount *= 5;
 					finish = LuckyFinish.BigLucky;
@@ -2107,7 +2289,7 @@ namespace Aura.Channel.World.Entities
 					Send.CombatMessage(killer, Localization.Get("Big Lucky Finish!!"));
 					Send.Notice(killer, Localization.Get("Big Lucky Finish!!"));
 				}
-				else if (luckyChance < ChannelServer.Instance.Conf.World.LuckyFinishChance)
+				else if (luckyChance < luckyFinishChance)
 				{
 					amount *= 2;
 					finish = LuckyFinish.HugeLucky;
@@ -2165,24 +2347,74 @@ namespace Aura.Channel.World.Entities
 		private void DropItems(Creature killer, Random rnd, Position pos)
 		{
 			// Normal
+			this.DropItems(killer, rnd, pos, this.Drops.Drops);
+
+			// Event
+			var eventDrops = ChannelServer.Instance.GameEventManager.GlobalBonuses.GetDrops(this, killer);
+			if (eventDrops.Count != 0)
+				this.DropItems(killer, rnd, pos, eventDrops);
+
+			// Static
+			foreach (var item in this.Drops.StaticDrops)
+				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
+
+			this.Drops.ClearStaticDrops();
+		}
+
+		/// <summary>
+		/// Drops only keys from creature's static drops.
+		/// </summary>
+		/// <param name="killer"></param>
+		/// <param name="rnd"></param>
+		/// <param name="pos"></param>
+		private void DropKeys(Creature killer, Random rnd, Position pos)
+		{
+			var keys = this.Drops.StaticDrops.Where(a => a.IsDungeonKey);
+
+			foreach (var item in keys)
+				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
+
+			this.Drops.RemoveFromStaticDrops(a => a.IsDungeonKey);
+		}
+
+		/// <summary>
+		/// Handles dropping of items in given collection.
+		/// </summary>
+		/// <param name="dataCollection"></param>
+		private void DropItems(Creature killer, Random rnd, Position pos, IEnumerable<DropData> dataCollection)
+		{
 			var dropped = new HashSet<int>();
-			foreach (var dropData in this.Drops.Drops)
+			foreach (var dropData in dataCollection)
 			{
 				if (dropData == null || !AuraData.ItemDb.Exists(dropData.ItemId))
 				{
-					Log.Warning("Creature.Kill: Invalid drop '{0}' from '{1}'.", (dropData == null ? "null" : dropData.ItemId.ToString()), this.RaceId);
+					Log.Warning("Creature.DropItems: Invalid drop '{0}' from '{1}'.", (dropData == null ? "null" : dropData.ItemId.ToString()), this.RaceId);
 					continue;
 				}
 
-				var dropRate = dropData.Chance * ChannelServer.Instance.Conf.World.DropRate;
+				// Check feature
+				if (!string.IsNullOrWhiteSpace(dropData.Feature) && !AuraData.FeaturesDb.IsEnabled(dropData.Feature))
+					continue;
+
+				// Get chance
+				var dropRate = dropData.Chance;
 				var dropChance = rnd.NextDouble() * 100;
 				var month = ErinnTime.Now.Month;
+
+				// Add global bonus
+				float itemDropBonus;
+				string bonuses;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.ItemDropRate, out itemDropBonus, out bonuses))
+					dropRate *= itemDropBonus;
 
 				// Tuesday: Increase in dungeon item drop rate.
 				// Wednesday: Increase in item drop rate from animals and nature.
 				// +50%, bonus is unofficial.
 				if ((month == ErinnMonth.Baltane && this.Region.IsDungeon) || (month == ErinnMonth.AlbanHeruin && !this.Region.IsDungeon))
 					dropRate *= 1.5f;
+
+				// Add conf
+				dropRate *= ChannelServer.Instance.Conf.World.DropRate;
 
 				if (dropChance < dropRate)
 				{
@@ -2191,74 +2423,12 @@ namespace Aura.Channel.World.Entities
 						continue;
 
 					var item = new Item(dropData);
-
-					// Equip stat modification
-					// http://wiki.mabinogiworld.com/view/Category:Weapons
-					if (item.HasTag("/righthand/weapon/|/twohand/weapon/"))
-					{
-						var num = rnd.Next(100);
-
-						// Durability
-						if (num == 0)
-							item.OptionInfo.DurabilityMax += 4000;
-						else if (num <= 5)
-							item.OptionInfo.DurabilityMax += 3000;
-						else if (num <= 10)
-							item.OptionInfo.DurabilityMax += 2000;
-						else if (num <= 25)
-							item.OptionInfo.DurabilityMax += 1000;
-
-						// Attack
-						if (num == 0)
-						{
-							item.OptionInfo.AttackMin += 3;
-							item.OptionInfo.AttackMax += 3;
-						}
-						else if (num <= 30)
-						{
-							item.OptionInfo.AttackMin += 2;
-							item.OptionInfo.AttackMax += 2;
-						}
-						else if (num <= 60)
-						{
-							item.OptionInfo.AttackMin += 1;
-							item.OptionInfo.AttackMax += 1;
-						}
-
-						// Crit
-						if (num == 0)
-							item.OptionInfo.Critical += 3;
-						else if (num <= 30)
-							item.OptionInfo.Critical += 2;
-						else if (num <= 60)
-							item.OptionInfo.Critical += 1;
-
-						// Balance
-						if (num == 0)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 12);
-						else if (num <= 10)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 10);
-						else if (num <= 30)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 8);
-						else if (num <= 50)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 6);
-						else if (num <= 70)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 4);
-						else if (num <= 90)
-							item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 2);
-					}
-
+					item.ModifyEquipStats(rnd);
 					item.Drop(this.Region, pos, Item.DropRadius, killer, false);
 
 					dropped.Add(dropData.ItemId);
 				}
 			}
-
-			// Static
-			foreach (var item in this.Drops.StaticDrops)
-				item.Drop(this.Region, pos, Item.DropRadius, killer, false);
-
-			this.Drops.ClearStaticDrops();
 		}
 
 		/// <summary>
@@ -2281,8 +2451,12 @@ namespace Aura.Channel.World.Entities
 					// Only warn when creature was a player, we'll let NPCs fall
 					// back to Human 17 silently, until we know if they
 					// have specific level up stats.
-					if (this.IsPlayer)
-						Log.Warning("Creature.GiveExp: Level up stats missing for race {0}, age {1}. Falling back to Human 17.", this.RaceId, this.Age);
+					//if (this.IsPlayer)
+					//	Log.Warning("Creature.GiveExp: Level up stats missing for race {0}, age {1}. Falling back to Human 17.", this.RaceId, this.Age);
+
+					// Don't warn anymore, as that would put out a warning for
+					// every kill as an RP monster, since only normal
+					// characters and pets have level up stats.
 				}
 			}
 
@@ -2305,7 +2479,18 @@ namespace Aura.Channel.World.Entities
 				if (levelStats == null)
 					continue;
 
-				this.AbilityPoints += (short)Math2.Clamp(0, short.MaxValue, levelStats.AP * ChannelServer.Instance.Conf.World.LevelApRate);
+				var addAp = levelStats.AP;
+
+				// Add global bonus
+				float bonusMultiplier;
+				string bonuses;
+				if (ChannelServer.Instance.GameEventManager.GlobalBonuses.GetBonusMultiplier(GlobalBonusStat.LevelUpAp, out bonusMultiplier, out bonuses))
+					addAp = (int)(addAp * bonusMultiplier);
+
+				// Add conf
+				addAp = (int)(addAp * ChannelServer.Instance.Conf.World.LevelApRate);
+
+				this.AbilityPoints += (short)addAp;
 				this.LifeMaxBase += levelStats.Life;
 				this.ManaMaxBase += levelStats.Mana;
 				this.StaminaMaxBase += levelStats.Stamina;
@@ -2560,9 +2745,14 @@ namespace Aura.Channel.World.Entities
 					break;
 
 				case ReviveOptions.PhoenixFeather:
-					// 10% additional injuries
-					this.Injuries += this.LifeInjured * 0.10f;
-					this.Life = 1;
+					// Only set life if life is not at max, since creatures
+					// will keep their life if they leveled up while dead.
+					if (this.Life < this.LifeMax)
+					{
+						// 10% additional injuries
+						this.Injuries += this.LifeInjured * 0.10f;
+						this.Life = 1;
+					}
 					break;
 
 				case ReviveOptions.WaitForRescue:
@@ -2641,12 +2831,29 @@ namespace Aura.Channel.World.Entities
 			var cp = this.CombatPower;
 			var otherCp = compareCreature.CombatPower;
 
-			if (otherCp < cp * 0.8f) return PowerRating.Weakest;
-			if (otherCp < cp * 1.0f) return PowerRating.Weak;
-			if (otherCp < cp * 1.4f) return PowerRating.Normal;
-			if (otherCp < cp * 2.0f) return PowerRating.Strong;
-			if (otherCp < cp * 3.0f) return PowerRating.Awful;
-			return PowerRating.Boss;
+			var result = PowerRating.Boss;
+
+			if (otherCp < cp * 0.8f) result = PowerRating.Weakest;
+			else if (otherCp < cp * 1.0f) result = PowerRating.Weak;
+			else if (otherCp < cp * 1.4f) result = PowerRating.Normal;
+			else if (otherCp < cp * 2.0f) result = PowerRating.Strong;
+			else if (otherCp < cp * 3.0f) result = PowerRating.Awful;
+
+			// Weaken condition
+			if (this.Conditions.Has(ConditionsA.Weaken))
+			{
+				var levels = 1;
+				var wkn_lv = this.Conditions.GetExtraField(31, "WKN_LV");
+				if (wkn_lv != null)
+					levels = (byte)wkn_lv;
+
+				result += levels;
+			}
+
+			if (result > PowerRating.Boss)
+				result = PowerRating.Boss;
+
+			return result;
 		}
 
 		/// <summary>
@@ -2763,7 +2970,7 @@ namespace Aura.Channel.World.Entities
 
 		/// <summary>
 		/// Sets new position for target, based on attacker's position
-		/// and the distance, takes collision into consideration.
+		/// and the distance, takes collision into account.
 		/// </summary>
 		/// <param name="target">Entity to be knocked back</param>
 		/// <param name="distance">Distance to knock back the target</param>
@@ -2780,6 +2987,29 @@ namespace Aura.Channel.World.Entities
 				newPos = targetPosition.GetRelative(intersection, -50);
 
 			target.SetPosition(newPos.X, newPos.Y);
+
+			return newPos;
+		}
+
+		/// <summary>
+		/// Sets new position for creature, based on entity's position
+		/// and the distance, takes collision into account.
+		/// </summary>
+		/// <param name="entity">Source of the force (attacker, prop)</param>
+		/// <param name="distance">Distance to knock back the target</param>
+		/// <returns>New position</returns>
+		public Position GetShoved(Entity entity, int distance)
+		{
+			var attackerPosition = entity.GetPosition();
+			var targetPosition = this.GetPosition();
+
+			var newPos = attackerPosition.GetRelative(targetPosition, distance);
+
+			Position intersection;
+			if (this.Region.Collisions.Find(targetPosition, newPos, out intersection))
+				newPos = targetPosition.GetRelative(intersection, -50);
+
+			this.SetPosition(newPos.X, newPos.Y);
 
 			return newPos;
 		}
@@ -2927,11 +3157,18 @@ namespace Aura.Channel.World.Entities
 		public override void Disappear()
 		{
 			this.Dispose();
-
-			if (this.Region != Region.Limbo)
-				this.Region.RemoveCreature(this);
+			this.RemoveFromRegion();
 
 			base.Disappear();
+		}
+
+		/// <summary>
+		/// Removes creature from its current region.
+		/// </summary>
+		public void RemoveFromRegion()
+		{
+			if (this.Region != Region.Limbo)
+				this.Region.RemoveCreature(this);
 		}
 
 		/// <summary>
@@ -2986,10 +3223,7 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public bool GiveItem(int itemId, int amount = 1)
 		{
-			var item = new Item(itemId);
-			item.Amount = amount;
-
-			return this.GiveItem(item);
+			return this.Inventory.InsertStacks(itemId, amount);
 		}
 
 		/// <summary>
@@ -2999,7 +3233,7 @@ namespace Aura.Channel.World.Entities
 		/// <returns></returns>
 		public bool GiveItem(Item item)
 		{
-			return this.Inventory.Add(item, true);
+			return this.Inventory.Insert(item, true);
 		}
 
 		/// <summary>
@@ -3015,6 +3249,17 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Adds item to creature's inventory and shows an acquire window.
 		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		public void AcquireItem(int itemId, int amount = 1)
+		{
+			this.GiveItem(itemId, amount);
+			Send.AcquireItemInfo(this, itemId, amount);
+		}
+
+		/// <summary>
+		/// Adds item to creature's inventory and shows an acquire window.
+		/// </summary>
 		/// <param name="item"></param>
 		public void AcquireItem(Item item)
 		{
@@ -3023,13 +3268,81 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Adds warp scroll to creature's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="portal"></param>
+		/// <returns></returns>
+		public bool GiveWarpScroll(int itemId, string portal)
+		{
+			return this.GiveItem(Item.CreateWarpScroll(itemId, portal));
+		}
+
+		/// <summary>
+		/// Adds given amount of gold to the creature's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public bool GiveGold(int amount)
+		{
+			return this.Inventory.AddGold(amount);
+		}
+
+		/// <summary>
+		/// Removes given amount of gold from the creature's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public bool RemoveGold(int amount)
+		{
+			return this.Inventory.RemoveGold(amount);
+		}
+
+		/// <summary>
+		/// Returns true if creature has at least the given amount of gold
+		/// in its inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public bool HasGold(int amount)
+		{
+			return this.Inventory.HasGold(amount);
+		}
+
+		/// <summary>
+		/// Checks if player has at least the given amount of the item.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		public bool HasItem(int itemId, int amount = 1)
+		{
+			return this.Inventory.Has(itemId, amount);
+		}
+
+		/// <summary>
+		/// Returns the amount of the given item the creature has in its
+		/// inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public int CountItems(int itemId)
+		{
+			return this.Inventory.Count(itemId);
+		}
+
+		/// <summary>
 		/// Removes items with the given id from the creature's inventory.
 		/// </summary>
 		/// <param name="itemId"></param>
 		/// <param name="amount"></param>
-		public void RemoveItem(int itemId, int amount = 1)
+		/// <returns></returns>
+		public bool RemoveItem(int itemId, int amount = 1)
 		{
-			this.Inventory.Remove(itemId, amount);
+			return this.Inventory.Remove(itemId, amount);
 		}
 
 		/// <summary>
@@ -3280,6 +3593,27 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns all creatures that have hit this creature and are still
+		/// in the same region.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetAllHitters()
+		{
+			var result = new List<Creature>();
+
+			lock (_hitTrackers)
+			{
+				foreach (var tracker in _hitTrackers.Values)
+				{
+					if (tracker.Attacker.Region == this.Region)
+						result.Add(tracker.Attacker);
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Returns the total number of hits the creature took.
 		/// </summary>
 		/// <returns></returns>
@@ -3304,8 +3638,10 @@ namespace Aura.Channel.World.Entities
 			if (item.OwnerId == 0 || item.ProtectionLimit == null || item.ProtectionLimit < DateTime.Now)
 				return true;
 
-			// Return whether creature is the owner
-			return (item.OwnerId == this.EntityId);
+			// Return whether the item's owner is controlled by the
+			// creature's client, this way masters can pick up their
+			// follower's (e.g. pet's) items.
+			return this.Client.Creatures.ContainsKey(item.OwnerId);
 		}
 
 		/// <summary>
@@ -3579,6 +3915,605 @@ namespace Aura.Channel.World.Entities
 				result = item.Data.SplashDamage;
 
 			return result;
+		}
+
+		/// <summary>
+		/// If this creature is an RP character, it returns the player's
+		/// character behind the RP character, if not it just returns itself.
+		/// </summary>
+		/// <remarks>
+		/// Use in cases where you want to execute an action on the actual
+		/// player character, but you don't know if you're working with an
+		/// RP character or not.
+		/// 
+		/// For example, maybe you want to give a player a quest item at the
+		/// end of the dungeon, but the dungeon can be played as RP or
+		/// non-RP. Using just the creature would give it to the RP
+		/// character, with the player never getting it.
+		/// </remarks>
+		/// <returns></returns>
+		public Creature GetActualCreature()
+		{
+			if (!this.IsRpCharacter)
+				return this;
+
+			var rpCharacter = this as RpCharacter;
+			return rpCharacter.Actor;
+		}
+
+		/// <summary>
+		/// Checks if player has the skill.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="rank"></param>
+		/// <returns></returns>
+		public bool HasSkill(SkillId skillId, SkillRank rank = SkillRank.Novice)
+		{
+			return this.Skills.Has(skillId, rank);
+		}
+
+		/// <summary>
+		/// Checks if player has the skill on the specified rank.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="rank"></param>
+		/// <returns></returns>
+		public bool IsSkill(SkillId skillId, SkillRank rank)
+		{
+			return this.Skills.Is(skillId, rank);
+		}
+
+		/// <summary>
+		/// Gives skill to player if he doesn't have it on that rank yet.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="rank"></param>
+		public void GiveSkill(SkillId skillId, SkillRank rank = SkillRank.Novice)
+		{
+			if (this.HasSkill(skillId, rank))
+				return;
+
+			this.Skills.Give(skillId, rank);
+		}
+
+		/// <summary>
+		/// Trains the specified condition for skill by one.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <param name="condition"></param>
+		public void TrainSkill(SkillId skillId, int condition)
+		{
+			var skill = this.Skills.Get(skillId);
+			if (skill == null)
+				return;
+
+			skill.Train(condition);
+		}
+
+		/// <summary>
+		/// Returns true if quest is in progress and not all objectives
+		/// have been finished yet.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="objective"></param>
+		/// <returns></returns>
+		public bool QuestActive(int questId, string objective = null)
+		{
+			return this.Quests.IsActive(questId, objective);
+		}
+
+		/// <summary>
+		/// Returns true if player has quest, completed or not.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public bool HasQuest(int questId)
+		{
+			return this.Quests.Has(questId);
+		}
+
+		/// <summary>
+		/// Returns true if quest was completed.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public bool QuestCompleted(int questId)
+		{
+			return this.Quests.IsComplete(questId);
+		}
+
+		/// <summary>
+		/// Returns true if player has quest, but it wasn't finished or
+		/// completed yet.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public bool QuestInProgress(int questId)
+		{
+			return (this.HasQuest(questId) && !this.QuestCompleted(questId));
+		}
+
+		/// <summary>
+		/// Finishes objective in quest.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="objective"></param>
+		/// <returns></returns>
+		public bool FinishQuestObjective(int questId, string objective)
+		{
+			return this.Quests.Finish(questId, objective);
+		}
+
+		/// <summary>
+		/// Returns current quest objective.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="objective"></param>
+		/// <returns></returns>
+		public string GetCurrentQuestObjective(int questId)
+		{
+			var quest = this.Quests.GetFirstIncomplete(questId);
+			if (quest == null)
+				throw new Exception("Player doesn't have quest '" + questId.ToString() + "'.");
+
+			var current = quest.CurrentObjective;
+			if (current == null)
+				return null;
+
+			return current.Ident;
+		}
+
+		/// <summary>
+		/// Starts quest.
+		/// </summary>
+		/// <param name="questId"></param>
+		public void StartQuest(int questId)
+		{
+			try
+			{
+				this.Quests.Start(questId);
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex, "Creature.StartQuest: Quest '{0}'", questId);
+			}
+		}
+
+		/// <summary>
+		/// Sends quest to player via owl.
+		/// </summary>
+		/// <param name="questId"></param>
+		public void SendOwl(int questId)
+		{
+			this.SendOwl(questId, 0);
+		}
+
+		/// <summary>
+		/// Sends quest to player via owl after the delay.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <param name="delay">Arrival delay in seconds.</param>
+		/// <returns></returns>
+		public bool SendOwl(int questId, int delay)
+		{
+			try
+			{
+				this.Quests.SendOwl(questId, delay);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex, "Creature.SendOwl: Quest '{0}'", questId);
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Completes quest (incl rewards).
+		/// </summary>
+		/// <param name="questId"></param>
+		public void CompleteQuest(int questId)
+		{
+			this.Quests.Complete(questId, false);
+		}
+
+		/// <summary>
+		/// Starts PTJ quest.
+		/// </summary>
+		/// <param name="questId"></param>
+		/// <returns></returns>
+		public bool StartPtj(int questId, string npcName)
+		{
+			try
+			{
+				var scroll = Item.CreateQuestScroll(questId);
+				var quest = scroll.Quest;
+
+				quest.MetaData.SetByte("QMRTCT", (byte)quest.Data.RewardGroups.Count);
+				quest.MetaData.SetInt("QMRTBF", 0x4321); // (specifies which groups to display at which position, 1 group per hex char)
+				quest.MetaData.SetString("QRQSTR", npcName);
+				quest.MetaData.SetBool("QMMABF", false);
+
+				// Calculate deadline, based on current time and quest data
+				var now = ErinnTime.Now;
+				var diffHours = Math.Max(0, quest.Data.DeadlineHour - now.Hour - 1);
+				var diffMins = Math.Max(0, 60 - now.Minute);
+				var deadline = DateTime.Now.AddTicks(diffHours * ErinnTime.TicksPerHour + diffMins * ErinnTime.TicksPerMinute);
+				quest.Deadline = deadline;
+
+				// Do quests given out by NPCs *always* go into the
+				// quest pocket?
+				this.Inventory.Add(scroll, Pocket.Quests);
+
+				ChannelServer.Instance.Events.OnCreatureStartedPtj(this, quest.Data.PtjType);
+
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex, "Creature.StartPtj: Quest '{0}'", questId);
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Completes PTJ quest, if one is active. Rewards the selected rewards.
+		/// </summary>
+		/// <param name="rewardReply">Example: @reward:0</param>
+		public void CompletePtj(string rewardReply)
+		{
+			var quest = this.Quests.GetPtjQuest();
+			if (quest == null)
+				return;
+
+			// Get reward group index
+			var rewardGroupIdx = 0;
+			if (!int.TryParse(rewardReply.Substring("@reward:".Length), out rewardGroupIdx))
+			{
+				Log.Warning("Creature.CompletePtj: Invalid reply '{0}'.", rewardReply);
+				return;
+			}
+
+			// Get reward group id
+			// The client displays a list of all available rewards,
+			// ordered by group id, with unobtainable ones disabled.
+			// What it sends is the index of the element in that list,
+			// not the actual group id, because that would be too easy.
+			var rewardGroup = -1;
+			var group = quest.Data.RewardGroups.Values.OrderBy(a => a.Id).ElementAt(rewardGroupIdx);
+			if (group == null)
+				Log.Warning("Creature.CompletePtj: Invalid group index '{0}' for quest '{1}'.", rewardGroupIdx, quest.Id);
+			else if (!group.HasRewardsFor(quest.GetResult()))
+				throw new Exception("Invalid reward group, doesn't have rewards for result.");
+			else
+				rewardGroup = group.Id;
+
+			// Complete
+			this.Quests.Complete(quest, rewardGroup, false);
+
+			ChannelServer.Instance.Events.OnCreatureCompletedPtj(this, quest.Data.PtjType);
+		}
+
+		/// <summary>
+		/// Gives up Ptj (fail without rewards).
+		/// </summary>
+		public void GiveUpPtj()
+		{
+			var quest = this.Quests.GetPtjQuest();
+			if (quest == null)
+				return;
+
+			this.Quests.GiveUp(quest);
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest is active and its type matches
+		/// the given one.
+		/// </summary>
+		/// <returns></returns>
+		public bool IsDoingPtj(PtjType type)
+		{
+			var quest = this.Quests.GetPtjQuest();
+			return (quest != null && quest.Data.PtjType == type);
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest is active.
+		/// </summary>
+		/// <returns></returns>
+		public bool IsDoingPtj()
+		{
+			var quest = this.Quests.GetPtjQuest();
+			return (quest != null);
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest from the given NPC is in progress.
+		/// </summary>
+		/// <param name="npc"></param>
+		/// <returns></returns>
+		public bool IsDoingPtjFor(Creature npc)
+		{
+			return this.IsDoingPtjFor(npc.Name);
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest from the given NPC is in progress.
+		/// </summary>
+		/// <param name="npcName"></param>
+		/// <returns></returns>
+		public bool IsDoingPtjFor(string npcName)
+		{
+			var quest = this.Quests.GetPtjQuest();
+			return (quest != null && quest.MetaData.GetString("QRQSTR") == npcName);
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest from an NPC other than the given one
+		/// is in progress.
+		/// </summary>
+		/// <param name="npcName"></param>
+		/// <returns></returns>
+		public bool IsDoingPtjNotFor(Creature npc)
+		{
+			return this.IsDoingPtjNotFor(npc.Name);
+		}
+
+		/// <summary>
+		/// Returns true if a PTJ quest from an NPC other than the given one
+		/// is in progress.
+		/// </summary>
+		/// <param name="npcName"></param>
+		/// <returns></returns>
+		public bool IsDoingPtjNotFor(string npcName)
+		{
+			var quest = this.Quests.GetPtjQuest();
+			return (quest != null && quest.MetaData.GetString("QRQSTR") != npcName);
+		}
+
+		/// <summary>
+		/// Returns true if the player can do a PTJ of type, because he hasn't
+		/// done one of the same type today.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="remaining"></param>
+		/// <returns></returns>
+		public bool CanDoPtj(PtjType type, int remaining = 99)
+		{
+			// Always allow devCATs
+			//if (this.Title == TitleId.devCAT)
+			//	return true;
+
+			// Check remaining
+			if (remaining <= 0)
+				return false;
+
+			// Check if PTJ has already been done this Erinn day
+			var ptj = this.Quests.GetPtjTrackRecord(type);
+			var change = new ErinnTime(ptj.LastChange);
+			var now = ErinnTime.Now;
+
+			return (now.Day != change.Day || now.Month != change.Month || now.Year != change.Year);
+		}
+
+		/// <summary>
+		/// Returns the player's level (basic, int, adv) for the given PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public QuestLevel GetPtjQuestLevel(PtjType type)
+		{
+			var record = this.Quests.GetPtjTrackRecord(type);
+			return record.GetQuestLevel();
+		}
+
+		/// <summary>
+		/// Returns number of times the player has done the given PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public int GetPtjDoneCount(PtjType type)
+		{
+			return this.Quests.GetPtjTrackRecord(type).Done;
+		}
+
+		/// <summary>
+		/// Returns number of times the player has successfully done the given PTJ type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public int GetPtjSuccessCount(PtjType type)
+		{
+			return this.Quests.GetPtjTrackRecord(type).Success;
+		}
+
+		/// <summary>
+		/// Returns how well the current PTJ has been done (so far).
+		/// </summary>
+		/// <returns></returns>
+		public QuestResult GetPtjResult()
+		{
+			var quest = this.Quests.GetPtjQuest();
+			if (quest != null)
+				return quest.GetResult();
+
+			return QuestResult.None;
+		}
+
+		/// <summary>
+		/// Displays notice.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public void Notice(string format, params object[] args)
+		{
+			Send.Notice(this, format, args);
+		}
+
+		/// <summary>
+		/// Displays notice.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public void Notice(NoticeType type, string format, params object[] args)
+		{
+			Send.Notice(this, type, format, args);
+		}
+
+		/// <summary>
+		/// Displays as notice and system message.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public void SystemNotice(string format, params object[] args)
+		{
+			this.Notice(format, args);
+			this.SystemMsg(format, args);
+		}
+
+		/// <summary>
+		/// Displays system message in player's chat log.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public void SystemMsg(string format, params object[] args)
+		{
+			Send.SystemMessage(this, format, args);
+		}
+
+		/// <summary>
+		/// Returns true if player has the keyword.
+		/// </summary>
+		/// <param name="keyword"></param>
+		public bool HasKeyword(string keyword)
+		{
+			return this.Keywords.Has(keyword);
+		}
+
+		/// <summary>
+		/// Returns true if player has the keyword.
+		/// </summary>
+		/// <param name="keyword"></param>
+		public void GiveKeyword(string keyword)
+		{
+			if (this.HasKeyword(keyword))
+				return;
+
+			this.Keywords.Give(keyword);
+		}
+
+		/// <summary>
+		/// Returns true if player has the keyword.
+		/// </summary>
+		/// <param name="keyword"></param>
+		public void RemoveKeyword(string keyword)
+		{
+			if (this.HasKeyword(keyword))
+				this.Keywords.Remove(keyword);
+		}
+
+		/// <summary>
+		/// Adds points (Pon) to creature's account.
+		/// </summary>
+		/// <param name="amount"></param>
+		public void GivePoints(int amount)
+		{
+			this.Points += amount;
+		}
+
+		/// <summary>
+		/// Removes points (Pon) from creature's account.
+		/// </summary>
+		/// <param name="amount"></param>
+		public void RemovePoints(int amount)
+		{
+			this.Points -= amount;
+		}
+
+		/// <summary>
+		/// Returns true if creature's account has at least the given amount
+		/// of points (Pon).
+		/// </summary>
+		/// <param name="amount"></param>
+		public bool HasPoints(int amount)
+		{
+			return (this.Points >= amount);
+		}
+
+		/// <summary>
+		/// Returns true if creature knows about the title, even if it
+		/// doesn't have it.
+		/// </summary>
+		/// <param name="titleId"></param>
+		/// <returns></returns>
+		public bool KnowsTitle(int titleId)
+		{
+			return this.Titles.Knows((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Returns true if creature has and is able to use the given title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		/// <returns></returns>
+		public bool CanUseTitle(int titleId)
+		{
+			return this.Titles.IsUsable((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Let's creature know about given title, but doesn't enable it.
+		/// </summary>
+		/// <param name="titleId"></param>
+		public void ShowTitle(int titleId)
+		{
+			this.Titles.Show((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Enables creature to use given title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		public void EnableTitle(int titleId)
+		{
+			this.Titles.Enable((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Returns true if creature is using the given title as either main
+		/// or option title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		/// <returns></returns>
+		public bool IsUsingTitle(int titleId)
+		{
+			return (this.Titles.SelectedTitle == titleId || this.Titles.SelectedOptionTitle == titleId);
+		}
+
+		/// <summary>
+		/// Returns true if the creature has equipped an item with the given
+		/// id in one of its main equip slots.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool HasEquipped(int itemId)
+		{
+			var items = this.Inventory.GetMainEquipment(a => a.Info.Id == itemId);
+			return items.Any();
+		}
+
+		/// <summary>
+		/// Returns true if the creature has equipped an item that matches
+		/// the given tag in one of its main equip slots.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool HasEquipped(string tag)
+		{
+			var items = this.Inventory.GetMainEquipment(a => a.HasTag(tag));
+			return items.Any();
 		}
 	}
 

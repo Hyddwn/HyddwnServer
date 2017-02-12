@@ -101,72 +101,79 @@ namespace Aura.Channel.World
 		/// </remarks>
 		private void Heartbeat(object _)
 		{
-			var now = new ErinnTime(DateTime.Now);
-			var diff = (now.DateTime - _lastHeartbeat).TotalMilliseconds;
-
-			if (diff != HeartbeatTime && Math.Abs(HeartbeatTime - diff) > HeartbeatTime && diff < 100000000)
+			try
 			{
-				Log.Debug("OMG, the server has an irregular heartbeat! ({0:0.00})", diff);
-			}
+				var now = new ErinnTime(DateTime.Now);
+				var diff = (now.DateTime - _lastHeartbeat).TotalMilliseconds;
 
-			// Seconds event
-			if ((_secondsTime += diff) >= Second)
-			{
-				_secondsTime = 0;
-				ChannelServer.Instance.Events.OnSecondsTimeTick(now);
-			}
-
-			// Minutes event
-			if ((_minutesTime += diff) >= Minute)
-			{
-				_minutesTime = (now.DateTime.Second * Second + now.DateTime.Millisecond);
-				ChannelServer.Instance.Events.OnMinutesTimeTick(now);
-
-				// Mabi tick event
-				if (++_mabiTickCount >= 5)
+				if (diff != HeartbeatTime && Math.Abs(HeartbeatTime - diff) > HeartbeatTime && diff < 100000000)
 				{
-					ChannelServer.Instance.Events.OnMabiTick(now);
-					_mabiTickCount = 0;
+					Log.Debug("OMG, the server has an irregular heartbeat! ({0:0.00})", diff);
 				}
 
-				// Play time tick event
-				if (++_playTimeTick >= 9)
+				// Seconds event
+				if ((_secondsTime += diff) >= Second)
 				{
-					ChannelServer.Instance.Events.OnPlayTimeTick(now);
-					_playTimeTick = 0;
-				}
-			}
-
-			// Hours event
-			if ((_hoursTime += diff) >= Hour)
-			{
-				_hoursTime = (now.DateTime.Minute * Minute + now.DateTime.Second * Second + now.DateTime.Millisecond);
-				ChannelServer.Instance.Events.OnHoursTimeTick(now);
-			}
-
-			// Erinn time event
-			if ((_erinnTime += diff) >= ErinnMinute)
-			{
-				_erinnTime = 0;
-				ChannelServer.Instance.Events.OnErinnTimeTick(now);
-
-				// TODO: Dawn/Dusk/Midnight wouldn't be called if the server had a 500+ ms hickup.
-
-				// Erinn daytime event
-				if (now.IsDawn || now.IsDusk)
-				{
-					ChannelServer.Instance.Events.OnErinnDaytimeTick(now);
-					this.OnErinnDaytimeTick(now);
+					_secondsTime = 0;
+					ChannelServer.Instance.Events.OnSecondsTimeTick(now);
 				}
 
-				// Erinn midnight event
-				if (now.IsMidnight)
-					ChannelServer.Instance.Events.OnErinnMidnightTick(now);
+				// Minutes event
+				if ((_minutesTime += diff) >= Minute)
+				{
+					_minutesTime = (now.DateTime.Second * Second + now.DateTime.Millisecond);
+					ChannelServer.Instance.Events.OnMinutesTimeTick(now);
+
+					// Mabi tick event
+					if (++_mabiTickCount >= 5)
+					{
+						ChannelServer.Instance.Events.OnMabiTick(now);
+						_mabiTickCount = 0;
+					}
+
+					// Play time tick event
+					if (++_playTimeTick >= 9)
+					{
+						ChannelServer.Instance.Events.OnPlayTimeTick(now);
+						_playTimeTick = 0;
+					}
+				}
+
+				// Hours event
+				if ((_hoursTime += diff) >= Hour)
+				{
+					_hoursTime = (now.DateTime.Minute * Minute + now.DateTime.Second * Second + now.DateTime.Millisecond);
+					ChannelServer.Instance.Events.OnHoursTimeTick(now);
+				}
+
+				// Erinn time event
+				if ((_erinnTime += diff) >= ErinnMinute)
+				{
+					_erinnTime = 0;
+					ChannelServer.Instance.Events.OnErinnTimeTick(now);
+
+					// TODO: Dawn/Dusk/Midnight wouldn't be called if the server had a 500+ ms hickup.
+
+					// Erinn daytime event
+					if (now.IsDawn || now.IsDusk)
+					{
+						ChannelServer.Instance.Events.OnErinnDaytimeTick(now);
+						this.OnErinnDaytimeTick(now);
+					}
+
+					// Erinn midnight event
+					if (now.IsMidnight)
+						ChannelServer.Instance.Events.OnErinnMidnightTick(now);
+				}
+
+				this.UpdateEntities();
+
+				_lastHeartbeat = now.DateTime;
 			}
-
-			this.UpdateEntities();
-
-			_lastHeartbeat = now.DateTime;
+			catch (Exception ex)
+			{
+				Log.Exception(ex, "Exception during world hearbeat.");
+			}
 		}
 
 		/// <summary>

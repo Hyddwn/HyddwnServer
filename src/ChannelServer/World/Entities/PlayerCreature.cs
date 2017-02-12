@@ -31,11 +31,6 @@ namespace Aura.Channel.World.Entities
 		public string Server { get; set; }
 
 		/// <summary>
-		/// Time at which the creature can be deleted.
-		/// </summary>
-		public DateTime DeletionTime { get; set; }
-
-		/// <summary>
 		/// Specifies whether to update visible creatures or not.
 		/// </summary>
 		public bool Watching { get; set; }
@@ -43,7 +38,7 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Set to true if creature is supposed to be saved.
 		/// </summary>
-		public bool Save { get; set; }
+		public virtual bool Save { get; set; }
 
 		/// <summary>
 		/// Player's CP, based on stats and skills.
@@ -110,6 +105,16 @@ namespace Aura.Channel.World.Entities
 				return false;
 			}
 
+			// When RP characters warp out of dungeons, their session ends.
+			// This should happen for shadow missions as well once we get them.
+			if (this.IsRpCharacter && this.Region.IsDungeon && !targetRegion.IsDungeon)
+			{
+				var rpCharacter = this as RpCharacter;
+				rpCharacter.End();
+
+				return true;
+			}
+
 			var currentRegionId = this.RegionId;
 			var loc = new Location(currentRegionId, this.GetPosition());
 
@@ -173,6 +178,35 @@ namespace Aura.Channel.World.Entities
 				Send.EntitiesDisappear(this.Client, disappear);
 
 				_visibleEntities = currentlyVisible;
+			}
+		}
+
+		// TODO: Start using Start- and StopLookAround everywhere,
+		//   to properly manage the visible entities. Right now we have
+		//   hack-ish appear and disappear calls all over the place.
+
+		/// <summary>
+		/// Starts auto-update of visible entities nearby, sending the first
+		/// list of visible entities right away.
+		/// </summary>
+		public void StartLookAround()
+		{
+			this.Watching = true;
+			this.LookAround();
+		}
+
+		/// <summary>
+		/// Stops auto-update of visible entities nearby,
+		/// clearing all currently visible entities.
+		/// </summary>
+		public void StopLookAround()
+		{
+			this.Watching = false;
+
+			lock (_lookAroundLock)
+			{
+				Send.EntitiesDisappear(this.Client, _visibleEntities);
+				_visibleEntities.Clear();
 			}
 		}
 

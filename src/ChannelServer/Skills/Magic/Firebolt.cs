@@ -61,7 +61,7 @@ namespace Aura.Channel.Skills.Magic
 			aAction.Set(AttackerOptions.Result);
 
 			var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-			tAction.Set(TargetOptions.Result);
+			tAction.Set(TargetOptions.Result | TargetOptions.KnockDown);
 			tAction.Stun = TargetStun;
 
 			var cap = new CombatActionPack(attacker, skill.Info.Id, aAction, tAction);
@@ -87,19 +87,11 @@ namespace Aura.Channel.Skills.Magic
 				target.TakeDamage(tAction.Damage = damage, attacker);
 			target.Aggro(attacker);
 
-			// Knock down on deadly
-			if (target.Conditions.Has(ConditionsA.Deadly))
-			{
-				tAction.Set(TargetOptions.KnockDown);
-				tAction.Stun = TargetStun;
-			}
-
-			// Death/Knockback
+			// Knockback
+			target.Stability = Creature.MinStability;
 			attacker.Shove(target, KnockbackDistance);
 			if (target.IsDead)
 				tAction.Set(TargetOptions.FinishingKnockDown);
-			else
-				tAction.Set(TargetOptions.KnockDown);
 
 			// Override stun set by defense
 			aAction.Stun = AttackerStun;

@@ -61,7 +61,7 @@ public class CoyoteAi : AiScript
 		}
 		else if (Case(10))
 		{
-			Do(Circle(500, 1000, 5000, false));
+			Do(Circle(500, 500, 1000));
 		}
 	}
 

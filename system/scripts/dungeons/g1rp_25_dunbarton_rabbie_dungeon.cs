@@ -10,9 +10,9 @@ public class RabbieTarlachRpDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#tarlach2");
-		//dungeon.SetRole(1, "#mari2");
-		//dungeon.SetRole(2, "#ruairi2");
+		dungeon.SetRole(0, "#tarlach2");
+		dungeon.SetRole(1, "#mari2");
+		dungeon.SetRole(2, "#ruairi2");
 	}
 
 	public override void OnPartyEntered(Dungeon dungeon, Creature creature)
@@ -29,12 +29,12 @@ public class RabbieTarlachRpDungeonScript : DungeonScript
 			var creators = dungeon.GetCreators();
 			foreach (var member in creators)
 			{
-				if (member.Keywords.Has("g1_29"))
+				if (member.HasKeyword("g1_29"))
 				{
-					member.Keywords.Remove("g1_29");
-					member.Keywords.Give("g1_30");
-					member.Keywords.Remove("g1_bone_of_glasgavelen");
-					member.Keywords.Give("g1_goddess_morrighan2");
+					member.RemoveKeyword("g1_29");
+					member.GiveKeyword("g1_30");
+					member.RemoveKeyword("g1_bone_of_glasgavelen");
+					member.GiveKeyword("g1_goddess_morrighan2");
 				}
 			}
 

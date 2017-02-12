@@ -84,6 +84,10 @@ namespace Aura.Channel.World
 		/// <returns></returns>
 		public bool InCone(Position tip, double direction, int radius, double angle)
 		{
+			// Cap angle at +180°, to prevent possibly unexpected inverting
+			// behavior. (The cone would go into the opposite direction.)
+			angle = Math.Min(Math.PI, Math.Abs(angle));
+
 			var halfAngle = angle / 2;
 
 			var tx1 = tip.X + (Math.Cos(-halfAngle + direction) * radius);
@@ -95,13 +99,34 @@ namespace Aura.Channel.World
 			var px = X;
 			var py = Y;
 
+			// Check if position is inside the triangle part of the cone.
 			// http://stackoverflow.com/questions/2049582/how-to-determine-a-point-in-a-2d-triangle
 			var A = 1.0 / 2.0 * (-ty2 * tx3 + ty1 * (-tx2 + tx3) + tx1 * (ty2 - ty3) + tx2 * ty3);
 			var sign = (A < 0 ? -1 : 1);
 			var s = (ty1 * tx3 - tx1 * ty3 + (ty3 - ty1) * px + (tx1 - tx3) * py) * sign;
 			var t = (tx1 * ty2 - ty1 * tx2 + (ty1 - ty2) * px + (tx2 - tx1) * py) * sign;
 
-			return (s > 0 && t > 0 && (s + t) < 2 * A * sign);
+			var isInTriangle = (s > 0 && t > 0 && (s + t) < 2 * A * sign);
+			if (isInTriangle)
+				return true;
+
+			// Check if position is on the triangle part's side of the cone.
+			// If it is, we can stop, since we already checked for the
+			// triangle. The only way the position could now be in the cone
+			// is if it was on the circle's side.
+			// http://stackoverflow.com/a/3461533/1171898
+			var isOnTriangleSide = (((tx2 - tx1) * (py - ty1) - (ty2 - ty1) * (px - tx1)) > 0);
+			if (isOnTriangleSide)
+				return false;
+
+			// Check if position is inside the circle.
+			var tx4 = (int)((tx1 + tx2) / 2);
+			var ty4 = (int)((ty1 + ty2) / 2);
+			var circleRadius = Math.Sqrt(Math.Pow(tx2 - tx1, 2) + Math.Pow(ty2 - ty1, 2)) / 2;
+			var targetDistance = Math.Sqrt(Math.Pow(tx4 - px, 2) + Math.Pow(ty4 - py, 2));
+			var isInCircle = (targetDistance < circleRadius);
+
+			return isInCircle;
 		}
 
 		/// <summary>
@@ -198,7 +223,7 @@ namespace Aura.Channel.World
 			var newX = this.X + (distance / deltaXY) * (deltaX);
 			var newY = this.Y + (distance / deltaXY) * (deltaY);
 
-			return new Position((int)newX, (int)newY);
+			return new Position((int)Math.Round(newX), (int)Math.Round(newY));
 		}
 
 		/// <summary>

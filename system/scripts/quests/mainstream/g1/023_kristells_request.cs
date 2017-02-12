@@ -4,7 +4,7 @@
 // Killing some monsters for Kristell and obtaining the Black Fomor Pass.
 // 
 // Wiki:
-// - Requirement: npc.Titles stated below while level 25 or higher
+// - Requirement: Titles stated below while level 25 or higher
 // - Instruction: Slay monsters threatening Kristell.
 //---------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ public class KristellsRequestQuest : QuestScript
 		AddObjective("talk", L("Talk to Kristell"), 14, 34657, 42808, Talk("kristell"));
 
 		AddReward(Item(BlackFomorPass));
-		AddReward(WarpScroll(63009, "barri_dungeon"));
+		AddReward(WarpScroll(63009, "Barri_Dungeon"));
 
 		AddHook("_duncan", "before_keywords", DuncanBeforeKeywords);
 		AddHook("_kristell", "before_keywords", KristellBeforeKeywords);
@@ -73,7 +73,7 @@ public class KristellsRequestQuest : QuestScript
 				return HookResult.Break;
 			}
 
-			var hasSlayerTitle = (npc.Title == 79 || npc.Title == 80 || npc.Title == 81 || npc.Title == 82 || npc.Title == 83 || npc.Title == 85 || npc.Title == 53);
+			var hasSlayerTitle = (npc.Player.IsUsingTitle(79) || npc.Player.IsUsingTitle(80) || npc.Player.IsUsingTitle(81) || npc.Player.IsUsingTitle(82) || npc.Player.IsUsingTitle(83) || npc.Player.IsUsingTitle(85) || npc.Player.IsUsingTitle(53));
 			if (!hasSlayerTitle)
 			{
 				npc.Msg(L("...<br/>If...<br/>If Tir Na Nog is..."));
@@ -87,10 +87,10 @@ public class KristellsRequestQuest : QuestScript
 				return HookResult.Break;
 			}
 
-			if (npc.HasKeyword("g1_33"))
+			if (npc.Player.HasKeyword("g1_33"))
 			{
-				if (!npc.HasQuest(this.Id))
-					npc.StartQuest(this.Id);
+				if (!npc.Player.HasQuest(this.Id))
+					npc.Player.StartQuest(this.Id);
 
 				npc.Msg(L("That title above your head<br/>tells me that you're confident<br/>with your strength."));
 				npc.Msg(L("If you're so strong,<br/>could I ask you for one favor?"));
@@ -101,9 +101,9 @@ public class KristellsRequestQuest : QuestScript
 			}
 			else
 			{
-				if (!npc.HasItem(BlackFomorPass))
+				if (!npc.Player.HasItem(BlackFomorPass))
 				{
-					npc.GiveItem(BlackFomorPass);
+					npc.Player.GiveItem(BlackFomorPass);
 					npc.Msg(L("This is a Fomor Pass used only by high ranking Fomors.<br/>I pray that you won't lose it."));
 				}
 				else
@@ -120,12 +120,12 @@ public class KristellsRequestQuest : QuestScript
 
 	public async Task<HookResult> KristellAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk"))
+		if (npc.Player.QuestActive(this.Id, "talk"))
 		{
-			npc.CompleteQuest(this.Id);
+			npc.Player.CompleteQuest(this.Id);
 
-			npc.RemoveKeyword("g1_33");
-			npc.GiveKeyword("g1_34");
+			npc.Player.RemoveKeyword("g1_33");
+			npc.Player.GiveKeyword("g1_34");
 
 			npc.Msg(L("Thank you for your help, I feel much safer now.<br/>I'll tell you how to get to the place Tarlach mentioned.<br/>This Fomor Pass is used by high-ranking Fomors to travel there.<br/>This wing will take you to the dungeon. I pray that you don't lose it."));
 
@@ -142,15 +142,15 @@ public class KristellsRequestQuest : QuestScript
 	[On("PlayerLoggedIn")]
 	public void PlayerLoggedIn(Creature creature)
 	{
-		if (creature.Keywords.Has("g1_34") && creature.Keywords.Has("g1_34_2") && creature.Keywords.Has("g1_cichol"))
+		if (creature.HasKeyword("g1_34") && creature.HasKeyword("g1_34_2") && creature.HasKeyword("g1_cichol"))
 		{
 			Cutscene.Play("G1_33_a_Morrighan", creature, cutscene =>
 			{
-				creature.Keywords.Remove("g1_34");
-				creature.Keywords.Remove("g1_34_2");
-				creature.Keywords.Give("g1_36"); // Dunno what happened to 35.
-				creature.Keywords.Remove("g1_cichol");
-				creature.Keywords.Give("g1_tirnanog_seal_breaker");
+				creature.RemoveKeyword("g1_34");
+				creature.RemoveKeyword("g1_34_2");
+				creature.GiveKeyword("g1_36"); // Dunno what happened to 35.
+				creature.RemoveKeyword("g1_cichol");
+				creature.GiveKeyword("g1_tirnanog_seal_breaker");
 			});
 		}
 	}

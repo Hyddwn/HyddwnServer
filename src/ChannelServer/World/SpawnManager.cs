@@ -53,6 +53,27 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
+		/// Removes spawner with given id, returns true if one was removed.
+		/// </summary>
+		/// <param name="spawnerId"></param>
+		/// <returns></returns>
+		public bool Remove(int spawnerId)
+		{
+			var spawner = this.Get(spawnerId);
+			if (spawner == null)
+				return false;
+
+			// Remove spawner
+			lock (_spawners)
+				_spawners.Remove(spawnerId);
+
+			// Dispose to remove spawned creatures
+			spawner.Dispose();
+
+			return true;
+		}
+
+		/// <summary>
 		/// Disposes and removes all spawners.
 		/// </summary>
 		public void Clear()
@@ -239,9 +260,21 @@ namespace Aura.Channel.World
 			}
 
 			// Polygon
+			var region = ChannelServer.Instance.World.GetRegion(this.RegionId);
 			var result = new Point();
-			while (!this.IsPointInside(result = new Point(rnd.Next(_minX, _maxX), rnd.Next(_minY, _maxY))))
-			{ }
+			for (int i = 0; i < 10; ++i)
+			{
+				while (!this.IsPointInside(result = new Point(rnd.Next(_minX, _maxX), rnd.Next(_minY, _maxY))))
+				{
+				}
+
+				// Check if position is inside a prop.
+				// Iterating over all props is not ideal, but a viable hot-fix.
+				// The region's quadtree should take the entities instead,
+				// so we can get only the props in a specific location.
+				if (region.GetProp(a => a.IsCollision && a.IsInside(result.X, result.Y)) == null)
+					break;
+			}
 
 			return result;
 		}

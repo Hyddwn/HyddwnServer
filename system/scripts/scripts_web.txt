@@ -6,6 +6,6 @@
 // uncomment them to use them.
 //---------------------------------------------------------------------------
 
-// web/registration.cs
+// web/some_script.cs
 
 include "/user/scripts/scripts_web.txt"

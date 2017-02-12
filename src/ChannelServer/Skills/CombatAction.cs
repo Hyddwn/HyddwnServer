@@ -13,6 +13,7 @@ using Aura.Channel.Network.Sending;
 using Aura.Shared.Util;
 using Aura.Channel.Skills.Life;
 using Aura.Channel.Skills.Base;
+using Aura.Data;
 
 namespace Aura.Channel.Skills
 {
@@ -170,6 +171,12 @@ namespace Aura.Channel.Skills
 						}
 					}
 
+					// Put target into battle stance if it was hit.
+					// Fix for #435, Mimics not opening after being got hit
+					// by Windmill "passively", because they didn't aggro.
+					if (!action.Creature.IsInBattleStance)
+						action.Creature.IsInBattleStance = true;
+
 					// Reduce stun if pinged
 					// If the second hit of the second set of dual wield hits
 					// pings, the monster's stun on the client is longer than
@@ -250,6 +257,16 @@ namespace Aura.Channel.Skills
 				else if (action.Category == CombatActionCategory.Attack)
 				{
 					var aAction = action as AttackerAction;
+
+					if (action.Creature.IsPlayer && action.SkillId >= SkillId.RangedAttack && action.SkillId <= SkillId.UrgentShot && !AuraData.FeaturesDb.IsEnabled("CombatSystemRenewal"))
+					{
+						// Players don't seem to be stunned from ranging
+						// on old officials. While the proper stun is sent
+						// to the client, for some reason you didn't need
+						// to wait. Since we don't know how officials did
+						// that, we'll just cap the stun time.
+						action.Stun = 0;
+					}
 
 					action.Creature.Stun = action.Stun;
 

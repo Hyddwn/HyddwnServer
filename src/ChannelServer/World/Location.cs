@@ -144,6 +144,26 @@ namespace Aura.Channel.World
 			return result;
 		}
 
+		public static bool operator ==(Location loc1, Location loc2)
+		{
+			return (loc1.RegionId == loc2.RegionId && loc1.X == loc2.X && loc1.Y == loc2.Y);
+		}
+
+		public static bool operator !=(Location loc1, Location loc2)
+		{
+			return !(loc1 == loc2);
+		}
+
+		public override int GetHashCode()
+		{
+			return this.RegionId.GetHashCode() ^ this.X.GetHashCode() ^ this.Y.GetHashCode();
+		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Location && this == (Location)obj;
+		}
+
 		/// <summary>
 		/// Returns a string representing this Location.
 		/// </summary>

@@ -48,6 +48,9 @@ namespace Aura.Login.Database
 				if (this.Info.Pocket >= Pocket.ArmorStyle && this.Info.Pocket <= Pocket.RobeStyle)
 					return true;
 
+				if (this.Info.Pocket == Pocket.TailStyle)
+					return true;
+
 				return false;
 			}
 		}

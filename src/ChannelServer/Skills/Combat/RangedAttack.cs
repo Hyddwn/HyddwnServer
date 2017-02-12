@@ -192,7 +192,7 @@ namespace Aura.Channel.Skills.Combat
 					tAction.Set(TargetOptions.Result);
 					tAction.Stun = (short)(actionType == CombatActionPackType.ChainRangeAttack ? TargetStunElf : TargetStun);
 					if (actionType == CombatActionPackType.ChainRangeAttack)
-						tAction.EffectFlags = EffectFlags.Unknown;
+						tAction.EffectFlags = EffectFlags.SpecialRangeHit;
 
 					cap.Add(tAction);
 
@@ -224,7 +224,9 @@ namespace Aura.Channel.Skills.Combat
 					ManaShield.Handle(target, ref damage, tAction);
 
 					// Natural Shield
-					var delayReduction = NaturalShield.Handle(attacker, target, ref damage, tAction);
+					var nsResult = NaturalShield.Handle(attacker, target, ref damage, tAction);
+					var delayReduction = nsResult.DelayReduction;
+					var pinged = nsResult.Pinged;
 
 					// Deal with it!
 					if (damage > 0)
@@ -288,7 +290,7 @@ namespace Aura.Channel.Skills.Combat
 						attacker.Shove(target, KnockBackDistance);
 
 					// Reduce stun, based on ping
-					if (delayReduction > 0)
+					if (pinged && delayReduction > 0)
 						tAction.Stun = (short)Math.Max(0, tAction.Stun - (tAction.Stun / 100 * delayReduction));
 
 					// No second hit if defended
@@ -305,6 +307,14 @@ namespace Aura.Channel.Skills.Combat
 						// Override stun set by Defense
 						aAction.Stun = DefenseAttackerStun;
 					}
+				}
+				else
+				{
+					// Dummy target action on miss, so the client knows what
+					// the target would've been. Possibly affects arrow
+					// animations.
+					var tAction = new TargetAction(CombatActionType.None, target, attacker, SkillId.None);
+					cap.Add(tAction);
 				}
 
 				// Update current weapon
@@ -331,7 +341,7 @@ namespace Aura.Channel.Skills.Combat
 		/// <summary>
 		/// Handles the majority of the skill training.
 		/// </summary>
-		/// <param name="obj"></param>
+		/// <param name="tAction"></param>
 		private void OnCreatureAttacks(TargetAction tAction)
 		{
 			if (tAction.AttackerSkillId != SkillId.RangedAttack)

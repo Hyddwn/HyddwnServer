@@ -58,7 +58,13 @@ public class NaoScript : NpcScript
 
 		while (true)
 		{
-			Msg(RandomPhrase(),
+			var msg = Rnd(
+				L("If there is something you'd like to know more of, please ask me now."),
+				L("Do not hesitate to ask questions. I am more than happy to answer them for you."),
+				L("If you have any questions before heading off to Erinn, please feel free to ask.")
+			);
+
+			Msg(msg,
 				Button(L("End Conversation"), "@endconv"),
 				List(L("Talk to Nao"), 4, "@endconv",
 					Button(L("About Mabinogi"), "@mabinogi"),
@@ -108,24 +114,13 @@ public class NaoScript : NpcScript
 		Player.SetLocation(125, 21489, 76421);
 		Player.Direction = 233;
 
-		GiveItem(1000, 1);  // Traveler's Guide
-		GiveItem(50004, 1); // Bread
+		Player.GiveItem(1000, 1);  // Traveler's Guide
+		Player.GiveItem(50004, 1); // Bread
 
 		// Add keyword, so players can't possibly get dyes without rebirth.
-		GiveKeyword("tutorial_present");
+		Player.GiveKeyword("tutorial_present");
 
 		Close();
-	}
-
-	private string RandomPhrase()
-	{
-		switch (Random(3))
-		{
-			default:
-			case 0: return L("If there is something you'd like to know more of, please ask me now.");
-			case 1: return L("Do not hesitate to ask questions. I am more than happy to answer them for you.");
-			case 2: return L("If you have any questions before heading off to Erinn, please feel free to ask.");
-		}
 	}
 
 	private async Task Rebirth()
@@ -160,8 +155,8 @@ public class NaoScript : NpcScript
 					{
 						case "@rebirth":
 							for (int i = 1; i < 10; ++i)
-								RemoveKeyword("Tin_ColorAmpul_" + i);
-							RemoveKeyword("tutorial_present");
+								Player.RemoveKeyword("Tin_ColorAmpul_" + i);
+							Player.RemoveKeyword("tutorial_present");
 
 							Player.Vars.Perm["EverRebirthed"] = true;
 
@@ -239,7 +234,24 @@ public class NaoScript : NpcScript
 
 	private async Task Birthday()
 	{
-		var potentialGifts = new int[] { 12000, 12001, 12002, 12003, 12004, 12005, 12006, 12007, 12008, 12009, 12010, 12011, 12012, 12013, 12014, 12015, 12016, 12017, 12018, 12019, 12020, 12021, 12022, 12023 };
+		Player.GiveItem(CreateRandomBirthdayGift());
+		Player.Vars.Perm["NaoLastPresentDate"] = DateTime.Now.Date;
+
+		// Unofficial
+		Msg(L("Happy Birthday, <username/>! "));
+		Msg(L("I have a little something for you on this special day,<br/>please accept it."));
+
+		if (IsEnabled("NaoDressUp") && !Player.HasKeyword("present_to_nao"))
+			Player.GiveKeyword("present_to_nao");
+
+		await Conversation();
+
+		Close(Hide.None, "Until we meet again, then.<br/>I wish you the best of luck in Erinn.<br/>I'll see you around.");
+	}
+
+	private Item CreateRandomBirthdayGift()
+	{
+		var potentialGifts = new[] { 12000, 12001, 12002, 12003, 12004, 12005, 12006, 12007, 12008, 12009, 12010, 12011, 12012, 12013, 12014, 12015, 12016, 12017, 12018, 12019, 12020, 12021, 12022, 12023 };
 
 		var rndGift = potentialGifts.Random();
 		var prefix = 0;
@@ -322,19 +334,7 @@ public class NaoScript : NpcScript
 			}
 		}
 
-		Player.GiveItem(Item.CreateEnchanted(rndGift, prefix, suffix));
-		Player.Vars.Perm["NaoLastPresentDate"] = DateTime.Now.Date;
-
-		// Unofficial
-		Msg(L("Happy Birthday, <username/>! "));
-		Msg(L("I have a little something for you on this special day,<br/>please accept it."));
-
-		if (IsEnabled("NaoDressUp") && !HasKeyword("present_to_nao"))
-			GiveKeyword("present_to_nao");
-
-		await Conversation();
-
-		Close(Hide.None, "Until we meet again, then.<br/>I wish you the best of luck in Erinn.<br/>I'll see you around.");
+		return Item.CreateEnchanted(rndGift, prefix, suffix);
 	}
 
 	protected override async Task Keywords(string keyword)
@@ -349,179 +349,179 @@ public class NaoScript : NpcScript
 				break;
 
 			case "nao_cloth0":
-				Msg(L("(Missing dialog: Nao asking if she should wear Black Dress."), Button("Yes"), Button("No"));
+				Msg(L("The old black clothes are better?<br/>Ok... from now on I will wear these clothes when we meet, <username/>."), Button(L("Thank you"), "@yes"), Button(L("It's not like that..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.BlackDress;
-					Msg(L("(Missing dialog: Nao responding to wearing Black Dress."));
+					Msg(L("Ok, if you think these are better, <username/>."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Black Dress."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth1":
-				Msg(L("(Missing dialog: Nao asking if she should wear Rua's Dress."), Button("Yes"), Button("No"));
+				Msg(L("Is it ok for me to accept these clothes?<br/>Alright, from now on I'll wear these clothes when I meet you, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.RuasDress;
-					Msg(L("(Missing dialog: Nao responding to wearing Rua's Dress."));
+					Msg(L("Ok, if you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Rua's Dress."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth2":
-				Msg(L("(Missing dialog: Nao asking if she should wear Pink Coat."), Button("Yes"), Button("No"));
+				Msg(L("Do you like this pink coat you gave me?<br/>Ok... from now on I will wear the pink coat when we meet again, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.PinkCoat;
-					Msg(L("(Missing dialog: Nao responding to wearing Pink Coat."));
+					Msg(L("I understand, if you think these are better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Pink Coat."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth3":
-				Msg(L("(Missing dialog: Nao asking if she should wear Black Coat."), Button("Yes"), Button("No"));
+				Msg(L("Do you like this black coat you gave me?<br/>Ok... from now on I will wear the black coat when we meet again, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.BlackCoat;
-					Msg(L("(Missing dialog: Nao responding to wearing Black Coat."));
+					Msg(L("Ok. If you think it's better, <username/>...<br/>Since it's warm I also love the black coat."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Black Coat."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth4":
-				Msg(L("(Missing dialog: Nao asking if she should wear Yellow Spring Dress."), Button("Yes"), Button("No"));
+				Msg(L("Do you like the spring dress better?<br/>Alright, from now on I'll wear the yellow spring dress just for you, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.YellowSpringDress;
-					Msg(L("(Missing dialog: Nao responding to wearing Yellow Spring Dress."));
+					Msg(L("Ok. If you think it's better, <username/>...<br/>I also love the spring clothes, they are so cute."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Yellow Spring Dress."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth5":
-				Msg(L("(Missing dialog: Nao asking if she should wear White Spring Dress."), Button("Yes"), Button("No"));
+				Msg(L("Do you like the spring dress better?<br/>Alright, from now on I'll wear the white spring dress just for you, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.WhiteSpringDress;
-					Msg(L("(Missing dialog: Nao responding to wearing White Spring Dress."));
+					Msg(L("Ok. If you think it's better, <username/>...<br/>I also love the spring clothes, they are so cute."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing White Spring Dress."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth6":
-				Msg(L("(Missing dialog: Nao asking if she should wear Pink Spring Dress."), Button("Yes"), Button("No"));
+				Msg(L("Do you like the spring dress better?<br/>Alright, from now on I'll wear the pink spring dress just for you, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.PinkSpringDress;
-					Msg(L("(Missing dialog: Nao responding to wearing Pink Spring Dress."));
+					Msg(L("Ok. If you think it's better, <username/>...<br/>I also love the spring clothes, they are so cute."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Pink Spring Dress."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth7":
-				Msg(L("(Missing dialog: Nao asking if she should wear Explorer Suit."), Button("Yes"), Button("No"));
+				Msg(L("Do you think the explorer suit you gifted me are better?<br/>Ok then, <username/>, I'll wear the explorer suit for you when we meet again."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
-					Player.NaoOutfit = NaoOutfit.PinkSpringDress;
-					Msg(L("(Missing dialog: Nao responding to wearing Explorer Suit."));
+					Player.NaoOutfit = NaoOutfit.ExplorerSuit;
+					Msg(L("Ok. If you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Explorer Suit."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth8":
-				Msg(L("(Missing dialog: Nao asking if she should wear Iria Casual Wear."), Button("Yes"), Button("No"));
+				Msg(L("Do you prefer the Iria Casual Look that you gave me as a present? Ok, from now on I will wear this outfit just for you, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
-					Player.NaoOutfit = NaoOutfit.PinkSpringDress;
-					Msg(L("(Missing dialog: Nao responding to wearing Iria Casual Wear."));
+					Player.NaoOutfit = NaoOutfit.IriaCasualWear;
+					Msg(L("Ok. If you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Iria Casual Wear."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_yukata":
-				Msg(L("(Missing dialog: Nao asking if she should wear Yukata."), Button("Yes"), Button("No"));
+				Msg(L("Do you like the Yukata clothing?<br/>Alright then, I will wear the Yukata outfit whenever we meet, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.Yukata;
-					Msg(L("(Missing dialog: Nao responding to wearing Yukata."));
+					Msg(L("Ok. If you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Yukata."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth_santa":
-				Msg(L("(Missing dialog: Nao asking if she should wear Santa Suit."), Button("Yes"), Button("No"));
+				Msg(L("During this time would you like me to wear the Santa Clothes?<br/>Ok then, I'll wear the Santa Suit whenever we meet, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.SantaSuit;
-					Msg(L("(Missing dialog: Nao responding to wearing Santa Suit."));
+					Msg(L("Ok. If you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Santa Suit."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth_summer":
-				Msg(L("(Missing dialog: Nao asking if she should wear White Dress."), Button("Yes"), Button("No"));
+				Msg(L("Do you like the White Dress you gave me before?<br/>Ok then, I'll be wearing a White Dress when we meet again, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.WhiteDress;
-					Msg(L("(Missing dialog: Nao responding to wearing White Dress."));
+					Msg(L("Ok. If you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing White Dress."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth_kimono":
-				Msg(L("(Missing dialog: Nao asking if she should wear Kimono."), Button("Yes"), Button("No"));
+				Msg(L("Do you prefer the Kimono you gave me before?<br/>Alright, I'll wear that outfit just for you when we meet again, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.Kimono;
-					Msg(L("(Missing dialog: Nao responding to wearing Kimono."));
+					Msg(L("Ok. If you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Kimono."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth_summer_2008":
-				Msg(L("(Missing dialog: Nao asking if she should wear Sky-Blue Dress."), Button("Yes"), Button("No"));
+				Msg(L("Do you like the sky-blue dress that you gave me as a present?<br/>Ok then, I'll wear that dress just for you when we meet again, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.SkyBlueDress;
-					Msg(L("(Missing dialog: Nao responding to wearing Sky-Blue Dress."));
+					Msg(L("Ok. If you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Sky-Blue Dress."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth_shakespeare":
-				Msg(L("(Missing dialog: Nao asking if she should wear Playwright Costume."), Button("Yes"), Button("No"));
+				Msg(L("Do you like the Playwright Costume you gave me before?<br/>Ok then, I'll be wearing it when we meet again, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.PlaywrightCostume;
-					Msg(L("(Missing dialog: Nao responding to wearing Playwright Costume."));
+					Msg(L("Ok. If you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Playwright Costume."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			case "nao_cloth_farmer":
-				Msg(L("(Missing dialog: Nao asking if she should wear Farming Outfit."), Button("Yes"), Button("No"));
+				Msg(L("Do you like the Farming Outfit you gave me before?<br/>Ok then, I'll be wearing it when we meet again, <username/>."), Button(L("Thank you"), "@yes"), Button(L("Nevermind..."), "@no"));
 				if (await Select() == "@yes")
 				{
 					Player.NaoOutfit = NaoOutfit.FarmingOutfit;
-					Msg(L("(Missing dialog: Nao responding to wearing Farming Outfit."));
+					Msg(L("Ok. If you think it's better, <username/>..."));
 				}
 				else
-					Msg(L("(Missing dialog: Nao responding to not wearing Farming Outfit."));
+					Msg(L("<username/>, you must not be interested in my clothes..."));
 				break;
 
 			// Breast
@@ -529,13 +529,13 @@ public class NaoScript : NpcScript
 			// --------------------------------------------------------------
 
 			case "nao_blacksuit":
-				GiveKeyword("breast");
+				Player.GiveKeyword("breast");
 
 				Msg(L("I really like these clothes.<br/>I think the skirt is sort of erotic but, despite the appearance, it's very comfortable.<br/>But...the chest is probably a bit tight."));
 				break;
 
 			case "breast":
-				RemoveKeyword("breast");
+				Player.RemoveKeyword("breast");
 
 				Msg(L("Uhm... <username/>, this discussion is a little..."));
 				Msg(Hide.Name, L("(Nao is blushing uncomfortably.)"));
@@ -596,7 +596,7 @@ public class NaoScript : NpcScript
 						break;
 
 					case 3:
-						GiveKeyword("nao_owl");
+						Player.GiveKeyword("nao_owl");
 						Msg(L("I have a pet owl. He's a great friend that takes care of many things for me."));
 						break;
 
@@ -626,7 +626,7 @@ public class NaoScript : NpcScript
 						break;
 
 					case 5:
-						GiveKeyword("nao_friend");
+						Player.GiveKeyword("nao_friend");
 						Msg(L("A few years ago, I was locked in a dungeon by the evil Fomor.<br/>I do not ever want to go near a dungeon now...<br/>I don't even want to think about it.<br/>Fortunately, a friend of mine rescued me from there."));
 						Msg(L("Dungeons are very dark and dangerous, but some claim that they<br/>are some of the best places for training and adrenaline rush.<br/>The power of the evil Fomors can change a dungeon every time it's visited,<br/>but that is the exact reason why the daredevil adventurers who prefer constant<br/>changes are that much more attracted to dungeons."));
 						break;
@@ -636,14 +636,20 @@ public class NaoScript : NpcScript
 						break;
 
 					case 7:
-						GiveKeyword("nao_blacksuit");
+						Player.GiveKeyword("nao_blacksuit");
 						Msg(L("There are some people who suspect I might be one of the Fomors because<br/>of my black dress. I mean, what I wear is none of their business,<br/>but someone even speculated that I was the messenger of death.<br/>Honestly, I felt really weird when I heard that."));
 						Msg(L("These days, I don't even know who I am anymore.<br/>Maybe I really am one of them, you know."));
 						Msg(L("...<p/>Please don't tell me you believe that..."));
 						break;
 
 					case 8:
-						Msg(L("(Missing dialog: Last response to Nao's Private Story."));
+						RndMsg(
+							L("Hehe, that's funny."),
+							L("I like it, thank you for caring about me."),
+							L("It's a funny thing."),
+							L("Yes..."),
+							L("Umm, do you want to talk about something else?")
+						);
 						break;
 				}
 
@@ -656,7 +662,7 @@ public class NaoScript : NpcScript
 			// --------------------------------------------------------------
 
 			default:
-				RndMsg(
+				RndFavorMsg(
 					L("Ummm...why don't we talk about something else?")
 				);
 				break;
@@ -665,7 +671,7 @@ public class NaoScript : NpcScript
 
 	protected async Task KeywordPresentToNao()
 	{
-		Msg(L("(Missing dialog: Nao awaiting present.)"), SelectItem("Present", "Select an item.", "*/nao_dress/*"));
+		Msg(L("You're giving me a present?<br/>I'm not that special...<br/>But, it'd be impolite to refuse. I'm very grateful.<p/>What kind of gift is it?"), SelectItem("Present for Nao", "Select a gift.", "*/nao_dress/*"));
 
 		var selection = await Select();
 		Item item = null;
@@ -694,11 +700,16 @@ public class NaoScript : NpcScript
 				}
 			}
 		}
+		else
+		{
+			Msg(L("Thanks for feeling that way, at least..."));
+			return;
+		}
 
 		// If no item selected or error.
 		if (item == null)
 		{
-			Msg(L("(Missing dialog: Nao disappointed about not getting a present?)"));
+			Msg(L("Ah...I'm not getting anything..."));
 			return;
 		}
 
@@ -710,114 +721,114 @@ public class NaoScript : NpcScript
 		switch (outfit)
 		{
 			case NaoOutfit.BlackDress:
-				GiveItem(80012); // White Dress
+				Player.GiveItem(80012); // White Dress
 
-				Msg(L("(Missing dialog: Nao receiving Black Dress."));
+				Msg(L("Thank you very much. I usually wear the same clothes every day.<br/>As a token of gratitude, <username/>, I'll wear these clothes just for you.<br/>Thank you very much."));
 				break;
 
 			case NaoOutfit.RuasDress:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth1");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth1");
 
-				Msg(L("(Missing dialog: Nao receiving Rua's Dress."));
+				Msg(L("Huh...? You're giving me this outfit?<br/>Thank you...they're very nice clothes.<br/>From now on, <username/>, I'll wear these clothes whenever I see you."));
 				break;
 
 			case NaoOutfit.PinkCoat:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth2");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth2");
 
-				Msg(L("(Missing dialog: Nao receiving Pink Coat."));
+				Msg(L("Thank you very much. Beautiful pink clothes...<br/>From now on, <username/>, I'll wear these clothes whenever I see you."));
 				break;
 
 			case NaoOutfit.BlackCoat:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth3");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth3");
 
-				Msg(L("(Missing dialog: Nao receiving Pink Coat."));
+				Msg(L("Thank you very much...it's a warm coat.<br/>From now on, <username/>, I'll be wearing this coat when we meet."));
 				break;
 
 			case NaoOutfit.YellowSpringDress:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth4");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth4");
 
-				Msg(L("(Missing dialog: Nao receiving Yellow Spring Dress."));
+				Msg(L("Thank you very much. These spring clothes are cute. I'm very happy.<br/>So, <username/>, when we meet again, I'll wear this outfit."));
 				break;
 
 			case NaoOutfit.WhiteSpringDress:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth5");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth5");
 
-				Msg(L("(Missing dialog: Nao receiving White Spring Dress."));
+				Msg(L("Thank you very much. These spring clothes are cute. I'm very happy.<br/>So, <username/>, when we meet again, I'll wear this outfit."));
 				break;
 
 			case NaoOutfit.PinkSpringDress:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth6");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth6");
 
-				Msg(L("(Missing dialog: Nao receiving Pink Spring Dress."));
+				Msg(L("Thank you very much. These spring clothes are cute. I'm very happy.<br/>So, <username/>, when we meet again, I'll wear this outfit."));
 				break;
 
 			case NaoOutfit.ExplorerSuit:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth7");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth7");
 
-				Msg(L("(Missing dialog: Nao receiving Explorer Suit."));
+				Msg(L("Thank you very much...these explorer clothes are pretty.<br/>From now on, <username/>, I'll wear this when we meet."));
 				break;
 
 			case NaoOutfit.IriaCasualWear:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth8");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth8");
 
-				Msg(L("(Missing dialog: Nao receiving Iria Casual Wear."));
+				Msg(L("Thank you very much... these clothes are cute.<br/>From now on, <username/>, I'll wear these when we meet."));
 				break;
 
 			case NaoOutfit.Yukata:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_yukata");
+				Player.GiveKeyword("nao_cloth0");
+				//Player.GiveKeyword("nao_yukata");
 
-				Msg(L("(Missing dialog: Nao receiving Yukuta."));
+				Msg(L("Thank you very much.<br/>Are these clothes from your world, <username/>? Very pretty...<br/>From now on, <username/>, I'll wear these clothes when I see you."));
 				break;
 
 			case NaoOutfit.SantaSuit:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth_santa");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth_santa");
 
-				Msg(L("(Missing dialog: Nao receiving Santa Suit."));
+				Msg(L("Thank you very much. Are these what you wear at the time of christmas in your world <username/>? Very cute...<br/>When we meet from now on, <username/>,<br/>I'll be sure to wear these clothes you gifted to me."));
 				break;
 
 			case NaoOutfit.WhiteDress:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth_summer");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth_summer");
 
-				Msg(L("(Missing dialog: Nao receiving White Dress."));
+				Msg(L("Thank you very much. This white dress is nice.<br/>From now on, <username/>, I'll wear this when we meet."));
 				break;
 
 			case NaoOutfit.Kimono:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth_kimono");
+				Player.GiveKeyword("nao_cloth0");
+				//Player.GiveKeyword("nao_cloth_kimono");
 
-				Msg(L("(Missing dialog: Nao receiving Kimono."));
+				Msg(L("Thank you very much. It's a long-sleeved kimono.<br/>From now on, <username/>, I'll wear it when we meet."));
 				break;
 
 			case NaoOutfit.SkyBlueDress:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth_summer_2008");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth_summer_2008");
 
-				Msg(L("(Missing dialog: Nao receiving Sky-Blue Dress."));
+				Msg(L("Thank you very much. It's a sky-blue dress.<br/>From now on, <username/>, I'll wear this when we meet."));
 				break;
 
 			case NaoOutfit.PlaywrightCostume:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth_shakespeare");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth_shakespeare");
 
-				Msg(L("(Missing dialog: Nao receiving Playwright Costume."));
+				Msg(L("Thank you very much. It's the clothes of a playwright.<br/>From now on, <username/>, I'll wear this when we meet."));
 				break;
 
 			case NaoOutfit.FarmingOutfit:
-				GiveKeyword("nao_cloth0");
-				GiveKeyword("nao_cloth_farmer");
+				Player.GiveKeyword("nao_cloth0");
+				Player.GiveKeyword("nao_cloth_farmer");
 
-				Msg(L("(Missing dialog: Nao receiving Farming Outfit."));
+				Msg(L("Thank you very much. It's a farmer's outfit.<br/>From now on, <username/>, I'll wear this when we meet."));
 				break;
 
 			default:
@@ -826,6 +837,6 @@ public class NaoScript : NpcScript
 		}
 
 		Player.NaoOutfit = outfit;
-		RemoveItem(itemId);
+		Player.RemoveItem(itemId);
 	}
 }

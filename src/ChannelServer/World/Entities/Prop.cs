@@ -85,7 +85,23 @@ namespace Aura.Channel.World.Entities
 		/// <summary>
 		/// Returns true if prop is not server sided and has a state or extra data.
 		/// </summary>
-		public bool ModifiedClientSide { get { return !this.ServerSide && (!string.IsNullOrWhiteSpace(this.State) || this.HasXml); } }
+		public bool ModifiedClientSide
+		{
+			get
+			{
+				if (this.ServerSide)
+					return false;
+
+				// Props that only have one default state appear to be "single",
+				// while others have default states like "off" or "closed".
+				// Sending everything that has *some* state made EntitiesAppear
+				// explode, so we'll limit it to meaningful states.
+				// See also: Region.GetVisibleEntities
+				var hasStates = (!string.IsNullOrWhiteSpace(this.State) && this.State != "single");
+
+				return (hasStates || this.HasXml);
+			}
+		}
 
 		/// <summary>
 		/// Called when a player interacts with the prop (touch, attack).
@@ -349,6 +365,20 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns a prop behavior that doesn't do anything.
+		/// </summary>
+		/// <remarks>
+		/// Use to prevent unimplemented messages.
+		/// </remarks>
+		/// <returns></returns>
+		public static PropFunc GetEmptyBehavior()
+		{
+			return (creature, prop) =>
+			{
+			};
+		}
+
+		/// <summary>
 		///  Returns true if prop's data has the tag.
 		/// </summary>
 		/// <param name="tag"></param>
@@ -451,6 +481,35 @@ namespace Aura.Channel.World.Entities
 			});
 
 			return targetable;
+		}
+
+		/// <summary>
+		/// Returns true if the given position is inside the prop.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public bool IsInside(int x, int y)
+		{
+			if (this.Shapes.Count == 0)
+				return false;
+
+			var result = false;
+			var point = new Point(x, y);
+
+			foreach (var points in this.Shapes)
+			{
+				for (int i = 0, j = points.Length - 1; i < points.Length; j = i++)
+				{
+					if (((points[i].Y > point.Y) != (points[j].Y > point.Y)) && (point.X < (points[j].X - points[i].X) * (point.Y - points[i].Y) / (points[j].Y - points[i].Y) + points[i].X))
+						result = !result;
+				}
+
+				if (result)
+					return true;
+			}
+
+			return false;
 		}
 	}
 

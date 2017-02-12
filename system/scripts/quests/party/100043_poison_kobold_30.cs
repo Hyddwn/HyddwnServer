@@ -13,6 +13,7 @@ public class PoisonKobolds30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Poison Kobolds"));
 		SetDescription(L("The Poison Kobold, unlike regular Kobolds, threatens its enemies with its poisonous attacks. Please [Hunt 30 Poison Kobolds]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

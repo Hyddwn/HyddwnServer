@@ -28,13 +28,13 @@ public class SuccubusRpQuest : GeneralScript
 
 		if (keyword == "g1_dulbrau2")
 		{
-			if (npc.HasKeyword("g1_14"))
+			if (npc.Player.HasKeyword("g1_14"))
 			{
-				npc.RemoveKeyword("g1_14");
-				npc.GiveKeyword("g1_15");
+				npc.Player.RemoveKeyword("g1_14");
+				npc.Player.GiveKeyword("g1_15");
 
-				npc.GiveItem(TarlachsGlassesPouch);
-				npc.GiveWarpScroll(63009, "rabbie_dungeon");
+				npc.Player.GiveItem(TarlachsGlassesPouch);
+				npc.Player.GiveWarpScroll(63009, "Rabbie_Dungeon");
 
 				npc.Msg(L("...How... how did you interpret...it...<br/>It means that the Goddess is sending Fomors here?<br/>Where did you hear that...?<br/>What...? The wizard...you heard from a Druid?"));
 				npc.Msg(L("...Named Tarlach...?"));
@@ -54,10 +54,10 @@ public class SuccubusRpQuest : GeneralScript
 				npc.Msg(L("If you go to Rabbi dungeon alone and offer this on the altar of the Goddess...<br/>You will be able to trust me.<br/>I'll give you a Red Wing of the Goddess<br/>so you can get to Rabbie Dungeon easily."), npc.Image("g1_ch14_glassespocket"));
 				npc.Msg(Hide.None, L("(You receive Tarlach's Spectacle Pouch from Kristell.)"));
 			}
-			else if (npc.HasKeyword("g1_15"))
+			else if (npc.Player.HasKeyword("g1_15"))
 			{
-				if (!npc.HasItem(TarlachsGlassesPouch))
-					npc.GiveItem(TarlachsGlassesPouch);
+				if (!npc.Player.HasItem(TarlachsGlassesPouch))
+					npc.Player.GiveItem(TarlachsGlassesPouch);
 
 				npc.Msg(L("If you go to Rabbi dungeon alone and offer the pouch on the altar of the Goddess...<br/>You will be able to trust me."));
 			}
@@ -66,10 +66,10 @@ public class SuccubusRpQuest : GeneralScript
 		}
 		else if (keyword == "g1_succubus")
 		{
-			npc.RemoveKeyword("g1_16");
-			npc.GiveKeyword("g1_17");
-			npc.RemoveKeyword("g1_succubus");
-			npc.GiveKeyword("g1_message_of_kristell");
+			npc.Player.RemoveKeyword("g1_16");
+			npc.Player.GiveKeyword("g1_17");
+			npc.Player.RemoveKeyword("g1_succubus");
+			npc.Player.GiveKeyword("g1_message_of_kristell");
 
 			npc.Msg(L("...<p/>Hello, I see you're back...<br/>Do you believe me now...?"));
 			npc.Msg(L("I'm not trying to hurt Tarlach or anything.<br/>I only want to know how he's doing."));
@@ -96,12 +96,12 @@ public class SuccubusRpQuest : GeneralScript
 
 		if (keyword == "g1_message_of_kristell")
 		{
-			npc.RemoveKeyword("g1_17");
-			npc.GiveKeyword("g1_17_1");
-			npc.RemoveKeyword("g1_message_of_kristell");
+			npc.Player.RemoveKeyword("g1_17");
+			npc.Player.GiveKeyword("g1_17_1");
+			npc.Player.RemoveKeyword("g1_message_of_kristell");
 
-			npc.GiveItem(BookOfFomor);
-			npc.StartQuest(210003); // Translating the Book of Fomors
+			npc.Player.GiveItem(BookOfFomor);
+			npc.Player.StartQuest(210003); // Translating the Book of Fomors
 
 			npc.Msg(L("Kristell's in Dunbarton?<br/>How...troubling."));
 			npc.Msg(L("I'm sorry, but I'm in no position to reciprocate her feelings...<br/>But if it really is her, perhaps<br/>she can translate this book."));

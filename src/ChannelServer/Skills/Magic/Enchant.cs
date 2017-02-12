@@ -125,20 +125,23 @@ namespace Aura.Channel.Skills.Magic
 			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
 			if (optionSetData == null)
 			{
-				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant with unknown option set '{0}'.", optionSetId);
+				Log.Warning("Enchant.Prepare: Creature '{0:X16}' tried to enchant with unknown option set '{1}'.", creature.EntityId, optionSetId);
 				return false;
 			}
 
-			if (!optionSetData.IgnoreRank)
+			// Skill rank for enchants of r5 and above
+			if (!optionSetData.IgnoreRank && !optionSetData.AlwaysSuccess)
 			{
-				// Skill rank for enchants of r5 and above
 				if (optionSetData.Rank >= SkillRank.R5 && skill.Info.Rank < SkillRank.R5)
 				{
 					Send.Notice(creature, Localization.Get("Your Enchant skill must be Rank 5 or above to use this Enchant Scroll."));
 					return false;
 				}
+			}
 
-				// Sequence for enchants of r9 and above
+			// Sequence for enchants of r9 and above
+			if (!optionSetData.IgnoreRank)
+			{
 				if (optionSetData.Rank >= SkillRank.R9)
 				{
 					var checkSetId = (optionSetData.Type == UpgradeType.Prefix ? item.OptionInfo.Prefix : item.OptionInfo.Suffix);
@@ -219,7 +222,7 @@ namespace Aura.Channel.Skills.Magic
 			// Check target
 			if (!item.HasTag(optionSetData.Allow) || item.HasTag(optionSetData.Disallow))
 			{
-				Log.Warning("Enchant.Complete: Creature '{0:X16}' tried to use set '{0}' on invalid item '{1}'.", optionSetData.Id, item.Info.Id);
+				Log.Warning("Enchant.Complete: Creature '{0:X16}' tried to use set '{1}' on invalid item '{2}'.", creature.EntityId, optionSetData.Id, item.Info.Id);
 				goto L_End;
 			}
 
@@ -487,9 +490,13 @@ namespace Aura.Channel.Skills.Magic
 		{
 			var points = 0;
 
+			// Destroy item if safe enchanting is disabled and rank is over 6.
+			if (!ChannelServer.Instance.Conf.World.SafeEnchanting && enchantRank >= SkillRank.R6)
+				return -1;
+
 			switch (enchantRank)
 			{
-				case SkillRank.Novice: return 0;
+				// A huge fail results in a bigger durability loss.
 				case SkillRank.RF: points = (result == EnchantResult.Fail ? rnd.Next(0, 1) : rnd.Next(0, 2)); break;
 				case SkillRank.RE: points = (result == EnchantResult.Fail ? rnd.Next(0, 2) : rnd.Next(0, 4)); break;
 				case SkillRank.RD: points = (result == EnchantResult.Fail ? rnd.Next(0, 2) : rnd.Next(0, 4)); break;
@@ -499,7 +506,14 @@ namespace Aura.Channel.Skills.Magic
 				case SkillRank.R9: points = (result == EnchantResult.Fail ? rnd.Next(1, 6) : rnd.Next(1, 10)); break;
 				case SkillRank.R8: points = (result == EnchantResult.Fail ? rnd.Next(2, 7) : rnd.Next(2, 12)); break;
 				case SkillRank.R7: points = (result == EnchantResult.Fail ? rnd.Next(2, 8) : rnd.Next(2, 14)); break;
-				default: return -1;
+
+				// Custom durability loss for R6+, for safe enchanting option.
+				case SkillRank.R6: points = (result == EnchantResult.Fail ? rnd.Next(3, 9) : rnd.Next(3, 16)); break;
+				case SkillRank.R5: points = (result == EnchantResult.Fail ? rnd.Next(3, 9) : rnd.Next(3, 16)); break;
+				case SkillRank.R4: points = (result == EnchantResult.Fail ? rnd.Next(4, 10) : rnd.Next(4, 18)); break;
+				case SkillRank.R3: points = (result == EnchantResult.Fail ? rnd.Next(4, 10) : rnd.Next(4, 18)); break;
+				case SkillRank.R2: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 20)); break;
+				case SkillRank.R1: points = (result == EnchantResult.Fail ? rnd.Next(5, 11) : rnd.Next(5, 20)); break;
 			}
 
 			return points * 1000;

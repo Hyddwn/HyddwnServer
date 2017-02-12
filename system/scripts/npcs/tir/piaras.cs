@@ -41,27 +41,27 @@ public class PiarasScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 10062) // is a friend of Nora
+				if (Player.IsUsingTitle(10062)) // is a friend of Nora
 				{
 					var today = ErinnTime.Now.ToString("yyyyMMdd");
 					if (today != Player.Vars.Perm["piaras_title_gift"])
 					{
 						Player.Vars.Perm["piaras_title_gift"] = today;
 
-						GiveItem(63002, 5); // Firewood x5
-						Notice(L("Received Firewood from Piaras."));
-						SystemMsg(L("Received Firewood from Piaras."));
+						Player.GiveItem(63002, 5); // Firewood x5
+						Player.Notice(L("Received Firewood from Piaras."));
+						Player.SystemMsg(L("Received Firewood from Piaras."));
 
 						Msg(L("If you are a friend of Nora, you are my friend as well.<br/>Would you like to take some?"));
 					}
 				}
-				else if (Title == 11001)
+				else if (Player.IsUsingTitle(11001))
 				{
 					Msg("I imagine what you did is incredible.");
 					Msg("... Although I do wonder why<br/>the Goddess won't descend upon us.");
 					Msg("But, really, I believe you.<br/>Follow the will of the Goddess and do the best you can do.");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("<username/>.<br/>I was wondering where you've been...");
 					Msg("...You must've went on a great adventure.<br/>You know I love adventure stories...");
@@ -112,28 +112,95 @@ public class PiarasScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("shop_inn");
-				Msg(FavorExpression(), "I might sound too proud,<br/>but I put a lot of effort into making this place as comfortable for my guests as possible.<br/>Please visit us when you need a place to stay.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Nora is my niece but I think of her more as a daughter now.<br/>Thinking of what my late brother did for me,<br/>I'll do everything I can for Nora. I know I can't do enough to return his love, but still...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I love traveling. I've been to many places.<br/>Cruachain in the Connachta continent was one of the best. I've never forgotten about it.<br/>I will tell you about it when we have time.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I was a raging bull. No one could tell me what to do in those days.<br/>I lived without fear, relying only on my youth.<br/>Now that I think of old days, I might have pushed things too far.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "(Missing Dialog: -10 Favor)");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "(Missing Dialog: -30 Favor & less than or equal to 10 Stress)");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "(Missing Dialog: -30 Favor & more than 10 Stress)");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Player.GiveKeyword("shop_inn");
+					Msg(FavorExpression(), "I might sound too proud,<br/>but I put a lot of effort into making this place as comfortable for my guests as possible.<br/>Please visit us when you need a place to stay.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				GiveKeyword("square");
-				Msg(FavorExpression(), "Why don't you talk to others in town? There's a good spot to meet people. The Town Square is right up this way. I suggest you try there first.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Hmm... Nora is my relative. Niece, to be precise.<br/>I was on the road but I came back to this village after I heard<br/>the kid had lost her parents.<br/>Please don't tell this story to anyone.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "The road to the north of the town must be blocked by now.<br/>Please avoid going there.<br/>I'm sure there are still some people who will go there anyway,<br/>but seriously, there is nothing to see there. It's just dangerous.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "There is a grassland when you head north from the town entrance.<br/>Why don't you pay a visit there?");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "(Missing Dialog: -10 Favor)");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "(Missing Dialog: -30 Favor & less than or equal to 10 Stress)");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "(Missing Dialog: -30 Favor & more than 10 Stress)");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Player.GiveKeyword("square");
+					Msg(FavorExpression(), "Why don't you talk to others in town? There's a good spot to meet people. The Town Square is right up this way. I suggest you try there first.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
+			case "skill_campfire":
 				// When the beginner quests changed, he no longer removes the keyword. Instead he says "I'm sorry.<br/>I don't have the time to talk about that right now."
 				// He also checks for race, but until we get the respective quests in for other races, we'll leave it out
-				if (Player.Skills.Has(SkillId.Campfire))
+				if (Player.HasSkill(SkillId.Campfire))
 				{
-					RemoveKeyword("skill_campfire");
+					Player.RemoveKeyword("skill_campfire");
 					Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
 				}
 				else
 				{
-					GiveKeyword("skill_campfire");
+					Player.GiveKeyword("skill_campfire");
 					Msg("Do you by chance know about the Campfire Skill?");
 					Msg("If you start a fire using the Campfire Skill,<br/>people would come by one at a time after seeing the bright fire from afar...");
 					Msg("People share what they have in their inventory<br/>and spend long summer nights sharing stories about their adventures.");
@@ -173,7 +240,7 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "skill_range":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Are you interested in long range attack?<br/>It would be better if you went to the School<br/>and asked Ranald the instructor.");
 				Msg("Long range attack is<br/>the act of attacking your opponent from a distance.<br/>Magic or arrows are common methods.");
 				Msg("When you use a bow and arrows,<br/>you can inflict damage and heavily injure your enemies.<br/>In contrast, magic only reduces their HP<br/>without causing any injuries.");
@@ -202,7 +269,7 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "skill_magnum_shot":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Magnum Shot skill?<br/>Well, that is just one of many archery skills.<br/>For this type of skill, it would be better to learn it at the School.<br/>I will just give you a quick overview.");
 				Msg("That is... the Magnum Shot skill maximizes the bow's elasticity.<br/>You pull the bowstring as far back as you can<br/>and shoot the arrow at that instant.");
 				Msg("You need a keen sense of elasticity in the first place,<br/>but strong arm and chest muscles are required too.<br/>I'm afraid you'll see a rough path of training<br/>before you master the skill yourself.");
@@ -210,14 +277,14 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "skill_counter_attack":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Melee Counterattack skill?<br/>Hmm... It's very difficult to explain with words.<br/>You'd better learn it at the School.");
 				Msg("Hey, don't give me that look.<br/>I really don't know that skill.");
 				Msg("How about talking to Ranald at the School<br/>or Trefor guarding this town?<br/>I'm sure they can help you better.");
 				break;
 
 			case "skill_smash":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Want to know about the Smash skill?<br/>Many people ask me about that.<br/>How about going to the School and<br/>asking Ranald about it?");
 				Msg("Ah, yes.<br/>There were some guests talking about it at my Inn.<br/>I overhear this and that because of my business.<br/>I've heard it many times, so I think the story is true.");
 				Msg("By the way, for this type of skill,<br/>don't you think it's best to ask<br/>a combat instructor?");
@@ -235,7 +302,7 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("farmland");
+				Player.GiveKeyword("farmland");
 				Msg("The reservoir? It's near the farmland.<br/>If you want to go to the reservoir,<br/>cross the bridge near the Windmill and go around it. Not the bridge close to the Blacksmith's Shop.<br/>You can just follow the fence.");
 				break;
 
@@ -252,13 +319,13 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "brook":
-				GiveKeyword("windmill");
+				Player.GiveKeyword("windmill");
 				Msg("Adelia Stream?<br/>The small stream in front of my shop is the Adelia Stream.<br/>Yes, the one near the Windmill.<br/>You must have missed it. Hahaha.");
 				Msg("A lot of people missed that just like you.<br/>Perhaps I should talk with Ferghus<br/>and put a sign there.");
 				break;
 
 			case "shop_headman":
-				GiveKeyword("square");
+				Player.GiveKeyword("square");
 				Msg("Are you looking for the Chief's House?<br/>Hm, it's very close.");
 				Msg("Go up the hill with the big tree from the Square<br/>and you'll find it right there.");
 				Msg("If you happen to go there,<br/>please say hello for me and<br/>try not to do anything inappropriate.");
@@ -270,7 +337,7 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "school":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("You are looking for the School?<br/>It's near the Church.<br/>It's not that far from here.");
 				Msg("There are teachers teaching magic and swordsmanship in the School.<br/>So you can ask them if you need anything from them.<br/>They will kindly explain to you about many things.");
 				Msg("If you can afford it,<br/>perhaps it's worthwhile to pay the tuition fee and take a class.");
@@ -282,38 +349,21 @@ public class PiarasScript : NpcScript
 				Msg("I know it's silly, ha ha ha...<br/>I am sorry, I won't do that again.");
 				break;
 
-			case "skill_campfire":
-				// When the beginner quests changed, he no longer removes the keyword. Instead he says "I'm sorry.<br/>I don't have the time to talk about that right now."
-				// He also checks for race, but until we get the respective quests in for other races, we'll leave it out
-				if (Player.Skills.Has(SkillId.Campfire))
-				{
-					RemoveKeyword("skill_campfire");
-					Msg("Ha ha. Now you know how to use the Campfire skill.<br/>It's something I didn't want to teach you, to be honest,<br/>but I am impressed that you have mastered it so well.<br/>With this, another young adventurer is born today, ha ha.");
-				}
-				else
-				{
-					Msg("Do you by chance know about the Campfire Skill?");
-					Msg("If you start a fire using the Campfire Skill,<br/>people would come by one at a time after seeing the bright fire from afar...");
-					Msg("People share what they have in their inventory<br/>and spend long summer nights sharing stories about their adventures.");
-					Msg("But really, if all travelers knew the Campfire Skill,<br/>inn owners like myself would have to pack up and find a different profession.");
-				}
-				break;
-
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Yes, many people eat around here, but...");
 				Msg("Are you looking for something to eat?<br/>Hmm... It just happens that I'm low on supplies.<br/>Could you go and see Caitin at the Grocery Store yourself?");
 				Msg("All the food served in the Inn<br/>is made and brought in<br/>by Caitin.");
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("Weapons Shop?<br/>There isn't one in this town, but...<br/>If you are in need of some weapons,<br/>you might want to visit the Blacksmith's Shop right over there.");
 				Msg("Tell Ferghus I sent you<br/>and he'll take care of you.");
 				break;
 
 			case "shop_cloth":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Are you looking for something to wear?<br/>Hmm... What you are wearing right now seems good enough.");
 				Msg("You must be interested in fashion.<br/>It would be quite hard to find a better outfit than what you have.<br/>Nevertheless, you can go talk to Malcolm at the General Shop.");
 				break;
@@ -367,7 +417,7 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Music Score?<br/>I thought the Scores were sold up at the General Shop.<br/>I can't imagine Malcolm just watching and doing nothing<br/>until he's out of supplies at the shop.");
 				Msg("If he says he's short, then you can come back to me.<br/>I bought some from Malcolm long ago.<br/>I can probably sell some<br/>at a similar price.");
 				break;
@@ -379,14 +429,55 @@ public class PiarasScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
-					"?",
-					"I don't know about that.",
-					"To be honest, I don't know.",
-					"I'd love to listen to you, but about something else.",
-					"I'm afraid this conversation isn't very interesting to me."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "When I have some time, I would like to look into it more.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I also would like to know about that. I will try to set aside some time, so please tell me about it later.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "(Missing Dialog: -10 Favor)");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "(Missing Dialog: -30 Favor)");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"?",
+						"I don't know about that.",
+						"To be honest, I don't know.",
+						"I'd love to listen to you, but about something else.",
+						"I'm afraid this conversation isn't very interesting to me."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Yes, I was also once addicted to this<br/>and wasted a large amount of money.<br/>Huh? No, I have no regrets."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Ah, Thank you."));
+				break;
+
+			default: // GiftReaction.Neutral
+				Msg(L("Well, I have a lot of these, but I will take it for the time being."));
 				break;
 		}
 	}
@@ -412,12 +503,14 @@ public class PiarasShop : NpcShopScript
 		Add("Book", 1058); // Understanding Wisps
 		Add("Book", 1062); // The Greedy Snow Imp
 		Add("Book", 1124); // An Easy Guide to Taking Up Residence in a Home
-		Add("Book", 1505); // The World of Handicrafts
 
 		Add("Gift", 52008); // Anthology
 		Add("Gift", 52009); // Cubic Puzzle
 		Add("Gift", 52011); // Socks
 		Add("Gift", 52017); // Underwear Set
 		Add("Gift", 52018); // Hammer
+
+		if (IsEnabled("Handicraft"))
+			Add("Book", 1505); // The World of Handicrafts
 	}
 }

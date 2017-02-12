@@ -18,7 +18,7 @@ namespace Aura.Channel.World.Quests
 		public abstract bool Met(Creature character);
 
 		/// <summary>
-		/// Returns true if this prerequisite, or on of its nested ones,
+		/// Returns true if this prerequisite, or one of its nested ones,
 		/// is of the given type.
 		/// </summary>
 		/// <param name="type"></param>
@@ -166,6 +166,29 @@ namespace Aura.Channel.World.Quests
 		public override bool Met(Creature character)
 		{
 			return !character.Skills.Has(this.Id, this.Rank);
+		}
+
+		public override bool Is(Type type)
+		{
+			return (this.GetType() == type);
+		}
+	}
+
+	/// <summary>
+	/// Skill prerequisite, met if a certain event is in progress.
+	/// </summary>
+	public class QuestPrerequisiteEventActive : QuestPrerequisite
+	{
+		public string GameEventId { get; protected set; }
+
+		public QuestPrerequisiteEventActive(string gameEventId)
+		{
+			this.GameEventId = gameEventId;
+		}
+
+		public override bool Met(Creature character)
+		{
+			return ChannelServer.Instance.GameEventManager.IsActive(this.GameEventId);
 		}
 
 		public override bool Is(Type type)

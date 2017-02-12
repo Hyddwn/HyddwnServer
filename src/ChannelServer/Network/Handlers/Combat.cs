@@ -212,8 +212,8 @@ namespace Aura.Channel.Network.Handlers
 		/// <example>
 		/// 0001 [0010F00000046344] Long   : 4767482418324292
 		/// </example>
-		[PacketHandler(Op.SubsribeStabilityMeter)]
-		public void SubsribeStabilityMeter(ChannelClient client, Packet packet)
+		[PacketHandler(Op.SubscribeStabilityMeter)]
+		public void SubscribeStabilityMeter(ChannelClient client, Packet packet)
 		{
 			// ...
 
@@ -234,10 +234,12 @@ namespace Aura.Channel.Network.Handlers
 		public void TouchMimic(ChannelClient client, Packet packet)
 		{
 			var targetEntityId = packet.GetLong();
+
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			var target = creature.Region.GetCreature(targetEntityId);
-			target.Aggro(creature);
+			if (target != null && !target.IsDead && creature.GetPosition().InRange(target.GetPosition(), 250))
+				target.Aggro(creature);
 
 			Send.TouchMimicR(creature);
 		}
@@ -264,6 +266,25 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			Send.UnkCombatR(creature);
+		}
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <remarks>
+		/// Sent by client if character is knocked back, purpose unknown.
+		/// </remarks>
+		/// <example>
+		/// 001 [..............01] Byte   : 1
+		/// </example>
+		[PacketHandler(Op.UnkKnockBack)]
+		public void UnkKnockBack(ChannelClient client, Packet packet)
+		{
+			//var unkByte = packet.GetByte();
+
+			//var creature = client.GetCreatureSafe(packet.Id);
+
+			// ...
 		}
 	}
 }

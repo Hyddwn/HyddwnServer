@@ -13,6 +13,7 @@ public class Kobolds30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Kobolds"));
 		SetDescription(L("A Kobold's dog-like legs make them physically stronger than Goblins but their intellect is far below that of humans. Please [Hunt 30 Kobolds]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

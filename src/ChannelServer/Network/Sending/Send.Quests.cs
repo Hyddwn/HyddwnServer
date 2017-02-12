@@ -208,11 +208,15 @@ namespace Aura.Channel.Network.Sending
 		/// Sends UpdateQuestTimerCounter to creature's client.
 		/// </summary>
 		/// <param name="creature"></param>
-		/// <param name="counter">Counter msg (e.g. "Remaining Sheep: 20")</param>
-		public static void UpdateQuestTimerCounter(Creature creature, string counter, int amount)
+		/// <param name="format">Counter msg format</param>
+		/// <param name="args">Counter msg arguments</param>
+		/// <example>
+		/// Send.UpdateQuestTimer(creature, L("Remaining sheep: {0}"), sheepAmount);
+		/// </example>
+		public static void UpdateQuestTimer(Creature creature, string format, params object[] args)
 		{
-			var packet = new Packet(Op.UpdateQuestTimerCounter, MabiId.Broadcast);
-			packet.PutString(counter, amount);
+			var packet = new Packet(Op.UpdateQuestTimer, MabiId.Broadcast);
+			packet.PutString(format, args);
 
 			creature.Client.Send(packet);
 		}

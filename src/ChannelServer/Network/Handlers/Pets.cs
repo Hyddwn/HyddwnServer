@@ -59,7 +59,7 @@ namespace Aura.Channel.Network.Handlers
 			client.Creatures.Add(pet.EntityId, pet);
 
 			// Register and response
-			Send.PetRegister(creature, pet);
+			Send.PetRegister(creature, pet, SubordinateType.Pet);
 			Send.SummonPetR(creature, pet);
 
 			// Make pet appear by "warping" it (sends EnterRegion)
@@ -132,7 +132,12 @@ namespace Aura.Channel.Network.Handlers
 			var entityId = packet.GetLong();
 			var action = (PetAction)packet.GetByte();
 
-			var pet = client.GetCreatureSafe(packet.Id);
+			// Don't use GetCreatureSafe here, since pets may send
+			// another packet after they have already been despawned,
+			// which kicks their master.
+			var pet = client.GetCreature(packet.Id);
+			if (pet == null)
+				return;
 
 			// Check action
 			if (!Enum.IsDefined(typeof(PetAction), action))

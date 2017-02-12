@@ -48,12 +48,12 @@ public class GilmoreScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("...You're quite a good liar.<br/>I don't know what to say to that.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("...Guardian? Ha!");
 				}
@@ -121,7 +121,7 @@ public class GilmoreScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				if (Title == 33)
+				if (Player.IsUsingTitle(33))
 				{
 					Msg(FavorExpression(), "Wait, <username/> the Diligent?<br/>Hmm. Not so bad for a youngster.");
 					Msg("You got it. You have to live diligently like that to save money. Yep.<br/>Now, don't get complacent!");
@@ -332,13 +332,11 @@ public class GilmoreShop : NpcShopScript
 		Add("General Goods", 2006);       // Big Gold Pouch
 		Add("General Goods", 2024);       // Item Bag (7x6)
 		Add("General Goods", 2029);       // Item Bag (8x6)
-		Add("General Goods", 2038);       // Item Bag (8X10)
 		Add("General Goods", 40004);      // Lute
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40216);      // Cymbals
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 62021, 100); // Six-sided Die x100
@@ -423,6 +421,10 @@ public class GilmoreShop : NpcShopScript
 		Add("Gift", 52018); // Hammer
 
 		Add("Event"); // Empty
+
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045); // Handicraft Kit
+
 		if (IsEnabled("PetBirds"))
 		{
 			Add("General Goods", 16024); // Pet Instructor Glove
@@ -438,6 +440,9 @@ public class GilmoreShop : NpcShopScript
 			Add("General Goods", 91366, 1);  // Seal Scroll (30-day) x1
 			Add("General Goods", 91366, 10); // Seal Scroll (30-day) x10
 		}
+
+		if (IsEnabled("PremiumBags"))
+			Add("General Goods", 2038); // Item Bag (8X10)
 
 		if (IsEnabled("Singing"))
 		{

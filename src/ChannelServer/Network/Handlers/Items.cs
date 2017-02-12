@@ -54,6 +54,13 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Check ability to move equip.
+			// (For example, RP characters usually can't.)
+			if ((source.IsEquip() || target.IsEquip()) && !creature.CanMoveEquip)
+			{
+				goto L_Fail;
+			}
+
 			// Check touchability
 			if (target.IsEquip())
 			{
@@ -171,6 +178,14 @@ namespace Aura.Channel.Network.Handlers
 			// Check item
 			var item = creature.Inventory.GetItem(entityId);
 			if (item == null)
+			{
+				Send.ItemDropR(creature, false, 0);
+				return;
+			}
+
+			// Check ability to move equip.
+			// (For example, RP characters usually can't.)
+			if (item.Info.Pocket.IsEquip() && !creature.CanMoveEquip)
 			{
 				Send.ItemDropR(creature, false, 0);
 				return;
@@ -306,7 +321,7 @@ namespace Aura.Channel.Network.Handlers
 		/// Sent when destroying an item (right click option).
 		/// </summary>
 		/// <example>
-		/// ...
+		/// 001 [005000CBB3152EEC] Long   : 22518873019723500
 		/// </example>
 		[PacketHandler(Op.ItemDestroy)]
 		public void ItemDestroy(ChannelClient client, Packet packet)
@@ -317,11 +332,7 @@ namespace Aura.Channel.Network.Handlers
 			var item = creature.Inventory.GetItemSafe(itemEntityId);
 
 			// Check if item is destroyable
-			// The check for the Sword of Elsinore is a terrible hack,
-			// but in my defense, it was devCAT's idea. Instead of adding the
-			// destroyable tag to the item, the client checks for the
-			// hamlets_sword tag >_>
-			if (!item.HasTag("/destroyable/|/hamlets_sword/|/guild_robe/"))
+			if (!item.IsDestroyable)
 			{
 				Log.Warning("ItemDestroy: Creature '{0:X16}' tried to destroy a non-destroyable item.", creature.EntityId);
 				Send.ItemDestroyR(creature, false);
@@ -1203,6 +1214,24 @@ namespace Aura.Channel.Network.Handlers
 
 			// Response
 			Send.CollectionAddItemR(creature, true);
+		}
+
+		/// <summary>
+		/// Sent when using an Ordinary Chest.
+		/// </summary>
+		/// <remarks>
+		/// The exact purpose of this packet is unknown, and the response
+		/// can be considered a dummy, since it's not based on logs. Sending
+		/// true + the entity id simply gets us past this, to the use packet.
+		/// </remarks>
+		[PacketHandler(Op.UnkOrdinaryChest)]
+		public void UnkOrdinaryChest(ChannelClient client, Packet packet)
+		{
+			var chestItemEntityId = packet.GetLong();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			Send.UnkOrdinaryChestR(creature, chestItemEntityId);
 		}
 	}
 }

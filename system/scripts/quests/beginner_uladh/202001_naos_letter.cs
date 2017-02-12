@@ -21,16 +21,16 @@ public class NaosLetterQuestScript : QuestScript
 		AddReward(Exp(100));
 		if (IsEnabled("G1EasyOverseas"))
 			AddReward(AP(3)); // 3 AP in EU and during "g1_easy_overseas" (212001)
-		
+
 		AddHook("_duncan", "after_intro", TalkDuncan);
 	}
-	
+
 	public async Task<HookResult> TalkDuncan(NpcScript npc, params object[] args)
 	{
-		if(npc.QuestActive(this.Id, "talk_duncan"))
+		if (npc.Player.QuestActive(this.Id, "talk_duncan"))
 		{
-			npc.FinishQuest(this.Id, "talk_duncan");
-			
+			npc.Player.FinishQuestObjective(this.Id, "talk_duncan");
+
 			npc.Msg(Hide.Name, "(You hand Nao's Letter of Introduction to Duncan.)");
 			npc.Msg("Ah, a letter from Nao.<br/>Hard to believe that little<br/>tomboy's all grown up...");
 			npc.Msg(Hide.Name, "(Duncan folds the letter in half and puts it in his pocket.)");
@@ -54,7 +54,7 @@ public class NaosLetterQuestScript : QuestScript
 
 			return HookResult.Break;
 		}
-		
+
 		return HookResult.Continue;
 	}
 }

@@ -9,8 +9,8 @@ public class ShielaMoresRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#shiela");
-		//dungeon.SetRole(1, "#mores");
+		dungeon.SetRole(0, "#shiela");
+		dungeon.SetRole(1, "#mores");
 	}
 
 	public virtual void OnPartyEntered(Dungeon dungeon, Creature creature)
@@ -30,6 +30,12 @@ public class ShielaMoresRPDungeonScript : DungeonScript
 
 		dungeon.PlayCutscene("G1_31_b_ShielaRP");
 	}
+	
+	public override void OnBossDeath(Dungeon dungeon, Creature boss, Creature killer)
+	{
+		if (dungeon.RemainingBosses <= 3)
+			dungeon.Complete();
+	}
 
 	public override void OnCleared(Dungeon dungeon)
 	{
@@ -39,12 +45,12 @@ public class ShielaMoresRPDungeonScript : DungeonScript
 			var creators = dungeon.GetCreators();
 			foreach (var member in creators)
 			{
-				if (member.Keywords.Has("g1_34_1"))
+				if (member.HasKeyword("g1_34_1"))
 				{
-					member.Keywords.Remove("g1_34_1");
-					member.Keywords.Give("g1_34_2");
-					member.Keywords.Remove("g1_memorial4");
-					member.Keywords.Give("g1_cichol");
+					member.RemoveKeyword("g1_34_1");
+					member.GiveKeyword("g1_34_2");
+					member.RemoveKeyword("g1_memorial4");
+					member.GiveKeyword("g1_cichol");
 				}
 			}
 

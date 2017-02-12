@@ -16,6 +16,7 @@ public class WerewolfAi : AiScript
 		SetAggroRadius(1200);
 
 		Hates("/pc/", "/pet/");
+		SetAggroLimit(AggroLimit.One);
 
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);

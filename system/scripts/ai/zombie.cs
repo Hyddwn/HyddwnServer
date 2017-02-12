@@ -29,6 +29,7 @@ public class ZombieAi : AiScript
 	{
 		SetVisualField(1500, 90);
 		SetAggroRadius(1200);
+		SetAggroLimit(AggroLimit.None);
 		Hates("/pc/", "/pet/");
 		Hates("/ahchemy_golem/");
 
@@ -39,7 +40,7 @@ public class ZombieAi : AiScript
 
 	protected override IEnumerable Idle()
 	{
-		if (Creature.Skills.Has(SkillId.Rest))
+		if (Creature.HasSkill(SkillId.Rest))
 			Do(StartSkill(SkillId.Rest));
 		Do(Wait(1000000000));
 	}

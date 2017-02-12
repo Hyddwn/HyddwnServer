@@ -9,7 +9,7 @@ public class SuccubusRPDungeonScript : DungeonScript
 {
 	public override void OnCreation(Dungeon dungeon)
 	{
-		//dungeon.SetRole(0, "#tarlach2");
+		dungeon.SetRole(0, "#tarlach2");
 	}
 
 	public override void OnBoss(Dungeon dungeon)
@@ -37,12 +37,12 @@ public class SuccubusRPDungeonScript : DungeonScript
 			var creators = dungeon.GetCreators();
 			foreach (var member in creators)
 			{
-				if (member.Keywords.Has("g1_15"))
+				if (member.HasKeyword("g1_15"))
 				{
-					member.Keywords.Remove("g1_15");
-					member.Keywords.Give("g1_16");
-					member.Keywords.Remove("g1_dulbrau2");
-					member.Keywords.Give("g1_succubus");
+					member.RemoveKeyword("g1_15");
+					member.GiveKeyword("g1_16");
+					member.RemoveKeyword("g1_dulbrau2");
+					member.GiveKeyword("g1_succubus");
 				}
 			}
 

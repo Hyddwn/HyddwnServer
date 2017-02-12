@@ -39,12 +39,12 @@ public class EmbodimentOfDestructionQuest : GeneralScript
 	{
 		var keyword = args[0] as string;
 
-		if (keyword == "g1_bone_of_glasgavelen" && npc.HasKeyword("g1_28"))
+		if (keyword == "g1_bone_of_glasgavelen" && npc.Player.HasKeyword("g1_28"))
 		{
-			if (!npc.QuestActive(NextQuestId))
+			if (!npc.Player.QuestActive(NextQuestId))
 			{
-				npc.StartQuest(NextQuestId); // Obtain the Magic Powder of Preservation
-				npc.GiveWarpScroll(63009, "fiodth_dungeon");
+				npc.Player.StartQuest(NextQuestId); // Obtain the Magic Powder of Preservation
+				npc.Player.GiveWarpScroll(63009, "Fiodth_Dungeon");
 
 				npc.Msg(L("...!<p/>That's it! In order to revive Glas Ghaibhleann,<br/>his bones must be exacavated and re-assembled.<br/>Any missing bones must be replaced with Adamantium."));
 				npc.Msg(L("But Adamantium is difficult to shape. It must<br/>be melted at very high temperatures first. And<br/>there's a special ingredient that must be applied to the bone."));

@@ -27,10 +27,10 @@ public class GlasGhaibhleannQuest : GeneralScript
 
 		if (keyword == "g1_revive_of_glasgavelen")
 		{
-			if (npc.HasKeyword("g1_37"))
+			if (npc.Player.HasKeyword("g1_37"))
 			{
-				npc.RemoveKeyword("g1_37");
-				npc.GiveKeyword("g1_37_2");
+				npc.Player.RemoveKeyword("g1_37");
+				npc.Player.GiveKeyword("g1_37_2");
 
 				npc.Msg(L("There's a sudden change in the sky.<br/>What's happened?"));
 				npc.Msg(L("...<p/>You finally rescued the Goddess.<br/>Congratulations."));
@@ -47,14 +47,14 @@ public class GlasGhaibhleannQuest : GeneralScript
 				npc.Msg(L("However, my body that's being<br/>controlled by the summoner would be powerful enough to blow away mere humans.<br/>I'm not sure if I should trust you with this task."));
 				npc.Msg(L("Can you make me a promise?<br/>Can you promise you will defeat my body?<br/>And return it to where it belongs?"), npc.Button(L("Yes"), "@yes"), npc.Button(L("No"), "@no"));
 			}
-			else if (npc.HasKeyword("g1_37_2"))
+			else if (npc.Player.HasKeyword("g1_37_2"))
 			{
 				npc.Msg(L("Can you promise you will defeat my body?<br/>And return it to where it belongs?"), npc.Button(L("Yes"), "@yes"), npc.Button(L("No"), "@no"));
 			}
-			else if (npc.HasKeyword("g1_38"))
+			else if (npc.Player.HasKeyword("g1_38"))
 			{
-				if (!npc.HasItem(PendantOfTheGoddessBind))
-					npc.GiveItem(PendantOfTheGoddessBind);
+				if (!npc.Player.HasItem(PendantOfTheGoddessBind))
+					npc.Player.GiveItem(PendantOfTheGoddessBind);
 
 				npc.Msg(L("Go to Albey Dungeon and offer the pendant there.<br/>If you succeed,<br/>it will only be a matter time before I free myself from being an Added Soul."));
 
@@ -70,19 +70,19 @@ public class GlasGhaibhleannQuest : GeneralScript
 				npc.Msg(L("Oh..."));
 				return HookResult.Break;
 			}
-			else if (!npc.HasItem(PendantOfTheGoddess))
+			else if (!npc.Player.HasItem(PendantOfTheGoddess))
 			{
 				npc.Msg(L("You don't have the pendant on you?"));
 				return HookResult.Break;
 			}
 
-			npc.RemoveKeyword("g1_37");
-			npc.RemoveKeyword("g1_37_2");
-			npc.GiveKeyword("g1_38");
+			npc.Player.RemoveKeyword("g1_37");
+			npc.Player.RemoveKeyword("g1_37_2");
+			npc.Player.GiveKeyword("g1_38");
 
-			npc.RemoveItem(PendantOfTheGoddess);
-			npc.GiveItem(PendantOfTheGoddessBind);
-			npc.GiveItem(Item.CreateWarpScroll(63009, "tirnanog_dungeon"));
+			npc.Player.RemoveItem(PendantOfTheGoddess);
+			npc.Player.GiveItem(PendantOfTheGoddessBind);
+			npc.Player.GiveItem(Item.CreateWarpScroll(63009, "TirNaNog_Dungeon"));
 
 			npc.Msg(L("Okay, I'll trust you.<br/>I guess it might not be a bad idea to trust you since<br/>you rescued the Goddess."));
 			npc.Msg(L("Go to Albey Dungeon and offer this pendant there.<br/>You know how to use the Red Wings of a Goddess, right?<br/>If you succeed,<br/>it will only be a matter time before I free myself from being an Added Soul."));

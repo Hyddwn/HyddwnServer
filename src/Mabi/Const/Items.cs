@@ -62,8 +62,26 @@ namespace Aura.Mabi.Const
 		PersonalInventory = 49,
 		VIPInventory = 50,
 		FarmStone = 81,
+		TailStyle = 90,
 		ItemBags = 100,
 		ItemBagsMax = 199,
+
+		BardBoardScroll1 = 1000,
+		BardBoardScroll2 = 1001,
+		BardBoardScroll3 = 1002,
+		BardBoardScroll4 = 1003,
+		BardBoardScroll5 = 1004,
+		BardBoardScroll6 = 1005,
+		BardBoardScroll7 = 1006,
+		BardBoardScroll8 = 1007,
+		BardBoardScroll9 = 1008,
+		BardBoardScroll10 = 1009,
+		BardBoardScroll11 = 1010,
+		BardBoardScroll12 = 1011,
+		BardBoardScroll13 = 1012,
+		BardBoardScroll14 = 1013,
+		BardBoardScroll15 = 1014,
+		BardBoardScroll16 = 1015,
 	}
 
 	[Flags]
@@ -100,7 +118,7 @@ namespace Aura.Mabi.Const
 		/// <returns></returns>
 		public static bool IsEquip(this Pocket pocket)
 		{
-			if ((pocket >= Pocket.Face && pocket <= Pocket.Accessory2) || (pocket >= Pocket.ArmorStyle && pocket <= Pocket.RobeStyle))
+			if ((pocket >= Pocket.Face && pocket <= Pocket.Accessory2) || (pocket >= Pocket.ArmorStyle && pocket <= Pocket.RobeStyle) || pocket == Pocket.TailStyle)
 				return true;
 			return false;
 		}
@@ -440,10 +458,15 @@ namespace Aura.Mabi.Const
 		Tuba = 18,
 		Lyra = 19,
 		ElectricGuitar = 20,
-
 		Piano = 21,
 		Violin = 22,
 		Cello = 23,
+		Harp = 24,
+		TunedViolin = 25,
+		TunedCello = 26,
+
+		TunedFlute = 55,
+		TunedWhistle = 56,
 
 		BassDrum = 66,
 		Drum = 67,

@@ -33,6 +33,7 @@ public class DeianScript : NpcScript
 		AddPhrase("It's amazing how fast they grow feeding on grass.");
 		AddPhrase("I wonder if I could buy a house with my savings yet...");
 		AddPhrase("What the... Now there's one missing!");
+		AddPhrase("I used to think they were cute. But it gets annoying when you have too many of them.");
 	}
 
 	protected override async Task Talk()
@@ -52,26 +53,26 @@ public class DeianScript : NpcScript
 				var today = ErinnTime.Now.ToString("yyyyMMdd");
 				if (today != Player.Vars.Perm["deian_title_gift"])
 				{
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 						case 10060: // is a friend of Deian
 							Player.Vars.Perm["deian_title_gift"] = today;
 
-							GiveItem(71021); // Brown Fox Fomor Scroll
-							Notice(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
-							SystemMsg(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
+							Player.GiveItem(71021); // Brown Fox Fomor Scroll
+							Player.Notice(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
+							Player.SystemMsg(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
 
 							Msg(L("Perfect timing. <username/>.<br/>I've been meaning to give you this."));
 							break;
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Hey! <username/>, that's my job you just did! What am I supposed to do now?<br/>Man! There must be something more heroic that I could do as a warrior...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Eh? <username/>...<br/>You've become the Guardian of Erinn?<br/>So fast!<br/>I'm still trying to become a Warrior!");
 					Msg("Good for you.<br/>Just make sure you leave me some work to do for when I become a Warrior.<br/>Wow, must've been tough.");
@@ -140,25 +141,111 @@ public class DeianScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "Yeah, yeah. I'm a mere shepherd...for now.<br/>But I will soon be a mighty warrior!<br/>");
-				ModifyRelation(Random(2), 0, Random(3));
+				// Got White, Red, and Black Spider Fomor Scrolls?
+				// Give Giant Spider Fomor Scroll for spider RP dungeon.
+				if ((Player.HasItem(71017) && Player.HasItem(71018) && Player.HasItem(71019)) && !Player.HasItem(73108) && !Player.HasKeyword("RP_Monster_GiantSpider_complete"))
+				{
+					Player.GiveKeyword("RP_Monster_GiantSpider_start");
+					Player.GiveItem(73108); // Giant Spider Fomor Scroll
+					Player.SystemNotice(L("Received Giant Spider Fomor Scroll from Shepherd Boy Deian."));
+
+					Msg(L("Do you know there is a giant spider living inside Alby Dungeon?<br/>I picked up a scroll titled 'Giant Spider's Fomor Scroll'.<br/>I think you can see something if you use this in Alby Dungeon.<br/>You can have it. I don't need it."));
+				}
+				else
+				{
+					if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+					{
+						Msg(FavorExpression(), "Do you know what shepherds and warriors have in common?<br/>They both need to look after others.<br/>...<br/>I was being serious for once!");
+						ModifyRelation(Random(2), 0, Random(2));
+					}
+					else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+					{
+						Msg(FavorExpression(), "Hmm... I come from a family of generals. Some of them were very famous.<br/>What...? So what am I doing here?<br/>How should I know?");
+						ModifyRelation(Random(2), 0, Random(2));
+					}
+					else if (Favor >= 10 && Stress <= 10)
+					{
+						Msg(FavorExpression(), "What does a shepherd do? Uh, look after sheep?<br/>Let the sheep feed, look for them if they get lost...");
+						ModifyRelation(Random(2), Random(2), Random(2));
+					}
+					else if (Favor <= -10)
+					{
+						Msg(FavorExpression(), "People look down on me because I live out here...<br/>Whatever...");
+						ModifyRelation(Random(2), 0, Random(1, 3));
+					}
+					else if (Favor <= -30 && Stress <= 10)
+					{
+						Msg(FavorExpression(), "My BGM, I know others like it, but I don't.<br/>Can't it be more romantic and sentimental, you know?<br/>A song revealing the pure heart and mind of a teenage boy who has gentle pangs of loneliness?");
+						ModifyRelation(Random(2), 0, Random(1, 3));
+					}
+					else if (Favor <= -30 && Stress > 10)
+					{
+						Msg(FavorExpression(), "I get frustrated when people like you keep asking questions! Jeez, you're ruining my day.");
+						ModifyRelation(Random(2), -Random(2), Random(1, 4));
+					}
+					else
+					{
+						Msg(FavorExpression(), "Yeah, yeah. I'm a mere shepherd...for now.<br/>But I will soon be a mighty warrior!");
+						ModifyRelation(Random(2), 0, Random(3));
+					}
+				}
+				break;
+
+			case "RP_Monster_GiantSpider_Born":
+				Player.GiveItem(Item.CreateEnchanted(40023, prefix: 20203)); // Shepherd's Gathering Knife
+				Player.RemoveKeyword("RP_Monster_GiantSpider_Born");
+
+				Msg(L("So, the Giant Spider had a great story behind it.<br/>But, it's incredible that you could experience the world from a spider's point of view.<br/>Alright. I'll give you a present for having done that.<br/>Check your Inventory."));
 				break;
 
 			case "rumor":
-				GiveKeyword("pool");
-				Msg(FavorExpression(), "Some people should have been born as fish.<br/>They can't pass water without diving right in.<br/>I wish they'd stop.");
-				Msg("Not long ago, someone jumped into the reservoir<br/>and made a huge mess.<br/>Guess who got stuck cleaning it up?<br/>Sooo not my job.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "<username/>. Now that I've even memorized your name...<br/>You are really persistent.<br/>Everyone in town has something to say about you.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "You heard that sheep are gentle? News flash, buddy! That's totally wrong.<br/>Do you know how stubborn sheep are?<br/>Imagine taking care of an entire flock of these suckers...<br/>Sure, they provide wool but sometimes it's definitely not worth it!");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "There are always a few knuckle heads that try to hit the sheep... Please don't do that.<br/>That's animal abuse, you know that?");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Dude, you must have a lot of spare time.<br/>Killing time with a shepherd boy like me.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "You can't just believe every rumor you hear. Don't take it so seriously.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "If you keep listening to gossip,<br/>you're going to end up wasting your life...");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Player.GiveKeyword("pool");
+					Msg(FavorExpression(), "Some people should have been born as fish.<br/>They can't pass water without diving right in.<br/>I wish they'd stop.");
+					Msg("Not long ago, someone jumped into the reservoir<br/>and made a huge mess.<br/>Guess who got stuck cleaning it up?<br/>Sooo not my job.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
-				if (HasSkill(SkillId.PlayingInstrument))
+				if (Player.HasSkill(SkillId.PlayingInstrument))
 				{
 					Msg("Alright, so you know about the Instrument Playing skill.<br/>It's always good to know how to appreciate art, haha!");
 				}
 				else
 				{
-					GiveKeyword("skill_instrument");
+					Player.GiveKeyword("skill_instrument");
 					Msg("Know anything about the Instrument Playing skill?<br/>Only introspective guys like me<br/>can handle instruments.<br/>I wonder how well you would do...");
 					Msg("Priestess Endelyon knows all about this skill.<br/>You should talk to her.<br/>");
 				}
@@ -184,7 +271,7 @@ public class DeianScript : NpcScript
 				break;
 
 			case "shop_inn":
-				GiveKeyword("skill_campfire");
+				Player.GiveKeyword("skill_campfire");
 				Msg("Staying up all night, sleeping under trees during the day...<br/>When you have my lifestyle, you don't need to sleep at an Inn!<br/>All I need is the Campfire skill to survive!");
 				break;
 
@@ -197,12 +284,12 @@ public class DeianScript : NpcScript
 				break;
 
 			case "skill_range":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Don't you think it's best to go to the School<br/>and ask Ranald about it?<br/>I don't mind telling you about it myself,<br/>but Ranald doesn't like it when I teach people...");
 				break;
 
 			case "skill_instrument":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("You really are something.<br/>I just told you,<br/>talk to Priestess Endelyon at the Church<br/>about that.");
 				Msg("I know your type...<br/>You like to use everything single<br/>keyword you get... Bug off!");
 				break;
@@ -271,13 +358,13 @@ public class DeianScript : NpcScript
 				break;
 
 			case "skill_campfire":
-				if (!HasSkill(SkillId.Campfire))
+				if (!Player.HasSkill(SkillId.Campfire))
 				{
-					if (!HasKeyword("deian_01"))
+					if (!Player.HasKeyword("deian_01"))
 					{
-						GiveItem(1012); // Campfire Manual
-						GiveItem(63002, 5); // Firewood
-						GiveKeyword("deian_01");
+						Player.GiveItem(1012); // Campfire Manual
+						Player.GiveItem(63002, 5); // Firewood
+						Player.GiveKeyword("deian_01");
 
 						Msg(L("Are you here for the Campfire skill?<br/>You see that over there? The burnt spot on the ground? I've been trying to learn it myself.<br/>But no matter how much I try, I just can't get it."));
 						Msg(L("It's harder than it looks... All I get is smoke and the spark won't catch.<br/>It's driving me crazy..."));
@@ -286,25 +373,25 @@ public class DeianScript : NpcScript
 					}
 					else
 					{
-						Msg("(Missing dialog: Another Campfire explanation)");
+						Msg(L("I gave out the Campfire book a while ago.<br/>You haven't figured the skill out yet?<br/>Well, it was difficult even for the brilliant me,<br/>it'll just take some more time~<p/>Whoops...don't make such a scary face.<br/>It's a long book and I couldn't understand it.<br/>I'm not ashamed!<br/>After poking around I made some friends, hehehe."));
 					}
 				}
 				else
 				{
-					RemoveKeyword("skill_campfire");
-					RemoveKeyword("deian_01");
+					Player.RemoveKeyword("skill_campfire");
+					Player.RemoveKeyword("deian_01");
 					Msg("Hey, you! What are you doing!<br/>Are you trying to use the Campfire skill here?<br/>Are you crazy!? You want to burn all my wool?<br/>Go away! Go away!<br/>You want to play with fire? Go do it far away from here!");
 				}
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("Restaurant? You must be talking about the Grocery Store.<br/>Speaking of food,<br/>my stomach is growling...");
 				Msg("It's been a while since I've had a decent meal.<br/>I always eat out here.<br/>A hard loaf of bread and plain water.<br/>Let's see, was there a restaurant in our town?");
 				break;
 
 			case "shop_armory":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("A Weapons Shop? What for?<br/>What are you going to do with a weapon?<br/>Think you'll put good use to it if you buy it now?<br/>I don't think so!");
 				break;
 
@@ -328,7 +415,7 @@ public class DeianScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("You can find a lot of bows at the Blacksmith's Shop.<br/>There's one nearby.<br/>If Ferghus is drunk, it might be possible to sneak one out.");
 				Msg("I'm just kidding! You weren't really thinking about doing that...were you?");
 				break;
@@ -355,17 +442,63 @@ public class DeianScript : NpcScript
 				break;
 
 			default:
-				RndMsg(
-					"Meh, I don't want to tell you.",
-					"Ask all you want, I'm not telling you.",
-					"What are you going to give me in exchange?",
-					"Hold up, I feel like I'm being interrogated.",
-					"Pry all you like. You'll get nothing from me.",
-					"So many questions, at least give me a small gift...",
-					"Sometimes, I'm just not in the mood to answer questions.",
-					"Don't be ridiculous. It's not that I don't know, I just don't want to tell you."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I almost fell asleep! Sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Hmm... I think I heard about that somewhere, but I forget. Sorry!");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Life must be easy for you, right? Talking about such things...");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Don't you have anything else to do?");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"Meh, I don't want to tell you.",
+						"Ask all you want, I'm not telling you.",
+						"What are you going to give me in exchange?",
+						"Hold up, I feel like I'm being interrogated.",
+						"Pry all you like. You'll get nothing from me.",
+						"So many questions, at least give me a small gift...",
+						"Sometimes, I'm just not in the mood to answer questions.",
+						"Don't be ridiculous. It's not that I don't know, I just don't want to tell you."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Wow!"));
+				Msg(L("This is what I really wanted! Are you really giving it to me?<br/>Wow, thank you so much!"));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Haha! What's up with the present all of a sudden? Thanks. I'll put it to good use."));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("A present? Thank you."));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("Hmm... It's not really my style, but since it's free..."));
 				break;
 		}
 	}

@@ -255,14 +255,26 @@ namespace Aura.Channel.World.Dungeons
 				return false;
 			}
 
-			var parameter = clientEvent.Data.Parameters.FirstOrDefault(a => a.EventType == EventType.Altar);
-			if (parameter == null || parameter.XML == null || parameter.XML.Attribute("dungeonname") == null)
-			{
-				Log.Warning("DungeonManager.CheckDrop: No dungeon name found in altar event '{0:X16}'.", clientEvent.EntityId);
-				return false;
-			}
+			// Get dungeon name
+			string dungeonName;
 
-			var dungeonName = parameter.XML.Attribute("dungeonname").Value.ToLower();
+			// Hack for Nekojima, since it doesn't have the proper
+			// attributes
+			if (clientEvent.Data.Name == "nekojima_altar_eventbox")
+			{
+				dungeonName = "JG_Neko_Dungeon".ToLower();
+			}
+			else
+			{
+				var parameter = clientEvent.Data.Parameters.FirstOrDefault(a => a.EventType == EventType.Altar);
+				if (parameter == null || parameter.XML == null || parameter.XML.Attribute("dungeonname") == null)
+				{
+					Log.Warning("DungeonManager.CheckDrop: No dungeon name found in altar event '{0:X16}'.", clientEvent.EntityId);
+					return false;
+				}
+
+				dungeonName = parameter.XML.Attribute("dungeonname").Value.ToLower();
+			}
 
 			// Check script
 			var dungeonScript = ChannelServer.Instance.ScriptManager.DungeonScripts.Get(dungeonName);
@@ -304,31 +316,93 @@ namespace Aura.Channel.World.Dungeons
 		/// </summary>
 		/// <param name="dungeonName"></param>
 		/// <param name="itemId"></param>
-		/// <param name="creature"></param>
+		/// <param name="leader"></param>
 		/// <returns></returns>
-		public bool CreateDungeonAndWarp(string dungeonName, int itemId, Creature creature)
+		public bool CreateDungeonAndWarp(string dungeonName, int itemId, Creature leader)
 		{
 			lock (_createAndCleanUpLock)
 			{
 				try
 				{
-					var dungeon = this.CreateDungeon(dungeonName, itemId, creature);
+					var dungeon = this.CreateDungeon(dungeonName, itemId, leader);
 					var regionId = dungeon.Regions.First().Id;
 
 					// Warp the party currently standing on the altar into the dungeon.
-					var party = creature.Party.GetCreaturesOnAltar(creature.RegionId);
+					var party = leader.Party;
+					var creators = party.GetCreaturesOnAltar(leader.RegionId);
 
 					// Add creature to list in case something went wrong.
-					if (party.Count == 0)
-						party.Add(creature);
+					// For example, there might be no altar, because the call
+					// came from the dungeon command.
+					if (creators.Count == 0)
+						creators.Add(leader);
 
-					foreach (var member in party)
+					// RP dungeon
+					if (dungeon.HasRoles)
 					{
-						var pos = member.GetPosition();
-						member.Warp(regionId, pos);
+						// Get roles
+						var roles = dungeon.GetRoles();
 
-						// TODO: This is a bit hacky, needs to be moved to Creature.Warp, with an appropriate check.
-						Send.EntitiesDisappear(member.Client, party);
+						if (roles.Count < creators.Count)
+						{
+							Send.Notice(leader, Localization.Get("Your party has too few members for this role-playing dungeon."));
+							return false;
+						}
+
+						// Create RP characters
+						var rpCharacters = new List<RpCharacter>();
+						for (int i = 0, j = 1; i < creators.Count; ++i)
+						{
+							var creator = creators[i];
+							var pos = creator.GetPosition();
+
+							// Get first role for leader or next available
+							// one for members.
+							var role = (creator == leader ? roles[0] : roles[j++]);
+
+							// Get actor data
+							var actorData = AuraData.ActorDb.Find(role);
+							if (actorData == null)
+							{
+								Log.Error("DungeonManager.CreateDungeonAndWarp: Actor data not found for '{0}'.", role);
+								return false;
+							}
+
+							try
+							{
+								var rpCharacter = new RpCharacter(actorData, creator, null);
+								rpCharacter.SetLocation(regionId, pos.X, pos.Y);
+
+								dungeon.RpCharacters.Add(rpCharacter.EntityId);
+								dungeon.Script.OnRpCharacterCreated(dungeon, rpCharacter);
+
+								rpCharacters.Add(rpCharacter);
+							}
+							catch
+							{
+								Log.Error("DungeonManager.CreateDungeonAndWarp: Failed to create RP character '{0}'.", role);
+								throw;
+							}
+						}
+
+						// Start RP sessions, which makes the players switch
+						// to the RP characters inside the dungeon.
+						foreach (var character in rpCharacters)
+							character.Start();
+					}
+					// Normal dungeon
+					else
+					{
+						// Warp in
+						foreach (var creator in creators)
+						{
+							// Warp member to same position in the lobby region.
+							var pos = creator.GetPosition();
+							creator.Warp(regionId, pos);
+
+							// TODO: This is a bit hacky, needs to be moved to Creature.Warp, with an appropriate check.
+							Send.EntitiesDisappear(creator.Client, creators);
+						}
 					}
 
 					return true;

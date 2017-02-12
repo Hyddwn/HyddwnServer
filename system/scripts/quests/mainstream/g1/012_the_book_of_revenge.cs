@@ -26,10 +26,10 @@ public class TheBookOfRevengeQuest : GeneralScript
 
 		if (keyword == "g1_mores")
 		{
-			npc.RemoveKeyword("g1_18");
-			npc.GiveKeyword("g1_19");
-			npc.RemoveKeyword("g1_mores");
-			npc.GiveKeyword("g1_mores_gwydion");
+			npc.Player.RemoveKeyword("g1_18");
+			npc.Player.GiveKeyword("g1_19");
+			npc.Player.RemoveKeyword("g1_mores");
+			npc.Player.GiveKeyword("g1_mores_gwydion");
 
 			npc.Msg(L("Mores...? That's the author of the book you have?<br/>Hmm... You're right..."));
 			npc.Msg(L("Really...? The one and only hero who rescued this world...<br/>Mores Gwydion?<br/>...No, it can't be. They probably just have the same name."));
@@ -52,30 +52,30 @@ public class TheBookOfRevengeQuest : GeneralScript
 
 		if (keyword == "g1_mores_gwydion")
 		{
-			if (npc.HasKeyword("g1_19"))
+			if (npc.Player.HasKeyword("g1_19"))
 			{
-				npc.RemoveKeyword("g1_19");
-				npc.GiveKeyword("g1_20");
+				npc.Player.RemoveKeyword("g1_19");
+				npc.Player.GiveKeyword("g1_20");
 
 				npc.Msg(L("Mores Gwydion..."));
 				npc.Msg(L("...Yes, he's the author of that book.<br/>He's my mentor who's taught me<br/>...And also a Wizard who'd saved the world."));
 				npc.Msg(L("I had always thought that he had passed away but...<br/>he's apparently alive and has sided with the Fomors."));
 				npc.Msg(L("...Anyhow, give me the translated book.<br/>I would like to take a look at it."), npc.Button(L("Sure"), "@yes"), npc.Button(L("No"), "@no"));
 			}
-			else if (npc.HasKeyword("g1_20"))
+			else if (npc.Player.HasKeyword("g1_20"))
 			{
 				npc.Msg(L("Give me the translated book.<br/>I would like to take a look at it."), npc.Button(L("Sure"), "@yes"), npc.Button(L("No"), "@no"));
 			}
 
-			if (await npc.Select() != "@yes" || !npc.HasItem(BookOfRevenge))
+			if (await npc.Select() != "@yes" || !npc.Player.HasItem(BookOfRevenge))
 			{
 				npc.Msg(L("Don't you have it with you?"));
 				return HookResult.Break;
 			}
 
-			npc.RemoveItem(BookOfRevenge);
-			npc.RemoveKeyword("g1_mores_gwydion");
-			npc.GiveKeyword("g1_memo_of_lost_thing");
+			npc.Player.RemoveItem(BookOfRevenge);
+			npc.Player.RemoveKeyword("g1_mores_gwydion");
+			npc.Player.GiveKeyword("g1_memo_of_lost_thing");
 
 			npc.Msg(Hide.Name, L("(Tarlach flipped through the book.)"));
 			npc.Msg(L("Just what I'd tought...<br/>Master had faked his own death<br/>for some reason and now he's helping the Fomors."));
@@ -112,24 +112,24 @@ public class TheBookOfRevengeQuest : GeneralScript
 
 		if (keyword == "g1_memo_of_lost_thing")
 		{
-			if (npc.HasKeyword("g1_20"))
+			if (npc.Player.HasKeyword("g1_20"))
 			{
-				npc.RemoveKeyword("g1_20");
-				npc.GiveKeyword("g1_21");
+				npc.Player.RemoveKeyword("g1_20");
+				npc.Player.GiveKeyword("g1_21");
 
-				npc.GiveWarpScroll(63009, "math_dungeon");
+				npc.Player.GiveWarpScroll(63009, "Math_Dungeon");
 
 				npc.Msg(L("You're back. I knew you would be back.<br/>Here's the item you're looking for."));
 				npc.Msg(L("I only remembered it later on too.<br/>I figured the person who wrote that can<br/>find the lost item at the Town Office."), npc.Image("g1_ch18_torque01"));
 				npc.Msg(L("Broken Torque.<br/>It looks like a memorial item. Try using it in Math Dungeon.<br/>I gave you the Red Wing of the Goddess too, just in case you need it."), npc.Image("g1_ch18_torque01"));
 			}
-			else if (npc.HasKeyword("g1_21"))
+			else if (npc.Player.HasKeyword("g1_21"))
 			{
 				npc.Msg(L("Try using the Broken Torque in Math Dungeon."));
 			}
 
-			if (!npc.HasItem(Torque))
-				npc.GiveItem(Torque);
+			if (!npc.Player.HasItem(Torque))
+				npc.Player.GiveItem(Torque);
 
 			return HookResult.Break;
 		}

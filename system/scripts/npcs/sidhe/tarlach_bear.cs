@@ -18,13 +18,14 @@ public class TarlachBearScript : NpcScript
 			SetLocation(48, 11100, 30400, 167);
 		else
 			SetLocation(22, 5800, 7100, 167);
+		SetGiftWeights(beauty: 1, individuality: 2, luxury: -1, toughness: 2, utility: 2, rarity: 0, meaning: -1, adult: 2, maniac: -1, anime: 2, sexy: 0);
 
-		AddPhrase("...... ");
+		AddPhrase("......");
 		AddPhrase("Grrrrr...");
-		AddPhrase("Growl... ");
-		AddPhrase("Rooooar... ");
-		AddPhrase("Roar... ");
-		AddPhrase("Rooar... ");
+		AddPhrase("Growl...");
+		AddPhrase("Rooooar...");
+		AddPhrase("Roar...");
+		AddPhrase("Rooar...");
 	}
 
 	[On("ErinnDaytimeTick")]
@@ -40,18 +41,14 @@ public class TarlachBearScript : NpcScript
 	{
 		SetBgm("NPC_Tarlach.mp3");
 
-		await Intro(
-			"The bear is enormous, and gazes at you with bright eyes.",
-			"It sniffs the air and looks around as if searching for something.",
-			"Its breath comes in steamy puffs, and it claws the ground from time to time."
-		);
+		await Intro(L("The bear is enormous, and gazes at you with bright eyes.<br/>It sniffs the air and looks around as if searching for something.<br/>Its breath comes in steamy puffs, and it claws the ground from time to time."));
 
 		Msg("Grr...", Button("Start a Conversation", "@talk"));
 
 		switch (await Select())
 		{
 			case "@talk":
-				Greet();
+				Msg(FavorExpression(), L("....."));
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 				await Conversation();
 				break;
@@ -60,40 +57,15 @@ public class TarlachBearScript : NpcScript
 		End("You have ended your conversation with <npcname/>.");
 	}
 
-	private void Greet()
-	{
-		if (Memory <= 0)
-		{
-			Msg(FavorExpression(), L("....."));
-		}
-		else if (Memory == 1)
-		{
-			Msg(FavorExpression(), L("....."));
-		}
-		else if (Memory == 2)
-		{
-			Msg(FavorExpression(), L("(Missing)"));
-		}
-		else if (Memory <= 6)
-		{
-			Msg(FavorExpression(), L("(Missing)"));
-		}
-		else
-		{
-			Msg(FavorExpression(), L("(Missing)"));
-		}
-
-		UpdateRelationAfterGreet();
-	}
-
 	protected override async Task Keywords(string keyword)
 	{
 		switch (keyword)
 		{
 			default:
 				RndFavorMsg(
-					".....<br/>(There's no way a bear could understand me...)",
-					".....<br/>(I wonder if the bear wants a Mana Herb?)"
+					".....<br/>(I can't possibly communicate with it.)",
+					".....<br/>(I wonder if the bear wants a Mana Herb?)",
+					".....<br/>(There's no way a bear could understand me...)"
 				);
 				break;
 		}

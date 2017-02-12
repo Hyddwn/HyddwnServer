@@ -113,8 +113,15 @@ namespace Aura.Shared.Network
 				try { this.Socket.Close(); }
 				catch { }
 
-				// Naturally, we have to clean up after killing somebody.
-				this.CleanUp();
+				try
+				{
+					// Naturally, we have to clean up after killing somebody.
+					this.CleanUp();
+				}
+				catch (Exception ex)
+				{
+					Log.Exception(ex, "While cleaning up after client.");
+				}
 
 				this.State = ClientState.Dead;
 			}

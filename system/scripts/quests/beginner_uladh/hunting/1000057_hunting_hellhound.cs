@@ -16,7 +16,8 @@ public class HellhoundQuestScript : QuestScript
 		if (IsEnabled("QuestViewRenewal"))
 			SetCategory(QuestCategory.Basic);
 
-		SetReceive(Receive.Automatically);
+		if (IsEnabled("MathDungeon"))
+			SetReceive(Receive.Automatically);
 		AddPrerequisite(Completed(1000056));
 
 		AddObjective("kill_hound", L("Hunt 1 Hellhound"), 25, 3200, 3426, Kill(1, "/hellhound/"));

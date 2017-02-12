@@ -13,6 +13,7 @@ public class MetalSkeletons30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Metal Skeletons"));
 		SetDescription(L("Have you ever seen a Metal Skeleton? The Metal Skeletons living in Rabbie Dungeon are controlled by a more powerful evil force than regular Skeletons. Please hunt [30 Metal Skeletons]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

@@ -20,6 +20,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Globalization;
 using Aura.Channel.World;
+using Aura.Data;
 
 namespace Aura.Channel.Database
 {
@@ -203,7 +204,6 @@ namespace Aura.Channel.Database
 					character.Name = reader.GetStringSafe("name");
 					character.Server = reader.GetStringSafe("server");
 					character.RaceId = reader.GetInt32("race");
-					character.DeletionTime = reader.GetDateTimeSafe("deletionTime");
 					character.SkinColor = reader.GetByte("skinColor");
 					character.EyeType = reader.GetInt16("eyeType");
 					character.EyeColor = reader.GetByte("eyeColor");
@@ -248,6 +248,7 @@ namespace Aura.Channel.Database
 					character.LastLogin = reader.GetDateTimeSafe("lastLogin");
 					character.LastAging = reader.GetDateTimeSafe("lastAging");
 					character.RebirthCount = reader.GetInt32("rebirthCount");
+					character.PlayTime = reader.GetInt64("playTime");
 
 					character.LifeFoodMod = reader.GetFloat("lifeFood");
 					character.ManaFoodMod = reader.GetFloat("manaFood");
@@ -549,6 +550,10 @@ namespace Aura.Channel.Database
 				character.Keywords.Add("portal_belfast");
 				character.Keywords.Add("portal_dunbarton");
 			}
+
+			// Remove keywords that make the NA client freeze
+			if (character.Keywords.Has("nao_cloth_kimono")) character.Keywords.RemoveSilent("nao_cloth_kimono");
+			if (character.Keywords.Has("nao_yukata")) character.Keywords.RemoveSilent("nao_yukata");
 		}
 
 		/// <summary>
@@ -603,6 +608,17 @@ namespace Aura.Channel.Database
 						skill.Info.ConditionCount7 = reader.GetInt16("condition7");
 						skill.Info.ConditionCount8 = reader.GetInt16("condition8");
 						skill.Info.ConditionCount9 = reader.GetInt16("condition9");
+
+						if (skill.Info.ConditionCount1 < skill.RankData.Conditions[0].Count) skill.Info.Flag |= SkillFlags.ShowCondition1;
+						if (skill.Info.ConditionCount2 < skill.RankData.Conditions[1].Count) skill.Info.Flag |= SkillFlags.ShowCondition2;
+						if (skill.Info.ConditionCount3 < skill.RankData.Conditions[2].Count) skill.Info.Flag |= SkillFlags.ShowCondition3;
+						if (skill.Info.ConditionCount4 < skill.RankData.Conditions[3].Count) skill.Info.Flag |= SkillFlags.ShowCondition4;
+						if (skill.Info.ConditionCount5 < skill.RankData.Conditions[4].Count) skill.Info.Flag |= SkillFlags.ShowCondition5;
+						if (skill.Info.ConditionCount6 < skill.RankData.Conditions[5].Count) skill.Info.Flag |= SkillFlags.ShowCondition6;
+						if (skill.Info.ConditionCount7 < skill.RankData.Conditions[6].Count) skill.Info.Flag |= SkillFlags.ShowCondition7;
+						if (skill.Info.ConditionCount8 < skill.RankData.Conditions[7].Count) skill.Info.Flag |= SkillFlags.ShowCondition8;
+						if (skill.Info.ConditionCount9 < skill.RankData.Conditions[8].Count) skill.Info.Flag |= SkillFlags.ShowCondition9;
+
 						skill.UpdateExperience();
 
 						character.Skills.Add(skill);
@@ -617,8 +633,28 @@ namespace Aura.Channel.Database
 			character.Skills.Add(SkillId.CombatMastery, SkillRank.RF, character.RaceId);
 			// According to the Wiki you get Crit upon advancing CM to RF, should CM be Novice?
 			character.Skills.Add(SkillId.CriticalHit, SkillRank.Novice, character.RaceId);
+
 			if (character is Character)
 			{
+				var sharpMindEnabled = AuraData.FeaturesDb.IsEnabled("SharpMind");
+				var passiveSharpMindEnabled = AuraData.FeaturesDb.IsEnabled("PassiveSharpMind");
+				var activeSharpMind = (sharpMindEnabled && !passiveSharpMindEnabled);
+				var hasSharpMind = character.Skills.Has(SkillId.SharpMind);
+
+				// Remove active Sharp Mind and return all AP spent on it if
+				// it's not enabled but the character has it.
+				if (!activeSharpMind && hasSharpMind)
+				{
+					var skill = character.Skills.Get(SkillId.SharpMind);
+					character.AbilityPoints += (short)skill.RankData.APTotal;
+					character.Skills.RemoveSilent(SkillId.SharpMind);
+				}
+
+				// Give active Sharp Mind if it's enabled but the character
+				// doesn't have it.
+				if (activeSharpMind && !hasSharpMind)
+					character.Skills.Add(SkillId.SharpMind, SkillRank.Novice, character.RaceId);
+
 				character.Skills.Add(SkillId.HiddenEnchant, SkillRank.Novice, character.RaceId);
 				character.Skills.Add(SkillId.HiddenResurrection, SkillRank.Novice, character.RaceId);
 				character.Skills.Add(SkillId.HiddenTownBack, SkillRank.Novice, character.RaceId);
@@ -1109,6 +1145,7 @@ namespace Aura.Channel.Database
 				cmd.Set("state", (uint)creature.State);
 				cmd.Set("age", creature.Age);
 				cmd.Set("rebirthCount", creature.RebirthCount);
+				cmd.Set("playTime", creature.PlayTime);
 				cmd.Set("lastTown", creature.LastTown);
 				cmd.Set("naoOutfit", (byte)creature.NaoOutfit);
 				cmd.Set("inventoryWidth", creature.InventoryWidth);

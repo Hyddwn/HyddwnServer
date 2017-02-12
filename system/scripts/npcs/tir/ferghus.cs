@@ -49,13 +49,13 @@ public class FerghusScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...Hmm... Such a boast should be made in front of Priest Meven.<br/>If you'd like, I'll tell you one more thing.");
 					Msg("There's no need to seek out any Goddesses.<br/>Your mother is the true Goddess.");
 					Msg("...Be a good child and honor your mother.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Hm... <username/>, the Guardian of Erinn?<br/>If you want, I could guard your weapons.");
 					Msg("...If you have any weapons that<br/>have become dull, I'll take care of it...");
@@ -142,7 +142,7 @@ public class FerghusScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("Hey, part-timer!<br/>You're not just lounging around, are you? Haha."));
 		}
@@ -175,27 +175,94 @@ public class FerghusScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("shop_smith");
-				Msg(FavorExpression(), "I'm the blacksmith of Tir Chonaill. We'll see each other often, <username/>.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "In fact, this shop is my family business. My dad used to work here.<br/>When I was young, I didn't understand anything. At that time, I hated my father for being a blacksmith.<br/>I don't know why I did that. I really shouldn't have. So many regrets...");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Honestly, the only pleasure I get these days is to step out for a second and have a drink.<br/>When I have some time to spare, I sit out here and look at the sunset.<br/>With a drink made by Caitin's mom in my hand.<br/>Now that's what I call pleasure.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "It's a bit difficult to keep up the orders these days. I was actually thinking of hiring someone.<br/>Will you work with me?<br/>Haha, just joking. I don't want to hire people randomly either.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "What was your name? I don't recall. Sorry.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "You're acting like you're a friend of mine. A bit awkward...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "Hmm... This is complicated. Let's talk later.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Player.GiveKeyword("shop_smith");
+					Msg(FavorExpression(), "I'm the blacksmith of Tir Chonaill. We'll see each other often, <username/>.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				GiveKeyword("windmill");
-				Msg(FavorExpression(), "The wind around Tir Chonaill is very strong. It even breaks the windmill blades.<br/>And I'm the one to fix them.<br/>Malcolm's got some skills,<br/>but I'm the one who deals with iron.");
-				Msg("I made those extra blades out there just in case.<br/>When the Windmill stops working, it's really inconvenient around here.<br/>It's always better to be prepared, isn't it?");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Priest Meven might be a bit stubborn sometimes,<br/>but I do like him.<br/>He once came to me with a bottle of wine he made himself,<br/>and asked me to join him for a drink.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "From time to time, Caitin brings me a bottle of wine her mom makes.<br/>I know she's ill. That makes me feel sorry since I can imagine how much effort she has to put in.<br/>But at the same time,<br/>I'm really grateful that she remembers a guy like me.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Sometimes it's much better to make a new tool<br/>than fix a broken one.<br/>But I know people don't want to throw away their old tools,<br/>and that's why I try to fix them for the owners.");
+					Msg("You know the more these tools are used, the better and more valuable they become.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Bebhinn sometimes teases people,<br/>but I don't think she's a bad girl.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I know there's a rumor that some people don't really like me.<br/>I'm trying to be careful, too.<br/>If you see or hear what others say about me, please share it with me.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "You just love talking about others, don't you?");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Player.GiveKeyword("windmill");
+					Msg(FavorExpression(), "The wind around Tir Chonaill is very strong. It even breaks the windmill blades.<br/>And I'm the one to fix them.<br/>Malcolm's got some skills,<br/>but I'm the one who deals with iron.");
+					Msg("I made those extra blades out there just in case.<br/>When the Windmill stops working, it's really inconvenient around here.<br/>It's always better to be prepared, isn't it?");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
-				GiveKeyword("skill_fishing");
+				Player.GiveKeyword("skill_fishing");
 				Msg("Hmm... Well, <username/>, since you ask,<br/>I might as well answer you. Let's see.<br/>Fishing. Do you know about the Fishing skill?");
 				Msg("I'm not sure about the details, but<br/>I've seen a lot of people fishing up there.<br/>I'm not sure if fishing would be considered a skill, though.");
 				Msg("From what I've seen, all you need is<br/>a Fishing Rod and a Bait Tin.");
 				break;
 
 			case "shop_misc":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg("This is the Blacksmith's Shop. Surprisingly, many people think they are at the General Shop.");
 				Msg("Let me tell you the biggest difference between Malcolm and me.<br/>He sells all kinds of stuff for your everyday life,<br/>but I, the best smithy in town, make metal stuff, you know.<br/>Like weapons, for example.");
 				Msg("If you insist, I'll show you the way to the General Shop.<br/>Walk across the bridge, and go up the hill to the Square.");
@@ -234,13 +301,13 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "skill_composing":
-				GiveKeyword("temple");
+				Player.GiveKeyword("temple");
 				Msg("You want to write music?<br/>Priestess Endelyon at the Church<br/>knows a bit about composing, I think.<br/>You can talk to her.");
 				Msg("She's such a nice lady.<br/>I'm sure she'll help you a lot.");
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Did you buy a Tailoring Kit? You can buy one at the General Shop.<br/>I know nothing about Tailoring, but I do know you need a Tailoring Kit and Fabric to make clothes.<br/>Just like a blacksmith needs an Anvil and a Bellows.");
 				break;
 
@@ -256,7 +323,7 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "skill_smash":
-				RemoveKeyword("skill_smash");
+				Player.RemoveKeyword("skill_smash");
 				Msg("Did you use the Smash skill?<br/>It is like a double-edged sword. Its weakness is as big as its strength. Better use it carefully.");
 				break;
 
@@ -273,13 +340,13 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("brook");
+				Player.GiveKeyword("brook");
 				Msg("The reservoir is not on this side.<br/>Cross the Adelia Stream out there,<br/>take a left, and then go straight.");
 				Msg("When you think you're close to the School, that's where it is.");
 				break;
 
 			case "farmland":
-				GiveKeyword("brook");
+				Player.GiveKeyword("brook");
 				Msg("The farmland? Then you're on the wrong side.<br/>Cross the Adelia Stream,<br/>and follow the path to the left.");
 				break;
 
@@ -312,7 +379,7 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "school":
-				GiveKeyword("farmland");
+				Player.GiveKeyword("farmland");
 				Msg("Did you ask because you want to know the location of the School?<br/>Then I will give you an answer.<br/>Cross the bridge first,<br/>and there's a road. Just go to the left until you see the farmland.");
 				Msg("If you pass the farmland, the School is very near you.<br/>The School gate is pretty big so you can't miss it.");
 				Msg("When you get there, can you tell Ranald<br/>we should get a drink together?<br/>Lassar must not find out about it, alright?");
@@ -355,7 +422,7 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "graveyard":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("The graveyard is near the Chief's House.<br/>Walk to the north of his house and you'll see it.<br/>Several days ago, I came home and slept like a log after drinking.<br/>But it turns out I slept in the graveyard, not in my bed!");
 				Msg("It was a bit chilly and more than a little creepy! But it was fun too.<br/>If there were no spiders, I could have a real good drinking binge there.");
 				break;
@@ -365,13 +432,13 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "bow":
-				RemoveKeyword("bow");
-				RemoveKeyword("skill_range");
+				Player.RemoveKeyword("bow");
+				Player.RemoveKeyword("skill_range");
 				Msg("Ha, ha. You are looking for bows. You came to the right place.<br/>I certainly have bows. In fact, you know what?<br/>This is a great chance to get your own bow!<br/>By the way, you know that you need arrows too, right?<br/>I mean, what can we do with just a bow and a string?<br/>Play with it?");
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Malcolm's General Shop sells lutes.<br/>He also sells... Um...<br/>What was that called? Ukul... something.");
 				break;
 
@@ -389,19 +456,63 @@ public class FerghusScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("If you are looking for Music Scores, you came too far down.<br/>Malcolm's General Shop is near the Square.<br/>Looks like someone wasted their time, haha.");
 				break;
 
 			default:
-				RndMsg(
-					"?",
-					"*Yawn* I don't know.",
-					"Haha. I have no idea.",
-					"That's not my concern.",
-					"I don't know, man. That's just out of my league."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Speaking of which, I don't think I ever paid much attention to that.<br/>I need to think about it for a while.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I am sorry. I have never been interested in such things.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "I don't have time to waste with you. There's work to do.");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "You enjoy these talks?");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"?",
+						"*Yawn* I don't know.",
+						"Haha. I have no idea.",
+						"That's not my concern.",
+						"I don't know, man. That's just out of my league."
+					);
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Haha. I like you."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Oh, you know who the truly skilled blacksmith is!"));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("Hmm... I know what you're up to.<br/>You are trying to win my favor and receive discounts, right?"));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("What do you want me to do with this?"));
 				break;
 		}
 	}

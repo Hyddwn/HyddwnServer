@@ -470,9 +470,11 @@ namespace Aura.Channel.Network.Sending
 				packet.PutString(compressedMML);
 			else
 				packet.PutInt(rndScore);
+			packet.PutInt(22124); // [200200, NA242 (2016-12-15)]
 			packet.PutByte((byte)instrument);
 			packet.PutByte(1);
 			packet.PutByte(0);
+			packet.PutInt(0); // [200200, NA242 (2016-12-15)]
 
 			creature.Client.Send(packet);
 		}

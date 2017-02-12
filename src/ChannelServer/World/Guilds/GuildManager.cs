@@ -428,6 +428,7 @@ namespace Aura.Channel.World.Guilds
 			guild.Stone.Direction = 0;
 
 			stone.Region.RemoveProp(stone);
+			ChannelServer.Instance.Database.UpdateGuildStone(guild);
 
 			this.UpdateStoneLocation(guild);
 		}

@@ -30,9 +30,9 @@ public class SheepShearingQuestScript : QuestScript
 
 	public async Task<HookResult> TalkNpc(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_deian1"))
+		if (npc.Player.QuestActive(this.Id, "talk_deian1"))
 		{
-			npc.FinishQuest(this.Id, "talk_deian1");
+			npc.Player.FinishQuestObjective(this.Id, "talk_deian1");
 
 			npc.Msg("Oh thank you for coming, I was dying from boredom...");
 			npc.Msg("Did you bring a gathering knife? I don't seem to<br/>have any extra around here. If you didn't you'll need<br/>to go see Ferghus about that!");
@@ -40,14 +40,14 @@ public class SheepShearingQuestScript : QuestScript
 
 			return HookResult.Break;
 		}
-		else if (npc.QuestActive(this.Id, "talk_deian2") && npc.HasItem(60009, 5))
+		else if (npc.Player.QuestActive(this.Id, "talk_deian2") && npc.Player.HasItem(60009, 5))
 		{
-			npc.FinishQuest(this.Id, "talk_deian2");
+			npc.Player.FinishQuestObjective(this.Id, "talk_deian2");
 
 			npc.Msg("Thank you, thank you! You look like a natural with that knife, I must say.<br/>These bundles of wool will help me out the rest of the day.<br/>Come by again if you ever want to get more wool!");
 
-			npc.RemoveItem(60009, 5); // Wool
-			npc.CompleteQuest(this.Id);
+			npc.Player.RemoveItem(60009, 5); // Wool
+			npc.Player.CompleteQuest(this.Id);
 
 			return HookResult.Break;
 		}

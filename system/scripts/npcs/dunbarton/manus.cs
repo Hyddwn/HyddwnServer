@@ -44,14 +44,14 @@ public class ManusScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Oh. <username/>? Good to see you!");
 					Msg("By the way...<br/>There are so many titles nowadays that<br/>it's not easy to remember them all.");
 					Msg("What do you think?");
 					Msg("Hey, hey. Are you ticked off at me?<br/>I'm just joking... Hahaha. Sorry, sorry.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Wow, what a title!<br/><username/>, I feel like<br/>I need to treat you differently. Haha!");
 				}
@@ -126,7 +126,7 @@ public class ManusScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("I trust that the task you're working on is going well?"));
 		}
@@ -166,26 +166,26 @@ public class ManusScript : NpcScript
 				}
 				else
 				{
-					GiveKeyword("shop_healing");
+					Player.GiveKeyword("shop_healing");
 					Msg(FavorExpression(), "I am the healer in this town. I'm good at what I do,<br/>so feel free to come by if you get sick.");
 					ModifyRelation(Random(2), 0, Random(3));
 				}
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg(FavorExpression(), "Have you been to Glenis' Restaurant yet?<br/>Make sure you pay a visit and order something.<br/>Eating well is the most important thing in maintaining good health. Hahaha!");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
-				if (!HasSkill(SkillId.Rest))
+				if (!Player.HasSkill(SkillId.Rest))
 				{
 					Msg("Really tired, aren't you? And you become easily fatigued.<br/>It's because your health keeps on getting spent without getting replenished.<br/>How about learning the Resting skill?<br/>You can ask other people to find out where you can learn it.");
 				}
-				else if (IsSkill(SkillId.Rest, SkillRank.RF))
+				else if (Player.IsSkill(SkillId.Rest, SkillRank.RF))
 				{
-					if (GetPtjDoneCount(PtjType.HealersHouse) < 3)
+					if (Player.GetPtjDoneCount(PtjType.HealersHouse) < 3)
 					{
 						Msg("Oh, I see that you know the Resting skill. Do you find it handy?<br/>If you want, I could raise the skill level for you by one.");
 						Msg("Ah! Ah! Of course, it comes at a price.<br/>Hahah... Let's see...");
@@ -193,7 +193,7 @@ public class ManusScript : NpcScript
 					}
 					else
 					{
-						TrainSkill(SkillId.Rest, 1);
+						Player.TrainSkill(SkillId.Rest, 1);
 						Msg("(Missing Dialog: Manus Trains Rest)");
 					}
 				}
@@ -209,7 +209,7 @@ public class ManusScript : NpcScript
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("The Grocery Store...? You mean the Restaurant.");
 				break;
 
@@ -229,7 +229,7 @@ public class ManusScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("There is a Blacksmith's Shop in our town?<br/>Well Nerys would know.<br/>Go find her at the Weapons Shop.");
 				Msg("If she doesn't know,<br/>then I think it would be safe to assume that there isn't one here.");
 				break;
@@ -239,24 +239,24 @@ public class ManusScript : NpcScript
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_cloth");
+				Player.GiveKeyword("shop_cloth");
 				Msg("Simon knows clothing-related skills well.<br/>Although, knowing him, I doubt he would pass on anything.");
 				Msg("Why don't you go see him anyway?<br/>He's at the Clothing Shop.");
 				break;
 
 			case "skill_magnum_shot":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("That's something you should ask that<br/>tomboy teacher, Aranwen.");
 				Msg("You would probably find her at the School, eh?");
 				break;
 
 			case "skill_counter_attack":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Go to the School and ask Aranwen there.");
 				break;
 
 			case "skill_smash":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Hmm. I'd like to show off and teach it to you myself,<br/>but if you develop bad habits or anything,<br/>you would curse me for the rest of your life. Ha ha.");
 				Msg("Go talk to Aranwen.<br/>She teaches combat skills, so she should be at the School.");
 				break;
@@ -296,7 +296,7 @@ public class ManusScript : NpcScript
 				break;
 
 			case "skill_windmill":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("So I look like someone who would know about<br/>such a barbaric skill, do I?");
 				Msg("Go talk to Aranwen. She's at the School.");
 				break;
@@ -329,7 +329,7 @@ public class ManusScript : NpcScript
 				break;
 
 			case "bow":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("Just across from here is the Weapons Shop. Why don't you buy one there?");
 				break;
 
@@ -339,7 +339,7 @@ public class ManusScript : NpcScript
 				break;
 
 			case "mabinogi":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Well, I did hear about it...<br/>I don't know exactly what it entails...<br/>Stewart would probably know about it since he's the instructor at the School.");
 				Msg("Go ask Stewart at the School.");
 				break;

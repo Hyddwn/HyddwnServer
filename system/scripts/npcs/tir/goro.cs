@@ -36,12 +36,12 @@ public class GoroScript : NpcScript
 			case "@talk":
 				Greet();
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...Did you finally succeed?<br/>That's incredible. Haha.");
 					Msg("But... Honestly, I believe all this is just the beginning.<br/>Puhahahaha...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("The power of humans is truly amazing...<br/>You're already strong enough to protect Erinn...");
 					Msg("...<npcname/> is quite curious<br/>where humans<br/>get such strength...");
@@ -130,13 +130,28 @@ public class GoroScript : NpcScript
 
 	protected override async Task Keywords(string kw)
 	{
-		RndMsg(
+		RndFavorMsg(
 			"Well...",
 			"Excuse me, what did you say?",
 			"Hmm...I believe I have heard about it...",
 			"I do not know anything about that kind of story."
 		);
 		ModifyRelation(0, 0, Random(3));
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Ah... Thank you. Thank you very much."));
+				Msg(L("My father always told me<br/>that if I treat a human like a human, they will treat me like a human as well."));
+				break;
+
+			default:
+				Msg(L("Thank you.<br/>I'll cherish it."));
+				break;
+		}
 	}
 }
 

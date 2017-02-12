@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Save my Sheep
 //--- Description -----------------------------------------------------------
-// Auomatically started after Rescue Resident, involves the player being
+// Automatically started after Rescue Resident, involves the player being
 // warped to a dynamic region, where they have to protect sheep from being
 // killed by wolves.
 //---------------------------------------------------------------------------
@@ -36,7 +36,7 @@ public class SaveMySheepQuestScript : QuestScript
 
 	public async Task<HookResult> TalkDeian(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_deian1") || npc.QuestActive(this.Id, "protect_sheep"))
+		if (npc.Player.QuestActive(this.Id, "talk_deian1") || npc.Player.QuestActive(this.Id, "protect_sheep"))
 		{
 			npc.Msg("I'm glad to see you. I've been stuck here all day!<br/>Can you look after my sheep for a few minutes? I got some business to take care of.<br/>It should be easy, as long as the wolves don't show up.");
 			npc.Msg("Just make sure to keep my sheep safe if wolves show up.<br/>The number of sheep and the time left will display<br/>on the top right corner.");
@@ -47,15 +47,15 @@ public class SaveMySheepQuestScript : QuestScript
 				return HookResult.Break;
 
 			npc.Close2();
-			npc.FinishQuest(this.Id, "talk_deian1");
+			npc.Player.FinishQuestObjective(this.Id, "talk_deian1");
 
 			CreateRegionAndWarp(npc.Player);
 
 			return HookResult.End;
 		}
-		else if (npc.QuestActive(this.Id, "talk_deian2"))
+		else if (npc.Player.QuestActive(this.Id, "talk_deian2"))
 		{
-			npc.FinishQuest(this.Id, "talk_deian2");
+			npc.Player.FinishQuestObjective(this.Id, "talk_deian2");
 
 			npc.Msg("Wow, good job.<br/>I got everything done thanks to you.<br/>You'll do this again next time, right? Thanks!");
 
@@ -65,7 +65,7 @@ public class SaveMySheepQuestScript : QuestScript
 		return HookResult.Continue;
 	}
 
-	const int Time = 180000 / 3; // Duration
+	const int Minute = 60 * 1000; // A minute in milliseconds
 	const int SheepAmount = 20; // Sheeps to protect
 	const int SheepMinAmount = 5; // Amount you need to save to succeed
 	const int WolfAmount = 10; // Wolves to (re)spawn
@@ -73,6 +73,14 @@ public class SaveMySheepQuestScript : QuestScript
 
 	public void CreateRegionAndWarp(Creature creature)
 	{
+		// Get duration
+		var time = 5;
+		if (IsEnabled("ShortSheepProtection"))
+			time = 3;
+
+		time *= Minute;
+
+		// Create region
 		var region = new DynamicRegion(118);
 		ChannelServer.Instance.World.AddRegion(region);
 
@@ -80,13 +88,13 @@ public class SaveMySheepQuestScript : QuestScript
 		var sheepAmount = SheepAmount;
 
 		// After x ms (success)
-		var timer = SetTimeout(Time, () =>
+		var timer = SetTimeout(time, () =>
 		{
 			// Unofficial, I think the msg also depends on how well you did.
 			// Official >10: Thanks to my dilligent supervision, over 10 sheep are safe.
 			Send.Notice(creature, NoticeType.MiddleSystem, L("The time is over, you did it."));
 			Send.RemoveQuestTimer(creature);
-			creature.Keywords.Give("TirChonaill_Tutorial_Thinking");
+			creature.GiveKeyword("TirChonaill_Tutorial_Thinking");
 			creature.Warp(1, 27622, 42125);
 		});
 
@@ -96,7 +104,7 @@ public class SaveMySheepQuestScript : QuestScript
 			var pos = Center.GetRandomInRect(6000, 4000, rnd);
 
 			var npc = new NPC(40001); // Sheep
-			npc.Death += (killed, killer) =>
+			npc.Finish += (killed, killer) =>
 			{
 				sheepAmount--;
 
@@ -110,7 +118,7 @@ public class SaveMySheepQuestScript : QuestScript
 					return;
 				}
 
-				Send.UpdateQuestTimerCounter(creature, L("Remaining sheep: {0}"), sheepAmount);
+				Send.UpdateQuestTimer(creature, L("Remaining sheep: {0}"), sheepAmount);
 			};
 			npc.Spawn(region.Id, pos.X, pos.Y);
 		}
@@ -121,7 +129,7 @@ public class SaveMySheepQuestScript : QuestScript
 
 		// Warp to region and start visible timer
 		creature.Warp(region.Id, 60000, 58000);
-		Send.SetQuestTimer(creature, Time, L("Protect the sheep from wolves"), L("Deadline: {0}"), L("Remaining sheep: {0}"), sheepAmount);
+		Send.SetQuestTimer(creature, time, L("Protect the sheep from wolves"), L("Deadline: {0}"), L("Remaining sheep: {0}"), sheepAmount);
 	}
 
 	private void SpawnWolf(int regionId, Random rnd)
@@ -130,7 +138,7 @@ public class SaveMySheepQuestScript : QuestScript
 
 		// Spawn wolf on random position and respawn it if it dies.
 		var npc = new NPC(20001); // Gray Wolf
-		npc.Death += (killed, killer) =>
+		npc.Finish += (killed, killer) =>
 		{
 			SpawnWolf(regionId, rnd);
 		};

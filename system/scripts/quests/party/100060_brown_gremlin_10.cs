@@ -13,6 +13,7 @@ public class BrownGremlin10PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Brown Gremlins"));
 		SetDescription(L("Brown Gremlins are under an evil spell and are attacking travelers. Please [Hunt 10 Brown Gremlins]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

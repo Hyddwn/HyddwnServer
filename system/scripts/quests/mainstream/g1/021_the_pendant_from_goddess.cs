@@ -24,7 +24,7 @@ public class ThePendantFromGoddessQuest : QuestScript
 		AddObjective("talk", L("Talk to Duncan."), 1, 15409, 38310, Talk("duncan"));
 
 		AddReward(Exp(370));
-		AddReward(WarpScroll(63009, "math_dungeon"));
+		AddReward(WarpScroll(63009, "Math_Dungeon"));
 
 		AddHook("_duncan", "before_keywords", DuncanBeforeKeywords);
 		AddHook("_duncan", "after_intro", DuncanAfterIntro);
@@ -37,10 +37,10 @@ public class ThePendantFromGoddessQuest : QuestScript
 
 		if (keyword == "g1_goddess_morrighan2")
 		{
-			if (npc.HasKeyword("g1_30"))
+			if (npc.Player.HasKeyword("g1_30"))
 			{
-				npc.RemoveKeyword("g1_30");
-				npc.GiveKeyword("g1_31");
+				npc.Player.RemoveKeyword("g1_30");
+				npc.Player.GiveKeyword("g1_31");
 
 				npc.Msg(Hide.Name, L("(You tell Duncan about the experience Tarlach had in Tir Na Nog.)"));
 				npc.Msg(L("Is that what happened to Tarlach?<br/>That's unbelievable.<br/>But I suppose there's no choice but to believe him. Hmmm."));
@@ -67,12 +67,12 @@ public class ThePendantFromGoddessQuest : QuestScript
 			if (IsEnabled("ShorterWaitTimesChapter1"))
 				owlDelay = 4 * 60;
 
-			npc.SendOwl(this.Id, owlDelay);
+			npc.Player.SendOwl(this.Id, owlDelay);
 
-			npc.RemoveKeyword("g1_32");
-			npc.GiveKeyword("g1_33");
-			npc.RemoveKeyword("g1_request_from_goddess");
-			npc.GiveKeyword("g1_way_to_tirnanog1");
+			npc.Player.RemoveKeyword("g1_32");
+			npc.Player.GiveKeyword("g1_33");
+			npc.Player.RemoveKeyword("g1_request_from_goddess");
+			npc.Player.GiveKeyword("g1_way_to_tirnanog1");
 
 			npc.Msg(L("You dreamt of the Goddess again?<br/>The Goddess said that the day of Glas Ghaibhleann's resurrection is approaching?"));
 			npc.Msg(L("It's just as I'd thought... Is Mores<br/>behind the resurrection of Glas Ghaibhleann?<br/>We don't even have the slightest clue what to do about it yet.<br/>This is a big problem!"));
@@ -93,8 +93,8 @@ public class ThePendantFromGoddessQuest : QuestScript
 
 		if (keyword == "g1_goddess_morrighan2")
 		{
-			npc.RemoveKeyword("g1_30");
-			npc.GiveKeyword("g1_31");
+			npc.Player.RemoveKeyword("g1_30");
+			npc.Player.GiveKeyword("g1_31");
 
 			npc.Msg(L("Now you know what I've been through.<br/>There was no sight of Mari and Ruiairi.<br/>The master barely managed to get me out.<br/>We made another attempt to find them, but it was no good..."));
 			npc.Msg(L("Since that day, I can no longer use any advanced magic<br/>and I have to stay in bear form during the day.<br/>Isn't that a strange turn of events?"));
@@ -112,14 +112,14 @@ public class ThePendantFromGoddessQuest : QuestScript
 	[On("PlayerLoggedIn")]
 	public void PlayerLoggedIn(Creature creature)
 	{
-		if (creature.Keywords.Has("g1_31"))
+		if (creature.HasKeyword("g1_31"))
 		{
 			Cutscene.Play("G1_28_a_Morrighan", creature, cutscene =>
 			{
-				creature.Keywords.Remove("g1_31");
-				creature.Keywords.Give("g1_32");
-				creature.Keywords.Remove("g1_goddess_morrighan2");
-				creature.Keywords.Give("g1_request_from_goddess");
+				creature.RemoveKeyword("g1_31");
+				creature.GiveKeyword("g1_32");
+				creature.RemoveKeyword("g1_goddess_morrighan2");
+				creature.GiveKeyword("g1_request_from_goddess");
 
 				creature.GiveItem(Pendant);
 			});
@@ -128,15 +128,15 @@ public class ThePendantFromGoddessQuest : QuestScript
 
 	public async Task<HookResult> DuncanAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk"))
+		if (npc.Player.QuestActive(this.Id, "talk"))
 		{
-			npc.CompleteQuest(this.Id);
+			npc.Player.CompleteQuest(this.Id);
 
-			npc.GiveKeyword("g1_memorial4");
-			npc.GiveKeyword("g1_34_1");
+			npc.Player.GiveKeyword("g1_memorial4");
+			npc.Player.GiveKeyword("g1_34_1");
 
-			npc.GiveItem(Torque);
-			npc.Notice(L("You have received Broken Torque from Duncan."));
+			npc.Player.GiveItem(Torque);
+			npc.Player.Notice(L("You have received Broken Torque from Duncan."));
 
 			npc.Msg(L("Welcome, <username/>. I'm glad you came...<br/>First, let me give you this.<br/>I found it while I was cleaning the house."));
 			npc.Msg(L("Yes... This is the reason I called you<br/>Do you remember...? How I told you I raised Mari..."));

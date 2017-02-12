@@ -44,11 +44,11 @@ public class WizardsNoteQuest : QuestScript
 
 		if (keyword == "g1_goddess_morrighan1")
 		{
-			npc.StartQuest(this.Id);
+			npc.Player.StartQuest(this.Id);
 
-			npc.RemoveKeyword("g1_goddess_morrighan1");
-			npc.RemoveKeyword("g1_22");
-			npc.GiveKeyword("g1_23");
+			npc.Player.RemoveKeyword("g1_goddess_morrighan1");
+			npc.Player.RemoveKeyword("g1_22");
+			npc.Player.GiveKeyword("g1_23");
 
 			npc.Msg(L("...<p/>It's hard to believe that such a thing could have happened<br/>to Mores. Is he still alive?"));
 			npc.Msg(L("And...this is the first time I've heard<br/>how much he hated humans.<br/>Please, don't speak of this to anyone else.<br/>It's better he's remembered as a hero."));
@@ -62,12 +62,12 @@ public class WizardsNoteQuest : QuestScript
 
 	public async Task<HookResult> TarlachAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "get_book"))
+		if (npc.Player.QuestActive(this.Id, "get_book"))
 		{
-			npc.FinishQuest(this.Id, "get_book");
+			npc.Player.FinishQuestObjective(this.Id, "get_book");
 
-			npc.GiveItem(BookOfRevenge);
-			npc.Notice(L("You have received the Book of Revenge from Tarlach."));
+			npc.Player.GiveItem(BookOfRevenge);
+			npc.Player.Notice(L("You have received the Book of Revenge from Tarlach."));
 
 			npc.Msg(L("Thank you for sharing the story of my mentor with me, <username/>..."));
 			npc.Msg(L("...<p/>Um... are you telling me that Chief Duncan of Tir Chonaill<br/>wants to...borrow the master's book...?"));
@@ -83,12 +83,12 @@ public class WizardsNoteQuest : QuestScript
 
 	public async Task<HookResult> DuncanAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "give_book"))
+		if (npc.Player.QuestActive(this.Id, "give_book"))
 		{
-			npc.FinishQuest(this.Id, "give_book");
+			npc.Player.FinishQuestObjective(this.Id, "give_book");
 
-			npc.RemoveItem(BookOfRevenge);
-			npc.Notice(L("You have given the Book of Revenge to Duncan."));
+			npc.Player.RemoveItem(BookOfRevenge);
+			npc.Player.Notice(L("You have given the Book of Revenge to Duncan."));
 
 			npc.Msg(L("So this is the Book of Revenge that Mores wrote...<br/>Let me take a look at it."));
 			npc.Msg(L("Hmm...interesting.<br/>I see. Hmm.<br/>Mmm..."));
@@ -107,9 +107,9 @@ public class WizardsNoteQuest : QuestScript
 
 	public async Task<HookResult> KristellAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_kristell"))
+		if (npc.Player.QuestActive(this.Id, "talk_kristell"))
 		{
-			npc.FinishQuest(this.Id, "talk_kristell");
+			npc.Player.FinishQuestObjective(this.Id, "talk_kristell");
 
 			npc.Msg(L("Is there another volume to this book...?<br/>I'm not sure.<br/>Based on the introduction, it seems likely..."));
 			npc.Msg(L("I've learned that this book is very popular amongst high-ranking Fomors.<br/>I only found that out while I was translating the book."));
@@ -123,13 +123,13 @@ public class WizardsNoteQuest : QuestScript
 
 	public async Task<HookResult> AeiraAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_aeira"))
+		if (npc.Player.QuestActive(this.Id, "talk_aeira"))
 		{
-			npc.CompleteQuest(this.Id);
-			npc.SendOwl(210006, OwlDelay); // The Book of Revenge, Volume II
+			npc.Player.CompleteQuest(this.Id);
+			npc.Player.SendOwl(210006, OwlDelay); // The Book of Revenge, Volume II
 
-			npc.RemoveKeyword("g1_23");
-			npc.GiveKeyword("g1_24");
+			npc.Player.RemoveKeyword("g1_23");
+			npc.Player.GiveKeyword("g1_24");
 
 			npc.Msg(L("'The Book of Revenge...?'<br/>I don't think we have a book by that title.<br/>I'm certain our distributor doesn't carry it, either.<br/>Trust me, I know all the books we carry here..."));
 			npc.Msg(L("It's a 3-volume set? If you've already got the first<br/>volume, then I can't sell it to you as a set, either...<br/>I doubt they'll let me order each volume separately."));
@@ -168,15 +168,15 @@ public class WizardsNote2Quest : QuestScript
 
 	public async Task<HookResult> AeiraAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_aeira"))
+		if (npc.Player.QuestActive(this.Id, "talk_aeira"))
 		{
-			npc.CompleteQuest(this.Id);
+			npc.Player.CompleteQuest(this.Id);
 
-			npc.RemoveKeyword("g1_24");
-			npc.GiveKeyword("g1_25");
-			npc.GiveKeyword("g1_memo_of_parcelman");
+			npc.Player.RemoveKeyword("g1_24");
+			npc.Player.GiveKeyword("g1_25");
+			npc.Player.GiveKeyword("g1_memo_of_parcelman");
 
-			npc.GiveWarpScroll(63009, "ciar_dungeon");
+			npc.Player.GiveWarpScroll(63009, "Ciar_Dungeon");
 
 			npc.Msg(L("Ah! <username/>! Welcome. Do you remember the book I gave you before, 'Land of Eternity, Tir Na Nog?'<br/>The author of that book, Leslie, called.<br/>You see, Leslie is a famous historian and an avide explorer."));
 			npc.Msg(L("She sent me this note.<br/>It says that she once found 'The Book of Revenge' inside Ciar dungeon, written in Fomor language.<br/>She said if you offer this note on the Altar of Ciar Dungeon, you'll be transported to where you can find the book.<br/>...Apparently this note has some kind of magic on it or something..."), npc.Image("g1_ch21_memo"));
@@ -194,8 +194,8 @@ public class WizardsNote2Quest : QuestScript
 
 		if (keyword == "g1_memo_of_parcelman")
 		{
-			if (npc.HasItem(WizardsNote))
-				npc.GiveItem(WizardsNote);
+			if (npc.Player.HasItem(WizardsNote))
+				npc.Player.GiveItem(WizardsNote);
 
 			npc.Msg(L("If you offer the note on the Altar of Ciar Dungeon, you'll be transported to where you can find the book."));
 

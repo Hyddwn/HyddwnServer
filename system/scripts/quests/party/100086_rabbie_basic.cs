@@ -13,6 +13,7 @@ public class RabbieBasicPartyQuest : QuestScript
 		SetName(L("[PQ] Defeat the Lycanthrope"));
 		SetDescription(L("Please offer [Rabbie Basic Fomor Pass] on the altar of Rabbie Dungeon, and defeat a [Lycanthrope] that can be found at the deepest part of the dungeon."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

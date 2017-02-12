@@ -151,7 +151,7 @@ namespace Aura.Channel.Skills.Life
 				{
 					skill.Train(2); // Create any material through use of a skill.
 
-					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/herb/whiteherb/")))
+					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/whiteherb/")))
 						skill.Train(4); // Successfully make a potion using a White Herb.
 					else if (args.ProductionData.Category == ProductionCategory.Handicraft && args.ProductionData.Rank >= SkillRank.R7 && args.ProductionData.Rank <= SkillRank.R5)
 						skill.Train(5); // Successfully handicraft any item from Rank 7 to Rank 5.
@@ -165,7 +165,7 @@ namespace Aura.Channel.Skills.Life
 				{
 					skill.Train(2); // Create any material through use of a skill.
 
-					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/herb/goldenherb/")))
+					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/goldenherb/")))
 						skill.Train(4); // Successfully make a potion using a Golden Herb.
 					else if (args.ProductionData.Category == ProductionCategory.Handicraft && args.ProductionData.Rank >= SkillRank.R6 && args.ProductionData.Rank <= SkillRank.R4)
 						skill.Train(5); // Successfully handicraft any item from Rank 6 to Rank 4.
@@ -179,7 +179,7 @@ namespace Aura.Channel.Skills.Life
 				{
 					skill.Train(2); // Create any material through use of a skill.
 
-					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/herb/mandrake/")))
+					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/mandrake/")))
 						skill.Train(4); // Successfully make a potion using a Mandrake.
 					else if (args.ProductionData.Category == ProductionCategory.Handicraft && args.ProductionData.Rank >= SkillRank.R5 && args.ProductionData.Rank <= SkillRank.R3)
 						skill.Train(5); // Successfully handicraft any item from Rank 5 to Rank 3.
@@ -193,7 +193,7 @@ namespace Aura.Channel.Skills.Life
 				{
 					skill.Train(2); // Create any material through use of a skill.
 
-					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/herb/antidoteherb/")))
+					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/antidoteherb/")))
 						skill.Train(4); // Successfully make a potion using a Antidote Herb.
 					else if (args.ProductionData.Category == ProductionCategory.Handicraft && args.ProductionData.Rank >= SkillRank.R4 && args.ProductionData.Rank <= SkillRank.R2)
 						skill.Train(5); // Successfully handicraft any item from Rank 4 to Rank 2.
@@ -207,7 +207,7 @@ namespace Aura.Channel.Skills.Life
 				{
 					skill.Train(2); // Create any material through use of a skill.
 
-					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/herb/poisonherb/")))
+					if (args.ProductionData.Category == ProductionCategory.PotionMaking && args.ProductionData.Materials.Any(a => a.Tag.Contains("/poisonherb/")))
 						skill.Train(3); // Successfully make a potion using a Poison Herb.
 					else if (args.ProductionData.Category == ProductionCategory.Handicraft && args.ProductionData.Rank >= SkillRank.R3 && args.ProductionData.Rank <= SkillRank.R1)
 						skill.Train(4); // Successfully handicraft any item from Rank 3 to Rank 1.

@@ -13,6 +13,7 @@ public class BrownBear10PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Down the Brown Bears"));
 		SetDescription(L("They say that there is a [brown bear in the plains far away from town]. Supposedly, the Brown Bears have tremendous power. Will you please hunt [10 brown bears]?"));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

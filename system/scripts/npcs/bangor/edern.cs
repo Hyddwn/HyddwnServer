@@ -52,9 +52,9 @@ public class EdernScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 					Msg("A title doesn't define who the person is.<br/>If you don't strive to become someone who fits the title,<br/>the title is no more than a fancy name for yourself. Don't forget.");
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 					Msg("You got quite a name there...<br/>But you can't be satisfied with being the guardian of Erinn!<br/>It's good to think big.");
 
 				await Conversation();
@@ -140,7 +140,11 @@ public class EdernScript : NpcScript
 
 	private void Greet()
 	{
-		if (Memory <= 0)
+		if (Player.IsDoingPtjFor(NPC))
+		{
+			Msg(FavorExpression(), L("I trust that you're doing the task I gave you, right?<br/>Be sure to finish it before the deadline!"));
+		}
+		else if (Memory <= 0)
 		{
 			Msg(FavorExpression(), L("What is your business here?"));
 		}
@@ -169,7 +173,7 @@ public class EdernScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("shop_smith");
+				Player.GiveKeyword("shop_smith");
 				Msg(FavorExpression(), "My name is <npcname/>. I am the blacksmith in this town.<br/>I own the Bangor Blacksmith's Shop.<br/>And you, who ask such obvious questions, are <username/>.");
 				Msg("There are plenty of spaces to handle metal, so feel free to use the available space.");
 				ModifyRelation(Random(2), 0, Random(3));
@@ -181,7 +185,7 @@ public class EdernScript : NpcScript
 				break;
 
 			case "about_skill":
-				if (HasSkill(SkillId.Blacksmithing, SkillRank.RF))
+				if (Player.HasSkill(SkillId.Blacksmithing, SkillRank.RF))
 				{
 					Msg("Hmm... So you are getting the hang of it now? Blacksmith skill?");
 					Msg("You seem rather cocky. Well, let me tell you something.");
@@ -190,7 +194,7 @@ public class EdernScript : NpcScript
 					Msg("Don't be too proud now with that little skill you have.<br/>It's only the beginning.");
 					Msg("If you don't devote yourself, you will only amount to a half-baked blacksmith.");
 				}
-				else if (HasSkill(SkillId.Blacksmithing, SkillRank.Novice))
+				else if (Player.HasSkill(SkillId.Blacksmithing, SkillRank.Novice))
 				{
 					Msg("Seeing how you're somewhat familiar with the Blacksmith skill,<br/>I suppose I can tell you this much.");
 					Msg("Being a blacksmith is more than hammering metal.<br/>The cardinal point is to learn how the metal<br/>reacts at what temperature.");
@@ -198,7 +202,7 @@ public class EdernScript : NpcScript
 					Msg("Of course you wouldn't understand now.<br/>You have a more lot to learn to even understand<br/>the knowledge I have gained for so many years.");
 					Msg("Still, it will do you good to remember what I've told you. Haha.");
 
-					TrainSkill(SkillId.Blacksmithing, 1);
+					Player.TrainSkill(SkillId.Blacksmithing, 1);
 				}
 				else
 				{
@@ -206,10 +210,6 @@ public class EdernScript : NpcScript
 					Msg("Shouldn't you be coming to a certain realization to see that<br/>my granddaughter, Elen, who is much better than you are,<br/>is only tending to item sales?");
 					Msg("To become proficient in the Blacksmith skill,<br/>the blacksmith hammer should never be too far from your hands.<br/>You, too, will feel differently about blacksmiths<br/>when you are holding a hammer yourself.");
 				}
-				break;
-
-			case "about_arbeit":
-				Msg("Unimplemented");
 				break;
 
 			case "shop_misc":
@@ -235,7 +235,7 @@ public class EdernScript : NpcScript
 				break;
 
 			case "shop_bank":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Go talk to Bryce over there.<br/>You'll easily find him near the General Shop.");
 				break;
 
@@ -357,7 +357,7 @@ public class EdernScript : NpcScript
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Have you been to the General Shop?");
 				break;
 

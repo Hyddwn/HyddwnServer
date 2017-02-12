@@ -28,7 +28,7 @@ public class MagicPowderOfPreservationQuest : QuestScript
 		AddReward(Exp(455));
 		AddReward(Gold(650));
 		AddReward(Item(Glasses));
-		AddReward(WarpScroll(63009, "rabbie_dungeon"));
+		AddReward(WarpScroll(63009, "Rabbie_Dungeon"));
 
 		AddHook("_tarlach", "after_intro", TarlachAfterIntro);
 		AddHook("_tarlach", "before_keywords", TarlachBeforeKeywords);
@@ -36,14 +36,14 @@ public class MagicPowderOfPreservationQuest : QuestScript
 
 	public async Task<HookResult> TarlachAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "give_powder") && npc.HasItem(Powder))
+		if (npc.Player.QuestActive(this.Id, "give_powder") && npc.Player.HasItem(Powder))
 		{
-			npc.CompleteQuest(this.Id);
+			npc.Player.CompleteQuest(this.Id);
 
-			npc.RemoveKeyword("g1_28");
-			npc.GiveKeyword("g1_29");
+			npc.Player.RemoveKeyword("g1_28");
+			npc.Player.GiveKeyword("g1_29");
 
-			npc.RemoveItem(Powder);
+			npc.Player.RemoveItem(Powder);
 
 			npc.Msg(L("Oh, you found it.<br/>I will put this powder on my glasses right now."));
 			npc.Msg(L("This is a memory item that contains the preserved memory I had of that time."), npc.Image("g1_ch25_glasses"));
@@ -61,10 +61,10 @@ public class MagicPowderOfPreservationQuest : QuestScript
 	{
 		var keyword = args[0] as string;
 
-		if (keyword == "g1_bone_of_glasgavelen" && npc.HasKeyword("g1_29"))
+		if (keyword == "g1_bone_of_glasgavelen" && npc.Player.HasKeyword("g1_29"))
 		{
-			if (!npc.HasItem(Glasses))
-				npc.GiveItem(Glasses);
+			if (!npc.Player.HasItem(Glasses))
+				npc.Player.GiveItem(Glasses);
 
 			npc.Msg(L("Go to Rabbie Dungeon and put the glasses on the altar.<br/>Then... you will know about...<br/>my anger toward the Goddess and evil spirits..."));
 

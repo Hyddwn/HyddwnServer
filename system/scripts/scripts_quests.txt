@@ -69,6 +69,7 @@ quests/beginner_uladh/hunting/1000060_hunting_ogre_warrior.cs
 // Part-Time Jobs
 quests/ptj/adventurerassn_eavan.cs
 quests/ptj/bookstore_aeira.cs
+quests/ptj/church_comgan.cs
 quests/ptj/church_endelyon.cs
 quests/ptj/church_kristell.cs
 quests/ptj/clothing_simon.cs
@@ -79,15 +80,22 @@ quests/ptj/healer_manus.cs
 quests/ptj/inn_piaras.cs
 quests/ptj/library_stewart.cs
 quests/ptj/neighboring_deian.cs
+quests/ptj/blacksmith_edern.cs
+quests/ptj/blacksmith_elen.cs
+quests/ptj/stope_sion.cs
 quests/ptj/blacksmith_ferghus.cs
 quests/ptj/general_malcolm.cs
-quests/ptj/general_tracy.cs
+quests/ptj/general_walter.cs
 quests/ptj/wepshop_nerys.cs
+quests/ptj/woodcutting_tracy.cs
 
 // Skills
+quests/skills/101_fireball.cs
+quests/skills/105_arrow_revolver.cs
 quests/skills/20006_elen_refine.cs
 quests/skills/20007_ranald_windmill.cs
 quests/skills/200063_dilys_herbalism.cs
+quests/skills/200042_manus_herbalism.cs
 quests/skills/204003_malcolm_weaving_g7.cs
 
 // Scroll Hunting
@@ -108,8 +116,13 @@ quests/collection/1009_collect_5_small_silver_gems.cs
 quests/collection/1010_collect_branches.cs
 quests/collection/1011_collect_berries.cs
 quests/collection/1012_collect_nails.cs
+quests/collection/1016_largeiceelemental.cs
+quests/collection/1017_largefireelemental.cs
+quests/collection/1018_largelightningelemental.cs
 quests/collection/40004_bigorder_milk.cs
 quests/collection/40005_bigorder_firewood.cs
+quests/collection/40020_bigorder_iron_ingots.cs
+quests/collection/40012_bigorder_iron_ore.cs
 quests/collection/40022_deliver_10_leather_bandanas.cs
 quests/collection/40023_deliver_5_common_silk_weaving_gloves.cs
 quests/collection/40024_deliver_2_cores_healer_gloves.cs

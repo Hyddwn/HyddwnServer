@@ -13,6 +13,7 @@ public class GorgonAi : AiScript
 	{
 		SetVisualField(1500, 90);
 		SetAggroRadius(1200);
+		SetAggroLimit(AggroLimit.None);
 
 		Hates("/pc/", "/pet/");
 

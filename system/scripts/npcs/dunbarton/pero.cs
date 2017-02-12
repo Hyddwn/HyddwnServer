@@ -37,11 +37,11 @@ public class PeroScript : NpcScript
 			case "@talk":
 				Greet();
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Rescue. Goddess? Wow. Amazing. Great. Strong. <username/>. Really. Strong.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("The. Savior. Of. Erinn? <username/>. Really. Really. Powerful.<br/>Pero. Shocked. Really. Shocked.");
 				}
@@ -127,7 +127,7 @@ public class PeroScript : NpcScript
 
 	protected override async Task Keywords(string kw)
 	{
-		RndMsg(
+		RndFavorMsg(
 			"<npcname/>. Don't. Know. Learn. Now.",
 			"<npcname/>. Don't. Know. Learn. Now. Important.",
 			"<username/>. Smart. Human. Pero. Listening. Now."

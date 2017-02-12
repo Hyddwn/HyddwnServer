@@ -47,7 +47,7 @@ public class EndelyonScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10060: // is a friend of Deian
 							message = L("Do you like boiled eggs?<p>I think these will help when you get hungry.");
@@ -62,20 +62,20 @@ public class EndelyonScript : NpcScript
 					{
 						Player.Vars.Perm["endelyon_title_gift"] = today;
 
-						GiveItem(50126); // Hard-Boiled Egg
-						Notice(L("Received Hard-Boiled Egg from Endelyon."));
-						SystemMsg(L("Received Hard-Boiled Egg from Endelyon."));
+						Player.GiveItem(50126); // Hard-Boiled Egg
+						Player.Notice(L("Received Hard-Boiled Egg from Endelyon."));
+						Player.SystemMsg(L("Received Hard-Boiled Egg from Endelyon."));
 
 						Msg(message);
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("So you rescued Morrighan the goddess, <username/>?<br/>But the goddess is supposed to be at Tir Na Nog.<br/>Does that mean you've been to Tir Na Nog, <username/>?");
 					Msg("Hmm... Well, then, that must mean that I am right now talking to an extraordinary individual, aren't I? Haha.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("I already heard the news! You became the Guardian of Erinn.<br/>The whole town seems to be talking about it. Hehe...<br/>Congratulations!");
 				}
@@ -143,19 +143,91 @@ public class EndelyonScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				GiveKeyword("temple");
-				Msg(FavorExpression(), "I don't have much knowledge, but I am here if you need help.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "You must be interested in Lymilark.<br/>Lymilark is the head of the three main gods worshipping Aton Cimeni, the Absolute God Almighty.");
+					Msg("Lymilark also represents the Uladh Continent where Tir Chonaill is located.<br/>Whenever the flames of war engulfed people in the past,<br/>Lymilark rose to save humans from misery.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Lymilark is one of three main gods of Erinn.<br/>There are three virtues that form as the pillars of the land: love, freedom and peace.<br/>Lymilark presides over Love.");
+					Msg("If I had not experienced Lymilark's love during childhood,<br/>I would have grown up to be just an ordinary girl like everyone else.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "We worship and serve gods, not necessarily to be blessed<br/>but to be one step closer to the truth and possess a peace of mind.<br/>Unfortunately, most of the people don't understand this point.<br/>What about you, <username/>?");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Where do you come from, <username/>?<br/>I wasn't born in Tir Chonaill, but I really love this place.<br/>Since you already saw how beautiful this town is,<br/>I believe you can understand what I mean.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I know that you ask questions with good intention, but I am a priestess.<br/>Think about that for a moment, and please stop asking me inappropriate questions.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "It seems you are more interested in me, a servant of the gods,<br/>and not in my teachings about the gods.<br/>This is unacceptable.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Player.GiveKeyword("temple");
+					Msg(FavorExpression(), "I don't have much knowledge, but I am here if you need help.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "rumor":
-				GiveKeyword("shop_healing");
-				Msg(FavorExpression(), "Have you met Dilys? She's the town's Healer.<br/>Walk along the road heading northeast, and you will find the Healer's House.<br/>Make sure to meet her if you pass by there.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "People might complain about Bebhinn.<br/>However, she helps people in her own way,<br/>and never means any harm.<br/>If you meet anyone with a grudge against her,<br/>please tell remind them of this.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Priest Meven is not an ordinary man.<br/>If he had stayed with the Pontiff's Court, he could have earned admiration and respect from many.<br/>Instead, he chose to help people in a remote town hidden in the middle of the mountains.<br/>It's really not as easy as it sounds.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Hmm, want to hear something?<br/>When someone runs out of HP and falls to the ground,<br/>they may lose an item.<br/>Lost items can be retrieved from Town Offices in big cities like Dunbarton,<br/>but it can be quite costly.");
+					Msg("Worse, you can't do it over and over.<br/>I hear the clerks at Town Offices sometimes get upset and refuse to return found items.<br/>It's better to get up immediately and recover your lost items yourself,<br/>but that probably won't happen often.");
+					Msg("Some folks went to great expense to discover a way around this.<br/>Turns out that the Holy Water of Lymilark used at Churches prevents items from getting lost!<br/>It also slows down durability loss.");
+					Msg("All you have to do is spinkle some Holy Water of Lymilark onto your important items to bless them.<br/>But there's always a catch.<br/>When you fall to the ground, the impact may cause the blessings on the items to disappear.<br/>The chance is about 50-50.");
+					Msg("Even so, let me know if you need some Holy Water of Lymilark.<br/>I can't give it to you for free,<br/>but I can let you have some if you help me.");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Nora is a cute girl who's also very tough.<br/>Whenever I talk with her, I'm amazed that she is so positive and determined despite her hardships.<br/>If only she realized how highly Malcolm thinks of her...");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "I'm worried that Ferghus drinks too much.<br/>Looks like he's drinking almost every day.<br/>Working all day and drinking all night... I'm really worried about his health.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "I don't think it's a good idea to talk about people behind their backs.<br/>That's not the way to win friends in Tir Chonaill.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Player.GiveKeyword("shop_healing");
+					Msg(FavorExpression(), "Have you met Dilys? She's the town's Healer.<br/>Walk along the road heading northeast, and you will find the Healer's House.<br/>Make sure to meet her if you pass by there.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
-				if (!QuestActive(204002) && !QuestCompleted(204002))
+				if (!Player.QuestActive(204002) && !Player.QuestCompleted(204002))
 				{
 					//StartQuest(204002); // Quest log: http://pastebin.com/1c9XFc5Y
 					Msg("Skills? I don't know if I can call it a skill, but you can gather eggs from hens.<br/>Some of the less fortunate among the faithful come to the Church seeking the blessings of Lymilark.<br/>To relieve their hunger, we prepare boiled eggs for them.");
@@ -163,9 +235,9 @@ public class EndelyonScript : NpcScript
 				}
 				else
 				{
-					if (!HasSkill(SkillId.Tailoring))
+					if (!Player.HasSkill(SkillId.Tailoring))
 					{
-						GiveKeyword("skill_tailoring");
+						Player.GiveKeyword("skill_tailoring");
 						Msg("I'm sorry, but I don't know much about skills.<br/>The only skill I know is tailoring.<br/>If you want to know more about making clothes,<br/>talk with Caitin at the Grocery Store.<br/>She's the best tailor in town.");
 					}
 					else
@@ -206,23 +278,23 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "skill_insrument":
-				GiveKeyword("lute");
+				Player.GiveKeyword("lute");
 				Msg("Hmm. I learned how to play the organ and the lute from an early age,<br/>but I don't think books can teach you those skills.<br/>It's something you must learn by trying it with your own two hands.");
 				Msg("Lutes are common instruments, so talk to Malcolm about buying one.");
 				break;
 
 			case "skill_composing":
-				if (HasSkill(SkillId.Composing))
+				if (Player.HasSkill(SkillId.Composing))
 				{
-					RemoveKeyword("skill_composing");
+					Player.RemoveKeyword("skill_composing");
 					Msg("So you know about the Composing skill.<br/>How about writing a song for a loved one?");
 				}
 				else
 				{
-					if (!QuestActive(20002))
+					if (!Player.QuestActive(20002))
 					{
 						//StartQuest(20002); // Quest Log: http://pastebin.com/e6JLQi55
-						RemoveKeyword("skill_composing");
+						Player.RemoveKeyword("skill_composing");
 						Msg("What? Bebhinn told you to ask me about the Composing skill?<br/>I like composing music, sure, but I started not too long ago.<br/>I can't even imagine how I could actually teach someone.");
 						Msg("Hmm... Now that we're talking about composing music,<br/>would you do me a favor?");
 						Msg(Hide.Name, "(Received a Quest Scroll containing <npcname/>'s request.)");
@@ -235,17 +307,17 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "skill_tailoring":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("You sure have a lot of doubts. Hahaha...<br/>All you need to do is ask Caitin at the Grocery Store.<br/>You couldn't possibly think that I don't tell you all I know?<br/>Hahaha. I hope you don't feel that way. Now, go to the Grocery Store.");
 				break;
 
 			case "skill_magnum_shot":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("I say it would be better to talk to Trefor the guard or Ranald the combat instructor.<br/>They are the experts on melee combat skills in this town.<br/>Trefor is on guard at the path to Alby Dungeon in the northern part of town,<br/>and Ranald is in the School right below where we are right now.");
 				break;
 
 			case "skill_counter_attack":
-				GiveKeyword("school");
+				Player.GiveKeyword("school");
 				Msg("Hmm... I think you should talk with Ranald about that.<br/>He must be at the School right below where we are right now.");
 				break;
 
@@ -263,7 +335,7 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "pool":
-				GiveKeyword("farmland");
+				Player.GiveKeyword("farmland");
 				Msg("The reservoir is near here.<br/>The Windmill draws water out of the reservoir to irrigate the farmland.");
 				break;
 
@@ -296,17 +368,17 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "skill_windmill":
-				GiveKeyword("windmill");
+				Player.GiveKeyword("windmill");
 				Msg("There is a Windmill in this town,<br/>but I don't know if the skill you mentioned has anything to do with that.");
 				break;
 
 			case "skill_campfire":
-				GiveKeyword("shop_inn");
+				Player.GiveKeyword("shop_inn");
 				Msg("Hmm... sounds like a useful skill,<br/>but you should be careful before starting a campfire in town.<br/>There's always a risk of fire getting out of control,<br/>and it's not very easy to clean up afterwards.<br/>If you need rest, why not just go to the Inn?");
 				break;
 
 			case "shop_restaurant":
-				GiveKeyword("shop_grocery");
+				Player.GiveKeyword("shop_grocery");
 				Msg("A restaurant? Are you looking for something to eat?<br/>I'd love to share what we have at the Church, but we recently ran out of food.<br/>Why don't you go to Caitin's Grocery Store?<br/>Everyone in town buys food from her store.");
 				break;
 
@@ -315,12 +387,12 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "shop_cloth":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("You want to buy clothes, don't you?<br/>Clothes are sold at Malcolm's General Shop near the Square.");
 				break;
 
 			case "shop_bookstore":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("Are you looking for a bookstore?<br/>Unfortunately, there are no bookstores in this town.<br/>Books are expensive and take time to read,<br/>so they are only for people with spare time and money.");
 				Msg("People here are simply too busy trying to make ends meet.<br/>The only books you can find in this town are probably some books on spells, I guess.<br/>Sometimes, Ferghus or Ranald give books as presents<br/>but it's a stretch to call them real books.");
 				break;
@@ -330,12 +402,12 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "graveyard":
-				GiveKeyword("shop_headman");
+				Player.GiveKeyword("shop_headman");
 				Msg("Have you been to Duncan's house? The graveyard is right behind it.<br/>It may look a little creepy,<br/>but it's the resting place for the people who died defending Tir Chonaill.<br/>Oh, there are some big spiders roaming around the graveyard. Be careful.");
 				break;
 
 			case "bow":
-				GiveKeyword("show_smith");
+				Player.GiveKeyword("show_smith");
 				Msg("Bows?<br/>Well, the Blacksmith's Shop might have them.<br/>Bows are usually made of wood, but arrowheads are made of iron, so...");
 				break;
 
@@ -356,19 +428,64 @@ public class EndelyonScript : NpcScript
 				break;
 
 			case "musicsheet":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("For casual notes, you may not need a music score,<br/>but if you want to play a serious tune, you'll need one.<br/>You can even create your own music score<br/>by writing what you've composed on a blank score sheet.<br/>Go to Malcolm's General Shop to buy a blank score.");
 				break;
 
 			default:
-				RndMsg(
-					"I have no idea...",
-					"Well, I'm afraid I can't comment on that.",
-					"It doesn't sound familiar to me, I mean...",
-					"I guess you'd better ask someone else about such things.",
-					"I don't think I can help you with that. Can we talk about something else?"
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Can I ask you for a favor? Can you tell me about the things you know, too?");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Oh, it's just that... I think you know more things than I do.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "I'm sorry, but I just realized I have some errands to take care of. Can we talk later?");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Sorry, I'm too busy right now.");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"I have no idea...",
+						"Well, I'm afraid I can't comment on that.",
+						"It doesn't sound familiar to me, I mean...",
+						"I guess you'd better ask someone else about such things.",
+						"I don't think I can help you with that. Can we talk about something else?"
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Oh, I am overwhelmed. Thank you so much for the gift.<br/>May the blessings of Lymilark be with you."));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Thank you.<br/>May Lymilark be with you always."));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("I'm afraid Meven won't be happy if he found out I kept things given by travelers.<br/>Oh, no. It's fine. I'll keep it at the Church for the time being."));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("I'm sorry, but I can't take this."));
 				break;
 		}
 	}

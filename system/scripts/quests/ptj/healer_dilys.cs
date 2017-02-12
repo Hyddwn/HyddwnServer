@@ -50,7 +50,7 @@ public class DilysPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -86,19 +86,19 @@ public class DilysPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Are you working for someone else?<br/>Can you help me after you're finished?"));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
 					npc.Msg(L("You're a little early.<br/>Report to me when it's closer to the deadline."));
@@ -119,7 +119,7 @@ public class DilysPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("Are you feeling sick?<br/>You should rest instead of working so hard.<br/>But, a promise is a promise. I am sorry, but I can't pay you this time."));
 				npc.ModifyRelation(0, -Random(3), 0);
@@ -138,7 +138,7 @@ public class DilysPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -159,12 +159,12 @@ public class DilysPtjScript : GeneralScript
 				}
 
 				// Herbalism quest
-				if (npc.GetPtjSuccessCount(JobType) >= 10 && !npc.HasSkill(SkillId.Herbalism) && !npc.HasQuest(200042) && !npc.HasQuest(200063))
+				if (npc.Player.GetPtjSuccessCount(JobType) >= 10 && !npc.Player.HasSkill(SkillId.Herbalism) && !npc.Player.HasQuest(200042) && !npc.Player.HasQuest(200063))
 				{
-					npc.Msg(L("Say, <username/>.  Do you have any interest in learning Herbalism?<br/>You've been such a great help to me here, I thought you might be interested in becoming a healer.<br/>If you're interested in Herbalism, I have a favor to ask you.<br/>If you do it, then I'll teach you."), npc.Button(L("I will do it"), "@yes"), npc.Button(L("No, thanks"), "@no"));
+					npc.Msg(L("Say, <username/>. Do you have any interest in learning Herbalism?<br/>You've been such a great help to me here, I thought you might be interested in becoming a healer.<br/>If you're interested in Herbalism, I have a favor to ask you.<br/>If you do it, then I'll teach you."), npc.Button(L("I will do it"), "@yes"), npc.Button(L("No, thanks"), "@no"));
 					if (await npc.Select() == "@yes")
 					{
-						npc.StartQuest(200063); // Gather Base Herb (Dilys)
+						npc.Player.SendOwl(200063); // Gather Base Herb (Dilys)
 						npc.Msg(L("You sound really interested in becoming a healer...<br/>If you step outside, an owl will deliver my request to you."));
 					}
 					else
@@ -177,34 +177,34 @@ public class DilysPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("It's not time to start work yet.<br/>Can you come back and ask for a job later?"));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
 			npc.Msg(L("There are no more jobs today.<br/>I will give you another job tomorrow."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
 			msg = L("Do you need some work to do?<br/>If you want, you can help me here.<br/>The pay is not great, but I will definitely pay you for your work.<br/>The pay also depends on how long you've worked for me.<br/>Would you like to try?");
 		else
 			msg = L("Ah, <username/>. Can you help me today?");
 
-		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Dilys's Healer's House Part-Time Job"), L("Looking for help with delivering goods in Healer's House."), PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+		npc.Msg(msg, npc.PtjDesc(randomPtj, L("Dilys's Healer's House Part-Time Job"), L("Looking for help with delivering goods in Healer's House."), PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
 			npc.Msg(L("Thank you for your help in advance."));
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
@@ -385,14 +385,14 @@ public abstract class DilysDeliveryPtjBaseScript : QuestScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj"))
+		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ItemId))
+		if (!npc.Player.HasItem(ItemId))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(ItemId, 1);
-		npc.FinishQuest(this.Id, "ptj");
+		npc.Player.RemoveItem(ItemId, 1);
+		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
 		await this.OnFinish(npc);
 

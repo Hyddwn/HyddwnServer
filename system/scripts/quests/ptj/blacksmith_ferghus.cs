@@ -47,7 +47,7 @@ public class FerghusPtjScript : GeneralScript
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
 		// Call PTJ method after intro if it's time to report
-		if (npc.DoingPtjForNpc() && npc.ErinnHour(Report, Deadline))
+		if (npc.Player.IsDoingPtjFor(npc.NPC) && ErinnHour(Report, Deadline))
 		{
 			await AboutArbeit(npc);
 			return HookResult.Break;
@@ -83,29 +83,25 @@ public class FerghusPtjScript : GeneralScript
 	public async Task AboutArbeit(NpcScript npc)
 	{
 		// Check if already doing another PTJ
-		if (npc.DoingPtjForOtherNpc())
+		if (npc.Player.IsDoingPtjNotFor(npc.NPC))
 		{
 			npc.Msg(L("Are you doing a part-time job?<br/>I guess you can help me next time."));
 			return;
 		}
 
 		// Check if PTJ is in progress
-		if (npc.DoingPtjForNpc())
+		if (npc.Player.IsDoingPtjFor(npc.NPC))
 		{
-			var result = npc.GetPtjResult();
+			var result = npc.Player.GetPtjResult();
 
 			// Check if report time
-			if (!npc.ErinnHour(Report, Deadline))
+			if (!ErinnHour(Report, Deadline))
 			{
 				if (result == QuestResult.Perfect)
-				{
 					npc.Msg(L("What? Did you finish the job?<br/>I'm busy now. Come back to me closer to the deadline."));
-				}
 				else
-				{
-					npc.Msg(L("How's it going?<br/>"));
-					npc.Msg(L("Make sure to report back to me before the deadline."));
-				}
+					npc.Msg(L("How's it going?<p/>Make sure to report back to me before the deadline."));
+
 				return;
 			}
 
@@ -124,11 +120,10 @@ public class FerghusPtjScript : GeneralScript
 			// Nothing done
 			if (result == QuestResult.None)
 			{
-				npc.GiveUpPtj();
+				npc.Player.GiveUpPtj();
 
 				npc.Msg(npc.FavorExpression(), L("......"));
-				npc.Msg(L("What!"));
-				npc.Msg(L("Are you joking with me?<br/>Once you take my offer, you have to do it right!<br/>If you're not interested, then don't even start!"));
+				npc.Msg(L("What!<p/>Are you joking with me?<br/>Once you take my offer, you have to do it right!<br/>If you're not interested, then don't even start!"));
 
 				npc.ModifyRelation(0, -Random(3), 0);
 			}
@@ -149,7 +144,7 @@ public class FerghusPtjScript : GeneralScript
 				}
 
 				// Complete
-				npc.CompletePtj(reply);
+				npc.Player.CompletePtj(reply);
 				remaining--;
 
 				// Result msg
@@ -173,49 +168,44 @@ public class FerghusPtjScript : GeneralScript
 		}
 
 		// Check if PTJ time
-		if (!npc.ErinnHour(Start, Deadline))
+		if (!ErinnHour(Start, Deadline))
 		{
 			npc.Msg(L("What? Part-time job?<br/>There's nothing. You can come back later."));
 			return;
 		}
 
 		// Check if not done today and if there are jobs remaining
-		if (!npc.CanDoPtj(JobType, remaining))
+		if (!npc.Player.CanDoPtj(JobType, remaining))
 		{
-			npc.Msg(L("Hey, they're all taken for the day.<br/>And don't come here tomorrow. I don't want to work with you any more."));
-			npc.Msg(L("..."));
-			npc.Msg(L("Haha. I'm joking, I'm joking.<br/>Of course you can come back tomorrow."));
+			npc.Msg(L("Hey, they're all taken for the day.<br/>And don't come here tomorrow. I don't want to work with you any more.<p/>...<p/>Haha. I'm joking, I'm joking.<br/>Of course you can come back tomorrow."));
 			return;
 		}
 
 		// Offer PTJ
-		var randomPtj = npc.RandomPtj(JobType, QuestIds);
+		var randomPtj = GetRandomPtj(npc.Player, JobType, QuestIds);
 		var msg = "";
 
-		if (npc.GetPtjDoneCount(JobType) == 0)
-		{
-			npc.Msg(L("Are you looking for a job?<br/>You'd get sweaty, hot and tired working at the Blacksmith's Shop.<br/>I guess you are not really up to it.<br/>How about doing some simple part-time work?"));
-			msg = L("I'll see how much I can pay you depending on how you do.");
-		}
+		if (npc.Player.GetPtjDoneCount(JobType) == 0)
+			msg = L("Are you looking for a job?<br/>You'd get sweaty, hot and tired working at the Blacksmith's Shop.<br/>I guess you are not really up to it.<br/>How about doing some simple part-time work?<p/>I'll see how much I can pay you depending on how you do.");
 		else
 			msg = L("Let's see, you want to work at the Blacksmith's Shop for a day?");
 
 		npc.Msg(msg, npc.PtjDesc(randomPtj,
 			L("Ferghus's Blacksmith Shop Part-Time Job"),
 			L("Looking for help with delivery of goods in Blacksmith Shop."),
-			PerDay, remaining, npc.GetPtjDoneCount(JobType)));
+			PerDay, remaining, npc.Player.GetPtjDoneCount(JobType)));
 
 		if (await npc.Select() == "@accept")
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("Oh, good then.<br/>I'll keep watching you.<br/>You're not a lazy kid who doesn't even bother<br/>to work or report before the deadline, are you?"));
 			else
 				npc.Msg(L("Alright. Good idea."));
-			npc.StartPtj(randomPtj);
+			npc.Player.StartPtj(randomPtj, npc.NPC.Name);
 		}
 		else
 		{
-			if (npc.GetPtjDoneCount(JobType) == 0)
+			if (npc.Player.GetPtjDoneCount(JobType) == 0)
 				npc.Msg(L("If you don't want it, then forget it.<br/>Young people these days don't even bother to think of doing anything difficult."));
 			else
 				npc.Msg(L("You can't really hire someone who doesn't want to work for you."));
@@ -357,14 +347,14 @@ public abstract class FerghusDeliveryPtjBaseScript : FerghusPtjBaseScript
 
 	public async Task<HookResult> AfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj"))
+		if (!npc.Player.QuestActive(this.Id, "ptj"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ArmorToDeliver))
+		if (!npc.Player.HasItem(ArmorToDeliver))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(ArmorToDeliver, 1);
-		npc.FinishQuest(this.Id, "ptj");
+		npc.Player.RemoveItem(ArmorToDeliver, 1);
+		npc.Player.FinishQuestObjective(this.Id, "ptj");
 
 		await this.OnFinish(npc);
 
@@ -582,18 +572,17 @@ public abstract class FerghusExtDeliveryPtjBaseScript : FerghusPtjBaseScript
 
 	public async Task<HookResult> TreforAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj1"))
+		if (!npc.Player.QuestActive(this.Id, "ptj1"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ArmorToDeliver))
+		if (!npc.Player.HasItem(ArmorToDeliver))
 			return HookResult.Continue;
 
-		npc.FinishQuest(this.Id, "ptj1");
+		npc.Player.FinishQuestObjective(this.Id, "ptj1");
 
 		npc.Msg(L("Is that the armor I asked to be repaired?<br/>The work is finally done?"));
 		npc.Msg(Hide.Name, L("(Delivered the armor to Trefor.)"));
-		npc.Msg(L("But I've got a slight problem.<br/>As you can see, I'm on duty right now and have no place to store it."));
-		npc.Msg(L("Could you do me a favor and leave it at the Healer's House?<br/>I'll grab it after my shift is over."));
+		npc.Msg(L("But I've got a slight problem.<br/>As you can see, I'm on duty right now and have no place to store it.<p/>Could you do me a favor and leave it at the Healer's House?<br/>I'll grab it after my shift is over."));
 		npc.Msg(Hide.Name, L("(Received the armor.)"));
 
 		return HookResult.Break;
@@ -601,19 +590,18 @@ public abstract class FerghusExtDeliveryPtjBaseScript : FerghusPtjBaseScript
 
 	public async Task<HookResult> DilysAfterIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.QuestActive(this.Id, "ptj2"))
+		if (!npc.Player.QuestActive(this.Id, "ptj2"))
 			return HookResult.Continue;
 
-		if (!npc.Player.Inventory.Has(ArmorToDeliver))
+		if (!npc.Player.HasItem(ArmorToDeliver))
 			return HookResult.Continue;
 
-		npc.Player.Inventory.Remove(ArmorToDeliver, 1);
-		npc.FinishQuest(this.Id, "ptj2");
+		npc.Player.RemoveItem(ArmorToDeliver, 1);
+		npc.Player.FinishQuestObjective(this.Id, "ptj2");
 
 		npc.Msg(L("Not again!<br/>Did Trefor ask you to leave that armor here?"));
 		npc.Msg(Hide.Name, L("(Gave the armor to Dilys.)"));
-		npc.Msg(L("That guy! Does he think this is a warehouse or something?<br/>Well, fine. I'll hold on to it for him."));
-		npc.Msg(L("As you know, being a guard is not easy."));
+		npc.Msg(L("That guy! Does he think this is a warehouse or something?<br/>Well, fine. I'll hold on to it for him.<p/>As you know, being a guard is not easy."));
 
 		return HookResult.Break;
 	}

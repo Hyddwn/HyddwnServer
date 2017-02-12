@@ -25,7 +25,10 @@ namespace Aura.Channel.Network.Sending.Helpers
 			if (type == ItemPacketType.Public)
 			{
 				packet.PutByte(1);
-				packet.PutByte(0);
+
+				// Affects color of dropped item's name (blue or green),
+				// indicating its value.
+				packet.PutByte((byte)item.UpgradeEffectCount);
 
 				//packet.PutByte(0); // Bitmask
 				// if & 1
@@ -87,6 +90,13 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 				if (isGuildRobe)
 					packet.PutString(item.MetaData1.GetString("GLDNAM"));
+
+				// In NA235 (Sep. 2016) we found an additional integer for
+				// Scythe that Reaps Darkness here, with no known purpose.
+				// In NA236 we had to remove said int again.
+				// It will be missed.
+				//if (item.Info.Id == 41237)
+				//	packet.PutInt(0);
 
 				// [190100, NA200 (2015-01-15)] ?
 				{

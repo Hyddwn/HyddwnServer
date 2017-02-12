@@ -13,6 +13,7 @@ public class VariousSkeletons30PartyQuest : QuestScript
 		SetName(L("[PQ] Hunt Skeletons"));
 		SetDescription(L("Various Skeletons under the evil spell are emerging as of late. I will reward you if you [Hunt 10 Metal Skeletons and 20 Red Skeletons]."));
 		SetType(QuestType.Collect);
+		SetCancelable(true);
 
 		SetIcon(QuestIcon.Party);
 		if (IsEnabled("QuestViewRenewal"))

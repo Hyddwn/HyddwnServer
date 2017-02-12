@@ -68,7 +68,13 @@ namespace Aura.Channel.Skills.Combat
 			creature.Temp.FinalHitKillCountStrong = 0;
 			creature.Temp.FinalHitKillCountAwful = 0;
 			creature.Temp.FinalHitKillCountBoss = 0;
-			creature.Skills.CancleAfter(skill.Info.Id, TimeSpan.FromSeconds(skill.RankData.Var1));
+
+			// Cancel skill after its duration if creature is not a dev.
+			// This was the official behavior before control over cancelation
+			// was given to the server as well, the client still doesn't show
+			// the duration bar depleting.
+			if (!creature.IsDev)
+				creature.Skills.CancleAfter(skill.Info.Id, TimeSpan.FromSeconds(skill.RankData.Var1));
 
 			Send.Effect(creature, Effect.FinalHit, (byte)1, (byte)1);
 			Send.SkillReady(creature, skill.Info.Id);
@@ -115,8 +121,6 @@ namespace Aura.Channel.Skills.Combat
 
 			if (_cm == null)
 				_cm = ChannelServer.Instance.SkillManager.GetHandler<CombatMastery>(SkillId.CombatMastery);
-
-			// TODO: Check duration
 
 			var attackResult = false;
 

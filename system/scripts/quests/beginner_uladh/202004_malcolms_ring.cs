@@ -36,28 +36,35 @@ public class MalcolmsRingQuestScript : QuestScript
 
 	public async Task<HookResult> TalkMalcolm(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_malcolm1"))
+		if (npc.Player.QuestActive(this.Id, "talk_malcolm1"))
 		{
-			npc.FinishQuest(this.Id, "talk_malcolm1");
-			
+			npc.Player.FinishQuestObjective(this.Id, "talk_malcolm1");
+
 			npc.Msg("So, you received the quest I sent through the Owl.<br/>Thanks for coming.<br/>I think I lost my ring in Alby Dungeon,<br/>but I can't leave, because I have no one to take care of the General Shop.");
 			npc.Msg("I know it's a lot to ask, but can you go find the ring for me?<br/>The dungeon is very dangerous so I suggest talking to Trefor first about the Counterattack skill.<br/><br/>Take this pass to enter the dungeon, and please find my ring.");
-			npc.GiveItem(63181); // Malcolm's Pass
-			npc.GiveKeyword("skill_counter_attack");
+			npc.Player.GiveItem(63181); // Malcolm's Pass
+			npc.Player.GiveKeyword("skill_counter_attack");
 
 			return HookResult.End;
 		}
-		else if (npc.QuestActive(this.Id, "talk_malcolm2"))
+		else if (npc.Player.QuestActive(this.Id, "kill_spider") && !npc.Player.HasItem(63181))
 		{
-			npc.FinishQuest(this.Id, "talk_malcolm2");
-			npc.GiveKeyword("Clear_Tutorial_Malcolm_Ring");
-			npc.RemoveItem(75058); // Malcolm's Ring
+			npc.Msg("Have you lost the pass?<br/>Take this one to enter the dungeon, and please find my ring.");
+			npc.Player.GiveItem(63181); // Malcolm's Pass
+
+			return HookResult.Break;
+		}
+		else if (npc.Player.QuestActive(this.Id, "talk_malcolm2"))
+		{
+			npc.Player.FinishQuestObjective(this.Id, "talk_malcolm2");
+			npc.Player.GiveKeyword("Clear_Tutorial_Malcolm_Ring");
+			npc.Player.RemoveItem(75058); // Malcolm's Ring
 
 			npc.Msg("You found my Ring!<br/>You have my thanks.");
 
 			return HookResult.Break;
 		}
-		
+
 		return HookResult.Continue;
 	}
 }

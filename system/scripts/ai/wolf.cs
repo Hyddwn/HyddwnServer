@@ -19,6 +19,7 @@ public class WolfAi : AiScript
 		HatesBattleStance(3000);
 
 		On(AiState.Aggro, AiEvent.DefenseHit, OnDefenseHit);
+		On(AiState.Aggro, AiEvent.Hit, OnHit);
 	}
 
 	protected override IEnumerable Idle()
@@ -85,5 +86,23 @@ public class WolfAi : AiScript
 	{
 		Do(Attack());
 		Do(Wait(3000));
+	}
+	
+	private IEnumerable OnHit()
+	{
+		SwitchRandom();
+		if (Case(15))
+		{
+			Do(KeepDistance(1000, true, 2000));
+		}
+		else if (Case(15))
+		{
+			Do(Timeout(2000, Wander()));
+		}
+		else if (Case(70))
+		{
+			Do(Attack(3));
+			Do(Wait(4000, 4000));
+		}
 	}
 }

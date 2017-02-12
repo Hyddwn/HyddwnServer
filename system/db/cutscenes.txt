@@ -423,6 +423,7 @@
 { name: "pet_maid_male_giant", actors: ["me", "pet"] },
 { name: "pet_menma", actors: ["me", "pet"] },
 { name: "pet_menma_giant", actors: ["me", "pet"] },
+{ name: "pet_william", actors: ["me", "#cutscene_third_william"] },
 { name: "RP_Bryce_00_a", actors: ["#bryce", "#ibbie", "#ibbie_mother"] },
 { name: "RP_Bryce_00_b", actors: ["#bryce", "#ibbie", "#ibbie_mother"] },
 { name: "RP_Ibbie_00_a", actors: ["#bryce", "#ibbie", "#ibbie_mother"] },

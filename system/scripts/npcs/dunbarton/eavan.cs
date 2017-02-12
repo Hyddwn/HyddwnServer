@@ -53,13 +53,13 @@ public class EavanScript : NpcScript
 		switch (await Select())
 		{
 			case "@talk":
-				GiveKeyword("shop_goverment_office");
+				Player.GiveKeyword("shop_goverment_office");
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 					Msg("I imagine rescuing the Goddess was extremely difficult...<br/>It's because of you, <username/>,<br/>that Erinn is such a peaceful place now.");
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 					Msg("The Guardian of Erinn, <username/>...<br/>You are always welcomed here.");
 
 				await Conversation();
@@ -88,7 +88,7 @@ public class EavanScript : NpcScript
 			//	switch(await Select())
 			//	{
 			//		case "@ok":
-			//			if (!QuestActive(70079))
+			//			if (!Player.QuestActive(70079))
 			//			{
 			//				StartQuest(70079); //[Daily Quest] Uladh Dungeon
 			//				Msg("Good luck.");
@@ -139,13 +139,13 @@ public class EavanScript : NpcScript
 
 	private void Greet()
 	{
-		if (DoingPtjForNpc())
+		if (Player.IsDoingPtjFor(NPC))
 		{
 			Msg(FavorExpression(), L("So, how is your task coming along?<br/>Please don't forget to report before the deadline."));
 		}
 		else if (Memory <= 0)
 		{
-			GiveKeyword("shop_goverment_office");
+			Player.GiveKeyword("shop_goverment_office");
 			Msg(FavorExpression(), L("Welcome to Dunbarton.<br/>My name is <npcname/>, the Town Office worker who takes care of all the business related to the Adventurers' Association."));
 		}
 		else if (Memory == 1)
@@ -195,7 +195,7 @@ public class EavanScript : NpcScript
 				break;
 
 			case "shop_grocery":
-				GiveKeyword("shop_restaurant");
+				Player.GiveKeyword("shop_restaurant");
 				Msg("A grocery store? The Restaurant carries cooking ingredients too,<br/>so why don't you just go there?<br/>It's close from here.");
 				break;
 
@@ -212,7 +212,7 @@ public class EavanScript : NpcScript
 				break;
 
 			case "shop_smith":
-				GiveKeyword("shop_armory");
+				Player.GiveKeyword("shop_armory");
 				Msg("Hmm. We don't have a Blacksmith's Shop here.<br/>If it is weapons or armor you are looking for,<br/>why don't you check out Nerys' Weapons Shop?");
 				break;
 
@@ -289,7 +289,7 @@ public class EavanScript : NpcScript
 				break;
 
 			case "lute":
-				GiveKeyword("shop_misc");
+				Player.GiveKeyword("shop_misc");
 				Msg("You can buy a Lute at the General Shop.");
 				break;
 
@@ -380,7 +380,10 @@ public class EavanShop : NpcShopScript
 			AddQuest("Guild Quest", 110006, 1200); // [Guild] Eliminate the Goblin Bandits
 			AddQuest("Guild Quest", 110007, 1200); // [Guild] Eliminate the Giant Ogre
 			AddQuest("Guild Quest", 110008, 1200); // [Guild] Eliminate the Giant Bear
+		}
 
+		if (IsEnabled("GuildRobe"))
+		{
 			Add("Guild Robe", false, (creature, npc) => creature.Guild != null && creature.Guild.HasRobe);
 			Add("Guild Robe", 19047); // Guild Robe, color is handled automatically by the client
 		}

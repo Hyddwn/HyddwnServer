@@ -354,6 +354,27 @@ namespace Aura.Channel.World.Entities
 		public bool IsBreakable { get { return (this.OptionInfo.DurabilityOriginal != 0); } }
 
 		/// <summary>
+		/// Returns true if item can be destroyed.
+		/// </summary>
+		public bool IsDestroyable
+		{
+			get
+			{
+				// The check for the Sword of Elsinore is a terrible hack,
+				// but in my defense, it was devCAT's idea. Instead of adding the
+				// destroyable tag to the item, the client checks for the
+				// hamlets_sword tag >_>
+				return this.HasTag("/destroyable/|/hamlets_sword/|/guild_robe/");
+			}
+		}
+
+		/// <summary>
+		/// Returns true if item has upgrade effects, e.g. from upgrades
+		/// or enchants.
+		/// </summary>
+		public int UpgradeEffectCount { get { lock (_upgrades) return (_upgrades.Count); } }
+
+		/// <summary>
 		/// Returns true if item can be blessed.
 		/// </summary>
 		public bool IsBlessable
@@ -365,6 +386,12 @@ namespace Aura.Channel.World.Entities
 					(this.Info.Pocket != Pocket.Magazine1 && this.Info.Pocket != Pocket.Magazine2);
 			}
 		}
+
+		/// <summary>
+		/// Returns true if item hasn't been completed yet, e.g via Tailoring
+		/// or Blacksmithing.
+		/// </summary>
+		public bool IsIncomplete { get { return this.MetaData1.Has("PRGRATE"); } }
 
 		/// <summary>
 		/// Item's price in a personal shop.
@@ -417,6 +444,13 @@ namespace Aura.Channel.World.Entities
 			if (this.Data.StackType != StackType.Sac && this.Info.Amount < 1)
 				this.Info.Amount = 1;
 
+			// Meta data, set before anything else, so other properties can
+			// overwrite the ones set manually.
+			if (!string.IsNullOrWhiteSpace(dropData.MetaData1))
+				this.MetaData1.Parse(dropData.MetaData1);
+			if (!string.IsNullOrWhiteSpace(dropData.MetaData2))
+				this.MetaData2.Parse(dropData.MetaData2);
+
 			// Set enchant meta data or apply option sets to item
 			if (dropData.Prefix != 0 || dropData.Suffix != 0)
 			{
@@ -456,6 +490,18 @@ namespace Aura.Channel.World.Entities
 			// Lowered durability
 			if (dropData.Durability != -1)
 				this.Durability = dropData.Durability;
+
+			// Food quality
+			if (dropData.FoodQuality != null)
+				this.MetaData1.SetInt("QUAL", (int)dropData.FoodQuality);
+
+			// Form id (manuals)
+			if (dropData.FormId != null)
+				this.MetaData1.SetInt("FORMID", (int)dropData.FormId);
+
+			// Scale (fish, gems)
+			if (dropData.Scale != null)
+				this.MetaData1.SetFloat("SCALE", (float)dropData.Scale);
 		}
 
 		/// <summary>
@@ -836,9 +882,9 @@ namespace Aura.Channel.World.Entities
 		/// <param name="drops"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"></exception>
-		public static Item GetRandomDrop(Random rnd, List<DropData> drops)
+		public static Item GetRandomDrop(Random rnd, IEnumerable<DropData> drops)
 		{
-			if (drops == null || drops.Count == 0)
+			if (drops == null || !drops.Any())
 				throw new ArgumentException("Drops list empty.");
 
 			return GetRandomDrop(rnd, drops.Sum(a => a.Chance), drops);
@@ -853,9 +899,9 @@ namespace Aura.Channel.World.Entities
 		/// <param name="drops"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"></exception>
-		public static Item GetRandomDrop(Random rnd, float total, List<DropData> drops)
+		public static Item GetRandomDrop(Random rnd, float total, IEnumerable<DropData> drops)
 		{
-			if (drops == null || drops.Count == 0)
+			if (drops == null || !drops.Any())
 				throw new ArgumentException("Drops list empty.");
 
 			var num = rnd.NextDouble() * total;
@@ -1680,6 +1726,98 @@ namespace Aura.Channel.World.Entities
 				newCollectionList[i] = Convert.ToByte(collectionStr.Substring(i * 8, 8), 2);
 
 			this.MetaData1.SetBin("COLLIST", newCollectionList);
+		}
+
+		/// Modifies equip stats. Run one for every dropped item.
+		/// </summary>
+		/// <param name="rnd"></param>
+		public void ModifyEquipStats(Random rnd)
+		{
+			var item = this;
+
+			// Equip stat modification
+			// http://wiki.mabinogiworld.com/view/Category:Weapons
+			if (item.HasTag("/righthand/weapon/|/twohand/weapon/"))
+			{
+				var num = rnd.Next(100);
+
+				// Durability
+				if (num == 0)
+					item.OptionInfo.DurabilityMax += 4000;
+				else if (num <= 5)
+					item.OptionInfo.DurabilityMax += 3000;
+				else if (num <= 10)
+					item.OptionInfo.DurabilityMax += 2000;
+				else if (num <= 25)
+					item.OptionInfo.DurabilityMax += 1000;
+
+				// Attack
+				if (num == 0)
+				{
+					item.OptionInfo.AttackMin += 3;
+					item.OptionInfo.AttackMax += 3;
+				}
+				else if (num <= 30)
+				{
+					item.OptionInfo.AttackMin += 2;
+					item.OptionInfo.AttackMax += 2;
+				}
+				else if (num <= 60)
+				{
+					item.OptionInfo.AttackMin += 1;
+					item.OptionInfo.AttackMax += 1;
+				}
+
+				// Crit
+				if (num == 0)
+					item.OptionInfo.Critical += 3;
+				else if (num <= 30)
+					item.OptionInfo.Critical += 2;
+				else if (num <= 60)
+					item.OptionInfo.Critical += 1;
+
+				// Balance
+				if (num == 0)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 12);
+				else if (num <= 10)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 10);
+				else if (num <= 30)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 8);
+				else if (num <= 50)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 6);
+				else if (num <= 70)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 4);
+				else if (num <= 90)
+					item.OptionInfo.Balance = (byte)Math.Max(0, item.OptionInfo.Balance - 2);
+			}
+		}
+
+		/// <summary>
+		/// Returns item's selling price based on the specified price and
+		/// its properties, including stackability and amount.
+		/// </summary>
+		/// <returns></returns>
+		public int GetSellingPrice()
+		{
+			var sellingPrice = 0;
+
+			if (!this.IsIncomplete)
+			{
+				sellingPrice = this.OptionInfo.SellingPrice;
+
+				if (this.Data.StackType == StackType.Sac)
+				{
+					// Add costs of the items inside the sac
+					sellingPrice += (int)((this.Info.Amount / (float)this.Data.StackItem.StackMax) * this.Data.StackItem.SellingPrice);
+				}
+				else if (this.Data.StackType == StackType.Stackable)
+				{
+					// Individuel price for this stack
+					sellingPrice = (int)((this.Amount / (float)this.Data.StackMax) * sellingPrice);
+				}
+			}
+
+			return sellingPrice;
 		}
 	}
 
