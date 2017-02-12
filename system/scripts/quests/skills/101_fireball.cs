@@ -42,11 +42,7 @@ public class FireballQuestScript : QuestScript
 
 		// Check prerequisites
 		if (!IsEnabled("Fireball") || !npc.Player.IsUsingTitle(ElementalApprentice) || !npc.Player.HasEquipped("/fire_wand/"))
-		{
-			npc.Msg(L("Haha, <username/>, you seem to be a very curious person.<br/>This is not the right time, though...<br/>...I'll let you know when the time is right."));
-
-			return HookResult.Break;
-		}
+			return HookResult.Continue;
 
 		// Start quest
 		if (!npc.Player.QuestActive(this.Id))
