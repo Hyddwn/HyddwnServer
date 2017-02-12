@@ -152,6 +152,7 @@
     <Compile Include="Scripting\Compilers\CSharpPreCompiler.cs" />
     <Compile Include="Scripting\NpcSession.cs" />
     <Compile Include="Scripting\Scripts\AiScript.cs" />
+    <Compile Include="Scripting\Scripts\CollectionBookScript.cs" />
     <Compile Include="Scripting\Scripts\DungeonScript.cs" />
     <Compile Include="Scripting\Scripts\GameEventScript.cs" />
     <Compile Include="Scripting\Scripts\GeneralScript.cs" />
