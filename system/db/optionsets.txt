@@ -1,4 +1,4 @@
-﻿// Aura
+// Aura
 // Database file
 // 
 // Values: id, category, rank, name, originalName, allow, disallow, [itemId], [alwaysSuccess], [ignoreRank], [repairMultiplier], [personalize], [effects[]]

@@ -157,8 +157,11 @@ namespace Aura.Mabi.Network
 		public const int UnequipBagR = 0x59F5;
 
 		// [180300, NA166 (18.09.2013)] 2 new ops
-		//public const int ? = 0x59F8; // Request for that --v ?
-		//public const int ? = 0x59F9; // "Unable to receive [something]."
+
+		public const int CollectionAddItem = 0x59F6;
+		public const int CollectionAddItemR = 0x59F7;
+		public const int CollectionGetReward = 0x59F8;
+		public const int CollectionGetRewardR = 0x59F9;
 
 		// Does this actually have to do something with Npcs? Sent by the
 		// server when selecting "@end", before the actual NpcTalkEnd
