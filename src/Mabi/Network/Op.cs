@@ -698,7 +698,8 @@ namespace Aura.Mabi.Network
 
 		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
 		// [200100, NA229 (2016-06-16)] Shifted by +8, from AC0E to AC16.
-		public const int ChatSticker = 0xAC16;
+		// [200200, NA246 (2017-02-16)] Shifted by 1, from AC16 to AC17.
+		public const int ChatSticker = 0xAC17;
 
 		// [190200, NA221 (2016-02-17)] Added
 		// DcUnk, purpose unknown, requires answer on disconnect,
@@ -708,8 +709,9 @@ namespace Aura.Mabi.Network
 		// [200100, NA229 (2016-06-16)] Shifted by 5, from AC1A to AC1F.
 		// [200200, NA229 (2016-10-13)] Shifted by 1, from AC1F to AC20.
 		// [200200, NA242 (2016-12-15)] Shifted by 4, from AC20 to AC24.
-		public const int DcUnk = 0xAC24;
-		public const int DcUnkR = 0xAC25;
+		// [200200, NA246 (2017-02-16)] Shifted by 1, from AC24 to AC25.
+		public const int DcUnk = 0xAC25;
+		public const int DcUnkR = 0xAC26;
 
 		public const int RebirthEventInfoRequest = 0xAC5E;
 		public const int RebirthEventInfo = 0xAC5F;
