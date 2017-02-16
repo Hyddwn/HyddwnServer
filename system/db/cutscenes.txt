@@ -396,6 +396,7 @@
 { name: "paladin_change_4", actors: ["me", "#paladin_4"] },
 { name: "paladin_change_4_f", actors: ["me", "#paladin_4_f"] },
 { name: "partner_Laiglinne", actors: ["me", "#Laiglinne", "#Meryl"] },
+{ name: "pet_1yearScale", actors: ["me", "pet"] },
 { name: "pet_bonedragon", actors: ["pet"] },
 { name: "pet_bonedragon_asterism", actors: ["pet"] },
 { name: "pet_bonedragon2", actors: ["pet"] },
