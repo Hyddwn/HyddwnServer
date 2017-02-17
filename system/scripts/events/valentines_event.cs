@@ -16,7 +16,7 @@ public class ValentineEventScript : GameEventScript
 
 	public override void AfterLoad()
 	{
-		ScheduleEvent(DateTime.Parse("2017-02-01 00:00"), DateTime.Parse("2017-03-01 00:00"));
+		//ScheduleEvent(DateTime.Parse("2017-02-01 00:00"), DateTime.Parse("2017-03-01 00:00"));
 	}
 
 	protected override void OnStart()
