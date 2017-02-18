@@ -655,7 +655,10 @@ namespace Aura.Mabi.Network
 		// [200100, NA209 (2016-06-16)]
 		// 4 new ops somewhere here, that shifted the UnkEsc~? ops by 4.
 
-		public const int UnkEsc = 0xAAF9;
+		// [200200, NA246 (2017-02-16)]
+		// 1 new op somewhere here, shifting UnkEsc~DcUnkR? by +1.
+
+		public const int UnkEsc = 0xAAFA;
 
 		//public const int GoBeautyShop = 0xAAF8;
 		//public const int GoBeautyShopR = 0xAAF9;
@@ -680,28 +683,27 @@ namespace Aura.Mabi.Network
 		// [200100, NA209 (2016-06-16)]
 		// 5 new ops somewhere here, that shifted BeginnerWarpBook by +5, to ABA8.
 
-		public const int BeginnerWarpBook = 0xABA8; // Added to Aura after ItemMagnet, original op unknown, if different.
+		public const int BeginnerWarpBook = 0xABA9; // Added to Aura after ItemMagnet, original op unknown, if different.
 
 		// ItemMagnet got increased by one, some time between NA200 and NA204.
 		// [200100, NA229 (2016-06-16)] ItemMagnet~AmmoRequired shifted by +4.
 
 		// [190100, NA200 (2015-01-15)] Added
 		// [190200, NA221 (2016-02-17)] Increased by one, ABAC->ABAD
-		public const int ItemMagnet = 0xABB3;
+		public const int ItemMagnet = 0xABB4;
 
 		// [190200, NA221 (2016-02-17)] Added
 		// [200100, NA229 (2016-06-16)] DestroyExpired* increased by four, ABAE->ABB2, ABAF->ABB3, ABB0->ABB4
-		public const int DestroyExpiredItems = 0xABB4;
-		public const int DestroyExpiredItemsConfirm = 0xABB5;
-		public const int DestroyExpiredItemsR = 0xABB6;
+		public const int DestroyExpiredItems = 0xABB5;
+		public const int DestroyExpiredItemsConfirm = 0xABB6;
+		public const int DestroyExpiredItemsR = 0xABB7;
 
 		// [200100, NA229 (2016-04-16)] Shifted by +8, from ABBB to ABC3.
 		// [200200, NA242 (2016-12-15)] Shifted by +2, from ABC3 to ABC5.
-		public const int AmmoRequired = 0xABC5;
+		public const int AmmoRequired = 0xABC6;
 
 		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
 		// [200100, NA229 (2016-06-16)] Shifted by +8, from AC0E to AC16.
-		// [200200, NA246 (2017-02-16)] Shifted by 1, from AC16 to AC17.
 		public const int ChatSticker = 0xAC17;
 
 		// [190200, NA221 (2016-02-17)] Added
@@ -712,7 +714,6 @@ namespace Aura.Mabi.Network
 		// [200100, NA229 (2016-06-16)] Shifted by 5, from AC1A to AC1F.
 		// [200200, NA229 (2016-10-13)] Shifted by 1, from AC1F to AC20.
 		// [200200, NA242 (2016-12-15)] Shifted by 4, from AC20 to AC24.
-		// [200200, NA246 (2017-02-16)] Shifted by 1, from AC24 to AC25.
 		public const int DcUnk = 0xAC25;
 		public const int DcUnkR = 0xAC26;
 
