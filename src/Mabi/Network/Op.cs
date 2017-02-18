@@ -512,14 +512,17 @@ namespace Aura.Mabi.Network
 		public const int SummonPetR = 0x902D;
 		public const int PersonalShopPetProtectStart = 0x902F;
 		public const int PersonalShopPetProtectStop = 0x9030;
-		public const int UnsummonPet = 0x9031;
-		public const int UnsummonPetR = 0x9032;
-		public const int TelePet = 0x9033;
-		public const int TelePetR = 0x9034;
-		public const int PutItemIntoPetInv = 0x9035;
-		public const int PutItemIntoPetInvR = 0x9036;
-		public const int TakeItemFromPetInv = 0x9037;
-		public const int TakeItemFromPetInvR = 0x9038;
+
+		// [200200, NA246 (2017-02-16)] UnsummonPet ~ TakeItemFromPetInvR shifted by +1.
+		public const int UnsummonPet = 0x9032;
+		public const int UnsummonPetR = 0x9033;
+		public const int TelePet = 0x9034;
+		public const int TelePetR = 0x9035;
+		public const int PutItemIntoPetInv = 0x9036;
+		public const int PutItemIntoPetInvR = 0x9037;
+		public const int TakeItemFromPetInv = 0x9038;
+		public const int TakeItemFromPetInvR = 0x9039;
+
 		public const int HitProp = 0x9088;
 		public const int HitPropR = 0x9089;
 		public const int HittingProp = 0x908A;
