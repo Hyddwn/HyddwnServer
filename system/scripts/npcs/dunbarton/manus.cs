@@ -44,14 +44,14 @@ public class ManusScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Oh. <username/>? Good to see you!");
 					Msg("By the way...<br/>There are so many titles nowadays that<br/>it's not easy to remember them all.");
 					Msg("What do you think?");
 					Msg("Hey, hey. Are you ticked off at me?<br/>I'm just joking... Hahaha. Sorry, sorry.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Wow, what a title!<br/><username/>, I feel like<br/>I need to treat you differently. Haha!");
 				}

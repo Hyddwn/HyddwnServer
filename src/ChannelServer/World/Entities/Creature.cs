@@ -307,6 +307,16 @@ namespace Aura.Channel.World.Entities
 			}
 		}
 
+		/// <summary>
+		/// Returns amount of gold in creature's inventory.
+		/// </summary>
+		public int Gold { get { return this.Inventory.Gold; } }
+
+		/// <summary>
+		/// Returns id of creature's current title.
+		/// </summary>
+		public int Title { get { return this.Titles.SelectedTitle; } }
+
 		// Look
 		// ------------------------------------------------------------------
 
@@ -2378,10 +2388,15 @@ namespace Aura.Channel.World.Entities
 			{
 				if (dropData == null || !AuraData.ItemDb.Exists(dropData.ItemId))
 				{
-					Log.Warning("Creature.Kill: Invalid drop '{0}' from '{1}'.", (dropData == null ? "null" : dropData.ItemId.ToString()), this.RaceId);
+					Log.Warning("Creature.DropItems: Invalid drop '{0}' from '{1}'.", (dropData == null ? "null" : dropData.ItemId.ToString()), this.RaceId);
 					continue;
 				}
 
+				// Check feature
+				if (!string.IsNullOrWhiteSpace(dropData.Feature) && !AuraData.FeaturesDb.IsEnabled(dropData.Feature))
+					continue;
+
+				// Get chance
 				var dropRate = dropData.Chance;
 				var dropChance = rnd.NextDouble() * 100;
 				var month = ErinnTime.Now.Month;
@@ -2955,7 +2970,7 @@ namespace Aura.Channel.World.Entities
 
 		/// <summary>
 		/// Sets new position for target, based on attacker's position
-		/// and the distance, takes collision into consideration.
+		/// and the distance, takes collision into account.
 		/// </summary>
 		/// <param name="target">Entity to be knocked back</param>
 		/// <param name="distance">Distance to knock back the target</param>
@@ -2972,6 +2987,29 @@ namespace Aura.Channel.World.Entities
 				newPos = targetPosition.GetRelative(intersection, -50);
 
 			target.SetPosition(newPos.X, newPos.Y);
+
+			return newPos;
+		}
+
+		/// <summary>
+		/// Sets new position for creature, based on entity's position
+		/// and the distance, takes collision into account.
+		/// </summary>
+		/// <param name="entity">Source of the force (attacker, prop)</param>
+		/// <param name="distance">Distance to knock back the target</param>
+		/// <returns>New position</returns>
+		public Position GetShoved(Entity entity, int distance)
+		{
+			var attackerPosition = entity.GetPosition();
+			var targetPosition = this.GetPosition();
+
+			var newPos = attackerPosition.GetRelative(targetPosition, distance);
+
+			Position intersection;
+			if (this.Region.Collisions.Find(targetPosition, newPos, out intersection))
+				newPos = targetPosition.GetRelative(intersection, -50);
+
+			this.SetPosition(newPos.X, newPos.Y);
 
 			return newPos;
 		}
@@ -4360,8 +4398,10 @@ namespace Aura.Channel.World.Entities
 		/// <param name="keyword"></param>
 		public void GiveKeyword(string keyword)
 		{
-			if (!this.HasKeyword(keyword))
-				this.Keywords.Give(keyword);
+			if (this.HasKeyword(keyword))
+				return;
+
+			this.Keywords.Give(keyword);
 		}
 
 		/// <summary>
@@ -4400,6 +4440,89 @@ namespace Aura.Channel.World.Entities
 		public bool HasPoints(int amount)
 		{
 			return (this.Points >= amount);
+		}
+
+		/// <summary>
+		/// Returns true if creature knows about the title, even if it
+		/// doesn't have it.
+		/// </summary>
+		/// <param name="titleId"></param>
+		/// <returns></returns>
+		public bool KnowsTitle(int titleId)
+		{
+			return this.Titles.Knows((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Returns true if creature has and is able to use the given title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		/// <returns></returns>
+		public bool CanUseTitle(int titleId)
+		{
+			return this.Titles.IsUsable((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Let's creature know about given title, but doesn't enable it.
+		/// </summary>
+		/// <param name="titleId"></param>
+		public void ShowTitle(int titleId)
+		{
+			this.Titles.Show((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Enables creature to use given title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		public void EnableTitle(int titleId)
+		{
+			this.Titles.Enable((ushort)titleId);
+		}
+
+		/// <summary>
+		/// Returns true if creature is using the given title as either main
+		/// or option title.
+		/// </summary>
+		/// <param name="titleId"></param>
+		/// <returns></returns>
+		public bool IsUsingTitle(int titleId)
+		{
+			return (this.Titles.SelectedTitle == titleId || this.Titles.SelectedOptionTitle == titleId);
+		}
+
+		/// <summary>
+		/// Returns true if the creature has equipped an item with the given
+		/// id in one of its main equip slots.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool HasEquipped(int itemId)
+		{
+			var items = this.Inventory.GetMainEquipment(a => a.Info.Id == itemId);
+			return items.Any();
+		}
+
+		/// <summary>
+		/// Returns true if the creature has equipped an item that matches
+		/// the given tag in one of its main equip slots.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool HasEquipped(string tag)
+		{
+			var items = this.Inventory.GetMainEquipment(a => a.HasTag(tag));
+			return items.Any();
+		}
+
+		/// <summary>
+		/// Plays sound for creature.
+		/// </summary>
+		/// <param name="fileName"></param>
+		public void PlaySound(string fileName)
+		{
+			Send.PlaySound(this, fileName);
 		}
 	}
 

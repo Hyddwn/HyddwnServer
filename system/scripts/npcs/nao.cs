@@ -784,7 +784,7 @@ public class NaoScript : NpcScript
 
 			case NaoOutfit.Yukata:
 				Player.GiveKeyword("nao_cloth0");
-				Player.GiveKeyword("nao_yukata");
+				//Player.GiveKeyword("nao_yukata");
 
 				Msg(L("Thank you very much.<br/>Are these clothes from your world, <username/>? Very pretty...<br/>From now on, <username/>, I'll wear these clothes when I see you."));
 				break;
@@ -805,7 +805,7 @@ public class NaoScript : NpcScript
 
 			case NaoOutfit.Kimono:
 				Player.GiveKeyword("nao_cloth0");
-				Player.GiveKeyword("nao_cloth_kimono");
+				//Player.GiveKeyword("nao_cloth_kimono");
 
 				Msg(L("Thank you very much. It's a long-sleeved kimono.<br/>From now on, <username/>, I'll wear it when we meet."));
 				break;

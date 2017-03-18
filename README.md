@@ -8,7 +8,7 @@ under Aura's license which you will find details for below.
 Aura
 ==============================
 
-Aura is an open-source MMORPG server software for the North American client of Mabinogi.
+Aura is an open-source MMORPG server software.
 It's solely being developed for educational purposes, learning about programming, MMORPGs,
 maintaining huge projects, working with other people, and improving knowledge.
 It's not about playing a game or competing with any services provided by

@@ -53,7 +53,7 @@ public class MalcolmScript : NpcScript
 					string message1 = null;
 					string message2 = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10059: // is a friend of Trefor
 							message2 = L("I am an old friend of Trefor.<br/>So please receive my small token of appreciation.");
@@ -85,13 +85,13 @@ public class MalcolmScript : NpcScript
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("...*Sigh*");
 					Msg("Has your life gotten any better after saving the Goddess?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("You're the... Guardian of Erinn?<br/>I don't know what you do exactly,<br/>but you seem to leave<br/>a really good impression on people.");
 					Msg("...I'm a bit jealous...");
@@ -568,7 +568,6 @@ public class MalcolmShop : NpcShopScript
 		Add("General Goods", 40018);      // Ukulele
 		Add("General Goods", 40045);      // Fishing Rod
 		Add("General Goods", 60034, 300); // Bait Tin x300
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -633,6 +632,9 @@ public class MalcolmShop : NpcShopScript
 
 		Add("Event");
 
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045); // Handicraft Kit
+
 		if (IsEnabled("PetBirds"))
 		{
 			Add("Shoes && Gloves", 16024); // Pet Instructor Glove
@@ -641,9 +643,9 @@ public class MalcolmShop : NpcShopScript
 
 		if (IsEnabled("PercussionInstruments"))
 		{
-			Add("General Goods", 40214);      // Big Drum
-			Add("General Goods", 40214);      // Big Drum
-			Add("General Goods", 40214);      // Big Drum
+			Add("General Goods", 40214); // Big Drum
+			Add("General Goods", 40214); // Big Drum
+			Add("General Goods", 40214); // Big Drum
 		}
 
 		if (IsEnabled("ItemSeal2"))

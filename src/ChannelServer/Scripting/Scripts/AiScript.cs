@@ -6,6 +6,7 @@ using Aura.Channel.Skills;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Combat;
 using Aura.Channel.Skills.Life;
+using Aura.Channel.Skills.Magic;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data;
@@ -1720,6 +1721,14 @@ namespace Aura.Channel.Scripting.Scripts
 
 				var handler = ChannelServer.Instance.SkillManager.GetHandler<GlasGhaibhleannSkill>(activeSkillId);
 				handler.Use(this.Creature, this.Creature.Skills.ActiveSkill, targetAreaEntityId);
+				this.SharpMind(activeSkillId, SharpMindStatus.Cancelling);
+			}
+			else if (activeSkillId == SkillId.Fireball)
+			{
+				var target = this.Creature.Target;
+
+				var handler = ChannelServer.Instance.SkillManager.GetHandler<Fireball>(activeSkillId);
+				handler.Use(this.Creature, this.Creature.Skills.ActiveSkill, target.EntityId, 0, 0);
 				this.SharpMind(activeSkillId, SharpMindStatus.Cancelling);
 			}
 			else

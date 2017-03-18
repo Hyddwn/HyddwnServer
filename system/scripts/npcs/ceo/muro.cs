@@ -63,13 +63,13 @@ public class MuroScript : NpcScript
 					case "@talk":
 						Greet();
 
-						if (Title == 11001)
+						if (Player.IsUsingTitle(11001))
 						{
 							Msg("...That's a lie. No way our Goddess was rescued by a pitiful Human being like you.<br/>...like I said.");
 							Msg("...Bring the Goddess you saved,<br/>in front of me,<br/>and introduce me to her.");
 							Msg("...Otherwise, I won't believe you. Mumumu...");
 						}
-						else if (Title == 11002)
+						else if (Player.IsUsingTitle(11002))
 						{
 							Msg("Hee... Human, a human is Erinn's Guardian.<br/>A human that claims to be the Guardian of Erinn is standing in front of me.<br/>Very, very intriguing.");
 							Msg("...I want to touch you, just once.");
@@ -88,13 +88,13 @@ public class MuroScript : NpcScript
 			case "@talk":
 				Greet();
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...That's a lie. No way our Goddess was rescued by a pitiful Human being like you.<br/>...like I said.");
 					Msg("...Bring the Goddess you saved,<br/>in front of me,<br/>and introduce me to her.");
 					Msg("...Otherwise, I won't believe you. Mumumu...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Hee... Human, a human is Erinn's Guardian.<br/>A human that claims to be the Guardian of Erinn is standing in front of me.<br/>Very, very intriguing.");
 					Msg("...I want to touch you, just once.");

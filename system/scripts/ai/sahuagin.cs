@@ -26,11 +26,6 @@ public class SahuaginAi : AiScript
 		{
 			Do(Wait(3000, 6000));
 		}
-		else if (Case(20))
-		{
-			Do(CancelSkill());
-			Do(Attack(3));
-		}
 		else if (Case(10))
 		{
 			Do(Say(L("Kaoo"), "...", "", "", ""));

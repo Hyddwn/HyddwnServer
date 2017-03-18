@@ -57,9 +57,9 @@ public class EavanScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 					Msg("I imagine rescuing the Goddess was extremely difficult...<br/>It's because of you, <username/>,<br/>that Erinn is such a peaceful place now.");
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 					Msg("The Guardian of Erinn, <username/>...<br/>You are always welcomed here.");
 
 				await Conversation();

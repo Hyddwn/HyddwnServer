@@ -66,7 +66,7 @@ public class TinScript : NpcScript
 			}
 			UpdateRelationAfterGreet();
 
-			if (Title == 11002)
+			if (Player.IsUsingTitle(11002))
 			{
 				Msg("Well done. <username/>.<br/>But you know what? This isn't the<br/>end of the Fomors.");
 				Msg("...Cichol and Dark Lord is still alive,<br/>and besides the fact that the goddess statue has been restored,<br/>much hasn't really changed...");

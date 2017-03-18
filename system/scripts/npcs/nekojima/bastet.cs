@@ -337,8 +337,10 @@ public class BastetShop : NpcShopScript
 		Add("General Goods", 2006);       // Big Gold Pouch
 		Add("General Goods", 40045);      // Fishing Rod
 		Add("General Goods", 60034, 300); // Bait Tin x300
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 63020);      // Empty Bottle
+
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045);  // Handicraft Kit
 
 		if (IsEnabled("Metallurgy"))
 			Add("General Goods", 40211);  // Metallurgy Sieve

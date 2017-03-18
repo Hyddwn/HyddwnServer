@@ -65,6 +65,10 @@ public class UploadVisualChatController : Controller
 		file.MoveTo("user/web/upload/visual-chat/" + fileName);
 
 		// Response, URL to image
-		response.Send(string.Format("http://{0}:{1}/upload/visual-chat/{2}", request.LocalEndPoint.Address, request.HttpPort, fileName));
+		var url = args.Request.Url.ToString();
+		url = url.Replace(args.Request.RawUrl, "");
+		url = string.Format("{0}/upload/visual-chat/{1}", url, fileName);
+
+		response.Send(url);
 	}
 }

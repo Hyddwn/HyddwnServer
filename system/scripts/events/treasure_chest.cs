@@ -83,8 +83,8 @@ public class OrdinaryChest91038ItemScript : ItemScript
 		new DropData(itemId: 50005, chance: 1),                   // Large Meat
 		new DropData(itemId: 63000, chance: 1, amount: 3),        // Phoenix Feather
 		new DropData(itemId: 63058, chance: 1, amount: 2),        // Recovery Booster
-		new DropData(itemId: 63047, chance: 1),                   // Remote Healer Coupon
-		new DropData(itemId: 63057, chance: 1),                   // Remote Tailor Coupon
+		//new DropData(itemId: 63047, chance: 1),                 // Remote Healer Coupon
+		//new DropData(itemId: 63057, chance: 1),                 // Remote Tailor Coupon
 		new DropData(itemId: 50123, chance: 1),                   // Roasted Bacon
 		new DropData(itemId: 13010, chance: 1),                   // Round Pauldron Chainmail
 		new DropData(itemId: 13023, chance: 1),                   // Rose Plate Armor (Type B)

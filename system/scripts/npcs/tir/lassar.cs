@@ -50,7 +50,7 @@ public class LassarScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 10061) // is a friend of Malcolm
+				if (Player.IsUsingTitle(10061)) // is a friend of Malcolm
 				{
 					var today = ErinnTime.Now.ToString("yyyyMMdd");
 					if (today != Player.Vars.Perm["lassar_title_gift"])
@@ -64,12 +64,12 @@ public class LassarScript : NpcScript
 						Msg(L("Hahaha. I was wondering who you were.<br/>You must be Malcolm's friend, <username/>, right?<br/>I would like to give you this MP Potion.<br/>Will you accept it?"));
 					}
 				}
-				else if (Title == 11001)
+				else if (Player.IsUsingTitle(11001))
 				{
 					Msg("Hmm... So you rescued the Goddess?<br/>And... that means you've done something the Three Missing Warriors couldn't do, right?<br/>This is a bit hard to believe. Hahaha...");
 					Msg("If you saved the Goddess, why hasn't she descend down upon Erinn as of yet?");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Hm? <username/>, you're the Guardian of Erinn?<br/>Are you <username/>, the one<br/>who used to train magic and combat here?");
 					Msg("...Wow... I'm amazed.<br/>I never knew a day like this would come.");

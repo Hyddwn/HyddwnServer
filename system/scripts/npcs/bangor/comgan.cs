@@ -48,13 +48,13 @@ public class ComganScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...you rescued the Goddess?<br/>You? <username/>...?<br/>That's just incredible...<br/>But... can I really believe what you're claiming?");
 					Msg("...It's just like how people find it so hard to believe that I'm a Priest...<br/>I can definitely relate.");
 					Msg("Anyway, this helps me to place myself in another person's shoes,<br/>so I must thank you for that.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Thank you for saving Erinn, <username/>.<br/>Please continue to watch out for us.");
 				}

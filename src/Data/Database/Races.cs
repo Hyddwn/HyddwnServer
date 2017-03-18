@@ -128,6 +128,7 @@ namespace Aura.Data.Database
 		public float? Scale { get; set; }
 		public string MetaData1 { get; set; }
 		public string MetaData2 { get; set; }
+		public string Feature { get; set; }
 
 		public DropData()
 		{
@@ -178,6 +179,7 @@ namespace Aura.Data.Database
 			result.Scale = this.Scale;
 			result.MetaData1 = this.MetaData1;
 			result.MetaData2 = this.MetaData2;
+			result.Feature = this.Feature;
 
 			return result;
 		}
@@ -413,11 +415,6 @@ namespace Aura.Data.Database
 				{
 					drop.AssertNotMissing("itemId", "chance");
 
-					// Check feature
-					var feature = drop.ReadString("feature");
-					if (!string.IsNullOrWhiteSpace(feature) && !AuraData.FeaturesDb.IsEnabled(feature))
-						continue;
-
 					var dropData = new DropData();
 					dropData.ItemId = drop.ReadInt("itemId");
 					dropData.Chance = drop.ReadFloat("chance");
@@ -426,6 +423,7 @@ namespace Aura.Data.Database
 					dropData.AmountMax = drop.ReadInt("amountMax");
 					dropData.Prefix = drop.ReadInt("prefix");
 					dropData.Suffix = drop.ReadInt("suffix");
+					dropData.Feature = drop.ReadString("feature");
 
 					if (amount != 0)
 						dropData.AmountMin = dropData.AmountMax = amount;

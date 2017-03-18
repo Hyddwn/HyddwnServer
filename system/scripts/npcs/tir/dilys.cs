@@ -48,7 +48,7 @@ public class DilysScript : NpcScript
 				{
 					string message = null;
 
-					switch (Title)
+					switch (Player.Title)
 					{
 						case 10061: // is a friend of Malcolm
 							message = L("Hello, <username/>, a Friend of Malcolm.<br/>I'm giving you this because I think you will find it useful.");
@@ -71,9 +71,9 @@ public class DilysScript : NpcScript
 					}
 				}
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 					Msg("...<username/>, Who Saved the Goddess?<br/>...<br/>Ugh, spare me.<br/>Trefor suffices as the town fool and we only need one.");
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 					Msg("Sigh...<br/>As if Trefore weren't enough...<br/>Do we really need more dummies in this town?");
 
 				await Conversation();

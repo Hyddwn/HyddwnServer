@@ -48,6 +48,8 @@ public class AlbeyFinalDungeonScript : DungeonScript
 	{
 		if (deadBoss.RaceId == DarkLord)
 		{
+			dungeon.RemoveAllMonsters();
+
 			var glasProp = dungeon.Regions.Last().GetProp(a => a.Info.Id == GlasPropId);
 			glasProp.SetState("released");
 
@@ -75,7 +77,7 @@ public class AlbeyFinalDungeonScript : DungeonScript
 			leader.GiveKeyword("g1_complete");
 			leader.GiveKeyword("g1_KnightOfTheLight");
 
-			leader.Titles.Enable(WhoSavedTheGoddessTitle);
+			leader.EnableTitle(WhoSavedTheGoddessTitle);
 			leader.AcquireItem(Item.CreateEnchant(GoddessEnchant, 3600));
 		}
 

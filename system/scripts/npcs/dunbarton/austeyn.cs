@@ -49,7 +49,7 @@ public class AusteynScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Hmm... Welcome.<br/>Your title says you've rescued the Goddess.");
 					Msg("That's a great title, but...");
@@ -57,7 +57,7 @@ public class AusteynScript : NpcScript
 					Msg("Well, I hear a lot of people are forging titles these days...");
 					Msg("Ah, no, I don't mean you...");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Oh wow, you're the one who saved Erinn?<br/>While you're at it,<br/>can you take care of the economic state of Dunbarton as well? Hehe...");
 				}
@@ -70,7 +70,7 @@ public class AusteynScript : NpcScript
 				var input = await Select();
 
 				if (input == "@cancel")
-					return;
+					break;
 
 				if (!RedeemCoupon(input))
 				{

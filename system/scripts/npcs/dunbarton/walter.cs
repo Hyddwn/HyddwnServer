@@ -47,14 +47,14 @@ public class WalterScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("...");
 					Msg("...");
 					Msg("What do you think about my daughter...?");
 					Msg("...I didn't mean to give you the book so late... I apologize.");
 				}
-				if (Title == 11002)
+				if (Player.IsUsingTitle(11002))
 				{
 					Msg("...I sense you are an amazing person.");
 				}
@@ -324,7 +324,6 @@ public class WalterShop : NpcShopScript
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
 		Add("General Goods", 40017);      // Mandolin
-		Add("General Goods", 60045);      // Handicraft Kit
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
 		Add("General Goods", 61001);      // Score Scroll
@@ -389,6 +388,9 @@ public class WalterShop : NpcShopScript
 		Add("Cooking Appliances", 46005); // Cooking Table
 
 		Add("Event"); // Empty
+
+		if (IsEnabled("Handicraft"))
+			Add("General Goods", 60045); // Handicraft Kit
 
 		if (IsEnabled("PetBirds"))
 			Add("General Goods", 40093); // Pet Instructor Stick

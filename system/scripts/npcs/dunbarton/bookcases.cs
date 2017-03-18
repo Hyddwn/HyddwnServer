@@ -69,6 +69,13 @@ public class BookCase5Script : BookCase1Script
 		SetBody(weight: 0f, upper: 0f, lower: 0f);
 		SetLocation(72, 12030, 8895, 0);
 	}
+
+	protected override async Task Talk()
+	{
+		await Intro(L("A huge bookshelf stretches all the way from the floor to the Library's high ceiling. Old books and volumes line every shelf.<br/>A soft ray of light can be seen through spots where the bookcases sag, casting a warm sepia light into the room.<br/>A musty scent of old paper permeates the area."));
+
+		End();
+	}
 }
 
 // [Magazine] section

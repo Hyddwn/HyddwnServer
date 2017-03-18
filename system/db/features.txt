@@ -108,6 +108,9 @@
 		
 		// Enables Math Avanced dungeon
 		{ name: "MathAdvanced", enabled: true },
+		
+		// Enables Ceo Golem, White Grizzly and Mini Bear field bosses
+		{ name: "G2FieldBosses", enabled: true },
 	]},
 	
 	// Season 2
@@ -456,6 +459,9 @@
 		
 		// Enables farming near Taillteann
 		{ name: "Farming", enabled: true },
+		
+		// Enables Nekojima island
+		{ name: "Nekojima", enabled: true },
 	]},
 	
 	// Season 3
@@ -541,6 +547,9 @@
 		
 		// Makes sheep protection quest easier. (Part of gfC4Tutorial)
 		{ name: "ShortSheepProtection", enabled: true },
+		
+		// Enables artisan upgrades
+		{ name: "ArtisanUpgrade", enabled: true },
 	]},
 	
 	// Season 2
@@ -745,4 +754,5 @@
 { name: "TwinSword", enabled: true },
 { name: "CombatSystemRenewal", enabled: true },
 { name: "TalentRenovationCloseCombat", enabled: true },
+{ name: "Handicraft", enabled: true },
 ]

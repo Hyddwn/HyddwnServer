@@ -46,14 +46,14 @@ public class SimonScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("<username/>, the one who saved the Goddess...?");
 					Msg("...Wait, if you're so great as to be saving the Goddess,<br/>shouldn't you know to be humble too?");
 					Msg("...Soon, all the rumors of your self-aggrandizing behavior will start catching up with you.");
 					Msg("Even so, I have to admit that what you did was pretty fabulous.");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("...Doesn't a title like that overwhelm you at all?<br/>Well... Judging by your confident look,<br/>I guess you have the skills to back it up.");
 				}

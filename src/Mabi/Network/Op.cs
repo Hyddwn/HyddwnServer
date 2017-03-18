@@ -157,8 +157,11 @@ namespace Aura.Mabi.Network
 		public const int UnequipBagR = 0x59F5;
 
 		// [180300, NA166 (18.09.2013)] 2 new ops
-		//public const int ? = 0x59F8; // Request for that --v ?
-		//public const int ? = 0x59F9; // "Unable to receive [something]."
+
+		public const int CollectionAddItem = 0x59F6;
+		public const int CollectionAddItemR = 0x59F7;
+		public const int CollectionGetReward = 0x59F8;
+		public const int CollectionGetRewardR = 0x59F9;
 
 		// Does this actually have to do something with Npcs? Sent by the
 		// server when selecting "@end", before the actual NpcTalkEnd
@@ -509,14 +512,17 @@ namespace Aura.Mabi.Network
 		public const int SummonPetR = 0x902D;
 		public const int PersonalShopPetProtectStart = 0x902F;
 		public const int PersonalShopPetProtectStop = 0x9030;
-		public const int UnsummonPet = 0x9031;
-		public const int UnsummonPetR = 0x9032;
-		public const int TelePet = 0x9033;
-		public const int TelePetR = 0x9034;
-		public const int PutItemIntoPetInv = 0x9035;
-		public const int PutItemIntoPetInvR = 0x9036;
-		public const int TakeItemFromPetInv = 0x9037;
-		public const int TakeItemFromPetInvR = 0x9038;
+
+		// [200200, NA246 (2017-02-16)] UnsummonPet ~ TakeItemFromPetInvR shifted by +1.
+		public const int UnsummonPet = 0x9032;
+		public const int UnsummonPetR = 0x9033;
+		public const int TelePet = 0x9034;
+		public const int TelePetR = 0x9035;
+		public const int PutItemIntoPetInv = 0x9036;
+		public const int PutItemIntoPetInvR = 0x9037;
+		public const int TakeItemFromPetInv = 0x9038;
+		public const int TakeItemFromPetInvR = 0x9039;
+
 		public const int HitProp = 0x9088;
 		public const int HitPropR = 0x9089;
 		public const int HittingProp = 0x908A;
@@ -649,7 +655,10 @@ namespace Aura.Mabi.Network
 		// [200100, NA209 (2016-06-16)]
 		// 4 new ops somewhere here, that shifted the UnkEsc~? ops by 4.
 
-		public const int UnkEsc = 0xAAF9;
+		// [200200, NA246 (2017-02-16)]
+		// 1 new op somewhere here, shifting UnkEsc~DcUnkR? by +1.
+
+		public const int UnkEsc = 0xAAFA;
 
 		//public const int GoBeautyShop = 0xAAF8;
 		//public const int GoBeautyShopR = 0xAAF9;
@@ -674,28 +683,28 @@ namespace Aura.Mabi.Network
 		// [200100, NA209 (2016-06-16)]
 		// 5 new ops somewhere here, that shifted BeginnerWarpBook by +5, to ABA8.
 
-		public const int BeginnerWarpBook = 0xABA8; // Added to Aura after ItemMagnet, original op unknown, if different.
+		public const int BeginnerWarpBook = 0xABA9; // Added to Aura after ItemMagnet, original op unknown, if different.
 
 		// ItemMagnet got increased by one, some time between NA200 and NA204.
 		// [200100, NA229 (2016-06-16)] ItemMagnet~AmmoRequired shifted by +4.
 
 		// [190100, NA200 (2015-01-15)] Added
 		// [190200, NA221 (2016-02-17)] Increased by one, ABAC->ABAD
-		public const int ItemMagnet = 0xABB3;
+		public const int ItemMagnet = 0xABB4;
 
 		// [190200, NA221 (2016-02-17)] Added
 		// [200100, NA229 (2016-06-16)] DestroyExpired* increased by four, ABAE->ABB2, ABAF->ABB3, ABB0->ABB4
-		public const int DestroyExpiredItems = 0xABB4;
-		public const int DestroyExpiredItemsConfirm = 0xABB5;
-		public const int DestroyExpiredItemsR = 0xABB6;
+		public const int DestroyExpiredItems = 0xABB5;
+		public const int DestroyExpiredItemsConfirm = 0xABB6;
+		public const int DestroyExpiredItemsR = 0xABB7;
 
 		// [200100, NA229 (2016-04-16)] Shifted by +8, from ABBB to ABC3.
 		// [200200, NA242 (2016-12-15)] Shifted by +2, from ABC3 to ABC5.
-		public const int AmmoRequired = 0xABC5;
+		public const int AmmoRequired = 0xABC6;
 
 		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
 		// [200100, NA229 (2016-06-16)] Shifted by +8, from AC0E to AC16.
-		public const int ChatSticker = 0xAC16;
+		public const int ChatSticker = 0xAC17;
 
 		// [190200, NA221 (2016-02-17)] Added
 		// DcUnk, purpose unknown, requires answer on disconnect,
@@ -705,8 +714,8 @@ namespace Aura.Mabi.Network
 		// [200100, NA229 (2016-06-16)] Shifted by 5, from AC1A to AC1F.
 		// [200200, NA229 (2016-10-13)] Shifted by 1, from AC1F to AC20.
 		// [200200, NA242 (2016-12-15)] Shifted by 4, from AC20 to AC24.
-		public const int DcUnk = 0xAC24;
-		public const int DcUnkR = 0xAC25;
+		public const int DcUnk = 0xAC25;
+		public const int DcUnkR = 0xAC26;
 
 		public const int RebirthEventInfoRequest = 0xAC5E;
 		public const int RebirthEventInfo = 0xAC5F;

@@ -548,6 +548,9 @@ namespace Aura.Data.Database
 							ei.Parameters.Add(red);
 						}
 
+						if (ei.Name == "nekojima_altar_eventbox")
+							ei.IsAltar = true;
+
 						ai.Events.Add(ei.Id, ei);
 					}
 

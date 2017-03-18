@@ -1657,6 +1657,83 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns collection list, based on meta data "COLLIST", as char
+		/// array of "1" and "0" chars, for easy checking and modification.
+		/// </summary>
+		/// <remarks>
+		/// As the 1s and 0s make up bytes, the array is a multitude of 8,
+		/// so make sure to check to check the amount of 1s to check for
+		/// completion, and not if all are 1, as that's not necessarily
+		/// correct.
+		/// </remarks>
+		/// <returns></returns>
+		public char[] GetCollectionList()
+		{
+			// We could've tried to use longs, or bool arrays, but really,
+			// char arrays and strings offer the easiest conversion and
+			// access.
+
+			if (this.Data.CollectionMax == 0)
+				throw new InvalidOperationException("Item is not a collection book.");
+
+			string result;
+
+			if (!this.MetaData1.Has("COLLIST"))
+			{
+				var max = this.Data.CollectionMax;
+				var multiple = 8;
+				var val = max + multiple - 1;
+
+				result = "".PadLeft((val - (val % multiple)), '0');
+			}
+			else
+			{
+				result = "";
+
+				var bin = this.MetaData1.GetBin("COLLIST");
+				for (int i = 0; i < bin.Length; ++i)
+				{
+					var add = (ulong)(bin[i] << (i * 8));
+					result += Convert.ToString(bin[i], 2).PadLeft(8, '0');
+				}
+			}
+
+			return result.ToCharArray();
+		}
+
+		/// <summary>
+		/// Sets collection list meta data "COLLIST", based on list.
+		/// </summary>
+		/// <param name="list"></param>
+		/// <example>
+		/// item.SetCollectionList("10000000".ToCharArray());
+		/// = COLLIST : gAAA
+		/// = Collected first item
+		/// 
+		/// item.SetCollectionList("11000000".ToCharArray());
+		/// = COLLIST : wAAA
+		/// = Collected first and second item
+		/// </example>
+		public void SetCollectionList(char[] list)
+		{
+			if (list == null)
+				throw new ArgumentNullException("list");
+
+			if (list.Length % 8 != 0)
+				throw new ArgumentException("Invalid amount of bits.");
+
+			if (this.Data.CollectionMax == 0)
+				throw new InvalidOperationException("Item is not a collection book.");
+
+			var collectionStr = new string(list);
+			var byteCount = list.Length / 8;
+			var newCollectionList = new byte[byteCount];
+			for (int i = 0; i < byteCount; ++i)
+				newCollectionList[i] = Convert.ToByte(collectionStr.Substring(i * 8, 8), 2);
+
+			this.MetaData1.SetBin("COLLIST", newCollectionList);
+		}
+
 		/// Modifies equip stats. Run one for every dropped item.
 		/// </summary>
 		/// <param name="rnd"></param>

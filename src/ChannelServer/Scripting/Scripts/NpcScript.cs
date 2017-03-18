@@ -84,6 +84,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// <summary>
 		/// Returns the player's current title.
 		/// </summary>
+		[Obsolete]
 		public int Title
 		{
 			get { return this.Player.Titles.SelectedTitle; }
@@ -93,6 +94,7 @@ namespace Aura.Channel.Scripting.Scripts
 		/// Gets and set the player's amount of gold,
 		/// by modifying the inventory.
 		/// </summary>
+		[Obsolete]
 		public int Gold
 		{
 			get { return this.Player.Inventory.Gold; }
@@ -1056,7 +1058,7 @@ namespace Aura.Channel.Scripting.Scripts
 
 			// Check gold
 			var cost = result.Item.GetRepairCost(rate, 1);
-			if (this.Gold < cost * result.Points)
+			if (this.Player.Inventory.Gold < cost * result.Points)
 			{
 				result.HadGold = false;
 				return result;
@@ -1103,7 +1105,7 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 
 			// Reduce gold, but only for successes
-			this.Gold -= cost * result.Successes;
+			this.Player.Inventory.Gold -= cost * result.Successes;
 
 			// Update max dura
 			if (result.Fails != 0)
@@ -1175,20 +1177,19 @@ namespace Aura.Channel.Scripting.Scripts
 			}
 
 			// Check for disabled Artisan
-			// TODO: Feature check, once we do have Artisan.
-			if (result.Upgrade.Effects.Any(a => a.Key == "Artisan"))
+			if (result.Upgrade.Effects.Any(a => a.Key == "Artisan") && !IsEnabled("ArtisanUpgrade"))
 			{
-				Send.MsgBox(this.Player, Localization.Get("Artisan upgrades aren't available yet."));
+				Send.MsgBox(this.Player, Localization.Get("Artisan upgrades are unavailable."));
 				return result;
 			}
 
 			// Check gold
-			if (this.Gold < result.Upgrade.Gold)
+			if (this.Player.Inventory.Gold < result.Upgrade.Gold)
 				return result;
 
 			// Take gold and exp
 			result.Item.Proficiency -= result.Upgrade.Exp;
-			this.Gold -= result.Upgrade.Gold;
+			this.Player.Inventory.Gold -= result.Upgrade.Gold;
 
 			// Increase upgrade count
 			result.Item.OptionInfo.Upgraded++;
@@ -1355,9 +1356,49 @@ namespace Aura.Channel.Scripting.Scripts
 						result.Item.MetaData1.SetFloat("IM_MGC", immuneMagicBuff + effect.Value[0]);
 						break;
 
+					case "Artisan":
+						var artisanId = (int)result.Upgrade.Effects["Artisan"][0];
+						var artisanData = AuraData.ArtisanUpgradesDb.Find(artisanId);
+						if (artisanData == null)
+						{
+							Log.Warning("NpcScript.Upgrade: Upgrade '{0}' references unknown Artisan upgrade '{1}'.", result.Upgrade.Ident, artisanId);
+							break;
+						}
+
+						// Choose a random number of random effect sets to apply to item.
+						// Has to be at least one of the random effect sets.
+						if (artisanData.Random.Count > 0)
+						{
+							var randomEffectSet = UniqueRnd(Random(artisanData.Random.Count) + 1, artisanData.Random.ToArray());
+							foreach (var setid in randomEffectSet)
+							{
+								var optionSetData = AuraData.OptionSetDb.Find(setid);
+								if (optionSetData == null)
+								{
+									Log.Warning("NpcScript.Upgrade: Artisan upgrade '{0}' references unknown option set '{1}'.", artisanId, setid);
+									continue;
+								}
+
+								result.Item.ApplyOptionSet(AuraData.OptionSetDb.Find(setid), false);
+							}
+						}
+
+						// 'Always' effect sets will always be applied to item.
+						foreach (var setid in artisanData.Always)
+						{
+							var optionSetData = AuraData.OptionSetDb.Find(setid);
+							if (optionSetData == null)
+							{
+								Log.Warning("NpcScript.Upgrade: Artisan upgrade '{0}' references unknown option set '{1}'.", artisanId, setid);
+								continue;
+							}
+
+							result.Item.ApplyOptionSet(AuraData.OptionSetDb.Find(setid), false);
+						}
+						break;
+
 					// TODO:
 					// - MaxBullets
-					// - Artisan
 
 					default:
 						Log.Unimplemented("Item upgrade '{0}'", effect.Key);

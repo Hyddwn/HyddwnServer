@@ -4,7 +4,7 @@
 // Killing some monsters for Kristell and obtaining the Black Fomor Pass.
 // 
 // Wiki:
-// - Requirement: npc.Titles stated below while level 25 or higher
+// - Requirement: Titles stated below while level 25 or higher
 // - Instruction: Slay monsters threatening Kristell.
 //---------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ public class KristellsRequestQuest : QuestScript
 				return HookResult.Break;
 			}
 
-			var hasSlayerTitle = (npc.Title == 79 || npc.Title == 80 || npc.Title == 81 || npc.Title == 82 || npc.Title == 83 || npc.Title == 85 || npc.Title == 53);
+			var hasSlayerTitle = (npc.Player.IsUsingTitle(79) || npc.Player.IsUsingTitle(80) || npc.Player.IsUsingTitle(81) || npc.Player.IsUsingTitle(82) || npc.Player.IsUsingTitle(83) || npc.Player.IsUsingTitle(85) || npc.Player.IsUsingTitle(53));
 			if (!hasSlayerTitle)
 			{
 				npc.Msg(L("...<br/>If...<br/>If Tir Na Nog is..."));

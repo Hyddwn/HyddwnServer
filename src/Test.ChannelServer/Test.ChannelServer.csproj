@@ -49,6 +49,7 @@
     <Compile Include="Scripting\ScriptVariables.cs" />
     <Compile Include="Scripting\WUUpgrades.cs" />
     <Compile Include="World\Entities\Creature.cs" />
+    <Compile Include="World\Entities\Item.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChannelServer\ChannelServer.csproj">

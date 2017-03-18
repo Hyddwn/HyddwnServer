@@ -49,7 +49,7 @@ public class AeiraScript : NpcScript
 				Greet();
 				Msg(Hide.Name, GetMoodString(), FavorExpression());
 
-				if (Title == 11001)
+				if (Player.IsUsingTitle(11001))
 				{
 					Msg("Come to think of it... You're <username/>, right?<br/>The one who came looking for all those odd books. Haha.");
 					Msg("Thanks to you, I spent a lot of time and effort searching for those books, too.<br/>And since you really inconvenienced me in a lot of ways,<br/>I think it's only right that you return the favor.");
@@ -57,7 +57,7 @@ public class AeiraScript : NpcScript
 					Msg("Hmm... Well? Did the books I'd found help you at all?<br/>Congratulations on what you've accomplished.");
 					Msg("I look forward to doing more business with you.<br/>And come by the Bookstore more often!");
 				}
-				else if (Title == 11002)
+				else if (Player.IsUsingTitle(11002))
 				{
 					Msg("Wow... <username/>, you really<br/>rescued Erinn?<br/>I wasn't sure before, but you really are an amazing person.<br/>Please continue to watch over my Bookstore!");
 				}
@@ -66,7 +66,10 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "@shop":
-				Msg("Welcome to the Bookstore.");
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+					Msg("<username/>, I brought in some interesting books, and I think you might like it.<br/>Here's the collection book. See if you find anything you like...");
+				else
+					Msg("Welcome to the Bookstore.");
 				OpenShop("AeiraShop");
 				return;
 		}
@@ -114,6 +117,41 @@ public class AeiraScript : NpcScript
 					Msg(FavorExpression(), "My name? It's <npcname/>. We've never met before, have we?");
 					ModifyRelation(1, 0, 0);
 				}
+				else if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Stewart... He's kind of cool, don't you think?<br/>I'm rather concerned about him, though... He seems to like Priestess Kristell.<br/>I wonder what he thinks of me... Can you find out for me?");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Tee hee hee... You know,<br/>my father may seem aloof, but he actually has a big heart.<br/>You may find it hard to believe, but it's true!");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "My father runs the General Shop near the Square.<br/>Have you met him before?");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Hmm. We may be talking too much.<br/>I wonder if that's OK...?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Don't just look through the books without buying.<br/>You'll ruin the books that way. You should show these books some proper respect.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "My dad told me not to talk to people like you for too long.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "My dad told me not to talk to people like you for too long.");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
 				else
 				{
 					Player.GiveKeyword("shop_bookstore");
@@ -123,9 +161,51 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "rumor":
-				Player.GiveKeyword("school");
-				Msg(FavorExpression(), "If you want to properly train the stuff that's written on the book,<br/>why don't you first read the book in detail, then visit the school?<br/>Oh, and don't forget to talk to Stewart when you're there.");
-				ModifyRelation(Random(2), 0, Random(3));
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I don't like seeing Kristell and Stewart together so close!<br/>They are both good people but<br/>when I see them together, I can't stand it!<br/>*Sniff* Is that awful of me?");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Hehe. Actually, Stewart mentioned you the other day.<br/>He said you seemed like a good person, and that we'll get along well.");
+					Msg("Oh, and... Stewart really likes people who can handle all three elements.<br/>If you're interested in magic, try learning all three elements.<br/>You can buy the books here, hehe.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Hmm. Have you, by any chance,<br/>been to Math Dungeon that's near here?");
+					Msg("When I was there, I received a telepathic message.<br/>It told me that only those who follow the way of music can break the seal.");
+					Msg("I was curious to see how to break it, so I looked into it.<br/>For the seals on Dugald Aisle, or in Rabbi or Ciar Dungeon,<br/>there is a book written by Jarman that covers it.<br/>But there seems to be nothing like that for Math Dungeon...");
+					Msg("A dungeon that's full of music...<br/>I want to go in there sometime just to see what it's like.<br/>How about you?");
+					Msg("Kristell did say that you might be able to enter<br/>if your three music-related skills<br/>are at least at Rank D.");
+					Msg("How she knows something<br/>like that so well is beyond me...");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "I really don't like those people who buy a book, skim through it,<br/>just learn the skill, and then throw it away.<br/>A book has value in and of itself... There are plenty of helpful tips available if you read it carefully.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Umm... You seem to know everyone that I know really well.<br/>You're not expecting something big to happen here, are you?");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Player.IsUsingTitle(28))
+				{
+					Msg(FavorExpression(), "Oh... You're an Elemental Master, aren't you?<br/>Wow. You certainly have something different about you!");
+					Msg("But wait, <username/>, are you...<br/>a beginner?");
+					Msg("Tee hee hee... I'm just kidding.<br/>I'm sorry if you didn't find that funny.");
+					Msg("Still, when a beautiful girl like me makes a joke,<br/>you should at least have the courtesy to laugh!");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					Player.GiveKeyword("school");
+					Msg(FavorExpression(), "If you want to properly train the stuff that's written on the book,<br/>why don't you first read the book in detail, then visit the school?<br/>Oh, and don't forget to talk to Stewart when you're there.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
 				break;
 
 			case "about_skill":
@@ -296,20 +376,77 @@ public class AeiraScript : NpcScript
 				break;
 
 			default:
-				RndFavorMsg(
-					"...?",
-					"Umm... What did you just say?",
-					"Oh... Umm... That... I don't know.",
-					"I'm not sure I know. Maybe Stewart knows.",
-					"I don't know too much about that. Sorry...",
-					"I don't really understand what you just said...",
-					"Yeah, but... I don't really know anything about that.",
-					"Hahaha. Well, it's not really my area of expertise...",
-					"I don't know much about it, but let me know if you find out more.",
-					"I'm not sure exactly what that is but it seems important,<br/>seeing how so many people inquire about it...",
-					"Heh. Just because I own a bookstore doesn't mean that I've read all the books here.<br/>Please be patient with me."
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "Umm... Can we talk about something else instead?");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Hmm. I'm not sure. Let's see, what kind of book would we need?");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Ummmmm...");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "I'm not sure I know. Maybe Stewart knows.");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"...?",
+						"Umm... What did you just say?",
+						"Oh... Umm... That... I don't know.",
+						"I'm not sure I know. Maybe Stewart knows.",
+						"I don't know too much about that. Sorry...",
+						"I don't really understand what you just said...",
+						"Yeah, but... I don't really know anything about that.",
+						"Hahaha. Well, it's not really my area of expertise...",
+						"I don't know much about it, but let me know if you find out more.",
+						"I'm not sure exactly what that is but it seems important,<br/>seeing how so many people inquire about it...",
+						"Heh. Just because I own a bookstore doesn't mean that I've read all the books here.<br/>Please be patient with me."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				RndMsg(
+					L("Wow! What a gift! Amazing! Thank you! Thank you! <br/>I'm so into stuff like this! <br/>How did you think to get me this?"),
+					L("Thank you. It's just the what I like.<br/>I've been waiting for a long time to see what it'd be like to receive a present...<br/>I didn't think I would be receiving it today.")
 				);
-				ModifyRelation(0, 0, Random(3));
+				break;
+
+			case GiftReaction.Like:
+				RndMsg(
+					L("Oh, is this for me? <br/>Thank you. Oh, wow! I'm so happy!"),
+					L("Oh! I didn't think you would give me something like this as a gift!<br/>Thank you. Hehe.")
+				);
+				break;
+
+			case GiftReaction.Neutral:
+				RndMsg(
+					L("Huh? Was that for me?<br/>Thank you so much!"),
+					L("Oh, I should really return the favor.<br/>I don't have any decent books to give away, though...<br/>Thank you for the gift.")
+				);
+				break;
+
+			case GiftReaction.Dislike:
+				RndMsg(
+					L("Oh... This...?<br/>Not fair. I can't even give it back to you..."),
+					L("I got my hopes up when you gave me something<br/>but this is disappointing.<br/>Umm... I'll just give it to someone else.<br/>I'll tell that person that it's from you.")
+				);
 				break;
 		}
 	}
@@ -320,55 +457,55 @@ public class AeiraShop : NpcShopScript
 	public override void Setup()
 	{
 		Add("Skill Book", 1006); // Introduction to Music Composition
-		Add("Skill Book", 1012); // Campfire Manual
-		Add("Skill Book", 1505); // The World of Handicrafts
-		Add("Skill Book", 1302); // Your first Glass of Wine Vol. 1
-		Add("Skill Book", 1303); // Your first Glass of Wine Vol. 2
+		Add("Skill Book", 1007); // Healing: The Basics of Magic
 		Add("Skill Book", 1011); // Improving Your Composing Skill
-		Add("Skill Book", 1304); // Wine for the Everyman
+		Add("Skill Book", 1012); // Campfire Manual
+		Add("Skill Book", 1013, 1, 80000); // Music Theory
 		Add("Skill Book", 1018); // The History of Music in Erinn (1)
-		Add("Skill Book", 1305); // Tin's Liquor Drop
-		Add("Skill Book", 1083); // Campfire Skill: Beyond the Kit
+		Add("Skill Book", 1019); // The History of Music in Erinn (2)
+		Add("Skill Book", 1020); // Composition Lessons with Helene (1)
+		Add("Skill Book", 1029, 1, 9900); // A Campfire Memory
 		Add("Skill Book", 1064); // Master Chef's Cooking Class: Baking
 		Add("Skill Book", 1065); // Master Chef's Cooking Class: Simmering
-		Add("Skill Book", 1019); // The History of Music in Erinn (2)
 		Add("Skill Book", 1066); // About Kneading
-		Add("Skill Book", 1020); // Composition Lessons with Helene (1)
-		Add("Skill Book", 1123); // The Great Camping Companion: Camp Kit
-		Add("Skill Book", 1007); // Healing: The Basics of Magic
-		Add("Skill Book", 1029, 1, 9900); // A Campfire Memory
-		Add("Skill Book", 1114); // The History of Music in Erinn (3)
+		Add("Skill Book", 1083); // Campfire Skill : Beyond the Kit
 		Add("Skill Book", 1111); // The Path of Composing
-		Add("Skill Book", 1013, 1, 80000); // Music Theory
+		Add("Skill Book", 1114); // The History of Music in Erinn (3)
 		Add("Skill Book", 1115); // Effective Meditation
+		Add("Skill Book", 1123); // The Great Camping Companion: Camp Kit
+		Add("Skill Book", 1302); // Your First Glass of Wine Vol. 1
+		Add("Skill Book", 1303); // Your First Glass of Wine Vol. 2
+		Add("Skill Book", 1304); // Wine for the Everyman
+		Add("Skill Book", 1305); // Tin's Liquor Drop
 
-		Add("Life Skill Book", 1055); // The Road to Becoming a Magic Warrior
-		Add("Life Skill Book", 1056); // How to Enjoy Field Hunting
-		Add("Life Skill Book", 1092); // Enchant, Another Mysterious Magic
-		Add("Life Skill Book", 1124); // An Easy Guide to Taking Up Residence in a Home
-		Add("Life Skill Book", 1102); // Your Pet
-		Add("Life Skill Book", 1052); // How to milk a Cow
-		Add("Life Skill Book", 1050); // An Unempolyed Man's Memoir of Clothes
-		Add("Life Skill Book", 1040); // Facial Expressions Require Practice too
-		Add("Life Skill Book", 1046); // Fire Arrow, The Ultimate Archery
+		Add("Life Skill Book", 1015); // Seal Stone Research Almanac : Rabbie Dungeon
+		Add("Life Skill Book", 1016); // Seal Stone Research Almanac : Ciar Dungeon
+		Add("Life Skill Book", 1017); // Seal Stone Research Almanac : Dugald Aisle
 		Add("Life Skill Book", 1021); // The Tir Chonaill Environs
 		Add("Life Skill Book", 1022); // The Dunbarton Environs
-		Add("Life Skill Book", 1043); // Wizards Love the Dark
-		Add("Life Skill Book", 1057); // Introduction to Field Bosses
-		Add("Life Skill Book", 1058); // Understanding Whisps
-		Add("Life Skill Book", 1015); // Seal Stone Research Almanac: Rabbie Dungeon
-		Add("Life Skill Book", 1016); // Seal Stone Research Almanac: Ciar Dungeon
-		Add("Life Skill Book", 1017); // Seal Stone Research Almanac: Dugald Aisle
+		Add("Life Skill Book", 1031); // Understanding Elementals
 		Add("Life Skill Book", 1033); // Guidebook for Dungeon Exploration - Theory
 		Add("Life Skill Book", 1034); // Guidebook for Dungeon Exploration - Practicum
 		Add("Life Skill Book", 1035); // An Adventurer's Memoir
-		Add("Life Skill Book", 1077); // Wanderer of the Fiodh Forest
-		Add("Life Skill Book", 1090); // How Am I Going to Survive Like This?
-		Add("Life Skill Book", 1031); // Understanding Elementals
-		Add("Life Skill Book", 1036); // Records of the Bangorr Seal Stone Investigation
+		Add("Life Skill Book", 1036); // Records of the Bangor Seal Stone Investigation
+		Add("Life Skill Book", 1040); // Facial Expressions Require Practice too
+		Add("Life Skill Book", 1043); // Wizards Love the Dark
+		Add("Life Skill Book", 1046); // Fire Arrow, The Ultimate Archery
+		Add("Life Skill Book", 1050); // An Unemployed Man's Memoir of Clothes
+		Add("Life Skill Book", 1052); // How to Milk a Cow
+		Add("Life Skill Book", 1055); // The Road to Becoming a Magic Warrior
+		Add("Life Skill Book", 1056); // How to Enjoy Field Hunting
+		Add("Life Skill Book", 1057); // Introduction to Field Bosses
+		Add("Life Skill Book", 1058); // Understanding Wisps
 		Add("Life Skill Book", 1072); // Cooking on Your Own Vol. 1
 		Add("Life Skill Book", 1073); // Cooking on Your Own Vol. 2
+		Add("Life Skill Book", 1077); // Wanderer of the Fiodh Forest
+		Add("Life Skill Book", 1090); // How Am I Going to Survive Like This?
+		Add("Life Skill Book", 1102); // Your Pet
+		Add("Life Skill Book", 1124); // An Easy Guide to Taking Up Residence in a Home
+		Add("Life Skill Book", 1701); // Dunbarton Collection Book
 
+		// A feature check will eventually go here since the Literature tab no longer exists
 		Add("Literature", 1023);  // The Story of Spiral Hill
 		Add("Literature", 1025);  // Mystery of the Dungeon
 		Add("Literature", 1026);  // A Report on Astralium
@@ -386,5 +523,16 @@ public class AeiraShop : NpcShopScript
 		Add("Literature", 74028); // The Forgotten Legend of Fiodh Forest
 		Add("Literature", 74029); // The Tragedy of Emain Macha
 		Add("Literature", 74027); // The Knight of Light Lugh, The Hero of Mag Tuireadh
+
+		if (IsEnabled("Handicraft"))
+			Add("Skill Book", 1505); // The World of Handicrafts
+
+		Add("Collection Book", (c, o) => o.GetMemory(c) >= 15 && o.GetFavor(c) >= 50 && o.GetStress(c) <= 5);
+		Add("Collection Book", 1500); // Weapon Collection Vol. 1
+		Add("Collection Book", 1503); // Special Item Collection - Signs
+		Add("Collection Book", 1506); // Collect Music Bottles
+		Add("Collection Book", 1507); // Food Collection - Snacks for Everyone
+		Add("Collection Book", 1508); // Food Collection - Meal that's Simple, yet Filling
+		Add("Collection Book", 1509); // Food Collection - A Special Dinner with Someone
 	}
 }

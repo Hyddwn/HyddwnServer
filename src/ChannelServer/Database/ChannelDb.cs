@@ -550,6 +550,10 @@ namespace Aura.Channel.Database
 				character.Keywords.Add("portal_belfast");
 				character.Keywords.Add("portal_dunbarton");
 			}
+
+			// Remove keywords that make the NA client freeze
+			if (character.Keywords.Has("nao_cloth_kimono")) character.Keywords.RemoveSilent("nao_cloth_kimono");
+			if (character.Keywords.Has("nao_yukata")) character.Keywords.RemoveSilent("nao_yukata");
 		}
 
 		/// <summary>
