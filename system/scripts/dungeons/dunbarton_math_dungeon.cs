@@ -106,6 +106,13 @@ public class MathDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Math Valentine's Day Dungeon
+		if (item.Info.Id == 75496)
+		{
+			dungeonName = "dunbarton_math_valentine_dungeon";
+			return true;
+		}
+
 		// Fall back for unknown passes
 		if (item.IsDungeonPass)
 		{
