@@ -423,9 +423,9 @@ namespace Aura.Channel.World.Entities
 			{
 				switch (sealColor)
 				{
-					case "yellow": this.Info.Color3 = 0xF4AE05; break;
 					//case "blue": this.Info.Color3 = 0xF4AE05; break;
 					//case "red": this.Info.Color3 = 0xF4AE05; break;
+					case "yellow": this.Info.Color3 = 0xF4AE05; break;
 				}
 			}
 		}
