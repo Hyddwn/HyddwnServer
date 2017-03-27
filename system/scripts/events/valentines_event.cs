@@ -88,12 +88,12 @@ public class AbbeyEventNpcScript : NpcScript
 			{
 				StartQuest(400021);
 				Msg("Hello, what did you need?");
-				Msg(Hide.Name,"You explain that you want to help Abbey express her feelings to Conor.");
+				Msg(Hide.Name, "You explain that you want to help Abbey express her feelings to Conor.");
 				Msg("W-w-what?<br/>...Well I suppose it is true that I have a crush on him...<br/>But what will I do if he rejects me?");
-				Msg(Hide.Name,"You explain that Conor seems to have a crush on Abbey as well.");
+				Msg(Hide.Name, "You explain that Conor seems to have a crush on Abbey as well.");
 				Msg("Is that so?<br/>Well... I suppose I could try something.");
 				Msg("How about we make a cacao chocolate cake?<br/>Yes of course we...<br/>I'm pretty terrible at cooking.");
-				Msg(Hide.Name,"You decide to agree to make the cake for her.");
+				Msg(Hide.Name, "You decide to agree to make the cake for her.");
 				Msg("Okay, well its pretty simple to make.<br/>Cacao chocolate cake can be made with sugar,<br/>flour dough, and cacao by mixing with your cooking skill.<br/>All the ingredients are available at any grocery store.");
 				Msg("Do you think you could deliver that when you're done<br/>and tell him it was from me?");
 				Msg("I feel like I wouldn't be able to talk straight<br/>if I delivered it myself.");
@@ -168,7 +168,7 @@ public class ConorEventNpcScript : NpcScript
 			var now = DateTime.Now;
 			var nowDay = now.Day;
 			var lastReceivedDay = GetLastReceivedDay(now);
-			
+
 			if (QuestActive(400023, "talk_conor")) // Check to see if the quest is active
 			{
 				SaveLastReceivedDay(now);
@@ -190,12 +190,12 @@ public class ConorEventNpcScript : NpcScript
 			{
 				StartQuest(400023);
 				Msg("Hello, did you need something?");
-				Msg(Hide.Name,"You explain that you want to help Conor express her feelings to Abbey.");
+				Msg(Hide.Name, "You explain that you want to help Conor express her feelings to Abbey.");
 				Msg("Oh...<br/>Well I suppose it is true that I have a crush on her...<br/>I don't have the courage to tell her how I feel though...");
-				Msg(Hide.Name,"You explain that Abbey seems to have a crush on Conor as well.");
+				Msg(Hide.Name, "You explain that Abbey seems to have a crush on Conor as well.");
 				Msg("Really?<br/>I can't say I was expecting that...<br/>Hmm... What should I do then...");
 				Msg("How about we make a cacao chocolate cake?<br/>Yes I said we...<br/>I'm a disaster in the kitchen.");
-				Msg(Hide.Name,"You decide to agree to make the cake for him.");
+				Msg(Hide.Name, "You decide to agree to make the cake for him.");
 				Msg("Okay, well it doesn't seem too hard to make.<br/>Cacao chocolate cake can be made with sugar,<br/>flour dough, and cacao by mixing with your cooking skill.<br/>All the ingredients are available at any grocery store.");
 				Msg("Do you think you could deliver that when you're done<br/>and tell her it was from me?");
 				Msg("I'm not sure if I could muster up the courage<br/>to deliver it myself...");
@@ -314,7 +314,7 @@ public class ValentinesAbbeyCakeScript : QuestScript
 			npc.FinishQuest(this.Id, "talk_conor");
 
 			npc.RemoveItem(50707); // Cacao Chocolate Cake
-			npc.Msg(Hide.Name,"You present the cake to Conor,<br/>You explain that its from Abbey.");
+			npc.Msg(Hide.Name, "You present the cake to Conor,<br/>You explain that its from Abbey.");
 			npc.Msg("Abbey?!<br/>Really? I never knew she felt that way about me...");
 			npc.Msg("I'm sorry... I'm really happy.<br/>Thank you for the cake.");
 
@@ -322,14 +322,14 @@ public class ValentinesAbbeyCakeScript : QuestScript
 		}
 		return HookResult.Continue;
 	}
-	
+
 	public async Task<HookResult> TalkAbbey(NpcScript npc, params object[] args)
 	{
 		if (npc.QuestActive(this.Id, "talk_abbey"))
 		{
 			npc.FinishQuest(this.Id, "talk_abbey");
 
-			npc.Msg(Hide.Name,"You explain Conor's reaction to the cake to Abbey.");
+			npc.Msg(Hide.Name, "You explain Conor's reaction to the cake to Abbey.");
 			npc.Msg("Oh?<br/>I guess he really does feel that way about me.");
 			npc.Msg("I'm really happy to hear that.<br/>Do you think you could help me make another cake tomorrow?");
 			npc.Msg("Oh right, its not much, but take these for your trouble.");
@@ -371,7 +371,7 @@ public class ValentinesAbbeyCake2Script : QuestScript
 			npc.FinishQuest(this.Id, "talk_conor");
 
 			npc.RemoveItem(50707); // Cacao Chocolate Cake
-			npc.Msg(Hide.Name,"You present the cake to Conor,<br/>You explain that its from Abbey.");
+			npc.Msg(Hide.Name, "You present the cake to Conor,<br/>You explain that its from Abbey.");
 			npc.Msg("Another cake?<br/>Perhaps I should return the favor one day...");
 			npc.Msg("Anyways, thank you for the cake.");
 
@@ -386,11 +386,11 @@ public class ValentinesAbbeyCake2Script : QuestScript
 		{
 			npc.FinishQuest(this.Id, "talk_abbey");
 
-			npc.Msg(Hide.Name,"You tell Abbey that you delivered the cake.");
+			npc.Msg(Hide.Name, "You tell Abbey that you delivered the cake.");
 			npc.Msg("It seemed that he liked it right?<br/>He even said that he should return the favor?");
 			npc.Msg("I'm really happy to hear that.<br/>Do you think you could help me make another cake tomorrow?");
 			npc.Msg("Oh right, its not much, but take these for your trouble.");
-			npc.Msg("Thanks again for the help.");			
+			npc.Msg("Thanks again for the help.");
 
 			return HookResult.Break;
 		}
@@ -429,7 +429,7 @@ public class ValentinesConorCakeScript : QuestScript
 			npc.FinishQuest(this.Id, "talk_abbey");
 
 			npc.RemoveItem(50707); // Cacao Chocolate Cake
-			npc.Msg(Hide.Name,"You present the cake to Abbey,<br/>You explain that its from Conor.");
+			npc.Msg(Hide.Name, "You present the cake to Abbey,<br/>You explain that its from Conor.");
 			npc.Msg("Conor did...?<br/>Wow, I didn't realize he felt that way about me...");
 			npc.Msg("I'm really happy to know that.<br/>Thank you for the cake.");
 
@@ -444,7 +444,7 @@ public class ValentinesConorCakeScript : QuestScript
 		{
 			npc.FinishQuest(this.Id, "talk_conor");
 
-			npc.Msg(Hide.Name,"You explain Abbey's reaction to the cake to Conor.");
+			npc.Msg(Hide.Name, "You explain Abbey's reaction to the cake to Conor.");
 			npc.Msg("Oh?<br/>She really does like me then...");
 			npc.Msg("Well, I'm glad to hear that's the case.<br/>Do you think you could help me make another cake tomorrow?");
 			npc.Msg("Oh right, its not much, but take these for your trouble.");
@@ -486,7 +486,7 @@ public class ValentinesConorCake2Script : QuestScript
 			npc.FinishQuest(this.Id, "talk_abbey");
 
 			npc.RemoveItem(50707); // Cacao Chocolate Cake
-			npc.Msg(Hide.Name,"You present the cake to Abbey,<br/>You explain that its from Conor.");
+			npc.Msg(Hide.Name, "You present the cake to Abbey,<br/>You explain that its from Conor.");
 			npc.Msg("Another cake?<br/>That's sweet of him...<br/>I feel like I should do something for him.");
 			npc.Msg("Anyways, thank you for the cake.");
 
@@ -501,11 +501,11 @@ public class ValentinesConorCake2Script : QuestScript
 		{
 			npc.FinishQuest(this.Id, "talk_conor");
 
-			npc.Msg(Hide.Name,"You tell Conor that you delivered the cake.");
+			npc.Msg(Hide.Name, "You tell Conor that you delivered the cake.");
 			npc.Msg("It seemed that she liked it right?<br/>She even said that she should return the favor?");
 			npc.Msg("Well, I'm glad to hear that's the case.<br/>Do you think you could help me make another cake tomorrow?");
 			npc.Msg("Oh right, its not much, but take these for your trouble.");
-			npc.Msg("Thanks again for the help.");			
+			npc.Msg("Thanks again for the help.");
 
 			return HookResult.Break;
 		}
