@@ -564,10 +564,7 @@ public class FemaleValentinesBox : ItemScript
 		var rnd = RandomProvider.Get();
 		var item = Item.GetRandomDrop(rnd, list);
 
-		if (item != null)
-		{
-			cr.Inventory.Add(item, true);
-		}
+		cr.Inventory.Add(item, true);
 	}
 }
 
@@ -620,9 +617,6 @@ public class MaleValentinesBox : ItemScript
 		var rnd = RandomProvider.Get();
 		var item = Item.GetRandomDrop(rnd, list);
 
-		if (item != null)
-		{
-			cr.Inventory.Add(item, true);
-		}
+		cr.Inventory.Add(item, true);
 	}
 }
