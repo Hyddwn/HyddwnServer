@@ -832,6 +832,40 @@
 	]},
 ]},
 
+// Barri Hidden Mine
+{ name: "bangor_barri_hidden_gold_dungeon", engName: "Hidden Barri Dungeon", style: 300000, baseSeed: 31000000, lobby: 34, exit: "Ula_DgnHall_Bangor_before1/_Ula_DgnHall_Bangor_before1/DG_BangorBefore1_Outer_Spawn", stairs: 23032, saveStatue: 23030, lastStatue: 23036, door: 23022, bossDoor: 23024, bossExitDoor: 23025, floors: [
+	// Floor 1
+	{ width: 8, height: 8, critPathMin: 30, critPathMax: 36, branch: 25, coverage: 40, hasBoss: true, color: [0x00FFFFFF,0x00BB9486,0x00BB9486], lightColor: [0x00BB9486,0x00BB9486,0x00BB9486], sections: [
+		{ min: 1, max: 1, puzzles: [
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 30002, amount: 3 }], [{ raceId: 30002, amount: 6 }], [{ raceId: 10101, amount: 5 }] ] },
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 80003, amount: 1 }], [{ raceId: 80003, amount: 3 }], [{ raceId: 10101, amount: 5 }] ] },
+			{ script: "entrance_puzzle", groups: [ [{ raceId: 80003, amount: 1 }], [{ raceId: 80003, amount: 3 }], [{ raceId: 10101, amount: 5 }] ] },
+		]},
+		{ min: 3, max: 4, puzzles: [
+			{ script: "keychest_monster", groups: [ [{ raceId: 30002, amount: 3 }], [{ raceId: 30002, amount: 6 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "keychest_monster", groups: [ [{ raceId: 80003, amount: 1 }], [{ raceId: 80003, amount: 3 }], [{ raceId: 10101, amount: 5 }] ] },
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 10101, amount: 5 }], [{ raceId: 10101, amount: 5 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "collectprop_gold_ore" },
+		]},
+		{ min: 3, max: 3, puzzles: [
+			{ script: "keychest_monster", groups: [ [{ raceId: 30002, amount: 3 }], [{ raceId: 30002, amount: 6 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "collectprop_gold_ore" },
+			{ script: "collectprop_gold_ore" },
+		]},
+		{ min: 3, max: 4, puzzles: [
+			{ script: "keychest_monster", groups: [ [{ raceId: 30002, amount: 3 }], [{ raceId: 30002, amount: 6 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "keychest_monster", groups: [ [{ raceId: 80003, amount: 1 }], [{ raceId: 80003, amount: 3 }], [{ raceId: 10101, amount: 5 }] ] },
+			{ script: "keychest_3mimic", groups: [ [{ raceId: 10101, amount: 5 }], [{ raceId: 10101, amount: 5 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "collectprop_gold_ore" },
+		]},
+		{ min: 3, max: 3, puzzles: [
+			{ script: "keychest_monster", groups: [ [{ raceId: 30002, amount: 3 }], [{ raceId: 30002, amount: 6 }], [{ raceId: 90001, amount: 3 }] ] },
+			{ script: "collectprop_gold_ore" },
+			{ script: "collectprop_gold_ore" },
+		]},
+	]},
+]},
+
 // Ciar
 //---------------------------------------------------------------------------
 
