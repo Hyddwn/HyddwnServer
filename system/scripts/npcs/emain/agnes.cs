@@ -390,7 +390,7 @@ public class AgnesShop : NpcShopScript
 			Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
 		}
 
-		Add("Books", (creature, npc) => npc.GetFavor(creature) >= 50);
+		Add("Books", (c, o) => o.GetMemory(c) >= 15 && o.GetFavor(c) >= 50 && o.GetStress(c) <= 5);
 		Add("Books", 1084); // Quick and Effective First Aid
 	}
 }
