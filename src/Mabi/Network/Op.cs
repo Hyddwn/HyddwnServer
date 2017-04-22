@@ -616,11 +616,11 @@ namespace Aura.Mabi.Network
 		// [200200, NA242 (2016-06-16)]
 		// Presumably 2 ops were added, which shifted SetBgm?~DestroyExpiredItemsR.
 
-		public const int SetBgm = 0xA914;
-		public const int UnsetBgm = 0xA915;
-
 		// [200200, NA249 (2017-04-13)]
-		// Presumably 2 ops were added, which shifted EnterDynamicRegionExtended?~DcUnkR?.
+		// Presumably 2 ops were added, which shifted SetBgm?~DcUnkR?.
+
+		public const int SetBgm = 0xA916;
+		public const int UnsetBgm = 0xA917;
 
 		public const int EnterDynamicRegionExtended = 0xA986; // Creates multiple dynamic regions and warps to one
 		public const int EnableRoyalAlchemist = 0xA9AB;
