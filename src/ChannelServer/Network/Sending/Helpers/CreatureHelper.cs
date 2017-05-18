@@ -945,6 +945,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 			else
 				packet.PutLong(creature.Temp.SittingProp.EntityId);
 
+			// [200200, NA252 (2017-05-18)] ?
+			{
+				packet.PutInt(0);
+			}
+
 			packet.PutInt(-1);                   // SittedSocialMotionId
 
 			// ? (Last Part of public, except for something at the very end)
@@ -1041,6 +1046,13 @@ namespace Aura.Channel.Network.Sending.Helpers
 					packet.PutByte(0);
 					packet.PutByte(false);                                       // Enables "Pure Music Mode" button above head
 				}
+
+				// [200200, NA252 (2017-05-18)] ?
+				{
+					packet.PutInt(0);
+					packet.PutInt(0);
+				}
+
 				packet.PutByte(false);                                            // Bags, Account Bank
 				packet.PutByte(false);
 				packet.PutByte(false);

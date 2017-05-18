@@ -206,6 +206,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 					// still get certain rewards after a timeout at some
 					// point?
 					packet.PutByte(true);
+
+					// [200200, NA252 (2017-05-18)] ?
+					{
+						packet.PutByte(0);
+					}
 				}
 			}
 
