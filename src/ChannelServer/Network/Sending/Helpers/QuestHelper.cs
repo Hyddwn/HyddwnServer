@@ -23,7 +23,8 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			packet.PutLong(quest.QuestItem.EntityId);
 
-			packet.PutByte((byte)quest.Data.Type); // 0 = blue icon, 2 = normal, 4 = exploration, 7 = shadow (changes structure slightly)
+			packet.PutByte((byte)quest.Data.Type);
+			// 0 = blue icon, 2 = normal, 4 = exploration, 7 = shadow (changes structure slightly)
 			// Client values that might make sense:
 			// Delivery: 1? (id == 506401?)
 			// Event: 1? ((this + 80) == 18?)
@@ -36,7 +37,8 @@ namespace Aura.Channel.Network.Sending.Helpers
 			// GuildQuest: 0 (id >= 110001 < 120000?)
 			// PartyQuest: 0 (id >= 100000 < 110000?), blue icon with party symbol, turns yellow if active
 
-			packet.PutInt(quest.Id); // Range is important for the tabs.
+			packet.PutInt(quest.Id);
+			// Range is important for the tabs.
 			// 201000~201999 : event
 			// 202000~209999 : normal
 			// 210000~239999 : goddess
