@@ -754,6 +754,10 @@ namespace Aura.Mabi.Network
 
 		public const int UnkCharWindow = 0xACAE; // [200200, NA249 (2017-04-13)]
 
+		// [200200, NA252 (2017-05-18)]
+		public const int SkillApTraining = 0xACB8;
+		public const int SkillApTrainingR = 0xACB9;
+
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
 
