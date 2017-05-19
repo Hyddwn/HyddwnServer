@@ -560,6 +560,13 @@ namespace Aura.Login.Network
 				packet.PutByte(0); // 0: Human, 1: Elf, 2: Giant
 				packet.PutByte(0); // Assist character ?
 				packet.PutByte(0); // >0 hides all characters?
+
+				// [200200, NA252 (2017-05-18)]
+				// Possibly related to the new rebirth timer? Time until
+				// next rebirth? Though it's 0 on NA.
+				{
+					packet.PutLong(0);
+				}
 			}
 
 			// Pets
