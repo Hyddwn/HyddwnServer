@@ -199,6 +199,11 @@ public class AgnesScript : NpcScript
 				Msg("...Or are you looking for<br/>some place else?");
 				break;
 
+			case "skill_range":
+				Msg("I am no expert on Long-Range Attack skills, but...<br/> I heard you can learn it fairly easily if you use<br/>a weapon like the bow or a crossbow.");
+				Msg("...Since injuries caused by bows can leave a scar,<br/>you should be careful where you aim the weapon...");
+				break;
+
 			case "skill_instrument":
 				Msg("If you want to know about music skills<br/>why don't you try asking a musician?");
 				Msg("Oh! That's right! There is a guy named Nele at the Square.<br/>He might know a thing or two about instruments. Have you asked him?<br/>If not, why don't you go talk to him?");
@@ -207,6 +212,16 @@ public class AgnesScript : NpcScript
 			case "skill_tailoring":
 				Msg("If you want to know about tailoring...<br/>you should go visit Tre'imhse Cairde<br/>and ask Ailionoa.");
 				Msg("...But, I don't know why Ailionoa is<br/>so grumpy all the time.<br/>If she would just smile, it would make her look so much prettier!<br/>...I think people find her difficult.");
+				break;
+
+			case "skill_magnum_shot":
+				Msg("I don't know much about the Magnum Shot skill,<br/>but I've seen somebody get shot by the Magnum Shot.<br/>It leaves a very deep wound that is difficult to heal<br/>without proper emergency treatment...");
+				Msg("If you are an adventurer, you should be careful...");
+				break;
+
+			case "skill_smash":
+				Msg("Now that I've been a Healer for quite some time,<br/>I'm increasingly able to tell what's happened...<br/>just by looking at someone's wound or injury.");
+				Msg("...I've seen a lot of men with swollen faces<br/>come in after being hit by Smash...<br/>They all seem to get attacked hard at Rabbi dungeon. <br/>Haha...");
 				break;
 
 			case "skill_gathering":
@@ -267,6 +282,11 @@ public class AgnesScript : NpcScript
 				Msg("Are you headed towards the Graveyard?<br/>...To pay your respects to the dead...?<br/>Then first go to the Square<br/>and follow the eastern road.");
 				Msg("...I don't go there too often...<br/>Graveyards make Healers feel guilty for some reason...");
 				Msg("...If you're going there for a specific person<br/>you might want to visit Del or Delen at the Square<br/>and get some flowers...");
+				break;
+
+			case "bow":
+				Msg("Well... I'm just a Healer.<br/>I don't know much about bows...<br/>Why don't you ask Osla at the Weapons Shop?<br/>She might know something about that.");
+				Msg("...Do you know her? Osla?<br/>She always makes this nasal sound when she talks...<br/>Like this... hmm...hmm...hmm...");
 				break;
 
 			case "tir_na_nog":
