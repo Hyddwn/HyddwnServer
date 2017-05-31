@@ -10,4 +10,5 @@
 { id: "TirChonaillBank", name: "Tir Chonaill Bank", x: 1000, y: 1000 },
 { id: "DunbartonBank", name: "Dunbarton Bank", x: 1015, y: 1045 },
 { id: "BangorBank", name: "Bangor Bank", x: 1030, y: 1090 },
+{ id: "EmainMachBank", name: "Emain Macha Bank", x: 970, y: 1050 },
 ]
