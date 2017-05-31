@@ -2018,6 +2018,19 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Makes creature controlled by the AI drop gold.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		protected IEnumerable DropGold(int amount)
+		{
+			var gold = Item.CreateGold(amount);
+			gold.Drop(this.Creature.Region, this.Creature.GetPosition(), 200, this.Creature, true);
+
+			yield break;
+		}
+
+		/// <summary>
 		/// Sets the skin color of the creature controlled by the AI.
 		/// </summary>
 		/// <param name="skinColor"></param>
