@@ -197,6 +197,10 @@ public class NeleScript : NpcScript
 			case "shop_smith":
 				Msg("There's no Blacksmith's Shop around Emain Macha, but there's a Weapons Shop...<br/>Head west from here and you'll find it.");
 				break;
+				
+			case "skill_range":
+				Msg("Hmm... I don't know if you have to go to that length...<br/>but... I'm sure an experienced fighter wouldn't say that.");
+				break;
 
 			case "skill_rest":
 				Msg("I like it... It's my favorite skill out there... Haha.");
@@ -205,9 +209,18 @@ public class NeleScript : NpcScript
 			case "skill_instrument":
 				Msg("Easy. Anyone can learn it, as long as he or she has an instrument to play with...<br/>You don't even have to be awesome at it.<br/>You just need to be good enough to have fun with it.<br/>Music is supposed to be fun...");
 				break;
+	
+			case "skill_composing":
+				GiveKeyword("musicsheet");
+				Msg("If you want to write good music, it is very important to<br/>set up the overall theme of the song first...<br/>No matter how many hours you spend in front of the music score,<br/> if you don't have the right theme,<br/>you won't be able to compose a song...");
+				break;
 
 			case "skill_tailoring":
 				Msg("Hmm... So if I were to have that skill...<br/>would it be easier for me to sew my own clothes...?<br/>What do you think? Do you think I should learn it?");
+				break;
+				
+			case "skill_smash":
+				Msg("It would hurt to get hit by that thing...<br/>Don't you think so?");
 				break;
 
 			case "skill_gathering":
@@ -273,12 +286,21 @@ public class NeleScript : NpcScript
 				Msg("Hmmm... I don't like to talk about sad stories...");
 				break;
 
-			case "fishing":
+			case "skill_fishing":
 				Msg("Are you aware that Priest James enjoys fishing<br/>a lot more than he would like people to believe...?");
+				break;
+				
+			case "bow":
+				Msg("I think Osla sells those.<br/>A very interesting lady...<br/>who sells weapons...");
 				break;
 
 			case "lute":
 				Msg("I hear some people tell me<br/>this lute looks old, and that I'll need it replaced...<br/>I've been playing this lute for so long, though,<br/>that this lute feels more like a friend to me than an instrument...");
+				break;
+				
+			case "complicity":
+				Msg("Instigating people is a foolish thing to do...");
+				Msg("Of course I'm joking, haha...");
 				break;
 
 			case "tir_na_nog":
