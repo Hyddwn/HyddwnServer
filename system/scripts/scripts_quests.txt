@@ -99,6 +99,18 @@ quests/skills/200063_dilys_herbalism.cs
 quests/skills/200042_manus_herbalism.cs
 quests/skills/204003_malcolm_weaving_g7.cs
 
+// Skill Rankup Quests
+quests/skills/rankup/200013_redbear_hunting.cs
+quests/skills/rankup/200014_smash_training.cs
+quests/skills/rankup/200015_counter_training.cs
+quests/skills/rankup/200016_windmill_training.cs
+quests/skills/rankup/200017_fox_hunting.cs
+quests/skills/rankup/200018_magnumshot_training.cs
+quests/skills/rankup/200019_healing_training.cs
+quests/skills/rankup/200021_instrument_training.cs
+quests/skills/rankup/200022_composing_training.cs
+quests/skills/rankup/200023_musicalknowledge_training.cs
+
 // Scroll Hunting
 quests/scrolls/*
 quests/party/*
