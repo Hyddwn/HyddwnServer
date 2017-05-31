@@ -16,7 +16,7 @@ public class EmainRegionScript : RegionScript
 	public override void LoadWarps()
 	{
 		// Sen Mag
-		SetPropBehavior(0x00A000340005001A, PropWarp(52,61831,7523, 53,69220,107798));
+		SetPropBehavior(0x00A000340005001A, PropWarp(52, 61831, 7523, 53, 69220, 107798));
 		SetPropBehavior(0x00A0003500020003, PropWarp(53, 65425, 107675, 52, 60692, 7282));
 
 		// Coill
@@ -24,7 +24,21 @@ public class EmainRegionScript : RegionScript
 		SetPropBehavior(0x00A0003600000003, PropWarp(54, 3454, 4430, 52, 22021, 69671));
 
 		// Club
-		SetPropBehavior(0x00A000340000015E, PropWarp(52, 48295, 48305, 57, 5979, 5278));
+		//SetPropBehavior(0x00A000340000015E, PropWarp(52, 48295, 48305, 57, 5979, 5278));		
+		SetPropBehavior(0x00A000340000015E, (creature, prop) =>
+		{
+			if (creature.Party.HasPets)
+				Send.MsgBox(creature, L("You cannot enter the club with a summoned pet."));
+			else if (ErinnHour(6, 18))
+				Send.MsgBox(creature, L("You can only enter at night, when Eweca fills the air."));
+			else if (creature.HasItem(73111))
+			{
+				creature.RemoveItem(73111);
+				creature.Warp(57, 5979, 5278);
+			}
+			else
+				Send.MsgBox(creature, "Purchase a pass if you wish to enter the club.");
+		});
 		SetPropBehavior(0x00A0003900000002, PropWarp(57, 5831, 5082, 52, 47996, 48008));
 
 		// Lookout 1
