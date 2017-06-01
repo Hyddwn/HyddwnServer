@@ -445,7 +445,7 @@ public class OslaShop : NpcShopScript
 		Add("Shoes & Gloves", 17501); // Solleret Shoes
 		Add("Shoes & Gloves", 17506); // Long Greaves
 		Add("Shoes & Gloves", 16523); // Graceful Gauntlet
-		Add("Shoes & Gloves", 16523); // Graceful Greaves
+		Add("Shoes & Gloves", 17515); // Graceful Greaves
 
 		Add("Helmet", 18501); // Guardian Helm
 		Add("Helmet", 18502); // Bone Helm
