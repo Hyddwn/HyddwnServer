@@ -57,33 +57,63 @@ public class BeanRuaGuard1Script : NpcScript
 	{
 		if (ErinnHour(16, 18))
 		{
-			// RndMsg currently doesn't support buttons.
-			//RndMsg(
-			//	"Okay, you can start filing in later.<br/>Hold on for now.",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"Bean Rua opens late in the afternoon...",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"Now now. Maybe later...",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"You're here too early. Please come back in a bit.",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"You can't go in right now...<br/>stop being so stubborn.",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"I was told you'd come, but... you're too early.",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"Can you please wait for a bit?",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit")
-			//);
-			Msg("Okay, you can start filing in later.<br/>Hold on for now.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+			switch (Random(7))
+			{
+				case 0:
+					Msg("Okay, you can start filing in later.<br/>Hold on for now.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 1:
+					Msg("Bean Rua opens late in the afternoon...", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 2:
+					Msg("Now now. Maybe later...", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 3:
+					Msg("You're here too early. Please come back in a bit.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 4:
+					Msg("You can't go in right now...<br/>stop being so stubborn.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 5:
+					Msg("I was told you'd come, but... you're too early.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 6:
+					Msg("Can you please wait for a bit?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+			}
 		}
 		else if (ErinnHour(18, 6))
 		{
-			// RndMsg currently doesn't support buttons.
-			//RndMsg(
-			//	"Would you prefer talking to me, instead of just walking on in...?",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"Are you looking for your party...?",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"You're staring at me...<p/>...Do I have something on my face?",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"Hello there. Looking good.",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"Welcome to Bean Rua.",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"The door's open. You can walk in, you know...",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"Do you have anything for me?",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"Welcome! Welcome! Welcome to Bean Rua, where the beautiful redheads rule.",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"),
-			//	"Did you make a reservation?",Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit")
-			//);
-			Msg("Welcome! Welcome! Welcome to Bean Rua, where the beautiful redheads rule.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+			switch (Random(9))
+			{
+				case 0:
+					Msg("Would you prefer talking to me, instead of just walking on in...", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 1:
+					Msg("Are you looking for your party...?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 2:
+					Msg("You're staring at me...<p/>...Do I have something on my face?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 3:
+					Msg("Hello there. Looking good.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 4:
+					Msg("Welcome to Bean Rua.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 5:
+					Msg("The door's open. You can walk in, you know...", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 6:
+					Msg("Do you have anything for me?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 7:
+					Msg("Welcome! Welcome! Welcome to Bean Rua, where the beautiful redheads rule.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+				case 8:
+					Msg("Did you make a reservation?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
+					break;
+			}
 		}
 		else
 		{
