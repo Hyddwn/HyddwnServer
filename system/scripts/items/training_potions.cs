@@ -3,10 +3,7 @@ public class EnthrallingPerformanceTrainingPotion41227ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.EnthrallingPerformance, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -15,10 +12,7 @@ public class WindmillTrainingPotion91151ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Windmill, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -27,10 +21,7 @@ public class RefiningTrainingPotion91152ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Refining, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -39,10 +30,7 @@ public class MagicTrainingPotion91156ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.MagicMastery, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -51,10 +39,7 @@ public class AlchemyTrainingPotion91157ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.AlchemyMastery, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -63,10 +48,7 @@ public class FishingTrainingPotion91215ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Fishing, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -75,10 +57,7 @@ public class HealingTrainingPotion91216ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Healing, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -87,10 +66,7 @@ public class SynthesisTrainingPotion91217ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Synthesis, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -99,10 +75,7 @@ public class CriticalHitTrainingPotion91218ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.CriticalHit, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -111,10 +84,7 @@ public class SpiritofOrderTrainingPotion91219ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.SpiritOfOrder, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -123,10 +93,7 @@ public class SoulofChaosTrainingPotion91220ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.SoulOfChaos, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -135,10 +102,7 @@ public class FuryofConnousTrainingPotion91221ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.FuryOfConnous, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -147,10 +111,7 @@ public class DaemonofPhysisTrainingPotion91222ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.DemonOfPhysis, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -159,10 +120,7 @@ public class ManaCrystallizationTrainingPotion91260ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ManaCrystallization, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -171,10 +129,7 @@ public class MetalConversionTrainingPotion91261ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.MetalConversion, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -183,10 +138,7 @@ public class HeatBusterTrainingPotion91262ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.HeatBuster, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -195,10 +147,7 @@ public class MusicCompositionTrainingPotionForRestoration91635ItemScript : ItemS
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Composing, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -207,10 +156,7 @@ public class MusicalKnowledgeTrainingPotionForRestoration91636ItemScript : ItemS
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.MusicalKnowledge, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -219,10 +165,7 @@ public class PlayingInstrumentTrainingPotionForRestoration91637ItemScript : Item
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.PlayingInstrument, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -231,10 +174,7 @@ public class PlayingInstrumentTrainingPotion91648ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.PlayingInstrument, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -243,10 +183,7 @@ public class DischordTrainingPotion91649ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Dischord, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -255,10 +192,7 @@ public class BattlefieldOvertureTrainingPotion91650ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.BattlefieldOverture, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -267,10 +201,7 @@ public class LullabyTrainingPotion91651ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Lullaby, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -279,10 +210,7 @@ public class VivaceTrainingPotion91652ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Vivace, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -291,10 +219,7 @@ public class EnduringMelodyTrainingPotion91653ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.EnduringMelody, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -303,10 +228,7 @@ public class HarvestSongTrainingPotion91654ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.HarvestSong, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -315,10 +237,7 @@ public class MarchSongTrainingPotion91655ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.MarchSong, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -327,10 +246,7 @@ public class Chain_ChargingStrikeTrainingPotion91656ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ChargingStrike, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -339,10 +255,7 @@ public class Chain_FocusedFistTrainingPotion91657ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.FocusedFist, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -351,10 +264,7 @@ public class Chain_SpinningUppercutTrainingPotion91658ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.SpinningUppercut, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -363,10 +273,7 @@ public class Chain_SomersaultKickTrainingPotion91659ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.SomersaultKick, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -375,10 +282,7 @@ public class Chain_DropKickTrainingPotion91660ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.DropKick, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -387,10 +291,7 @@ public class Chain_PummelTrainingPotion91661ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Pummel, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -399,10 +300,7 @@ public class ChainMasteryTrainingPotion91662ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ChainMastery, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -411,10 +309,7 @@ public class EnchantTrainingPotion91750ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Enchant, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -423,10 +318,7 @@ public class ControlMarionetteTrainingPotion91773ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ControlMarionette, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -435,10 +327,7 @@ public class PierrotMarionetteTrainingPotion91774ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.PierrotMarionette, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -447,10 +336,7 @@ public class ColossusMarionetteTrainingPotion91775ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ColossusMarionette, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -459,10 +345,7 @@ public class Act2_ThresholdCutterTrainingPotion91776ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Act2ThresholdCutter, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -471,10 +354,7 @@ public class Act1_IncitingIncidentTrainingPotion91777ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Act1IncitingIncident, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -483,10 +363,7 @@ public class Act4_RisingActionTrainingPotion91778ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Act4RisingAction, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -495,10 +372,7 @@ public class Act6_CrisisTrainingPotion91779ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Act6Crisis, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -507,10 +381,7 @@ public class Act7_ClimacticCrashTrainingPotion91780ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Act7ClimacticCrash, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -519,10 +390,7 @@ public class Act9_InvigoratingEncoreTrainingPotion91781ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Act9InvigoratingEncore, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -531,10 +399,7 @@ public class WirePullTrainingPotion91782ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.WirePull, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -543,10 +408,7 @@ public class PuppetsSnareTrainingPotion91783ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.PuppetsSnare, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -555,10 +417,7 @@ public class BlacksmithingTrainingPotion91895ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Blacksmithing, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -567,10 +426,7 @@ public class RefiningTrainingPotion91907ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Refining, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -579,10 +435,7 @@ public class FishingTrainingPotion91912ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Fishing, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -591,10 +444,7 @@ public class BlacksmithingTrainingPotion91923ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Blacksmithing, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -603,10 +453,7 @@ public class EnchantTrainingPotion92688ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Enchant, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -615,10 +462,7 @@ public class DualGunMasteryTrainingPotion93159ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.DualGunMastery, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -627,10 +471,7 @@ public class FlashLauncherTrainingPotion93160ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.FlashLauncher, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -639,10 +480,7 @@ public class GrappleShotTrainingPotion93161ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.GrappleShot, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -651,10 +489,7 @@ public class BulletSlideTrainingPotion93162ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.BulletSlide, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -663,10 +498,7 @@ public class ShootingRushTrainingPotion93163ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ShootingRush, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -675,10 +507,7 @@ public class BulletStormTrainingPotion93164ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.BulletStorm, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -687,10 +516,7 @@ public class ReloadTrainingPotion93165ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Reload, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -699,10 +525,7 @@ public class WayoftheGunTrainingPotion93166ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.WayOfTheGun, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -711,10 +534,7 @@ public class ShurikenMasteryTrainingPotion93168ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ShurikenMastery, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -723,10 +543,7 @@ public class ShurikenChargeTrainingPotion93169ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ShurikenCharge, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -735,10 +552,7 @@ public class KunaiStormTrainingPotion93170ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.KunaiStorm, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -747,10 +561,7 @@ public class ShadowBindTrainingPotion93171ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ShadowBind, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -759,10 +570,7 @@ public class ShadowCloakTrainingPotion93172ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ShadowCloak, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -771,10 +579,7 @@ public class ExplosiveKunaiTrainingPotion93173ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.ExplosiveKunai, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -783,10 +588,7 @@ public class SmokescreenTrainingPotion93174ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Smokescreen, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -795,10 +597,7 @@ public class SakuraAbyssTrainingPotion93175ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.SakuraAbyss, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
@@ -807,10 +606,7 @@ public class FragmentationTrainingPotion93398ItemScript : ItemScript
 {
     public override void OnUse(Creature creature, Item item, string parameter)
     {
-        for (int i = 1; i <= 9; i++)
-        {
-            creature.Skills.Train(SkillId.Fragmentation, i, 999);
-        }
+        creature.Skills.TrainComplete();
     }
 }
 
