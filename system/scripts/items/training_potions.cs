@@ -3,7 +3,7 @@ public class EnthrallingPerformanceTrainingPotion41227ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.EnthrallingPerformance);
 	}
 }
 
@@ -12,7 +12,7 @@ public class WindmillTrainingPotion91151ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Windmill);
 	}
 }
 
@@ -21,7 +21,7 @@ public class RefiningTrainingPotion91152ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Refining);
 	}
 }
 
@@ -30,7 +30,7 @@ public class MagicTrainingPotion91156ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.MagicMastery);
 	}
 }
 
@@ -39,7 +39,7 @@ public class AlchemyTrainingPotion91157ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.AlchemyMastery);
 	}
 }
 
@@ -48,7 +48,7 @@ public class FishingTrainingPotion91215ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Fishing);
 	}
 }
 
@@ -57,7 +57,7 @@ public class HealingTrainingPotion91216ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Healing);
 	}
 }
 
@@ -66,7 +66,7 @@ public class SynthesisTrainingPotion91217ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Synthesis);
 	}
 }
 
@@ -75,7 +75,7 @@ public class CriticalHitTrainingPotion91218ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.CriticalHit);
 	}
 }
 
@@ -84,7 +84,7 @@ public class SpiritofOrderTrainingPotion91219ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.SpiritOfOrder);
 	}
 }
 
@@ -93,7 +93,7 @@ public class SoulofChaosTrainingPotion91220ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.SoulOfChaos);
 	}
 }
 
@@ -102,7 +102,7 @@ public class FuryofConnousTrainingPotion91221ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.FuryOfConnous);
 	}
 }
 
@@ -111,7 +111,7 @@ public class DaemonofPhysisTrainingPotion91222ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.DemonOfPhysis);
 	}
 }
 
@@ -120,7 +120,7 @@ public class ManaCrystallizationTrainingPotion91260ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ManaCrystallization);
 	}
 }
 
@@ -129,7 +129,7 @@ public class MetalConversionTrainingPotion91261ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.MetalConversion);
 	}
 }
 
@@ -138,7 +138,7 @@ public class HeatBusterTrainingPotion91262ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.HeatBuster);
 	}
 }
 
@@ -147,7 +147,7 @@ public class MusicCompositionTrainingPotionForRestoration91635ItemScript : ItemS
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Composing);
 	}
 }
 
@@ -156,7 +156,7 @@ public class MusicalKnowledgeTrainingPotionForRestoration91636ItemScript : ItemS
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.MusicalKnowledge);
 	}
 }
 
@@ -165,7 +165,7 @@ public class PlayingInstrumentTrainingPotionForRestoration91637ItemScript : Item
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.PlayingInstrument);
 	}
 }
 
@@ -174,7 +174,7 @@ public class PlayingInstrumentTrainingPotion91648ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.PlayingInstrument);
 	}
 }
 
@@ -183,7 +183,7 @@ public class DischordTrainingPotion91649ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Dischord);
 	}
 }
 
@@ -192,7 +192,7 @@ public class BattlefieldOvertureTrainingPotion91650ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.BattlefieldOverture);
 	}
 }
 
@@ -201,7 +201,7 @@ public class LullabyTrainingPotion91651ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Lullaby);
 	}
 }
 
@@ -210,7 +210,7 @@ public class VivaceTrainingPotion91652ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Vivace);
 	}
 }
 
@@ -219,7 +219,7 @@ public class EnduringMelodyTrainingPotion91653ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.EnduringMelody);
 	}
 }
 
@@ -228,7 +228,7 @@ public class HarvestSongTrainingPotion91654ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.HarvestSong);
 	}
 }
 
@@ -237,7 +237,7 @@ public class MarchSongTrainingPotion91655ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.MarchSong);
 	}
 }
 
@@ -246,7 +246,7 @@ public class Chain_ChargingStrikeTrainingPotion91656ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ChargingStrike);
 	}
 }
 
@@ -255,7 +255,7 @@ public class Chain_FocusedFistTrainingPotion91657ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.FocusedFist);
 	}
 }
 
@@ -264,7 +264,7 @@ public class Chain_SpinningUppercutTrainingPotion91658ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.SpinningUppercut);
 	}
 }
 
@@ -273,7 +273,7 @@ public class Chain_SomersaultKickTrainingPotion91659ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.SomersaultKick);
 	}
 }
 
@@ -282,7 +282,7 @@ public class Chain_DropKickTrainingPotion91660ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.DropKick);
 	}
 }
 
@@ -291,7 +291,7 @@ public class Chain_PummelTrainingPotion91661ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Pummel);
 	}
 }
 
@@ -300,7 +300,7 @@ public class ChainMasteryTrainingPotion91662ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ChainMastery);
 	}
 }
 
@@ -309,7 +309,7 @@ public class EnchantTrainingPotion91750ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Enchant);
 	}
 }
 
@@ -318,7 +318,7 @@ public class ControlMarionetteTrainingPotion91773ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ControlMarionette);
 	}
 }
 
@@ -327,7 +327,7 @@ public class PierrotMarionetteTrainingPotion91774ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.PierrotMarionette);
 	}
 }
 
@@ -336,7 +336,7 @@ public class ColossusMarionetteTrainingPotion91775ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ColossusMarionette);
 	}
 }
 
@@ -345,7 +345,7 @@ public class Act2_ThresholdCutterTrainingPotion91776ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Act2ThresholdCutter);
 	}
 }
 
@@ -354,7 +354,7 @@ public class Act1_IncitingIncidentTrainingPotion91777ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Act1IncitingIncident);
 	}
 }
 
@@ -363,7 +363,7 @@ public class Act4_RisingActionTrainingPotion91778ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Act4RisingAction);
 	}
 }
 
@@ -372,7 +372,7 @@ public class Act6_CrisisTrainingPotion91779ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Act6Crisis);
 	}
 }
 
@@ -381,7 +381,7 @@ public class Act7_ClimacticCrashTrainingPotion91780ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Act7ClimacticCrash);
 	}
 }
 
@@ -390,7 +390,7 @@ public class Act9_InvigoratingEncoreTrainingPotion91781ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Act9InvigoratingEncore);
 	}
 }
 
@@ -399,7 +399,7 @@ public class WirePullTrainingPotion91782ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.WirePull);
 	}
 }
 
@@ -408,7 +408,7 @@ public class PuppetsSnareTrainingPotion91783ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.PuppetsSnare);
 	}
 }
 
@@ -417,7 +417,7 @@ public class BlacksmithingTrainingPotion91895ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Blacksmithing);
 	}
 }
 
@@ -426,7 +426,7 @@ public class RefiningTrainingPotion91907ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Refining);
 	}
 }
 
@@ -435,7 +435,7 @@ public class FishingTrainingPotion91912ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Fishing);
 	}
 }
 
@@ -444,7 +444,7 @@ public class BlacksmithingTrainingPotion91923ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Blacksmithing);
 	}
 }
 
@@ -453,7 +453,7 @@ public class EnchantTrainingPotion92688ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Enchant);
 	}
 }
 
@@ -462,7 +462,7 @@ public class DualGunMasteryTrainingPotion93159ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.DualGunMastery);
 	}
 }
 
@@ -471,7 +471,7 @@ public class FlashLauncherTrainingPotion93160ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.FlashLauncher);
 	}
 }
 
@@ -480,7 +480,7 @@ public class GrappleShotTrainingPotion93161ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.GrappleShot);
 	}
 }
 
@@ -489,7 +489,7 @@ public class BulletSlideTrainingPotion93162ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.BulletSlide);
 	}
 }
 
@@ -498,7 +498,7 @@ public class ShootingRushTrainingPotion93163ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ShootingRush);
 	}
 }
 
@@ -507,7 +507,7 @@ public class BulletStormTrainingPotion93164ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.BulletStorm);
 	}
 }
 
@@ -516,7 +516,7 @@ public class ReloadTrainingPotion93165ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Reload);
 	}
 }
 
@@ -525,7 +525,7 @@ public class WayoftheGunTrainingPotion93166ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.WayOfTheGun);
 	}
 }
 
@@ -534,7 +534,7 @@ public class ShurikenMasteryTrainingPotion93168ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ShurikenMastery);
 	}
 }
 
@@ -543,7 +543,7 @@ public class ShurikenChargeTrainingPotion93169ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ShurikenCharge);
 	}
 }
 
@@ -552,7 +552,7 @@ public class KunaiStormTrainingPotion93170ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.KunaiStorm);
 	}
 }
 
@@ -561,7 +561,7 @@ public class ShadowBindTrainingPotion93171ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ShadowBind);
 	}
 }
 
@@ -570,7 +570,7 @@ public class ShadowCloakTrainingPotion93172ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ShadowCloak);
 	}
 }
 
@@ -579,7 +579,7 @@ public class ExplosiveKunaiTrainingPotion93173ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.ExplosiveKunai);
 	}
 }
 
@@ -588,7 +588,7 @@ public class SmokescreenTrainingPotion93174ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Smokescreen);
 	}
 }
 
@@ -597,7 +597,7 @@ public class SakuraAbyssTrainingPotion93175ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.SakuraAbyss);
 	}
 }
 
@@ -606,7 +606,6 @@ public class FragmentationTrainingPotion93398ItemScript : ItemScript
 {
 	public override void OnUse(Creature creature, Item item, string parameter)
 	{
-		creature.Skills.TrainComplete();
+		creature.Skills.TrainComplete(SkillId.Fragmentation);
 	}
 }
-

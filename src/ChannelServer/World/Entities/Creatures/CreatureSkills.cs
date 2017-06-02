@@ -327,6 +327,17 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Increases all training condition counts for the given skill
+		/// to their upper bounds.
+		/// </summary>
+		/// <param name="skillId"></param>
+		public void TrainComplete(SkillId skillId)
+		{
+			for (int i = 0; i < 9; i++)
+				this.Train(skillId, 999);
+		}
+
+		/// <summary>
 		/// Trains condition in skill.
 		/// </summary>
 		/// <param name="skillId"></param>

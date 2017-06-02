@@ -167,18 +167,6 @@ namespace Aura.Channel.Skills
 			ChannelServer.Instance.Events.OnSkillRankChanged(_creature, this);
 		}
 
-
-        /// <summary>
-        /// Increases all training condition counts to their upper bounds
-        /// </summary>
-	    public void TrainComplete()
-	    {
-	        for (int i = 0; i < 9; i++)
-	        {
-	            Train(i, 999);
-	        }
-	    }
-
 		/// <summary>
 		/// Increases training condition count.
 		/// </summary>
