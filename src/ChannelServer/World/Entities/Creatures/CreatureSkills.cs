@@ -334,7 +334,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		public void TrainComplete(SkillId skillId)
 		{
 			for (int i = 0; i < 9; i++)
-				this.Train(skillId, 999);
+				this.Train(skillId, i, 999);
 		}
 
 		/// <summary>
