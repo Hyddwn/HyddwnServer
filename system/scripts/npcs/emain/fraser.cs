@@ -279,7 +279,7 @@ public class FraserScript : NpcScript
 	{
 		switch (reaction)
 		{
-			case GiftReaction.Neutral:
+			default: // GiftReaction.Neutral
 				RndMsg(
 					"I don't know what's in here, but a gift is still a gift. Thanks!",
 					"What is this? It's not anything weird is it?",

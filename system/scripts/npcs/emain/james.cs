@@ -295,7 +295,7 @@ public class JamesScript : NpcScript
 	{
 		switch (reaction)
 		{
-			case GiftReaction.Neutral:
+			default: // GiftReaction.Neutral
 				RndMsg(
 					"Are you donating this? Of course I'm more than happy to receive this.",
 					"Thanks. I appreciate your kindness.",

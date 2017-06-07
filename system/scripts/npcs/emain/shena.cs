@@ -101,7 +101,8 @@ public class ShenaScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg("Wait, are you trying to hit on me? Hahaha!");
+				Msg(FavorExpression(), "Wait, are you trying to hit on me? Hahaha!");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			// Rumor keywords may need different conditions, I'm unsure of how the cooking contest related messages work.
@@ -115,10 +116,11 @@ public class ShenaScript : NpcScript
 					Msg("But the Chef Exam is in progress right now...<br/>You can request to enter the Chef Exam<br/>after this one is over.");
 				}
 				else
-					RndMsg(
+					RndFavorMsg(
 						"Someone flat out told me that Loch Lios has the best food<br/>in this kingdom. Hahaha...",
 						"On this coming Samhain, the highest qualifying chefs with the highest scores<br/>from all previous cooking contests, will battle each other in a cook-off.<br/>It'll be a sort of a battle of the cooks!"
 					);
+					ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_arbeit":
@@ -286,7 +288,7 @@ public class ShenaScript : NpcScript
 	{
 		switch (reaction)
 		{
-			case GiftReaction.Neutral:
+			default: // GiftReaction.Neutral
 				RndMsg(
 					"This... is from you, <username/>?<br/>Thanks!",
 					"Since you're giving me this,<br/>are you saying that you're interested in me?<br/>Hahaha, I was just kidding, yet you're turning red.",
