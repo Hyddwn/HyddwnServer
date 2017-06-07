@@ -46,12 +46,39 @@ public class FletaScript : NpcScript
 	{
 		if ((ErinnHour(9, 11)) || (ErinnHour(15, 17)) || (ErinnHour(19, 21)))
 		{
-			if (NPC.RegionId != 53)
-				NPC.WarpFlash(53, 103364, 109290);
+			if (this.NPC.RegionId != 53)
+				this.NPC.WarpFlash(53, 103364, 109290);
 		}
-		else if (NPC.RegionId != 22)
+		else if (this.NPC.RegionId != 22)
 		{
-			NPC.WarpFlash(22, 6500, 4800);
+			this.NPC.WarpFlash(22, 6500, 4800);
+		}
+		
+		if (ChannelServer.Instance.Weather.GetWeatherType(NPC.RegionId) == WeatherType.Rain)
+		{
+			if (!this.NPC.HasItem(19014) || !this.NPC.HasItem(17048) )
+			{
+				EquipItem(Pocket.Robe, 19014, 0x00FFDE01, 0x00FFDE01, 0x00FFDE01);
+				EquipItem(Pocket.Shoe, 17048, 0x00FFDE01, 0x00FFFFFF, 0x00FFFFFF);
+				if (ChannelServer.Instance.Weather.GetWeatherAsFloat(this.NPC.RegionId) != 2.0f)
+					SetHoodDown();
+				Send.EntityDisappears(this.NPC);
+				Send.EntityAppears(this.NPC);
+			}
+		}
+		else
+		{
+			if (this.NPC.HasItem(19014))
+			{
+				var robe = this.NPC.Inventory.GetItemAt(Pocket.Robe, 0, 0);
+				this.NPC.Inventory.Remove(robe);
+			}
+			if (!this.NPC.HasItem(17007))
+			{
+				EquipItem(Pocket.Shoe, 17007, 0x00151515, 0x00FFFFFF, 0x00FFFFFF);
+				Send.EntityDisappears(this.NPC);
+				Send.EntityAppears(this.NPC);
+			}
 		}
 	}
 
@@ -112,6 +139,44 @@ public class FletaScript : NpcScript
 			Msg("It was rolling around somewhere at my house...<br/>Give it to a guy named Manus in Dunbarton.<br/>It's not useful to me<br/>but it might be useful to you.");
 			Msg("Do you need anything else...?", Button("End conversation", "@exit"), Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair item", "@repair"));
 		}
+        else if (Player.HasItem(74160))
+		{
+			if (!Player.HasItem(70069))
+			{
+				Player.RemoveItem(74160);
+				Send.Notice(Player, ("You have given Rab's Empty Plate to Fleta."));
+				Msg("Hmm...is this Rab's food bowl?<br/>Rab seems to have lost his appetite these days, he's not eating well.<br/>He needs to eat a special dish... but I don't want to cook.");
+				Msg("Hey, I'll give you the recipe, do you want to cook it for me?<br/>You can ask someone else to make it for you, that's up to you,<br/>but in return I'll give you one modification coupon for heavy armor.", Button("Ok", "@yes"), Button("No Thanks", "@no"));
+				switch (await Select())
+				{
+					case "@yes":
+						Msg("Alright.<br/>Rab, that little rascal is quite picky with his food. He only likes fancy foods.<br/>I've written down the recipe on the Quest scroll.<br/>Whether you make it yourself, or you get someone else to make it for you, it doesn't matter as long as you get it to me.");
+						switch (Random(3))
+						{
+							case 0:
+								Player.GiveItem(Aura.Channel.World.Entities.Item.CreateQuestScroll(60041));
+								break;
+							case 1:
+								Player.GiveItem(Aura.Channel.World.Entities.Item.CreateQuestScroll(60042));
+								break;
+							case 2:
+								Player.GiveItem(Aura.Channel.World.Entities.Item.CreateQuestScroll(60043));
+								break;
+						}
+						Msg("Do you need anything else...?", Button("End conversation", "@exit"), Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair item", "@repair"));
+						break;
+
+					case "@no":
+						Msg("But why did he give me the dog bowl?<br/>.....Rab, that little...");
+						Msg("Do you need anything else...?", Button("End conversation", "@exit"), Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair item", "@repair"));
+						break;
+				}
+			}
+			else
+				Msg("You seem to be doing something for someone else...<br/>so go finish that first, then let's talk.");
+		}
+		else if (Player.HasItem(52038))
+			Msg("...If you have something to say, say it.<br/>You have a modification coupon. Then it should be no problem.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Modify Item", "@upgrade"));
 		else
 			Msg("...If you have something to say, say it.", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"));
 
@@ -183,6 +248,30 @@ public class FletaScript : NpcScript
 				}
 
 				Msg("Do you have anything else you want to repair?<br/>I'll repair it for you if I have nothing else to do, so bring it.<repair hide='true'/>");
+				break;
+
+			case "@upgrade":
+				Msg("You want to modify something? Let me see it.<br/>Hmm...you know that once you modify it, no one else can wear it except you, right?<br/>It won't fit anyone else.<upgrade />");
+
+				while (true)
+				{
+					var reply = await Select();
+
+					if (!reply.StartsWith("@upgrade:"))
+						break;
+
+					var result = Upgrade(reply);
+					if (result.Success)
+					{
+						Msg("The modification is complete"); //unofficial dialogue
+						Player.RemoveItem(52038);
+						Msg("This should do it right?<br/>If you have anything you want to modify, bring it to me.<upgrade hide='true'/>");
+						break;
+					}
+					else
+						Msg("(Error)");
+				}
+				Msg("This should do it right?<br/>If you have anything you want to modify, bring it to me.<upgrade hide='true'/>");
 				break;
 		}
 
