@@ -47,7 +47,25 @@ public class RabScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		Msg(Hide.Both, "(Fleta's dog. I think it's name is Rab)");
+		// Check to see if the quest is active
+		if (QuestActive(60041, "talk_rab") || QuestActive(60042, "talk_rab") || QuestActive(60043, "talk_rab"))
+			Hook("give_food"); // Trigger hook
+		else
+			Msg(Hide.Both, "(Fleta's dog. I think it's name is Rab)");
+	}
+
+	protected override async Task TalkPet()
+	{
+		if (!Player.HasItem(74160))
+		{
+			Msg(Hide.Both, "(Rab pushes forward his empty bowl)");
+			Player.GiveItem(74160); // Rab's Empty Plate
+			Send.Notice(Player, ("Received Rab's Empty Plate from Fleta's Rab."));
+			Msg("Grr! (Look at this empty bowl!)<br/>Ruff Ruff! (I'm starving!)<br/>Bark Bark. Grrr Woof Woof! (I want something new and tasty!)<br/>Ruff, Howl. (My master knows what I like but she's too lazy to cook it for me.)");
+			Msg("Woof Woof! (All I have are these empty bowls to chew on!)<br/>Woof Woof Woof! (Now I'm getting even tired of that, so you can have it.)<br/>Whimper. (Every time you see the empty bowl)<br/>Whimpppper. (pray that I'll be able to eat some good food)");
+		}
+		else
+			Msg("Ruff? Ruff!! (Hey, you have my bowl!)<br/>*Whimper* (Oh, how I wish the bowl was full)");
 	}
 
 	protected override async Task Gift(Item item, GiftReaction reaction)
