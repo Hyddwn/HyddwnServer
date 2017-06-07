@@ -1,17 +1,13 @@
 //--- Aura Script -----------------------------------------------------------
-// Magic Rat Man AI
+// Armored Skeleton AI
 //--- Description -----------------------------------------------------------
-// AI for Rat Man with lightning bolt.
+// AI for armored skeletons.
 //---------------------------------------------------------------------------
 
-[AiScript("ratman_magic")]
-public class RatManMagicAi : AiScript
+[AiScript("skeletonarmora")]
+public class SkeletonArmorAAi : AiScript
 {
-	readonly string[] DistanceChat = new[] { "This way", "Follow me~" };
-	readonly string[] SmashChat = new[] { "Prepare for a heavy blow.", "Here I come.", "I have found a blind side." };
-	readonly string[] AttackChat = new[] { "Hahahaha", "A hit, it's a hit!"};
-
-	public RatManMagicAi()
+	public SkeletonArmorAAi()
 	{
 		SetVisualField(950, 120);
 		SetAggroRadius(400);
@@ -33,98 +29,101 @@ public class RatManMagicAi : AiScript
 		SwitchRandom();
 		if (Case(20))
 		{
-			Do(Say(DistanceChat));
-			Do(KeepDistance(1000, false, 2000));
-			Do(Circle(600, 1000, 2000));
+			Do(KeepDistance(400, false, 2000));
+			Do(Circle(300, 1000, 1000));
+		}
+		else if (Case(20))
+		{	
+			if (HasEquipped("/bow/") || HasEquipped("/bow01/") || HasEquipped("/crossbow/"))
+			{
+				Do(SwitchTo(WeaponSet.Second));
+				Do(RangedAttack());
+			}
+			else
+				Do(Attack(3));
 		}
 		else if (Case(20))
 		{
-			Do(CancelSkill());
-			Do(Say(AttackChat));
-			Do(Attack(3));
-		}
-		else if (Case(15))
-		{
-			Do(Say(SmashChat));
-			Do(PrepareSkill(SkillId.Smash));
-			Do(CancelSkill());
-			Do(Say(AttackChat));
-			Do(Attack(3));
-		}
-		else if (Case(20))
-		{
-			Do(Say(SmashChat));
+			Do(SwitchTo(WeaponSet.First));
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Attack(1, 4000));
 		}
-		else if (Case(15))
+		else if (Case(20))
 		{
-			Do(StackAttack(SkillId.Lightningbolt, Rnd(1, 1, 2, 2, 3)));
-			Do(Wait(2000, 2000));
-		}
-		else if (Case(5))
-		{
+			Do(SwitchTo(WeaponSet.First));
 			Do(PrepareSkill(SkillId.Defense));
 			Do(Follow(600, true));
 			Do(CancelSkill());
 		}
-		else if (Case(5))
+		else if (Case(20))
 		{
+			Do(SwitchTo(WeaponSet.First));
 			Do(PrepareSkill(SkillId.Counterattack));
-			//Do(Follow(600, true));
+			Do(Wait(5000, 5000));
 			Do(CancelSkill());
 		}
 	}
 
 	private IEnumerable OnDefenseHit()
 	{
+		Do(SwitchTo(WeaponSet.First));
 		Do(Attack(3));
 		Do(Wait(3000));
 	}
 
 	private IEnumerable OnKnockDown()
 	{
-		if (Creature.Life < Creature.LifeMax * 0.20f)
-		{
-			
-			if (Random() < 50)
-			{
-				Do(SwitchTo(WeaponSet.First));
-				Do(PrepareSkill(SkillId.Defense));
-				Do(Wait(2000, 4000));
-				Do(CancelSkill());
-			}
-			else 
-			{
-				Do(SwitchTo(WeaponSet.First));
-				Do(PrepareSkill(SkillId.Smash));
-				Do(Attack(1, 4000));
-			}
-		}
-		else
+		SwitchRandom();
+		if (Case(20))
 		{
 			SwitchRandom();
-			if (Case(40))
+			if (HasSkill(SkillId.Windmill))
 			{
 				Do(SwitchTo(WeaponSet.First));
 				Do(PrepareSkill(SkillId.Windmill));
 				//Do(Wait(4000, 4000));
 				Do(UseSkill());
-				
 			}
-			else if (Case(30))
+			else if (Case(50))
 			{
 				Do(SwitchTo(WeaponSet.First));
 				Do(PrepareSkill(SkillId.Smash));
 				Do(Attack(1, 4000));
 			}
-			else if(Case(30))
+			else if(Case(25))
 			{
 				Do(SwitchTo(WeaponSet.First));
 				Do(PrepareSkill(SkillId.Defense));
-				Do(Wait(2000, 4000));
+				Do(Wait(2000, 6000));
 				Do(CancelSkill());
 			}
+			else if(Case(25))
+			{
+				Do(SwitchTo(WeaponSet.First));
+				Do(PrepareSkill(SkillId.Counterattack));
+				Do(Wait(4000, 8000));
+				Do(CancelSkill());
+			}
+		}
+		else if (Case(40))
+		{
+			Do(SwitchTo(WeaponSet.First));
+			Do(PrepareSkill(SkillId.Smash));
+			Do(Attack(1, 4000));
+		}
+		else if(Case(20))
+		{
+			Do(SwitchTo(WeaponSet.First));
+			Do(PrepareSkill(SkillId.Defense));
+			Do(Wait(2000, 6000));
+			Do(CancelSkill());
+		}
+		else if(Case(20))
+		{
+			Do(SwitchTo(WeaponSet.First));
+			Do(PrepareSkill(SkillId.Counterattack));
+			Do(Wait(4000, 8000));
+			Do(CancelSkill());
 		}
 	}
 }

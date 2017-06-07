@@ -884,6 +884,30 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			return this.Creature.Skills.Has(skillId);
 		}
+		
+		/// <summary>
+		/// Returns true if the AI creature has equipped an item with the given
+		/// id in one of its equip slots.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool HasEquipped(int itemId)
+		{
+			var items = this.Creature.Inventory.GetEquipment(a => a.Info.Id == itemId);
+			return items.Any();
+		}
+
+		/// <summary>
+		/// Returns true if the AI creature has equipped an item that matches
+		/// the given tag in one of its equip slots.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <returns></returns>
+		public bool HasEquipped(string tag)
+		{
+			var items = this.Creature.Inventory.GetEquipment(a => a.HasTag(tag));
+			return items.Any();
+		}
 
 		/// <summary>
 		/// Generates and saves a random number between 0 and 99,
