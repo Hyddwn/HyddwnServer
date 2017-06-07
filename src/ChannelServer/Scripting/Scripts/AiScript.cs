@@ -7,6 +7,7 @@ using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Combat;
 using Aura.Channel.Skills.Life;
 using Aura.Channel.Skills.Magic;
+using Aura.Channel.Skills.Music;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data;
@@ -884,6 +885,30 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			return this.Creature.Skills.Has(skillId);
 		}
+		
+		/// <summary>
+		/// Returns true if the AI creature has equipped an item with the given
+		/// id in one of its equip slots.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool HasEquipped(int itemId)
+		{
+			var items = this.Creature.Inventory.GetEquipment(a => a.Info.Id == itemId);
+			return items.Any();
+		}
+
+		/// <summary>
+		/// Returns true if the AI creature has equipped an item that matches
+		/// the given tag in one of its equip slots.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <returns></returns>
+		public bool HasEquipped(string tag)
+		{
+			var items = this.Creature.Inventory.GetEquipment(a => a.HasTag(tag));
+			return items.Any();
+		}
 
 		/// <summary>
 		/// Generates and saves a random number between 0 and 99,
@@ -1612,6 +1637,12 @@ namespace Aura.Channel.Scripting.Scripts
 					this.Creature.Skills.ActiveSkill = skill;
 					skillHandler.Complete(this.Creature, skill, null);
 					this.Creature.Skills.ActiveSkill = null;
+				}
+				else if (skillId == SkillId.PlayingInstrument)
+				{
+					var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<PlayingInstrument>(skillId);
+					skillHandler.Prepare(this.Creature, skill, null);
+					this.Creature.Skills.ActiveSkill = skill;
 				}
 				// Try to handle implicitly
 				else
