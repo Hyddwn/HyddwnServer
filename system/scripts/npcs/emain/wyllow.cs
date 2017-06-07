@@ -204,7 +204,7 @@ public class WyllowScript : NpcScript
 	{
 		switch (reaction)
 		{
-			case GiftReaction.Neutral:
+			default: // GiftReaction.Neutral
 				RndMsg(
 					"Lymilark will be happy to know that you have given a donation....",
 					"Thank you.",
