@@ -48,10 +48,10 @@ public class RabFood03QuestScript : QuestScript
 	
 	public async Task<HookResult> FletaIntro(NpcScript npc, params object[] args)
 	{
-		if (!npc.Player.QuestActive(this.Id))
+		if (!npc.QuestActive(this.Id, "talk_fleta"))
 			return HookResult.Continue;
 
-		npc.Player.FinishQuestObjective(this.Id, "talk_fleta");
+		npc.FinishQuest(this.Id, "talk_fleta");
 
 		return HookResult.Break;
 	}
