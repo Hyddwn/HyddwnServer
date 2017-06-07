@@ -49,9 +49,11 @@ public class RabScript : NpcScript
 	{
 		// Check to see if the quest is active
 		if (QuestActive(60041, "talk_rab") || QuestActive(60042, "talk_rab") || QuestActive(60043, "talk_rab"))
+		{
 			Hook("give_food"); // Trigger hook
-		else
-			Msg(Hide.Both, "(Fleta's dog. I think it's name is Rab)");
+		}
+		
+		Msg(Hide.Both, "(Fleta's dog. I think it's name is Rab)");
 	}
 
 	protected override async Task TalkPet()
