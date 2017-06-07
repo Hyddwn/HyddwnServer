@@ -352,7 +352,7 @@ public class LucasScript : NpcScript
 				);
 				break;
 
-			case GiftReaction.Neutral:
+			default: // GiftReaction.Neutral
 				RndMsg(
 					"It isn't what I was expecting, but I'll take it.",
 					"You came to say hi? That's very nice of you.",

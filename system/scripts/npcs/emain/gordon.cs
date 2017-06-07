@@ -105,11 +105,13 @@ public class GordonScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg("People say I'm obsessed with cooking.<br/>But, if you're not obsessed with somthing,<br/>you can't really achieve anything!");
+				Msg(FavorExpression(),"People say I'm obsessed with cooking.<br/>But, if you're not obsessed with somthing,<br/>you can't really achieve anything!");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
-				Msg("Our Lord is such a connoisseur of food that<br/>his Chef frequently asks me to assist him with the Lord's menu.<br/>No offence to him, but he'll need to really work on refining his skills.");
+				Msg(FavorExpression(),"Our Lord is such a connoisseur of food that<br/>his Chef frequently asks me to assist him with the Lord's menu.<br/>No offence to him, but he'll need to really work on refining his skills.");
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "about_skill":
@@ -279,27 +281,28 @@ public class GordonScript : NpcScript
 	{
 		switch (reaction)
 		{
+			case GiftReaction.Love: //placeholder missing love messages
 			case GiftReaction.Like:
 				RndMsg(
 					"Well, today is a good day.",
 					"I'll gladly accept this.",
 					"What's the occasion?"
 				);
-				break;
-
-			case GiftReaction.Neutral:
-				RndMsg(
-					"Thanks.",
-					"A gift? This wasn't necessary.",
-					"I don't know if I need this for the resaurant, but thanks."
-				);
-				break;
+				break;		
 
 			case GiftReaction.Dislike:
 				RndMsg(
 					"A gift? This wasn't necessary.",
 					"Why did you bring something like this to me?",
 					"What is this?"
+				);
+				break;
+				
+			default: // GiftReaction.Neutral
+				RndMsg(
+					"Thanks.",
+					"A gift? This wasn't necessary.",
+					"I don't know if I need this for the resaurant, but thanks."
 				);
 				break;
 		}
