@@ -94,6 +94,9 @@ npcs/egos/cylinder_female.cs
 npcs/gairech/seumas.cs
 npcs/gairech/seumas_part_timer.cs
 
+npcs/senmag/fleta.cs
+npcs/senmag/rab.cs
+
 npcs/sidhe/tarlach.cs
 npcs/sidhe/tarlach_bear.cs
 
