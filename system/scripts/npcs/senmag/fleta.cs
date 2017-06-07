@@ -429,54 +429,54 @@ public class FletaShop : NpcShopScript
 		//Add("Outfit", 15253); // Yukata (M) Type 3
 
 		// 2008 Costume Contest Winners
-		Add("Outfit", 14047); // Flame Patterned Leather Armor (M)
-		Add("Outfit", 14048); // Flame Patterned Leather Armor (F)
-		Add("Outfit", 19048); // Jester Robe
-		Add("Outfit", 15325); // Bat Jacket (M)
-		Add("Outfit", 15326); // Bat Jacket (F)
+		//Add("Outfit", 14047); // Flame Patterned Leather Armor (M)
+		//Add("Outfit", 14048); // Flame Patterned Leather Armor (F)
+		//Add("Outfit", 19048); // Jester Robe
+		//Add("Outfit", 15325); // Bat Jacket (M)
+		//Add("Outfit", 15326); // Bat Jacket (F)
 
 		//if (IsEnabled("Giant"))
-		{
-			Add("Outfit", 14049); // Primitive Fox Armor (M)
-			Add("Outfit", 14050); // Primitive Fox Armor (F)
-			Add("Outfit", 15327); // Fur-trimmed Coat
-			Add("Outfit", 15328); // Fur-trimmed Dress
-			Add("Outfit", 19049); // Royal Striped Robe (M)
-			Add("Outfit", 19050); // Royal Striped Robe (F)
-		}
+		//{
+		//	Add("Outfit", 14049); // Primitive Fox Armor (M)
+		//	Add("Outfit", 14050); // Primitive Fox Armor (F)
+		//	Add("Outfit", 15327); // Fur-trimmed Coat
+		//	Add("Outfit", 15328); // Fur-trimmed Dress
+		//	Add("Outfit", 19049); // Royal Striped Robe (M)
+		//	Add("Outfit", 19050); // Royal Striped Robe (F)
+		//}
 
 		// 2009 Costume Contest Winners
-		Add("Outfit", 19061); // Mushroom Robe	
-		Add("Outfit", 15459); // Clover Pig Costume (F)
-		Add("Outfit", 15460); // Clover Pig Costume (M)
-		Add("Outfit", 14057); // Elegant Lamellar Armor (M)
-		Add("Outfit", 14058); // Elegant Lamellar Armor (F)
+		//Add("Outfit", 19061); // Mushroom Robe	
+		//Add("Outfit", 15459); // Clover Pig Costume (F)
+		//Add("Outfit", 15460); // Clover Pig Costume (M)
+		//Add("Outfit", 14057); // Elegant Lamellar Armor (M)
+		//Add("Outfit", 14058); // Elegant Lamellar Armor (F)
 
 		//if (IsEnabled("Giant"))
-		{
-			Add("Outfit", 19062); // Giant Walrus Robe (M)
-			Add("Outfit", 19063); // Giant Walrus Robe (F)
-			Add("Outfit", 15461); // Traveler Bolero (F Giant)
-			Add("Outfit", 15462); // Traveler Bolero (M Giant)
-			Add("Outfit", 13068); // Giant Half Guard Leather Armor (M)
-			Add("Outfit", 13069); // Giant Half Guard Leather Armor (F)
-		}
+		//{
+		//	Add("Outfit", 19062); // Giant Walrus Robe (M)
+		//	Add("Outfit", 19063); // Giant Walrus Robe (F)
+		//	Add("Outfit", 15461); // Traveler Bolero (F Giant)
+		//	Add("Outfit", 15462); // Traveler Bolero (M Giant)
+		//	Add("Outfit", 13068); // Giant Half Guard Leather Armor (M)
+		//	Add("Outfit", 13069); // Giant Half Guard Leather Armor (F)
+		//}
 
 		// 2010 Costume Contest Winners
-		Add("Outfit", 19070); // Owl Robe
-		Add("Outfit", 15589); // Traveler Outfit (F)
-		Add("Outfit", 15590); // Traveler Outfit (M)
-		Add("Outfit", 14063); // Diamond Patterned Leather Armor (M)
-		Add("Outfit", 14064); // Diamond Patterned Leather Armor (F)
+		//Add("Outfit", 19070); // Owl Robe
+		//Add("Outfit", 15589); // Traveler Outfit (F)
+		//Add("Outfit", 15590); // Traveler Outfit (M)
+		//Add("Outfit", 14063); // Diamond Patterned Leather Armor (M)
+		//Add("Outfit", 14064); // Diamond Patterned Leather Armor (F)
 
 		//if (IsEnabled("Giant"))
-		{
-			Add("Outfit", 15598); // Delightful Orchestra Costume (F Giant)
-			Add("Outfit", 15599); // Delightful Orchestra Costume (M Giant)
-			Add("Outfit", 14065); // Quilted Light Armor (Male Giant)
-			Add("Outfit", 14066); // Quilted Light Armor (Female Giant)
-			Add("Outfit", 19071); // Protector's Robe
-		}
+		//{
+		//	Add("Outfit", 15598); // Delightful Orchestra Costume (F Giant)
+		//	Add("Outfit", 15599); // Delightful Orchestra Costume (M Giant)
+		//	Add("Outfit", 14065); // Quilted Light Armor (Male Giant)
+		//	Add("Outfit", 14066); // Quilted Light Armor (Female Giant)
+		//	Add("Outfit", 19071); // Protector's Robe
+		//}
 
 		Add("Fancy Outfit", 14015); // Claus Muffler Leather Mail
 		Add("Fancy Outfit", 15110); // Selina Suit
@@ -543,80 +543,80 @@ public class FletaShop : NpcShopScript
 		// Japan Server Only
 
 		// 2008 Costume Contest Winners
-		Add("Shoes & Gloves", 17130); // Flame Patterned Leather Boots
-		Add("Shoes & Gloves", 16054); // Flame Patterned Leather Gloves	
-		Add("Shoes & Gloves", 17132); // Bat Boots
+		//Add("Shoes & Gloves", 17130); // Flame Patterned Leather Boots
+		//Add("Shoes & Gloves", 16054); // Flame Patterned Leather Gloves	
+		//Add("Shoes & Gloves", 17132); // Bat Boots
 
 		//if (IsEnabled("Giant"))
-		{
-			Add("Shoes & Gloves", 16055); // Primitive Fox Gloves (M)
-			Add("Shoes & Gloves", 16056); // Primitive Fox Gloves (F)
-			Add("Shoes & Gloves", 17133); // Fur-trimmed Boots (M)
-			Add("Shoes & Gloves", 17134); // Fur-trimmed Boots (F)
-		}
+		//{
+		//	Add("Shoes & Gloves", 16055); // Primitive Fox Gloves (M)
+		//	Add("Shoes & Gloves", 16056); // Primitive Fox Gloves (F)
+		//	Add("Shoes & Gloves", 17133); // Fur-trimmed Boots (M)
+		//	Add("Shoes & Gloves", 17134); // Fur-trimmed Boots (F)
+		//}
 
 		// 2009 Costume Contest Winners
-		Add("Shoes & Gloves", 16063); // Elegant Lamellar Gloves
-		Add("Shoes & Gloves", 17164); // Elegant Lamellar Boots
+		//Add("Shoes & Gloves", 16063); // Elegant Lamellar Gloves
+		//Add("Shoes & Gloves", 17164); // Elegant Lamellar Boots
 
 		//if (IsEnabled("Giant"))
-		{
-			Add("Shoes & Gloves", 17197); // Traveler Bolero Shoes (F Giant)
-			Add("Shoes & Gloves", 17198); // Traveler Bolero Shoes (M Giant)
-			Add("Shoes & Gloves", 16552); // Giant Half Guard Leather Gauntlets (M)
-			Add("Shoes & Gloves", 16553); // Giant Half Guard Leather Gauntlets (F)
-			Add("Shoes & Gloves", 17535); // Giant Half Guard Leather Greaves (M)
-			Add("Shoes & Gloves", 17536); // Giant Half Guard Leather Greaves (F)
-		}
+		//{
+		//	Add("Shoes & Gloves", 17197); // Traveler Bolero Shoes (F Giant)
+		//	Add("Shoes & Gloves", 17198); // Traveler Bolero Shoes (M Giant)
+		//	Add("Shoes & Gloves", 16552); // Giant Half Guard Leather Gauntlets (M)
+		//	Add("Shoes & Gloves", 16553); // Giant Half Guard Leather Gauntlets (F)
+		//	Add("Shoes & Gloves", 17535); // Giant Half Guard Leather Greaves (M)
+		//	Add("Shoes & Gloves", 17536); // Giant Half Guard Leather Greaves (F)
+		//}
 
 		// 2010 Costume Contest Winners
-		Add("Shoes & Gloves", 17229); // Traveler Boots
-		Add("Shoes & Gloves", 16143); // Diamond Patterned Leather Gloves
-		Add("Shoes & Gloves", 17553); // Diamond Patterned Leather Boots
+		//Add("Shoes & Gloves", 17229); // Traveler Boots
+		//Add("Shoes & Gloves", 16143); // Diamond Patterned Leather Gloves
+		//Add("Shoes & Gloves", 17553); // Diamond Patterned Leather Boots
 
-		if (IsEnabled("Giant"))
-		{
-			Add("Shoes & Gloves", 17233); // Delightful Orchestra Shoes (F Giant)
-			Add("Shoes & Gloves", 17234); // Delightful Orchestra Shoes (M Giant)
-			Add("Shoes & Gloves", 16144); // Quilted Protector (Giants)
-			Add("Shoes & Gloves", 16144); // Quilted Boots (Giants)
-		}
+		//if (IsEnabled("Giant"))
+		//{
+		//	Add("Shoes & Gloves", 17233); // Delightful Orchestra Shoes (F Giant)
+		//	Add("Shoes & Gloves", 17234); // Delightful Orchestra Shoes (M Giant)
+		//	Add("Shoes & Gloves", 16144); // Quilted Protector (Giants)
+		//	Add("Shoes & Gloves", 16144); // Quilted Boots (Giants)
+		//}
 
 		Add("Hats", 18125); // Wis' Intelligence Soldier Cap (F)
 
 		// Japan/Korea/China Servers Only
 
 		// Event Only
-		Add("Hats", 18107); // Romantic Straw Hat
-		Add("Hats", 18107); // Romantic Straw Hat
-		Add("Hats", 18107); // Romantic Straw Hat
-		Add("Hats", 18107); // Romantic Straw Hat
-		Add("Hats", 18107); // Romantic Straw Hat
+		//Add("Hats", 18107); // Romantic Straw Hat
+		//Add("Hats", 18107); // Romantic Straw Hat
+		//Add("Hats", 18107); // Romantic Straw Hat
+		//Add("Hats", 18107); // Romantic Straw Hat
+		//Add("Hats", 18107); // Romantic Straw Hat
 
 		// Japan Server Only
 
 		// Event Only
-		Add("Hats", 18129); // Watermelon Hat
-		Add("Hats", 18130); // Straw Hat
+		//Add("Hats", 18129); // Watermelon Hat
+		//Add("Hats", 18130); // Straw Hat
 
 		// 2008 Costume Contest Winners
-		Add("Hats", 18228); // Viseo's Flight Cap
-		Add("Hats", 18559); // Flame Patterned Leather Cap
-		Add("Hats", 18566); // Bat Hat
-		Add("Hats", 18262); // Clover Pig Hat		
-		Add("Hats", 18272); // Elegant Lamellar Helmet
+		//Add("Hats", 18228); // Viseo's Flight Cap
+		//Add("Hats", 18559); // Flame Patterned Leather Cap
+		//Add("Hats", 18566); // Bat Hat
+		//Add("Hats", 18262); // Clover Pig Hat		
+		//Add("Hats", 18272); // Elegant Lamellar Helmet
 
-		if (IsEnabled("Giant"))
-		{
-			Add("Hats", 18263); // Traveler Bolero Bandana (F Giant)
-			Add("Hats", 18264); // Traveler Bolero Bandana (M Giant)
-			Add("Hats", 18315); // Delightful Orchestra Hat
-		}
+		//if (IsEnabled("Giant"))
+		//{
+		//	Add("Hats", 18263); // Traveler Bolero Bandana (F Giant)
+		//	Add("Hats", 18264); // Traveler Bolero Bandana (M Giant)
+		//	Add("Hats", 18315); // Delightful Orchestra Hat
+		//}
 		// 2010 Costume Contest Winners
-		Add("Hats", 18597); // Diamond Patterned Leather Helmet
+		//Add("Hats", 18597); // Diamond Patterned Leather Helmet
 
-		if (IsEnabled("Giant"))
-			Add("Hats", 18598); // Quilted Hairband
+		//if (IsEnabled("Giant"))
+		//	Add("Hats", 18598); // Quilted Hairband
 
 		Add("Event"); // Empty
 
