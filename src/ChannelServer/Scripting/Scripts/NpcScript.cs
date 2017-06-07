@@ -1527,6 +1527,18 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Adds production pattern to player's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		[Obsolete]
+		public bool GivePattern(int itemId, int formId, int useCount)
+		{
+			return this.Player.GivePattern(itemId, formId, useCount);
+		}
+
+		/// <summary>
 		/// Removes item(s) from a player's inventory.
 		/// </summary>
 		/// <param name="itemId"></param>
