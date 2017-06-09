@@ -62,8 +62,10 @@ public class FletaScript : NpcScript
 				EquipItem(Pocket.Shoe, 17048, 0x00FFDE01, 0x00FFFFFF, 0x00FFFFFF);
 				if (ChannelServer.Instance.Weather.GetWeatherAsFloat(this.NPC.RegionId) != 2.0f)
 					SetHoodDown();
-				Send.EntityDisappears(this.NPC);
-				Send.EntityAppears(this.NPC);
+				var shoe = this.NPC.Inventory.GetItemAt(Pocket.Shoe, 0, 0);
+				var robe = this.NPC.Inventory.GetItemAt(Pocket.Robe, 0, 0);
+				Send.EquipmentChanged(this.NPC, shoe);
+				Send.EquipmentChanged(this.NPC, robe);
 			}
 		}
 		else
@@ -72,12 +74,13 @@ public class FletaScript : NpcScript
 			{
 				var robe = this.NPC.Inventory.GetItemAt(Pocket.Robe, 0, 0);
 				this.NPC.Inventory.Remove(robe);
+				Send.EquipmentMoved(this.NPC, Pocket.Robe);
 			}
 			if (!this.NPC.HasItem(17007))
 			{
 				EquipItem(Pocket.Shoe, 17007, 0x00151515, 0x00FFFFFF, 0x00FFFFFF);
-				Send.EntityDisappears(this.NPC);
-				Send.EntityAppears(this.NPC);
+				var shoe = this.NPC.Inventory.GetItemAt(Pocket.Shoe, 0, 0);
+				Send.EquipmentChanged(this.NPC, shoe);
 			}
 		}
 	}
@@ -90,8 +93,8 @@ public class FletaScript : NpcScript
 
 		if ((Player.HasItem(70076)) && (!Player.HasItem(52044)) && (!Player.HasKeyword("errand_hiddenA")))
 		{
-			GiveKeyword("errand_of_fleta");
-			GiveKeyword("errand_hiddenA");
+			Player.GiveKeyword("errand_of_fleta");
+			Player.GiveKeyword("errand_hiddenA");
 			Player.RemoveItem(70076); // Empty Treasure Chest
 			Msg("This is...");
 			Msg(Hide.Name, "(Fleta took all the empty treasure chests.)");
@@ -154,13 +157,13 @@ public class FletaScript : NpcScript
 						switch (Random(3))
 						{
 							case 0:
-								Player.GiveItem(Aura.Channel.World.Entities.Item.CreateQuestScroll(60041));
+								Player.SendOwl(60041);
 								break;
 							case 1:
-								Player.GiveItem(Aura.Channel.World.Entities.Item.CreateQuestScroll(60042));
+								Player.SendOwl(60042);
 								break;
 							case 2:
-								Player.GiveItem(Aura.Channel.World.Entities.Item.CreateQuestScroll(60043));
+								Player.SendOwl(60043);
 								break;
 						}
 						Msg("Do you need anything else...?", Button("End conversation", "@exit"), Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair item", "@repair"));
