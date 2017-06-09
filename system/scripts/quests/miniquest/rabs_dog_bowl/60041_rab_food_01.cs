@@ -7,9 +7,12 @@
 
 public class RabFood01QuestScript : QuestScript
 {
+	public virtual int DogFood { get { return 50215; } } // Shrimp Dog Food
+
 	public override void Load()
 	{
 		SetId(60041);
+		SetScrollId(70069);
 		SetName("Rab's Dog Food");
 		SetDescription("Rab looks like he wants some Shrimp Dog Food. Yea, a dog that likes shrimp... Shrimp Dog Food is all about just mixing in shrimp, rice, and a bit of salt. You can buy the ingredients in Dunbarton. You don't really have to make it, so just get me the dish if you can. - Fleta -");
 		SetCancelable(true);
@@ -22,16 +25,17 @@ public class RabFood01QuestScript : QuestScript
 
 		AddReward(Item(52038)); // Fleta Upgrade Coupon for Heavy Armor for 1
 
-		AddHook("_rab", "give_food", RabIntro);
+		AddHook("_rab", "after_intro", RabIntro);
 		AddHook("_fleta", "after_intro", FletaIntro);
 	}
 
 	public async Task<HookResult> RabIntro(NpcScript npc, params object[] args)
 	{
-		if (npc.QuestActive(this.Id, "talk_rab") && npc.HasItem(50215))
+		if (npc.QuestActive(this.Id, "talk_rab") && npc.HasItem(DogFood))
 		{
-			Send.Notice(npc.Player, "You have given Shrimp Dog Food to Fleta's Rab.");
-			npc.RemoveItem(50215); // Shrimp dog food
+			var itemData = AuraData.ItemDb.Find(DogFood);
+			Send.Notice(npc.Player, string.Format(L("You have given {0} to Fleta's Rab."), itemData.Name));
+			npc.RemoveItem(DogFood);
 			npc.Msg(Hide.Both, "(Rab seems happy)");
 			npc.Msg("Bark! Bark! Bark!");
 			npc.Msg(Hide.Both, "(Rab's devouring the food)");
@@ -45,7 +49,7 @@ public class RabFood01QuestScript : QuestScript
 
 		return HookResult.Continue;
 	}
-	
+
 	public async Task<HookResult> FletaIntro(NpcScript npc, params object[] args)
 	{
 		if (!npc.QuestActive(this.Id, "talk_fleta"))
