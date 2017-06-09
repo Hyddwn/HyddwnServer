@@ -37,6 +37,7 @@ namespace Aura.Channel.Skills.Combat
 	/// 
 	/// There isn't much data on this skill, so skill variable use
 	/// is mostly based on speculation from gameplay and packet data.
+	/// Note: Effects only work with NPC Caliburn item.
 	/// </remarks>
 	[Skill(SkillId.Excalibur)]
 	public class Excalibur : ISkillHandler, IPreparable, IUseable, ICompletable, ICancelable
@@ -124,11 +125,11 @@ namespace Aura.Channel.Skills.Combat
 			var p4 = this.RotatePoint(pointTemp2, poePoint, (rotationAngle * -1)); // Rotate Negative
 
 			// TargetProp
-			var lProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
+			var lProp = new Prop(42, attacker.RegionId, poe.X, poe.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single"); // Curently a lamppost for debug. Normal prop is 280
 			attacker.Region.AddProp(lProp);
 
 			// Prepare Combat Actions
-            var cap = new CombatActionPack(attacker, skill.Info.Id);
+			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
 			var targetAreaId = new Location(attacker.RegionId, poe).ToLocationId();
 
@@ -217,7 +218,11 @@ namespace Aura.Channel.Skills.Combat
 			Send.Effect(attacker, Effect.Excalibur, ExcaliburEffect.Attack, poe.X, poe.Y);
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 
-			attacker.Region.RemoveProp(lProp);
+			// Debug
+			Task.Delay(10000).ContinueWith(_ =>
+			{
+				attacker.Region.RemoveProp(lProp);
+			});
 		}
 
 		/// <summary>
