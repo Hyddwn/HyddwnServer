@@ -3285,7 +3285,6 @@ namespace Aura.Channel.World.Entities
 		/// <param name="formId"></param>
 		/// <param name="useCount"></param>
 		/// <returns></returns>
-		[Obsolete]
 		public bool GivePattern(int itemId, int formId, int useCount)
 		{
 			return this.GiveItem(Item.CreatePattern(itemId, formId, useCount));
