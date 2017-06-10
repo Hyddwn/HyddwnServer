@@ -149,6 +149,11 @@ quests/collection/60026_make_some_flour_dough.cs
 quests/collection/60027_make_some_fry_batter.cs
 quests/collection/60028_make_some_rice.cs
 
+// Mini-Quests
+quests/miniquest/rabs_dog_bowl/60041_rab_food_01.cs
+quests/miniquest/rabs_dog_bowl/60042_rab_food_02.cs
+quests/miniquest/rabs_dog_bowl/60043_rab_food_03.cs
+
 // Mainstream
 require "quests/mainstream/scripts_g1.txt"
 
