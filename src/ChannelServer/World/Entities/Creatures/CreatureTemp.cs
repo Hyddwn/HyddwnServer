@@ -47,6 +47,9 @@ namespace Aura.Channel.World.Entities.Creatures
 		public bool LightningRodFullCharge;
 		public DateTime LightningRodPrepareTime;
 
+		// Excalibur charge time
+		public DateTime ExcaliburPrepareTime;
+
 		// Backup of target's position when gathering, for run away check
 		public Position GatheringTargetPosition;
 

@@ -25,11 +25,11 @@ namespace Aura.Channel.Skills.Combat
 	/// Skill handler for Excalibur
 	/// </summary>
 	/// <remarks>
-	/// Var1: ?
+	/// Var1: Charging Time
 	/// Var2: Damage ?
-	/// Var3: Skill Length ?
-	/// Var4: Skill Width ?
-	/// Var5: ?
+	/// Var3: Skill Length
+	/// Var4: Skill Width
+	/// Var5: Skill Delay
 	/// Var6: ?
 	/// Var7: ?
 	/// Var8: ?
@@ -37,7 +37,7 @@ namespace Aura.Channel.Skills.Combat
 	/// 
 	/// There isn't much data on this skill, so skill variable use
 	/// is mostly based on speculation from gameplay and packet data.
-	/// Note: Effects only work with NPC Caliburn item.
+	/// Note: Effects only fully work with [Caliburn (For NPC)] and Female Character
 	/// </remarks>
 	[Skill(SkillId.Excalibur)]
 	public class Excalibur : ISkillHandler, IPreparable, IUseable, ICompletable, ICancelable
@@ -82,6 +82,8 @@ namespace Aura.Channel.Skills.Combat
 			skill.State = SkillState.Ready;
 			Send.SkillReady(creature, skill.Info.Id, skill.RankData.LoadTime);
 
+			creature.Temp.ExcaliburPrepareTime = DateTime.Now;
+
 			return true;
 		}
 
@@ -94,11 +96,18 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public void Use(Creature attacker, Skill skill, Packet packet)
 		{
-			// Get Skill Data
+			// Check for full charge
+			if (DateTime.Now < attacker.Temp.ExcaliburPrepareTime.AddMilliseconds(skill.RankData.Var1)) // Not enough time has passed during charging
+			{
+				Send.SkillUseSilentCancel(attacker);
+				Send.Effect(attacker, Effect.Excalibur, ExcaliburEffect.Cancel);
+				return;
+			}
+			
+			// Skill Data
 			var skillDamage = skill.RankData.Var2 / 100f;
 			var skillLength = (int)skill.RankData.Var3;
-			var skillWidth = (int)skill.RankData.Var4;
-			var radius = skillWidth / 2;
+			var skillRadius = ((int)skill.RankData.Var4) / 2;
 
 			var attackerPos = attacker.GetPosition();
 
@@ -106,26 +115,26 @@ namespace Aura.Channel.Skills.Combat
 			var r = Mabi.MabiMath.ByteToRadian(attacker.Direction);
 			var poe = attackerPos.GetRelative(r, skillLength);
 
+			// Turn the attacker in the correct direction before using any effects
+			attacker.TurnTo(poe);
+
 			var attackerPoint = new Point(attackerPos.X, attackerPos.Y);
 			var poePoint = new Point(poe.X, poe.Y);
+			var pointDist = Math.Sqrt((skillLength * skillLength) + (skillRadius * skillRadius)); // Pythagorean Theorem - Distance between point and opposite side's center.
+			var rotationAngle = Math.Asin(skillRadius / pointDist);
 
-			var pointDist = Math.Sqrt((skillLength * skillLength) + (radius * radius)); // Pythagorean Theorem - Distance between point and opposite side's center.
-			var rotationAngle = Math.Asin(radius / pointDist);
-
-			// Calculate Points 1 & 2
 			var posTemp1 = attackerPos.GetRelative(poe, (int)(pointDist - skillLength));
 			var pointTemp1 = new Point(posTemp1.X, posTemp1.Y);
 			var p1 = this.RotatePoint(pointTemp1, attackerPoint, rotationAngle); // Rotate Positive - moves point to position where distance from poe is range and Distance from attackerPos is pointDist.
 			var p2 = this.RotatePoint(pointTemp1, attackerPoint, (rotationAngle * -1)); // Rotate Negative - moves point to opposite side of p1
 
-			// Calculate Points 3 & 4
 			var posTemp2 = poe.GetRelative(attackerPos, (int)(pointDist - skillLength));
 			var pointTemp2 = new Point(posTemp2.X, posTemp2.Y);
 			var p3 = this.RotatePoint(pointTemp2, poePoint, rotationAngle); // Rotate Positive
 			var p4 = this.RotatePoint(pointTemp2, poePoint, (rotationAngle * -1)); // Rotate Negative
 
 			// TargetProp
-			var lProp = new Prop(42, attacker.RegionId, poe.X, poe.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single"); // Curently a lamppost for debug. Normal prop is 280
+			var lProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single"); // Curently a lamppost for debug. Normal prop is 280
 			attacker.Region.AddProp(lProp);
 
 			// Prepare Combat Actions
@@ -157,7 +166,7 @@ namespace Aura.Channel.Skills.Combat
 			{
 				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
 				tAction.Set(TargetOptions.None);
-				tAction.Delay = (int)skill.RankData.Var7; // cast time?
+				tAction.Delay = (int)skill.RankData.Var5;
 				cap.Add(tAction);
 
 				var damage = (attacker.GetRndTotalDamage() * skillDamage);
@@ -214,15 +223,11 @@ namespace Aura.Channel.Skills.Combat
 
 			cap.Handle();
 
-			attacker.TurnTo(poe);
 			Send.Effect(attacker, Effect.Excalibur, ExcaliburEffect.Attack, poe.X, poe.Y);
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 
-			// Debug
-			Task.Delay(10000).ContinueWith(_ =>
-			{
-				attacker.Region.RemoveProp(lProp);
-			});
+			// Remove skill prop
+			attacker.Region.RemoveProp(lProp);
 		}
 
 		/// <summary>
