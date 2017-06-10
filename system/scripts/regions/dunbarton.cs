@@ -35,14 +35,27 @@ public class DunbartonRegionScript : RegionScript
 		// School
 		SetPropBehavior(0x00A0000E000A01DB, PropWarp(14,45565,40000, 71,9111,9613));
 		SetPropBehavior(0x00A0004700000001, PropWarp(71,8934,9610, 14,44615,39995));
-		
+
 		// School
 		SetPropBehavior(0x00A0001200010001, PropWarp(18,2213,2015, 71,10337,8150));
 		SetPropBehavior(0x00A0004700000003, PropWarp(71,10330,7921, 18,2180,1843));
-		
+
 		// Dunbarton School Library
-		SetPropBehavior(0x00A0004700000002, PropWarp(71,10296,10955, 72,10200,7600));
+		SetPropBehavior(0x00A0004700000002, (creature, prop) =>
+		{
+			if (ErinnHour(0, 1) && creature.HasItem(63106))
+			{
+				Cutscene.Play("into_the_Scary_School", creature, cutscene =>
+				{
+					creature.RemoveItem(63106);
+					creature.Warp(76, 10200, 7600);
+				});
+			}
+			else
+				creature.Warp(72, 10200, 7600);
+		});
 		SetPropBehavior(0x00A0004800000002, PropWarp(72,10200,7600, 71,10383,11058));
+		SetPropBehavior(0x00A0004C00000002, PropWarp(76,10200,7600, 71,10383,11058));
 
 		// Math
 		SetPropBehavior(0x00A0000E00090011, PropWarp(14,58396,59080, 25,3233,2484));
@@ -151,5 +164,12 @@ public class DunbartonRegionScript : RegionScript
 
 		// West, bears
 		CreateSpawner(race: 70002, amount: 2, region: 14, delay: 300, delayMin: 10, delayMax: 20, coordinates: A(21942, 38999, 21942, 49905, 26152, 49905, 26152, 38999)); // Red Bear
+
+		// Scary Library
+		CreateSpawner(race: 17603, amount: 4, region: 76, delay: 60, delayMin: 10, delayMax: 10, coordinates: A(9478, 7650, 9478, 10477, 10870, 10477, 10870, 7650)); // Ghost1
+		CreateSpawner(race: 17604, amount: 4, region: 76, delay: 60, delayMin: 10, delayMax: 10, coordinates: A(9478, 7650, 9478, 10477, 10870, 10477, 10870, 7650)); // Ghost2
+		CreateSpawner(race: 80301, amount: 10, region: 76, delay: 10, delayMin: 5, delayMax: 5, coordinates: A(9478, 7650, 9478, 10477, 10870, 10477, 10870, 7650)); // Cloaker
+		CreateSpawner(race: 17701, amount: 4, region: 76, delay: 10, delayMin: 10, delayMax: 10, coordinates: A(9478, 7650, 9478, 10477, 10870, 10477, 10870, 7650)); // Hollow Knight
+
 	}
 }

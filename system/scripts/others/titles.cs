@@ -442,6 +442,32 @@ public class TitleRewardingScript : GeneralScript
 		}
 	}
 
+    [On("PlayerEntersRegion")]
+	public void OnPlayerEntersRegion(Creature creature)
+	{
+		// who saw the library ghost
+		// Enable upon entering the Scary Library
+		// ------------------------------------------------------------------
+		if (!creature.CanUseTitle(9))
+		{
+			if (creature.RegionId == 76)
+				creature.EnableTitle(9);
+		}
+	}
+
+	[On("PlayerReceivesItem")]
+	public void OnPlayerReceivesItem(Creature creature, int itemId, int amount)
+	{
+		// who saw the library ghost
+		// Show upon earning a Scary Library Pass
+		// ------------------------------------------------------------------
+		if (!creature.CanUseTitle(9))
+		{
+			if (itemId == 63106)
+				creature.ShowTitle(9);
+		}
+	}
+
 	public async Task<HookResult> SimonBeforeKeywords(NpcScript npc, params object[] args)
 	{
 		// the Luxurious 
