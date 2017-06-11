@@ -29,7 +29,7 @@ namespace Aura.Channel.Skills.Combat
 	/// Var2: Damage ?
 	/// Var3: Skill Length
 	/// Var4: Skill Width
-	/// Var5: Skill Delay
+	/// Var5: ?
 	/// Var6: ?
 	/// Var7: ?
 	/// Var8: ?
@@ -48,14 +48,14 @@ namespace Aura.Channel.Skills.Combat
 		private const int AttackerStun = 0;
 
 		/// <summary>
-		/// Target's stun [Unofficial]
+		/// Target's stun
 		/// </summary>
-		private const int TargetStun = 2000;
+		private const int TargetStun = 5000;
 
 		/// <summary>
-		/// Distance the target is knocked back [Unofficial]
+		/// Distance the target is knocked back
 		/// </summary>
-		private const int KnockbackDistance = 250;
+		private const int KnockbackDistance = 300;
 
 		/// <summary>
 		/// Prepares the skill
@@ -66,12 +66,14 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
+			// 2-Hand check
 			if (creature.RightHand == null || !creature.RightHand.HasTag("/twohand/"))
 			{
 				Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
 				return false;
 			}
 
+			// Stop movement
 			creature.StopMove();
 
 			skill.State = SkillState.Prepared;
@@ -115,27 +117,27 @@ namespace Aura.Channel.Skills.Combat
 			var r = Mabi.MabiMath.ByteToRadian(attacker.Direction);
 			var poe = attackerPos.GetRelative(r, skillLength);
 
-			// Turn the attacker in the correct direction before using any effects
-			attacker.TurnTo(poe);
-
 			var attackerPoint = new Point(attackerPos.X, attackerPos.Y);
 			var poePoint = new Point(poe.X, poe.Y);
-			var pointDist = Math.Sqrt((skillLength * skillLength) + (skillRadius * skillRadius)); // Pythagorean Theorem - Distance between point and opposite side's center.
+			var pointDist = Math.Sqrt((skillLength * skillLength) + (skillRadius * skillRadius));
 			var rotationAngle = Math.Asin(skillRadius / pointDist);
 
 			var posTemp1 = attackerPos.GetRelative(poe, (int)(pointDist - skillLength));
 			var pointTemp1 = new Point(posTemp1.X, posTemp1.Y);
-			var p1 = this.RotatePoint(pointTemp1, attackerPoint, rotationAngle); // Rotate Positive - moves point to position where distance from poe is range and Distance from attackerPos is pointDist.
-			var p2 = this.RotatePoint(pointTemp1, attackerPoint, (rotationAngle * -1)); // Rotate Negative - moves point to opposite side of p1
+			var p1 = this.RotatePoint(pointTemp1, attackerPoint, rotationAngle);
+			var p2 = this.RotatePoint(pointTemp1, attackerPoint, (rotationAngle * -1));
 
 			var posTemp2 = poe.GetRelative(attackerPos, (int)(pointDist - skillLength));
 			var pointTemp2 = new Point(posTemp2.X, posTemp2.Y);
-			var p3 = this.RotatePoint(pointTemp2, poePoint, rotationAngle); // Rotate Positive
-			var p4 = this.RotatePoint(pointTemp2, poePoint, (rotationAngle * -1)); // Rotate Negative
+			var p3 = this.RotatePoint(pointTemp2, poePoint, rotationAngle);
+			var p4 = this.RotatePoint(pointTemp2, poePoint, (rotationAngle * -1));
 
 			// TargetProp
-			var lProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single"); // Curently a lamppost for debug. Normal prop is 280
+			var lProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
 			attacker.Region.AddProp(lProp);
+
+			// Turn to target area
+			attacker.TurnTo(poe);
 
 			// Prepare Combat Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
@@ -164,10 +166,13 @@ namespace Aura.Channel.Skills.Combat
 
 			foreach (var target in targets)
 			{
-				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
+				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, SkillId.CombatMastery);
 				tAction.Set(TargetOptions.None);
-				tAction.Delay = (int)skill.RankData.Var5;
+				tAction.Delay = 1200;
 				cap.Add(tAction);
+
+				// Stop target movement
+				target.StopMove();
 
 				var damage = (attacker.GetRndTotalDamage() * skillDamage);
 
@@ -198,6 +203,9 @@ namespace Aura.Channel.Skills.Combat
 				// Apply Damage
 				target.TakeDamage(tAction.Damage = damage, attacker);
 
+				// Aggro
+				target.Aggro(attacker);
+
 				// Stun Time
 				tAction.Stun = TargetStun;
 
@@ -223,7 +231,7 @@ namespace Aura.Channel.Skills.Combat
 
 			cap.Handle();
 
-			Send.Effect(attacker, Effect.Excalibur, ExcaliburEffect.Attack, poe.X, poe.Y);
+			Send.Effect(attacker, Effect.Excalibur, ExcaliburEffect.Attack, (float)poe.X, (float)poe.Y);
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 
 			// Remove skill prop
