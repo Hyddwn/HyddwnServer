@@ -32,8 +32,6 @@ public class ManusScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		SetBgm("NPC_Manus.mp3");
-
 		await Intro(L("This man is wearing a green and white healer's dress.<br/>His thick, dark hair is immaculately combed and reaches down to his neck,<br/>his straight bangs accentuating a strong jaw and prominent cheekbones."));
 
 		Msg("Ha! Tell me everything you need!", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Get Treatment", "@healerscare"), Button("Heal Pet", "@petheal"));
@@ -60,6 +58,25 @@ public class ManusScript : NpcScript
 				break;
 
 			case "@shop":
+				if (Player.HasItem(52043))
+				{
+					Msg("Hm? Wait, isn't this ticket...?!");
+					Msg("Ha, Haha, no, it's nothing!<br/>Here, choose what you want!<br/>Since you even brought the ticket, I should show you some useful books!");
+					Msg("Oh yeah, you know you can only use this ticket once, right?<br/>I can't just let you see the books multiple times,<br/>so make sure you have enough money before you use the ticket, okay?<br/>So, do you want to see the books?", Button("Open Shop", "@buy"), Button("Next Time", "@exit"));
+
+					switch (await Select())
+					{
+						case "@buy":
+							Msg("Here, take a look.<br/>These are special books you can't find anywhere else!");
+							OpenShop("ManusShop");
+							Player.RemoveItem(52043);
+							return;
+
+						case "@exit":
+							Msg("Make sure you bring enough money with you next time!");
+							return;
+					}
+				}
 				Msg("Is there something I can help you with?");
 				OpenShop("ManusShop");
 				return;
@@ -403,5 +420,9 @@ public class ManusShop : NpcShopScript
 			Add("First Aid Kits", 63716, 10); // Marionette Repair Set x10
 			Add("First Aid Kits", 63716, 20); // Marionette Repair Set x20
 		}
+
+		Add("Special Goods", (creature, npc) => creature.HasItem(52043));
+		Add("Special Goods", 1112); // First Aid Using Splints
+		Add("Special Goods", 1116); // The True Value of Mental Rest
 	}
 }

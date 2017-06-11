@@ -378,6 +378,29 @@ public class EdernScript : NpcScript
 				Msg("Do you even realize that you are at the Blacksmith's Shop?");
 				break;
 
+			case "making_dogcollar_of_rab":
+				Msg("You need a strong dog collar?<br/>You don't need anything special for that.<br/>Just as long as you make it right.");
+				Msg("Just use tough leather and strong nails,<br/>and make the connecting loop<br/>and place the nail in there.");
+				Msg("If you need it, I'll give you a blueprint for it.<br/>I can't give it to you for free. I'll charge you 100 Gold.", Button("Purchase", "@buy"), Button("Cancel", "@exit"));
+				switch (await Select())
+				{
+					case "@buy":
+						if (Player.Inventory.Gold >= 100)
+						{
+							Player.Inventory.Gold -= 100;
+							Msg("Come again if you need another one.");
+							Player.GivePattern(64581, 20154, 30); // Blacksmith Manual - Belt-like Leather Necklace
+						}
+						else
+							Msg("Hey, <username/>...<br/>You don't even have 100 Gold, what are you trying to do?<br/>What's wrong with young people these days...");
+						break;
+
+					case "@exit":
+						Msg("You don't need it?<br/>I'm telling you, you don't need to look for anything else...<br/>Well, it's up to you.");
+						break;
+				}
+				break;
+
 			default:
 				RndFavorMsg(
 					"And why are you asking ME?",
@@ -397,9 +420,13 @@ public class EdernShop : NpcShopScript
 	{
 		Add("Weapon", 40078); // Bipennis
 		Add("Weapon", 40079); // Mace
-		Add("Weapon", 40080); // Trudy Hunting Suit
+		Add("Weapon", 40080); // Gladius
 		Add("Weapon", 40081); // Leather Long Bow
-		Add("Weapon", 40404); // Physis Wooden Lance
+
+		if (IsEnabled("Lance"))
+		{
+			Add("Weapon", 40404); // Physis Wooden Lance
+		}
 
 		Add("Advanced Weapon"); // Randomly filled on midnight tick
 

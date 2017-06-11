@@ -66,7 +66,26 @@ public class AeiraScript : NpcScript
 				break;
 
 			case "@shop":
-				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				if (Player.HasItem(52044))
+				{
+					Msg("Wait where did you get this ticket?<br/>Only special Bookstore members have this...");
+					Msg("Hehe, I'm just kidding.<br/>We have some new arrivals.<br/>Do you want to take a look?<br/>It'll probably be useful to people like you, <username/>.");
+					Msg("Oh, and once you use the ticket, that's it.<br/>So make sure you have enough money when you want to use it.<br/>So, do you want to see the books?", Button("Open Shop", "@buy"), Button("Cancel", "@exit"));
+
+					switch (await Select())
+					{
+						case "@buy":
+							Msg("What do you think? You can't get this just anywhere.<br/>You should purchase it when you can.");
+							OpenShop("AeiraShop");
+							Player.RemoveItem(52044);
+							return;
+
+						case "@exit":
+							Msg("Very well, then. Come again later.<br/>Don't forget to bring enough money to buy the book next time.");
+							return;
+					}
+				}
+				else if (Memory >= 15 && Favor >= 50 && Stress <= 5)
 					Msg("<username/>, I brought in some interesting books, and I think you might like it.<br/>Here's the collection book. See if you find anything you like...");
 				else
 					Msg("Welcome to the Bookstore.");
@@ -534,5 +553,8 @@ public class AeiraShop : NpcShopScript
 		Add("Collection Book", 1507); // Food Collection - Snacks for Everyone
 		Add("Collection Book", 1508); // Food Collection - Meal that's Simple, yet Filling
 		Add("Collection Book", 1509); // Food Collection - A Special Dinner with Someone
+
+		Add("Special Goods", (creature, npc) => creature.HasItem(52044));
+		Add("Special Goods", 1113); // The History of Music in Erinn (4)
 	}
 }

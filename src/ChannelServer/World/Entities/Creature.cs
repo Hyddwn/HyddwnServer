@@ -3277,6 +3277,18 @@ namespace Aura.Channel.World.Entities
 		{
 			return this.GiveItem(Item.CreateWarpScroll(itemId, portal));
 		}
+		
+		/// <summary>
+		/// Adds production pattern to creature's inventory.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <param name="formId"></param>
+		/// <param name="useCount"></param>
+		/// <returns></returns>
+		public bool GivePattern(int itemId, int formId, int useCount)
+		{
+			return this.GiveItem(Item.CreatePattern(itemId, formId, useCount));
+		}
 
 		/// <summary>
 		/// Adds given amount of gold to the creature's inventory.

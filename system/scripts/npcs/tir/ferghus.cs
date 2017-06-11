@@ -460,6 +460,29 @@ public class FerghusScript : NpcScript
 				Msg("If you are looking for Music Scores, you came too far down.<br/>Malcolm's General Shop is near the Square.<br/>Looks like someone wasted their time, haha.");
 				break;
 
+			case "making_dogcollar_of_rab":
+				Msg("Why are you looking for a collar all of a sudden?<br/>Ha, someone keeps chewing the collar<br/>and runs away?");
+				Msg("Then, a chain collar should do it.<br/>A collar made up of thick chains interlocked with each other<br/>would be impossible to break through<br/>even for a god with steel teeth.");
+				Msg("If you give me 100 Gold, I'll make you a Blacksmith Manual for it...<br/>What do you say?", Button("Purchase", "@buy"), Button("Cancel", "@exit"));
+				switch (await Select())
+				{
+					case "@buy":
+						if (Player.Inventory.Gold >= 100)
+						{
+							Player.Inventory.Gold -= 100;
+							Msg("I have plenty of Blacksmith Manuals, so if you fail<br/>come back.");
+							Player.GivePattern(64581, 20156, 30); // Blacksmith Manual - Chain Necklace
+						}
+						else
+							Msg("Um... You don't even have 100 Gold.<br/>I'm sorry I can't help you then.<br/>Come back once you have the money.");
+						break;
+
+					case "@exit":
+						Msg("There's probably no other dog collar as strong as this...<br/>Well, if you want to look for something else<br/>it's up to you.");
+						break;
+				}
+				break;
+
 			default:
 				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
 				{
