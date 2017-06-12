@@ -325,8 +325,16 @@ namespace Aura.Channel.Skills.Combat
 					skill.Train(1); // Try ranged attack.
 
 				// Reduce arrows
-				if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows && !attacker.Magazine.HasTag("/unlimited_arrow/"))
-					attacker.Inventory.Decrement(attacker.Magazine);
+				// NPCs typically have a single arrow equipped, but it's not
+				// decremented. For now we'll check the ranged tag here,
+				// since all archer mobs appear to have it. We could also
+				// check if the creature is an NPC, but *technically* a
+				// player could control an NPC.
+				if (!attacker.HasTag("/ranged/"))
+				{
+					if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows && !attacker.Magazine.HasTag("/unlimited_arrow/"))
+						attacker.Inventory.Decrement(attacker.Magazine);
+				}
 
 				cap.Handle();
 			}
