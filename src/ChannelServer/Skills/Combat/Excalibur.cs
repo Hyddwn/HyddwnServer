@@ -109,48 +109,28 @@ namespace Aura.Channel.Skills.Combat
 			// Skill Data
 			var skillDamage = skill.RankData.Var2 / 100f;
 			var skillLength = (int)skill.RankData.Var3;
-			var skillRadius = ((int)skill.RankData.Var4) / 2;
+			var skillWidth = (int)skill.RankData.Var4;
 
-			var attackerPos = attacker.GetPosition();
-
-			// Calculate polygon points
-			var r = Mabi.MabiMath.ByteToRadian(attacker.Direction);
-			var poe = attackerPos.GetRelative(r, skillLength);
-
-			var attackerPoint = new Point(attackerPos.X, attackerPos.Y);
-			var poePoint = new Point(poe.X, poe.Y);
-			var pointDist = Math.Sqrt((skillLength * skillLength) + (skillRadius * skillRadius));
-			var rotationAngle = Math.Asin(skillRadius / pointDist);
-
-			var posTemp1 = attackerPos.GetRelative(poe, (int)(pointDist - skillLength));
-			var pointTemp1 = new Point(posTemp1.X, posTemp1.Y);
-			var p1 = this.RotatePoint(pointTemp1, attackerPoint, rotationAngle);
-			var p2 = this.RotatePoint(pointTemp1, attackerPoint, (rotationAngle * -1));
-
-			var posTemp2 = poe.GetRelative(attackerPos, (int)(pointDist - skillLength));
-			var pointTemp2 = new Point(posTemp2.X, posTemp2.Y);
-			var p3 = this.RotatePoint(pointTemp2, poePoint, rotationAngle);
-			var p4 = this.RotatePoint(pointTemp2, poePoint, (rotationAngle * -1));
+			// Get targets in rectangular area
+			Position endPos; // Position on the skill area rectangle opposite of the attacker
+			var targets = SkillHelper.GetTargetableCreaturesInSkillArea(attacker, skillLength, skillWidth, out endPos);
 
 			// TargetProp
-			var lProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
+			var lProp = new Prop(280, attacker.RegionId, endPos.X, endPos.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
 			attacker.Region.AddProp(lProp);
 
 			// Turn to target area
-			attacker.TurnTo(poe);
+			attacker.TurnTo(endPos);
 
 			// Prepare Combat Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-			var targetAreaId = new Location(attacker.RegionId, poe).ToLocationId();
+			var targetAreaId = new Location(attacker.RegionId, endPos).ToLocationId();
 
 			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetAreaId);
 			aAction.Set(AttackerOptions.UseEffect);
 			aAction.PropId = lProp.EntityId;
 			cap.Add(aAction);
-
-			// Get targets in Polygon - includes collission check
-			var targets = attacker.Region.GetCreaturesInPolygon(p1, p2, p3, p4).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(attacker.GetPosition(), x.GetPosition())).ToList();
 
 			var rnd = RandomProvider.Get();
 
@@ -231,7 +211,7 @@ namespace Aura.Channel.Skills.Combat
 
 			cap.Handle();
 
-			Send.Effect(attacker, Effect.Excalibur, ExcaliburEffect.Attack, (float)poe.X, (float)poe.Y);
+			Send.Effect(attacker, Effect.Excalibur, ExcaliburEffect.Attack, (float)endPos.X, (float)endPos.Y);
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 
 			// Remove skill prop
@@ -260,17 +240,6 @@ namespace Aura.Channel.Skills.Combat
 		{
 			Send.Effect(creature, Effect.Excalibur, ExcaliburEffect.Cancel);
 			Send.SkillCancel(creature);
-		}
-
-		private Point RotatePoint(Point point, Point pivot, double radians)
-		{
-			var cosTheta = Math.Cos(radians);
-			var sinTheta = Math.Sin(radians);
-
-			var x = (int)(cosTheta * (point.X - pivot.X) - sinTheta * (point.Y - pivot.Y) + pivot.X);
-			var y = (int)(sinTheta * (point.X - pivot.X) + cosTheta * (point.Y - pivot.Y) + pivot.Y);
-
-			return new Point(x, y);
 		}
 	}
 }
