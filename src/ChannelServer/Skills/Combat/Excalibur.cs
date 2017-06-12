@@ -76,8 +76,6 @@ namespace Aura.Channel.Skills.Combat
 			// Stop movement
 			creature.StopMove();
 
-			skill.State = SkillState.Prepared;
-
 			Send.MotionCancel2(creature, 0);
 			Send.Effect(creature, Effect.Excalibur, ExcaliburEffect.Prepare, 0);
 
