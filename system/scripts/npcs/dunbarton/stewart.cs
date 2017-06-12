@@ -453,8 +453,11 @@ public class StewartShop : NpcShopScript
 			Add("Magic Weapons", 40234); // Tikka Wood Healing Wand
 		}
 
-		//Unofficial, passes should be added to Spellbook tab
-		Add("Pass", (c, o) => o.GetMemory(c) >= 15 && o.GetFavor(c) >= 50 && o.GetStress(c) <= 5);
-		Add("Pass", 63106, 1, -1, 10); // Scary Library Pass
+		// Unofficial, passes should be added to Spellbook tab
+		if (IsEnabled("ScaryLibrary"))
+		{
+			Add("Pass", (c, o) => o.GetMemory(c) >= 15 && o.GetFavor(c) >= 50 && o.GetStress(c) <= 5);
+			Add("Pass", 63106, 1, -1, 10); // Scary Library Pass
+		}
 	}
 }
