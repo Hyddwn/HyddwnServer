@@ -212,6 +212,12 @@ namespace Aura.Mabi.Const
 		public static readonly int LightningRod = 418;
 
 		/// <summary>
+		/// Effects for Excalibur
+		/// int:0|2|3 (cancel | prepare | attack [position.x, position.y])
+		/// </summary>
+		public static readonly int Excalibur = 427;
+
+		/// <summary>
 		/// Effects for The Fake Spiral Sword
 		/// </summary>
 		public static readonly int TheFakeSpiralSword = 430;
@@ -318,5 +324,23 @@ namespace Aura.Mabi.Const
 		/// Cancels the entire effect
 		/// </summary>
 		public const byte Cancel = 6;
+	}
+
+	public static class ExcaliburEffect
+	{
+		/// <summary>
+		/// Cancels the effect
+		/// </summary>
+		public const int Cancel = 0;
+
+		/// <summary>
+		/// Charging effect for Excalibur
+		/// </summary>
+		public const int Prepare = 2;
+
+		/// <summary>
+		/// Attacking effect for Excalibur
+		/// </summary>
+		public const int Attack = 3;
 	}
 }

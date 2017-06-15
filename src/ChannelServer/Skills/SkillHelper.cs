@@ -5,6 +5,7 @@ using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Combat;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
 using System;
@@ -134,6 +135,49 @@ namespace Aura.Channel.Skills
 			var injure = damage * (rndInjure / 100f);
 
 			target.Injuries += injure;
+		}
+
+		/// <summary>
+		/// Gets targetable creatures within a skill's rectangular area (includes collision check).
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skillLength"></param>
+		/// <param name="skillWidth"></param>
+		/// <returns></returns>
+		public static List<Creature> GetTargetableCreaturesInSkillArea(Creature attacker, int skillLength, int skillWidth)
+		{
+			if (attacker == null)
+				return null;
+
+			var attackerPos = attacker.GetPosition();
+			var r = Mabi.MabiMath.ByteToRadian(attacker.Direction);
+
+			return attacker.Region.GetCreaturesInRectangle(attackerPos, r, skillLength, skillWidth).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(attacker.GetPosition(), x.GetPosition())).ToList();
+
+		}
+
+		/// <summary>
+		/// Gets targetable creatures within a skill's rectangular area (includes collision check).
+		/// Outs an end position on the far end of the rectangle, opposite the attacker position.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skillLength"></param>
+		/// <param name="skillWidth"></param>
+		/// <param name="endPos"></param>
+		/// <returns></returns>
+		public static List<Creature> GetTargetableCreaturesInSkillArea(Creature attacker, int skillLength, int skillWidth, out Position endPosition)
+		{
+			if (attacker == null)
+			{
+				endPosition = new Position(0, 0);
+				return null;
+			}
+
+			var attackerPos = attacker.GetPosition();
+			var r = Mabi.MabiMath.ByteToRadian(attacker.Direction);
+
+			return attacker.Region.GetCreaturesInRectangle(attackerPos, r, skillLength, skillWidth, out endPosition).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(attacker.GetPosition(), x.GetPosition())).ToList();
+
 		}
 	}
 }
