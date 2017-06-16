@@ -173,6 +173,38 @@ public class Keychest9ChestRabbieScript : Keychest9ChestScript
 	}
 }
 
+[PuzzleScript("keychest_9chest_runda_siren")]
+public class Keychest9ChestRundaSirenScript : Keychest9ChestScript
+{
+	protected override void AddChestDrops(Chest chest, int chestNum, bool isMonsterChest, bool isEnchantChest)
+	{
+		// Gold
+		if (!isMonsterChest)
+			chest.Add(Item.Create(id: 2000, amountMin: 100, amountMax: 250));
+
+		// Enchant
+		if (isEnchantChest)
+		{
+			var enchant = 0;
+			switch (Random(10))
+			{
+				case 0:
+				case 1:
+				case 2: enchant = 30802; break; // Counter (Suffix)
+				case 3: 
+				case 4:
+				case 5: enchant = 30803; break; // Windmill (Suffix)
+				case 6: 
+				case 7:
+				case 8: enchant = 30804; break; // Smash (Suffix)
+				case 9: enchant = 30706; break; // Formal (Suffix)
+			}
+
+			chest.Add(Item.CreateEnchant(enchant));
+		}
+	}
+}
+
 [PuzzleScript("keychest_9chest_mid_supply")]
 public class Keychest9ChestMidSupplyScript : Keychest9ChestScript
 {
