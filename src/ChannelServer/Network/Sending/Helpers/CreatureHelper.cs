@@ -1148,6 +1148,11 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutInt(0);
 			}
 
+			// [200200, NA253 (2017-06-16)] ?
+			{
+				packet.PutByte(0);
+			}
+
 			return packet;
 		}
 	}
