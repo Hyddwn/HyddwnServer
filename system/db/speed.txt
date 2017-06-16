@@ -470,3 +470,5 @@ grief/*/run,                   116.652000
 grief/*/walk,                  116.652000
 npc_en/*/run,                  373.850600
 npc_en/*/walk,                 207.689200
+pet_gdragon/*/walk,            119.286600
+pet_gdragon/*/run,            1369.000000
