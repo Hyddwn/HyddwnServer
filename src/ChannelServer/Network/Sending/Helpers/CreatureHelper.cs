@@ -125,10 +125,12 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutShort((short)creature.LeftBalanceMod);
 				packet.PutShort((short)creature.RightBalanceMod);
 				packet.PutFloat(0);                  // MagicDefenseMod
-													 // [180300, NA166 (18.09.2013)] Magic Protection
+
+				// [180300, NA166 (18.09.2013)] Magic Protection
 				{
 					packet.PutFloat(0);              // MagicProtectMod
 				}
+
 				packet.PutFloat(0);                  // MagicAttackMod
 				packet.PutShort(15);                 // MeleeAttackRateMod
 				packet.PutShort(15);                 // RangeAttackRateMod
@@ -621,8 +623,9 @@ namespace Aura.Channel.Network.Sending.Helpers
 			packet.PutLong(0);                   // VehicleId
 			packet.PutInt(0);                    // SeatIndex
 			packet.PutByte(0);                   // PassengerList
-												 // loop
-												 //   packet.PutLong
+
+			// PassengerList loop
+			//   packet.PutLong
 
 			// Showdown
 			// --------------------------------------------------------------
@@ -741,7 +744,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutInt(0);                    // TotalScore
 				packet.PutShort(0);                  // AchievementList
 
-				// loop
+				// AchievementList loop
 				//   packet.PutShort achievementId
 			}
 
@@ -751,7 +754,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 			{
 				packet.PutInt(0);                    // FavoriteFarmList
 
-				// loop
+				// FavoriteFarmList loop
 				//   packet.PutLong                  // FarmId
 				//   packet.PutInt                   // ZoneId
 				//   packet.PutShort                 // PosX
