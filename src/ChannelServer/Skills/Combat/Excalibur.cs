@@ -157,12 +157,7 @@ namespace Aura.Channel.Skills.Combat
 
 				// Critical Hit
 				if (crit)
-				{
-					var bonus = critSkill.RankData.Var1 / 100f;
-					damage = damage + (damage * bonus);
-
-					tAction.Set(TargetOptions.Critical);
-				}
+					CriticalHit.Handle(attacker, 100, ref damage, tAction);
 
 				// Handle skills and reductions
 				SkillHelper.HandleDefenseProtection(target, ref damage);
