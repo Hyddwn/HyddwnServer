@@ -509,6 +509,7 @@ namespace Aura.Mabi.Const
 		EnduringMelody = 53104,
 		HarvestSong = 53105,
 		MarchSong = 53106,
+		BattleDance = 53107,
 		Song = 53200,
 
 		// Puppetry
