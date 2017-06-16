@@ -66,10 +66,11 @@ namespace Aura.Channel.Skills.Combat
 		/// <returns></returns>
 		public bool Prepare(Creature creature, Skill skill, Packet packet)
 		{
-			// 2-Hand check
+			// Safe check; client prevents skill use without a two-hand weapon already
 			if (creature.RightHand == null || !creature.RightHand.HasTag("/twohand/"))
 			{
 				Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
+				Send.Notice(creature, Localization.Get("Two-handed weapon required."));
 				return false;
 			}
 
@@ -114,8 +115,8 @@ namespace Aura.Channel.Skills.Combat
 			var targets = SkillHelper.GetTargetableCreaturesInSkillArea(attacker, skillLength, skillWidth, out endPos);
 
 			// TargetProp
-			var lProp = new Prop(280, attacker.RegionId, endPos.X, endPos.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
-			attacker.Region.AddProp(lProp);
+			var targetProp = new Prop(280, attacker.RegionId, endPos.X, endPos.Y, Mabi.MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
+			attacker.Region.AddProp(targetProp);
 
 			// Turn to target area
 			attacker.TurnTo(endPos);
@@ -127,7 +128,7 @@ namespace Aura.Channel.Skills.Combat
 
 			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetAreaId);
 			aAction.Set(AttackerOptions.UseEffect);
-			aAction.PropId = lProp.EntityId;
+			aAction.PropId = targetProp.EntityId;
 			cap.Add(aAction);
 
 			var rnd = RandomProvider.Get();
@@ -137,7 +138,7 @@ namespace Aura.Channel.Skills.Combat
 			var critSkill = attacker.Skills.Get(SkillId.CriticalHit);
 			if (critSkill != null && critSkill.Info.Rank > SkillRank.Novice)
 			{
-				var critChance = Math2.Clamp(0, 30, attacker.GetTotalCritChance(0));
+				var critChance = attacker.GetTotalCritChance(0);
 				if (rnd.NextDouble() * 100 < critChance)
 					crit = true;
 			}
@@ -163,19 +164,11 @@ namespace Aura.Channel.Skills.Combat
 					tAction.Set(TargetOptions.Critical);
 				}
 
-				// Def and Prot
+				// Handle skills and reductions
 				SkillHelper.HandleDefenseProtection(target, ref damage);
-
-				// Defense
 				Defense.Handle(aAction, tAction, ref damage);
-
-				// Heavy Stander
 				HeavyStander.Handle(attacker, target, ref damage, tAction);
-
-				// Conditions
 				SkillHelper.HandleConditions(attacker, target, ref damage);
-
-				// Mana Shield
 				ManaShield.Handle(target, ref damage, tAction);
 
 				// Apply Damage
@@ -213,7 +206,7 @@ namespace Aura.Channel.Skills.Combat
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 
 			// Remove skill prop
-			attacker.Region.RemoveProp(lProp);
+			attacker.Region.RemoveProp(targetProp);
 		}
 
 		/// <summary>

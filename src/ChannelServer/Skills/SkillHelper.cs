@@ -139,25 +139,6 @@ namespace Aura.Channel.Skills
 
 		/// <summary>
 		/// Gets targetable creatures within a skill's rectangular area (includes collision check).
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <param name="skillLength"></param>
-		/// <param name="skillWidth"></param>
-		/// <returns></returns>
-		public static List<Creature> GetTargetableCreaturesInSkillArea(Creature attacker, int skillLength, int skillWidth)
-		{
-			if (attacker == null)
-				return null;
-
-			var attackerPos = attacker.GetPosition();
-			var r = Mabi.MabiMath.ByteToRadian(attacker.Direction);
-
-			return attacker.Region.GetCreaturesInRectangle(attackerPos, r, skillLength, skillWidth).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(attacker.GetPosition(), x.GetPosition())).ToList();
-
-		}
-
-		/// <summary>
-		/// Gets targetable creatures within a skill's rectangular area (includes collision check).
 		/// Outs an end position on the far end of the rectangle, opposite the attacker position.
 		/// </summary>
 		/// <param name="attacker"></param>
@@ -178,6 +159,21 @@ namespace Aura.Channel.Skills
 
 			return attacker.Region.GetCreaturesInRectangle(attackerPos, r, skillLength, skillWidth, out endPosition).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(attacker.GetPosition(), x.GetPosition())).ToList();
 
+		}
+
+		/// <summary>
+		/// Gets targetable creatures within a skill's rectangular area (includes collision check).
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skillLength"></param>
+		/// <param name="skillWidth"></param>
+		/// <param name="endPosition"></param>
+		/// <returns></returns>
+		public static List<Creature> GetTargetableCreaturesInSkillArea(Creature attacker, int skillLength, int skillWidth)
+		{
+			Position discard; // Discarded out parameter
+
+			return GetTargetableCreaturesInSkillArea(attacker, skillLength, skillWidth, out discard);
 		}
 	}
 }
