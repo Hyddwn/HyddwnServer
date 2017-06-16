@@ -263,7 +263,7 @@ public class TitleRewardingScript : GeneralScript
 		}
 	}
 
-    [On("CreatureAttackedByPlayer")]
+	[On("CreatureAttackedByPlayer")]
 	public void OnCreatureAttackedByPlayer(TargetAction tAction)
 	{
 		// the One Who Removed Siren's Mask (male) or
@@ -447,7 +447,7 @@ public class TitleRewardingScript : GeneralScript
 				killer.EnableTitle(85);
 		}
 
-        else if (deadCreature.HasTag("/siren/"))
+		else if (deadCreature.HasTag("/siren/"))
 		{
 			// the One Who Removed Siren's Mask (male) or
 			// the One Who Exposed Siren's Identity (female)
@@ -470,7 +470,7 @@ public class TitleRewardingScript : GeneralScript
 		}
 	}
 
-    [On("PlayerEntersRegion")]
+	[On("PlayerEntersRegion")]
 	public void OnPlayerEntersRegion(Creature creature)
 	{
 		// who saw the library ghost
