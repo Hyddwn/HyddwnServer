@@ -2,6 +2,7 @@
 using Aura.Channel.Skills.Base;
 using Aura.Channel.World.Entities;
 using Aura.Channel.World.Entities.Creatures;
+using Aura.Data;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Shared.Util;
@@ -20,9 +21,9 @@ namespace Aura.Channel.Skills.Transformations
 	///   Var4: Defense
 	///   Var5: Protection
 	///   Var6: ?
-	///   Var7: ?
-	///   Var8: ?
-	///   Var9: ?
+	///   Var7: Passive Defense Activation Bonus (%)
+	///   Var8: Magic Defense
+	///   Var9: Magic Protection
 	///   Var20: Duration
 	///   
 	/// Power of Order
@@ -156,6 +157,12 @@ namespace Aura.Channel.Skills.Transformations
 			creature.StatMods.Add(Stat.DefenseMod, skill.RankData.Var4, StatModSource.Skill, (long)skill.Info.Id);
 			creature.StatMods.Add(Stat.ProtectionMod, skill.RankData.Var5, StatModSource.Skill, (long)skill.Info.Id);
 
+			if (AuraData.FeaturesDb.IsEnabled("PaladinMagicDefense"))
+			{
+				creature.StatMods.Add(Stat.MagicDefenseMod, skill.RankData.Var8, StatModSource.Skill, (long)skill.Info.Id);
+				creature.StatMods.Add(Stat.MagicProtectionMod, skill.RankData.Var9, StatModSource.Skill, (long)skill.Info.Id);
+			}
+
 			// Power of Order bonuses
 			if (powerOfOrder != null)
 			{
@@ -201,7 +208,8 @@ namespace Aura.Channel.Skills.Transformations
 				Stat.Life, Stat.LifeInjured, Stat.LifeMax, Stat.LifeMaxMod,
 				Stat.Mana, Stat.ManaMax, Stat.ManaMaxMod,
 				Stat.Stamina, Stat.Hunger, Stat.StaminaMax, Stat.StaminaMaxMod,
-				Stat.DefenseMod, Stat.ProtectionMod, Stat.StrMod, Stat.WillMod, Stat.DexMod, Stat.BalanceMod,
+				Stat.DefenseMod, Stat.ProtectionMod, Stat.MagicDefenseMod, Stat.MagicProtectionMod,
+				Stat.StrMod, Stat.WillMod, Stat.DexMod, Stat.BalanceMod,
 				Stat.AttackMinMod, Stat.AttackMaxMod, Stat.InjuryMinMod, Stat.InjuryMaxMod
 			);
 		}

@@ -503,6 +503,9 @@
 		
 		// Enables guild board
 		{ name: "GuildListBoard", enabled: true },
+		
+		// Enables magic defense and protection bonuses for Spirit of Order
+		{ name: "PaladinMagicDefense", enabled: true },
 	]},
 	
 	// Season 2
