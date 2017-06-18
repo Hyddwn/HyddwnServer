@@ -571,7 +571,7 @@ namespace Aura.Mabi.Network
 		public const int DyePaletteReqR = 0xA419;
 		public const int DyePickColor = 0xA41A;
 		public const int DyePickColorR = 0xA41B;
-		public const int Transformation = 0xA41C;
+		public const int UpdateTransformation = 0xA41C;
 		public const int PetAction = 0xA41D;
 		public const int SharpMind = 0xA41E;
 		public const int MoonGateInfoRequest = 0xA428;

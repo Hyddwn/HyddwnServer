@@ -1023,5 +1023,21 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Updates creature's transformation information for client's
+		/// in range of creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void UpdateTransformation(Creature creature)
+		{
+			var packet = new Packet(Op.UpdateTransformation, creature.EntityId);
+			packet.PutByte((byte)creature.Transformation);
+			packet.PutShort((short)creature.TransformationSkillRank);
+			packet.PutShort((short)creature.TransformationLevel);
+			packet.PutByte(1);
+
+			creature.Region.Broadcast(packet, creature);
+		}
 	}
 }
