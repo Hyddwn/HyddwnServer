@@ -729,7 +729,7 @@ namespace Aura.Mabi.Const
 
 	/// <summary>
 	/// The level of the character's transformation, eg Holy Knight (Lv. 3)
-	/// vs Champion (Lv. 4)
+	/// vs Champion (Lv. 4).
 	/// </summary>
 	public enum TransformationLevel : short
 	{
