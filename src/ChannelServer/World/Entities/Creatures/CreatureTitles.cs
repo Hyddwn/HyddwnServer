@@ -74,7 +74,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Adds title as "Known" and sends xyz.
+		/// Adds title as "Known" and updates client.
 		/// </summary>
 		/// <param name="titleId"></param>
 		public void Show(ushort titleId)
@@ -84,7 +84,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
-		/// Adds title as "Available" and sends xyz.
+		/// Adds title as "Available" and updates client.
 		/// </summary>
 		/// <param name="titleId"></param>
 		public void Enable(ushort titleId)
