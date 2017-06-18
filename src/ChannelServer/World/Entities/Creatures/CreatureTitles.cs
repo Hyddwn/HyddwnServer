@@ -3,7 +3,6 @@
 
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using Aura.Channel.Network.Sending;
 using Aura.Data;
@@ -20,10 +19,18 @@ namespace Aura.Channel.World.Entities.Creatures
 		private Creature _creature;
 
 		private Dictionary<ushort, TitleState> _list;
-
 		private TitleData _titleData, _optionTitleData;
+		private ushort _selectedTitle, _tempTitle;
 
-		public ushort SelectedTitle { get; set; }
+		public ushort SelectedTitle
+		{
+			get { return (_tempTitle != 0 ? _tempTitle : _selectedTitle); }
+			set { _selectedTitle = value; }
+		}
+		public ushort ActualSelectedTitle
+		{
+			get { return _selectedTitle; }
+		}
 		public ushort SelectedOptionTitle { get; set; }
 		public DateTime Applied { get; private set; }
 
@@ -152,6 +159,37 @@ namespace Aura.Channel.World.Entities.Creatures
 		}
 
 		/// <summary>
+		/// Sets temporary title, that overwrites the actual title until
+		/// the character either relogs, or the temp title is reset by
+		/// setting it to 0.
+		/// </summary>
+		/// <param name="titleId"></param>
+		public void SetTempTitle(ushort titleId)
+		{
+			if (titleId == 0)
+			{
+				_tempTitle = 0;
+				this.ChangeTitle(this.ActualSelectedTitle, false);
+			}
+			else
+			{
+				var data = AuraData.TitleDb.Find(titleId);
+				if (data == null)
+					throw new ArgumentException("Unknown title '" + titleId + "'.");
+
+				if (!this.Knows(titleId))
+					this.Show(titleId);
+
+				_tempTitle = titleId;
+
+				this.SwitchStatMods(data, false);
+			}
+
+			Send.TitleUpdate(_creature);
+			this.Changed.Raise(_creature);
+		}
+
+		/// <summary>
 		/// Tries to change title, returns false if anything goes wrong.
 		/// </summary>
 		/// <param name="titleId"></param>
@@ -165,7 +203,7 @@ namespace Aura.Channel.World.Entities.Creatures
 			if (titleId != 0 && !this.IsUsable(titleId))
 			{
 				this.SetTitle(0, option);
-				Log.Warning("Player '{0}' tried to use disabled title '{1}'.", _creature.Name, titleId);
+				Log.Warning("CreatureTitles: Player '{0}' tried to use disabled title '{1}'.", _creature.Name, titleId);
 				return false;
 			}
 
@@ -176,7 +214,7 @@ namespace Aura.Channel.World.Entities.Creatures
 				if (data == null)
 				{
 					this.SetTitle(0, option);
-					Log.Warning("Player '{0}' tried to use unknown title '{1}'.", _creature.Name, titleId);
+					Log.Warning("CreatureTitles: Player '{0}' tried to use unknown title '{1}'.", _creature.Name, titleId);
 					return false;
 				}
 			}
@@ -280,7 +318,7 @@ namespace Aura.Channel.World.Entities.Creatures
 							break;
 
 						default:
-							Log.Warning("SwitchStatMods: Unknown title effect '{0}' in title {1}.", effect.Key, data.Id);
+							Log.Warning("CreatureTitles: Unknown title effect '{0}' in title {1}.", effect.Key, data.Id);
 							break;
 					}
 				}
