@@ -133,7 +133,7 @@ public class AerScript : NpcScript
 			Player.GiveItem(63102);
 			Player.SystemNotice(L("Received Rundal Siren Dungeon Pass from Aer."));
 
-			if (Player.Vars.Perm["rundalSirenClear"] == null)
+			if (!HasKeyword("mini_aer_killsiren"))
 			{
 				Msg(L("...This is ...a dungeon pass...isn't it...?<br/>What is it for...?<br/>Oh, I see..."));
 				Msg(L("<username/>,<br/>have you ever heard of Siren?"));
@@ -147,7 +147,7 @@ public class AerScript : NpcScript
 			else
 			{
 				Msg(L("<username/>...<br/>Have you been to the Sirens' Dungeon<br/>that we talked about?"));
-				Msg(L("That's strange...<br/>If you've visted their dungeon, <username/>,<br/>all the rumors about them should've stopped by now ..."));
+				Msg(L("That's strange...<br/>If you've visited their dungeon, <username/>,<br/>all the rumors about them should've stopped by now ..."));
 				Msg(L("From what I'd heard from my friends,<br/>the Sirens have been acting exactly the same!<br/>I wish they would learn their lesson already..."));
 				Msg(L("Since you brought me this pass,<br/>I'll change it so that<br/>you can re-enter the Sirens' dungeon once more..."));
 				Msg(L("I wish they would stop bothering people<br/>once and for all..."));

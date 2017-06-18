@@ -15,6 +15,19 @@ public class RundalDungeonScript : DungeonScript
 			dungeonName = "emain_runda_low_dungeon";
 			return true;
 		}
+		
+		// Rundal Siren Pass
+		if (item.Info.Id == 63102) // Rundal Siren Dungeon Pass
+		{
+			if (creature.Party.MemberCount != 1)
+			{
+				Send.Notice(creature, L("You can only enter this dungeon alone."));
+				return false;
+			}
+
+			dungeonName = "emain_runda_middle_siren_dungeon";
+			return true;
+		}
 
 		// Rundal Adv. Fomor Pass for 2
 		if (item.Info.Id == 63126)

@@ -1,13 +1,13 @@
 //--- Aura Script -----------------------------------------------------------
-// Sahuagin AI
+// Sahuagin Fighter AI
 //--- Description -----------------------------------------------------------
-// AI for Sahuagin.
+// AI for Sahuagin Fighter.
 //---------------------------------------------------------------------------
 
-[AiScript("sahuagin")]
-public class SahuaginAi : AiScript
+[AiScript("sahuagin2")]
+public class Sahuagin2Ai : AiScript
 {
-	public SahuaginAi()
+	public Sahuagin2Ai()
 	{
 		SetVisualField(850, 120);
 		SetAggroRadius(200);
@@ -38,15 +38,13 @@ public class SahuaginAi : AiScript
 
 	protected override IEnumerable Alert()
 	{
-		if (Random(100) < 30)
+		if (Random(100) < 50)
 		{
-			Do(Say(L("Kaoo"), "...", "", "", ""));
-			Do(Wait(1000, 4000));
 			Do(Say(L("Kaoo"), "...", "", "", ""));
 			Do(Circle(600, 2000, 2000));
 		}
 
-		Do(Wait(2000, 10000));
+		Do(Wait(500, 2000));
 	}
 
 	protected override IEnumerable Aggro()
@@ -58,11 +56,11 @@ public class SahuaginAi : AiScript
 		if (Case(30))
 		{
 			Do(Say(L("Kaoo"), L("Woooh"), "", "", ""));
-			Do(Attack(Rnd(2, 2, 2, 3, 3)));
+			Do(Attack(Rnd(1, 2, 2, 2, 3, 3)));
 		}
 		else if (Case(30))
 		{
-			Do(Attack(1, 700));
+			Do(Attack(Rnd(1, 1, 2), 700));
 			Do(Wait(1000));
 			Do(Attack(1, 700));
 			Do(Wait(1000));
@@ -79,6 +77,7 @@ public class SahuaginAi : AiScript
 		else if (Case(15))
 		{
 			Do(PrepareSkill(SkillId.Defense));
+			Do(Say("...", "", "", ""));
 			Do(Follow(200, true, 5000));
 			Do(CancelSkill());
 		}

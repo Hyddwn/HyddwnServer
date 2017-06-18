@@ -7,6 +7,7 @@ using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Combat;
 using Aura.Channel.Skills.Life;
 using Aura.Channel.Skills.Magic;
+using Aura.Channel.Skills.Music;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data;
@@ -1637,6 +1638,13 @@ namespace Aura.Channel.Scripting.Scripts
 					skillHandler.Complete(this.Creature, skill, null);
 					this.Creature.Skills.ActiveSkill = null;
 				}
+				else if (skillId == SkillId.PlayingInstrument)
+				{
+					var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<PlayingInstrument>(skillId);
+					skillHandler.Prepare(this.Creature, skill, null);
+					this.Creature.Skills.ActiveSkill = skill;
+				}
+				// Try 
 				// Try to handle implicitly
 				else
 				{
