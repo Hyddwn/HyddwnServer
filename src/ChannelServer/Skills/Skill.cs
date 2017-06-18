@@ -50,6 +50,12 @@ namespace Aura.Channel.Skills
 		/// </summary>
 		public DateTime CastEnd { get; set; }
 
+		/// <summary>
+		/// Time at which the skill can be used again.
+		/// (Temporary, until we have a proper cool down system.)
+		/// </summary>
+		public DateTime CoolDownEnd { get; set; }
+
 		private int _stack = 0;
 		/// <summary>
 		/// Gets or sets loaded stack count, capped at 0~max.
