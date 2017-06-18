@@ -491,7 +491,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// </summary>
 		/// <param name="skillId"></param>
 		/// <param name="timeSpan"></param>
-		public void CancleAfter(SkillId skillId, TimeSpan timeSpan)
+		public void CancelAfter(SkillId skillId, TimeSpan timeSpan)
 		{
 			_autoCancel = skillId;
 			_autoCancelTime = DateTime.Now.Add(timeSpan);

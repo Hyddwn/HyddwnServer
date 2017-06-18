@@ -74,7 +74,7 @@ namespace Aura.Channel.Skills.Combat
 			// was given to the server as well, the client still doesn't show
 			// the duration bar depleting.
 			if (!creature.IsDev)
-				creature.Skills.CancleAfter(skill.Info.Id, TimeSpan.FromSeconds(skill.RankData.Var1));
+				creature.Skills.CancelAfter(skill.Info.Id, TimeSpan.FromSeconds(skill.RankData.Var1));
 
 			Send.Effect(creature, Effect.FinalHit, (byte)1, (byte)1);
 			Send.SkillReady(creature, skill.Info.Id);
