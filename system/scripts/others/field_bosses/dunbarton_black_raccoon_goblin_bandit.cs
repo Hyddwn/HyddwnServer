@@ -98,11 +98,13 @@ public class DunbartonFieldBossScript : FieldBossBaseScript
 	//		if (spawnTime.Ticks == 0)
 	//		{
 	//			npc.Msg(npc.FavorExpression(), string.Format(L(""), Spawn.BossName, Spawn.LocationName));
+	//			return HookResult.Break;
 	//		}
 	//		else if (spawnTime.TotalMinutes < 100)
 	//		{
 	//			var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 	//			npc.Msg(npc.FavorExpression(), string.Format(L(""), Spawn.BossName, Spawn.LocationName, time));
+	//			return HookResult.Break;
 	//		}
 	//	}
 

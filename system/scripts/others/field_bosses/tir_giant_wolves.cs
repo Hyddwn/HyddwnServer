@@ -101,14 +101,14 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			if (spawnTime.Ticks == 0)
 			{
 				npc.Msg(npc.FavorExpression(), string.Format(L("You should go to {1} immediately!<br/>There's news about a {0} attack!"), Spawn.BossName, Spawn.LocationName));
+				return HookResult.Break;
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} will spawn around {1} in {2}."), Spawn.BossName, Spawn.LocationName, time));
+				return HookResult.Break;
 			}
-
-			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -123,14 +123,14 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			if (spawnTime.Ticks == 0)
 			{
 				npc.Msg(npc.FavorExpression(), string.Format(L("Why are you here?<br/>I saw people running to {1}.<br/>They were running to save their friends in peril after {0} showed up."), Spawn.BossName, Spawn.LocationName));
+				return HookResult.Break;
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("I have something to tell you.<br/>Can you feel the evil presence of {0} spreading around {1}?<br/>I think something bad will happen in around {2}..."), Spawn.BossName, Spawn.LocationName, time));
+				return HookResult.Break;
 			}
-
-			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -145,14 +145,14 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			if (spawnTime.Ticks == 0)
 			{
 				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} spawned around {1}."), Spawn.BossName, Spawn.LocationName));
+				return HookResult.Break;
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("A monster will show up in {1} at {2}!<br/>{0} will show up!<br/>Hey, I said I'm not lying!"), Spawn.BossName, Spawn.LocationName, time));
+				return HookResult.Break;
 			}
-
-			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -167,14 +167,14 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			if (spawnTime.Ticks == 0)
 			{
 				npc.Msg(npc.FavorExpression(), string.Format(L("Head to {1} right away!<br/>Trefor made a fuss because of {0}'s attack."), Spawn.BossName, Spawn.LocationName));
+				return HookResult.Break;
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} will spawn around {1} in {2}."), Spawn.BossName, Spawn.LocationName, time));
+				return HookResult.Break;
 			}
-
-			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -189,14 +189,14 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			if (spawnTime.Ticks == 0)
 			{
 				npc.Msg(npc.FavorExpression(), string.Format(L("There is a rumor about {0}'s sneak attack at {1}.<br/>I pray there would be nothing to worry about this time."), Spawn.BossName, Spawn.LocationName));
+				return HookResult.Break;
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} will spawn around {1} in {2}."), Spawn.BossName, Spawn.LocationName, time));
+				return HookResult.Break;
 			}
-
-			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
@@ -211,14 +211,14 @@ public class GiantWolvesFieldBossScript : FieldBossBaseScript
 			if (spawnTime.Ticks == 0)
 			{
 				npc.Msg(npc.FavorExpression(), string.Format(L("Did you hear {0} appearing at {1}?"), Spawn.BossName, Spawn.LocationName));
+				return HookResult.Break;
 			}
 			else if (spawnTime.TotalMinutes < 100)
 			{
 				var time = GetTimeSpanString(ErinnTime.Now, new ErinnTime(Spawn.Time));
 				npc.Msg(npc.FavorExpression(), string.Format(L("(Missing dialog: {0} will spawn around {1} in {2}."), Spawn.BossName, Spawn.LocationName, time));
+				return HookResult.Break;
 			}
-
-			return HookResult.Break;
 		}
 
 		return HookResult.Continue;
