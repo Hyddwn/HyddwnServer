@@ -21,9 +21,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		private Creature _creature;
 		private Dictionary<SkillId, Skill> _skills;
 		private Dictionary<SkillId, Action> _callbacks;
-
-		private SkillId _autoCancel;
-		private DateTime _autoCancelTime;
+		private Dictionary<SkillId, DateTime> _autoCancel;
 
 		// Skill of creature with highest combat power
 		public float HighestSkillCp { get; private set; }
@@ -51,6 +49,7 @@ namespace Aura.Channel.World.Entities.Creatures
 		{
 			_skills = new Dictionary<SkillId, Skill>();
 			_callbacks = new Dictionary<SkillId, Action>();
+			_autoCancel = new Dictionary<SkillId, DateTime>();
 			_creature = creature;
 		}
 
@@ -493,8 +492,14 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <param name="timeSpan"></param>
 		public void CancelAfter(SkillId skillId, TimeSpan timeSpan)
 		{
-			_autoCancel = skillId;
-			_autoCancelTime = DateTime.Now.Add(timeSpan);
+			var skill = this.Get(skillId);
+			if (skill == null)
+				throw new ArgumentException("Skill '" + skillId + "' not found on creature '" + _creature + "'.");
+
+			var cancelTime = DateTime.Now.Add(timeSpan);
+
+			lock (_autoCancel)
+				_autoCancel[skill.Info.Id] = cancelTime;
 		}
 
 		/// <summary>
@@ -503,20 +508,70 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// <param name="time"></param>
 		public void OnSecondsTimeTick(ErinnTime time)
 		{
-			if (_autoCancel == SkillId.None)
-				return;
-
-			if (!this.IsActive(_autoCancel))
+			lock (_autoCancel)
 			{
-				_autoCancel = SkillId.None;
-				return;
+				// Don't do anything if there are no auto cancels
+				if (_autoCancel.Count == 0)
+					return;
+
+				// Start with null to not create garbage, in case there's
+				// nothing to remove.
+				List<SkillId> remove = null;
+
+				// Check all listed auto cancels
+				foreach (var ac in _autoCancel)
+				{
+					var skillId = ac.Key;
+					var cancelTime = ac.Value;
+
+					// Ready to cancel?
+					if (time.DateTime < cancelTime)
+						continue;
+
+					// Remove from list of auto cancels
+					if (remove == null)
+						remove = new List<SkillId>();
+					remove.Add(skillId);
+
+					// Cancel/Stop skill
+					// If handler implements IStoppable, it's a Start/Stop
+					// skill and needs Stop to be called. If it doesn't,
+					// it's a normal skill, of which only one is active
+					// at a time, and that one active skill needs to be
+					// canceled.
+					// If a skill was canceled manually and this later ticks,
+					// cancelation won't trigger if the skill is not active
+					// anymore. If it was activated again in the meantime,
+					// the auto cancel time should've been overwritten.
+					var handler = ChannelServer.Instance.SkillManager.GetHandler<IStoppable>(skillId);
+					if (handler == null)
+					{
+						if (this.IsActive(skillId))
+						{
+							this.CancelActiveSkill();
+						}
+					}
+					else if (handler is IStoppable)
+					{
+						var skill = this.Get(skillId);
+						if (skill.Has(SkillFlags.InUse))
+						{
+							var stopHandler = (handler as IStoppable);
+							stopHandler.Stop(_creature, skill, new Mabi.Network.Packet(0, 0));
+						}
+					}
+					else
+					{
+						Log.Warning("CreatureSkills: Unable to handle auto cancel for '{0}'.", skillId);
+					}
+				}
+
+				if (remove != null)
+				{
+					foreach (var skillId in remove)
+						_autoCancel.Remove(skillId);
+				}
 			}
-
-			if (time.DateTime < _autoCancelTime)
-				return;
-
-			_autoCancel = SkillId.None;
-			this.CancelActiveSkill();
 		}
 	}
 }
