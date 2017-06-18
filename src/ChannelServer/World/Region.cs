@@ -1160,11 +1160,27 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Gets creatures within a rectangle of specified rotation (in radians), length, and width.
-		/// Outs the position of the opposite end of the rectangle.
+		/// Gets creatures within a rectangle of specified radian rotation,
+		/// length, and width.
 		/// </summary>
 		/// <param name="startPosition"></param>
-		/// <param name="rotation"></param>
+		/// <param name="radianRotation"></param>
+		/// <param name="rectLength"></param>
+		/// <param name="rectWidth"></param>
+		/// <returns></returns>
+		public List<Creature> GetCreaturesInRectangle(Position startPosition, double radianRotation, int rectLength, int rectWidth)
+		{
+			Position discard;
+			return this.GetCreaturesInRectangle(startPosition, radianRotation, rectLength, rectWidth, out discard);
+		}
+
+		/// <summary>
+		/// Gets creatures within a rectangle of specified radian rotation,
+		/// length, and width. Outs the position of the opposite end of the
+		/// rectangle.
+		/// </summary>
+		/// <param name="startPosition"></param>
+		/// <param name="radianRotation"></param>
 		/// <param name="rectLength"></param>
 		/// <param name="rectWidth"></param>
 		/// <param name="endPosition"></param>
@@ -1173,7 +1189,8 @@ namespace Aura.Channel.World
 		{
 			int radius = rectWidth / 2;
 
-			endPosition = startPosition.GetRelative(radianRotation, rectLength); // Position at the opposite end of the rectangle from the startPosition
+			// Position at the opposite end of the rectangle from the startPosition
+			endPosition = startPosition.GetRelative(radianRotation, rectLength);
 
 			var startPoint = new Point(startPosition.X, startPosition.Y);
 			var endPoint = new Point(endPosition.X, endPosition.Y);
@@ -1205,26 +1222,11 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Gets creatures within a rectangle of specified rotation (in radians), length, and width.
+		/// Rotates point around pivot.
 		/// </summary>
-		/// <param name="startPosition"></param>
-		/// <param name="rotation"></param>
-		/// <param name="rectLength"></param>
-		/// <param name="rectWidth"></param>
-		/// <returns></returns>
-		public List<Creature> GetCreaturesInRectangle(Position startPosition, double radianRotation, int rectLength, int rectWidth)
-		{
-			Position discard; // Discarded out parameter
-
-			return this.GetCreaturesInRectangle(startPosition, radianRotation, rectLength, rectWidth, out discard);
-		}
-
-		/// <summary>
-		/// Used for point rotation in skill area calculations
-		/// </summary>
-		/// <param name="point"></param>
-		/// <param name="pivot"></param>
-		/// <param name="radians"></param>
+		/// <param name="point">Point to rotate.</param>
+		/// <param name="pivot">Center of the rotation.</param>
+		/// <param name="radians">Angle to rotate by in radians.</param>
 		/// <returns></returns>
 		private Point RotatePoint(Point point, Point pivot, double radians)
 		{
