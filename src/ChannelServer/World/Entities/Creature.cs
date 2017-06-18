@@ -356,6 +356,30 @@ namespace Aura.Channel.World.Entities
 			}
 		}
 
+		// Transformation
+		// ------------------------------------------------------------------
+
+		/// <summary>
+		/// Returns the creature's current transformation.
+		/// </summary>
+		public Transformation Transformation { get; set; }
+
+		/// <summary>
+		/// Returns the rank of the creature's current transformation's
+		/// skill.
+		/// </summary>
+		public SkillRank TransformationSkillRank { get; set; }
+
+		/// <summary>
+		/// Reuturns the level of the creature's current transformation.
+		/// </summary>
+		public TransformationLevel TransformationLevel { get; set; }
+
+		/// <summary>
+		/// Returns true if creature is currently transformed.
+		/// </summary>
+		public bool IsTransformed { get { return (this.Transformation != Transformation.None); } }
+
 		// Inventory
 		// ------------------------------------------------------------------
 
@@ -3277,7 +3301,7 @@ namespace Aura.Channel.World.Entities
 		{
 			return this.GiveItem(Item.CreateWarpScroll(itemId, portal));
 		}
-		
+
 		/// <summary>
 		/// Adds production pattern to creature's inventory.
 		/// </summary>

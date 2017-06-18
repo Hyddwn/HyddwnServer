@@ -548,9 +548,9 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 			// Transformation
 			// --------------------------------------------------------------
-			packet.PutByte(0);                   // Type (1:Paladin, 2:DarkKnight, 3:SubraceTransformed, 4:TransformedElf, 5:TransformedGiant)
-			packet.PutShort(0);                  // Level
-			packet.PutShort(0);                  // SubType
+			packet.PutByte((byte)creature.Transformation);
+			packet.PutShort((short)creature.TransformationSkillRank);
+			packet.PutShort((short)creature.TransformationLevel);
 
 			// Pet
 			// --------------------------------------------------------------
