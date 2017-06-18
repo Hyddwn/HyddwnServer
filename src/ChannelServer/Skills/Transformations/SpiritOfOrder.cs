@@ -25,6 +25,8 @@ namespace Aura.Channel.Skills.Transformations
 	///   Var8: Magic Defense
 	///   Var9: Magic Protection
 	///   Var20: Duration
+	///   IntVar1: Transformation Level
+	///   IntVar2: Transformation Title
 	///   
 	/// Power of Order
 	///   Var1: STR
@@ -92,7 +94,7 @@ namespace Aura.Channel.Skills.Transformations
 		{
 			creature.Transformation = Transformation.Paladin;
 			creature.TransformationSkillRank = skill.Info.Rank;
-			creature.TransformationLevel = GetTransformationLevel(creature, skill);
+			creature.TransformationLevel = (TransformationLevel)skill.RankData.IntVar1;
 
 			Send.UpdateTransformation(creature);
 		}
@@ -251,27 +253,6 @@ namespace Aura.Channel.Skills.Transformations
 			creature.Stamina = (creature.StaminaMax * staminaRate);
 
 			this.UpdateClientStats(creature);
-		}
-
-		/// <summary>
-		/// Returns the creature's transformation level for the given skill,
-		/// based on the creature's preferences and the skill's rank.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <returns></returns>
-		public static TransformationLevel GetTransformationLevel(Creature creature, Skill skill)
-		{
-			if (skill == null || skill.Info.Rank < SkillRank.RF)
-				return TransformationLevel.None;
-			else if (skill.Info.Rank < SkillRank.RA)
-				return TransformationLevel.One;
-			else if (skill.Info.Rank < SkillRank.R5)
-				return TransformationLevel.Two;
-			else if (skill.Info.Rank < SkillRank.R1)
-				return TransformationLevel.Three;
-			else
-				return TransformationLevel.Four;
 		}
 	}
 }
