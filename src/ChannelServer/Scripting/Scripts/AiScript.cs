@@ -385,12 +385,12 @@ namespace Aura.Channel.Scripting.Scripts
 			//   noticed a cow.
 
 			// Reset on...
-			if (this.Creature.Target.IsDead																 // target dead
+			if (this.Creature.Target.IsDead                                                              // target dead
 			|| this.Creature.Region == Region.Limbo                                                      // invalid region (e.g. unsummoned pet)
 			|| !this.Creature.GetPosition().InRange(this.Creature.Target.GetPosition(), _aggroMaxRadius) // out of aggro range
-			|| this.Creature.Target.Warping																 // target is warping
-			|| this.Creature.Target.Client.State == ClientState.Dead									 // target disconnected
-			|| (_state != AiState.Aggro && this.Creature.Target.Conditions.Has(ConditionsA.Invisible))	 // target hid before reaching aggro state
+			|| this.Creature.Target.Warping                                                              // target is warping
+			|| this.Creature.Target.Client.State == ClientState.Dead                                     // target disconnected
+			|| (_state != AiState.Aggro && this.Creature.Target.Conditions.Has(ConditionsA.Invisible))   // target hid before reaching aggro state
 			)
 			{
 				this.Reset();
@@ -885,7 +885,7 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			return this.Creature.Skills.Has(skillId);
 		}
-		
+
 		/// <summary>
 		/// Returns true if the AI creature has equipped an item with the given
 		/// id in one of its equip slots.
@@ -1346,7 +1346,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var until = _timestamp + timeout;
 
 			// Each successful hit counts, attack until count or timeout is reached.
-			for (int i = 0; ; )
+			for (int i = 0; ;)
 			{
 				// Get skill
 				var skill = this.Creature.Skills.ActiveSkill;
