@@ -2128,6 +2128,13 @@ namespace Aura.Channel.Scripting.Scripts
 			for (int i = 0; i < diff; ++i)
 			{
 				var summonPos = pos.GetRandomInRange(minDistance, maxDistance, _rnd);
+
+				// If there's a collision between the creature's position
+				// and the summon's position, the monster that is to be
+				// summoned should not spawn at all.
+				if (this.Creature.Region.Collisions.Any(pos, summonPos))
+					continue;
+
 				var regionId = this.Creature.RegionId;
 				var x = summonPos.X;
 				var y = summonPos.Y;
