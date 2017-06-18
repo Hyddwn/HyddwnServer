@@ -13,6 +13,8 @@ public class SahuaginArcherAi : AiScript
 		SetAggroRadius(200);
 
 		Hates("/pc/", "/pet/");
+		
+		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);
 	}
 
 	protected override IEnumerable Idle()
@@ -115,6 +117,32 @@ public class SahuaginArcherAi : AiScript
 				Do(Wait(2000, 4000));
 				Do(CancelSkill());
 			}
+		}
+	}
+	
+	private IEnumerable OnKnockDown()
+	{
+		Do(SwitchTo(WeaponSet.Second));
+		Do(Say("...", "", "", ""));
+		SwitchRandom();
+		if (Case(33))
+		{
+			Do(PrepareSkill(SkillId.Defense));
+			Do(Wait(2000, 4000));
+			Do(CancelSkill());
+		}
+		else if (Case(34))
+		{
+			if (HasSkill(SkillId.Windmill))
+			{
+				Do(PrepareSkill(SkillId.Windmill));
+				Do(UseSkill());
+			}
+			Do(Wait(2000, 4000));
+		}
+		else if (Case(33))
+		{
+			Do(Attack(Rnd(1, 3), 3000));
 		}
 	}
 }
