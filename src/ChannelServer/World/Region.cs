@@ -1160,47 +1160,7 @@ namespace Aura.Channel.World
 		}
 
 		/// <summary>
-		/// Gets creatures within a rectangle of specified rotation, length, and width.
-		/// </summary>
-		/// <param name="startPosition"></param>
-		/// <param name="rotation"></param>
-		/// <param name="rectLength"></param>
-		/// <param name="rectWidth"></param>
-		/// <returns></returns>
-		public List<Creature> GetCreaturesInRectangle(Position startPosition, double rotation, int rectLength, int rectWidth)
-		{
-			int radius = rectWidth / 2;
-
-			var endPosition = startPosition.GetRelative(rotation, rectLength); // Position at the opposite end of the rectangle from the startPosition
-
-			var startPoint = new Point(startPosition.X, startPosition.Y);
-			var endPoint = new Point(endPosition.X, endPosition.Y);
-
-			// Calculate the diagonal distance from the starting point to each of the rectangle's points on the opposite side
-			var pointDist = Math.Sqrt((rectLength * rectLength) + (radius * radius));
-
-			// Rotation angle used to place the points of [pointDist] distance away in the correct position to form a rectangle
-			// One negative and one positive rotation of a point [pointDist] distance away will provide two points of the rectangle
-			var rotationAngle = Math.Asin(radius / pointDist);
-
-			var posTemp1 = startPosition.GetRelative(endPosition, (int)(pointDist - rectLength)); // Get a position [pointDist] away from the starting position
-			var pointTemp1 = new Point(posTemp1.X, posTemp1.Y); // Create a point at [posTemp1]
-			var p1 = this.RotatePoint(pointTemp1, startPoint, rotationAngle); // Rotate [pointTemp1] about the starting point by [rotationAngle] to create one point of the rectangle on the same side as the ending position
-			var p2 = this.RotatePoint(pointTemp1, startPoint, (rotationAngle * -1)); // Rotate the same point in the opposite direction, creating the second point on the same side of the rectangle
-
-			var posTemp2 = endPosition.GetRelative(startPosition, (int)(pointDist - rectLength)); // Get a position [pointDist] away from the ending position
-			var pointTemp2 = new Point(posTemp2.X, posTemp2.Y); // Create a point at [posTemp2]
-			var p3 = this.RotatePoint(pointTemp2, endPoint, rotationAngle); // Rotate [pointTemp2] about the ending point by [rotationAngle] to create one point of the rectangle on the same side as the starting position
-			var p4 = this.RotatePoint(pointTemp2, endPoint, (rotationAngle * -1)); // Rotate the same point in the opposite direction, creating the second point on the same side of the rectangle
-
-			// Get creatures within the four points calculated
-			var creatureList = this.GetCreaturesInPolygon(p1, p2, p3, p4);
-
-			return creatureList;
-		}
-
-		/// <summary>
-		/// Gets creatures within a rectangle of specified rotation, length, and width.
+		/// Gets creatures within a rectangle of specified rotation (in radians), length, and width.
 		/// Outs the position of the opposite end of the rectangle.
 		/// </summary>
 		/// <param name="startPosition"></param>
@@ -1209,11 +1169,11 @@ namespace Aura.Channel.World
 		/// <param name="rectWidth"></param>
 		/// <param name="endPosition"></param>
 		/// <returns></returns>
-		public List<Creature> GetCreaturesInRectangle(Position startPosition, double rotation, int rectLength, int rectWidth, out Position endPosition)
+		public List<Creature> GetCreaturesInRectangle(Position startPosition, double radianRotation, int rectLength, int rectWidth, out Position endPosition)
 		{
 			int radius = rectWidth / 2;
 
-			endPosition = startPosition.GetRelative(rotation, rectLength); // Position at the opposite end of the rectangle from the startPosition
+			endPosition = startPosition.GetRelative(radianRotation, rectLength); // Position at the opposite end of the rectangle from the startPosition
 
 			var startPoint = new Point(startPosition.X, startPosition.Y);
 			var endPoint = new Point(endPosition.X, endPosition.Y);
@@ -1225,20 +1185,38 @@ namespace Aura.Channel.World
 			// One negative and one positive rotation of a point [pointDist] distance away will provide two points of the rectangle
 			var rotationAngle = Math.Asin(radius / pointDist);
 
-			var posTemp1 = startPosition.GetRelative(endPosition, (int)(pointDist - rectLength)); // Get a position [pointDist] away from the starting position
-			var pointTemp1 = new Point(posTemp1.X, posTemp1.Y); // Create a point at [posTemp1]
-			var p1 = this.RotatePoint(pointTemp1, startPoint, rotationAngle); // Rotate [pointTemp1] about the starting point by [rotationAngle] to create one point of the rectangle on the same side as the ending position
-			var p2 = this.RotatePoint(pointTemp1, startPoint, (rotationAngle * -1)); // Rotate the same point in the opposite direction, creating the second point on the same side of the rectangle
+			// Create a point [pointDist] away from the starting point, and rotate it both positively and negatively by [rotationAngle]
+			// to generate two points on one side of the rectangle
+			var posTemp1 = startPosition.GetRelative(endPosition, (int)(pointDist - rectLength));
+			var pointTemp1 = new Point(posTemp1.X, posTemp1.Y);
+			var p1 = this.RotatePoint(pointTemp1, startPoint, rotationAngle);
+			var p2 = this.RotatePoint(pointTemp1, startPoint, (rotationAngle * -1));
 
-			var posTemp2 = endPosition.GetRelative(startPosition, (int)(pointDist - rectLength)); // Get a position [pointDist] away from the ending position
-			var pointTemp2 = new Point(posTemp2.X, posTemp2.Y); // Create a point at [posTemp2]
-			var p3 = this.RotatePoint(pointTemp2, endPoint, rotationAngle); // Rotate [pointTemp2] about the ending point by [rotationAngle] to create one point of the rectangle on the same side as the starting position
-			var p4 = this.RotatePoint(pointTemp2, endPoint, (rotationAngle * -1)); // Rotate the same point in the opposite direction, creating the second point on the same side of the rectangle
+			// Same method as points 1 and 2, starting from the end point instead to create two points on the opposite side
+			var posTemp2 = endPosition.GetRelative(startPosition, (int)(pointDist - rectLength));
+			var pointTemp2 = new Point(posTemp2.X, posTemp2.Y);
+			var p3 = this.RotatePoint(pointTemp2, endPoint, rotationAngle);
+			var p4 = this.RotatePoint(pointTemp2, endPoint, (rotationAngle * -1));
 
 			// Get creatures within the four points calculated
 			var creatureList = this.GetCreaturesInPolygon(p1, p2, p3, p4);
 
 			return creatureList;
+		}
+
+		/// <summary>
+		/// Gets creatures within a rectangle of specified rotation (in radians), length, and width.
+		/// </summary>
+		/// <param name="startPosition"></param>
+		/// <param name="rotation"></param>
+		/// <param name="rectLength"></param>
+		/// <param name="rectWidth"></param>
+		/// <returns></returns>
+		public List<Creature> GetCreaturesInRectangle(Position startPosition, double radianRotation, int rectLength, int rectWidth)
+		{
+			Position discard; // Discarded out parameter
+
+			return this.GetCreaturesInRectangle(startPosition, radianRotation, rectLength, rectWidth, out discard);
 		}
 
 		/// <summary>
