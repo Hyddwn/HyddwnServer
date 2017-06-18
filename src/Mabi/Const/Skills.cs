@@ -713,4 +713,30 @@ namespace Aura.Mabi.Const
 		/// </summary>
 		MagicCraft = 16,
 	}
+
+	/// <summary>
+	/// Used in defining what a character transforms to.
+	/// </summary>
+	public enum Transformation : byte
+	{
+		None = 0,
+		Paladin = 1,
+		DarkKnight = 2,
+		SubraceTransformed = 3,
+		Falcon = 4,
+		Beast = 5,
+	}
+
+	/// <summary>
+	/// The level of the character's transformation, eg Holy Knight (Lv. 3)
+	/// vs Champion (Lv. 4)
+	/// </summary>
+	public enum TransformationLevel : short
+	{
+		None = 0,
+		One = 1,
+		Two = 2,
+		Three = 3,
+		Four = 4,
+	}
 }
