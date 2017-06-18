@@ -753,6 +753,7 @@ namespace Aura.Mabi.Network
 		public const int SwitchToPureMusicMode = 0xAC8B;
 
 		public const int UnkCharWindow = 0xACAE; // [200200, NA249 (2017-04-13)]
+		public const int UnkCharWindow2 = 0xACB5; // [200200, NA253 (2017-05-16)]
 
 		// [200200, NA252 (2017-05-18)]
 		public const int SkillApTraining = 0xACB8;
