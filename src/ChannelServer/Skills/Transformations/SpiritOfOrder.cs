@@ -117,6 +117,10 @@ namespace Aura.Channel.Skills.Transformations
 			result.Add(TimeSpan.FromSeconds(1 * Math.Max(0, (int)creature.Age - 25)));
 			result.Subtract(TimeSpan.FromSeconds(2 * Math.Min(25, (int)creature.Age)));
 
+			var rate = ChannelServer.Instance.Conf.World.PaladinDurationRate;
+			if (rate != 1)
+				result = TimeSpan.FromMilliseconds(result.TotalMilliseconds * rate);
+
 			return result;
 		}
 
