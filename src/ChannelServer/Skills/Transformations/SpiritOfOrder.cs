@@ -59,7 +59,7 @@ namespace Aura.Channel.Skills.Transformations
 		{
 			if (DateTime.Now < skill.CoolDownEnd)
 			{
-				creature.Notice(Localization.Get("You can't transform anymore today."));
+				creature.Notice(Localization.Get("You can't use this for the rest of the day."));
 				return StartStopResult.Fail;
 			}
 
