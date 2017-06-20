@@ -6,6 +6,8 @@
 
 public class telescopenpcScript : NpcScript
 {
+	int signNumber;
+	
 	public override void Load()
 	{
 		SetRace(990002);
@@ -30,11 +32,12 @@ public class telescopenpcScript : NpcScript
 				if (Player.Inventory.Gold >= 10)
 				{
 					Player.Inventory.Gold -= 10;
-					Cutscene.Play("etc_event_Emainmach_telescope", Player);
-					// Numbers should randomize
-					// Notice should not be sent until after cutscene ends
-					Send.Notice(Player, L("5425...\nWho would write such numbers, and why?"));
-					Close2();
+					Cutscene.Play("etc_event_Emainmach_telescope", Player, cutscene =>
+					{
+						signNumber = Random(1000, 8999);
+						Send.Notice(Player, string.Format(L("{0}...\nWho would write such numbers, and why?"), signNumber));
+						Close2();
+					});
 				}
 				else
 					End("You don't have enough money.");
