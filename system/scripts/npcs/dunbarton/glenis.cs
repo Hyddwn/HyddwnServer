@@ -301,143 +301,7 @@ public class GlenisShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Food", 50004);     // Bread
-		Add("Food", 50002);     // Slice of Cheese
-		Add("Food", 50220);     // Corn Powder
-		Add("Food", 50206);     // Chocolate
-		Add("Food", 50217);     // Celery
-		Add("Food", 50217);     // Basil x1
-		Add("Food", 50217, 5);  // Basil x5
-		Add("Food", 50217, 10); // Basil x10
-		Add("Food", 50217, 20); // Basil x20
-		Add("Food", 50218);     // Tomato x1
-		Add("Food", 50218, 5);  // Tomato x5
-		Add("Food", 50218, 10); // Tomato x10
-		Add("Food", 50218, 20); // Tomato x20
-		Add("Food", 50045);     // Pine Nut
-		Add("Food", 50047);     // Camellia Seeds
-		Add("Food", 50111);     // Carrot x1
-		Add("Food", 50111, 5);  // Carrot x5
-		Add("Food", 50111, 10); // Carrot x10
-		Add("Food", 50111, 20); // Carrot x20
-		Add("Food", 50018);     // Baking Chocolate x1
-		Add("Food", 50018, 5);  // Baking Chocolate x5
-		Add("Food", 50018, 10); // Baking Chocolate x10
-		Add("Food", 50018, 20); // Baking Chocolate x20
-		Add("Food", 50114);     // Garlic x1
-		Add("Food", 50114, 5);  // Garlic x5
-		Add("Food", 50114, 10); // Garlic x10
-		Add("Food", 50114, 20); // Garlic x20
-		Add("Food", 50127);     // Shrimp x1
-		Add("Food", 50127, 5);  // Shrimp x5
-		Add("Food", 50127, 10); // Shrimp x10
-		Add("Food", 50127, 20); // Shrimp x20
-		Add("Food", 50131);     // Sugar x1
-		Add("Food", 50131, 5);  // Sugar x5
-		Add("Food", 50131, 10); // Sugar x10
-		Add("Food", 50131, 20); // Sugar x20
-		Add("Food", 50132);     // Salt x1
-		Add("Food", 50132, 5);  // Salt x5
-		Add("Food", 50132, 10); // Salt x10
-		Add("Food", 50132, 20); // Salt x20
-		Add("Food", 50148);     // Yeast x1
-		Add("Food", 50148, 5);  // Yeast x5
-		Add("Food", 50148, 10); // Yeast x10
-		Add("Food", 50148, 20); // Yeast x20
-		Add("Food", 50153);     // Deep Fry Batter x1
-		Add("Food", 50153, 5);  // Deep Fry Batter x5
-		Add("Food", 50153, 10); // Deep Fry Batter x10
-		Add("Food", 50153, 20); // Deep Fry Batter x20
-		Add("Food", 50156);     // Pepper x1
-		Add("Food", 50156, 5);  // Pepper x5
-		Add("Food", 50156, 10); // Pepper x10
-		Add("Food", 50156, 20); // Pepper x20
-		Add("Food", 50046);     // Juniper Berry
-		Add("Food", 50112);     // Strawberry x1
-		Add("Food", 50112, 5);  // Strawberry x5
-		Add("Food", 50112, 10); // Strawberry x10
-		Add("Food", 50112, 20); // Strawberry x20
-		Add("Food", 50121);     // Butter x1
-		Add("Food", 50121, 5);  // Butter x5
-		Add("Food", 50121, 10); // Butter x10
-		Add("Food", 50121, 20); // Butter x20
-		Add("Food", 50142);     // Onion x1
-		Add("Food", 50142, 5);  // Onion x5
-		Add("Food", 50142, 10); // Onion x10
-		Add("Food", 50142, 20); // Onion x20
-		Add("Food", 50108);     // Chicken Wings x1
-		Add("Food", 50108, 5);  // Chicken Wings x5
-		Add("Food", 50108, 10); // Chicken Wings x10
-		Add("Food", 50108, 20); // Chicken Wings x20
-		Add("Food", 50130);     // Whipped Cream x1
-		Add("Food", 50130, 5);  // Whipped Cream x5
-		Add("Food", 50130, 10); // Whipped Cream x10
-		Add("Food", 50130, 20); // Whipped Cream x20
-		Add("Food", 50186);     // Red Pepper Powder x1
-		Add("Food", 50186, 5);  // Red Pepper Powder x5
-		Add("Food", 50186, 10); // Red Pepper Powder x10
-		Add("Food", 50186, 20); // Red Pepper Powder x20
-		Add("Food", 50005);     // Large Meat
-		Add("Food", 50001);     // Big Lump of Cheese
-		Add("Food", 50135);     // Rice x1
-		Add("Food", 50135, 5);  // Rice x5
-		Add("Food", 50135, 10); // Rice x10
-		Add("Food", 50135, 20); // Rice x20
-		Add("Food", 50138);     // Cabbage x1
-		Add("Food", 50138, 5);  // Cabbage x5
-		Add("Food", 50138, 10); // Cabbage x10
-		Add("Food", 50138, 20); // Cabbage x20
-		Add("Food", 50139);     // Button Mushroom x1
-		Add("Food", 50139, 5);  // Button Mushroom x5
-		Add("Food", 50139, 10); // Button Mushroom x10
-		Add("Food", 50139, 20); // Button Mushroom x20
-		Add("Food", 50145);     // Olive Oil x1
-		Add("Food", 50145, 5);  // Olive Oil x5
-		Add("Food", 50145, 10); // Olive Oil x10
-		Add("Food", 50145, 20); // Olive Oil x20
-		Add("Food", 50187);     // Lemon x1
-		Add("Food", 50187, 5);  // Lemon x5
-		Add("Food", 50187, 10); // Lemon x10
-		Add("Food", 50187, 20); // Lemon x20
-		Add("Food", 50118);     // Orange x1
-		Add("Food", 50118, 5);  // Orange x5
-		Add("Food", 50118, 10); // Orange x10
-		Add("Food", 50118, 20); // Orange x20
-		Add("Food", 50118);     // Thyme x1
-		Add("Food", 50118, 5);  // Thyme x5
-		Add("Food", 50118, 10); // Thyme x10
-		Add("Food", 50118, 20); // Thyme x20
-		Add("Food", 50421);     // Pecan x1
-		Add("Food", 50421, 5);  // Pecan x5
-		Add("Food", 50421, 10); // Pecan x10
-		Add("Food", 50421, 20); // Pecan x20
-		Add("Food", 50426);     // Peanuts x1
-		Add("Food", 50426, 5);  // Peanuts x5
-		Add("Food", 50426, 10); // Peanuts x10
-		Add("Food", 50426, 20); // Peanuts x20
-		Add("Food", 50123);     // Roasted Bacon
-		Add("Food", 50134);     // Sliced Bread
-		Add("Food", 50133);     // Beef
-		Add("Food", 50122);     // Bacon x1
-		Add("Food", 50122, 5);  // Bacon x5
-		Add("Food", 50122, 10); // Bacon x10
-		Add("Food", 50122, 20); // Bacon x20
-		Add("Food", 50430);     // Grapes x1
-		Add("Food", 50430, 5);  // Grapes x5
-		Add("Food", 50430, 10); // Grapes x10
-		Add("Food", 50430, 20); // Grapes x20
-		Add("Food", 50120);     // Steamed Rice
-		Add("Food", 50102);     // Potato Salad
-		Add("Food", 50431);     // Ripe Pumpkin x1
-		Add("Food", 50431, 5);  // Ripe Pumpkin x5
-		Add("Food", 50431, 10); // Ripe Pumpkin x10
-		Add("Food", 50431, 20); // Ripe Pumpkin x20
-		Add("Food", 50006);     // Sliced Meat x1
-		Add("Food", 50006, 5);  // Sliced Meat x5
-		Add("Food", 50006, 10); // Sliced Meat x10
-		Add("Food", 50006, 20); // Sliced Meat x2
-		Add("Food", 50104);     // Egg Salad
-		Add("Food", 50101);     // Potato Egg Salad
+		Add("Food");
 
 		Add("Gift", 52010); // Ramen
 		Add("Gift", 52021); // Slice of Cake
@@ -455,5 +319,189 @@ public class GlenisShop : NpcShopScript
 		AddQuest("Quest", 60028, 1290); // Make Some Rice
 
 		Add("Event"); // Empty
+
+		if (IsEnabled("MasterChef"))
+		{
+			Add("Food", 50004);     // Bread
+			Add("Food", 50002);     // Slice of Cheese
+			Add("Food", 50220);     // Corn Powder
+			Add("Food", 50206);     // Chocolate
+			Add("Food", 50217);     // Celery
+			Add("Food", 50219);     // Basil x1
+			Add("Food", 50219, 5);  // Basil x5
+			Add("Food", 50219, 10); // Basil x10
+			Add("Food", 50219, 20); // Basil x20
+			Add("Food", 50218);     // Tomato x1
+			Add("Food", 50218, 5);  // Tomato x5
+			Add("Food", 50218, 10); // Tomato x10
+			Add("Food", 50218, 20); // Tomato x20
+			Add("Food", 50045);     // Pine Nut
+			Add("Food", 50047);     // Camellia Seeds
+			Add("Food", 50111);     // Carrot x1
+			Add("Food", 50111, 5);  // Carrot x5
+			Add("Food", 50111, 10); // Carrot x10
+			Add("Food", 50111, 20); // Carrot x20
+			Add("Food", 50018);     // Baking Chocolate x1
+			Add("Food", 50018, 5);  // Baking Chocolate x5
+			Add("Food", 50018, 10); // Baking Chocolate x10
+			Add("Food", 50018, 20); // Baking Chocolate x20
+			Add("Food", 50114);     // Garlic x1
+			Add("Food", 50114, 5);  // Garlic x5
+			Add("Food", 50114, 10); // Garlic x10
+			Add("Food", 50114, 20); // Garlic x20
+			Add("Food", 50127);     // Shrimp x1
+			Add("Food", 50127, 5);  // Shrimp x5
+			Add("Food", 50127, 10); // Shrimp x10
+			Add("Food", 50127, 20); // Shrimp x20
+			Add("Food", 50131);     // Sugar x1
+			Add("Food", 50131, 5);  // Sugar x5
+			Add("Food", 50131, 10); // Sugar x10
+			Add("Food", 50131, 20); // Sugar x20
+			Add("Food", 50132);     // Salt x1
+			Add("Food", 50132, 5);  // Salt x5
+			Add("Food", 50132, 10); // Salt x10
+			Add("Food", 50132, 20); // Salt x20
+			Add("Food", 50148);     // Yeast x1
+			Add("Food", 50148, 5);  // Yeast x5
+			Add("Food", 50148, 10); // Yeast x10
+			Add("Food", 50148, 20); // Yeast x20
+			Add("Food", 50153);     // Deep Fry Batter x1
+			Add("Food", 50153, 5);  // Deep Fry Batter x5
+			Add("Food", 50153, 10); // Deep Fry Batter x10
+			Add("Food", 50153, 20); // Deep Fry Batter x20
+			Add("Food", 50156);     // Pepper x1
+			Add("Food", 50156, 5);  // Pepper x5
+			Add("Food", 50156, 10); // Pepper x10
+			Add("Food", 50156, 20); // Pepper x20
+			Add("Food", 50185, 1);  // Curry Powder x1
+			Add("Food", 50185, 5);  // Curry Powder x5
+			Add("Food", 50185, 10); // Curry Powder x10
+			Add("Food", 50185, 20); // Curry Powder x20
+			Add("Food", 50046);     // Juniper Berry
+			Add("Food", 50112);     // Strawberry x1
+			Add("Food", 50112, 5);  // Strawberry x5
+			Add("Food", 50112, 10); // Strawberry x10
+			Add("Food", 50112, 20); // Strawberry x20
+			Add("Food", 50121);     // Butter x1
+			Add("Food", 50121, 5);  // Butter x5
+			Add("Food", 50121, 10); // Butter x10
+			Add("Food", 50121, 20); // Butter x20
+			Add("Food", 50142);     // Onion x1
+			Add("Food", 50142, 5);  // Onion x5
+			Add("Food", 50142, 10); // Onion x10
+			Add("Food", 50142, 20); // Onion x20
+			Add("Food", 50108);     // Chicken Wings x1
+			Add("Food", 50108, 5);  // Chicken Wings x5
+			Add("Food", 50108, 10); // Chicken Wings x10
+			Add("Food", 50108, 20); // Chicken Wings x20
+			Add("Food", 50130);     // Whipped Cream x1
+			Add("Food", 50130, 5);  // Whipped Cream x5
+			Add("Food", 50130, 10); // Whipped Cream x10
+			Add("Food", 50130, 20); // Whipped Cream x20
+			Add("Food", 50186);     // Red Pepper Powder x1
+			Add("Food", 50186, 5);  // Red Pepper Powder x5
+			Add("Food", 50186, 10); // Red Pepper Powder x10
+			Add("Food", 50186, 20); // Red Pepper Powder x20
+			Add("Food", 50005);     // Large Meat
+			Add("Food", 50001);     // Big Lump of Cheese
+			Add("Food", 50135);     // Rice x1
+			Add("Food", 50135, 5);  // Rice x5
+			Add("Food", 50135, 10); // Rice x10
+			Add("Food", 50135, 20); // Rice x20
+			Add("Food", 50138);     // Cabbage x1
+			Add("Food", 50138, 5);  // Cabbage x5
+			Add("Food", 50138, 10); // Cabbage x10
+			Add("Food", 50138, 20); // Cabbage x20
+			Add("Food", 50139);     // Button Mushroom x1
+			Add("Food", 50139, 5);  // Button Mushroom x5
+			Add("Food", 50139, 10); // Button Mushroom x10
+			Add("Food", 50139, 20); // Button Mushroom x20
+			Add("Food", 50145);     // Olive Oil x1
+			Add("Food", 50145, 5);  // Olive Oil x5
+			Add("Food", 50145, 10); // Olive Oil x10
+			Add("Food", 50145, 20); // Olive Oil x20
+			Add("Food", 50187);     // Lemon x1
+			Add("Food", 50187, 5);  // Lemon x5
+			Add("Food", 50187, 10); // Lemon x10
+			Add("Food", 50187, 20); // Lemon x20
+			Add("Food", 50188);     // Orange x1
+			Add("Food", 50188, 5);  // Orange x5
+			Add("Food", 50188, 10); // Orange x10
+			Add("Food", 50188, 20); // Orange x20
+			Add("Food", 50189);     // Thyme x1
+			Add("Food", 50189, 5);  // Thyme x5
+			Add("Food", 50189, 10); // Thyme x10
+			Add("Food", 50189, 20); // Thyme x20
+			Add("Food", 50421);     // Pecan x1
+			Add("Food", 50421, 5);  // Pecan x5
+			Add("Food", 50421, 10); // Pecan x10
+			Add("Food", 50421, 20); // Pecan x20
+			Add("Food", 50426);     // Peanuts x1
+			Add("Food", 50426, 5);  // Peanuts x5
+			Add("Food", 50426, 10); // Peanuts x10
+			Add("Food", 50426, 20); // Peanuts x20
+			Add("Food", 50133);     // Beef
+			Add("Food", 50122);     // Bacon x1
+			Add("Food", 50122, 5);  // Bacon x5
+			Add("Food", 50122, 10); // Bacon x10
+			Add("Food", 50122, 20); // Bacon x20
+			Add("Food", 50430);     // Grapes x1
+			Add("Food", 50430, 5);  // Grapes x5
+			Add("Food", 50430, 10); // Grapes x10
+			Add("Food", 50430, 20); // Grapes x20
+			Add("Food", 50431);     // Ripe Pumpkin x1
+			Add("Food", 50431, 5);  // Ripe Pumpkin x5
+			Add("Food", 50431, 10); // Ripe Pumpkin x10
+			Add("Food", 50431, 20); // Ripe Pumpkin x20
+			Add("Food", 50006);     // Sliced Meat x1
+			Add("Food", 50006, 5);  // Sliced Meat x5
+			Add("Food", 50006, 10); // Sliced Meat x10
+			Add("Food", 50006, 20); // Sliced Meat x2
+			Add("Food", 50123, "QUAL:4:60;"); // Roasted Bacon
+			Add("Food", 50120, "QUAL:4:75;"); // Steamed Rice
+			Add("Food", 50134, "QUAL:4:65;"); // Sliced Bread
+			Add("Food", 50104, "QUAL:4:70;"); // Egg Salad
+			Add("Food", 50102, "QUAL:4:70;"); // Potato Salad
+			Add("Food", 50101, "QUAL:4:70;"); // Potato Egg Salad
+		}
+		else
+		{
+			Add("Food", 50108);     // Chicken Wings x1
+			Add("Food", 50108, 10); // Chicken Wings x10
+			Add("Food", 50133);     // Beef
+			Add("Food", 50122);     // Bacon x1
+			Add("Food", 50122, 10); // Bacon x10
+			Add("Food", 50127);     // Shrimp x1
+			Add("Food", 50112);     // Strawberry x1
+			Add("Food", 50112, 10); // Strawberry x10
+			Add("Food", 50135);     // Rice x1
+			Add("Food", 50135, 10); // Rice x10
+			Add("Food", 50142);     // Onion x1
+			Add("Food", 50142, 10); // Onion x10
+			Add("Food", 50114);     // Garlic x1
+			Add("Food", 50114, 10); // Garlic x10
+			Add("Food", 50121);     // Butter x1
+			Add("Food", 50121, 10); // Butter x10
+			Add("Food", 50131);     // Sugar x1
+			Add("Food", 50131, 10); // Sugar x10
+			Add("Food", 50132);     // Salt x1
+			Add("Food", 50132, 10); // Salt x10
+			Add("Food", 50156);     // Pepper x1
+			Add("Food", 50156, 10); // Pepper x10
+			Add("Food", 50145);     // Olive Oil x1
+			Add("Food", 50145, 10); // Olive Oil x10
+			Add("Food", 50153);     // Deep Fry Batter x1
+			Add("Food", 50148);     // Yeast x1
+			Add("Food", 50148, 10); // Yeast x10
+			Add("Food", 50045);     // Pine Nut
+			Add("Food", 50046);     // Juniper Berry
+			Add("Food", 50047);     // Camellia Seeds
+			Add("Food", 50123, "QUAL:4:60;"); // Roasted Bacon
+			Add("Food", 50120, "QUAL:4:75;"); // Steamed Rice
+			Add("Food", 50134, "QUAL:4:65;"); // Sliced Bread
+			Add("Food", 50104, "QUAL:4:70;"); // Egg Salad
+			Add("Food", 50102, "QUAL:4:70;"); // Potato Salad
+			Add("Food", 50101, "QUAL:4:70;"); // Potato Egg Salad
+		}
 	}
 }
