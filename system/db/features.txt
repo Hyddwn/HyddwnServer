@@ -707,8 +707,11 @@
 	
 	// Season 6
 	{ name: "G18S6", enabled: true, children: [
-		// Enables Reforces
+		// Enables Reforges
 		{ name: "Reforges", enabled: true },
+		
+		// Enables streamlined grocery stores
+		{ name: "MasterChef", enabled: true },
 	]},
 	
 	// Season 7
