@@ -35,8 +35,6 @@ public class MalcolmScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		SetBgm("NPC_Malcolm.mp3");
-
 		await Intro(L("While his thin face makes him look weak,<br/>and his soft and delicate hands seem much too feminine,<br/>his cool long blonde hair gives him a suave look.<br/>He looks like he just came out of a workshop since he's wearing a heavy leather apron."));
 
 		Msg("What can I do for you?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"));
