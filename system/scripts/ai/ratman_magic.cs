@@ -7,6 +7,10 @@
 [AiScript("ratman_magic")]
 public class RatManMagicAi : AiScript
 {
+	readonly string[] DistanceChat = new[] { "This way", "Follow me~" };
+	readonly string[] SmashChat = new[] { "Prepare for a heavy blow.", "Here I come.", "I have found a blind side." };
+	readonly string[] AttackChat = new[] { "Hahahaha", "A hit, it's a hit!"};
+
 	public RatManMagicAi()
 	{
 		SetVisualField(950, 120);
@@ -29,22 +33,27 @@ public class RatManMagicAi : AiScript
 		SwitchRandom();
 		if (Case(20))
 		{
+			Do(Say(DistanceChat));
 			Do(KeepDistance(1000, false, 2000));
 			Do(Circle(600, 1000, 2000));
 		}
 		else if (Case(20))
 		{
 			Do(CancelSkill());
+			Do(Say(AttackChat));
 			Do(Attack(3));
 		}
 		else if (Case(15))
 		{
+			Do(Say(SmashChat));
 			Do(PrepareSkill(SkillId.Smash));
 			Do(CancelSkill());
+			Do(Say(AttackChat));
 			Do(Attack(3));
 		}
 		else if (Case(20))
 		{
+			Do(Say(SmashChat));
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Attack(1, 4000));
 		}
@@ -75,7 +84,47 @@ public class RatManMagicAi : AiScript
 
 	private IEnumerable OnKnockDown()
 	{
-		Do(Attack(3));
-		Do(Wait(3000));
+		if (Creature.Life < Creature.LifeMax * 0.20f)
+		{
+			
+			if (Random() < 50)
+			{
+				Do(SwitchTo(WeaponSet.First));
+				Do(PrepareSkill(SkillId.Defense));
+				Do(Wait(2000, 4000));
+				Do(CancelSkill());
+			}
+			else 
+			{
+				Do(SwitchTo(WeaponSet.First));
+				Do(PrepareSkill(SkillId.Smash));
+				Do(Attack(1, 4000));
+			}
+		}
+		else
+		{
+			SwitchRandom();
+			if (Case(40))
+			{
+				Do(SwitchTo(WeaponSet.First));
+				Do(PrepareSkill(SkillId.Windmill));
+				//Do(Wait(4000, 4000));
+				Do(UseSkill());
+				
+			}
+			else if (Case(30))
+			{
+				Do(SwitchTo(WeaponSet.First));
+				Do(PrepareSkill(SkillId.Smash));
+				Do(Attack(1, 4000));
+			}
+			else if(Case(30))
+			{
+				Do(SwitchTo(WeaponSet.First));
+				Do(PrepareSkill(SkillId.Defense));
+				Do(Wait(2000, 4000));
+				Do(CancelSkill());
+			}
+		}
 	}
 }

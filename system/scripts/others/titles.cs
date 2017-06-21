@@ -263,6 +263,24 @@ public class TitleRewardingScript : GeneralScript
 		}
 	}
 
+	[On("CreatureAttackedByPlayer")]
+	public void OnCreatureAttackedByPlayer(TargetAction tAction)
+	{
+		// the One Who Removed Siren's Mask (male) or
+		// the One Who Exposed Siren's Identity (female)
+		// Enable when hitting a siren with a critical smash
+		// without killing the siren
+		// ------------------------------------------------------------------
+		if (tAction.AttackerSkillId != SkillId.Smash)
+			return;
+		
+		if (!tAction.Attacker.CanUseTitle(86))
+		{
+			if (tAction.Has(TargetOptions.Critical) && !tAction.Creature.IsDead && tAction.Creature.HasTag("/siren/"))
+				tAction.Attacker.EnableTitle(86);
+		}
+	}
+
 	[On("CreatureLevelUp")]
 	public void OnCreatureLevelUp(Creature creature)
 	{
@@ -429,6 +447,16 @@ public class TitleRewardingScript : GeneralScript
 				killer.EnableTitle(85);
 		}
 
+		else if (deadCreature.HasTag("/siren/"))
+		{
+			// the One Who Removed Siren's Mask (male) or
+			// the One Who Exposed Siren's Identity (female)
+			// Show when killing a siren.
+			// ------------------------------------------------------------------
+			if (!killer.CanUseTitle(86))
+				killer.ShowTitle(86);
+		}
+
 		// the Fire Arrow
 		// Enabled when killing an enemy with a fire arrow.
 		// ------------------------------------------------------------------
@@ -439,6 +467,32 @@ public class TitleRewardingScript : GeneralScript
 			// or still being set when it shouldn't be.
 			if (killer.RightHand != null && killer.RightHand.HasTag("/bow/|/bow01/") && Campfire.GetNearbyCampfire(killer, 500) != null)
 				killer.EnableTitle(88);
+		}
+	}
+
+	[On("PlayerEntersRegion")]
+	public void OnPlayerEntersRegion(Creature creature)
+	{
+		// who saw the library ghost
+		// Enable upon entering the Scary Library
+		// ------------------------------------------------------------------
+		if (!creature.CanUseTitle(9))
+		{
+			if (creature.RegionId == 76)
+				creature.EnableTitle(9);
+		}
+	}
+
+	[On("PlayerReceivesItem")]
+	public void OnPlayerReceivesItem(Creature creature, int itemId, int amount)
+	{
+		// who saw the library ghost
+		// Show upon earning a Scary Library Pass
+		// ------------------------------------------------------------------
+		if (!creature.CanUseTitle(9))
+		{
+			if (itemId == 63106)
+				creature.ShowTitle(9);
 		}
 	}
 

@@ -423,9 +423,9 @@ namespace Aura.Channel.World.Entities
 			{
 				switch (sealColor)
 				{
-					case "yellow": this.Info.Color3 = 0xF4AE05; break;
 					//case "blue": this.Info.Color3 = 0xF4AE05; break;
 					//case "red": this.Info.Color3 = 0xF4AE05; break;
+					case "yellow": this.Info.Color3 = 0xF4AE05; break;
 				}
 			}
 		}
@@ -887,7 +887,14 @@ namespace Aura.Channel.World.Entities
 			if (drops == null || !drops.Any())
 				throw new ArgumentException("Drops list empty.");
 
-			return GetRandomDrop(rnd, drops.Sum(a => a.Chance), drops);
+			var item = GetRandomDrop(rnd, drops.Sum(a => a.Chance), drops);
+
+			// Give drop with lowest chance if we didn't get one for some
+			// reason. (This might happen due to floating point inaccuracy?)
+			if (item == null)
+				item = new Item(drops.OrderBy(a => a.Chance).First());
+
+			return item;
 		}
 
 		/// <summary>

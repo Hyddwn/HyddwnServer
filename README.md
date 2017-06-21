@@ -18,6 +18,3 @@ Aura is completely free and licensed under the GNU GPL.
 As such, every user is free to use Aura and choose how to use it,
 in the context of its license.
 
-Build Status
-------------------------------
-[![Build Status](https://travis-ci.org/aura-project/aura.png?branch=master)](https://travis-ci.org/aura-project/aura)

@@ -72,130 +72,131 @@ namespace Aura.Channel.Skills.Magic
 			if (!isBoltMagic && !isAdvMagic)
 				return;
 
-			var attackerSkill = attacker.Skills.Get(SkillId.MagicMastery);
-			if (attackerSkill == null)
+			var magicMasterySkill = attacker.Skills.Get(SkillId.MagicMastery);
+			if (magicMasterySkill == null)
 				return;
 
+			var attackerSkillId = tAction.AttackerSkillId;
 			var rating = attacker.GetPowerRating(tAction.Creature);
 
-			if (attackerSkill.Info.Rank == SkillRank.Novice)
+			if (magicMasterySkill.Info.Rank == SkillRank.Novice)
 			{
 				if (isBoltMagic)
-					attackerSkill.Train(1); // Attack any monster with bolt magic.
+					magicMasterySkill.Train(1); // Attack any monster with bolt magic.
 			}
-			else if (attackerSkill.Info.Rank >= SkillRank.RF && attackerSkill.Info.Rank <= SkillRank.RD)
+			else if (magicMasterySkill.Info.Rank >= SkillRank.RF && magicMasterySkill.Info.Rank <= SkillRank.RD)
 			{
 				if (isBoltMagic)
 				{
-					attackerSkill.Train(1); // Attack any monster with bolt magic.
+					magicMasterySkill.Train(1); // Attack any monster with bolt magic.
 
 					if (tAction.IsKnockBack)
-						attackerSkill.Train(2); // Knock back a monster with bolt magic.
+						magicMasterySkill.Train(2); // Knock back a monster with bolt magic.
 
 					if (target.IsDead)
-						attackerSkill.Train(3); // Kill a monster with bolt magic.
+						magicMasterySkill.Train(3); // Kill a monster with bolt magic.
 				}
 			}
-			else if (attackerSkill.Info.Rank >= SkillRank.RC && attackerSkill.Info.Rank <= SkillRank.RB)
+			else if (magicMasterySkill.Info.Rank >= SkillRank.RC && magicMasterySkill.Info.Rank <= SkillRank.RB)
 			{
 				if (isBoltMagic && rating == PowerRating.Normal)
 				{
-					attackerSkill.Train(1); // Attack any monster of equal level with bolt magic.
+					magicMasterySkill.Train(1); // Attack any monster of equal level with bolt magic.
 
 					if (target.IsDead)
-						attackerSkill.Train(2); // Kill a monster of equal level with bolt magic.
+						magicMasterySkill.Train(2); // Kill a monster of equal level with bolt magic.
 				}
 			}
-			else if (attackerSkill.Info.Rank >= SkillRank.RA && attackerSkill.Info.Rank <= SkillRank.R9)
+			else if (magicMasterySkill.Info.Rank >= SkillRank.RA && magicMasterySkill.Info.Rank <= SkillRank.R9)
 			{
 				if (isBoltMagic && rating == PowerRating.Strong)
 				{
-					attackerSkill.Train(1); // Attack a Strong monster with bolt magic.
+					magicMasterySkill.Train(1); // Attack a Strong monster with bolt magic.
 
 					if (target.IsDead)
-						attackerSkill.Train(2); // Kill a Strong monster with bolt magic.
+						magicMasterySkill.Train(2); // Kill a Strong monster with bolt magic.
 				}
 			}
-			else if (attackerSkill.Info.Rank >= SkillRank.R8 && attackerSkill.Info.Rank <= SkillRank.R7)
+			else if (magicMasterySkill.Info.Rank >= SkillRank.R8 && magicMasterySkill.Info.Rank <= SkillRank.R7)
 			{
 				if (isBoltMagic && rating == PowerRating.Awful)
 				{
-					attackerSkill.Train(1); // Attack an Awful monster with bolt magic.
+					magicMasterySkill.Train(1); // Attack an Awful monster with bolt magic.
 
 					if (target.IsDead)
-						attackerSkill.Train(2); // Kill an Awful monster with bolt magic.
+						magicMasterySkill.Train(2); // Kill an Awful monster with bolt magic.
 				}
 			}
-			else if (attackerSkill.Info.Rank >= SkillRank.R6 && attackerSkill.Info.Rank <= SkillRank.R6)
+			else if (magicMasterySkill.Info.Rank >= SkillRank.R6 && magicMasterySkill.Info.Rank <= SkillRank.R6)
 			{
 				if (isBoltMagic && rating == PowerRating.Boss)
 				{
-					attackerSkill.Train(1); // Attack a Boss monster with bolt magic.
+					magicMasterySkill.Train(1); // Attack a Boss monster with bolt magic.
 
 					if (target.IsDead)
-						attackerSkill.Train(2); // Kill a Boss monster with bolt magic.
+						magicMasterySkill.Train(2); // Kill a Boss monster with bolt magic.
 				}
 			}
-			else if (attackerSkill.Info.Rank >= SkillRank.R5 && attackerSkill.Info.Rank <= SkillRank.R4)
+			else if (magicMasterySkill.Info.Rank >= SkillRank.R5 && magicMasterySkill.Info.Rank <= SkillRank.R4)
 			{
 				if (isBoltMagic && rating == PowerRating.Boss)
 				{
-					attackerSkill.Train(1); // Attack a Boss monster with bolt magic.
+					magicMasterySkill.Train(1); // Attack a Boss monster with bolt magic.
 
 					if (target.IsDead)
-						attackerSkill.Train(2); // Kill a Boss monster with bolt magic.
+						magicMasterySkill.Train(2); // Kill a Boss monster with bolt magic.
 				}
 
 				if (rating == PowerRating.Strong && target.IsDead)
 				{
-					switch (attackerSkill.Info.Id)
+					switch (attackerSkillId)
 					{
-						case SkillId.Thunder: attackerSkill.Train(3); break; // Kill a Strong monster with Thunder.
-						case SkillId.Fireball: attackerSkill.Train(4); break; // Kill a Strong monster with Fireball.
-						case SkillId.IceSpear: if (!attacker.IsGiant) attackerSkill.Train(5); break; // Kill a Strong monster with Ice Spear.
-						case SkillId.Blaze: if (!attacker.IsGiant) attackerSkill.Train(6); break; // Kill a Strong monster with Blaze.
+						case SkillId.Thunder: magicMasterySkill.Train(3); break; // Kill a Strong monster with Thunder.
+						case SkillId.Fireball: magicMasterySkill.Train(4); break; // Kill a Strong monster with Fireball.
+						case SkillId.IceSpear: if (!attacker.IsGiant) magicMasterySkill.Train(5); break; // Kill a Strong monster with Ice Spear.
+						case SkillId.Blaze: if (!attacker.IsGiant) magicMasterySkill.Train(6); break; // Kill a Strong monster with Blaze.
 					}
 				}
 			}
-			else if (attackerSkill.Info.Rank == SkillRank.R3)
+			else if (magicMasterySkill.Info.Rank == SkillRank.R3)
 			{
 				if (isBoltMagic && rating == PowerRating.Boss)
 				{
-					attackerSkill.Train(1); // Attack a Boss monster with bolt magic.
+					magicMasterySkill.Train(1); // Attack a Boss monster with bolt magic.
 
 					if (target.IsDead)
-						attackerSkill.Train(2); // Kill a Boss monster with bolt magic.
+						magicMasterySkill.Train(2); // Kill a Boss monster with bolt magic.
 				}
 
 				if (rating == PowerRating.Awful && target.IsDead)
 				{
-					switch (attackerSkill.Info.Id)
+					switch (attackerSkillId)
 					{
-						case SkillId.Thunder: attackerSkill.Train(3); break; // Kill an Awful monster with Thunder.
-						case SkillId.Fireball: attackerSkill.Train(4); break; // Kill an Awful monster with Fireball.
-						case SkillId.IceSpear: if (!attacker.IsGiant) attackerSkill.Train(5); break; // Kill an Awful monster with Ice Spear.
-						case SkillId.Blaze: if (!attacker.IsGiant) attackerSkill.Train(6); break; // Kill an Awful monster with Blaze.
+						case SkillId.Thunder: magicMasterySkill.Train(3); break; // Kill an Awful monster with Thunder.
+						case SkillId.Fireball: magicMasterySkill.Train(4); break; // Kill an Awful monster with Fireball.
+						case SkillId.IceSpear: if (!attacker.IsGiant) magicMasterySkill.Train(5); break; // Kill an Awful monster with Ice Spear.
+						case SkillId.Blaze: if (!attacker.IsGiant) magicMasterySkill.Train(6); break; // Kill an Awful monster with Blaze.
 					}
 				}
 			}
-			else if (attackerSkill.Info.Rank >= SkillRank.R2 && attackerSkill.Info.Rank <= SkillRank.R1)
+			else if (magicMasterySkill.Info.Rank >= SkillRank.R2 && magicMasterySkill.Info.Rank <= SkillRank.R1)
 			{
 				if (isBoltMagic && rating == PowerRating.Boss)
 				{
-					attackerSkill.Train(1); // Attack a Boss monster with bolt magic.
+					magicMasterySkill.Train(1); // Attack a Boss monster with bolt magic.
 
 					if (target.IsDead)
-						attackerSkill.Train(2); // Kill a Boss monster with bolt magic.
+						magicMasterySkill.Train(2); // Kill a Boss monster with bolt magic.
 				}
 
 				if (rating == PowerRating.Boss && target.IsDead)
 				{
-					switch (attackerSkill.Info.Id)
+					switch (attackerSkillId)
 					{
-						case SkillId.Thunder: attackerSkill.Train(3); break; // Kill a Boss monster with Thunder.
-						case SkillId.Fireball: attackerSkill.Train(4); break; // Kill a Boss monster with Fireball.
-						case SkillId.IceSpear: if (!attacker.IsGiant) attackerSkill.Train(5); break; // Kill a Boss monster with Ice Spear.
-						case SkillId.Blaze: if (!attacker.IsGiant) attackerSkill.Train(6); break; // Kill a Boss monster with Blaze.
+						case SkillId.Thunder: magicMasterySkill.Train(3); break; // Kill a Boss monster with Thunder.
+						case SkillId.Fireball: magicMasterySkill.Train(4); break; // Kill a Boss monster with Fireball.
+						case SkillId.IceSpear: if (!attacker.IsGiant) magicMasterySkill.Train(5); break; // Kill a Boss monster with Ice Spear.
+						case SkillId.Blaze: if (!attacker.IsGiant) magicMasterySkill.Train(6); break; // Kill a Boss monster with Blaze.
 					}
 				}
 			}

@@ -133,7 +133,7 @@
 		// Enables merchant NPC Fleta
 		{ name: "Fleta", enabled: true },
 		
-		// Enabled Scary Library dungeon
+		// Enables Scary Library dungeon
 		{ name: "ScaryLibrary", enabled: true },
 	
 		// Enables Rundal Siren dungeon

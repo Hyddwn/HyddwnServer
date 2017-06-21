@@ -345,6 +345,34 @@ public class ElenScript : NpcScript
 				Msg("Hehe... I don't really know about such things.");
 				break;
 
+			case "breast":
+				Msg("Pervert! You're the worst!");
+				break;
+
+			case "making_dogcollar_of_rab":
+				Msg("You need a strong dog collar?<br/>Because the dog keeps chewing on it?");
+				Msg("Oh no... Maybe it's because<br/>the collar is on too tight...<br/>Chewing the collar like that cannot be good for the dog's teeth...");
+				Msg("Hmm, how about a collar made out of<br/>gold or silver?<br/>It won't be as easy to chew off<br/>so maybe it won't be as rough on the teeth either.");
+				Msg("If you want, I have a Blacksmith Manual you can purchase... Heehee...<br/>I'll only charge you 100 Gold.", Button("Purchase", "@buy"), Button("Cancel", "@exit"));
+				switch (await Select())
+				{
+					case "@buy":
+						if (Player.Inventory.Gold >= 100)
+						{
+							Player.Inventory.Gold -= 100;
+							Msg("Thank you!<br/>If you need another one, let me know.");
+							Player.GivePattern(64581, 20155, 30); // Blacksmith Manual - Gold Necklace
+						}
+						else
+							Msg("<username/>. You don't have enough money.<br/>It's only 100 Gold, stop being so cheap.<br/>Go to the Bank and retrieve some money.");
+						break;
+
+					case "@exit":
+						Msg("You don't need it?<br/>I think it would be perfect...<br/>Well, let me know if you change your mind!");
+						break;
+				}
+				break;
+
 			default:
 				RndFavorMsg(
 					"I don't really know.",

@@ -177,23 +177,12 @@ namespace Aura.Channel.Skills.Magic
 
 				// Critical Hit
 				if (crit)
-				{
-					var bonus = critSkill.RankData.Var1 / 100f;
-					damage = damage + (damage * bonus);
+					CriticalHit.Handle(attacker, 100, ref damage, tAction);
 
-					tAction.Set(TargetOptions.Critical);
-				}
-
-				// MDef and MProt
+				// Handle skills and reductions
 				SkillHelper.HandleMagicDefenseProtection(target, ref damage);
-
-				// Conditions
 				SkillHelper.HandleConditions(attacker, target, ref damage);
-
-				// Mana Deflector
 				var delayReduction = ManaDeflector.Handle(attacker, target, ref damage, tAction);
-
-				// Mana Shield
 				ManaShield.Handle(target, ref damage, tAction);
 
 				// Apply Damage

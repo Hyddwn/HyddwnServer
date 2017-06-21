@@ -224,6 +224,15 @@ namespace Aura.Channel.Network.Handlers
 				throw new ModerateViolation("Attempted to put an item into an invalid pet pocket ({0})", pocket);
 			}
 
+			// Check if item can be moved into pet's inventory.
+			// Putting personalized items in a pet's inventory may cause
+			// serious problems.
+			if (item.Is(ItemFlags.Personalized))
+			{
+				Send.Notice(creature, Localization.Get("Personalized items may not be stored in a pet's inventory."));
+				goto L_Fail;
+			}
+
 			// Try to move item
 			if (!creature.Inventory.MovePet(pet, item, pet, pocket, x, y))
 			{

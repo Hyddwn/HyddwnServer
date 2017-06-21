@@ -232,7 +232,7 @@ namespace Aura.Channel.World.Quests
 			if (!_progresses.ContainsKey(objective))
 				throw new Exception("SetUndone: No progress found for objective '" + objective + "'.");
 
-			for (int i = _progresses.Count - 1; i >= 0; ++i)
+			for (int i = _progresses.Count - 1; i >= 0; --i)
 			{
 				_progresses[i].Done = false;
 				_progresses[i].Unlocked = (_progresses[i].Ident == objective);

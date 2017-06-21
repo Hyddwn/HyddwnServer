@@ -34,8 +34,6 @@ public class StewartScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		SetBgm("NPC_Stewart.mp3");
-
 		await Intro(L("He is a young man with nerdy spectacles and tangled hair.<br/>Beneath his glasses, his soft eyes are somewhat appealing,<br/>but his stained tunic and his hands which reek of herbs confirm that he is clumsy and unkempt."));
 
 		Msg("How can I help you?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Repair Item", "@repair"), Button("Upgrade Item", "@upgrade"));
@@ -453,6 +451,13 @@ public class StewartShop : NpcShopScript
 			Add("Magic Weapons", 40232); // Crown Ice Wand
 			Add("Magic Weapons", 40233); // Phoenix Fire Wand
 			Add("Magic Weapons", 40234); // Tikka Wood Healing Wand
+		}
+
+		// Unofficial, passes should be added to Spellbook tab
+		if (IsEnabled("ScaryLibrary"))
+		{
+			Add("Pass", (c, o) => o.GetMemory(c) >= 15 && o.GetFavor(c) >= 50 && o.GetStress(c) <= 5);
+			Add("Pass", 63106, 1, -1, 10); // Scary Library Pass
 		}
 	}
 }

@@ -7,6 +7,7 @@ using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Combat;
 using Aura.Channel.Skills.Life;
 using Aura.Channel.Skills.Magic;
+using Aura.Channel.Skills.Music;
 using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data;
@@ -384,12 +385,12 @@ namespace Aura.Channel.Scripting.Scripts
 			//   noticed a cow.
 
 			// Reset on...
-			if (this.Creature.Target.IsDead																 // target dead
+			if (this.Creature.Target.IsDead                                                              // target dead
 			|| this.Creature.Region == Region.Limbo                                                      // invalid region (e.g. unsummoned pet)
 			|| !this.Creature.GetPosition().InRange(this.Creature.Target.GetPosition(), _aggroMaxRadius) // out of aggro range
-			|| this.Creature.Target.Warping																 // target is warping
-			|| this.Creature.Target.Client.State == ClientState.Dead									 // target disconnected
-			|| (_state != AiState.Aggro && this.Creature.Target.Conditions.Has(ConditionsA.Invisible))	 // target hid before reaching aggro state
+			|| this.Creature.Target.Warping                                                              // target is warping
+			|| this.Creature.Target.Client.State == ClientState.Dead                                     // target disconnected
+			|| (_state != AiState.Aggro && this.Creature.Target.Conditions.Has(ConditionsA.Invisible))   // target hid before reaching aggro state
 			)
 			{
 				this.Reset();
@@ -886,6 +887,30 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Returns true if the AI creature has equipped an item with the given
+		/// id in one of its equip slots.
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public bool HasEquipped(int itemId)
+		{
+			var items = this.Creature.Inventory.GetEquipment(a => a.Info.Id == itemId);
+			return items.Any();
+		}
+
+		/// <summary>
+		/// Returns true if the AI creature has equipped an item that matches
+		/// the given tag in one of its equip slots.
+		/// </summary>
+		/// <param name="tag"></param>
+		/// <returns></returns>
+		public bool HasEquipped(string tag)
+		{
+			var items = this.Creature.Inventory.GetEquipment(a => a.HasTag(tag));
+			return items.Any();
+		}
+
+		/// <summary>
 		/// Generates and saves a random number between 0 and 99,
 		/// for Case to use.
 		/// </summary>
@@ -1321,7 +1346,7 @@ namespace Aura.Channel.Scripting.Scripts
 			var until = _timestamp + timeout;
 
 			// Each successful hit counts, attack until count or timeout is reached.
-			for (int i = 0; ; )
+			for (int i = 0; ;)
 			{
 				// Get skill
 				var skill = this.Creature.Skills.ActiveSkill;
@@ -1613,6 +1638,13 @@ namespace Aura.Channel.Scripting.Scripts
 					skillHandler.Complete(this.Creature, skill, null);
 					this.Creature.Skills.ActiveSkill = null;
 				}
+				else if (skillId == SkillId.PlayingInstrument)
+				{
+					var skillHandler = ChannelServer.Instance.SkillManager.GetHandler<PlayingInstrument>(skillId);
+					skillHandler.Prepare(this.Creature, skill, null);
+					this.Creature.Skills.ActiveSkill = skill;
+				}
+				// Try 
 				// Try to handle implicitly
 				else
 				{
@@ -2018,6 +2050,19 @@ namespace Aura.Channel.Scripting.Scripts
 		}
 
 		/// <summary>
+		/// Makes creature controlled by the AI drop gold.
+		/// </summary>
+		/// <param name="amount"></param>
+		/// <returns></returns>
+		protected IEnumerable DropGold(int amount)
+		{
+			var gold = Item.CreateGold(amount);
+			gold.Drop(this.Creature.Region, this.Creature.GetPosition(), 200, this.Creature, true);
+
+			yield break;
+		}
+
+		/// <summary>
 		/// Sets the skin color of the creature controlled by the AI.
 		/// </summary>
 		/// <param name="skinColor"></param>
@@ -2083,6 +2128,13 @@ namespace Aura.Channel.Scripting.Scripts
 			for (int i = 0; i < diff; ++i)
 			{
 				var summonPos = pos.GetRandomInRange(minDistance, maxDistance, _rnd);
+
+				// If there's a collision between the creature's position
+				// and the summon's position, the monster that is to be
+				// summoned should not spawn at all.
+				if (this.Creature.Region.Collisions.Any(pos, summonPos))
+					continue;
+
 				var regionId = this.Creature.RegionId;
 				var x = summonPos.X;
 				var y = summonPos.Y;

@@ -652,7 +652,10 @@ namespace Aura.Channel.Scripting.Scripts
 				{
 					item.Info.Color1 = AuraData.ColorMapDb.GetRandom(item.Data.ColorMap1, rand);
 					item.Info.Color2 = AuraData.ColorMapDb.GetRandom(item.Data.ColorMap2, rand);
-					item.Info.Color3 = AuraData.ColorMapDb.GetRandom(item.Data.ColorMap3, rand);
+
+					// Don't randomize color of book seals.
+					if (!item.MetaData1.Has("MGCSEL"))
+						item.Info.Color3 = AuraData.ColorMapDb.GetRandom(item.Data.ColorMap3, rand);
 				}
 			}
 		}

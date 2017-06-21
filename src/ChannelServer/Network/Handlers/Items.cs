@@ -1152,8 +1152,6 @@ namespace Aura.Channel.Network.Handlers
 			}
 		}
 
-		static int x = 0;
-
 		/// <summary>
 		/// Sent when trying to add an item to a collection book.
 		/// </summary>

@@ -16,6 +16,13 @@ public class BarriDungeonScript : DungeonScript
 			return true;
 		}
 
+		// Barri Hidden Mine
+		if (item.Info.Id == 63170) // Pass to the Hidden Mine
+		{
+			dungeonName = "bangor_barri_hidden_gold_dungeon";
+			return true;
+		}
+
 		// Brown Fomor Pass (G1)
 		if (item.Info.Id == 73011)
 		{
