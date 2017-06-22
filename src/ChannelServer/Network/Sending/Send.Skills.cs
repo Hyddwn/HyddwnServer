@@ -1049,5 +1049,19 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.TransferSkillExpR, creature.EntityId);
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Enables/disables given skill.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		public static void SetSkillEnabled(Creature creature, SkillId skillId, bool enabled)
+		{
+			var packet = new Packet(Op.SetSkillEnabled, creature.EntityId);
+			packet.PutUShort((ushort)skillId);
+			packet.PutByte(enabled);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

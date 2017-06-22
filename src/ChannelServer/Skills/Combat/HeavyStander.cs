@@ -132,7 +132,7 @@ namespace Aura.Channel.Skills.Combat
 			{
 				// Check if skill exists and it's either in use or passive
 				var skill = target.Skills.Get(Skills[i]);
-				if (skill != null && (skill.Info.Id == SkillId.HeavyStanderPassive || skill.Has(SkillFlags.InUse)))
+				if (skill != null && ((skill.Info.Id == SkillId.HeavyStanderPassive || skill.Enabled) || skill.Has(SkillFlags.InUse)))
 				{
 					var damageReduction = skill.RankData.Var1;
 					var activationChance = skill.RankData.Var3;

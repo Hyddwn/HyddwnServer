@@ -573,5 +573,19 @@ namespace Aura.Channel.World.Entities.Creatures
 				}
 			}
 		}
+
+		/// <summary>
+		/// Sets Enabled property for all given skills.
+		/// </summary>
+		/// <param name="skillIds"></param>
+		public void SetEnabled(bool enabled, params SkillId[] skillIds)
+		{
+			foreach (var skillId in skillIds)
+			{
+				var skill = this.Get(skillId);
+				if (skill != null)
+					skill.Enabled = enabled;
+			}
+		}
 	}
 }

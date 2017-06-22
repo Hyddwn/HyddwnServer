@@ -90,6 +90,22 @@ namespace Aura.Channel.Skills
 		}
 
 		/// <summary>
+		/// Enables/Disables skill, changing whether it can/will be used,
+		/// and updates the client.  Visualized on the client side by
+		/// changing the icon's transparency.
+		/// </summary>
+		public bool Enabled
+		{
+			get { return _enabled; }
+			set
+			{
+				_enabled = value;
+				Send.SetSkillEnabled(_creature, this.Info.Id, _enabled);
+			}
+		}
+		private bool _enabled;
+
+		/// <summary>
 		/// New Skill.
 		/// </summary>
 		/// <param name="creature"></param>

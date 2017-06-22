@@ -129,7 +129,7 @@ namespace Aura.Channel.Skills.Combat
 			{
 				// Check if skill exists and it's either in use or passive
 				var skill = target.Skills.Get(Skills[i]);
-				if (skill != null && (skill.Info.Id == SkillId.ManaDeflectorPassive || skill.Has(SkillFlags.InUse)))
+				if (skill != null && ((skill.Info.Id == SkillId.ManaDeflectorPassive || skill.Enabled) || skill.Has(SkillFlags.InUse)))
 				{
 					damageReduction = skill.RankData.Var1;
 					delayReduction = skill.RankData.Var2;
