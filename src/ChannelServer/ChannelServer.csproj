@@ -264,6 +264,7 @@
     <Compile Include="World\Dungeons\Generation\MazeMove.cs" />
     <Compile Include="World\Dungeons\Generation\MazeRoomInternal.cs" />
     <Compile Include="World\Dungeons\Generation\Position.cs" />
+    <Compile Include="World\Entities\Creatures\CreatureCoolDowns.cs" />
     <Compile Include="World\Entities\PlayingInstrumentProp.cs" />
     <Compile Include="World\Entities\RpCharacter.cs" />
     <Compile Include="World\GameEvents\GameEventManager.cs" />

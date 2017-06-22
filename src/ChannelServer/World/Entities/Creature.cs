@@ -76,6 +76,7 @@ namespace Aura.Channel.World.Entities
 		public CreatureDrops Drops { get; protected set; }
 		public CreatureDeadMenu DeadMenu { get; protected set; }
 		public AimMeter AimMeter { get; protected set; }
+		public CreatureCoolDowns CoolDowns { get; protected set; }
 
 		public int InventoryWidth { get; set; }
 		public int InventoryHeight { get; set; }
@@ -1220,6 +1221,7 @@ namespace Aura.Channel.World.Entities
 			this.AimMeter = new AimMeter(this);
 			this.Party = Party.CreateDummy(this);
 			this.Inventory = new CreatureInventory(this);
+			this.CoolDowns = new CreatureCoolDowns(this);
 
 			this.Vars = new ScriptVariables();
 

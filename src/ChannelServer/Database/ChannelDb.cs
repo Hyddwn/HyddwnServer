@@ -303,6 +303,7 @@ namespace Aura.Channel.Database
 			this.GetCharacterTitles(character);
 			this.GetCharacterSkills(character);
 			this.GetCharacterQuests(character);
+			this.GetCharacterCoolDowns(character);
 
 			// Add bank tab for characters
 			// TODO: Bank tabs for pets?
@@ -575,6 +576,30 @@ namespace Aura.Channel.Database
 						var usable = (reader.GetBoolean("usable") ? TitleState.Usable : TitleState.Known);
 
 						character.Titles.Add(id, usable);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Reads cool downs from database and adds them to character.
+		/// </summary>
+		/// <param name="character"></param>
+		private void GetCharacterCoolDowns(PlayerCreature character)
+		{
+			using (var conn = this.Connection)
+			using (var mc = new MySqlCommand("SELECT * FROM `cool_downs` WHERE `creatureId` = @creatureId", conn))
+			{
+				mc.Parameters.AddWithValue("@creatureId", character.CreatureId);
+
+				using (var reader = mc.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						var identifier = reader.GetStringSafe("identifier");
+						var end = reader.GetDateTimeSafe("end");
+
+						character.CoolDowns.Add(identifier, end);
 					}
 				}
 			}
@@ -1165,7 +1190,7 @@ namespace Aura.Channel.Database
 			this.SaveCharacterKeywords(creature);
 			this.SaveCharacterTitles(creature);
 			this.SaveCharacterSkills(creature);
-			//this.SaveCharacterCooldowns(creature);
+			this.SaveCharacterCoolDowns(creature);
 
 			this.SaveVars(account.Id, creature.CreatureId, creature.Vars.Perm);
 		}
@@ -1228,6 +1253,40 @@ namespace Aura.Channel.Database
 						cmd.Set("creatureId", creature.CreatureId);
 						cmd.Set("titleId", title.Key);
 						cmd.Set("usable", (title.Value == TitleState.Usable));
+
+						cmd.Execute();
+					}
+				}
+
+				transaction.Commit();
+			}
+		}
+
+		/// <summary>
+		/// Writes all of creature's cool downs to the database.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void SaveCharacterCoolDowns(PlayerCreature creature)
+		{
+			using (var conn = this.Connection)
+			using (var transaction = conn.BeginTransaction())
+			{
+				using (var mc = new MySqlCommand("DELETE FROM `cool_downs` WHERE `creatureId` = @creatureId", conn, transaction))
+				{
+					mc.Parameters.AddWithValue("@creatureId", creature.CreatureId);
+					mc.ExecuteNonQuery();
+				}
+
+				foreach (var coolDown in creature.CoolDowns.GetList())
+				{
+					using (var cmd = new InsertCommand("INSERT INTO `cool_downs` {0}", conn, transaction))
+					{
+						var identifier = coolDown.Key;
+						var end = coolDown.Value;
+
+						cmd.Set("creatureId", creature.CreatureId);
+						cmd.Set("identifier", identifier);
+						cmd.Set("end", end);
 
 						cmd.Execute();
 					}
