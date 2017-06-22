@@ -97,6 +97,7 @@ namespace Aura.Channel.Util
 			Add(50, 50, "ptj", "<type> <level>", Localization.Get("Sets the level of a certain PTJ type."), HandlePtj);
 			Add(50, 50, "quest", "<id> [finish objective]", Localization.Get("Starts a quest or sets the specified objective to be finished."), HandleQuest);
 			Add(50, 50, "prof", "[equipflags=all|armor|glove|shoe|head|robe|rhand1|rhand2|lhand1|lhand2|accessory1|accessory2] [amount=101000]", Localization.Get("Sets proficiency of equipped item(s)."), HandleProf);
+			Add(50, 50, "resetcd", "", Localization.Get("Resets all cool downs."), HandleResetCoolDown);
 
 			// Admins
 			Add(99, 99, "dynamic", "[variant]", Localization.Get("Creates dynamic region, based on the current one."), HandleDynamic);
@@ -2496,6 +2497,19 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("Proficiency set."));
 			if (target != sender)
 				Send.ServerMessage(target, Localization.Get("Your equipment proficiency has been set by {0}."), sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleResetCoolDown(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			var coolDowns = target.CoolDowns.GetList();
+			foreach (var cd in coolDowns)
+				target.CoolDowns.Reset(cd.Key);
+
+			Send.ServerMessage(sender, Localization.Get("All cool downs have been resetted."));
+			if (target != sender)
+				Send.ServerMessage(target, Localization.Get("All your cool downs have been resetted by {0}."), sender.Name);
 
 			return CommandResult.Okay;
 		}
