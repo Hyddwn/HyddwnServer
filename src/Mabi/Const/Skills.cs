@@ -584,6 +584,35 @@ namespace Aura.Mabi.Const
 		AdministrativePicking2 = 65006,
 	}
 
+	public static class SkillIdExtension
+	{
+		/// <summary>
+		/// Returns true if skill is a transformation skill, like
+		/// Spirit of Order or Soul of Chaos.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		public static bool IsTransformationSkill(this SkillId skillId)
+		{
+			return (skillId == SkillId.SpiritOfOrder || skillId == SkillId.SoulOfChaos || skillId == SkillId.FuryOfConnous || skillId == SkillId.DemonOfPhysis);
+		}
+
+		/// <summary>
+		/// Returns true if the skill is one that is only active while being
+		/// transformed, such as Sword of Order or Control of Darkness.
+		/// </summary>
+		/// <param name="skillId"></param>
+		/// <returns></returns>
+		public static bool IsTransformationOnlySkill(this SkillId skillId)
+		{
+			return
+				(skillId >= SkillId.PowerOfOrder && skillId <= SkillId.PaladinManaDeflector) ||
+				(skillId >= SkillId.ControlofDarkness && skillId <= SkillId.DarkManaDeflector) ||
+				(skillId >= SkillId.ElvenMagicMissile && skillId <= SkillId.ConnousManaDeflector) ||
+				(skillId >= SkillId.GiantFullSwing && skillId <= SkillId.PhysisManaDeflector);
+		}
+	}
+
 	public enum PlayingQuality
 	{
 		VeryBad = 0,
