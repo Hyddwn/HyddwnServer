@@ -200,16 +200,13 @@ namespace Aura.Channel.World.Entities.Creatures
 				if (data == null)
 					throw new ArgumentException("Unknown title '" + titleId + "'.");
 
-				if (!this.Knows(titleId))
-					this.Show(titleId);
-
 				_tempTitle = titleId;
 
 				this.SwitchStatMods(data, false);
-			}
 
-			Send.TitleUpdate(_creature);
-			this.Changed.Raise(_creature);
+				Send.TitleUpdate(_creature);
+				this.Changed.Raise(_creature);
+			}
 		}
 
 		/// <summary>
