@@ -51,10 +51,9 @@ namespace Aura.Channel.Skills
 		public DateTime CastEnd { get; set; }
 
 		/// <summary>
-		/// Time at which the skill can be used again.
-		/// (Temporary, until we have a proper cool down system.)
+		/// Returns true if skill is currently on cool down.
 		/// </summary>
-		public DateTime CoolDownEnd { get; set; }
+		public bool IsCoolingDown { get { return _creature.CoolDowns.IsCoolingDown("SkillUse:" + this.Info.Id.ToString()); } }
 
 		private int _stack = 0;
 		/// <summary>
@@ -443,6 +442,15 @@ namespace Aura.Channel.Skills
 				result *= 1.10f;
 
 			return (int)result;
+		}
+
+		/// <summary>
+		/// Sets time at which the skill can be used again.
+		/// </summary>
+		/// <param name="end"></param>
+		public void SetCoolDownEnd(DateTime end)
+		{
+			_creature.CoolDowns.Add("SkillUse:" + this.Info.Id.ToString(), end);
 		}
 	}
 

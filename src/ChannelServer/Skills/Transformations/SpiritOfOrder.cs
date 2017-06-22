@@ -66,7 +66,7 @@ namespace Aura.Channel.Skills.Transformations
 		/// <returns></returns>
 		public override StartStopResult Start(Creature creature, Skill skill, MabiDictionary dict)
 		{
-			if (DateTime.Now < skill.CoolDownEnd)
+			if (skill.IsCoolingDown)
 			{
 				creature.Notice(Localization.Get("You can't use this for the rest of the day."));
 				return StartStopResult.Fail;
@@ -145,7 +145,7 @@ namespace Aura.Channel.Skills.Transformations
 		private void SetTimers(Creature creature, Skill skill)
 		{
 			creature.Skills.CancelAfter(skill.Info.Id, this.GetDuration(creature, skill));
-			skill.CoolDownEnd = ErinnTime.GetNextTime(6, 0).DateTime;
+			skill.SetCoolDownEnd(ErinnTime.GetNextTime(6, 0).DateTime);
 		}
 
 		/// <summary>
