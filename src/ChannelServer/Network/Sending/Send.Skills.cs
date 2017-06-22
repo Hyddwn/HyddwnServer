@@ -1023,5 +1023,45 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Updates creature's transformation information for client's
+		/// in range of creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void UpdateTransformation(Creature creature)
+		{
+			var packet = new Packet(Op.UpdateTransformation, creature.EntityId);
+			packet.PutByte((byte)creature.Transformation);
+			packet.PutShort((short)creature.TransformationSkillRank);
+			packet.PutShort((short)creature.TransformationLevel);
+			packet.PutByte(1);
+
+			creature.Region.Broadcast(packet, creature);
+		}
+
+		/// <summary>
+		/// Sends TransferSkillExpR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void TransferSkillExpR(Creature creature)
+		{
+			var packet = new Packet(Op.TransferSkillExpR, creature.EntityId);
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Enables/disables given skill.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		public static void SetSkillEnabled(Creature creature, SkillId skillId, bool enabled)
+		{
+			var packet = new Packet(Op.SetSkillEnabled, creature.EntityId);
+			packet.PutUShort((ushort)skillId);
+			packet.PutByte(enabled);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

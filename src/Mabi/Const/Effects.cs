@@ -120,6 +120,12 @@ namespace Aura.Mabi.Const
 		public static readonly int FireballFly = 39;
 
 		/// <summary>
+		/// The effect for activating Paladin's passive defenses.
+		/// short:skill id
+		/// </summary>
+		public static readonly int PaladinPassiveDefense = 59;
+
+		/// <summary>
 		/// The frozen effect of Ice Spear
 		/// </summary>
 		public static readonly int IcespearFreeze = 65;

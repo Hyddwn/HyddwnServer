@@ -246,8 +246,11 @@ namespace Aura.Mabi.Network
 		public const int BlacksmithingMiniGame = 0x6998;
 		public const int FishingActionRequired = 0x699A;
 		public const int FishingAction = 0x699B;
+		public const int TransferSkillExp = 0x699C;
+		public const int TransferSkillExpR = 0x699D;
 		public const int ProductionSuccessRequest = 0x699E;
 		public const int ProductionSuccessRequestR = 0x699F;
+		public const int SetSkillEnabled = 0x69A2;
 		public const int ResetCooldown = 0x69A7;
 		public const int UseMotion = 0x6D62;
 		public const int PlayAnimation = 0x6D63; // s:data/.../anim/..., 1:0, 2:0, 1:0
@@ -571,7 +574,7 @@ namespace Aura.Mabi.Network
 		public const int DyePaletteReqR = 0xA419;
 		public const int DyePickColor = 0xA41A;
 		public const int DyePickColorR = 0xA41B;
-		public const int Transformation = 0xA41C;
+		public const int UpdateTransformation = 0xA41C;
 		public const int PetAction = 0xA41D;
 		public const int SharpMind = 0xA41E;
 		public const int MoonGateInfoRequest = 0xA428;

@@ -273,7 +273,7 @@ public class TitleRewardingScript : GeneralScript
 		// ------------------------------------------------------------------
 		if (tAction.AttackerSkillId != SkillId.Smash)
 			return;
-		
+
 		if (!tAction.Attacker.CanUseTitle(86))
 		{
 			if (tAction.Has(TargetOptions.Critical) && !tAction.Creature.IsDead && tAction.Creature.HasTag("/siren/"))
@@ -284,6 +284,10 @@ public class TitleRewardingScript : GeneralScript
 	[On("CreatureLevelUp")]
 	public void OnCreatureLevelUp(Creature creature)
 	{
+		// Titles involving stats can't be gained while being transformed,
+		// but we don't need explicit checks for that, as we're checking
+		// the base totals, excluding the stat bonuses.
+
 		// the Wise
 		// Shown on level up with more than 80 Int, enabled with more than
 		// 200 Int.
