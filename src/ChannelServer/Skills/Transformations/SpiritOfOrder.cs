@@ -66,8 +66,20 @@ namespace Aura.Channel.Skills.Transformations
 	[Skill(SkillId.SpiritOfOrder)]
 	public class SpiritOfOrderHandler : StartStopSkillHandler, IInitiableSkillHandler
 	{
+		/// <summary>
+		/// Delay in ms until the passive defense effects are displayed.
+		/// </summary>
 		private const int EffectBaseDelay = 6500;
+
+		/// <summary>
+		/// Delay in ms between the passive defense effects.
+		/// </summary>
 		private const int EffectAddDelay = 1500;
+
+		/// <summary>
+		/// Amount of skill training EXP a player gets per level up.
+		/// </summary>
+		private const int ExpPerLevelUp = 10;
 
 		/// <summary>
 		/// Called when the skill handler is loaded, sets up training
@@ -351,7 +363,7 @@ namespace Aura.Channel.Skills.Transformations
 			// Give 10 exp to Spirit of Order if creature has it.
 			var skill = creature.Skills.Get(SkillId.SpiritOfOrder);
 			if (skill != null)
-				skill.Train(1, 10);
+				skill.Train(1, ExpPerLevelUp);
 		}
 	}
 }
