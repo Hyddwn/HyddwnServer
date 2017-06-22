@@ -237,6 +237,9 @@ namespace Aura.Channel.Skills.Transformations
 			this.UpdateClientStats(creature);
 
 			// Passive defenses
+			// If the user has them, they are handled. The feature
+			// "PaladinPassiveDefence" only controls whether you are able
+			// to *get them* via normal means.
 			var effectDelay = EffectBaseDelay;
 
 			// Natural Shield
