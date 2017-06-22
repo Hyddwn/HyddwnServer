@@ -46,8 +46,17 @@ namespace Aura.Channel.Skills.Transformations
 	///   Var5: ?
 	/// </remarks>
 	[Skill(SkillId.SpiritOfOrder)]
-	public class SpiritOfOrderHandler : StartStopSkillHandler
+	public class SpiritOfOrderHandler : StartStopSkillHandler, IInitiableSkillHandler
 	{
+		/// <summary>
+		/// Called when the skill handler is loaded, sets up training
+		/// event subscriptions.
+		/// </summary>
+		public void Init()
+		{
+			ChannelServer.Instance.Events.CreatureLevelUp += this.OnCreatureLevelUp;
+		}
+
 		/// <summary>
 		/// Transforms creature.
 		/// </summary>
@@ -59,7 +68,7 @@ namespace Aura.Channel.Skills.Transformations
 		{
 			if (DateTime.Now < skill.CoolDownEnd)
 			{
-				creature.Notice(Localization.Get("You can't transform anymore today."));
+				creature.Notice(Localization.Get("You can't use this for the rest of the day."));
 				return StartStopResult.Fail;
 			}
 
@@ -255,6 +264,18 @@ namespace Aura.Channel.Skills.Transformations
 			creature.Stamina = (creature.StaminaMax * staminaRate);
 
 			this.UpdateClientStats(creature);
+		}
+
+		/// <summary>
+		/// Raised when a creature levels up.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void OnCreatureLevelUp(Creature creature)
+		{
+			// Give 10 exp to Spirit of Order if creature has it.
+			var skill = creature.Skills.Get(SkillId.SpiritOfOrder);
+			if (skill != null)
+				skill.Train(1, 10);
 		}
 	}
 }

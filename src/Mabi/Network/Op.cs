@@ -246,6 +246,8 @@ namespace Aura.Mabi.Network
 		public const int BlacksmithingMiniGame = 0x6998;
 		public const int FishingActionRequired = 0x699A;
 		public const int FishingAction = 0x699B;
+		public const int TransferSkillExp = 0x699C;
+		public const int TransferSkillExpR = 0x699D;
 		public const int ProductionSuccessRequest = 0x699E;
 		public const int ProductionSuccessRequestR = 0x699F;
 		public const int ResetCooldown = 0x69A7;
