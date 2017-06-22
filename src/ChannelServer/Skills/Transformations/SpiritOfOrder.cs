@@ -73,7 +73,7 @@ namespace Aura.Channel.Skills.Transformations
 			}
 
 			this.Transform(creature, skill);
-			this.GiveStatMods(creature, skill);
+			this.GiveBonuses(creature, skill);
 			this.SetTimers(creature, skill);
 
 			return StartStopResult.Okay;
@@ -88,7 +88,7 @@ namespace Aura.Channel.Skills.Transformations
 		/// <returns></returns>
 		public override StartStopResult Stop(Creature creature, Skill skill, MabiDictionary dict)
 		{
-			this.RemoveStatMods(creature, skill);
+			this.RemoveBonuses(creature, skill);
 			this.ResetTransformation(creature, skill);
 
 			return StartStopResult.Okay;
@@ -149,20 +149,20 @@ namespace Aura.Channel.Skills.Transformations
 		}
 
 		/// <summary>
-		/// Gives stat mods for transformation, based on skill's rank and
+		/// Gives bonuses for transformation based on skill's rank and
 		/// the passive transformation skill's ranks, heals creature,
 		/// and updates clients.
 		/// The mod identifiers are "Skill" and the transformation skill's id.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="skill"></param>
-		private void GiveStatMods(Creature creature, Skill skill)
+		private void GiveBonuses(Creature creature, Skill skill)
 		{
 			var powerOfOrder = creature.Skills.Get(SkillId.PowerOfOrder);
 			var eyeOfOrder = creature.Skills.Get(SkillId.EyeOfOrder);
 			var swordOfOrder = creature.Skills.Get(SkillId.SwordOfOrder);
 
-			// Spirit of Order bonuses
+			// Spirit of Order
 			creature.StatMods.Add(Stat.LifeMaxMod, skill.RankData.Var1, StatModSource.Skill, (long)skill.Info.Id);
 			creature.StatMods.Add(Stat.ManaMaxMod, skill.RankData.Var2, StatModSource.Skill, (long)skill.Info.Id);
 			creature.StatMods.Add(Stat.StaminaMaxMod, skill.RankData.Var3, StatModSource.Skill, (long)skill.Info.Id);
@@ -175,21 +175,21 @@ namespace Aura.Channel.Skills.Transformations
 				creature.StatMods.Add(Stat.MagicProtectionMod, skill.RankData.Var9, StatModSource.Skill, (long)skill.Info.Id);
 			}
 
-			// Power of Order bonuses
+			// Power of Order
 			if (powerOfOrder != null)
 			{
 				creature.StatMods.Add(Stat.StrMod, powerOfOrder.RankData.Var1, StatModSource.Skill, (long)skill.Info.Id);
 				creature.StatMods.Add(Stat.WillMod, powerOfOrder.RankData.Var2, StatModSource.Skill, (long)skill.Info.Id);
 			}
 
-			// Eye of Order bonuses
+			// Eye of Order
 			if (eyeOfOrder != null)
 			{
 				creature.StatMods.Add(Stat.DexMod, powerOfOrder.RankData.Var1, StatModSource.Skill, (long)skill.Info.Id);
 				creature.StatMods.Add(Stat.BalanceMod, powerOfOrder.RankData.Var2, StatModSource.Skill, (long)skill.Info.Id);
 			}
 
-			// Sword of Order bonuses
+			// Sword of Order
 			if (swordOfOrder != null)
 			{
 				creature.StatMods.Add(Stat.AttackMinMod, swordOfOrder.RankData.Var1, StatModSource.Skill, (long)skill.Info.Id);
@@ -241,12 +241,12 @@ namespace Aura.Channel.Skills.Transformations
 		}
 
 		/// <summary>
-		/// Removes stat mods added when the transformation began and
+		/// Removes bonuses added when the transformation began and
 		/// updates clients.
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="skill"></param>
-		private void RemoveStatMods(Creature creature, Skill skill)
+		private void RemoveBonuses(Creature creature, Skill skill)
 		{
 			// Save stat rates before removing the bonuses
 			var injuryRate = (1f / creature.LifeMax * creature.Injuries);

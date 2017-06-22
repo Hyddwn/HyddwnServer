@@ -2507,9 +2507,9 @@ namespace Aura.Channel.Util
 			foreach (var cd in coolDowns)
 				target.CoolDowns.Reset(cd.Key);
 
-			Send.ServerMessage(sender, Localization.Get("All cool downs have been resetted."));
+			Send.ServerMessage(sender, Localization.Get("All cool downs have been reset."));
 			if (target != sender)
-				Send.ServerMessage(target, Localization.Get("All your cool downs have been resetted by {0}."), sender.Name);
+				Send.ServerMessage(target, Localization.Get("All your cool downs have been reset by {0}."), sender.Name);
 
 			return CommandResult.Okay;
 		}
