@@ -44,10 +44,31 @@ namespace Aura.Channel.Skills.Transformations
 	///   Var3: ?
 	///   Var4: ?
 	///   Var5: ?
+	///   
+	/// Pal. Natural Shield
+	///   Var1: ?
+	///   Var2: ?
+	///   Var3: ?
+	///   Var4: Bonus Activation Rate
+	///   
+	/// Pal. Heavy Stander
+	///   Var1: ?
+	///   Var2: ?
+	///   Var3: ?
+	///   Var4: Bonus Activation Rate
+	///   
+	/// Pal. Mana Deflector
+	///   Var1: ?
+	///   Var2: ?
+	///   Var3: ?
+	///   Var4: Bonus Activation Rate
 	/// </remarks>
 	[Skill(SkillId.SpiritOfOrder)]
 	public class SpiritOfOrderHandler : StartStopSkillHandler, IInitiableSkillHandler
 	{
+		private const int EffectBaseDelay = 6500;
+		private const int EffectAddDelay = 1500;
+
 		/// <summary>
 		/// Called when the skill handler is loaded, sets up training
 		/// event subscriptions.
@@ -158,9 +179,14 @@ namespace Aura.Channel.Skills.Transformations
 		/// <param name="skill"></param>
 		private void GiveBonuses(Creature creature, Skill skill)
 		{
+			var rnd = RandomProvider.Get();
+
 			var powerOfOrder = creature.Skills.Get(SkillId.PowerOfOrder);
 			var eyeOfOrder = creature.Skills.Get(SkillId.EyeOfOrder);
 			var swordOfOrder = creature.Skills.Get(SkillId.SwordOfOrder);
+			var naturalShield = creature.Skills.Get(SkillId.PaladinNaturalShield);
+			var heavyStander = creature.Skills.Get(SkillId.PaladinHeavyStander);
+			var manaDeflector = creature.Skills.Get(SkillId.PaladinManaDeflector);
 
 			// Spirit of Order
 			creature.StatMods.Add(Stat.LifeMaxMod, skill.RankData.Var1, StatModSource.Skill, (long)skill.Info.Id);
@@ -178,6 +204,7 @@ namespace Aura.Channel.Skills.Transformations
 			// Power of Order
 			if (powerOfOrder != null)
 			{
+				powerOfOrder.Enabled = true;
 				creature.StatMods.Add(Stat.StrMod, powerOfOrder.RankData.Var1, StatModSource.Skill, (long)skill.Info.Id);
 				creature.StatMods.Add(Stat.WillMod, powerOfOrder.RankData.Var2, StatModSource.Skill, (long)skill.Info.Id);
 			}
@@ -185,6 +212,7 @@ namespace Aura.Channel.Skills.Transformations
 			// Eye of Order
 			if (eyeOfOrder != null)
 			{
+				eyeOfOrder.Enabled = true;
 				creature.StatMods.Add(Stat.DexMod, powerOfOrder.RankData.Var1, StatModSource.Skill, (long)skill.Info.Id);
 				creature.StatMods.Add(Stat.BalanceMod, powerOfOrder.RankData.Var2, StatModSource.Skill, (long)skill.Info.Id);
 			}
@@ -192,6 +220,7 @@ namespace Aura.Channel.Skills.Transformations
 			// Sword of Order
 			if (swordOfOrder != null)
 			{
+				swordOfOrder.Enabled = true;
 				creature.StatMods.Add(Stat.AttackMinMod, swordOfOrder.RankData.Var1, StatModSource.Skill, (long)skill.Info.Id);
 				creature.StatMods.Add(Stat.AttackMaxMod, swordOfOrder.RankData.Var1, StatModSource.Skill, (long)skill.Info.Id);
 				creature.StatMods.Add(Stat.InjuryMinMod, swordOfOrder.RankData.Var2, StatModSource.Skill, (long)skill.Info.Id);
@@ -206,6 +235,47 @@ namespace Aura.Channel.Skills.Transformations
 			creature.Stamina += skill.RankData.Var3;
 
 			this.UpdateClientStats(creature);
+
+			// Passive defenses
+			var effectDelay = EffectBaseDelay;
+
+			// Natural Shield
+			if (naturalShield != null && rnd.Next(100) < (skill.RankData.Var7 + naturalShield.RankData.Var4))
+			{
+				Send.EffectDelayed(creature, effectDelay, Effect.PaladinPassiveDefense, (ushort)naturalShield.Info.Id);
+				Send.SystemMessage(creature, Localization.Get("Pal. Natural Shield activated."));
+				naturalShield.Enabled = true;
+				effectDelay += EffectAddDelay;
+			}
+
+			// Heavy Stander
+			if (heavyStander != null && rnd.Next(100) < (skill.RankData.Var7 + heavyStander.RankData.Var4))
+			{
+				Send.EffectDelayed(creature, effectDelay, Effect.PaladinPassiveDefense, (ushort)heavyStander.Info.Id);
+				Send.SystemMessage(creature, Localization.Get("Pal. Heavy Stander activated."));
+				heavyStander.Enabled = true;
+				effectDelay += EffectAddDelay;
+			}
+
+			// Mana Deflector
+			if (manaDeflector != null && rnd.Next(100) < (skill.RankData.Var7 + manaDeflector.RankData.Var4))
+			{
+				Send.EffectDelayed(creature, effectDelay, Effect.PaladinPassiveDefense, (ushort)manaDeflector.Info.Id);
+				Send.SystemMessage(creature, Localization.Get("Pal. Mana Deflector activated."));
+				manaDeflector.Enabled = true;
+				effectDelay += EffectAddDelay;
+			}
+
+			// Passive activation message
+			var passives = "";
+			if (naturalShield != null && naturalShield.Enabled) passives += "Pal. Natural Shield, \n";
+			if (heavyStander != null && heavyStander.Enabled) passives += "Pal. Heavy Stander, \n";
+			if (manaDeflector != null && manaDeflector.Enabled) passives += "Pal. Mana Deflector, \n";
+			if (passives != "")
+			{
+				passives = passives.Substring(0, passives.Length - 3);
+				Send.Notice(creature, NoticeType.Middle, 0, EffectBaseDelay, Localization.Get(passives + " activated."));
+			}
 		}
 
 		/// <summary>
@@ -264,6 +334,9 @@ namespace Aura.Channel.Skills.Transformations
 			creature.Stamina = (creature.StaminaMax * staminaRate);
 
 			this.UpdateClientStats(creature);
+
+			// Disable skills
+			creature.Skills.SetEnabled(false, SkillId.PowerOfOrder, SkillId.EyeOfOrder, SkillId.SwordOfOrder, SkillId.PaladinNaturalShield, SkillId.PaladinHeavyStander, SkillId.PaladinManaDeflector);
 		}
 
 		/// <summary>
