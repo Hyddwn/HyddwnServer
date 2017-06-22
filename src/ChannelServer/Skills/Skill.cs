@@ -176,9 +176,12 @@ namespace Aura.Channel.Skills
 		/// <summary>
 		/// Increases training condition count.
 		/// </summary>
-		/// <param name="condition"></param>
-		/// <param name="amount"></param>
-		public void Train(int condition, int amount = 1)
+		/// <param name="condition">Condition to train (1~9).</param>
+		/// <param name="amount">Amount of EXP to give.</param>
+		/// <param name="applyBonuses">
+		/// Whether to apply bonuses to the EXP, from events or rate settings.
+		/// </param>
+		public void Train(int condition, int amount = 1, bool applyBonuses = true)
 		{
 			// Only characters can train skills.
 			if (_creature.IsPet)
@@ -187,7 +190,8 @@ namespace Aura.Channel.Skills
 			var bonusMessage = "";
 
 			// Add bonuses
-			this.HandleSkillExpRateBonuses(ref amount, ref bonusMessage);
+			if (applyBonuses)
+				this.HandleSkillExpRateBonuses(ref amount, ref bonusMessage);
 
 			// Change count and reveal the condition
 			switch (condition)
