@@ -116,25 +116,25 @@ namespace Aura.Channel.Skills.Transformations
 		/// <param name="skill"></param>
 		private TimeSpan GetDuration(Creature creature, Skill skill)
 		{
-			var result = TimeSpan.FromSeconds(60 * 3 + 45); // 3m 45s
+			var rebirthCount = creature.RebirthCount;
+			var age = Math.Min((int)creature.Age, 50);
 
-			// +7s per rebirth, up to 25, up to 6m
-			// +1s per rebirth, past 25, no limit
-			// -2s per age, up to 25
-			// Reference: http://wiki.mabinogiworld.com/view/Paladin
+			var modifier1 = 240 * rebirthCount;
+			var modifier2 = 0;
 
-			result.Add(TimeSpan.FromSeconds(7 * Math.Min(25, (int)creature.Age)));
-			if (result > TimeSpan.FromMinutes(6))
-				result = TimeSpan.FromMinutes(6);
+			if (rebirthCount <= 10)
+				modifier2 = modifier1 / 30 + 240;
+			else if (rebirthCount <= 100)
+				modifier2 = modifier1 / 180 + 320;
+			else
+				modifier2 = modifier1 / 5400 + 450;
 
-			result.Add(TimeSpan.FromSeconds(1 * Math.Max(0, (int)creature.Age - 25)));
-			result.Subtract(TimeSpan.FromSeconds(2 * Math.Min(25, (int)creature.Age)));
+			var result = 0;
+			result += 1000 * modifier2;
+			result -= 1000 * age * (modifier2 - 160) / (rebirthCount + 50);
+			result = Math.Max(0, result);
 
-			var rate = ChannelServer.Instance.Conf.World.PaladinDurationRate;
-			if (rate != 1)
-				result = TimeSpan.FromMilliseconds(result.TotalMilliseconds * rate);
-
-			return result;
+			return TimeSpan.FromMilliseconds(result);
 		}
 
 		/// <summary>
