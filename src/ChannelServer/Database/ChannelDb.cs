@@ -1140,7 +1140,7 @@ namespace Aura.Channel.Database
 				cmd.Set("toxicWill", creature.ToxicWill);
 				cmd.Set("toxicLuck", creature.ToxicLuck);
 				cmd.Set("playPoints", creature.PlayPoints);
-				cmd.Set("title", creature.Titles.SelectedTitle);
+				cmd.Set("title", creature.Titles.ActualSelectedTitle);
 				cmd.Set("optionTitle", creature.Titles.SelectedOptionTitle);
 				cmd.Set("state", (uint)creature.State);
 				cmd.Set("age", creature.Age);

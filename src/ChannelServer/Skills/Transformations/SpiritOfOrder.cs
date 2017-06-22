@@ -104,6 +104,7 @@ namespace Aura.Channel.Skills.Transformations
 			creature.Transformation = Transformation.Paladin;
 			creature.TransformationSkillRank = skill.Info.Rank;
 			creature.TransformationLevel = (TransformationLevel)skill.RankData.IntVar1;
+			creature.Titles.SetTempTitle((ushort)skill.RankData.IntVar2);
 
 			Send.UpdateTransformation(creature);
 		}
@@ -234,6 +235,7 @@ namespace Aura.Channel.Skills.Transformations
 			creature.Transformation = Transformation.None;
 			creature.TransformationSkillRank = SkillRank.Novice;
 			creature.TransformationLevel = TransformationLevel.None;
+			creature.Titles.SetTempTitle(0);
 
 			Send.UpdateTransformation(creature);
 		}
