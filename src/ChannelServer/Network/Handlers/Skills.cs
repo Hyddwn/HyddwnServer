@@ -841,5 +841,66 @@ namespace Aura.Channel.Network.Handlers
 			Send.MsgBox(creature, Localization.Get("Not supported yet."));
 			Send.SkillApTrainingR(creature);
 		}
+
+		/// <summary>
+		/// Set when trying to train a skill with AP. (Dummy handler)
+		/// </summary>
+		/// <example>
+		/// 001 [............9C41] Short  : -25535
+		/// 002 [............9C42] Short  : -25534
+		/// 003 [........00000013] Int    : 19
+		/// </example>
+		[PacketHandler(Op.TransferSkillExp)]
+		public void TransferSkillExp(ChannelClient client, Packet packet)
+		{
+			var fromSkillId = (SkillId)packet.GetUShort();
+			var toSkillId = (SkillId)packet.GetUShort();
+			var amount = packet.GetInt();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+
+			// Check if source is valid
+			if (!fromSkillId.IsTransformationSkill())
+			{
+				Log.Warning("TransferSkillExp: User '{0}' tried to transfer exp from '{1}'.", client.Account.Id, fromSkillId);
+				goto L_End;
+			}
+
+			// Check if target is valid
+			if (!toSkillId.IsTransformationOnlySkill())
+			{
+				Log.Warning("TransferSkillExp: User '{0}' tried to transfer exp to '{1}'.", client.Account.Id, toSkillId);
+				goto L_End;
+			}
+
+			var fromSkill = creature.Skills.Get(fromSkillId);
+			var toSkill = creature.Skills.Get(toSkillId);
+
+			// Check skills
+			if (fromSkill == null || toSkill == null)
+			{
+				Log.Warning("TransferSkillExp: User '{0}' tried to transfer exp from or to a skill they don't have '{1}'->'{2}'.", client.Account.Id, fromSkillId, toSkillId);
+				goto L_End;
+			}
+
+			if (fromSkill.Info.ConditionCount1 < amount)
+			{
+				Log.Warning("TransferSkillExp: User '{0}' tried to transfer more exp than the skill has.", client.Account.Id);
+				goto L_End;
+			}
+
+			if (toSkill.IsFullyTrained)
+			{
+				Log.Warning("TransferSkillExp: User '{0}' tried to transfer exp to a fully trained skill.", client.Account.Id);
+				goto L_End;
+			}
+
+			// Transfer
+			fromSkill.Train(1, -amount, false);
+			toSkill.Train(1, amount, false);
+
+		L_End:
+			Send.TransferSkillExpR(creature);
+		}
 	}
 }

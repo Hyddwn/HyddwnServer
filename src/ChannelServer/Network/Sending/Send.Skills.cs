@@ -1039,5 +1039,15 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Region.Broadcast(packet, creature);
 		}
+
+		/// <summary>
+		/// Sends TransferSkillExpR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void TransferSkillExpR(Creature creature)
+		{
+			var packet = new Packet(Op.TransferSkillExpR, creature.EntityId);
+			creature.Client.Send(packet);
+		}
 	}
 }
