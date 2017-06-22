@@ -22,16 +22,35 @@ namespace Aura.Channel.World.Entities.Creatures
 		private TitleData _titleData, _optionTitleData;
 		private ushort _selectedTitle, _tempTitle;
 
+		/// <summary>
+		/// Returns the title the creature is currently using,
+		/// temporary or not. Setting this value will not change
+		/// the temporary title.
+		/// </summary>
 		public ushort SelectedTitle
 		{
 			get { return (_tempTitle != 0 ? _tempTitle : _selectedTitle); }
 			set { _selectedTitle = value; }
 		}
+
+		/// <summary>
+		/// Returns the title the creature is using, potentially behind
+		/// a temporary title.
+		/// </summary>
 		public ushort ActualSelectedTitle
 		{
 			get { return _selectedTitle; }
 		}
+
+		/// <summary>
+		/// Gets or sets the option title the creature is using.
+		/// Doesn't update the client.
+		/// </summary>
 		public ushort SelectedOptionTitle { get; set; }
+
+		/// <summary>
+		/// Returns the time at which the main title was set.
+		/// </summary>
 		public DateTime Applied { get; private set; }
 
 		/// <summary>
@@ -39,6 +58,10 @@ namespace Aura.Channel.World.Entities.Creatures
 		/// </summary>
 		public event Action<Creature> Changed;
 
+		/// <summary>
+		/// Creates new instance for cretaure.
+		/// </summary>
+		/// <param name="creature"></param>
 		public CreatureTitles(Creature creature)
 		{
 			_creature = creature;
