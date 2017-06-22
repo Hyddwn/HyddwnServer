@@ -873,10 +873,17 @@ namespace Aura.Channel.Network.Handlers
 				goto L_End;
 			}
 
+			// Check amount
+			if (amount < 0 || amount > short.MaxValue)
+			{
+				Log.Warning("TransferSkillExp: User '{0}' tried to transfer invalid exp amount '{1}'.", client.Account.Id, amount);
+				goto L_End;
+			}
+
+			// Check skills
 			var fromSkill = creature.Skills.Get(fromSkillId);
 			var toSkill = creature.Skills.Get(toSkillId);
 
-			// Check skills
 			if (fromSkill == null || toSkill == null)
 			{
 				Log.Warning("TransferSkillExp: User '{0}' tried to transfer exp from or to a skill they don't have '{1}'->'{2}'.", client.Account.Id, fromSkillId, toSkillId);
