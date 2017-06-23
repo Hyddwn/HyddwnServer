@@ -179,6 +179,26 @@ namespace Aura.Channel.Skills.Transformations
 		{
 			creature.Skills.CancelAfter(skill.Info.Id, this.GetDuration(creature, skill));
 			skill.SetCoolDownEnd(ErinnTime.GetNextTime(6, 0).DateTime);
+
+			creature.Death += this.OnDeath;
+		}
+
+		/// <summary>
+		/// Called when the transformed creature is killed.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void OnDeath(Creature creature, Creature killer)
+		{
+			creature.Death -= this.OnDeath;
+
+			if (creature.Transformation != Transformation.Paladin)
+				return;
+
+			var skill = creature.Skills.Get(SkillId.SpiritOfOrder);
+			if (skill == null)
+				return;
+
+			this.Stop(creature, skill);
 		}
 
 		/// <summary>
