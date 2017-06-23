@@ -53,6 +53,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public float SharpMindChance { get; protected set; }
 		public bool SafeEnchanting { get; protected set; }
 		public float PaladinDurationRate { get; protected set; }
+		public bool PaladinCancelOnDeath { get; protected set; }
 
 		public bool Bagception { get; protected set; }
 		public bool NoDurabilityLoss { get; protected set; }
@@ -130,6 +131,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.SharpMindChance = this.GetFloat("sharp_mind_chance", 50);
 			this.SafeEnchanting = this.GetBool("safe_enchanting", false);
 			this.PaladinDurationRate = this.GetFloat("paladin_duration_rate", 100) / 100.0f;
+			this.PaladinCancelOnDeath = this.GetBool("paladin_cancel_on_death", true);
 
 			this.Bagception = this.GetBool("bagception", false);
 			this.NoDurabilityLoss = this.GetBool("no_durability_loss", false);
