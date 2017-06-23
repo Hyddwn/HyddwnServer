@@ -191,9 +191,6 @@ namespace Aura.Channel.Skills.Transformations
 		{
 			creature.Death -= this.OnDeath;
 
-			if (creature.Transformation != Transformation.Paladin)
-				return;
-
 			var skill = creature.Skills.Get(SkillId.SpiritOfOrder);
 			if (skill == null)
 				return;
