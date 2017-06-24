@@ -105,6 +105,8 @@ namespace Aura.Channel.Skills.Transformations
 				return StartStopResult.Fail;
 			}
 
+			creature.StopMove();
+
 			this.Transform(creature, skill);
 			this.GiveBonuses(creature, skill);
 			this.SetTimers(creature, skill);
@@ -121,6 +123,8 @@ namespace Aura.Channel.Skills.Transformations
 		/// <returns></returns>
 		public override StartStopResult Stop(Creature creature, Skill skill, MabiDictionary dict)
 		{
+			creature.StopMove();
+
 			this.RemoveBonuses(creature, skill);
 			this.ResetTransformation(creature, skill);
 
