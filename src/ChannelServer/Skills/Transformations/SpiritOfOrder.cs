@@ -181,7 +181,10 @@ namespace Aura.Channel.Skills.Transformations
 		/// <param name="skill"></param>
 		private void SetTimers(Creature creature, Skill skill)
 		{
-			creature.Skills.CancelAfter(skill.Info.Id, this.GetDuration(creature, skill));
+			var duration = this.GetDuration(creature, skill);
+			duration = TimeSpan.FromMilliseconds(Math.Max(1000, duration.TotalMilliseconds * ChannelServer.Instance.Conf.World.PaladinDurationRate));
+
+			creature.Skills.CancelAfter(skill.Info.Id, duration);
 			skill.SetCoolDownEnd(ErinnTime.GetNextTime(6, 0).DateTime);
 
 			creature.Death += this.OnDeath;
