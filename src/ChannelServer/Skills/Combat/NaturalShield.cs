@@ -116,6 +116,14 @@ namespace Aura.Channel.Skills.Combat
 			if (target.HasTag("/beatable_only/"))
 				damage = 1;
 
+			// Demi Lich only takes damage if the wielder has a ghost sword
+			// in their right hand.
+			if (target.HasTag("/demilich/"))
+			{
+				damage = 1;
+				pinged = true;
+			}
+
 			// Check skills
 			for (int i = 0; i < Skills.Length; ++i)
 			{

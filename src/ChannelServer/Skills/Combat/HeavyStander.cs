@@ -127,6 +127,18 @@ namespace Aura.Channel.Skills.Combat
 					damage *= 3;
 			}
 
+			// Demi Lich only takes damage if the wielder has a ghost sword
+			// in their right hand.
+			if (target.HasTag("/demilich/"))
+			{
+				var rightHand = attacker.RightHand;
+				if (rightHand == null || !rightHand.HasTag("/undeadslayer/"))
+				{
+					damage = 1;
+					pinged = true;
+				}
+			}
+
 			// Check skills
 			for (int i = 0; i < Skills.Length; ++i)
 			{
