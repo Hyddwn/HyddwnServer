@@ -205,6 +205,38 @@ public class Keychest9ChestRundaSirenScript : Keychest9ChestScript
 	}
 }
 
+[PuzzleScript("keychest_9chest_peaca")]
+public class Keychest9ChestPeacaScript : Keychest9ChestScript
+{
+	protected override void AddChestDrops(Chest chest, int chestNum, bool isMonsterChest, bool isEnchantChest)
+	{
+		// Gold
+		if (!isMonsterChest)
+			chest.Add(Item.Create(id: 2000, amountMin: 100, amountMax: 250));
+
+		// Enchant
+		if (isEnchantChest)
+		{
+			var enchant = 0;
+			switch (Random(10))
+			{
+				case 0:
+				case 1: enchant = 201; break; // Hamster (Prefix)
+				case 2:
+				case 3:
+				case 4: enchant = 20601; break; // Blessed (Prefix)
+				case 5:
+				case 6: enchant = 20204; break; // Foggy (Prefix)
+				case 7:
+				case 8: enchant = 31301; break; // Raccoon Cub (Suffix)
+				case 9: enchant = 30714; break; // Easy Peaca (Suffix)
+			}
+
+			chest.Add(Item.CreateEnchant(enchant));
+		}
+	}
+}
+
 [PuzzleScript("keychest_9chest_mid_supply")]
 public class Keychest9ChestMidSupplyScript : Keychest9ChestScript
 {
