@@ -1034,8 +1034,10 @@ namespace Aura.Channel.Network.Handlers
 
 			if (!AuraData.FeaturesDb.IsEnabled("ItemShop"))
 			{
-				Send.ServerMessage(creature, Localization.Get("The item shop isn't available yet."));
-				Send.OpenItemShopR(creature, false, null);
+                creature.Warp(new Location { X = 5606, Y = 7817, RegionId = 68 });
+
+                Send.ServerMessage(creature, Localization.Get("You have been moved to the shop area."));
+                Send.OpenItemShopR(creature, false, null);
 				return;
 			}
 
