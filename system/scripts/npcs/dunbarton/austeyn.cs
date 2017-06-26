@@ -37,8 +37,6 @@ public class AusteynScript : NpcScript
 
 	protected override async Task Talk()
 	{
-		SetBgm("NPC_Austeyn.mp3");
-
 		await Intro(L("His gray hair and mustache may show his age,<br/>but his firm build and the smile on his face show a youthful presence.<br/>It's as if he wants to prove that he can smile even with his small eyes."));
 
 		Msg("So, what can I help you with?", Button("Start a Conversation", "@talk"), Button("Open My Account", "@bank"), Button("Redeem Coupon", "@coupon"), Button("Coin Event", "@coin"), Button("Trade", "@shop"));
