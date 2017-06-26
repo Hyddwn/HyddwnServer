@@ -349,7 +349,6 @@ public class ShenaShop : NpcShopScript
 		Add("Cooking Ingredients", 50005);     // Large Meat
 		Add("Cooking Ingredients", 50217);     // Celery
 		Add("Cooking Ingredients", 50220);     // Corn Powder
-		Add("Cooking Ingredients", 50134);     // Sliced Bread
 
 		Add("Event"); // Empty
 
@@ -454,6 +453,10 @@ public class ShenaShop : NpcShopScript
 			Add("Cooking Ingredients", 50104, "QUAL:4:70;"); // Egg Salad
 			Add("Cooking Ingredients", 50102, "QUAL:4:70;"); // Potato Salad
 			Add("Cooking Ingredients", 50101, "QUAL:4:70;"); // Potato Egg Salad
+		}
+		else
+		{
+			Add("Cooking Ingredients", 50134);     // Sliced Bread
 		}
 	}
 }
