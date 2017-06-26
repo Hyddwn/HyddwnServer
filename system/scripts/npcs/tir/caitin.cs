@@ -477,6 +477,9 @@ public class CaitinShop : NpcShopScript
 		Add("Grocery", 50148, 10); // Yeast x10
 		Add("Grocery", 50130);     // Whipped Cream x1
 		Add("Grocery", 50130, 5);  // Whipped Cream x5
+		Add("Grocery", 50120, "QUAL:4:50;"); // Steamed Rice
+		Add("Grocery", 50134, "QUAL:4:70;"); // Sliced Bread
+		Add("Grocery", 50104, "QUAL:4:60;"); // Egg Salad
 
 		Add("Gift", 52010); // Ramen
 		Add("Gift", 52019); // Heart Cake
@@ -494,7 +497,7 @@ public class CaitinShop : NpcShopScript
 		AddQuest("Quest", 1009, 100); // Collecting Quest [5 Small Silver Gems]
 
 		Add("Event"); // Empty
-		
+
 		if (IsEnabled("MasterChef"))
 		{
 			Add("Grocery", 50220);     // Corn Powder
@@ -611,12 +614,6 @@ public class CaitinShop : NpcShopScript
 			Add("Grocery", 50104, "QUAL:4:70;"); // Egg Salad
 			Add("Grocery", 50102, "QUAL:4:70;"); // Potato Salad
 			Add("Grocery", 50101, "QUAL:4:70;"); // Potato Egg Salad
-		}
-		else
-		{
-			Add("Grocery", 50120, "QUAL:4:50;"); // Steamed Rice
-			Add("Grocery", 50134, "QUAL:4:70;"); // Sliced Bread
-			Add("Grocery", 50104, "QUAL:4:60;"); // Egg Salad
 		}
 	}
 }

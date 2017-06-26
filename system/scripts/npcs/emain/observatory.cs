@@ -6,8 +6,6 @@
 
 public class telescopenpcScript : NpcScript
 {
-	int signNumber;
-	
 	public override void Load()
 	{
 		SetRace(990002);
@@ -34,7 +32,7 @@ public class telescopenpcScript : NpcScript
 					Player.Inventory.Gold -= 10;
 					Cutscene.Play("etc_event_Emainmach_telescope", Player, cutscene =>
 					{
-						signNumber = Random(1000, 8999);
+						var signNumber = Random(1000, 8999);
 						Send.Notice(Player, string.Format(L("{0}...\nWho would write such numbers, and why?"), signNumber));
 						Close2();
 					});
