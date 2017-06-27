@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // James
 //--- Description -----------------------------------------------------------
-// Priest in front of Emain Macha Cathedral
+// Priest in front of Emain Macha Cathedral.
 //---------------------------------------------------------------------------
 
 public class JamesScript : NpcScript
@@ -20,7 +20,6 @@ public class JamesScript : NpcScript
 		EquipItem(Pocket.Armor, 15081, 0x00594933, 0x00696969, 0x00FFFFFF);
 		EquipItem(Pocket.Shoe, 17012, 0x00505832, 0x00FFFFFF, 0x004B4B4B);
 		EquipItem(Pocket.Head, 18091, 0x00747474, 0x00FFFFFF, 0x00FFFFFF);
-
 
 		AddPhrase("Lord, I pray for another meaningful day with you.");
 		AddPhrase("Who should I write to today...");

@@ -1,8 +1,8 @@
 //--- Aura Script -----------------------------------------------------------
 // Emain Macha Royal Guards
 //--- Description -----------------------------------------------------------
-// Script for the royal guard npcs in Emain Macha
-// guardsman07 is different from the other guards and says lots of gossip
+// Script for the royal guard NPCs in Emain Macha.
+// Guardsman07 is different from the other guards and says lots of gossip.
 //---------------------------------------------------------------------------
 
 public abstract class GuardsmanBaseScript : NpcScript
@@ -17,9 +17,8 @@ public abstract class GuardsmanBaseScript : NpcScript
 		EquipItem(Pocket.Armor, 13025, 0x008C8C8C, 0x00808080, 0x00FFFFFF);
 		EquipItem(Pocket.Head, 18522, 0x00646464, 0x00FFFFFF, 0x00FFFFFF);
 		EquipItem(Pocket.RightHand2, 40012, 0x00FFFFFF, 0x006C7050, 0x00FFFFFF);
-
 	}
-	
+
 	protected override async Task Talk()
 	{
 		RndMsg(
@@ -34,7 +33,7 @@ public abstract class GuardsmanBaseScript : NpcScript
 			"......<p/>......<p/>......<p/>?<p/>I, I didn't fall asleep!"
 		);
 	}
-	
+
 	protected override async Task Gift(Item item, GiftReaction reaction)
 	{
 		switch (reaction)
@@ -79,7 +78,7 @@ public class Guardsman07Script : NpcScript
 		AddPhrase("Hey, who's throwing away trash!");
 		AddPhrase("Hmmm... my legs hurt...");
 	}
-	
+
 	protected override async Task Talk()
 	{
 		RndMsg(
@@ -128,12 +127,12 @@ public class Guardsman07Script : NpcScript
 			"Hey... Have you heard...?<p/>...Supposedly there's someone who walks around dropping money at the Town Square.<br/>If they're going to do that, at least drop a lot... Or give me some...",
 			"Hey... Have you heard...?<p/>...I heard Lucas, the Club owner, has a different girlfriend every time you see him.<br/>He's broken a lot of girls' hearts..."
 		);
-	}	
+	}
 
 	protected override async Task Gift(Item item, GiftReaction reaction)
 	{
 		switch (reaction)
-		{		
+		{
 			default:
 				Msg(L("...Is that for me? Thank you."));
 				break;

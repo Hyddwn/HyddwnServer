@@ -20,7 +20,6 @@ public class OslaScript : NpcScript
 		EquipItem(Pocket.Armor, 13023, 0x00D6C5BA, 0x00947E6B, 0x00000000);
 		EquipItem(Pocket.Shoe, 17510, 0x0061534E, 0x00F6D493, 0x00644356);
 
-
 		AddPhrase("Hmm... where's my knight in shining armor?");
 		AddPhrase("It's a problem if I have too many customers to take care of...");
 		AddPhrase("...But I guess it's okay since I'm prettty...");
@@ -485,9 +484,7 @@ public class OslaShop : NpcShopScript
 		Add("Armor", 13008); // Phoenix Surcoat Plate
 		Add("Armor", 13018); // Double Ring Mail
 
-		Add("Event"); // Empty
-		//Add("Event", 45103, 20); // 20 Toy Arrows
-		//Add("Event", 45103, 20); // 100 Toy Arrows
+		Add("Event");
 
 		if (IsEnabled("FighterJob"))
 		{

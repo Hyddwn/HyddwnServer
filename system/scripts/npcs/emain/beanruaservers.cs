@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Bean Rua Servers
 //--- Description -----------------------------------------------------------
-// Script for the servers inside Bean Rua
+// Script for the servers inside Bean Rua.
 //---------------------------------------------------------------------------
 
 public class BeanRua01Script : NpcScript
@@ -39,7 +39,6 @@ public class BeanRua01Script : NpcScript
 		}
 	}
 }
-
 
 public class BeanRua02Script : BeanRua01Script { public override void Load() { base.Load(); SetName("_beanrua02"); SetBody(height: 1.00f, weight: 1.00f, upper: 1.00f); SetFace(skinColor: 17, eyeColor: 39); SetStand("human/female/anim/female_stand_npc_emain_Rua"); SetLocation(57, 6927, 6356, 143); EquipItem(Pocket.Face, 3901, 0x0001918B, 0x00C4DD83, 0x00F79825); EquipItem(Pocket.Hair, 3032, 0x00942C12, 0x00942C12, 0x00942C12); } }
 public class BeanRua03Script : BeanRua01Script { public override void Load() { base.Load(); SetName("_beanrua03"); SetFace(skinColor: 15, eyeType: 3, eyeColor: 113); SetStand("human/female/anim/female_stand_npc_emain_05"); SetLocation(57, 6618, 6271, 157); EquipItem(Pocket.Face, 3900, 0x00F78F4C, 0x00C3B35D, 0x00F9A142); EquipItem(Pocket.Hair, 3024, 0x00980A0A, 0x00980A0A, 0x00980A0A); } }

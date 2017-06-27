@@ -22,7 +22,6 @@ public class RichManScript : NpcScript
 		EquipItem(Pocket.Shoe, 17042, 0x001D241A, 0x00FFFFFF, 0x00FFFFFF);
 		EquipItem(Pocket.Head, 18034, 0x002B685F, 0x00FFFFFF, 0x00FFFFFF);
 
-
 		AddPhrase("Oh no, I dropped the money again");
 		AddPhrase("Oh, I dropped a coin");
 		AddPhrase("Money's flowing everywhere...");

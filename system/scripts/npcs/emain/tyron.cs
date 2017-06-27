@@ -23,7 +23,6 @@ public class TyronScript : NpcScript
 		EquipItem(Pocket.Shoe, 17508, 0x00CBAF9C, 0x00CAB8A4, 0x00FFFFFF);
 		EquipItem(Pocket.RightHand1, 40011, 0x00C0C0C0, 0x00304544, 0x00FFFFFF);
 
-
 		AddPhrase("Hey boss, can I rest for a second?");
 		AddPhrase("Training is the only way!");
 		AddPhrase("I need to fix my armor...");

@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Jocelin
 //--- Description -----------------------------------------------------------
-// Banker
+// Emain Macha Banker
 //---------------------------------------------------------------------------
 
 public class JocelinScript : NpcScript
@@ -18,7 +18,6 @@ public class JocelinScript : NpcScript
 		EquipItem(Pocket.Hair, 3021, 0x00491622, 0x00491622, 0x00491622);
 		EquipItem(Pocket.Armor, 15041, 0x0075554A, 0x0075554A, 0x0069554F);
 		EquipItem(Pocket.Shoe, 17008, 0x00000000, 0x00D3AB64, 0x00F29D38);
-
 
 		AddPhrase("That's just wrong... How come nobody talked to me about that signboard...?");
 		AddPhrase("I can't believe that Sign Board...");

@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Emain Observatory tools
 //--- Description -----------------------------------------------------------
-// telescope and viewscope npcs found on top of the observatory
+// Telescope and viewscope NPCs found on top of the observatory.
 //---------------------------------------------------------------------------
 
 public class telescopenpcScript : NpcScript

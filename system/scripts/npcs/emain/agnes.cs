@@ -37,7 +37,7 @@ public class AgnesScript : NpcScript
 	protected override async Task Talk()
 	{
 		SetBgm("NPC_Agnes.mp3");
-	
+
 		await Intro(L("Her dark eyes are full of innocence, and shine on her pale white face.<br/>Her green hair is neatly tied in a double pony-tail which gives off a sense of calmness.<br/>She is dressed in a stylish white and yellow green Healer dress.<br/>As she becomes aware of us, she smiles and turns my way with her hands folded together."));
 
 		Msg("Hello there.<br/>Did you get hurt? Do you need some potions?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Get Treatment", "@healerscare"), Button("Heal Pet", "@petheal"));
@@ -173,7 +173,7 @@ public class AgnesScript : NpcScript
 				Msg("They are twins. Don't you think they look alike?<br/>The average person can't tell them apart.. Hehe...");
 				Msg("Hm, I wish i had a twin sister.<br/>It would've been so much fun...<br/>I'm jealous of Del and Delen!");
 				Msg("...How about you, <username/>? Have you ever wished you'd had a twin?");
-				ModifyRelation(Random(2), 0, Random(3));			
+				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "shop_misc":
@@ -308,7 +308,7 @@ public class AgnesScript : NpcScript
 				Msg("Er..., it's like it's the first time you've seen them...");
 				break;
 
-			default:		
+			default:
 				RndFavorMsg(
 					"That is difficult to answer.",
 					"Are those the kinds of things you're interested in, <username/>...?<br/>We seem to have different interests...",
@@ -318,7 +318,7 @@ public class AgnesScript : NpcScript
 					"Is this something you don't know, <username/>?<br/>You should ask me then, haha...",
 					"I don't really know... Please don't think of me differently."
 				);
-				ModifyRelation(0, 0, Random(3));			
+				ModifyRelation(0, 0, Random(3));
 				break;
 		}
 	}

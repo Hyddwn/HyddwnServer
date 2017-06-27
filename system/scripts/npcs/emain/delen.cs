@@ -21,7 +21,6 @@ public class DelenScript : NpcScript
 		EquipItem(Pocket.Armor, 15082, 0x00FA8D8D, 0x00F7B4AC, 0x00202020);
 		EquipItem(Pocket.Shoe, 17040, 0x005E2922, 0x0041002C, 0x00683D0D);
 
-
 		AddPhrase("Hi there! Check out these flowers!");
 		AddPhrase("Am I doing something wrong...?");
 		AddPhrase("Pretty flowers! Pick all you want!");
