@@ -298,6 +298,10 @@ public class AgnesScript : NpcScript
 				Msg("Looking for a Score?<br/>...I heard that Galvin used to sell them<br/>a long time ago. I think that's what I'd heard...");
 				break;
 
+			case "Cooker_qualification_test":
+				Msg("You should be able to check on all information pertaining to the cooking contest<br/>in the other channels.");
+				break;
+
 			case "EG_C2_Unknown_Continet":
 				Msg("<username/>, I realize... it is, for the sake of your adventures<br/>a great thing to be traveling around so much<br/>but I want to caution you from spending too much time dreaming about nonsense... it's just not good for you.");
 				break;
@@ -309,16 +313,70 @@ public class AgnesScript : NpcScript
 				break;
 
 			default:
-				RndFavorMsg(
-					"That is difficult to answer.",
-					"Are those the kinds of things you're interested in, <username/>...?<br/>We seem to have different interests...",
-					"Umm... I don't really kow about that.",
-					"I have nothing to say about that.",
-					"Hah... please talk to someone else.",
-					"Is this something you don't know, <username/>?<br/>You should ask me then, haha...",
-					"I don't really know... Please don't think of me differently."
-				);
-				ModifyRelation(0, 0, Random(3));
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					RndFavorMsg(
+						"Hmm... Sorry, I don't really know.",
+						"Um... Can we talk about something else...?",
+						"Sorry, I'm not really interested in that...",
+						"To tell you the truth, I don't have a clue...",
+						"Wow, you are very knowledgeable <username/>...",
+						"I don't really know... Please don't think of me differently.",
+						"I'm sorry, I don't really like talking about things like that..."
+					);
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					RndFavorMsg(
+						"...Why don't we change the topic...?",
+						"I'm sorry, I'm not really interested in that.",
+						"My gosh, did you expect me to know about that?",
+						"I don't really want to pay any attention to that...",
+						"...I don't think I would be of much help with that.",
+						"I'm not sure...?<br/>I'm sorry I can't really help you.",
+						"Darn...I wish I could be of more help...<br/>I don't think I would be of much help."
+					);
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					RndFavorMsg(
+						"Why don't you tell me instead?",
+						"Hmm. Why are you asking me this?",
+						"I don't know what you are talking about.",
+						"We can talk about things like that later...",
+						"I don't feel comfortable answering that...",
+						"...<username/><br/>You have no idea how to talk to a lady."
+					);
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					RndFavorMsg(
+						"...",
+						"...I don't know.",
+						"...Let's not talk about that.",
+						"I'm a little busy right now...",
+						"Can we stop talking about that?",
+						"Do we have to talk about that right now?",
+						"Don't you think it's rude to bring up topics others don't like to talk about?"
+					);
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"That is difficult to answer.",
+						"Um, I don't know much about that.",
+						"I have nothing to say about that.",
+						"Hah... please talk to someone else.",
+						"Umm... I don't really kow about that.",
+						"Is this something you don't know, <username/>?<br/>You should ask me then, haha...",
+						"Are those the kinds of things you're interested in, <username/>...?<br/>We seem to have different interests..."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
 				break;
 		}
 	}
@@ -332,12 +390,17 @@ public class AgnesScript : NpcScript
 					"Are you sure this is for me?<br/>My dear.... this is precious...<br/>Thank you, <username/>.",
 					"My gosh... Are you sure you want to give this to me?",
 					"This is really sweet...<br/>I dont know how to thank you...",
-					"Holy Moly! You're giving me this...?<br/>Wow...<br/>Thank you <username/>."
+					"Holy Moly! You're giving me this...?<br/>Wow...<br/>Thank you <username/>.",
+					"My gosh... oh dear... I can't believe you gave me this...<br/>I don't know if I can thank you enough..."
 				);
 				break;
 
 			case GiftReaction.Like:
 				RndMsg(
+					"What a present... <br/>Thank you. I like it a lot.",
+					"I didn't see this side of you, <username/>...<br/>Thank you.",
+					"Are you sure this is for me? <br/>Because, I'm not giving it back! Hahaha...",
+					"Presents always make people happy no matter what they are. <br/>Especially when they're coming from someone like you, <username/>!",
 					"Wow... is it okay for me to accept this?<br/>It is a little too much, but thanks!",
 					"This present makes me nostalgic for some reason, haha...<br/>Thanks.",
 					"Is this... for me?<br/>Then this must be a... present?<p/>I'm so excited, <username/><br/>Thanks.",
@@ -345,7 +408,7 @@ public class AgnesScript : NpcScript
 				);
 				break;
 
-			default: // GiftReaction.Neutral
+			case GiftReaction.Neutral:
 				RndMsg(
 					"Is this a present? haha... Thanks. I'll be sure to use it.",
 					"Huh? Is this a present? Hehehe...<br/>Thanks.",
@@ -356,6 +419,19 @@ public class AgnesScript : NpcScript
 					"Huh? Present? For me?<br/>Hahaha... Thank you very much!",
 					"This is really nice.<br/>I appreciate it.",
 					"I'm not going to change the way I treat you just because of this present. hahaha...<br/>However I'll make a note of it!"
+				);
+				break;
+
+			case GiftReaction.Dislike:
+				RndMsg(
+					"...I have plenty of space for this, but...<br/>I'm a little hesitant to accept this. But I'll accept it, since it's coming from you, <username/> Haha...",
+					"Hahaha... This present is... Oh my, you must be joking...",
+					"Um... I'm sorry to tell you this, but... <br/>the present you just gave me, is not so useful to me.  <br/>But I'll be happy to accept it...",
+					"...Why are you giving me this present? <br/>I'm totally disappointed, <username/>.",
+					"...I'd be happy to accept this.",
+					"This is hardly... a present...<br/>I don't appreciate jokes like this.",
+					"...Umm, I'm sorry...<br/>This kind of a gift... is interesting...<br/>But I'll accept it...",
+					"Hmm... This isn't exactly one of my favorite things in the world,<br/>but since you are giving it to me, <username/>,<br/>I will gladly accept it."
 				);
 				break;
 		}
