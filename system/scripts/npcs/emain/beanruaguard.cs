@@ -57,72 +57,42 @@ public class BeanRuaGuard1Script : NpcScript
 
 	protected override async Task Talk()
 	{
+		var msg = "";
 		if (ErinnHour(16, 18))
 		{
 			switch (Random(7))
 			{
-				case 0:
-					Msg("Okay, you can start filing in later.<br/>Hold on for now.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 1:
-					Msg("Bean Rua opens late in the afternoon...", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 2:
-					Msg("Now now. Maybe later...", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 3:
-					Msg("You're here too early. Please come back in a bit.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 4:
-					Msg("You can't go in right now...<br/>stop being so stubborn.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 5:
-					Msg("I was told you'd come, but... you're too early.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 6:
-					Msg("Can you please wait for a bit?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
+				case 0: msg = "Okay, you can start filing in later.<br/>Hold on for now."; break;
+				case 1: msg = "Bean Rua opens late in the afternoon..."; break;
+				case 2: msg = "Now now. Maybe later..."; break;
+				case 3: msg = "You're here too early. Please come back in a bit."; break;
+				case 4: msg = "You can't go in right now...<br/>stop being so stubborn."; break;
+				case 5: msg = "I was told you'd come, but... you're too early."; break;
+				case 6: msg = "Can you please wait for a bit?"; break;
 			}
 		}
 		else if (ErinnHour(18, 6))
 		{
 			switch (Random(9))
 			{
-				case 0:
-					Msg("Would you prefer talking to me, instead of just walking on in...", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 1:
-					Msg("Are you looking for your party...?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 2:
-					Msg("You're staring at me...<p/>...Do I have something on my face?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 3:
-					Msg("Hello there. Looking good.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 4:
-					Msg("Welcome to Bean Rua.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 5:
-					Msg("The door's open. You can walk in, you know...", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 6:
-					Msg("Do you have anything for me?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 7:
-					Msg("Welcome! Welcome! Welcome to Bean Rua, where the beautiful redheads rule.", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
-				case 8:
-					Msg("Did you make a reservation?", Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-					break;
+				case 0: msg = "Would you prefer talking to me, instead of just walking on in..."; break;
+				case 1: msg = "Are you looking for your party...?"; break;
+				case 2: msg = "You're staring at me...<p/>...Do I have something on my face?"; break;
+				case 3: msg = "Hello there. Looking good."; break;
+				case 4: msg = "Welcome to Bean Rua."; break;
+				case 5: msg = "The door's open. You can walk in, you know..."; break;
+				case 6: msg = "Do you have anything for me?"; break;
+				case 7: msg = "Welcome! Welcome! Welcome to Bean Rua, where the beautiful redheads rule."; break;
+				case 8: msg = "Did you make a reservation?"; break;
 			}
 		}
 		else
 		{
-			// Unofficial, Doormen should be hidden during the day
+			// Unofficial, Doormen should be hidden during the day.
 			End("Bean Rua is currently closed,<br/>please come back during the night.");
 		}
 
+		Msg(msg, Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
 		switch (await Select())
 		{
 			case "@ticket":
