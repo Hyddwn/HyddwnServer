@@ -38,17 +38,20 @@ public class BeanRuaGuard1Script : NpcScript
 		AddPhrase("We're open now. Line up!");
 	}
 
+	protected virtual Location NormalLocation { get { return new Location(52, 47115, 47272); } }
+	protected virtual Location TempLocation { get { return new Location(22, 6500, 4800); } }
+
 	[On("ErinnTimeTick")]
-	public virtual void OnErinnTimeTick(ErinnTime time)
+	public void OnErinnTimeTick(ErinnTime time)
 	{
 		if (ErinnHour(16, 6))
 		{
 			if (NPC.RegionId != 52)
-				NPC.Warp(52, 47115, 47272);
+				NPC.Warp(NormalLocation);
 		}
 		else if (NPC.RegionId != 22)
 		{
-			NPC.Warp(22, 6500, 4800);
+			NPC.Warp(TempLocation);
 		}
 	}
 
@@ -116,7 +119,7 @@ public class BeanRuaGuard1Script : NpcScript
 		}
 		else
 		{
-			//unofficial, Doormen should be hidden during the day
+			// Unofficial, Doormen should be hidden during the day
 			End("Bean Rua is currently closed,<br/>please come back during the night.");
 		}
 
@@ -173,22 +176,8 @@ public class BeanRuaGuard1Script : NpcScript
 	}
 }
 
-
 public class BeanRuaGuard2Script : BeanRuaGuard1Script
 {
 	public override void Load() { base.Load(); SetName("_beanruaguard02"); SetFace(skinColor: 15, eyeType: 4, eyeColor: 32, mouthType: 0); SetLocation(52, 48270, 48122, 155); EquipItem(Pocket.Face, 4900, 0x00F8E24C, 0x00707072, 0x006C706C); EquipItem(Pocket.Hair, 4038, 0x00AA7840, 0x00AA7840, 0x00AA7840); }
-
-	[On("ErinnTimeTick")]
-	public override void OnErinnTimeTick(ErinnTime time)
-	{
-		if (ErinnHour(16, 6))
-		{
-			if (NPC.RegionId != 52)
-				NPC.Warp(52, 48270, 48122);
-		}
-		else if (NPC.RegionId != 22)
-		{
-			NPC.Warp(22, 6500, 4800);
-		}
-	}
+	protected override Location NormalLocation { get { return new Location(52, 48270, 48122); } }
 }
