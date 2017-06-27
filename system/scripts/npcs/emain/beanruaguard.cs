@@ -1,9 +1,10 @@
 //--- Aura Script -----------------------------------------------------------
 // Bean Rua Guards
 //--- Description -----------------------------------------------------------
-// Script for the Doormen outside Bean Rua, used to purchase entrance passes
-// Currently the doormen warp to the gm map (region 22), but they are
-// hidden from the client rather than warped on official
+// Script for the Doormen outside Bean Rua, used to purchase entrance passes.
+//--- Notes -----------------------------------------------------------------
+// Currently the doormen warp to the GM map (region 22), but they are
+// hidden from the client rather than warped on official.
 //---------------------------------------------------------------------------
 
 public class BeanRuaGuard1Script : NpcScript
@@ -22,7 +23,6 @@ public class BeanRuaGuard1Script : NpcScript
 		EquipItem(Pocket.Glove, 16006, 0x002E231F, 0x00FFFFFF, 0x00FFFFFF);
 		EquipItem(Pocket.Shoe, 17010, 0x00000000, 0x00FFFFFF, 0x00FFFFFF);
 
-
 		AddPhrase("Alright, go in.");
 		AddPhrase("It's open!!");
 		AddPhrase("Did your guild reserve a spot?");
@@ -38,7 +38,6 @@ public class BeanRuaGuard1Script : NpcScript
 		AddPhrase("We're open now. Line up!");
 	}
 
-	// Officially, the Bean Rua Guards are hidden instead of warped
 	[On("ErinnTimeTick")]
 	public virtual void OnErinnTimeTick(ErinnTime time)
 	{
@@ -175,8 +174,11 @@ public class BeanRuaGuard1Script : NpcScript
 }
 
 
-public class BeanRuaGuard2Script : BeanRuaGuard1Script { public override void Load() { base.Load(); SetName("_beanruaguard02"); SetFace(skinColor: 15, eyeType: 4, eyeColor: 32, mouthType: 0); SetLocation(52, 48270, 48122, 155); EquipItem(Pocket.Face, 4900, 0x00F8E24C, 0x00707072, 0x006C706C); EquipItem(Pocket.Hair, 4038, 0x00AA7840, 0x00AA7840, 0x00AA7840); } 
-[On("ErinnTimeTick")]
+public class BeanRuaGuard2Script : BeanRuaGuard1Script
+{
+	public override void Load() { base.Load(); SetName("_beanruaguard02"); SetFace(skinColor: 15, eyeType: 4, eyeColor: 32, mouthType: 0); SetLocation(52, 48270, 48122, 155); EquipItem(Pocket.Face, 4900, 0x00F8E24C, 0x00707072, 0x006C706C); EquipItem(Pocket.Hair, 4038, 0x00AA7840, 0x00AA7840, 0x00AA7840); }
+
+	[On("ErinnTimeTick")]
 	public override void OnErinnTimeTick(ErinnTime time)
 	{
 		if (ErinnHour(16, 6))
