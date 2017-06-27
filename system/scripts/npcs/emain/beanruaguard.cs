@@ -9,6 +9,9 @@
 
 public class BeanRuaGuard1Script : NpcScript
 {
+	private const int BeanRuaBrooch = 73110;
+	private const int TicketToBeanRua = 73111;
+
 	public override void Load()
 	{
 		SetRace(10002);
@@ -93,45 +96,41 @@ public class BeanRuaGuard1Script : NpcScript
 		}
 
 		Msg(msg, Button("Buy Ticket", "@ticket"), Button("End Conversation", "@exit"));
-		switch (await Select())
+		if (await Select() == "@ticket")
 		{
-			case "@ticket":
-				if (Player.HasItem(73110))
-					Msg("You must be a member of our club. We have a member's discount for the ticket.<br/>The ticket is good for one-time use.<br/>The ticket will cost you 500 Gold. Would you like to buy one?", Button("Buy", "@buy"), Button("Cancel", "@exit"));
-				else
-					Msg("To enter Club Bean Rua, you must first buy a ticket.<br/>The ticket is only good for a one-time use and will expire after a certain amount of time.<br/>The ticket will cost you 1,000 Gold. Would you like to buy one now?", Button("Buy", "@buy"), Button("Cancel", "@exit"));
-				switch (await Select())
-				{
-					case "@buy":
-						if ((Player.Inventory.Gold >= 500) && (Player.HasItem(73110)))
-						{
-							Player.Inventory.Gold -= 500;
-							Player.GiveItem(73111);
-							Msg("Thank you! Have a great time!");
-							Send.Notice(Player, L("Received Ticket to Bean Rua from Bean Rua Doorman."));
-							Close2();
-						}
-						else if (Player.Inventory.Gold >= 1000)
-						{
-							Player.Inventory.Gold -= 1000;
-							Player.GiveItem(73111);
-							Msg("Thank you! Have a great time!");
-							Send.Notice(Player, L("Received Ticket to Bean Rua from Bean Rua Doorman."));
-							Close2();
-						}
-						else
-							End("Hmmm, you're short on cash.");
-						return;
+			var price = 1000;
 
-					case "@exit":
-						End("Please come back later!");
-						return;
-				}
-				return;
+			if (Player.HasItem(BeanRuaBrooch))
+			{
+				msg = "You must be a member of our club. We have a member's discount for the ticket.<br/>The ticket is good for one-time use.<br/>The ticket will cost you 500 Gold. Would you like to buy one?";
+				price = 500;
+			}
+			else
+			{
+				msg = "To enter Club Bean Rua, you must first buy a ticket.<br/>The ticket is only good for a one-time use and will expire after a certain amount of time.<br/>The ticket will cost you 1,000 Gold. Would you like to buy one now?";
+				price = 1000;
+			}
 
-			case "@exit":
-				End("Have a good time!");
-				return;
+			Msg(msg, Button("Buy", "@buy"), Button("Cancel", "@exit"));
+			if (await Select() == "@buy")
+			{
+				if (Player.Inventory.Gold < price)
+					End("Hmmm, you're short on cash.");
+
+				Player.Inventory.Gold -= price;
+				Player.GiveItem(TicketToBeanRua);
+				Msg("Thank you! Have a great time!");
+				Send.Notice(Player, L("Received Ticket to Bean Rua from Bean Rua Doorman."));
+				Close();
+			}
+			else
+			{
+				End("Please come back later!");
+			}
+		}
+		else
+		{
+			End("Have a good time!");
 		}
 	}
 
