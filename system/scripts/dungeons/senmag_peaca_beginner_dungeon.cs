@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Peaca Beginner Dungeon
 //--- Description -----------------------------------------------------------
-// Script for  Peaca Beginner Dungeon
+// Script for Peaca Beginner Dungeon.
 // Peaca Beginner seems to use a duplicate of Barri Normal's rewards
 // with different rates and with no enchanted equipment.
 //---------------------------------------------------------------------------

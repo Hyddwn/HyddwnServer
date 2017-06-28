@@ -25,9 +25,7 @@ public class WightAi : AiScript
 	{
 		Do(Say("......"));
 		SwitchRandom();
-		if (Case(10))
-		{}
-		else if (Case(30))
+		if (Case(30))
 		{
 			Do(Wander(100, 500, true));
 		}
@@ -107,7 +105,7 @@ public class WightAi : AiScript
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Follow(50, true, 3000));
-				Do(CancelSkill());	
+				Do(CancelSkill());
 			}
 			else if (Case(10))
 			{
@@ -314,7 +312,7 @@ public class WightAi : AiScript
 			Do(PrepareSkill(SkillId.Smash));
 			Do(Attack(1, 4000));
 		}
-		else if(Case(30))
+		else if (Case(30))
 		{
 			Do(PrepareSkill(SkillId.Defense));
 			if (Random(100) < 60)

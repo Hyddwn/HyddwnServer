@@ -191,10 +191,10 @@ public class Keychest9ChestRundaSirenScript : Keychest9ChestScript
 				case 0:
 				case 1:
 				case 2: enchant = 30802; break; // Counter (Suffix)
-				case 3: 
+				case 3:
 				case 4:
 				case 5: enchant = 30803; break; // Windmill (Suffix)
-				case 6: 
+				case 6:
 				case 7:
 				case 8: enchant = 30804; break; // Smash (Suffix)
 				case 9: enchant = 30706; break; // Formal (Suffix)

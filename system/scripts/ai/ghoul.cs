@@ -47,7 +47,7 @@ public class GhoulAi : AiScript
 				Do(PrepareSkill(SkillId.Windmill));
 				Do(UseSkill());
 			}
-		}		
+		}
 		else if (Case(20))
 		{
 			Do(PrepareSkill(SkillId.Smash));
@@ -86,19 +86,19 @@ public class GhoulAi : AiScript
 			}
 		}
 	}
-	
+
 	private IEnumerable OnKnockDown()
 	{
 		if (Creature.Life < Creature.LifeMax * 0.20f)
 		{
-			
+
 			if (Random() < 50)
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Wait(2000, 4000));
 				Do(CancelSkill());
 			}
-			else 
+			else
 			{
 				Do(PrepareSkill(SkillId.Smash));
 				Do(Attack(1, 4000));
@@ -119,7 +119,7 @@ public class GhoulAi : AiScript
 				Do(PrepareSkill(SkillId.Smash));
 				Do(Attack(1, 4000));
 			}
-			else if(Case(30))
+			else if (Case(30))
 			{
 				Do(PrepareSkill(SkillId.Defense));
 				Do(Wait(2000, 4000));

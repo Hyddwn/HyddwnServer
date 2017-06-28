@@ -14,7 +14,7 @@ public class DemiLichAi : AiScript
 		SetAggroLimit(AggroLimit.Three);
 
 		Hates("/pc/", "/pet/");
-		
+
 		On(AiState.Aggro, AiEvent.Hit, OnHit);
 		On(AiState.Aggro, AiEvent.KnockDown, OnKnockDown);
 		On(AiState.Aggro, AiEvent.CriticalKnockDown, OnCriticalKnockDown);
@@ -102,7 +102,7 @@ public class DemiLichAi : AiScript
 				Do(PrepareSkill(SkillId.Fireball));
 				Do(UseSkill());
 			}
-		}	
+		}
 	}
 
 	private IEnumerable OnHit()

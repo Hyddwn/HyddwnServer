@@ -23,16 +23,16 @@ public class PeacaDungeonScript : DungeonScript
 			return false;
 		}
 
-		// senmag_peaca_dungeon
+		// Peaca Normal (senmag_peaca_dungeon)
 		if (!IsEnabled("G17S2"))
 		{
 			if (creature.Party.MemberCount < 4)
 			{
-				// Unofficial text
 				Send.Notice(creature, L("You must have a party of at least 4 members to enter."));
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -66,10 +66,10 @@ public class PeacaDungeonScript : DungeonScript
 				{
 					case 0: enchant = 20501; break; // Simple (Prefix)
 					case 1: enchant = 20502; break; // Scrupulous (Prefix)
-					case 2: enchant = 30809; break;  // Dark Cross (Suffix)
-					case 3: enchant = 31201; break;  // Prudent (Suffix)
-					case 4: enchant = 31202; break;  // Jackal (Suffix)
-					case 5: enchant = 31102; break;  // Viper (Suffix)
+					case 2: enchant = 30809; break; // Dark Cross (Suffix)
+					case 3: enchant = 31201; break; // Prudent (Suffix)
+					case 4: enchant = 31202; break; // Jackal (Suffix)
+					case 5: enchant = 31102; break; // Viper (Suffix)
 				}
 				treasureChest.Add(Item.CreateEnchant(enchant));
 			}
@@ -91,7 +91,7 @@ public class PeacaDungeonScript : DungeonScript
 			drops = new List<DropData>();
 			drops.Add(new DropData(itemId: 62004, chance: 18, amountMin: 2, amountMax: 4)); // Magic Powder
 			drops.Add(new DropData(itemId: 51102, chance: 18, amountMin: 2, amountMax: 4)); // Mana Herb
-			drops.Add(new DropData(itemId: 51003, chance: 18, amountMin: 2, amountMax: 4));  // Hp 50 Potion
+			drops.Add(new DropData(itemId: 51003, chance: 18, amountMin: 2, amountMax: 4)); // Hp 50 Potion
 			drops.Add(new DropData(itemId: 51008, chance: 18, amountMin: 2, amountMax: 4)); // Mp 50 Potion
 			drops.Add(new DropData(itemId: 51013, chance: 18, amountMin: 2, amountMax: 4)); // Stamina 50 Potion
 
