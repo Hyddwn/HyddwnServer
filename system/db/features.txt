@@ -178,6 +178,9 @@
 		
 		// Enables magical music effects
 		{ name: "MagicalMusic", enabled: true },
+		
+		// Enables obtaining the Raccoon Cub enchant from dungeons
+		{ name: "RaccoonCubEnchant", enabled: true },
 	]},
 	
 	// Season 3
