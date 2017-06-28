@@ -182,6 +182,9 @@ public class PriceShop : NpcShopScript
 
 	protected override void OnErinnMidnightTick(ErinnTime time)
 	{
+		// Run base (color randomization)
+		base.OnErinnMidnightTick(time);
+
 		ClearTab(L("Interesting Items"));
 
 		Add(L("Interesting Items"), 18541); // Bald Wig
