@@ -218,18 +218,37 @@ public class Keychest9ChestPeacaScript : Keychest9ChestScript
 		if (isEnchantChest)
 		{
 			var enchant = 0;
-			switch (Random(10))
+			if (IsEnabled("G3S2"))
 			{
-				case 0:
-				case 1: enchant = 201; break; // Hamster (Prefix)
-				case 2:
-				case 3:
-				case 4: enchant = 20601; break; // Blessed (Prefix)
-				case 5:
-				case 6: enchant = 20204; break; // Foggy (Prefix)
-				case 7:
-				case 8: enchant = 31301; break; // Raccoon Cub (Suffix)
-				case 9: enchant = 30714; break; // Easy Peaca (Suffix)
+				switch (Random(10))
+				{
+					case 0:
+					case 1: enchant = 201; break; // Hamster (Prefix)
+					case 2:
+					case 3:
+					case 4: enchant = 20601; break; // Blessed (Prefix)
+					case 5:
+					case 6: enchant = 20204; break; // Foggy (Prefix)
+					case 7:
+					case 8: enchant = 31301; break; // Raccoon Cub (Suffix)
+					case 9: enchant = 30714; break; // Easy Peaca (Suffix)
+				}
+			}
+			else
+			{
+				switch (Random(10))
+				{
+					case 0:
+					case 1: enchant = 201; break; // Hamster (Prefix)
+					case 2:
+					case 3:
+					case 4: enchant = 20601; break; // Blessed (Prefix)
+					case 5:
+					case 6: enchant = 20204; break; // Foggy (Prefix)
+					case 7:
+					case 8:
+					case 9: enchant = 30714; break; // Easy Peaca (Suffix)
+				}
 			}
 
 			chest.Add(Item.CreateEnchant(enchant));
