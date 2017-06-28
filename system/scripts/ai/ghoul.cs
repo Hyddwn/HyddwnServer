@@ -110,7 +110,8 @@ public class GhoulAi : AiScript
 			if (Case(40))
 			{
 				Do(PrepareSkill(SkillId.Windmill));
-				//Do(Wait(3000, 3000));
+				//Do(Wait(3000, 3000)); // Official; Fix when AI Windmill can auto-counter
+				Do(Wait(1000, 1000)); // Unofficial
 				Do(UseSkill());
 			}
 			else if (Case(30))

@@ -53,7 +53,6 @@ public class DemiLichAi : AiScript
 		}
 		else if (Case(5))
 		{
-			//Do(PrepareSkill(SkillId.Smash));
 			Do(Follow(200, true, 5000));
 			Do(Attack(Rnd(1, 2, 3), 3000));
 		}
