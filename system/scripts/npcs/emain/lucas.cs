@@ -366,48 +366,64 @@ public class LucasShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Liquor", 50181, "QUAL:4:64;"); // Leighean Gin
-		Add("Liquor", 50171, "QUAL:4:65;"); // Emain Macha Wine
-		Add("Liquor", 50182, "QUAL:4:66;"); // Brifne Whiskey
-		Add("Liquor", 50183, "QUAL:4:65;"); // Devenish Black Beer
-		Add("Liquor", 50184); // Ice
+		Add(L("Liquor"), 50181, "QUAL:4:64;"); // Leighean Gin
+		Add(L("Liquor"), 50171, "QUAL:4:65;"); // Emain Macha Wine
+		Add(L("Liquor"), 50182, "QUAL:4:66;"); // Brifne Whiskey
+		Add(L("Liquor"), 50183, "QUAL:4:65;"); // Devenish Black Beer
+		Add(L("Liquor"), 50184); // Ice
 
-		Add("Food", 50109, "QUAL:4:62;"); // Roasted Chicken Wing
-		Add("Food", 50107, "QUAL:4:64;"); // Fruit Salad
+		Add(L("Food"), 50109, "QUAL:4:62;"); // Roasted Chicken Wing
+		Add(L("Food"), 50107, "QUAL:4:64;"); // Fruit Salad
 
-		Add("Suspicious Item", (creature, npc) => creature.HasItem(73110));
-		Add("Suspicious Item", 18089); // Purple Rose Decoration
+		Add(L("Suspicious Item"), (creature, npc) => creature.HasItem(73110));
+
+		OnErinnMidnightTick(ErinnTime.Now);
+	}
+
+	protected override void OnErinnMidnightTick(ErinnTime time)
+	{
+		// Run base (color randomization)
+		base.OnErinnMidnightTick(time);
+
+		ClearTab(L("Suspicious Item"));
+
+		Add(L("Suspicious Item"), 18089); // Purple Rose Decoration
 
 		if (Random(100) > 50)
-			Add("Suspicious Item", 16519); // Glove of Extravaganza
+			Add(L("Suspicious Item"), 16519); // Glove of Extravaganza
 		else
-			Add("Suspicious Item", 16518); // Couple Ring Glove
-
-		if ((ErinnTime.Now.Month == ErinnMonth.Imbolic) || (ErinnTime.Now.Month == ErinnMonth.AlbanHeruin))
-			Add("Suspicious Item", 40053); // Purple Rose Bouquet
-
+			Add(L("Suspicious Item"), 16518); // Couple Ring Glove
+		if ((time.Month == ErinnMonth.Imbolic) || (time.Month == ErinnMonth.AlbanHeruin))
+			Add(L("Suspicious Item"), 40053); // Purple Rose Bouquet
 		if (Random(30) >= 20)
 		{
-			if ((ErinnTime.Now.Month == ErinnMonth.AlbanEiler) || (ErinnTime.Now.Month == ErinnMonth.Samhain))
-				Add("Suspicious Item", 40051); // Single Purple Rose
-			if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
-				Add("Suspicious Item", 40057); // 0 Sign
-
-			// Special Equipment
-			if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
-				Add("Suspicious Item", 14005, 0x00202020, 0x00202020, 0x00202020, 129800, 1); // Drandos Leather Mail (F)
-			else if (ErinnTime.Now.Month == ErinnMonth.AlbanEiler)
-				Add("Suspicious Item", 40011, 0x00202020, 0x00202020, 0x00202020, 3500, 4); // Broadsword
-			else if (ErinnTime.Now.Month == ErinnMonth.Baltane)
-				Add("Suspicious Item", 18521, 0x00202020, 0x00202020, 0x00202020, 43800, 3); // European Comb
-			else if (ErinnTime.Now.Month == ErinnMonth.AlbanHeruin)
-				Add("Suspicious Item", 13015, 0x00202020, 0x00202020, 0x00202020, 242750, 1); // Brigandine
-			else if (ErinnTime.Now.Month == ErinnMonth.Lughnasadh)
-				Add("Suspicious Item", 40016, 0x00202020, 0x00202020, 0x00202020, 2900, 2); // Warhammer
-			else if (ErinnTime.Now.Month == ErinnMonth.AlbanElved)
-				Add("Suspicious Item", 18519, 0x00202020, 0x00202020, 0x00202020, 47850, 3); // Panache Head Protector
-			else if (ErinnTime.Now.Month == ErinnMonth.Samhain)
-				Add("Suspicious Item", 18515, 0x00202020, 0x00202020, 0x00202020, 47000, 3); // Twin Horn Cap
+			switch (time.Month)
+			{
+				case ErinnMonth.Imbolic: // Sunday
+					Add(L("Suspicious Item"), 40057); // 0 Sign
+					Add(L("Suspicious Item"), 14005, 0x00202020, 0x00202020, 0x00202020, 129800, 1); // Drandos Leather Mail (F)
+					break;
+				case ErinnMonth.AlbanEiler: // Monday
+					Add(L("Suspicious Item"), 40051); // Single Purple Rose
+					Add(L("Suspicious Item"), 40011, 0x00202020, 0x00202020, 0x00202020, 3500, 4); // Broadsword
+					break;
+				case ErinnMonth.Baltane: // Tuesday
+					Add(L("Suspicious Item"), 18521, 0x00202020, 0x00202020, 0x00202020, 43800, 3); // European Comb
+					break;
+				case ErinnMonth.AlbanHeruin: // Wednesday
+					Add(L("Suspicious Item"), 13015, 0x00202020, 0x00202020, 0x00202020, 242750, 1); // Brigandine
+					break;
+				case ErinnMonth.Lughnasadh: // Thursday
+					Add(L("Suspicious Item"), 40016, 0x00202020, 0x00202020, 0x00202020, 2900, 2); // Warhammer
+					break;
+				case ErinnMonth.AlbanElved: // Friday
+					Add(L("Suspicious Item"), 18519, 0x00202020, 0x00202020, 0x00202020, 47850, 3); // Panache Head Protector
+					break;
+				case ErinnMonth.Samhain: // Saturday
+					Add(L("Suspicious Item"), 40051); // Single Purple Rose
+					Add(L("Suspicious Item"), 18515, 0x00202020, 0x00202020, 0x00202020, 47000, 3); // Twin Horn Cap
+					break;
+			}
 		}
 	}
 }

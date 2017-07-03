@@ -281,19 +281,29 @@ public class DelShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Floral Decoration", 18086); // Daisy Decoration
-		Add("Floral Decoration", 18086); // Daisy Decoration
-		Add("Floral Decoration", 18086); // Daisy Decoration
-		Add("Floral Decoration", 18087); // Rose Decoration
-		Add("Floral Decoration", 18087); // Rose Decoration
-		Add("Floral Decoration", 18087); // Rose Decoration
-		if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
-		{
-			Add("Floral Decoration", 18090); // Blue Rose Decoration
-		}
+		Add(L("Floral Decoration"));
 
-		Add("Floral Coronet", 18088); // Floral Coronet
-		Add("Floral Coronet", 18088); // Floral Coronet
-		Add("Floral Coronet", 18088); // Floral Coronet
+		Add(L("Floral Coronet"), 18088); // Floral Coronet
+		Add(L("Floral Coronet"), 18088); // Floral Coronet
+		Add(L("Floral Coronet"), 18088); // Floral Coronet
+
+		OnErinnMidnightTick(ErinnTime.Now);
+	}
+	
+	protected override void OnErinnMidnightTick(ErinnTime time)
+	{
+		// Run base (color randomization)
+		base.OnErinnMidnightTick(time);
+
+		ClearTab(L("Floral Decoration"));
+
+		Add(L("Floral Decoration"), 18086); // Daisy Decoration
+		Add(L("Floral Decoration"), 18086); // Daisy Decoration
+		Add(L("Floral Decoration"), 18086); // Daisy Decoration
+		Add(L("Floral Decoration"), 18087); // Rose Decoration
+		Add(L("Floral Decoration"), 18087); // Rose Decoration
+		Add(L("Floral Decoration"), 18087); // Rose Decoration
+		if (time.Month == ErinnMonth.Imbolic) // Sunday
+			Add(L("Floral Decoration"), 18090); // Blue Rose Decoration
 	}
 }
