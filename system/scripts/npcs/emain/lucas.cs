@@ -389,13 +389,15 @@ public class LucasShop : NpcShopScript
 
 		Add(L("Suspicious Item"), 18089); // Purple Rose Decoration
 
-		if (Random(100) > 50)
+		if (Random(100) < 50)
 			Add(L("Suspicious Item"), 16519); // Glove of Extravaganza
 		else
 			Add(L("Suspicious Item"), 16518); // Couple Ring Glove
+
 		if ((time.Month == ErinnMonth.Imbolic) || (time.Month == ErinnMonth.AlbanHeruin))
 			Add(L("Suspicious Item"), 40053); // Purple Rose Bouquet
-		if (Random(30) >= 20)
+
+		if (Random(30) < 10)
 		{
 			switch (time.Month)
 			{
