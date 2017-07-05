@@ -50,6 +50,11 @@ namespace Aura.Channel.Skills
 		/// </summary>
 		public DateTime CastEnd { get; set; }
 
+		/// <summary>
+		/// Returns true if skill is currently on cool down.
+		/// </summary>
+		public bool IsCoolingDown { get { return _creature.CoolDowns.IsCoolingDown("SkillUse:" + this.Info.Id.ToString()); } }
+
 		private int _stack = 0;
 		/// <summary>
 		/// Gets or sets loaded stack count, capped at 0~max.
@@ -83,6 +88,22 @@ namespace Aura.Channel.Skills
 					this.Info.ConditionCount7 + this.Info.ConditionCount8 + this.Info.ConditionCount9 == 0);
 			}
 		}
+
+		/// <summary>
+		/// Enables/Disables skill, changing whether it can/will be used,
+		/// and updates the client.  Visualized on the client side by
+		/// changing the icon's transparency.
+		/// </summary>
+		public bool Enabled
+		{
+			get { return _enabled; }
+			set
+			{
+				_enabled = value;
+				Send.SetSkillEnabled(_creature, this.Info.Id, _enabled);
+			}
+		}
+		private bool _enabled;
 
 		/// <summary>
 		/// New Skill.
@@ -170,9 +191,12 @@ namespace Aura.Channel.Skills
 		/// <summary>
 		/// Increases training condition count.
 		/// </summary>
-		/// <param name="condition"></param>
-		/// <param name="amount"></param>
-		public void Train(int condition, int amount = 1)
+		/// <param name="condition">Condition to train (1~9).</param>
+		/// <param name="amount">Amount of EXP to give.</param>
+		/// <param name="applyBonuses">
+		/// Whether to apply bonuses to the EXP, from events or rate settings.
+		/// </param>
+		public void Train(int condition, int amount = 1, bool applyBonuses = true)
 		{
 			// Only characters can train skills.
 			if (_creature.IsPet)
@@ -181,30 +205,28 @@ namespace Aura.Channel.Skills
 			var bonusMessage = "";
 
 			// Add bonuses
-			this.HandleSkillExpRateBonuses(ref amount, ref bonusMessage);
+			if (applyBonuses)
+				this.HandleSkillExpRateBonuses(ref amount, ref bonusMessage);
 
 			// Change count and reveal the condition
-			if (amount > 0)
+			switch (condition)
 			{
-				switch (condition)
-				{
-					case 1: if (this.Info.ConditionCount1 == 0) return; this.Info.ConditionCount1 = (short)Math.Max(0, this.Info.ConditionCount1 - amount); this.Info.Flag |= SkillFlags.ShowCondition1; break;
-					case 2: if (this.Info.ConditionCount2 == 0) return; this.Info.ConditionCount2 = (short)Math.Max(0, this.Info.ConditionCount2 - amount); this.Info.Flag |= SkillFlags.ShowCondition2; break;
-					case 3: if (this.Info.ConditionCount3 == 0) return; this.Info.ConditionCount3 = (short)Math.Max(0, this.Info.ConditionCount3 - amount); this.Info.Flag |= SkillFlags.ShowCondition3; break;
-					case 4: if (this.Info.ConditionCount4 == 0) return; this.Info.ConditionCount4 = (short)Math.Max(0, this.Info.ConditionCount4 - amount); this.Info.Flag |= SkillFlags.ShowCondition4; break;
-					case 5: if (this.Info.ConditionCount5 == 0) return; this.Info.ConditionCount5 = (short)Math.Max(0, this.Info.ConditionCount5 - amount); this.Info.Flag |= SkillFlags.ShowCondition5; break;
-					case 6: if (this.Info.ConditionCount6 == 0) return; this.Info.ConditionCount6 = (short)Math.Max(0, this.Info.ConditionCount6 - amount); this.Info.Flag |= SkillFlags.ShowCondition6; break;
-					case 7: if (this.Info.ConditionCount7 == 0) return; this.Info.ConditionCount7 = (short)Math.Max(0, this.Info.ConditionCount7 - amount); this.Info.Flag |= SkillFlags.ShowCondition7; break;
-					case 8: if (this.Info.ConditionCount8 == 0) return; this.Info.ConditionCount8 = (short)Math.Max(0, this.Info.ConditionCount8 - amount); this.Info.Flag |= SkillFlags.ShowCondition8; break;
-					case 9: if (this.Info.ConditionCount9 == 0) return; this.Info.ConditionCount9 = (short)Math.Max(0, this.Info.ConditionCount9 - amount); this.Info.Flag |= SkillFlags.ShowCondition9; break;
-					default:
-						Log.Error("Skill.Train: Unknown training condition ({0})", condition);
-						break;
-				}
+				case 1: if (this.Info.ConditionCount1 == 0) return; this.Info.ConditionCount1 = (short)Math.Max(0, this.Info.ConditionCount1 - amount); this.Info.Flag |= SkillFlags.ShowCondition1; break;
+				case 2: if (this.Info.ConditionCount2 == 0) return; this.Info.ConditionCount2 = (short)Math.Max(0, this.Info.ConditionCount2 - amount); this.Info.Flag |= SkillFlags.ShowCondition2; break;
+				case 3: if (this.Info.ConditionCount3 == 0) return; this.Info.ConditionCount3 = (short)Math.Max(0, this.Info.ConditionCount3 - amount); this.Info.Flag |= SkillFlags.ShowCondition3; break;
+				case 4: if (this.Info.ConditionCount4 == 0) return; this.Info.ConditionCount4 = (short)Math.Max(0, this.Info.ConditionCount4 - amount); this.Info.Flag |= SkillFlags.ShowCondition4; break;
+				case 5: if (this.Info.ConditionCount5 == 0) return; this.Info.ConditionCount5 = (short)Math.Max(0, this.Info.ConditionCount5 - amount); this.Info.Flag |= SkillFlags.ShowCondition5; break;
+				case 6: if (this.Info.ConditionCount6 == 0) return; this.Info.ConditionCount6 = (short)Math.Max(0, this.Info.ConditionCount6 - amount); this.Info.Flag |= SkillFlags.ShowCondition6; break;
+				case 7: if (this.Info.ConditionCount7 == 0) return; this.Info.ConditionCount7 = (short)Math.Max(0, this.Info.ConditionCount7 - amount); this.Info.Flag |= SkillFlags.ShowCondition7; break;
+				case 8: if (this.Info.ConditionCount8 == 0) return; this.Info.ConditionCount8 = (short)Math.Max(0, this.Info.ConditionCount8 - amount); this.Info.Flag |= SkillFlags.ShowCondition8; break;
+				case 9: if (this.Info.ConditionCount9 == 0) return; this.Info.ConditionCount9 = (short)Math.Max(0, this.Info.ConditionCount9 - amount); this.Info.Flag |= SkillFlags.ShowCondition9; break;
+				default:
+					Log.Error("Skill.Train: Unknown training condition ({0})", condition);
+					break;
 			}
 
 			var exp = this.UpdateExperience();
-			if (exp > 0)
+			if (exp != 0)
 				Send.SkillTrainingUp(_creature, this, exp, bonusMessage);
 
 			this.CheckMaster();
@@ -436,6 +458,15 @@ namespace Aura.Channel.Skills
 				result *= 1.10f;
 
 			return (int)result;
+		}
+
+		/// <summary>
+		/// Sets time at which the skill can be used again.
+		/// </summary>
+		/// <param name="end"></param>
+		public void SetCoolDownEnd(DateTime end)
+		{
+			_creature.CoolDowns.Add("SkillUse:" + this.Info.Id.ToString(), end);
 		}
 	}
 

@@ -21,7 +21,6 @@ public class DelScript : NpcScript
 		EquipItem(Pocket.Armor, 15082, 0x00FA8D8D, 0x00F7B4AC, 0x00202020);
 		EquipItem(Pocket.Shoe, 17040, 0x005E2922, 0x0041002C, 0x00683D0D);
 
-
 		AddPhrase("Hey! I got flowers.");
 		AddPhrase("Flowers make a perfect gift for a romantic date.");
 		AddPhrase("Smell these fresh flowers.");

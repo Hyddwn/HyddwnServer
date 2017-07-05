@@ -21,7 +21,6 @@ public class CraigScript : NpcScript
 		EquipItem(Pocket.Armor, 13024, 0x0091755B, 0x00463424, 0x0036241B);
 		EquipItem(Pocket.RightHand2, 40033, 0x00B7B6B8, 0x00C48246, 0x009AAFA2);
 
-
 		AddPhrase("These trainees aren't nearly as good as they used to be...");
 		AddPhrase("...");
 		AddPhrase("They certainly don't live up to their name as the \"Mighty Knights\"...");

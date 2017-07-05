@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Gordon
 //--- Description -----------------------------------------------------------
-// Head Chef at Emain Macha's Restaraunt, Loch Lios
+// Head Chef at Emain Macha's Restaraunt, Loch Lios.
 //---------------------------------------------------------------------------
 
 public class GordonScript : NpcScript
@@ -105,12 +105,12 @@ public class GordonScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(),"People say I'm obsessed with cooking.<br/>But, if you're not obsessed with somthing,<br/>you can't really achieve anything!");
+				Msg(FavorExpression(), "People say I'm obsessed with cooking.<br/>But, if you're not obsessed with somthing,<br/>you can't really achieve anything!");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
 			case "rumor":
-				Msg(FavorExpression(),"Our Lord is such a connoisseur of food that<br/>his Chef frequently asks me to assist him with the Lord's menu.<br/>No offence to him, but he'll need to really work on refining his skills.");
+				Msg(FavorExpression(), "Our Lord is such a connoisseur of food that<br/>his Chef frequently asks me to assist him with the Lord's menu.<br/>No offence to him, but he'll need to really work on refining his skills.");
 				ModifyRelation(Random(2), 0, Random(3));
 				break;
 
@@ -288,7 +288,7 @@ public class GordonScript : NpcScript
 					"I'll gladly accept this.",
 					"What's the occasion?"
 				);
-				break;		
+				break;
 
 			case GiftReaction.Dislike:
 				RndMsg(
@@ -297,7 +297,7 @@ public class GordonScript : NpcScript
 					"What is this?"
 				);
 				break;
-				
+
 			default: // GiftReaction.Neutral
 				RndMsg(
 					"Thanks.",

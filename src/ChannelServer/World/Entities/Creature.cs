@@ -76,6 +76,7 @@ namespace Aura.Channel.World.Entities
 		public CreatureDrops Drops { get; protected set; }
 		public CreatureDeadMenu DeadMenu { get; protected set; }
 		public AimMeter AimMeter { get; protected set; }
+		public CreatureCoolDowns CoolDowns { get; protected set; }
 
 		public int InventoryWidth { get; set; }
 		public int InventoryHeight { get; set; }
@@ -355,6 +356,30 @@ namespace Aura.Channel.World.Entities
 				return result;
 			}
 		}
+
+		// Transformation
+		// ------------------------------------------------------------------
+
+		/// <summary>
+		/// Returns the creature's current transformation.
+		/// </summary>
+		public Transformation Transformation { get; set; }
+
+		/// <summary>
+		/// Returns the rank of the creature's current transformation's
+		/// skill.
+		/// </summary>
+		public SkillRank TransformationSkillRank { get; set; }
+
+		/// <summary>
+		/// Reuturns the level of the creature's current transformation.
+		/// </summary>
+		public TransformationLevel TransformationLevel { get; set; }
+
+		/// <summary>
+		/// Returns true if creature is currently transformed.
+		/// </summary>
+		public bool IsTransformed { get { return (this.Transformation != Transformation.None); } }
 
 		// Inventory
 		// ------------------------------------------------------------------
@@ -1196,6 +1221,7 @@ namespace Aura.Channel.World.Entities
 			this.AimMeter = new AimMeter(this);
 			this.Party = Party.CreateDummy(this);
 			this.Inventory = new CreatureInventory(this);
+			this.CoolDowns = new CreatureCoolDowns(this);
 
 			this.Vars = new ScriptVariables();
 
@@ -3277,7 +3303,7 @@ namespace Aura.Channel.World.Entities
 		{
 			return this.GiveItem(Item.CreateWarpScroll(itemId, portal));
 		}
-		
+
 		/// <summary>
 		/// Adds production pattern to creature's inventory.
 		/// </summary>

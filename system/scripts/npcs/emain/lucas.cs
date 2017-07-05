@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Lucas
 //--- Description -----------------------------------------------------------
-// Club Owner of the Bean Rua in Emain Macha
+// Club Owner of the Bean Rua in Emain Macha.
 //---------------------------------------------------------------------------
 
 public class LucasScript : NpcScript
@@ -21,7 +21,6 @@ public class LucasScript : NpcScript
 		EquipItem(Pocket.Armor, 15007, 0x00100701, 0x000C0501, 0x006D3C12);
 		EquipItem(Pocket.Shoe, 17031, 0x00210F0E, 0x006D0036, 0x004B0007);
 		EquipItem(Pocket.RightHand2, 40011, 0x00FFFFFF, 0x000B0909, 0x00FFFFFF);
-
 
 		AddPhrase("*Cough*... This is what I'm talking about.");
 		AddPhrase("Hey! Behave...");
@@ -378,12 +377,15 @@ public class LucasShop : NpcShopScript
 
 		Add("Suspicious Item", (creature, npc) => creature.HasItem(73110));
 		Add("Suspicious Item", 18089); // Purple Rose Decoration
+
 		if (Random(100) > 50)
 			Add("Suspicious Item", 16519); // Glove of Extravaganza
 		else
 			Add("Suspicious Item", 16518); // Couple Ring Glove
+
 		if ((ErinnTime.Now.Month == ErinnMonth.Imbolic) || (ErinnTime.Now.Month == ErinnMonth.AlbanHeruin))
 			Add("Suspicious Item", 40053); // Purple Rose Bouquet
+
 		if (Random(30) >= 20)
 		{
 			if ((ErinnTime.Now.Month == ErinnMonth.AlbanEiler) || (ErinnTime.Now.Month == ErinnMonth.Samhain))
@@ -391,7 +393,7 @@ public class LucasShop : NpcShopScript
 			if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
 				Add("Suspicious Item", 40057); // 0 Sign
 
-			//Special Equipment
+			// Special Equipment
 			if (ErinnTime.Now.Month == ErinnMonth.Imbolic)
 				Add("Suspicious Item", 14005, 0x00202020, 0x00202020, 0x00202020, 129800, 1); // Drandos Leather Mail (F)
 			else if (ErinnTime.Now.Month == ErinnMonth.AlbanEiler)

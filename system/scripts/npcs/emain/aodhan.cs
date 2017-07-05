@@ -21,7 +21,6 @@ public class AodhanScript : NpcScript
 		EquipItem(Pocket.Armor, 13024, 0x00CEBFB5, 0x003F524E, 0x00161D29);
 		EquipItem(Pocket.RightHand2, 40033, 0x00B7B6B8, 0x00C48246, 0x009AAFA2);
 
-
 		AddPhrase("We should make night training twice as hard.");
 		AddPhrase("Another peaceful day.");
 		AddPhrase("Is the quality of the trainees getting worse...?");

@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Emain Macha Beggar
 //--- Description -----------------------------------------------------------
-// Script for Emain Macha's Beggar
+// Script for Emain Macha's Beggar.
 //---------------------------------------------------------------------------
 
 public class BeggarScript : NpcScript

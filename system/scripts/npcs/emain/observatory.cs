@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Emain Observatory tools
 //--- Description -----------------------------------------------------------
-// telescope and viewscope npcs found on top of the observatory
+// Telescope and viewscope NPCs found on top of the observatory.
 //---------------------------------------------------------------------------
 
 public class telescopenpcScript : NpcScript
@@ -30,11 +30,12 @@ public class telescopenpcScript : NpcScript
 				if (Player.Inventory.Gold >= 10)
 				{
 					Player.Inventory.Gold -= 10;
-					Cutscene.Play("etc_event_Emainmach_telescope", Player);
-					// Numbers should randomize
-					// Notice should not be sent until after cutscene ends
-					Send.Notice(Player, L("5425...\nWho would write such numbers, and why?"));
-					Close2();
+					Cutscene.Play("etc_event_Emainmach_telescope", Player, cutscene =>
+					{
+						var signNumber = Random(1000, 8999);
+						Send.Notice(Player, string.Format(L("{0}...\nWho would write such numbers, and why?"), signNumber));
+						Close();
+					});
 				}
 				else
 					End("You don't have enough money.");
@@ -67,7 +68,7 @@ public class viewscopenpcScript : NpcScript
 				{
 					Player.Inventory.Gold -= 15;
 					Cutscene.Play("into_the_Emainmach", Player);
-					Close2();
+					Close();
 				}
 				else
 					End("You don't have enough money.");

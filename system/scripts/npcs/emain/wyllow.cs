@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Wyllow
 //--- Description -----------------------------------------------------------
-// Head Bishop inside of Emain Macha Cathedral
+// Head Bishop inside of Emain Macha Cathedral.
 //---------------------------------------------------------------------------
 
 public class WyllowScript : NpcScript
@@ -20,7 +20,6 @@ public class WyllowScript : NpcScript
 		EquipItem(Pocket.Armor, 15083, 0x00808080, 0x00808080, 0x00808080);
 		EquipItem(Pocket.Shoe, 17009, 0x007B6642, 0x00B4A67F, 0x00842160);
 		EquipItem(Pocket.Head, 18092, 0x00808080, 0x00FFFFFF, 0x00FFFFFF);
-
 
 		AddPhrase("Bow down to the Lord...");
 		AddPhrase("Lord Lymilark...");

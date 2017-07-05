@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Galvin
 //--- Description -----------------------------------------------------------
-// Observatory Owner, runs a General Shop and manages the lost and found
+// Observatory Owner, runs a General Shop and manages the lost and found.
 //---------------------------------------------------------------------------
 
 public class GalvinScript : NpcScript
@@ -21,7 +21,6 @@ public class GalvinScript : NpcScript
 		EquipItem(Pocket.Armor, 15070, 0x003E3D22, 0x0016322C, 0x00F5D29E);
 		EquipItem(Pocket.Shoe, 17044, 0x00000000, 0x004C1458, 0x00AF760B);
 		EquipItem(Pocket.Head, 18047, 0x007C2703, 0x00E7A95F, 0x008B5340);
-
 
 		AddPhrase("Hey there, cool guy!");
 		AddPhrase("Welcome to the world famous Observatory!");

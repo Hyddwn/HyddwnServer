@@ -601,19 +601,5 @@ namespace Aura.Channel.Network.Handlers
 		public void UnkCharWindow(ChannelClient client, Packet packet)
 		{
 		}
-
-		/// <summary>
-		/// ? (dummy)
-		/// </summary>
-		/// <remarks>
-		/// Sent when opening the char window.
-		/// </remarks>
-		/// <example>
-		/// No parameters.
-		/// </example>
-		[PacketHandler(Op.UnkCharWindow2)]
-		public void UnkCharWindow2(ChannelClient client, Packet packet)
-		{
-		}
 	}
 }

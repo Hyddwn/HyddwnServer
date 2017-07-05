@@ -137,6 +137,8 @@ namespace Aura.Data.Database
 		public float Var18 { get; set; }
 		public float Var19 { get; set; }
 		public float Var20 { get; set; }
+		public int IntVar1 { get; set; }
+		public int IntVar2 { get; set; }
 
 		public List<TrainingsConditionData> Conditions { get; set; }
 	}
@@ -243,6 +245,9 @@ namespace Aura.Data.Database
 				rankInfo.Var18 = rank.ReadFloat("var18");
 				rankInfo.Var19 = rank.ReadFloat("var19");
 				rankInfo.Var20 = rank.ReadFloat("var20");
+
+				rankInfo.IntVar1 = rank.ReadInt("intVar1");
+				rankInfo.IntVar2 = rank.ReadInt("intVar2");
 
 				rankInfo.Conditions = new List<TrainingsConditionData>();
 				foreach (JObject training in rank["training"].Where(a => a.Type == JTokenType.Object))

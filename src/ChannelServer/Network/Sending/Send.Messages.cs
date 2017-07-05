@@ -278,6 +278,25 @@ namespace Aura.Channel.Network.Sending
 		}
 
 		/// <summary>
+		/// Sends Notice to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="type"></param>
+		/// <param name="duration">Ignored if 0</param>
+		/// <param name="format"></param>
+		/// <param name="args"></param>
+		public static void Notice(Creature creature, NoticeType type, int duration, int delay, string format, params object[] args)
+		{
+			var packet = new Packet(Op.Notice, MabiId.Broadcast);
+			packet.PutByte((byte)type);
+			packet.PutString(string.Format(format, args));
+			packet.PutInt(duration);
+			packet.PutInt(delay);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
 		/// Broadcasts Notice to every player in any region.
 		/// </summary>
 		/// <param name="type"></param>

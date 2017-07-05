@@ -20,7 +20,6 @@ public class AilionoaScript : NpcScript
 		EquipItem(Pocket.Armor, 15079, 0x00DD6C66, 0x00450C1D, 0x00FFF2D2);
 		EquipItem(Pocket.Shoe, 17007, 0x00200B04, 0x00576D8D, 0x00FFFFFF);
 
-
 		AddPhrase("Am I missing something...?");
 		AddPhrase("Why...");
 		AddPhrase("I think I've forgot something...");

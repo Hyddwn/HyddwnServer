@@ -178,6 +178,9 @@
 		
 		// Enables magical music effects
 		{ name: "MagicalMusic", enabled: true },
+		
+		// Enables obtaining the Raccoon Cub enchant from dungeons
+		{ name: "RaccoonCubEnchant", enabled: true },
 	]},
 	
 	// Season 3
@@ -503,6 +506,9 @@
 		
 		// Enables guild board
 		{ name: "GuildListBoard", enabled: true },
+		
+		// Enables magic defense and protection bonuses for Spirit of Order
+		{ name: "PaladinMagicDefense", enabled: true },
 	]},
 	
 	// Season 2
@@ -707,8 +713,11 @@
 	
 	// Season 6
 	{ name: "G18S6", enabled: true, children: [
-		// Enables Reforces
+		// Enables Reforges
 		{ name: "Reforges", enabled: true },
+		
+		// Enables streamlined grocery stores
+		{ name: "MasterChef", enabled: true },
 	]},
 	
 	// Season 7

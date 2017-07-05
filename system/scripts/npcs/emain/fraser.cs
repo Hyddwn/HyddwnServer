@@ -1,7 +1,7 @@
 //--- Aura Script -----------------------------------------------------------
 // Fraser
 //--- Description -----------------------------------------------------------
-// Chef at Emain Macha's Restaraunt, Loch Lios
+// Chef at Emain Macha's Restaraunt, Loch Lios.
 //---------------------------------------------------------------------------
 
 public class FraserScript : NpcScript
