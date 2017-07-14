@@ -681,6 +681,9 @@
 	{ name: "G17S2", enabled: true, children: [
 		// Enables obtaining puppet skills and items
 		{ name: "PuppetMasterJob", enabled: true },
+		
+		// Disables Peaca Normal party member check
+		{ name: "LimitlessPeaca", enabled: true },
 	]},
 	
 	// Season 3
