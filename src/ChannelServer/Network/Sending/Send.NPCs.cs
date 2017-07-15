@@ -242,7 +242,9 @@ namespace Aura.Channel.Network.Sending
 			packet.PutString(bankTitle);
 			packet.PutInt(bank.Gold);
 
-			var tabList = bank.GetTabList(race);
+			var server = creature.Client.Account.Characters.FirstOrDefault(c => c.CreatureId == packet.Id).Server;
+
+			var tabList = bank.GetTabList(server, race);
 			packet.PutInt(tabList.Count);
 			foreach (var tab in tabList)
 			{
