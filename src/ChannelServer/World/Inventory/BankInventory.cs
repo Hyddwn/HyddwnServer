@@ -38,15 +38,18 @@ namespace Aura.Channel.World.Inventory
 		/// Adds bank tab pocket.
 		/// </summary>
 		/// <param name="name">Name of the tab (character)</param>
+		/// <param name="creatureId">The id of the character</param>
 		/// <param name="race">Race filter id (1|2|3)</param>
 		/// <param name="width">Width of the tab pocket</param>
 		/// <param name="height">Height of the tab pocket</param>
-		public void AddTab(string name, long creatureId, BankTabRace race, int width, int height)
+		public void AddTab(PlayerCreature creature, BankTabRace race, int width, int height)
 		{
-			if (this.Tabs.ContainsKey(name))
-				throw new InvalidOperationException("Bank tab " + name + " already exists.");
+			string tabName = string.Format("{0}@{1}", creature.Name, creature.Server);
 
-			this.Tabs[name] = new BankTabPocket(name, creatureId, race, width, height);
+			if (this.Tabs.ContainsKey(tabName))
+				throw new InvalidOperationException("Bank tab " + tabName + " already exists.");
+
+			this.Tabs[tabName] = new BankTabPocket(creature.Name, creature.CreatureId, race, width, height);
 		}
 
 		/// <summary>
@@ -62,12 +65,22 @@ namespace Aura.Channel.World.Inventory
 		/// <summary>
 		/// Returns thread-safe list of tabs.
 		/// </summary>
-		/// <param name="race"></param>
 		/// <returns></returns>
-		public IList<BankTabPocket> GetTabList(BankTabRace race)
+		public IList<BankTabPocket> GetTabList(string server)
 		{
 			lock (this.Tabs)
-				return this.Tabs.Values.Where(a => a.Race == race).ToList();
+				return this.Tabs.Where(t => t.Key.Split('@')[1] == server).Select(kv => kv.Value).ToList();
+		}
+
+		/// <summary>
+		/// Returns thread-safe list of tabs.
+		/// </summary>
+		/// <param name="race"></param>
+		/// <returns></returns>
+		public IList<BankTabPocket> GetTabList(string server, BankTabRace race)
+		{
+			lock (this.Tabs)
+				return this.Tabs.Where(t => t.Key.Split('@')[1] == server).Select(kv => kv.Value).Where(a => a.Race == race).ToList();
 		}
 
 		/// <summary>

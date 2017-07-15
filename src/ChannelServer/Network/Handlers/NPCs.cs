@@ -521,8 +521,10 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			tabName = string.Format("{0}@{1}", tabName, creature.Client.Account.Characters.FirstOrDefault(c => c.CreatureId == packet.Id).Server);
+
 			// Check premium
-			if (!client.Account.PremiumServices.CanUseAllBankTabs && tabName != creature.Name)
+			if (!client.Account.PremiumServices.CanUseAllBankTabs && tabName != string.Format("{0}@{1}", creature.Name, creature.Client.Account.Characters.FirstOrDefault(c => c.CreatureId == packet.Id).Server))
 			{
 				// Unofficial
 				Send.MsgBox(creature, Localization.Get("Inventory Plus is required to access other character's bank tabs."));
@@ -593,8 +595,10 @@ namespace Aura.Channel.Network.Handlers
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
+			tabName = string.Format("{0}@{1}", tabName, creature.Client.Account.Characters.FirstOrDefault(c => c.CreatureId == packet.Id).Server);
+
 			// Check premium
-			if (!client.Account.PremiumServices.CanUseAllBankTabs && tabName != creature.Name)
+			if (!client.Account.PremiumServices.CanUseAllBankTabs && tabName != string.Format("{0}@{1}", creature.Name, creature.Client.Account.Characters.FirstOrDefault(c => c.CreatureId == packet.Id).Server))
 			{
 				// Unofficial
 				Send.MsgBox(creature, Localization.Get("Inventory Plus is required to access other character's bank tabs."));

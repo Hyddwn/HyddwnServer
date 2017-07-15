@@ -378,7 +378,7 @@ namespace Aura.Channel.Database
 		{
 			// Add tab
 			var race = character.IsHuman ? BankTabRace.Human : character.IsElf ? BankTabRace.Elf : BankTabRace.Giant;
-			account.Bank.AddTab(character.Name, character.CreatureId, race, width, height);
+			account.Bank.AddTab(character, race, width, height);
 
 			// Read bank items
 			var items = this.GetItems(character.CreatureId, true);
