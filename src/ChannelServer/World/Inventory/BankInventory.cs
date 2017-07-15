@@ -38,6 +38,7 @@ namespace Aura.Channel.World.Inventory
 		/// Adds bank tab pocket.
 		/// </summary>
 		/// <param name="name">Name of the tab (character)</param>
+        /// <param name="creatureId">The id of the character</param>
 		/// <param name="race">Race filter id (1|2|3)</param>
 		/// <param name="width">Width of the tab pocket</param>
 		/// <param name="height">Height of the tab pocket</param>
