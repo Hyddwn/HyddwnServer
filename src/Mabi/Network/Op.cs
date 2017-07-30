@@ -745,8 +745,9 @@ namespace Aura.Mabi.Network
 		// [200100, NA229 (2016-06-16)] Shifted by 5, from AC1A to AC1F.
 		// [200200, NA229 (2016-10-13)] Shifted by 1, from AC1F to AC20.
 		// [200200, NA242 (2016-12-15)] Shifted by 4, from AC20 to AC24.
-		public const int DcUnk = 0xAC34;
-		public const int DcUnkR = 0xAC35;
+		// [200300, NA256 (2017-07-27)] Shifted by 3, from AC34 to AC37.
+		public const int DcUnk = 0xAC37;
+		public const int DcUnkR = 0xAC38;
 
 		public const int RebirthEventInfoRequest = 0xAC5E;
 		public const int RebirthEventInfo = 0xAC5F;
