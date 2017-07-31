@@ -1034,6 +1034,15 @@ namespace Aura.Channel.Scripting.Scripts
 		{
 			var result = new RepairResult();
 
+			// Response ends with one '#' if the player selected 100%
+			// success rate.
+			if (repairReply.EndsWith("#"))
+			{
+				repairReply = repairReply.TrimEnd('#');
+				rate = 100;
+				result.Used100Rate = true;
+			}
+
 			// Get item id: @repair(_all):123456789
 			int pos = -1;
 			if ((pos = repairReply.IndexOf(':')) == -1 || !long.TryParse(repairReply.Substring(pos + 1), out result.ItemEntityId))
@@ -2266,6 +2275,7 @@ namespace Aura.Channel.Scripting.Scripts
 		public int Points;
 		public int Successes;
 		public int Fails;
+		public bool Used100Rate;
 	}
 
 	/// <summary>
