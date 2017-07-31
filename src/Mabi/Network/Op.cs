@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using System.Reflection;
+
 namespace Aura.Mabi.Network
 {
 	/// <summary>
@@ -737,6 +738,9 @@ namespace Aura.Mabi.Network
 		// [200200, NA252 (2017-04-18)]
 		// 3 ops were added, which shifted DcUnk~DcUnkR?
 
+		// [200300, NA256 (2017-07-27)]
+		// 3 new ops, shifting DcUnk?~SkillApTrainingR?
+
 		// [190200, NA221 (2016-02-17)] Added
 		// DcUnk, purpose unknown, requires answer on disconnect,
 		// or the player gets stuck.
@@ -745,24 +749,23 @@ namespace Aura.Mabi.Network
 		// [200100, NA229 (2016-06-16)] Shifted by 5, from AC1A to AC1F.
 		// [200200, NA229 (2016-10-13)] Shifted by 1, from AC1F to AC20.
 		// [200200, NA242 (2016-12-15)] Shifted by 4, from AC20 to AC24.
-		// [200300, NA256 (2017-07-27)] Shifted by 3, from AC34 to AC37.
 		public const int DcUnk = 0xAC37;
 		public const int DcUnkR = 0xAC38;
 
-		public const int RebirthEventInfoRequest = 0xAC5E;
-		public const int RebirthEventInfo = 0xAC5F;
-		public const int RebirthEventReceivePotion = 0xAC61;
+		public const int RebirthEventInfoRequest = 0xAC61;
+		public const int RebirthEventInfo = 0xAC62;
+		public const int RebirthEventReceivePotion = 0xAC64;
 
 		// [200200, NA242 (2016-06-16)] SwitchToPureMusicMode added
 		// Sent when clicking headset icon I had above my head for some
 		// reason.
-		public const int SwitchToPureMusicMode = 0xAC8B;
+		public const int SwitchToPureMusicMode = 0xAC8E;
 
-		public const int UnkCharWindow = 0xACB5; // [200200, NA249 (2017-04-13)]
+		public const int UnkCharWindow = 0xACB8; // [200200, NA249 (2017-04-13)]
 
 		// [200200, NA252 (2017-05-18)]
-		public const int SkillApTraining = 0xACB8;
-		public const int SkillApTrainingR = 0xACB9;
+		public const int SkillApTraining = 0xACBB;
+		public const int SkillApTrainingR = 0xACBC;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
