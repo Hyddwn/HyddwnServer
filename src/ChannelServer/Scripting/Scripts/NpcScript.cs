@@ -560,8 +560,9 @@ namespace Aura.Channel.Scripting.Scripts
 					Localization.Get("(I think I left a good impression.)"),
 					Localization.Get("(The conversation drew a lot of interest.)"),
 					Localization.Get("(That was a great conversation!)")
-					// (It seems I left quite a good impression.)
-			   );
+				);
+
+				// (It seems I left quite a good impression.)
 			}
 			else
 			{
