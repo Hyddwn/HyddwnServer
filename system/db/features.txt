@@ -766,6 +766,12 @@
 	
 	// Season 2
 	{ name: "G20S2", enabled: true, children: []},
+	
+	// Season 3
+	{ name: "G20S3", enabled: true, children: [
+		// Enables 100% repair and repairing everything at once.
+		{ name: "RepairRenewal", enabled: true },
+	]},
 ]},
 
 // Temporarily enabled until we go full G1.

@@ -1038,6 +1038,12 @@ namespace Aura.Channel.Scripting.Scripts
 			// success rate.
 			if (repairReply.EndsWith("#"))
 			{
+				if (!this.IsEnabled("RepairRenewal"))
+				{
+					Send.MsgBox(this.Player, Localization.Get("The 100% repair feature has not been enabled yet."));
+					return result;
+				}
+
 				repairReply = repairReply.TrimEnd('#');
 				rate = 100;
 				result.Used100Rate = true;
