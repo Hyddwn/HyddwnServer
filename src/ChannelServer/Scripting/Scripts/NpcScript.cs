@@ -1043,6 +1043,13 @@ namespace Aura.Channel.Scripting.Scripts
 				result.Used100Rate = true;
 			}
 
+			// Repair everything
+			if (repairReply == "@repair_everything")
+			{
+				Send.MsgBox(this.Player, Localization.Get("Repairing everything at once is not supported yet."));
+				return result;
+			}
+
 			// Get item id: @repair(_all):123456789
 			int pos = -1;
 			if ((pos = repairReply.IndexOf(':')) == -1 || !long.TryParse(repairReply.Substring(pos + 1), out result.ItemEntityId))
