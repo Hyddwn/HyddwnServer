@@ -7032,4 +7032,13 @@
 { id: 45906, name: "scene_building_tara_default_A_02_rev02", tags: "" },
 { id: 45907, name: "scene_building_tara_default_B_03_r01", tags: "" },
 { id: 45908, name: "scene_building_tara_default_A_02_rev03", tags: "" },
+{ id: 45909, name: "scene_prop_gononet_computerset01", tags: "/sittable/no_sitting_down_motion_chair/" },
+{ id: 45910, name: "scene_prop_gononet_computerset02", tags: "/sittable/no_sitting_down_motion_chair/" },
+{ id: 45911, name: "scene_prop_Halloween_paperhouse02", tags: "/sittable/no_sitting_down_motion_chair/" },
+{ id: 45912, name: "scene_prop_Halloween_paperhouse01", tags: "/sittable/no_sitting_down_motion_chair/" },
+{ id: 45913, name: "scene_prop_Halloween_catchair01", tags: "/sittable/" },
+{ id: 45914, name: "scene_prop_Halloween_catchair02", tags: "/sittable/" },
+{ id: 45915, name: "prop_hydrapipe", tags: "" },
+{ id: 45916, name: "scene_prop_Halloween_pumpkinchair01", tags: "/sittable/" },
+{ id: 45917, name: "farm_halloween_tombstone_03", tags: "/private_farm/default/" },
 ]
