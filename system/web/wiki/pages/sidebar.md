@@ -4,6 +4,9 @@
 * [Main Page](./)
 * [Help](?Help)
 * 
+    * General
+    * [Skills](?Skills)
+* 
     * Quests
     * [Beginner](?Beginner_Quests_(Uladh))
     * [Hunting](?Hunting_Quests)
