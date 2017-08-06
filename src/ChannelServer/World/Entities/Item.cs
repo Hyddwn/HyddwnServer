@@ -1159,7 +1159,7 @@ namespace Aura.Channel.World.Entities
 					case 097: val = 450; rate = 0.100f; break;
 					case 098: val = 500; rate = 0.130f; break;
 					case 099: val = 550; rate = 0.300f; break;
-					case 100: val = 700; rate = 1.000f; break;
+					case 100: val = 700; rate = 0.260f; break;
 				}
 			}
 			else if (

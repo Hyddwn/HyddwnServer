@@ -560,8 +560,9 @@ namespace Aura.Channel.Scripting.Scripts
 					Localization.Get("(I think I left a good impression.)"),
 					Localization.Get("(The conversation drew a lot of interest.)"),
 					Localization.Get("(That was a great conversation!)")
-					// (It seems I left quite a good impression.)
-			   );
+				);
+
+				// (It seems I left quite a good impression.)
 			}
 			else
 			{
@@ -1032,6 +1033,28 @@ namespace Aura.Channel.Scripting.Scripts
 		public RepairResult Repair(string repairReply, int rate, params string[] tags)
 		{
 			var result = new RepairResult();
+
+			// Response ends with one '#' if the player selected 100%
+			// success rate.
+			if (repairReply.EndsWith("#"))
+			{
+				if (!this.IsEnabled("RepairRenewal"))
+				{
+					Send.MsgBox(this.Player, Localization.Get("The 100% repair feature has not been enabled yet."));
+					return result;
+				}
+
+				repairReply = repairReply.TrimEnd('#');
+				rate = 100;
+				result.Used100Rate = true;
+			}
+
+			// Repair everything
+			if (repairReply == "@repair_everything")
+			{
+				Send.MsgBox(this.Player, Localization.Get("Repairing everything at once is not supported yet."));
+				return result;
+			}
 
 			// Get item id: @repair(_all):123456789
 			int pos = -1;
@@ -2265,6 +2288,7 @@ namespace Aura.Channel.Scripting.Scripts
 		public int Points;
 		public int Successes;
 		public int Fails;
+		public bool Used100Rate;
 	}
 
 	/// <summary>

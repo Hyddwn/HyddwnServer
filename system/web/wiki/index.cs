@@ -25,6 +25,7 @@ public class WikiController : Controller
 	private Dictionary<string, Page> pages;
 
 	private Regex _headerRegex = new Regex(@"<h(?<number>[1-6])>(?<title>.*?)<\/h[1-6]>", RegexOptions.Compiled);
+	private Regex _pageLinkRegex = new Regex(@"<a href=""\?([^""]+)"">([^<]+)</a>", RegexOptions.Compiled);
 	private string _tocCheck = "<p><strong>TOC</strong></p>";
 
 	public override void Handle(HttpRequestEventArgs args, string requestedPath, string localPath)
@@ -65,12 +66,35 @@ public class WikiController : Controller
 
 		var sidebar = commonmark.RenderFile(server.GetLocalPath("wiki/pages/sidebar.md"));
 
+		sidebar = MarkMissingPageLinks(sidebar);
+		content = MarkMissingPageLinks(content);
+
 		// Render
 		response.Send(handlebars.RenderFile(server.GetLocalPath("wiki/templates/main.htm"), new
 		{
 			sidebar,
 			content,
 		}));
+	}
+
+	/// <summary>
+	/// Adds "missing" CSS class to links to pages that don't exist yet.
+	/// </summary>
+	/// <param name="html"></param>
+	/// <returns></returns>
+	private string MarkMissingPageLinks(string html)
+	{
+		var result = html;
+		var matches = _pageLinkRegex.Matches(result);
+
+		foreach (Match match in matches)
+		{
+			var pageName = GetPageName(match.Groups[1].Value);
+			if (!pages.ContainsKey(pageName))
+				result = result.Replace(match.Groups[0].Value, "<a class=\"missing\" href=\"?" + match.Groups[1].Value + "\">" + match.Groups[2].Value + "</a>");
+		}
+
+		return result;
 	}
 
 	/// <summary>

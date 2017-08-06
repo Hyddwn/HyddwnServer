@@ -24,7 +24,7 @@ public class PeacaDungeonScript : DungeonScript
 		}
 
 		// Peaca Normal (senmag_peaca_dungeon)
-		if (!IsEnabled("G17S2"))
+		if (!IsEnabled("LimitlessPeaca"))
 		{
 			if (creature.Party.MemberCount < 4)
 			{

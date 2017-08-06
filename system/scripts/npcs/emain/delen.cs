@@ -294,24 +294,31 @@ public class DelenShop : NpcShopScript
 {
 	public override void Setup()
 	{
-		Add("Flowers", 40046); // Single Rose
-		Add("Flowers", 40046); // Single Rose
-		Add("Flowers", 40046); // Single Rose
-		Add("Flowers", 40046); // Single Rose
-		Add("Flowers", 40046); // Single Rose
-		if (ErinnTime.Now.Month == ErinnMonth.Samhain)
-		{
-			Add("Flowers", 40052); // Single Blue Rose
-		}
+		OnErinnMidnightTick(ErinnTime.Now);
+	}
 
-		Add("Bouquet of Flowers", 40047); // Rose Bouquet
-		Add("Bouquet of Flowers", 40047); // Rose Bouquet
-		Add("Bouquet of Flowers", 40047); // Rose Bouquet
-		Add("Bouquet of Flowers", 40047); // Rose Bouquet
-		Add("Bouquet of Flowers", 40047); // Rose Bouquet
-		if (ErinnTime.Now.Month == ErinnMonth.AlbanHeruin)
-		{
-			Add("Bouquet of Flowers", 40054); // Blue Rose Bouquet
-		}
+	protected override void OnErinnMidnightTick(ErinnTime time)
+	{
+		// Run base (color randomization)
+		base.OnErinnMidnightTick(time);
+
+		ClearTab(L("Flowers"));
+		ClearTab(L("Bouquet of Flowers"));
+
+		Add(L("Flowers"), 40046); // Single Rose
+		Add(L("Flowers"), 40046); // Single Rose
+		Add(L("Flowers"), 40046); // Single Rose
+		Add(L("Flowers"), 40046); // Single Rose
+		Add(L("Flowers"), 40046); // Single Rose
+		if (time.Month == ErinnMonth.Samhain) // Saturday
+			Add(L("Flowers"), 40052); // Single Blue Rose
+
+		Add(L("Bouquet of Flowers"), 40047); // Rose Bouquet
+		Add(L("Bouquet of Flowers"), 40047); // Rose Bouquet
+		Add(L("Bouquet of Flowers"), 40047); // Rose Bouquet
+		Add(L("Bouquet of Flowers"), 40047); // Rose Bouquet
+		Add(L("Bouquet of Flowers"), 40047); // Rose Bouquet
+		if (time.Month == ErinnMonth.AlbanHeruin) // Wednesday
+			Add(L("Bouquet of Flowers"), 40054); // Blue Rose Bouquet
 	}
 }

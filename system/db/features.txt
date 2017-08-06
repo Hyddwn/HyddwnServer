@@ -327,6 +327,9 @@
 		
 		// Enables ice fishing
 		{ name: "IceFishing", enabled: true },
+		
+		// Enables Emain cooking contest
+		{ name: "CookingContest", enabled: true },
 	]},
 	
 	// Season 2
@@ -382,6 +385,9 @@
 		
 		// Enables obtaining percussion instruments
 		{ name: "PercussionInstruments", enabled: true },
+		
+		// Enables skill advancement arena in Emain (Dan training)
+		{ name: "AdvancementArena", enabled: true },
 	]},
 	
 	// Season 2
@@ -675,6 +681,9 @@
 	{ name: "G17S2", enabled: true, children: [
 		// Enables obtaining puppet skills and items
 		{ name: "PuppetMasterJob", enabled: true },
+		
+		// Disables Peaca Normal party member check
+		{ name: "LimitlessPeaca", enabled: true },
 	]},
 	
 	// Season 3
@@ -757,6 +766,12 @@
 	
 	// Season 2
 	{ name: "G20S2", enabled: true, children: []},
+	
+	// Season 3
+	{ name: "G20S3", enabled: true, children: [
+		// Enables 100% repair and repairing everything at once.
+		{ name: "RepairRenewal", enabled: true },
+	]},
 ]},
 
 // Temporarily enabled until we go full G1.

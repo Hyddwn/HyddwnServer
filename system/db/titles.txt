@@ -248,7 +248,7 @@
 { id: 10097, name: "the Master of Crash Shot", effects: { "Mana":20, "Stamina":20, "Str":-25, "Dex":10 } }, 
 { id: 10098, name: "the Fire Alchemist", effects: { "Mana":5, "Stamina":15, "Str":-10 } }, 
 { id: 10099, name: "the Water Alchemist", effects: { "Mana":15, "Stamina":10, "Int":-10, "Dex":-10 } }, 
-{ id: 10100, name: "the Clay Alchemist", effects: { "Life":15, "Dex":-15 } }, 
+{ id: 10100, name: "the Earth Alchemy Master", effects: { "Life":15, "Dex":-15 } }, 
 { id: 10101, name: "the Wind Alchemist", effects: { "Int":-10, "Dex":10, "Will":15 } }, 
 { id: 10103, name: "the Master of Transmutation" }, 
 { id: 10104, name: "the Master of Fire", effects: { "Mana":5, "Stamina":15, "Str":-10 } }, 
