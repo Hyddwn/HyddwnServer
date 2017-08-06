@@ -109,6 +109,6 @@ Obtaining
 	<tr>
 		<td style="text-align:center;">10</td>
 		<td>Giant Imp</td>
-		<td>Fiodh (Int 4))</td>
+		<td>Fiodh (Int 4)</td>
 	</tr>
 </table>
