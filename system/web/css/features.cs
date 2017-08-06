@@ -25,6 +25,8 @@ public class FeaturesCssController : Controller
 
 				sb.AppendLine(string.Format("*[data-feature='{0}']  {{ display: {1}; }}", feature, enabled ? "inline" : "none"));
 				sb.AppendLine(string.Format("*[data-feature='!{0}'] {{ display: {1}; }}", feature, !enabled ? "inline" : "none"));
+				sb.AppendLine(string.Format("div[data-feature='{0}']  {{ display: {1}; }}", feature, enabled ? "block" : "none"));
+				sb.AppendLine(string.Format("div[data-feature='!{0}'] {{ display: {1}; }}", feature, !enabled ? "block" : "none"));
 			}
 
 			cache = sb.ToString();
