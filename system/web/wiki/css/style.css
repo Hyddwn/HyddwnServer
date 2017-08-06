@@ -67,7 +67,7 @@ a:hover {
 }
 
 a.missing {
-	color: #c23b3b;
+	color: #f96666;
 }
 
 .license-footer {
@@ -75,6 +75,16 @@ a.missing {
 	font-size: 13px;
 	text-align: center;
 	display: block;
+}
+
+.unavailableFeature {
+	padding: 5px;
+	border: 1px solid #ccc;
+	background: #f0f0f0;
+	text-align: center;
+	margin-bottom: 10px;
+	border-radius: 3px;
+	width: 100%;
 }
 
 .toc {
