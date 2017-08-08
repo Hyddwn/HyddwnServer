@@ -21,6 +21,21 @@ TODO
 Obtaining
 -----------------------------------------------------------------------------
 
+### Quest
+
+1. Talk to Steward about Skills while using the Elemental Apprentice title
+   and having a Fire Wand equipped.
+2. Collect all Fireball pages and put them into the book Steward gave you.
+3. Talk to Steward to complete the quest and receive Rank Novice Fireball.
+
+#### Notes
+
+* The pages must be enchanted onto the book in order, as they override each
+  other. For example, if you enchant Page 2 onto a book with Page 5, you
+  will be back at Page 2 and have to collect 3-5 again.
+* You can't start the quest if you already have a quest for another advanced
+  skill, like Arrow Revolver or Thunder.
+
 ### List of pages
 
 <table>

@@ -21,6 +21,21 @@ TODO
 Obtaining
 -----------------------------------------------------------------------------
 
+### Quest
+
+1. Talk to Aranwen about Skills while using the Fire Arrow title.
+2. Collect all Arrow Revolver pages and put them into the book Aranwen gave
+   you.
+3. Talk to Aranwen to complete the quest and receive Rank F Arrow Revolver.
+
+#### Notes
+
+* The pages must be enchanted onto the book in order, as they override each
+  other. For example, if you enchant Page 2 onto a book with Page 5, you
+  will be back at Page 2 and have to collect 3-5 again.
+* You can't start the quest if you already have a quest for another advanced
+  skill, like Fireball or Thunder.
+
 ### List of pages
 
 <table>
