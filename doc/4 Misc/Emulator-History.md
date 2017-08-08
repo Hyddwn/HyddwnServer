@@ -48,6 +48,8 @@ Unfortunately it wasn't long before the team lost interest/motivation. Mid 2012 
 
 Between late 2013 and early 2014, Aura was rewritten from scratch. The reason for this was that the source code released in 2012 hadn't been ready for release. But it was still used, only extending it, without fixing underlying issues and bad structural decisions.
 
+In early 2017, Nexon took down the Aura repository, its forum, its chat, and everything else remotely related to it with DMCAs. Following this, the Aura team stopped developing the server in public, but continued to keep it up-to-date for private use.
+
 ##Chart
 
 ![](http://aura-project.org/history.png)
