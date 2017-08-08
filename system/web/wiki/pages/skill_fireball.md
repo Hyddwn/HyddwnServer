@@ -59,13 +59,13 @@ Obtaining
 	</tr>
 	<!-- Page 3 -->
 	<tr>
-		<td style="text-align:center;">3</td>
+		<td rowspan="1" style="text-align:center;">3</td>
 		<td>Gray Gremlin</td>
 		<td>Barri (Basic/Adv/Spirit/G1), Albey (Silver/Black/Goddess), Fiodh (Normal)</td>
 	</tr>
 	<!-- Page 4 -->
 	<tr>
-		<td style="text-align:center;">4</td>
+		<td rowspan="1" style="text-align:center;">4</td>
 		<td>Brown Gremlin</td>
 		<td>Barri (Basic/Adv/Spirit/G1), Albey (Silver/G1)</td>
 	</tr>
@@ -85,7 +85,7 @@ Obtaining
 	</tr>
 	<!-- Page 7 -->
 	<tr>
-		<td style="text-align:center;">7</td>
+		<td rowspan="1" style="text-align:center;">7</td>
 		<td>Rat Man</td>
 		<td>Ciar (Basic/Int), Albey</td>
 	</tr>
@@ -101,13 +101,13 @@ Obtaining
 	</tr>
 	<!-- Page 9 -->
 	<tr>
-		<td style="text-align:center;">9</td>
+		<td rowspan="1" style="text-align:center;">9</td>
 		<td>Red Succubus</td>
 		<td>Rabbie (Basic Solo)</td>
 	</tr>
 	<!-- Page 10 -->
 	<tr>
-		<td style="text-align:center;">10</td>
+		<td rowspan="1" style="text-align:center;">10</td>
 		<td>Giant Imp</td>
 		<td>Fiodh (Int 4)</td>
 	</tr>
