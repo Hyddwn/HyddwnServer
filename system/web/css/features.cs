@@ -1,11 +1,13 @@
 ﻿using Aura.Data;
 using Swebs;
 using Swebs.RequestHandlers.CSharp;
+using System;
 using System.Text;
 
 public class FeaturesCssController : Controller
 {
 	private string cache;
+	private DateTime cacheTime;
 
 	public override void Handle(HttpRequestEventArgs args, string requestuestPath, string localPath)
 	{
@@ -15,7 +17,7 @@ public class FeaturesCssController : Controller
 		response.ContentType = "text/css";
 		response.CacheControl = "public, max-age: 3600";
 
-		if (cache == null)
+		if (cache == null || cacheTime < AuraData.FeaturesDb.LastEntryRead)
 		{
 			var sb = new StringBuilder();
 			foreach (var entry in AuraData.FeaturesDb.Entries)
@@ -30,6 +32,7 @@ public class FeaturesCssController : Controller
 			}
 
 			cache = sb.ToString();
+			cacheTime = DateTime.Now;
 		}
 
 		response.Send(cache);

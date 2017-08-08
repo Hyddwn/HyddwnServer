@@ -86,7 +86,20 @@ namespace Aura.Web
 
 			// Commands
 			var commands = new ConsoleCommands();
+			commands.Add("reloaddata", "Reloads all data.", this.ReloadData);
 			commands.Wait();
+		}
+
+		/// <summary>
+		/// Handles reloaddata command, reloading all data.
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		private CommandResult ReloadData(string command, IList<string> args)
+		{
+			this.LoadData(DataLoad.Features, true);
+			return CommandResult.Okay;
 		}
 
 		/// <summary>
