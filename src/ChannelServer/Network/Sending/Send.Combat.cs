@@ -79,6 +79,11 @@ namespace Aura.Channel.Network.Sending
 				actionPacket.PutUShort((ushort)action.SkillId);
 				actionPacket.PutUShort((ushort)action.SecondarySkillId);
 
+				// [200300, NA258 (2017-08-19)] ? 
+				{
+					actionPacket.PutShort(action.Category == CombatActionCategory.Target ? (short)0 : (short)1);
+				}
+
 				// Official name for CombatAction is CombatScene, and both Actions are Combatant.
 				// Official client distinguish between Attacker and Defender simply by checking Flags. tachiorz
 
