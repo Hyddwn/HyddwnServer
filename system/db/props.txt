@@ -7041,4 +7041,7 @@
 { id: 45915, name: "prop_hydrapipe", tags: "" },
 { id: 45916, name: "scene_prop_Halloween_pumpkinchair01", tags: "/sittable/" },
 { id: 45917, name: "farm_halloween_tombstone_03", tags: "/private_farm/default/" },
+{ id: 45918, name: "farm_halloween_tree01", tags: "/private_farm/default/" },
+{ id: 45919, name: "farm_halloween_streetlight01", tags: "/private_farm/default/" },
+{ id: 45920, name: "farm_halloween_Witchpot01", tags: "/private_farm/default/" },
 ]
