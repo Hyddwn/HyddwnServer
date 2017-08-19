@@ -1050,6 +1050,12 @@ namespace Aura.Channel.Network.Sending.Helpers
 					packet.PutByte(false);                                       // Enables "Pure Music Mode" button above head
 				}
 
+				// [200300, NA258 (2017-08-19)] Extra Equip?
+				{
+					packet.PutLong(0);
+					packet.PutInt(-1);
+				}
+
 				// [200200, NA252 (2017-05-18)] ?
 				{
 					packet.PutInt(0);
