@@ -11,17 +11,17 @@ namespace Aura.Mabi.Const
 	[Flags]
 	public enum SkillFlags : ushort
 	{
-		Shown = 0x01,
-		CountType = 0x02,
-		InUse = 0x04,
-		Rankable = 0x08,
-		PassiveApplied = 0x10,
+		Shown = 0x0001,
+		CountType = 0x0002,
+		InUse = 0x0004,
+		Rankable = 0x0008,
+		PassiveApplied = 0x0010,
 
-		ShowCondition1 = 0x80,
-		ShowCondition2 = 0x100,
-		ShowCondition3 = 0x200,
-		ShowCondition4 = 0x400,
-		ShowCondition5 = 0x800,
+		ShowCondition1 = 0x0080,
+		ShowCondition2 = 0x0100,
+		ShowCondition3 = 0x0200,
+		ShowCondition4 = 0x0400,
+		ShowCondition5 = 0x0800,
 		ShowCondition6 = 0x1000,
 		ShowCondition7 = 0x2000,
 		ShowCondition8 = 0x4000,

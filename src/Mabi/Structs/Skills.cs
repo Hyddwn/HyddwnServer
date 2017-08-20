@@ -24,25 +24,36 @@ namespace Aura.Mabi.Structs
 	{
 		public SkillId Id;
 		public short Version;
+
 		public SkillRank Rank;
 		public SkillRank MaxRank;
 		private byte __unknown6;
 		private byte __unknown7;
+
 		public int Experience;
+
 		public short Count;
 		public SkillFlags Flag;
+
 		public long LastPromotionTime;
+
 		public short PromotionCount;
 		public short __unknown26; // -1
+
 		public int PromotionExp;
+
 		public short ConditionCount1;
 		public short ConditionCount2;
+
 		public short ConditionCount3;
 		public short ConditionCount4;
+
 		public short ConditionCount5;
 		public short ConditionCount6;
+
 		public short ConditionCount7;
 		public short ConditionCount8;
+
 		public short ConditionCount9;
 		public short __unknown50; // 113
 	}
