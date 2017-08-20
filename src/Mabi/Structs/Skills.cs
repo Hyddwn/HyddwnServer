@@ -42,6 +42,14 @@ namespace Aura.Mabi.Structs
 
 		public int PromotionExp;
 
+		// [200300, NA258 (2017-08-19)] 20 new bytes, purpose yet unknown.
+		public int _unknown1;
+		public int _unknown2;
+		public int _unknown3;
+		public int _unknown4;
+		public int _unknown5;
+		// [/200300, NA258 (2017-08-19)]
+
 		public short ConditionCount1;
 		public short ConditionCount2;
 
