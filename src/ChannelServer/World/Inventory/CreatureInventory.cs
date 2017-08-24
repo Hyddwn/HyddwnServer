@@ -260,7 +260,7 @@ namespace Aura.Channel.World.Inventory
 			lock (_pockets)
 			{
 				if (_pockets.ContainsKey(inventoryPocket.Pocket))
-					Log.Warning("Replacing pocket '{0}' in '{1}'s inventory.", inventoryPocket.Pocket, _creature);
+					Log.Warning("Replacing pocket '{0}' in '{1}'s inventory.", inventoryPocket.Pocket, _creature.Name);
 
 				_pockets[inventoryPocket.Pocket] = inventoryPocket;
 			}

@@ -462,7 +462,7 @@ namespace Aura.Channel.Database
 							item.OptionInfo.Upgraded = reader.GetByte("upgrades");
 							item.MetaData1.Parse(reader.GetStringSafe("meta1") ?? "");
 							item.MetaData2.Parse(reader.GetStringSafe("meta2") ?? "");
-							item.OptionInfo.LinkedPocketId = (Pocket)reader.GetByte("linkedPocket");
+							item.OptionInfo.LinkedPocketId = (Pocket)reader.GetInt32("linkedPocket");
 							item.OptionInfo.Flags = (ItemFlags)reader.GetByte("flags");
 							item.OptionInfo.Prefix = reader.GetUInt16("prefix");
 							item.OptionInfo.Suffix = reader.GetUInt16("suffix");
@@ -1336,7 +1336,7 @@ namespace Aura.Channel.Database
 					else
 						cmd.Set("bankTransferStart", item.BankTransferStart);
 					cmd.Set("bankTransferDuration", item.BankTransferDuration);
-					cmd.Set("pocket", (byte)item.Info.Pocket);
+					cmd.Set("pocket", (int)item.Info.Pocket);
 					cmd.Set("x", item.Info.X);
 					cmd.Set("y", item.Info.Y);
 					cmd.Set("color1", item.Info.Color1);
