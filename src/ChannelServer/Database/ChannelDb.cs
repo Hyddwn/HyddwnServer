@@ -348,7 +348,9 @@ namespace Aura.Channel.Database
 			var items = this.GetItems(character.CreatureId);
 
 			// Create bag pockets
-			foreach (var item in items.Where(a => a.OptionInfo.LinkedPocketId != Pocket.None))
+			// LinkedPocketId is also used by the extra equip slot items in
+			// the respective pocket, so they have to be filtered.
+			foreach (var item in items.Where(a => a.OptionInfo.LinkedPocketId != Pocket.None && a.Info.Pocket != Pocket.ExtraEquipSlotKits))
 				character.Inventory.Add(new InventoryPocketNormal(item.OptionInfo.LinkedPocketId, item.Data.BagWidth, item.Data.BagHeight));
 
 			// Add items

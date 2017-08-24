@@ -731,6 +731,11 @@ namespace Aura.Mabi.Network
 		// [200200, NA242 (2016-12-15)] Shifted by +2, from ABC3 to ABC5.
 		public const int AmmoRequired = 0xABD2;
 
+		// [200200, NA258 (2017-08-22)] Extra equip slots
+		public const int SwitchExtraEquipment = 0xAC13;
+		public const int SwitchExtraEquipmentR = 0xAC14;
+		public const int UpdateExtraEquipmentEnd = 0xAC15;
+
 		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
 		// [200100, NA229 (2016-06-16)] Shifted by +8, from AC0E to AC16.
 		public const int ChatSticker = 0xAC23;

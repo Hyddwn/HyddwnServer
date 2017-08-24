@@ -82,6 +82,38 @@ namespace Aura.Mabi.Const
 		BardBoardScroll14 = 1013,
 		BardBoardScroll15 = 1014,
 		BardBoardScroll16 = 1015,
+
+		ArmorExtra1 = 2000,
+		GloveExtra1,
+		ShoeExtra1,
+		HeadExtra1,
+		RobeExtra1,
+		RightHandExtra1,
+		LeftHandExtra1,
+		Accessory1HandExtra1,
+		Accessory2HandExtra1,
+
+		ArmorExtra2 = 2009,
+		GloveExtra2,
+		ShoeExtra2,
+		HeadExtra2,
+		RobeExtra2,
+		RightHandExtra2,
+		LeftHandExtra2,
+		Accessory1HandExtra2,
+		Accessory2HandExtra2,
+
+		ArmorExtra3 = 2018,
+		GloveExtra3,
+		ShoeExtra3,
+		HeadExtra3,
+		RobeExtra3,
+		RightHandExtra3,
+		LeftHandExtra3,
+		Accessory1Extra3,
+		Accessory2Extra3,
+
+		ExtraEquipSlotKits = 3000,
 	}
 
 	[Flags]

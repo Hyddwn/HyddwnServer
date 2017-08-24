@@ -81,6 +81,18 @@ namespace Aura.Channel.World.Entities
 		public int InventoryWidth { get; set; }
 		public int InventoryHeight { get; set; }
 
+		public int CurrentExtraSlot
+		{
+			get { return ((VariableManager)this.Vars.Perm).Get("CurrentExtraSlot", -1); }
+			set { ((VariableManager)this.Vars.Perm)["CurrentExtraSlot"] = value; }
+		}
+
+		public DateTime ExtraSlotsEnd
+		{
+			get { return ((VariableManager)this.Vars.Perm).Get("ExtraSlotEnd", DateTime.MinValue); }
+			set { ((VariableManager)this.Vars.Perm)["ExtraSlotEnd"] = value; }
+		}
+
 		/// <summary>
 		/// Temporary and permanent variables exclusive to this creature.
 		/// </summary>
