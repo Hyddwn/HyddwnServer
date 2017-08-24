@@ -1633,12 +1633,14 @@ namespace Aura.Channel.World.Entities
 			var equipment = this.Inventory.GetMainEquipment(a => a.Durability > 0);
 			var update = new List<Item>();
 
+			// Go through all equipment to let armors gain prof, regardless
+			// of any decay settings.
 			foreach (var item in equipment)
 			{
 				// Dura loss
 				// Going by the name "no_abrasion", I assume items with this
 				// tag don't lose durability regularly.
-				if (!ChannelServer.Instance.Conf.World.NoDurabilityLoss && !item.HasTag("/no_abrasion/"))
+				if (!ChannelServer.Instance.Conf.World.NoDurabilityLoss && !ChannelServer.Instance.Conf.World.NoDecay && !item.HasTag("/no_abrasion/"))
 				{
 					var loss = 0;
 
