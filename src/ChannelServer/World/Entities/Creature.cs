@@ -4616,6 +4616,8 @@ namespace Aura.Channel.World.Entities
 			if (set1 == set2)
 				throw new ArgumentException("The given sets can't be the same.");
 
+			var adds = new Dictionary<Item, Pocket>();
+
 			foreach (var slot in _swapSlots)
 			{
 				// Check if slot is among the ones to swap
@@ -4669,8 +4671,16 @@ namespace Aura.Channel.World.Entities
 				if (item2 != null) this.Inventory.Remove(item2);
 
 				// Add items
-				if (item1 != null) this.Inventory.Add(item1, pocket2);
-				if (item2 != null) this.Inventory.Add(item2, pocket1);
+				if (item1 != null) adds.Add(item1, pocket2);
+				if (item2 != null) adds.Add(item2, pocket1);
+			}
+
+			// Add items after all were remove, since the auto-equip code
+			// might otherwise interfere with the adding and removing
+			// of the weapons.
+			foreach (var add in adds)
+			{
+				this.Inventory.Add(add.Key, add.Value);
 			}
 		}
 
