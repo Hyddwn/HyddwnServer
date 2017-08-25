@@ -104,6 +104,11 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns whether the extra equip slots can currently be used.
+		/// </summary>
+		public bool ExtraEquipmentSlotsAvailable { get { return (DateTime.Now < this.ExtraEquipmentSetsEnd); } }
+
+		/// <summary>
 		/// Returns number of available extra equipment sets.
 		/// </summary>
 		public int ExtraEquipmentSetsCount { get { return this.Inventory.Count(PrefabEquipmentSwapKit); } }

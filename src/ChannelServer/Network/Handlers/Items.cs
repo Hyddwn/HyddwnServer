@@ -88,6 +88,14 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Check extra slots' availability
+			// Allow removing items from the pockets, but not adding them.
+			if (target >= Pocket.ArmorExtra1 && target < Pocket.ExtraEquipSlotKits && !creature.ExtraEquipmentSlotsAvailable)
+			{
+				Send.Notice(creature, Localization.Get("You can't do that right now."));
+				goto L_Fail;
+			}
+
 			// Check premium
 			// Technically it would be cheating to drop or destroy items
 			// that are inside bags, with expired service, but we'll ignore
@@ -1343,7 +1351,7 @@ namespace Aura.Channel.Network.Handlers
 			var currentSet = creature.CurrentEquipmentSet;
 
 			// Check request's validity
-			var available = (DateTime.Now <= creature.ExtraEquipmentSetsEnd);
+			var available = creature.ExtraEquipmentSlotsAvailable;
 			var setValid = (newSet >= EquipmentSet.Set1 && newSet <= EquipmentSet.Set3);
 			var setAvailable = (newSet == EquipmentSet.Original || (int)newSet < kitCount);
 
