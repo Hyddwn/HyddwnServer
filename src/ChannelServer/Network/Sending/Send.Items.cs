@@ -582,6 +582,18 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends UpdateExtraEquipmentEnd to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void UpdateExtraEquipmentEnd(Creature creature)
+		{
+			var packet = new Packet(Op.UpdateExtraEquipmentEnd, creature.EntityId);
+			packet.PutLong(creature.ExtraSetsEnd);
+
+			creature.Client.Send(packet);
+		}
 	}
 
 	public enum ItemPickUpResult : byte

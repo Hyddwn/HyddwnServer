@@ -42,6 +42,8 @@ namespace Aura.Channel.World.Entities
 
 		public const int MaxElementalAffinity = 9;
 
+		public const int PrefabEquipmentSwapKit = 86038;
+
 		public const float ZombieSpeed = 28.6525f;
 
 		private byte _inquiryId;
@@ -92,6 +94,8 @@ namespace Aura.Channel.World.Entities
 			get { return ((VariableManager)this.Vars.Perm).Get("ExtraSetsEnd", DateTime.MinValue); }
 			set { ((VariableManager)this.Vars.Perm)["ExtraSetsEnd"] = value; }
 		}
+
+		public int AvailableExtraSets { get { return this.Inventory.Count(PrefabEquipmentSwapKit); } }
 
 		/// <summary>
 		/// Temporary and permanent variables exclusive to this creature.
@@ -4614,7 +4618,6 @@ namespace Aura.Channel.World.Entities
 				var item2 = this.Inventory.GetItemAt(pocket2, 0, 0);
 
 				// Correct pockets/items for magazines
-				Log.Debug("{0} <==> {1}, {2} <==> {3}", pocket1, pocket2, set1, set2);
 				if (item1 != null && item1.IsMagazine && pocket2 == this.Inventory.LeftHandPocket)
 				{
 					pocket2 = this.Inventory.MagazinePocket;
@@ -4704,6 +4707,50 @@ namespace Aura.Channel.World.Entities
 
 				return (result + 9 * (int)set);
 			}
+		}
+
+		/// <summary>
+		/// Extends time in which the extra sets may be used by the given
+		/// time span.
+		/// </summary>
+		/// <param name="timeSpan"></param>
+		public void ExtendExtraSetsTime(TimeSpan timeSpan)
+		{
+			if (this.ExtraSetsEnd == DateTime.MinValue)
+				this.ExtraSetsEnd = DateTime.Now.Add(timeSpan);
+			else
+				this.ExtraSetsEnd += timeSpan;
+
+			Send.UpdateExtraEquipmentEnd(this);
+		}
+
+		/// <summary>
+		/// Adds an extra equipment set, returns true on success or false
+		/// if the max number of sets was reached already.
+		/// </summary>
+		/// <returns></returns>
+		public bool AddExtraSet()
+		{
+			// The client only supports 3 hotkeys for the extra slots,
+			// so we'll limit the amount you can have for now, although there
+			// doesn't seem to be a really limit.
+			if (this.AvailableExtraSets >= 3)
+				return false;
+
+			// The linked pocket refers to the first pocket in a nine pocket
+			// range that this kit's equip set uses. Technically it might be
+			// possible to use any number here, but we'll still to the officials
+			// convention for now, where they start at 2000 for the first set,
+			// 2009 for the second, and so on.
+			// 3000 (ExtraEquipSlotKits) is the pocket for the kits though,
+			// so we should be careful not to add too many sets.
+
+			var item = new Item(PrefabEquipmentSwapKit);
+			item.OptionInfo.LinkedPocketId = (Pocket.ArmorExtra1 + 9 * this.AvailableExtraSets);
+
+			this.Inventory.Add(item, Pocket.ExtraEquipSlotKits);
+
+			return true;
 		}
 	}
 
