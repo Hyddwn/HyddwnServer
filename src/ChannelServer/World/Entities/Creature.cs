@@ -4639,30 +4639,34 @@ namespace Aura.Channel.World.Entities
 				if (item1 != null && item1.IsMagazine && pocket2 == this.Inventory.LeftHandPocket)
 				{
 					pocket2 = this.Inventory.MagazinePocket;
-					item2 = this.Inventory.GetItemAt(pocket2, 0, 0);
+					if (item2 != null && item2.IsMagazine)
+						item2 = this.Inventory.GetItemAt(pocket2, 0, 0);
 				}
 				else if (item1 == null && pocket1 == this.Inventory.LeftHandPocket)
 				{
 					var magazine = this.Inventory.GetItemAt(this.Inventory.MagazinePocket, 0, 0);
 					if (magazine != null)
 					{
-						pocket1 = this.Inventory.MagazinePocket;
 						item1 = magazine;
+						if (item2 == null || item2.IsMagazine)
+							pocket1 = this.Inventory.MagazinePocket;
 					}
 				}
 
 				if (item2 != null && item2.IsMagazine && pocket1 == this.Inventory.LeftHandPocket)
 				{
 					pocket1 = this.Inventory.MagazinePocket;
-					item1 = this.Inventory.GetItemAt(pocket1, 0, 0);
+					if (item1 != null && item1.IsMagazine)
+						item1 = this.Inventory.GetItemAt(pocket1, 0, 0);
 				}
 				else if (item2 == null && pocket2 == this.Inventory.LeftHandPocket)
 				{
 					var magazine = this.Inventory.GetItemAt(this.Inventory.MagazinePocket, 0, 0);
 					if (magazine != null)
 					{
-						pocket2 = this.Inventory.MagazinePocket;
 						item2 = magazine;
+						if (item1 == null || item1.IsMagazine)
+							pocket2 = this.Inventory.MagazinePocket;
 					}
 				}
 
