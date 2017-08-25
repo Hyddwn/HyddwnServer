@@ -1332,33 +1332,25 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.SwitchExtraEquipment)]
 		public void SwitchExtraEquipment(ChannelClient client, Packet packet)
 		{
-			/// 0x0000   none
-			/// 0x0001   armor
-			/// 0x0002   glove
-			/// 0x0004   shoe
-			/// 0x0008   head
-			/// 0x0010   robe
-			/// 0x0020   right hand
-			/// 0x0040   left hand
-			/// 0x0080   acc1
-			/// 0x0100   acc2
-			/// 
-			/// 0x0060  both hands
-			/// 0x01FF   all
-
-			var slot = packet.GetInt();    // slot to switch to
-			var unkInt1 = packet.GetInt(); // pockets to switch
-			var unkInt2 = 0;
+			var set = (ExtraSet)packet.GetInt();
+			var toSwap = (ExtraSlots)packet.GetInt();
+			var swappedBefore = ExtraSlots.None;
 			if (packet.Peek() == PacketElementType.Int)
-				unkInt2 = packet.GetInt(); // previously switched pockets?
+				swappedBefore = (ExtraSlots)packet.GetInt();
 
 			var creature = client.GetCreatureSafe(packet.Id);
 
-			if (slot == creature.CurrentExtraSlot)
-				slot = -1;
-			creature.CurrentExtraSlot = slot;
 
-			Send.SwitchExtraEquipmentR(creature, slot);
+			// Fix set if same set, to switch back
+			if (set == creature.CurrentExtraSet)
+				set = ExtraSet.Original;
+
+			// Swap items
+			// ...
+
+			// Update set
+			creature.CurrentExtraSet = set;
+			Send.SwitchExtraEquipmentR(creature, set);
 		}
 	}
 }

@@ -1052,8 +1052,8 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 				// [200300, NA258 (2017-08-19)] Extra Equip?
 				{
-					packet.PutLong(creature.ExtraSlotsEnd);
-					packet.PutInt(creature.CurrentExtraSlot);
+					packet.PutLong(creature.ExtraSetsEnd);
+					packet.PutInt((int)creature.CurrentExtraSet);
 				}
 
 				// [200200, NA252 (2017-05-18)] ?

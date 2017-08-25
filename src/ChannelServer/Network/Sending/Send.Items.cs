@@ -562,14 +562,14 @@ namespace Aura.Channel.Network.Sending
 		/// </summary>
 		/// <param name="creature"></param>
 		/// <param name="newSet"></param>
-		public static void SwitchExtraEquipmentR(Creature creature, int newSet)
+		public static void SwitchExtraEquipmentR(Creature creature, ExtraSet newSet)
 		{
 			var packet = new Packet(Op.SwitchExtraEquipmentR, creature.EntityId);
 			packet.PutByte(true); // success? false doesn't seem to do anything
 
-			if (newSet != -1)
+			if (newSet != ExtraSet.Original)
 			{
-				packet.PutInt(newSet); // selected slot: 0=tab1, 1=tab2
+				packet.PutInt((int)newSet); // selected slot: 0=tab1, 1=tab2
 				packet.PutByte(0);
 				packet.PutInt(-1);
 			}

@@ -943,4 +943,30 @@ namespace Aura.Mabi.Const
 			}
 		}
 	}
+
+	[Flags]
+	public enum ExtraSlots : int
+	{
+		None = 0x0000,
+		Armor = 0x0001,
+		Glove = 0x0002,
+		Shoe = 0x0004,
+		Head = 0x0008,
+		Robe = 0x0010,
+		RightHand = 0x0020,
+		LeftHand = 0x0040,
+		Accessory1 = 0x0080,
+		Accessory2 = 0x0100,
+
+		BothHands = 0x0060,
+		All = 0x01FF,
+	}
+
+	public enum ExtraSet : int
+	{
+		Original = -1,
+		Set1 = 0,
+		Set2 = 1,
+		Set3 = 2,
+	}
 }

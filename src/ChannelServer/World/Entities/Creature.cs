@@ -81,16 +81,16 @@ namespace Aura.Channel.World.Entities
 		public int InventoryWidth { get; set; }
 		public int InventoryHeight { get; set; }
 
-		public int CurrentExtraSlot
+		public ExtraSet CurrentExtraSet
 		{
-			get { return ((VariableManager)this.Vars.Perm).Get("CurrentExtraSlot", -1); }
-			set { ((VariableManager)this.Vars.Perm)["CurrentExtraSlot"] = value; }
+			get { return (ExtraSet)((VariableManager)this.Vars.Perm).Get("CurrentExtraSet", (int)ExtraSet.Original); }
+			set { ((VariableManager)this.Vars.Perm)["CurrentExtraSet"] = (int)value; }
 		}
 
-		public DateTime ExtraSlotsEnd
+		public DateTime ExtraSetsEnd
 		{
-			get { return ((VariableManager)this.Vars.Perm).Get("ExtraSlotEnd", DateTime.MinValue); }
-			set { ((VariableManager)this.Vars.Perm)["ExtraSlotEnd"] = value; }
+			get { return ((VariableManager)this.Vars.Perm).Get("ExtraSetsEnd", DateTime.MinValue); }
+			set { ((VariableManager)this.Vars.Perm)["ExtraSetsEnd"] = value; }
 		}
 
 		/// <summary>
