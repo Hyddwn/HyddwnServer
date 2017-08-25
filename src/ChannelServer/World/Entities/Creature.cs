@@ -4576,6 +4576,135 @@ namespace Aura.Channel.World.Entities
 		{
 			Send.PlaySound(this, fileName);
 		}
+
+		// Use a static list to go through, so LeftHand is guaranteed to
+		// come before RightHand. Otherwise the auto-equip code could remove
+		// a second sword or arrows before they can be swapped.
+		private readonly static ExtraSlots[] _swapSlots = new[]
+		{
+			ExtraSlots.Armor,ExtraSlots.Glove, ExtraSlots.Shoe, ExtraSlots.Head, ExtraSlots.Robe,
+			ExtraSlots.LeftHand, ExtraSlots.RightHand, ExtraSlots.Accessory1, ExtraSlots.Accessory2,
+		};
+
+		/// <summary>
+		/// Swaps the given equip sets' slots.
+		/// </summary>
+		/// <param name="set1"></param>
+		/// <param name="set2"></param>
+		public void SwapEquipSets(ExtraSet set1, ExtraSet set2, ExtraSlots slots)
+		{
+			if (set1 == set2)
+				throw new ArgumentException("The given sets can't be the same.");
+
+			foreach (var slot in _swapSlots)
+			{
+				// Check if slot is among the ones to swap
+				if ((slots & slot) == 0)
+					continue;
+
+				var pocket1 = this.TranslateSlotToPocket(slot, set1);
+				var pocket2 = this.TranslateSlotToPocket(slot, set2);
+
+				// If only one of the pockets is None, something went wrong.
+				if (pocket1 == Pocket.None || pocket2 == Pocket.None)
+					throw new InvalidOperationException("Pocket1 or pocket2 is none.");
+
+				// Get items
+				var item1 = this.Inventory.GetItemAt(pocket1, 0, 0);
+				var item2 = this.Inventory.GetItemAt(pocket2, 0, 0);
+
+				// Correct pockets/items for magazines
+				Log.Debug("{0} <==> {1}, {2} <==> {3}", pocket1, pocket2, set1, set2);
+				if (item1 != null && item1.IsMagazine && pocket2 == this.Inventory.LeftHandPocket)
+				{
+					pocket2 = this.Inventory.MagazinePocket;
+					item2 = this.Inventory.GetItemAt(pocket2, 0, 0);
+				}
+				else if (item1 == null && pocket1 == this.Inventory.LeftHandPocket)
+				{
+					var magazine = this.Inventory.GetItemAt(this.Inventory.MagazinePocket, 0, 0);
+					if (magazine != null)
+					{
+						pocket1 = this.Inventory.MagazinePocket;
+						item1 = magazine;
+					}
+				}
+
+				if (item2 != null && item2.IsMagazine && pocket1 == this.Inventory.LeftHandPocket)
+				{
+					pocket1 = this.Inventory.MagazinePocket;
+					item1 = this.Inventory.GetItemAt(pocket1, 0, 0);
+				}
+				else if (item2 == null && pocket2 == this.Inventory.LeftHandPocket)
+				{
+					var magazine = this.Inventory.GetItemAt(this.Inventory.MagazinePocket, 0, 0);
+					if (magazine != null)
+					{
+						pocket2 = this.Inventory.MagazinePocket;
+						item2 = magazine;
+					}
+				}
+
+				// Remove items
+				if (item1 != null) this.Inventory.Remove(item1);
+				if (item2 != null) this.Inventory.Remove(item2);
+
+				// Add items
+				if (item1 != null) this.Inventory.Add(item1, pocket2);
+				if (item2 != null) this.Inventory.Add(item2, pocket1);
+			}
+		}
+
+		/// <summary>
+		/// Returns the Pocket for the given slot and set combination.
+		/// Magazines are not handled by this function.
+		/// </summary>
+		/// <param name="slot"></param>
+		/// <param name="set"></param>
+		/// <returns></returns>
+		/// <example>
+		/// TranslateSlotToPocket(ExtraSlots.Glove, ExtraSet.Original) // Pocket.Glove
+		/// TranslateSlotToPocket(ExtraSlots.Shoe, ExtraSet.Set2) // Pocket.ShoeExtra2
+		/// </example>
+		private Pocket TranslateSlotToPocket(ExtraSlots slot, ExtraSet set)
+		{
+			if (set == ExtraSet.Original)
+			{
+				switch (slot)
+				{
+					case ExtraSlots.Armor: return Pocket.Armor;
+					case ExtraSlots.Glove: return Pocket.Glove;
+					case ExtraSlots.Shoe: return Pocket.Shoe;
+					case ExtraSlots.Head: return Pocket.Head;
+					case ExtraSlots.Robe: return Pocket.Robe;
+					case ExtraSlots.RightHand: return this.Inventory.RightHandPocket;
+					case ExtraSlots.LeftHand: return this.Inventory.LeftHandPocket;
+					case ExtraSlots.Accessory1: return Pocket.Accessory1;
+					case ExtraSlots.Accessory2: return Pocket.Accessory2;
+				}
+
+				return Pocket.None;
+			}
+			else
+			{
+				var result = Pocket.None;
+
+				switch (slot)
+				{
+					case ExtraSlots.Armor: result = Pocket.ArmorExtra1; break;
+					case ExtraSlots.Glove: result = Pocket.GloveExtra1; break;
+					case ExtraSlots.Shoe: result = Pocket.ShoeExtra1; break;
+					case ExtraSlots.Head: result = Pocket.HeadExtra1; break;
+					case ExtraSlots.Robe: result = Pocket.RobeExtra1; break;
+					case ExtraSlots.RightHand: result = Pocket.RightHandExtra1; break;
+					case ExtraSlots.LeftHand: result = Pocket.LeftHandExtra1; break;
+					case ExtraSlots.Accessory1: result = Pocket.Accessory1HandExtra1; break;
+					case ExtraSlots.Accessory2: result = Pocket.Accessory2HandExtra1; break;
+				}
+
+				return (result + 9 * (int)set);
+			}
+		}
 	}
 
 	public enum TargetableOptions

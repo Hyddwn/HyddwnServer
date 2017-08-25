@@ -329,6 +329,12 @@ namespace Aura.Channel.World.Entities
 		public bool IsShieldLike { get { return (this.IsShield || this.IsEquippableBook); } }
 
 		/// <summary>
+		/// Returns true if item goes into the magazine pocket, like an
+		/// arrow or bait.
+		/// </summary>
+		public bool IsMagazine { get { return this.HasTag("/arrow/|/bait/|/enchantscroll/"); } }
+
+		/// <summary>
 		/// Returns true if item is two handed.
 		/// </summary>
 		public bool IsTwoHand { get { return this.HasTag("/twohand/"); } }

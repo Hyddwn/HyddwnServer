@@ -1332,25 +1332,46 @@ namespace Aura.Channel.Network.Handlers
 		[PacketHandler(Op.SwitchExtraEquipment)]
 		public void SwitchExtraEquipment(ChannelClient client, Packet packet)
 		{
-			var set = (ExtraSet)packet.GetInt();
+			var newSet = (ExtraSet)packet.GetInt();
 			var toSwap = (ExtraSlots)packet.GetInt();
 			var swappedBefore = ExtraSlots.None;
 			if (packet.Peek() == PacketElementType.Int)
 				swappedBefore = (ExtraSlots)packet.GetInt();
 
 			var creature = client.GetCreatureSafe(packet.Id);
+			var kitCount = creature.Inventory.Count(86038);
+			var currentSet = creature.CurrentExtraSet;
 
+			// Check request's validity
+			var available = (DateTime.Now <= creature.ExtraSetsEnd);
+			var setValid = (newSet >= ExtraSet.Set1 && newSet <= ExtraSet.Set3);
+			var setAvailable = (newSet == ExtraSet.Original || (int)newSet < kitCount);
+
+			if (!available || !setValid || !setAvailable)
+			{
+				creature.Notice(Localization.Get("You can't do that right now."));
+				Send.SwitchExtraEquipmentR(creature, creature.CurrentExtraSet);
+				return;
+			}
 
 			// Fix set if same set, to switch back
-			if (set == creature.CurrentExtraSet)
-				set = ExtraSet.Original;
+			if (newSet == currentSet)
+				newSet = ExtraSet.Original;
 
 			// Swap items
-			// ...
+			if ((currentSet == ExtraSet.Original && newSet != ExtraSet.Original) || (currentSet != ExtraSet.Original && newSet == ExtraSet.Original))
+			{
+				creature.SwapEquipSets(currentSet, newSet, toSwap);
+			}
+			else if (currentSet != ExtraSet.Original && newSet != ExtraSet.Original)
+			{
+				creature.SwapEquipSets(currentSet, ExtraSet.Original, swappedBefore);
+				creature.SwapEquipSets(ExtraSet.Original, newSet, toSwap);
+			}
 
 			// Update set
-			creature.CurrentExtraSet = set;
-			Send.SwitchExtraEquipmentR(creature, set);
+			creature.CurrentExtraSet = newSet;
+			Send.SwitchExtraEquipmentR(creature, newSet);
 		}
 	}
 }
