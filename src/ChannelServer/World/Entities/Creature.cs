@@ -83,19 +83,30 @@ namespace Aura.Channel.World.Entities
 		public int InventoryWidth { get; set; }
 		public int InventoryHeight { get; set; }
 
-		public ExtraSet CurrentExtraSet
+		/// <summary>
+		/// Gets or sets currently selected equipment set.
+		/// Does not update client.
+		/// </summary>
+		public EquipmentSet CurrentEquipmentSet
 		{
-			get { return (ExtraSet)((VariableManager)this.Vars.Perm).Get("CurrentExtraSet", (int)ExtraSet.Original); }
-			set { ((VariableManager)this.Vars.Perm)["CurrentExtraSet"] = (int)value; }
+			get { return (EquipmentSet)((VariableManager)this.Vars.Perm).Get("CurrentEquipmentSet", (int)EquipmentSet.Original); }
+			set { ((VariableManager)this.Vars.Perm)["CurrentEquipmentSet"] = (int)value; }
 		}
 
-		public DateTime ExtraSetsEnd
+		/// <summary>
+		/// Gets or sets the time in which the extra equip slots can be used.
+		/// Does not update client.
+		/// </summary>
+		public DateTime ExtraEquipmentSetsEnd
 		{
 			get { return ((VariableManager)this.Vars.Perm).Get("ExtraSetsEnd", DateTime.MinValue); }
 			set { ((VariableManager)this.Vars.Perm)["ExtraSetsEnd"] = value; }
 		}
 
-		public int AvailableExtraSets { get { return this.Inventory.Count(PrefabEquipmentSwapKit); } }
+		/// <summary>
+		/// Returns number of available extra equipment sets.
+		/// </summary>
+		public int ExtraEquipmentSetsCount { get { return this.Inventory.Count(PrefabEquipmentSwapKit); } }
 
 		/// <summary>
 		/// Temporary and permanent variables exclusive to this creature.
@@ -4586,7 +4597,7 @@ namespace Aura.Channel.World.Entities
 		// a second sword or arrows before they can be swapped.
 		private readonly static ExtraSlots[] _swapSlots = new[]
 		{
-			ExtraSlots.Armor,ExtraSlots.Glove, ExtraSlots.Shoe, ExtraSlots.Head, ExtraSlots.Robe,
+			ExtraSlots.Armor, ExtraSlots.Glove, ExtraSlots.Shoe, ExtraSlots.Head, ExtraSlots.Robe,
 			ExtraSlots.LeftHand, ExtraSlots.RightHand, ExtraSlots.Accessory1, ExtraSlots.Accessory2,
 		};
 
@@ -4595,7 +4606,7 @@ namespace Aura.Channel.World.Entities
 		/// </summary>
 		/// <param name="set1"></param>
 		/// <param name="set2"></param>
-		public void SwapEquipSets(ExtraSet set1, ExtraSet set2, ExtraSlots slots)
+		public void SwapEquipmentSets(EquipmentSet set1, EquipmentSet set2, ExtraSlots slots)
 		{
 			if (set1 == set2)
 				throw new ArgumentException("The given sets can't be the same.");
@@ -4669,9 +4680,9 @@ namespace Aura.Channel.World.Entities
 		/// TranslateSlotToPocket(ExtraSlots.Glove, ExtraSet.Original) // Pocket.Glove
 		/// TranslateSlotToPocket(ExtraSlots.Shoe, ExtraSet.Set2) // Pocket.ShoeExtra2
 		/// </example>
-		private Pocket TranslateSlotToPocket(ExtraSlots slot, ExtraSet set)
+		private Pocket TranslateSlotToPocket(ExtraSlots slot, EquipmentSet set)
 		{
-			if (set == ExtraSet.Original)
+			if (set == EquipmentSet.Original)
 			{
 				switch (slot)
 				{
@@ -4714,12 +4725,12 @@ namespace Aura.Channel.World.Entities
 		/// time span.
 		/// </summary>
 		/// <param name="timeSpan"></param>
-		public void ExtendExtraSetsTime(TimeSpan timeSpan)
+		public void ExtendExtraEquipmentSetsTime(TimeSpan timeSpan)
 		{
-			if (this.ExtraSetsEnd == DateTime.MinValue)
-				this.ExtraSetsEnd = DateTime.Now.Add(timeSpan);
+			if (this.ExtraEquipmentSetsEnd == DateTime.MinValue)
+				this.ExtraEquipmentSetsEnd = DateTime.Now.Add(timeSpan);
 			else
-				this.ExtraSetsEnd += timeSpan;
+				this.ExtraEquipmentSetsEnd += timeSpan;
 
 			Send.UpdateExtraEquipmentEnd(this);
 		}
@@ -4729,12 +4740,12 @@ namespace Aura.Channel.World.Entities
 		/// if the max number of sets was reached already.
 		/// </summary>
 		/// <returns></returns>
-		public bool AddExtraSet()
+		public bool AddExtraEquipmentSet()
 		{
 			// The client only supports 3 hotkeys for the extra slots,
 			// so we'll limit the amount you can have for now, although there
 			// doesn't seem to be a really limit.
-			if (this.AvailableExtraSets >= 3)
+			if (this.ExtraEquipmentSetsCount >= 3)
 				return false;
 
 			// The linked pocket refers to the first pocket in a nine pocket
@@ -4746,7 +4757,7 @@ namespace Aura.Channel.World.Entities
 			// so we should be careful not to add too many sets.
 
 			var item = new Item(PrefabEquipmentSwapKit);
-			item.OptionInfo.LinkedPocketId = (Pocket.ArmorExtra1 + 9 * this.AvailableExtraSets);
+			item.OptionInfo.LinkedPocketId = (Pocket.ArmorExtra1 + 9 * this.ExtraEquipmentSetsCount);
 
 			this.Inventory.Add(item, Pocket.ExtraEquipSlotKits);
 

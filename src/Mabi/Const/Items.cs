@@ -962,7 +962,7 @@ namespace Aura.Mabi.Const
 		All = 0x01FF,
 	}
 
-	public enum ExtraSet : int
+	public enum EquipmentSet : int
 	{
 		Original = -1,
 		Set1 = 0,
