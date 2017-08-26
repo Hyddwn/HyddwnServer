@@ -474,6 +474,13 @@ namespace Aura.Data.Database
 				}
 			}
 
+			// Give combat mastery to all races, as it's required for
+			// melee attacks.
+			if (!raceData.Skills.Exists(a => a.SkillId == (ushort)SkillId.CombatMastery))
+			{
+				raceData.Skills.Add(new RaceSkillData() { SkillId = (ushort)SkillId.CombatMastery, Rank = (byte)SkillRank.Novice });
+			}
+
 			// Items
 			if (entry.ContainsKeys("equip"))
 			{
