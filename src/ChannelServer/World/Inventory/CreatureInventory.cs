@@ -133,7 +133,7 @@ namespace Aura.Channel.World.Inventory
 				AccessiblePockets.Add(i);
 
 			// Extra equip slots
-			for (var i = Pocket.ArmorExtra1; i <= Pocket.Accessory2Extra3; i++)
+			for (var i = Pocket.ArmorExtra1; i < Pocket.ExtraEquipSlotKits; i++)
 				AccessiblePockets.Add(i);
 		}
 
@@ -255,7 +255,7 @@ namespace Aura.Channel.World.Inventory
 				this.Add(new InventoryPocketSingle(i));
 
 			// Extra Equip
-			for (var i = Pocket.ArmorExtra1; i <= Pocket.Accessory2Extra3; ++i)
+			for (var i = Pocket.ArmorExtra1; i < Pocket.ExtraEquipSlotKits; ++i)
 				this.Add(new InventoryPocketSingle(i));
 
 			this.Add(new InventoryPocketSingle(Pocket.TailStyle));
