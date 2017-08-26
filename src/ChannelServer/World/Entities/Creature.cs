@@ -4740,6 +4740,22 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns true if creature can currently use the given pocket.
+		/// </summary>
+		/// <param name="pocket"></param>
+		/// <returns></returns>
+		public bool CanUseExtraEquipmentPocket(Pocket pocket)
+		{
+			if (!pocket.IsExtraSlot())
+				throw new ArgumentException("Pocket is not an extra slot pocket.");
+
+			var pocketId = (int)pocket;
+			var set = Math.Floor((pocketId - 2000) / 9.0);
+
+			return (this.ExtraEquipmentSetsCount > set);
+		}
+
+		/// <summary>
 		/// Extends time in which the extra sets may be used by the given
 		/// time span.
 		/// </summary>

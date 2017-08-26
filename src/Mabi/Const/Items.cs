@@ -192,6 +192,16 @@ namespace Aura.Mabi.Const
 		{
 			return (pocket >= Pocket.ItemBags && pocket <= Pocket.ItemBagsMax);
 		}
+
+		/// <summary>
+		/// Returns true if pocket is in the extra slot range.
+		/// </summary>
+		/// <param name="pocket"></param>
+		/// <returns></returns>
+		public static bool IsExtraSlot(this Pocket pocket)
+		{
+			return (pocket >= Pocket.ArmorExtra1 && pocket < Pocket.ExtraEquipSlotKits);
+		}
 	}
 
 	/// <summary>

@@ -89,8 +89,14 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			// Check extra slots' availability
+			if ((target.IsExtraSlot() && !creature.CanUseExtraEquipmentPocket(target)) || (source.IsExtraSlot() && !creature.CanUseExtraEquipmentPocket(source)))
+			{
+				Send.Notice(creature, Localization.Get("You can't do that right now."));
+				goto L_Fail;
+			}
+
 			// Allow removing items from the pockets, but not adding them.
-			if (target >= Pocket.ArmorExtra1 && target < Pocket.ExtraEquipSlotKits && !creature.ExtraEquipmentSlotsAvailable)
+			if (target.IsExtraSlot() && !creature.ExtraEquipmentSlotsAvailable)
 			{
 				Send.Notice(creature, Localization.Get("You can't do that right now."));
 				goto L_Fail;
