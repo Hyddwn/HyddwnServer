@@ -88,6 +88,14 @@ namespace Aura.Channel.Network.Handlers
 				goto L_Fail;
 			}
 
+			// Check extra slots' availability
+			// Allow removing items from the pockets, but not adding them.
+			if (target >= Pocket.ArmorExtra1 && target < Pocket.ExtraEquipSlotKits && !creature.ExtraEquipmentSlotsAvailable)
+			{
+				Send.Notice(creature, Localization.Get("You can't do that right now."));
+				goto L_Fail;
+			}
+
 			// Check premium
 			// Technically it would be cheating to drop or destroy items
 			// that are inside bags, with expired service, but we'll ignore
@@ -145,7 +153,7 @@ namespace Aura.Channel.Network.Handlers
 
 			return;
 
-		L_Fail:
+			L_Fail:
 			Send.ItemMoveR(creature, false);
 		}
 
@@ -604,7 +612,7 @@ namespace Aura.Channel.Network.Handlers
 			Send.UseItemR(creature, true, item.Info.Id);
 			return;
 
-		L_Fail:
+			L_Fail:
 			Send.UseItemR(creature, false, 0);
 		}
 
@@ -1134,7 +1142,7 @@ namespace Aura.Channel.Network.Handlers
 				//Send.Notice(creature, Localization.Get("You purchased {0}."), good.Name);
 			}
 
-		L_End:
+			L_End:
 			Send.PurchaseMerchandiseR(creature);
 		}
 
@@ -1316,6 +1324,62 @@ namespace Aura.Channel.Network.Handlers
 			var creature = client.GetCreatureSafe(packet.Id);
 
 			Send.UnkOrdinaryChestR(creature, chestItemEntityId);
+		}
+
+		/// <summary>
+		/// Sent when switching to an extra equip slot.
+		/// </summary>
+		/// <example>
+		/// 0001 [........00000000] Int    : 0
+		/// 0002 [........000001FF] Int    : 511
+		/// 
+		/// 0001 [........00000001] Int    : 1
+		/// 0002 [........0000FFFF] Int    : 65535
+		/// 0003 [........000001FF] Int    : 511
+		/// </example>
+		[PacketHandler(Op.SwitchExtraEquipment)]
+		public void SwitchExtraEquipment(ChannelClient client, Packet packet)
+		{
+			var newSet = (EquipmentSet)packet.GetInt();
+			var toSwap = (ExtraSlots)packet.GetInt();
+			var swappedBefore = ExtraSlots.None;
+			if (packet.Peek() == PacketElementType.Int)
+				swappedBefore = (ExtraSlots)packet.GetInt();
+
+			var creature = client.GetCreatureSafe(packet.Id);
+			var kitCount = creature.Inventory.Count(86038);
+			var currentSet = creature.CurrentEquipmentSet;
+
+			// Check request's validity
+			var available = creature.ExtraEquipmentSlotsAvailable;
+			var setValid = (newSet >= EquipmentSet.Set1 && newSet <= EquipmentSet.Set3);
+			var setAvailable = (newSet == EquipmentSet.Original || (int)newSet < kitCount);
+
+			if (!available || !setValid || !setAvailable)
+			{
+				creature.Notice(Localization.Get("You can't do that right now."));
+				Send.SwitchExtraEquipmentR(creature, creature.CurrentEquipmentSet);
+				return;
+			}
+
+			// Fix set if same set, to switch back
+			if (newSet == currentSet)
+				newSet = EquipmentSet.Original;
+
+			// Swap items
+			if ((currentSet == EquipmentSet.Original && newSet != EquipmentSet.Original) || (currentSet != EquipmentSet.Original && newSet == EquipmentSet.Original))
+			{
+				creature.SwapEquipmentSets(currentSet, newSet, toSwap);
+			}
+			else if (currentSet != EquipmentSet.Original && newSet != EquipmentSet.Original)
+			{
+				creature.SwapEquipmentSets(currentSet, EquipmentSet.Original, swappedBefore);
+				creature.SwapEquipmentSets(EquipmentSet.Original, newSet, toSwap);
+			}
+
+			// Update set
+			creature.CurrentEquipmentSet = newSet;
+			Send.SwitchExtraEquipmentR(creature, newSet);
 		}
 	}
 }

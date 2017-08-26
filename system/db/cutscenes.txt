@@ -211,6 +211,8 @@
 { name: "event_SamhainP2_04", actors: ["me", "#Laiglinne"] },
 { name: "event_SamhainP2_05", actors: ["#Laiglinne"] },
 { name: "event_ScenarioDG_enn" },
+{ name: "event_SkillPromotionRN", actors: ["me", "#C9G19_aodhan", "#dorren", "#Drama2berched", "#SkillPromotionRN_arzul", "#SkillPromotionRN_edern", "#SkillPromotionRN_huw", "#taunes", "#ubicommon_Female", "#ubicommon_Male"] },
+{ name: "event_SkillPromotionRN_giant", actors: ["me", "#C9G19_aodhan", "#dorren", "#Drama2berched", "#SkillPromotionRN_arzul", "#SkillPromotionRN_edern", "#SkillPromotionRN_huw", "#taunes", "#ubicommon_Female", "#ubicommon_Male"] },
 { name: "event_trickmaster01", actors: ["me", "#DetectiveEventCrazyHarold", "#DetectiveEventHarold"] },
 { name: "event_trickmaster02", actors: ["me", "#DetectiveEventArisa", "#DetectiveEventCarpet", "#DetectiveEventEve"] },
 { name: "event_trickmaster03", actors: ["me", "#DetectiveEventGladin", "#DetectiveEventPaul", "#DetectiveEventTrickMaster", "#Grim_Reaper"] },

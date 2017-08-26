@@ -57,6 +57,7 @@ namespace Aura.Channel.Util.Configuration.Files
 
 		public bool Bagception { get; protected set; }
 		public bool NoDurabilityLoss { get; protected set; }
+		public bool NoDecay { get; protected set; }
 		public bool UnlimitedUpgrades { get; protected set; }
 		public bool UncapProficiency { get; protected set; }
 		public bool UnlimitedDyes { get; protected set; }
@@ -135,6 +136,7 @@ namespace Aura.Channel.Util.Configuration.Files
 
 			this.Bagception = this.GetBool("bagception", false);
 			this.NoDurabilityLoss = this.GetBool("no_durability_loss", false);
+			this.NoDecay = this.GetBool("no_decay", false);
 			this.UnlimitedUpgrades = this.GetBool("unlimited_upgrades", false);
 			this.UncapProficiency = this.GetBool("uncap_proficiency", false);
 			this.UnlimitedDyes = this.GetBool("unlimited_dyes", false);

@@ -22,6 +22,11 @@ namespace Aura.Data.Database
 	/// </summary>
 	public class FeaturesDb : DatabaseJsonIndexed<string, FeatureData>
 	{
+		/// <summary>
+		/// The last time an entry was read.
+		/// </summary>
+		public DateTime LastEntryRead { get; private set; }
+
 		public bool IsEnabled(string featureName)
 		{
 			var invert = false;
@@ -43,6 +48,7 @@ namespace Aura.Data.Database
 		protected override void ReadEntry(JObject entry)
 		{
 			this.ParseObjectRecursive(entry, true);
+			this.LastEntryRead = DateTime.Now;
 		}
 
 		private void ParseObjectRecursive(JObject entry, bool parentEnabled)

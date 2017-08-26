@@ -82,6 +82,38 @@ namespace Aura.Mabi.Const
 		BardBoardScroll14 = 1013,
 		BardBoardScroll15 = 1014,
 		BardBoardScroll16 = 1015,
+
+		ArmorExtra1 = 2000,
+		GloveExtra1,
+		ShoeExtra1,
+		HeadExtra1,
+		RobeExtra1,
+		RightHandExtra1,
+		LeftHandExtra1,
+		Accessory1HandExtra1,
+		Accessory2HandExtra1,
+
+		ArmorExtra2 = 2009,
+		GloveExtra2,
+		ShoeExtra2,
+		HeadExtra2,
+		RobeExtra2,
+		RightHandExtra2,
+		LeftHandExtra2,
+		Accessory1HandExtra2,
+		Accessory2HandExtra2,
+
+		ArmorExtra3 = 2018,
+		GloveExtra3,
+		ShoeExtra3,
+		HeadExtra3,
+		RobeExtra3,
+		RightHandExtra3,
+		LeftHandExtra3,
+		Accessory1Extra3,
+		Accessory2Extra3,
+
+		ExtraEquipSlotKits = 3000,
 	}
 
 	[Flags]
@@ -910,5 +942,31 @@ namespace Aura.Mabi.Const
 					return Stat.None;
 			}
 		}
+	}
+
+	[Flags]
+	public enum ExtraSlots : int
+	{
+		None = 0x0000,
+		Armor = 0x0001,
+		Glove = 0x0002,
+		Shoe = 0x0004,
+		Head = 0x0008,
+		Robe = 0x0010,
+		RightHand = 0x0020,
+		LeftHand = 0x0040,
+		Accessory1 = 0x0080,
+		Accessory2 = 0x0100,
+
+		BothHands = 0x0060,
+		All = 0x01FF,
+	}
+
+	public enum EquipmentSet : int
+	{
+		Original = -1,
+		Set1 = 0,
+		Set2 = 1,
+		Set3 = 2,
 	}
 }

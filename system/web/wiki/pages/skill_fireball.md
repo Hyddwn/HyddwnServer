@@ -21,6 +21,21 @@ TODO
 Obtaining
 -----------------------------------------------------------------------------
 
+### Quest
+
+1. Talk to Steward about Skills while using the Elemental Apprentice title
+   and having a Fire Wand equipped.
+2. Collect all Fireball pages and put them into the book Steward gave you.
+3. Talk to Steward to complete the quest and receive Rank Novice Fireball.
+
+#### Notes
+
+* The pages must be enchanted onto the book in order, as they override each
+  other. For example, if you enchant Page 2 onto a book with Page 5, you
+  will be back at Page 2 and have to collect 3-5 again.
+* You can't start the quest if you already have a quest for another advanced
+  skill, like Arrow Revolver or Thunder.
+
 ### List of pages
 
 <table>
@@ -59,13 +74,13 @@ Obtaining
 	</tr>
 	<!-- Page 3 -->
 	<tr>
-		<td style="text-align:center;">3</td>
+		<td rowspan="1" style="text-align:center;">3</td>
 		<td>Gray Gremlin</td>
 		<td>Barri (Basic/Adv/Spirit/G1), Albey (Silver/Black/Goddess), Fiodh (Normal)</td>
 	</tr>
 	<!-- Page 4 -->
 	<tr>
-		<td style="text-align:center;">4</td>
+		<td rowspan="1" style="text-align:center;">4</td>
 		<td>Brown Gremlin</td>
 		<td>Barri (Basic/Adv/Spirit/G1), Albey (Silver/G1)</td>
 	</tr>
@@ -85,7 +100,7 @@ Obtaining
 	</tr>
 	<!-- Page 7 -->
 	<tr>
-		<td style="text-align:center;">7</td>
+		<td rowspan="1" style="text-align:center;">7</td>
 		<td>Rat Man</td>
 		<td>Ciar (Basic/Int), Albey</td>
 	</tr>
@@ -101,13 +116,13 @@ Obtaining
 	</tr>
 	<!-- Page 9 -->
 	<tr>
-		<td style="text-align:center;">9</td>
+		<td rowspan="1" style="text-align:center;">9</td>
 		<td>Red Succubus</td>
 		<td>Rabbie (Basic Solo)</td>
 	</tr>
 	<!-- Page 10 -->
 	<tr>
-		<td style="text-align:center;">10</td>
+		<td rowspan="1" style="text-align:center;">10</td>
 		<td>Giant Imp</td>
 		<td>Fiodh (Int 4)</td>
 	</tr>

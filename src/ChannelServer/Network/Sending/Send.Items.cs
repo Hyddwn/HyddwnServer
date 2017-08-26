@@ -556,6 +556,44 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends SwitchExtraEquipmentR to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="newSet"></param>
+		public static void SwitchExtraEquipmentR(Creature creature, EquipmentSet newSet)
+		{
+			var packet = new Packet(Op.SwitchExtraEquipmentR, creature.EntityId);
+			packet.PutByte(true); // success? false doesn't seem to do anything
+
+			if (newSet != EquipmentSet.Original)
+			{
+				packet.PutInt((int)newSet); // selected slot: 0=tab1, 1=tab2
+				packet.PutByte(0);
+				packet.PutInt(-1);
+			}
+			else
+			{
+				packet.PutInt(0);
+				packet.PutByte(1); // 1 = back to original?
+				packet.PutInt(0);
+			}
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends UpdateExtraEquipmentEnd to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		public static void UpdateExtraEquipmentEnd(Creature creature)
+		{
+			var packet = new Packet(Op.UpdateExtraEquipmentEnd, creature.EntityId);
+			packet.PutLong(creature.ExtraEquipmentSetsEnd);
+
+			creature.Client.Send(packet);
+		}
 	}
 
 	public enum ItemPickUpResult : byte

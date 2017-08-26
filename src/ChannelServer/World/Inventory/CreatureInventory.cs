@@ -131,6 +131,10 @@ namespace Aura.Channel.World.Inventory
 			// Add bags to the list of modifiable pockets.
 			for (var i = Pocket.ItemBags; i <= Pocket.ItemBagsMax; i++)
 				AccessiblePockets.Add(i);
+
+			// Extra equip slots
+			for (var i = Pocket.ArmorExtra1; i <= Pocket.Accessory2Extra3; i++)
+				AccessiblePockets.Add(i);
 		}
 
 		/// <summary>
@@ -240,12 +244,18 @@ namespace Aura.Channel.World.Inventory
 			this.Add(new InventoryPocketSingle(Pocket.EntrustmentItem2));
 			this.Add(new InventoryPocketNormal(Pocket.EntrustmentReward, 10, 5));
 
+			this.Add(new InventoryPocketStack(Pocket.ExtraEquipSlotKits));
+
 			// Equipment
 			for (var i = Pocket.Face; i <= Pocket.Accessory2; ++i)
 				this.Add(new InventoryPocketSingle(i));
 
 			// Style
 			for (var i = Pocket.ArmorStyle; i <= Pocket.RobeStyle; ++i)
+				this.Add(new InventoryPocketSingle(i));
+
+			// Extra Equip
+			for (var i = Pocket.ArmorExtra1; i <= Pocket.Accessory2Extra3; ++i)
 				this.Add(new InventoryPocketSingle(i));
 
 			this.Add(new InventoryPocketSingle(Pocket.TailStyle));
@@ -260,7 +270,7 @@ namespace Aura.Channel.World.Inventory
 			lock (_pockets)
 			{
 				if (_pockets.ContainsKey(inventoryPocket.Pocket))
-					Log.Warning("Replacing pocket '{0}' in '{1}'s inventory.", inventoryPocket.Pocket, _creature);
+					Log.Warning("Replacing pocket '{0}' in '{1}'s inventory.", inventoryPocket.Pocket, _creature.Name);
 
 				_pockets[inventoryPocket.Pocket] = inventoryPocket;
 			}

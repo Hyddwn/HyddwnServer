@@ -42,6 +42,8 @@ namespace Aura.Channel.World.Entities
 
 		public const int MaxElementalAffinity = 9;
 
+		public const int PrefabEquipmentSwapKit = 86038;
+
 		public const float ZombieSpeed = 28.6525f;
 
 		private byte _inquiryId;
@@ -80,6 +82,36 @@ namespace Aura.Channel.World.Entities
 
 		public int InventoryWidth { get; set; }
 		public int InventoryHeight { get; set; }
+
+		/// <summary>
+		/// Gets or sets currently selected equipment set.
+		/// Does not update client.
+		/// </summary>
+		public EquipmentSet CurrentEquipmentSet
+		{
+			get { return (EquipmentSet)((VariableManager)this.Vars.Perm).Get("CurrentEquipmentSet", (int)EquipmentSet.Original); }
+			set { ((VariableManager)this.Vars.Perm)["CurrentEquipmentSet"] = (int)value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the time in which the extra equip slots can be used.
+		/// Does not update client.
+		/// </summary>
+		public DateTime ExtraEquipmentSetsEnd
+		{
+			get { return ((VariableManager)this.Vars.Perm).Get("ExtraSetsEnd", DateTime.MinValue); }
+			set { ((VariableManager)this.Vars.Perm)["ExtraSetsEnd"] = value; }
+		}
+
+		/// <summary>
+		/// Returns whether the extra equip slots can currently be used.
+		/// </summary>
+		public bool ExtraEquipmentSlotsAvailable { get { return (DateTime.Now < this.ExtraEquipmentSetsEnd); } }
+
+		/// <summary>
+		/// Returns number of available extra equipment sets.
+		/// </summary>
+		public int ExtraEquipmentSetsCount { get { return this.Inventory.Count(PrefabEquipmentSwapKit); } }
 
 		/// <summary>
 		/// Temporary and permanent variables exclusive to this creature.
@@ -1621,12 +1653,14 @@ namespace Aura.Channel.World.Entities
 			var equipment = this.Inventory.GetMainEquipment(a => a.Durability > 0);
 			var update = new List<Item>();
 
+			// Go through all equipment to let armors gain prof, regardless
+			// of any decay settings.
 			foreach (var item in equipment)
 			{
 				// Dura loss
 				// Going by the name "no_abrasion", I assume items with this
 				// tag don't lose durability regularly.
-				if (!ChannelServer.Instance.Conf.World.NoDurabilityLoss && !item.HasTag("/no_abrasion/"))
+				if (!ChannelServer.Instance.Conf.World.NoDurabilityLoss && !ChannelServer.Instance.Conf.World.NoDecay && !item.HasTag("/no_abrasion/"))
 				{
 					var loss = 0;
 
@@ -4561,6 +4595,192 @@ namespace Aura.Channel.World.Entities
 		public void PlaySound(string fileName)
 		{
 			Send.PlaySound(this, fileName);
+		}
+
+		// Use a static list to go through, so LeftHand is guaranteed to
+		// come before RightHand. Otherwise the auto-equip code could remove
+		// a second sword or arrows before they can be swapped.
+		private readonly static ExtraSlots[] _swapSlots = new[]
+		{
+			ExtraSlots.Armor, ExtraSlots.Glove, ExtraSlots.Shoe, ExtraSlots.Head, ExtraSlots.Robe,
+			ExtraSlots.LeftHand, ExtraSlots.RightHand, ExtraSlots.Accessory1, ExtraSlots.Accessory2,
+		};
+
+		/// <summary>
+		/// Swaps the given equip sets' slots.
+		/// </summary>
+		/// <param name="set1"></param>
+		/// <param name="set2"></param>
+		public void SwapEquipmentSets(EquipmentSet set1, EquipmentSet set2, ExtraSlots slots)
+		{
+			if (set1 == set2)
+				throw new ArgumentException("The given sets can't be the same.");
+
+			var adds = new Dictionary<Item, Pocket>();
+
+			foreach (var slot in _swapSlots)
+			{
+				// Check if slot is among the ones to swap
+				if ((slots & slot) == 0)
+					continue;
+
+				var pocket1 = this.TranslateSlotToPocket(slot, set1);
+				var pocket2 = this.TranslateSlotToPocket(slot, set2);
+
+				// If only one of the pockets is None, something went wrong.
+				if (pocket1 == Pocket.None || pocket2 == Pocket.None)
+					throw new InvalidOperationException("Pocket1 or pocket2 is none.");
+
+				// Get items
+				var item1 = this.Inventory.GetItemAt(pocket1, 0, 0);
+				var item2 = this.Inventory.GetItemAt(pocket2, 0, 0);
+
+				// Correct pockets/items for magazines
+				if (item1 != null && item1.IsMagazine && pocket2 == this.Inventory.LeftHandPocket)
+				{
+					pocket2 = this.Inventory.MagazinePocket;
+					if (item2 != null && item2.IsMagazine)
+						item2 = this.Inventory.GetItemAt(pocket2, 0, 0);
+				}
+				else if (item1 == null && pocket1 == this.Inventory.LeftHandPocket)
+				{
+					var magazine = this.Inventory.GetItemAt(this.Inventory.MagazinePocket, 0, 0);
+					if (magazine != null)
+					{
+						item1 = magazine;
+						if (item2 == null || item2.IsMagazine)
+							pocket1 = this.Inventory.MagazinePocket;
+					}
+				}
+
+				if (item2 != null && item2.IsMagazine && pocket1 == this.Inventory.LeftHandPocket)
+				{
+					pocket1 = this.Inventory.MagazinePocket;
+					if (item1 != null && item1.IsMagazine)
+						item1 = this.Inventory.GetItemAt(pocket1, 0, 0);
+				}
+				else if (item2 == null && pocket2 == this.Inventory.LeftHandPocket)
+				{
+					var magazine = this.Inventory.GetItemAt(this.Inventory.MagazinePocket, 0, 0);
+					if (magazine != null)
+					{
+						item2 = magazine;
+						if (item1 == null || item1.IsMagazine)
+							pocket2 = this.Inventory.MagazinePocket;
+					}
+				}
+
+				// Remove items
+				if (item1 != null) this.Inventory.Remove(item1);
+				if (item2 != null) this.Inventory.Remove(item2);
+
+				// Add items
+				if (item1 != null) adds.Add(item1, pocket2);
+				if (item2 != null) adds.Add(item2, pocket1);
+			}
+
+			// Add items after all were remove, since the auto-equip code
+			// might otherwise interfere with the adding and removing
+			// of the weapons.
+			foreach (var add in adds)
+			{
+				this.Inventory.Add(add.Key, add.Value);
+			}
+		}
+
+		/// <summary>
+		/// Returns the Pocket for the given slot and set combination.
+		/// Magazines are not handled by this function.
+		/// </summary>
+		/// <param name="slot"></param>
+		/// <param name="set"></param>
+		/// <returns></returns>
+		/// <example>
+		/// TranslateSlotToPocket(ExtraSlots.Glove, ExtraSet.Original) // Pocket.Glove
+		/// TranslateSlotToPocket(ExtraSlots.Shoe, ExtraSet.Set2) // Pocket.ShoeExtra2
+		/// </example>
+		private Pocket TranslateSlotToPocket(ExtraSlots slot, EquipmentSet set)
+		{
+			if (set == EquipmentSet.Original)
+			{
+				switch (slot)
+				{
+					case ExtraSlots.Armor: return Pocket.Armor;
+					case ExtraSlots.Glove: return Pocket.Glove;
+					case ExtraSlots.Shoe: return Pocket.Shoe;
+					case ExtraSlots.Head: return Pocket.Head;
+					case ExtraSlots.Robe: return Pocket.Robe;
+					case ExtraSlots.RightHand: return this.Inventory.RightHandPocket;
+					case ExtraSlots.LeftHand: return this.Inventory.LeftHandPocket;
+					case ExtraSlots.Accessory1: return Pocket.Accessory1;
+					case ExtraSlots.Accessory2: return Pocket.Accessory2;
+				}
+
+				return Pocket.None;
+			}
+			else
+			{
+				var result = Pocket.None;
+
+				switch (slot)
+				{
+					case ExtraSlots.Armor: result = Pocket.ArmorExtra1; break;
+					case ExtraSlots.Glove: result = Pocket.GloveExtra1; break;
+					case ExtraSlots.Shoe: result = Pocket.ShoeExtra1; break;
+					case ExtraSlots.Head: result = Pocket.HeadExtra1; break;
+					case ExtraSlots.Robe: result = Pocket.RobeExtra1; break;
+					case ExtraSlots.RightHand: result = Pocket.RightHandExtra1; break;
+					case ExtraSlots.LeftHand: result = Pocket.LeftHandExtra1; break;
+					case ExtraSlots.Accessory1: result = Pocket.Accessory1HandExtra1; break;
+					case ExtraSlots.Accessory2: result = Pocket.Accessory2HandExtra1; break;
+				}
+
+				return (result + 9 * (int)set);
+			}
+		}
+
+		/// <summary>
+		/// Extends time in which the extra sets may be used by the given
+		/// time span.
+		/// </summary>
+		/// <param name="timeSpan"></param>
+		public void ExtendExtraEquipmentSetsTime(TimeSpan timeSpan)
+		{
+			if (this.ExtraEquipmentSetsEnd == DateTime.MinValue)
+				this.ExtraEquipmentSetsEnd = DateTime.Now.Add(timeSpan);
+			else
+				this.ExtraEquipmentSetsEnd += timeSpan;
+
+			Send.UpdateExtraEquipmentEnd(this);
+		}
+
+		/// <summary>
+		/// Adds an extra equipment set, returns true on success or false
+		/// if the max number of sets was reached already.
+		/// </summary>
+		/// <returns></returns>
+		public bool AddExtraEquipmentSet()
+		{
+			// The client only supports 3 hotkeys for the extra slots,
+			// so we'll limit the amount you can have for now, although there
+			// doesn't seem to be a really limit.
+			if (this.ExtraEquipmentSetsCount >= 3)
+				return false;
+
+			// The linked pocket refers to the first pocket in a nine pocket
+			// range that this kit's equip set uses. Technically it might be
+			// possible to use any number here, but we'll still to the officials
+			// convention for now, where they start at 2000 for the first set,
+			// 2009 for the second, and so on.
+			// 3000 (ExtraEquipSlotKits) is the pocket for the kits though,
+			// so we should be careful not to add too many sets.
+
+			var item = new Item(PrefabEquipmentSwapKit);
+			item.OptionInfo.LinkedPocketId = (Pocket.ArmorExtra1 + 9 * this.ExtraEquipmentSetsCount);
+
+			this.Inventory.Add(item, Pocket.ExtraEquipSlotKits);
+
+			return true;
 		}
 	}
 

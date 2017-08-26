@@ -348,7 +348,9 @@ namespace Aura.Channel.Database
 			var items = this.GetItems(character.CreatureId);
 
 			// Create bag pockets
-			foreach (var item in items.Where(a => a.OptionInfo.LinkedPocketId != Pocket.None))
+			// LinkedPocketId is also used by the extra equip slot items in
+			// the respective pocket, so they have to be filtered.
+			foreach (var item in items.Where(a => a.OptionInfo.LinkedPocketId != Pocket.None && a.Info.Pocket != Pocket.ExtraEquipSlotKits))
 				character.Inventory.Add(new InventoryPocketNormal(item.OptionInfo.LinkedPocketId, item.Data.BagWidth, item.Data.BagHeight));
 
 			// Add items
@@ -462,7 +464,7 @@ namespace Aura.Channel.Database
 							item.OptionInfo.Upgraded = reader.GetByte("upgrades");
 							item.MetaData1.Parse(reader.GetStringSafe("meta1") ?? "");
 							item.MetaData2.Parse(reader.GetStringSafe("meta2") ?? "");
-							item.OptionInfo.LinkedPocketId = (Pocket)reader.GetByte("linkedPocket");
+							item.OptionInfo.LinkedPocketId = (Pocket)reader.GetInt32("linkedPocket");
 							item.OptionInfo.Flags = (ItemFlags)reader.GetByte("flags");
 							item.OptionInfo.Prefix = reader.GetUInt16("prefix");
 							item.OptionInfo.Suffix = reader.GetUInt16("suffix");
@@ -1336,7 +1338,7 @@ namespace Aura.Channel.Database
 					else
 						cmd.Set("bankTransferStart", item.BankTransferStart);
 					cmd.Set("bankTransferDuration", item.BankTransferDuration);
-					cmd.Set("pocket", (byte)item.Info.Pocket);
+					cmd.Set("pocket", (int)item.Info.Pocket);
 					cmd.Set("x", item.Info.X);
 					cmd.Set("y", item.Info.Y);
 					cmd.Set("color1", item.Info.Color1);

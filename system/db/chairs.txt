@@ -73,6 +73,7 @@
 { itemId: 50946, name: "Elephant Chair", propId: 45661, giantPropId: 45661 },
 { itemId: 50951, name: "Ice Forest Throne", propId: 45746, giantPropId: 45747 },
 { itemId: 50952, name: "Dead Forest Throne", propId: 45748, giantPropId: 45749 },
+{ itemId: 50953, name: "Fortune Teller's Table", propId: 45786, giantPropId: 45787 },
 { itemId: 50954, name: "Mansion Parlor Studio Set", propId: 45798, giantPropId: 0 },
 { itemId: 50955, name: "Mansion Bedroom Studio Set", propId: 45799, giantPropId: 0 },
 { itemId: 50956, name: "Crime Scene Studio Set", propId: 45797, giantPropId: 0 },
