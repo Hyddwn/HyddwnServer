@@ -50,6 +50,9 @@ namespace Aura.Channel.World.Entities.Creatures
 		// Excalibur charge time
 		public DateTime ExcaliburPrepareTime;
 
+		// Chain mastery time variables
+		public DateTime ChainStartTime;
+
 		// Backup of target's position when gathering, for run away check
 		public Position GatheringTargetPosition;
 

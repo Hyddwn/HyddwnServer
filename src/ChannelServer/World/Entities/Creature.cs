@@ -2113,6 +2113,10 @@ namespace Aura.Channel.World.Entities
 			return (min + (max - min) * multiplier);
 		}
 
+		/// <summary>
+		/// Returns random base damage for fighter attacks
+		/// </summary>
+		/// <returns></returns>
 		public float GetRndFighterDamage()
 		{
 			var totalMinDamage = 0f;

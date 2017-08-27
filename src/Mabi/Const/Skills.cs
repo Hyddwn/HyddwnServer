@@ -768,4 +768,14 @@ namespace Aura.Mabi.Const
 		Three = 3,
 		Four = 4,
 	}
+
+	/// <summary>
+	/// The time (ms) the character has to execute a skill on the given stage
+	/// eg Upon using a Stage1 skill, the character has 7 seconds to use a Stage2 skill.
+	/// </summary>
+	public enum ChainMasteryInterval : int
+	{
+		Stage2 = 7000,
+		Stage3 = 5000,
+	}
 }
