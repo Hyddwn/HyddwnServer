@@ -188,6 +188,11 @@ namespace Aura.Mabi.Const
 		public static readonly int ShadowBunshin = 263;
 
 		/// <summary>
+		/// Charging Strike effect
+		/// </summary>
+		public static readonly int ChargingStrike = 282;
+
+		/// <summary>
 		/// Used in thunder's final stage
 		/// </summary>
 		public static readonly int Thunderbolt = 298;

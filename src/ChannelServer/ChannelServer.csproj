@@ -181,6 +181,7 @@
     <Compile Include="Skills\Combat\CriticalHit.cs" />
     <Compile Include="Skills\Combat\Defense.cs" />
     <Compile Include="Skills\Combat\FinalHit.cs" />
+    <Compile Include="Skills\Fighter\ChargingStrike.cs" />
     <Compile Include="Skills\Magic\Fireball.cs" />
     <Compile Include="Skills\Combat\GlasGhaibhleannSkill.cs" />
     <Compile Include="Skills\Combat\ManaDeflector.cs" />

@@ -384,6 +384,15 @@ namespace Aura.Channel.Network.Sending
 			creature.Client.Send(packet);
 		}
 
+		public static void SkillUse(Creature creature, SkillId skillId, long entityId)
+		{
+			var packet = new Packet(Op.SkillUse, creature.EntityId);
+			packet.PutUShort((ushort)skillId);
+			packet.PutLong(entityId);
+
+			creature.Client.Send(packet);
+		}
+
 		/// <summary>
 		/// Sends SkillUse to creature's client.
 		/// </summary>

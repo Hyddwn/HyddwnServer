@@ -2113,6 +2113,36 @@ namespace Aura.Channel.World.Entities
 			return (min + (max - min) * multiplier);
 		}
 
+		public float GetRndFighterDamage()
+		{
+			var totalMinDamage = 0f;
+			var totalMaxDamage = 0f;
+
+			// Min and Max from Will stat
+			var minStatDamage = (this.Will / 3.5f);
+			var maxStatDamage = (this.Will / 3f);
+
+			// Var1: Min Damage
+			// Var2: Max Damage
+			var knuckleMasterySkill = this.Skills.Get(SkillId.KnuckleMastery);
+
+			// Get Min and Max bonus from Knuckle Mastery
+			if (knuckleMasterySkill != null)
+			{
+				totalMinDamage += knuckleMasterySkill.RankData.Var1;
+				totalMaxDamage += knuckleMasterySkill.RankData.Var2;
+			}
+
+			totalMinDamage += minStatDamage;
+			totalMaxDamage += maxStatDamage;
+
+			// Balance
+			var balance = this.BalanceBase + this.BalanceBaseMod + this.RightBalanceMod;
+
+			// Damage
+			return this.GetRndDamage(totalMinDamage, totalMaxDamage, balance);
+		}
+
 		/// <summary>
 		/// Applies damage to Life, kills creature if necessary.
 		/// </summary>
