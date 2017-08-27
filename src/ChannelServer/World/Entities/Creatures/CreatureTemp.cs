@@ -51,6 +51,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		public DateTime ExcaliburPrepareTime;
 
 		// Chain mastery time variables
+		// 7 Second interval for Stage 1 -> Stage 2 Chain
+		// 5 Second interval for Stage 2 -> Stage 3 Chain
 		public DateTime ChainStartTime;
 
 		// Backup of target's position when gathering, for run away check
