@@ -50,10 +50,11 @@ namespace Aura.Channel.World.Entities.Creatures
 		// Excalibur charge time
 		public DateTime ExcaliburPrepareTime;
 
-		// Chain mastery time variables
+		// Fighter variables
 		// 7 Second interval for Stage 1 -> Stage 2 Chain
 		// 5 Second interval for Stage 2 -> Stage 3 Chain
-		public DateTime ChainStartTime;
+		public DateTime FighterChainStartTime;
+		public int FighterChainLevel;
 
 		// Backup of target's position when gathering, for run away check
 		public Position GatheringTargetPosition;

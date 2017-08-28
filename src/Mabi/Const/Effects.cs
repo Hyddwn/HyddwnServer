@@ -193,6 +193,11 @@ namespace Aura.Mabi.Const
 		public static readonly int ChargingStrike = 282;
 
 		/// <summary>
+		/// Spinning Uppercut effect
+		/// </summary>
+		public static readonly int SpinningUppercutDebuff = 289;
+
+		/// <summary>
 		/// Used in thunder's final stage
 		/// </summary>
 		public static readonly int Thunderbolt = 298;
