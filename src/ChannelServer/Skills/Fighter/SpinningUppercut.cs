@@ -64,7 +64,7 @@ namespace Aura.Channel.Skills.Fighter
 				return false;
 
 			// Chain Check - Stage 2
-			if (creature.Temp.FighterChainLevel == 2 && DateTime.Now > creature.Temp.FighterChainStartTime.AddMilliseconds((double)ChainMasteryInterval.Stage2))
+			if (creature.Temp.FighterChainLevel != 2 || DateTime.Now > creature.Temp.FighterChainStartTime.AddMilliseconds((double)ChainMasteryInterval.Stage2))
 				return false;
 
 			// Target check
