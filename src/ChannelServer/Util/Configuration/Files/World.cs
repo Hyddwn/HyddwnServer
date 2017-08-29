@@ -67,6 +67,7 @@ namespace Aura.Channel.Util.Configuration.Files
 		public float ProficiencyRate { get; protected set; }
 		public bool GlobalBank { get; protected set; }
 		public bool ReusingPersonalShopLicenses { get; protected set; }
+		public int MaxExtraSets { get; protected set; }
 
 		public TimeSpan RebirthTime { get; protected set; }
 
@@ -146,6 +147,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.ProficiencyRate = this.GetFloat("proficiency_rate", 100);
 			this.GlobalBank = this.GetBool("global_bank", true);
 			this.ReusingPersonalShopLicenses = this.GetBool("reusing_personal_shop_licenses", false);
+			this.MaxExtraSets = this.GetInt("max_extra_sets", 3);
 
 			this.RebirthTime = TimeSpan.FromDays(this.GetInt("rebirth_time", 6));
 

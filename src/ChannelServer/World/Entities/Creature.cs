@@ -4740,6 +4740,22 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns true if creature can currently use the given pocket.
+		/// </summary>
+		/// <param name="pocket"></param>
+		/// <returns></returns>
+		public bool CanUseExtraEquipmentPocket(Pocket pocket)
+		{
+			if (!pocket.IsExtraSlot())
+				throw new ArgumentException("Pocket is not an extra slot pocket.");
+
+			var pocketId = (int)pocket;
+			var set = Math.Floor((pocketId - 2000) / 9.0);
+
+			return (this.ExtraEquipmentSetsCount > set);
+		}
+
+		/// <summary>
 		/// Extends time in which the extra sets may be used by the given
 		/// time span.
 		/// </summary>
@@ -4762,9 +4778,13 @@ namespace Aura.Channel.World.Entities
 		public bool AddExtraEquipmentSet()
 		{
 			// The client only supports 3 hotkeys for the extra slots,
-			// so we'll limit the amount you can have for now, although there
-			// doesn't seem to be a really limit.
-			if (this.ExtraEquipmentSetsCount >= 3)
+			// but it supports having way more. We'll set a hard limit of
+			// 16 for now, the absolut max our current implementation could
+			// support are 111, but who knows if devCAT won't add more
+			// stuff in between.
+			var max = Math.Min(16, ChannelServer.Instance.Conf.World.MaxExtraSets);
+
+			if (this.ExtraEquipmentSetsCount >= max)
 				return false;
 
 			// The linked pocket refers to the first pocket in a nine pocket

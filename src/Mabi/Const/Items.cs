@@ -93,25 +93,10 @@ namespace Aura.Mabi.Const
 		Accessory1HandExtra1,
 		Accessory2HandExtra1,
 
-		ArmorExtra2 = 2009,
-		GloveExtra2,
-		ShoeExtra2,
-		HeadExtra2,
-		RobeExtra2,
-		RightHandExtra2,
-		LeftHandExtra2,
-		Accessory1HandExtra2,
-		Accessory2HandExtra2,
-
-		ArmorExtra3 = 2018,
-		GloveExtra3,
-		ShoeExtra3,
-		HeadExtra3,
-		RobeExtra3,
-		RightHandExtra3,
-		LeftHandExtra3,
-		Accessory1Extra3,
-		Accessory2Extra3,
+		// The other extra sets are never referenced explicitly, and there's
+		// potentially a lot of them, so we'll leave it at the first ones,
+		// for reference. Aura assumes a max of 112 available sets, from
+		// 2000 to 2999.
 
 		ExtraEquipSlotKits = 3000,
 	}
@@ -191,6 +176,16 @@ namespace Aura.Mabi.Const
 		public static bool IsBag(this Pocket pocket)
 		{
 			return (pocket >= Pocket.ItemBags && pocket <= Pocket.ItemBagsMax);
+		}
+
+		/// <summary>
+		/// Returns true if pocket is in the extra slot range.
+		/// </summary>
+		/// <param name="pocket"></param>
+		/// <returns></returns>
+		public static bool IsExtraSlot(this Pocket pocket)
+		{
+			return (pocket >= Pocket.ArmorExtra1 && pocket < Pocket.ExtraEquipSlotKits);
 		}
 	}
 

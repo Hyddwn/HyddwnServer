@@ -40,6 +40,7 @@ namespace Aura.Channel.Util
 			Add(00, 50, "distance", "", Localization.Get("Calculates distance between two positions."), HandleDistance);
 			Add(00, 50, "partysize", "<size>", Localization.Get("Changes party max size."), HandlePartySize);
 			Add(00, -1, "help", "[command]", Localization.Get("Displays available commands and their usage."), HandleHelp);
+			Add(00, -1, "equipset", "<set (0, 1, 2, 3, ...)>", Localization.Get("Switches to the given equip set."), HandleEquipSet);
 
 			// VIPs
 			Add(01, 50, "go", "<location>", Localization.Get("Warps to pre-defined locations."), HandleGo);
@@ -2510,6 +2511,61 @@ namespace Aura.Channel.Util
 			Send.ServerMessage(sender, Localization.Get("All cool downs have been reset."));
 			if (target != sender)
 				Send.ServerMessage(target, Localization.Get("All your cool downs have been reset by {0}."), sender.Name);
+
+			return CommandResult.Okay;
+		}
+
+		private CommandResult HandleEquipSet(ChannelClient client, Creature sender, Creature target, string message, IList<string> args)
+		{
+			if (args.Count < 2)
+			{
+				Send.ServerMessage(sender, Localization.Get("Sets:"));
+				Send.ServerMessage(sender, Localization.Get("  0 - Original"));
+				Send.ServerMessage(sender, Localization.Get("  1 - Set 1"));
+				Send.ServerMessage(sender, Localization.Get("  2 - Set 2"));
+				Send.ServerMessage(sender, Localization.Get("  3 - Set 3"));
+				Send.ServerMessage(sender, Localization.Get("  ..."));
+
+				return CommandResult.Okay;
+			}
+
+			// Get sets
+			var currentSet = target.CurrentEquipmentSet;
+			var newSet = EquipmentSet.Original;
+
+			int arg;
+			if (!int.TryParse(args[1], out arg) || arg < 0 || arg > 112)
+				return CommandResult.InvalidArgument;
+
+			newSet = (EquipmentSet)(arg - 1);
+
+			// Check sets
+			if (arg > target.ExtraEquipmentSetsCount)
+			{
+				Send.ServerMessage(sender, Localization.Get("Set not available."));
+				return CommandResult.Fail;
+			}
+
+			if (currentSet == newSet)
+			{
+				Send.ServerMessage(sender, Localization.Get("Can't switch to the current set."));
+				return CommandResult.Fail;
+			}
+
+			// Swap items
+			if (currentSet != EquipmentSet.Original && newSet != EquipmentSet.Original)
+			{
+				target.SwapEquipmentSets(currentSet, EquipmentSet.Original, ExtraSlots.All);
+				currentSet = EquipmentSet.Original;
+			}
+			target.SwapEquipmentSets(currentSet, newSet, ExtraSlots.All);
+
+			sender.CurrentEquipmentSet = newSet;
+			Send.SwitchExtraEquipmentR(sender, sender.CurrentEquipmentSet);
+
+			Send.ServerMessage(sender, Localization.Get("Switched to equipment set {0}."), (int)newSet + 1);
+			if (sender != target)
+				Send.ServerMessage(target, Localization.Get("Switched to equipment set {0}."), (int)newSet + 1);
 
 			return CommandResult.Okay;
 		}
