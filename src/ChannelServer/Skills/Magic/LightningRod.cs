@@ -112,40 +112,23 @@ namespace Aura.Channel.Skills.Magic
 			// Set full charge variable
 			attacker.Temp.LightningRodFullCharge = (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3));
 
-			// Get direction for target Area
-			var direction = Mabi.MabiMath.ByteToRadian(attacker.Direction);
-
-			var attackerPos = attacker.GetPosition();
-
-			// Calculate polygon points
-			var r = MabiMath.ByteToRadian(attacker.Direction);
-			var poe = attackerPos.GetRelative(r, 800);
-			var pivot = new Point(poe.X, poe.Y);
-			var p1 = new Point(pivot.X - SkillLength / 2, pivot.Y - SkillWidth / 2);
-			var p2 = new Point(pivot.X - SkillLength / 2, pivot.Y + SkillWidth / 2);
-			var p3 = new Point(pivot.X + SkillLength / 2, pivot.Y + SkillWidth / 2);
-			var p4 = new Point(pivot.X + SkillLength / 2, pivot.Y - SkillWidth / 2);
-			p1 = this.RotatePoint(p1, pivot, r);
-			p2 = this.RotatePoint(p2, pivot, r);
-			p3 = this.RotatePoint(p3, pivot, r);
-			p4 = this.RotatePoint(p4, pivot, r);
+			// Get targets in skill area
+			Position targetPropPos;
+			var targets = SkillHelper.GetTargetableCreaturesInSkillArea(attacker, SkillLength, SkillWidth, out targetPropPos);
 
 			// TargetProp
-			var lProp = new Prop(280, attacker.RegionId, poe.X, poe.Y, MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
+			var lProp = new Prop(280, attacker.RegionId, targetPropPos.X, targetPropPos.Y, MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
 			attacker.Region.AddProp(lProp);
 
 			// Prepare Combat Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-			var targetAreaId = new Location(attacker.RegionId, poe).ToLocationId();
+			var targetAreaId = new Location(attacker.RegionId, targetPropPos).ToLocationId();
 
 			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetAreaId);
 			aAction.Set(AttackerOptions.KnockBackHit1 | AttackerOptions.UseEffect);
 			aAction.PropId = lProp.EntityId;
 			cap.Add(aAction);
-
-			// Get targets in Polygon - includes collission check
-			var targets = attacker.Region.GetCreaturesInPolygon(p1, p2, p3, p4).Where(x => attacker.CanTarget(x) && !attacker.Region.Collisions.Any(attacker.GetPosition(), x.GetPosition())).ToList();
 
 			var rnd = RandomProvider.Get();
 
@@ -213,7 +196,7 @@ namespace Aura.Channel.Skills.Magic
 
 			cap.Handle();
 
-			Send.Effect(attacker, Effect.LightningRod, LightningRodEffect.Attack, poe.X, poe.Y);
+			Send.Effect(attacker, Effect.LightningRod, LightningRodEffect.Attack, targetPropPos.X, targetPropPos.Y);
 
 			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
 			skill.Train(1); // Use the Skill
