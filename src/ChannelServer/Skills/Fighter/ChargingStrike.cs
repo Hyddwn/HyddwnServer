@@ -100,10 +100,6 @@ namespace Aura.Channel.Skills.Fighter
 
 			var target = attacker.Region.GetCreature(targetEntityId);
 
-			// Stop movement
-			attacker.StopMove();
-			target.StopMove();
-
 			var attackerPos = attacker.GetPosition();
 			var targetPos = target.GetPosition();
 
@@ -115,7 +111,10 @@ namespace Aura.Channel.Skills.Fighter
 				return;
 			}
 
-			// Range Check ???
+			// Stop movement
+			attacker.Lock(Locks.Walk | Locks.Run);
+			attacker.StopMove();
+			target.StopMove();
 
 			// Effects
 			Send.EffectDelayed(attacker, attackerPos.GetDistance(targetPos), Effect.ChargingStrike, (byte)0, targetEntityId);
@@ -180,8 +179,13 @@ namespace Aura.Channel.Skills.Fighter
 			// Death and Knockback
 			if (target.IsDead)
 			{
-				tAction.Set(TargetOptions.FinishingKnockDown);
-				attacker.Shove(target, KnockbackDistance);
+				if (target.Is(RaceStands.KnockDownable))
+				{
+					tAction.Set(TargetOptions.FinishingKnockDown);
+					attacker.Shove(target, KnockbackDistance);
+				}
+				else
+					tAction.Set(TargetOptions.Finished | TargetOptions.FinishingHit);
 			}
 			else // This skill never knocks back normally
 			{

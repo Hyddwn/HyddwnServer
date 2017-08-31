@@ -193,6 +193,12 @@ namespace Aura.Mabi.Const
 		public static readonly int ChargingStrike = 282;
 
 		/// <summary>
+		/// Drop Kick effect
+		/// </summary>
+		public static readonly int DropKick = 286;
+		public static readonly int DropKick2 = 287;
+
+		/// <summary>
 		/// Spinning Uppercut effect
 		/// </summary>
 		public static readonly int SpinningUppercutDebuff = 289;

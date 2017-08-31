@@ -67,8 +67,11 @@ namespace Aura.Channel.Skills.Fighter
 			if (creature.Temp.FighterChainLevel != 2 || DateTime.Now > creature.Temp.FighterChainStartTime.AddMilliseconds((double)ChainMasteryInterval.Stage2))
 				return false;
 
-			// Target check
-			var unkString = packet.GetString();
+			// Discard unused packet string
+			if (packet.Peek() == PacketElementType.String)
+				packet.GetString();
+
+			// No target entity ID...
 			if (packet.Peek() == PacketElementType.None)
 			{
 				Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
@@ -99,10 +102,6 @@ namespace Aura.Channel.Skills.Fighter
 		{
 			var target = attacker.Region.GetCreature(targetEntityId);
 
-			// Stop movement
-			attacker.StopMove();
-			target.StopMove();
-
 			var attackerPos = attacker.GetPosition();
 			var targetPos = target.GetPosition();
 
@@ -112,6 +111,10 @@ namespace Aura.Channel.Skills.Fighter
 				Send.SkillUseSilentCancel(attacker);
 				return;
 			}
+
+			// Stop movement
+			attacker.StopMove();
+			target.StopMove();
 
 			Send.SkillUseEntity(attacker, skill.Info.Id, targetEntityId);
 			skill.State = SkillState.Used;
@@ -130,7 +133,7 @@ namespace Aura.Channel.Skills.Fighter
 			var rnd = RandomProvider.Get();
 			if (rnd.NextDouble() * 100 < debuffChance)
 			{
-				Send.Effect(target, Effect.SpinningUppercutDebuff, (short)skill.Info.Id, 0, defDecrease, protDecrease); // *The 0 is a placeholder for an unknown value
+				Send.Effect(target, Effect.SpinningUppercutDebuff, (short)skill.Info.Id, 0, defDecrease, protDecrease);
 				target.Conditions.Activate(ConditionsC.DefProtectDebuff, extra);
 			}
 
@@ -142,7 +145,6 @@ namespace Aura.Channel.Skills.Fighter
 
 			var tAction = new TargetAction(CombatActionType.TakeHit | CombatActionType.Attacker, target, attacker, skill.Info.Id);
 			tAction.Set(TargetOptions.Result | TargetOptions.SpinningUppercut);
-			tAction.Delay = 0;
 
 			cap.Add(aAction, tAction);
 
@@ -181,15 +183,20 @@ namespace Aura.Channel.Skills.Fighter
 			// Death and Knockback
 			if (target.IsDead)
 			{
-				tAction.Set(TargetOptions.FinishingKnockDown);
-				attacker.Shove(target, KnockbackDistance);
+				if (target.Is(RaceStands.KnockDownable))
+				{
+					tAction.Set(TargetOptions.FinishingKnockDown);
+					attacker.Shove(target, KnockbackDistance);
+				}
+				else
+					tAction.Set(TargetOptions.Finished | TargetOptions.FinishingHit);
 			}
 			else
 			{
 				if (!target.IsKnockedDown)
 					target.Stability -= StabilityReduction;
 
-				if (target.IsUnstable)
+				if (target.IsUnstable && target.Is(RaceStands.KnockDownable))
 				{
 					tAction.Set(TargetOptions.KnockDown);
 					attacker.Shove(target, KnockbackDistance);

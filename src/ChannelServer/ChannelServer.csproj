@@ -182,6 +182,7 @@
     <Compile Include="Skills\Combat\Defense.cs" />
     <Compile Include="Skills\Combat\FinalHit.cs" />
     <Compile Include="Skills\Fighter\ChargingStrike.cs" />
+    <Compile Include="Skills\Fighter\DropKick.cs" />
     <Compile Include="Skills\Fighter\SpinningUppercut.cs" />
     <Compile Include="Skills\Magic\Fireball.cs" />
     <Compile Include="Skills\Combat\GlasGhaibhleannSkill.cs" />
