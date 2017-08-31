@@ -119,6 +119,10 @@ namespace Aura.Channel.Skills.Fighter
 			Send.SkillUseEntity(attacker, skill.Info.Id, targetEntityId);
 			skill.State = SkillState.Used;
 
+			// Counter
+			if (Counterattack.Handle(target, attacker))
+				return;
+
 			// Defense/Protection decrease on target
 			var debuffChance = (int)skill.RankData.Var6;
 			var defDecrease = (int)skill.RankData.Var3;

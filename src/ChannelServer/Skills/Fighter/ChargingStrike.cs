@@ -131,6 +131,13 @@ namespace Aura.Channel.Skills.Fighter
 
 			Send.EffectDelayed(attacker, attackerPos.GetDistance(targetPos), Effect.ChargingStrike, (byte)1, targetEntityId);
 
+			// Counter
+			if (Counterattack.Handle(target, attacker))
+			{
+				attacker.Conditions.Deactivate(ConditionsC.FastMove);
+				return;
+			}
+
 			// Prepare Combat Actions
 			var cap = new CombatActionPack(attacker, skill.Info.Id);
 

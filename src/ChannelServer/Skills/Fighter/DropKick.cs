@@ -94,9 +94,15 @@ namespace Aura.Channel.Skills.Fighter
 
 			skill.State = SkillState.Ready;
 
-			// Wait for animation
-			// *skill should be able to be interrupted in this time
-			Task.Delay(1000).ContinueWith(_=> { this.UseSkill(creature, skill, targetEntityId); });
+			// Wait for animation, cancel skill if the creature is stunned before the animation ends
+			Task.Delay(1000).ContinueWith(_=>
+			{
+				if (!creature.IsStunned)
+					this.UseSkill(creature, skill, targetEntityId);
+				else
+					Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
+			});
+
 			return true;
 		}
 
