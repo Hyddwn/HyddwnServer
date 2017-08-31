@@ -89,7 +89,7 @@ namespace Aura.Channel.Skills.Fighter
 
 			// Effects
 			Send.Effect(creature, Effect.DropKick, (byte)10);
-			Send.EffectDelayed(creature, 100, Effect.DropKick2, "G16_F_Skill_D-kick_ready", 5000, 0.0f, (byte)0);
+			Send.EffectDelayed(creature, 100, Effect.DropKick2, "G16_F_Skill_D_kick_ready", 5000, 0.0f, (byte)0);
 			Send.EffectDelayed(creature, 200, Effect.DropKick, (byte)0, creature.EntityId);
 
 			skill.State = SkillState.Ready;
