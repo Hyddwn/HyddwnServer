@@ -119,25 +119,11 @@ namespace Aura.Channel.Skills.Combat
 			aAction.Stun = UseStun;
 			cap.Add(aAction);
 
-			var attackerPosition = attacker.GetPosition();
-
-			// Calculate rectangular target area
-			var targetAreaPos = new Position(targetAreaEntityId);
-			var poe = targetAreaPos.GetRelative(attackerPosition, -800);
-			var r = (Math.PI / 2) + Math.Atan2(attackerPosition.Y - targetAreaPos.Y, attackerPosition.X - targetAreaPos.X);
-			var pivot = new Point(poe.X, poe.Y);
-			var p1 = new Point(pivot.X - LaserRectWidth / 2, pivot.Y - LaserRectHeight / 2);
-			var p2 = new Point(pivot.X - LaserRectWidth / 2, pivot.Y + LaserRectHeight / 2);
-			var p3 = new Point(pivot.X + LaserRectWidth / 2, pivot.Y + LaserRectHeight / 2);
-			var p4 = new Point(pivot.X + LaserRectWidth / 2, pivot.Y - LaserRectHeight / 2);
-			p1 = this.RotatePoint(p1, pivot, r);
-			p2 = this.RotatePoint(p2, pivot, r);
-			p3 = this.RotatePoint(p3, pivot, r);
-			p4 = this.RotatePoint(p4, pivot, r);
+			// Get targets in skill area
+			var targets = SkillHelper.GetTargetableCreaturesInSkillArea(attacker, LaserRectHeight, LaserRectWidth);
 
 			// Attack targets
-			var targets = attacker.Region.GetCreaturesInPolygon(p1, p2, p3, p4);
-			foreach (var target in targets.Where(cr => !cr.IsDead && (!cr.Has(CreatureStates.Npc) || cr == attacker.Target)))
+			foreach (var target in targets)
 			{
 				var targetPosition = target.GetPosition();
 
