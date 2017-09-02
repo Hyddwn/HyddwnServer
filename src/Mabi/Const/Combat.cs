@@ -143,9 +143,9 @@ namespace Aura.Mabi.Const
 		FinishingHit = 0x1000,
 
 		/// <summary>
-		/// Unknown, only seen in Spinning Uppercut
+		/// Unknown, only seen in Fighter skills
 		/// </summary>
-		SpinningUppercut = 0x800000,
+		FighterUnk = 0x800000,
 
 		/// <summary>
 		/// For blue numbers

@@ -154,7 +154,7 @@ namespace Aura.Channel.Skills.Fighter
 			aAction.Set(AttackerOptions.Result);
 
 			var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-			tAction.Set(TargetOptions.Result | TargetOptions.SpinningUppercut);
+			tAction.Set(TargetOptions.Result | TargetOptions.FighterUnk);
 
 			cap.Add(aAction, tAction);
 
