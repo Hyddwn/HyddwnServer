@@ -3,22 +3,22 @@
 
 namespace Aura.Shared.Util.Configuration.Files
 {
-    /// <summary>
-    ///     Represents premium.conf
-    /// </summary>
-    public class PremiumConfFile : ConfFile
-    {
-        public bool FreeInventoryPlus { get; protected set; }
-        public bool FreePremium { get; protected set; }
-        public bool FreeVip { get; protected set; }
+	/// <summary>
+	/// Represents premium.conf
+	/// </summary>
+	public class PremiumConfFile : ConfFile
+	{
+		public bool FreeInventoryPlus { get; protected set; }
+		public bool FreePremium { get; protected set; }
+		public bool FreeVip { get; protected set; }
 
-        public void Load()
-        {
-            Require("system/conf/premium.conf");
+		public void Load()
+		{
+			this.Require("system/conf/premium.conf");
 
-            FreeInventoryPlus = GetBool("free_inventory_plus", true);
-            FreePremium = GetBool("free_premium", false);
-            FreeVip = GetBool("free_vip", false);
-        }
-    }
+			this.FreeInventoryPlus = this.GetBool("free_inventory_plus", true);
+			this.FreePremium = this.GetBool("free_premium", false);
+			this.FreeVip = this.GetBool("free_vip", false);
+		}
+	}
 }

@@ -6,27 +6,27 @@ using System.Threading;
 
 namespace Aura.Shared.Util.Configuration.Files
 {
-    /// <summary>
-    ///     Represents localization.conf
-    /// </summary>
-    public class LocalizationConfFile : ConfFile
-    {
-        public string Language { get; protected set; }
-        public string Culture { get; protected set; }
-        public string CultureUi { get; protected set; }
+	/// <summary>
+	/// Represents localization.conf
+	/// </summary>
+	public class LocalizationConfFile : ConfFile
+	{
+		public string Language { get; protected set; }
+		public string Culture { get; protected set; }
+		public string CultureUi { get; protected set; }
 
-        public void Load()
-        {
-            Require("system/conf/localization.conf");
+		public void Load()
+		{
+			this.Require("system/conf/localization.conf");
 
-            Language = GetString("language", "en-US");
-            Culture = GetString("culture", "en-US");
-            CultureUi = GetString("culture_ui", "en-US");
+			this.Language = this.GetString("language", "en-US");
+			this.Culture = this.GetString("culture", "en-US");
+			this.CultureUi = this.GetString("culture_ui", "en-US");
 
-            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Culture);
-            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo(CultureUi);
-            Thread.CurrentThread.CurrentCulture = CultureInfo.DefaultThreadCurrentCulture;
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.DefaultThreadCurrentUICulture;
-        }
-    }
+			CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(this.Culture);
+			CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo(this.CultureUi);
+			Thread.CurrentThread.CurrentCulture = CultureInfo.DefaultThreadCurrentCulture;
+			Thread.CurrentThread.CurrentUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+		}
+	}
 }

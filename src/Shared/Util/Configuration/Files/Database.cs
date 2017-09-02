@@ -3,27 +3,27 @@
 
 namespace Aura.Shared.Util.Configuration.Files
 {
-    /// <summary>
-    ///     Represents database.conf
-    /// </summary>
-    public class DatabaseConfFile : ConfFile
-    {
-        public string Host { get; protected set; }
-        public int Port { get; protected set; }
-        public string User { get; protected set; }
-        public string Pass { get; protected set; }
-        public string Db { get; protected set; }
+	/// <summary>
+	/// Represents database.conf
+	/// </summary>
+	public class DatabaseConfFile : ConfFile
+	{
+		public string Host { get; protected set; }
+		public int Port { get; protected set; }
+		public string User { get; protected set; }
+		public string Pass { get; protected set; }
+		public string Db { get; protected set; }
+		
 
+		public void Load()
+		{
+			this.Require("system/conf/database.conf");
 
-        public void Load()
-        {
-            Require("system/conf/database.conf");
-
-            Host = GetString("host", "127.0.0.1");
-            Port = GetInt("port", 3306);
-            User = GetString("user", "root");
-            Pass = GetString("pass", "");
-            Db = GetString("database", "aura");
-        }
-    }
+			this.Host = this.GetString("host", "127.0.0.1");
+			this.Port = this.GetInt("port", 3306);
+			this.User = this.GetString("user", "root");
+			this.Pass = this.GetString("pass", "");
+			this.Db = this.GetString("database", "aura");
+		}
+	}
 }
