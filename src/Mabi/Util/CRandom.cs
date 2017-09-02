@@ -7,91 +7,92 @@
 */
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Aura.Mabi.Util
 {
-	/// <summary>
-	/// Exception used in CRandom to notify caller about an expected bug
-	/// where no random number can be generated.
-	/// </summary>
-	/// <remarks>
-	/// There's a bug in this version of MT that Mabi uses, where the result of
-	/// its random functions is "truly" random, because it accesses memory out of
-	/// bounds, where anything could be. Instead of returning random numbers
-	/// we throw an Exception in this case, to let the caller know what's happening,
-	/// and decide how to handle it.
-	/// </remarks>
-	public class CRandomException : Exception
-	{
-	}
+    /// <summary>
+    ///     Exception used in CRandom to notify caller about an expected bug
+    ///     where no random number can be generated.
+    /// </summary>
+    /// <remarks>
+    ///     There's a bug in this version of MT that Mabi uses, where the result of
+    ///     its random functions is "truly" random, because it accesses memory out of
+    ///     bounds, where anything could be. Instead of returning random numbers
+    ///     we throw an Exception in this case, to let the caller know what's happening,
+    ///     and decide how to handle it.
+    /// </remarks>
+    public class CRandomException : Exception
+    {
+    }
 
-	public class CRandom
-	{
-		private const int N = 624;
-		private uint[] _mt;
-		private int _mti;
-		private uint _mt_ptr;
+    public class CRandom
+    {
+        private const int N = 624;
+        private readonly uint[] _mt;
+        private uint _mt_ptr;
+        private int _mti;
 
-		public CRandom(uint seed)
-		{
-			_mti = 0;
-			_mt = new uint[N];
+        public CRandom(uint seed)
+        {
+            _mti = 0;
+            _mt = new uint[N];
 
-			var x = seed;
-			for (var i = 0; i < N; i++)
-			{
-				_mt[i] = x & 0xFFFF0000;
-				x = (69069 * x) & 0xFFFFFFFF;
-				_mt[i] |= x >> 16;
-				x = 69069 * x + 69070;
-			}
-			this.Reload();
-		}
+            var x = seed;
+            for (var i = 0; i < N; i++)
+            {
+                _mt[i] = x & 0xFFFF0000;
+                x = (69069 * x) & 0xFFFFFFFF;
+                _mt[i] |= x >> 16;
+                x = 69069 * x + 69070;
+            }
+            Reload();
+        }
 
-		private void Reload()
-		{
-			for (var i = 0; i < N; i++)
-			{
-				var y = (_mt[i] & 0x80000000) + (_mt[(i + 1) % N] & 0x7FFFFFFF);
-				_mt[i] = _mt[(i + 397) % N] ^ (y >> 1);
-				if (y % 2 != 0)
-					_mt[i] ^= 2567483615;
-			}
-			_mti = N;
-			_mt_ptr = 0;
-		}
+        private void Reload()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                var y = (_mt[i] & 0x80000000) + (_mt[(i + 1) % N] & 0x7FFFFFFF);
+                _mt[i] = _mt[(i + 397) % N] ^ (y >> 1);
+                if (y % 2 != 0)
+                    _mt[i] ^= 2567483615;
+            }
+            _mti = N;
+            _mt_ptr = 0;
+        }
 
-		public uint RandomU32()
-		{
-			var temp_i = _mti--;
-			if (temp_i == 0)
-				Reload();
+        public uint RandomU32()
+        {
+            var temp_i = _mti--;
+            if (temp_i == 0)
+                Reload();
 
-			uint y = 0;
-			if (_mt_ptr < N)
-				y = _mt[_mt_ptr++];
-			else
-			{
-				++_mt_ptr;
-				throw new CRandomException();
-			}
+            uint y = 0;
+            if (_mt_ptr < N)
+            {
+                y = _mt[_mt_ptr++];
+            }
+            else
+            {
+                ++_mt_ptr;
+                throw new CRandomException();
+            }
 
-			y ^= (y >> 11);
-			y ^= (y << 7) & 0x9D2C5680U;
-			y ^= (y << 15) & 0xEFC60000U;
-			y ^= (y >> 18);
-			return y;
-		}
+            y ^= y >> 11;
+            y ^= (y << 7) & 0x9D2C5680U;
+            y ^= (y << 15) & 0xEFC60000U;
+            y ^= y >> 18;
+            return y;
+        }
 
-		public float RandomF32()
-		{
-			return (float)((this.RandomU32() & 0x7FFFFFFF) * 4.656612873077393e-10);
-		}
+        public float RandomF32()
+        {
+            return (float) ((RandomU32() & 0x7FFFFFFF) * 4.656612873077393e-10);
+        }
 
-		public float RandomF32(float start, float end)
-		{
-			return this.RandomF32() * (end - start) + start;
-		}
-	}
+        public float RandomF32(float start, float end)
+        {
+            return RandomF32() * (end - start) + start;
+        }
+    }
 }

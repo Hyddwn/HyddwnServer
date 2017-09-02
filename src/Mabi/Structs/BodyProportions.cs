@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 
 namespace Aura.Mabi.Structs
 {
-	[StructLayout(LayoutKind.Sequential, Pack = 1)]
-	public struct BodyProportions
-	{
-		public float Height;
-		public float Weight;
-		public float Upper;
-		public float Lower;
-	}
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct BodyProportions
+    {
+        public float Height;
+        public float Weight;
+        public float Upper;
+        public float Lower;
+    }
 }

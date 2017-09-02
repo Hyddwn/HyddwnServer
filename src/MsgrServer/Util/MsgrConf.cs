@@ -1,45 +1,44 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using Aura.Shared.Util;
-using Aura.Shared.Util.Configuration;
 using System;
+using Aura.Shared.Util.Configuration;
 
 namespace Aura.Msgr.Util
 {
-	public class MsgrConf : BaseConf
-	{
-		/// <summary>
-		/// msgr.conf
-		/// </summary>
-		public MsgrConfFile Msgr { get; protected set; }
+    public class MsgrConf : BaseConf
+    {
+        public MsgrConf()
+        {
+            Msgr = new MsgrConfFile();
+        }
 
-		public MsgrConf()
-		{
-			this.Msgr = new MsgrConfFile();
-		}
+        /// <summary>
+        ///     msgr.conf
+        /// </summary>
+        public MsgrConfFile Msgr { get; protected set; }
 
-		public override void Load()
-		{
-			this.LoadDefault();
-			this.Msgr.Load();
-		}
-	}
+        public override void Load()
+        {
+            LoadDefault();
+            Msgr.Load();
+        }
+    }
 
-	/// <summary>
-	/// Represents msgr.conf
-	/// </summary>
-	public class MsgrConfFile : ConfFile
-	{
-		public int Port { get; protected set; }
-		public int MaxFriends { get; protected set; }
+    /// <summary>
+    ///     Represents msgr.conf
+    /// </summary>
+    public class MsgrConfFile : ConfFile
+    {
+        public int Port { get; protected set; }
+        public int MaxFriends { get; protected set; }
 
-		public void Load()
-		{
-			this.Require("system/conf/msgr.conf");
+        public void Load()
+        {
+            Require("system/conf/msgr.conf");
 
-			this.Port = this.GetInt("port", 8002);
-			this.MaxFriends = Math.Max(0, this.GetInt("max_friends", 0));
-		}
-	}
+            Port = GetInt("port", 8002);
+            MaxFriends = Math.Max(0, GetInt("max_friends", 0));
+        }
+    }
 }

@@ -3,11 +3,11 @@
 
 namespace Aura.Mabi.Const
 {
-	public static class TitleId
-	{
-		public const ushort Guild = 50000;
-		public const ushort GM = 60000;
-		public const ushort devCAT = 60001;
-		public const ushort devDOG = 60002;
-	}
+    public static class TitleId
+    {
+        public const ushort Guild = 50000;
+        public const ushort GM = 60000;
+        public const ushort devCAT = 60001;
+        public const ushort devDOG = 60002;
+    }
 }
