@@ -65,10 +65,7 @@ namespace Aura.Channel.Skills.Fighter
 			// Heavy Armor check
 			var chainMasterySkill = creature.Skills.Get(SkillId.ChainMastery);
 			if (creature.HasEquipped("/heavyarmor/") && (chainMasterySkill == null || chainMasterySkill.RankData.Var3 == 0))
-			{
-				Send.Notice(creature, Localization.Get("You cannot use this skill with Heavy Armor equipped."));
 				return false;
-			}
 
 			// Discard unused packet string
 			if (packet.Peek() == PacketElementType.String)
