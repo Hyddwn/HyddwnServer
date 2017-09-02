@@ -3,13 +3,13 @@
 
 namespace Aura.Shared.Scripting.Scripts
 {
-    public interface IScript
-    {
-        bool Init();
-    }
+	public interface IScript
+	{
+		bool Init();
+	}
 
-    public interface IAutoLoader
-    {
-        void AutoLoad();
-    }
+	public interface IAutoLoader
+	{
+		void AutoLoad();
+	}
 }

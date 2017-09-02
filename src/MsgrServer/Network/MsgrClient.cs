@@ -5,75 +5,71 @@ using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Msgr.Database;
 using Aura.Shared.Network;
+using System.Linq;
 
 namespace Aura.Msgr.Network
 {
-    public class MsgrClient : BaseClient
-    {
-        public User User { get; set; }
+	public class MsgrClient : BaseClient
+	{
+		public User User { get; set; }
 
-        protected override void EncodeBuffer(byte[] buffer)
-        {
-        }
+		protected override void EncodeBuffer(byte[] buffer)
+		{
+		}
 
-        public override void DecodeBuffer(byte[] buffer)
-        {
-        }
+		public override void DecodeBuffer(byte[] buffer)
+		{
+		}
 
-        protected override byte[] BuildPacket(Packet packet)
-        {
-            var packetSize = packet.GetSize();
+		protected override byte[] BuildPacket(Packet packet)
+		{
+			var packetSize = packet.GetSize();
 
-            // Calculate header size
-            var headerSize = 3;
-            var n = packetSize;
-            do
-            {
-                headerSize++;
-                n >>= 7;
-            } while (n != 0);
+			// Calculate header size
+			var headerSize = 3;
+			int n = packetSize;
+			do { headerSize++; n >>= 7; } while (n != 0);
 
-            // Write header
-            var result = new byte[headerSize + packetSize];
-            result[0] = 0x55;
-            result[1] = 0x12;
-            result[2] = 0x00;
+			// Write header
+			var result = new byte[headerSize + packetSize];
+			result[0] = 0x55;
+			result[1] = 0x12;
+			result[2] = 0x00;
 
-            // Length
-            var ptr = 3;
-            n = packetSize;
-            do
-            {
-                result[ptr++] = (byte) (n > 0x7F ? 0x80 | (n & 0xFF) : n & 0xFF);
-                n >>= 7;
-            } while (n != 0);
+			// Length
+			var ptr = 3;
+			n = packetSize;
+			do
+			{
+				result[ptr++] = (byte)(n > 0x7F ? (0x80 | (n & 0xFF)) : n & 0xFF);
+				n >>= 7;
+			}
+			while (n != 0);
 
-            // Write packet
-            packet.Build(ref result, ptr);
+			// Write packet
+			packet.Build(ref result, ptr);
 
-            return result;
-        }
+			return result;
+		}
 
-        public override void CleanUp()
-        {
-            if (User == null)
-                return;
+		public override void CleanUp()
+		{
+			if (this.User == null)
+				return;
 
-            MsgrServer.Instance.UserManager.Remove(User);
+			MsgrServer.Instance.UserManager.Remove(this.User);
 
-            // Notify friends about user going offline
-            var friendUsers = MsgrServer.Instance.UserManager.Get(User.GetFriendIds());
-            if (friendUsers.Count != 0)
-                Network.Send.FriendOffline(friendUsers, User);
+			// Notify friends about user going offline
+			var friendUsers = MsgrServer.Instance.UserManager.Get(this.User.GetFriendIds());
+			if (friendUsers.Count != 0)
+				Network.Send.FriendOffline(friendUsers, this.User);
 
-            var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(User.CharacterId);
-            if (guild != null)
-            {
-                var member = guild.GetMember(User.CharacterId);
-                GuildManager.ForOnlineMembers(guild,
-                    memberUser =>
-                        Network.Send.GuildMemberState(memberUser.Client, guild, member, User, ContactStatus.Offline));
-            }
-        }
-    }
+			var guild = MsgrServer.Instance.GuildManager.FindGuildWithMember(this.User.CharacterId);
+			if (guild != null)
+			{
+				var member = guild.GetMember(this.User.CharacterId);
+				GuildManager.ForOnlineMembers(guild, memberUser => Network.Send.GuildMemberState(memberUser.Client, guild, member, this.User, ContactStatus.Offline));
+			}
+		}
+	}
 }
