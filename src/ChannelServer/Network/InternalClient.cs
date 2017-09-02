@@ -3,19 +3,19 @@
 
 namespace Aura.Channel.Network
 {
-	/// <summary>
-	/// A special ChannelClient, with the encryption reversed
-	/// </summary>
-	public class InternalClient : ChannelClient
-	{
-		protected override void EncodeBuffer(byte[] buffer)
-		{
-			this.Crypto.FromClient(buffer, 6, buffer.Length - 4);
-		}
+    /// <summary>
+    ///     A special ChannelClient, with the encryption reversed
+    /// </summary>
+    public class InternalClient : ChannelClient
+    {
+        protected override void EncodeBuffer(byte[] buffer)
+        {
+            Crypto.FromClient(buffer, 6, buffer.Length - 4);
+        }
 
-		public override void DecodeBuffer(byte[] buffer)
-		{
-			this.Crypto.FromServer(buffer);
-		}
-	}
+        public override void DecodeBuffer(byte[] buffer)
+        {
+            Crypto.FromServer(buffer);
+        }
+    }
 }

@@ -3,24 +3,24 @@
 
 namespace Aura.Channel.World.Dungeons.Generation
 {
-	public class MazeRoomInternal
-	{
-		public int[] Directions { get; set; }
-		public bool IsOnCriticalPath { get; set; }
-		public int VisitedCount { get; set; }
-		public bool IsReserved { get; set; }
+    public class MazeRoomInternal
+    {
+        public MazeRoomInternal()
+        {
+            Directions = new[] {0, 0, 0, 0};
+        }
 
-		public bool Visited { get { return (this.VisitedCount != 0); } }
-		public bool Occupied { get { return (this.Visited || this.IsReserved); } }
+        public int[] Directions { get; set; }
+        public bool IsOnCriticalPath { get; set; }
+        public int VisitedCount { get; set; }
+        public bool IsReserved { get; set; }
 
-		public MazeRoomInternal()
-		{
-			this.Directions = new int[] { 0, 0, 0, 0 };
-		}
+        public bool Visited => VisitedCount != 0;
+        public bool Occupied => Visited || IsReserved;
 
-		public int GetPassageType(int direction)
-		{
-			return this.Directions[direction];
-		}
-	}
+        public int GetPassageType(int direction)
+        {
+            return Directions[direction];
+        }
+    }
 }

@@ -7,48 +7,48 @@ using Newtonsoft.Json.Linq;
 
 namespace Aura.Data.Database
 {
-	[Serializable]
-	public class ArtisanUpgradeData
-	{
-		public int Id { get; set; }
+    [Serializable]
+    public class ArtisanUpgradeData
+    {
+        public ArtisanUpgradeData()
+        {
+            Random = new List<int>();
+            Always = new List<int>();
+        }
 
-		/// <summary>
-		/// Option sets to be randomly applied to an item.
-		/// </summary>
-		public List<int> Random { get; set; }
+        public int Id { get; set; }
 
-		/// <summary>
-		/// Option sets that will always be applied to an item.
-		/// </summary>
-		public List<int> Always { get; set; }
+        /// <summary>
+        ///     Option sets to be randomly applied to an item.
+        /// </summary>
+        public List<int> Random { get; set; }
 
-		public ArtisanUpgradeData()
-		{
-			this.Random = new List<int>();
-			this.Always = new List<int>();
-		}
-	}
+        /// <summary>
+        ///     Option sets that will always be applied to an item.
+        /// </summary>
+        public List<int> Always { get; set; }
+    }
 
-	public class ArtisanUpgradesDb : DatabaseJsonIndexed<int, ArtisanUpgradeData>
-	{
-		protected override void ReadEntry(JObject entry)
-		{
-			entry.AssertNotMissing("id");
+    public class ArtisanUpgradesDb : DatabaseJsonIndexed<int, ArtisanUpgradeData>
+    {
+        protected override void ReadEntry(JObject entry)
+        {
+            entry.AssertNotMissing("id");
 
-			var data = new ArtisanUpgradeData()
-			{
-				Id = entry.ReadInt("id")
-			};
+            var data = new ArtisanUpgradeData
+            {
+                Id = entry.ReadInt("id")
+            };
 
-			if (entry.ContainsKey("random"))
-				foreach (var setid in entry["random"])
-					data.Random.Add((int)setid);
+            if (entry.ContainsKey("random"))
+                foreach (var setid in entry["random"])
+                    data.Random.Add((int) setid);
 
-			if (entry.ContainsKey("always"))
-				foreach (var setid in entry["always"])
-					data.Always.Add((int)setid);
+            if (entry.ContainsKey("always"))
+                foreach (var setid in entry["always"])
+                    data.Always.Add((int) setid);
 
-			this.Entries[data.Id] = data;
-		}
-	}
+            Entries[data.Id] = data;
+        }
+    }
 }

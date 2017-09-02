@@ -3,10 +3,10 @@
 
 namespace Aura.Mabi.Const
 {
-	public enum RebirthLocation : byte
-	{
-		Last = 0,
-		Tir = 1,
-		Iria = 2,
-	}
+    public enum RebirthLocation : byte
+    {
+        Last = 0,
+        Tir = 1,
+        Iria = 2
+    }
 }

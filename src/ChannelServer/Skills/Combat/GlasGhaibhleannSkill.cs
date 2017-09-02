@@ -1,180 +1,171 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
+using System.Drawing;
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Magic;
-using Aura.Channel.World;
 using Aura.Channel.World.Entities;
-using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
-using Aura.Shared.Network;
-using Aura.Shared.Util;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aura.Channel.Skills.Combat
 {
-	/// <summary>
-	/// Glas Ghaibhleann's laser skill.
-	/// </summary>
-	/// <remarks>
-	/// Since this is a monster skill, the implementation is based on guesses.
-	/// It works, but might not be 100% correct.
-	/// 
-	/// I haven't seen a log of a successful hit of this skill yet.
-	/// </remarks>
-	[Skill(SkillId.GlasGhaibhleannSkill)]
-	public class GlasGhaibhleannSkill : StandardPrepareHandler, IUseable
-	{
-		/// <summary>
-		/// Time in milliseconds the user is being stunned for.
-		/// </summary>
-		private const int UseStun = 800;
+    /// <summary>
+    ///     Glas Ghaibhleann's laser skill.
+    /// </summary>
+    /// <remarks>
+    ///     Since this is a monster skill, the implementation is based on guesses.
+    ///     It works, but might not be 100% correct.
+    ///     I haven't seen a log of a successful hit of this skill yet.
+    /// </remarks>
+    [Skill(SkillId.GlasGhaibhleannSkill)]
+    public class GlasGhaibhleannSkill : StandardPrepareHandler, IUseable
+    {
+        /// <summary>
+        ///     Time in milliseconds the user is being stunned for.
+        /// </summary>
+        private const int UseStun = 800;
 
-		/// <summary>
-		/// Time in milliseconds targets are being stunned for.
-		/// </summary>
-		private const int TargetStun = 3000; // ?
+        /// <summary>
+        ///     Time in milliseconds targets are being stunned for.
+        /// </summary>
+        private const int TargetStun = 3000; // ?
 
-		/// <summary>
-		/// Units the enemy is knocked back.
-		/// </summary>
-		private const int KnockbackDistance = 450;
+        /// <summary>
+        ///     Units the enemy is knocked back.
+        /// </summary>
+        private const int KnockbackDistance = 450;
 
-		/// <summary>
-		/// Width of the laser area of effect.
-		/// </summary>
-		private const int LaserRectWidth = 1000;
+        /// <summary>
+        ///     Width of the laser area of effect.
+        /// </summary>
+        private const int LaserRectWidth = 1000;
 
-		/// <summary>
-		/// Height of the laser area of effect.
-		/// </summary>
-		private const int LaserRectHeight = 400;
+        /// <summary>
+        ///     Height of the laser area of effect.
+        /// </summary>
+        private const int LaserRectHeight = 400;
 
-		/// <summary>
-		/// Preapres the skill.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		/// <returns></returns>
-		public override bool Prepare(Creature creature, Skill skill, Packet packet)
-		{
-			creature.StopMove();
+        /// <summary>
+        ///     Handles skill usage.
+        /// </summary>
+        /// <param name="attacker"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        public void Use(Creature attacker, Skill skill, Packet packet)
+        {
+            var targetAreaEntityId = packet.GetLong();
+            Use(attacker, skill, targetAreaEntityId);
+        }
 
-			Send.SkillInitEffect(creature, "");
-			Send.UseMotion(creature, 10, 2);
-			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
+        /// <summary>
+        ///     Preapres the skill.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public override bool Prepare(Creature creature, Skill skill, Packet packet)
+        {
+            creature.StopMove();
 
-			return true;
-		}
+            Send.SkillInitEffect(creature, "");
+            Send.UseMotion(creature, 10, 2);
+            Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
-		/// <summary>
-		/// Readies the skill.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		/// <returns></returns>
-		public override bool Ready(Creature creature, Skill skill, Packet packet)
-		{
-			Send.Effect(creature, 5, (byte)0);
-			Send.SkillReady(creature, skill.Info.Id);
+            return true;
+        }
 
-			return true;
-		}
+        /// <summary>
+        ///     Readies the skill.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public override bool Ready(Creature creature, Skill skill, Packet packet)
+        {
+            Send.Effect(creature, 5, (byte) 0);
+            Send.SkillReady(creature, skill.Info.Id);
 
-		/// <summary>
-		/// Handles skill usage.
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		public void Use(Creature attacker, Skill skill, Packet packet)
-		{
-			var targetAreaEntityId = packet.GetLong();
-			this.Use(attacker, skill, targetAreaEntityId);
-		}
+            return true;
+        }
 
-		/// <summary>
-		/// Handles skill usage.
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <param name="skill"></param>
-		/// <param name="targetAreaEntityId"></param>
-		public void Use(Creature attacker, Skill skill, long targetAreaEntityId)
-		{
-			Send.Effect(attacker, 5, (byte)1, targetAreaEntityId);
+        /// <summary>
+        ///     Handles skill usage.
+        /// </summary>
+        /// <param name="attacker"></param>
+        /// <param name="skill"></param>
+        /// <param name="targetAreaEntityId"></param>
+        public void Use(Creature attacker, Skill skill, long targetAreaEntityId)
+        {
+            Send.Effect(attacker, 5, (byte) 1, targetAreaEntityId);
 
-			var cap = new CombatActionPack(attacker, skill.Info.Id);
+            var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-			var aAction = new AttackerAction(CombatActionType.Attacker, attacker, targetAreaEntityId);
-			aAction.Options |= AttackerOptions.Result;
-			aAction.Stun = UseStun;
-			cap.Add(aAction);
+            var aAction = new AttackerAction(CombatActionType.Attacker, attacker, targetAreaEntityId);
+            aAction.Options |= AttackerOptions.Result;
+            aAction.Stun = UseStun;
+            cap.Add(aAction);
 
-			// Get targets in skill area
-			var targets = SkillHelper.GetTargetableCreaturesInSkillArea(attacker, LaserRectHeight, LaserRectWidth);
+            // Get targets in skill area
+            var targets = SkillHelper.GetTargetableCreaturesInSkillArea(attacker, LaserRectHeight, LaserRectWidth);
 
-			// Attack targets
-			foreach (var target in targets)
-			{
-				var targetPosition = target.GetPosition();
+            // Attack targets
+            foreach (var target in targets)
+            {
+                var targetPosition = target.GetPosition();
 
-				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-				tAction.Options = TargetOptions.Result | TargetOptions.KnockDown;
-				tAction.Stun = TargetStun;
-				tAction.Delay = 1200;
-				cap.Add(tAction);
+                var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
+                tAction.Options = TargetOptions.Result | TargetOptions.KnockDown;
+                tAction.Stun = TargetStun;
+                tAction.Delay = 1200;
+                cap.Add(tAction);
 
-				// Var2: 300/1000, based on rank. Could be damage?
-				var damage = skill.RankData.Var2;
+                // Var2: 300/1000, based on rank. Could be damage?
+                var damage = skill.RankData.Var2;
 
-				// Modify damage
-				CriticalHit.Handle(attacker, attacker.GetTotalCritChance(target.Protection), ref damage, tAction);
-				SkillHelper.HandleDefenseProtection(target, ref damage);
-				SkillHelper.HandleConditions(attacker, target, ref damage);
-				ManaShield.Handle(target, ref damage, tAction);
+                // Modify damage
+                CriticalHit.Handle(attacker, attacker.GetTotalCritChance(target.Protection), ref damage, tAction);
+                SkillHelper.HandleDefenseProtection(target, ref damage);
+                SkillHelper.HandleConditions(attacker, target, ref damage);
+                ManaShield.Handle(target, ref damage, tAction);
 
-				// Apply damage
-				if (damage > 0)
-				{
-					target.TakeDamage(tAction.Damage = 300, attacker);
-					SkillHelper.HandleInjury(attacker, target, damage);
-				}
-				target.Stability = Creature.MinStability;
+                // Apply damage
+                if (damage > 0)
+                {
+                    target.TakeDamage(tAction.Damage = 300, attacker);
+                    SkillHelper.HandleInjury(attacker, target, damage);
+                }
+                target.Stability = Creature.MinStability;
 
-				// Aggro
-				target.Aggro(attacker);
+                // Aggro
+                target.Aggro(attacker);
 
-				// Check death
-				if (target.IsDead)
-					tAction.Options |= TargetOptions.FinishingKnockDown;
+                // Check death
+                if (target.IsDead)
+                    tAction.Options |= TargetOptions.FinishingKnockDown;
 
-				// Knock back
-				attacker.Shove(target, KnockbackDistance);
-			}
+                // Knock back
+                attacker.Shove(target, KnockbackDistance);
+            }
 
-			cap.Handle();
+            cap.Handle();
 
-			Send.SkillUse(attacker, skill.Info.Id, 0);
-		}
+            Send.SkillUse(attacker, skill.Info.Id, 0);
+        }
 
-		private Point RotatePoint(Point point, Point pivot, double radians)
-		{
-			var cosTheta = Math.Cos(radians);
-			var sinTheta = Math.Sin(radians);
+        private Point RotatePoint(Point point, Point pivot, double radians)
+        {
+            var cosTheta = Math.Cos(radians);
+            var sinTheta = Math.Sin(radians);
 
-			var x = (int)(cosTheta * (point.X - pivot.X) - sinTheta * (point.Y - pivot.Y) + pivot.X);
-			var y = (int)(sinTheta * (point.X - pivot.X) + cosTheta * (point.Y - pivot.Y) + pivot.Y);
+            var x = (int) (cosTheta * (point.X - pivot.X) - sinTheta * (point.Y - pivot.Y) + pivot.X);
+            var y = (int) (sinTheta * (point.X - pivot.X) + cosTheta * (point.Y - pivot.Y) + pivot.Y);
 
-			return new Point(x, y);
-		}
-	}
+            return new Point(x, y);
+        }
+    }
 }

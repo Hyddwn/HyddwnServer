@@ -12,162 +12,165 @@ using Aura.Shared.Util;
 
 namespace Aura.Channel.Skills.Hidden
 {
-	/// <summary>
-	/// Handler for hidden guild stone placement skill, casted when using
-	/// Guild Stone Installation Permit item.
-	/// </summary>
-	[Skill(SkillId.HiddenGuildStoneSetting)]
-	public class HiddenGuildStoneSetting : IPreparable, ICancelable, IUseable, ICompletable
-	{
-		/// <summary>
-		/// Minimum distance to other stones.
-		/// </summary>
-		private const int MinStoneDistance = 1000;
+    /// <summary>
+    ///     Handler for hidden guild stone placement skill, casted when using
+    ///     Guild Stone Installation Permit item.
+    /// </summary>
+    [Skill(SkillId.HiddenGuildStoneSetting)]
+    public class HiddenGuildStoneSetting : IPreparable, ICancelable, IUseable, ICompletable
+    {
+        /// <summary>
+        ///     Minimum distance to other stones.
+        /// </summary>
+        private const int MinStoneDistance = 1000;
 
-		/// <summary>
-		/// Maximum distance between character and stone.
-		/// </summary>
-		private const int MaxStoneDistance = 500;
+        /// <summary>
+        ///     Maximum distance between character and stone.
+        /// </summary>
+        private const int MaxStoneDistance = 500;
 
-		/// <summary>
-		/// Prepares skill.
-		/// </summary>
-		/// <remarks>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		/// <returns></returns>
-		public bool Prepare(Creature creature, Skill skill, Packet packet)
-		{
-			var parameters = packet.GetString();
-			var itemEntityId = MabiDictionary.Fetch<long>("ITEMID", parameters);
-			var guild = creature.Guild;
+        /// <summary>
+        ///     Cancels skill.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        public void Cancel(Creature creature, Skill skill)
+        {
+        }
 
-			if (itemEntityId == 0 || creature.Inventory.GetItem(itemEntityId) == null)
-			{
-				Log.Warning("HiddenGuildStoneSetting.Prepare: User '{0}' tried to use skill with invalid item.", creature.Client.Account.Id);
-				return false;
-			}
-			else if (guild == null)
-			{
-				Send.MsgBox(creature, Localization.Get("You're not in a guild."));
-				return false;
-			}
-			else if (creature.GuildMember.Rank != GuildMemberRank.Leader)
-			{
-				Send.MsgBox(creature, Localization.Get("Only the guild leader can place the guild stone."));
-				return false;
-			}
-			else if (guild.HasStone)
-			{
-				Send.MsgBox(creature, Localization.Get("Your guild already has a guild stone."));
-				return false;
-			}
+        /// <summary>
+        ///     Completes skill, placing the stone.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        public void Complete(Creature creature, Skill skill, Packet packet)
+        {
+            var locationId = packet.GetLong();
+            var unkInt1 = packet.GetInt();
+            var unkInt2 = packet.GetInt();
 
-			skill.Stacks = 1;
-			skill.State = SkillState.Ready;
+            // Ignore parameters, we got everything we need in Use.
+            creature.Skills.Callback(skill.Info.Id);
 
-			Send.Echo(creature, Op.SkillReady, packet);
+            Send.Echo(creature, Op.SkillComplete, packet);
+        }
 
-			return true;
-		}
+        /// <summary>
+        ///     Prepares skill.
+        /// </summary>
+        /// <remarks>
+        ///     <param name="creature"></param>
+        ///     <param name="skill"></param>
+        ///     <param name="packet"></param>
+        ///     <returns></returns>
+        public bool Prepare(Creature creature, Skill skill, Packet packet)
+        {
+            var parameters = packet.GetString();
+            var itemEntityId = MabiDictionary.Fetch<long>("ITEMID", parameters);
+            var guild = creature.Guild;
 
-		/// <summary>
-		/// Cancels skill.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		public void Cancel(Creature creature, Skill skill)
-		{
-		}
+            if (itemEntityId == 0 || creature.Inventory.GetItem(itemEntityId) == null)
+            {
+                Log.Warning("HiddenGuildStoneSetting.Prepare: User '{0}' tried to use skill with invalid item.",
+                    creature.Client.Account.Id);
+                return false;
+            }
+            if (guild == null)
+            {
+                Send.MsgBox(creature, Localization.Get("You're not in a guild."));
+                return false;
+            }
+            if (creature.GuildMember.Rank != GuildMemberRank.Leader)
+            {
+                Send.MsgBox(creature, Localization.Get("Only the guild leader can place the guild stone."));
+                return false;
+            }
+            if (guild.HasStone)
+            {
+                Send.MsgBox(creature, Localization.Get("Your guild already has a guild stone."));
+                return false;
+            }
 
-		/// <summary>
-		/// Uses skill, attempting to place the stone.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		public void Use(Creature creature, Skill skill, Packet packet)
-		{
-			var locationId = packet.GetLong();
-			var unkInt1 = packet.GetInt();
-			var unkInt2 = packet.GetInt();
+            skill.Stacks = 1;
+            skill.State = SkillState.Ready;
 
-			var guild = creature.Guild;
-			var region = creature.Region;
-			var pos = new Position(locationId);
-			var creaturePos = creature.GetPosition();
+            Send.Echo(creature, Op.SkillReady, packet);
 
-			// Check range
-			if (!creaturePos.InRange(pos, MaxStoneDistance))
-			{
-				creature.Unlock(Locks.Walk | Locks.Run);
+            return true;
+        }
 
-				Send.Notice(creature, Localization.Get("You're too far away."));
-				Send.SkillUseSilentCancel(creature);
-				return;
-			}
+        /// <summary>
+        ///     Uses skill, attempting to place the stone.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        public void Use(Creature creature, Skill skill, Packet packet)
+        {
+            var locationId = packet.GetLong();
+            var unkInt1 = packet.GetInt();
+            var unkInt2 = packet.GetInt();
 
-			// Check distance to other stones
-			var otherStones = region.GetProps(a => a.HasTag("/guildstone/") && a.GetPosition().InRange(pos, MinStoneDistance));
-			if (otherStones.Count != 0)
-			{
-				creature.Unlock(Locks.Walk | Locks.Run);
+            var guild = creature.Guild;
+            var region = creature.Region;
+            var pos = new Position(locationId);
+            var creaturePos = creature.GetPosition();
 
-				Send.Notice(creature, Localization.Get("You're too close to another Guild Stone to put yours up."));
-				Send.SkillUseSilentCancel(creature);
-				return;
-			}
+            // Check range
+            if (!creaturePos.InRange(pos, MaxStoneDistance))
+            {
+                creature.Unlock(Locks.Walk | Locks.Run);
 
-			// Check street
-			if (creature.Region.IsOnStreet(pos))
-			{
-				Send.Notice(creature, Localization.Get("You can't place a Guild Stone on the street."));
-				Send.SkillUseSilentCancel(creature);
-				return;
-			}
+                Send.Notice(creature, Localization.Get("You're too far away."));
+                Send.SkillUseSilentCancel(creature);
+                return;
+            }
 
-			// Place stone (from complete)
-			creature.Skills.Callback(skill.Info.Id, () =>
-			{
-				guild.Stone.PropId = GuildStonePropId.Normal;
-				guild.Stone.RegionId = region.Id;
-				guild.Stone.X = pos.X;
-				guild.Stone.Y = pos.Y;
-				guild.Stone.Direction = MabiMath.ByteToRadian(creature.Direction);
+            // Check distance to other stones
+            var otherStones = region.GetProps(a =>
+                a.HasTag("/guildstone/") && a.GetPosition().InRange(pos, MinStoneDistance));
+            if (otherStones.Count != 0)
+            {
+                creature.Unlock(Locks.Walk | Locks.Run);
 
-				ChannelServer.Instance.GuildManager.SetStone(guild);
+                Send.Notice(creature, Localization.Get("You're too close to another Guild Stone to put yours up."));
+                Send.SkillUseSilentCancel(creature);
+                return;
+            }
 
-				Send.Notice(NoticeType.Top, 20000, Localization.Get("{0} Guild has been formed. Guild Leader : {1}"), guild.Name, guild.LeaderName);
+            // Check street
+            if (creature.Region.IsOnStreet(pos))
+            {
+                Send.Notice(creature, Localization.Get("You can't place a Guild Stone on the street."));
+                Send.SkillUseSilentCancel(creature);
+                return;
+            }
 
-				creature.Inventory.Remove(63041); // Guild Stone Installation Permit
-			});
+            // Place stone (from complete)
+            creature.Skills.Callback(skill.Info.Id, () =>
+            {
+                guild.Stone.PropId = GuildStonePropId.Normal;
+                guild.Stone.RegionId = region.Id;
+                guild.Stone.X = pos.X;
+                guild.Stone.Y = pos.Y;
+                guild.Stone.Direction = MabiMath.ByteToRadian(creature.Direction);
 
-			// TODO: Skills that don't necessarily end in Use need a way to get
-			//   back to Ready, we currently don't properly support that.
-			//   Use will probably require a return value, like Prepare.
-			//   Temporary solution: working with stacks.
-			skill.Stacks = 0;
+                ChannelServer.Instance.GuildManager.SetStone(guild);
 
-			Send.Echo(creature, Op.SkillUse, packet);
-		}
+                Send.Notice(NoticeType.Top, 20000, Localization.Get("{0} Guild has been formed. Guild Leader : {1}"),
+                    guild.Name, guild.LeaderName);
 
-		/// <summary>
-		/// Completes skill, placing the stone.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		public void Complete(Creature creature, Skill skill, Packet packet)
-		{
-			var locationId = packet.GetLong();
-			var unkInt1 = packet.GetInt();
-			var unkInt2 = packet.GetInt();
+                creature.Inventory.Remove(63041); // Guild Stone Installation Permit
+            });
 
-			// Ignore parameters, we got everything we need in Use.
-			creature.Skills.Callback(skill.Info.Id);
+            // TODO: Skills that don't necessarily end in Use need a way to get
+            //   back to Ready, we currently don't properly support that.
+            //   Use will probably require a return value, like Prepare.
+            //   Temporary solution: working with stacks.
+            skill.Stacks = 0;
 
-			Send.Echo(creature, Op.SkillComplete, packet);
-		}
-	}
+            Send.Echo(creature, Op.SkillUse, packet);
+        }
+    }
 }

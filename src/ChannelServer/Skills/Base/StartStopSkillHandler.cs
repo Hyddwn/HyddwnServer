@@ -2,108 +2,105 @@
 // For more information, see license file in the main folder
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Aura.Channel.World.Entities;
-using Aura.Shared.Network;
-using Aura.Mabi;
 using Aura.Channel.Network.Sending;
-using Aura.Shared.Util;
+using Aura.Channel.World.Entities;
+using Aura.Mabi;
 using Aura.Mabi.Const;
-using Aura.Data.Database;
 using Aura.Mabi.Network;
 
 namespace Aura.Channel.Skills.Base
 {
-	/// <summary>
-	/// Base class for skills that use only Start and Stop.
-	/// </summary>
-	/// <remarks>
-	/// Sends back Skill(Start|Stop) with string or byte parameter,
-	/// depending on incoming packet. Always passes a dictionary to the
-	/// next methods, since the byte seems useless =|
-	/// The parameter can also be missing in Stop, example:
-	/// Auto stop of ManaShield on 0 mana.
-	/// 
-	/// If Start|Stop returns fail a silent cancel will be sent.
-	/// </remarks>
-	public abstract class StartStopSkillHandler : IStartStoppable
-	{
-		public void Start(Creature creature, Skill skill, Packet packet)
-		{
-			// Get parameters
-			var stringParam = packet.NextIs(PacketElementType.String);
-			var dict = new MabiDictionary();
-			byte unkByte = 0;
+    /// <summary>
+    ///     Base class for skills that use only Start and Stop.
+    /// </summary>
+    /// <remarks>
+    ///     Sends back Skill(Start|Stop) with string or byte parameter,
+    ///     depending on incoming packet. Always passes a dictionary to the
+    ///     next methods, since the byte seems useless =|
+    ///     The parameter can also be missing in Stop, example:
+    ///     Auto stop of ManaShield on 0 mana.
+    ///     If Start|Stop returns fail a silent cancel will be sent.
+    /// </remarks>
+    public abstract class StartStopSkillHandler : IStartStoppable
+    {
+        public void Start(Creature creature, Skill skill, Packet packet)
+        {
+            // Get parameters
+            var stringParam = packet.NextIs(PacketElementType.String);
+            var dict = new MabiDictionary();
+            byte unkByte = 0;
 
-			if (stringParam)
-				dict.Parse(packet.GetString());
-			else
-				unkByte = packet.GetByte();
+            if (stringParam)
+                dict.Parse(packet.GetString());
+            else
+                unkByte = packet.GetByte();
 
-			// Run skill
-			var result = this.Start(creature, skill, dict);
+            // Run skill
+            var result = Start(creature, skill, dict);
 
-			if (result == StartStopResult.Fail)
-			{
-				Send.SkillStartSilentCancel(creature, skill.Info.Id);
-				return;
-			}
+            if (result == StartStopResult.Fail)
+            {
+                Send.SkillStartSilentCancel(creature, skill.Info.Id);
+                return;
+            }
 
-			skill.Activate(SkillFlags.InUse);
+            skill.Activate(SkillFlags.InUse);
 
-			Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana, Stat.Stamina);
+            Send.StatUpdate(creature, StatUpdateType.Private, Stat.Mana, Stat.Stamina);
 
-			if (stringParam)
-				Send.SkillStart(creature, skill, dict.ToString());
-			else
-				Send.SkillStart(creature, skill, unkByte);
-		}
+            if (stringParam)
+                Send.SkillStart(creature, skill, dict.ToString());
+            else
+                Send.SkillStart(creature, skill, unkByte);
+        }
 
-		public void Stop(Creature creature, Skill skill, Packet packet)
-		{
-			var stringParam = packet.NextIs(PacketElementType.String);
-			var dict = new MabiDictionary();
-			byte unkByte = 0;
+        public void Stop(Creature creature, Skill skill, Packet packet)
+        {
+            var stringParam = packet.NextIs(PacketElementType.String);
+            var dict = new MabiDictionary();
+            byte unkByte = 0;
 
-			if (stringParam)
-				dict.Parse(packet.GetString());
-			else if (packet.NextIs(PacketElementType.Byte))
-				unkByte = packet.GetByte();
+            if (stringParam)
+                dict.Parse(packet.GetString());
+            else if (packet.NextIs(PacketElementType.Byte))
+                unkByte = packet.GetByte();
 
-			var result = this.Stop(creature, skill, dict);
+            var result = Stop(creature, skill, dict);
 
-			skill.Deactivate(SkillFlags.InUse);
+            skill.Deactivate(SkillFlags.InUse);
 
-			if (result == StartStopResult.Fail)
-				Send.SkillStopSilentCancel(creature, skill.Info.Id);
-			else if (stringParam)
-				Send.SkillStop(creature, skill, dict.ToString());
-			else
-				Send.SkillStop(creature, skill, unkByte);
-		}
+            if (result == StartStopResult.Fail)
+                Send.SkillStopSilentCancel(creature, skill.Info.Id);
+            else if (stringParam)
+                Send.SkillStop(creature, skill, dict.ToString());
+            else
+                Send.SkillStop(creature, skill, unkByte);
+        }
 
-		public void Stop(Creature creature, Skill skill)
-		{
-			var result = this.Stop(creature, skill, new MabiDictionary());
+        public void Stop(Creature creature, Skill skill)
+        {
+            var result = Stop(creature, skill, new MabiDictionary());
 
-			if (result == StartStopResult.Fail)
-				Send.SkillStopSilentCancel(creature, skill.Info.Id);
-			else
-				Send.SkillStop(creature, skill, "");
-		}
+            if (result == StartStopResult.Fail)
+                Send.SkillStopSilentCancel(creature, skill.Info.Id);
+            else
+                Send.SkillStop(creature, skill, "");
+        }
 
-		public virtual StartStopResult Start(Creature creature, Skill skill, MabiDictionary dict)
-		{
-			throw new NotImplementedException();
-		}
+        public virtual StartStopResult Start(Creature creature, Skill skill, MabiDictionary dict)
+        {
+            throw new NotImplementedException();
+        }
 
-		public virtual StartStopResult Stop(Creature creature, Skill skill, MabiDictionary dict)
-		{
-			throw new NotImplementedException();
-		}
-	}
+        public virtual StartStopResult Stop(Creature creature, Skill skill, MabiDictionary dict)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
-	public enum StartStopResult { Okay, Fail }
+    public enum StartStopResult
+    {
+        Okay,
+        Fail
+    }
 }

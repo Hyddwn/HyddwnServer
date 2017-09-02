@@ -3,22 +3,22 @@
 
 namespace Aura.Data.Database
 {
-	public class AncientDropDb : DatabaseCsv<DropData>
-	{
-		[MinFieldCount(2)]
-		protected override void ReadEntry(CsvEntry entry)
-		{
-			var info = new DropData();
+    public class AncientDropDb : DatabaseCsv<DropData>
+    {
+        [MinFieldCount(2)]
+        protected override void ReadEntry(CsvEntry entry)
+        {
+            var info = new DropData();
 
-			info.ItemId = entry.ReadInt(0);
-			info.Chance = entry.ReadFloat(1);
+            info.ItemId = entry.ReadInt(0);
+            info.Chance = entry.ReadFloat(1);
 
-			if (info.Chance > 100)
-				info.Chance = 100;
-			else if (info.Chance < 0)
-				info.Chance = 0;
+            if (info.Chance > 100)
+                info.Chance = 100;
+            else if (info.Chance < 0)
+                info.Chance = 0;
 
-			this.Entries.Add(info);
-		}
-	}
+            Entries.Add(info);
+        }
+    }
 }

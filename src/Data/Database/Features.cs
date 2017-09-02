@@ -1,72 +1,68 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Aura.Data.Database
 {
-	[Serializable]
-	public class FeatureData
-	{
-		public string Name { get; set; }
-		public bool Enabled { get; set; }
-	}
+    [Serializable]
+    public class FeatureData
+    {
+        public string Name { get; set; }
+        public bool Enabled { get; set; }
+    }
 
-	/// <summary>
-	/// Indexed by feature name.
-	/// </summary>
-	public class FeaturesDb : DatabaseJsonIndexed<string, FeatureData>
-	{
-		/// <summary>
-		/// The last time an entry was read.
-		/// </summary>
-		public DateTime LastEntryRead { get; private set; }
+    /// <summary>
+    ///     Indexed by feature name.
+    /// </summary>
+    public class FeaturesDb : DatabaseJsonIndexed<string, FeatureData>
+    {
+        /// <summary>
+        ///     The last time an entry was read.
+        /// </summary>
+        public DateTime LastEntryRead { get; private set; }
 
-		public bool IsEnabled(string featureName)
-		{
-			var invert = false;
-			if (featureName.StartsWith("!"))
-			{
-				featureName = featureName.Substring(1);
-				invert = true;
-			}
+        public bool IsEnabled(string featureName)
+        {
+            var invert = false;
+            if (featureName.StartsWith("!"))
+            {
+                featureName = featureName.Substring(1);
+                invert = true;
+            }
 
-			var entry = this.Entries.GetValueOrDefault(featureName);
-			if (entry == null) return false;
+            var entry = Entries.GetValueOrDefault(featureName);
+            if (entry == null) return false;
 
-			if (!invert)
-				return entry.Enabled;
-			else
-				return !entry.Enabled;
-		}
+            if (!invert)
+                return entry.Enabled;
+            return !entry.Enabled;
+        }
 
-		protected override void ReadEntry(JObject entry)
-		{
-			this.ParseObjectRecursive(entry, true);
-			this.LastEntryRead = DateTime.Now;
-		}
+        protected override void ReadEntry(JObject entry)
+        {
+            ParseObjectRecursive(entry, true);
+            LastEntryRead = DateTime.Now;
+        }
 
-		private void ParseObjectRecursive(JObject entry, bool parentEnabled)
-		{
-			entry.AssertNotMissing("name", "enabled");
+        private void ParseObjectRecursive(JObject entry, bool parentEnabled)
+        {
+            entry.AssertNotMissing("name", "enabled");
 
-			var data = new FeatureData();
-			data.Name = entry.ReadString("name");
-			data.Enabled = entry.ReadBool("enabled") && parentEnabled;
+            var data = new FeatureData();
+            data.Name = entry.ReadString("name");
+            data.Enabled = entry.ReadBool("enabled") && parentEnabled;
 
-			this.Entries[data.Name] = data;
+            Entries[data.Name] = data;
 
-			// Stop if there are no children
-			if (!entry.ContainsKeys("children"))
-				return;
+            // Stop if there are no children
+            if (!entry.ContainsKeys("children"))
+                return;
 
-			foreach (JObject child in entry["children"].Where(a => a.Type == JTokenType.Object))
-				this.ParseObjectRecursive(child, data.Enabled);
-		}
-	}
+            foreach (JObject child in entry["children"].Where(a => a.Type == JTokenType.Object))
+                ParseObjectRecursive(child, data.Enabled);
+        }
+    }
 }

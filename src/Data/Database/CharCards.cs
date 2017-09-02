@@ -7,52 +7,52 @@ using Newtonsoft.Json.Linq;
 
 namespace Aura.Data.Database
 {
-	[Serializable]
-	public class CharCardData
-	{
-		public int Id { get; set; }
-		public string Name { get; set; }
-		public int SetId { get; set; }
-		public List<int> Races { get; set; }
-		public int TradeItem { get; set; }
-		public int TradePoints { get; set; }
+    [Serializable]
+    public class CharCardData
+    {
+        public CharCardData()
+        {
+            Races = new List<int>();
+        }
 
-		public CharCardData()
-		{
-			this.Races = new List<int>();
-		}
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int SetId { get; set; }
+        public List<int> Races { get; set; }
+        public int TradeItem { get; set; }
+        public int TradePoints { get; set; }
 
-		public bool Enabled(int race)
-		{
-			return this.Races.Contains(race);
-		}
-	}
+        public bool Enabled(int race)
+        {
+            return Races.Contains(race);
+        }
+    }
 
-	/// <summary>
-	/// Indexed by char card id.
-	/// </summary>
-	public class CharCardDb : DatabaseJsonIndexed<int, CharCardData>
-	{
-		protected override void ReadEntry(JObject entry)
-		{
-			entry.AssertNotMissing("id", "name", "set", "allowed");
+    /// <summary>
+    ///     Indexed by char card id.
+    /// </summary>
+    public class CharCardDb : DatabaseJsonIndexed<int, CharCardData>
+    {
+        protected override void ReadEntry(JObject entry)
+        {
+            entry.AssertNotMissing("id", "name", "set", "allowed");
 
-			var info = new CharCardData();
-			info.Id = entry.ReadInt("id");
-			info.Name = entry.ReadString("name");
-			info.SetId = entry.ReadInt("set");
-			info.TradeItem = entry.ReadInt("tradeItem");
-			info.TradePoints = entry.ReadInt("tradePoints");
+            var info = new CharCardData();
+            info.Id = entry.ReadInt("id");
+            info.Name = entry.ReadString("name");
+            info.SetId = entry.ReadInt("set");
+            info.TradeItem = entry.ReadInt("tradeItem");
+            info.TradePoints = entry.ReadInt("tradePoints");
 
-			var races = entry.ReadInt("allowed");
-			if ((races & 0x01) != 0) info.Races.Add(10001);
-			if ((races & 0x02) != 0) info.Races.Add(10002);
-			if ((races & 0x04) != 0) info.Races.Add(9001);
-			if ((races & 0x08) != 0) info.Races.Add(9002);
-			if ((races & 0x10) != 0) info.Races.Add(8001);
-			if ((races & 0x20) != 0) info.Races.Add(8002);
+            var races = entry.ReadInt("allowed");
+            if ((races & 0x01) != 0) info.Races.Add(10001);
+            if ((races & 0x02) != 0) info.Races.Add(10002);
+            if ((races & 0x04) != 0) info.Races.Add(9001);
+            if ((races & 0x08) != 0) info.Races.Add(9002);
+            if ((races & 0x10) != 0) info.Races.Add(8001);
+            if ((races & 0x20) != 0) info.Races.Add(8002);
 
-			this.Entries[info.Id] = info;
-		}
-	}
+            Entries[info.Id] = info;
+        }
+    }
 }

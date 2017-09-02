@@ -3,21 +3,21 @@
 
 namespace Aura.Mabi.Const
 {
-	/// <summary>
-	/// Race's gender
-	/// </summary>
-	public enum Gender : byte
-	{
-		None,
-		Female,
-		Male,
-		Universal,
-	}
+    /// <summary>
+    ///     Race's gender
+    /// </summary>
+    public enum Gender : byte
+    {
+        None,
+        Female,
+        Male,
+        Universal
+    }
 
-	public enum SupportRace : byte
-	{
-		None,
-		Elf,
-		Giant,
-	}
+    public enum SupportRace : byte
+    {
+        None,
+        Elf,
+        Giant
+    }
 }

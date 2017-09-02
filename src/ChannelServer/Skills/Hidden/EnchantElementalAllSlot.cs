@@ -12,87 +12,91 @@ using Aura.Shared.Util;
 
 namespace Aura.Channel.Skills.Hidden
 {
-	/// <summary>
-	/// Handler for hidden skill used to enchant Massive [element] Elementals.
-	/// </summary>
-	[Skill(SkillId.EnchantElementalAllSlot)]
-	public class EnchantElementalAllSlot : IPreparable, ICompletable, ICancelable
-	{
-		/// <summary>
-		/// Prepares skill.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		/// <returns></returns>
-		public bool Prepare(Creature creature, Skill skill, Packet packet)
-		{
-			var dict = packet.GetString();
-			var enchantItemEntityId = MabiDictionary.Fetch<long>("ITEMID", dict);
+    /// <summary>
+    ///     Handler for hidden skill used to enchant Massive [element] Elementals.
+    /// </summary>
+    [Skill(SkillId.EnchantElementalAllSlot)]
+    public class EnchantElementalAllSlot : IPreparable, ICompletable, ICancelable
+    {
+        /// <summary>
+        ///     Cancel actions.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        public void Cancel(Creature creature, Skill skill)
+        {
+        }
 
-			// Check everythig in Complete.
+        /// <summary>
+        ///     Completes skill, applying the enchant.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        public void Complete(Creature creature, Skill skill, Packet packet)
+        {
+            var dict = packet.GetString();
+            var enchantItemEntityId = MabiDictionary.Fetch<long>("ITEMID", dict);
 
-			// Response
-			Send.Echo(creature, Op.SkillUse, packet);
-			skill.State = SkillState.Used;
+            // Check enchant
+            var elemental = creature.Inventory.GetItem(enchantItemEntityId);
+            if (elemental == null)
+            {
+                Log.Warning(
+                    "EnchantElementalAllSlot.Complete: User '{0}' tried to enchant with a non-existent elemental.",
+                    creature.Client.Account.Id);
+                goto L_Fail;
+            }
 
-			return true;
-		}
+            // Check option set
+            var optionSetId = elemental.MetaData1.GetInt("ENELEM");
+            var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
+            if (optionSetData == null)
+            {
+                Log.Warning(
+                    "EnchantElementalAllSlot.Complete: User '{0:X16}' tried to enchant with unknown option set '{1}'.",
+                    creature.Client.Account.Id, optionSetId);
+                goto L_Fail;
+            }
 
-		/// <summary>
-		/// Completes skill, applying the enchant.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		public void Complete(Creature creature, Skill skill, Packet packet)
-		{
-			var dict = packet.GetString();
-			var enchantItemEntityId = MabiDictionary.Fetch<long>("ITEMID", dict);
+            // Apply elementals
+            var equip = creature.Inventory.GetMainEquipment();
+            foreach (var item in equip)
+            {
+                item.ApplyOptionSet(optionSetData, true);
 
-			// Check enchant
-			var elemental = creature.Inventory.GetItem(enchantItemEntityId);
-			if (elemental == null)
-			{
-				Log.Warning("EnchantElementalAllSlot.Complete: User '{0}' tried to enchant with a non-existent elemental.", creature.Client.Account.Id);
-				goto L_Fail;
-			}
+                Send.ItemUpdate(creature, item);
+                Send.AcquireEnchantedItemInfo(creature, item.EntityId, item.Info.Id, optionSetId);
+            }
 
-			// Check option set
-			var optionSetId = elemental.MetaData1.GetInt("ENELEM");
-			var optionSetData = AuraData.OptionSetDb.Find(optionSetId);
-			if (optionSetData == null)
-			{
-				Log.Warning("EnchantElementalAllSlot.Complete: User '{0:X16}' tried to enchant with unknown option set '{1}'.", creature.Client.Account.Id, optionSetId);
-				goto L_Fail;
-			}
+            // Decrement elemental
+            creature.Inventory.Decrement(elemental);
 
-			// Apply elementals
-			var equip = creature.Inventory.GetMainEquipment();
-			foreach (var item in equip)
-			{
-				item.ApplyOptionSet(optionSetData, true);
+            Send.Effect(creature, Effect.Enchant, (byte) EnchantResult.Success);
 
-				Send.ItemUpdate(creature, item);
-				Send.AcquireEnchantedItemInfo(creature, item.EntityId, item.Info.Id, optionSetId);
-			}
+            L_Fail:
+            Send.Echo(creature, packet);
+        }
 
-			// Decrement elemental
-			creature.Inventory.Decrement(elemental);
+        /// <summary>
+        ///     Prepares skill.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public bool Prepare(Creature creature, Skill skill, Packet packet)
+        {
+            var dict = packet.GetString();
+            var enchantItemEntityId = MabiDictionary.Fetch<long>("ITEMID", dict);
 
-			Send.Effect(creature, Effect.Enchant, (byte)EnchantResult.Success);
+            // Check everythig in Complete.
 
-		L_Fail:
-			Send.Echo(creature, packet);
-		}
+            // Response
+            Send.Echo(creature, Op.SkillUse, packet);
+            skill.State = SkillState.Used;
 
-		/// <summary>
-		/// Cancel actions.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		public void Cancel(Creature creature, Skill skill)
-		{
-		}
-	}
+            return true;
+        }
+    }
 }

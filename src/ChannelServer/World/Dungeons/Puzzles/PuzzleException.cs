@@ -6,26 +6,26 @@ using System.Runtime.Serialization;
 
 namespace Aura.Channel.World.Dungeons.Puzzles
 {
-	[Serializable]
-	public class PuzzleException : Exception
-	{
-		public PuzzleException()
-		{
-		}
+    [Serializable]
+    public class PuzzleException : Exception
+    {
+        public PuzzleException()
+        {
+        }
 
-		public PuzzleException(string message)
-			: base(message)
-		{
-		}
+        public PuzzleException(string message)
+            : base(message)
+        {
+        }
 
-		public PuzzleException(string message, Exception inner)
-			: base(message, inner)
-		{
-		}
+        public PuzzleException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
 
-		protected PuzzleException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
-	}
+        protected PuzzleException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+    }
 }

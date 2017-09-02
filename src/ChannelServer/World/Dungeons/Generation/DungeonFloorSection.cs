@@ -5,426 +5,424 @@ using System.Collections.Generic;
 using System.Linq;
 using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.World.Dungeons.Puzzles;
-using Aura.Data;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
-using Aura.Shared.Util;
 using Aura.Mabi.Util;
+using Aura.Shared.Util;
 
 namespace Aura.Channel.World.Dungeons.Generation
 {
-	public class DungeonFloorSection
-	{
-		public class LockedDoorCandidateNode
-		{
-			/// <summary>
-			/// Dungeon room reference.
-			/// </summary>
-			public RoomTrait Room = null;
+    public class DungeonFloorSection
+    {
+        /// <summary>
+        ///     Provides unique colors for this section locked doors.
+        /// </summary>
+        private readonly LockColorProvider _lockColorProvider;
 
-			/// <summary>
-			/// Direction of the door.
-			/// </summary>
-			public int Direction = -1;
+        /// <summary>
+        ///     List of nodes that can serve as locked place.
+        /// </summary>
+        private readonly LinkedList<LockedDoorCandidateNode> _lockedDoorCandidates;
 
-			/// <summary>
-			/// Index of this place in DungeonFloorSection.Places list.
-			/// </summary>
-			public int PlaceIndex = -1;
+        /// <summary>
+        ///     Was boss door placed in last floor last section or not.
+        /// </summary>
+        private bool _placeBossDoor;
 
-			public LockedDoorCandidateNode(RoomTrait room, int direction, int placeIndex)
-			{
-				this.Room = room;
-				this.Direction = direction;
-				this.PlaceIndex = placeIndex;
-			}
-		}
+        /// <summary>
+        ///     Random generator used by this section.
+        /// </summary>
+        private readonly MTRandom _rng;
 
-		public class PlaceNode
-		{
-			/// <summary>
-			/// Dungeon room reference.
-			/// </summary>
-			public RoomTrait Room;
+        /// <summary>
+        ///     Section of teh floor, contain Puzzles.
+        /// </summary>
+        /// <param name="startRoom">Start room of this section.</param>
+        /// <param name="path">Critical path for this section.</param>
+        /// <param name="haveBossRoom">Should we place a boss door in this section.</param>
+        /// <param name="rng">Randrom generator for this dungeon.</param>
+        public DungeonFloorSection(RoomTrait startRoom, List<MazeMove> path, bool haveBossRoom, MTRandom rng)
+        {
+            _lockColorProvider = new LockColorProvider();
+            _lockedDoorCandidates = new LinkedList<LockedDoorCandidateNode>();
+            Places = new List<PlaceNode>();
+            Puzzles = new List<Puzzle>();
 
-			/// <summary>
-			/// Moves needed to get to this place from the start.
-			/// </summary>
-			public int Depth;
+            _placeBossDoor = haveBossRoom;
+            _rng = rng;
 
-			/// <summary>
-			/// Is this place used by puzzle.
-			/// </summary>
-			public bool IsUsed;
+            InitLists(startRoom, path);
+        }
 
-			public PlaceNode(RoomTrait room, int depth, bool isUsed)
-			{
-				this.Room = room;
-				this.Depth = depth;
-				this.IsUsed = isUsed;
-			}
-		}
+        /// <summary>
+        ///     Linear list of all places for this section, so N-th place always behind N+1 place.
+        /// </summary>
+        public List<PlaceNode> Places { get; }
 
-		private class LockColorProvider
-		{
-			public static readonly uint[] Colors = new uint[]
-			{ 
-				0xe76c74, // Red
-				0x654e9f, // Purple
-				0x4fbcee, // Blue
-				0x3e75ba, // Dark Blue
-				0xbfd46c, // Green
-				0x77b75d, // Dark Green
-				0xf7b356, // Orange
-				0xfdf06c, // Yellow
-				0xff76bd, // Pink
-				0xdf67b0, // Maroon
-				0x6df8f3, // Turquoise
-			};
+        /// <summary>
+        ///     List of puzzles this section contains.
+        /// </summary>
+        public List<Puzzle> Puzzles { get; }
 
-			private Queue<uint> _availableColors;
+        /// <summary>
+        ///     Returns true if all of the section's puzzles have been solved.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasBeenCleared
+        {
+            get { return Puzzles.All(a => a.HasBeenSolved); }
+        }
 
-			public LockColorProvider()
-			{
-				var rnd = RandomProvider.Get();
+        /// <summary>
+        ///     Creates Places list, walking critical path and adding subpaths recursively.
+        ///     Creates _lockedDoorCandidates list, places on the way to end room and to chest places.
+        /// </summary>
+        /// <param name="startRoom"></param>
+        /// <param name="path"></param>
+        private void InitLists(RoomTrait startRoom, List<MazeMove> path)
+        {
+            var room = startRoom;
+            var depth = 0;
+            foreach (var move in path)
+            {
+                Places.Add(new PlaceNode(room, depth, false));
+                room.RoomIndex = Places.Count - 1;
+                room.isOnPath = true;
+                var lockedDoorCandidate = new LockedDoorCandidateNode(room, move.Direction, Places.Count - 1);
+                _lockedDoorCandidates.AddLast(lockedDoorCandidate);
+                for (var direction = 0; direction < 4; direction++)
+                    if (move.Direction != direction && room.Links[direction] == LinkType.To)
+                    {
+                        var nextRoom = room.Neighbor[direction];
+                        if (nextRoom != null)
+                            CreateEmptyPlacesRecursive(nextRoom, depth + 1);
+                    }
+                room = room.Neighbor[move.Direction];
+                depth++;
+            }
+        }
 
-				_availableColors = new Queue<uint>(Colors.OrderBy(a => rnd.Next()));
-			}
+        /// <summary>
+        ///     Recursively add subpath rooms to Places list.
+        /// </summary>
+        /// <param name="room"></param>
+        /// <param name="depth"></param>
+        private void CreateEmptyPlacesRecursive(RoomTrait room, int depth)
+        {
+            Places.Add(new PlaceNode(room, depth, false));
+            room.RoomIndex = Places.Count - 1;
+            for (var direction = 0; direction < 4; direction++)
+            {
+                if (room.Links[direction] != LinkType.To) continue;
+                var nextRoom = room.Neighbor[direction];
+                if (nextRoom != null)
+                    CreateEmptyPlacesRecursive(nextRoom, depth + 1);
+            }
+        }
 
-			/// <summary>
-			/// Get unique color for a locked place.
-			/// </summary>
-			public uint GetLockColor()
-			{
-				if (_availableColors.Count == 0)
-					// We're out of available colors, let's return a random one.
-					return (uint)RandomProvider.Get().Next(0xFFFFFF);
+        public uint GetLockColor()
+        {
+            return _lockColorProvider.GetLockColor();
+        }
 
-				return _availableColors.Dequeue();
-			}
-		}
+        /// <summary>
+        ///     Gets a node from _lockedDoorCandidates, that will be used to make locked place, and removes it from the list.
+        /// </summary>
+        /// <param name="lockSelf"></param>
+        /// <returns></returns>
+        public LockedDoorCandidateNode GetLock(bool lockSelf = false)
+        {
+            LockedDoorCandidateNode result = null;
 
-		/// <summary>
-		///	Random generator used by this section.
-		/// </summary>
-		private MTRandom _rng;
+            var count = _lockedDoorCandidates.Count;
+            if (count == 0)
+                throw new PuzzleException("Out of locked door candidates.");
 
-		/// <summary>
-		/// Was boss door placed in last floor last section or not.
-		/// </summary>
-		private bool _placeBossDoor;
+            // Always place locked place before the boss door.
+            // todo: always place a locked place at the end of section, add script handler
+            if (_placeBossDoor)
+                result = _lockedDoorCandidates.FirstOrDefault(x =>
+                    x.Room.Neighbor[Direction.Up] != null && x.Room.Neighbor[Direction.Up].RoomType == RoomType.End);
 
-		/// <summary>
-		/// Provides unique colors for this section locked doors.
-		/// </summary>
-		private LockColorProvider _lockColorProvider;
+            if (result == null)
+            {
+                var lockedDoor = _lockedDoorCandidates.Last;
+                if (lockSelf)
+                    while (lockedDoor != null && lockedDoor.Value.Room.isReserved)
+                        lockedDoor = lockedDoor.Previous;
+                else
+                    while (lockedDoor != null)
+                    {
+                        // Test if there is a free room for unlock place before this door
+                        var placeIndex = lockedDoor.Value.PlaceIndex;
+                        // Get index of room behind lockedPlace door.
+                        placeIndex = Places[placeIndex].Room.Neighbor[lockedDoor.Value.Direction].RoomIndex;
+                        if (placeIndex == 0 || placeIndex == -1) // should be last room in section.
+                            placeIndex = Places.Count;
+                        --placeIndex;
+                        while (placeIndex >= 0 && (placeIndex == lockedDoor.Value.PlaceIndex ||
+                                                   Places[placeIndex].IsUsed || Places[placeIndex].Room.isLocked))
+                            --placeIndex;
+                        if (placeIndex >= 0)
+                            break;
+                        lockedDoor = lockedDoor.Previous;
+                    }
+                if (lockedDoor == null)
+                {
+                    if (lockSelf)
+                        throw new PuzzleException("Out of candidates for self lock.");
+                    throw new PuzzleException("None of lock candidates can serve as lock with unlock place.");
+                }
+                result = lockedDoor.Value;
+            }
 
-		/// <summary>
-		/// List of nodes that can serve as locked place.
-		/// </summary>
-		private LinkedList<LockedDoorCandidateNode> _lockedDoorCandidates = null;
+            if (_placeBossDoor)
+                _placeBossDoor = false;
 
-		/// <summary>
-		/// Linear list of all places for this section, so N-th place always behind N+1 place.
-		/// </summary>
-		public List<PlaceNode> Places { get; private set; }
+            _lockedDoorCandidates.Remove(result);
 
-		/// <summary>
-		/// List of puzzles this section contains.
-		/// </summary>
-		public List<Puzzle> Puzzles { get; private set; }
+            return result;
+        }
 
-		/// <summary>
-		/// Returns true if all of the section's puzzles have been solved.
-		/// </summary>
-		/// <returns></returns>
-		public bool HasBeenCleared { get { return this.Puzzles.All(a => a.HasBeenSolved); } }
+        /// <summary>
+        ///     Finds appropriate place to use as unlock place for given locked place.
+        /// </summary>
+        /// <param name="lockedPlace"></param>
+        /// <returns>Index of unlock place in Places list</returns>
+        public int GetUnlock(PuzzlePlace lockedPlace)
+        {
+            var lockedPlaceIndex = lockedPlace.PlaceIndex;
+            // Get index of room behind lockedPlace door.
+            lockedPlaceIndex = Places[lockedPlaceIndex].Room.Neighbor[lockedPlace.DoorDirection].RoomIndex;
+            if (lockedPlaceIndex == 0 || lockedPlaceIndex == -1) // should be last room in section.
+                lockedPlaceIndex = Places.Count;
 
-		/// <summary>
-		/// Section of teh floor, contain Puzzles.
-		/// </summary>
-		/// <param name="startRoom">Start room of this section.</param>
-		/// <param name="path">Critical path for this section.</param>
-		/// <param name="haveBossRoom">Should we place a boss door in this section.</param>
-		/// <param name="rng">Randrom generator for this dungeon.</param>
-		public DungeonFloorSection(RoomTrait startRoom, List<MazeMove> path, bool haveBossRoom, MTRandom rng)
-		{
-			_lockColorProvider = new LockColorProvider();
-			_lockedDoorCandidates = new LinkedList<LockedDoorCandidateNode>();
-			this.Places = new List<PlaceNode>();
-			this.Puzzles = new List<Puzzle>();
+            var possiblePlacesOnPath = new List<int>();
+            var possiblePlacesNotOnPath = new List<int>();
+            var deadEnd = -1;
+            var deadEndDepth = 0;
+            RoomTrait room;
+            // places before lockedPlaceIndex are always behind it.
+            for (var i = 0; i < lockedPlaceIndex; ++i)
+            {
+                room = Places[i].Room;
+                if (!Places[i].IsUsed && !room.isLocked && room.RoomType != RoomType.Start)
+                {
+                    // Check is this place have locked doors.
+                    // Locked places tend to not reserve themselves, so they could share place with some puzzle, like another locked place.
+                    // But they couldn't be shared with unlock places, because they have to control all doors.
+                    var haveLockedDoors = false;
+                    for (var j = 0; j < 4; ++j)
+                        if (room.DoorType[j] == (int) DungeonBlockType.DoorWithLock && room.Links[j] == LinkType.To)
+                        {
+                            haveLockedDoors = true;
+                            break;
+                        }
+                    if (!haveLockedDoors)
+                    {
+                        var emptyNeighborCount = 0;
+                        for (var dir = 0; dir < 4; ++dir)
+                            if (room.IsLinked(dir) && !room.Neighbor[dir].isReserved)
+                                emptyNeighborCount++;
+                        if (emptyNeighborCount < 2)
+                            if (deadEndDepth < Places[i].Depth)
+                                deadEnd = i;
+                        if (room.isOnPath)
+                            possiblePlacesOnPath.Add(i);
+                        else
+                            possiblePlacesNotOnPath.Add(i);
+                    }
+                }
+            }
 
-			_placeBossDoor = haveBossRoom;
-			_rng = rng;
+            // Chance to not use deepest corner for unlock place.
+            if (_rng.GetUInt32(100) < 40)
+                deadEnd = -1;
 
-			this.InitLists(startRoom, path);
-		}
+            if (possiblePlacesOnPath.Count == 0 && possiblePlacesNotOnPath.Count == 0)
+            {
+                // Convert locked place room back to alley if there are no more locked doors.
+                room = Places[lockedPlace.PlaceIndex].Room;
+                room.SetDoorType(lockedPlace.DoorDirection, (int) DungeonBlockType.Alley);
+                room.SetPuzzleDoor(null, lockedPlace.DoorDirection);
+                var isLockedRoom = room.DoorType.Any(x =>
+                    x == (int) DungeonBlockType.DoorWithLock || x == (int) DungeonBlockType.BossDoor);
+                if (!isLockedRoom)
+                {
+                    room.isLocked = false;
+                    room.RoomType = RoomType.Alley;
+                }
 
-		/// <summary>
-		/// Creates Places list, walking critical path and adding subpaths recursively.
-		/// Creates _lockedDoorCandidates list, places on the way to end room and to chest places.
-		/// </summary>
-		/// <param name="startRoom"></param>
-		/// <param name="path"></param>
-		private void InitLists(RoomTrait startRoom, List<MazeMove> path)
-		{
-			var room = startRoom;
-			var depth = 0;
-			foreach (var move in path)
-			{
-				this.Places.Add(new PlaceNode(room, depth, false));
-				room.RoomIndex = this.Places.Count - 1;
-				room.isOnPath = true;
-				var lockedDoorCandidate = new LockedDoorCandidateNode(room, move.Direction, this.Places.Count - 1);
-				_lockedDoorCandidates.AddLast(lockedDoorCandidate);
-				for (var direction = 0; direction < 4; direction++)
-				{
-					if (move.Direction != direction && room.Links[direction] == LinkType.To)
-					{
-						var nextRoom = room.Neighbor[direction];
-						if (nextRoom != null)
-							CreateEmptyPlacesRecursive(nextRoom, depth + 1);
-					}
-				}
-				room = room.Neighbor[move.Direction];
-				depth++;
-			}
-		}
+                // Return locked place door to list on available doors.
+                var lockedDoorCandidate = new LockedDoorCandidateNode(room, lockedPlace.DoorDirection, room.RoomIndex);
+                _lockedDoorCandidates.AddFirst(lockedDoorCandidate);
+                throw new PuzzleException("Out of unlock places.");
+            }
 
-		/// <summary>
-		///	Recursively add subpath rooms to Places list.
-		/// </summary>
-		/// <param name="room"></param>
-		/// <param name="depth"></param>
-		private void CreateEmptyPlacesRecursive(RoomTrait room, int depth)
-		{
-			this.Places.Add(new PlaceNode(room, depth, false));
-			room.RoomIndex = this.Places.Count - 1;
-			for (var direction = 0; direction < 4; direction++)
-			{
-				if (room.Links[direction] != LinkType.To) continue;
-				var nextRoom = room.Neighbor[direction];
-				if (nextRoom != null)
-					CreateEmptyPlacesRecursive(nextRoom, depth + 1);
-			}
-		}
+            var possiblePlaces = possiblePlacesNotOnPath.Count > 0 ? possiblePlacesNotOnPath : possiblePlacesOnPath;
 
-		public uint GetLockColor()
-		{
-			return _lockColorProvider.GetLockColor();
-		}
+            var placeIndex =
+                deadEnd != -1 ? deadEnd : possiblePlaces[(int) _rng.GetUInt32((uint) possiblePlaces.Count)];
 
-		/// <summary>
-		/// Gets a node from _lockedDoorCandidates, that will be used to make locked place, and removes it from the list.
-		/// </summary>
-		/// <param name="lockSelf"></param>
-		/// <returns></returns>
-		public LockedDoorCandidateNode GetLock(bool lockSelf = false)
-		{
-			LockedDoorCandidateNode result = null;
+            // Walk down from current place to our path and add new possible doors to this._lockedDoorCandidates
+            room = Places[placeIndex].Room;
+            while (room.RoomType != RoomType.Start)
+            {
+                if (room.isOnPath)
+                    break;
+                var dir = room.GetIncomingDirection();
+                room.isOnPath = true;
+                room = room.Neighbor[dir];
 
-			var count = _lockedDoorCandidates.Count;
-			if (count == 0)
-				throw new PuzzleException("Out of locked door candidates.");
+                // skip reserved doors
+                //if (room.ReservedDoor[Direction.GetOppositeDirection(dir)]) continue;
+                // skip reserved places
+                if (room.isReserved) continue;
 
-			// Always place locked place before the boss door.
-			// todo: always place a locked place at the end of section, add script handler
-			if (_placeBossDoor)
-			{
-				result = _lockedDoorCandidates.FirstOrDefault(x =>
-					x.Room.Neighbor[Direction.Up] != null && x.Room.Neighbor[Direction.Up].RoomType == RoomType.End);
-			}
+                var lockedDoorCandidate =
+                    new LockedDoorCandidateNode(room, Direction.GetOppositeDirection(dir), room.RoomIndex);
+                _lockedDoorCandidates.AddFirst(lockedDoorCandidate);
+            }
+            return placeIndex;
+        }
 
-			if (result == null)
-			{
-				var lockedDoor = _lockedDoorCandidates.Last;
-				if (lockSelf)
-					while (lockedDoor != null && lockedDoor.Value.Room.isReserved)
-						lockedDoor = lockedDoor.Previous;
-				else
-					while (lockedDoor != null)
-					{
-						// Test if there is a free room for unlock place before this door
-						var placeIndex = lockedDoor.Value.PlaceIndex;
-						// Get index of room behind lockedPlace door.
-						placeIndex = this.Places[placeIndex].Room.Neighbor[lockedDoor.Value.Direction].RoomIndex;
-						if (placeIndex == 0 || placeIndex == -1) // should be last room in section.
-							placeIndex = this.Places.Count;
-						--placeIndex;
-						while (placeIndex >= 0 && (placeIndex == lockedDoor.Value.PlaceIndex || this.Places[placeIndex].IsUsed || this.Places[placeIndex].Room.isLocked))
-						{
-							--placeIndex;
-						}
-						if (placeIndex >= 0)
-							break;
-						lockedDoor = lockedDoor.Previous;
-					}
-				if (lockedDoor == null)
-				{
-					if (lockSelf)
-						throw new PuzzleException("Out of candidates for self lock.");
-					throw new PuzzleException("None of lock candidates can serve as lock with unlock place.");
-				}
-				result = lockedDoor.Value;
-			}
+        public void ReservePlace(int placeIndex)
+        {
+            Places[placeIndex].IsUsed = true;
+            Places[placeIndex].Room.isReserved = true;
+        }
 
-			if (_placeBossDoor)
-				_placeBossDoor = false;
+        /// <summary>
+        ///     Get random unused place from Places list.
+        /// </summary>
+        /// <returns>Index of place in Places list.</returns>
+        public int ReservePlace()
+        {
+            var unusedCount = Places.Count(x => !x.IsUsed);
+            if (unusedCount == 0)
+                throw new PuzzleException("Out of empty places.");
+            var i = (int) _rng.GetUInt32(0, (uint) unusedCount - 1);
+            var placeIndex = 0;
+            for (; placeIndex < Places.Count; ++placeIndex)
+            {
+                if (Places[placeIndex].IsUsed) continue;
+                if (i == 0) break;
+                --i;
+            }
+            Places[placeIndex].IsUsed = true;
+            Places[placeIndex].Room.isReserved = true;
+            return placeIndex;
+        }
 
-			_lockedDoorCandidates.Remove(result);
+        /// <summary>
+        ///     Remove reserved rooms from this._lockedDoorCandidates
+        /// </summary>
+        public void CleanLockedDoorCandidates()
+        {
+            var node = _lockedDoorCandidates.First;
+            while (node != null)
+            {
+                var next = node.Next;
+                if (node.Value.Room.isReserved) _lockedDoorCandidates.Remove(node);
+                node = next;
+            }
+        }
 
-			return result;
-		}
+        public Puzzle NewPuzzle(Dungeon dungeon, DungeonFloorData floorData, DungeonPuzzleData puzzleData,
+            PuzzleScript puzzleScript)
+        {
+            var puzzle = new Puzzle(dungeon, this, floorData, puzzleData, puzzleScript);
+            Puzzles.Add(puzzle);
+            return puzzle;
+        }
 
-		/// <summary>
-		/// Finds appropriate place to use as unlock place for given locked place.
-		/// </summary>
-		/// <param name="lockedPlace"></param>
-		/// <returns>Index of unlock place in Places list</returns>
-		public int GetUnlock(PuzzlePlace lockedPlace)
-		{
-			var lockedPlaceIndex = lockedPlace.PlaceIndex;
-			// Get index of room behind lockedPlace door.
-			lockedPlaceIndex = this.Places[lockedPlaceIndex].Room.Neighbor[lockedPlace.DoorDirection].RoomIndex;
-			if (lockedPlaceIndex == 0 || lockedPlaceIndex == -1) // should be last room in section.
-				lockedPlaceIndex = this.Places.Count;
+        public class LockedDoorCandidateNode
+        {
+            /// <summary>
+            ///     Direction of the door.
+            /// </summary>
+            public int Direction = -1;
 
-			List<int> possiblePlacesOnPath = new List<int>();
-			List<int> possiblePlacesNotOnPath = new List<int>();
-			var deadEnd = -1;
-			var deadEndDepth = 0;
-			RoomTrait room;
-			// places before lockedPlaceIndex are always behind it.
-			for (var i = 0; i < lockedPlaceIndex; ++i)
-			{
-				room = this.Places[i].Room;
-				if (!this.Places[i].IsUsed && !room.isLocked && room.RoomType != RoomType.Start)
-				{
-					// Check is this place have locked doors.
-					// Locked places tend to not reserve themselves, so they could share place with some puzzle, like another locked place.
-					// But they couldn't be shared with unlock places, because they have to control all doors.
-					var haveLockedDoors = false;
-					for (var j = 0; j < 4; ++j)
-						if (room.DoorType[j] == (int)DungeonBlockType.DoorWithLock && room.Links[j] == LinkType.To)
-						{
-							haveLockedDoors = true;
-							break;
-						}
-					if (!haveLockedDoors)
-					{
-						var emptyNeighborCount = 0;
-						for (var dir = 0; dir < 4; ++dir)
-							if (room.IsLinked(dir) && !room.Neighbor[dir].isReserved)
-								emptyNeighborCount++;
-						if (emptyNeighborCount < 2)
-						{
-							if (deadEndDepth < this.Places[i].Depth)
-								deadEnd = i;
-						}
-						if (room.isOnPath)
-							possiblePlacesOnPath.Add(i);
-						else
-							possiblePlacesNotOnPath.Add(i);
-					}
-				}
-			}
+            /// <summary>
+            ///     Index of this place in DungeonFloorSection.Places list.
+            /// </summary>
+            public int PlaceIndex = -1;
 
-			// Chance to not use deepest corner for unlock place.
-			if (_rng.GetUInt32(100) < 40)
-				deadEnd = -1;
+            /// <summary>
+            ///     Dungeon room reference.
+            /// </summary>
+            public RoomTrait Room;
 
-			if (possiblePlacesOnPath.Count == 0 && possiblePlacesNotOnPath.Count == 0)
-			{
-				// Convert locked place room back to alley if there are no more locked doors.
-				room = this.Places[lockedPlace.PlaceIndex].Room;
-				room.SetDoorType(lockedPlace.DoorDirection, (int)DungeonBlockType.Alley);
-				room.SetPuzzleDoor(null, lockedPlace.DoorDirection);
-				var isLockedRoom = room.DoorType.Any(x => (x == (int)DungeonBlockType.DoorWithLock || x == (int)DungeonBlockType.BossDoor));
-				if (!isLockedRoom)
-				{
-					room.isLocked = false;
-					room.RoomType = RoomType.Alley;
-				}
+            public LockedDoorCandidateNode(RoomTrait room, int direction, int placeIndex)
+            {
+                Room = room;
+                Direction = direction;
+                PlaceIndex = placeIndex;
+            }
+        }
 
-				// Return locked place door to list on available doors.
-				var lockedDoorCandidate = new LockedDoorCandidateNode(room, lockedPlace.DoorDirection, room.RoomIndex);
-				_lockedDoorCandidates.AddFirst(lockedDoorCandidate);
-				throw new PuzzleException("Out of unlock places.");
-			}
+        public class PlaceNode
+        {
+            /// <summary>
+            ///     Moves needed to get to this place from the start.
+            /// </summary>
+            public int Depth;
 
-			var possiblePlaces = (possiblePlacesNotOnPath.Count > 0 ? possiblePlacesNotOnPath : possiblePlacesOnPath);
+            /// <summary>
+            ///     Is this place used by puzzle.
+            /// </summary>
+            public bool IsUsed;
 
-			var placeIndex = deadEnd != -1 ? deadEnd : possiblePlaces[(int)_rng.GetUInt32((uint)possiblePlaces.Count)];
+            /// <summary>
+            ///     Dungeon room reference.
+            /// </summary>
+            public RoomTrait Room;
 
-			// Walk down from current place to our path and add new possible doors to this._lockedDoorCandidates
-			room = this.Places[placeIndex].Room;
-			while (room.RoomType != RoomType.Start)
-			{
-				if (room.isOnPath)
-					break;
-				var dir = room.GetIncomingDirection();
-				room.isOnPath = true;
-				room = room.Neighbor[dir];
+            public PlaceNode(RoomTrait room, int depth, bool isUsed)
+            {
+                Room = room;
+                Depth = depth;
+                IsUsed = isUsed;
+            }
+        }
 
-				// skip reserved doors
-				//if (room.ReservedDoor[Direction.GetOppositeDirection(dir)]) continue;
-				// skip reserved places
-				if (room.isReserved) continue;
+        private class LockColorProvider
+        {
+            public static readonly uint[] Colors =
+            {
+                0xe76c74, // Red
+                0x654e9f, // Purple
+                0x4fbcee, // Blue
+                0x3e75ba, // Dark Blue
+                0xbfd46c, // Green
+                0x77b75d, // Dark Green
+                0xf7b356, // Orange
+                0xfdf06c, // Yellow
+                0xff76bd, // Pink
+                0xdf67b0, // Maroon
+                0x6df8f3 // Turquoise
+            };
 
-				var lockedDoorCandidate = new LockedDoorCandidateNode(room, Direction.GetOppositeDirection(dir), room.RoomIndex);
-				_lockedDoorCandidates.AddFirst(lockedDoorCandidate);
-			}
-			return placeIndex;
-		}
+            private readonly Queue<uint> _availableColors;
 
-		public void ReservePlace(int placeIndex)
-		{
+            public LockColorProvider()
+            {
+                var rnd = RandomProvider.Get();
 
-			this.Places[placeIndex].IsUsed = true;
-			this.Places[placeIndex].Room.isReserved = true;
-		}
+                _availableColors = new Queue<uint>(Colors.OrderBy(a => rnd.Next()));
+            }
 
-		/// <summary>
-		/// Get random unused place from Places list.
-		/// </summary>
-		/// <returns>Index of place in Places list.</returns>
-		public int ReservePlace()
-		{
-			var unusedCount = this.Places.Count(x => !x.IsUsed);
-			if (unusedCount == 0)
-				throw new PuzzleException("Out of empty places.");
-			var i = (int)_rng.GetUInt32(0, (uint)unusedCount - 1);
-			var placeIndex = 0;
-			for (; placeIndex < this.Places.Count; ++placeIndex)
-			{
-				if (this.Places[placeIndex].IsUsed) continue;
-				if (i == 0) break;
-				--i;
-			}
-			this.Places[placeIndex].IsUsed = true;
-			this.Places[placeIndex].Room.isReserved = true;
-			return placeIndex;
-		}
+            /// <summary>
+            ///     Get unique color for a locked place.
+            /// </summary>
+            public uint GetLockColor()
+            {
+                if (_availableColors.Count == 0)
+                    // We're out of available colors, let's return a random one.
+                    return (uint) RandomProvider.Get().Next(0xFFFFFF);
 
-		/// <summary>
-		/// Remove reserved rooms from this._lockedDoorCandidates
-		/// </summary>
-		public void CleanLockedDoorCandidates()
-		{
-			var node = _lockedDoorCandidates.First;
-			while (node != null)
-			{
-				var next = node.Next;
-				if (node.Value.Room.isReserved) _lockedDoorCandidates.Remove(node);
-				node = next;
-			}
-		}
-
-		public Puzzle NewPuzzle(Dungeon dungeon, DungeonFloorData floorData, DungeonPuzzleData puzzleData, PuzzleScript puzzleScript)
-		{
-			var puzzle = new Puzzle(dungeon, this, floorData, puzzleData, puzzleScript);
-			this.Puzzles.Add(puzzle);
-			return puzzle;
-		}
-	}
+                return _availableColors.Dequeue();
+            }
+        }
+    }
 }

@@ -2,22 +2,18 @@
 // For more information, see license file in the main folder
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aura.Channel.World.Dungeons
 {
-	public class DungeonBoss
-	{
-		public int RaceId { get; set; }
-		public int Amount { get; set; }
+    public class DungeonBoss
+    {
+        public DungeonBoss(int raceId, int amount)
+        {
+            RaceId = raceId;
+            Amount = Math.Max(1, amount);
+        }
 
-		public DungeonBoss(int raceId, int amount)
-		{
-			this.RaceId = raceId;
-			this.Amount = Math.Max(1, amount);
-		}
-	}
+        public int RaceId { get; set; }
+        public int Amount { get; set; }
+    }
 }

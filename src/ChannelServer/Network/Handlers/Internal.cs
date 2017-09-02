@@ -1,148 +1,145 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
+using System.Linq;
 using Aura.Channel.Network.Sending;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Network;
 using Aura.Shared.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Aura.Channel.Network.Handlers
 {
-	public partial class ChannelServerHandlers : PacketHandlerManager<ChannelClient>
-	{
-		[PacketHandler(Op.Internal.ServerIdentifyR)]
-		public void Internal_ServerIdentifyR(ChannelClient client, Packet packet)
-		{
-			var success = packet.GetBool();
+    public partial class ChannelServerHandlers : PacketHandlerManager<ChannelClient>
+    {
+        [PacketHandler(Op.Internal.ServerIdentifyR)]
+        public void Internal_ServerIdentifyR(ChannelClient client, Packet packet)
+        {
+            var success = packet.GetBool();
 
-			if (!success)
-			{
-				Log.Error("Server identification failed, check the password.");
-				return;
-			}
+            if (!success)
+            {
+                Log.Error("Server identification failed, check the password.");
+                return;
+            }
 
-			client.State = ClientState.LoggedIn;
+            client.State = ClientState.LoggedIn;
 
-			Send.Internal_ChannelStatus(ChannelState.Normal);
-		}
+            Send.Internal_ChannelStatus(ChannelState.Normal);
+        }
 
-		/// <summary>
-		/// Sent to all connected clients by the login server,
-		/// list of servers and channels
-		/// </summary>
-		/// <example>
-		/// 001 [................] String : Aura
-		/// 002 [............0000] Short  : 0
-		/// 003 [............0000] Short  : 0
-		/// 004 [..............01] Byte   : 1
-		/// 005 [........00000001] Int    : 1
-		/// 006 [................] String : Ch1
-		/// 007 [........00000001] Int    : 1
-		/// 008 [........00000000] Int    : 0
-		/// 009 [........00000000] Int    : 0
-		/// 010 [............0000] Short  : 0
-		/// 011 [................] String : 127.0.0.1
-		/// 012 [........00002B0C] Int    : 11020
-		/// 013 [........00000000] Int    : 0
-		/// </example>
-		[PacketHandler(Op.Internal.ChannelStatus)]
-		public void Internal_ChannelStatus(ChannelClient client, Packet packet)
-		{
-			var serverCount = packet.GetByte();
-			for (int i = 0; i < serverCount; ++i)
-			{
-				var serverName = packet.GetString();
-				var unk1 = packet.GetShort();
-				var unk2 = packet.GetShort();
-				var unk3 = packet.GetByte();
+        /// <summary>
+        ///     Sent to all connected clients by the login server,
+        ///     list of servers and channels
+        /// </summary>
+        /// <example>
+        ///     001 [................] String : Aura
+        ///     002 [............0000] Short  : 0
+        ///     003 [............0000] Short  : 0
+        ///     004 [..............01] Byte   : 1
+        ///     005 [........00000001] Int    : 1
+        ///     006 [................] String : Ch1
+        ///     007 [........00000001] Int    : 1
+        ///     008 [........00000000] Int    : 0
+        ///     009 [........00000000] Int    : 0
+        ///     010 [............0000] Short  : 0
+        ///     011 [................] String : 127.0.0.1
+        ///     012 [........00002B0C] Int    : 11020
+        ///     013 [........00000000] Int    : 0
+        /// </example>
+        [PacketHandler(Op.Internal.ChannelStatus)]
+        public void Internal_ChannelStatus(ChannelClient client, Packet packet)
+        {
+            var serverCount = packet.GetByte();
+            for (var i = 0; i < serverCount; ++i)
+            {
+                var serverName = packet.GetString();
+                var unk1 = packet.GetShort();
+                var unk2 = packet.GetShort();
+                var unk3 = packet.GetByte();
 
-				var channelCount = packet.GetInt();
-				for (int j = 0; j < channelCount; ++j)
-				{
-					var channelName = packet.GetString();
-					var state = (ChannelState)packet.GetInt();
-					var events = (ChannelEvent)packet.GetInt();
-					var unk4 = packet.GetInt();
-					var stress = packet.GetShort();
-					var host = packet.GetString();
-					var port = packet.GetInt();
-					var users = packet.GetInt();
-					var maxUsers = packet.GetInt();
+                var channelCount = packet.GetInt();
+                for (var j = 0; j < channelCount; ++j)
+                {
+                    var channelName = packet.GetString();
+                    var state = (ChannelState) packet.GetInt();
+                    var events = (ChannelEvent) packet.GetInt();
+                    var unk4 = packet.GetInt();
+                    var stress = packet.GetShort();
+                    var host = packet.GetString();
+                    var port = packet.GetInt();
+                    var users = packet.GetInt();
+                    var maxUsers = packet.GetInt();
 
-					// Add channel
-					var channel = new ChannelInfo(channelName, serverName, host, port);
-					channel.State = state;
-					channel.Events = events;
-					channel.Users = users;
-					channel.MaxUsers = maxUsers;
+                    // Add channel
+                    var channel = new ChannelInfo(channelName, serverName, host, port);
+                    channel.State = state;
+                    channel.Events = events;
+                    channel.Users = users;
+                    channel.MaxUsers = maxUsers;
 
-					ChannelServer.Instance.ServerList.Add(channel);
-				}
-			}
-		}
+                    ChannelServer.Instance.ServerList.Add(channel);
+                }
+            }
+        }
 
-		/// <summary>
-		/// Sent to all connected clients by the login server,
-		/// message to broadcast
-		/// </summary>
-		/// <example>
-		/// 001 [................] String : test
-		/// </example>
-		[PacketHandler(Op.Internal.BroadcastNotice)]
-		public void Broadcast(ChannelClient client, Packet packet)
-		{
-			var notice = packet.GetString();
+        /// <summary>
+        ///     Sent to all connected clients by the login server,
+        ///     message to broadcast
+        /// </summary>
+        /// <example>
+        ///     001 [................] String : test
+        /// </example>
+        [PacketHandler(Op.Internal.BroadcastNotice)]
+        public void Broadcast(ChannelClient client, Packet packet)
+        {
+            var notice = packet.GetString();
 
-			Send.Notice(NoticeType.TopRed, Math.Max(20000, notice.Length * 350), notice);
-		}
+            Send.Notice(NoticeType.TopRed, Math.Max(20000, notice.Length * 350), notice);
+        }
 
-		/// <summary>
-		/// Request for the channel to shutdown.
-		/// </summary>
-		/// <remarks>
-		/// Logs an error if the server is already shutting down.
-		/// </remarks>
-		/// <example>
-		/// ...
-		/// </example>
-		[PacketHandler(Op.Internal.ChannelShutdown)]
-		public void ChannelShutdown(ChannelClient client, Packet packet)
-		{
-			int time = packet.GetInt();
+        /// <summary>
+        ///     Request for the channel to shutdown.
+        /// </summary>
+        /// <remarks>
+        ///     Logs an error if the server is already shutting down.
+        /// </remarks>
+        /// <example>
+        ///     ...
+        /// </example>
+        [PacketHandler(Op.Internal.ChannelShutdown)]
+        public void ChannelShutdown(ChannelClient client, Packet packet)
+        {
+            var time = packet.GetInt();
 
-			if (!ChannelServer.Instance.ShuttingDown)
-			{
-				if (client.Equals(ChannelServer.Instance.LoginServer))
-				{
-					Log.Info("Shutdown request confirmed to be from the LoginServer. Proceeding with shutdown.");
-					ChannelServer.Instance.Shutdown(time);
-				}
-				else
-				{
-					Log.Error("Shutdown request is not from the LoginServer. Rejecting shutdown request.");
-				}
-			}
-			else
-			{
-				Log.Error("There was an attempt to shutdown this channel while it is already shutting down.");
-			}
-		}
+            if (!ChannelServer.Instance.ShuttingDown)
+                if (client.Equals(ChannelServer.Instance.LoginServer))
+                {
+                    Log.Info("Shutdown request confirmed to be from the LoginServer. Proceeding with shutdown.");
+                    ChannelServer.Instance.Shutdown(time);
+                }
+                else
+                {
+                    Log.Error("Shutdown request is not from the LoginServer. Rejecting shutdown request.");
+                }
+            else
+                Log.Error("There was an attempt to shutdown this channel while it is already shutting down.");
+        }
 
-		/// <summary>
-		/// Sent to request a certain be logged out.
-		/// </summary>
-		[PacketHandler(Op.Internal.RequestDisconnect)]
-		public void Internal_RequestDisconnect(ChannelClient client, Packet packet)
-		{
-			var accountName = packet.GetString();
+        /// <summary>
+        ///     Sent to request a certain be logged out.
+        /// </summary>
+        [PacketHandler(Op.Internal.RequestDisconnect)]
+        public void Internal_RequestDisconnect(ChannelClient client, Packet packet)
+        {
+            var accountName = packet.GetString();
 
-			var accountClient = ChannelServer.Instance.Server.Clients.FirstOrDefault(a => a.Account != null && a.Account.Id == accountName);
-			if (accountClient != null)
-				accountClient.Kill();
-		}
-	}
+            var accountClient =
+                ChannelServer.Instance.Server.Clients.FirstOrDefault(a =>
+                    a.Account != null && a.Account.Id == accountName);
+            if (accountClient != null)
+                accountClient.Kill();
+        }
+    }
 }

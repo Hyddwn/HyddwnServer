@@ -3,14 +3,13 @@
 
 namespace Aura.Mabi.Const
 {
-	/// <summary>
-	/// Continents players can warp to.
-	/// </summary>
-	public enum Continent : byte
-	{
-		Uladh = 0,
-		Iria = 1,
-		Belvast = 2,
-	}
-
+    /// <summary>
+    ///     Continents players can warp to.
+    /// </summary>
+    public enum Continent : byte
+    {
+        Uladh = 0,
+        Iria = 1,
+        Belvast = 2
+    }
 }

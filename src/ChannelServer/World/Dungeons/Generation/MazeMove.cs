@@ -3,18 +3,18 @@
 
 namespace Aura.Channel.World.Dungeons.Generation
 {
-	public class MazeMove
-	{
-		public Position PosFrom { get; private set; }
-		public Position PosTo { get; private set; }
+    public class MazeMove
+    {
+        public MazeMove(Position from, Position to, int direction)
+        {
+            PosFrom = new Position(from);
+            PosTo = new Position(to);
+            Direction = direction;
+        }
 
-		public int Direction { get; set; }
+        public Position PosFrom { get; }
+        public Position PosTo { get; }
 
-		public MazeMove(Position from, Position to, int direction)
-		{
-			this.PosFrom = new Position(from);
-			this.PosTo = new Position(to);
-			this.Direction = direction;
-		}
-	}
+        public int Direction { get; set; }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
+using System;
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.Util;
@@ -12,298 +13,286 @@ using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aura.Channel.Skills.Life
 {
-	/// <summary>
-	/// Campfire skill handler
-	/// </summary>
-	/// <remarks>
-	/// Var1: Regeneration Bonus
-	/// Var2: ?
-	/// Var3: Players Accommodated
-	/// Var4: ?
-	/// 
-	/// Duration is apparently not in the db.
-	/// 
-	/// Without Firewood you get the msg "not an appropriate place".
-	/// </remarks>
-	[Skill(SkillId.Campfire, SkillId.CampfireKit)]
-	public class Campfire : ISkillHandler, IPreparable, IReadyable, IUseable, ICompletable, ICancelable
-	{
-		/// <summary>
-		/// Prop to spawn
-		/// </summary>
-		private const int PropId = 203;
-		private const int HalloweenPropId = 44455;
-		private const int ChristmasPropId = 44867;
-		private const int SeventhAnnvPropId = 44809;
-		private const int EighthAnnvPropId = 44960;
+    /// <summary>
+    ///     Campfire skill handler
+    /// </summary>
+    /// <remarks>
+    ///     Var1: Regeneration Bonus
+    ///     Var2: ?
+    ///     Var3: Players Accommodated
+    ///     Var4: ?
+    ///     Duration is apparently not in the db.
+    ///     Without Firewood you get the msg "not an appropriate place".
+    /// </remarks>
+    [Skill(SkillId.Campfire, SkillId.CampfireKit)]
+    public class Campfire : ISkillHandler, IPreparable, IReadyable, IUseable, ICompletable, ICancelable
+    {
+        /// <summary>
+        ///     Prop to spawn
+        /// </summary>
+        private const int PropId = 203;
 
-		/// <summary>
-		/// How much Firewood is required/being removed.
-		/// </summary>
-		private const int FirewoodCost = 5;
+        private const int HalloweenPropId = 44455;
+        private const int ChristmasPropId = 44867;
+        private const int SeventhAnnvPropId = 44809;
+        private const int EighthAnnvPropId = 44960;
 
-		/// <summary>
-		/// Prepares skill (effectively does nothing)
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		/// <returns></returns>
-		public bool Prepare(Creature creature, Skill skill, Packet packet)
-		{
-			if (skill.Info.Id == SkillId.Campfire)
-			{
-				var itemId = packet.GetInt();
+        /// <summary>
+        ///     How much Firewood is required/being removed.
+        /// </summary>
+        private const int FirewoodCost = 5;
 
-				Send.SkillPrepare(creature, skill.Info.Id, itemId);
-			}
-			else
-			{
-				var dict = packet.GetString();
+        /// <summary>
+        ///     Canceles skill (no special actions required)
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        public void Cancel(Creature creature, Skill skill)
+        {
+        }
 
-				Send.SkillPrepare(creature, skill.Info.Id, dict);
-			}
+        /// <summary>
+        ///     Completes skill, placing the campfire.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        public void Complete(Creature creature, Skill skill, Packet packet)
+        {
+            var positionId = packet.GetLong();
+            var unkInt1 = packet.GetInt();
+            var unkInt2 = packet.GetInt();
+            var propId = PropId;
 
-			return true;
-		}
+            // Check location
+            var pos = new Position(positionId);
+            var validLocation = IsValidRegion(creature.Region) && IsValidPosition(creature, pos);
 
-		/// <summary>
-		/// Readies skill, saving the item id to use for later.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		/// <returns></returns>
-		public bool Ready(Creature creature, Skill skill, Packet packet)
-		{
-			if (skill.Info.Id == SkillId.Campfire)
-			{
-				creature.Temp.FirewoodItemId = packet.GetInt();
+            if (validLocation)
+            {
+                // Handle items
+                if (skill.Info.Id == SkillId.Campfire)
+                {
+                    // Check Firewood, the client should stop the player long before Complete.
+                    if (creature.Inventory.Count(creature.Temp.FirewoodItemId) < FirewoodCost)
+                        throw new ModerateViolation("Used Campfire without Firewood.");
 
-				Send.SkillReady(creature, skill.Info.Id, creature.Temp.FirewoodItemId);
-			}
-			else
-			{
-				var dict = packet.GetString();
+                    // Remove Firewood
+                    creature.Inventory.Remove(creature.Temp.FirewoodItemId, FirewoodCost);
+                }
+                else
+                {
+                    // Check kit
+                    var item = creature.Inventory.GetItem(creature.Temp.CampfireKitItemEntityId);
+                    if (item == null)
+                        throw new ModerateViolation("Used CampfireKit with invalid kit.");
 
-				creature.Temp.CampfireKitItemEntityId = MabiDictionary.Fetch<long>("ITEMID", dict);
+                    propId = GetPropId(item); // Change the prop ID based on what campfire kit was used
 
-				Send.SkillReady(creature, skill.Info.Id, dict);
-			}
+                    // Reduce kit
+                    creature.Inventory.Decrement(item);
+                }
 
-			return true;
-		}
+                // Set up Campfire
+                var effect = skill.Info.Rank < SkillRank.RB ? "campfire_01" : "campfire_02";
+                var prop = new Prop(propId, creature.RegionId, pos.X, pos.Y, MabiMath.ByteToRadian(creature.Direction),
+                    1); // Logs
+                prop.State = "single";
+                if (prop.Data.Id != HalloweenPropId)
+                    prop.Xml.SetAttributeValue("EFFECT", effect); // Fire effect
+                prop.DisappearTime =
+                    DateTime.Now.AddMinutes(GetDuration(skill.Info.Rank,
+                        creature.RegionId)); // Disappear after x minutes
 
-		/// <summary>
-		/// Uses skill, checking if the campfire can be built at the given
-		/// position.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		public void Use(Creature creature, Skill skill, Packet packet)
-		{
-			var positionId = packet.GetLong();
-			var unkInt1 = packet.GetInt();
-			var unkInt2 = packet.GetInt();
+                // Temp data for Rest
+                prop.Temp.CampfireSkillRank = skill.RankData;
+                if (skill.Info.Id == SkillId.Campfire)
+                    prop.Temp.CampfireFirewood = AuraData.ItemDb.Find(creature.Temp.FirewoodItemId);
 
-			// Check location
-			var validLocation = IsValidRegion(creature.Region) && IsValidPosition(creature, new Position(positionId));
-			if (!validLocation)
-			{
-				Send.Notice(creature, Localization.Get("It's a little cramped here to make a Campfire."));
+                creature.Region.AddProp(prop);
 
-				creature.Skills.CancelActiveSkill();
-				Send.SkillUseSilentCancel(creature);
-				return;
-			}
+                // Training
+                if (skill.Info.Id == SkillId.Campfire && skill.Info.Rank == SkillRank.Novice)
+                    skill.Train(1); // Use Campfire.
+            }
 
-			Send.SkillUse(creature, skill.Info.Id, positionId, unkInt1, unkInt2);
-		}
+            // Complete
+            Send.SkillComplete(creature, skill.Info.Id, positionId, unkInt1, unkInt2);
+        }
 
-		/// <summary>
-		/// Completes skill, placing the campfire.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		/// <param name="packet"></param>
-		public void Complete(Creature creature, Skill skill, Packet packet)
-		{
-			var positionId = packet.GetLong();
-			var unkInt1 = packet.GetInt();
-			var unkInt2 = packet.GetInt();
-			var propId = PropId;
+        /// <summary>
+        ///     Prepares skill (effectively does nothing)
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public bool Prepare(Creature creature, Skill skill, Packet packet)
+        {
+            if (skill.Info.Id == SkillId.Campfire)
+            {
+                var itemId = packet.GetInt();
 
-			// Check location
-			var pos = new Position(positionId);
-			var validLocation = IsValidRegion(creature.Region) && IsValidPosition(creature, pos);
+                Send.SkillPrepare(creature, skill.Info.Id, itemId);
+            }
+            else
+            {
+                var dict = packet.GetString();
 
-			if (validLocation)
-			{
-				// Handle items
-				if (skill.Info.Id == SkillId.Campfire)
-				{
-					// Check Firewood, the client should stop the player long before Complete.
-					if (creature.Inventory.Count(creature.Temp.FirewoodItemId) < FirewoodCost)
-						throw new ModerateViolation("Used Campfire without Firewood.");
+                Send.SkillPrepare(creature, skill.Info.Id, dict);
+            }
 
-					// Remove Firewood
-					creature.Inventory.Remove(creature.Temp.FirewoodItemId, FirewoodCost);
-				}
-				else
-				{
-					// Check kit
-					var item = creature.Inventory.GetItem(creature.Temp.CampfireKitItemEntityId);
-					if (item == null)
-						throw new ModerateViolation("Used CampfireKit with invalid kit.");
+            return true;
+        }
 
-					propId = this.GetPropId(item); // Change the prop ID based on what campfire kit was used
+        /// <summary>
+        ///     Readies skill, saving the item id to use for later.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        public bool Ready(Creature creature, Skill skill, Packet packet)
+        {
+            if (skill.Info.Id == SkillId.Campfire)
+            {
+                creature.Temp.FirewoodItemId = packet.GetInt();
 
-					// Reduce kit
-					creature.Inventory.Decrement(item);
-				}
+                Send.SkillReady(creature, skill.Info.Id, creature.Temp.FirewoodItemId);
+            }
+            else
+            {
+                var dict = packet.GetString();
 
-				// Set up Campfire
-				var effect = (skill.Info.Rank < SkillRank.RB ? "campfire_01" : "campfire_02");
-				var prop = new Prop(propId, creature.RegionId, pos.X, pos.Y, MabiMath.ByteToRadian(creature.Direction), 1); // Logs
-				prop.State = "single";
-				if (prop.Data.Id != HalloweenPropId)
-					prop.Xml.SetAttributeValue("EFFECT", effect); // Fire effect
-				prop.DisappearTime = DateTime.Now.AddMinutes(this.GetDuration(skill.Info.Rank, creature.RegionId)); // Disappear after x minutes
+                creature.Temp.CampfireKitItemEntityId = MabiDictionary.Fetch<long>("ITEMID", dict);
 
-				// Temp data for Rest
-				prop.Temp.CampfireSkillRank = skill.RankData;
-				if (skill.Info.Id == SkillId.Campfire)
-					prop.Temp.CampfireFirewood = AuraData.ItemDb.Find(creature.Temp.FirewoodItemId);
+                Send.SkillReady(creature, skill.Info.Id, dict);
+            }
 
-				creature.Region.AddProp(prop);
+            return true;
+        }
 
-				// Training
-				if (skill.Info.Id == SkillId.Campfire && skill.Info.Rank == SkillRank.Novice)
-					skill.Train(1); // Use Campfire.
-			}
+        /// <summary>
+        ///     Uses skill, checking if the campfire can be built at the given
+        ///     position.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="skill"></param>
+        /// <param name="packet"></param>
+        public void Use(Creature creature, Skill skill, Packet packet)
+        {
+            var positionId = packet.GetLong();
+            var unkInt1 = packet.GetInt();
+            var unkInt2 = packet.GetInt();
 
-			// Complete
-			Send.SkillComplete(creature, skill.Info.Id, positionId, unkInt1, unkInt2);
-		}
+            // Check location
+            var validLocation = IsValidRegion(creature.Region) && IsValidPosition(creature, new Position(positionId));
+            if (!validLocation)
+            {
+                Send.Notice(creature, Localization.Get("It's a little cramped here to make a Campfire."));
 
-		/// <summary>
-		/// Returns true if a campfire can be built at the given position.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="pos"></param>
-		/// <returns></returns>
-		public static bool IsValidPosition(Creature creature, Position pos)
-		{
-			var validPosition = true;
+                creature.Skills.CancelActiveSkill();
+                Send.SkillUseSilentCancel(creature);
+                return;
+            }
 
-			// Collisions betwen player and position
-			if (creature.Region.Collisions.Any(creature.GetPosition(), pos))
-				validPosition = false;
-			// Too close to a creature
-			else if (creature.Region.GetCreaturesInRange(pos, 90).Count != 0)
-				validPosition = false;
-			// Too close to a collision
-			else if (creature.Region.Collisions.AnyInRange(creature.GetPosition(), 250))
-				validPosition = false;
+            Send.SkillUse(creature, skill.Info.Id, positionId, unkInt1, unkInt2);
+        }
 
-			return validPosition;
-		}
+        /// <summary>
+        ///     Returns true if a campfire can be built at the given position.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public static bool IsValidPosition(Creature creature, Position pos)
+        {
+            var validPosition = true;
 
-		/// <summary>
-		/// Returns true if a campfire can be built at the given position.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="pos"></param>
-		/// <returns></returns>
-		public static bool IsValidRegion(Region region)
-		{
-			if (region.IsIndoor)
-				return false;
+            // Collisions betwen player and position
+            if (creature.Region.Collisions.Any(creature.GetPosition(), pos))
+                validPosition = false;
+            // Too close to a creature
+            else if (creature.Region.GetCreaturesInRange(pos, 90).Count != 0)
+                validPosition = false;
+            // Too close to a collision
+            else if (creature.Region.Collisions.AnyInRange(creature.GetPosition(), 250))
+                validPosition = false;
 
-			return true;
-		}
+            return validPosition;
+        }
 
-		/// <summary>
-		/// Canceles skill (no special actions required)
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <param name="skill"></param>
-		public void Cancel(Creature creature, Skill skill)
-		{
-		}
+        /// <summary>
+        ///     Returns true if a campfire can be built at the given position.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public static bool IsValidRegion(Region region)
+        {
+            if (region.IsIndoor)
+                return false;
 
-		/// <summary>
-		/// Returns duration for rank in minutes.
-		/// </summary>
-		/// <param name="rank"></param>
-		/// <returns></returns>
-		private int GetDuration(SkillRank rank, int regionId)
-		{
-			var duration = 4;
-			if (rank >= SkillRank.RC && rank <= SkillRank.R6)
-				duration = 5;
-			else if (rank >= SkillRank.R5)
-				duration = 6;
+            return true;
+        }
 
-			// Lower duration during rain
-			var weatherType = ChannelServer.Instance.Weather.GetWeatherType(regionId);
-			if (weatherType == WeatherType.Rain)
-				duration /= 2; // Unofficial
+        /// <summary>
+        ///     Returns duration for rank in minutes.
+        /// </summary>
+        /// <param name="rank"></param>
+        /// <returns></returns>
+        private int GetDuration(SkillRank rank, int regionId)
+        {
+            var duration = 4;
+            if (rank >= SkillRank.RC && rank <= SkillRank.R6)
+                duration = 5;
+            else if (rank >= SkillRank.R5)
+                duration = 6;
 
-			return duration;
-		}
+            // Lower duration during rain
+            var weatherType = ChannelServer.Instance.Weather.GetWeatherType(regionId);
+            if (weatherType == WeatherType.Rain)
+                duration /= 2; // Unofficial
 
-		/// <summary>
-		/// Gets the prop ID
-		/// </summary>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		private int GetPropId(Item item)
-		{
-			if (item != null)
-			{
-				if (item.HasTag("/halloween_campfire_kit/"))
-				{
-					return HalloweenPropId;
-				}
-				else if (item.HasTag("/burner/"))
-				{
-					return ChristmasPropId;
-				}
-				else if (item.Info.Id == 63291)
-				{
-					return SeventhAnnvPropId;
-				}
-				else if (item.Info.Id == 63343)
-				{
-					return EighthAnnvPropId;
-				}
-			}
+            return duration;
+        }
 
-			return PropId;
-		}
+        /// <summary>
+        ///     Gets the prop ID
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private int GetPropId(Item item)
+        {
+            if (item != null)
+                if (item.HasTag("/halloween_campfire_kit/"))
+                    return HalloweenPropId;
+                else if (item.HasTag("/burner/"))
+                    return ChristmasPropId;
+                else if (item.Info.Id == 63291)
+                    return SeventhAnnvPropId;
+                else if (item.Info.Id == 63343)
+                    return EighthAnnvPropId;
 
-		/// <summary>
-		/// Returns a campfire in range of creature, or null if there is none.
-		/// </summary>
-		/// <param name="creature"></param>
-		/// <returns></returns>
-		public static Prop GetNearbyCampfire(Creature creature, int range)
-		{
-			var campfires = creature.Region.GetProps(a => a.Info.Id == 203 && a.GetPosition().InRange(creature.GetPosition(), 500));
-			if (campfires.Count == 0)
-				return null;
+            return PropId;
+        }
 
-			return campfires[0];
-		}
-	}
+        /// <summary>
+        ///     Returns a campfire in range of creature, or null if there is none.
+        /// </summary>
+        /// <param name="creature"></param>
+        /// <returns></returns>
+        public static Prop GetNearbyCampfire(Creature creature, int range)
+        {
+            var campfires = creature.Region.GetProps(a =>
+                a.Info.Id == 203 && a.GetPosition().InRange(creature.GetPosition(), 500));
+            if (campfires.Count == 0)
+                return null;
+
+            return campfires[0];
+        }
+    }
 }

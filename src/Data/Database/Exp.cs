@@ -6,85 +6,85 @@ using System.Collections.Generic;
 
 namespace Aura.Data.Database
 {
-	[Serializable]
-	public class ExpData
-	{
-		//public uint Race;
-		public int Level { get; set; }
-		public int Exp { get; set; }
-	}
+    [Serializable]
+    public class ExpData
+    {
+        //public uint Race;
+        public int Level { get; set; }
 
-	public class ExpDb : DatabaseCsv<ExpData>
-	{
-		public int MaxLevel { get; private set; }
-		public long MaxExp { get; private set; }
+        public int Exp { get; set; }
+    }
 
-		/// <summary>
-		/// Returns total exp required to reach the level after the given one.
-		/// </summary>
-		/// <param name="currentLv"></param>
-		/// <returns></returns>
-		public int GetTotalForNextLevel(int currentLv)
-		{
-			var result = 0;
+    public class ExpDb : DatabaseCsv<ExpData>
+    {
+        public int MaxLevel { get; private set; }
+        public long MaxExp { get; private set; }
 
-			if (currentLv >= this.Entries.Count)
-				currentLv = (short)this.Entries.Count;
+        /// <summary>
+        ///     Returns total exp required to reach the level after the given one.
+        /// </summary>
+        /// <param name="currentLv"></param>
+        /// <returns></returns>
+        public int GetTotalForNextLevel(int currentLv)
+        {
+            var result = 0;
 
-			for (ushort i = 0; i < currentLv; ++i)
-			{
-				result += this.Entries[i].Exp;
-			}
+            if (currentLv >= Entries.Count)
+                currentLv = (short) Entries.Count;
 
-			return result;
-		}
+            for (ushort i = 0; i < currentLv; ++i)
+                result += Entries[i].Exp;
 
-		/// <summary>
-		/// Returns the exp required for the next level.
-		/// </summary>
-		/// <param name="currentLv"></param>
-		/// <returns></returns>
-		public int GetForLevel(int currentLv)
-		{
-			if (currentLv < 1)
-				return 0;
-			if (currentLv > this.MaxLevel)
-				currentLv = (short)this.Entries.Count;
+            return result;
+        }
 
-			currentLv -= 1;
-			return this.Entries[currentLv].Exp;
-		}
+        /// <summary>
+        ///     Returns the exp required for the next level.
+        /// </summary>
+        /// <param name="currentLv"></param>
+        /// <returns></returns>
+        public int GetForLevel(int currentLv)
+        {
+            if (currentLv < 1)
+                return 0;
+            if (currentLv > MaxLevel)
+                currentLv = (short) Entries.Count;
 
-		/// <summary>
-		/// Calculates exp remaining till the next level. Required for stat update.
-		/// </summary>
-		/// <param name="currentLv"></param>
-		/// <param name="totalExp"></param>
-		/// <returns></returns>
-		public long CalculateRemaining(short currentLv, long totalExp)
-		{
-			return this.GetForLevel(currentLv) - (this.GetTotalForNextLevel(currentLv) - totalExp) + this.GetForLevel((short)(currentLv - 1));
-		}
+            currentLv -= 1;
+            return Entries[currentLv].Exp;
+        }
 
-		protected override void ReadEntry(CsvEntry entry)
-		{
-			// Replace previous values if there is more than 1 line.
-			this.Entries = new List<ExpData>(entry.Count);
+        /// <summary>
+        ///     Calculates exp remaining till the next level. Required for stat update.
+        /// </summary>
+        /// <param name="currentLv"></param>
+        /// <param name="totalExp"></param>
+        /// <returns></returns>
+        public long CalculateRemaining(short currentLv, long totalExp)
+        {
+            return GetForLevel(currentLv) - (GetTotalForNextLevel(currentLv) - totalExp) +
+                   GetForLevel((short) (currentLv - 1));
+        }
 
-			while (!entry.End)
-			{
-				var info = new ExpData();
-				info.Level = (entry.Pointer + 1);
-				info.Exp = entry.ReadInt();
+        protected override void ReadEntry(CsvEntry entry)
+        {
+            // Replace previous values if there is more than 1 line.
+            Entries = new List<ExpData>(entry.Count);
 
-				this.Entries.Add(info);
-			}
-		}
+            while (!entry.End)
+            {
+                var info = new ExpData();
+                info.Level = entry.Pointer + 1;
+                info.Exp = entry.ReadInt();
 
-		protected override void AfterLoad()
-		{
-			this.MaxLevel = this.Entries.Count;
-			this.MaxExp = this.GetTotalForNextLevel(this.MaxLevel);
-		}
-	}
+                Entries.Add(info);
+            }
+        }
+
+        protected override void AfterLoad()
+        {
+            MaxLevel = Entries.Count;
+            MaxExp = GetTotalForNextLevel(MaxLevel);
+        }
+    }
 }

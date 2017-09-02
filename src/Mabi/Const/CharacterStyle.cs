@@ -3,16 +3,16 @@
 
 namespace Aura.Mabi.Const
 {
-	public enum CharacterStyleType
-	{
-		MaleHairStyle = 1,
-		FemaleHairStyle = 2,
-		HairColor = 3,
-		SkinColor = 4,
-		EyeColor = 5,
-		EyeType = 6,
-		MouthType = 7,
-		MaleFace = 8,
-		FemaleFace = 9,
-	}
+    public enum CharacterStyleType
+    {
+        MaleHairStyle = 1,
+        FemaleHairStyle = 2,
+        HairColor = 3,
+        SkinColor = 4,
+        EyeColor = 5,
+        EyeType = 6,
+        MouthType = 7,
+        MaleFace = 8,
+        FemaleFace = 9
+    }
 }
