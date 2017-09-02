@@ -28,7 +28,7 @@ namespace Aura.Channel.Skills.Fighter
 	/// Var4: Protection Reduction
 	/// Var6: Reduction Chance
 	[Skill(SkillId.SpinningUppercut)]
-	public class SpinningUppercut : ISkillHandler, IPreparable, ICompletable, ICancelable // also IInitiable
+	public class SpinningUppercut : ISkillHandler, IPreparable, ICompletable, ICancelable, IInitiableSkillHandler
 	{
 		/// <summary>
 		/// Attacker's stun after skill use
@@ -49,6 +49,14 @@ namespace Aura.Channel.Skills.Fighter
 		/// Target's knockback distance if killed
 		/// </summary>
 		private const int KnockbackDistance = 220;
+
+		/// <summary>
+		/// Subscribes handlers to events required for training.
+		/// </summary>
+		public void Init()
+		{
+			ChannelServer.Instance.Events.CreatureAttackedByPlayer += this.OnCreatureAttackedByPlayer;
+		}
 
 		/// <summary>
 		/// Prepares and uses the skill
@@ -139,6 +147,7 @@ namespace Aura.Channel.Skills.Fighter
 			{
 				Send.Effect(target, Effect.SpinningUppercutDebuff, (short)skill.Info.Id, 0, defDecrease, protDecrease);
 				target.Conditions.Activate(ConditionsC.DefProtectDebuff, extra);
+				attacker.Temp.SpinningUppercutDebuffApplied = true;
 			}
 
 			// Prepare Combat Actions
@@ -232,6 +241,59 @@ namespace Aura.Channel.Skills.Fighter
 		public void Cancel(Creature creature, Skill skill)
 		{
 
+		}
+
+		/// <summary>
+		/// Skill training, called when someone attacks something
+		/// </summary>
+		/// <param name="action"></param>
+		public void OnCreatureAttackedByPlayer(TargetAction action)
+		{
+			// Check skill
+			if (action.AttackerSkillId != SkillId.SpinningUppercut)
+				return;
+
+			// Get skill
+			var attackerSkill = action.Attacker.Skills.Get(SkillId.SpinningUppercut);
+			if (attackerSkill == null) return;
+
+			// Training
+			switch (attackerSkill.Info.Rank)
+			{
+				case SkillRank.Novice:
+					attackerSkill.Train(1); // Use the skill successfully.
+					break;
+				case SkillRank.RF:
+				case SkillRank.RE:
+				case SkillRank.RD:
+				case SkillRank.RC:
+				case SkillRank.RB:
+				case SkillRank.RA:
+				case SkillRank.R9:
+				case SkillRank.R8:
+				case SkillRank.R7:
+				case SkillRank.R6:
+					attackerSkill.Train(1); // Use the skill successfully.
+					if (action.Attacker.Temp.SpinningUppercutDebuffApplied == true) attackerSkill.Train(2); // Decrease an enemy's Defense and Protection with Spinning Uppercut.
+					action.Attacker.Temp.SpinningUppercutDebuffApplied = false; // Reset temp variable
+					break;
+				case SkillRank.R5:
+				case SkillRank.R4:
+				case SkillRank.R3:
+					if (action.Has(TargetOptions.Critical)) attackerSkill.Train(1); // Get a Critical Hit with Spinning Uppercut.
+					if (action.Attacker.Temp.SpinningUppercutDebuffApplied == true) attackerSkill.Train(2); // Decrease an enemy's Defense and Protection with Spinning Uppercut.
+					action.Attacker.Temp.SpinningUppercutDebuffApplied = false; // Reset temp variable
+					break;
+				case SkillRank.R2:
+					if (action.Attacker.Temp.SpinningUppercutDebuffApplied == true && action.Creature.HasTag("/ghost/")) attackerSkill.Train(1); // Lower the Defense and Protection of a Ghost.
+					action.Attacker.Temp.SpinningUppercutDebuffApplied = false; // Reset temp variable
+					break;
+				case SkillRank.R1:
+					if (action.Has(TargetOptions.Critical)) attackerSkill.Train(1); // Get a Critical Hit with Spinning Uppercut.
+					if (action.Attacker.Temp.SpinningUppercutDebuffApplied == true) attackerSkill.Train(2); // Decrease an enemy's Defense and Protection with Spinning Uppercut.
+					action.Attacker.Temp.SpinningUppercutDebuffApplied = false; // Reset temp variable
+					break;
+			}
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace Aura.Channel.Skills.Fighter
 	/// Var4: Splash Length
 	/// Var5: Splash Damage
 	[Skill(SkillId.DropKick)]
-	public class DropKick : ISkillHandler, IPreparable, ICompletable, ICancelable // also IInitiable
+	public class DropKick : ISkillHandler, IPreparable, ICompletable, ICancelable, IInitiableSkillHandler
 	{
 		/// <summary>
 		/// Attacker's stun after skill use
@@ -44,6 +44,15 @@ namespace Aura.Channel.Skills.Fighter
 		/// Target's stability reduction on hit
 		/// </summary>
 		private const int StabilityReduction = 100;
+
+		/// <summary>
+		/// Subscribes handlers to events required for training.
+		/// </summary>
+		public void Init()
+		{
+			ChannelServer.Instance.Events.CreatureAttackedByPlayer += this.OnCreatureAttackedByPlayer;
+			ChannelServer.Instance.Events.CreatureAttacks += this.OnCreatureAttacks;
+		}
 
 		/// <summary>
 		/// Prepares and uses the skill
@@ -234,6 +243,9 @@ namespace Aura.Channel.Skills.Fighter
 			var skillWidth = skill.RankData.Var3;
 			var attackerPos = attacker.GetPosition();
 
+			// Set training variable
+			attacker.Temp.DropKickSplashTargetCount = 0;
+
 			// Get splash targets
 			var targets = SkillHelper.GetTargetableCreaturesInSkillArea(attacker, (int)skillLength, (int)skillWidth);
 			targets.Remove(initTarget);
@@ -264,6 +276,8 @@ namespace Aura.Channel.Skills.Fighter
 			// Target Actions
 			foreach (var target in targets)
 			{
+				attacker.Temp.DropKickSplashTargetCount += 1;
+
 				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
 				tAction.Delay = target.GetPosition().GetDistance(attackerPos);
 				cap.Add(tAction);
@@ -347,6 +361,95 @@ namespace Aura.Channel.Skills.Fighter
 		public void Cancel(Creature creature, Skill skill)
 		{
 			creature.Unlock(Locks.Walk | Locks.Run);
+		}
+
+		/// <summary>
+		/// Skill training, called when someone attacks something
+		/// </summary>
+		/// <param name="action"></param>
+		public void OnCreatureAttackedByPlayer(TargetAction action)
+		{
+			// Check skill
+			if (action.AttackerSkillId != SkillId.DropKick)
+				return;
+
+			// Get skill
+			var attackerSkill = action.Attacker.Skills.Get(SkillId.DropKick);
+			if (attackerSkill == null) return;
+
+			// Disregard the second splash CombatActionPack for this training
+			if (!action.Has(TargetOptions.FighterUnk))
+				return;
+
+			// Training
+			switch (attackerSkill.Info.Rank)
+			{
+				case SkillRank.RF:
+				case SkillRank.RE:
+				case SkillRank.RD:
+				case SkillRank.RC:
+				case SkillRank.RB:
+				case SkillRank.RA:
+				case SkillRank.R9:
+				case SkillRank.R8:
+				case SkillRank.R7:
+				case SkillRank.R6:
+				case SkillRank.R5:
+				case SkillRank.R4:
+				case SkillRank.R3:
+				case SkillRank.R1:
+					if (action.Has(TargetOptions.Critical)) attackerSkill.Train(2); // Get a critical hit with Drop Kick.
+					break;
+			}
+		}
+
+		public void OnCreatureAttacks(AttackerAction aAction)
+		{
+			// Check skill
+			if (aAction.SkillId != SkillId.DropKick)
+				return;
+
+			// Get skill
+			var attackerSkill = aAction.Creature.Skills.Get(SkillId.DropKick);
+			if (attackerSkill == null) return;
+
+			// Disregard the initial CombatActionPack for this training
+			if (aAction.Flags.HasFlag(CombatActionType.RangeHit))
+				return;
+
+			// Training
+			switch (attackerSkill.Info.Rank)
+			{
+				case SkillRank.Novice:
+					attackerSkill.Train(1); // Use the skill successfully.
+					break;
+				case SkillRank.RF:
+				case SkillRank.RE:
+				case SkillRank.RD:
+				case SkillRank.RC:
+				case SkillRank.RB:
+				case SkillRank.RA:
+				case SkillRank.R9:
+				case SkillRank.R8:
+				case SkillRank.R7:
+				case SkillRank.R6:
+				case SkillRank.R5:
+				case SkillRank.R4:
+				case SkillRank.R3:
+					attackerSkill.Train(1); // Use the skill successfully.
+					if (aAction.Creature.Temp.DropKickSplashTargetCount >= 1) attackerSkill.Train(3); // Hit 2 or more enemies with Drop Kick. (Initial target counts as 1)
+					aAction.Creature.Temp.DropKickSplashTargetCount = 0; // Reset variable
+					break;
+				case SkillRank.R2:
+					if (aAction.Creature.Temp.DropKickSplashTargetCount >= 2) attackerSkill.Train(1); // Hit 3 or more enemies with Drop Kick. (Initial target counts as 1)
+					aAction.Creature.Temp.DropKickSplashTargetCount = 0; // Reset variable
+					break;
+				case SkillRank.R1:
+					attackerSkill.Train(1); // Use the skill successfully.
+					if (aAction.Creature.Temp.DropKickSplashTargetCount >= 1) attackerSkill.Train(3); // Hit 2 or more enemies with Drop Kick. (Initial target counts as 1)
+					aAction.Creature.Temp.DropKickSplashTargetCount = 0; // Reset variable
+					break;
+			}
 		}
 	}
 }

@@ -54,7 +54,8 @@ namespace Aura.Channel.World.Entities.Creatures
 		// 7 Second interval for Stage 1 -> Stage 2 Chain
 		// 5 Second interval for Stage 2 -> Stage 3 Chain
 		public DateTime FighterChainStartTime;
-		public int FighterChainLevel;
+		public int FighterChainLevel, DropKickSplashTargetCount;
+		public bool SpinningUppercutDebuffApplied;
 
 		// Backup of target's position when gathering, for run away check
 		public Position GatheringTargetPosition;

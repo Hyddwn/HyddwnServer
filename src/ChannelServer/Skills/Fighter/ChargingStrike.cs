@@ -26,7 +26,7 @@ namespace Aura.Channel.Skills.Fighter
 	/// Var2: Cooldown Decreased
 	/// Var3: Range
 	[Skill(SkillId.ChargingStrike)]
-	public class ChargingStrike : ISkillHandler, IPreparable, IReadyable, IUseable, ICancelable // also IInitiable
+	public class ChargingStrike : ISkillHandler, IPreparable, IReadyable, IUseable, ICancelable, IInitiableSkillHandler
 	{
 		/// <summary>
 		/// Attacker's stun after skill use
@@ -47,6 +47,14 @@ namespace Aura.Channel.Skills.Fighter
 		/// Target's knockback distance if killed
 		/// </summary>
 		private const int KnockbackDistance = 190;
+
+		/// <summary>
+		/// Subscribes handlers to events required for training.
+		/// </summary>
+		public void Init()
+		{
+			ChannelServer.Instance.Events.CreatureAttackedByPlayer += this.OnCreatureAttackedByPlayer;
+		}
 
 		/// <summary>
 		/// Prepares the skill
@@ -222,6 +230,52 @@ namespace Aura.Channel.Skills.Fighter
 		public void Cancel(Creature creature, Skill skill)
 		{
 		
+		}
+
+		/// <summary>
+		/// Skill training, called when someone attacks something
+		/// </summary>
+		/// <param name="action"></param>
+		public void OnCreatureAttackedByPlayer(TargetAction action)
+		{
+			// Check skill
+			if (action.AttackerSkillId != SkillId.ChargingStrike)
+				return;
+
+			// Get skill
+			var attackerSkill = action.Attacker.Skills.Get(SkillId.ChargingStrike);
+			if (attackerSkill == null) return;
+
+			// Training
+			switch (attackerSkill.Info.Rank)
+			{
+				case SkillRank.Novice:
+					attackerSkill.Train(1); // Use the skill successfully.
+					break;
+				case SkillRank.RF:
+				case SkillRank.RE:
+				case SkillRank.RD:
+				case SkillRank.RC:
+				case SkillRank.RB:
+				case SkillRank.RA:
+				case SkillRank.R9:
+				case SkillRank.R8:
+				case SkillRank.R7:
+				case SkillRank.R6:
+				case SkillRank.R5:
+				case SkillRank.R4:
+				case SkillRank.R3:
+					attackerSkill.Train(1); // Use the skill successfully.
+					if (action.Has(TargetOptions.Critical)) attackerSkill.Train(2); // Get a Critical Hit with Charging Strike.
+					break;
+				case SkillRank.R2:
+					if (action.Creature.HasTag("/ogre/")) attackerSkill.Train(1); // Use the skill successfully on an Ogre.
+					break;
+				case SkillRank.R1:
+					attackerSkill.Train(1); // Use the skill successfully.
+					if (action.Has(TargetOptions.Critical)) attackerSkill.Train(2); // Get a Critical Hit with Charging Strike.
+					break;
+			}
 		}
 	}
 }
