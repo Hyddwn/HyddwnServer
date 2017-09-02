@@ -62,6 +62,14 @@ namespace Aura.Channel.Skills.Fighter
 			if (creature.Temp.FighterChainLevel != 3 || DateTime.Now > creature.Temp.FighterChainStartTime.AddMilliseconds((double)ChainMasteryInterval.Stage3))
 				return false;
 
+			// Heavy Armor check
+			var chainMasterySkill = creature.Skills.Get(SkillId.ChainMastery);
+			if (creature.HasEquipped("/heavyarmor/") && (chainMasterySkill == null || chainMasterySkill.RankData.Var3 == 0))
+			{
+				Send.Notice(creature, Localization.Get("You cannot use this skill with Heavy Armor equipped."));
+				return false;
+			}
+
 			// Discard unused packet string
 			if (packet.Peek() == PacketElementType.String)
 				packet.GetString();
@@ -158,11 +166,14 @@ namespace Aura.Channel.Skills.Fighter
 			var damageBonus = (chainMasterySkill == null ? 0 : chainMasterySkill.RankData.Var1);
 			damage += damage * (damageBonus / 100f);
 
+			// Heavy Armor Damage Reduction
+			var damageReduction = (chainMasterySkill == null ? 0 : (100 - chainMasterySkill.RankData.Var3));
+			if (attacker.HasEquipped("/heavyarmor/"))
+				damage -= damage * (damageReduction / 100f);
+
 			// Master Title - Damage +10%
 			if (attacker.Titles.SelectedTitle == skill.Data.MasterTitle)
 				damage += (damage * 0.1f);
-			
-			// Heavy Armor Damage Reduction
 
 			// Critical Hit
 			var critChance = attacker.GetRightCritChance(target.Protection);
@@ -209,7 +220,7 @@ namespace Aura.Channel.Skills.Fighter
 			cap.Handle();
 
 			// Splash Damage
-			this.HandleSplash(attacker, skill, target, skillLength, damageBonus);
+			this.HandleSplash(attacker, skill, target, skillLength, damageBonus, damageReduction);
 		}
 
 		/// <summary>
@@ -220,7 +231,7 @@ namespace Aura.Channel.Skills.Fighter
 		/// <param name="initTarget"></param>
 		/// <param name="skillLength"></param>
 		/// <param name="damageBonus"></param>
-		public void HandleSplash(Creature attacker, Skill skill, Creature initTarget, float skillLength, float damageBonus)
+		public void HandleSplash(Creature attacker, Skill skill, Creature initTarget, float skillLength, float damageBonus, float damageReduction)
 		{
 			// Variables
 			var skillWidth = skill.RankData.Var3;
@@ -260,9 +271,15 @@ namespace Aura.Channel.Skills.Fighter
 				tAction.Delay = target.GetPosition().GetDistance(attackerPos);
 				cap.Add(tAction);
 
-				// Damage
+				// Splash Damage
 				var damage = (attacker.GetRndFighterDamage() * (skill.RankData.Var5 / 100f));
+
+				// Chain Mastery Damage Bonus
 				damage += damage * (damageBonus / 100f);
+
+				// Heavy Armor Damage Reduction
+				if (attacker.HasEquipped("/heavyarmor/"))
+					damage -= damage * (damageReduction / 100f);
 
 				// Master Title - Damage +10%
 				if (attacker.Titles.SelectedTitle == skill.Data.MasterTitle)
