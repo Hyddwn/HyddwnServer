@@ -11,120 +11,119 @@ using Aura.Shared.Util;
 
 namespace Aura.Channel.Skills.Action
 {
-    /// <summary>
-    ///     Dice Tossing handler
-    /// </summary>
-    [Skill(SkillId.DiceTossing)]
-    public class DiceTossing : ISkillHandler, IPreparable, IReadyable, IUseable, ICompletable, ICancelable
-    {
-        private const int Range = 400;
+	/// <summary>
+	/// Dice Tossing handler
+	/// </summary>
+	[Skill(SkillId.DiceTossing)]
+	public class DiceTossing : ISkillHandler, IPreparable, IReadyable, IUseable, ICompletable, ICancelable
+	{
+		private const int Range = 400;
 
-        /// <summary>
-        ///     Cancels skill, Cancels Motion and returns the character to idle position.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        public void Cancel(Creature creature, Skill skill)
-        {
-            skill.Stacks = 0;
+		/// <summary>
+		/// Prepares skill, fails if no Dice is found.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		public bool Prepare(Creature creature, Skill skill, Packet packet)
+		{
+			// Check if dice are equipped (checked on client as well)
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/dice/"))
+			{
+				Send.Notice(creature, Localization.Get("You must equip one Six Sided Dice to use this Action."));
+				return false;
+			}
 
-            Send.MotionCancel2(creature, 1);
-            Send.Effect(creature, Effect.Dice, 0, "cancel"); // [200200, NA233 (2016-08-12)] New 0 int after effect id
-        }
+			creature.StopMove();
 
-        /// <summary>
-        ///     Completes skill
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        public void Complete(Creature creature, Skill skill, Packet packet)
-        {
-            var location = packet.GetLong();
-            var unkInt1 = packet.GetInt();
-            var unkInt2 = packet.GetInt();
+			Send.UseMotion(creature, 27, 0, false, false);
+			Send.Effect(creature, Effect.Dice, 0, "prepare"); // [200200, NA233 (2016-08-12)] New 0 int after effect id
+			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
-            Send.SkillComplete(creature, skill.Info.Id, location, unkInt1, unkInt2);
-        }
+			return true;
+		}
 
-        /// <summary>
-        ///     Prepares skill, fails if no Dice is found.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Prepare(Creature creature, Skill skill, Packet packet)
-        {
-            // Check if dice are equipped (checked on client as well)
-            if (creature.RightHand == null || !creature.RightHand.HasTag("/dice/"))
-            {
-                Send.Notice(creature, Localization.Get("You must equip one Six Sided Dice to use this Action."));
-                return false;
-            }
+		/// <summary>
+		/// Readies the skill.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		public bool Ready(Creature creature, Skill skill, Packet packet)
+		{
+			skill.Stacks = 1;
 
-            creature.StopMove();
+			Send.UseMotion(creature, 27, 1, true, false);
+			Send.Effect(creature, Effect.Dice, 0, "wait"); // [200200, NA233 (2016-08-12)] New 0 int after effect id
+			Send.SkillReady(creature, skill.Info.Id);
 
-            Send.UseMotion(creature, 27, 0, false, false);
-            Send.Effect(creature, Effect.Dice, 0, "prepare"); // [200200, NA233 (2016-08-12)] New 0 int after effect id
-            Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
+			return true;
+		}
 
-            return true;
-        }
+		/// <summary>
+		/// Uses skill, the actual usage is in Complete.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Use(Creature creature, Skill skill, Packet packet)
+		{
+			var location = packet.GetLong();
+			var unkInt1 = packet.GetInt();
+			var unkInt2 = packet.GetInt();
 
-        /// <summary>
-        ///     Readies the skill.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Ready(Creature creature, Skill skill, Packet packet)
-        {
-            skill.Stacks = 1;
+			var areaPosition = new Position(location);
 
-            Send.UseMotion(creature, 27, 1, true, false);
-            Send.Effect(creature, Effect.Dice, 0, "wait"); // [200200, NA233 (2016-08-12)] New 0 int after effect id
-            Send.SkillReady(creature, skill.Info.Id);
+			// Check range
+			if (!creature.GetPosition().InRange(areaPosition, Range))
+			{
+				this.Cancel(creature, skill);
+				Send.SkillUseSilentCancel(creature);
+				Send.Notice(creature, Localization.Get("Out of range."));
+				return;
+			}
 
-            return true;
-        }
+			// Reduce Dice
+			if (creature.Inventory.RightHand != null)
+				creature.Inventory.Decrement(creature.Inventory.RightHand);
 
-        /// <summary>
-        ///     Uses skill, the actual usage is in Complete.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        public void Use(Creature creature, Skill skill, Packet packet)
-        {
-            var location = packet.GetLong();
-            var unkInt1 = packet.GetInt();
-            var unkInt2 = packet.GetInt();
+			var number = (byte)(RandomProvider.Get().Next(6));
 
-            var areaPosition = new Position(location);
+			Send.UseMotion(creature, 27, 2, false, false);
+			Send.Effect(creature, Effect.Dice, 0, "process", location, number); // [200200, NA233 (2016-08-12)] New 0 int after effect id
+			Send.SkillUse(creature, skill.Info.Id, location, unkInt1, unkInt2);
 
-            // Check range
-            if (!creature.GetPosition().InRange(areaPosition, Range))
-            {
-                Cancel(creature, skill);
-                Send.SkillUseSilentCancel(creature);
-                Send.Notice(creature, Localization.Get("Out of range."));
-                return;
-            }
+			skill.Stacks = 0;
+		}
 
-            // Reduce Dice
-            if (creature.Inventory.RightHand != null)
-                creature.Inventory.Decrement(creature.Inventory.RightHand);
+		/// <summary>
+		/// Completes skill
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Complete(Creature creature, Skill skill, Packet packet)
+		{
+			var location = packet.GetLong();
+			var unkInt1 = packet.GetInt();
+			var unkInt2 = packet.GetInt();
 
-            var number = (byte) RandomProvider.Get().Next(6);
+			Send.SkillComplete(creature, skill.Info.Id, location, unkInt1, unkInt2);
+		}
 
-            Send.UseMotion(creature, 27, 2, false, false);
-            Send.Effect(creature, Effect.Dice, 0, "process", location,
-                number); // [200200, NA233 (2016-08-12)] New 0 int after effect id
-            Send.SkillUse(creature, skill.Info.Id, location, unkInt1, unkInt2);
+		/// <summary>
+		/// Cancels skill, Cancels Motion and returns the character to idle position.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		public void Cancel(Creature creature, Skill skill)
+		{
+			skill.Stacks = 0;
 
-            skill.Stacks = 0;
-        }
-    }
+			Send.MotionCancel2(creature, 1);
+			Send.Effect(creature, Effect.Dice, 0, "cancel"); // [200200, NA233 (2016-08-12)] New 0 int after effect id
+		}
+	}
 }

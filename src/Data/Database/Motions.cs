@@ -6,31 +6,31 @@ using Newtonsoft.Json.Linq;
 
 namespace Aura.Data.Database
 {
-    [Serializable]
-    public class MotionData
-    {
-        public string Name { get; set; }
-        public short Category { get; set; }
-        public short Type { get; set; }
-        public bool Loop { get; set; }
-    }
+	[Serializable]
+	public class MotionData
+	{
+		public string Name { get; set; }
+		public short Category { get; set; }
+		public short Type { get; set; }
+		public bool Loop { get; set; }
+	}
 
-    /// <summary>
-    ///     Indexed by motion name.
-    /// </summary>
-    public class MotionDb : DatabaseJsonIndexed<string, MotionData>
-    {
-        protected override void ReadEntry(JObject entry)
-        {
-            entry.AssertNotMissing("name", "category", "type");
+	/// <summary>
+	/// Indexed by motion name.
+	/// </summary>
+	public class MotionDb : DatabaseJsonIndexed<string, MotionData>
+	{
+		protected override void ReadEntry(JObject entry)
+		{
+			entry.AssertNotMissing("name", "category", "type");
 
-            var info = new MotionData();
-            info.Name = entry.ReadString("name");
-            info.Category = entry.ReadShort("category");
-            info.Type = entry.ReadShort("type");
-            info.Loop = entry.ReadBool("loop");
+			var info = new MotionData();
+			info.Name = entry.ReadString("name");
+			info.Category = entry.ReadShort("category");
+			info.Type = entry.ReadShort("type");
+			info.Loop = entry.ReadBool("loop");
 
-            Entries[info.Name] = info;
-        }
-    }
+			this.Entries[info.Name] = info;
+		}
+	}
 }

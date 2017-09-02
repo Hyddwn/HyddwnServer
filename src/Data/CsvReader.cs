@@ -8,334 +8,177 @@ using System.IO;
 
 namespace Aura.Data
 {
-    public class CsvReader : IDisposable
-    {
-        public CsvReader(string path)
-        {
-            Path = path;
-            Seperator = ',';
-        }
+	public class CsvReader : IDisposable
+	{
+		public string Path { get; set; }
+		public char Seperator { get; set; }
 
-        public string Path { get; set; }
-        public char Seperator { get; set; }
+		public CsvReader(string path)
+		{
+			this.Path = path;
+			this.Seperator = ',';
+		}
 
-        public void Dispose()
-        {
-        }
+		public IEnumerable<CsvEntry> Next()
+		{
+			using (var fs = new FileStream(this.Path, FileMode.Open, FileAccess.Read, FileShare.Read))
+			using (var reader = new StreamReader(fs))
+			{
+				for (int i = 0; !reader.EndOfStream; ++i)
+				{
+					var entry = this.GetEntry(reader.ReadLine());
+					if (entry.Count < 1)
+						continue;
 
-        public IEnumerable<CsvEntry> Next()
-        {
-            using (var fs = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (var reader = new StreamReader(fs))
-            {
-                for (var i = 0; !reader.EndOfStream; ++i)
-                {
-                    var entry = GetEntry(reader.ReadLine());
-                    if (entry.Count < 1)
-                        continue;
+					entry.Line = i + 1;
 
-                    entry.Line = i + 1;
+					yield return entry;
+				}
+			}
 
-                    yield return entry;
-                }
-            }
-        }
+			yield break;
+		}
 
-        protected CsvEntry GetEntry(string csv)
-        {
-            var result = new CsvEntry();
+		protected CsvEntry GetEntry(string csv)
+		{
+			var result = new CsvEntry();
 
-            csv = csv.Trim();
+			csv = csv.Trim();
 
-            // Check for empty and commented lines.
-            if (csv != string.Empty && !csv.StartsWith("//"))
-            {
-                int ptr = 0, braces = 0;
-                bool inString = false, comment = false;
-                for (var i = 0; i < csv.Length; ++i)
-                {
-                    // End of line?
-                    var eol = i == csv.Length - 1;
+			// Check for empty and commented lines.
+			if (csv != string.Empty && !csv.StartsWith("//"))
+			{
+				int ptr = 0, braces = 0;
+				bool inString = false, comment = false;
+				for (int i = 0; i < csv.Length; ++i)
+				{
+					// End of line?
+					var eol = (i == csv.Length - 1);
 
-                    // Quotes
-                    if (csv[i] == '"' && braces == 0)
-                        inString = !inString;
+					// Quotes
+					if (csv[i] == '"' && braces == 0)
+						inString = !inString;
 
-                    // Braces
-                    if (!inString)
-                        if (csv[i] == '{')
-                            braces++;
-                        else if (csv[i] == '}')
-                            braces--;
+					// Braces
+					if (!inString)
+					{
+						if (csv[i] == '{')
+							braces++;
+						else if (csv[i] == '}')
+							braces--;
+					}
 
-                    // Comments
-                    if (!inString && csv[i] == '/' && csv[i + 1] == '/')
-                        comment = true;
+					// Comments
+					if (!inString && csv[i] == '/' && csv[i + 1] == '/')
+						comment = true;
 
-                    if (csv[i] == Seperator && braces == 0 && !inString || eol || comment)
-                    {
-                        // Inc by one to get the last char
-                        if (eol) i++;
+					if ((csv[i] == Seperator && braces == 0 && !inString) || eol || comment)
+					{
+						// Inc by one to get the last char
+						if (eol) i++;
 
-                        // Get value
-                        var v = csv.Substring(ptr, i - ptr).Trim(' ', '\t', '"');
+						// Get value
+						var v = csv.Substring(ptr, i - ptr).Trim(' ', '\t', '"');
 
-                        // Trim surrounding braces
-                        if (v.Length >= 2 && v[0] == '{' && v[v.Length - 1] == '}')
-                            v = v.Substring(1, v.Length - 2);
+						// Trim surrounding braces
+						if (v.Length >= 2 && v[0] == '{' && v[v.Length - 1] == '}')
+							v = v.Substring(1, v.Length - 2);
 
-                        result.Fields.Add(v);
+						result.Fields.Add(v);
 
-                        // Skip over seperator
-                        ptr = i + 1;
+						// Skip over seperator
+						ptr = i + 1;
 
-                        // Stop at comments
-                        if (comment)
-                            break;
-                    }
-                }
-            }
+						// Stop at comments
+						if (comment)
+							break;
+					}
+				}
+			}
 
-            return result;
-        }
-    }
+			return result;
+		}
 
-    public class CsvEntry
-    {
-        public CsvEntry()
-        {
-            Fields = new List<string>();
-        }
+		public void Dispose()
+		{ }
+	}
 
-        public CsvEntry(List<string> fields)
-        {
-            Fields = fields;
-        }
+	public class CsvEntry
+	{
+		public List<string> Fields { get; set; }
+		public int Pointer { get; set; }
+		public int Line { get; set; }
 
-        public List<string> Fields { get; set; }
-        public int Pointer { get; set; }
-        public int Line { get; set; }
+		public int Count { get { return this.Fields.Count; } }
 
-        public int Count => Fields.Count;
+		public bool End
+		{
+			get { return (this.Pointer > this.Fields.Count - 1); }
+		}
 
-        public bool End => Pointer > Fields.Count - 1;
+		public int Remaining
+		{
+			get { return (this.Fields.Count - this.Pointer - 1); }
+		}
 
-        public int Remaining => Fields.Count - Pointer - 1;
+		public CsvEntry()
+		{
+			this.Fields = new List<string>();
+		}
 
-        public void Skip(int fields)
-        {
-            Pointer += fields;
-            if (Pointer >= Fields.Count)
-                Pointer = 0;
-        }
+		public CsvEntry(List<string> fields)
+		{
+			this.Fields = fields;
+		}
 
-        public bool IsFieldEmpty(int index = -1)
-        {
-            return string.IsNullOrWhiteSpace(Fields[index < 0 ? Pointer : index]);
-        }
+		public void Skip(int fields)
+		{
+			this.Pointer += fields;
+			if (this.Pointer >= this.Fields.Count)
+				this.Pointer = 0;
+		}
 
-        public bool ReadBool(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return false;
-            }
+		public bool IsFieldEmpty(int index = -1)
+		{
+			return string.IsNullOrWhiteSpace(this.Fields[index < 0 ? this.Pointer : index]);
+		}
 
-            var val = Fields[index < 0 ? Pointer++ : index];
-            return val == "1" || val == "true" || val == "yes";
-        }
+		public bool ReadBool(int index = -1)
+		{
+			if (IsFieldEmpty(index))
+			{
+				this.Pointer++;
+				return false;
+			}
 
-        public byte ReadByte(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToByte(Fields[index < 0 ? Pointer++ : index]);
-        }
+			var val = this.Fields[index < 0 ? this.Pointer++ : index];
+			return (val == "1" || val == "true" || val == "yes");
+		}
 
-        public sbyte ReadSByte(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToSByte(Fields[index < 0 ? Pointer++ : index]);
-        }
+		public byte ReadByte(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToByte(this.Fields[index < 0 ? this.Pointer++ : index]); }
+		public sbyte ReadSByte(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToSByte(this.Fields[index < 0 ? this.Pointer++ : index]); }
+		public byte ReadByteHex(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToByte(this.Fields[index < 0 ? this.Pointer++ : index], 16); }
+		public sbyte ReadSByteHex(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToSByte(this.Fields[index < 0 ? this.Pointer++ : index], 16); }
 
-        public byte ReadByteHex(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToByte(Fields[index < 0 ? Pointer++ : index], 16);
-        }
+		public short ReadShort(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToInt16(this.Fields[index < 0 ? this.Pointer++ : index]); }
+		public ushort ReadUShort(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToUInt16(this.Fields[index < 0 ? this.Pointer++ : index]); }
+		public short ReadShortHex(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToInt16(this.Fields[index < 0 ? this.Pointer++ : index], 16); }
+		public ushort ReadUShortHex(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToUInt16(this.Fields[index < 0 ? this.Pointer++ : index], 16); }
 
-        public sbyte ReadSByteHex(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToSByte(Fields[index < 0 ? Pointer++ : index], 16);
-        }
+		public int ReadInt(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToInt32(this.Fields[index < 0 ? this.Pointer++ : index]); }
+		public uint ReadUInt(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToUInt32(this.Fields[index < 0 ? this.Pointer++ : index]); }
+		public int ReadIntHex(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToInt32(this.Fields[index < 0 ? this.Pointer++ : index], 16); }
+		public uint ReadUIntHex(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToUInt32(this.Fields[index < 0 ? this.Pointer++ : index], 16); }
 
-        public short ReadShort(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToInt16(Fields[index < 0 ? Pointer++ : index]);
-        }
+		public long ReadLong(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToInt64(this.Fields[index < 0 ? this.Pointer++ : index]); }
+		public ulong ReadULong(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToUInt64(this.Fields[index < 0 ? this.Pointer++ : index]); }
+		public long ReadLongHex(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToInt64(this.Fields[index < 0 ? this.Pointer++ : index], 16); }
+		public ulong ReadULongHex(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return Convert.ToUInt64(this.Fields[index < 0 ? this.Pointer++ : index], 16); }
 
-        public ushort ReadUShort(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToUInt16(Fields[index < 0 ? Pointer++ : index]);
-        }
+		public float ReadFloat(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return float.Parse(this.Fields[index < 0 ? this.Pointer++ : index], NumberStyles.Any, CultureInfo.GetCultureInfo("en-US")); }
+		public double ReadDouble(int index = -1) { if (IsFieldEmpty(index)) { this.Pointer++; return 0; } return double.Parse(this.Fields[index < 0 ? this.Pointer++ : index], NumberStyles.Any, CultureInfo.GetCultureInfo("en-US")); }
 
-        public short ReadShortHex(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToInt16(Fields[index < 0 ? Pointer++ : index], 16);
-        }
-
-        public ushort ReadUShortHex(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToUInt16(Fields[index < 0 ? Pointer++ : index], 16);
-        }
-
-        public int ReadInt(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToInt32(Fields[index < 0 ? Pointer++ : index]);
-        }
-
-        public uint ReadUInt(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToUInt32(Fields[index < 0 ? Pointer++ : index]);
-        }
-
-        public int ReadIntHex(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToInt32(Fields[index < 0 ? Pointer++ : index], 16);
-        }
-
-        public uint ReadUIntHex(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToUInt32(Fields[index < 0 ? Pointer++ : index], 16);
-        }
-
-        public long ReadLong(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToInt64(Fields[index < 0 ? Pointer++ : index]);
-        }
-
-        public ulong ReadULong(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToUInt64(Fields[index < 0 ? Pointer++ : index]);
-        }
-
-        public long ReadLongHex(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToInt64(Fields[index < 0 ? Pointer++ : index], 16);
-        }
-
-        public ulong ReadULongHex(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return Convert.ToUInt64(Fields[index < 0 ? Pointer++ : index], 16);
-        }
-
-        public float ReadFloat(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return float.Parse(Fields[index < 0 ? Pointer++ : index], NumberStyles.Any,
-                CultureInfo.GetCultureInfo("en-US"));
-        }
-
-        public double ReadDouble(int index = -1)
-        {
-            if (IsFieldEmpty(index))
-            {
-                Pointer++;
-                return 0;
-            }
-            return double.Parse(Fields[index < 0 ? Pointer++ : index], NumberStyles.Any,
-                CultureInfo.GetCultureInfo("en-US"));
-        }
-
-        public string ReadString(int index = -1)
-        {
-            return Fields[index < 0 ? Pointer++ : index];
-        }
-
-        public string[] ReadStringList(int index = -1)
-        {
-            return ReadString(index).Split(':');
-        }
-    }
+		public string ReadString(int index = -1) { return (this.Fields[index < 0 ? this.Pointer++ : index]); }
+		public string[] ReadStringList(int index = -1) { return this.ReadString(index).Split(':'); }
+	}
 }

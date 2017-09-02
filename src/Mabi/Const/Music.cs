@@ -3,12 +3,8 @@
 
 namespace Aura.Mabi.Const
 {
-    /// <summary>
-    ///     Repeat modes for SetBgm
-    /// </summary>
-    public enum BgmRepeat
-    {
-        Indefinitely = 0,
-        Once = 1
-    }
+	/// <summary>
+	/// Repeat modes for SetBgm
+	/// </summary>
+	public enum BgmRepeat : int { Indefinitely = 0, Once = 1 }
 }

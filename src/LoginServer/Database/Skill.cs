@@ -5,15 +5,15 @@ using Aura.Mabi.Const;
 
 namespace Aura.Login.Database
 {
-    public class Skill
-    {
-        public Skill(SkillId id, SkillRank rank = SkillRank.Novice)
-        {
-            Id = id;
-            Rank = rank;
-        }
+	public class Skill
+	{
+		public SkillId Id { get; set; }
+		public SkillRank Rank { get; set; }
 
-        public SkillId Id { get; set; }
-        public SkillRank Rank { get; set; }
-    }
+		public Skill(SkillId id, SkillRank rank = SkillRank.Novice)
+		{
+			this.Id = id;
+			this.Rank = rank;
+		}
+	}
 }

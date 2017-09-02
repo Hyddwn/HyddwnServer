@@ -7,50 +7,57 @@ using Aura.Channel.World.Entities;
 using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using Aura.Shared.Network;
+using Aura.Shared.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Aura.Channel.Skills.Hidden
 {
-    /// <summary>
-    ///     Called when using Massive Holy Water.
-    /// </summary>
-    [Skill(SkillId.BigBlessingWaterKit)]
-    public class BigBlessingWaterKit : IPreparable, ICompletable, ICancelable
-    {
-        public void Cancel(Creature creature, Skill skill)
-        {
-        }
+	/// <summary>
+	/// Called when using Massive Holy Water.
+	/// </summary>
+	[Skill(SkillId.BigBlessingWaterKit)]
+	public class BigBlessingWaterKit : IPreparable, ICompletable, ICancelable
+	{
+		public bool Prepare(Creature creature, Skill skill, Packet packet)
+		{
+			var dict = packet.GetString();
 
-        public void Complete(Creature creature, Skill skill, Packet packet)
-        {
-            var str = packet.GetString();
-            var dict = new MabiDictionary(str);
+			Send.SkillUse(creature, skill.Info.Id, dict);
 
-            var hwEntityId = dict.GetLong("ITEMID");
-            if (hwEntityId == 0)
-                goto L_End;
+			return true;
+		}
 
-            var hw = creature.Inventory.GetItemSafe(hwEntityId);
-            if (!hw.HasTag("/large_blessing_potion/"))
-                goto L_End;
+		public void Complete(Creature creature, Skill skill, Packet packet)
+		{
+			var str = packet.GetString();
+			var dict = new MabiDictionary(str);
 
-            // TODO: Check loading time
+			var hwEntityId = dict.GetLong("ITEMID");
+			if (hwEntityId == 0)
+				goto L_End;
 
-            var items = creature.Inventory.GetEquipment(a => a.IsBlessable);
-            creature.Bless(items);
-            creature.Inventory.Decrement(hw, 1);
+			var hw = creature.Inventory.GetItemSafe(hwEntityId);
+			if (!hw.HasTag("/large_blessing_potion/"))
+				goto L_End;
 
-            L_End:
-            Send.UseMotion(creature, 14, 0);
-            Send.SkillComplete(creature, skill.Info.Id, str);
-        }
+			// TODO: Check loading time
 
-        public bool Prepare(Creature creature, Skill skill, Packet packet)
-        {
-            var dict = packet.GetString();
+			var items = creature.Inventory.GetEquipment(a => a.IsBlessable);
+			creature.Bless(items);
+			creature.Inventory.Decrement(hw, 1);
 
-            Send.SkillUse(creature, skill.Info.Id, dict);
+		L_End:
+			Send.UseMotion(creature, 14, 0);
+			Send.SkillComplete(creature, skill.Info.Id, str);
+		}
 
-            return true;
-        }
-    }
+		public void Cancel(Creature creature, Skill skill)
+		{
+		}
+	}
 }

@@ -3,11 +3,11 @@
 
 namespace Aura.Mabi.Const
 {
-    public enum LuckyFinish
-    {
-        None,
-        Lucky,
-        BigLucky,
-        HugeLucky
-    }
+	public enum LuckyFinish
+	{
+		None,
+		Lucky,
+		BigLucky,
+		HugeLucky,
+	}
 }

@@ -3,14 +3,14 @@
 
 namespace Aura.Mabi.Const
 {
-    public enum Month : byte
-    {
-        Imbolic,
-        AlbanEiler,
-        Baltane,
-        AlbanHeruin,
-        Lughnasadh,
-        AlbanElved,
-        Samhain
-    }
+	public enum Month : byte
+	{
+		Imbolic,
+		AlbanEiler,
+		Baltane,
+		AlbanHeruin,
+		Lughnasadh,
+		AlbanElved,
+		Samhain,
+	}
 }

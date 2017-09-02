@@ -6,56 +6,60 @@ using Aura.Channel.Skills.Base;
 using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using Aura.Shared.Network;
 using Aura.Shared.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Aura.Channel.Skills.Hidden
 {
-    /// <summary>
-    ///     Called when using Holy Water.
-    /// </summary>
-    [Skill(SkillId.HiddenBlessing)]
-    public class Blessing : IPreparable, ICompletable, ICancelable
-    {
-        public void Cancel(Creature creature, Skill skill)
-        {
-        }
+	/// <summary>
+	/// Called when using Holy Water.
+	/// </summary>
+	[Skill(SkillId.HiddenBlessing)]
+	public class Blessing : IPreparable, ICompletable, ICancelable
+	{
+		public bool Prepare(Creature creature, Skill skill, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+			var hwEntityId = packet.GetLong();
 
-        public void Complete(Creature creature, Skill skill, Packet packet)
-        {
-            var itemEntityId = packet.GetLong();
-            var hwEntityId = packet.GetLong();
+			// Beware, the client uses the entity ids you send back for the
+			// Complete packet. If you switch them around the handler would
+			// bless the HW and delete the item without security checks.
+			Send.SkillUse(creature, skill.Info.Id, itemEntityId, hwEntityId);
 
-            var item = creature.Inventory.GetItemSafe(itemEntityId);
-            var hw = creature.Inventory.GetItemSafe(hwEntityId);
-            var isHolyWater = hw.Info.Id == 63016; // There's only one item using this skill.
+			return true;
+		}
 
-            // TODO: Check loading time
+		public void Complete(Creature creature, Skill skill, Packet packet)
+		{
+			var itemEntityId = packet.GetLong();
+			var hwEntityId = packet.GetLong();
 
-            if (item.IsBlessable && isHolyWater)
-            {
-                creature.Inventory.Decrement(hw, 1);
-                creature.Bless(item);
-            }
-            else
-            {
-                Log.Warning("Blessing.Complete: Invalid item or Holy Water.");
-            }
+			var item = creature.Inventory.GetItemSafe(itemEntityId);
+			var hw = creature.Inventory.GetItemSafe(hwEntityId);
+			var isHolyWater = (hw.Info.Id == 63016); // There's only one item using this skill.
 
-            Send.UseMotion(creature, 14, 0);
-            Send.SkillComplete(creature, skill.Info.Id, itemEntityId, hwEntityId);
-        }
+			// TODO: Check loading time
 
-        public bool Prepare(Creature creature, Skill skill, Packet packet)
-        {
-            var itemEntityId = packet.GetLong();
-            var hwEntityId = packet.GetLong();
+			if (item.IsBlessable && isHolyWater)
+			{
+				creature.Inventory.Decrement(hw, 1);
+				creature.Bless(item);
+			}
+			else
+				Log.Warning("Blessing.Complete: Invalid item or Holy Water.");
 
-            // Beware, the client uses the entity ids you send back for the
-            // Complete packet. If you switch them around the handler would
-            // bless the HW and delete the item without security checks.
-            Send.SkillUse(creature, skill.Info.Id, itemEntityId, hwEntityId);
+			Send.UseMotion(creature, 14, 0);
+			Send.SkillComplete(creature, skill.Info.Id, itemEntityId, hwEntityId);
+		}
 
-            return true;
-        }
-    }
+		public void Cancel(Creature creature, Skill skill)
+		{
+		}
+	}
 }

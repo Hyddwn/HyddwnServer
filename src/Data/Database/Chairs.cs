@@ -6,31 +6,31 @@ using Newtonsoft.Json.Linq;
 
 namespace Aura.Data.Database
 {
-    [Serializable]
-    public class ChairData
-    {
-        public int ItemId { get; set; }
-        public int PropId { get; set; }
-        public int GiantPropId { get; set; }
-        public int Effect { get; set; }
-    }
+	[Serializable]
+	public class ChairData
+	{
+		public int ItemId { get; set; }
+		public int PropId { get; set; }
+		public int GiantPropId { get; set; }
+		public int Effect { get; set; }
+	}
 
-    /// <summary>
-    ///     Indexed by item id.
-    /// </summary>
-    public class ChairDb : DatabaseJsonIndexed<int, ChairData>
-    {
-        protected override void ReadEntry(JObject entry)
-        {
-            entry.AssertNotMissing("itemId", "propId", "giantPropId");
+	/// <summary>
+	/// Indexed by item id.
+	/// </summary>
+	public class ChairDb : DatabaseJsonIndexed<int, ChairData>
+	{
+		protected override void ReadEntry(JObject entry)
+		{
+			entry.AssertNotMissing("itemId", "propId", "giantPropId");
 
-            var info = new ChairData();
-            info.ItemId = entry.ReadInt("itemId");
-            info.PropId = entry.ReadInt("propId");
-            info.GiantPropId = entry.ReadInt("giantPropId");
-            info.Effect = entry.ReadInt("effect");
+			var info = new ChairData();
+			info.ItemId = entry.ReadInt("itemId");
+			info.PropId = entry.ReadInt("propId");
+			info.GiantPropId = entry.ReadInt("giantPropId");
+			info.Effect = entry.ReadInt("effect");
 
-            Entries[info.ItemId] = info;
-        }
-    }
+			this.Entries[info.ItemId] = info;
+		}
+	}
 }

@@ -1,295 +1,295 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System;
 using System.Linq;
-using Aura.Channel.World.Entities;
 using Aura.Data;
-using Aura.Mabi;
 using Aura.Mabi.Const;
+using Aura.Mabi;
+using Aura.Channel.World.Entities;
+using System;
 
 namespace Aura.Channel.World.Quests
 {
-    public abstract class QuestObjective
-    {
-        protected QuestObjective(int amount)
-        {
-            MetaData = new MabiDictionary();
-            Amount = amount;
-        }
+	public abstract class QuestObjective
+	{
+		public string Ident { get; set; }
+		public string Description { get; set; }
 
-        public string Ident { get; set; }
-        public string Description { get; set; }
+		public int Amount { get; set; }
 
-        public int Amount { get; set; }
+		public int RegionId { get; set; }
+		public int X { get; set; }
+		public int Y { get; set; }
 
-        public int RegionId { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
+		public MabiDictionary MetaData { get; protected set; }
 
-        public MabiDictionary MetaData { get; protected set; }
+		public abstract ObjectiveType Type { get; }
 
-        public abstract ObjectiveType Type { get; }
-    }
+		protected QuestObjective(int amount)
+		{
+			this.MetaData = new MabiDictionary();
+			this.Amount = amount;
+		}
+	}
 
-    /// <summary>
-    ///     Objective to kill creatures of a race type.
-    /// </summary>
-    public class QuestObjectiveKill : QuestObjective
-    {
-        public QuestObjectiveKill(int amount, params string[] raceTypes)
-            : base(amount)
-        {
-            RaceTypes = raceTypes;
+	/// <summary>
+	/// Objective to kill creatures of a race type.
+	/// </summary>
+	public class QuestObjectiveKill : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Kill; } }
 
-            MetaData.SetString("TGTSID", string.Join("|", raceTypes));
-            MetaData.SetInt("TARGETCOUNT", amount);
-            MetaData.SetShort("TGTCLS", 0);
-        }
+		public string[] RaceTypes { get; set; }
 
-        public override ObjectiveType Type => ObjectiveType.Kill;
+		public QuestObjectiveKill(int amount, params string[] raceTypes)
+			: base(amount)
+		{
+			this.RaceTypes = raceTypes;
 
-        public string[] RaceTypes { get; set; }
+			this.MetaData.SetString("TGTSID", string.Join("|", raceTypes));
+			this.MetaData.SetInt("TARGETCOUNT", amount);
+			this.MetaData.SetShort("TGTCLS", 0);
+		}
 
-        /// <summary>
-        ///     Returns true if creature matches one of the race types.
-        /// </summary>
-        /// <param name="killedCreature"></param>
-        /// <returns></returns>
-        public bool Check(Creature killedCreature)
-        {
-            return RaceTypes.Any(type => killedCreature.RaceData.HasTag(type));
-        }
-    }
+		/// <summary>
+		/// Returns true if creature matches one of the race types.
+		/// </summary>
+		/// <param name="killedCreature"></param>
+		/// <returns></returns>
+		public bool Check(Creature killedCreature)
+		{
+			return this.RaceTypes.Any(type => killedCreature.RaceData.HasTag(type));
+		}
+	}
 
-    /// <summary>
-    ///     Objective to collect a certain item.
-    /// </summary>
-    public class QuestObjectiveCollect : QuestObjective
-    {
-        public QuestObjectiveCollect(int itemId, int amount)
-            : base(amount)
-        {
-            ItemId = itemId;
-            Amount = amount;
+	/// <summary>
+	/// Objective to collect a certain item.
+	/// </summary>
+	public class QuestObjectiveCollect : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Collect; } }
 
-            MetaData.SetInt("TARGETITEM", itemId);
-            MetaData.SetInt("TARGETCOUNT", amount);
-            MetaData.SetInt("QO_FLAG", 1);
-        }
+		public int ItemId { get; set; }
 
-        public override ObjectiveType Type => ObjectiveType.Collect;
+		public QuestObjectiveCollect(int itemId, int amount)
+			: base(amount)
+		{
+			this.ItemId = itemId;
+			this.Amount = amount;
 
-        public int ItemId { get; set; }
-    }
+			this.MetaData.SetInt("TARGETITEM", itemId);
+			this.MetaData.SetInt("TARGETCOUNT", amount);
+			this.MetaData.SetInt("QO_FLAG", 1);
+		}
+	}
 
-    /// <summary>
-    ///     Objective to talk to a specific NPC.
-    /// </summary>
-    public class QuestObjectiveTalk : QuestObjective
-    {
-        public QuestObjectiveTalk(string npcName)
-            : base(1)
-        {
-            Name = npcName;
+	/// <summary>
+	/// Objective to talk to a specific NPC.
+	/// </summary>
+	public class QuestObjectiveTalk : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Talk; } }
 
-            MetaData.SetString("TARGECHAR", npcName);
-            MetaData.SetInt("TARGETCOUNT", 1);
-        }
+		public string Name { get; set; }
 
-        public override ObjectiveType Type => ObjectiveType.Talk;
+		public QuestObjectiveTalk(string npcName)
+			: base(1)
+		{
+			this.Name = npcName;
 
-        public string Name { get; set; }
-    }
+			this.MetaData.SetString("TARGECHAR", npcName);
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
+	}
 
-    /// <summary>
-    ///     Objective to deliver something to a specific NPC.
-    /// </summary>
-    /// <remarks>
-    ///     The item is automatically given to the player on quest start,
-    ///     if this is the first quest objective.
-    /// </remarks>
-    public class QuestObjectiveDeliver : QuestObjective
-    {
-        public QuestObjectiveDeliver(int itemId, int amount, string npcName)
-            : base(amount)
-        {
-            ItemId = itemId;
-            NpcName = npcName;
+	/// <summary>
+	/// Objective to deliver something to a specific NPC.
+	/// </summary>
+	/// <remarks>
+	/// The item is automatically given to the player on quest start,
+	/// if this is the first quest objective.
+	/// </remarks>
+	public class QuestObjectiveDeliver : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Deliver; } }
 
-            MetaData.SetString("TARGECHAR", NpcName);
-            MetaData.SetInt("TARGETCOUNT", Amount);
-            MetaData.SetInt("TARGETITEM", ItemId);
-        }
+		public int ItemId { get; set; }
+		public string NpcName { get; set; }
 
-        public override ObjectiveType Type => ObjectiveType.Deliver;
+		public QuestObjectiveDeliver(int itemId, int amount, string npcName)
+			: base(amount)
+		{
+			this.ItemId = itemId;
+			this.NpcName = npcName;
 
-        public int ItemId { get; set; }
-        public string NpcName { get; set; }
-    }
+			this.MetaData.SetString("TARGECHAR", this.NpcName);
+			this.MetaData.SetInt("TARGETCOUNT", this.Amount);
+			this.MetaData.SetInt("TARGETITEM", this.ItemId);
+		}
+	}
 
-    /// <summary>
-    ///     Objective to reach a rank in a certain skill.
-    /// </summary>
-    public class QuestObjectiveReachRank : QuestObjective
-    {
-        public QuestObjectiveReachRank(SkillId skillId, SkillRank rank)
-            : base(1)
-        {
-            Id = skillId;
-            Rank = rank;
+	/// <summary>
+	/// Objective to reach a rank in a certain skill.
+	/// </summary>
+	public class QuestObjectiveReachRank : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.ReachRank; } }
 
-            MetaData.SetUShort("TGTSKL", (ushort) skillId);
-            MetaData.SetShort("TGTLVL", (short) rank);
-            MetaData.SetInt("TARGETCOUNT", 1);
-        }
+		public SkillId Id { get; set; }
+		public SkillRank Rank { get; set; }
 
-        public override ObjectiveType Type => ObjectiveType.ReachRank;
+		public QuestObjectiveReachRank(SkillId skillId, SkillRank rank)
+			: base(1)
+		{
+			this.Id = skillId;
+			this.Rank = rank;
 
-        public SkillId Id { get; set; }
-        public SkillRank Rank { get; set; }
-    }
+			this.MetaData.SetUShort("TGTSKL", (ushort)skillId);
+			this.MetaData.SetShort("TGTLVL", (short)rank);
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
+	}
 
-    /// <summary>
-    ///     Objective to reach a certain level.
-    /// </summary>
-    public class QuestObjectiveReachLevel : QuestObjective
-    {
-        public QuestObjectiveReachLevel(int level)
-            : base(level)
-        {
-            MetaData.SetShort("TGTLVL", (short) level);
-            MetaData.SetInt("TARGETCOUNT", 1);
-        }
+	/// <summary>
+	/// Objective to reach a certain level.
+	/// </summary>
+	public class QuestObjectiveReachLevel : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.ReachLevel; } }
 
-        public override ObjectiveType Type => ObjectiveType.ReachLevel;
-    }
+		public QuestObjectiveReachLevel(int level)
+			: base(level)
+		{
+			this.MetaData.SetShort("TGTLVL", (short)level);
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
+	}
 
-    /// <summary>
-    ///     Objective to get a certain keyword.
-    /// </summary>
-    public class QuestObjectiveGetKeyword : QuestObjective
-    {
-        public QuestObjectiveGetKeyword(string keyword)
-            : base(1)
-        {
-            var keywordData = AuraData.KeywordDb.Find(keyword);
-            if (keywordData == null)
-                throw new ArgumentException("Keyword '" + keyword + "' not found.");
+	/// <summary>
+	/// Objective to get a certain keyword.
+	/// </summary>
+	public class QuestObjectiveGetKeyword : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.GetKeyword; } }
 
-            KeywordId = keywordData.Id;
-            MetaData.SetInt("TGTKEYWORD", KeywordId); // Unofficial
-            MetaData.SetInt("TARGETCOUNT", 1);
-        }
+		public int KeywordId { get; private set; }
 
-        public QuestObjectiveGetKeyword(int keywordId)
-            : base(1)
-        {
-            KeywordId = keywordId;
-            MetaData.SetInt("TGTKEYWORD", KeywordId); // Unofficial
-            MetaData.SetInt("TARGETCOUNT", 1);
-        }
+		public QuestObjectiveGetKeyword(string keyword)
+			: base(1)
+		{
+			var keywordData = AuraData.KeywordDb.Find(keyword);
+			if (keywordData == null)
+				throw new ArgumentException("Keyword '" + keyword + "' not found.");
 
-        public override ObjectiveType Type => ObjectiveType.GetKeyword;
+			this.KeywordId = keywordData.Id;
+			this.MetaData.SetInt("TGTKEYWORD", this.KeywordId); // Unofficial
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
 
-        public int KeywordId { get; }
-    }
+		public QuestObjectiveGetKeyword(int keywordId)
+			: base(1)
+		{
+			this.KeywordId = keywordId;
+			this.MetaData.SetInt("TGTKEYWORD", this.KeywordId); // Unofficial
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
+	}
 
-    /// <summary>
-    ///     Objective to equip a certain type of item.
-    /// </summary>
-    public class QuestObjectiveEquip : QuestObjective
-    {
-        public QuestObjectiveEquip(string tag)
-            : base(1)
-        {
-            Tag = tag;
-            MetaData.SetString("TGTSID", Tag);
-            MetaData.SetInt("TARGETCOUNT", 1);
-        }
+	/// <summary>
+	/// Objective to equip a certain type of item.
+	/// </summary>
+	public class QuestObjectiveEquip : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Equip; } }
 
-        public override ObjectiveType Type => ObjectiveType.Equip;
+		public string Tag { get; private set; }
 
-        public string Tag { get; }
-    }
+		public QuestObjectiveEquip(string tag)
+			: base(1)
+		{
+			this.Tag = tag;
+			this.MetaData.SetString("TGTSID", this.Tag);
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
+	}
 
-    /// <summary>
-    ///     Objective to gather a specific item.
-    /// </summary>
-    public class QuestObjectiveGather : QuestObjective
-    {
-        public QuestObjectiveGather(int itemId, int amount)
-            : base(amount)
-        {
-            ItemId = itemId;
-            MetaData.SetInt("TARGETITEM", ItemId);
-            //this.MetaData.SetString("TGTSID", "/Gathering_Knife/"); // Tool to use (ignored?)
-            MetaData.SetInt("TARGETCOUNT", Amount);
-        }
+	/// <summary>
+	/// Objective to gather a specific item.
+	/// </summary>
+	public class QuestObjectiveGather : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Gather; } }
 
-        public override ObjectiveType Type => ObjectiveType.Gather;
+		public int ItemId { get; private set; }
 
-        public int ItemId { get; }
-    }
+		public QuestObjectiveGather(int itemId, int amount)
+			: base(amount)
+		{
+			this.ItemId = itemId;
+			this.MetaData.SetInt("TARGETITEM", this.ItemId);
+			//this.MetaData.SetString("TGTSID", "/Gathering_Knife/"); // Tool to use (ignored?)
+			this.MetaData.SetInt("TARGETCOUNT", this.Amount);
+		}
+	}
 
-    /// <summary>
-    ///     Objective to use a certain skill.
-    /// </summary>
-    public class QuestObjectiveUseSkill : QuestObjective
-    {
-        public QuestObjectiveUseSkill(SkillId skillId)
-            : base(1)
-        {
-            Id = skillId;
+	/// <summary>
+	/// Objective to use a certain skill.
+	/// </summary>
+	public class QuestObjectiveUseSkill : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.UseSkill; } }
 
-            MetaData.SetUShort("TGTSKL", (ushort) skillId);
-            MetaData.SetInt("TARGETCOUNT", 1);
-        }
+		public SkillId Id { get; set; }
 
-        public override ObjectiveType Type => ObjectiveType.UseSkill;
+		public QuestObjectiveUseSkill(SkillId skillId)
+			: base(1)
+		{
+			this.Id = skillId;
 
-        public SkillId Id { get; set; }
-    }
+			this.MetaData.SetUShort("TGTSKL", (ushort)skillId);
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+		}
+	}
 
-    /// <summary>
-    ///     Objective to clear a certain dungeon.
-    /// </summary>
-    public class QuestObjectiveClearDungeon : QuestObjective
-    {
-        public QuestObjectiveClearDungeon(string dungeonName)
-            : base(1)
-        {
-            DungeonName = dungeonName;
+	/// <summary>
+	/// Objective to clear a certain dungeon.
+	/// </summary>
+	public class QuestObjectiveClearDungeon : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.ClearDungeon; } }
 
-            MetaData.SetInt("TARGETCOUNT", 1);
-            MetaData.SetString("TGTCLS", dungeonName);
-        }
+		public string DungeonName { get; set; }
 
-        public override ObjectiveType Type => ObjectiveType.ClearDungeon;
+		public QuestObjectiveClearDungeon(string dungeonName)
+			: base(1)
+		{
+			this.DungeonName = dungeonName;
 
-        public string DungeonName { get; set; }
-    }
+			this.MetaData.SetInt("TARGETCOUNT", 1);
+			this.MetaData.SetString("TGTCLS", dungeonName);
+		}
+	}
 
-    public class QuestObjectiveCreate : QuestObjective
-    {
-        public QuestObjectiveCreate(int itemId, int amount, SkillId skillId, int quality = -1000)
-            : base(amount)
-        {
-            SkillId = skillId;
-            MinQuality = quality;
-            ItemId = itemId;
-            Amount = amount;
+	public class QuestObjectiveCreate : QuestObjective
+	{
+		public override ObjectiveType Type { get { return ObjectiveType.Create; } }
 
-            MetaData.SetUShort("TGTSKL", (ushort) skillId);
-            MetaData.SetInt("TARGETQUALITY", quality);
-            MetaData.SetInt("TARGETITEM", itemId);
-            MetaData.SetInt("TARGETCOUNT", amount);
-        }
+		public SkillId SkillId { get; private set; }
+		public int MinQuality { get; private set; }
+		public int ItemId { get; private set; }
 
-        public override ObjectiveType Type => ObjectiveType.Create;
+		public QuestObjectiveCreate(int itemId, int amount, SkillId skillId, int quality = -1000)
+			: base(amount)
+		{
+			this.SkillId = skillId;
+			this.MinQuality = quality;
+			this.ItemId = itemId;
+			this.Amount = amount;
 
-        public SkillId SkillId { get; }
-        public int MinQuality { get; }
-        public int ItemId { get; }
-    }
+			this.MetaData.SetUShort("TGTSKL", (ushort)skillId);
+			this.MetaData.SetInt("TARGETQUALITY", quality);
+			this.MetaData.SetInt("TARGETITEM", itemId);
+			this.MetaData.SetInt("TARGETCOUNT", amount);
+		}
+	}
 }

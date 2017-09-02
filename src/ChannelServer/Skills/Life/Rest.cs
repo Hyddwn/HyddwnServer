@@ -13,227 +13,226 @@ using Aura.Shared.Util;
 
 namespace Aura.Channel.Skills.Life
 {
-    /// <summary>
-    ///     Handles the Rest skill. Also called when using a chair.
-    /// </summary>
-    /// <remarks>
-    ///     Var1: Life regen multiplicator
-    ///     Var2: Stamina regen multiplicator
-    ///     Var3: Injury regen
-    /// </remarks>
-    [Skill(SkillId.Rest)]
-    public class Rest : StartStopSkillHandler
-    {
-        /// <summary>
-        ///     Starts rest skill.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="dict"></param>
-        /// <returns></returns>
-        public override StartStopResult Start(Creature creature, Skill skill, MabiDictionary dict)
-        {
-            creature.StopMove();
+	/// <summary>
+	/// Handles the Rest skill. Also called when using a chair.
+	/// </summary>
+	/// <remarks>
+	/// Var1: Life regen multiplicator
+	/// Var2: Stamina regen multiplicator
+	/// Var3: Injury regen
+	/// </remarks>
+	[Skill(SkillId.Rest)]
+	public class Rest : StartStopSkillHandler
+	{
+		/// <summary>
+		/// Starts rest skill.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="dict"></param>
+		/// <returns></returns>
+		public override StartStopResult Start(Creature creature, Skill skill, MabiDictionary dict)
+		{
+			creature.StopMove();
 
-            var chairItemEntityId = dict.GetLong("ITEMID");
+			var chairItemEntityId = dict.GetLong("ITEMID");
 
-            if (chairItemEntityId != 0)
-            {
-                SetUpChair(creature, chairItemEntityId);
-            }
-            else
-            {
-                // Find all nearby sittable props and sit on closest one
-                var crpos = creature.GetPosition();
-                var props = creature.Region.GetProps(prop => prop.HasTag("/sittable/")
-                                                             && (!prop.HasXml ||
-                                                                 prop.Xml.Attribute("SITCHAR") == null ||
-                                                                 prop.Xml.Attribute("SITCHAR").Value == "0")
-                                                             && prop.GetPosition().GetDistance(crpos) < 125);
-                if (props.Count > 0)
-                {
-                    var nearest = 0;
-                    var minDist = 125;
-                    for (var i = 0; i < props.Count; i++)
-                    {
-                        var dist = crpos.GetDistance(props[i].GetPosition());
-                        if (dist < minDist)
-                        {
-                            nearest = i;
-                            minDist = dist;
-                        }
-                    }
-                    SitOnProp(creature, props[nearest]);
-                }
-            }
+			if (chairItemEntityId != 0)
+				this.SetUpChair(creature, chairItemEntityId);
+			else
+			{
+				// Find all nearby sittable props and sit on closest one
+				var crpos = creature.GetPosition();
+				var props = creature.Region.GetProps(prop => prop.HasTag("/sittable/")
+					&& (!prop.HasXml || prop.Xml.Attribute("SITCHAR") == null || prop.Xml.Attribute("SITCHAR").Value == "0")
+					&& prop.GetPosition().GetDistance(crpos) < 125);
+				if (props.Count > 0)
+				{
+					int nearest = 0;
+					int minDist = 125;
+					for (int i = 0; i < props.Count; i++)
+					{
+						var dist = crpos.GetDistance(props[i].GetPosition());
+						if(dist < minDist)
+						{
+							nearest = i;
+							minDist = dist;
+						}
+					}
+					this.SitOnProp(creature, props[nearest]);
+				}
+			}
 
-            creature.Activate(CreatureStates.SitDown);
-            if (skill.Info.Rank >= SkillRank.R9)
-                creature.Activate(CreatureStatesEx.RestR9);
+			creature.Activate(CreatureStates.SitDown);
+			if (skill.Info.Rank >= SkillRank.R9)
+				creature.Activate(CreatureStatesEx.RestR9);
 
-            Send.SitDown(creature);
+			Send.SitDown(creature);
 
-            // Get base bonuses
-            var bonusLife = (skill.RankData.Var1 - 100) / 100;
-            var bonusStamina = (skill.RankData.Var2 - 100) / 100;
-            var bonusInjury = skill.RankData.Var3;
+			// Get base bonuses
+			var bonusLife = ((skill.RankData.Var1 - 100) / 100);
+			var bonusStamina = ((skill.RankData.Var2 - 100) / 100);
+			var bonusInjury = skill.RankData.Var3;
 
-            // Add bonus from campfire
-            // TODO: Check for disappearing of campfire? (OnDisappears+Recheck)
-            var campfires = creature.Region.GetProps(a =>
-                a.Info.Id == 203 && a.GetPosition().InRange(creature.GetPosition(), 500));
-            if (campfires.Count > 0)
-            {
-                // Add bonus if no chair?
-                if (chairItemEntityId == 0)
-                {
-                    // TODO: Select nearest? Random?
-                    var campfire = campfires[0];
+			// Add bonus from campfire
+			// TODO: Check for disappearing of campfire? (OnDisappears+Recheck)
+			var campfires = creature.Region.GetProps(a => a.Info.Id == 203 && a.GetPosition().InRange(creature.GetPosition(), 500));
+			if (campfires.Count > 0)
+			{
+				// Add bonus if no chair?
+				if (chairItemEntityId == 0)
+				{
+					// TODO: Select nearest? Random?
+					var campfire = campfires[0];
 
-                    var multi = campfire.Temp.CampfireSkillRank != null
-                        ? campfire.Temp.CampfireSkillRank.Var1 / 100f
-                        : 1;
+					var multi = (campfire.Temp.CampfireSkillRank != null ? campfire.Temp.CampfireSkillRank.Var1 / 100f : 1);
 
-                    // Add bonus for better wood.
-                    // Amounts unofficial.
-                    if (campfire.Temp.CampfireFirewood != null)
-                        if (campfire.Temp.CampfireFirewood.HasTag("/firewood01/"))
-                            multi += 0.1f;
-                        else if (campfire.Temp.CampfireFirewood.HasTag("/firewood02/"))
-                            multi += 0.2f;
-                        else if (campfire.Temp.CampfireFirewood.HasTag("/firewood03/"))
-                            multi += 0.3f;
+					// Add bonus for better wood.
+					// Amounts unofficial.
+					if (campfire.Temp.CampfireFirewood != null)
+					{
+						if (campfire.Temp.CampfireFirewood.HasTag("/firewood01/"))
+							multi += 0.1f;
+						else if (campfire.Temp.CampfireFirewood.HasTag("/firewood02/"))
+							multi += 0.2f;
+						else if (campfire.Temp.CampfireFirewood.HasTag("/firewood03/"))
+							multi += 0.3f;
+					}
 
-                    // Apply multiplicator
-                    bonusLife *= multi;
-                    bonusStamina *= multi;
-                    bonusInjury *= multi;
-                }
+					// Apply multiplicator
+					bonusLife *= multi;
+					bonusStamina *= multi;
+					bonusInjury *= multi;
+				}
 
-                Send.Notice(creature, Localization.Get("The fire feels very warm"));
-            }
+				Send.Notice(creature, Localization.Get("The fire feels very warm"));
+			}
 
-            creature.Regens.Add("Rest", Stat.Life, 0.12f * bonusLife, creature.LifeMax);
-            creature.Regens.Add("Rest", Stat.Stamina, 0.4f * bonusStamina, creature.StaminaMax);
-            creature.Regens.Add("Rest", Stat.LifeInjured, bonusInjury,
-                creature.LifeMax); // TODO: Test if LifeInjured = Injuries
+			creature.Regens.Add("Rest", Stat.Life, (0.12f * bonusLife), creature.LifeMax);
+			creature.Regens.Add("Rest", Stat.Stamina, (0.4f * bonusStamina), creature.StaminaMax);
+			creature.Regens.Add("Rest", Stat.LifeInjured, bonusInjury, creature.LifeMax); // TODO: Test if LifeInjured = Injuries
 
-            if (skill.Info.Rank == SkillRank.Novice) skill.Train(1); // Use Rest.
+			if (skill.Info.Rank == SkillRank.Novice) skill.Train(1); // Use Rest.
 
-            return StartStopResult.Okay;
-        }
+			return StartStopResult.Okay;
+		}
 
-        /// <summary>
-        ///     Stops rest skill, called when moving or stopping it.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="dict"></param>
-        /// <returns></returns>
-        public override StartStopResult Stop(Creature creature, Skill skill, MabiDictionary dict)
-        {
-            creature.Deactivate(CreatureStates.SitDown);
-            if (skill.Info.Rank >= SkillRank.R9)
-                creature.Deactivate(CreatureStatesEx.RestR9);
+		/// <summary>
+		/// Stops rest skill, called when moving or stopping it.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="dict"></param>
+		/// <returns></returns>
+		public override StartStopResult Stop(Creature creature, Skill skill, MabiDictionary dict)
+		{
+			creature.Deactivate(CreatureStates.SitDown);
+			if (skill.Info.Rank >= SkillRank.R9)
+				creature.Deactivate(CreatureStatesEx.RestR9);
 
-            Send.StandUp(creature);
+			Send.StandUp(creature);
 
-            creature.Regens.Remove("Rest");
+			creature.Regens.Remove("Rest");
 
-            if (creature.Temp.SittingProp != null)
-                RemoveChair(creature);
+			if (creature.Temp.SittingProp != null)
+				this.RemoveChair(creature);
 
-            return StartStopResult.Okay;
-        }
+			return StartStopResult.Okay;
+		}
 
-        /// <summary>
-        ///     Creates sitting prop, fails silently if item or chair
-        ///     data doesn't exist.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="chairItemEntityId"></param>
-        private void SetUpChair(Creature creature, long chairItemEntityId)
-        {
-            if (chairItemEntityId == 0)
-                return;
+		/// <summary>
+		/// Creates sitting prop, fails silently if item or chair
+		/// data doesn't exist.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="chairItemEntityId"></param>
+		private void SetUpChair(Creature creature, long chairItemEntityId)
+		{
+			if (chairItemEntityId == 0)
+				return;
 
-            // Check item
-            var item = creature.Inventory.GetItem(chairItemEntityId);
-            if (item == null || item.Data.Type != ItemType.Misc)
-                return;
+			// Check item
+			var item = creature.Inventory.GetItem(chairItemEntityId);
+			if (item == null || item.Data.Type != ItemType.Misc)
+				return;
 
-            // Get chair data
-            var chairData = AuraData.ChairDb.Find(item.Info.Id);
-            if (chairData == null)
-                return;
+			// Get chair data
+			var chairData = AuraData.ChairDb.Find(item.Info.Id);
+			if (chairData == null)
+				return;
 
-            var pos = creature.GetPosition();
+			var pos = creature.GetPosition();
 
-            // Effect
-            if (chairData.Effect != 0)
-                Send.Effect(creature, chairData.Effect, true);
+			// Effect
+			if (chairData.Effect != 0)
+				Send.Effect(creature, chairData.Effect, true);
 
-            // Chair prop
-            var sittingProp = new Prop(!creature.IsGiant ? chairData.PropId : chairData.GiantPropId, creature.RegionId,
-                pos.X, pos.Y, MabiMath.ByteToRadian(creature.Direction));
-            sittingProp.Info.Color1 = item.Info.Color1;
-            sittingProp.Info.Color2 = item.Info.Color2;
-            sittingProp.Info.Color3 = item.Info.Color3;
-            sittingProp.State = "stand";
-            creature.Region.AddProp(sittingProp);
+			// Chair prop
+			var sittingProp = new Prop((!creature.IsGiant ? chairData.PropId : chairData.GiantPropId), creature.RegionId, pos.X, pos.Y, MabiMath.ByteToRadian(creature.Direction));
+			sittingProp.Info.Color1 = item.Info.Color1;
+			sittingProp.Info.Color2 = item.Info.Color2;
+			sittingProp.Info.Color3 = item.Info.Color3;
+			sittingProp.State = "stand";
+			creature.Region.AddProp(sittingProp);
 
-            // Update chair
-            sittingProp.Xml.SetAttributeValue("OWNER", creature.EntityId);
+			// Update chair
+			sittingProp.Xml.SetAttributeValue("OWNER", creature.EntityId);
 
-            SitOnProp(creature, sittingProp, chairData);
-        }
+			this.SitOnProp(creature, sittingProp, chairData);
+		}
 
-        /// <summary>
-        ///     Removes current chair prop.
-        /// </summary>
-        /// <param name="creature"></param>
-        private void RemoveChair(Creature creature)
-        {
-            if (creature.Temp.SittingProp == null)
-                return;
+		/// <summary>
+		/// Removes current chair prop.
+		/// </summary>
+		/// <param name="creature"></param>
+		private void RemoveChair(Creature creature)
+		{
+			if (creature.Temp.SittingProp == null)
+				return;
 
-            if (creature.Temp.CurrentChairData != null)
-                if (creature.Temp.CurrentChairData.Effect != 0)
-                    Send.Effect(creature, creature.Temp.CurrentChairData.Effect, false);
+			if (creature.Temp.CurrentChairData != null)
+			{
+				// Effect
+				if (creature.Temp.CurrentChairData.Effect != 0)
+					Send.Effect(creature, creature.Temp.CurrentChairData.Effect, false);
+			}
 
-            // Update chair
-            if (creature.Temp.SittingProp.Xml.Attribute("OWNER") != null)
-                creature.Temp.SittingProp.Xml.SetAttributeValue("OWNER", 0);
-            creature.Temp.SittingProp.Xml.SetAttributeValue("SITCHAR", 0);
+			// Update chair
+			if(creature.Temp.SittingProp.Xml.Attribute("OWNER") != null)
+				creature.Temp.SittingProp.Xml.SetAttributeValue("OWNER", 0);
+			creature.Temp.SittingProp.Xml.SetAttributeValue("SITCHAR", 0);
 
-            Send.PropUpdate(creature.Temp.SittingProp);
+			Send.PropUpdate(creature.Temp.SittingProp);
 
-            Send.AssignSittingProp(creature, 0, 0);
+			Send.AssignSittingProp(creature, 0, 0);
 
-            if (creature.Temp.CurrentChairData != null)
-                creature.Temp.SittingProp.DisappearTime = DateTime.Now.AddSeconds(1);
+			if (creature.Temp.CurrentChairData != null)
+			{
+				// Remove chair in 1s
+				creature.Temp.SittingProp.DisappearTime = DateTime.Now.AddSeconds(1);
+			}
 
-            creature.Temp.SittingProp = null;
-        }
+			creature.Temp.SittingProp = null;
+		}
 
-        /// <summary>
-        ///     Sets owner for a prop and makes the creature sit on it.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="prop"></param>
-        /// <param name="chair">For temporary props from items.</param>
-        private void SitOnProp(Creature creature, Prop prop, ChairData chair = null)
-        {
-            // Move char
-            Send.AssignSittingProp(creature, prop.EntityId, 1);
+		/// <summary>
+		/// Sets owner for a prop and makes the creature sit on it.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="prop"></param>
+		/// <param name="chair">For temporary props from items.</param>
+		private void SitOnProp(Creature creature, Prop prop, ChairData chair = null)
+		{
+			// Move char
+			Send.AssignSittingProp(creature, prop.EntityId, 1);
 
-            // Update chair
-            prop.Xml.SetAttributeValue("SITCHAR", creature.EntityId);
+			// Update chair
+			prop.Xml.SetAttributeValue("SITCHAR", creature.EntityId);
 
-            Send.PropUpdate(prop);
+			Send.PropUpdate(prop);
 
-            creature.Temp.CurrentChairData = chair;
-            creature.Temp.SittingProp = prop;
-        }
-    }
+			creature.Temp.CurrentChairData = chair;
+			creature.Temp.SittingProp = prop;
+		}
+	}
 }

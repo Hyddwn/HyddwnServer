@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System.Collections.Generic;
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Magic;
@@ -9,297 +8,293 @@ using Aura.Channel.World.Entities;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Util;
+using System.Collections.Generic;
 
 namespace Aura.Channel.Skills.Combat
 {
-    /// <summary>
-    ///     Magnum Shot handler
-    /// </summary>
-    /// <remarks>
-    ///     Var1: Damage
-    ///     Var4: Splash Damage
-    ///     Var5: Splash Distance (Radius?)
-    ///     Var6: Splash Angle?
-    /// </remarks>
-    [Skill(SkillId.MagnumShot)]
-    public class MagnumShot : ISkillHandler, IPreparable, IReadyable, ICompletable, ICancelable, ICombatSkill,
-        IInitiableSkillHandler
-    {
-        /// <summary>
-        ///     Distance to knock the target back.
-        /// </summary>
-        private const int KnockBackDistance = 450;
+	/// <summary>
+	/// Magnum Shot handler
+	/// </summary>
+	/// <remarks>
+	/// Var1: Damage
+	/// Var4: Splash Damage
+	/// Var5: Splash Distance (Radius?)
+	/// Var6: Splash Angle?
+	/// </remarks>
+	[Skill(SkillId.MagnumShot)]
+	public class MagnumShot : ISkillHandler, IPreparable, IReadyable, ICompletable, ICancelable, ICombatSkill,
+		IInitiableSkillHandler
+	{
+		/// <summary>
+		/// Distance to knock the target back.
+		/// </summary>
+		private const int KnockBackDistance = 450;
 
-        /// <summary>
-        ///     Stun for the attacker
-        /// </summary>
-        /// <remarks>
-        ///     There are actions with 520 stun, dependent on something?
-        /// </remarks>
-        private const int AttackerStun = 600;
+		/// <summary>
+		/// Stun for the attacker
+		/// </summary>
+		/// <remarks>
+		/// There are actions with 520 stun, dependent on something?
+		/// </remarks>
+		private const int AttackerStun = 600;
 
-        /// <summary>
-        ///     Stun for the target
-        /// </summary>
-        private const int TargetStun = 3000;
+		/// <summary>
+		/// Stun for the target
+		/// </summary>
+		private const int TargetStun = 3000;
 
-        /// <summary>
-        ///     Bonus damage for fire arrows
-        /// </summary>
-        public const float FireBonus = 1.5f;
+		/// <summary>
+		/// Bonus damage for fire arrows
+		/// </summary>
+		public const float FireBonus = 1.5f;
 
-        /// <summary>
-        ///     Cancels skill, stopping the aim meter and disabling the fire effect.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        public void Cancel(Creature creature, Skill skill)
-        {
-            creature.AimMeter.Stop();
+		/// <summary>
+		/// Sets up subscriptions for skill training.
+		/// </summary>
+		public void Init()
+		{
+			ChannelServer.Instance.Events.CreatureAttack += this.OnCreatureAttacks;
+		}
 
-            // Disable fire arrow effect
-            if (creature.Temp.FireArrow)
-                Send.Effect(creature, Effect.FireArrow, false);
-        }
+		/// <summary>
+		/// Prepares skill.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		public bool Prepare(Creature creature, Skill skill, Packet packet)
+		{
+			Send.SkillFlashEffect(creature);
+			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
-        /// <summary>
-        ///     Uses the skill.
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="skill"></param>
-        /// <param name="targetEntityId"></param>
-        /// <returns></returns>
-        public CombatSkillResult Use(Creature attacker, Skill skill, long targetEntityId)
-        {
-            // Get target
-            var mainTarget = attacker.Region.GetCreature(targetEntityId);
-            if (mainTarget == null)
-                return CombatSkillResult.InvalidTarget;
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/crossbow/"))
+				creature.Lock(Locks.Run);
 
-            // Actions
-            var cap = new CombatActionPack(attacker, skill.Info.Id);
+			return true;
+		}
 
-            var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, targetEntityId);
-            aAction.Set(AttackerOptions.Result);
-            aAction.Stun = AttackerStun;
-            cap.Add(aAction);
+		/// <summary>
+		/// Readies skill, activates fire effect.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		public bool Ready(Creature creature, Skill skill, Packet packet)
+		{
+			creature.Temp.FireArrow = creature.Region.GetProps(a => a.Info.Id == 203 && a.GetPosition().InRange(creature.GetPosition(), 500)).Count > 0;
+			if (creature.Temp.FireArrow)
+				Send.Effect(creature, Effect.FireArrow, true);
 
-            // Hit by chance
-            var chance = attacker.AimMeter.GetAimChance(mainTarget);
-            var rnd = RandomProvider.Get();
-            if (rnd.NextDouble() * 100 < chance)
-            {
-                aAction.Set(AttackerOptions.KnockBackHit2);
+			Send.SkillReady(creature, skill.Info.Id);
 
-                // Get targets, incl. splash.
-                // Splash happens from r5 onwards, but we'll base it on Var4,
-                // which is the splash damage and first != 0 on r5.
-                var targets = new HashSet<Creature> {mainTarget};
-                if (skill.RankData.Var4 != 0)
-                {
-                    var targetPosition = mainTarget.GetPosition();
-                    var direction = attacker.GetPosition().GetDirection(targetPosition);
-                    targets.UnionWith(attacker.GetTargetableCreaturesInCone(targetPosition, direction,
-                        skill.RankData.Var5, skill.RankData.Var6));
-                }
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/crossbow/"))
+				creature.Lock(Locks.Run);
 
-                // Damage
-                var mainDamage = GetDamage(attacker, skill);
+			return true;
+		}
 
-                foreach (var target in targets)
-                {
-                    var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-                    tAction.Set(TargetOptions.Result | TargetOptions.CleanHit);
-                    tAction.Stun = TargetStun;
-                    cap.Add(tAction);
+		/// <summary>
+		/// Completes skill, stopping the aim meter and disabling the fire effect.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Complete(Creature creature, Skill skill, Packet packet)
+		{
+			this.Cancel(creature, skill);
+			Send.SkillComplete(creature, skill.Info.Id);
+		}
 
-                    // Damage
-                    var damage = mainDamage;
+		/// <summary>
+		/// Cancels skill, stopping the aim meter and disabling the fire effect.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		public void Cancel(Creature creature, Skill skill)
+		{
+			creature.AimMeter.Stop();
 
-                    // Elementals
-                    damage *= attacker.CalculateElementalDamageMultiplier(target);
+			// Disable fire arrow effect
+			if (creature.Temp.FireArrow)
+				Send.Effect(creature, Effect.FireArrow, false);
+		}
 
-                    // More damage with fire arrow
-                    // XXX: Does this affect the element?
-                    if (attacker.Temp.FireArrow)
-                        damage *= FireBonus;
+		/// <summary>
+		/// Uses the skill.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="targetEntityId"></param>
+		/// <returns></returns>
+		public CombatSkillResult Use(Creature attacker, Skill skill, long targetEntityId)
+		{
+			// Get target
+			var mainTarget = attacker.Region.GetCreature(targetEntityId);
+			if (mainTarget == null)
+				return CombatSkillResult.InvalidTarget;
 
-                    // Splash modifier
-                    if (target != mainTarget)
-                        damage *= skill.RankData.Var4 / 100f;
+			// Actions
+			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-                    // Critical Hit
-                    var critChance = attacker.GetRightCritChance(target.Protection);
-                    CriticalHit.Handle(attacker, critChance, ref damage, tAction);
+			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, targetEntityId);
+			aAction.Set(AttackerOptions.Result);
+			aAction.Stun = AttackerStun;
+			cap.Add(aAction);
 
-                    // Subtract target def/prot
-                    SkillHelper.HandleDefenseProtection(target, ref damage);
+			// Hit by chance
+			var chance = attacker.AimMeter.GetAimChance(mainTarget);
+			var rnd = RandomProvider.Get();
+			if (rnd.NextDouble() * 100 < chance)
+			{
+				aAction.Set(AttackerOptions.KnockBackHit2);
 
-                    // Conditions
-                    SkillHelper.HandleConditions(attacker, target, ref damage);
+				// Get targets, incl. splash.
+				// Splash happens from r5 onwards, but we'll base it on Var4,
+				// which is the splash damage and first != 0 on r5.
+				var targets = new HashSet<Creature>() { mainTarget };
+				if (skill.RankData.Var4 != 0)
+				{
+					var targetPosition = mainTarget.GetPosition();
+					var direction = attacker.GetPosition().GetDirection(targetPosition);
+					targets.UnionWith(attacker.GetTargetableCreaturesInCone(targetPosition, direction, skill.RankData.Var5, skill.RankData.Var6));
+				}
 
-                    // Mana Shield
-                    ManaShield.Handle(target, ref damage, tAction);
+				// Damage
+				var mainDamage = this.GetDamage(attacker, skill);
 
-                    // Natural Shield
-                    // Ignore delay reduction, as knock downs shouldn't be shortened
-                    NaturalShield.Handle(attacker, target, ref damage, tAction);
+				foreach (var target in targets)
+				{
+					var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
+					tAction.Set(TargetOptions.Result | TargetOptions.CleanHit);
+					tAction.Stun = TargetStun;
+					cap.Add(tAction);
 
-                    // Deal with it!
-                    if (damage > 0)
-                    {
-                        target.TakeDamage(tAction.Damage = damage, attacker);
-                        SkillHelper.HandleInjury(attacker, target, damage);
-                    }
+					// Damage
+					var damage = mainDamage;
 
-                    // Knock down
-                    // If target is using a shield and defense, don't KD.
-                    var targetLeftHand = target.LeftHand;
-                    if (tAction.SkillId != SkillId.Defense || targetLeftHand == null || !targetLeftHand.IsShield)
-                    {
-                        target.Stability = Creature.MinStability;
-                        attacker.Shove(target, KnockBackDistance);
-                        tAction.Set(TargetOptions.KnockDownFinish);
-                    }
+					// Elementals
+					damage *= attacker.CalculateElementalDamageMultiplier(target);
 
-                    // Aggro
-                    if (target == mainTarget)
-                        target.Aggro(attacker);
+					// More damage with fire arrow
+					// XXX: Does this affect the element?
+					if (attacker.Temp.FireArrow)
+						damage *= FireBonus;
 
-                    if (target.IsDead)
-                    {
-                        tAction.Set(TargetOptions.Finished);
-                        if (target == mainTarget)
-                            aAction.Set(AttackerOptions.KnockBackHit1);
-                    }
-                }
-            }
-            else
-            {
-                aAction.Set(AttackerOptions.Missed);
-            }
+					// Splash modifier
+					if (target != mainTarget)
+						damage *= (skill.RankData.Var4 / 100f);
 
-            // Update current weapon
-            SkillHelper.UpdateWeapon(attacker, mainTarget, ProficiencyGainType.Ranged, attacker.RightHand);
+					// Critical Hit
+					var critChance = attacker.GetRightCritChance(target.Protection);
+					CriticalHit.Handle(attacker, critChance, ref damage, tAction);
 
-            // Reduce arrows
-            if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows &&
-                !attacker.Magazine.HasTag("/unlimited_arrow/"))
-                attacker.Inventory.Decrement(attacker.Magazine);
+					// Subtract target def/prot
+					SkillHelper.HandleDefenseProtection(target, ref damage);
 
-            // Disable fire arrow effect
-            if (attacker.Temp.FireArrow)
-                Send.Effect(attacker, Effect.FireArrow, false);
+					// Conditions
+					SkillHelper.HandleConditions(attacker, target, ref damage);
 
-            // "Cancels" the skill
-            // 800 = old load time? == aAction.Stun? Varies? Doesn't seem to be a stun.
-            Send.SkillUse(attacker, skill.Info.Id, 800, 1);
+					// Mana Shield
+					ManaShield.Handle(target, ref damage, tAction);
 
-            cap.Handle();
+					// Natural Shield
+					// Ignore delay reduction, as knock downs shouldn't be shortened
+					NaturalShield.Handle(attacker, target, ref damage, tAction);
 
-            return CombatSkillResult.Okay;
-        }
+					// Deal with it!
+					if (damage > 0)
+					{
+						target.TakeDamage(tAction.Damage = damage, attacker);
+						SkillHelper.HandleInjury(attacker, target, damage);
+					}
 
-        /// <summary>
-        ///     Completes skill, stopping the aim meter and disabling the fire effect.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        public void Complete(Creature creature, Skill skill, Packet packet)
-        {
-            Cancel(creature, skill);
-            Send.SkillComplete(creature, skill.Info.Id);
-        }
+					// Knock down
+					// If target is using a shield and defense, don't KD.
+					var targetLeftHand = target.LeftHand;
+					if (tAction.SkillId != SkillId.Defense || targetLeftHand == null || !targetLeftHand.IsShield)
+					{
+						target.Stability = Creature.MinStability;
+						attacker.Shove(target, KnockBackDistance);
+						tAction.Set(TargetOptions.KnockDownFinish);
+					}
 
-        /// <summary>
-        ///     Sets up subscriptions for skill training.
-        /// </summary>
-        public void Init()
-        {
-            ChannelServer.Instance.Events.CreatureAttack += OnCreatureAttacks;
-        }
+					// Aggro
+					if (target == mainTarget)
+						target.Aggro(attacker);
 
-        /// <summary>
-        ///     Prepares skill.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Prepare(Creature creature, Skill skill, Packet packet)
-        {
-            Send.SkillFlashEffect(creature);
-            Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
+					if (target.IsDead)
+					{
+						tAction.Set(TargetOptions.Finished);
+						if (target == mainTarget)
+							aAction.Set(AttackerOptions.KnockBackHit1);
+					}
+				}
+			}
+			else
+			{
+				aAction.Set(AttackerOptions.Missed);
+			}
 
-            if (creature.RightHand == null || !creature.RightHand.HasTag("/crossbow/"))
-                creature.Lock(Locks.Run);
+			// Update current weapon
+			SkillHelper.UpdateWeapon(attacker, mainTarget, ProficiencyGainType.Ranged, attacker.RightHand);
 
-            return true;
-        }
+			// Reduce arrows
+			if (attacker.Magazine != null && !ChannelServer.Instance.Conf.World.InfiniteArrows && !attacker.Magazine.HasTag("/unlimited_arrow/"))
+				attacker.Inventory.Decrement(attacker.Magazine);
 
-        /// <summary>
-        ///     Readies skill, activates fire effect.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Ready(Creature creature, Skill skill, Packet packet)
-        {
-            creature.Temp.FireArrow = creature.Region
-                                          .GetProps(a =>
-                                              a.Info.Id == 203 && a.GetPosition().InRange(creature.GetPosition(), 500))
-                                          .Count > 0;
-            if (creature.Temp.FireArrow)
-                Send.Effect(creature, Effect.FireArrow, true);
+			// Disable fire arrow effect
+			if (attacker.Temp.FireArrow)
+				Send.Effect(attacker, Effect.FireArrow, false);
 
-            Send.SkillReady(creature, skill.Info.Id);
+			// "Cancels" the skill
+			// 800 = old load time? == aAction.Stun? Varies? Doesn't seem to be a stun.
+			Send.SkillUse(attacker, skill.Info.Id, 800, 1);
 
-            if (creature.RightHand == null || !creature.RightHand.HasTag("/crossbow/"))
-                creature.Lock(Locks.Run);
+			cap.Handle();
 
-            return true;
-        }
+			return CombatSkillResult.Okay;
+		}
 
-        /// <summary>
-        ///     Returns the raw damage to be done.
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="skill"></param>
-        /// <returns></returns>
-        protected float GetDamage(Creature attacker, Skill skill)
-        {
-            var result = attacker.GetRndRangedDamage();
-            result *= skill.RankData.Var1 / 100f;
+		/// <summary>
+		/// Returns the raw damage to be done.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <returns></returns>
+		protected float GetDamage(Creature attacker, Skill skill)
+		{
+			var result = attacker.GetRndRangedDamage();
+			result *= skill.RankData.Var1 / 100f;
 
-            return result;
-        }
+			return result;
+		}
 
-        /// <summary>
-        ///     Handles the majority of the skill training.
-        /// </summary>
-        /// <param name="tAction"></param>
-        private void OnCreatureAttacks(TargetAction tAction)
-        {
-            if (tAction.AttackerSkillId != SkillId.MagnumShot)
-                return;
+		/// <summary>
+		/// Handles the majority of the skill training.
+		/// </summary>
+		/// <param name="tAction"></param>
+		private void OnCreatureAttacks(TargetAction tAction)
+		{
+			if (tAction.AttackerSkillId != SkillId.MagnumShot)
+				return;
 
-            var attackerSkill = tAction.Attacker.Skills.Get(SkillId.MagnumShot);
+			var attackerSkill = tAction.Attacker.Skills.Get(SkillId.MagnumShot);
 
-            if (attackerSkill != null)
-            {
-                attackerSkill.Train(1); // Attack an enemy.
-                if (tAction.Has(TargetOptions.Critical))
-                    attackerSkill.Train(2);
+			if (attackerSkill != null)
+			{
+				attackerSkill.Train(1); // Attack an enemy.
+				if (tAction.Has(TargetOptions.Critical))
+					attackerSkill.Train(2);
 
-                if (tAction.Creature.IsDead) // Kill an enemy.
-                {
-                    attackerSkill.Train(3);
-                    if (tAction.Has(TargetOptions.Critical))
-                        attackerSkill.Train(4);
-                }
-            }
-        }
-    }
+				if (tAction.Creature.IsDead)  // Kill an enemy.
+				{
+					attackerSkill.Train(3);
+					if (tAction.Has(TargetOptions.Critical))
+						attackerSkill.Train(4);
+				}
+			}
+		}
+	}
 }

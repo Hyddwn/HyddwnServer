@@ -11,41 +11,40 @@ using Aura.Shared.Util;
 
 namespace Aura.Channel.Skills.Hidden
 {
-    [Skill(SkillId.NameColorChange)]
-    public class NameColorChange : IPreparable, IUseable, ICompletable, ICancelable
-    {
-        public void Cancel(Creature creature, Skill skill)
-        {
-        }
+	[Skill(SkillId.NameColorChange)]
+	public class NameColorChange : IPreparable, IUseable, ICompletable, ICancelable
+	{
+		public bool Prepare(Creature creature, Skill skill, Packet packet)
+		{
+			var dict = packet.GetString();
 
-        public void Complete(Creature creature, Skill skill, Packet packet)
-        {
-            Send.SkillComplete(creature, skill.Info.Id);
-        }
+			// Get item entity id
+			creature.Temp.NameColorItemEntityId = MabiDictionary.Fetch<long>("ITEMID", dict);
+			if (creature.Temp.NameColorItemEntityId == 0)
+			{
+				Log.Warning("NameColorChange: Invalid item id '{0}' from creature '{1:X16}'.", creature.Temp.NameColorItemEntityId, creature.EntityId);
+				return false;
+			}
 
-        public bool Prepare(Creature creature, Skill skill, Packet packet)
-        {
-            var dict = packet.GetString();
+			// Go into ready mode
+			Send.SkillReady(creature, skill.Info.Id, dict);
+			skill.State = SkillState.Ready;
 
-            // Get item entity id
-            creature.Temp.NameColorItemEntityId = MabiDictionary.Fetch<long>("ITEMID", dict);
-            if (creature.Temp.NameColorItemEntityId == 0)
-            {
-                Log.Warning("NameColorChange: Invalid item id '{0}' from creature '{1:X16}'.",
-                    creature.Temp.NameColorItemEntityId, creature.EntityId);
-                return false;
-            }
+			return true;
+		}
 
-            // Go into ready mode
-            Send.SkillReady(creature, skill.Info.Id, dict);
-            skill.State = SkillState.Ready;
+		public void Use(Creature creature, Skill skill, Packet packet)
+		{
+			Send.SkillUse(creature, skill.Info.Id);
+		}
 
-            return true;
-        }
+		public void Complete(Creature creature, Skill skill, Packet packet)
+		{
+			Send.SkillComplete(creature, skill.Info.Id);
+		}
 
-        public void Use(Creature creature, Skill skill, Packet packet)
-        {
-            Send.SkillUse(creature, skill.Info.Id);
-        }
-    }
+		public void Cancel(Creature creature, Skill skill)
+		{
+		}
+	}
 }

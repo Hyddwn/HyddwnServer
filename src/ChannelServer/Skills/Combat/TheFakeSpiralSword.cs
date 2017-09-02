@@ -1,227 +1,233 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System;
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Magic;
+using Aura.Channel.Skills.Combat;
+using Aura.Channel.World;
 using Aura.Channel.World.Entities;
 using Aura.Data.Database;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using Aura.Shared.Network;
 using Aura.Shared.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Aura.Channel.Skills.Combat
 {
-    /// <summary>
-    ///     Skill handler for The Fake Spiral Sword
-    /// </summary>
-    /// <remarks>
-    ///     Var1: Damage Percentage ?
-    ///     Var2: Attack Range ?
-    ///     Var3: Explosion Radius ?
-    ///     Var4: ?
-    ///     Var5: ?
-    ///     There isn't much data on this skill, so skill variable use
-    ///     is mostly based on speculation from gameplay and packet data.
-    /// </remarks>
-    [Skill(SkillId.TheFakeSpiralSword)]
-    public class TheFakeSpiralSword : ISkillHandler, IPreparable, IReadyable, ICompletable, ICancelable, ICombatSkill
-    {
-        /// <summary>
-        ///     Attacker's stun
-        /// </summary>
-        private const int AttackerStun = 500;
+	/// <summary>
+	/// Skill handler for The Fake Spiral Sword
+	/// </summary>
+	/// <remarks>
+	/// Var1: Damage Percentage ?
+	/// Var2: Attack Range ?
+	/// Var3: Explosion Radius ?
+	/// Var4: ?
+	/// Var5: ?
+	/// 
+	/// There isn't much data on this skill, so skill variable use
+	/// is mostly based on speculation from gameplay and packet data.
+	/// </remarks>
+	[Skill(SkillId.TheFakeSpiralSword)]
+	public class TheFakeSpiralSword : ISkillHandler, IPreparable, IReadyable, ICompletable, ICancelable, ICombatSkill
+	{
+		/// <summary>
+		/// Attacker's stun
+		/// </summary>
+		private const int AttackerStun = 500;
 
-        /// <summary>
-        ///     Target's stun
-        /// </summary>
-        private const int TargetStun = 2000;
+		/// <summary>
+		/// Target's stun
+		/// </summary>
+		private const int TargetStun = 2000;
 
-        /// <summary>
-        ///     Distance the target is knocked back
-        /// </summary>
-        private const int KnockbackDistance = 250;
+		/// <summary>
+		/// Distance the target is knocked back
+		/// </summary>
+		private const int KnockbackDistance = 250;
 
-        /// <summary>
-        ///     Cancels the skill
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        public void Cancel(Creature creature, Skill skill)
-        {
-            Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Cancel);
-            Send.SkillCancel(creature);
-        }
+		/// <summary>
+		/// Prepares the skill
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		public bool Prepare(Creature creature, Skill skill, Packet packet)
+		{
+			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Prepare, DateTime.Now, skill.RankData.LoadTime);
+			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
-        /// <summary>
-        ///     Uses the skill
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="skill"></param>
-        /// <param name="targetEntityId"></param>
-        /// <returns></returns>
-        public CombatSkillResult Use(Creature attacker, Skill skill, long targetEntityId)
-        {
-            // Get Target
-            var initTarget = attacker.Region.GetCreature(targetEntityId);
+			return true;
+		}
 
-            // Check Target
-            if (initTarget == null)
-                return CombatSkillResult.InvalidTarget;
+		/// <summary>
+		/// Readies the skill
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		public bool Ready(Creature creature, Skill skill, Packet packet)
+		{
+			skill.Stacks = 1;
 
-            var attackerPos = attacker.StopMove();
-            var initTargetPos = initTarget.GetPosition();
+			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Ready);
+			Send.SkillReady(creature, skill.Info.Id);
 
-            // Check Range
-            var range = (int) skill.RankData.Var2;
-            if (!attacker.GetPosition().InRange(initTargetPos, range))
-                return CombatSkillResult.OutOfRange;
+			return true;
+		}
 
-            // Check for Collisions
-            if (attacker.Region.Collisions.Any(attackerPos, initTargetPos))
-                return CombatSkillResult.InvalidTarget;
+		/// <summary>
+		/// Uses the skill
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="targetEntityId"></param>
+		/// <returns></returns>
+		public CombatSkillResult Use(Creature attacker, Skill skill, long targetEntityId)
+		{
+			// Get Target
+			var initTarget = attacker.Region.GetCreature(targetEntityId);
 
-            initTarget.StopMove();
+			// Check Target
+			if (initTarget == null)
+				return CombatSkillResult.InvalidTarget;
 
-            // Effects
-            Send.Effect(attacker, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Attack,
-                DateTime.Now.Ticks / 10000, (byte) 1);
+			var attackerPos = attacker.StopMove();
+			var initTargetPos = initTarget.GetPosition();
 
-            // Skill Use
-            Send.SkillUseStun(attacker, skill.Info.Id, AttackerStun, 1);
-            skill.Stacks = 0;
+			// Check Range
+			var range = (int)skill.RankData.Var2;
+			if (!attacker.GetPosition().InRange(initTargetPos, range))
+				return CombatSkillResult.OutOfRange;
 
-            // Prepare Combat Actions
-            var cap = new CombatActionPack(attacker, skill.Info.Id);
+			// Check for Collisions
+			if (attacker.Region.Collisions.Any(attackerPos, initTargetPos))
+				return CombatSkillResult.InvalidTarget;
 
-            var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, targetEntityId);
-            aAction.Set(AttackerOptions.KnockBackHit1 | AttackerOptions.KnockBackHit2 | AttackerOptions.Result);
-            cap.Add(aAction);
+			initTarget.StopMove();
 
-            aAction.Stun = AttackerStun;
+			// Effects
+			Send.Effect(attacker, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Attack, (DateTime.Now.Ticks / 10000), (byte)1);
 
-            // Get Explosion Radius of Attack
-            var explosionRadius = (int) skill.RankData.Var3 / 2;
+			// Skill Use
+			Send.SkillUseStun(attacker, skill.Info.Id, AttackerStun, 1);
+			skill.Stacks = 0;
 
-            // Get Explosion Targets
-            var targets = attacker.GetTargetableCreaturesAround(initTargetPos, explosionRadius);
+			// Prepare Combat Actions
+			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-            var rnd = RandomProvider.Get();
+			var aAction = new AttackerAction(CombatActionType.RangeHit, attacker, targetEntityId);
+			aAction.Set(AttackerOptions.KnockBackHit1 | AttackerOptions.KnockBackHit2 | AttackerOptions.Result);
+			cap.Add(aAction);
 
-            // Get Critical Hit
-            var crit = false;
-            if (attacker.Skills.Has(SkillId.CriticalHit, SkillRank.RF))
-            {
-                var critChance = attacker.GetRightCritChance(0);
-                crit = rnd.Next(100) < critChance;
-            }
+			aAction.Stun = AttackerStun;
 
-            foreach (var target in targets)
-            {
-                var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-                tAction.Set(TargetOptions.Result);
-                tAction.Delay = attackerPos.GetDistance(initTargetPos) / 2;
-                cap.Add(tAction);
+			// Get Explosion Radius of Attack
+			var explosionRadius = (int)skill.RankData.Var3 / 2;
 
-                // Damage
-                var damage = attacker.GetRndTotalDamage() * (skill.RankData.Var1 / 100f);
+			// Get Explosion Targets
+			var targets = attacker.GetTargetableCreaturesAround(initTargetPos, explosionRadius);
 
-                // Critical Hit
-                if (crit)
-                    CriticalHit.Handle(attacker, 100, ref damage, tAction);
+			var rnd = RandomProvider.Get();
 
-                // Defense and Prot
-                SkillHelper.HandleDefenseProtection(target, ref damage);
+			// Get Critical Hit
+			var crit = false;
+			if (attacker.Skills.Has(SkillId.CriticalHit, SkillRank.RF))
+			{
+				var critChance = attacker.GetRightCritChance(0);
+				crit = (rnd.Next(100) < critChance);
+			}
 
-                // Defense
-                Defense.Handle(aAction, tAction, ref damage);
+			foreach (var target in targets)
+			{
+				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
+				tAction.Set(TargetOptions.Result);
+				tAction.Delay = attackerPos.GetDistance(initTargetPos) / 2;
+				cap.Add(tAction);
 
-                // Mana Shield
-                ManaShield.Handle(target, ref damage, tAction);
+				// Damage
+				var damage = (attacker.GetRndTotalDamage() * (skill.RankData.Var1 / 100f));
 
-                // Heavy Stander
-                HeavyStander.Handle(attacker, target, ref damage, tAction);
+				// Critical Hit
+				if (crit)
+					CriticalHit.Handle(attacker, 100, ref damage, tAction);
 
-                // Apply Damage
-                target.TakeDamage(tAction.Damage = damage, attacker);
+				// Defense and Prot
+				SkillHelper.HandleDefenseProtection(target, ref damage);
 
-                // Aggro
-                target.Aggro(attacker);
+				// Defense
+				Defense.Handle(aAction, tAction, ref damage);
 
-                // Stun Time
-                tAction.Stun = TargetStun;
+				// Mana Shield
+				ManaShield.Handle(target, ref damage, tAction);
 
-                // Death and Knockback
-                if (target.Is(RaceStands.KnockDownable))
-                {
-                    if (target.IsDead)
-                        tAction.Set(TargetOptions.FinishingKnockDown);
-                    else
-                        tAction.Set(TargetOptions.KnockDown);
+				// Heavy Stander
+				HeavyStander.Handle(attacker, target, ref damage, tAction);
 
-                    // Shove
-                    if (target == initTarget)
-                        attacker.Shove(target, KnockbackDistance);
-                    else
-                        initTarget.Shove(target, KnockbackDistance);
-                }
-            }
+				// Apply Damage
+				target.TakeDamage(tAction.Damage = damage, attacker);
 
-            aAction.Creature.Stun = aAction.Stun;
-            cap.Handle();
+				// Aggro
+				target.Aggro(attacker);
 
-            // User can attack multiple times if attack isn't locked, which will cause them to freeze.
-            // This is automatically unlocked by the skill after Use is finished.
-            attacker.Lock(Locks.Attack);
+				// Stun Time
+				tAction.Stun = TargetStun;
 
-            return CombatSkillResult.Okay;
-        }
+				// Death and Knockback
+				if (target.Is(RaceStands.KnockDownable))
+				{
+					if (target.IsDead)
+						tAction.Set(TargetOptions.FinishingKnockDown);
+					else
+						tAction.Set(TargetOptions.KnockDown);
 
-        /// <summary>
-        ///     Completes the skill
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        public void Complete(Creature creature, Skill skill, Packet packet)
-        {
-            Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Complete);
-            Send.SkillComplete(creature, skill.Info.Id);
-        }
+					// Shove
+					if (target == initTarget)
+						attacker.Shove(target, KnockbackDistance);
+					else
+						initTarget.Shove(target, KnockbackDistance);
+				}
+			}
 
-        /// <summary>
-        ///     Prepares the skill
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Prepare(Creature creature, Skill skill, Packet packet)
-        {
-            Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Prepare, DateTime.Now,
-                skill.RankData.LoadTime);
-            Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
+			aAction.Creature.Stun = aAction.Stun;
+			cap.Handle();
 
-            return true;
-        }
+			// User can attack multiple times if attack isn't locked, which will cause them to freeze.
+			// This is automatically unlocked by the skill after Use is finished.
+			attacker.Lock(Locks.Attack);
 
-        /// <summary>
-        ///     Readies the skill
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Ready(Creature creature, Skill skill, Packet packet)
-        {
-            skill.Stacks = 1;
+			return CombatSkillResult.Okay;
+		}
 
-            Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Ready);
-            Send.SkillReady(creature, skill.Info.Id);
+		/// <summary>
+		/// Completes the skill
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Complete(Creature creature, Skill skill, Packet packet)
+		{
+			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Complete);
+			Send.SkillComplete(creature, skill.Info.Id);
+		}
 
-            return true;
-        }
-    }
+		/// <summary>
+		/// Cancels the skill
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Cancel(Creature creature, Skill skill)
+		{
+			Send.Effect(creature, Effect.TheFakeSpiralSword, TheFakeSpiralSwordEffect.Cancel);
+			Send.SkillCancel(creature);
+		}
+	}
 }

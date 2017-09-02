@@ -11,236 +11,237 @@ using Aura.Shared.Util;
 
 namespace Aura.Channel.Skills.Combat
 {
-    /// <summary>
-    ///     Monster stomp skill handler.
-    /// </summary>
-    /// <remarks>
-    ///     Based on Giant Stomp logs.
-    ///     It appears that different races use different ranks, that make for
-    ///     different versions of the skill. The variables don't increase
-    ///     by rank, but they kinda jump back and forth.
-    ///     Var1: ? (0, 200, 400, 550)
-    ///     Var2: ? (0, 1000, 1500)
-    ///     Var3: ? (0, 300, 900)
-    /// </remarks>
-    [Skill(SkillId.Stomp)]
-    public class Stomp : IPreparable, IReadyable, IUseable, ICompletable, ICancelable
-    {
-        /// <summary>
-        ///     Units the enemy is knocked back.
-        /// </summary>
-        private const int KnockbackDistance = 0;
+	/// <summary>
+	/// Monster stomp skill handler.
+	/// </summary>
+	/// <remarks>
+	/// Based on Giant Stomp logs.
+	/// 
+	/// It appears that different races use different ranks, that make for
+	/// different versions of the skill. The variables don't increase
+	/// by rank, but they kinda jump back and forth.
+	/// 
+	/// Var1: ? (0, 200, 400, 550)
+	/// Var2: ? (0, 1000, 1500)
+	/// Var3: ? (0, 300, 900)
+	/// </remarks>
+	[Skill(SkillId.Stomp)]
+	public class Stomp : IPreparable, IReadyable, IUseable, ICompletable, ICancelable
+	{
+		/// <summary>
+		/// Units the enemy is knocked back.
+		/// </summary>
+		private const int KnockbackDistance = 0;
 
-        /// <summary>
-        ///     Stun for attacker.
-        /// </summary>
-        private const int AttackerStun = 2000;
+		/// <summary>
+		/// Stun for attacker.
+		/// </summary>
+		private const int AttackerStun = 2000;
 
-        /// <summary>
-        ///     Finishes motions.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        public void Cancel(Creature creature, Skill skill)
-        {
-            if (skill.State == SkillState.Ready)
-                Send.CancelMotion(creature);
-        }
+		/// <summary>
+		/// Prepares the skill.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		public bool Prepare(Creature creature, Skill skill, Packet packet)
+		{
+			Send.SkillInitEffect(creature, "");
+			Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
 
-        /// <summary>
-        ///     Handles completing.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        public void Complete(Creature creature, Skill skill, Packet packet)
-        {
-            Send.SkillComplete(creature, skill.Info.Id);
-        }
+			return true;
+		}
 
-        /// <summary>
-        ///     Prepares the skill.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Prepare(Creature creature, Skill skill, Packet packet)
-        {
-            Send.SkillInitEffect(creature, "");
-            Send.SkillPrepare(creature, skill.Info.Id, skill.GetCastTime());
+		/// <summary>
+		/// Readies the skill.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		public bool Ready(Creature creature, Skill skill, Packet packet)
+		{
+			Send.UseMotion(creature, 10, 0);
+			Send.SkillReady(creature, skill.Info.Id);
 
-            return true;
-        }
+			return true;
+		}
 
-        /// <summary>
-        ///     Readies the skill.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Ready(Creature creature, Skill skill, Packet packet)
-        {
-            Send.UseMotion(creature, 10, 0);
-            Send.SkillReady(creature, skill.Info.Id);
+		/// <summary>
+		/// Handles using the skill with the information from the packet.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Use(Creature creature, Skill skill, Packet packet)
+		{
+			var targetAreaId = packet.GetLong();
+			var unkInt1 = packet.GetInt();
+			var unkInt2 = packet.GetInt();
 
-            return true;
-        }
+			Use(creature, skill, targetAreaId, unkInt1, unkInt2);
+		}
 
-        /// <summary>
-        ///     Handles using the skill with the information from the packet.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        public void Use(Creature creature, Skill skill, Packet packet)
-        {
-            var targetAreaId = packet.GetLong();
-            var unkInt1 = packet.GetInt();
-            var unkInt2 = packet.GetInt();
+		/// <summary>
+		/// Handles using the skill.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="targetAreaId"></param>
+		/// <param name="unkInt1"></param>
+		/// <param name="unkInt2"></param>
+		public void Use(Creature attacker, Skill skill, long targetAreaId, int unkInt1, int unkInt2)
+		{
+			var range = this.GetRange(attacker, skill);
+			var targets = attacker.GetTargetableCreaturesInRange(range, TargetableOptions.AddAttackRange);
+			var rnd = RandomProvider.Get();
 
-            Use(creature, skill, targetAreaId, unkInt1, unkInt2);
-        }
+			// Create actions
+			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-        /// <summary>
-        ///     Handles using the skill.
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="skill"></param>
-        /// <param name="targetAreaId"></param>
-        /// <param name="unkInt1"></param>
-        /// <param name="unkInt2"></param>
-        public void Use(Creature attacker, Skill skill, long targetAreaId, int unkInt1, int unkInt2)
-        {
-            var range = GetRange(attacker, skill);
-            var targets = attacker.GetTargetableCreaturesInRange(range, TargetableOptions.AddAttackRange);
-            var rnd = RandomProvider.Get();
+			var aAction = new AttackerAction(CombatActionType.Attacker, attacker, targetAreaId);
+			aAction.Set(AttackerOptions.Result);
+			aAction.Stun = AttackerStun;
 
-            // Create actions
-            var cap = new CombatActionPack(attacker, skill.Info.Id);
+			cap.Add(aAction);
 
-            var aAction = new AttackerAction(CombatActionType.Attacker, attacker, targetAreaId);
-            aAction.Set(AttackerOptions.Result);
-            aAction.Stun = AttackerStun;
+			foreach (var target in targets)
+			{
+				// Check if hit
+				var hitChance = this.GetHitChance(attacker, target, skill);
+				if (rnd.Next(0, 100) > hitChance)
+					continue;
 
-            cap.Add(aAction);
+				target.StopMove();
 
-            foreach (var target in targets)
-            {
-                // Check if hit
-                var hitChance = GetHitChance(attacker, target, skill);
-                if (rnd.Next(0, 100) > hitChance)
-                    continue;
+				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
+				tAction.Set(TargetOptions.Result);
+				tAction.Delay = 300;
 
-                target.StopMove();
+				// Calculate damage
+				var damage = this.GetDamage(attacker, skill);
 
-                var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, skill.Info.Id);
-                tAction.Set(TargetOptions.Result);
-                tAction.Delay = 300;
+				// Elementals
+				damage *= attacker.CalculateElementalDamageMultiplier(target);
 
-                // Calculate damage
-                var damage = GetDamage(attacker, skill);
+				// Handle skills and reductions
+				CriticalHit.Handle(attacker, attacker.GetTotalCritChance(0), ref damage, tAction);
+				SkillHelper.HandleDefenseProtection(target, ref damage);
+				SkillHelper.HandleConditions(attacker, target, ref damage);
+				ManaShield.Handle(target, ref damage, tAction);
+				HeavyStander.Handle(attacker, target, ref damage, tAction);
 
-                // Elementals
-                damage *= attacker.CalculateElementalDamageMultiplier(target);
+				// Clean Hit if not critical
+				if (!tAction.Has(TargetOptions.Critical))
+					tAction.Set(TargetOptions.CleanHit);
 
-                // Handle skills and reductions
-                CriticalHit.Handle(attacker, attacker.GetTotalCritChance(0), ref damage, tAction);
-                SkillHelper.HandleDefenseProtection(target, ref damage);
-                SkillHelper.HandleConditions(attacker, target, ref damage);
-                ManaShield.Handle(target, ref damage, tAction);
-                HeavyStander.Handle(attacker, target, ref damage, tAction);
+				// Take damage if any is left
+				if (damage > 0)
+				{
+					target.TakeDamage(tAction.Damage = damage, attacker);
+					SkillHelper.HandleInjury(attacker, target, damage);
+				}
 
-                // Clean Hit if not critical
-                if (!tAction.Has(TargetOptions.Critical))
-                    tAction.Set(TargetOptions.CleanHit);
+				// Finish if dead, knock down if not defended
+				if (target.IsDead)
+					tAction.Set(TargetOptions.KnockDownFinish);
+				else
+					tAction.Set(TargetOptions.KnockDown);
 
-                // Take damage if any is left
-                if (damage > 0)
-                {
-                    target.TakeDamage(tAction.Damage = damage, attacker);
-                    SkillHelper.HandleInjury(attacker, target, damage);
-                }
+				// Anger Management
+				if (!target.IsDead)
+					target.Aggro(attacker);
 
-                // Finish if dead, knock down if not defended
-                if (target.IsDead)
-                    tAction.Set(TargetOptions.KnockDownFinish);
-                else
-                    tAction.Set(TargetOptions.KnockDown);
+				// Stun & knock down
+				tAction.Stun = CombatMastery.GetTargetStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
+				target.Stability = Creature.MinStability;
 
-                // Anger Management
-                if (!target.IsDead)
-                    target.Aggro(attacker);
+				// Add action
+				cap.Add(tAction);
+			}
 
-                // Stun & knock down
-                tAction.Stun =
-                    CombatMastery.GetTargetStun(attacker.AverageKnockCount, attacker.AverageAttackSpeed, true);
-                target.Stability = Creature.MinStability;
+			Send.UseMotion(attacker, 10, 1);
 
-                // Add action
-                cap.Add(tAction);
-            }
+			cap.Handle();
 
-            Send.UseMotion(attacker, 10, 1);
+			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, unkInt1, unkInt2);
+		}
 
-            cap.Handle();
+		/// <summary>
+		/// Handles completing.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Complete(Creature creature, Skill skill, Packet packet)
+		{
+			Send.SkillComplete(creature, skill.Info.Id);
+		}
 
-            Send.SkillUse(attacker, skill.Info.Id, targetAreaId, unkInt1, unkInt2);
-        }
+		/// <summary>
+		/// Finishes motions.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		public void Cancel(Creature creature, Skill skill)
+		{
+			if (skill.State == SkillState.Ready)
+				Send.CancelMotion(creature);
+		}
 
-        /// <summary>
-        ///     Calculates range based on creature and skill.
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="skill"></param>
-        /// <returns></returns>
-        private int GetRange(Creature attacker, Skill skill)
-        {
-            return 1500;
-        }
+		/// <summary>
+		/// Calculates range based on creature and skill.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <returns></returns>
+		private int GetRange(Creature attacker, Skill skill)
+		{
+			return 1500;
+		}
 
-        /// <summary>
-        ///     Calculates stun based on creature and skill.
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="skill"></param>
-        /// <returns></returns>
-        private int GetTargetStun(Creature attacker, Skill skill)
-        {
-            return 600;
-        }
+		/// <summary>
+		/// Calculates stun based on creature and skill.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <returns></returns>
+		private int GetTargetStun(Creature attacker, Skill skill)
+		{
+			return 600;
+		}
 
-        /// <summary>
-        ///     Calculates base damage based on creature and skill.
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="skill"></param>
-        /// <returns></returns>
-        private float GetDamage(Creature attacker, Skill skill)
-        {
-            return attacker.GetRndTotalDamage();
-        }
+		/// <summary>
+		/// Calculates base damage based on creature and skill.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <returns></returns>
+		private float GetDamage(Creature attacker, Skill skill)
+		{
+			return attacker.GetRndTotalDamage();
+		}
 
-        /// <summary>
-        ///     Calculates hit chance based on creatures and skill.
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="target"></param>
-        /// <param name="skill"></param>
-        /// <returns></returns>
-        private float GetHitChance(Creature attacker, Creature target, Skill skill)
-        {
-            // If target is standing still
-            if (!target.IsMoving)
-                return 50;
+		/// <summary>
+		/// Calculates hit chance based on creatures and skill.
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="target"></param>
+		/// <param name="skill"></param>
+		/// <returns></returns>
+		private float GetHitChance(Creature attacker, Creature target, Skill skill)
+		{
+			// If target is standing still
+			if (!target.IsMoving)
+				return 50;
 
-            // If target is walking
-            if (target.IsWalking)
-                return 70;
+			// If target is walking
+			if (target.IsWalking)
+				return 70;
 
-            // If target is running
-            return 90;
-        }
-    }
+			// If target is running
+			return 90;
+		}
+	}
 }

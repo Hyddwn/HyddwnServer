@@ -5,18 +5,18 @@ using System;
 
 namespace Aura.Channel.World.Quests
 {
-    /// <summary>
-    ///     Represents a queued quest owl.
-    /// </summary>
-    public class QuestOwl
-    {
-        public QuestOwl(int questId, DateTime arrival)
-        {
-            QuestId = questId;
-            Arrival = arrival;
-        }
+	/// <summary>
+	/// Represents a queued quest owl.
+	/// </summary>
+	public class QuestOwl
+	{
+		public int QuestId { get; private set; }
+		public DateTime Arrival { get; private set; }
 
-        public int QuestId { get; }
-        public DateTime Arrival { get; }
-    }
+		public QuestOwl(int questId, DateTime arrival)
+		{
+			this.QuestId = questId;
+			this.Arrival = arrival;
+		}
+	}
 }

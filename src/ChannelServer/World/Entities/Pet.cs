@@ -3,10 +3,10 @@
 
 namespace Aura.Channel.World.Entities
 {
-    /// <summary>
-    ///     Pet or partner
-    /// </summary>
-    public class Pet : PlayerCreature
-    {
-    }
+	/// <summary>
+	/// Pet or partner
+	/// </summary>
+	public class Pet : PlayerCreature
+	{
+	}
 }

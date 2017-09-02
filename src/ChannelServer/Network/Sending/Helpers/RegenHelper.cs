@@ -4,25 +4,26 @@
 using Aura.Channel.World.Entities.Creatures;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
+using Aura.Shared.Network;
 
 namespace Aura.Channel.Network.Sending.Helpers
 {
-    public static class RegenHelper
-    {
-        public static Packet AddRegen(this Packet packet, StatRegen regen)
-        {
-            packet.PutInt(regen.Id);
+	public static class RegenHelper
+	{
+		public static Packet AddRegen(this Packet packet, StatRegen regen)
+		{
+			packet.PutInt(regen.Id);
 
-            // It makes more sense for us to *increase* the hunger, but the
-            // client wants to *decrease* the amount of available Stamina.
-            packet.PutFloat(regen.Stat != Stat.Hunger ? regen.Change : -regen.Change);
+			// It makes more sense for us to *increase* the hunger, but the
+			// client wants to *decrease* the amount of available Stamina.
+			packet.PutFloat(regen.Stat != Stat.Hunger ? regen.Change : -regen.Change);
 
-            packet.PutInt(regen.TimeLeft);
-            packet.PutInt((int) regen.Stat);
-            packet.PutByte(0); // ?
-            packet.PutFloat(regen.Max);
+			packet.PutInt(regen.TimeLeft);
+			packet.PutInt((int)regen.Stat);
+			packet.PutByte(0); // ?
+			packet.PutFloat(regen.Max);
 
-            return packet;
-        }
-    }
+			return packet;
+		}
+	}
 }

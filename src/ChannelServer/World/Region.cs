@@ -3,1466 +3,1441 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Threading;
 using Aura.Channel.Network;
 using Aura.Channel.Network.Sending;
-using Aura.Channel.Scripting;
-using Aura.Channel.Scripting.Scripts;
 using Aura.Channel.Util;
 using Aura.Channel.World.Entities;
-using Aura.Data.Database;
+using Aura.Data;
 using Aura.Mabi.Const;
-using Aura.Mabi.Network;
+using Aura.Shared.Network;
 using Aura.Shared.Util;
+using System.Threading;
+using Aura.Data.Database;
+using Boo.Lang.Compiler.TypeSystem;
+using System.Drawing;
+using Aura.Channel.Scripting.Scripts;
+using Aura.Mabi.Network;
+using Aura.Channel.Scripting;
+using Aura.Channel.World.Entities.Props;
 
 namespace Aura.Channel.World
 {
-    public abstract class Region
-    {
-        // TODO: Data?
-        public const int VisibleRange = 3000;
-
-        public static readonly Region Limbo = new Limbo();
-        protected Dictionary<long, ClientEvent> _clientEvents;
-
-        protected HashSet<ChannelClient> _clients;
-
-        protected Dictionary<long, Creature> _creatures;
-
-        protected ReaderWriterLockSlim _creaturesRWLS, _propsRWLS, _clientEventsRWLS, _itemsRWLS;
-        protected Dictionary<long, Item> _items;
-        private readonly Dictionary<int, int> _propIds;
-        protected Dictionary<long, Prop> _props;
-
-        private readonly object _visibilitySyncLock = new object();
-
-        /// <summary>
-        ///     Initializes class.
-        /// </summary>
-        /// <param name="regionId"></param>
-        protected Region(int regionId)
-        {
-            _creaturesRWLS = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-            _propsRWLS = new ReaderWriterLockSlim();
-            _clientEventsRWLS = new ReaderWriterLockSlim();
-            _itemsRWLS = new ReaderWriterLockSlim();
-
-            _propIds = new Dictionary<int, int>();
-
-            Id = regionId;
-
-            _creatures = new Dictionary<long, Creature>();
-            _props = new Dictionary<long, Prop>();
-            _clientEvents = new Dictionary<long, ClientEvent>();
-            _items = new Dictionary<long, Item>();
-
-            _clients = new HashSet<ChannelClient>();
-
-            Collisions = new RegionCollision();
-
-            Properties = new VariableManager();
-        }
-
-        public RegionInfoData Data { get; protected set; }
-
-        /// <summary>
-        ///     Region's name
-        /// </summary>
-        public string Name { get; protected set; }
-
-        /// <summary>
-        ///     Region's id
-        /// </summary>
-        public int Id { get; protected set; }
-
-        /// <summary>
-        ///     Manager for blocking objects in the region.
-        /// </summary>
-        public RegionCollision Collisions { get; protected set; }
-
-        /// <summary>
-        ///     Returns true if region is a dynamic region, judged by its id.
-        /// </summary>
-        public bool IsDynamic => Math2.Between(Id, MabiId.DynamicRegions, MabiId.DynamicRegions + 5000);
-
-        /// <summary>
-        ///     Returns true if region is a dungeon region, judged by its id.
-        /// </summary>
-        public bool IsDungeon => Math2.Between(Id, MabiId.DungeonRegions, MabiId.DungeonRegions + 10000);
-
-        /// <summary>
-        ///     Returns true if region is temporary, i.e. a dungeon or a dynamic region.
-        /// </summary>
-        public bool IsTemp => IsDynamic || IsDungeon;
-
-        /// <summary>
-        ///     Returns true if region is an indoor region (e.g. houses).
-        /// </summary>
-        public bool IsIndoor { get; protected set; }
-
-        /// <summary>
-        ///     Variable manager containing region's properties.
-        /// </summary>
-        public VariableManager Properties { get; }
-
-        /// <summary>
-        ///     Raised when a player gets added to the region.
-        /// </summary>
-        public event Action<Creature> PlayerEnters;
-
-        /// <summary>
-        ///     Raised when a player is removed from the region.
-        /// </summary>
-        public event Action<Creature> PlayerLeaves;
-
-        /// <summary>
-        ///     Raised when a player was added to the region.
-        /// </summary>
-        /// <remarks>
-        ///     Called after all is said and done, and the player is officially
-        ///     in this region, unlike PlayerEnters, which is called during the
-        ///     warp process, before informing the client about the successful
-        ///     warp.
-        /// </remarks>
-        public event Action<Creature, int> PlayerEntered;
-
-        public void OnPlayerEntered(Creature creature, int prevRegionId)
-        {
-            PlayerEntered.Raise(creature, prevRegionId);
-        }
-
-        /// <summary>
-        ///     Adds all props found in the client for this region and creates a list
-        ///     of areas.
-        /// </summary>
-        protected void InitializeFromData()
-        {
-            if (Data == null || Data.Areas == null)
-                return;
-
-            LoadProps();
-            LoadClientEvents();
-        }
-
-        /// <summary>
-        ///     Adds all props found in the client for this region.
-        /// </summary>
-        protected void LoadProps()
-        {
-            foreach (var areaData in Data.Areas)
-            foreach (var propData in areaData.Props.Values)
-            {
-                var prop = new Prop(propData, Id, Data.Name, areaData.Name);
-
-                AddProp(prop);
-            }
-        }
-
-        /// <summary>
-        ///     Adds all props found in the client for this region.
-        /// </summary>
-        protected void LoadClientEvents()
-        {
-            foreach (var areaData in Data.Areas)
-            foreach (var clientEventData in areaData.Events.Values)
-            {
-                var clientEvent = new ClientEvent(clientEventData, Data.Name, areaData.Name);
-                AddClientEvent(clientEvent);
-            }
-        }
-
-        /// <summary>
-        ///     Returns event by id or null if it doesn't exist.
-        /// </summary>
-        /// <param name="eventId"></param>
-        /// <returns></returns>
-        public ClientEvent GetClientEvent(long eventId)
-        {
-            ClientEvent result;
-
-            _clientEventsRWLS.EnterReadLock();
-            try
-            {
-                _clientEvents.TryGetValue(eventId, out result);
-            }
-            finally
-            {
-                _clientEventsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns event by name or null if it doesn't exist.
-        /// </summary>
-        /// <param name="eventId"></param>
-        /// <returns></returns>
-        public ClientEvent GetClientEvent(string eventName)
-        {
-            return GetClientEvent(a => a.Data.Name == eventName);
-        }
-
-        /// <summary>
-        ///     Adds client event to region.
-        /// </summary>
-        /// <param name="clientEvent"></param>
-        private void AddClientEvent(ClientEvent clientEvent)
-        {
-            _clientEventsRWLS.EnterWriteLock();
-            try
-            {
-                if (_clientEvents.ContainsKey(clientEvent.EntityId))
-                    throw new ArgumentException("A client event with id '" + clientEvent.EntityId.ToString("X16") +
-                                                "' already exists.");
-
-                _clientEvents.Add(clientEvent.EntityId, clientEvent);
-            }
-            finally
-            {
-                _clientEventsRWLS.ExitWriteLock();
-            }
-
-            // Add collisions
-            Collisions.Add(clientEvent);
-        }
-
-        /// <summary>
-        ///     Returns first event that matches the predicate.
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public ClientEvent GetClientEvent(Func<ClientEvent, bool> predicate)
-        {
-            _clientEventsRWLS.EnterReadLock();
-            try
-            {
-                return _clientEvents.Values.FirstOrDefault(predicate);
-            }
-            finally
-            {
-                _clientEventsRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns all events that matches the predicate.
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public ClientEvent[] GetClientEvents(Func<ClientEvent, bool> predicate)
-        {
-            _clientEventsRWLS.EnterReadLock();
-            try
-            {
-                return _clientEvents.Values.Where(predicate).ToArray();
-            }
-            finally
-            {
-                _clientEventsRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns true if given position is on the street.
-        /// </summary>
-        /// <param name="pos"></param>
-        /// <returns></returns>
-        public bool IsOnStreet(Position pos)
-        {
-            var events = GetClientEvents(a => a.Data.Type == EventType.Street && a.IsInside(pos));
-            return events.Length != 0;
-        }
-
-        /// <summary>
-        ///     Returns a list of events that start with the given path,
-        ///     e.g. "Uladh_main/field_Tir_S_aa/fish_tircho_stream_", to get all
-        ///     fishing events starting with that name.
-        /// </summary>
-        /// <param name="eventPath"></param>
-        /// <returns></returns>
-        public List<ClientEvent> GetMatchingEvents(string eventPath)
-        {
-            var split = eventPath.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
-            if (split.Length != 3)
-                throw new ArgumentException("Invalid event path, expected 3 segments.");
-
-            var result = new List<ClientEvent>();
-            //var eventName = split[2];
-
-            // We either have to look for the name or the path, but it's
-            // technically possible that two areas have events with the same
-            // name, so the path is safer.
-
-            _clientEventsRWLS.EnterReadLock();
-            try
-            {
-                // TODO: Cache
-
-                var events = _clientEvents.Values.Where(a => a.Data.Path.StartsWith(eventPath));
-                result.AddRange(events);
-            }
-            finally
-            {
-                _clientEventsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns id of area at the given coordinates and adjusts it if region is dynamic, or 0 if area wasn't found.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public int GetAreaId(int x, int y)
-        {
-            var areaId = 0;
-
-            foreach (var area in Data.Areas)
-                if (x >= Math.Min(area.X1, area.X2) && x < Math.Max(area.X1, area.X2) &&
-                    y >= Math.Min(area.Y1, area.Y2) && y < Math.Max(area.Y1, area.Y2))
-                    areaId = area.Id;
-
-            return areaId;
-        }
-
-        /// <summary>
-        ///     Updates all entites, removing dead ones, updating visibility, etc.
-        /// </summary>
-        public void UpdateEntities()
-        {
-            RemoveOverdueEntities();
-            UpdateVisibility();
-        }
-
-        /// <summary>
-        ///     Removes expired entities.
-        /// </summary>
-        private void RemoveOverdueEntities()
-        {
-            var now = DateTime.Now;
-
-            // Get all expired entities
-            var disappear = new List<Entity>();
-
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                disappear.AddRange(_creatures.Values.Where(a =>
-                    a.DisappearTime > DateTime.MinValue && a.DisappearTime < now));
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-
-            _itemsRWLS.EnterReadLock();
-            try
-            {
-                disappear.AddRange(
-                    _items.Values.Where(a => a.DisappearTime > DateTime.MinValue && a.DisappearTime < now));
-            }
-            finally
-            {
-                _itemsRWLS.ExitReadLock();
-            }
-
-            _propsRWLS.EnterReadLock();
-            try
-            {
-                disappear.AddRange(
-                    _props.Values.Where(a => a.DisappearTime > DateTime.MinValue && a.DisappearTime < now));
-            }
-            finally
-            {
-                _propsRWLS.ExitReadLock();
-            }
-
-            // Remove them from the region
-            foreach (var entity in disappear)
-                entity.Disappear();
-        }
-
-        /// <summary>
-        ///     Updates visible entities on all clients.
-        /// </summary>
-        private void UpdateVisibility()
-        {
-            lock (_visibilitySyncLock)
-            {
-                _creaturesRWLS.EnterReadLock();
-                try
-                {
-                    foreach (var creature in _creatures.Values)
-                    {
-                        var pc = creature as PlayerCreature;
-
-                        // Only update player creatures
-                        if (pc == null)
-                            continue;
-
-                        pc.LookAround();
-                    }
-                }
-                finally
-                {
-                    _creaturesRWLS.ExitReadLock();
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Returns a list of visible entities, from the view point of creature.
-        /// </summary>
-        /// <param name="creature"></param>
-        public List<Entity> GetVisibleEntities(Creature creature)
-        {
-            var result = new List<Entity>();
-            var pos = creature.GetPosition();
-
-            // Players don't see anything else while they're watching a cutscene.
-            // This automatically (de)spawns entities (from LookAround) while watching.
-            if (creature.Temp.CurrentCutscene == null || !creature.IsPlayer)
-            {
-                _creaturesRWLS.EnterReadLock();
-                try
-                {
-                    result.AddRange(_creatures.Values.Where(a =>
-                        a.GetPosition().InRange(pos, VisibleRange) && !a.Conditions.Has(ConditionsA.Invisible)));
-                }
-                finally
-                {
-                    _creaturesRWLS.ExitReadLock();
-                }
-
-                _itemsRWLS.EnterReadLock();
-                try
-                {
-                    result.AddRange(_items.Values.Where(a => a.GetPosition().InRange(pos, VisibleRange)));
-                }
-                finally
-                {
-                    _itemsRWLS.ExitReadLock();
-                }
-            }
-
-            _propsRWLS.EnterReadLock();
-            try
-            {
-                // Send all props of a region, so they're visible from afar.
-                // While client props are visible as well they don't have to
-                // be sent, the client already has them.
-                //
-                // ^^^^^^^^^^^^^^^^^^ This caused a bug with client prop states
-                // not being set until the prop was used by a player while
-                // the creature was in the region (eg windmill) so we'll count
-                // all props as visible. -- Xcelled
-                //
-                // ^^^^^^^^^^^^^^^^^^ That causes a huge EntitiesAppear packet,
-                // because there are thousands of client props. We only need
-                // the ones that make a difference. Added check for
-                // state and XML. [exec]
-                //
-                // After the MusicQ update (NA242) I thought this might become
-                // a problem, that you would hear the music from the new music
-                // props from across the region, but it seems like the client
-                // filters them, based on the creature that spawned them.
-                // Is the creature not in range, the music stops. [exec]
-
-                result.AddRange(_props.Values.Where(a => a.ServerSide || a.ModifiedClientSide));
-            }
-            finally
-            {
-                _propsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Adds creature to region, sends EntityAppears.
-        /// </summary>
-        public void AddCreature(Creature creature)
-        {
-            //if (creature.Region != Region.Limbo)
-            //	creature.Region.RemoveCreature(creature);
-
-            _creaturesRWLS.EnterWriteLock();
-            try
-            {
-                if (_creatures.ContainsKey(creature.EntityId))
-                    throw new ArgumentException("A creature with id '" + creature.EntityId.ToString("X16") +
-                                                "' already exists.");
-
-                _creatures.Add(creature.EntityId, creature);
-            }
-            finally
-            {
-                _creaturesRWLS.ExitWriteLock();
-            }
-
-            creature.Region = this;
-            creature.Activate(CreatureStates.EverEnteredWorld);
-
-            // Save reference to client if it's mainly controlling this creature.
-            if (creature.Client.Controlling == creature)
-                lock (_clients)
-                {
-                    _clients.Add(creature.Client);
-                }
-
-            // Send appear packets, so there's no delay.
-            Send.EntityAppears(creature);
-
-            // Remove Spawned state, so effect only plays the first time.
-            // This probably only works because of the EntityAppears above,
-            // otherwise the state would be gone by the time LookAround
-            // kicks in. Maybe we need a better solution.
-            creature.State &= ~CreatureStates.Spawned;
-
-            //if (creature.EntityId < MabiId.Npcs)
-            //	Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
-
-            if (creature.IsPlayer)
-            {
-                ChannelServer.Instance.Events.OnPlayerEntersRegion(creature);
-                PlayerEnters.Raise(creature);
-            }
-        }
-
-        /// <summary>
-        ///     Removes creature from region, sends EntityDisappears.
-        /// </summary>
-        public virtual void RemoveCreature(Creature creature)
-        {
-            _creaturesRWLS.EnterWriteLock();
-            try
-            {
-                _creatures.Remove(creature.EntityId);
-            }
-            finally
-            {
-                _creaturesRWLS.ExitWriteLock();
-            }
-
-            // TODO: Technically not required? Handled by LookAround.
-            Send.EntityDisappears(creature);
-
-            if (creature.IsPlayer)
-            {
-                ChannelServer.Instance.Events.OnPlayerLeavesRegion(creature);
-                PlayerLeaves.Raise(creature);
-            }
-
-            // Update visible entities before leaving the region, so the client
-            // gets and up-to-date list.
-            var playerCreature = creature as PlayerCreature;
-            if (playerCreature != null)
-                playerCreature.LookAround();
-
-            creature.Region = Limbo;
-
-            if (creature.Client.Controlling == creature)
-                lock (_clients)
-                {
-                    _clients.Remove(creature.Client);
-                }
-        }
-
-        /// <summary>
-        ///     Returns creature by entityId, or null, if it doesn't exist.
-        /// </summary>
-        public Creature GetCreature(long entityId)
-        {
-            Creature creature;
-
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                _creatures.TryGetValue(entityId, out creature);
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-
-            return creature;
-        }
-
-        /// <summary>
-        ///     Returns true if creature with given entity id exists.
-        /// </summary>
-        /// <param name="entityId"></param>
-        /// <returns></returns>
-        public bool CreatureExists(long entityId)
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                return _creatures.ContainsKey(entityId);
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns list of creatures that match predicate.
-        /// </summary>
-        public ICollection<Creature> GetCreatures(Func<Creature, bool> predicate)
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                return _creatures.Values.Where(predicate).ToList();
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns list of creatures that match predicate.
-        /// </summary>
-        public ICollection<NPC> GetNpcs(Func<NPC, bool> predicate)
-        {
-            var result = new List<NPC>();
-
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                foreach (var creature in _creatures.Values)
-                {
-                    var npc = creature as NPC;
-                    if (npc == null || !predicate(npc))
-                        continue;
-
-                    result.Add(npc);
-                }
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns creature by name, or null, if it doesn't exist.
-        /// </summary>
-        public Creature GetCreature(string name)
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                return _creatures.Values.FirstOrDefault(a => a.Name == name);
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns NPC by entityId, or null, if no NPC with that id exists.
-        /// </summary>
-        public NPC GetNpc(long entityId)
-        {
-            return GetCreature(entityId) as NPC;
-        }
-
-        /// <summary>
-        ///     Returns NPC by entity id, throws SevereViolation exception if
-        ///     NPC doesn't exist.
-        /// </summary>
-        /// <param name="entityId"></param>
-        /// <returns></returns>
-        public NPC GetNpcSafe(long entityId)
-        {
-            var npc = GetNpc(entityId);
-
-            if (npc == null)
-                throw new SevereViolation("Tried to get a nonexistant NPC");
-
-            return npc;
-        }
-
-        /// <summary>
-        ///     Returns creature by entity id, throws SevereViolation exception if
-        ///     creature doesn't exist.
-        /// </summary>
-        /// <param name="entityId"></param>
-        /// <returns></returns>
-        public Creature GetCreatureSafe(long entityId)
-        {
-            var creature = GetCreature(entityId);
-
-            if (creature == null)
-                throw new SevereViolation("Tried to get a nonexistant creature");
-
-            return creature;
-        }
-
-        /// <summary>
-        ///     Returns first player creature with the given name, or null.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public PlayerCreature GetPlayer(string name)
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                return _creatures.Values.FirstOrDefault(a => a is PlayerCreature && a.Name == name) as PlayerCreature;
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns all player creatures in range.
-        /// </summary>
-        /// <param name="pos"></param>
-        /// <param name="range"></param>
-        /// <returns></returns>
-        public List<Creature> GetPlayersInRange(Position pos, int range = VisibleRange)
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                return _creatures.Values.Where(a => a.IsPlayer && a.GetPosition().InRange(pos, range)).ToList();
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns all player creatures in region.
-        /// </summary>
-        /// <returns></returns>
-        public List<Creature> GetAllPlayers()
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                return _creatures.Values.Where(a => a.IsPlayer).ToList();
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns amount of players in region.
-        /// </summary>
-        /// <returns></returns>
-        public int CountPlayers()
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                // Count any player creatures that are directly controlled,
-                // filtering creatures with masters (pets/partners).
-                return _creatures.Values.Count(a => a is PlayerCreature && a.Master == null);
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns all visible creatures in range of entity, excluding itself.
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="range"></param>
-        /// <returns></returns>
-        public ICollection<Creature> GetVisibleCreaturesInRange(Entity entity, int range = VisibleRange)
-        {
-            return GetCreatures(a =>
-                a != entity && a.GetPosition().InRange(entity.GetPosition(), range) &&
-                !a.Conditions.Has(ConditionsA.Invisible));
-        }
-
-        /// <summary>
-        ///     Spawns prop, sends EntityAppears.
-        /// </summary>
-        public void AddProp(Prop prop)
-        {
-            // Generate prop id if it doesn't have one yet.
-            if (prop.EntityId == 0)
-                prop.EntityId = GetNewPropEntityId(prop);
-
-            _propsRWLS.EnterWriteLock();
-            try
-            {
-                if (_props.ContainsKey(prop.EntityId))
-                    throw new ArgumentException(
-                        "A prop with id '" + prop.EntityId.ToString("X16") + "' already exists.");
-
-                _props.Add(prop.EntityId, prop);
-            }
-            finally
-            {
-                _propsRWLS.ExitWriteLock();
-            }
-
-            prop.Region = this;
-
-            // Add collisions
-            Collisions.Add(prop);
-
-            // Props often times need to be visible on the client immediately,
-            // to apply additional effects for example, so we're gonna
-            // update the visibility here.
-            UpdateVisibility();
-        }
-
-        /// <summary>
-        ///     Generates entity id for prop.
-        /// </summary>
-        /// <param name="prop"></param>
-        /// <returns></returns>
-        private long GetNewPropEntityId(Prop prop)
-        {
-            var regionId = Id;
-            var areaId = GetAreaId((int) prop.Info.X, (int) prop.Info.Y);
-            var propId = 0;
-
-            lock (_propIds)
-            {
-                if (!_propIds.ContainsKey(areaId))
-                    _propIds[areaId] = 1;
-
-                propId = _propIds[areaId]++;
-
-                if (propId >= ushort.MaxValue)
-                    throw new Exception("Max prop id reached in region '" + regionId + "', area '" + areaId + "'.");
-            }
-
-            var result = MabiId.ServerProps;
-            result |= (long) regionId << 32;
-            result |= (long) areaId << 16;
-            result |= (ushort) propId;
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Despawns prop, sends EntityDisappears.
-        /// </summary>
-        /// <param name="prop"></param>
-        /// <returns></returns>
-        public void RemoveProp(Prop prop)
-        {
-            if (!prop.ServerSide)
-            {
-                Log.Error("RemoveProp: Client side props can't be removed.");
-                prop.DisappearTime = DateTime.MinValue;
-                return;
-            }
-
-            _propsRWLS.EnterWriteLock();
-            try
-            {
-                _props.Remove(prop.EntityId);
-            }
-            finally
-            {
-                _propsRWLS.ExitWriteLock();
-            }
-
-            // Remove collisions
-            Collisions.Remove(prop.EntityId);
-
-            Send.PropDisappears(prop);
-
-            prop.Region = Limbo;
-        }
-
-        /// <summary>
-        ///     Returns prop or null.
-        /// </summary>
-        /// <param name="entityId"></param>
-        /// <returns></returns>
-        public Prop GetProp(long entityId)
-        {
-            Prop result;
-
-            _propsRWLS.EnterReadLock();
-            try
-            {
-                _props.TryGetValue(entityId, out result);
-            }
-            finally
-            {
-                _propsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns first prop that matches the predicate, or null if
-        ///     no matching props were found.
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public Prop GetProp(Func<Prop, bool> predicate)
-        {
-            Prop result;
-
-            _propsRWLS.EnterReadLock();
-            try
-            {
-                result = _props.Values.FirstOrDefault(predicate);
-            }
-            finally
-            {
-                _propsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns list of all props that match the predicate.
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public IList<Prop> GetProps(Func<Prop, bool> predicate)
-        {
-            var result = new List<Prop>();
-
-            _propsRWLS.EnterReadLock();
-            try
-            {
-                result.AddRange(_props.Values.Where(predicate));
-            }
-            finally
-            {
-                _propsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Adds item, sends EntityAppears.
-        /// </summary>
-        /// <remarks>
-        ///     Use Item's Drop method to drop items in a region,
-        ///     unless you know what you're doing.
-        /// </remarks>
-        /// <param name="item"></param>
-        public void AddItem(Item item)
-        {
-            _itemsRWLS.EnterWriteLock();
-            try
-            {
-                if (_items.ContainsKey(item.EntityId))
-                    throw new ArgumentException("An item with id '" + item.EntityId.ToString("X16") +
-                                                "' already exists.");
-
-                _items.Add(item.EntityId, item);
-            }
-            finally
-            {
-                _itemsRWLS.ExitWriteLock();
-            }
-
-            item.Region = this;
-
-            Send.EntityAppears(item);
-        }
-
-        /// <summary>
-        ///     Despawns item, sends EntityDisappears.
-        /// </summary>
-        /// <param name="item"></param>
-        public void RemoveItem(Item item)
-        {
-            _itemsRWLS.EnterWriteLock();
-            try
-            {
-                _items.Remove(item.EntityId);
-            }
-            finally
-            {
-                _itemsRWLS.ExitWriteLock();
-            }
-
-            Send.EntityDisappears(item);
-
-            item.Region = Limbo;
-        }
-
-        /// <summary>
-        ///     Returns item or null.
-        /// </summary>
-        /// <param name="entityId"></param>
-        /// <returns></returns>
-        public Item GetItem(long entityId)
-        {
-            Item result;
-
-            _itemsRWLS.EnterReadLock();
-            try
-            {
-                _items.TryGetValue(entityId, out result);
-            }
-            finally
-            {
-                _itemsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns first item that matches predicate, or null if none were found.
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public Item GetItem(Func<Item, bool> predicate)
-        {
-            Item result;
-
-            _itemsRWLS.EnterReadLock();
-            try
-            {
-                result = _items.Values.FirstOrDefault(predicate);
-            }
-            finally
-            {
-                _itemsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns a list of all items on the floor.
-        /// </summary>
-        /// <returns></returns>
-        public List<Item> GetAllItems()
-        {
-            List<Item> result;
-
-            _itemsRWLS.EnterReadLock();
-            try
-            {
-                result = new List<Item>(_items.Values);
-            }
-            finally
-            {
-                _itemsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns new list of all entities within range of source.
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="range">Leave at default for visible range.</param>
-        /// <returns></returns>
-        public List<Entity> GetEntitiesInRange(Entity source, int range = -1)
-        {
-            if (range < 0)
-                range = VisibleRange;
-
-            var result = new List<Entity>();
-
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                result.AddRange(_creatures.Values.Where(a => a.GetPosition().InRange(source.GetPosition(), range)));
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-
-            _itemsRWLS.EnterReadLock();
-            try
-            {
-                result.AddRange(_items.Values.Where(a => a.GetPosition().InRange(source.GetPosition(), range)));
-            }
-            finally
-            {
-                _itemsRWLS.ExitReadLock();
-            }
-
-            _propsRWLS.EnterReadLock();
-            try
-            {
-                // All props are visible, but not all of them are in range.
-                result.AddRange(_props.Values.Where(a => a.GetPosition().InRange(source.GetPosition(), range)));
-            }
-            finally
-            {
-                _propsRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns new list of all creatures within range of position.
-        /// </summary>
-        /// <param name="pos"></param>
-        /// <param name="range"></param>
-        /// <returns></returns>
-        public List<Creature> GetCreaturesInRange(Position pos, int range)
-        {
-            var result = new List<Creature>();
-
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                result.AddRange(_creatures.Values.Where(a => a.GetPosition().InRange(pos, range)));
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns new list of all creatures within the specified polygon.
-        /// </summary>
-        /// <param name="points"></param>
-        /// <returns></returns>
-        public List<Creature> GetCreaturesInPolygon(params Point[] points)
-        {
-            var result = new List<Creature>();
-
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                result.AddRange(_creatures.Values.Where(a => a.GetPosition().InPolygon(points)));
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Gets creatures within a rectangle of specified radian rotation,
-        ///     length, and width.
-        /// </summary>
-        /// <param name="startPosition"></param>
-        /// <param name="radianRotation"></param>
-        /// <param name="rectLength"></param>
-        /// <param name="rectWidth"></param>
-        /// <returns></returns>
-        public List<Creature> GetCreaturesInRectangle(Position startPosition, double radianRotation, int rectLength,
-            int rectWidth)
-        {
-            Position discard;
-            return GetCreaturesInRectangle(startPosition, radianRotation, rectLength, rectWidth, out discard);
-        }
-
-        /// <summary>
-        ///     Gets creatures within a rectangle of specified radian rotation,
-        ///     length, and width. Outs the position of the opposite end of the
-        ///     rectangle.
-        /// </summary>
-        /// <param name="startPosition"></param>
-        /// <param name="radianRotation"></param>
-        /// <param name="rectLength"></param>
-        /// <param name="rectWidth"></param>
-        /// <param name="endPosition"></param>
-        /// <returns></returns>
-        public List<Creature> GetCreaturesInRectangle(Position startPosition, double radianRotation, int rectLength,
-            int rectWidth, out Position endPosition)
-        {
-            var radius = rectWidth / 2;
-
-            // Position at the opposite end of the rectangle from the startPosition
-            endPosition = startPosition.GetRelative(radianRotation, rectLength);
-
-            var startPoint = new Point(startPosition.X, startPosition.Y);
-            var endPoint = new Point(endPosition.X, endPosition.Y);
-
-            // Calculate the diagonal distance from the starting point to each of the rectangle's points on the opposite side
-            var pointDist = Math.Sqrt(rectLength * rectLength + radius * radius);
-
-            // Rotation angle used to place the points of [pointDist] distance away in the correct position to form a rectangle
-            // One negative and one positive rotation of a point [pointDist] distance away will provide two points of the rectangle
-            var rotationAngle = Math.Asin(radius / pointDist);
-
-            // Create a point [pointDist] away from the starting point, and rotate it both positively and negatively by [rotationAngle]
-            // to generate two points on one side of the rectangle
-            var posTemp1 = startPosition.GetRelative(endPosition, (int) (pointDist - rectLength));
-            var pointTemp1 = new Point(posTemp1.X, posTemp1.Y);
-            var p1 = RotatePoint(pointTemp1, startPoint, rotationAngle);
-            var p2 = RotatePoint(pointTemp1, startPoint, rotationAngle * -1);
-
-            // Same method as points 1 and 2, starting from the end point instead to create two points on the opposite side
-            var posTemp2 = endPosition.GetRelative(startPosition, (int) (pointDist - rectLength));
-            var pointTemp2 = new Point(posTemp2.X, posTemp2.Y);
-            var p3 = RotatePoint(pointTemp2, endPoint, rotationAngle);
-            var p4 = RotatePoint(pointTemp2, endPoint, rotationAngle * -1);
-
-            // Get creatures within the four points calculated
-            var creatureList = GetCreaturesInPolygon(p1, p2, p3, p4);
-
-            return creatureList;
-        }
-
-        /// <summary>
-        ///     Rotates point around pivot.
-        /// </summary>
-        /// <param name="point">Point to rotate.</param>
-        /// <param name="pivot">Center of the rotation.</param>
-        /// <param name="radians">Angle to rotate by in radians.</param>
-        /// <returns></returns>
-        private Point RotatePoint(Point point, Point pivot, double radians)
-        {
-            var cosTheta = Math.Cos(radians);
-            var sinTheta = Math.Sin(radians);
-
-            var x = (int) (cosTheta * (point.X - pivot.X) - sinTheta * (point.Y - pivot.Y) + pivot.X);
-            var y = (int) (sinTheta * (point.X - pivot.X) + cosTheta * (point.Y - pivot.Y) + pivot.Y);
-
-            return new Point(x, y);
-        }
-
-        /// <summary>
-        ///     Removes all scripted entites from this region.
-        /// </summary>
-        public void RemoveScriptedEntities()
-        {
-            // Get NPCs
-            var npcs = new List<Creature>();
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                npcs.AddRange(_creatures.Values.Where(a => a is NPC));
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-
-            // Get server side props
-            var props = new List<Prop>();
-            _propsRWLS.EnterReadLock();
-            try
-            {
-                props.AddRange(_props.Values.Where(a => a.ServerSide));
-            }
-            finally
-            {
-                _propsRWLS.ExitReadLock();
-            }
-
-            // Remove all
-            foreach (var npc in npcs)
-            {
-                npc.Dispose();
-                RemoveCreature(npc);
-            }
-            foreach (var prop in props) RemoveProp(prop);
-        }
-
-        /// <summary>
-        ///     Activates AIs in range of the movement path.
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        public void ActivateAis(Creature creature, Position from, Position to)
-        {
-            // Bounding rectangle
-            var minX = Math.Min(from.X, to.X) - VisibleRange;
-            var minY = Math.Min(from.Y, to.Y) - VisibleRange;
-            var maxX = Math.Max(from.X, to.X) + VisibleRange;
-            var maxY = Math.Max(from.Y, to.Y) + VisibleRange;
-
-            // Activation
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                foreach (var npc in _creatures.Values.OfType<NPC>())
-                {
-                    if (npc.AI == null)
-                        continue;
-
-                    var pos = npc.GetPosition();
-                    if (!(pos.X >= minX && pos.X <= maxX && pos.Y >= minY && pos.Y <= maxY))
-                        continue;
-
-                    var speed = creature.GetSpeed();
-                    if (speed < 1)
-                        speed = 1;
-
-                    var time = from.GetDistance(to) / speed * 1000;
-
-                    npc.AI.Activate(time);
-                }
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns amount of creatures of race that are targetting target
-        ///     in this region.
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="raceId"></param>
-        /// <returns></returns>
-        public int CountAggro(Creature target, int raceId)
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                return _creatures.Values.OfType<NPC>().Count(npc =>
-                    !npc.IsDead &&
-                    npc.AI != null &&
-                    npc.AI.State == AiScript.AiState.Aggro &&
-                    npc.RaceId == raceId &&
-                    npc.Target == target
-                );
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Returns amount of creatures of race that are targetting target
-        ///     in this region.
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        public int CountAggro(Creature target)
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                return _creatures.Values.OfType<NPC>().Count(npc =>
-                    !npc.IsDead &&
-                    npc.AI != null &&
-                    npc.AI.State == AiScript.AiState.Aggro &&
-                    npc.Target == target
-                );
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Adds all good NPCs of region to list.
-        /// </summary>
-        /// <param name="list"></param>
-        public void GetAllGoodNpcs(ref List<Creature> list)
-        {
-            _creaturesRWLS.EnterReadLock();
-            try
-            {
-                list.AddRange(_creatures.Values.Where(a => a.Has(CreatureStates.GoodNpc) && a is NPC));
-            }
-            finally
-            {
-                _creaturesRWLS.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        ///     Broadcasts packet in region.
-        /// </summary>
-        public virtual void Broadcast(Packet packet)
-        {
-            lock (_clients)
-            {
-                foreach (var client in _clients)
-                    client.Send(packet);
-            }
-        }
-
-        /// <summary>
-        ///     Broadcasts packet to all creatures in range of source.
-        /// </summary>
-        public virtual void Broadcast(Packet packet, Entity source, bool sendToSource = true, int range = -1)
-        {
-            if (range < 0)
-                range = VisibleRange;
-
-            var pos = source.GetPosition();
-
-            lock (_clients)
-            {
-                foreach (var client in _clients)
-                {
-                    if (!client.Controlling.GetPosition().InRange(pos, range))
-                        continue;
-
-                    if (client.Controlling == source && !sendToSource)
-                        continue;
-
-                    client.Send(packet);
-                }
-            }
-        }
-    }
-
-    public enum RegionMode
-    {
-        /// <summary>
-        ///     Kept in the world permanently
-        /// </summary>
-        Permanent,
-
-        /// <summary>
-        ///     Region gets removed once the last player has left.
-        /// </summary>
-        RemoveWhenEmpty
-    }
-
-    public class Limbo : Region
-    {
-        public Limbo()
-            : base(0)
-        {
-        }
-
-        public override void Broadcast(Packet packet)
-        {
-            Log.Warning("Broadcast in Limbo.");
-            Log.Debug(Environment.StackTrace);
-        }
-
-        public override void Broadcast(Packet packet, Entity source, bool sendToSource = true, int range = -1)
-        {
-            Log.Warning("Broadcast in Limbo from source.");
-            Log.Debug(Environment.StackTrace);
-        }
-    }
+	public abstract class Region
+	{
+		// TODO: Data?
+		public const int VisibleRange = 3000;
+
+		public static readonly Region Limbo = new Limbo();
+
+		protected ReaderWriterLockSlim _creaturesRWLS, _propsRWLS, _clientEventsRWLS, _itemsRWLS;
+		private Dictionary<int, int> _propIds;
+
+		protected Dictionary<long, Creature> _creatures;
+		protected Dictionary<long, Prop> _props;
+		protected Dictionary<long, ClientEvent> _clientEvents;
+		protected Dictionary<long, Item> _items;
+
+		protected HashSet<ChannelClient> _clients;
+
+		private object _visibilitySyncLock = new object();
+
+		public RegionInfoData Data { get; protected set; }
+
+		/// <summary>
+		/// Region's name
+		/// </summary>
+		public string Name { get; protected set; }
+
+		/// <summary>
+		/// Region's id
+		/// </summary>
+		public int Id { get; protected set; }
+
+		/// <summary>
+		/// Manager for blocking objects in the region.
+		/// </summary>
+		public RegionCollision Collisions { get; protected set; }
+
+		/// <summary>
+		/// Returns true if region is a dynamic region, judged by its id.
+		/// </summary>
+		public bool IsDynamic { get { return Math2.Between(this.Id, MabiId.DynamicRegions, MabiId.DynamicRegions + 5000); } }
+
+		/// <summary>
+		/// Returns true if region is a dungeon region, judged by its id.
+		/// </summary>
+		public bool IsDungeon { get { return Math2.Between(this.Id, MabiId.DungeonRegions, MabiId.DungeonRegions + 10000); } }
+
+		/// <summary>
+		/// Returns true if region is temporary, i.e. a dungeon or a dynamic region.
+		/// </summary>
+		public bool IsTemp { get { return (this.IsDynamic || this.IsDungeon); } }
+
+		/// <summary>
+		/// Returns true if region is an indoor region (e.g. houses).
+		/// </summary>
+		public bool IsIndoor { get; protected set; }
+
+		/// <summary>
+		/// Variable manager containing region's properties.
+		/// </summary>
+		public VariableManager Properties { get; private set; }
+
+		/// <summary>
+		/// Raised when a player gets added to the region.
+		/// </summary>
+		public event Action<Creature> PlayerEnters;
+
+		/// <summary>
+		/// Raised when a player is removed from the region.
+		/// </summary>
+		public event Action<Creature> PlayerLeaves;
+
+		/// <summary>
+		/// Raised when a player was added to the region.
+		/// </summary>
+		/// <remarks>
+		/// Called after all is said and done, and the player is officially
+		/// in this region, unlike PlayerEnters, which is called during the
+		/// warp process, before informing the client about the successful
+		/// warp.
+		/// </remarks>
+		public event Action<Creature, int> PlayerEntered;
+		public void OnPlayerEntered(Creature creature, int prevRegionId) { this.PlayerEntered.Raise(creature, prevRegionId); }
+
+		/// <summary>
+		/// Initializes class.
+		/// </summary>
+		/// <param name="regionId"></param>
+		protected Region(int regionId)
+		{
+			_creaturesRWLS = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+			_propsRWLS = new ReaderWriterLockSlim();
+			_clientEventsRWLS = new ReaderWriterLockSlim();
+			_itemsRWLS = new ReaderWriterLockSlim();
+
+			_propIds = new Dictionary<int, int>();
+
+			this.Id = regionId;
+
+			_creatures = new Dictionary<long, Creature>();
+			_props = new Dictionary<long, Prop>();
+			_clientEvents = new Dictionary<long, ClientEvent>();
+			_items = new Dictionary<long, Item>();
+
+			_clients = new HashSet<ChannelClient>();
+
+			this.Collisions = new RegionCollision();
+
+			this.Properties = new VariableManager();
+		}
+
+		/// <summary>
+		/// Adds all props found in the client for this region and creates a list
+		/// of areas.
+		/// </summary>
+		protected void InitializeFromData()
+		{
+			if (this.Data == null || this.Data.Areas == null)
+				return;
+
+			this.LoadProps();
+			this.LoadClientEvents();
+		}
+
+		/// <summary>
+		/// Adds all props found in the client for this region.
+		/// </summary>
+		protected void LoadProps()
+		{
+			foreach (var areaData in this.Data.Areas)
+			{
+				foreach (var propData in areaData.Props.Values)
+				{
+					var prop = new Prop(propData, this.Id, this.Data.Name, areaData.Name);
+
+					this.AddProp(prop);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Adds all props found in the client for this region.
+		/// </summary>
+		protected void LoadClientEvents()
+		{
+			foreach (var areaData in this.Data.Areas)
+			{
+				foreach (var clientEventData in areaData.Events.Values)
+				{
+					var clientEvent = new ClientEvent(clientEventData, this.Data.Name, areaData.Name);
+					this.AddClientEvent(clientEvent);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns event by id or null if it doesn't exist.
+		/// </summary>
+		/// <param name="eventId"></param>
+		/// <returns></returns>
+		public ClientEvent GetClientEvent(long eventId)
+		{
+			ClientEvent result;
+
+			_clientEventsRWLS.EnterReadLock();
+			try
+			{
+				_clientEvents.TryGetValue(eventId, out result);
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns event by name or null if it doesn't exist.
+		/// </summary>
+		/// <param name="eventId"></param>
+		/// <returns></returns>
+		public ClientEvent GetClientEvent(string eventName)
+		{
+			return this.GetClientEvent(a => a.Data.Name == eventName);
+		}
+
+		/// <summary>
+		/// Adds client event to region.
+		/// </summary>
+		/// <param name="clientEvent"></param>
+		private void AddClientEvent(ClientEvent clientEvent)
+		{
+			_clientEventsRWLS.EnterWriteLock();
+			try
+			{
+				if (_clientEvents.ContainsKey(clientEvent.EntityId))
+					throw new ArgumentException("A client event with id '" + clientEvent.EntityId.ToString("X16") + "' already exists.");
+
+				_clientEvents.Add(clientEvent.EntityId, clientEvent);
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitWriteLock();
+			}
+
+			// Add collisions
+			this.Collisions.Add(clientEvent);
+		}
+
+		/// <summary>
+		/// Returns first event that matches the predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public ClientEvent GetClientEvent(Func<ClientEvent, bool> predicate)
+		{
+			_clientEventsRWLS.EnterReadLock();
+			try
+			{
+				return _clientEvents.Values.FirstOrDefault(predicate);
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns all events that matches the predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public ClientEvent[] GetClientEvents(Func<ClientEvent, bool> predicate)
+		{
+			_clientEventsRWLS.EnterReadLock();
+			try
+			{
+				return _clientEvents.Values.Where(predicate).ToArray();
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns true if given position is on the street.
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <returns></returns>
+		public bool IsOnStreet(Position pos)
+		{
+			var events = this.GetClientEvents(a => a.Data.Type == EventType.Street && a.IsInside(pos));
+			return (events.Length != 0);
+		}
+
+		/// <summary>
+		/// Returns a list of events that start with the given path,
+		/// e.g. "Uladh_main/field_Tir_S_aa/fish_tircho_stream_", to get all
+		/// fishing events starting with that name.
+		/// </summary>
+		/// <param name="eventPath"></param>
+		/// <returns></returns>
+		public List<ClientEvent> GetMatchingEvents(string eventPath)
+		{
+			var split = eventPath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+			if (split.Length != 3)
+				throw new ArgumentException("Invalid event path, expected 3 segments.");
+
+			var result = new List<ClientEvent>();
+			//var eventName = split[2];
+
+			// We either have to look for the name or the path, but it's
+			// technically possible that two areas have events with the same
+			// name, so the path is safer.
+
+			_clientEventsRWLS.EnterReadLock();
+			try
+			{
+				// TODO: Cache
+
+				var events = _clientEvents.Values.Where(a => a.Data.Path.StartsWith(eventPath));
+				result.AddRange(events);
+			}
+			finally
+			{
+				_clientEventsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns id of area at the given coordinates and adjusts it if region is dynamic, or 0 if area wasn't found.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public int GetAreaId(int x, int y)
+		{
+			var areaId = 0;
+
+			foreach (var area in this.Data.Areas)
+			{
+				if (x >= Math.Min(area.X1, area.X2) && x < Math.Max(area.X1, area.X2) && y >= Math.Min(area.Y1, area.Y2) && y < Math.Max(area.Y1, area.Y2))
+					areaId = area.Id;
+			}
+
+			return areaId;
+		}
+
+		/// <summary>
+		/// Updates all entites, removing dead ones, updating visibility, etc.
+		/// </summary>
+		public void UpdateEntities()
+		{
+			this.RemoveOverdueEntities();
+			this.UpdateVisibility();
+		}
+
+		/// <summary>
+		/// Removes expired entities. 
+		/// </summary>
+		private void RemoveOverdueEntities()
+		{
+			var now = DateTime.Now;
+
+			// Get all expired entities
+			var disappear = new List<Entity>();
+
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				disappear.AddRange(_creatures.Values.Where(a => a.DisappearTime > DateTime.MinValue && a.DisappearTime < now));
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+
+			_itemsRWLS.EnterReadLock();
+			try
+			{
+				disappear.AddRange(_items.Values.Where(a => a.DisappearTime > DateTime.MinValue && a.DisappearTime < now));
+			}
+			finally
+			{
+				_itemsRWLS.ExitReadLock();
+			}
+
+			_propsRWLS.EnterReadLock();
+			try
+			{
+				disappear.AddRange(_props.Values.Where(a => a.DisappearTime > DateTime.MinValue && a.DisappearTime < now));
+			}
+			finally
+			{
+				_propsRWLS.ExitReadLock();
+			}
+
+			// Remove them from the region
+			foreach (var entity in disappear)
+				entity.Disappear();
+		}
+
+		/// <summary>
+		/// Updates visible entities on all clients.
+		/// </summary>
+		private void UpdateVisibility()
+		{
+			lock (_visibilitySyncLock)
+			{
+				_creaturesRWLS.EnterReadLock();
+				try
+				{
+					foreach (var creature in _creatures.Values)
+					{
+						var pc = creature as PlayerCreature;
+
+						// Only update player creatures
+						if (pc == null)
+							continue;
+
+						pc.LookAround();
+					}
+				}
+				finally
+				{
+					_creaturesRWLS.ExitReadLock();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns a list of visible entities, from the view point of creature.
+		/// </summary>
+		/// <param name="creature"></param>
+		public List<Entity> GetVisibleEntities(Creature creature)
+		{
+			var result = new List<Entity>();
+			var pos = creature.GetPosition();
+
+			// Players don't see anything else while they're watching a cutscene.
+			// This automatically (de)spawns entities (from LookAround) while watching.
+			if (creature.Temp.CurrentCutscene == null || !creature.IsPlayer)
+			{
+				_creaturesRWLS.EnterReadLock();
+				try
+				{
+					result.AddRange(_creatures.Values.Where(a => a.GetPosition().InRange(pos, VisibleRange) && !a.Conditions.Has(ConditionsA.Invisible)));
+				}
+				finally
+				{
+					_creaturesRWLS.ExitReadLock();
+				}
+
+				_itemsRWLS.EnterReadLock();
+				try
+				{
+					result.AddRange(_items.Values.Where(a => a.GetPosition().InRange(pos, VisibleRange)));
+				}
+				finally
+				{
+					_itemsRWLS.ExitReadLock();
+				}
+			}
+
+			_propsRWLS.EnterReadLock();
+			try
+			{
+				// Send all props of a region, so they're visible from afar.
+				// While client props are visible as well they don't have to
+				// be sent, the client already has them.
+				//
+				// ^^^^^^^^^^^^^^^^^^ This caused a bug with client prop states
+				// not being set until the prop was used by a player while
+				// the creature was in the region (eg windmill) so we'll count
+				// all props as visible. -- Xcelled
+				//
+				// ^^^^^^^^^^^^^^^^^^ That causes a huge EntitiesAppear packet,
+				// because there are thousands of client props. We only need
+				// the ones that make a difference. Added check for
+				// state and XML. [exec]
+				// 
+				// After the MusicQ update (NA242) I thought this might become
+				// a problem, that you would hear the music from the new music
+				// props from across the region, but it seems like the client
+				// filters them, based on the creature that spawned them.
+				// Is the creature not in range, the music stops. [exec]
+
+				result.AddRange(_props.Values.Where(a => a.ServerSide || a.ModifiedClientSide));
+			}
+			finally
+			{
+				_propsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Adds creature to region, sends EntityAppears.
+		/// </summary>
+		public void AddCreature(Creature creature)
+		{
+			//if (creature.Region != Region.Limbo)
+			//	creature.Region.RemoveCreature(creature);
+
+			_creaturesRWLS.EnterWriteLock();
+			try
+			{
+				if (_creatures.ContainsKey(creature.EntityId))
+					throw new ArgumentException("A creature with id '" + creature.EntityId.ToString("X16") + "' already exists.");
+
+				_creatures.Add(creature.EntityId, creature);
+			}
+			finally
+			{
+				_creaturesRWLS.ExitWriteLock();
+			}
+
+			creature.Region = this;
+			creature.Activate(CreatureStates.EverEnteredWorld);
+
+			// Save reference to client if it's mainly controlling this creature.
+			if (creature.Client.Controlling == creature)
+			{
+				lock (_clients)
+					_clients.Add(creature.Client);
+			}
+
+			// Send appear packets, so there's no delay.
+			Send.EntityAppears(creature);
+
+			// Remove Spawned state, so effect only plays the first time.
+			// This probably only works because of the EntityAppears above,
+			// otherwise the state would be gone by the time LookAround
+			// kicks in. Maybe we need a better solution.
+			creature.State &= ~CreatureStates.Spawned;
+
+			//if (creature.EntityId < MabiId.Npcs)
+			//	Log.Status("Creatures currently in region {0}: {1}", this.Id, _creatures.Count);
+
+			if (creature.IsPlayer)
+			{
+				ChannelServer.Instance.Events.OnPlayerEntersRegion(creature);
+				this.PlayerEnters.Raise(creature);
+			}
+		}
+
+		/// <summary>
+		/// Removes creature from region, sends EntityDisappears.
+		/// </summary>
+		public virtual void RemoveCreature(Creature creature)
+		{
+			_creaturesRWLS.EnterWriteLock();
+			try
+			{
+				_creatures.Remove(creature.EntityId);
+			}
+			finally
+			{
+				_creaturesRWLS.ExitWriteLock();
+			}
+
+			// TODO: Technically not required? Handled by LookAround.
+			Send.EntityDisappears(creature);
+
+			if (creature.IsPlayer)
+			{
+				ChannelServer.Instance.Events.OnPlayerLeavesRegion(creature);
+				this.PlayerLeaves.Raise(creature);
+			}
+
+			// Update visible entities before leaving the region, so the client
+			// gets and up-to-date list.
+			var playerCreature = creature as PlayerCreature;
+			if (playerCreature != null)
+				playerCreature.LookAround();
+
+			creature.Region = Region.Limbo;
+
+			if (creature.Client.Controlling == creature)
+				lock (_clients)
+					_clients.Remove(creature.Client);
+		}
+
+		/// <summary>
+		/// Returns creature by entityId, or null, if it doesn't exist.
+		/// </summary>
+		public Creature GetCreature(long entityId)
+		{
+			Creature creature;
+
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				_creatures.TryGetValue(entityId, out creature);
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+
+			return creature;
+		}
+
+		/// <summary>
+		/// Returns true if creature with given entity id exists.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		public bool CreatureExists(long entityId)
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				return _creatures.ContainsKey(entityId);
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns list of creatures that match predicate.
+		/// </summary>
+		public ICollection<Creature> GetCreatures(Func<Creature, bool> predicate)
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				return _creatures.Values.Where(predicate).ToList();
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns list of creatures that match predicate.
+		/// </summary>
+		public ICollection<NPC> GetNpcs(Func<NPC, bool> predicate)
+		{
+			var result = new List<NPC>();
+
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				foreach (var creature in _creatures.Values)
+				{
+					var npc = creature as NPC;
+					if (npc == null || !predicate(npc))
+						continue;
+
+					result.Add(npc);
+				}
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns creature by name, or null, if it doesn't exist.
+		/// </summary>
+		public Creature GetCreature(string name)
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				return _creatures.Values.FirstOrDefault(a => a.Name == name);
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns NPC by entityId, or null, if no NPC with that id exists.
+		/// </summary>
+		public NPC GetNpc(long entityId)
+		{
+			return this.GetCreature(entityId) as NPC;
+		}
+
+		/// <summary>
+		/// Returns NPC by entity id, throws SevereViolation exception if
+		/// NPC doesn't exist.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		public NPC GetNpcSafe(long entityId)
+		{
+			var npc = this.GetNpc(entityId);
+
+			if (npc == null)
+				throw new SevereViolation("Tried to get a nonexistant NPC");
+
+			return npc;
+		}
+
+		/// <summary>
+		/// Returns creature by entity id, throws SevereViolation exception if
+		/// creature doesn't exist.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		public Creature GetCreatureSafe(long entityId)
+		{
+			var creature = this.GetCreature(entityId);
+
+			if (creature == null)
+				throw new SevereViolation("Tried to get a nonexistant creature");
+
+			return creature;
+		}
+
+		/// <summary>
+		/// Returns first player creature with the given name, or null.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public PlayerCreature GetPlayer(string name)
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				return _creatures.Values.FirstOrDefault(a => a is PlayerCreature && a.Name == name) as PlayerCreature;
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns all player creatures in range.
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <param name="range"></param>
+		/// <returns></returns>
+		public List<Creature> GetPlayersInRange(Position pos, int range = VisibleRange)
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				return _creatures.Values.Where(a => a.IsPlayer && a.GetPosition().InRange(pos, range)).ToList();
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns all player creatures in region.
+		/// </summary>
+		/// <returns></returns>
+		public List<Creature> GetAllPlayers()
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				return _creatures.Values.Where(a => a.IsPlayer).ToList();
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns amount of players in region.
+		/// </summary>
+		/// <returns></returns>
+		public int CountPlayers()
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				// Count any player creatures that are directly controlled,
+				// filtering creatures with masters (pets/partners).
+				return _creatures.Values.Count(a => a is PlayerCreature && a.Master == null);
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns all visible creatures in range of entity, excluding itself.
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <param name="range"></param>
+		/// <returns></returns>
+		public ICollection<Creature> GetVisibleCreaturesInRange(Entity entity, int range = VisibleRange)
+		{
+			return this.GetCreatures(a => a != entity && a.GetPosition().InRange(entity.GetPosition(), range) && !a.Conditions.Has(ConditionsA.Invisible));
+		}
+
+		/// <summary>
+		///  Spawns prop, sends EntityAppears.
+		/// </summary>
+		public void AddProp(Prop prop)
+		{
+			// Generate prop id if it doesn't have one yet.
+			if (prop.EntityId == 0)
+				prop.EntityId = this.GetNewPropEntityId(prop);
+
+			_propsRWLS.EnterWriteLock();
+			try
+			{
+				if (_props.ContainsKey(prop.EntityId))
+					throw new ArgumentException("A prop with id '" + prop.EntityId.ToString("X16") + "' already exists.");
+
+				_props.Add(prop.EntityId, prop);
+			}
+			finally
+			{
+				_propsRWLS.ExitWriteLock();
+			}
+
+			prop.Region = this;
+
+			// Add collisions
+			this.Collisions.Add(prop);
+
+			// Props often times need to be visible on the client immediately,
+			// to apply additional effects for example, so we're gonna
+			// update the visibility here.
+			this.UpdateVisibility();
+		}
+
+		/// <summary>
+		/// Generates entity id for prop.
+		/// </summary>
+		/// <param name="prop"></param>
+		/// <returns></returns>
+		private long GetNewPropEntityId(Prop prop)
+		{
+			var regionId = this.Id;
+			var areaId = this.GetAreaId((int)prop.Info.X, (int)prop.Info.Y);
+			var propId = 0;
+
+			lock (_propIds)
+			{
+				if (!_propIds.ContainsKey(areaId))
+					_propIds[areaId] = 1;
+
+				propId = _propIds[areaId]++;
+
+				if (propId >= ushort.MaxValue)
+					throw new Exception("Max prop id reached in region '" + regionId + "', area '" + areaId + "'.");
+			}
+
+			var result = MabiId.ServerProps;
+			result |= (long)regionId << 32;
+			result |= (long)areaId << 16;
+			result |= (ushort)propId;
+
+			return result;
+		}
+
+		/// <summary>
+		/// Despawns prop, sends EntityDisappears.
+		/// </summary>
+		/// <param name="prop"></param>
+		/// <returns></returns>
+		public void RemoveProp(Prop prop)
+		{
+			if (!prop.ServerSide)
+			{
+				Log.Error("RemoveProp: Client side props can't be removed.");
+				prop.DisappearTime = DateTime.MinValue;
+				return;
+			}
+
+			_propsRWLS.EnterWriteLock();
+			try
+			{
+				_props.Remove(prop.EntityId);
+			}
+			finally
+			{
+				_propsRWLS.ExitWriteLock();
+			}
+
+			// Remove collisions
+			this.Collisions.Remove(prop.EntityId);
+
+			Send.PropDisappears(prop);
+
+			prop.Region = Region.Limbo;
+		}
+
+		/// <summary>
+		/// Returns prop or null.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		public Prop GetProp(long entityId)
+		{
+			Prop result;
+
+			_propsRWLS.EnterReadLock();
+			try
+			{
+				_props.TryGetValue(entityId, out result);
+			}
+			finally
+			{
+				_propsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns first prop that matches the predicate, or null if
+		/// no matching props were found.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public Prop GetProp(Func<Prop, bool> predicate)
+		{
+			Prop result;
+
+			_propsRWLS.EnterReadLock();
+			try
+			{
+				result = _props.Values.FirstOrDefault(predicate);
+			}
+			finally
+			{
+				_propsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns list of all props that match the predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public IList<Prop> GetProps(Func<Prop, bool> predicate)
+		{
+			var result = new List<Prop>();
+
+			_propsRWLS.EnterReadLock();
+			try
+			{
+				result.AddRange(_props.Values.Where(predicate));
+			}
+			finally
+			{
+				_propsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		///  Adds item, sends EntityAppears.
+		/// </summary>
+		/// <remarks>
+		/// Use Item's Drop method to drop items in a region,
+		/// unless you know what you're doing.
+		/// </remarks>
+		/// <param name="item"></param>
+		public void AddItem(Item item)
+		{
+			_itemsRWLS.EnterWriteLock();
+			try
+			{
+				if (_items.ContainsKey(item.EntityId))
+					throw new ArgumentException("An item with id '" + item.EntityId.ToString("X16") + "' already exists.");
+
+				_items.Add(item.EntityId, item);
+			}
+			finally
+			{
+				_itemsRWLS.ExitWriteLock();
+			}
+
+			item.Region = this;
+
+			Send.EntityAppears(item);
+		}
+
+		/// <summary>
+		/// Despawns item, sends EntityDisappears.
+		/// </summary>
+		/// <param name="item"></param>
+		public void RemoveItem(Item item)
+		{
+			_itemsRWLS.EnterWriteLock();
+			try
+			{
+				_items.Remove(item.EntityId);
+			}
+			finally
+			{
+				_itemsRWLS.ExitWriteLock();
+			}
+
+			Send.EntityDisappears(item);
+
+			item.Region = Region.Limbo;
+		}
+
+		/// <summary>
+		/// Returns item or null.
+		/// </summary>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		public Item GetItem(long entityId)
+		{
+			Item result;
+
+			_itemsRWLS.EnterReadLock();
+			try
+			{
+				_items.TryGetValue(entityId, out result);
+			}
+			finally
+			{
+				_itemsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns first item that matches predicate, or null if none were found.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public Item GetItem(Func<Item, bool> predicate)
+		{
+			Item result;
+
+			_itemsRWLS.EnterReadLock();
+			try
+			{
+				result = _items.Values.FirstOrDefault(predicate);
+			}
+			finally
+			{
+				_itemsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns a list of all items on the floor.
+		/// </summary>
+		/// <returns></returns>
+		public List<Item> GetAllItems()
+		{
+			List<Item> result;
+
+			_itemsRWLS.EnterReadLock();
+			try
+			{
+				result = new List<Item>(_items.Values);
+			}
+			finally
+			{
+				_itemsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns new list of all entities within range of source.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="range">Leave at default for visible range.</param>
+		/// <returns></returns>
+		public List<Entity> GetEntitiesInRange(Entity source, int range = -1)
+		{
+			if (range < 0)
+				range = VisibleRange;
+
+			var result = new List<Entity>();
+
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				result.AddRange(_creatures.Values.Where(a => a.GetPosition().InRange(source.GetPosition(), range)));
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+
+			_itemsRWLS.EnterReadLock();
+			try
+			{
+				result.AddRange(_items.Values.Where(a => a.GetPosition().InRange(source.GetPosition(), range)));
+			}
+			finally
+			{
+				_itemsRWLS.ExitReadLock();
+			}
+
+			_propsRWLS.EnterReadLock();
+			try
+			{
+				// All props are visible, but not all of them are in range.
+				result.AddRange(_props.Values.Where(a => a.GetPosition().InRange(source.GetPosition(), range)));
+			}
+			finally
+			{
+				_propsRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns new list of all creatures within range of position.
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <param name="range"></param>
+		/// <returns></returns>
+		public List<Creature> GetCreaturesInRange(Position pos, int range)
+		{
+			var result = new List<Creature>();
+
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				result.AddRange(_creatures.Values.Where(a => a.GetPosition().InRange(pos, range)));
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Returns new list of all creatures within the specified polygon.
+		/// </summary>
+		/// <param name="points"></param>
+		/// <returns></returns>
+		public List<Creature> GetCreaturesInPolygon(params Point[] points)
+		{
+			var result = new List<Creature>();
+
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				result.AddRange(_creatures.Values.Where(a => a.GetPosition().InPolygon(points)));
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Gets creatures within a rectangle of specified radian rotation,
+		/// length, and width.
+		/// </summary>
+		/// <param name="startPosition"></param>
+		/// <param name="radianRotation"></param>
+		/// <param name="rectLength"></param>
+		/// <param name="rectWidth"></param>
+		/// <returns></returns>
+		public List<Creature> GetCreaturesInRectangle(Position startPosition, double radianRotation, int rectLength, int rectWidth)
+		{
+			Position discard;
+			return this.GetCreaturesInRectangle(startPosition, radianRotation, rectLength, rectWidth, out discard);
+		}
+
+		/// <summary>
+		/// Gets creatures within a rectangle of specified radian rotation,
+		/// length, and width. Outs the position of the opposite end of the
+		/// rectangle.
+		/// </summary>
+		/// <param name="startPosition"></param>
+		/// <param name="radianRotation"></param>
+		/// <param name="rectLength"></param>
+		/// <param name="rectWidth"></param>
+		/// <param name="endPosition"></param>
+		/// <returns></returns>
+		public List<Creature> GetCreaturesInRectangle(Position startPosition, double radianRotation, int rectLength, int rectWidth, out Position endPosition)
+		{
+			int radius = rectWidth / 2;
+
+			// Position at the opposite end of the rectangle from the startPosition
+			endPosition = startPosition.GetRelative(radianRotation, rectLength);
+
+			var startPoint = new Point(startPosition.X, startPosition.Y);
+			var endPoint = new Point(endPosition.X, endPosition.Y);
+
+			// Calculate the diagonal distance from the starting point to each of the rectangle's points on the opposite side
+			var pointDist = Math.Sqrt((rectLength * rectLength) + (radius * radius));
+
+			// Rotation angle used to place the points of [pointDist] distance away in the correct position to form a rectangle
+			// One negative and one positive rotation of a point [pointDist] distance away will provide two points of the rectangle
+			var rotationAngle = Math.Asin(radius / pointDist);
+
+			// Create a point [pointDist] away from the starting point, and rotate it both positively and negatively by [rotationAngle]
+			// to generate two points on one side of the rectangle
+			var posTemp1 = startPosition.GetRelative(endPosition, (int)(pointDist - rectLength));
+			var pointTemp1 = new Point(posTemp1.X, posTemp1.Y);
+			var p1 = this.RotatePoint(pointTemp1, startPoint, rotationAngle);
+			var p2 = this.RotatePoint(pointTemp1, startPoint, (rotationAngle * -1));
+
+			// Same method as points 1 and 2, starting from the end point instead to create two points on the opposite side
+			var posTemp2 = endPosition.GetRelative(startPosition, (int)(pointDist - rectLength));
+			var pointTemp2 = new Point(posTemp2.X, posTemp2.Y);
+			var p3 = this.RotatePoint(pointTemp2, endPoint, rotationAngle);
+			var p4 = this.RotatePoint(pointTemp2, endPoint, (rotationAngle * -1));
+
+			// Get creatures within the four points calculated
+			var creatureList = this.GetCreaturesInPolygon(p1, p2, p3, p4);
+
+			return creatureList;
+		}
+
+		/// <summary>
+		/// Rotates point around pivot.
+		/// </summary>
+		/// <param name="point">Point to rotate.</param>
+		/// <param name="pivot">Center of the rotation.</param>
+		/// <param name="radians">Angle to rotate by in radians.</param>
+		/// <returns></returns>
+		private Point RotatePoint(Point point, Point pivot, double radians)
+		{
+			var cosTheta = Math.Cos(radians);
+			var sinTheta = Math.Sin(radians);
+
+			var x = (int)(cosTheta * (point.X - pivot.X) - sinTheta * (point.Y - pivot.Y) + pivot.X);
+			var y = (int)(sinTheta * (point.X - pivot.X) + cosTheta * (point.Y - pivot.Y) + pivot.Y);
+
+			return new Point(x, y);
+		}
+
+		/// <summary>
+		/// Removes all scripted entites from this region.
+		/// </summary>
+		public void RemoveScriptedEntities()
+		{
+			// Get NPCs
+			var npcs = new List<Creature>();
+			_creaturesRWLS.EnterReadLock();
+			try { npcs.AddRange(_creatures.Values.Where(a => a is NPC)); }
+			finally { _creaturesRWLS.ExitReadLock(); }
+
+			// Get server side props
+			var props = new List<Prop>();
+			_propsRWLS.EnterReadLock();
+			try { props.AddRange(_props.Values.Where(a => a.ServerSide)); }
+			finally { _propsRWLS.ExitReadLock(); }
+
+			// Remove all
+			foreach (var npc in npcs) { npc.Dispose(); this.RemoveCreature(npc); }
+			foreach (var prop in props) this.RemoveProp(prop);
+		}
+
+		/// <summary>
+		/// Activates AIs in range of the movement path.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		public void ActivateAis(Creature creature, Position from, Position to)
+		{
+			// Bounding rectangle
+			var minX = Math.Min(from.X, to.X) - VisibleRange;
+			var minY = Math.Min(from.Y, to.Y) - VisibleRange;
+			var maxX = Math.Max(from.X, to.X) + VisibleRange;
+			var maxY = Math.Max(from.Y, to.Y) + VisibleRange;
+
+			// Activation
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				foreach (var npc in _creatures.Values.OfType<NPC>())
+				{
+					if (npc.AI == null)
+						continue;
+
+					var pos = npc.GetPosition();
+					if (!(pos.X >= minX && pos.X <= maxX && pos.Y >= minY && pos.Y <= maxY))
+						continue;
+
+					var speed = creature.GetSpeed();
+					if (speed < 1)
+						speed = 1;
+
+					var time = (from.GetDistance(to) / speed) * 1000;
+
+					npc.AI.Activate(time);
+				}
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns amount of creatures of race that are targetting target
+		/// in this region.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <param name="raceId"></param>
+		/// <returns></returns>
+		public int CountAggro(Creature target, int raceId)
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				return _creatures.Values.OfType<NPC>().Count(npc =>
+					!npc.IsDead &&
+					npc.AI != null &&
+					npc.AI.State == AiScript.AiState.Aggro &&
+					npc.RaceId == raceId &&
+					npc.Target == target
+				);
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Returns amount of creatures of race that are targetting target
+		/// in this region.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public int CountAggro(Creature target)
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				return _creatures.Values.OfType<NPC>().Count(npc =>
+					!npc.IsDead &&
+					npc.AI != null &&
+					npc.AI.State == AiScript.AiState.Aggro &&
+					npc.Target == target
+				);
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Adds all good NPCs of region to list.
+		/// </summary>
+		/// <param name="list"></param>
+		public void GetAllGoodNpcs(ref List<Creature> list)
+		{
+			_creaturesRWLS.EnterReadLock();
+			try
+			{
+				list.AddRange(_creatures.Values.Where(a => a.Has(CreatureStates.GoodNpc) && a is NPC));
+			}
+			finally
+			{
+				_creaturesRWLS.ExitReadLock();
+			}
+		}
+
+		/// <summary>
+		/// Broadcasts packet in region.
+		/// </summary>
+		public virtual void Broadcast(Packet packet)
+		{
+			lock (_clients)
+			{
+				foreach (var client in _clients)
+					client.Send(packet);
+			}
+		}
+
+		/// <summary>
+		/// Broadcasts packet to all creatures in range of source.
+		/// </summary>
+		public virtual void Broadcast(Packet packet, Entity source, bool sendToSource = true, int range = -1)
+		{
+			if (range < 0)
+				range = VisibleRange;
+
+			var pos = source.GetPosition();
+
+			lock (_clients)
+			{
+				foreach (var client in _clients)
+				{
+					if (!client.Controlling.GetPosition().InRange(pos, range))
+						continue;
+
+					if (client.Controlling == source && !sendToSource)
+						continue;
+
+					client.Send(packet);
+				}
+			}
+		}
+	}
+
+	public enum RegionMode
+	{
+		/// <summary>
+		/// Kept in the world permanently
+		/// </summary>
+		Permanent,
+
+		/// <summary>
+		/// Region gets removed once the last player has left.
+		/// </summary>
+		RemoveWhenEmpty,
+	}
+
+	public class Limbo : Region
+	{
+		public Limbo()
+			: base(0)
+		{
+		}
+
+		public override void Broadcast(Packet packet)
+		{
+			Log.Warning("Broadcast in Limbo.");
+			Log.Debug(Environment.StackTrace);
+		}
+
+		public override void Broadcast(Packet packet, Entity source, bool sendToSource = true, int range = -1)
+		{
+			Log.Warning("Broadcast in Limbo from source.");
+			Log.Debug(Environment.StackTrace);
+		}
+	}
 }

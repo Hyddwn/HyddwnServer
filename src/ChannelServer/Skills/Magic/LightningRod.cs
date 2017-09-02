@@ -1,341 +1,341 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System;
-using System.Drawing;
-using System.Linq;
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.Skills.Combat;
-using Aura.Channel.World;
 using Aura.Channel.World.Entities;
+using Aura.Channel.World;
 using Aura.Data.Database;
-using Aura.Mabi;
 using Aura.Mabi.Const;
 using Aura.Mabi.Network;
 using Aura.Shared.Util;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Aura.Mabi;
 
 namespace Aura.Channel.Skills.Magic
 {
-    /// <summary>
-    ///     Lightning Rod Handler
-    /// </summary>
-    /// Var1: Min Damage
-    /// Var2: Max Damage
-    /// Var3: Max Chargning Time (ms)
-    /// Var4: Max Charge Damage Bonus (%)
-    /// Var5: Cooldown
-    [Skill(SkillId.LightningRod)]
-    public class LightningRod : ISkillHandler, IPreparable, IUseable, ICompletable, ICancelable, IInitiableSkillHandler
-    {
-        /// <summary>
-        ///     Length of attack area; unconfirmed.
-        /// </summary>
-        /// <remarks>
-        ///     "http://wiki.mabinogiworld.com/view/Lightning_Rod#Summary"
-        /// </remarks>
-        private const int SkillLength = 1400;
+	/// <summary>
+	/// Lightning Rod Handler
+	/// </summary>
+	/// Var1: Min Damage
+	/// Var2: Max Damage
+	/// Var3: Max Chargning Time (ms)
+	/// Var4: Max Charge Damage Bonus (%)
+	/// Var5: Cooldown
+	[Skill(SkillId.LightningRod)]
+	public class LightningRod : ISkillHandler, IPreparable, IUseable, ICompletable, ICancelable, IInitiableSkillHandler
+	{
+		/// <summary>
+		/// Length of attack area; unconfirmed.
+		/// </summary>
+		/// <remarks>
+		/// "http://wiki.mabinogiworld.com/view/Lightning_Rod#Summary"
+		/// </remarks>
+		private const int SkillLength = 1400;
 
-        /// <summary>
-        ///     Width of attack area; unconfirmed.
-        /// </summary>
-        /// <remarks>
-        ///     "http://wiki.mabinogiworld.com/view/Lightning_Rod#Summary"
-        /// </remarks>
-        private const int SkillWidth = 200;
+		/// <summary>
+		/// Width of attack area; unconfirmed.
+		/// </summary>
+		/// <remarks>
+		/// "http://wiki.mabinogiworld.com/view/Lightning_Rod#Summary"
+		/// </remarks>
+		private const int SkillWidth = 200;
 
-        /// <summary>
-        ///     Length of target's stun
-        /// </summary>
-        private const int TargetStun = 2000;
+		/// <summary>
+		/// Length of target's stun
+		/// </summary>
+		private const int TargetStun = 2000;
 
-        /// <summary>
-        ///     Distance target gets knocked back
-        /// </summary>
-        private const int KnockbackDistance = 720;
+		/// <summary>
+		/// Distance target gets knocked back
+		/// </summary>
+		private const int KnockbackDistance = 720;
 
-        /// <summary>
-        ///     Time for mana degeneration (ms)
-        /// </summary>
-        private const int DegenTime = 1000;
+		/// <summary>
+		/// Time for mana degeneration (ms)
+		/// </summary>
+		private const int DegenTime = 1000;
 
-        public void Cancel(Creature creature, Skill skill)
-        {
-            creature.Temp.LightningRodFullCharge = false;
+		/// <summary>
+		/// Subscribes handlers to events required for training.
+		/// </summary>
+		public void Init()
+		{
+			ChannelServer.Instance.Events.CreatureAttackedByPlayer += this.OnCreatureAttackedByPlayer;
+			ChannelServer.Instance.Events.CreatureAttacks += this.OnCreatureAttacks;
+		}
 
-            Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
-        }
+		/// <summary>
+		/// Prepares the skill
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		/// <returns></returns>
+		public bool Prepare(Creature creature, Skill skill, Packet packet)
+		{
+			if (creature.RightHand == null || !creature.RightHand.HasTag("/staff/"))
+			{
+				Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
+				return false;
+			}
 
-        public void Complete(Creature creature, Skill skill, Packet packet)
-        {
-            creature.Temp.LightningRodFullCharge = false;
+			creature.StopMove();
 
-            Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
-            Send.SkillComplete(creature, skill.Info.Id);
-        }
+			skill.State = SkillState.Prepared;
 
-        /// <summary>
-        ///     Subscribes handlers to events required for training.
-        /// </summary>
-        public void Init()
-        {
-            ChannelServer.Instance.Events.CreatureAttackedByPlayer += OnCreatureAttackedByPlayer;
-            ChannelServer.Instance.Events.CreatureAttacks += OnCreatureAttacks;
-        }
+			Send.MotionCancel2(creature, 0);
+			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Prepare, 0);
 
-        /// <summary>
-        ///     Prepares the skill
-        /// </summary>
-        /// <param name="creature"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        public bool Prepare(Creature creature, Skill skill, Packet packet)
-        {
-            if (creature.RightHand == null || !creature.RightHand.HasTag("/staff/"))
-            {
-                Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
-                return false;
-            }
+			Send.SkillReady(creature, skill.Info.Id);
+			skill.State = SkillState.Ready;
 
-            creature.StopMove();
+			creature.Temp.LightningRodPrepareTime = DateTime.Now;
 
-            skill.State = SkillState.Prepared;
+			return true;
+		}
 
-            Send.MotionCancel2(creature, 0);
-            Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Prepare, 0);
+		/// <summary>
+		/// Uses LightningRod
+		/// </summary>
+		/// <param name="attacker"></param>
+		/// <param name="skill"></param>
+		/// <param name="packet"></param>
+		public void Use(Creature attacker, Skill skill, Packet packet)
+		{
+			// Set full charge variable
+			attacker.Temp.LightningRodFullCharge = (DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3));
 
-            Send.SkillReady(creature, skill.Info.Id);
-            skill.State = SkillState.Ready;
+			// Get targets in skill area
+			Position targetPropPos;
+			var targets = SkillHelper.GetTargetableCreaturesInSkillArea(attacker, SkillLength, SkillWidth, out targetPropPos);
 
-            creature.Temp.LightningRodPrepareTime = DateTime.Now;
+			// TargetProp
+			var lProp = new Prop(280, attacker.RegionId, targetPropPos.X, targetPropPos.Y, MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
+			attacker.Region.AddProp(lProp);
 
-            return true;
-        }
+			// Prepare Combat Actions
+			var cap = new CombatActionPack(attacker, skill.Info.Id);
 
-        /// <summary>
-        ///     Uses LightningRod
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="skill"></param>
-        /// <param name="packet"></param>
-        public void Use(Creature attacker, Skill skill, Packet packet)
-        {
-            // Set full charge variable
-            attacker.Temp.LightningRodFullCharge =
-                DateTime.Now >= attacker.Temp.LightningRodPrepareTime.AddMilliseconds(skill.RankData.Var3);
+			var targetAreaId = new Location(attacker.RegionId, targetPropPos).ToLocationId();
 
-            // Get targets in skill area
-            Position targetPropPos;
-            var targets =
-                SkillHelper.GetTargetableCreaturesInSkillArea(attacker, SkillLength, SkillWidth, out targetPropPos);
+			var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetAreaId);
+			aAction.Set(AttackerOptions.KnockBackHit1 | AttackerOptions.UseEffect);
+			aAction.PropId = lProp.EntityId;
+			cap.Add(aAction);
 
-            // TargetProp
-            var lProp = new Prop(280, attacker.RegionId, targetPropPos.X, targetPropPos.Y,
-                MabiMath.ByteToRadian(attacker.Direction), 1f, 0f, "single");
-            attacker.Region.AddProp(lProp);
+			var rnd = RandomProvider.Get();
 
-            // Prepare Combat Actions
-            var cap = new CombatActionPack(attacker, skill.Info.Id);
+			// Check crit
+			var crit = false;
+			var critSkill = attacker.Skills.Get(SkillId.CriticalHit);
+			if (critSkill != null && critSkill.Info.Rank > SkillRank.Novice)
+			{
+				var critChance = Math2.Clamp(0, 30, attacker.GetTotalCritChance(0));
+				if (rnd.NextDouble() * 100 < critChance)
+					crit = true;
+			}
 
-            var targetAreaId = new Location(attacker.RegionId, targetPropPos).ToLocationId();
+			foreach (var target in targets)
+			{
+				var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, SkillId.CombatMastery);
+				tAction.Set(TargetOptions.None);
+				tAction.AttackerSkillId = skill.Info.Id;
+				cap.Add(tAction);
 
-            var aAction = new AttackerAction(CombatActionType.SpecialHit, attacker, targetAreaId);
-            aAction.Set(AttackerOptions.KnockBackHit1 | AttackerOptions.UseEffect);
-            aAction.PropId = lProp.EntityId;
-            cap.Add(aAction);
+				var damage = attacker.GetRndMagicDamage(skill, skill.RankData.Var1, skill.RankData.Var2);
 
-            var rnd = RandomProvider.Get();
+				// Add damage if the skill is fully charged
+				var dmgMultiplier = skill.RankData.Var4 / 100f;
+				if (attacker.Temp.LightningRodFullCharge)
+				{
+					damage += (damage * dmgMultiplier);
+				}
 
-            // Check crit
-            var crit = false;
-            var critSkill = attacker.Skills.Get(SkillId.CriticalHit);
-            if (critSkill != null && critSkill.Info.Rank > SkillRank.Novice)
-            {
-                var critChance = Math2.Clamp(0, 30, attacker.GetTotalCritChance(0));
-                if (rnd.NextDouble() * 100 < critChance)
-                    crit = true;
-            }
+				// Critical Hit
+				if (crit)
+					CriticalHit.Handle(attacker, 100, ref damage, tAction);
 
-            foreach (var target in targets)
-            {
-                var tAction = new TargetAction(CombatActionType.TakeHit, target, attacker, SkillId.CombatMastery);
-                tAction.Set(TargetOptions.None);
-                tAction.AttackerSkillId = skill.Info.Id;
-                cap.Add(tAction);
+				// Handle skills and reductions
+				SkillHelper.HandleMagicDefenseProtection(target, ref damage);
+				SkillHelper.HandleConditions(attacker, target, ref damage);
+				var delayReduction = ManaDeflector.Handle(attacker, target, ref damage, tAction);
+				ManaShield.Handle(target, ref damage, tAction);
 
-                var damage = attacker.GetRndMagicDamage(skill, skill.RankData.Var1, skill.RankData.Var2);
+				// Apply Damage
+				target.TakeDamage(tAction.Damage = damage, attacker);
 
-                // Add damage if the skill is fully charged
-                var dmgMultiplier = skill.RankData.Var4 / 100f;
-                if (attacker.Temp.LightningRodFullCharge)
-                    damage += damage * dmgMultiplier;
+				// Stun Time
+				tAction.Stun = TargetStun;
 
-                // Critical Hit
-                if (crit)
-                    CriticalHit.Handle(attacker, 100, ref damage, tAction);
+				// Death or Knockback
+				if (target.IsDead)
+				{
+					tAction.Set(TargetOptions.FinishingKnockDown);
+					attacker.Shove(target, KnockbackDistance);
+				}
+				else
+				{
+					// Always knock down
+					if (target.Is(RaceStands.KnockDownable))
+					{
+						tAction.Set(TargetOptions.KnockDown);
+						attacker.Shove(target, KnockbackDistance);
+					}
+				}
+			}
 
-                // Handle skills and reductions
-                SkillHelper.HandleMagicDefenseProtection(target, ref damage);
-                SkillHelper.HandleConditions(attacker, target, ref damage);
-                var delayReduction = ManaDeflector.Handle(attacker, target, ref damage, tAction);
-                ManaShield.Handle(target, ref damage, tAction);
+			// Update current weapon
+			SkillHelper.UpdateWeapon(attacker, targets.FirstOrDefault(), ProficiencyGainType.Melee, attacker.RightHand);
 
-                // Apply Damage
-                target.TakeDamage(tAction.Damage = damage, attacker);
+			cap.Handle();
 
-                // Stun Time
-                tAction.Stun = TargetStun;
+			Send.Effect(attacker, Effect.LightningRod, LightningRodEffect.Attack, targetPropPos.X, targetPropPos.Y);
 
-                // Death or Knockback
-                if (target.IsDead)
-                {
-                    tAction.Set(TargetOptions.FinishingKnockDown);
-                    attacker.Shove(target, KnockbackDistance);
-                }
-                else
-                {
-                    // Always knock down
-                    if (target.Is(RaceStands.KnockDownable))
-                    {
-                        tAction.Set(TargetOptions.KnockDown);
-                        attacker.Shove(target, KnockbackDistance);
-                    }
-                }
-            }
+			Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
+			skill.Train(1); // Use the Skill
 
-            // Update current weapon
-            SkillHelper.UpdateWeapon(attacker, targets.FirstOrDefault(), ProficiencyGainType.Melee, attacker.RightHand);
+			attacker.Region.RemoveProp(lProp);
+		}
 
-            cap.Handle();
+		public void Complete(Creature creature, Skill skill, Packet packet)
+		{
+			creature.Temp.LightningRodFullCharge = false;
 
-            Send.Effect(attacker, Effect.LightningRod, LightningRodEffect.Attack, targetPropPos.X, targetPropPos.Y);
+			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
+			Send.SkillComplete(creature, skill.Info.Id);
+		}
 
-            Send.SkillUse(attacker, skill.Info.Id, targetAreaId, 0, 1);
-            skill.Train(1); // Use the Skill
+		public void Cancel(Creature creature, Skill skill)
+		{
+			creature.Temp.LightningRodFullCharge = false;
 
-            attacker.Region.RemoveProp(lProp);
-        }
+			Send.Effect(creature, Effect.LightningRod, LightningRodEffect.Cancel);
+		}
 
-        /// <summary>
-        ///     Training, called when someone attacks something.
-        /// </summary>
-        /// <param name="action"></param>
-        public void OnCreatureAttackedByPlayer(TargetAction action)
-        {
-            // Check if skill used is LightningRod
-            if (action.AttackerSkillId != SkillId.LightningRod)
-                return;
+		/// <summary>
+		/// Training, called when someone attacks something.
+		/// </summary>
+		/// <param name="action"></param>
+		public void OnCreatureAttackedByPlayer(TargetAction action)
+		{
+			// Check if skill used is LightningRod
+			if (action.AttackerSkillId != SkillId.LightningRod)
+				return;
 
-            // Get skill
-            var attackerSkill = action.Attacker.Skills.Get(SkillId.LightningRod);
-            if (attackerSkill == null) return; // Should be impossible.
+			// Get skill
+			var attackerSkill = action.Attacker.Skills.Get(SkillId.LightningRod);
+			if (attackerSkill == null) return; // Should be impossible.
 
-            // Learning by attacking
-            switch (attackerSkill.Info.Rank)
-            {
-                case SkillRank.RF:
-                case SkillRank.RE:
-                    attackerSkill.Train(2); // Attack an enemy
-                    break;
-                case SkillRank.RD:
-                case SkillRank.RC:
-                    attackerSkill.Train(2); // Attack an enemy
-                    if (action.Attacker.Temp.LightningRodFullCharge)
-                        attackerSkill.Train(3); // Attack an Enemy with a Max Charge
-                    break;
-                case SkillRank.RB:
-                case SkillRank.RA:
-                case SkillRank.R9:
-                case SkillRank.R8:
-                case SkillRank.R7:
-                case SkillRank.R6:
-                case SkillRank.R5:
-                case SkillRank.R4:
-                case SkillRank.R3:
-                case SkillRank.R2:
-                case SkillRank.R1:
-                    if (action.Creature.IsDead) attackerSkill.Train(2); // Defeat an enemy
-                    if (action.Creature.IsDead && action.Attacker.Temp.LightningRodFullCharge)
-                        attackerSkill.Train(3); // Defeat an Enemy with a Max Charge
-                    break;
-            }
-        }
+			// Learning by attacking
+			switch (attackerSkill.Info.Rank)
+			{
+				case SkillRank.RF:
+				case SkillRank.RE:
+					attackerSkill.Train(2); // Attack an enemy
+					break;
+				case SkillRank.RD:
+				case SkillRank.RC:
+					attackerSkill.Train(2); // Attack an enemy
+					if (action.Attacker.Temp.LightningRodFullCharge) attackerSkill.Train(3); // Attack an Enemy with a Max Charge
+					break;
+				case SkillRank.RB:
+				case SkillRank.RA:
+				case SkillRank.R9:
+				case SkillRank.R8:
+				case SkillRank.R7:
+				case SkillRank.R6:
+				case SkillRank.R5:
+				case SkillRank.R4:
+				case SkillRank.R3:
+				case SkillRank.R2:
+				case SkillRank.R1:
+					if (action.Creature.IsDead) attackerSkill.Train(2); // Defeat an enemy
+					if (action.Creature.IsDead && action.Attacker.Temp.LightningRodFullCharge) attackerSkill.Train(3); // Defeat an Enemy with a Max Charge
+					break;
+			}
+		}
 
-        /// <summary>
-        ///     Training, called when a creature attacks another creature(s)
-        /// </summary>
-        /// <param name="aAction"></param>
-        public void OnCreatureAttacks(AttackerAction aAction)
-        {
-            // Handles the multiple target training requirements
+		/// <summary>
+		/// Training, called when a creature attacks another creature(s)
+		/// </summary>
+		/// <param name="aAction"></param>
+		public void OnCreatureAttacks(AttackerAction aAction)
+		{
+			// Handles the multiple target training requirements
 
-            // Check if skill used is LightningRod
-            if (aAction.SkillId != SkillId.LightningRod)
-                return;
+			// Check if skill used is LightningRod
+			if (aAction.SkillId != SkillId.LightningRod)
+				return;
 
-            // Get skill
-            var attackerSkill = aAction.Creature.Skills.Get(SkillId.LightningRod);
-            if (attackerSkill == null) return; // Should be impossible.
+			// Get skill
+			var attackerSkill = aAction.Creature.Skills.Get(SkillId.LightningRod);
+			if (attackerSkill == null) return; // Should be impossible.
 
-            // Get targets
-            var targets = aAction.Pack.GetTargets();
+			// Get targets
+			var targets = aAction.Pack.GetTargets();
 
-            // Kill count
-            var killCount = targets.Where(a => a.IsDead).Count();
+			// Kill count
+			var killCount = targets.Where(a => a.IsDead).Count();
 
-            // Learning by attacking
-            switch (attackerSkill.Info.Rank)
-            {
-                case SkillRank.RF:
-                case SkillRank.RE:
-                case SkillRank.RD:
-                case SkillRank.RC:
-                case SkillRank.RB:
-                case SkillRank.RA:
-                case SkillRank.R9:
-                case SkillRank.R8:
-                case SkillRank.R7:
-                    if (killCount >= 2) // Defeat 2 or more enemies
-                        attackerSkill.Train(4);
-                    break;
-                case SkillRank.R6:
-                case SkillRank.R5:
-                case SkillRank.R4:
-                    if (killCount >= 3) // Defeat 3 or more enemies
-                        attackerSkill.Train(4);
-                    break;
-                case SkillRank.R3:
-                case SkillRank.R2:
-                    if (killCount >= 4) // Defeat 4 or more enemies
-                    {
-                        attackerSkill.Train(4);
+			// Learning by attacking
+			switch (attackerSkill.Info.Rank)
+			{
+				case SkillRank.RF:
+				case SkillRank.RE:
+				case SkillRank.RD:
+				case SkillRank.RC:
+				case SkillRank.RB:
+				case SkillRank.RA:
+				case SkillRank.R9:
+				case SkillRank.R8:
+				case SkillRank.R7:
+					if (killCount >= 2) // Defeat 2 or more enemies
+						attackerSkill.Train(4);
+					break;
+				case SkillRank.R6:
+				case SkillRank.R5:
+				case SkillRank.R4:
+					if (killCount >= 3) // Defeat 3 or more enemies
+						attackerSkill.Train(4);
+					break;
+				case SkillRank.R3:
+				case SkillRank.R2:
+					if (killCount >= 4) // Defeat 4 or more enemies
+					{
+						attackerSkill.Train(4);
 
-                        if (aAction.Creature.Temp.LightningRodFullCharge) // Defeat 4 or more Enemies with a Max Charge
-                            attackerSkill.Train(5);
-                    }
-                    break;
-                case SkillRank.R1:
-                    if (killCount >= 5) // Defeat 5 or more enemies
-                    {
-                        attackerSkill.Train(4);
+						if (aAction.Creature.Temp.LightningRodFullCharge) // Defeat 4 or more Enemies with a Max Charge
+							attackerSkill.Train(5);
+					}
+					break;
+				case SkillRank.R1:
+					if (killCount >= 5) // Defeat 5 or more enemies
+					{
+						attackerSkill.Train(4);
 
-                        if (aAction.Creature.Temp.LightningRodFullCharge) // Defeat 5 or more Enemies with a Max Charge
-                            attackerSkill.Train(5);
-                    }
-                    break;
-            }
-        }
+						if (aAction.Creature.Temp.LightningRodFullCharge) // Defeat 5 or more Enemies with a Max Charge
+							attackerSkill.Train(5);
+					}
+					break;
+			}
+		}
 
-        private Point RotatePoint(Point point, Point pivot, double radians)
-        {
-            var cosTheta = Math.Cos(radians);
-            var sinTheta = Math.Sin(radians);
+		private Point RotatePoint(Point point, Point pivot, double radians)
+		{
+			var cosTheta = Math.Cos(radians);
+			var sinTheta = Math.Sin(radians);
 
-            var x = (int) (cosTheta * (point.X - pivot.X) - sinTheta * (point.Y - pivot.Y) + pivot.X);
-            var y = (int) (sinTheta * (point.X - pivot.X) + cosTheta * (point.Y - pivot.Y) + pivot.Y);
+			var x = (int)(cosTheta * (point.X - pivot.X) - sinTheta * (point.Y - pivot.Y) + pivot.X);
+			var y = (int)(sinTheta * (point.X - pivot.X) + cosTheta * (point.Y - pivot.Y) + pivot.Y);
 
-            return new Point(x, y);
-        }
-    }
+			return new Point(x, y);
+		}
+	}
 }

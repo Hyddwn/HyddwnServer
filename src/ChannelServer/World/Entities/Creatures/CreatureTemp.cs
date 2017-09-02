@@ -2,93 +2,86 @@
 // For more information, see license file in the main folder
 
 using System;
-using System.Collections.Generic;
 using Aura.Channel.Scripting.Scripts;
-using Aura.Channel.Skills.Life;
-using Aura.Channel.World.Shops;
 using Aura.Data.Database;
-using Aura.Mabi.Const;
 using Aura.Mabi.Structs;
+using System.Collections.Generic;
+using Aura.Channel.Skills.Life;
+using Aura.Mabi.Const;
+using Aura.Channel.World.Shops;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
-    public class CreatureTemp
-    {
-        public Entrustment ActiveEntrustment;
-        public PersonalShop ActivePersonalShop;
+	public class CreatureTemp
+	{
+		// Sitting
+		public ChairData CurrentChairData;
+		public Prop SittingProp;
 
-        public Trade ActiveTrade;
-        public List<BlacksmithDot> BlacksmithingMiniGameDots;
-        public long CampfireKitItemEntityId;
-        public CatchSize CatchSize;
-        public int ColorWheelResult;
+		// Food cache
+		public float WeightFoodChange, UpperFoodChange, LowerFoodChange;
+		public float LifeFoodChange, ManaFoodChange, StaminaFoodChange;
+		public float StrFoodChange, IntFoodChange, DexFoodChange, WillFoodChange, LuckFoodChange;
 
-        public List<Ingredient> CookingIngredients;
-        public string CookingMethod;
+		// True while visiting Nao
+		public bool InSoulStream;
 
-        public object CounterSyncLock = new object();
-        public int CreationFinishId;
+		// Currently playing cutscene
+		public Cutscene CurrentCutscene;
 
-        public string CurrentBankId;
+		// Last open shop
+		public NpcShopScript CurrentShop;
+		public NPC CurrentShopOwner;
 
-        public string CurrentBankTitle;
+		// Items temporarily used by skills
+		public Item SkillItem1, SkillItem2;
 
-        // Sitting
-        public ChairData CurrentChairData;
+		// Random dyeing cursors for regular dyes
+		public DyePickers RegularDyePickers;
+		public int DyeDistortA1, DyeDistortA2, DyeDistortA3, DyeDistortA4;
 
-        // Currently playing cutscene
-        public Cutscene CurrentCutscene;
+		// Final Hit training counters
+		public int FinalHitKillCount, FinalHitKillCountStrong, FinalHitKillCountAwful, FinalHitKillCountBoss;
 
-        // Last open shop
-        public NpcShopScript CurrentShop;
+		// Lightning Rod variables
+		public bool LightningRodFullCharge;
+		public DateTime LightningRodPrepareTime;
 
-        public NPC CurrentShopOwner;
-        public int DyeDistortA1, DyeDistortA2, DyeDistortA3, DyeDistortA4;
+		// Excalibur charge time
+		public DateTime ExcaliburPrepareTime;
 
-        // Excalibur charge time
-        public DateTime ExcaliburPrepareTime;
+		// Backup of target's position when gathering, for run away check
+		public Position GatheringTargetPosition;
 
-        // Final Hit training counters
-        public int FinalHitKillCount, FinalHitKillCountStrong, FinalHitKillCountAwful, FinalHitKillCountBoss;
+		public int FirewoodItemId;
+		public long CampfireKitItemEntityId;
 
-        public bool FireArrow;
+		public Prop FishingProp;
+		public bool FishingActionRequested;
+		public DropData FishingDrop;
+		public CatchSize CatchSize;
 
-        public int FirewoodItemId;
-        public bool FishingActionRequested;
-        public DropData FishingDrop;
+		public bool FireArrow;
 
-        public Prop FishingProp;
+		public long NameColorItemEntityId;
+		public int ColorWheelResult;
 
-        // Backup of target's position when gathering, for run away check
-        public Position GatheringTargetPosition;
+		public int TailoringMiniGameX, TailoringMiniGameY;
+		public List<BlacksmithDot> BlacksmithingMiniGameDots;
+		public int CreationFinishId;
 
-        // True while visiting Nao
-        public bool InSoulStream;
+		public List<Ingredient> CookingIngredients;
+		public string CookingMethod;
 
-        public float LifeFoodChange, ManaFoodChange, StaminaFoodChange;
+		public object CounterSyncLock = new object();
 
-        // Lightning Rod variables
-        public bool LightningRodFullCharge;
+		public string CurrentBankId;
+		public string CurrentBankTitle;
 
-        public DateTime LightningRodPrepareTime;
+		public Trade ActiveTrade;
+		public Entrustment ActiveEntrustment;
+		public PersonalShop ActivePersonalShop;
 
-        public long NameColorItemEntityId;
-
-        public PlayingInstrumentProp PlayingInstrumentProp;
-
-        // Random dyeing cursors for regular dyes
-        public DyePickers RegularDyePickers;
-
-        public Prop SittingProp;
-
-        // Items temporarily used by skills
-        public Item SkillItem1, SkillItem2;
-
-        public float StrFoodChange, IntFoodChange, DexFoodChange, WillFoodChange, LuckFoodChange;
-
-        public int TailoringMiniGameX, TailoringMiniGameY;
-
-        // Food cache
-        public float WeightFoodChange, UpperFoodChange, LowerFoodChange;
-    }
+		public PlayingInstrumentProp PlayingInstrumentProp;
+	}
 }

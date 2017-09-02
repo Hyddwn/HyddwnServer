@@ -1,47 +1,47 @@
 ﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
-using System.Collections.Generic;
 using Aura.Data;
 using Aura.Data.Database;
 using Aura.Mabi.Util;
+using System.Collections.Generic;
 
 namespace Aura.Channel.World.Dungeons.Generation
 {
-    public class DungeonGenerator
-    {
-        public DungeonGenerator(string dungeonName, int itemId, int seed, int floorPlan, string option)
-        {
-            Name = dungeonName.ToLower();
-            Data = AuraData.DungeonDb.Find(Name);
+	public class DungeonGenerator
+	{
+		public string Name { get; private set; }
+		public int ItemId { get; private set; }
+		public int Seed { get; private set; }
+		public int FloorPlan { get; private set; }
+		public string Option { get; private set; }
+		public MTRandom RngMaze { get; private set; }
+		public MTRandom RngPuzzles { get; private set; }
+		public List<DungeonFloor> Floors { get; private set; }
+		public DungeonData Data { get; private set; }
 
-            Seed = seed;
-            FloorPlan = floorPlan;
-            Option = (option ?? "").ToLower();
-            RngMaze = new MTRandom(Data.BaseSeed + itemId + floorPlan);
-            RngPuzzles = new MTRandom(seed);
-            Floors = new List<DungeonFloor>();
+		public DungeonGenerator(string dungeonName, int itemId, int seed, int floorPlan, string option)
+		{
+			this.Name = dungeonName.ToLower();
+			this.Data = AuraData.DungeonDb.Find(this.Name);
 
-            DungeonFloor prev = null;
-            for (var i = 0; i < Data.Floors.Count; i++)
-            {
-                var isLastFloor = i == Data.Floors.Count - 1;
+			this.Seed = seed;
+			this.FloorPlan = floorPlan;
+			this.Option = (option ?? "").ToLower();
+			this.RngMaze = new MTRandom(this.Data.BaseSeed + itemId + floorPlan);
+			this.RngPuzzles = new MTRandom(seed);
+			this.Floors = new List<DungeonFloor>();
 
-                var floor = new DungeonFloor(this, Data.Floors[i], isLastFloor, prev);
-                Floors.Add(floor);
+			DungeonFloor prev = null;
+			for (int i = 0; i < this.Data.Floors.Count; i++)
+			{
+				var isLastFloor = (i == this.Data.Floors.Count - 1);
 
-                prev = floor;
-            }
-        }
+				var floor = new DungeonFloor(this, this.Data.Floors[i], isLastFloor, prev);
+				this.Floors.Add(floor);
 
-        public string Name { get; }
-        public int ItemId { get; private set; }
-        public int Seed { get; }
-        public int FloorPlan { get; }
-        public string Option { get; }
-        public MTRandom RngMaze { get; }
-        public MTRandom RngPuzzles { get; }
-        public List<DungeonFloor> Floors { get; }
-        public DungeonData Data { get; }
-    }
+				prev = floor;
+			}
+		}
+	}
 }

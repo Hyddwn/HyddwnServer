@@ -4,135 +4,132 @@
 using System;
 using System.Collections.Generic;
 using Aura.Channel.Network.Sending;
-using Aura.Channel.World.Dungeons.Puzzles;
 using Aura.Channel.World.Entities;
-using Aura.Channel.World.Entities.Props;
+using Aura.Mabi;
 using Aura.Shared.Util;
+using Aura.Channel.World.Dungeons.Puzzles;
+using Aura.Channel.World.Entities.Props;
 
 namespace Aura.Channel.World.Dungeons.Props
 {
-    public class Chest : DungeonProp
-    {
-        protected List<Item> _items;
+	public class Chest : DungeonProp
+	{
+		protected List<Item> _items;
 
-        public Chest(int propId, string name)
-            : base(propId, name)
-        {
-            _items = new List<Item>();
+		public bool IsOpen { get { return (this.State == "open"); } }
 
-            Name = name;
-            Behavior = DefaultBehavior;
-        }
+		public Chest(int propId, string name)
+			: base(propId, name)
+		{
+			_items = new List<Item>();
 
-        public Chest(Puzzle puzzle, string name)
-            : this(puzzle.Dungeon.Data.ChestId, name)
-        {
-        }
+			this.Name = name;
+			this.Behavior = this.DefaultBehavior;
+		}
 
-        public bool IsOpen => State == "open";
+		public Chest(Puzzle puzzle, string name)
+			: this(puzzle.Dungeon.Data.ChestId, name)
+		{
+		}
 
-        protected virtual void DefaultBehavior(Creature creature, Prop prop)
-        {
-            if (State == "open")
-                return;
+		protected virtual void DefaultBehavior(Creature creature, Prop prop)
+		{
+			if (this.State == "open")
+				return;
 
-            SetState("open");
-            DropItems(creature);
-        }
+			this.SetState("open");
+			this.DropItems(creature);
+		}
 
-        /// <summary>
-        ///     Drops all items inside the chest to the floor.
-        /// </summary>
-        /// <param name="opener">If not null, creature becomes the owner of the items.</param>
-        public void DropItems(Creature opener)
-        {
-            lock (_items)
-            {
-                foreach (var item in _items)
-                    item.Drop(Region, GetPosition(), Item.DropRadius, opener, false);
+		/// <summary>
+		/// Drops all items inside the chest to the floor.
+		/// </summary>
+		/// <param name="opener">If not null, creature becomes the owner of the items.</param>
+		public void DropItems(Creature opener)
+		{
+			lock (_items)
+			{
+				foreach (var item in _items)
+					item.Drop(this.Region, this.GetPosition(), Item.DropRadius, opener, false);
 
-                _items.Clear();
-            }
-        }
+				_items.Clear();
+			}
+		}
 
-        /// <summary>
-        ///     Adds item to chest.
-        /// </summary>
-        /// <param name="item"></param>
-        public void Add(Item item)
-        {
-            lock (_items)
-            {
-                _items.Add(item);
-            }
-        }
+		/// <summary>
+		/// Adds item to chest.
+		/// </summary>
+		/// <param name="item"></param>
+		public void Add(Item item)
+		{
+			lock (_items)
+				_items.Add(item);
+		}
 
-        /// <summary>
-        ///     Adds gold stacks based on amount to chest.
-        /// </summary>
-        /// <param name="amount"></param>
-        public void AddGold(int amount)
-        {
-            while (amount > 0)
-            {
-                var n = Math.Min(1000, amount);
-                amount -= n;
+		/// <summary>
+		/// Adds gold stacks based on amount to chest.
+		/// </summary>
+		/// <param name="amount"></param>
+		public void AddGold(int amount)
+		{
+			while (amount > 0)
+			{
+				var n = Math.Min(1000, amount);
+				amount -= n;
 
-                var gold = Item.CreateGold(n);
-                Add(gold);
-            }
-        }
-    }
+				var gold = Item.CreateGold(n);
+				this.Add(gold);
+			}
+		}
+	}
 
-    public class LockedChest : Chest
-    {
-        public LockedChest(int propId, string name, string lockName)
-            : base(propId, name)
-        {
-            LockName = lockName;
-            State = "closed";
-            Extensions.AddSilent(new ConfirmationPropExtension("", Localization.Get("Do you wish to open this chest?"),
-                null, "haskey(" + lockName + ")"));
-        }
+	public class LockedChest : Chest
+	{
+		public string LockName { get; protected set; }
 
-        public LockedChest(Puzzle puzzle, string name, string key)
-            : this(puzzle.Dungeon.Data.ChestId, name, key)
-        {
-        }
+		public LockedChest(int propId, string name, string lockName)
+			: base(propId, name)
+		{
+			this.LockName = lockName;
+			this.State = "closed";
+			this.Extensions.AddSilent(new ConfirmationPropExtension("", Localization.Get("Do you wish to open this chest?"), null, "haskey(" + lockName + ")"));
+		}
 
-        public string LockName { get; protected set; }
+		public LockedChest(Puzzle puzzle, string name, string key)
+			: this(puzzle.Dungeon.Data.ChestId, name, key)
+		{
+		}
 
-        protected override void DefaultBehavior(Creature creature, Prop prop)
-        {
-            // Make sure the chest was still closed when it was clicked.
-            // No security violation because it could be caused by lag.
-            if (prop.State == "open")
-                return;
+		protected override void DefaultBehavior(Creature creature, Prop prop)
+		{
+			// Make sure the chest was still closed when it was clicked.
+			// No security violation because it could be caused by lag.
+			if (prop.State == "open")
+				return;
 
-            // Check key
-            var key = creature.Inventory.GetItem(a =>
-                a.Info.Id == 70028 && a.MetaData1.GetString("prop_to_unlock") == LockName);
-            if (key == null)
-            {
-                Send.Notice(creature, Localization.Get("There is no matching key."));
-                return;
-            }
+			// Check key
+			var key = creature.Inventory.GetItem(a => a.Info.Id == 70028 && a.MetaData1.GetString("prop_to_unlock") == this.LockName);
+			if (key == null)
+			{
+				Send.Notice(creature, Localization.Get("There is no matching key."));
+				return;
+			}
 
-            // Remove key
-            creature.Inventory.Remove(key);
+			// Remove key
+			creature.Inventory.Remove(key);
 
-            // Open and drop
-            prop.SetState("open");
-            DropItems(creature);
-        }
-    }
+			// Open and drop
+			prop.SetState("open");
+			this.DropItems(creature);
+		}
+	}
 
-    public class TreasureChest : LockedChest
-    {
-        public TreasureChest()
-            : base(10201, "TreasureChest", "chest")
-        {
-            State = "closed_identified";
-        }
-    }
+	public class TreasureChest : LockedChest
+	{
+		public TreasureChest()
+			: base(10201, "TreasureChest", "chest")
+		{
+			this.State = "closed_identified";
+		}
+	}
 }
