@@ -119,9 +119,8 @@ public class BeanRuaGuard1Script : NpcScript
 
 				Player.Inventory.Gold -= price;
 				Player.GiveItem(TicketToBeanRua);
-				Msg("Thank you! Have a great time!");
 				Send.Notice(Player, L("Received Ticket to Bean Rua from Bean Rua Doorman."));
-				Close();
+				End("Thank you! Have a great time!");			
 			}
 			else
 			{

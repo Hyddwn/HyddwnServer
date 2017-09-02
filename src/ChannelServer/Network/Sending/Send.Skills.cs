@@ -489,6 +489,7 @@ namespace Aura.Channel.Network.Sending
 		{
 			var packet = new Packet(Op.SkillTrainingUp, creature.EntityId);
 			packet.PutBin(skill.Info);
+			packet.PutByte(0); // [200300, NA258 (2017-08-31)] ?
 			packet.PutFloat(exp);
 			packet.PutByte(1);
 			packet.PutString(bonus); // (Specialized Skill Bonus: x2)

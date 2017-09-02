@@ -34,7 +34,6 @@ public class telescopenpcScript : NpcScript
 					{
 						var signNumber = Random(1000, 8999);
 						Send.Notice(Player, string.Format(L("{0}...\nWho would write such numbers, and why?"), signNumber));
-						Close();
 					});
 				}
 				else
@@ -68,7 +67,6 @@ public class viewscopenpcScript : NpcScript
 				{
 					Player.Inventory.Gold -= 15;
 					Cutscene.Play("into_the_Emainmach", Player);
-					Close();
 				}
 				else
 					End("You don't have enough money.");
