@@ -778,15 +778,19 @@ namespace Aura.Channel.Network.Sending.Helpers
 			// --------------------------------------------------------------
 			if (type == CreaturePacketType.Private)
 			{
-				packet.PutInt(0);                    // SupportType (0:None, 1:Neamhain, 2:Morrighan)
+				packet.PutInt(0);                // SupportType (0:None, 1:Neamhain, 2:Morrighan)
 			}
 
 			// [150100] NPC options
 			// --------------------------------------------------------------
 			if (type == CreaturePacketType.Public && creature is NPC)
 			{
-				packet.PutShort(0);              // OnlyShowFilter
-				packet.PutShort(0);              // HideFilter
+				// [200300, NA258] It appears that these two shorts turned
+				// into strings at some point, but I don't know when.
+				//packet.PutShort(0);              // OnlyShowFilter
+				//packet.PutShort(0);              // HideFilter
+				packet.PutString("");
+				packet.PutString("");
 			}
 
 			// [150100] Commerce
@@ -924,6 +928,14 @@ namespace Aura.Channel.Network.Sending.Helpers
 			if (type == CreaturePacketType.Public)
 			{
 				packet.PutByte(0);
+			}
+
+			// [200300, NA258] ?
+			// Without this other players had a red aura.
+			// --------------------------------------------------------------
+			if (type == CreaturePacketType.Public && creature is Character)
+			{
+				packet.PutShort(0);
 			}
 
 			// Character
@@ -1137,25 +1149,39 @@ namespace Aura.Channel.Network.Sending.Helpers
 				packet.PutLong(end);
 			}
 
-			// [200100, NA229 (2016-06-16)] ?
+			if (type == CreaturePacketType.Private)
 			{
+				// [200100, NA229 (2016-06-16)] ?
+				{
+					packet.PutByte(0);
+					packet.PutInt(0);
+				}
+
+				// [200200, NA242 (2016-12-15)] ?
+				{
+					packet.PutLong(0);
+				}
+
+				// [200200, NA247 (2017-03-17)] ?
+				{
+					packet.PutInt(0);
+					packet.PutInt(0);
+				}
+
+				// [200200, NA253 (2017-06-16)] ?
+				{
+					packet.PutByte(0);
+				}
+			}
+			else if (type == CreaturePacketType.Public)
+			{
+				// [200300, NA258] Noticed this difference in public recently,
+				// Not sure how long this has been different.
+				packet.PutLong(0);
+				packet.PutString("");
+				packet.PutByte(0);
 				packet.PutByte(0);
 				packet.PutInt(0);
-			}
-
-			// [200200, NA242 (2016-12-15)] ?
-			{
-				packet.PutLong(0);
-			}
-
-			// [200200, NA247 (2017-03-17)] ?
-			{
-				packet.PutInt(0);
-				packet.PutInt(0);
-			}
-
-			// [200200, NA253 (2017-06-16)] ?
-			{
 				packet.PutByte(0);
 			}
 
