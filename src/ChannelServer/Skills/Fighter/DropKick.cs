@@ -19,12 +19,14 @@ namespace Aura.Channel.Skills.Fighter
 	/// <summary>
 	/// Dropkick skill handler
 	/// </summary>
+	/// <remarks>
 	/// STAGE 3 CHAIN
 	/// Var1: Damage
 	/// Var2: Cooldown Decreased
 	/// Var3: Splash Width
 	/// Var4: Splash Length
 	/// Var5: Splash Damage
+	/// </remarks>
 	[Skill(SkillId.DropKick)]
 	public class DropKick : ISkillHandler, IPreparable, ICompletable, ICancelable, IInitiableSkillHandler
 	{

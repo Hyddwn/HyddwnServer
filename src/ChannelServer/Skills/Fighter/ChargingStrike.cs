@@ -17,10 +17,12 @@ namespace Aura.Channel.Skills.Fighter
 	/// <summary>
 	/// Charging Strike skill handler
 	/// </summary>
+	/// <remarks>
 	/// STAGE 1 CHAIN
 	/// Var1: Damage
 	/// Var2: Cooldown Decreased
 	/// Var3: Range
+	/// </remarks>
 	[Skill(SkillId.ChargingStrike)]
 	public class ChargingStrike : ISkillHandler, IPreparable, IReadyable, IUseable, ICancelable, IInitiableSkillHandler
 	{

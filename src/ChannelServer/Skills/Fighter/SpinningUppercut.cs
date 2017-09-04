@@ -18,12 +18,14 @@ namespace Aura.Channel.Skills.Fighter
 	/// <summary>
 	/// Spinning Uppercut skill handler
 	/// </summary>
+	/// <remarks>
 	/// STAGE 2 CHAIN
 	/// Var1: Damage
 	/// Var2: Cooldown Decreased
 	/// Var3: Defense Reduction
 	/// Var4: Protection Reduction
 	/// Var6: Reduction Chance
+	/// </remarks>
 	[Skill(SkillId.SpinningUppercut)]
 	public class SpinningUppercut : ISkillHandler, IPreparable, ICompletable, ICancelable, IInitiableSkillHandler
 	{
