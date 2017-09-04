@@ -78,22 +78,17 @@ namespace Aura.Channel.Skills.Fighter
 
 			// No target entity ID...
 			if (packet.Peek() == PacketElementType.None)
-			{
-				Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
 				return false;
-			}
 
 			// In the case that there is a Long in the packet...
 			var targetEntityId = packet.GetLong();
 			var target = creature.Region.GetCreature(targetEntityId);
 			if (target == null)
-			{
-				Send.SkillPrepareSilentCancel(creature, skill.Info.Id);
 				return false;
-			}
 
 			skill.State = SkillState.Ready;
 			this.UseSkill(creature, skill, targetEntityId);
+
 			return true;
 		}
 
