@@ -188,6 +188,22 @@ namespace Aura.Mabi.Const
 		public static readonly int ShadowBunshin = 263;
 
 		/// <summary>
+		/// Charging Strike effect
+		/// </summary>
+		public static readonly int ChargingStrike = 282;
+
+		/// <summary>
+		/// Drop Kick effect
+		/// </summary>
+		public static readonly int DropKick = 286;
+		public static readonly int DropKick2 = 287;
+
+		/// <summary>
+		/// Spinning Uppercut effect
+		/// </summary>
+		public static readonly int SpinningUppercutDebuff = 289;
+
+		/// <summary>
 		/// Used in thunder's final stage
 		/// </summary>
 		public static readonly int Thunderbolt = 298;
