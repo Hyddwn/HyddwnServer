@@ -378,7 +378,7 @@
 { type: 2, id: 8163, name: "Kusina Hair", races: "/human/female/|/elf/female/|/giant/female/", price: 0, coupon: 76175 },
 { type: 2, id: 8164, name: "Pierrot Hair", races: "/human/female/|/elf/female/|/giant/female/", price: 0, coupon: 76176 },
 { type: 2, id: 8165, name: "Scathach Hair", races: "/human/female/|/elf/female/|/giant/female/", price: 0, coupon: 76177 },
-{ type: 2, id: 8166, name: "Macaroon Mistress Hair", races: "/human/female/|/elf/female/|/giant/female/", price: 0, coupon: 76178 },
+{ type: 2, id: 8166, name: "Macaron Mistress Hair", races: "/human/female/|/elf/female/|/giant/female/", price: 0, coupon: 76178 },
 { type: 2, id: 8167, name: "Urban Hair", races: "/human/female/|/elf/female/|/giant/female/", price: 0, coupon: 76179 },
 { type: 2, id: 8168, name: "Avelin Hair", races: "/human/female/|/elf/female/|/giant/female/", price: 0, coupon: 76180 },
 { type: 2, id: 8169, name: "Caswyn Hair", races: "/human/female/|/elf/female/|/giant/female/", price: 0, coupon: 76181 },
