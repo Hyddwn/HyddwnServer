@@ -2,6 +2,7 @@
 // For more information, see license file in the main folder
 
 using System;
+using System.Threading.Tasks;
 using Aura.Channel.Network.Sending;
 using Aura.Channel.Skills.Base;
 using Aura.Channel.World.Entities;
@@ -38,7 +39,9 @@ namespace Aura.Channel.Skills.Life
 			var chairItemEntityId = dict.GetLong("ITEMID");
 
 			if (chairItemEntityId != 0)
+			{
 				this.SetUpChair(creature, chairItemEntityId);
+			}
 			else
 			{
 				// Find all nearby sittable props and sit on closest one
@@ -53,7 +56,7 @@ namespace Aura.Channel.Skills.Life
 					for (int i = 0; i < props.Count; i++)
 					{
 						var dist = crpos.GetDistance(props[i].GetPosition());
-						if(dist < minDist)
+						if (dist < minDist)
 						{
 							nearest = i;
 							minDist = dist;
@@ -172,11 +175,21 @@ namespace Aura.Channel.Skills.Life
 			sittingProp.Info.Color1 = item.Info.Color1;
 			sittingProp.Info.Color2 = item.Info.Color2;
 			sittingProp.Info.Color3 = item.Info.Color3;
-			sittingProp.State = "stand";
+			sittingProp.State = chairData.State;
 			creature.Region.AddProp(sittingProp);
+
+			if (chairData.NextState != null)
+			{
+				Task.Delay(chairData.StateChangeDelay).ContinueWith(_ =>
+				  {
+					  sittingProp.State = chairData.NextState;
+					  Send.PropUpdate(sittingProp);
+				  });
+			}
 
 			// Update chair
 			sittingProp.Xml.SetAttributeValue("OWNER", creature.EntityId);
+			sittingProp.Xml.SetAttributeValue("PMUIID", chairData.ItemId);
 
 			this.SitOnProp(creature, sittingProp, chairData);
 		}
@@ -198,7 +211,7 @@ namespace Aura.Channel.Skills.Life
 			}
 
 			// Update chair
-			if(creature.Temp.SittingProp.Xml.Attribute("OWNER") != null)
+			if (creature.Temp.SittingProp.Xml.Attribute("OWNER") != null)
 				creature.Temp.SittingProp.Xml.SetAttributeValue("OWNER", 0);
 			creature.Temp.SittingProp.Xml.SetAttributeValue("SITCHAR", 0);
 

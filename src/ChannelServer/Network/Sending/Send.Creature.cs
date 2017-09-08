@@ -425,6 +425,9 @@ namespace Aura.Channel.Network.Sending
 			var packet = new Packet(Op.SitDown, creature.EntityId);
 			packet.PutByte(creature.GetRestPose());
 
+			if (creature.Temp.SittingProp != null)
+				packet.PutInt(creature.Temp.CurrentChairData.ItemId);
+
 			creature.Region.Broadcast(packet, creature);
 		}
 
