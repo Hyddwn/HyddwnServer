@@ -176,20 +176,21 @@ namespace Aura.Channel.Skills.Life
 			sittingProp.Info.Color2 = item.Info.Color2;
 			sittingProp.Info.Color3 = item.Info.Color3;
 			sittingProp.State = chairData.State;
+
+			sittingProp.Xml.SetAttributeValue("OWNER", creature.EntityId);
+			sittingProp.Xml.SetAttributeValue("PMUIID", chairData.ItemId);
+
 			creature.Region.AddProp(sittingProp);
 
+			// State transition
 			if (chairData.NextState != null)
 			{
 				Task.Delay(chairData.StateChangeDelay).ContinueWith(_ =>
-				  {
-					  sittingProp.State = chairData.NextState;
-					  Send.PropUpdate(sittingProp);
-				  });
+				{
+					sittingProp.State = chairData.NextState;
+					Send.PropUpdate(sittingProp);
+				});
 			}
-
-			// Update chair
-			sittingProp.Xml.SetAttributeValue("OWNER", creature.EntityId);
-			sittingProp.Xml.SetAttributeValue("PMUIID", chairData.ItemId);
 
 			this.SitOnProp(creature, sittingProp, chairData);
 		}
