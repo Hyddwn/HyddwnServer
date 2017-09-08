@@ -177,6 +177,12 @@ namespace Aura.Channel.Skills.Life
 			sittingProp.Info.Color3 = item.Info.Color3;
 			sittingProp.State = chairData.State;
 
+			if (chairData.Stand != -1)
+			{
+				sittingProp.Xml.SetAttributeValue("PMPG", chairData.Stand);
+				sittingProp.Xml.SetAttributeValue("PMPS", true);
+			}
+
 			sittingProp.Xml.SetAttributeValue("OWNER", creature.EntityId);
 			sittingProp.Xml.SetAttributeValue("PMUIID", chairData.ItemId);
 
