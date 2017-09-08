@@ -16,6 +16,7 @@ namespace Aura.Data.Database
 		public string State { get; set; }
 		public string NextState { get; set; }
 		public int StateChangeDelay { get; set; }
+		public int Stand { get; set; }
 	}
 
 	/// <summary>
@@ -35,6 +36,7 @@ namespace Aura.Data.Database
 			info.State = entry.ReadString("state", "stand");
 			info.NextState = entry.ReadString("nextState", null);
 			info.StateChangeDelay = entry.ReadInt("stateChangeDelay", 0);
+			info.Stand = entry.ReadInt("stand", -1);
 
 			this.Entries[info.ItemId] = info;
 		}
