@@ -13,6 +13,9 @@ namespace Aura.Data.Database
 		public int PropId { get; set; }
 		public int GiantPropId { get; set; }
 		public int Effect { get; set; }
+		public string State { get; set; }
+		public string NextState { get; set; }
+		public int StateChangeDelay { get; set; }
 	}
 
 	/// <summary>
@@ -29,6 +32,9 @@ namespace Aura.Data.Database
 			info.PropId = entry.ReadInt("propId");
 			info.GiantPropId = entry.ReadInt("giantPropId");
 			info.Effect = entry.ReadInt("effect");
+			info.State = entry.ReadString("state", "stand");
+			info.NextState = entry.ReadString("nextState", null);
+			info.StateChangeDelay = entry.ReadInt("stateChangeDelay", 0);
 
 			this.Entries[info.ItemId] = info;
 		}
