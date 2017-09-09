@@ -2371,30 +2371,23 @@ namespace Aura.Channel.World.Entities
 				{
 					amount *= 100;
 					finish = LuckyFinish.Lucky;
-
-					Send.CombatMessage(killer, Localization.Get("Huge Lucky Finish!!"));
-					Send.Notice(killer, Localization.Get("Huge Lucky Finish!!"));
 				}
 				else if (luckyChance < bigLuckyFinishChance)
 				{
 					amount *= 5;
 					finish = LuckyFinish.BigLucky;
-
-					Send.CombatMessage(killer, Localization.Get("Big Lucky Finish!!"));
-					Send.Notice(killer, Localization.Get("Big Lucky Finish!!"));
 				}
 				else if (luckyChance < luckyFinishChance)
 				{
 					amount *= 2;
 					finish = LuckyFinish.HugeLucky;
-
-					Send.CombatMessage(killer, Localization.Get("Lucky Finish!!"));
-					Send.Notice(killer, Localization.Get("Lucky Finish!!"));
 				}
 
 				// If lucky finish
 				if (finish != LuckyFinish.None)
 				{
+					Send.LuckyFinish(this, finish);
+
 					// Event
 					ChannelServer.Instance.Events.OnCreatureGotLuckyFinish(killer, finish, amount);
 

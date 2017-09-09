@@ -387,6 +387,7 @@ namespace Aura.Mabi.Network
 		public const int SetCombatTarget = 0x7920;
 		public const int SetFinisher = 0x7921;
 		public const int SetFinisher2 = 0x7922;
+		public const int LuckyFinish = 0x7923;
 		public const int CombatAction = 0x7924;
 		public const int CombatActionEnd = 0x7925;
 		public const int CombatActionPack = 0x7926;
