@@ -2386,7 +2386,7 @@ namespace Aura.Channel.World.Entities
 				// If lucky finish
 				if (finish != LuckyFinish.None)
 				{
-					Send.LuckyFinish(this, finish);
+					Send.LuckyFinish(killer, finish);
 
 					// Event
 					ChannelServer.Instance.Events.OnCreatureGotLuckyFinish(killer, finish, amount);
