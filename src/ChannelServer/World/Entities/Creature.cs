@@ -2370,7 +2370,7 @@ namespace Aura.Channel.World.Entities
 				if (luckyChance < hugeLuckyFinishChance)
 				{
 					amount *= 100;
-					finish = LuckyFinish.Lucky;
+					finish = LuckyFinish.HugeLucky;
 				}
 				else if (luckyChance < bigLuckyFinishChance)
 				{
@@ -2380,7 +2380,7 @@ namespace Aura.Channel.World.Entities
 				else if (luckyChance < luckyFinishChance)
 				{
 					amount *= 2;
-					finish = LuckyFinish.HugeLucky;
+					finish = LuckyFinish.Lucky;
 				}
 
 				// If lucky finish
