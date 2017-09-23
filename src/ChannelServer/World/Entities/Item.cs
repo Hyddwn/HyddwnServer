@@ -1325,8 +1325,8 @@ namespace Aura.Channel.World.Entities
 					case 096: val = 0700; rate = 0.165f; break;
 					case 097: val = 0800; rate = 0.170f; break;
 					case 098: val = 0900; rate = 0.200f; break;
-					//case 099: val = 1000; rate = 0.300f; break; // pre-G20S03
-					//case 100: val = 1500; rate = 0.400f; break; // pre-G20S03
+					//case 099: val = 1000; rate = 0.250f; break; // pre-G20S03
+					//case 100: val = 1500; rate = 0.300f; break; // pre-G20S03
 					case 099: val = 1000; rate = 0.300f; break;
 					case 100: val = 1500; rate = 0.400f; break;
 				}
