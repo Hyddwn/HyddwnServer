@@ -153,6 +153,9 @@
 { raceId: 490100, name: "Cone Hat Panda", timeLimit: 96, exp: 1.6, height: 0.28, upper: 1.3, lower: 1.45, life: 84, mana: 21, stamina: 74, str: 42, int: 10, dex: 25, will: 27, luck: 18, defense: 0, protection: 2, colorable: true, color1: 0x00080808, color2: 0x00080808, color3: 0x00080808 },
 { raceId: 490101, name: "Fez", timeLimit: 120, exp: 1.7, height: 1.0, upper: 1.0, lower: 1.0, life: 72, mana: 38, stamina: 43, str: 24, int: 31, dex: 26, will: 23, luck: 29, defense: 0, protection: 2, colorable: true },
 { raceId: 490102, name: "Tia", timeLimit: 120, exp: 1.7, height: 1.0, upper: 1.0, lower: 1.0, life: 72, mana: 38, stamina: 43, str: 24, int: 31, dex: 26, will: 23, luck: 29, defense: 0, protection: 2, colorable: true },
+{ raceId: 490106, name: "Band Monkey", timeLimit: 105, exp: 1.5, height: 0.26, upper: 1.37, lower: 1.3, life: 66, mana: 51, stamina: 44, str: 28, int: 30, dex: 31, will: 14, luck: 17, defense: 0, protection: 2 },
+{ raceId: 490107, name: "Band Warp Imp", timeLimit: 112, exp: 1.7, height: 0.2, upper: 3.6, lower: 1.5, life: 72, mana: 38, stamina: 43, str: 24, int: 31, dex: 26, will: 23, luck: 29, defense: 0, protection: 2, colorable: true },
+{ raceId: 490109, name: "Band Alpaca", timeLimit: 180, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 90, mana: 70, stamina: 80, str: 40, int: 50, dex: 36, will: 46, luck: 30, defense: 0, protection: 2, colorable: true },
 { raceId: 490213, name: "Fantasia Clover Gnu", timeLimit: 93, exp: 1.3, height: 0.45, upper: 1.2, lower: 1.2, life: 66, mana: 35, stamina: 56, str: 24, int: 12, dex: 16, will: 12, luck: 14, defense: 0, protection: 2 },
 { raceId: 500001, name: "Black Mud Crab", timeLimit: 90, exp: 1.6, height: 0.75, upper: 1.0, lower: 1.0, life: 50, mana: 33, stamina: 34, str: 33, int: 40, dex: 27, will: 27, luck: 28, defense: 0, protection: 2 },
 { raceId: 500002, name: "Red Rock Crab", timeLimit: 111, exp: 1.7, height: 0.75, upper: 1.0, lower: 1.0, life: 45, mana: 40, stamina: 39, str: 27, int: 38, dex: 24, will: 30, luck: 29, defense: 0, protection: 2 },
@@ -221,6 +224,7 @@
 { raceId: 490089, name: "Blue Horse", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
 { raceId: 490097, name: "Crystal Rudolph", timeLimit: 92, exp: 1.8, height: 0.65, upper: 1.2, lower: 1.2, life: 70, mana: 45, stamina: 77, str: 38, int: 40, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
 { raceId: 490099, name: "White Horse", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
+{ raceId: 490112, name: "Band Golden Mare", timeLimit: 130, exp: 1.8, height: 0.88, upper: 1.06, lower: 1.1, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20 },
 
 // Snow Mounts
 //---------------------------------------------------------------------------
@@ -325,6 +329,7 @@
 { raceId: 490093, name: "Ice Dragon", timeLimit: 107, exp: 1.75, height: 0.6, upper: 1.1, lower: 1.3, life: 75, mana: 52, stamina: 70, str: 41, int: 50, dex: 38, will: 32, luck: 30, defense: 0, protection: 2 },
 { raceId: 490094, name: "Thunder Dragon", timeLimit: 120, exp: 1.8, height: 0.7, upper: 1.15, lower: 1.24, life: 80, mana: 39, stamina: 77, str: 47, int: 32, dex: 36, will: 40, luck: 29, defense: 0, protection: 2 },
 { raceId: 490096, name: "Bone Dragon", timeLimit: 120, exp: 1.75, height: 0.6, upper: 1.1, lower: 1.3, life: 350, mana: 100, stamina: 300, str: 150, int: 100, dex: 45, will: 45, luck: 30, defense: 15, protection: 8 },
+{ raceId: 490105, name: "Mir Dragon", timeLimit: 150, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 80, mana: 39, stamina: 77, str: 47, int: 32, dex: 36, will: 40, luck: 29, defense: 0, protection: 2, colorable: true },
 { raceId: 490115, name: "Mir Dragon", timeLimit: 150, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 80, mana: 39, stamina: 77, str: 47, int: 32, dex: 36, will: 40, luck: 29, defense: 0, protection: 2, colorable: true },
 { raceId: 490203, name: "Milky Way Bone Dragon", timeLimit: 120, exp: 1.75, height: 0.6, upper: 1.1, lower: 1.3, life: 350, mana: 100, stamina: 300, str: 150, int: 100, dex: 45, will: 45, luck: 30, defense: 15, protection: 8 },
 { raceId: 490204, name: "Milky Way Ice Dragon", timeLimit: 107, exp: 1.75, height: 0.6, upper: 1.1, lower: 1.3, life: 75, mana: 52, stamina: 70, str: 41, int: 50, dex: 38, will: 32, luck: 30, defense: 0, protection: 2 },
@@ -364,6 +369,7 @@
 { raceId: 490087, name: "Scooter Imp", timeLimit: 100, exp: 1.5, height: 1.0, upper: 1.0, lower: 1.0, life: 400, mana: 20, stamina: 300, str: 100, int: 5, dex: 45, will: 45, luck: 30, defense: 20, protection: 20, colorable: true },
 { raceId: 490088, name: "Bike Pet Orge", timeLimit: 180, exp: 1.5, height: 1.0, upper: 1.0, lower: 1.0, life: 200, mana: 24, stamina: 300, str: 38, int: 5, dex: 60, will: 5, luck: 25, defense: 5, protection: 50 },
 { raceId: 490095, name: "Bike Pet", timeLimit: 180, exp: 1.5, height: 1.0, upper: 1.0, lower: 1.0, life: 200, mana: 24, stamina: 300, str: 38, int: 5, dex: 60, will: 5, luck: 25, defense: 5, protection: 50 },
+{ raceId: 490111, name: "Band Scooter", timeLimit: 180, exp: 1.5, height: 1.0, upper: 1.0, lower: 1.0, life: 200, mana: 24, stamina: 300, str: 38, int: 5, dex: 60, will: 5, luck: 25, defense: 5, protection: 50, colorable: true },
 { raceId: 490201, name: "Milky Way Scooter", timeLimit: 180, exp: 1.5, height: 1.0, upper: 1.0, lower: 1.0, life: 200, mana: 24, stamina: 300, str: 38, int: 5, dex: 60, will: 5, luck: 25, defense: 5, protection: 50 },
 { raceId: 490214, name: "Fantasia Scooter Imp", timeLimit: 100, exp: 1.5, height: 1.0, upper: 1.0, lower: 1.0, life: 400, mana: 20, stamina: 300, str: 100, int: 5, dex: 45, will: 45, luck: 30, defense: 20, protection: 20, colorable: true },
 
@@ -381,6 +387,7 @@
 { raceId: 270905, name: "Floral Fairy (F)", timeLimit: 180, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 150, mana: 120, stamina: 40, str: 40, int: 60, dex: 20, will: 20, luck: 35, defense: 15, protection: 8, colorable: true },
 { raceId: 490060, name: "Lemongrass Flora", timeLimit: 180, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 150, mana: 120, stamina: 40, str: 40, int: 60, dex: 20, will: 20, luck: 35, defense: 15, protection: 8, colorable: true },
 { raceId: 490066, name: "Fallen Fairy", timeLimit: 120, exp: 1.75, height: 1.0, upper: 1.0, lower: 1.0, life: 350, mana: 100, stamina: 300, str: 150, int: 100, dex: 45, will: 45, luck: 30, defense: 15, protection: 8, colorable: true },
+{ raceId: 490108, name: "Band Floral Fairy", timeLimit: 180, exp: 1.1, height: 1.0, upper: 1.0, lower: 1.0, life: 150, mana: 120, stamina: 40, str: 40, int: 60, dex: 20, will: 20, luck: 35, defense: 15, protection: 8, colorable: true },
 { raceId: 490216, name: "Fantasia Fallen Fairy", timeLimit: 120, exp: 1.75, height: 1.0, upper: 1.0, lower: 1.0, life: 350, mana: 100, stamina: 300, str: 150, int: 100, dex: 45, will: 45, luck: 30, defense: 15, protection: 8, colorable: true },
 
 // The 7 sheep
@@ -394,6 +401,7 @@
 { raceId: 490039, name: "Cranky Sheep", timeLimit: 120, exp: 1.35, height: 0.75, upper: 1.0, lower: 1.0, life: 300, mana: 100, stamina: 300, str: 150, int: 50, dex: 40, will: 40, luck: 25, defense: 15, protection: 25, colorable: true },
 { raceId: 490040, name: "Meany Sheep", timeLimit: 120, exp: 1.35, height: 0.75, upper: 1.0, lower: 1.0, life: 300, mana: 100, stamina: 300, str: 150, int: 50, dex: 40, will: 40, luck: 25, defense: 15, protection: 25, colorable: true },
 { raceId: 490045, name: "Cirque Sheep", timeLimit: 120, exp: 1.35, height: 0.75, upper: 1.0, lower: 1.0, life: 300, mana: 100, stamina: 300, str: 150, int: 50, dex: 40, will: 40, luck: 25, defense: 15, protection: 25, colorable: true },
+{ raceId: 490110, name: "Band Conductor Sheep", timeLimit: 120, exp: 1.35, height: 0.75, upper: 1.0, lower: 1.0, life: 300, mana: 100, stamina: 300, str: 150, int: 50, dex: 40, will: 40, luck: 25, defense: 15, protection: 25, colorable: true },
 { raceId: 490219, name: "Suave Sheep", timeLimit: 120, exp: 1.35, height: 0.75, upper: 1.0, lower: 1.0, life: 300, mana: 100, stamina: 300, str: 150, int: 50, dex: 40, will: 40, luck: 25, defense: 15, protection: 25, colorable: true },
 
 // Spirit of Tuan
@@ -404,7 +412,7 @@
 
 // Prancing Pony
 //---------------------------------------------------------------------------
-{ raceId: 490046, name: "Prancing Pony", timeLimit: 130, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20, colorable: true },
+{ raceId: 490046, name: "Balloon Pony", timeLimit: 130, exp: 1.8, height: 1.0, upper: 1.0, lower: 1.0, life: 300, mana: 60, stamina: 150, str: 50, int: 60, dex: 48, will: 46, luck: 30, defense: 15, protection: 20, colorable: true },
 
 // 60
 //---------------------------------------------------------------------------

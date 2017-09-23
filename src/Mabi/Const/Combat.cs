@@ -143,6 +143,11 @@ namespace Aura.Mabi.Const
 		FinishingHit = 0x1000,
 
 		/// <summary>
+		/// Unknown, only seen in Fighter skills
+		/// </summary>
+		FighterUnk = 0x800000,
+
+		/// <summary>
 		/// For blue numbers
 		/// </summary>
 		/// <remarks>

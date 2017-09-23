@@ -594,6 +594,19 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Plays lucky finish effect on creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="finish"></param>
+		public static void LuckyFinish(Creature creature, LuckyFinish finish)
+		{
+			var packet = new Packet(Op.LuckyFinish, creature.EntityId);
+			packet.PutInt((int)finish);
+
+			creature.Client.Send(packet);
+		}
 	}
 
 	public enum ItemPickUpResult : byte

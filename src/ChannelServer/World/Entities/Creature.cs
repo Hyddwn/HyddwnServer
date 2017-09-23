@@ -2114,6 +2114,40 @@ namespace Aura.Channel.World.Entities
 		}
 
 		/// <summary>
+		/// Returns random base damage for fighter attacks
+		/// </summary>
+		/// <returns></returns>
+		public float GetRndFighterDamage()
+		{
+			var totalMinDamage = 0f;
+			var totalMaxDamage = 0f;
+
+			// Min and Max from Will stat
+			var minStatDamage = (this.Will / 3.5f);
+			var maxStatDamage = (this.Will / 3f);
+
+			// Var1: Min Damage
+			// Var2: Max Damage
+			var knuckleMasterySkill = this.Skills.Get(SkillId.KnuckleMastery);
+
+			// Get Min and Max bonus from Knuckle Mastery
+			if (knuckleMasterySkill != null)
+			{
+				totalMinDamage += knuckleMasterySkill.RankData.Var1;
+				totalMaxDamage += knuckleMasterySkill.RankData.Var2;
+			}
+
+			totalMinDamage += minStatDamage;
+			totalMaxDamage += maxStatDamage;
+
+			// Balance
+			var balance = this.BalanceBase + this.BalanceBaseMod + this.RightBalanceMod;
+
+			// Damage
+			return this.GetRndDamage(totalMinDamage, totalMaxDamage, balance);
+		}
+
+		/// <summary>
 		/// Applies damage to Life, kills creature if necessary.
 		/// </summary>
 		/// <param name="damage"></param>
@@ -2336,31 +2370,24 @@ namespace Aura.Channel.World.Entities
 				if (luckyChance < hugeLuckyFinishChance)
 				{
 					amount *= 100;
-					finish = LuckyFinish.Lucky;
-
-					Send.CombatMessage(killer, Localization.Get("Huge Lucky Finish!!"));
-					Send.Notice(killer, Localization.Get("Huge Lucky Finish!!"));
+					finish = LuckyFinish.HugeLucky;
 				}
 				else if (luckyChance < bigLuckyFinishChance)
 				{
 					amount *= 5;
 					finish = LuckyFinish.BigLucky;
-
-					Send.CombatMessage(killer, Localization.Get("Big Lucky Finish!!"));
-					Send.Notice(killer, Localization.Get("Big Lucky Finish!!"));
 				}
 				else if (luckyChance < luckyFinishChance)
 				{
 					amount *= 2;
-					finish = LuckyFinish.HugeLucky;
-
-					Send.CombatMessage(killer, Localization.Get("Lucky Finish!!"));
-					Send.Notice(killer, Localization.Get("Lucky Finish!!"));
+					finish = LuckyFinish.Lucky;
 				}
 
 				// If lucky finish
 				if (finish != LuckyFinish.None)
 				{
+					Send.LuckyFinish(killer, finish);
+
 					// Event
 					ChannelServer.Instance.Events.OnCreatureGotLuckyFinish(killer, finish, amount);
 

@@ -387,6 +387,7 @@ namespace Aura.Mabi.Network
 		public const int SetCombatTarget = 0x7920;
 		public const int SetFinisher = 0x7921;
 		public const int SetFinisher2 = 0x7922;
+		public const int LuckyFinish = 0x7923;
 		public const int CombatAction = 0x7924;
 		public const int CombatActionEnd = 0x7925;
 		public const int CombatActionPack = 0x7926;
@@ -681,7 +682,10 @@ namespace Aura.Mabi.Network
 		// [200200, NA252 (2017-04-18)]
 		// 2 ops were added, which shifted UnkEsc~DcUnkR?
 
-		public const int UnkEsc = 0xAB03;
+		// [200300, NA259 (2017-09-07)]
+		// 1 op was added, which shifted UnkEsc~SkillApTrainingR?
+
+		public const int UnkEsc = 0xAB04;
 
 		//public const int GoBeautyShop = 0xAAF8;
 		//public const int GoBeautyShopR = 0xAAF9;
@@ -709,7 +713,7 @@ namespace Aura.Mabi.Network
 		// Added to Aura after ItemMagnet, original op unknown, if different.
 		// [200200, NA252 (2017-04-18)] Shifted from ABB2 to 0xABB7?
 		// When exactly this happened is unknown.
-		public const int BeginnerWarpBook = 0xABB7;
+		public const int BeginnerWarpBook = 0xABB8;
 
 		// [200200, NA252 (2017-04-18)]
 		// 1 op was added, which shifted ItemMagnet~DcUnkR?
@@ -719,26 +723,26 @@ namespace Aura.Mabi.Network
 
 		// [190100, NA200 (2015-01-15)] Added
 		// [190200, NA221 (2016-02-17)] Increased by one, ABAC->ABAD
-		public const int ItemMagnet = 0xABC0;
+		public const int ItemMagnet = 0xABC1;
 
 		// [190200, NA221 (2016-02-17)] Added
 		// [200100, NA229 (2016-06-16)] DestroyExpired* increased by four, ABAE->ABB2, ABAF->ABB3, ABB0->ABB4
-		public const int DestroyExpiredItems = 0xABC1;
-		public const int DestroyExpiredItemsConfirm = 0xABC2;
-		public const int DestroyExpiredItemsR = 0xABC3;
+		public const int DestroyExpiredItems = 0xABC2;
+		public const int DestroyExpiredItemsConfirm = 0xABC3;
+		public const int DestroyExpiredItemsR = 0xABC4;
 
 		// [200100, NA229 (2016-04-16)] Shifted by +8, from ABBB to ABC3.
 		// [200200, NA242 (2016-12-15)] Shifted by +2, from ABC3 to ABC5.
-		public const int AmmoRequired = 0xABD2;
+		public const int AmmoRequired = 0xABD3;
 
 		// [200200, NA258 (2017-08-22)] Extra equip slots
-		public const int SwitchExtraEquipment = 0xAC13;
-		public const int SwitchExtraEquipmentR = 0xAC14;
-		public const int UpdateExtraEquipmentEnd = 0xAC15;
+		public const int SwitchExtraEquipment = 0xAC14;
+		public const int SwitchExtraEquipmentR = 0xAC15;
+		public const int UpdateExtraEquipmentEnd = 0xAC16;
 
 		// [200100, NA226 (2016-04-14)] Shifted by 4, from AC0A to AC0E.
 		// [200100, NA229 (2016-06-16)] Shifted by +8, from AC0E to AC16.
-		public const int ChatSticker = 0xAC23;
+		public const int ChatSticker = 0xAC24;
 
 		// [200200, NA252 (2017-04-18)]
 		// 3 ops were added, which shifted DcUnk~DcUnkR?
@@ -754,23 +758,23 @@ namespace Aura.Mabi.Network
 		// [200100, NA229 (2016-06-16)] Shifted by 5, from AC1A to AC1F.
 		// [200200, NA229 (2016-10-13)] Shifted by 1, from AC1F to AC20.
 		// [200200, NA242 (2016-12-15)] Shifted by 4, from AC20 to AC24.
-		public const int DcUnk = 0xAC37;
-		public const int DcUnkR = 0xAC38;
+		public const int DcUnk = 0xAC38;
+		public const int DcUnkR = 0xAC39;
 
-		public const int RebirthEventInfoRequest = 0xAC61;
-		public const int RebirthEventInfo = 0xAC62;
-		public const int RebirthEventReceivePotion = 0xAC64;
+		public const int RebirthEventInfoRequest = 0xAC62;
+		public const int RebirthEventInfo = 0xAC63;
+		public const int RebirthEventReceivePotion = 0xAC65;
 
 		// [200200, NA242 (2016-06-16)] SwitchToPureMusicMode added
 		// Sent when clicking headset icon I had above my head for some
 		// reason.
-		public const int SwitchToPureMusicMode = 0xAC8E;
+		public const int SwitchToPureMusicMode = 0xAC8F;
 
-		public const int UnkCharWindow = 0xACB8; // [200200, NA249 (2017-04-13)]
+		public const int UnkCharWindow = 0xACB9; // [200200, NA249 (2017-04-13)]
 
 		// [200200, NA252 (2017-05-18)]
-		public const int SkillApTraining = 0xACBB;
-		public const int SkillApTrainingR = 0xACBC;
+		public const int SkillApTraining = 0xACBC;
+		public const int SkillApTrainingR = 0xACBD;
 
 		public const int NpcTalk = 0x13882;
 		public const int NpcTalkSelect = 0x13883;
