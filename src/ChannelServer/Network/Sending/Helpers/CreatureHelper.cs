@@ -943,7 +943,7 @@ namespace Aura.Channel.Network.Sending.Helpers
 			if (type == CreaturePacketType.Public)
 			{
 				packet.PutLong(0);                   // AimingTarget
-				packet.PutLong(0);                   // Executor
+				packet.PutLong(creature.FinisherId);
 				packet.PutShort(0);                  // ReviveTypeList
 
 				// loop						         
