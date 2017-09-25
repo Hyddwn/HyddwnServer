@@ -34,7 +34,6 @@ namespace Aura.Channel.World.Entities
 		public const int BaseMagicBalance = 30;
 		public const float MinStability = -10, MaxStability = 100;
 
-		private const float MinWeight = 0.7f, MaxWeight = 1.5f;
 		private const float MaxFoodStatBonus = 100;
 		private const float MaxStatBonus = 100;
 
@@ -358,11 +357,15 @@ namespace Aura.Channel.World.Entities
 		public byte EyeColor { get; set; }
 		public byte MouthType { get; set; }
 
-		private float _weight, _upper, _lower;
+		// Originally we clamped the size values, but seeing how pets
+		// have vastly different properties than characters, and we don't
+		// know exactly which values are valid and which are not, we'll
+		// just allow anything for now.
+
 		public float Height { get; set; }
-		public float Weight { get { return _weight; } set { _weight = Math2.Clamp(MinWeight, MaxWeight, value); } }
-		public float Upper { get { return _upper; } set { _upper = Math2.Clamp(MinWeight, MaxWeight, value); } }
-		public float Lower { get { return _lower; } set { _lower = Math2.Clamp(MinWeight, MaxWeight, value); } }
+		public float Weight { get; set; }
+		public float Upper { get; set; }
+		public float Lower { get; set; }
 
 		public float BodyScale { get { return (this.Height * 0.4f + 0.6f); } }
 
