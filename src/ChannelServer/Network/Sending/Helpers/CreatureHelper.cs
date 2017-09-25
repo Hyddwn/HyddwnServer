@@ -944,10 +944,19 @@ namespace Aura.Channel.Network.Sending.Helpers
 			{
 				packet.PutLong(0);                   // AimingTarget
 				packet.PutLong(creature.FinisherId);
-				packet.PutShort(0);                  // ReviveTypeList
 
-				// loop						         
-				//   packet.PutInt	
+				if (creature.DeadMenu.Options != 0)
+				{
+					var flags = creature.DeadMenu.GetFlags();
+
+					packet.PutShort((short)flags.Count);
+					foreach (var flag in flags)
+						packet.PutInt(flag);
+				}
+				else
+				{
+					packet.PutShort(0);
+				}
 
 				// < int g18 monsters?
 			}
