@@ -299,6 +299,8 @@ namespace Aura.Login.Database
 						character.Color1 = reader.GetUInt32("color1");
 						character.Color2 = reader.GetUInt32("color2");
 						character.Color3 = reader.GetUInt32("color3");
+						character.LastDeSpawn = reader.GetDateTimeSafe("lastDeSpawn");
+						character.RemainingTime = reader.GetTimeSpanSafe("remainingTime");
 
 						result.Add(character);
 					}

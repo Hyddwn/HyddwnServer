@@ -66,6 +66,27 @@ namespace Aura.Channel.World.Entities
 		public Creature Master { get; set; }
 		public Creature Pet { get; set; }
 
+		/// <summary>
+		/// Last time the character logged in or out (used for pet timer).
+		/// </summary>
+		public DateTime LastDeSpawn { get; set; }
+
+		/// <summary>
+		/// Remaining time the character can be used.
+		/// </summary>
+		public TimeSpan RemainingTime
+		{
+			get { return _remainingTime; }
+			set
+			{
+				if (value < TimeSpan.Zero)
+					_remainingTime = TimeSpan.Zero;
+				else
+					_remainingTime = value;
+			}
+		}
+		private TimeSpan _remainingTime;
+
 		public CreatureTemp Temp { get; protected set; }
 		public CreatureKeywords Keywords { get; protected set; }
 		public CreatureTitles Titles { get; protected set; }

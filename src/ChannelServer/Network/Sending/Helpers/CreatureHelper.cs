@@ -302,8 +302,8 @@ namespace Aura.Channel.Network.Sending.Helpers
 					packet.PutBin(item.Info);
 				}
 
-				packet.PutInt(0);  // PetRemainingTime
-				packet.PutLong(0); // PetLastTime
+				packet.PutInt(creature.RemainingTime);
+				packet.PutLong(creature.LastDeSpawn);
 				packet.PutLong(0); // PetExpireTime
 
 				return packet;
@@ -560,8 +560,8 @@ namespace Aura.Channel.Network.Sending.Helpers
 
 				if (type == CreaturePacketType.Private)
 				{
-					packet.PutInt(2000000000);          // RemainingSummonTime
-					packet.PutLong(0);                  // LastSummonTime
+					packet.PutInt(creature.RemainingTime);
+					packet.PutLong(creature.LastDeSpawn);
 					packet.PutLong(0);                  // PetExpireTime
 					packet.PutByte(0);                  // Loyalty
 					packet.PutByte(0);                  // Favor
