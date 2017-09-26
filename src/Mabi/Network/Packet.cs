@@ -202,6 +202,9 @@ namespace Aura.Mabi.Network
 		/// <summary>Writes val to buffer.</summary>
 		public Packet PutUInt(uint val) { return this.PutInt((int)val); }
 
+		/// <summary>Writes val as int to buffer.</summary>
+		public Packet PutInt(TimeSpan val) { return this.PutInt((int)(val.Ticks / 10000)); }
+
 		/// <summary>Writes val to buffer.</summary>
 		public Packet PutLong(long val) { return this.PutSimple(PacketElementType.Long, BitConverter.GetBytes(IPAddress.HostToNetworkOrder(val))); }
 
