@@ -92,25 +92,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			// Remove pet
-			client.Creatures.Remove(pet.EntityId);
-			pet.Master = null;
-			creature.Pet = null;
-
-			// Stop movement
-			var pos = pet.StopMove();
-
-			// Remove from region and send necessary effects, packets, and response
-			Send.SpawnEffect(SpawnEffect.PetDespawn, creature.RegionId, pos.X, pos.Y, creature, pet);
-			if (pet.Region != Region.Limbo)
-				pet.Region.RemoveCreature(pet);
-			Send.PetUnregister(creature, pet);
-			Send.Disappear(pet);
-			Send.UnsummonPetR(creature, true, entityId);
-
-			// Update master's upgrade effects, for potential summon checks.
-			// XXX: Do we need an event for this?
-			creature.Inventory.UpdateStatBonuses();
+			pet.Unsummon();
 		}
 
 		/// <summary>

@@ -4853,6 +4853,51 @@ namespace Aura.Channel.World.Entities
 
 			return true;
 		}
+
+		/// <summary>
+		/// Unsummons creature (used for pets).
+		/// </summary>
+		public void Unsummon()
+		{
+			var pet = (this as Pet);
+			if (pet == null)
+				return;
+
+			var creature = pet.Master;
+			if (creature == null)
+				return;
+
+			// Remove pet
+			creature.Client.Creatures.Remove(pet.EntityId);
+			pet.Master = null;
+			creature.Pet = null;
+
+			// Stop movement
+			var pos = pet.StopMove();
+
+			// Update timer
+			if (pet.LastDeSpawn != DateTime.MinValue)
+			{
+				var now = DateTime.Now;
+
+				pet.RemainingTime = pet.RemainingTime - (now - pet.LastDeSpawn);
+				pet.LastDeSpawn = now;
+				pet.Vars.Temp["TimeUpDespawn"] = null;
+				pet.Vars.Temp["RemainingMinuteWarning"] = null;
+			}
+
+			// Remove from region and send necessary effects, packets, and response
+			Send.SpawnEffect(SpawnEffect.PetDespawn, creature.RegionId, pos.X, pos.Y, creature, pet);
+			if (pet.Region != Region.Limbo)
+				pet.Region.RemoveCreature(pet);
+			Send.PetUnregister(creature, pet);
+			Send.Disappear(pet);
+			Send.UnsummonPetR(creature, true, pet.EntityId);
+
+			// Update master's upgrade effects, for potential summon checks.
+			// XXX: Do we need an event for this?
+			creature.Inventory.UpdateStatBonuses();
+		}
 	}
 
 	public enum TargetableOptions
