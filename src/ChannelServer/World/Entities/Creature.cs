@@ -1682,6 +1682,10 @@ namespace Aura.Channel.World.Entities
 			if (this.Region == Region.Limbo)
 				return;
 
+			// Skip if disabled
+			if (!ChannelServer.Instance.Conf.World.PetTimeLimit)
+				return;
+
 			var end = this.LastDeSpawn.Add(this.RemainingTime);
 			var now = DateTime.Now;
 			var diff = (end - now);
