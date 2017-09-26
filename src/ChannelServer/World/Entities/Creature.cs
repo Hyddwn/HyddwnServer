@@ -1658,6 +1658,54 @@ namespace Aura.Channel.World.Entities
 			this.Skills.OnSecondsTimeTick(time);
 
 			this.PlayTime++;
+
+			this.CheckPetTimer(time);
+		}
+
+		/// <summary>
+		/// Checks remaining time, notifies owner about the time, and
+		/// despawns creature.
+		/// </summary>
+		/// <param name="time"></param>
+		private void CheckPetTimer(ErinnTime time)
+		{
+			// If last is 0, no timer
+			if (this.LastDeSpawn == DateTime.MinValue)
+				return;
+
+			// No despawn for primary creatures
+			var master = this.Master;
+			if (master == null)
+				return;
+
+			// Pause in limbo
+			if (this.Region == Region.Limbo)
+				return;
+
+			var end = this.LastDeSpawn.Add(this.RemainingTime);
+			var now = DateTime.Now;
+			var diff = (end - now);
+
+			// Time up
+			if (diff <= TimeSpan.Zero)
+			{
+				if (this.Vars.Temp["TimeUpDespawn"] == null)
+				{
+					this.Unsummon();
+					master.Notice(Localization.Get("The animal character has been unsummoned due to time limit."));
+					this.Vars.Temp["TimeUpDespawn"] = true;
+				}
+			}
+			// One minute warning
+			else if (diff <= TimeSpan.FromMinutes(1))
+			{
+				if (this.Vars.Temp["RemainingMinuteWarning"] == null)
+				{
+					Send.PetOneMinuteNotice(master, this.EntityId);
+					Send.PetOneMinuteTransparency(master, this.EntityId);
+					this.Vars.Temp["RemainingMinuteWarning"] = true;
+				}
+			}
 		}
 
 		/// <summary>
