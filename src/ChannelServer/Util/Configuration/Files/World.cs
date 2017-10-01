@@ -85,6 +85,8 @@ namespace Aura.Channel.Util.Configuration.Files
 
 		public float GoldQuestRewardRate { get; protected set; }
 
+		public bool PetTimeLimit { get; protected set; }
+
 		public void Load()
 		{
 			this.Require("system/conf/world.conf");
@@ -164,6 +166,8 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.PartyQuestMinSize = Math2.Clamp(1, this.PartyMaxSize, this.GetInt("party_quest_min_size", 2));
 
 			this.GoldQuestRewardRate = this.GetFloat("gold_quest_reward_rate", 100) / 100.0f;
+
+			this.PetTimeLimit = this.GetBool("pet_time_limit", true);
 		}
 	}
 }

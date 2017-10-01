@@ -511,6 +511,8 @@ namespace Aura.Mabi.Network
 
 		public const int PetRegister = 0x9024;
 		public const int PetUnregister = 0x9025;
+		public const int PetOneMinuteNotice = 0x9028;
+		public const int PetOneMinuteTransparency = 0x9029;
 		public const int StartRP = 0x902A;
 		public const int EndRP = 0x902B;
 		public const int SummonPet = 0x902C;

@@ -153,5 +153,31 @@ namespace Aura.Channel.Network.Sending
 
 			creature.Client.Send(packet);
 		}
+
+		/// <summary>
+		/// Sends PetOneMinuteNotice to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="entityId"></param>
+		public static void PetOneMinuteNotice(Creature creature, long entityId)
+		{
+			var packet = new Packet(Op.PetOneMinuteNotice, creature.EntityId);
+			packet.PutLong(entityId);
+
+			creature.Client.Send(packet);
+		}
+
+		/// <summary>
+		/// Sends PetOneMinuteTransparency to creature's client.
+		/// </summary>
+		/// <param name="creature"></param>
+		/// <param name="entityId"></param>
+		public static void PetOneMinuteTransparency(Creature creature, long entityId)
+		{
+			var packet = new Packet(Op.PetOneMinuteTransparency, creature.EntityId);
+			packet.PutLong(entityId);
+
+			creature.Client.Send(packet);
+		}
 	}
 }

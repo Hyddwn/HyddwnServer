@@ -6,6 +6,7 @@ using Aura.Mabi.Const;
 using Aura.Channel.World.Dungeons;
 using Aura.Channel.Network.Sending;
 using Aura.Data;
+using System.Collections.Generic;
 
 namespace Aura.Channel.World.Entities.Creatures
 {
@@ -179,6 +180,25 @@ namespace Aura.Channel.World.Entities.Creatures
 			var exp = AuraData.ExpDb.GetForLevel(level);
 
 			return (int)(exp * optionMultiplicator * levelMultiplicator);
+		}
+
+		/// <summary>
+		/// Returns list of available options as ints.
+		/// </summary>
+		/// <returns></returns>
+		public List<int> GetFlags()
+		{
+			var bits = (int)this.Options;
+			var flags = new List<int> { 0 };
+
+			// Break down options bit by bit, and add them to flags if set.
+			for (var i = 1; bits != 0; ++i, bits >>= 1)
+			{
+				if ((bits & 1) != 0)
+					flags.Add(i);
+			}
+
+			return flags;
 		}
 	}
 }

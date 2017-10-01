@@ -34,7 +34,6 @@ namespace Aura.Channel.World.Entities
 		public const int BaseMagicBalance = 30;
 		public const float MinStability = -10, MaxStability = 100;
 
-		private const float MinWeight = 0.7f, MaxWeight = 1.5f;
 		private const float MaxFoodStatBonus = 100;
 		private const float MaxStatBonus = 100;
 
@@ -66,6 +65,27 @@ namespace Aura.Channel.World.Entities
 
 		public Creature Master { get; set; }
 		public Creature Pet { get; set; }
+
+		/// <summary>
+		/// Last time the character logged in or out (used for pet timer).
+		/// </summary>
+		public DateTime LastDeSpawn { get; set; }
+
+		/// <summary>
+		/// Remaining time the character can be used.
+		/// </summary>
+		public TimeSpan RemainingTime
+		{
+			get { return _remainingTime; }
+			set
+			{
+				if (value < TimeSpan.Zero)
+					_remainingTime = TimeSpan.Zero;
+				else
+					_remainingTime = value;
+			}
+		}
+		private TimeSpan _remainingTime;
 
 		public CreatureTemp Temp { get; protected set; }
 		public CreatureKeywords Keywords { get; protected set; }
@@ -358,11 +378,15 @@ namespace Aura.Channel.World.Entities
 		public byte EyeColor { get; set; }
 		public byte MouthType { get; set; }
 
-		private float _weight, _upper, _lower;
+		// Originally we clamped the size values, but seeing how pets
+		// have vastly different properties than characters, and we don't
+		// know exactly which values are valid and which are not, we'll
+		// just allow anything for now.
+
 		public float Height { get; set; }
-		public float Weight { get { return _weight; } set { _weight = Math2.Clamp(MinWeight, MaxWeight, value); } }
-		public float Upper { get { return _upper; } set { _upper = Math2.Clamp(MinWeight, MaxWeight, value); } }
-		public float Lower { get { return _lower; } set { _lower = Math2.Clamp(MinWeight, MaxWeight, value); } }
+		public float Weight { get; set; }
+		public float Upper { get; set; }
+		public float Lower { get; set; }
 
 		public float BodyScale { get { return (this.Height * 0.4f + 0.6f); } }
 
@@ -1634,6 +1658,58 @@ namespace Aura.Channel.World.Entities
 			this.Skills.OnSecondsTimeTick(time);
 
 			this.PlayTime++;
+
+			this.CheckPetTimer(time);
+		}
+
+		/// <summary>
+		/// Checks remaining time, notifies owner about the time, and
+		/// despawns creature.
+		/// </summary>
+		/// <param name="time"></param>
+		private void CheckPetTimer(ErinnTime time)
+		{
+			// If last is 0, no timer
+			if (this.LastDeSpawn == DateTime.MinValue)
+				return;
+
+			// No despawn for primary creatures
+			var master = this.Master;
+			if (master == null)
+				return;
+
+			// Pause in limbo
+			if (this.Region == Region.Limbo)
+				return;
+
+			// Skip if disabled
+			if (!ChannelServer.Instance.Conf.World.PetTimeLimit)
+				return;
+
+			var end = this.LastDeSpawn.Add(this.RemainingTime);
+			var now = DateTime.Now;
+			var diff = (end - now);
+
+			// Time up
+			if (diff <= TimeSpan.Zero)
+			{
+				if (this.Vars.Temp["TimeUpDespawn"] == null)
+				{
+					this.Unsummon();
+					master.Notice(Localization.Get("The animal character has been unsummoned due to time limit."));
+					this.Vars.Temp["TimeUpDespawn"] = true;
+				}
+			}
+			// One minute warning
+			else if (diff <= TimeSpan.FromMinutes(1))
+			{
+				if (this.Vars.Temp["RemainingMinuteWarning"] == null)
+				{
+					Send.PetOneMinuteNotice(master, this.EntityId);
+					Send.PetOneMinuteTransparency(master, this.EntityId);
+					this.Vars.Temp["RemainingMinuteWarning"] = true;
+				}
+			}
 		}
 
 		/// <summary>
@@ -4828,6 +4904,51 @@ namespace Aura.Channel.World.Entities
 			this.Inventory.Add(item, Pocket.ExtraEquipSlotKits);
 
 			return true;
+		}
+
+		/// <summary>
+		/// Unsummons creature (used for pets).
+		/// </summary>
+		public void Unsummon()
+		{
+			var pet = (this as Pet);
+			if (pet == null)
+				return;
+
+			var creature = pet.Master;
+			if (creature == null)
+				return;
+
+			// Remove pet
+			creature.Client.Creatures.Remove(pet.EntityId);
+			pet.Master = null;
+			creature.Pet = null;
+
+			// Stop movement
+			var pos = pet.StopMove();
+
+			// Update timer
+			if (pet.LastDeSpawn != DateTime.MinValue)
+			{
+				var now = DateTime.Now;
+
+				pet.RemainingTime = pet.RemainingTime - (now - pet.LastDeSpawn);
+				pet.LastDeSpawn = now;
+				pet.Vars.Temp["TimeUpDespawn"] = null;
+				pet.Vars.Temp["RemainingMinuteWarning"] = null;
+			}
+
+			// Remove from region and send necessary effects, packets, and response
+			Send.SpawnEffect(SpawnEffect.PetDespawn, creature.RegionId, pos.X, pos.Y, creature, pet);
+			if (pet.Region != Region.Limbo)
+				pet.Region.RemoveCreature(pet);
+			Send.PetUnregister(creature, pet);
+			Send.Disappear(pet);
+			Send.UnsummonPetR(creature, true, pet.EntityId);
+
+			// Update master's upgrade effects, for potential summon checks.
+			// XXX: Do we need an event for this?
+			creature.Inventory.UpdateStatBonuses();
 		}
 	}
 

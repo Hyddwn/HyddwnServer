@@ -10,6 +10,7 @@ using Aura.Mabi.Const;
 using Aura.Channel.World.Inventory;
 using Aura.Mabi.Network;
 using System;
+using Aura.Data;
 
 namespace Aura.Channel.Network.Handlers
 {
@@ -39,6 +40,27 @@ namespace Aura.Channel.Network.Handlers
 			}
 
 			var pet = client.Account.GetPetSafe(entityId);
+
+			// Timer
+			var petData = AuraData.PetDb.Find(pet.RaceId);
+			if (petData != null)
+			{
+				var now = DateTime.Now;
+
+				// Reset remaining time if pet hasn't been spawned today
+				if (pet.LastDeSpawn.Date != now.Date)
+					pet.RemainingTime = TimeSpan.FromMinutes(petData.TimeLimit);
+
+				// Check timer
+				if (pet.RemainingTime == TimeSpan.Zero)
+				{
+					Log.Warning("SummonPet: Player '{0}' tried to spawn pet with no time left.", client.Account.Id);
+					Send.SummonPetR(creature, null);
+					return;
+				}
+
+				pet.LastDeSpawn = now;
+			}
 
 			// Adjust pet's state
 			// Doesn't fix giant mount problems.
@@ -92,25 +114,7 @@ namespace Aura.Channel.Network.Handlers
 				return;
 			}
 
-			// Remove pet
-			client.Creatures.Remove(pet.EntityId);
-			pet.Master = null;
-			creature.Pet = null;
-
-			// Stop movement
-			var pos = pet.StopMove();
-
-			// Remove from region and send necessary effects, packets, and response
-			Send.SpawnEffect(SpawnEffect.PetDespawn, creature.RegionId, pos.X, pos.Y, creature, pet);
-			if (pet.Region != Region.Limbo)
-				pet.Region.RemoveCreature(pet);
-			Send.PetUnregister(creature, pet);
-			Send.Disappear(pet);
-			Send.UnsummonPetR(creature, true, entityId);
-
-			// Update master's upgrade effects, for potential summon checks.
-			// XXX: Do we need an event for this?
-			creature.Inventory.UpdateStatBonuses();
+			pet.Unsummon();
 		}
 
 		/// <summary>

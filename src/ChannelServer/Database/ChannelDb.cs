@@ -1,4 +1,4 @@
-// Copyright (c) Aura development team - Licensed under GNU GPL
+﻿// Copyright (c) Aura development team - Licensed under GNU GPL
 // For more information, see license file in the main folder
 
 using Aura.Channel.Network;
@@ -286,6 +286,9 @@ namespace Aura.Channel.Database
 					character.ToxicLuck = reader.GetFloat("toxicLuck");
 
 					character.PlayPoints = reader.GetInt32("playPoints");
+
+					character.LastDeSpawn = reader.GetDateTimeSafe("lastDeSpawn");
+					character.RemainingTime = reader.GetTimeSpanSafe("remainingTime");
 
 					title = reader.GetUInt16("title");
 					optionTitle = reader.GetUInt16("optionTitle");
@@ -1183,6 +1186,12 @@ namespace Aura.Channel.Database
 					cmd.Set("lastRebirth", creature.LastRebirth);
 				if (creature.LastLogin != DateTime.MinValue)
 					cmd.Set("lastLogin", creature.LastLogin);
+
+				if (creature.LastDeSpawn != DateTime.MinValue)
+				{
+					cmd.Set("lastDeSpawn", creature.LastDeSpawn);
+					cmd.Set("remainingTime", creature.RemainingTime);
+				}
 
 				cmd.Execute();
 			}

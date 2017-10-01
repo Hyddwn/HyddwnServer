@@ -947,6 +947,17 @@ namespace Aura.Shared.Database
 		{
 			return reader[index] as DateTime? ?? DateTime.MinValue;
 		}
+
+		/// <summary>
+		/// Returns TimeSpan of the index, or TimeSpan.Zero, if value is null.
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public static TimeSpan GetTimeSpanSafe(this MySqlDataReader reader, string index)
+		{
+			return reader[index] as TimeSpan? ?? TimeSpan.Zero;
+		}
 	}
 
 	/// <summary>

@@ -188,8 +188,8 @@ namespace Aura.Login.Network
 					packet.PutBin(item.Info);
 				}
 
-				packet.PutInt(0);  // PetRemainingTime
-				packet.PutLong(0); // PetLastTime
+				packet.PutInt(character.RemainingTime);
+				packet.PutLong(character.LastDeSpawn);
 				packet.PutLong(0); // PetExpireTime
 			}
 

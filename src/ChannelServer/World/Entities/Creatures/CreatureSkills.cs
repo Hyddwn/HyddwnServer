@@ -402,6 +402,18 @@ namespace Aura.Channel.World.Entities.Creatures
 
 			Send.SkillCancel(_creature);
 
+			// Reset cooldown in old combat system, if the skill has a
+			// "new-system-cooldown". That check is important,
+			// there were cooldowns in the old system, like for FH,
+			// but they didn't use the CoolDown field.
+			if (this.ActiveSkill.RankData.CoolDown != 0)
+			{
+				if (!AuraData.FeaturesDb.IsEnabled("CombatSystemRenewal"))
+					Send.ResetCooldown(_creature, this.ActiveSkill.Info.Id);
+
+				// else TODO: Set skill's cooldown for security reasons.
+			}
+
 			this.ActiveSkill.State = SkillState.Canceled;
 			this.ActiveSkill = null;
 

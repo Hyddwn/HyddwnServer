@@ -161,6 +161,15 @@ namespace Aura.Channel.Network
 				var playerCreature = creature as PlayerCreature;
 				if (playerCreature != null)
 					ChannelServer.Instance.Database.UpdateOnlineStatus(playerCreature.CreatureId, false);
+
+				// Update timer
+				if (playerCreature.LastDeSpawn != DateTime.MinValue)
+				{
+					var now = DateTime.Now;
+
+					playerCreature.RemainingTime = playerCreature.RemainingTime - (now - playerCreature.LastDeSpawn);
+					playerCreature.LastDeSpawn = now;
+				}
 			}
 
 			// Save everything after we're done cleaning up

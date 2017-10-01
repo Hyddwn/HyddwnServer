@@ -77,6 +77,16 @@ namespace Aura.Login.Database
 			}
 		}
 
+		/// <summary>
+		/// Last time the character logged in or out (used for pet timer).
+		/// </summary>
+		public DateTime LastDeSpawn { get; set; }
+
+		/// <summary>
+		/// Remaining time the character can be used.
+		/// </summary>
+		public TimeSpan RemainingTime { get; set; }
+
 		public Character()
 		{
 			this.Height = 1;
