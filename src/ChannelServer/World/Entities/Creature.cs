@@ -2770,6 +2770,8 @@ namespace Aura.Channel.World.Entities
 					this.Upper = (float)data.Upper;
 				if (data.Lower != null)
 					this.Lower = (float)data.Lower;
+
+				Send.CreatureBodyUpdate(this);
 			}
 
 			// Send stat bonuses
