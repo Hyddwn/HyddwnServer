@@ -119,7 +119,7 @@ namespace Aura.Channel.Network.Sending
 		{
 			// Private
 			StatUpdate(creature, StatUpdateType.Private,
-				Stat.Height, Stat.Upper, Stat.Lower,
+				Stat.Height, Stat.Weight, Stat.Upper, Stat.Lower,
 				Stat.Life, Stat.LifeInjured, Stat.LifeMax, Stat.LifeMaxMod,
 				Stat.Stamina, Stat.Hunger, Stat.StaminaMax, Stat.StaminaMaxMod,
 				Stat.Mana, Stat.ManaMax, Stat.ManaMaxMod,

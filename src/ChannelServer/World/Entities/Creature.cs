@@ -2758,8 +2758,21 @@ namespace Aura.Channel.World.Entities
 
 			this.LastAging = DateTime.Now;
 
-			if (this is Character)
-				this.Height = Math.Min(1.0f, 1.0f / 7.0f * (this.Age - 10.0f)); // 0 ~ 1.0
+			// Update body
+			var data = AuraData.StatsAgeUpDb.Find(this.RaceId, this.Age);
+			if (data != null)
+			{
+				if (data.Height != null)
+					this.Height = (float)data.Height;
+				if (data.Weight != null)
+					this.Weight = (float)data.Weight;
+				if (data.Upper != null)
+					this.Upper = (float)data.Upper;
+				if (data.Lower != null)
+					this.Lower = (float)data.Lower;
+
+				Send.CreatureBodyUpdate(this);
+			}
 
 			// Send stat bonuses
 			if (life != 0) Send.SimpleAcquireInfo(this, "life", mana);

@@ -8,9 +8,29 @@ using System.Linq;
 
 namespace Aura.Data.Database
 {
-	public class StatsAgeUpDb : DatabaseJsonIndexed<int, Dictionary<int, StatsUpData>>
+	public class StatsAgeUpData
 	{
-		public StatsUpData Find(int raceId, int age)
+		public int Age { get; set; }
+
+		public int AP { get; set; }
+		public float Life { get; set; }
+		public float Mana { get; set; }
+		public float Stamina { get; set; }
+		public float Str { get; set; }
+		public float Int { get; set; }
+		public float Dex { get; set; }
+		public float Will { get; set; }
+		public float Luck { get; set; }
+
+		public float? Height { get; set; }
+		public float? Weight { get; set; }
+		public float? Upper { get; set; }
+		public float? Lower { get; set; }
+	}
+
+	public class StatsAgeUpDb : DatabaseJsonIndexed<int, Dictionary<int, StatsAgeUpData>>
+	{
+		public StatsAgeUpData Find(int raceId, int age)
 		{
 			var race = this.Entries.GetValueOrDefault(raceId);
 			if (race == null)
@@ -31,7 +51,7 @@ namespace Aura.Data.Database
 		{
 			entry.AssertNotMissing("race", "age", "life", "mana", "stamina", "str", "int", "dex", "will", "luck");
 
-			var data = new StatsUpData();
+			var data = new StatsAgeUpData();
 
 			data.Age = entry.ReadByte("age");
 			data.AP = entry.ReadInt("ap");
@@ -44,10 +64,15 @@ namespace Aura.Data.Database
 			data.Will = entry.ReadFloat("will");
 			data.Luck = entry.ReadFloat("luck");
 
+			if (entry.ContainsKey("height")) data.Height = entry.ReadFloat("height");
+			if (entry.ContainsKey("weight")) data.Weight = entry.ReadFloat("weight");
+			if (entry.ContainsKey("upper")) data.Upper = entry.ReadFloat("upper");
+			if (entry.ContainsKey("lower")) data.Lower = entry.ReadFloat("lower");
+
 			foreach (int raceId in entry["race"])
 			{
 				if (!this.Entries.ContainsKey(raceId))
-					this.Entries[raceId] = new Dictionary<int, StatsUpData>();
+					this.Entries[raceId] = new Dictionary<int, StatsAgeUpData>();
 
 				this.Entries[raceId][data.Age] = data;
 			}
